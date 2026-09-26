@@ -34,5 +34,21 @@ window.__sets = [];
       return new Promise(function (r) { setTimeout(function () { fire(coll); r(); }, 150); }); // confirmed
     } }; }
   }; } };
-  window.claude = { use: function (n) { return Promise.resolve(n === "db" ? db : null); } };
+  // Optional comments (window.__withComments): canSendToClaude answers window.__can after a
+  // 300 ms lag, so a cached value can be stale; sendToClaude logs to window.__sent or rejects
+  // with window.__sendReject.
+  window.__can = window.__can || "no_session";
+  window.__sent = [];
+  var comments = {
+    canSendToClaude: function () { return new Promise(function (r) { setTimeout(function () { r(window.__can); }, 300); }); },
+    anchorFor: function () { return Promise.resolve({ kind: "element" }); },
+    sendToClaude: function (target) {
+      if (window.__sendReject) return Promise.reject({ code: window.__sendReject });
+      window.__sent.push(target.text);
+      return Promise.resolve({ threadId: "t1", commentId: "c1" });
+    }
+  };
+  window.claude = { use: function (n) {
+    return Promise.resolve(n === "db" ? db : n === "comments" && window.__withComments ? comments : null);
+  } };
 })();

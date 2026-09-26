@@ -13,15 +13,16 @@ const DEMO = JSON.parse(html.split('<script type="application/json" id="demo-bat
 const B1 = Object.assign({}, DEMO, { id: "b1" });
 const answerWrites = (sets) => sets.filter((s) => s.p.indexOf("/answers/") >= 0);
 
-async function open(browser, seed, draft, hash) {
+async function open(browser, seed, draft, hash, withComments) {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push(String(e)));
-  await page.addInitScript(({ seed, draft }) => {
+  await page.addInitScript(({ seed, draft, withComments }) => {
     window.__seed = seed;
+    window.__withComments = !!withComments;
     if (draft) { try { localStorage.setItem("answer-board:v1", JSON.stringify(draft)); } catch (e) { /* none */ } }
-  }, { seed, draft });
+  }, { seed, draft, withComments });
   await page.addInitScript({ path: FAKE });
   await page.goto("file://" + PAGE + (hash || ""));
   return { ctx, page, errors };
@@ -121,6 +122,32 @@ async function open(browser, seed, draft, hash) {
     await page.waitForTimeout(1200);  // the 800 ms save fires while the textarea still has focus
     const w = answerWrites(await page.evaluate(() => window.__sets));
     out.held = { texts: w.map((s) => s.body.text), shown: await ta.inputValue() };
+    await ctx.close();
+  }
+
+  // 8. A stale cached "no_session" never blocks a send: the click always tries.
+  {
+    const { ctx, page } = await open(browser, { "batches/b1": B1 }, null, "", true);
+    await page.waitForSelector("#b-b1 [data-send]");
+    await page.waitForTimeout(800);                       // the cache now says no_session
+    await page.evaluate(() => { window.__can = "available"; });
+    await page.locator("#b-b1 [data-send]").click();      // before any re-check can answer
+    await page.waitForTimeout(800);
+    out.staleCache = { sent: (await page.evaluate(() => window.__sent)).length,
+      status: await page.locator("#b-b1 [data-send-status]").textContent() };
+    await ctx.close();
+  }
+
+  // 9. claude_unavailable: the snapshot is still written and the message says so.
+  {
+    const { ctx, page } = await open(browser, { "batches/b1": B1 }, null, "", true);
+    await page.waitForSelector("#b-b1 [data-send]");
+    await page.evaluate(() => { window.__can = "available"; window.__sendReject = "claude_unavailable"; });
+    await page.waitForTimeout(800);
+    await page.locator("#b-b1 [data-send]").click();
+    await page.waitForTimeout(800);
+    const subs = (await page.evaluate(() => window.__sets)).filter((x) => x.p.indexOf("/submissions/") >= 0);
+    out.unavailable = { snapshots: subs.length, status: await page.locator("#b-b1 [data-send-status]").textContent() };
     await ctx.close();
   }
 

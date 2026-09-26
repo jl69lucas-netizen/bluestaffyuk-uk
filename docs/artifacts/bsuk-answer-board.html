@@ -106,7 +106,7 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
   var observers = {};   // id -> IntersectionObserver clearing the New badge
   var sending = {};     // id -> status text while a Send is in progress
   var db = null, comments = null, downloads = null, demo = false, firstBatches = true, batchesLoaded = false;
-  var canSend = "off";  // cached comments.canSendToClaude(), so the click goes straight to the send
+  var canSend = "off";  // cached comments.canSendToClaude(): only for the hint shown before a click
   var DOWNLOAD_OFF = ["unavailable", "not_granted", "capability_disabled", "capability_removed"];
 
   function $(id) { return document.getElementById(id); }
@@ -235,6 +235,7 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     return h + '<section class="sec send" data-send-card="' + esc(b.id) + '"><div class="sendrow"><div>' +
       "<h3 class=\"st\">Ready to send?</h3><p class=\"muted\" data-counts></p></div>" +
       '<button type="button" class="btn big" data-send>Send to Claude Code →</button></div>' +
+      '<p class="muted" data-send-hint></p>' +
       '<p class="sendstatus" role="status" data-send-status></p>' +
       '<div class="row"><span>No Claude session watching?</span>' +
       '<button type="button" class="chip" data-copy>Copy answers</button>' +
@@ -418,9 +419,16 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     return out.join("\n");
   }
   function flash(el, msg) { setText(el, msg); setTimeout(function () { setText(el, ""); }, 2500); }
+  var HINTS = {
+    no_session: "No Claude Code session is watching this board right now; Send still saves your answers.",
+    writers_only: "Only an editor of this board can send to Claude; Send still saves your answers."
+  };
+  function paintHints() {
+    document.querySelectorAll("[data-send-hint]").forEach(function (el) { setText(el, db ? HINTS[canSend] || "" : ""); });
+  }
   function refreshCanSend() {
-    if (!comments) { canSend = "off"; return; }
-    comments.canSendToClaude().then(function (v) { canSend = v; }, function () { canSend = "off"; });
+    if (!comments) { canSend = "off"; paintHints(); return; }
+    comments.canSendToClaude().then(function (v) { canSend = v; paintHints(); }, function () { canSend = "off"; paintHints(); });
   }
   function sendCard(id) { return document.querySelector('[data-send-card="' + cssId(id) + '"]'); }
   function showSending(id) {
@@ -444,8 +452,10 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     var note = "Answers submitted — " + b.title.slice(0, 120) + " (" + id + "). Snapshot " + sid + ": " + c.answered + " answered, " +
       c.skip + " skip, " + c.not_yet + " not yet, " + c.empty + " empty. Read db batches/" + id + "/submissions/" + sid + ".";
     // The send must start inside this click (it needs the viewer's recent gesture), so it runs
-    // beside the saves and uses the cached canSendToClaude(); Claude reads the snapshot seconds later.
-    var sendingP = (canSend !== "available" ? Promise.resolve(canSend) : comments.anchorFor(card).then(function (anchor) {
+    // beside the saves and always tries: a cached canSendToClaude() may be stale, and a
+    // claude_unavailable rejection is decided before anything is posted. Claude reads the
+    // snapshot seconds later.
+    var sendingP = (!comments ? Promise.resolve("off") : comments.anchorFor(card).then(function (anchor) {
       return comments.sendToClaude({ anchor: anchor, text: note });
     }).then(function () { return "sent"; })).catch(function (e) { return (e && e.code) || "error"; })
       .then(function (how) { refreshCanSend(); return how; });
@@ -624,6 +634,8 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
   }
 
   // A re-render deferred because focus was inside a batch happens once focus leaves it.
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") refreshCanSend(); });
+  window.addEventListener("focus", refreshCanSend);
   $("batches").addEventListener("focusout", function () {
     setTimeout(function () {
       if (openIds().some(function (id) { return rendered[id] !== batchSig(batches[id]); })) renderBatches();

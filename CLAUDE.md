@@ -228,7 +228,12 @@ work is done rather than how a page is built, so they are stated here.
 - A single blocking either/or pick may still be asked in chat. Visual picks keep their browser
   mockups, and the board question links to the mockup.
 - Watch the board with the ArtifactComments tool at the start of any session that may post or
-  receive, so the user's **Send to Claude Code** reaches the session.
+  receive, so the user's **Send to Claude Code** reaches the session. Only a main-loop session
+  holds a watch, never a subagent.
+- Then confirm with a bare ArtifactComments `watch` listing that the board's row says
+  auto-replies armed. If not, ask the user to paste the board link in chat and watch again (a
+  watch arms only for a board this session published or whose link the user gave in their own
+  message). "read my answers" stays the fallback.
 - Posting, receiving and marking a batch received: `docs/reference/answer-board/README.md`.
 
 ## Gates — run these, do not re-derive them

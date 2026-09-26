@@ -409,6 +409,10 @@ def test_the_client_in_a_browser_against_a_fake_db(tmp_path):
     assert res["malformed"]["errors"] == [], res
     assert res["demoDraft"] == {"ids": ["b9", "demo"], "real": "real"}, res  # demo keeps real drafts
     assert res["held"] == {"texts": [], "shown": "theirs"}, res               # a held newer record wins
+    assert res["staleCache"]["sent"] == 1, res                  # a stale cache never blocks a send
+    assert res["staleCache"]["status"].startswith("Sent to Claude Code"), res
+    assert res["unavailable"]["snapshots"] == 1, res
+    assert "Claude Code couldn't receive it right now" in res["unavailable"]["status"], res
 
 
 def test_claude_md_carries_the_answer_board_rule():

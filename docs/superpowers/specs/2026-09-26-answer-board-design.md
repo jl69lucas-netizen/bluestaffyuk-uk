@@ -90,7 +90,7 @@ with no gaps or repeats; the parser exits non-zero naming the line otherwise. Ke
 | `batches/<batchId>/answers/<qNN>` | the page | `{n, text, choice, status: "answered"\|"not_yet"\|"skip"\|"empty", updatedAt}` |
 | `batches/<batchId>/submissions/<s-time>` | the page, on Send | `{at, id, batchId, counts, answers: [{n, key, question, kind, choice, choiceLabel, status, text}]}` |
 
-`batchId` is a slug with the date, e.g. `2026-09-24-questions-for-lisa`. A choice question is
+`batchId` is a slug with the date, e.g. `2026-09-24-questions-for-lisa-bright`. A choice question is
 Answered once an option is picked; the note is optional. A text question is Answered when it
 has text. *Not yet* and *Skip* (labelled "Leave it off the site" when the batch's `project` is
 `site-content`, else "Skip") are complete answers on their own.
