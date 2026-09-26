@@ -6,6 +6,7 @@
   python3 scripts/perf_audit.py <slug> --live --mobile    # the deployed URL (needs SITE_URL)
   python3 scripts/perf_audit.py <slug> --psi --mobile     # Google's own servers: THE record that counts
   python3 scripts/perf_audit.py --parse docs/reports/lh/lh--1.json   # judge a saved report, run nothing
+  python3 scripts/perf_audit.py --parse r1.json r2.json r3.json r4.json r5.json   # IN RUN ORDER: r1 is cold
 
 Exit: 0 pass, 1 ran and failed the gate, 2 cannot run (no dist/, no lighthouse, refused).
 
@@ -23,7 +24,14 @@ Chrome, empty caches — so the verdict is the WARM median, of runs 2–5, print
 spread of those runs and the cold run beside it; one run is its own warm set. CLS on this
 site is bimodal, so a CLS verdict (warm median at or under 0.1) is given only on five or
 more runs: on fewer, the record says `"verdict": null` and the output says so, and a CLS
-FAIL on five runs fails the gate as `cumulative-layout-shift`.
+FAIL on five runs fails the gate as `cumulative-layout-shift`. Warm runs that carry no CLS
+value at all say `no CLS values in the warm runs` and give no verdict either.
+
+`--parse` judges saved reports by the same protocol: pass the files IN RUN ORDER, because
+the first file is taken as the cold run 1 and the rest as the warm runs.
+
+`--psi` defaults to ONE run: every PSI call is a fresh run on Google's servers, and its
+quota is per day. The five-run default is for local Lighthouse (`--runs` still overrides).
 
 WHY `--live` EXISTS. dist/ is not necessarily what visitors get. A host may edit the HTML
 at the edge — inject its own analytics script, rewrite a font link into inline faces — and
@@ -78,6 +86,7 @@ PORT = 4399
 # browser fails the command rather than the afternoon.
 LH_TIMEOUT = 300
 DEFAULT_RUNS = 5
+DEFAULT_PSI_RUNS = 1   # each PSI call is a fresh run, and the quota is per day
 CLS_MIN_RUNS = 5
 CLS_GOOD = 0.1   # the "good" line of Core Web Vitals
 
@@ -91,8 +100,7 @@ def judge(reports):
     a category Lighthouse did not produce must not pass on nothing."""
     failed = []
     for cat, floor in THRESHOLDS.items():
-        scores = [((r.get("categories") or {}).get(cat) or {}).get("score") or 0 for r in reports]
-        if statistics.median(scores) < floor:
+        if statistics.median(_scores(reports, cat)) < floor:
             failed.append(cat)
     return failed
 
@@ -119,9 +127,52 @@ def cls_verdict(reports):
     out = {"verdict": None, "runs": len(reports), "runs_needed": CLS_MIN_RUNS,
            "median": round(statistics.median(vals), 4) if vals else None,
            "min": round(min(vals), 4) if vals else None, "max": round(max(vals), 4) if vals else None}
-    if len(reports) >= CLS_MIN_RUNS and vals:
+    if not vals:
+        out["reason"] = "no CLS values in the warm runs"
+    elif len(reports) < CLS_MIN_RUNS:
+        out["reason"] = f"fewer than {CLS_MIN_RUNS} runs"
+    else:
         out["verdict"] = "PASS" if statistics.median(vals) <= CLS_GOOD else "FAIL"
     return out
+
+
+def evaluate(reports):
+    """Judge reports given IN RUN ORDER (report 1 is cold): the one verdict both a run and
+    `--parse` print. Returns failed/median/spread/cold/metrics/cls/judged and the lines."""
+    judged = warm(reports)
+    failed = judge(judged)
+    median, spread, cold, lines = {}, {}, {}, []
+    for cat in THRESHOLDS:
+        scores = _scores(judged, cat)
+        median[cat] = statistics.median(scores)
+        spread[cat] = [min(scores), max(scores)]
+        note = ""
+        if len(reports) > 1:
+            cold[cat] = _scores(reports[:1], cat)[0]
+            note = (f"  (warm runs: {', '.join(str(round(s * 100)) for s in sorted(scores))};"
+                    f" cold run 1: {round(cold[cat] * 100)})")
+        lines.append(f"    {'FAIL' if cat in failed else 'PASS'}  {cat:17s} {round(median[cat] * 100):3d}  floor 100{note}")
+
+    metrics = {}
+    for m in ("cumulative-layout-shift", "largest-contentful-paint", "total-blocking-time"):
+        vals = [v for v in (((r.get("audits") or {}).get(m) or {}).get("numericValue") for r in judged)
+                if isinstance(v, (int, float))]
+        if vals:
+            metrics[m] = round(statistics.median(vals), 4)
+            lines.append(f"    {m}: median {metrics[m]}  min {round(min(vals), 4)}  max {round(max(vals), 4)}")
+
+    cls = cls_verdict(reports)
+    if cls["verdict"] is not None:
+        lines.append(f"    {cls['verdict']}  CLS warm median {cls['median']}  line {CLS_GOOD}")
+        if cls["verdict"] == "FAIL":
+            failed.append("cumulative-layout-shift")
+    elif cls["median"] is None:
+        lines.append("    CLS: no CLS values in the warm runs — no CLS verdict")
+    else:
+        lines.append(f"    CLS: no CLS verdict on {len(reports)} run(s) — CLS is bimodal; "
+                     f"run {CLS_MIN_RUNS} (the default) for one")
+    return {"judged": judged, "failed": failed, "median": median, "spread": spread, "cold": cold,
+            "metrics": metrics, "cls": cls, "lines": lines}
 
 
 def _requests(report):
@@ -212,7 +263,8 @@ def parse_only(paths):
     """Judge saved Lighthouse JSON without running anything. Returns the exit code.
 
     The gate has to be readable offline: docs/reports/lh/ already holds Foundation's
-    reports, and a judging change must be checkable against them without a sweep."""
+    reports, and a judging change must be checkable against them without a sweep. The
+    files are taken IN THE ORDER GIVEN as run order: the first is the cold run 1."""
     reports = []
     for path in paths:
         try:
@@ -220,11 +272,11 @@ def parse_only(paths):
         except (OSError, json.JSONDecodeError) as e:
             print(f"cannot read {path}: {e}", file=sys.stderr)
             return 2
-    failed = judge(reports)
-    print(f"  --parse {len(reports)} report(s) · Lighthouse {reports[0].get('lighthouseVersion', '?')}")
-    for cat in THRESHOLDS:
-        scores = [((r.get("categories") or {}).get(cat) or {}).get("score") or 0 for r in reports]
-        print(f"    {'FAIL' if cat in failed else 'PASS'}  {cat:17s} {round(statistics.median(scores) * 100):3d}  floor 100")
+    ev = evaluate(reports)
+    failed = ev["failed"]
+    basis = "one report" if len(reports) == 1 else f"warm median of reports 2–{len(reports)} (report 1 is cold)"
+    print(f"  --parse {len(reports)} report(s), in run order · {basis} · Lighthouse {reports[0].get('lighthouseVersion', '?')}")
+    print("\n".join(ev["lines"]))
     if failed:
         print(f"\nPERF GATE FAIL: {', '.join(failed)}")
         return 1
@@ -238,8 +290,8 @@ def main(argv=None):
     ap.add_argument("--mobile", action="store_true")
     ap.add_argument("--live", action="store_true", help="audit the deployed URL, not dist/")
     ap.add_argument("--psi", action="store_true", help="PageSpeed Insights API on the deployed URL (implies --live)")
-    ap.add_argument("--runs", type=int, default=DEFAULT_RUNS,
-                    help=f"Lighthouse runs (default {DEFAULT_RUNS}); run 1 is cold and is not judged")
+    ap.add_argument("--runs", type=int, default=None,
+                    help=f"runs (default {DEFAULT_RUNS} local, {DEFAULT_PSI_RUNS} with --psi); run 1 is cold and is not judged")
     ap.add_argument("--dist", default=None, help="directory to serve and diff against (default dist/)")
     ap.add_argument("--parse", nargs="+", metavar="REPORT.json",
                     help="judge saved Lighthouse JSON and exit; runs no browser")
@@ -248,6 +300,8 @@ def main(argv=None):
         return parse_only(a.parse)
     if a.slug is None:
         ap.error("slug is required unless --parse is given (use '' for the home page)")
+    if a.runs is None:
+        a.runs = DEFAULT_PSI_RUNS if a.psi else DEFAULT_RUNS
     if a.runs < 1:
         ap.error("--runs must be at least 1")
     a.live = a.live or a.psi
@@ -293,38 +347,12 @@ def main(argv=None):
             httpd.shutdown()
 
     lh_version = reports[0].get("lighthouseVersion", "?")
-    judged = warm(reports)
+    ev = evaluate(reports)
+    judged, failed, cls = ev["judged"], ev["failed"], ev["cls"]
+    median, spread, cold, metrics = ev["median"], ev["spread"], ev["cold"], ev["metrics"]
     basis = "one run" if len(reports) == 1 else f"warm median of runs 2–{len(reports)}"
     print(f"\n  {path}  [{profile}{' · PSI' if a.psi else ' · LIVE' if a.live else ' · dist'}]  {a.runs} run(s) · {basis} · Lighthouse {lh_version}")
-    failed = judge(judged)
-    median, spread, cold = {}, {}, {}
-    for cat, floor in THRESHOLDS.items():
-        scores = _scores(judged, cat)
-        median[cat] = statistics.median(scores)
-        spread[cat] = [min(scores), max(scores)]
-        note = ""
-        if len(reports) > 1:
-            cold[cat] = _scores(reports[:1], cat)[0]
-            note = (f"  (warm runs: {', '.join(str(round(s * 100)) for s in sorted(scores))};"
-                    f" cold run 1: {round(cold[cat] * 100)})")
-        print(f"    {'FAIL' if cat in failed else 'PASS'}  {cat:17s} {round(median[cat] * 100):3d}  floor 100{note}")
-
-    metrics = {}
-    for m in ("cumulative-layout-shift", "largest-contentful-paint", "total-blocking-time"):
-        vals = [v for v in (((r.get("audits") or {}).get(m) or {}).get("numericValue") for r in judged)
-                if isinstance(v, (int, float))]
-        if vals:
-            metrics[m] = round(statistics.median(vals), 4)
-            print(f"    {m}: median {metrics[m]}  min {round(min(vals), 4)}  max {round(max(vals), 4)}")
-
-    cls = cls_verdict(reports)
-    if cls["verdict"] is None:
-        print(f"    CLS: no CLS verdict on {len(reports)} run(s) — CLS is bimodal; "
-              f"run {CLS_MIN_RUNS} (the default) for one")
-    else:
-        print(f"    {cls['verdict']}  CLS warm median {cls['median']}  line {CLS_GOOD}")
-        if cls["verdict"] == "FAIL":
-            failed.append("cumulative-layout-shift")
+    print("\n".join(ev["lines"]))
 
     injected, blocking = [], []
     if a.live:
