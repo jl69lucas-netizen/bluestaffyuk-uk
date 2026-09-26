@@ -239,8 +239,17 @@ python3 scripts/indexnow_submit.py <slug> [<slug> ...]   # refuses (exit 2) with
 ```
 
 ```bash
-python3 scripts/indexnow_submit.py --changed   # refuses (exit 2) without BSUK_RELEASE=1
+python3 scripts/rendered_changes.py --base <dir-or-ref> --json   # the dist-hash diff: which built pages changed
 ```
+
+```bash
+python3 scripts/indexnow_submit.py --changed   # submits what rendered_changes.py listed; refuses (exit 2) without BSUK_RELEASE=1
+```
+
+`--changed` reads the rendered-changes report that `python3 scripts/rendered_changes.py --json` writes (git-ignored, under docs/reports/), never a source diff: a city page renders
+from `src/pages/uk-locations/[slug].astro` and a data row, so only the built output says which
+pages moved. Every close runs `rendered_changes.py --json` and commits
+`data/quality/dist-hashes.json`, so the next close can pass its commit as `--base`.
 
 ```bash
 python3 scripts/indexnow_submit.py --dry-run <slug>   # refuses (exit 2) without BSUK_RELEASE=1
