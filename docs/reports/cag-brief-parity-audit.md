@@ -34,7 +34,9 @@ Three things stand out:
    H3 image-first check matches a CSS class the real pages do not use. The hardening scan reads 2
    files for a city page. And `board_gate` (the Asset Gate) is not part of `check:all`. CAG
    learned this the hard way: its blocking contrast check examined zero nodes for a full day.
-3. **Six live defects or fabrication risks came up**, and I confirmed each one in the repo
+3. **Correction (user ruling, 2026-09-26):** `impeccable` and `frontend-design` are mandatory on
+   every page. The §0–5 auditor had marked them "skip"; they are now a Wave 4 gap (21b).
+4. **Six live defects or fabrication risks came up**, and I confirmed each one in the repo
    myself. They are listed below.
 
 ## How this was checked
@@ -72,7 +74,7 @@ The full item-by-item tables are Appendices A–D.
 | 15 | Images, Asset Gate | 9 | 8 | 1 | 0 | Bake under 95 KB enforced; the uniform in-body image box was never built |
 | 16 | Build rules | 10 | 8 | 0 | 0 | Global CTA flag ignored; puppy cards have no delivery line; Link-First untested |
 | 17 | Responsive | 9 | 1 | 2 | 3 | Strong; new pages are not added to render targets |
-| 18 | Harden pass | 4 | 4 | 1 | 0 | Hardening scan misses city pages and the kit |
+| 18 | Harden pass | 4 | 4 | 1 | 0 | Hardening scan misses city pages and the kit; **impeccable + frontend-design not routed anywhere** |
 | 19 | Gates and pass checks | 25 | 8 | 1 | 3 | Wiring checked both ways; examined-count > 0 not wired; "run twice" is not a rule |
 | 20 | Measurement ledger M1–M18 | 9 | 6 | 2 | 2 | No close-out prints the numbers; `rework_ledger.py` never built |
 | 21 | LLM visibility | 5 | 1 | 1 | 2 | One engine per page (deliberate); the 0–10 score is promised but never computed |
@@ -94,7 +96,7 @@ close. BSUK spreads the same run across files:
 | §5 Data inventory | — | No step at all |
 | Sprints 0–1 | `bsuk-query-augmentation` → board (one approval) | Competitor metrics discarded; no keyword or entity numbers |
 | Asset Gate | `board_gate.py` + sha-bound image approvals | Not in `check:all` — easy to skip |
-| Sprints 2–3 | Builder skill + `page_hardening_scan.py` | Scan misses city pages and the kit |
+| Sprints 2–3 | Builder skill + `page_hardening_scan.py` | Scan misses city pages and the kit; **impeccable and frontend-design never run** |
 | Sprint 4 | Many gates, each run by hand | No `gate:page <slug>`; "run twice" not a rule |
 | Sprint 5 | `bsuk-llm-keyword-intel` | No score |
 | Sprint 6 | `session-closer` + gate report | No measurement ledger; IndexNow cannot see city pages |
@@ -161,6 +163,7 @@ Grouped into four waves, easiest first. Each item names the CAG section and the 
 | # | Change | CAG § | Why |
 |---|---|---|---|
 | 21 | `docs/reference/page-run.md` — the ordered per-page run; `check:workflow` guards its references | 3, 23 | Your framing: one workflow before each page |
+| 21b | **`impeccable` + `frontend-design` mandatory in Sprint 3 on every page** (user ruling 2026-09-26): routed in CLAUDE.md, WORKFLOW and the three builder skills; each run is recorded in `data/harden/<slug>.json` (widths 375/768/1280, findings, fixes, commit) and `gate:page` fails without it | 2, 18 | The audit had marked these "skip"; you ruled them a must. A record makes "ran it" provable, not a claim |
 | 22 | Auto-filled intake block on each board (page state, robots, verbatim count, empty `h1`, question file, retired-term hits); close KI 63 | 0, 5 | CAG §0 — "mode is determined by looking" |
 | 23 | `npm run gate:page -- <slug>`: dup (body + `--headers`), final audit for the right profile, hardening, AEO and evidence audits, each with `--fail-on-error`, run twice and diffed; the "run twice" rule goes in `rules/gates.md` | 19a, 19b, M8 | One command per page instead of seven |
 | 24 | `scripts/measurement_ledger.py` — JSON + table of M1–M3, M6, M8–M10, M12, M13, M18 in every gate report | 20, 26 | CAG §20: each is a number reported at close, not a box ticked |
@@ -301,8 +304,8 @@ Read-only audit. Every citation was opened or grepped; nothing in the repo was c
 | S.31 | agent `cag-non-commodity-content-agent` | PRESENT | — | `.claude/agents/bsuk-non-commodity-content-agent.md` | — |
 | S.32 | agent `cag-entity-incorporation-agent` | MISSING (deferred) | — | `data/port-manifest.json` ("project 6 at the earliest"). Partial equivalent: `scripts/ontology_seed.py --check` + board entities by class (`WORKFLOW.md:880`) | **SKIP.** The outline side is already gated at board time. |
 | S.33 | `cag-page-hardening` | PRESENT | `scripts/page_hardening_scan.py` (report-only unless `--fail-on-error`), `tests/py/test_page_hardening.py` | `.claude/skills/bsuk-page-hardening/SKILL.md` | — |
-| S.34 | `impeccable` | MISSING (not routed) | — | 0 hits in BSUK routing; the design system is locked (`rules/design.md`) | **SKIP.** P5 uses the locked kit; polish is measured by the render harness. |
-| S.35 | `frontend-design` | MISSING (not routed) | — | 0 hits | **SKIP** (same reason). |
+| S.34 | `impeccable` | MISSING (not routed) | — | 0 hits in BSUK routing; the design system is locked (`rules/design.md`) | **ADOPT-BEFORE-P5 — user ruling 2026-09-26: mandatory on every page.** Plan Tasks 23 + 25. |
+| S.35 | `frontend-design` | MISSING (not routed) | — | 0 hits | **ADOPT-BEFORE-P5 — user ruling 2026-09-26: mandatory on every page.** Plan Tasks 23 + 25. |
 | S.36 | `cag-gate-integrity` **first** | PRESENT | ENFORCED by `test:render:meta` (checks the checkers) | `.claude/skills/bsuk-gate-integrity/SKILL.md`; "REQUIRED FIRST" `WORKFLOW.md:71, 429` | — |
 | S.37 | `cag-perf-gate` | PRESENT | `scripts/perf_audit.py` (dist; `--live` refused pre-P6) | `.claude/skills/bsuk-perf-gate/SKILL.md` | — |
 | S.38 | `cag-final-page-pass` | PRESENT | `scripts/final_page_audit.py` (`--fail-on-error`) | `.claude/skills/bsuk-final-page-pass/SKILL.md` | — |
@@ -335,7 +338,7 @@ Read-only audit. Every citation was opened or grepped; nothing in the repo was c
 | 3.4 | Sprint 1 Plan → distribution matrix, H1–H6 outline, component tuple, meta sets | PRESENT | ENFORCED: the board schema requires `h1, meta_set, sections, tuple` (`schemas/board.schema.json`); A/B/C categories validated (`scripts/pageboard.py:103-110`); `board_approve.py` refuses while a family rule FAILs (`tests/py/test_family_rules_on_board.py`) | `WORKFLOW.md:294-305, 880` | None. |
 | 3.5 | Asset Gate HARD STOP — the breeder drops OG photos + infographics and says "start" | PARTIAL | ENFORCED **only when run**: the image build-gate checks live in `scripts/board_gate.py` (stage `build`), which is **not in `check:all`** (`package.json` `check:all`) | `IMAGE-DESIGNS.md:209-238` (two-pass approval); `WORKFLOW.md:49, 880` | **ADOPT-BEFORE-P5:** chain a board gate over every new-family page in `data/facts/rebuilt.json` into `check:all`, e.g. `outline_provenance_check` calling `gate_findings(stage="build")`. Rule 17 puts an image on every body H2/H3 of 28+ pages, and today the gate that holds those images is optional. |
 | 3.6 | Sprint 2 Build → section-by-section, on main, verified in `dist/` | PRESENT (branch, not main — deliberate) | ENFORCED: `check:outline` (built from the approved outline, no sibling crossover), `check:verbatim`, `check:facts` | `WORKFLOW.md:281-361`; `rules/copy.md:70` | None. |
-| 3.7 | Sprint 3 Harden → hardening scan + impeccable/frontend polish, mobile-first | PRESENT (without impeccable/frontend-design) | Partly: `test:render:pages` at 375/768/1280 blocks; `page_hardening_scan.py` is report-only unless `--fail-on-error` | `WORKFLOW.md:61-69, 425-485` | See S.34/S.35 (SKIP). |
+| 3.7 | Sprint 3 Harden → hardening scan + impeccable/frontend polish, mobile-first | PRESENT (without impeccable/frontend-design) | Partly: `test:render:pages` at 375/768/1280 blocks; `page_hardening_scan.py` is report-only unless `--fail-on-error` | `WORKFLOW.md:61-69, 425-485` | See S.34/S.35 — now mandatory (user ruling 2026-09-26). |
 | 3.8 | Sprint 4 Gates → meta gate FIRST · dup · final audit · seam parity · a11y · perf | PARTIAL | ENFORCED: `test:render:meta` first (`CLAUDE.md:259-260`), dup (`check:outline`, `audit:dup`), `final_page_audit.py`, `a11y-text-contrast-aa`, `perf_audit.py` | **Seam parity missing:** `scripts/seam_parity.py` not ported (`WORKFLOW.md:439-441`); only `layout-hero-counter-separation` is tested | **ADOPT-LATER (P5 mid-point):** port the seam check if the first city pages show seam drift. The hero-counter check already covers the most visible seam. |
 | 3.9 | Sprint 5 Visibility → LLM visibility measurement + AEO/GEO pass | N/A until P6 (AEO part PRESENT) | AEO: `scripts/aeo_audit.py` (ERROR exits 1) | AEO is Sprint 3b/4 (`WORKFLOW.md:487-506, 526`); LLM intel is pre-build (Step 0b); pages are not live | None for P5. |
 | 3.10 | Sprint 6 Deploy/Close → sitemaps, push, live 200, IndexNow, lessons doc, memory | N/A (deploy half) / PRESENT (close half) | Sitemaps ENFORCED (`check:sitemaps`); push/IndexNow/pagefind guarded (`CLAUDE.md:29-48`) | Sprint 5 Ship inactive (`WORKFLOW.md:659-690`); Sprint 6 Bank: lessons, back-propagate, sweep siblings, memory (`WORKFLOW.md:693-715`) | None. |
@@ -736,7 +739,7 @@ How to read the Enforced column:
 | 18.4 | Contrast ratios are written down from a calculation, not from the draft | PRESENT | ENFORCED: `test_contrast_pairs_clear_aa` computes every pair from `tokens.css` (`tests/py/test_design_tokens.py:62-106`); `test_counter_inks_are_guarded_pairs_on_the_counter_bed` (`:207-220`) | `data/design/contrast.json`; `rules/design.md:20` ("add the pair before you use it"); `PageDial.astro:174-177` (4.49:1 measured) | None. |
 | 18.5 | Contrast floors (CAG: stone-600 body, small clay, footer `white/80`, no opacity dimming) | PARTIAL | BSUK token pairs are ENFORCED (18.4); `opacity-dims-text-contrast` WARN (`page_hardening_scan.py:310-320`) | The BSUK floor is "brass never carries small text on a light bed" (`bsuk-component-refresh/SKILL.md:29-33`), but **the hardening floor check is CAG residue**: `check_clay_small_text` looks for `--clay` / `#e8604c` (`page_hardening_scan.py:294-303`), which do not exist here, so it can never fire. The hardening skill's dial contrast table cites greens `#234f3b` / `#9fc7b0` (`bsuk-page-hardening/SKILL.md:167-176`). | **ADOPT-LATER.** Replace the clay check with a brass (`--color-cta`) small-text-on-light check and re-base the skill's table to steel/brass/bone. The residue survived `check:markers` because the marker list does not name these tokens. |
 | 18.6 | Colour specificity check (a 1.19:1 result is a losing specificity battle) | PRESENT | report-only `component-color-loses-to-descendant` (`page_hardening_scan.py:1089-1165`); `theme-lead-color-outranks-component` (`:1205-1265`); `css-component-color-not-overridden` **advisory** (`css.ts:248-250`) | `bsuk-page-hardening/SKILL.md:297-345` | None beyond 18.1's scope fix. The theme check also reads a nonexistent `src/styles/direction-d.css` (`page_hardening_scan.py:1305-1306`), which is harmless. |
-| 18.7 | Impeccable + frontend-design pass (hierarchy, IA, cognitive load, spacing, motion, states, UX copy) | MISSING | none | No mention in `WORKFLOW.md`, `bsuk-page-hardening`, `bsuk-final-page-pass` or `CLAUDE.md` | **ADOPT-LATER.** This is a judgment pass run through globally installed skills. Name it once in WORKFLOW Sprint 3 step 6. It cannot be tested. |
+| 18.7 | Impeccable + frontend-design pass (hierarchy, IA, cognitive load, spacing, motion, states, UX copy) | MISSING | none | No mention in `WORKFLOW.md`, `bsuk-page-hardening`, `bsuk-final-page-pass` or `CLAUDE.md` | **ADOPT-BEFORE-P5 — user ruling 2026-09-26.** Both skills are mandatory in Sprint 3 on every page, enforced by a per-page harden record that `gate:page` checks (plan Tasks 23 + 25). |
 | 18.8 | Verify in a painting page: IO reads static in an occluded pane; scroll-spy and animation checks run in Playwright | PRESENT | TEXT-ONLY (the render harness itself is Playwright) | `bsuk-page-hardening/SKILL.md:349-353`; `WORKFLOW.md:466-469` | None, but see 13.9: the one scroll-spy on the site has no Playwright test. |
 
 ---
