@@ -87,3 +87,58 @@ def test_the_lisa_sheet_parses_to_21_text_questions():
     assert [q["key"] for q in qs] == [f"q{n:02d}" for n in range(1, 22)]
     assert {q["kind"] for q in qs} == {"text"}
     assert sheet["sections"][-1]["title"] == "What happens next"
+
+
+import answer_board_batch  # noqa: E402
+
+BATCH_KEYS = {"id", "title", "project", "askedAt", "intro", "status", "receivedAt",
+              "receivedCommit", "sections", "questions"}
+Q_KEYS = {"n", "key", "section", "question", "context", "where", "kind", "options"}
+
+
+def test_slug_is_lowercase_hyphenated_and_capped():
+    assert answer_board_batch.slug("Questions for Lisa Bright") == "questions-for-lisa-bright"
+    assert answer_board_batch.slug("Project 5 · London board picks!") == "project-5-london-board-picks"
+    assert len(answer_board_batch.slug("x" * 200)) == 60
+
+
+def test_make_batch_has_the_spec_shape():
+    batch = answer_board_batch.make_batch(parse("mini.md"), "2026-09-26-mini", "tools", "2026-09-26T12:00:00Z")
+    assert set(batch) == BATCH_KEYS
+    assert batch["status"] == "open" and batch["receivedAt"] == "" and batch["receivedCommit"] == ""
+    assert [s["title"] for s in batch["sections"]] == ["First part", "Second part", "What happens next"]
+    for q in batch["questions"]:
+        assert set(q) == Q_KEYS
+    assert [q["section"] for q in batch["questions"]] == [0, 0, 1]
+    assert batch["questions"][1]["kind"] == "choice"
+
+
+def test_the_cli_writes_the_lisa_batch_deterministically(tmp_path):
+    cmd = [sys.executable, str(ROOT / "scripts/answer_board_batch.py"), str(LISA),
+           "--project", "site-content", "--date", "2026-09-24", "--out-dir", str(tmp_path)]
+    first = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
+    assert first.returncode == 0, first.stderr
+    out = tmp_path / "2026-09-24-questions-for-lisa-bright.json"
+    body = out.read_bytes()
+    assert subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT).returncode == 0
+    assert out.read_bytes() == body
+    batch = json.loads(body)
+    assert batch["id"] == "2026-09-24-questions-for-lisa-bright"
+    assert batch["askedAt"] == "2026-09-24T12:00:00Z" and len(batch["questions"]) == 21
+    assert len(body) < 256 * 1024
+    assert "21 questions" in first.stdout
+
+
+def test_the_committed_lisa_batch_matches_the_sheet():
+    committed = ROOT / "docs/reference/answer-board/batches/2026-09-24-questions-for-lisa-bright.json"
+    sheet = answer_sheet.parse_sheet(LISA.read_text(encoding="utf-8"))
+    expected = answer_board_batch.make_batch(sheet, "2026-09-24-questions-for-lisa-bright",
+                                             "site-content", "2026-09-24T12:00:00Z")
+    assert json.loads(committed.read_text(encoding="utf-8")) == expected
+
+
+def test_the_cli_exits_non_zero_on_a_bad_sheet(tmp_path):
+    run = subprocess.run([sys.executable, str(ROOT / "scripts/answer_board_batch.py"),
+                          str(FIX / "gap.md"), "--project", "x", "--out-dir", str(tmp_path)],
+                         capture_output=True, text=True, cwd=ROOT)
+    assert run.returncode == 1 and "expected question 2, found 3" in run.stderr

@@ -1,0 +1,252 @@
+{
+  "askedAt": "2026-09-24T12:00:00Z",
+  "id": "2026-09-24-questions-for-lisa-bright",
+  "intro": "Buyers ask these questions on Google, on Bing, in ChatGPT answers and on Reddit, and the new\nwebsite cannot answer them yet, because nothing we hold says what the true answer is. We will\nnot guess on your behalf: a page only states what you have told us, or what a document shows.\nSo each question below waits for your answer.\n\nAnswer in your own words, as briefly as you like. \"Yes\", \"No\" or \"Not yet\" is a fine answer.\nWhere a question asks for a document or a number, a photo of the paper or the number itself\nis enough. If a question does not apply to how you work, say so and we will leave it off the\nsite. Nothing here is published until you have answered it.\n\nUnder each question, **Where it goes** says where the website keeps your answer. You do not\nneed to do anything with that line; it is there so that you can see exactly what each answer\nchanges. (From Known Issues 41, 7 and 54 in `docs/reference/session-log.md`.)",
+  "project": "site-content",
+  "questions": [
+    {
+      "context": "Today the site lists six puppies as available. Are they, and would you sell one to a family in Manchester?",
+      "key": "q01",
+      "kind": "text",
+      "n": 1,
+      "options": [],
+      "question": "Are there blue Staffy puppies available now for buyers in Manchester?",
+      "section": 0,
+      "where": "each puppy's `status` in `data/puppies.json`, and a new row `buyer-availability` in `data/faq.json`."
+    },
+    {
+      "context": "The site says £1,500 to £1,700, priced by puppy. Is that still right?",
+      "key": "q02",
+      "kind": "text",
+      "n": 2,
+      "options": [],
+      "question": "How much does one of your puppies cost?",
+      "section": 0,
+      "where": "`price_range` in `data/settings.json`, and each puppy's price in `data/puppies.json`."
+    },
+    {
+      "context": "The site says the deposit is £500 and refundable. When is it paid, and when, and how, is it given back?",
+      "key": "q03",
+      "kind": "text",
+      "n": 3,
+      "options": [],
+      "question": "Should a buyer pay a deposit before they have seen the puppy, and what is your deposit policy?",
+      "section": 0,
+      "where": "`deposit_gbp` and `deposit_refundable` in `data/settings.json`, and a new row `buyer-deposit-policy` in `data/faq.json`."
+    },
+    {
+      "context": "If there is, how does a family join it, and is anything paid to join?",
+      "key": "q04",
+      "kind": "text",
+      "n": 4,
+      "options": [],
+      "question": "Is there a waiting list?",
+      "section": 0,
+      "where": "a new row `buyer-waiting-list` in `data/faq.json`."
+    },
+    {
+      "context": "",
+      "key": "q05",
+      "kind": "text",
+      "n": 5,
+      "options": [],
+      "question": "Can a buyer see the puppy with its mother, where the litter was raised?",
+      "section": 1,
+      "where": "a new row `buyer-see-with-mother` in `data/faq.json`."
+    },
+    {
+      "context": "",
+      "key": "q06",
+      "kind": "text",
+      "n": 6,
+      "options": [],
+      "question": "Do you give a written contract, and will you take a puppy back if the owner cannot keep it?",
+      "section": 1,
+      "where": "a new row `buyer-contract-and-return` in `data/faq.json`."
+    },
+    {
+      "context": "If it does, how many days?",
+      "key": "q07",
+      "kind": "text",
+      "n": 7,
+      "options": [],
+      "question": "Does the contract give the buyer time to have their own vet check the puppy?",
+      "section": 1,
+      "where": "a new row `buyer-own-vet-check` in `data/faq.json`."
+    },
+    {
+      "context": "What were the results? A photo of each certificate is the best answer. Several answers on the site already say the parents are \"certified clear\" or \"DNA tested clear\", and until we have seen the certificates we cannot show that this is true.",
+      "key": "q08",
+      "kind": "text",
+      "n": 8,
+      "options": [],
+      "question": "Have both parents been tested for L-2-HGA and for hereditary cataracts (HC-HSF4)?",
+      "section": 2,
+      "where": "the `parents-dna-clear` row in `data/quality/evidence-ledger.json` (today it records the results as not yet seen), and the `about-health-tested`, `about-health-tests`, `blog-what-we-cover`, `health-dna-tests`, `health-genetic-tested`, `health-l2hga-meaning`, `home-ethical-breeder`, `home-health-tests`, `home-parents-health-tested`, `listing-health-clearances`, `sale-kc-health-checked` and `whyus-prone-to` rows in `data/faq.json`."
+    },
+    {
+      "context": "",
+      "key": "q09",
+      "kind": "text",
+      "n": 9,
+      "options": [],
+      "question": "Have the parents had eye examinations and elbow screening, as well as the DNA tests?",
+      "section": 2,
+      "where": "a new row `health-eye-elbow-screening` in `data/faq.json`."
+    },
+    {
+      "context": "",
+      "key": "q10",
+      "kind": "text",
+      "n": 10,
+      "options": [],
+      "question": "What are the parents' Kennel Club registered names, and what happens if a puppy's registration papers are delayed?",
+      "section": 2,
+      "where": "a new row `parents-kc-names` in `data/faq.json`."
+    },
+    {
+      "context": "",
+      "key": "q11",
+      "kind": "text",
+      "n": 11,
+      "options": [],
+      "question": "What is the parents' coefficient of inbreeding?",
+      "section": 2,
+      "where": "a new row `parents-coi` in `data/faq.json`."
+    },
+    {
+      "context": "",
+      "key": "q12",
+      "kind": "text",
+      "n": 12,
+      "options": [],
+      "question": "How can a buyer confirm that the puppy has been examined by a vet? May they contact your vet?",
+      "section": 3,
+      "where": "a new row `puppy-vet-check-proof` in `data/faq.json`."
+    },
+    {
+      "context": "",
+      "key": "q13",
+      "kind": "text",
+      "n": 13,
+      "options": [],
+      "question": "Has the puppy had its first vaccination before it is collected?",
+      "section": 3,
+      "where": "the `health-vaccinations` row in `data/faq.json`."
+    },
+    {
+      "context": "The site already says that every puppy leaves with a written health guarantee, but it cannot say how long the cover lasts or what it covers until you tell us.",
+      "key": "q14",
+      "kind": "text",
+      "n": 14,
+      "options": [],
+      "question": "Do you give a written health guarantee? If so, for how long, and what does it cover?",
+      "section": 3,
+      "where": "the `home-health-guarantee` row in `data/faq.json`, and `guarantee_days` in `data/settings.json` (today it is empty, so no page states a number)."
+    },
+    {
+      "context": "For example: people, children, other dogs, household noises, car journeys.",
+      "key": "q15",
+      "kind": "text",
+      "n": 15,
+      "options": [],
+      "question": "What socialisation has the puppy had by the time it goes home?",
+      "section": 3,
+      "where": "a new row `puppy-socialisation` in `data/faq.json`."
+    },
+    {
+      "context": "One of the website's city pages, carried over from the old site, says you do, but nothing we hold confirms it, so no rewritten page will say it until you tell us.",
+      "key": "q16",
+      "kind": "text",
+      "n": 16,
+      "options": [],
+      "question": "Do you follow Puppy Culture or early neurological stimulation (ENS) with your litters?",
+      "section": 3,
+      "where": "a new row `puppy-early-stimulation` in `data/faq.json`."
+    },
+    {
+      "context": "",
+      "key": "q17",
+      "kind": "text",
+      "n": 17,
+      "options": [],
+      "question": "Can a blue puppy come from parents that are not both blue? What colours are your puppies' parents?",
+      "section": 4,
+      "where": "a new row `colour-blue-parents` in `data/faq.json`."
+    },
+    {
+      "context": "Please answer yes or no. If yes, send your membership number, or a link to your entry on the Kennel Club's own site, so the page can show the record behind the claim. The old website said this five times with nothing behind it, so the new pages leave it out until you confirm it.",
+      "key": "q18",
+      "kind": "text",
+      "n": 18,
+      "options": [],
+      "question": "Are you a member of the Kennel Club Assured Breeder Scheme?",
+      "section": 5,
+      "where": "two new keys in `data/settings.json`: `kc_assured_breeder` (yes or no) and `kc_assured_breeder_record` (the number or the link)."
+    },
+    {
+      "context": "A photo of the licence is enough. The old website called you \"council-licensed\" but showed no number, so the new pages do not say it yet.",
+      "key": "q19",
+      "kind": "text",
+      "n": 19,
+      "options": [],
+      "question": "What is your dog breeding licence number, and which council issued it?",
+      "section": 5,
+      "where": "two new keys in `data/settings.json`: `breeding_licence_number` and `breeding_licence_council`."
+    },
+    {
+      "context": "For example: \"Licensed by [the council's name] to breed dogs, licence number [the number]\". Write the sentence the way you are happy to see it on every page.",
+      "key": "q20",
+      "kind": "text",
+      "n": 20,
+      "options": [],
+      "question": "Exactly how should the website describe your licence?",
+      "section": 5,
+      "where": "a new key `breeding_licence_wording` in `data/settings.json`."
+    },
+    {
+      "context": "In England, Lucy's Law means a puppy under six months old can only be sold by the person who bred it, and a buyer should see it with its mother where it was born. Write the sentence you are happy to have on the site, or tell us to leave it off.",
+      "key": "q21",
+      "kind": "text",
+      "n": 21,
+      "options": [],
+      "question": "How should the website say that you follow Lucy's Law?",
+      "section": 5,
+      "where": "a new key `lucys_law_wording` in `data/settings.json`."
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Puppies, prices and deposits"
+    },
+    {
+      "lead": "",
+      "title": "Seeing the puppy, and the paperwork"
+    },
+    {
+      "lead": "",
+      "title": "The parents' health"
+    },
+    {
+      "lead": "",
+      "title": "Each puppy's own health and start in life"
+    },
+    {
+      "lead": "",
+      "title": "Colour"
+    },
+    {
+      "lead": "",
+      "title": "Your standing as a breeder"
+    },
+    {
+      "lead": "When your answers come back, each one is written into the file named under it, exactly as you\ngave it. The pages that use it are then rebuilt, and the question files behind the Manchester\nand Leeds pages are rebuilt from what is already saved, at no cost. Anything you would rather\nnot have on the website stays off it. If an answer needs a document we do not have yet, the\npage keeps saying nothing about it until the document arrives.",
+      "title": "What happens next"
+    }
+  ],
+  "status": "open",
+  "title": "Questions for Lisa Bright"
+}
