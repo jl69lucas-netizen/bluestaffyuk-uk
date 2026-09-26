@@ -8,9 +8,10 @@ Prints its examined counts — a gate that examines nothing is not a pass
 
 `--all` (`npm run check:boards`, in check:all) runs the build-stage gate over EVERY page in
 data/facts/rebuilt.json — the Asset Gate and the approval hash stop being a step somebody
-has to remember. A rebuilt page with no board record is a FAIL there, never a skip: no page
-is built without an approved board. dist/, the ontology, the ledger and every record are
-read once for the whole run."""
+has to remember. A rebuilt page whose board record is missing or unreadable is a FAIL there
+(`board-unreadable`), never a skip: no page is built without an approved board. dist/, the
+ontology, the ledger and every record are read once for the whole run; an empty dist/ is a
+precondition error (exit 2), so build first."""
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
@@ -65,12 +66,18 @@ def run_all():
     except PB.BoardError as e:
         print(f"board-gate ERROR {e}")
         return 2
+    # An empty dist/ is a precondition error, not a verdict: header collisions and
+    # min-h5-h6 would be judged against nothing.
+    if not live:
+        print("board-gate --all: dist/ has 0 live pages — run npm run -s build first")
+        return 2
     failed = []
     for slug in slugs:
         try:
             n, lines = judge(slug, "build", ont, ledger, live, boards)
         except PB.BoardError as e:
-            n, lines = 1, [f"board-gate {slug} [build]", f"  FAIL board-missing             {e}"]
+            # Missing, schema-invalid or inconsistent: the record could not be judged.
+            n, lines = 1, [f"board-gate {slug} [build]", f"  {'FAIL':4s} {'board-unreadable':24s} {e}"]
         if n:
             failed.append(slug)
             print("\n".join(lines))
@@ -85,7 +92,7 @@ def main():
     flags = [a for a in sys.argv[1:] if a.startswith("--")]
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     unknown = [a for a in flags if a not in FLAGS]
-    if "--all" in flags and not unknown and not args and flags == ["--all"]:
+    if flags == ["--all"] and not args:
         sys.exit(run_all())
     if unknown or len(args) != 1 or "--all" in flags:
         print(f"board-gate ERROR unknown option {unknown[0]}" if unknown else
