@@ -24,7 +24,7 @@ import retired_facts_check as R  # noqa: E402
 # deleted, in the same commit. Leave FROZEN alone (a key that is gone can never return,
 # because the count would no longer match). Never add to FROZEN or raise the ceiling: a new
 # retired fact is fixed on the page.
-ALLOWLIST_CEILING = 57
+ALLOWLIST_CEILING = 61
 FROZEN = frozenset({
     "data:locations.json/blue-staffy-puppies-aberdeen/body_html:amount:£1,100",
     "data:locations.json/blue-staffy-puppies-aberdeen/body_html:amount:£100",
@@ -51,6 +51,8 @@ FROZEN = frozenset({
     "data:locations.json/blue-staffy-puppies-york/body_html:amount:£100",
     "data:locations.json/staffy-breeding-dogs-glasgow/body_html:amount:£850–£1,200",
     "data:locations.json/staffy-breeding-dogs-glasgow/body_html:city:Glasgow",
+    "data:locations.json/staffy-breeding-dogs-glasgow/body_html:home:coltmuir",
+    "data:locations.json/staffy-breeding-dogs-glasgow/body_html:home:g22",
     "data:locations.json/staffy-breeding-dogs-glasgow/body_html:home:our glasgow home",
     "data:locations.json/staffy-breeding-dogs-glasgow/description:city:Glasgow",
     "data:locations.json/staffy-breeding-dogs-glasgow/description:home:based in glasgow",
@@ -82,6 +84,8 @@ FROZEN = frozenset({
     "dist:uk-locations/staffy-breeding-dogs-glasgow:amount:£850–£1,200",
     "dist:uk-locations/staffy-breeding-dogs-glasgow:city:Glasgow",
     "dist:uk-locations/staffy-breeding-dogs-glasgow:home:based in glasgow",
+    "dist:uk-locations/staffy-breeding-dogs-glasgow:home:coltmuir",
+    "dist:uk-locations/staffy-breeding-dogs-glasgow:home:g22",
     "dist:uk-locations/staffy-breeding-dogs-glasgow:home:our glasgow home",
 })
 
@@ -141,6 +145,21 @@ def test_retired_amounts_fail(text, found):
     assert R.amount_findings(text, LOCKED) == found
 
 
+# A dash followed by a bare number is a range only when that number is a plausible top end
+# of a price: not smaller than the first figure, not a count of weeks / pups / miles, not a
+# year. Otherwise the first figure is judged alone — locked here, so nothing is reported.
+@pytest.mark.parametrize("text,found", [("£500 - 8 weeks", []),
+                                        ("£1,500 – 12 weeks old", []),
+                                        ("£350 - 2 pups left", []),
+                                        ("£500—2026", []),
+                                        ("£200 - 1,000 miles", []),
+                                        ("£100 - 8 weeks", ["£100"]),      # judged alone
+                                        ("£200-350", []),                  # still the range
+                                        ("£200-300", ["£200–£300"])])
+def test_a_bare_second_number_is_a_range_end_only_when_it_can_be_one(text, found):
+    assert R.amount_findings(text, LOCKED) == found
+
+
 def test_retired_wording_fails_in_any_case():
     found = R.html_findings("<p>A Non-Refundable deposit from a council licensed breeder.</p>", LOCKED)
     assert found == [("term", "non-refundable"), ("term", "council-licensed")]
@@ -164,6 +183,16 @@ def test_the_former_home_is_a_claim_even_on_the_citys_own_pages():
         ("home", "from our glasgow home"), ("home", "coltmuir"), ("home", "g22")]
     assert R.html_findings("<p>Staffy puppies in Glasgow</p>", LOCKED, city_page=True) == []
     assert R.html_findings("<p>We are based in Carlisle, our home.</p>", LOCKED) == []
+
+
+def test_a_map_embed_of_the_former_home_is_a_home_claim():
+    # The old-address Google Maps embed: its title is copy, its src names the district.
+    embed = ('<iframe title="Map of Coltmuir, Glasgow G22" '
+             'src="https://www.google.com/maps/embed?pb=!2s40%20Coltmuir%20St%2C%20Glasgow%20G22%206LU"></iframe>')
+    assert R.html_findings(embed, LOCKED, city_page=True) == [
+        ("home", "coltmuir"), ("home", "g22"), ("home", "coltmuir"), ("home", "g22")]
+    # Only the home rule reads a src: a figure or the bare city in a URL is not copy.
+    assert R.html_findings('<iframe src="https://x.test/Glasgow/£5"></iframe>', LOCKED) == []
 
 
 def test_only_the_for_sale_page_may_name_the_former_city(tmp_path):

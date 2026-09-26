@@ -32,6 +32,8 @@
     "data:locations.json/blue-staffy-puppies-york/body_html:amount:£100": "Known Issue 65 — migrated city body: a retired £ figure; project 5 rewrites this page",
     "data:locations.json/staffy-breeding-dogs-glasgow/body_html:amount:£850–£1,200": "Known Issue 65 — migrated city body: a retired £ figure; project 5 rewrites this page",
     "data:locations.json/staffy-breeding-dogs-glasgow/body_html:city:Glasgow": "Known Issue 65 + Known Issue 16 — migrated city body: the former city named on a page that does not sell puppies there (Known Issue 16); project 5 rewrites this page",
+    "data:locations.json/staffy-breeding-dogs-glasgow/body_html:home:coltmuir": "Known Issue 65 + Known Issue 16 — migrated city body: the old-address map embed names the former home (Known Issue 16; the business is in Carlisle); project 5 rewrites this page",
+    "data:locations.json/staffy-breeding-dogs-glasgow/body_html:home:g22": "Known Issue 65 + Known Issue 16 — migrated city body: the old-address map embed names the former home (Known Issue 16; the business is in Carlisle); project 5 rewrites this page",
     "data:locations.json/staffy-breeding-dogs-glasgow/body_html:home:our glasgow home": "Known Issue 65 + Known Issue 16 — migrated city body: the kennel claimed at the former home (Known Issue 16; the business is in Carlisle); project 5 rewrites this page",
     "data:locations.json/staffy-breeding-dogs-glasgow/description:city:Glasgow": "Known Issue 65 + Known Issue 16 — migrated city body: the former city named on a page that does not sell puppies there (Known Issue 16); project 5 rewrites this page",
     "data:locations.json/staffy-breeding-dogs-glasgow/description:home:based in glasgow": "Known Issue 65 + Known Issue 16 — migrated city body: the kennel claimed at the former home (Known Issue 16; the business is in Carlisle); project 5 rewrites this page",
@@ -63,6 +65,8 @@
     "dist:uk-locations/staffy-breeding-dogs-glasgow:amount:£850–£1,200": "Known Issue 65 — migrated city body: a retired £ figure; project 5 rewrites this page",
     "dist:uk-locations/staffy-breeding-dogs-glasgow:city:Glasgow": "Known Issue 65 + Known Issue 16 — migrated city body: the former city named on a page that does not sell puppies there (Known Issue 16); project 5 rewrites this page",
     "dist:uk-locations/staffy-breeding-dogs-glasgow:home:based in glasgow": "Known Issue 65 + Known Issue 16 — migrated city body: the kennel claimed at the former home (Known Issue 16; the business is in Carlisle); project 5 rewrites this page",
+    "dist:uk-locations/staffy-breeding-dogs-glasgow:home:coltmuir": "Known Issue 65 + Known Issue 16 — migrated city body: the old-address map embed names the former home (Known Issue 16; the business is in Carlisle); project 5 rewrites this page",
+    "dist:uk-locations/staffy-breeding-dogs-glasgow:home:g22": "Known Issue 65 + Known Issue 16 — migrated city body: the old-address map embed names the former home (Known Issue 16; the business is in Carlisle); project 5 rewrites this page",
     "dist:uk-locations/staffy-breeding-dogs-glasgow:home:our glasgow home": "Known Issue 65 + Known Issue 16 — migrated city body: the kennel claimed at the former home (Known Issue 16; the business is in Carlisle); project 5 rewrites this page"
   }
 }

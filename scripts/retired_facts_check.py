@@ -9,7 +9,9 @@ gate sweeps both tenses of the site (audit D5):
 
   dist      every built page (dist/**/index.html) minus the specimen routes: visible text,
             JSON-LD, <meta name="description">, the text-valued og:* meta (not og:url or
-            og:image*) and img alt text. Link and image URLs (href, src) are not copy
+            og:image*), img alt text and iframe title. Link and image URLs (href, src) are
+            not copy; an iframe src is read by the home rule alone (the old-address map
+            embed). body_html in data/ is read the same way
   data      the data files pages render facts from: data/locations.json (field by field,
             per city row), settings, puppies, price matrix, FAQ and reviews
   src       src/**/*.{astro,ts,tsx,js,mjs,md,mdx} with comments stripped — a comment that
@@ -54,6 +56,7 @@ import json
 import pathlib
 import re
 import sys
+import urllib.parse
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ALLOWLIST = ROOT / "data" / "quality" / "retired-facts-allowlist.json"
@@ -68,8 +71,12 @@ HOME = re.compile(r"(?i)\b(?:based in|from our|our)\s+Glasgow(?:\s+home)?\b|\bCo
 NUMBER = r"\d[\d,]*(?<![,])"
 AMOUNT = r"£\s?" + NUMBER
 # A second figure joins by a dash (its £ may be dropped: "£200-350") or by " to " (its £ may
-# not: "£0 to 8 weeks" is not a range).
-MONEY = re.compile(AMOUNT + r"(?:\s*[–—-]\s*£?\s?" + NUMBER + r"|\s+to\s+" + AMOUNT + r")?")
+# not: "£0 to 8 weeks" is not a range). A bare second number is a range end only when it
+# can be one — see amount_findings.
+MONEY = re.compile(r"(?P<first>" + AMOUNT + r")(?:\s*[–—-]\s*(?P<bare>" + NUMBER + r")"
+                   r"|\s*[–—-]\s*(?P<dash>" + AMOUNT + r")|\s+to\s+(?P<to>" + AMOUNT + r"))?")
+UNIT_AFTER = re.compile(r"\s*(?:weeks?|months?|years?|days?|miles?|pups?|puppies|%|km|kg)\b|\s*%")
+YEAR = re.compile(r"(?:19|20)\d\d")
 OG_URL_PROPERTIES = ("og:url", "og:image")
 RENDERED_DATA = ("settings.json", "puppies.json", "price-matrix.json", "faq.json", "reviews.json")
 LOCATION_FIELDS = ("title", "h1", "description", "body_html")
@@ -101,12 +108,27 @@ def amount_findings(text, locked):
     singles, ranges = locked
     out = []
     for m in MONEY.finditer(text):
-        parts = re.findall(NUMBER, m.group(0))
-        vals = tuple(_value(x) for x in parts)
-        ok = vals[0] in singles if len(vals) == 1 else tuple(sorted(vals)) in ranges
+        first = re.search(NUMBER, m.group("first")).group(0)
+        second = m.group("dash") or m.group("to")
+        if second:                                  # both carry £: a range either way round
+            parts = [first, re.search(NUMBER, second).group(0)]
+            vals = tuple(sorted(_value(x) for x in parts))
+        elif m.group("bare") and _bare_end(first, m.group("bare"), text[m.end():]):
+            parts = [first, m.group("bare")]         # "£200-350": low to high, never sorted
+            vals = tuple(_value(x) for x in parts)
+        else:                                       # "£500 - 8 weeks": the £ figure alone
+            parts, vals = [first], (_value(first),)
+        ok = vals[0] in singles if len(vals) == 1 else vals in ranges
         if not ok:
             out.append("–".join("£" + x for x in parts))
     return out
+
+
+def _bare_end(first, bare, after):
+    """A number after a dash with no £ ends a range only if it is not below the first figure,
+    not a count (weeks, pups, miles, %…) and not a year ("£500—2026")."""
+    return (_value(bare) >= _value(first) and not UNIT_AFTER.match(after)
+            and not YEAR.fullmatch(bare))
 
 
 class _Text(html.parser.HTMLParser):
@@ -116,7 +138,7 @@ class _Text(html.parser.HTMLParser):
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.parts, self.skip, self.city_link = [], 0, 0
+        self.parts, self.skip, self.city_link, self.home_src = [], 0, 0, []
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -130,6 +152,13 @@ class _Text(html.parser.HTMLParser):
             self.parts.append(("text", a.get("content") or ""))
         if tag == "img" and a.get("alt"):
             self.parts.append(("text", a["alt"]))
+        if tag == "iframe":
+            # A map embed: its title is copy; its src is read by the former-HOME rule alone
+            # (the old-address Maps URL names the district), never for figures or the city.
+            if a.get("title"):
+                self.parts.append(("text", a["title"]))
+            if a.get("src"):
+                self.home_src.append(urllib.parse.unquote_plus(a["src"]))
 
     def handle_endtag(self, tag):
         if tag in ("style", "script") and self.skip:
@@ -147,7 +176,8 @@ def html_findings(markup, locked, city_page=False):
     p.feed(markup)
     text = " ".join(d for _, d in p.parts)
     plain = " ".join(d for kind, d in p.parts if kind == "text")
-    return text_findings(text, locked, city=not city_page, city_text=plain)
+    return (text_findings(text, locked, city=not city_page, city_text=plain)
+            + [f for src in p.home_src for f in home_findings(src)])
 
 
 def text_findings(text, locked, city=True, city_text=None):
@@ -158,8 +188,11 @@ def text_findings(text, locked, city=True, city_text=None):
     found += [("term", m.group(0).lower().replace(" ", "-")) for m in TERMS.finditer(text)]
     if city and FORMER_CITY in (text if city_text is None else city_text):
         found.append(("city", FORMER_CITY))
-    found += [("home", re.sub(r"\s+", " ", m.group(0)).lower()) for m in HOME.finditer(text)]
-    return found
+    return found + home_findings(text)
+
+
+def home_findings(text):
+    return [("home", re.sub(r"\s+", " ", m.group(0)).lower()) for m in HOME.finditer(text)]
 
 
 def strip_comments(src, suffix):
