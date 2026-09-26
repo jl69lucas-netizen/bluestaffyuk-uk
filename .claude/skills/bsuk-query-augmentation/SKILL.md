@@ -54,7 +54,7 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
 | 3 | `--preflight` only | cached → make NO call |
 | 4 | `--preflight`, `--budget` | `--preflight`: budget exceeded; both modes: settings, spend log or dashboard readings unreadable (`--budget` never exits 4 for the budget itself) → no call made; stop, report the guard's stderr line; never work around it |
 | 5 | build only | short → Step 5 |
-| 6 | build, `--extract-h2` | bad input. Build: a raw input file is unparseable or the wrong shape → fix the named file from its source, never hand-edit around it. `--extract-h2`: the saved HTML is missing or unreadable → capture it again |
+| 6 | build, `--extract-h2`, `--competitor-metrics` | bad input. Build: a raw input file is unparseable or the wrong shape → fix the named file from its source, never hand-edit around it. `--extract-h2`: the saved HTML is missing or unreadable → capture it again. `--competitor-metrics`: the page's competitors file is missing or malformed, or a cache file is not the page its record names → re-save that page |
 
 ## Step 1 — preflight before EVERY paid call
 
@@ -126,20 +126,32 @@ response if one was bought, else from the `results` in `raw/<slug>/serp_google.j
 five from Bing (the `results` in `raw/<slug>/serp_bing.json`), merged. **Marketplaces and
 directories are in the pool** — only off-topic results are dropped.
 
-For each pool page, save its HTML to the scratchpad. Prefer the page's original HTML via
-`curl` (free, and cleanest). If curl fails or comes back blocked (a challenge page), use a
-browser capture (free, but a rendered capture
+For each pool page, save its HTML to `data/queries/cache/<slug>/<n>.html` (gitignored:
+third-party pages carry advertisers' contact details), `n` being the page's 1-based place in
+`pages`. Prefer the page's original HTML via `curl` (free, and cleanest). If curl fails or comes
+back blocked (a challenge page), use a browser capture (free, but a rendered capture
 can include consent dialogs; the extractor drops them). Firecrawl scrape raw HTML comes last
 because it spends credits. Then run:
 
 ```bash
-python3 scripts/query_augment.py --extract-h2 <scratchpad>/<page>.html
+python3 scripts/query_augment.py --extract-h2 data/queries/cache/<slug>/<n>.html
 ```
 
 Copy its `h2`, `h2_all` and `blocked` into
 `data/queries/raw/<slug>/competitors.json` = `{"status", "fetched", "pages": [{"url",
 "google_pos", "bing_pos", "h2": [...], "h2_all", "blocked"}]}` (a position is `null` when the
 page is not in that engine's five). A challenge page stays in the pool as `"blocked": true`.
+Then keep each page's metrics from the same saved files — no second fetch:
+
+```bash
+python3 scripts/query_augment.py --competitor-metrics <slug>
+```
+
+It writes `metrics` into every page whose cache file matches its record (title, meta
+description, word count, words and H3s per content H2, image/video/table counts, JSON-LD
+`@type`s) and lists the pages with no cache file. Exit 6 means a cache file is not the page its
+record says — re-save that page, never edit the record to match. The question file's
+`word_target` (Rule 27) is the median of these word counts.
 Never count, clean or judge competitor H2s yourself — the script does, the same way every time.
 
 ## Step 4 — threads

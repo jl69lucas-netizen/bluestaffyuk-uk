@@ -32,6 +32,13 @@ scripts/query_coverage_check.py gates.
       navigation dropped; blocked = a bot challenge page) — how a competitors.json page's
       h2, h2_all and blocked are filled from a saved page, never by hand
       exit 0 printed (a blocked page also warns on stderr) · 6 the file is missing or unreadable
+      The same JSON also carries "metrics" (page_metrics: title, meta description, word
+      counts per content H2, H3s, image/video/table counts, JSON-LD @types).
+  query_augment.py --competitor-metrics SLUG
+      fills each data/queries/raw/SLUG/competitors.json page's "metrics" from
+      data/queries/cache/SLUG/<n>.html (n = the page's 1-based place in "pages"); no fetch.
+      exit 0 written (pages with no cache file are listed) · 6 competitors.json missing or
+      malformed, or a cache file that is not its page (nothing written)
   query_augment.py SLUG --page-type TYPE --keyword "..." --route /path/
       exit 0 written · 5 too few fact-backed questions to fill the FAQ blocks
       · 6 an input file is unparseable or the wrong shape (nothing written)
@@ -602,13 +609,17 @@ class _H2s(HTMLParser):
         self._close_h2()
 
     def content_h2s(self):
+        return [self.found[i][1] for i in self.content_indices()]
+
+    def content_indices(self):
+        """Indices into self.found (= the n-th <h2> tag, from 0) of the content H2s."""
         seen = {id(e): e for anc, _, _ in self.found for e in anc}.values()
         leaves = [e for e in seen if e["tag"] == "article" and e["h2"] and not e["nested"]]
         card_articles = {id(e) for e in leaves} if len(leaves) >= MIN_CARD_ARTICLES else set()
         items = Counter(id(e["parent"]) for e in seen
                         if e["tag"] == "li" and e["h2"] and e["parent"] is not None)
         out = []
-        for ancestors, text, bare in self.found:
+        for i, (ancestors, text, bare) in enumerate(self.found):
             tags = [e["tag"] for e in ancestors]
             # A heading that is nothing but links is a card title, not a section.
             if not text or not bare or CARD_ANCESTORS & set(tags) \
@@ -620,10 +631,10 @@ class _H2s(HTMLParser):
             if any(e["tag"] == "li" and e["parent"] is not None
                    and items[id(e["parent"])] >= MIN_CARD_ITEMS for e in ancestors):
                 continue
-            if any(t == "header" and not HEADER_HOSTS & set(tags[:i])
-                   for i, t in enumerate(tags)):
+            if any(t == "header" and not HEADER_HOSTS & set(tags[:j])
+                   for j, t in enumerate(tags)):
                 continue
-            out.append(text)
+            out.append(i)
         return out
 
 
@@ -661,6 +672,172 @@ def extract_h2s(html):
     words; whitespace is collapsed; empty headings are dropped.
     """
     return page_report(html)["h2"]
+
+
+# ── competitor page metrics (parity build Task 17) ────────────────────────────────────────────
+# The same saved page --extract-h2 reads, measured once more: no second fetch. Text inside
+# these elements is never page prose (navigation, furniture, forms and the <head>).
+# A <button> is not skipped: accordion FAQs put their question H3s inside one.
+METRIC_SKIP = RAW_TAGS | {"head", "title", "noscript", "svg", "nav", "footer", "aside", "form",
+                          "select"}
+HEADING_TAGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
+WORD = re.compile(r"[^\W_]+(?:['’-][^\W_]+)*")
+VIDEO_SRC = re.compile(r"youtube\.com|youtube-nocookie\.com|youtu\.be|vimeo\.com|wistia|dailymotion",
+                       re.I)
+# A string that carries a phone number, an email or a WhatsApp link is never kept: committed
+# raw files hold no third-party contact details (tests/py/test_no_third_party_contacts.py).
+CONTACTISH = re.compile(r"@|wa\.me|whatsapp|(?:\d[\s()+-]{0,2}){9,}", re.I)
+
+
+class _Metrics(HTMLParser):
+    """Word, heading, media and schema counts for one saved page. `ordinal` counts every <h2>
+    start tag exactly as _H2s does, so words and H3s land under the n-th <h2>."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.stack = []
+        self.ordinal = 0
+        self.words = Counter()          # ordinal -> prose words (headings excluded)
+        self.h3 = {}                    # ordinal -> [H3 text]
+        self.total = 0
+        self.h3_count = self.images = self.videos = self.tables = 0
+        self.title = self.meta_description = None
+        self._title = None
+        self._h3 = None
+        self._ld = None
+        self.ld_blocks = []
+
+    def _hidden(self):
+        return any(t in METRIC_SKIP for t in self.stack)
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if tag == "h2":
+            self.ordinal += 1
+        if tag == "title" and self.title is None and "svg" not in self.stack:
+            self._title = []
+        if tag == "meta" and (a.get("name") or "").lower() == "description" \
+                and self.meta_description is None:
+            self.meta_description = " ".join((a.get("content") or "").split()) or None
+        if tag == "script" and (a.get("type") or "").lower() == "application/ld+json":
+            self._ld = []
+        if not self._hidden():
+            if tag == "img":
+                self.images += 1
+            elif tag == "video" or (tag == "iframe" and VIDEO_SRC.search(a.get("src") or "")):
+                self.videos += 1
+            elif tag == "table":
+                self.tables += 1
+            elif tag == "h3":
+                self.h3_count += 1
+                self._h3 = []
+        if tag not in VOID_TAGS:
+            self.stack.append(tag)
+
+    def handle_endtag(self, tag):
+        if tag == "title" and self._title is not None:
+            self.title = " ".join("".join(self._title).split()) or None
+            self._title = None
+        if tag == "script" and self._ld is not None:
+            self.ld_blocks.append("".join(self._ld))
+            self._ld = None
+        if tag == "h3" and self._h3 is not None:
+            text = " ".join("".join(self._h3).split())
+            if text:
+                self.h3.setdefault(self.ordinal, []).append(text)
+            self._h3 = None
+        if tag in self.stack:
+            del self.stack[len(self.stack) - 1 - self.stack[::-1].index(tag):]
+
+    def handle_data(self, data):
+        if self._title is not None:
+            self._title.append(data)
+        if self._ld is not None:
+            self._ld.append(data)
+        if self._hidden():
+            return
+        if self._h3 is not None:
+            self._h3.append(data)
+        n = len(WORD.findall(data))
+        self.total += n
+        if not HEADING_TAGS & set(self.stack):
+            self.words[self.ordinal] += n
+
+
+def _schema_types(blocks):
+    found = set()
+
+    def walk(o):
+        if isinstance(o, dict):
+            t = o.get("@type")
+            for x in (t if isinstance(t, list) else [t]):
+                if isinstance(x, str) and x:
+                    found.add(x)
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    for b in blocks:
+        try:
+            walk(json.loads(b))
+        except ValueError:
+            continue   # a broken JSON-LD block names no type
+    return sorted(found)
+
+
+def page_metrics(html):
+    """What a competitor page carries, measured from the saved HTML --extract-h2 reads:
+
+    title, meta_description, word_count (visible words outside the <head>, nav, footer,
+    aside, form, select, noscript, svg, script, style and template), intro_words
+    (prose before the first content H2), sections (one per content H2 from extract_h2s, in order:
+    its prose words up to the next <h2> of any kind, headings excluded, and its H3 texts),
+    h3_count, images, videos (<video> or a YouTube/Vimeo/Wistia/Dailymotion iframe), tables,
+    schema_types (every JSON-LD @type, sorted) and scrubbed (how many title, description or
+    H3 strings were dropped because they carried a phone number, an email or a WhatsApp link).
+    """
+    h = _H2s()
+    h.feed(html)
+    h.close()
+    m = _Metrics()
+    m.feed(html)
+    m.close()
+    scrubbed = 0
+
+    def keep(text):
+        nonlocal scrubbed
+        if text is not None and CONTACTISH.search(text):
+            scrubbed += 1
+            return None
+        return text
+    sections, content = [], h.content_indices()
+    first = content[0] + 1 if content else m.ordinal + 1
+    for i in content:
+        h3s = [keep(t) for t in m.h3.get(i + 1, [])]
+        sections.append({"h2": h.found[i][1], "words": m.words[i + 1],
+                         "h3": [t for t in h3s if t is not None]})
+    return {"title": keep(m.title), "meta_description": keep(m.meta_description),
+            "word_count": m.total, "intro_words": sum(m.words[k] for k in range(first)), "sections": sections,
+            "h3_count": m.h3_count, "images": m.images, "videos": m.videos,
+            "tables": m.tables, "schema_types": _schema_types(m.ld_blocks),
+            "scrubbed": scrubbed}
+
+
+def word_target(pages):
+    """Rule 27's number: the median word_count of the pages that are measured and not
+    blocked. {"median", "from", "of"}; with nothing measured, median is None and "status"
+    names the barrier."""
+    counts = sorted(p["metrics"]["word_count"] for p in pages
+                    if isinstance(p.get("metrics"), dict) and not p.get("blocked", False))
+    out = {"median": None, "from": len(counts), "of": len(pages)}
+    if not counts:
+        out["status"] = ("NOT FETCHED — no competitor page carries metrics; run "
+                         "query_augment.py --competitor-metrics <slug> over the cached HTML")
+        return out
+    mid = len(counts) // 2
+    out["median"] = counts[mid] if len(counts) % 2 else round((counts[mid - 1] + counts[mid]) / 2)
+    return out
 
 
 META_CHARSET = re.compile(rb"""<meta[^>]+charset\s*=\s*["']?([A-Za-z0-9._:-]+)""", re.I)
@@ -1175,7 +1352,77 @@ def load_competitors(slug, root=ROOT):
             raise BadInput(path, f"pages[{i}].h2_all must be a non-negative integer")
         if not isinstance(p.get("blocked", False), bool):
             raise BadInput(path, f"pages[{i}].blocked must be true or false")
+        if "metrics" in p:
+            problem = _metrics_problem(p["metrics"])
+            if problem:
+                raise BadInput(path, f"pages[{i}].metrics {problem}")
     return d
+
+
+METRIC_COUNTS = ("word_count", "intro_words", "h3_count", "images", "videos", "tables",
+                 "scrubbed")
+
+
+def _count(x):
+    return isinstance(x, int) and not isinstance(x, bool) and x >= 0
+
+
+def _metrics_problem(m):
+    """None when `m` has page_metrics' shape (word_count required, the rest optional), else
+    what is wrong with it. Metrics are copied from the script's output, never typed."""
+    if not isinstance(m, dict):
+        return "must be an object"
+    if "word_count" not in m:
+        return "must carry word_count"
+    for k in METRIC_COUNTS:
+        if k in m and not _count(m[k]):
+            return f"{k} must be a non-negative integer"
+    for k in ("title", "meta_description"):
+        if not _opt_str(m.get(k)):
+            return f"{k} must be a string or null"
+    types = m.get("schema_types", [])
+    if not (isinstance(types, list) and all(isinstance(t, str) for t in types)):
+        return "schema_types must be a list of strings"
+    secs = m.get("sections", [])
+    if not isinstance(secs, list):
+        return "sections must be a list"
+    for j, sec in enumerate(secs):
+        if not (isinstance(sec, dict) and isinstance(sec.get("h2"), str)
+                and _count(sec.get("words"))
+                and isinstance(sec.get("h3", []), list)
+                and all(isinstance(t, str) for t in sec.get("h3", []))):
+            return f"sections[{j}] must be {{h2: string, words: count, h3: [strings]}}"
+    return None
+
+
+def competitor_metrics(slug, root=ROOT):
+    """Fill each competitors.json page's `metrics` from data/queries/cache/<slug>/<n>.html,
+    n being the page's 1-based place in `pages` — the file --extract-h2 already read. No fetch.
+
+    Returns (measured, missing urls). A cache file whose h2 / h2_all / blocked differ from the
+    page's record is not that page: BadInput, and nothing is written."""
+    path = Path(root) / "data/queries/raw" / slug / "competitors.json"
+    d = load_competitors(slug, root)
+    if not path.exists():
+        raise BadInput(path, "missing — write competitors.json (bsuk-query-augmentation Step 3) first")
+    cache = Path(root) / "data/queries/cache" / slug
+    measured, missing = 0, []
+    for n, p in enumerate(d["pages"], 1):
+        f = cache / f"{n}.html"
+        if not f.exists():
+            missing.append(p["url"])
+            continue
+        html = decode_html(f.read_bytes())
+        rep = page_report(html)
+        want = {"h2": p.get("h2", []), "h2_all": p.get("h2_all", 0),
+                "blocked": p.get("blocked", False)}
+        if rep != want:
+            raise BadInput(f, f"does not match pages[{n - 1}] ({p['url']}): the file gives "
+                              f"{json.dumps(rep)}, the record {json.dumps(want)}")
+        p["metrics"] = page_metrics(html)
+        measured += 1
+    _write_json(path, d)
+    return measured, missing
 
 
 def load_previous(slug, root=ROOT):
@@ -1273,6 +1520,9 @@ def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
     comp = load_competitors(slug, root)
     status["competitors"] = comp.get("status", "ok")
     target, rows = section_target(comp["pages"])
+    for row, p in zip(rows, comp["pages"]):
+        if isinstance(p.get("metrics"), dict):
+            row["words"] = p["metrics"]["word_count"]
     if prev is None:
         prev = load_previous(slug, root)
     try:
@@ -1288,7 +1538,8 @@ def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
     fills = _carry_fills(prev, questions, extras)
     data = {"slug": slug, "page_type": page_type, "primary_keyword": keyword, "route": route,
             "fetched": today, "spend_usd": _page_spend(slug, root), "sources": status,
-            "competitors": rows, "section_target": target, "extra_sections": extras,
+            "competitors": rows, "section_target": target,
+            "word_target": word_target(comp["pages"]), "extra_sections": extras,
             "questions": questions}
     return data, fills
 
@@ -1318,6 +1569,7 @@ def main(argv=None):
     ap.add_argument("--route")
     ap.add_argument("--today")
     ap.add_argument("--extract-h2", metavar="FILE")
+    ap.add_argument("--competitor-metrics", metavar="SLUG")
     ap.add_argument("--reconcile", action="store_true")
     ap.add_argument("--balance", type=float)
     ap.add_argument("--opening", type=float)
@@ -1325,11 +1577,11 @@ def main(argv=None):
     ap.add_argument("--budget", metavar="SOURCE", choices=PAID_SOURCES)
     a = ap.parse_args(argv)
     root = Path(a.root)
-    modes = [m for m in (a.preflight, a.record, a.slug, a.extract_h2,
+    modes = [m for m in (a.preflight, a.record, a.slug, a.extract_h2, a.competitor_metrics,
                          a.reconcile or None, a.budget) if m is not None]
     if len(modes) != 1:
         ap.error("give exactly one of --preflight SLUG, --record SLUG, --reconcile, "
-                 "--budget SOURCE, --extract-h2 FILE or a build SLUG")
+                 "--budget SOURCE, --extract-h2 FILE, --competitor-metrics SLUG or a build SLUG")
     if a.today is not None and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.today):
         ap.error(f"--today must be a YYYY-MM-DD UTC date, got {a.today!r}")
     if not a.reconcile and any(x is not None for x in (a.balance, a.opening, a.covers)):
@@ -1369,11 +1621,23 @@ def main(argv=None):
             print(f"query_augment.py: warning: {a.extract_h2} looks blocked (a bot challenge "
                   "or interstitial) — record it as blocked; it cannot set the section count",
                   file=sys.stderr)
+        rep["metrics"] = page_metrics(html)
         print(json.dumps(rep))   # ASCII-escaped: safe on any stdout
         return EXIT_OK
     slug = modes[0]
     if not SLUG_RE.fullmatch(slug):
         ap.error(f"slug must match ^[a-z0-9-]+$, got {slug!r}")
+    if a.competitor_metrics:
+        try:
+            measured, missing = competitor_metrics(slug, root)
+        except BadInput as e:
+            print(f"query_augment.py: bad input: {e}", file=sys.stderr)
+            return EXIT_BAD_INPUT
+        total = measured + len(missing)
+        print(f"measured {measured} of {total} pages in data/queries/raw/{slug}/competitors.json"
+              + "".join(f"\n  no cache file (NOT FETCHED — data/queries/cache/{slug}/ holds no "
+                        f"saved page): {u}" for u in missing))
+        return EXIT_OK
     if a.preflight:
         if a.source not in CANDIDATE_SOURCES:
             ap.error("--source must be one of " + ", ".join(CANDIDATE_SOURCES))

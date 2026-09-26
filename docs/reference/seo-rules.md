@@ -198,7 +198,9 @@ No default. A page's body-section count is `section_target.total` in its questio
 than 9 (`docs/reference/location-page-template.md`, "Section count").
 
 **Rule 27 — Word Count (Dynamic)**
-The competitors' median word count, from the competitor scan; `NOT FETCHED` until that scan
+The competitors' median word count, from the competitor scan: `word_target.median` in the
+question file (`data/queries/<slug>.json`), measured by `query_augment.py --competitor-metrics`
+from the saved competitor HTML; `NOT FETCHED — <barrier>` (its `status`) until that scan
 exists. Never fix a word count before running competitor research, and never pick a number
 first and write to fill it.
 

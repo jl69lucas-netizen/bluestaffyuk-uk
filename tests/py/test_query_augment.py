@@ -956,8 +956,10 @@ def test_cli_extract_h2_prints_the_json_list(tmp_path):
     r = subprocess.run([sys.executable, str(SCRIPT), "--extract-h2", str(f)],
                        capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
-    assert json.loads(r.stdout) == {"h2": ["21 Staffie Puppies For Sale In Manchester",
-                                           "Buyer's Advice"], "h2_all": 4, "blocked": False}
+    out = json.loads(r.stdout)
+    assert out.pop("metrics")["sections"][0]["h2"] == "21 Staffie Puppies For Sale In Manchester"
+    assert out == {"h2": ["21 Staffie Puppies For Sale In Manchester",
+                          "Buyer's Advice"], "h2_all": 4, "blocked": False}
     assert r.stderr == ""
 
 
@@ -1083,7 +1085,9 @@ def test_cli_extract_h2_warns_on_a_blocked_page_and_exits_0(tmp_path):
     r = subprocess.run([sys.executable, str(SCRIPT), "--extract-h2", str(f)],
                        capture_output=True, text=True)
     assert r.returncode == 0
-    assert json.loads(r.stdout) == {"h2": [], "h2_all": 0, "blocked": True}
+    out = json.loads(r.stdout)
+    assert out.pop("metrics")["sections"] == []
+    assert out == {"h2": [], "h2_all": 0, "blocked": True}
     lines = r.stderr.strip().splitlines()
     assert len(lines) == 1 and "blocked" in lines[0] and "cf.html" in lines[0]
 
