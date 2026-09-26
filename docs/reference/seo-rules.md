@@ -119,7 +119,17 @@ Top-of-funnel impression volume; every informational page needs CTR-optimised me
 | Solution keywords | 5–10× | |
 | Related keywords | 10–15× | |
 | Transactional keywords | 15× | Buy, for sale, available, pricing |
-| **TOTAL** | **≈85–105×** | Hard target per page |
+| **TOTAL** | **≤105 (no minimum)** | |
+
+The authority for this table is `.claude/agents/bsuk-keyword-verifier.md`, which judges the
+count; this block follows it (`tests/py/test_rule18_frequency.py`):
+- There is **no floor**. A page is never "under-optimized" by count (retired 2026-09-09: the
+  floor manufactured the repetition the evidence pass now fails). The per-type counts above
+  are ceilings to stay under, never numbers to reach.
+- A full page with >110 total keyword mentions is flagged **OVER-STUFFED**; trust-concept
+  terms additionally answer to `data/quality/evidence-budgets.json` via
+  `scripts/evidence_audit.py`.
+- Short pages (<1,500 words): scale proportionally; do not apply full-page thresholds.
 
 **Rule 19 — Keyword Density Per Section**
 Primary keyword 0.8–1.2% per section. LSI distributed naturally, never force-inserted.
@@ -341,7 +351,7 @@ reason, and its section angle.
 | Section | Heading | Primary KW | LSI KWs | Longtail KWs | NLP/Conversational | Comparison KWs | Word Count |
 |---|---|---|---|---|---|---|---|
 
-One row per section from hero to final CTA; the total row hits 85–105× per Rule 18.
+One row per section from hero to final CTA; the total row stays at or under 105 (Rule 18 — a ceiling, no floor).
 
 **E. Special Elements Plan** — newsletter signup, comparison table, price card, calculator
 or quiz, the 4 counters (Rule 31), trust badge bar, the 3 inquiry forms (Rule 32), video,

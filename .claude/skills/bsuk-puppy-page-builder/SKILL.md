@@ -61,7 +61,7 @@ real slugs from `data/locations.json`, never the same trio twice).
 
 ## 2. Content formula
 
-### 2a. Keyword distribution per page (~85–105 total mentions; 1–2% primary density, never stuffed)
+### 2a. Keyword distribution per page (≤105 total mentions, no floor; 1–2% primary density, never stuffed)
 | Type | Count | Note |
 |---|---|---|
 | Primary keyword | 30–35 | natural placements; front-loaded in title/H1/first 100 words |
