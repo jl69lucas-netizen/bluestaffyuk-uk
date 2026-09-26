@@ -34,6 +34,7 @@ EXPECTED = {
     "schema_types": ["FAQPage", "ItemPage", "Organization", "Question", "WebPage"],
     "scope": "main",
     "grid_share": 11,
+    "section_share": 71,
     "listing": None,
     "scrubbed": 1,
 }
@@ -208,9 +209,10 @@ def test_word_target_counts_each_site_once_keeping_the_best_ranked_url():
     ({"listing": "card grid holds 80% of the prose"}, "listing: card grid holds 80% of the prose"),
 ])
 def test_word_target_excludes_what_is_not_prose(over, reason):
-    pages = [_measured("https://a.example/", 1, 300, **over), _measured("https://b.example/", 2, 310)]
+    pages = [_measured("https://a.example/", 1, 300, **over), _measured("https://b.example/", 2, 310),
+             _measured("https://c.example/", 3, 330)]
     wt = Q.word_target(pages)
-    assert wt["used"] == ["https://b.example/"] and wt["median"] == 310
+    assert wt["used"] == ["https://b.example/", "https://c.example/"] and wt["median"] == 320
     assert wt["excluded"] == [{"url": "https://a.example/", "reason": reason}]
 
 
@@ -248,7 +250,8 @@ def test_build_writes_the_word_target_and_each_rows_words(tmp_path):
                       "/uk-locations/m/", root, "2026-09-26")
     jsonschema.validate(data, json.loads((ROOT / "schemas/queries.schema.json").read_text()))
     wt = data["word_target"]
-    assert (wt["median"], wt["from"], wt["of"], wt["used"]) == (59, 1, 2, ["https://a.example"])
+    assert (wt["median"], wt["from"], wt["of"], wt["used"]) == (None, 1, 2, ["https://a.example"])
+    assert wt["status"] == "NOT FETCHED — fewer than two prose competitor pages (1 used)"
     assert [r.get("words") for r in data["competitors"]] == [59, None]
 
 
@@ -369,7 +372,7 @@ def test_word_target_when_every_measured_page_is_a_listing_says_so():
     wt = Q.word_target([_measured("https://a.example/", 1, 300, schema_types=["ItemList"],
                                   grid_share=70)])
     assert wt["median"] is None and wt["used"] == []
-    assert wt["status"].startswith("NOT FETCHED — no measured competitor page is prose")
+    assert wt["status"] == "NOT FETCHED — fewer than two prose competitor pages (0 used)"
 
 
 def test_accordion_faq_h3s_in_a_list_are_kept():
@@ -421,14 +424,15 @@ def test_listing_json_ld_with_a_small_grid_is_kept_with_a_note():
     wt = Q.word_target(pages)
     assert wt["used"] == ["https://a.example/", "https://b.example/"] and wt["excluded"] == []
     assert wt["notes"] == [{"url": "https://a.example/",
-                            "reason": "has ItemList JSON-LD (kept: grid share 12%)"}]
+                            "reason": "has ItemList JSON-LD (kept: grid share 12%, 71% of the "
+                                      "prose in sections)"}]
 
 
 def test_listing_json_ld_with_a_large_grid_is_excluded():
     pages = [_measured("https://a.example/", 1, 300, schema_types=["ItemList"], grid_share=55),
-             _measured("https://b.example/", 2, 320)]
+             _measured("https://b.example/", 2, 320), _measured("https://c.example/", 3, 340)]
     wt = Q.word_target(pages)
-    assert wt["used"] == ["https://b.example/"] and wt["notes"] == []
+    assert wt["used"] == ["https://b.example/", "https://c.example/"] and wt["notes"] == []
     assert wt["excluded"] == [{"url": "https://a.example/",
                                "reason": "listing: JSON-LD ItemList, card grid holds 55% of the prose"}]
 
@@ -436,3 +440,65 @@ def test_listing_json_ld_with_a_large_grid_is_excluded():
 def test_site_of_documents_its_hand_kept_suffix_list():
     assert "Public Suffix List" in Q.site_of.__doc__
     assert Q.site_of("https://www.pets4homes.co.uk/x") == "pets4homes.co.uk"
+
+
+
+# ── Task 17: listing pages need prose in sections; the target needs two pages ────────────────
+def test_section_share_is_the_prose_inside_content_sections():
+    assert Q.page_metrics(PAGE)["section_share"] == 71   # 27 of 38 prose words
+    html = f"<main><p>{_words(90)}</p><h2>About</h2><p>{_words(10)}</p></main>"
+    assert Q.page_metrics(html)["section_share"] == 10
+
+
+def test_listing_json_ld_with_little_prose_in_sections_is_excluded():
+    # puppies.co.uk's shape: ItemList, headless div cards, 1168 of 1349 words before any H2
+    cards = "".join(f"<div class='card'><img src='/{i}.jpg'><p>{_words(20)}</p></div>"
+                    for i in range(40))
+    ld = '<script type="application/ld+json">{"@type":"ItemList"}</script>'
+    html = f"{ld}<main>{cards}<h2>Recommended for you</h2><p>{_words(60)}</p></main>"
+    m = Q.page_metrics(html)
+    assert m["grid_share"] == 0 and m["section_share"] == 7
+    pages = [dict(_record("https://a.example/", html, 1), metrics=m),
+             _measured("https://b.example/", 2, 300), _measured("https://c.example/", 3, 320)]
+    wt = Q.word_target(pages)
+    assert wt["excluded"] == [{"url": "https://a.example/", "reason":
+                               "listing: JSON-LD ItemList, only 7% of the prose sits in content "
+                               "sections"}]
+
+
+def test_a_breeder_page_with_item_list_and_prose_in_sections_is_kept_with_a_note():
+    ld = '<script type="application/ld+json">{"@type":"ItemList"}</script>'
+    html = (f"{ld}<main><p>{_words(20)}</p><h2>Our dogs</h2><p>{_words(100)}</p>"
+            f"<h2>Health</h2><p>{_words(80)}</p></main>")
+    m = Q.page_metrics(html)
+    assert m["section_share"] == 90 and m["listing"] is None
+    pages = [dict(_record("https://a.example/", html, 1), metrics=m),
+             _measured("https://b.example/", 2, 300)]
+    wt = Q.word_target(pages)
+    assert "https://a.example/" in wt["used"] and wt["excluded"] == []
+    assert wt["notes"] == [{"url": "https://a.example/",
+                            "reason": "has ItemList JSON-LD (kept: grid share 0%, 90% of the "
+                                      "prose in sections)"}]
+
+
+@pytest.mark.parametrize("n", [0, 1])
+def test_word_target_needs_two_prose_pages(n):
+    pages = [_measured(f"https://s{i}.example/", i + 1, 300 + i) for i in range(n)]
+    pages.append(dict(_record("https://blocked.example/", PAGE, 9), blocked=True))
+    wt = Q.word_target(pages)
+    assert wt["median"] is None and wt["from"] == n and len(wt["used"]) == n
+    assert wt["status"] == f"NOT FETCHED — fewer than two prose competitor pages ({n} used)"
+
+
+def test_word_target_with_two_prose_pages_has_a_median():
+    wt = Q.word_target([_measured("https://a.example/", 1, 300),
+                        _measured("https://b.example/", 2, 400)])
+    assert wt["median"] == 350 and "status" not in wt
+
+
+def test_load_competitors_refuses_a_bad_section_share(tmp_path):
+    page = _record("https://a.example/", PAGE, 1)
+    page["metrics"] = dict(EXPECTED, section_share=-3)
+    root = _repo(tmp_path, [page], {})
+    with pytest.raises(Q.BadInput, match="section_share"):
+        Q.load_competitors(SLUG, root)

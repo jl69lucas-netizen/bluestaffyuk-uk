@@ -710,6 +710,10 @@ LISTING_SHARE = 0.6       # a card grid holding more of the prose than this is a
 # Listing JSON-LD (LISTING_TYPES) excludes a page only with a card grid holding more than this:
 # a breeder page can carry an ItemList of its litters beside real prose.
 LISTING_LD_SHARE = 0.4
+# ...or with less than this share of its prose inside content-H2 sections (headless div cards
+# put the whole listing before the first real H2).
+LISTING_LD_SECTION_SHARE = 0.5
+MIN_TARGET_PAGES = 2      # a word target from fewer prose pages than this is not a median
 SCHEMA_URL = re.compile(r"^https?://schema\.org/", re.I)
 
 
@@ -923,6 +927,7 @@ def page_metrics(html):
     and none at all past MAX_KEPT_H3), h3_count, images, videos (<video> or a YouTube / Vimeo /
     Wistia / Dailymotion iframe), tables, schema_types (every JSON-LD @type, schema.org URLs
     shortened, sorted), scope, grid_share (the % of the prose held by the largest card grid),
+    section_share (the % of the prose inside content-H2 sections),
     listing (why the page is a listing — a card grid holding more
     than LISTING_SHARE of the prose — or None) and scrubbed (how many title, description or
     H3 strings were dropped because they carried a phone number, an email or a WhatsApp link).
@@ -967,6 +972,7 @@ def page_metrics(html):
         grids.append(run)
     prose = sum(m.words.values())
     share = round(100 * max(grids) / prose) if prose and grids else 0
+    in_sections = round(100 * sum(s["words"] for s in sections) / prose) if prose else 0
     listing = None
     if prose and grids and max(grids) > LISTING_SHARE * prose:
         listing = f"card grid holds {share}% of the prose"
@@ -975,7 +981,8 @@ def page_metrics(html):
             "word_count": m.total, "intro_words": sum(m.words[k] for k in range(first)),
             "sections": sections, "h3_count": len(m.h3s), "images": m.images,
             "videos": m.videos, "tables": m.tables, "schema_types": types,
-            "scope": scope, "grid_share": share, "listing": listing, "scrubbed": scrubbed}
+            "scope": scope, "grid_share": share, "section_share": in_sections,
+            "listing": listing, "scrubbed": scrubbed}
 
 
 MULTI_PART_SUFFIXES = {"co.uk", "org.uk", "me.uk", "ltd.uk", "plc.uk", "net.uk", "ac.uk",
@@ -1006,10 +1013,12 @@ def _prose_problem(p):
         return "no content H2"
     if m.get("listing"):
         return f"listing: {m['listing']}"
-    listed = sorted(LISTING_TYPES & set(m.get("schema_types", [])))
-    share = m.get("grid_share", 0)
+    listed = ", ".join(sorted(LISTING_TYPES & set(m.get("schema_types", []))))
+    share, in_sections = m.get("grid_share", 0), m.get("section_share", 0)
     if listed and share > 100 * LISTING_LD_SHARE:
-        return f"listing: JSON-LD {', '.join(listed)}, card grid holds {share}% of the prose"
+        return f"listing: JSON-LD {listed}, card grid holds {share}% of the prose"
+    if listed and in_sections < 100 * LISTING_LD_SECTION_SHARE:
+        return f"listing: JSON-LD {listed}, only {in_sections}% of the prose sits in content sections"
     return None
 
 
@@ -1018,7 +1027,8 @@ def _prose_note(p):
     listed = sorted(LISTING_TYPES & set(p["metrics"].get("schema_types", [])))
     if listed:
         return (f"has {', '.join(listed)} JSON-LD (kept: grid share "
-                f"{p['metrics'].get('grid_share', 0)}%)")
+                f"{p['metrics'].get('grid_share', 0)}%, "
+                f"{p['metrics'].get('section_share', 0)}% of the prose in sections)")
     return None
 
 
@@ -1026,13 +1036,14 @@ def word_target(pages):
     """Rule 27's number: the median word_count of the competitor pages that are prose.
 
     A page counts when it is measured, not blocked, has words and a content H2, and is not a
-    listing (JSON-LD ItemList / SearchResultsPage / OfferCatalog, or a card grid holding most
-    of its prose). Each site (registrable domain) counts once, at its best-ranked page (Google,
+    listing: a card grid holding most of its prose, or JSON-LD ItemList / SearchResultsPage /
+    OfferCatalog with a grid over LISTING_LD_SHARE or under LISTING_LD_SECTION_SHARE of its
+    prose in content sections (a kept page with such JSON-LD gets a note). Each site (registrable domain) counts once, at its best-ranked page (Google,
     then Bing, then URL, as section_target). The top count is an outlier and dropped when it
     exceeds OUTLIER_RATIO × the next, as section_target does. An even count's median is the
     mean of the middle two rounded half up (int(x + 0.5)), never round()'s half-to-even.
-    {"median", "from", "of", "used": [urls], "excluded": [{"url", "reason"}]}; with nothing
-    usable, median is None and "status" names the barrier."""
+    {"median", "from", "of", "used": [urls], "excluded": [{"url", "reason"}], "notes"}; with
+    fewer than MIN_TARGET_PAGES pages used, median is None and "status" names the barrier."""
     excluded, usable = [], []
     for p in pages:
         why = _prose_problem(p)
@@ -1061,17 +1072,12 @@ def word_target(pages):
     notes = [{"url": p["url"], "reason": _prose_note(p)} for p in kept if _prose_note(p)]
     out = {"median": None, "from": len(counts), "of": len(pages),
            "used": [p["url"] for p in kept], "excluded": excluded, "notes": notes}
-    if not counts:
-        if any(isinstance(p.get("metrics"), dict) for p in pages):
-            out["status"] = ("NOT FETCHED — no measured competitor page is prose (every one is "
-                             "a listing, blocked, empty or a same-site repeat; see excluded): "
-                             "this SERP gives Rule 27 no median")
-        else:
-            out["status"] = ("NOT FETCHED — no competitor page carries metrics; run "
-                             "query_augment.py --competitor-metrics <slug> over the cached HTML")
+    if len(counts) < MIN_TARGET_PAGES:
+        out["status"] = (f"NOT FETCHED — fewer than two prose competitor pages "
+                         f"({len(counts)} used)")
         return out
     mid = len(counts) // 2
-    even = int((counts[mid - 1] + counts[mid]) / 2 + 0.5) if mid else counts[mid]
+    even = int((counts[mid - 1] + counts[mid]) / 2 + 0.5)
     out["median"] = counts[mid] if len(counts) % 2 else even
     return out
 
@@ -1596,7 +1602,7 @@ def load_competitors(slug, root=ROOT):
 
 
 METRIC_COUNTS = ("word_count", "intro_words", "h3_count", "images", "videos", "tables",
-                 "grid_share", "scrubbed")
+                 "grid_share", "section_share", "scrubbed")
 
 
 def _count(x):

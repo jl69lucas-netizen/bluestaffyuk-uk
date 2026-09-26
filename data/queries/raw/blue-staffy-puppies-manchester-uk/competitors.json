@@ -34,6 +34,7 @@
         ],
         "scope": "body",
         "grid_share": 100,
+        "section_share": 100,
         "listing": "card grid holds 100% of the prose",
         "scrubbed": 0
       }
@@ -94,6 +95,7 @@
         ],
         "scope": "main",
         "grid_share": 81,
+        "section_share": 19,
         "listing": "card grid holds 81% of the prose",
         "scrubbed": 0
       }
@@ -118,6 +120,7 @@
         "schema_types": [],
         "scope": "main",
         "grid_share": 0,
+        "section_share": 0,
         "listing": null,
         "scrubbed": 0
       }
@@ -160,6 +163,7 @@
         ],
         "scope": "body",
         "grid_share": 76,
+        "section_share": 1,
         "listing": "card grid holds 76% of the prose",
         "scrubbed": 0
       }
@@ -216,6 +220,7 @@
         ],
         "scope": "main",
         "grid_share": 0,
+        "section_share": 12,
         "listing": null,
         "scrubbed": 0
       }
@@ -276,6 +281,7 @@
         ],
         "scope": "main",
         "grid_share": 82,
+        "section_share": 18,
         "listing": "card grid holds 82% of the prose",
         "scrubbed": 0
       }
@@ -336,6 +342,7 @@
         ],
         "scope": "main",
         "grid_share": 82,
+        "section_share": 18,
         "listing": "card grid holds 82% of the prose",
         "scrubbed": 0
       }
@@ -372,6 +379,7 @@
         ],
         "scope": "body",
         "grid_share": 100,
+        "section_share": 100,
         "listing": "card grid holds 100% of the prose",
         "scrubbed": 0
       }
