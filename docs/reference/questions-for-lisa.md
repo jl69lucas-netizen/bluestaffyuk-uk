@@ -14,6 +14,9 @@ Under each question, **Where it goes** says where the website keeps your answer.
 need to do anything with that line; it is there so that you can see exactly what each answer
 changes. (From Known Issues 41, 7 and 54 in `docs/reference/session-log.md`.)
 
+**Answer on the answer board:** https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf. Type each answer under its question there
+and press Send to Claude Code; nothing needs copying.
+
 ## Puppies, prices and deposits
 
 1. **Are there blue Staffy puppies available now for buyers in Manchester?** Today the site

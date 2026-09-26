@@ -295,6 +295,15 @@ older indexable location pages still print retired terms. **Next: project 5** �
 pages, the comparison cluster and the two blog posts, in the order the re-synthesised strategy
 gives (London, Manchester and Liverpool stub rebuilds first), starting with Known Issues 60 and 61.
 
+## Answer board tool build (2026-09-26) — COMPLETE
+
+Branch `answer-board` (worktree `/Users/apple/Downloads/BSUK-answers`), cut from `foundation` at `e9b3c1b`. Spec: `docs/superpowers/specs/2026-09-26-answer-board-design.md` (Artifact https://claude.ai/artifact/53L9VZvUS3Q4UfnqyDAYWV). Plan: `docs/superpowers/plans/2026-09-26-answer-board.md` (Artifact https://claude.ai/artifact/1RYiRJ7TKniXQBJCyyijhA). **The board: https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf** (published 2026-09-26 with `db` rules read/write `admin`, `comments`, `downloads`; Lisa's batch posted at version 1; a non-editor reads nothing).
+
+What it added:
+- **One standing board, "Questions for You"** (`scripts/build_answer_board.py` → `docs/artifacts/bsuk-answer-board.html`). Every batch of questions for the user is posted there; the user answers in place (text, or a choice plus a note; Not yet / Skip on every question) and presses **Send to Claude Code** per batch. Layout A: sticky progress rail, wide question column, a top bar on phones.
+- **Batches live in the board's `db`**, written by Claude with the ArtifactData tool from `scripts/answer_board_batch.py`'s JSON (sheet parser `scripts/answer_sheet.py`), so posting never republishes the page. Answers save one document per question with a browser draft as backup; Send writes a snapshot and sends a short note (a comment is capped at 4 KiB) naming it.
+- **The rule:** CLAUDE.md "Questions for the user — the answer board"; the procedure is `docs/reference/answer-board/README.md`. Lisa's 21 questions are the first batch (`docs/reference/answer-board/batches/2026-09-24-questions-for-lisa-bright.json`).
+
 ## Known Issues
 
 Seeded from the Foundation gate report's "Open items" 1–8 and extended by projects 2 and 3.
@@ -903,7 +912,7 @@ numbers.
 41. **Questions for Lisa Bright (2026-09-23). Sent (project 5 readiness pass, Task R6):** the
     questions below, with the Kennel Club, licence (Known Issue 54) and Lucy's Law (Known Issue 7)
     questions, are `docs/reference/questions-for-lisa.md` (21 questions), published for the user to
-    forward (https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH). Open until she answers. Grouped and reworded from the files' blocked
+    forward (https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH). Open until she answers. Since 2026-09-26 they are the first batch on the answer board (`docs/reference/answer-board/README.md`): the user types each answer there and presses Send to Claude Code. Grouped and reworded from the files' blocked
     buyer questions: the Manchester and Leeds question files hold buyer questions (from Google,
     Bing, ChatGPT and Reddit) that the merge blocked as "unverified fact" because BSUK has no
     recorded fact to answer them. Each answer becomes a `data/faq.json` row or a

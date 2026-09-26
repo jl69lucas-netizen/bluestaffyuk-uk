@@ -63,6 +63,13 @@ Roman, Byrd and Ince at £1,500; Vennie, Christa and Cheryl at £1,700. The depo
 and refundable. Never write a health screen, a licence or a guarantee length: none is
 established.
 
+### "Ask the user questions" / "read my answers"
+→ the answer board: `docs/reference/answer-board/README.md`. A batch is made with
+`python3 scripts/answer_board_batch.py <sheet> --project <name>` and written to the board with
+the ArtifactData tool; answers come back through the board's **Send to Claude Code** and are
+saved under `docs/reference/answer-board/answers/`. The board page is built with
+`python3 scripts/build_answer_board.py`.
+
 ### "A puppy was reserved or sold"
 → update `data/puppies.json` → rebuild → retire or redirect the route via
 `data/redirects.json` and `python3 scripts/redirect_check.py`. Never leave a sold puppy
