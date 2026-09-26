@@ -38,12 +38,15 @@ import SectionSheet from '../components/kit/SectionSheet.astro';
 import SectionStrip from '../components/kit/SectionStrip.astro';
 import PageNav from '../components/kit/PageNav.astro';
 import type { SectionRef } from '../lib/sections';
+import { globalCtaShown } from '../lib/globalCta';
 
 // Every head prop is BaseLayout's, forwarded untouched; `sections` is the only one the shell
 // owns. Extending rather than restating means a prop added to the layout reaches the shell.
 interface Props extends BaseProps { sections?: SectionRef[] }
 const { sections = [], ...head } = Astro.props;
 const nav = sections.length >= 6;
+// The approved board's `global_cta` decides the footer's CTA band (CAG parity audit D3).
+const cta = globalCtaShown(Astro.url.pathname);
 // A page that passes one to five sections gets NO in-page nav and no warning would be given
 // at runtime, because nothing is rendered — the author sees a page that simply has no dial
 // and has to guess whether the threshold or their list is wrong. Say which, at build time,
@@ -73,7 +76,7 @@ if (sections.length > 0 && !nav) {
     </div>
   </div>
   {nav && <SectionSheet sections={sections} />}
-  <SiteFooterKit slot="footer" />
+  <SiteFooterKit slot="footer" cta={cta} />
 </BaseLayout>
 <style>
   @layer components {
