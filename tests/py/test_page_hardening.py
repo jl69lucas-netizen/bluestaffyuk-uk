@@ -512,7 +512,7 @@ const x = 1;
 .adopt{color:#111}
 .faqC-x{width:16px}
 .faqC-q{font-size:1.05rem}
-.doc-stack{display:grid}
+.stack-table{display:grid}
 .tile{border:0}
 .on{opacity:1}
 .off{opacity:.4}
@@ -537,20 +537,20 @@ def test_class_drift_reports_styled_but_never_rendered():
     d = checks_named(found, "markup-css-drift")
     assert d, "must report the classes that are styled but never rendered"
     listed = _listed(d)
-    assert {"faqC-q", "doc-stack"} <= listed, listed
+    assert {"faqC-q", "stack-table"} <= listed, listed
 
 
 def test_class_drift_flags_spec_mandated_components_as_ERROR():
-    """.doc-stack is mandated by the for-sale spec — a missing component, not dead code."""
+    """.stack-table is mandated (working rule 13, the kit's DataTable) — a missing component, not dead code."""
     found = checks_named(
         run(H.check_class_drift, [("src/pages/adoption/index.astro", DRIFT_SRC)]),
         "markup-css-drift")
     errors = [f for f in found if f["sev"] == "ERROR"]
     assert errors, "a spec-mandated component must raise ERROR, not WARN"
-    assert "doc-stack" in _listed(errors)
+    assert "stack-table" in _listed(errors)
     # …and it must NOT be lumped into the deletable WARN list.
     warns = [f for f in found if f["sev"] == "WARN"]
-    assert "doc-stack" not in _listed(warns)
+    assert "stack-table" not in _listed(warns)
     assert "faqC-q" in _listed(warns), "non-mandated dead code belongs in the WARN list"
 
 

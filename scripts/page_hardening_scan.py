@@ -26,11 +26,18 @@ examines the page's own file plus the components it actually imports, plus
 BaseLayout.astro/global.css — see src_files()/imports_of(). Before this date
 a scoped run examined only the page file itself and could miss a defect
 shipped in an imported component.
+
+2026-09-26: a page rendered by a DYNAMIC route (a city at uk-locations/<city>, a
+puppy, a blog post) resolves to its template — `src/pages/uk-locations/[slug].astro`
+— and that template's imports, data/locations.json among them (page_source()).
+The site sweep recurses into src/components/, so the kit is read too.
 """
 import re, sys, glob, os, json, pathlib, argparse
-from _slugs import select_pages
+from _slugs import select_pages, resolve_page
 
-SRC_GLOBS = ["src/pages/**/*.astro", "src/components/*.astro",
+# `src/components/**` recurses: the kit (`src/components/kit/`) is where every rebuilt and
+# project 5 page's sections live, and a non-recursive glob never read one of its files.
+SRC_GLOBS = ["src/pages/**/*.astro", "src/components/**/*.astro",
              "src/layouts/*.astro", "src/styles/*.css"]
 DIST = "dist"
 
@@ -95,6 +102,36 @@ def imports_of(astro_path, root="."):
     return found
 
 
+def page_source(slug, root="."):
+    """The source file a built page is rendered from, or None.
+
+    A static page is `src/pages/<route>/index.astro` (`src/pages/index.astro` for the root).
+    Every other page is a DYNAMIC route: a city is `uk-locations/<city>` rendered by
+    `src/pages/uk-locations/[slug].astro`, a puppy by `available-puppies/[slug].astro`, a
+    blog post by `src/pages/[...post].astro`. Before 2026-09-26 only the static form was
+    tried, so a city page's scoped run read BaseLayout and global.css and nothing of the page.
+    A bare city key is resolved to its route first (scripts/_slugs.py, Known Issue 39); the
+    dynamic file is looked up in the route's parent directory with os.listdir, because glob
+    reads the `[` in `[slug].astro` as a character class."""
+    try:
+        route = resolve_page(slug, root)[1]
+    except ValueError:
+        return None
+    if not route:
+        return "src/pages/index.astro"
+    static = f"src/pages/{route}/index.astro"
+    if os.path.isfile(os.path.join(root, static)):
+        return static
+    parent = os.path.dirname(route)
+    folder = os.path.join(root, "src", "pages", parent)
+    if not os.path.isdir(folder):
+        return None
+    dynamic = sorted(f for f in os.listdir(folder) if f.startswith("[") and f.endswith("].astro"))
+    if not dynamic:
+        return None
+    return "/".join(p for p in ("src/pages", parent, dynamic[0]) if p)
+
+
 def src_files(slugs, root="."):
     """A scoped run examines the page's OWN source file plus the components
     it actually imports (one level, plus one more level for
@@ -120,7 +157,7 @@ def src_files(slugs, root="."):
             for p in glob.glob(os.path.join(root, "src/pages/**/*.astro"), recursive=True)
         ))
         shared_files = []
-        for g in ("src/components/*.astro", "src/layouts/*.astro", "src/styles/*.css"):
+        for g in ("src/components/**/*.astro", "src/layouts/*.astro", "src/styles/*.css"):
             shared_files += [
                 os.path.relpath(p, root).replace(os.sep, "/")
                 for p in glob.glob(os.path.join(root, g), recursive=True)
@@ -129,11 +166,8 @@ def src_files(slugs, root="."):
 
     result = set(always)
     for s in slugs:
-        if s in ("index", "", "/"):
-            page_file = "src/pages/index.astro"
-        else:
-            page_file = f"src/pages/{s.strip('/')}/index.astro"
-        if not os.path.isfile(os.path.join(root, page_file)):
+        page_file = page_source(s, root)
+        if page_file is None:
             continue
         result.add(page_file)
         first_level = imports_of(page_file, root=root)
@@ -158,8 +192,12 @@ def check_css_math(files):
         for i, ln in enumerate(lines_of(f), 1):
             for m in pat.finditer(ln):
                 expr = m.group(0)
+                # A custom property's NAME is not arithmetic: `var(--space-4)` read as
+                # `e-4` failed every kit component on 2026-09-26, the day the scan first
+                # read src/components/kit/. Names are blanked before the test.
+                bare = re.sub(r"--[\w-]+", "--v", expr)
                 # a +/- with a non-space on either side, ignoring signs after ( or ,
-                if re.search(r"(?<=[0-9a-z%\)])\+(?=[^\s])|(?<=[0-9a-z%\)])\s\-(?=[^\s])|(?<=[0-9a-z%\)])\-(?=[.\d])", expr):
+                if re.search(r"(?<=[0-9a-z%\)])\+(?=[^\s])|(?<=[0-9a-z%\)])\s\-(?=[^\s])|(?<=[0-9a-z%\)])\-(?=[.\d])", bare):
                     add("ERROR", "css-math-spacing", f, i,
                         f"invalid CSS math (needs spaces around +/-): {expr}",
                         "rewrite as clamp(1.5rem, 1.02rem + 1.55vw, 1.98rem) — "
@@ -922,9 +960,17 @@ def check_smooth_scroll(sources):
 # Components the for-sale spec mandates. Sourced from
 # sessions/2026-07-19-for-sale-component-map.md + the 2026-07-28 harden pass,
 # where all of these shipped as CSS with no markup behind them.
+#
+# Re-based 2026-09-26. The set above was the source repo's for-sale components, none of which
+# any BSUK file renders, so the ERROR half of this check could never fire here. These are the
+# kit components the working rules require on a rebuilt page, each styled and rendered in its
+# own kit file: the counter strip (rule 16; layout-hero-counter-separation hooks on
+# .counter-wrap), the stacking table (rule 13), the hero (rule 16), the page dial, the page
+# nav, the section sheet, the FAQ block and the statement label.
+# tests/py/test_page_hardening_scope.py holds every member to a class a kit file renders.
 SPEC_MANDATED = {
-    "doc-stack", "otA", "geo-pin", "geo-arrow", "read-img",
-    "vflags", "chkB", "fs-video", "xsell", "seam",
+    "counter-wrap", "stack-table", "kit-hero", "kit-dial", "kit-nav", "kit-sheet",
+    "kit-faq", "stmt-label",
 }
 
 _QUOTED = re.compile(r'"([^"]*)"|\'([^\']*)\'')
@@ -972,6 +1018,11 @@ def _rendered_classes(markup):
     for m in re.finditer(r"class(?:Name)?=\{([^}]*)\}", markup):
         for q in _QUOTED.findall(m.group(1)):
             harvested.update((q[0] or q[1]).split())
+    # Astro's class:list={['kit-dial', cls]} — how every kit component renders its root. Not
+    # read before 2026-09-26, so each kit root would have read as styled-but-never-rendered.
+    for m in re.finditer(r"class:list=\{(\[.*?\])\}", markup, re.S):
+        for q in _QUOTED.findall(m.group(1)):
+            harvested.update((q[0] or q[1]).split())
     return harvested, literal
 
 
@@ -979,8 +1030,8 @@ def _global_css():
     """The project-wide sheets, cached. A class styled here is not an orphan."""
     if not hasattr(_global_css, "_cache"):
         text = ""
-        for g in ("src/styles/*.css", "src/layouts/*.astro", "src/components/*.astro"):
-            for p in glob.glob(g):
+        for g in ("src/styles/*.css", "src/layouts/*.astro", "src/components/**/*.astro"):
+            for p in glob.glob(g, recursive=True):
                 text += "\n".join(lines_of(p))
         _global_css._cache = text
     return _global_css._cache
