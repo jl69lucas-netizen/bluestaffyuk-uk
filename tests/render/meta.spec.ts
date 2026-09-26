@@ -18,6 +18,7 @@ import { registry, MAX_DEFECT_ROWS, type Check, type Defect } from './lib/regist
 import { runCheck } from './lib/runCheck.js';
 import { flattenSlug } from './lib/scorecard.js';
 import { latestCards, notYetMeasured, readScorecards, zeroExamined } from './lib/examined.js';
+import { severityFor, isNewPage, type Promotion, type NewPageRule } from './lib/promotions.js';
 import { fixtureUrl, FIXTURE_BASE } from './lib/servers.js';
 import { measureTopChrome, waitForScrollSettle } from './lib/probes.js';
 import { checkDistFreshness, builtRoutesWithoutSource } from './lib/freshness.js';
@@ -1890,5 +1891,107 @@ test.describe('zero-examined guard: every non-deferred check examined > 0 in the
         `${dead.join(', ')} — a check that judged nothing is not a pass. Point it at markup the ` +
         `pages really carry, or defer it in targets.json with a promotion condition.`,
     ).toEqual([]);
+  });
+});
+
+/**
+ * The image class a rebuilt page really renders.
+ *
+ * `layout-h3-image-first` counted only `img.sec-img`, which ships on /kit-preview/ alone:
+ * every rebuilt page renders its body photographs through src/components/BodyImage.astro as
+ * `img.bl-img`, so on the pages rule 17 puts an image under every H3 the check examined zero
+ * blocks. This pair is BodyImage's own markup.
+ */
+test.describe('layout-h3-image-first [BodyImage .bl-img]', () => {
+  const check = () => registry.find((c) => c.id === 'layout-h3-image-first')!;
+
+  test('is silent when each H3 opens on its body photograph', async ({ page }, testInfo) => {
+    const res = await page.goto(`${FIXTURE_BASE}/tests/render/fixtures/known_good/h3-image-first-bl-img.html`);
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'both H3 blocks own a .bl-img').toBe(2);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires when the body photograph follows the prose', async ({ page }, testInfo) => {
+    const res = await page.goto(`${FIXTURE_BASE}/tests/render/fixtures/known_broken/h3-image-first-bl-img.html`);
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(2);
+    expect(r.defects[0]?.count, 'both blocks are offenders').toBe(2);
+  });
+});
+
+/**
+ * Promotion is a record, not a flag flip.
+ *
+ * targets.json's `_comment` says a check enters advisory and is promoted after it has
+ * passed its fixtures and made zero false reports across one full cluster — and until the
+ * parity plan's Task 14 nothing recorded when that had happened, so `blocking` checks carried
+ * no evidence of an advisory period at all. `promotions` is that record: every blocking check
+ * has an entry, and a `new-pages` entry makes an advisory check blocking on the project 5
+ * pages only (new-family page type, rebuilt from its board, not one of the twelve frozen
+ * pages — `new_page_rule`, pinned to scripts/family_rules.py by tests/py/test_targets_coverage.py).
+ */
+test.describe('promotions: every blocking check is on record, and new-page promotions bind new pages only', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const t = JSON.parse(readFileSync(resolve(here, 'targets.json'), 'utf8')) as {
+    promotions: Record<string, Promotion>;
+    new_page_rule: NewPageRule;
+  };
+  const rule: NewPageRule = { page_types: ['location', 'comparison', 'blog'], built_before: ['blue-staffy-blog-guides'] };
+  const rebuilt = new Set(['blue-staffy-puppies-hull', 'blue-staffy-blog-guides', 'index']);
+  const promo: Record<string, Promotion> = {
+    promoted: { scope: 'new-pages', since: '2026-09-26', cluster_cleared: 'x', false_reports: 0 },
+  };
+
+  test('isNewPage is a new-family, rebuilt, unfrozen page — by route or by bare key', () => {
+    expect(isNewPage({ slug: 'uk-locations/blue-staffy-puppies-hull', page_type: 'location' }, rule, rebuilt)).toBe(true);
+    expect(isNewPage({ slug: 'uk-locations/blue-staffy-puppies-leeds', page_type: 'location' }, rule, rebuilt)).toBe(false); // migrated, not rebuilt
+    expect(isNewPage({ slug: 'blue-staffy-blog-guides', page_type: 'blog' }, rule, rebuilt)).toBe(false); // frozen
+    expect(isNewPage({ slug: 'index', page_type: 'home' }, rule, rebuilt)).toBe(false); // not a new family
+  });
+
+  test('severityFor blocks a promoted check on a new page and nowhere else', () => {
+    const hull = { slug: 'uk-locations/blue-staffy-puppies-hull', page_type: 'location' };
+    const leeds = { slug: 'uk-locations/blue-staffy-puppies-leeds', page_type: 'location' };
+    expect(severityFor({ id: 'promoted', severity: 'advisory' }, hull, promo, rule, rebuilt)).toBe('blocking');
+    expect(severityFor({ id: 'promoted', severity: 'advisory' }, leeds, promo, rule, rebuilt)).toBe('advisory');
+    expect(severityFor({ id: 'other', severity: 'advisory' }, hull, promo, rule, rebuilt)).toBe('advisory');
+    expect(severityFor({ id: 'other', severity: 'blocking' }, leeds, promo, rule, rebuilt)).toBe('blocking');
+  });
+
+  test('every blocking check has a promotions entry with scope all', () => {
+    const missing = registry
+      .filter((c) => c.severity === 'blocking' && t.promotions[c.id]?.scope !== 'all')
+      .map((c) => c.id)
+      .sort();
+    expect(missing, `blocking with no promotion on record: ${missing.join(', ')}`).toEqual([]);
+  });
+
+  test('every promotion names a registered check, fits its severity and records zero false reports', () => {
+    const bad: string[] = [];
+    for (const [id, p] of Object.entries(t.promotions)) {
+      const c = registry.find((x) => x.id === id);
+      if (!c) bad.push(`${id}: not a registered check`);
+      else if (p.scope === 'all' && c.severity !== 'blocking') bad.push(`${id}: scope all but registered ${c.severity}`);
+      else if (p.scope === 'new-pages' && c.severity !== 'advisory') bad.push(`${id}: new-pages scope on a ${c.severity} check`);
+      if (!['all', 'new-pages'].includes(p.scope)) bad.push(`${id}: unknown scope ${p.scope}`);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(p.since)) bad.push(`${id}: since ${p.since} is not a date`);
+      if (p.false_reports !== 0) bad.push(`${id}: ${p.false_reports} false reports — not promotable`);
+      if (!(p.cluster_cleared ?? '').trim()) bad.push(`${id}: no cluster_cleared evidence`);
+    }
+    expect(bad).toEqual([]);
+  });
+
+  test('the four project 5 promotions are on record', () => {
+    for (const id of [
+      'layout-hero-counter-separation',
+      'layout-h3-image-first',
+      'sem-section-opening-paragraph',
+      'sem-title-case-headings',
+    ]) {
+      expect(t.promotions[id]?.scope, id).toBe('new-pages');
+    }
   });
 });

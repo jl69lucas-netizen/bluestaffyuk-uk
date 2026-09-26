@@ -1,0 +1,116 @@
+{
+  "slug": "thank-you-blue-staffy-puppies-journey",
+  "date": "2026-09-26",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 31
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 669,
+    "layout-tap-target-size": 178,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "img-srcset-within-2x": 21,
+    "img-alt-present-and-unique": 21,
+    "img-sizes-matches-box": 0,
+    "nav-anchors-resolve": 99,
+    "nav-jump-target-lands": 27,
+    "nav-bottom-chrome-clear": 18,
+    "sem-heading-order": 123,
+    "sem-all-six-levels": 123,
+    "sem-title-case-headings": 123,
+    "sem-section-opening-paragraph": 123,
+    "sem-statement-label-visible": 12,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1320,
+    "css-no-dead-component-rule": 915,
+    "css-component-color-not-overridden": 66,
+    "dup-no-sibling-crossover": 180,
+    "a11y-text-contrast-aa": 636,
+    "a11y-no-duplicate-ids": 48,
+    "a11y-hero-ledge-contrast": 0,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "CSS": 234,
+    "DUP": 9
+  },
+  "total": 9,
+  "total_instances": 243,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x6, bl-media-none x5, bl-list-stack x4, bl-head-above x3, bl-cols-1 x2, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 70,
+      "message": "70 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 18w vs /board-preview/thank-you-blue-staffy-puppies-journey/ \"business hours to a reply 24 48 puppies available right now 6 uk delivery by distance 200 \" | 13w vs /board-preview/thank-you-blue-staffy-puppies-journey/ \"you have chosen a refundable deposit of 500 holds that puppy for you\" | 13w vs /board-preview/thank-you-blue-staffy-puppies-journey/ \"home delivery by defra approved transport priced by distance between 200 and 350\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x6, bl-media-none x5, bl-list-stack x4, bl-head-above x3, bl-cols-1 x2, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 70,
+      "message": "70 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 18w vs /board-preview/thank-you-blue-staffy-puppies-journey/ \"business hours to a reply 24 48 puppies available right now 6 uk delivery by distance 200 \" | 13w vs /board-preview/thank-you-blue-staffy-puppies-journey/ \"you have chosen a refundable deposit of 500 holds that puppy for you\" | 13w vs /board-preview/thank-you-blue-staffy-puppies-journey/ \"home delivery by defra approved transport priced by distance between 200 and 350\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x6, bl-media-none x5, bl-list-stack x4, bl-head-above x3, bl-cols-1 x2, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 70,
+      "message": "70 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 18w vs /board-preview/thank-you-blue-staffy-puppies-journey/ \"business hours to a reply 24 48 puppies available right now 6 uk delivery by distance 200 \" | 13w vs /board-preview/thank-you-blue-staffy-puppies-journey/ \"you have chosen a refundable deposit of 500 holds that puppy for you\" | 13w vs /board-preview/thank-you-blue-staffy-puppies-journey/ \"home delivery by defra approved transport priced by distance between 200 and 350\""
+    }
+  ]
+}

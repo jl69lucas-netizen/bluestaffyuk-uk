@@ -35,7 +35,7 @@ enforced: test
 family: LAYOUT
 ---
 
-- **Hero and counter strip must be visually separated (ALWAYS — breeder, 2026-08-07)** — A counter/stat strip placed directly under a hero on one continuous background reads as hero furniture, and the figures stop registering as claims. Every page carrying both MUST put a visible boundary between them: at minimum a **background-tone shift AND a 1px rule**; at most a `.bsuk-seam` divider. Never zero separation, and never whitespace alone. On the puppy cluster the marker is a 3px `--seam-gradient` bar on `.counter-wrap::before` plus a `--counter-bed` bed. Enforced by `tests/render/checks/layout.ts::layout-hero-counter-separation`, with both fixture halves — a page with a tone shift but no rule still fails.
+- **Hero and counter strip must be visually separated (ALWAYS — breeder, 2026-08-07)** — A counter/stat strip placed directly under a hero on one continuous background reads as hero furniture, and the figures stop registering as claims. Every page carrying both MUST put a visible boundary between them: at minimum a **background-tone shift AND a 1px rule**; at most a `.bsuk-seam` divider. Never zero separation, and never whitespace alone. On the puppy cluster the marker is a 3px `--seam-gradient` bar on `.counter-wrap::before` plus a `--counter-bed` bed. Enforced by `tests/render/checks/layout.ts::layout-hero-counter-separation`, with both fixture halves — a page with a tone shift but no rule still fails. Blocking on project 5 pages (targets.json `promotions`, scope `new-pages`).
 
 ---
 id: layout-h3-image-first
@@ -43,7 +43,7 @@ enforced: test
 family: LAYOUT
 ---
 
-- **Under an H3, the image comes before the prose (ALWAYS — breeder, 2026-08-07)** — In the puppy cluster a sectional image sits immediately after its `</h3>` and before that block's first `<p>`, so the reader gets the subject before the argument. **H2 blocks keep lead-paragraph-first** — this rule is H3-scoped, deliberately, and a check that flags H2s is over-broad. Only `.sec-img` counts; seam emblems and icons are decorative and must never register as "the image". An H3 that owns no image is not a violation and must not be counted as examined. Enforced by `tests/render/checks/layout.ts::layout-h3-image-first`.
+- **Under an H3, the image comes before the prose (ALWAYS — breeder, 2026-08-07)** — In the puppy cluster a sectional image sits immediately after its `</h3>` and before that block's first `<p>`, so the reader gets the subject before the argument. **H2 blocks keep lead-paragraph-first** — this rule is H3-scoped, deliberately, and a check that flags H2s is over-broad. Only a sectional image counts — `.sec-img` (the kit specimen) or `.bl-img` (`src/components/BodyImage.astro`, the body photograph every rebuilt page renders); seam emblems and icons are decorative and must never register as "the image". An H3 that owns no image is not a violation and must not be counted as examined. Enforced by `tests/render/checks/layout.ts::layout-h3-image-first` — blocking on project 5 pages (targets.json `promotions`, scope `new-pages`), advisory on the twelve pages built before them.
 
 ---
 id: layout-hero-height-and-image-first

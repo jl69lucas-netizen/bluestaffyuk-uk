@@ -219,3 +219,13 @@ def test_a_key_that_is_not_a_slug_is_reported_not_raised():
     missing, wrong = _rebuilt_gaps(["../x"], {"pages": []})
     assert len(missing) == 1 and missing[0].startswith("../x: not a slug")
     assert wrong == []
+
+
+def test_the_new_page_rule_is_family_rules_own(targets):
+    """pages.spec.ts decides which pages a `new-pages` promotion blocks from
+    `new_page_rule`; scripts/family_rules.py decides the same question for the board rules.
+    One answer, spelled twice because one side is TypeScript — so pinned here."""
+    import family_rules as FR
+    rule = targets["new_page_rule"]
+    assert tuple(rule["page_types"]) == FR.NEW_FAMILY_PAGE_TYPES
+    assert set(rule["built_before"]) == FR.BUILT_BEFORE_SYSTEM_GAPS

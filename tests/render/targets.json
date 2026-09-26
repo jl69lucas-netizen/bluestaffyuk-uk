@@ -6,6 +6,150 @@
   "pending_page_types": {
     "comparison": "Project 5 builds comparison pages and none is built yet. Declared now so the first one is examined by every family the day it lands, instead of by whatever was remembered then. Remove this entry when the first comparison page is added to `pages` (tests/py/test_targets_coverage.py fails until you do)."
   },
+  "_promotions_comment": "Added 2026-09-26 (parity plan Task 14). `promotions` is the record the _comment's promotion rule never had: every check whose registered severity is `blocking` has a scope `all` entry, and a scope `new-pages` entry makes an ADVISORY check block on project 5 pages only — a `new_page_rule.page_types` page that is in data/facts/rebuilt.json and not in `new_page_rule.built_before` (tests/render/lib/promotions.ts). `new_page_rule` is scripts/family_rules.py's NEW_FAMILY_PAGE_TYPES and BUILT_BEFORE_SYSTEM_GAPS, pinned by tests/py/test_targets_coverage.py. meta.spec.ts fails a blocking check with no entry, an entry whose scope contradicts the registry, and any entry with a false report.",
+  "new_page_rule": {
+    "page_types": [
+      "location",
+      "comparison",
+      "blog"
+    ],
+    "built_before": [
+      "blue-staffy-blog-guides",
+      "blue-staffy-health-uk",
+      "blue-staffy-pup-sale-uk",
+      "blue-staffy-uk-breeders",
+      "buy-blue-staffy-puppies-uk",
+      "buy-staffy-puppies-for-sale-uk",
+      "index",
+      "privacy-policy-uk",
+      "thank-you-blue-staffy-puppies-journey",
+      "uk-blue-staffy-breeders-contact",
+      "uk-blue-staffy-puppy-buying-guide",
+      "uk-staffordshire-bull-terrier-guide"
+    ]
+  },
+  "promotions": {
+    "a11y-hero-ledge-contrast": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "hero-aside-no-clip": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "img-alt-present-and-unique": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "img-sizes-matches-box": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "img-srcset-within-2x": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "layout-h3-image-first": {
+      "scope": "new-pages",
+      "since": "2026-09-26",
+      "cluster_cleared": "retargeted 2026-09-26 to img.bl-img, the class src/components/BodyImage.astro renders; its reports on the twelve frozen pages are true reports (prose before the photo), which is why the scope is new pages only",
+      "false_reports": 0
+    },
+    "layout-hero-counter-separation": {
+      "scope": "new-pages",
+      "since": "2026-09-26",
+      "cluster_cleared": "examined the real counter strip on every rebuilt page since project 4 with zero rows (docs/reports/render-baseline-project4.md); blocks the 28+ project 5 counters",
+      "false_reports": 0
+    },
+    "layout-min-font-size": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "layout-no-horizontal-overflow": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "layout-table-stacks-on-mobile": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "layout-tap-target-size": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "nav-anchors-resolve": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "nav-bottom-chrome-clear": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "nav-jump-target-lands": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "schema-date-modified-present": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "schema-no-visible-date": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "schema-sold-not-instock": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "sem-heading-order": {
+      "scope": "all",
+      "since": "2026-09-26",
+      "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
+      "false_reports": 0
+    },
+    "sem-section-opening-paragraph": {
+      "scope": "new-pages",
+      "since": "2026-09-26",
+      "cluster_cleared": "heading-straight-into-heading only (narrow predicate measured on the puppy cards); rule 17 pages open every body heading on an image then prose, which this never flags",
+      "false_reports": 0
+    },
+    "sem-title-case-headings": {
+      "scope": "new-pages",
+      "since": "2026-09-26",
+      "cluster_cleared": "caser ported from page_hardening_scan.check_title_case and tuned on this site's headings; FAQ questions are headings here and Title Case (rules/headings.md)",
+      "false_reports": 0
+    }
+  },
   "families_by_page_type": {
     "home": ["IMG", "LAYOUT", "NAV", "SEM", "SCHEMA", "CSS", "DUP", "A11Y", "FORM"],
     "for-sale": ["IMG", "LAYOUT", "NAV", "SEM", "SCHEMA", "CSS", "DUP", "A11Y", "FORM"],

@@ -10,12 +10,19 @@ import { runCheck } from './lib/runCheck.js';
 import { resetScrollInstant } from './lib/probes.js';
 import { distText, distSlugs, routeFor, siblingSlugsFor } from './lib/dupCorpus.js';
 import type { Defect } from './lib/registry.js';
+import { severityFor, type Promotion, type NewPageRule } from './lib/promotions.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const targets = JSON.parse(readFileSync(resolve(here, 'targets.json'), 'utf8')) as {
   families_by_page_type: Record<string, string[]>;
   pages: { slug: string; page_type: string; corpus: boolean }[];
+  promotions: Record<string, Promotion>;
+  new_page_rule: NewPageRule;
 };
+// The project 5 pages a `new-pages` promotion blocks on are the rebuilt ones (lib/promotions.ts).
+const rebuilt = new Set<string>(
+  JSON.parse(readFileSync(resolve(here, '..', '..', 'data', 'facts', 'rebuilt.json'), 'utf8')) as string[],
+);
 
 /**
  * DUP's corpus: every built page, read once per worker. dist/ is fixed for the whole run
@@ -159,11 +166,16 @@ for (const target of targets.pages) {
       overrides,
     });
 
-    const blocking = defects.filter(
-      (d) =>
-        registry.find((c) => c.id === d.checkId)?.severity === 'blocking' &&
-        !overridden.has(d.checkId),
-    );
+    // Severity is per PAGE now: a `new-pages` promotion (targets.json) blocks on a project 5
+    // page and stays advisory on the twelve frozen pages and the migrated bodies.
+    const blocking = defects.filter((d) => {
+      const check = registry.find((c) => c.id === d.checkId);
+      return (
+        !!check &&
+        severityFor(check, target, targets.promotions, targets.new_page_rule, rebuilt) === 'blocking' &&
+        !overridden.has(d.checkId)
+      );
+    });
     expect(
       blocking.map((d) => `[${d.family}] ${d.message}`),
       `${target.slug} @ ${viewport}px`,
