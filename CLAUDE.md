@@ -95,8 +95,8 @@ Rules 1–9 have **no mechanical decision procedure**, which is exactly why they
 delegated to a test and must stay in context. They are the nine `enforced: judgment` rows in
 `data/quality/rule-index.json`, and that file's `judgment_cap: 9` is what stops that list
 growing. Rules 10–17 are the breeder's standing working rules (2026-09-18 to 2026-09-24).
-Each has a row in the same file, keyed `claude_md`: 12, 14, 15, 16 and 17 are `enforced: test`
-and name the test behind their gate, 10, 11 and 13 are `untested`, and none is a judgment
+Each has a row in the same file, keyed `claude_md`: 12, 13, 14, 15, 16 and 17 are `enforced: test`
+and name the test behind their gate, 10 and 11 are `untested`, and none is a judgment
 row, so the cap is untouched. Every other rule moved to a pack.
 
 1. **First-person brand voice.** Write as Lisa Bright: *we / us / our / here at
@@ -253,9 +253,10 @@ npm run test:render:pages
 ```
 
 `check:all` chains `check:parity`, `check:facts`, `check:links`, `check:verbatim`,
-`check:redirects`, `check:schema`, `check:queries`, `check:competitors`, `check:gaps`,
-`check:sitemaps`, `check:placeholders`, `check:workflow`, `check:markers` and `agents`, in
-that order (`tests/py/test_package_scripts.py` pins it). Every gate in the chain must be
+`check:outline`, `check:redirects`, `check:schema`, `check:queries`, `check:competitors`,
+`check:gaps`, `check:sitemaps`, `check:placeholders`, `check:workflow`, `check:markers` and
+`agents`, in that order (`tests/py/test_package_scripts.py` pins the chain and
+`tests/py/test_doc_drift.py` pins this sentence to it). Every gate in the chain must be
 green. `test:render:meta` is the gate that checks the checkers — run it **before** trusting
 any page result. `test:render:pages` measures the target pages at 375/768/1280 in a real
 browser.

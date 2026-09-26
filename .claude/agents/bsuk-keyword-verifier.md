@@ -171,8 +171,8 @@ Append to the standard verification report:
 ### Schema: [PASS ✅ | FAIL ❌]
 - Missing schemas: [list]
 
-### LLM Visibility Score: [X/10 | "not measured"]
-- Recommendation: [if <5: route to @bsuk-non-commodity-content-agent for entity strengthening]
+### LLM Visibility: [cited | not cited | NOT FETCHED — <reason> | "not measured"] (`bsuk_cited` in docs/research/llm-intel/<slug>-<date>.json)
+- Recommendation: [if not cited: route to @bsuk-non-commodity-content-agent for entity strengthening]
 
 ### AEO Gate Result: [PASS — on to the rest of Sprint 4 | FAIL — fix items above first]
 ```

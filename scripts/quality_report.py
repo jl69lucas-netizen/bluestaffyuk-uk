@@ -202,7 +202,8 @@ def main(argv=None) -> int:
     cur, delta = trend(ledger)
     print("\n1. REWORK RATE  (lagging — spec target: under 15% at 90 days)")
     if cur is None:
-        print("   no windows recorded — run scripts/rework_ledger.py --last-30-days (arrives with project 4)")
+        print("   no windows recorded — append one to data/quality/rework-ledger.json by hand "
+              "(bsuk-learning-loop Step 5; the source repo's writer was not ported)")
     else:
         arrow = "" if delta is None else f"  ({delta:+.1%} vs previous window)"
         # PAGE rework is the headline. Harness self-repair is printed beside it, never

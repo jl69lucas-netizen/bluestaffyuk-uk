@@ -174,7 +174,7 @@ SESSION CONTEXT:
 - Component Style: [informational 760px | transactional 1200px | hybrid]
 - Visual Plan: [section → type mapping, or "decide during build"]
 - Audit Status: [complete | pending → run bsuk-content-audit-agent first]
-- LLM Visibility: [0–10 score | "not measured" → run bsuk-llm-keyword-intel]
+- LLM Visibility: [cited | not cited | NOT FETCHED — <reason> (`bsuk_cited` in docs/research/llm-intel/<slug>-<date>.json) | "not measured" → run bsuk-llm-keyword-intel]
 - Page Record: [existing page — its row in data/page-map.json, the extractor's record of the old site | new page — no page-map row; its board data/boards/<slug>.json, written first]
 - Hub Page: [/url/ of parent hub | "needs to be built first"]
 - Internal Links Needed: [from workflow gate check, or "TBD after audit"]
@@ -696,7 +696,8 @@ lessons never reached the skill that enforces them.*
 
 ```
 1. session-closer skill        → fill the brief's What's Next
-2. Write the lessons doc       → a dated file under docs/superpowers/sessions/
+2. Write the lessons            → the project's gate report, docs/reports/<project>-gate-report.md,
+                                  under `## Open items` (a live defect also gets a Known Issue)
 3. BACK-PROPAGATE every lesson into the artifact that ENFORCES it:
      a render defect      → a check in scripts/page_hardening_scan.py + a RED test
      a gate that lied     → .claude/skills/bsuk-gate-integrity/SKILL.md
@@ -837,8 +838,8 @@ full `ls data/`.
 | `data/settings.json` | Manual | the build | Rare |
 | `data/quality/rule-index.json` | Manual | `scripts/quality_report.py` | New or retired rule |
 | `data/quality/evidence-budgets.json` | Manual | `scripts/evidence_audit.py` | Budget changes |
-| `data/quality/evidence-ledger.json` | evidence-pass | `scripts/evidence_audit.py` | Per claim — empty today |
-| `data/quality/rework-ledger.json` | learning-loop | `scripts/quality_report.py` | Per rework window — empty today |
+| `data/quality/evidence-ledger.json` | evidence-pass | `scripts/evidence_audit.py` | Per claim — one row today, `parents-dna-clear` at proof NOT FETCHED (Known Issue 40) |
+| `data/quality/rework-ledger.json` | learning-loop (appended by hand; the source repo's writer was not ported) | `scripts/quality_report.py` | Per rework window — empty today |
 | `data/boards/` | the page-type builder (the record, `schemas/board.schema.json`), `scripts/board_approve.py` (the approval) | `scripts/build_page_board.py` (renders the board Artifact), `scripts/board_gate.py` | Per page board |
 
 ---

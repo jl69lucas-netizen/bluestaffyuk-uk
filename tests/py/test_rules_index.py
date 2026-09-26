@@ -485,7 +485,9 @@ CLAUDE_MD_RULES = {
     10: ("untested", None),
     11: ("untested", None),
     12: ("test", "tests/py/test_link_parity.py"),
-    13: ("untested", None),
+    # the stacking half is a blocking render check; the board half's three styles are proven
+    # on the `table` shape by tests/py/test_board_previews.py (CAG parity audit 19d.8)
+    13: ("test", "tests/render/checks/layout.ts::layout-table-stacks-on-mobile"),
     14: ("test", "tests/py/test_facts_preserved.py"),
     15: ("test", "tests/py/test_verbatim_set.py"),
     16: ("test", "tests/py/test_rule16_gate.py"),
@@ -525,7 +527,7 @@ def test_every_working_rule_10_to_17_has_one_ledger_row():
         assert r.get("test") == test, (n, r)
         assert "pack" not in r, (n, "a CLAUDE.md rule is not written in a pack")
         if test:
-            assert (ROOT / test).is_file(), (n, test)
+            assert (ROOT / test.split("::")[0]).is_file(), (n, test)
 
 
 def test_quality_report_reads_the_eight_rows_as_ruled():
