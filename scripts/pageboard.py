@@ -905,9 +905,11 @@ def _is_specimen(rel):
     return DUP.is_specimen("" if rel == "." else rel)
 
 
-def live_headings(dist=DIST):
+def live_headings(dist=None):
     """{page: [heading text, ...]} from every built page, minus the specimen routes.
-    Empty when dist/ is absent."""
+    Empty when dist/ is absent. DIST is read at call time, like built_page(), so a test
+    can point it elsewhere."""
+    dist = DIST if dist is None else dist
     out = {}
     for page in sorted(pathlib.Path(dist).glob("**/index.html")):
         rel = page.parent.relative_to(dist).as_posix()
