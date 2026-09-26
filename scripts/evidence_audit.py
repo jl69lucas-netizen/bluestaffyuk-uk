@@ -70,7 +70,8 @@ def main_html(html):
 # ── term-budget-per-page ────────────────────────────────────────────────────
 @lru_cache(maxsize=1)
 def _location_cities():
-    """{location slug: city} from data/locations.json; empty when the file is absent."""
+    """{location slug: city} from data/locations.json; empty when the file is absent.
+    Cached: a caller that changes LOCATIONS_PATH must call `_location_cities.cache_clear()`."""
     if not LOCATIONS_PATH.exists():
         return {}
     return {r["slug"]: r["city"] for r in json.loads(LOCATIONS_PATH.read_text(encoding="utf-8"))}
@@ -95,6 +96,9 @@ def city_pattern(city):
     """`Newcastle-under-Lyme` also matches `Newcastle under Lyme`: any run of spaces or
     hyphens in the name matches any run of spaces or hyphens on the page."""
     words = [w for w in re.split(r"[\s-]+", city) if w]
+    if not words:
+        # r"\b\b" would match everywhere: a name with no words is a data error, not a term
+        raise ValueError(f"city {city!r} has no words to match")
     return r"\b" + r"[\s-]+".join(re.escape(w) for w in words) + r"\b"
 
 

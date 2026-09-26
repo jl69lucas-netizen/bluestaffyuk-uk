@@ -110,3 +110,11 @@ def test_the_twelve_built_pages_pass_their_brand_budget_as_built(slug):
     html = built.read_text(encoding="utf-8")
     over = [t for t, n, c in ea.term_budget(html, ea.page_type_for(slug), LIVE, slug) if t == "bluestaffyuk"]
     assert over == [], slug
+
+
+def test_city_pattern_keeps_word_boundaries():
+    # `York` must not match inside `Yorkshire`, but a hyphen is a word boundary (`York-based`)
+    assert re.findall(ea.city_pattern("York"), "North Yorkshire, York-based, York", re.I) == ["York", "York"]
+    # a name with no words would give r"\b\b", which matches everywhere: refuse it
+    with pytest.raises(ValueError):
+        ea.city_pattern("-")
