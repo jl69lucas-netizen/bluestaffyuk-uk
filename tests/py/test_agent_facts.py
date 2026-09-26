@@ -581,11 +581,13 @@ def test_the_guarantee_gate_actually_fires(tmp_path):
 METHOD_LABEL = re.compile(
     r"(?i:\bsociali[sz]ation method\b|\bhome-raised method\b|\bapproved method (?:labels?|names?)\b"
     r"|\bapproved labels?\b|\bbrand-owned method (?:labels?|names?|nodes?)\b)"
-    r"|\b(?:Carlisle|BSUK|BlueStaffyUK|Lisa Bright|Bright)\b[^|\n]{0,30}?\bMethod\b")
+    r"|\b(?:Carlisle|BSUK|BlueStaffyUK|Blue Staff(?:y|ies)|Lisa|Bright)\b[^|\n.]{0,40}?"
+    r"\b(?:Method|Protocol|Programme|Program)\b")
 
 
 def method_label_targets():
-    return targets() + sorted((ROOT / "rules").glob("*.md")) + [ROOT / "CLAUDE.md"]
+    return (targets() + sorted((ROOT / ".claude/skills").glob("*/references/*.md"))
+            + sorted((ROOT / "rules").glob("*.md")) + [ROOT / "CLAUDE.md"])
 
 
 def method_labels(path: pathlib.Path):
@@ -614,9 +616,13 @@ def test_the_method_label_lint_actually_fires(tmp_path):
         "are first-class entities and the only two approved labels.\n"
         "  → WARN:  no binomial · no breeder-name entity · no brand-owned method label\n"
         "Lisa Bright's Puppy Method is taught on every page.\n"
-        # silent: a named framework, a research step, and the rule that forbids a label
+        "Every litter follows The BSUK Puppy Protocol from day one.\n"
+        "The Blue Staffy Rearing Programme starts at three weeks.\n"
+        # silent: a named framework, a research step, the rule that forbids a label, and a
+        # sentence break between a name and the word Method
         "**Two-Keyword Header Method (apply to every header):**\n"
         "### 3. Tiered Sprint 0.5 Research Method + 17-Field Output Format\n"
-        "BSUK has no named house method; never invent one.\n", encoding="utf-8")
+        "BSUK has no named house method; never invent one.\n"
+        "Lisa Bright, our breeder. Method: we weigh daily.\n", encoding="utf-8")
     assert [b.split("  ")[0] for b in method_labels(p)] == [
-        "SKILL.md:%d" % n for n in range(1, 8)]
+        "SKILL.md:%d" % n for n in range(1, 10)]

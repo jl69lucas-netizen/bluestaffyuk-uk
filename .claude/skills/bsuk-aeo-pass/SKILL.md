@@ -189,7 +189,7 @@ lands.
 | 3 Entity-rich | binomial + breeder name present; not pronoun-heavy | yes |
 | 4 Declarative | avg sentence length, count over 30 words | yes (advisory) |
 | 5 Formatting | ≥1 table/list, ≥1 stat-bearing header | yes |
-| 6a No label | no invented method name on the page | yes (`LABELED_METHODS` stays empty) |
+| 6a No label | no invented method name on the page | **human** (no page check; instruction files are linted by tests/py/test_agent_facts.py) |
 | 6b Freshness | `dateModified` in JSON-LD, **zero** visible dates | yes (ERROR) |
 
 ## Common Mistakes

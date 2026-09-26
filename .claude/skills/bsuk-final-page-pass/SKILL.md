@@ -66,7 +66,6 @@ script.
 | `wordcount_in_band` | **700–1,000 words** (script checks 600–1,200 with buffer for chrome); not the pillar "+1,000" floor |
 | `newsletter_present` | **NA** — puppy pages are exempt from newsletter requirement (footer newsletter only, per 2026-06-18 decision) |
 | `all_h1_h4` | WARN — H1×1 + H2/H3 required; H4 where structure exists on a lean puppy page; H5/H6 only on genuine depth |
-| `house_method` | **none** — the check was deleted (no house method is on file); `CLAUDE.md` rule 9 forbids inventing a house-method name |
 | `lifespan_12_14` | WARN — at least one "12–14 year" breed-lifespan reference (not hard-FAIL on a lean puppy page) |
 | `real_hero_image` | WARN — hero must not be a placeholder/logo; flags if first content image src contains "placeholder", "coming-soon", or "default" |
 
@@ -81,7 +80,7 @@ source repo only; `scripts/final_page_audit.py` with no flag IS the interior pro
 
 | Page type | Key hard gates | Key scaled / scoped | Notes |
 |---|---|---|---|
-| **Interior** (`rich` pages) | single_canonical, no_phone_in_body, no_visible_date, jsonld_valid, faqpage_present | none — no WARN checks; every other check defaults to FAIL | `python3 scripts/final_page_audit.py` with no flag |
+| **Interior** (`rich` pages) | single_canonical, no_phone_in_body, no_visible_date, jsonld_valid, faqpage_present | none — no WARN checks; four NA (see above); the rest FAIL | `python3 scripts/final_page_audit.py` with no flag |
 | **For-sale / variant** (`/blue-staffy-pup-sale-uk/`, `/buy-staffy-puppies-for-sale-uk/`) | sold_not_instock; single_canonical; the £200–£350 delivery band | word count 1,000–2,000; `no_aggregateoffer` WARN — a hub may aggregate, a single pup may not | one `Product` per pup, one `Offer` each (`rules/puppies.md`) |
 | **Location** (`/uk-locations/<slug>/`, 28 cities) | single_canonical; no_visible_date; BreadcrumbList; delivery band | word count 3,000–5,000; the city entity in H1; FAQPage present | every city comes from `data/locations.json` |
 | **Comparison** (`/uk-staffordshire-bull-terrier-guide/` etc.) | single_canonical; comparison table present; no_visible_date | word count 1,500–3,000; H1 contains "vs" or "versus" | `bsuk-comparison-builder` handles schema |
@@ -178,7 +177,6 @@ SCALED / SCOPED (WARN — shippable, log for follow-up)
 [ ] Real hero photo — not a placeholder, coming-soon image, or logo
 [ ] H1 ×1 + H2/H3 present; H4 only where page depth warrants it
 [ ] The 12–14 year breed lifespan mentioned at least once
-[ ] House-method naming (WARN until breeder confirms a term)
 
 EXEMPT on puppy pages
 [ ] Newsletter — footer newsletter is sufficient; mid-page newsletter NOT required
