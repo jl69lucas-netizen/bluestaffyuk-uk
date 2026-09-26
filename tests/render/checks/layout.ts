@@ -361,6 +361,11 @@ register({
           i++;
           const isImg = n.matches('img.sec-img, img.bl-img') || !!n.querySelector?.('img.sec-img, img.bl-img');
           if (isImg && imgAt === -1) imgAt = i;
+          // Known limitations, both deliberate: prose is a direct <p> sibling of 40+ characters,
+          // so text inside a wrapper (<div><p>, a list, a card) is not seen as prose and cannot
+          // make the block an offender; and the image must carry `.sec-img` or `.bl-img` on the
+          // <img> itself — a <picture> or figure whose class sits only on the wrapper, or an
+          // image rendered by another component, is not counted as the block's image.
           const isProse = n.tagName === 'P' && (n.textContent ?? '').trim().length > 40;
           if (isProse && proseAt === -1) proseAt = i;
         }

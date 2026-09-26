@@ -223,9 +223,17 @@ def test_a_key_that_is_not_a_slug_is_reported_not_raised():
 
 def test_the_new_page_rule_is_family_rules_own(targets):
     """pages.spec.ts decides which pages a `new-pages` promotion blocks from
-    `new_page_rule`; scripts/family_rules.py decides the same question for the board rules.
-    One answer, spelled twice because one side is TypeScript — so pinned here."""
+    `new_page_rule`; scripts/family_rules.py decides the same page-type, frozen-page and
+    `_`-fixture question for the board rules. That part is one answer spelled twice (one side
+    is TypeScript), so it is pinned here. The TS side then ADDS one condition family_rules
+    does not need, because a board is already in hand there: the page must also be in
+    data/facts/rebuilt.json or have an approved board (`or_board_approved`), so a legacy city
+    page with neither stays advisory."""
     import family_rules as FR
     rule = targets["new_page_rule"]
     assert tuple(rule["page_types"]) == FR.NEW_FAMILY_PAGE_TYPES
     assert set(rule["built_before"]) == FR.BUILT_BEFORE_SYSTEM_GAPS
+    prefix = rule["excluded_prefix"]
+    assert prefix == "_"
+    assert not FR.is_new_page(prefix + "demo") and FR.is_new_page("demo")
+    assert rule["or_board_approved"] is True

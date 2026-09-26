@@ -141,6 +141,8 @@ its `section_target.total`.
 | 13 | Enquiry form | `ContactFormKit` | `form-inquiry-contract` · `layout-tap-target-size` |
 | — | Footer | `SiteFooterKit` | inherited from `BaseLayout`; never hand-written, not a frame part |
 
+**Four checks block from board approval on.** `layout-hero-counter-separation`, `layout-h3-image-first`, `sem-section-opening-paragraph` and `sem-title-case-headings` are blocking on a new page as soon as its board is approved (`tests/render/targets.json` `promotions`, scope `new-pages`), so the first build is held to them: place each `BodyImage` directly after its H3 and before that block's prose, or the first build blocks.
+
 **No `variant` prop and no letter — but the arrangement props are the page's own.** The
 letters in `data/design/picks.json` are a record of project 3's component picks, never a prop:
 project 3's prune (design-system spec §11 amendment 4) deleted every losing variant and every

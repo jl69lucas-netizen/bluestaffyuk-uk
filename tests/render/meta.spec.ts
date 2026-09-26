@@ -18,7 +18,7 @@ import { registry, MAX_DEFECT_ROWS, type Check, type Defect } from './lib/regist
 import { runCheck } from './lib/runCheck.js';
 import { flattenSlug } from './lib/scorecard.js';
 import { latestCards, notYetMeasured, readScorecards, zeroExamined } from './lib/examined.js';
-import { severityFor, isNewPage, type Promotion, type NewPageRule } from './lib/promotions.js';
+import { severityFor, isNewPage, approvedBoards, type Promotion, type NewPageRule } from './lib/promotions.js';
 import { fixtureUrl, FIXTURE_BASE } from './lib/servers.js';
 import { measureTopChrome, waitForScrollSettle } from './lib/probes.js';
 import { checkDistFreshness, builtRoutesWithoutSource } from './lib/freshness.js';
@@ -1939,7 +1939,12 @@ test.describe('promotions: every blocking check is on record, and new-page promo
     promotions: Record<string, Promotion>;
     new_page_rule: NewPageRule;
   };
-  const rule: NewPageRule = { page_types: ['location', 'comparison', 'blog'], built_before: ['blue-staffy-blog-guides'] };
+  const rule: NewPageRule = {
+    page_types: ['location', 'comparison', 'blog'],
+    built_before: ['blue-staffy-blog-guides'],
+    excluded_prefix: '_',
+    or_board_approved: true,
+  };
   const rebuilt = new Set(['blue-staffy-puppies-hull', 'blue-staffy-blog-guides', 'index']);
   const promo: Record<string, Promotion> = {
     promoted: { scope: 'new-pages', since: '2026-09-26', cluster_cleared: 'x', false_reports: 0 },
@@ -1982,6 +1987,44 @@ test.describe('promotions: every blocking check is on record, and new-page promo
       if (!(p.cluster_cleared ?? '').trim()) bad.push(`${id}: no cluster_cleared evidence`);
     }
     expect(bad).toEqual([]);
+  });
+
+  test('a new page is new from board approval on, before it is in rebuilt.json', () => {
+    const york = { slug: 'uk-locations/blue-staffy-puppies-york', page_type: 'location' };
+    const leeds = { slug: 'uk-locations/blue-staffy-puppies-leeds', page_type: 'location' };
+    const boards = new Set(['uk-locations--blue-staffy-puppies-york', '_demo', 'blue-staffy-blog-guides']);
+    // Approved board, not yet rebuilt: the four checks already block its first build.
+    expect(isNewPage(york, rule, rebuilt, boards)).toBe(true);
+    expect(severityFor({ id: 'promoted', severity: 'advisory' }, york, promo, rule, rebuilt, boards)).toBe('blocking');
+    // Bare-key board spelling is found too.
+    expect(isNewPage(york, rule, rebuilt, new Set(['blue-staffy-puppies-york']))).toBe(true);
+    // A legacy city page has no board and is not rebuilt: advisory.
+    expect(isNewPage(leeds, rule, rebuilt, boards)).toBe(false);
+    expect(severityFor({ id: 'promoted', severity: 'advisory' }, leeds, promo, rule, rebuilt, boards)).toBe('advisory');
+    // A frozen page and a `_` fixture stay out whatever their board says.
+    expect(isNewPage({ slug: 'blue-staffy-blog-guides', page_type: 'blog' }, rule, rebuilt, boards)).toBe(false);
+    expect(isNewPage({ slug: '_demo', page_type: 'blog' }, rule, rebuilt, boards)).toBe(false);
+    // With or_board_approved off, the board alone is not enough.
+    expect(isNewPage(york, { ...rule, or_board_approved: false }, rebuilt, boards)).toBe(false);
+  });
+
+  test('approvedBoards reads approval or approval_previous and nothing else', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'boards-'));
+    try {
+      writeFileSync(join(dir, 'uk-locations--a.json'), JSON.stringify({ approval: { approved_at: 'x' } }));
+      writeFileSync(join(dir, 'b.json'), JSON.stringify({ approval: null, approval_previous: { approved_at: 'x' } }));
+      writeFileSync(join(dir, 'c.json'), JSON.stringify({ approval: null }));
+      writeFileSync(join(dir, 'notes.txt'), 'not a board');
+      expect([...approvedBoards(dir)].sort()).toEqual(['b', 'uk-locations--a']);
+      expect([...approvedBoards(join(dir, 'missing'))]).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test('targets.json records the board-approval condition and the fixture prefix', () => {
+    expect(t.new_page_rule.or_board_approved).toBe(true);
+    expect(t.new_page_rule.excluded_prefix).toBe('_');
   });
 
   test('the four project 5 promotions are on record', () => {

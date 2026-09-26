@@ -230,3 +230,84 @@ def test_the_reports_total_row_equals_the_real_scorecard_sums():
     assert blocking + advisory == total, (
         f"report Total {blocking}+{advisory} != {total} detail rows in the {latest} scorecards"
     )
+
+
+# ── Per-page severity: a `new-pages` promotion (tests/render/targets.json) blocks on a
+# project 5 page, so the baseline must classify it there as blocking, exactly as
+# tests/render/pages.spec.ts does through tests/render/lib/promotions.ts. ────────────────────
+
+sys.path.insert(0, str(ROOT / "scripts"))
+import family_rules as FR  # noqa: E402
+import render_baseline as RB  # noqa: E402
+
+RULE = {
+    "page_types": list(FR.NEW_FAMILY_PAGE_TYPES),
+    "built_before": sorted(FR.BUILT_BEFORE_SYSTEM_GAPS),
+    "excluded_prefix": "_",
+    "or_board_approved": True,
+}
+
+
+def test_the_python_mirror_agrees_with_family_rules_wherever_there_is_evidence():
+    """With rebuilt/board evidence present, the mirror answers family_rules' own question."""
+    slugs = sorted(FR.BUILT_BEFORE_SYSTEM_GAPS) + ["_demo", "blue-staffy-puppies-york", "blue-staffy-vs-pitbull"]
+    for slug in slugs:
+        for page_type in ("location", "comparison", "blog", "home", "interior"):
+            want = page_type in FR.NEW_FAMILY_PAGE_TYPES and FR.is_new_page(slug)
+            assert RB.is_new_page(slug, page_type, RULE, {slug}, set()) is want, (slug, page_type)
+            assert RB.is_new_page(slug, page_type, RULE, set(), {slug}) is want, (slug, page_type)
+
+
+def test_the_mirror_needs_rebuilt_or_an_approved_board():
+    york = "uk-locations/blue-staffy-puppies-york"
+    assert RB.is_new_page(york, "location", RULE, set(), {"uk-locations--blue-staffy-puppies-york"})
+    assert RB.is_new_page(york, "location", RULE, set(), {"blue-staffy-puppies-york"})
+    assert RB.is_new_page(york, "location", RULE, {"blue-staffy-puppies-york"}, set())
+    # a legacy city page: no board, not rebuilt
+    assert not RB.is_new_page(york, "location", RULE, set(), set())
+    assert not RB.is_new_page(york, "location", {**RULE, "or_board_approved": False}, set(),
+                              {"uk-locations--blue-staffy-puppies-york"})
+
+
+def test_approved_boards_reads_approval_or_approval_previous(tmp_path):
+    (tmp_path / "uk-locations--a.json").write_text(json.dumps({"approval": {"approved_at": "x"}}))
+    (tmp_path / "b.json").write_text(json.dumps({"approval": None, "approval_previous": {"x": 1}}))
+    (tmp_path / "c.json").write_text(json.dumps({"approval": None}))
+    assert RB.approved_boards(tmp_path) == {"uk-locations--a", "b"}
+    assert RB.approved_boards(tmp_path / "missing") == set()
+
+
+@pytest.fixture
+def promoted(tmp_path):
+    """One advisory check promoted to `new-pages`, reported on a new city page (approved
+    board) and on a legacy city page (no board)."""
+    cards = tmp_path / "scorecards"
+    cards.mkdir()
+    checks = tmp_path / "checks"
+    checks.mkdir()
+    (checks / "layout.ts").write_text(
+        "export const a = {\n  id: 'layout-promoted',\n  family: 'LAYOUT',\n  severity: 'advisory',\n};\n"
+    )
+    boards = tmp_path / "boards"
+    boards.mkdir()
+    (boards / "uk-locations--blue-staffy-puppies-york.json").write_text(json.dumps({"approval": {"a": 1}}))
+    rebuilt = tmp_path / "rebuilt.json"
+    rebuilt.write_text("[]")
+    targets = tmp_path / "targets.json"
+    targets.write_text(json.dumps({
+        "new_page_rule": RULE,
+        "promotions": {"layout-promoted": {"scope": "new-pages", "since": "2026-09-26",
+                                           "cluster_cleared": "x", "false_reports": 0}},
+    }))
+    for slug in ("uk-locations/blue-staffy-puppies-york", "uk-locations/blue-staffy-puppies-leeds"):
+        card = _scorecard(slug, "2026-09-26", [("layout-promoted", 1)])
+        card["page_type"] = "location"
+        (cards / f"{slug.replace('/', '__')}-2026-09-26.json").write_text(json.dumps(card))
+    return ["--scorecards-dir", str(cards), "--checks-dir", str(checks), "--targets", str(targets),
+            "--rebuilt", str(rebuilt), "--boards-dir", str(boards)]
+
+
+def test_a_promoted_check_on_a_new_page_is_counted_blocking(promoted):
+    out = run(*promoted, expect=0).stdout
+    # york (approved board) -> blocking; leeds (legacy, no board) -> advisory
+    assert "| LAYOUT | 1 | 1 | 2 |" in out

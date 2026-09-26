@@ -10,7 +10,7 @@ import { runCheck } from './lib/runCheck.js';
 import { resetScrollInstant } from './lib/probes.js';
 import { distText, distSlugs, routeFor, siblingSlugsFor } from './lib/dupCorpus.js';
 import type { Defect } from './lib/registry.js';
-import { severityFor, type Promotion, type NewPageRule } from './lib/promotions.js';
+import { severityFor, approvedBoards, type Promotion, type NewPageRule } from './lib/promotions.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const targets = JSON.parse(readFileSync(resolve(here, 'targets.json'), 'utf8')) as {
@@ -19,10 +19,12 @@ const targets = JSON.parse(readFileSync(resolve(here, 'targets.json'), 'utf8')) 
   promotions: Record<string, Promotion>;
   new_page_rule: NewPageRule;
 };
-// The project 5 pages a `new-pages` promotion blocks on are the rebuilt ones (lib/promotions.ts).
+// The project 5 pages a `new-pages` promotion blocks on are the rebuilt ones ...
 const rebuilt = new Set<string>(
   JSON.parse(readFileSync(resolve(here, '..', '..', 'data', 'facts', 'rebuilt.json'), 'utf8')) as string[],
 );
+// ... and, from board approval on, the ones with an approved board (lib/promotions.ts).
+const boards = approvedBoards(resolve(here, '..', '..', 'data', 'boards'));
 
 /**
  * DUP's corpus: every built page, read once per worker. dist/ is fixed for the whole run
@@ -172,7 +174,7 @@ for (const target of targets.pages) {
       const check = registry.find((c) => c.id === d.checkId);
       return (
         !!check &&
-        severityFor(check, target, targets.promotions, targets.new_page_rule, rebuilt) === 'blocking' &&
+        severityFor(check, target, targets.promotions, targets.new_page_rule, rebuilt, boards) === 'blocking' &&
         !overridden.has(d.checkId)
       );
     });
