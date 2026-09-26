@@ -69,7 +69,7 @@ Promote the catalog in `.claude/skills/bsuk-entity-agent/SKILL.md` into a typed 
 | **Documentation** | LICENCE_CLAIM_PLACEHOLDER paperwork · DNA certificate (the parents' L-2-HGA and HC-HSF4 results, `NOT FETCHED`) · Health record · Whelp certificate · Vet record |
 | **Health** | Condition (L-2-HGA, HC-HSF4 hereditary cataract, skin allergies) · Screening (DNA test on both parents) · Vet health check · Vaccination · Diet |
 | **Behavior** | Temperament ability · Bonding · Bite inhibition · Socialization · Training method |
-| **Method** | The NOT FETCHED — the breeder has not named a house method · The Carlisle Socialization Method |
+| **Method** | none on file — the breeder has not named a house method, so no Method node is asserted |
 | **Concept** | Comparison topic · Educational concept · Buyer objection · Trust signal · Legal concept |
 | **Buyer** | Customer · Family archetype (CLEO/REX/NOVA/SAGE/IRIS) · Review |
 
@@ -154,10 +154,10 @@ LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER or NOT FETCHED.
 implying wild capture or illegal trade. Every puppy is home-bred in the UK and goes home with
 its paperwork (`data/faq.json` `whyus-paperwork`).
 
-**3d. Brand-owned method nodes.** `The NOT FETCHED — the breeder has not named a house method` and `The Carlisle
-Socialization Method` are first-class entities and the only two approved labels. A page
-that teaches our method without naming it shows an unowned Method node — a finding, since
-answer engines then absorb the expertise as generic knowledge.
+**3d. No Method node.** BSUK has no named house method (the breeder has never given one,
+and `scripts/aeo_audit.py` keeps `LABELED_METHODS` empty). A page that describes how Lisa
+raises the litter asserts `RAISED_BY` and `LOCATED_IN` triples, never a named Method entity;
+a capitalised method name on a page is a finding, because it is a credential nobody made.
 
 ---
 

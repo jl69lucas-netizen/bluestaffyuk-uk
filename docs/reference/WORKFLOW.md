@@ -493,14 +493,14 @@ it to us*.
 ```
 python3 scripts/aeo_audit.py <slug>
   → ERROR: no dateModified in JSON-LD · any VISIBLE date (banned)
-  → WARN:  no binomial · no breeder-name entity · no brand-owned method label
+  → WARN:  no binomial · no breeder-name entity
            · pronoun-heavy · buried answers (PROXY, read them) · no stat header
 ```
 
 - [ ] Zero ERROR from `scripts/aeo_audit.py`
 - [ ] `python3 scripts/generate_page_dates.py --check` current, map committed
 - [ ] Facts correct: **LICENCE_CLAIM_PLACEHOLDER** · **£1,500 / £1,700** · **£500 refundable deposit** · guarantee length is not established, so no guarantee is written
-- [ ] One of the two approved method labels present and defined
+- [ ] No invented house-method name on the page (the breeder has never given one)
 - [ ] Part 2 (atomic sections) checked BY HAND — three sections read in isolation
 
 ---

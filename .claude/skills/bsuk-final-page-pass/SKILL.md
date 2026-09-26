@@ -66,7 +66,7 @@ script.
 | `wordcount_in_band` | **700–1,000 words** (script checks 600–1,200 with buffer for chrome); not the pillar "+1,000" floor |
 | `newsletter_present` | **NA** — puppy pages are exempt from newsletter requirement (footer newsletter only, per 2026-06-18 decision) |
 | `all_h1_h4` | WARN — H1×1 + H2/H3 required; H4 where structure exists on a lean puppy page; H5/H6 only on genuine depth |
-| `house_method` | **WARN** — flag until breeder confirms a term; `CLAUDE.md` rule 9 forbids inventing a house-method name |
+| `house_method` | **none** — the check was deleted (no house method is on file); `CLAUDE.md` rule 9 forbids inventing a house-method name |
 | `lifespan_12_14` | WARN — at least one "12–14 year" breed-lifespan reference (not hard-FAIL on a lean puppy page) |
 | `real_hero_image` | WARN — hero must not be a placeholder/logo; flags if first content image src contains "placeholder", "coming-soon", or "default" |
 
@@ -154,7 +154,7 @@ SUBJECTIVE (read 3 sample pages: 1 transactional, 1 pillar, 1 trust)
 [ ] ≤1 Honesty-Policy humor beat/section; none on legal/health
 [ ] Flesch 60–70 (floor ~55 for entity-dense pages)
 [ ] ≥1 high-resolution breeder detail / ~500 words; no "both make exceptional companions" filler
-[ ] A named house method is used ONLY once the breeder confirms one — never invented (WARN until then)
+[ ] No house-method name on the page — none is on file, and one is never invented
 [ ] LSI/NLP keyword coverage: "blue Staffy", "blue and white Staffy", "home-raised",
     "Staffordshire Bull Terrier puppy", "UK home delivery by DEFRA-approved transport",
     "collection in Carlisle" present where natural — not forced, not stuffed
@@ -191,7 +191,7 @@ FIRST-PERSON VOICE (puppy page)
 
 These are recommendations surfaced for the breeder — the gate never auto-resolves them:
 
-- **House-method name** (WARN on all pages until confirmed) — upgrade check from WARN to enforced only after the breeder supplies a confirmed term for inclusion in `data/quality/evidence-ledger.json`.
+- **House-method name** — none is on file. If the breeder supplies one, add it to `LABELED_METHODS` in `scripts/aeo_audit.py` before any page names it.
 - **Extra authority-link targets** — beyond the standard library (The Kennel Club, the RSPCA, a veterinary school, a government animal-welfare page), the gate may suggest further credible `.org/.ac.uk/.gov.uk` targets for link variety. Verify 200 before inserting; the external-link library is deferred to project 6.
 - **Delivery and local-authority entities** — the gate flags *whether a given page type warrants* logistics entities (DEFRA-approved transport, the delivery band, collection in Carlisle) or local-authority signals. Puppy listing pages generally inherit these from the price/delivery cluster rather than carrying them inline; the flag is informational only.
 

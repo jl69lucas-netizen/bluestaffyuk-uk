@@ -49,7 +49,7 @@ A script can't judge these — read them:
 3. **Flesch 60–70** (target; floor ~55 for entity-dense copy — don't gut density to chase it).
 4. **Non-commodity detail** — ≥1 high-resolution breeder fact per ~500 words; kill generic filler.
 5. **Tone** — warm, professional, empathetic.
-6. **Brand-protocol naming** — the named house method ("the BSUK Home-Raised Method") used where home-rearing is discussed.
+6. **No invented method name** — home-rearing is described in the first person with the facts on file; no capitalised house-method name appears (the breeder has never given one).
 
 ## Copy-Paste Manual Checklist
 > Paste this block anywhere (a fresh chat, a PR comment, a doc) to run the gate by hand. Tick every box; a page isn't "done" until the REAL items pass.
@@ -88,7 +88,7 @@ SUBJECTIVE (read 3 sample pages)
 [ ] ≤1 Honesty-Policy humor beat/section; none on legal/health
 [ ] Flesch 60–70 (floor ~55 for entity-dense pages)
 [ ] ≥1 high-resolution breeder detail / ~500 words; no "both make exceptional companions" filler
-[ ] Named house method ("the BSUK Home-Raised Method") used where home-rearing is discussed
+[ ] No invented house-method name; home-rearing described in the first person, from facts on file
 
 TRIAGE every ✗ as: REAL (fix) · ACCEPTED (page-type) · FALSE POSITIVE (heuristic) · NET-NEW/BY-DESIGN
 ```

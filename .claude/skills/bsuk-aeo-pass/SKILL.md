@@ -1,6 +1,6 @@
 ---
 name: bsuk-aeo-pass
-description: Use when finishing any BSUK page build, rebuild or polish and the page must be citable by AI answer engines — ChatGPT, Perplexity, Claude, Google AI Overviews. Also use when a page ranks but is never cited, when AI answers about Blue Staffies quote competitors instead of us, when copy reads as anonymous "we/our" rather than named entities, or when checking freshness signals, brand-owned method names, BLUF openers, atomic sections, declarative sentences, or stat-bearing headers. Triggers - "run the AEO pass", "make this citable", "AI search optimization", "answer engine optimization", "GEO check".
+description: Use when finishing any BSUK page build, rebuild or polish and the page must be citable by AI answer engines — ChatGPT, Perplexity, Claude, Google AI Overviews. Also use when a page ranks but is never cited, when AI answers about Blue Staffies quote competitors instead of us, when copy reads as anonymous "we/our" rather than named entities, or when checking freshness signals, BLUF openers, atomic sections, declarative sentences, or stat-bearing headers. Triggers - "run the AEO pass", "make this citable", "AI search optimization", "answer engine optimization", "GEO check".
 ---
 
 # SKILL: BSUK AEO Pass — Make the Page Citable
@@ -131,23 +131,18 @@ style** (`framework-heading-hierarchy` §Header Style Selection).
 
 ## Part 6 — Brand Ownership and Freshness
 
-### 6a. Label the method, so the expertise stays ours
+### 6a. No named house method — describe the process, never label it
 
-Unlabeled expertise gets absorbed as generic knowledge. **Approved by the breeder
-2026-07-30 — two labels, used for different things:**
+BSUK has **no named house method**. Lisa Bright has never given one, and `CLAUDE.md`
+rule 9 forbids inventing a credential, so no page may carry a capitalised method name
+for the raising or the socialisation process. `scripts/aeo_audit.py` keeps
+`LABELED_METHODS` empty for that reason, and `tests/py/test_agent_facts.py` fails any
+instruction file that names or requires one.
 
-| Label | Covers |
-|---|---|
-| **The NOT FETCHED — the breeder has not named a house method** | weaning schedule, the weeks with the mother and the litter, the eight-week earliest go-home age — the *raising* process |
-| **The Carlisle Socialization Method** | family handling, out-of-crate routine, noise/handling desensitisation — the *socialization* side |
-
-Use them as proper nouns, capitalised, at least once per relevant page, and define
-them once where first used. Before 2026-07-30 there were **zero instances site-wide**,
-across 108 pages, 61 skills and 68 agents — so every page's raising process read as
-generic advice any competitor could claim.
-
-Keep them honest: they name a real process, they are not a certification. Never imply
-third-party accreditation.
+Make the expertise ours the honest way: say what Lisa does, in the first person, with
+the facts on file — the weeks with the mother and the litter, the eight-week earliest
+go-home age (`data/faq.json` `buying-best-age`), family handling at home. If the breeder
+ever names a method, it is added to `LABELED_METHODS` first, and only then written.
 
 ### 6b. Freshness is a schema signal, never a visible one
 
@@ -194,7 +189,7 @@ lands.
 | 3 Entity-rich | binomial + breeder name present; not pronoun-heavy | yes |
 | 4 Declarative | avg sentence length, count over 30 words | yes (advisory) |
 | 5 Formatting | ≥1 table/list, ≥1 stat-bearing header | yes |
-| 6a Labeled | one of the two approved method names present | yes |
+| 6a No label | no invented method name on the page | yes (`LABELED_METHODS` stays empty) |
 | 6b Freshness | `dateModified` in JSON-LD, **zero** visible dates | yes (ERROR) |
 
 ## Common Mistakes
@@ -207,4 +202,5 @@ lands.
   evidence ledger (`data/quality/evidence-ledger.json`).
 - **Turning declarative into robotic.** `anti-ai-writing` still applies.
 - **Trusting the BLUF proxy.** It flags long first sentences; some are fine. Read them.
-- **Inventing a third method name.** Two are approved. Adding more dilutes both.
+- **Inventing a method name.** There is none on file. A name the breeder never gave is a
+  made-up credential that an answer engine repeats as fact.
