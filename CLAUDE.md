@@ -254,7 +254,7 @@ npm run test:render:pages
 
 `check:all` chains `check:parity`, `check:facts`, `check:links`, `check:verbatim`,
 `check:outline`, `check:redirects`, `check:schema`, `check:queries`, `check:competitors`,
-`check:gaps`, `check:sitemaps`, `check:placeholders`, `check:retired`, `check:workflow`, `check:markers` and
+`check:gaps`, `check:sitemaps`, `check:placeholders`, `check:retired`, `check:boards`, `check:workflow`, `check:markers` and
 `agents`, in that order (`tests/py/test_package_scripts.py` pins the chain and
 `tests/py/test_doc_drift.py` pins this sentence to it). Every gate in the chain must be
 green. `test:render:meta` is the gate that checks the checkers — run it **before** trusting
@@ -274,7 +274,8 @@ The page audits report only by default; pass `--fail-on-error` to make them exit
 and `--json` to write the machine-readable result under `docs/reports/`.
 
 **No page is built without an approved board.** `python3 scripts/board_gate.py <slug>`
-refuses when `data/boards/<slug>.json` is missing or unapproved;
+refuses when `data/boards/<slug>.json` is missing or unapproved (`npm run check:boards`, in
+`check:all`, runs it with `--all` over every page in `data/facts/rebuilt.json`);
 `python3 scripts/build_page_board.py <slug>` builds one and
 `python3 scripts/board_approve.py <slug>` records the approval. The homepage board
 (`data/boards/index.json`) is the worked example.

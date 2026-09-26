@@ -112,10 +112,13 @@ def test_the_check_all_chain_is_the_documented_one():
     # check:retired follows check:placeholders: both judge what the built site SAYS — a
     # placeholder is a fact not yet supplied, a retired fact is one that has been withdrawn
     # (Known Issue 65; its allowlist only shrinks).
+    # check:boards follows check:retired: `board_gate.py --all` runs the build-stage board
+    # gate (approval hash, Asset Gate image checks, header collisions) over every page in
+    # data/facts/rebuilt.json, so no rebuilt page ships on a board that stopped matching.
     expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
                 "check:outline", "check:redirects", "check:schema", "check:queries",
                 "check:competitors", "check:gaps", "check:sitemaps", "check:placeholders",
-                "check:retired", "check:workflow", "check:markers", "agents"]
+                "check:retired", "check:boards", "check:workflow", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected
 
 
