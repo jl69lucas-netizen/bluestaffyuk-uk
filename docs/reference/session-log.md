@@ -303,6 +303,7 @@ What it added:
 - **One standing board, "Questions for You"** (`scripts/build_answer_board.py` → `docs/artifacts/bsuk-answer-board.html`). Every batch of questions for the user is posted there; the user answers in place (text, or a choice plus a note; Not yet / Skip on every question) and presses **Send to Claude Code** per batch. Layout A: sticky progress rail, wide question column, a top bar on phones.
 - **Batches live in the board's `db`**, written by Claude with the ArtifactData tool from `scripts/answer_board_batch.py`'s JSON (sheet parser `scripts/answer_sheet.py`), so posting never republishes the page. Answers save one document per question with a browser draft as backup; Send writes a snapshot and sends a short note (a comment is capped at 4 KiB) naming it.
 - **The rule:** CLAUDE.md "Questions for the user — the answer board"; the procedure is `docs/reference/answer-board/README.md`. Lisa's 21 questions are the first batch (`docs/reference/answer-board/batches/2026-09-24-questions-for-lisa-bright.json`).
+- **Any additional questions** (2026-09-26, branch `answer-board-extra`, merged `5f4a8c7`; board republished as version 2): one free-text section after the open batches where the user types extra questions or sub-tasks and sends them; saved as `drafts/additional`, sent as a snapshot `additional/s-…`; receiving is in `docs/reference/answer-board/README.md` ("Additional questions").
 
 ## Known Issues
 
