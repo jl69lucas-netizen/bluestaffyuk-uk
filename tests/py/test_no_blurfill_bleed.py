@@ -215,3 +215,34 @@ def test_the_gate_fails_a_new_page_whose_record_names_style_b():
 
 def test_the_gate_leaves_a_frozen_page_s_style_b_alone():
     assert not [f for f in IR.slot_findings(_record(FROZEN)) if f[0] == IR.OG_STYLE_RETIRED]
+
+
+def _picked(slug):
+    sys.path.insert(0, str(ROOT / "tests" / "py"))
+    from test_image_rules import _full
+    b = _full()
+    b["meta"]["slug"] = slug
+    b["approval"] = {"picks": {"img:opening-tile-2": "og:B"}}
+    return b
+
+
+def test_the_gate_fails_a_new_page_whose_approval_picks_style_b():
+    found = [f for f in IR.slot_findings(_picked(NEW)) if f[0] == IR.OG_STYLE_RETIRED]
+    assert len(found) == 1 and found[0][1] == "FAIL" and "opening-tile-2" in found[0][2], found
+    assert "user ruling 2026-09-26" in found[0][2]
+    assert not [f for f in IR.slot_findings(_picked(FROZEN)) if f[0] == IR.OG_STYLE_RETIRED]
+
+
+@pytest.mark.parametrize("arg,new", [
+    (NEW, True), (FROZEN, False), ("_demo", False), ("", False), (None, False),
+    ({"meta": {"slug": NEW}}, True), ({"meta": {"slug": FROZEN}}, False),
+    ({"meta": {"slug": "_demo"}}, False), ({}, False)])
+def test_one_public_new_page_helper(arg, new):
+    assert family_rules.is_new_page(arg) is new
+
+
+def test_ingest_and_the_board_use_the_one_helper():
+    for f in ("scripts/ingest_image.py", "scripts/image_rules.py"):
+        src = (ROOT / f).read_text(encoding="utf-8")
+        assert "family_rules.is_new_page(" in src, f
+        assert "BUILT_BEFORE_SYSTEM_GAPS" not in src.split('"""', 2)[2], f

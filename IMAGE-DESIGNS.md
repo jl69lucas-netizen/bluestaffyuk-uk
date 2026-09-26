@@ -175,7 +175,7 @@ baked style centres the dog full-height, so a later mobile cover crop only trims
 **Style `B`:** Retired for in-body images on new pages (user ruling 2026-09-26: bleeds use design colours — bone — never a blurred/grey/black bed). Social OG only. `scripts/ingest_image.py` refuses `--og-style B` for any page not in `BUILT_BEFORE_SYSTEM_GAPS` (`scripts/family_rules.py`), and board block 7 does not offer it there.
 
 **Mobile counterparts** (full-bleed, taller): **mA** 4:5 top-cover · **mB** 4:5 contain ·
-**mC** 4:5 blur-fill (matches B) · **mG** stacked two-up (matches H) · **mH** 3:4 top-cover.
+**mC** 4:5 blur-fill (matches B; retired for new pages, user ruling 2026-09-26 — use mB, 4:5 contain on bone, instead) · **mG** stacked two-up (matches H) · **mH** 3:4 top-cover.
 
 **Standing default:** a single-dog or pair portrait on a new page is baked with
 `--style contain` (Style `A`), which keeps the whole dog centred full-height over the bone

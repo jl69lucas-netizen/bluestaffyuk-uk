@@ -41,12 +41,19 @@ def register(fn):
     return fn
 
 
+def is_new_page(board_or_slug):
+    """True for a page built from project 5 on: a slug that is not one of the twelve frozen
+    pages and not a `_`-prefixed fixture (`_demo`). Takes a board or a bare slug, so a script
+    that knows only the slug (scripts/ingest_image.py) asks the same question as the gate."""
+    if isinstance(board_or_slug, dict):
+        board_or_slug = (board_or_slug.get("meta") or {}).get("slug")
+    slug = board_or_slug or ""
+    return bool(slug) and slug not in BUILT_BEFORE_SYSTEM_GAPS and not slug.startswith("_")
+
+
 def applies(board):
     m = board["meta"]
-    slug = m["slug"]
-    return (m["page_type"] in NEW_FAMILY_PAGE_TYPES
-            and slug not in BUILT_BEFORE_SYSTEM_GAPS
-            and not slug.startswith("_"))
+    return m["page_type"] in NEW_FAMILY_PAGE_TYPES and is_new_page(m["slug"])
 
 
 def findings(board, ont):

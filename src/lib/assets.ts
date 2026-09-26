@@ -127,10 +127,10 @@ export const inPublic = (publicPath: string) => {
  * The `sizes` an in-body photograph paints at on a page inside `PageShell`.
  *
  * MEASURED, not chosen: `.bl-img` inside a prose column is capped at 420px from 900px up
- * (src/styles/board-styles.css) and is full width below 640px. The same string was written
- * into four rebuilt pages, and `img-sizes-matches-box` (blocking) measures the promise
- * against the box on every one of them — so a change to that cap has to reach four files
- * today and one after this. A page whose geometry is genuinely different states its own.
+ * (src/styles/board-styles.css) and is full width below 640px. The rebuilt pages that pass
+ * it import this one string, so a change to that cap is made here. No render check measures
+ * it today: `img-sizes-matches-box` (tests/render/checks/img.ts) examines only the hero's
+ * `.kit-hero .pic`. A page whose geometry is genuinely different states its own.
  */
 export const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
 
@@ -140,3 +140,13 @@ export const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
  * the column's two 20px gutters, so above it the box is at its cap.
  */
 export const UNIFORM_SIZES = '(max-width: 800px) 100vw, 760px';
+
+/**
+ * The `sizes` of the tall box (BodyImage `box="tall"`, `.bl-img.sec-img.og-tall`). Below
+ * 900px in portrait orientation the box turns 4:5, and the 1408x768 file covers it: a 4:5 box
+ * W wide is 1.25W tall, so the file is scaled to 1.25W / 768 and paints 1408 * 1.25 / 768 =
+ * 2.29W wide, of which the box shows the middle strip. The browser must therefore pick a
+ * candidate ~230vw wide (in practice the full 1408 file on a phone), not 100vw, or the strip
+ * is upscaled and soft. Elsewhere it is the uniform 16:9 box, 760px at most.
+ */
+export const TALL_SIZES = '(max-width: 899.98px) and (orientation: portrait) 230vw, 760px';

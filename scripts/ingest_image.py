@@ -180,7 +180,7 @@ def _style_problems(og_style, infographic, mobcrop=""):
 def _retired_problems(og_style, slug):
     """Style B on a new page (or on a page this call cannot name) is refused; the twelve
     pages built before project 5 keep it."""
-    if og_style == "B" and (not slug or slug not in family_rules.BUILT_BEFORE_SYSTEM_GAPS):
+    if og_style == "B" and (not slug or family_rules.is_new_page(slug)):
         return [RETIRED_B + ("" if slug else " (no --board given, so the page is unknown)")]
     return []
 

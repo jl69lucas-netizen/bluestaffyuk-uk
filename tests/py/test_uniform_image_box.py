@@ -41,13 +41,17 @@ def block(selector_rx, text=CSS):
 
 def media(query):
     """Every `@media (<query>)` block of the stylesheet, joined."""
-    found = re.findall(r"@media \(" + re.escape(query) + r"\) \{(.*?)\n  \}", CSS, re.S)
+    found = re.findall(r"@media \(" + re.escape(query) + r"\)\s*\{(.*?)\n\s*\}", CSS, re.S)
     assert found, f"no @media ({query}) block"
     return "\n".join(found)
 
 
+UNIFORM_RULE = r"\n\s*\.bl-img\.sec-img\s*(?=\{)"
+TALL_QUERY = "max-width: 899.98px) and (orientation: portrait"
+
+
 def test_the_uniform_box_is_760_wide_16_by_9_and_cropped_not_squashed():
-    d = block(r"\n  \.bl-img\.sec-img ")
+    d = block(UNIFORM_RULE)
     assert d["max-width"] == "760px"
     assert d["aspect-ratio"] == "1408 / 768"
     assert d["object-fit"] == "cover"
@@ -59,11 +63,18 @@ def test_the_box_never_takes_the_side_media_cap():
     assert re.search(r"\.bl-media-left \.bl-prose > \.bl-img\.sec-img", wide)
     d = block(r"\.bl-media-right \.bl-prose > \.bl-img\.sec-img", wide)
     assert d["max-width"] == "760px" and d["grid-column"] == "1 / -1"
+    # Full width, so it sits directly under its heading (rule 17, image-first), never after
+    # the prose as the natural right-hand image does (`order: 99`).
+    assert d["order"] == "-1"
 
 
-def test_a_portrait_goes_4_by_5_at_900px_and_below():
-    d = block(r"\.bl-img\.sec-img\.og-tall", media("max-width: 900px"))
+def test_a_portrait_goes_4_by_5_below_900px_in_portrait_orientation_only():
+    d = block(r"\.bl-img\.sec-img\.og-tall", media(TALL_QUERY))
     assert d["aspect-ratio"] == "4 / 5"
+    # 899.98px pairs with the min-width: 900px rules without a 1px overlap; a landscape phone
+    # keeps the 16:9 box.
+    assert "(max-width: 900px)" not in CSS
+    assert not re.search(r"\.og-tall[^{]*\{[^}]*(?:100vw|calc\(50% - 50vw\))", CSS)
 
 
 def test_body_image_offers_the_three_boxes():
@@ -76,6 +87,27 @@ def test_body_image_offers_the_three_boxes():
 def test_uniform_sizes_matches_the_box():
     m = re.search(r"export const UNIFORM_SIZES = '([^']+)';", ASSETS)
     assert m and m.group(1) == "(max-width: 800px) 100vw, 760px"
+
+
+def test_tall_sizes_fetches_the_whole_file_for_the_4_by_5_strip():
+    """A 4:5 box W wide is 1.25W tall; a 1408x768 file covering it is scaled to 1.25W/768, so
+    it is 1408 * 1.25 / 768 = 2.29W wide. The phone must fetch ~230vw, not 100vw."""
+    m = re.search(r"export const TALL_SIZES = '([^']+)';", ASSETS)
+    assert m and m.group(1) == "(max-width: 899.98px) and (orientation: portrait) 230vw, 760px"
+    assert round(1408 * 1.25 / 768, 2) == 2.29
+    assert "import { BODY_SIZES, TALL_SIZES, UNIFORM_SIZES } from '../lib/assets';" in BODY
+    assert re.search(r"box === 'tall'\s*\?\s*TALL_SIZES", BODY)
+
+
+def test_an_explicit_sizes_prop_overrides_the_default():
+    assert re.search(r"const sizes = Astro\.props\.sizes \?\?", BODY)
+
+
+def test_focal_is_validated_and_dropped_for_the_natural_box():
+    assert "/^\\d{1,3}% \\d{1,3}%$/" in BODY
+    m = re.search(r"const style = ([^;]+);", BODY)
+    assert m and "box !== 'natural'" in m.group(1) and "FOCAL.test(focal)" in m.group(1), m
+    assert "undefined" in m.group(1)
 
 
 def test_the_twelve_built_pages_keep_the_natural_box():
@@ -96,7 +128,7 @@ def test_the_rule_is_enforced_by_this_file():
 # --- the bleed colour (user ruling 2026-09-26: "No grey or black bleed on phones") ---------
 
 def test_the_box_bleeds_a_design_system_colour():
-    d = block(r"\n  \.bl-img\.sec-img ")
+    d = block(UNIFORM_RULE)
     assert re.fullmatch(r"var\(--color-[a-z0-9-]+\)", d.get("background-color", "")), d
     assert d["background-color"] == "var(--color-surface)"
 
@@ -128,6 +160,22 @@ def test_no_box_rule_paints_a_grey_black_or_transparent_bleed():
             if prop in ("background", "background-color"):
                 assert not _bad_background(value), (selector.strip(), prop, value)
     assert seen >= 3, "expected the .sec-img / .og-tall rules in board-styles.css"
+
+
+def test_the_docs_name_og_tall_as_the_one_exception_and_no_full_bleed_recipe():
+    assert re.search(r"`\.og-tall`[^\n]*one sanctioned exception", RULES)
+    pup = (ROOT / ".claude/skills/bsuk-puppy-page-builder/SKILL.md").read_text(encoding="utf-8")
+    assert "margin-left:calc(50% - 50vw)" not in pup and 'box="tall"' in pup
+    assert "never 100vw full-bleed (scrollbar overflow)" in pup
+    designs = (ROOT / "IMAGE-DESIGNS.md").read_text(encoding="utf-8")
+    assert "**mC** 4:5 blur-fill (matches B) · " not in designs
+    assert re.search(r"\*\*mC\*\*[^·]*retired for new pages", designs)
+
+
+def test_body_sizes_comment_is_current():
+    head = ASSETS.split("export const BODY_SIZES", 1)[0].rsplit("/**", 1)[1]
+    assert "measures the promise\n * against the box on every one of them" not in head
+    assert ".kit-hero .pic" in head
 
 
 def test_the_rule_bakes_portraits_with_contain_never_blurfill():

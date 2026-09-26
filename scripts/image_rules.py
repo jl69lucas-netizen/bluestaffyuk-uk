@@ -140,9 +140,9 @@ def picks(board):
 
 
 def _new_page(board):
-    """True for any page not built before project 5 (family_rules BUILT_BEFORE_SYSTEM_GAPS)."""
+    """True for a page built from project 5 on (family_rules.is_new_page, the one helper)."""
     import family_rules  # noqa: E402  (lazy: family_rules imports this module)
-    return (board.get("meta") or {}).get("slug") not in family_rules.BUILT_BEFORE_SYSTEM_GAPS
+    return family_rules.is_new_page(board)
 
 
 def slot_findings(board):
@@ -171,11 +171,14 @@ def slot_findings(board):
         where = f"section {s['id']}" + (f", H3 {n['heading']!r}" if n is not None else "")
         for why in slot_problems(img):
             out.append(("image-slot-fields", "FAIL", f"slot {img['slot']} ({where}): {why}"))
-        if img.get("og_style") == "B" and _new_page(board):
+        pick = parse_pick(picks(board).get(PICK_PREFIX + img["slot"]) or "")
+        picked_b = bool(pick) and pick["kind"] == "og" and pick["style"] == "B"
+        if (img.get("og_style") == "B" or picked_b) and _new_page(board):
+            how = "its record names og_style B" if img.get("og_style") == "B" else "its pick is og:B"
             out.append((OG_STYLE_RETIRED, "FAIL",
-                        f"slot {img['slot']} ({where}): style B (blurfill) is retired for in-body "
-                        "images on new pages — user ruling 2026-09-26: no grey or black bleed on "
-                        "phones; use A (contain, bone gradient) or E (topcover)"))
+                        f"slot {img['slot']} ({where}): {how}; style B (blurfill) is retired for "
+                        "in-body images on new pages — user ruling 2026-09-26: no grey or black "
+                        "bleed on phones; use A (contain, bone gradient) or E (topcover)"))
     # Task 12a: the row ingest and publish fill. Either adding it later would change the
     # record hash and un-approve the page, so it is planned now, with the slot.
     for s, n, img in IC.iter_slots(board):
