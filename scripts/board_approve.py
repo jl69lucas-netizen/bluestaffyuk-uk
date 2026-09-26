@@ -234,10 +234,32 @@ def refuse_on_new_page_rules(b, ont):
             + "\n".join(f"  - {c}: {m}" for c, m in fails))
 
 
-def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
+def refuse_header_collisions(b, live):
+    """A new page (family_rules.applies) whose headings collide with a live page is refused
+    at approval and at re-approval, with the same `pageboard.header_hits()` the build gate
+    FAILs on as `header-collision`. Otherwise the colliding record is approved, refused at
+    board_gate, and the reword moves the hash and forces a second approval. `live` is
+    {page: [heading, ...]} (pageboard.live_headings()); None means the caller read no live
+    pages and is the pure API's opt-out — main() and reapprove_main() always read them. A new
+    page is never approved against an EMPTY live set: that is a pre-check of nothing."""
+    if live is None or not PB.FR.applies(b):
+        return
+    if not live:
+        raise PB.BoardError(
+            "header pre-check examined 0 live pages — run npm run build first; a new page is "
+            "not approved against nothing")
+    hits = PB.header_hits(b, live)
+    if hits:
+        raise PB.BoardError(
+            "this record's headings collide with live pages — reword them and board it again:\n"
+            + "\n".join(f"  - header-collision: {h['kind']}: {h['heading']!r} vs {h['page']} {h['with']!r}"
+                        for h in hits))
+
+
+def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=None):
     """The board, ledger and ontology as they stand after this approval. Pure: it reads
     nothing but its arguments and writes nothing — raise here and the files on disk are
-    untouched."""
+    untouched. `live` is the built site's headings, for refuse_header_collisions()."""
     # Either the record as it stands, or the record as it stood before an approval wrote
     # picks/notes/h1 into it: applying one approval twice (a rerun, a retry after a failed
     # write) is idempotent, while a heading edited after the fact moves BOTH hashes and is
@@ -339,6 +361,7 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     promoted = [e["id"] for e in o["entities"] if e["authorization"] != was[e["id"]]]
 
     refuse_on_new_page_rules(b, o)
+    refuse_header_collisions(b, live)
     return {"board": b, "ledger": led, "ontology": o, "changed": changed, "promoted": promoted}
 
 
@@ -520,7 +543,7 @@ def reapprove_refusals(old_board, new_board, paths):
     return bad
 
 
-def apply_reapproval(board, reason, old_board, now, ont):
+def apply_reapproval(board, reason, old_board, now, ont, live=None):
     """The record after a controller's re-approval. Pure, like apply_approval(): it writes
     nothing and raises before anything moves. `ont`, the ontology the new-page rules read, is
     passed in rather than loaded; reapprove_main() passes the committed one, which a
@@ -574,6 +597,7 @@ def apply_reapproval(board, reason, old_board, now, ont):
     a["record_hash"] = PB.record_hash(b)
     PB.validate_board(b)
     refuse_on_new_page_rules(b, ont)
+    refuse_header_collisions(b, live)
     return {"board": b, "changed_paths": paths}
 
 
@@ -637,7 +661,8 @@ def reapprove_main(slug):
     a = parse_args()
     board = PB.load_board(slug)
     now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    out = apply_reapproval(board, a.reason, baseline_board(slug), now, PB.load_ontology())
+    live = PB.live_headings() if PB.DIST.exists() else {}
+    out = apply_reapproval(board, a.reason, baseline_board(slug), now, PB.load_ontology(), live=live)
     # The ledger records what the TUPLE and the H6 prefixes spend. Neither can move under a
     # wording fix — but a heading edit is how an H6 prefix WOULD move, so it is checked
     # rather than assumed: a re-approval that silently desynced the ledger would hand the
@@ -687,7 +712,8 @@ def main():
         inbox = json.loads(inbox_path.read_text(encoding="utf-8"))
         inbox = inbox.get("data", inbox) if isinstance(inbox, dict) else inbox   # read_db may wrap it
         before = PB.load_board(slug)
-        out = apply_approval(before, inbox, PB.load_ontology(), PB.load_ledger(), canvas_dir)
+        live = PB.live_headings() if PB.DIST.exists() else {}
+        out = apply_approval(before, inbox, PB.load_ontology(), PB.load_ledger(), canvas_dir, live=live)
         shares = rule16_refusals(before, out["board"], PB.load_all_boards())
         if shares:
             raise PB.BoardError("this approval would give two pages one arrangement:\n  - "
