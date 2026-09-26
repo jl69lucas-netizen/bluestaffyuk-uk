@@ -73,7 +73,7 @@ real slugs from `data/locations.json`, never the same trio twice).
 | Solution ("health-tested", "KC-aware") | 5–10 | |
 | Transactional ("reserve", "deposit", "available now") | ~15 | honest only |
 
-Each row caps that keyword type; the page total is capped at 105. The rows are not summed and never a number to reach — a short, focused page that uses far fewer is correct.
+Each row caps that keyword type; the page total is capped at 105. The rows are not summed and never a number to reach — a short, focused page that uses far fewer is correct. Where a row shows a range, the upper figure is the cap.
 
 Source for the actual keywords: per-page Sprint 0 research. **Search-console data is NOT
 FETCHED until project 6** — no query, impression or position figure may be written before

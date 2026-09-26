@@ -121,7 +121,7 @@ Top-of-funnel impression volume; every informational page needs CTR-optimised me
 | Transactional keywords | 15× | Buy, for sale, available, pricing |
 | **TOTAL** | **≤105 (no minimum)** | |
 
-Each row caps that keyword type; the page total is capped at 105. The rows are not summed and never a number to reach — a short, focused page that uses far fewer is correct.
+Each row caps that keyword type; the page total is capped at 105. The rows are not summed and never a number to reach — a short, focused page that uses far fewer is correct. Where a row shows a range, the upper figure is the cap.
 
 The authority for this table is `.claude/agents/bsuk-keyword-verifier.md`, which judges the
 count; this block follows it (`tests/py/test_rule18_frequency.py`):

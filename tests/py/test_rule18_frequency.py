@@ -19,13 +19,13 @@ TOTAL_ROW = re.compile(r"^\|\s*\*\*TOTAL\*\*\s*\|\s*(.+?)\s*\|", re.M)
 # a count presented as something to reach: "must hit 85–105×", "vs 85–105× target",
 # "~85–105 total mentions", "≈85–105×", "at least 85 mentions", "aim for 85–105 keywords",
 # "between 85 and 105 mentions", a keyword "hard target per page". Spared: "85–105 words",
-# "a hard target for CLS".
+# "a hard target for CLS", and word/section/FAQ/character minimums ("at least 12 FAQs total").
 FLOOR = re.compile(
     r"(?i)(?:must hit|hits|≈|~|vs)\s*85\s*[–-]\s*105"
     r"|85\s*[–-]\s*105[×x]?\s*(?:total\s*)?(?:target|mentions)"
     r"|hard target[^|\n]{0,20}(?:per page|mention|keyword)"
     r"|(?<!\w)(?:at least|minimum|min\.?|floor(?: of)?|≥|>=|no fewer than|must (?:hit|reach)|aim for|target)"
-    r"\s*\d{2,3}\b[^|\n]{0,30}(?:mention|keyword|total|×)"
+    r"\s*\d{2,3}\b(?!\s*(?:words?|px|%|minutes?|FAQs?|sections?|characters?|chars?)\b)[^|\n;.]{0,30}(?:mention|keyword|×)"
     r"|\b85\s*(?:[–-]|to|and)\s*105\b(?!\s*words)")
 # the Rule 18 tables: per-type rows are caps, never targets
 CAP_TABLES = [SEO_RULES, VERIFIER, ROOT / ".claude/skills/bsuk-puppy-page-builder/SKILL.md"]
@@ -76,13 +76,21 @@ def test_the_floor_lint_fires_and_spares_the_ceiling():
                  "floor of 85 keywords",
                  "aim for 85–105 keywords",
                  "between 85 and 105 mentions",
-                 "total: 85–105×"):
+                 "total: 85–105×",
+                 "at least 90 total keyword mentions",
+                 "must reach 100 mentions",
+                 "at least 85×"):
         assert FLOOR.search(line), line
     for line in ("| **TOTAL** | **≤105 (no minimum)** | |",
                  "the total row stays at or under 105 (Rule 18 — a ceiling, no floor)",
                  "85 words",
                  "85-105 words per paragraph",
-                 "A hard target for CLS is 0.1"):
+                 "A hard target for CLS is 0.1",
+                 "at least 12 FAQs total",
+                 "at least 300 words total per section",
+                 "minimum 800 words; keyword density 1%",
+                 "at least 20 minutes total",
+                 "minimum 60 characters, keyword first"):
         assert not FLOOR.search(line), line
 
 
