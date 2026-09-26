@@ -246,16 +246,21 @@ def unbuilt_sibling_headings(b, live, boards):
     which page to reword against."""
     out = {}
     me = (b.get("meta") or {}).get("slug")
+    my_key = PB.own_live_key(b)
     for slug, o in sorted((boards or {}).items()):
         if slug == me or not (o.get("approval") or o.get("approval_previous")):
             continue
         try:
-            if PB.own_live_key(o) in live:
+            key = PB.own_live_key(o)
+            if key == my_key:
+                continue                              # this page under another slug spelling
+            if key in live:
                 continue                              # built: its live headings already count
-            out[f"{PB.own_live_key(o)} (approved board {slug}, not built yet)"] = \
+            out[f"{key} (approved board {slug}, not built yet)"] = \
                 [t for _, t in PB.all_headings(o)]
         except (KeyError, TypeError, IndexError, ValueError) as e:
-            raise PB.BoardError(f"cannot read the headings of approved board {slug}: {e!r}") from None
+            raise PB.BoardError(f"cannot read the headings of approved board {slug}: {e!r} "
+                                f"— fix or re-board {slug}; approvals resume once it reads") from None
     return out
 
 

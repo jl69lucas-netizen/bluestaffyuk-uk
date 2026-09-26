@@ -245,3 +245,25 @@ def test_live_headings_reads_dist_at_call_time(tmp_path, monkeypatch):
     page.write_text("<html><body><h2>Hello There</h2></body></html>")
     monkeypatch.setattr(PB, "DIST", tmp_path / "dist")
     assert "/somewhere/" in PB.live_headings()
+
+
+def test_the_same_route_under_another_spelling_is_not_a_sibling():
+    """A city board keyed by its bare slug and one keyed by its full route are ONE page
+    (/uk-locations/<slug>/): the scan skips it by route, not only by slug."""
+    bare, full = "blue-staffy-puppies-aberdeen", "uk-locations/blue-staffy-puppies-aberdeen"
+    assert PB.own_live_key(_board(slug=bare)) == PB.own_live_key(_board(slug=full))
+    b = _board(slug=bare)
+    b["sections"][0]["heading"] = SHARED_H2
+    out = BA.apply_approval(b, _inbox(b), ONT, LEDGER, live={"/other/": ["Something Else Entirely"]},
+                            boards={full: _approved_board(full, SHARED_H2)})
+    assert out["board"]["meta"]["status"] == "approved"
+
+
+def test_a_malformed_approved_board_says_how_to_resume():
+    broken = _approved_board(CITY_A, SHARED_H2)
+    del broken["h1"]
+    b = _board()
+    with pytest.raises(PB.BoardError) as e:
+        BA.apply_approval(b, _inbox(b), ONT, LEDGER, live={"/other/": ["Something Else Entirely"]},
+                          boards={CITY_A: broken})
+    assert f"— fix or re-board {CITY_A}; approvals resume once it reads" in str(e.value)
