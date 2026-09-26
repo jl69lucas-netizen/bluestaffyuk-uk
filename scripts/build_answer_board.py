@@ -54,7 +54,7 @@ header.mast{padding-bottom:16px;border-bottom:3px solid var(--blue);margin-botto
 h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0}
 .note{background:var(--blue-soft);border:1px solid var(--line);border-radius:6px;padding:10px 14px;font-size:15px;margin:0 0 16px}
 .btn{font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:var(--on-blue);cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
-.btn.ghost{background:transparent;color:var(--blue)}.btn:disabled{opacity:.45;cursor:not-allowed}.btn.big{font-size:16px;padding:12px 22px}
+.btn.ghost{background:transparent;color:var(--blue)}.btn:disabled{opacity:.45;cursor:not-allowed}.btn[aria-disabled="true"]{opacity:.45;cursor:progress}.btn.big{font-size:16px;padding:12px 22px}
 button:focus-visible,a:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
 .batch{margin:0 0 34px;scroll-margin-top:16px}
 .bhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 10px}

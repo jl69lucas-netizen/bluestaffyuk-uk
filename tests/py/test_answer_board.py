@@ -407,6 +407,8 @@ def test_the_client_in_a_browser_against_a_fake_db(tmp_path):
     assert res["focus"]["typedStill"] == "mine", res
     assert res["malformed"]["good"] == 1 and res["malformed"]["bad"] == 0, res
     assert res["malformed"]["errors"] == [], res
+    assert res["demoDraft"] == {"ids": ["b9", "demo"], "real": "real"}, res  # demo keeps real drafts
+    assert res["held"] == {"texts": [], "shown": "theirs"}, res               # a held newer record wins
 
 
 def test_claude_md_carries_the_answer_board_rule():
@@ -422,3 +424,12 @@ def test_claude_md_carries_the_answer_board_rule():
 def test_the_readme_names_the_board_url_and_the_paths():
     text = (ROOT / "docs/reference/answer-board/README.md").read_text(encoding="utf-8")
     assert "batches/<batchId>/submissions" in text and "docs/reference/answer-board/answers/" in text
+
+
+def test_a_busy_send_button_looks_busy():
+    assert '.btn[aria-disabled="true"]{opacity:.45;cursor:progress}' in build_answer_board.CSS
+
+
+def test_claude_unavailable_has_its_own_message():
+    js = CLIENT.read_text(encoding="utf-8")
+    assert 'how === "claude_unavailable"' in js and "Claude Code couldn't receive it right now" in js

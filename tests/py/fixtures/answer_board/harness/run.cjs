@@ -13,7 +13,7 @@ const DEMO = JSON.parse(html.split('<script type="application/json" id="demo-bat
 const B1 = Object.assign({}, DEMO, { id: "b1" });
 const answerWrites = (sets) => sets.filter((s) => s.p.indexOf("/answers/") >= 0);
 
-async function open(browser, seed, draft) {
+async function open(browser, seed, draft, hash) {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   const errors = [];
@@ -23,7 +23,7 @@ async function open(browser, seed, draft) {
     if (draft) { try { localStorage.setItem("answer-board:v1", JSON.stringify(draft)); } catch (e) { /* none */ } }
   }, { seed, draft });
   await page.addInitScript({ path: FAKE });
-  await page.goto("file://" + PAGE);
+  await page.goto("file://" + PAGE + (hash || ""));
   return { ctx, page, errors };
 }
 
@@ -96,6 +96,31 @@ async function open(browser, seed, draft) {
     const { ctx, page, errors } = await open(browser, { "batches/b1": B1, "batches/a0": bad });
     try { await page.waitForSelector("#b-b1", { timeout: 3000 }); } catch (e) { /* reported below */ }
     out.malformed = { good: await page.locator("#b-b1").count(), bad: await page.locator("#b-a0").count(), errors };
+    await ctx.close();
+  }
+
+  // 6. Demo mode keeps the real batches' browser drafts.
+  {
+    const draft = { b9: { q01: { n: 1, text: "real", choice: "", status: "answered", updatedAt: 7 } } };
+    const { ctx, page } = await open(browser, {}, draft, "#demo");
+    await page.locator("#demo--q01 textarea").fill("demo text");
+    await page.waitForTimeout(100);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("answer-board:v1")));
+    out.demoDraft = { ids: Object.keys(stored).sort(), real: stored.b9 && stored.b9.q01.text };
+    await ctx.close();
+  }
+
+  // 7. A newer record held during an edit is not overwritten when the pending save fires.
+  {
+    const { ctx, page } = await open(browser, { "batches/b1": B1 });
+    const ta = page.locator("#b1--q01 textarea");
+    await ta.click();
+    await ta.type("mine");
+    await page.evaluate(() => window.__put("batches/b1/answers/q01",
+      { n: 1, text: "theirs", choice: "", status: "answered", updatedAt: Date.now() + 1000 }));
+    await page.waitForTimeout(1200);  // the 800 ms save fires while the textarea still has focus
+    const w = answerWrites(await page.evaluate(() => window.__sets));
+    out.held = { texts: w.map((s) => s.body.text), shown: await ta.inputValue() };
     await ctx.close();
   }
 

@@ -56,8 +56,9 @@
     try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}") || {}; } catch (e) { return {}; }
   }
   function writeDraft() {
-    // Keep only open batches once the board's batches have loaded (in demo, only "demo").
-    var keep = demo || batchesLoaded ? {} : Object.assign({}, draft);
+    // Keep only open batches once the board's batches have loaded; demo mode rewrites only
+    // "demo" and keeps every other stored draft.
+    var keep = demo ? Object.assign({}, readDraft()) : batchesLoaded ? {} : Object.assign({}, draft);
     Object.keys(answers).forEach(function (id) {
       if (demo ? id === "demo" : !batchesLoaded || (batches[id] && batches[id].status !== "received")) keep[id] = answers[id];
     });
@@ -293,6 +294,12 @@
     var t = k(id, key);
     clearTimeout(timers[t]); delete timers[t];
     var a = answers[id] && answers[id][key];
+    // A newer board record held during the edit wins over the older local text.
+    if (a && later[t] && later[t].updatedAt > a.updatedAt) {
+      var rec = later[t];
+      delete later[t];
+      if (adopt(id, key, rec)) { paintCard(id, key, true); writeDraft(); renderRail(); paintTotals(); }
+    }
     if (!db || !a || a.updatedAt === 0 || written[t] === sig(a)) return inflight[t] || Promise.resolve();
     if (inflight[t]) { again[t] = true; return inflight[t]; }
     var body = { n: a.n, text: a.text, choice: a.choice, status: a.status, updatedAt: a.updatedAt };
@@ -371,6 +378,7 @@
       else if (how === "rate_limited") sendResult(id, "Saved as copy " + sid + ". Sending is limited for a moment; wait, then press Send again.");
       else if (how === "consent_required") sendResult(id, "Saved as copy " + sid + ". You didn't allow comments from this page. Press Send again to allow it.");
       else if (how === "forbidden" || how === "writers_only") sendResult(id, "Saved as copy " + sid + ". Only an editor of this board can send to Claude.");
+      else if (how === "claude_unavailable") sendResult(id, "Saved on the board as copy " + sid + ", but Claude Code couldn't receive it right now. Tell Claude Code \"read my answers\", or use Copy answers.");
       else if (how === "no_session") sendResult(id, "Saved on the board as copy " + sid + ", but no Claude Code session is watching this board right now. Tell Claude Code \"read my answers\", or use Copy answers.");
       else sendResult(id, "Saved on the board as copy " + sid + ", but sending to Claude isn't available here. Tell Claude Code \"read my answers\", or use Copy answers.");
     }, function (e) {
