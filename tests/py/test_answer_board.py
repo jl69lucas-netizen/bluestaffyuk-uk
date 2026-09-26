@@ -320,3 +320,90 @@ def test_the_longest_note_is_well_under_the_comment_limit():
             "99 answered, 99 skip, 99 not yet, 99 empty. Read db batches/" + "b" * 90 +
             "/submissions/s-2026-09-26T10-11-12-000Z.")
     assert len(note.encode("utf-8")) < 1024
+
+
+def test_the_cli_refuses_a_sheet_title_over_120_characters(tmp_path):
+    sheet = tmp_path / "long.md"
+    sheet.write_text("# " + "T" * 121 + "\n\n## S\n\n1. **Q?** x\n", encoding="utf-8")
+    run = _cli(str(sheet), "--project", "x", "--out-dir", str(tmp_path / "out"))
+    assert run.returncode == 1 and "title is over 120 characters" in run.stderr
+    assert not (tmp_path / "out").exists()
+    sheet.write_text("# " + "T" * 120 + "\n\n## S\n\n1. **Q?** x\n", encoding="utf-8")
+    assert _cli(str(sheet), "--project", "x", "--out-dir", str(tmp_path / "out")).returncode == 0
+
+
+def test_the_demo_json_cannot_open_an_html_comment():
+    demo = dict(build_answer_board.demo_batch(), intro="a <!-- b")
+    out = build_answer_board.render_shell(demo)
+    blob = out.split('<script type="application/json" id="demo-batch">', 1)[1].split("</script>", 1)[0]
+    assert "<!--" not in blob and json.loads(blob)["intro"] == "a <!-- b"
+
+
+HTML_BUILDERS = ("cardHtml", "batchHtml", "renderRail", "renderDone", "showDone")
+
+
+def _strip_escapes(src):
+    """Drop every esc(…), inline(…) and paras(…) call, parentheses balanced."""
+    out, i = [], 0
+    for m in re.finditer(r"\b(?:esc|inline|paras)\(", src):
+        if m.start() < i:
+            continue
+        out.append(src[i:m.start()])
+        depth, j = 1, m.end()
+        while depth:
+            depth += {"(": 1, ")": -1}.get(src[j], 0)
+            j += 1
+        i = j
+    return "".join(out) + src[i:]
+
+
+def test_every_db_field_in_the_html_builders_is_escaped():
+    js = CLIENT.read_text(encoding="utf-8")
+    for name in HTML_BUILDERS:
+        body = re.search(r"\n  function " + name + r"\(.*?\n  }\n", js, re.S)
+        assert body, name
+        # On a line that builds HTML, a field of a question, batch, option, section or answer
+        # may only be concatenated through esc(), inline() or paras(); a nested .map() that
+        # builds more HTML is allowed.
+        raw = [f for line in _strip_escapes(body.group(0)).splitlines() if "<" in line
+               for f in re.findall(r"\+\s*(?:q|b|o|s|a)\.(?!\w+\.map\()[\w.]+", line)]
+        assert raw == [], (name, raw)
+
+
+HARNESS = FIX / "harness"
+
+
+def _node_path():
+    """node_modules of this checkout, then of the main checkout when this is a worktree."""
+    paths = [ROOT / "node_modules"]
+    common = subprocess.run(["git", "rev-parse", "--git-common-dir"], cwd=ROOT,
+                            capture_output=True, text=True).stdout.strip()
+    if common:
+        paths.append((ROOT / common).resolve().parent / "node_modules")
+    return ":".join(str(p) for p in paths if p.is_dir())
+
+
+def test_the_client_in_a_browser_against_a_fake_db(tmp_path):
+    import os
+    if shutil.which("node") is None:
+        pytest.skip("node not installed")
+    env = dict(os.environ, NODE_PATH=_node_path())
+    probe = subprocess.run(["node", "-e", "require('playwright')"], cwd=ROOT, env=env,
+                           capture_output=True, text=True)
+    if probe.returncode != 0:
+        pytest.skip("playwright is not installed (node_modules here or in the main checkout)")
+    page = tmp_path / "board.html"
+    page.write_text(build_answer_board.render_shell(build_answer_board.demo_batch()), encoding="utf-8")
+    run = subprocess.run(["node", str(HARNESS / "run.cjs"), str(page), str(HARNESS / "fake.js")],
+                         cwd=ROOT, env=env, capture_output=True, text=True, timeout=180)
+    if run.stdout.startswith("SKIP"):
+        pytest.skip(run.stdout.strip())
+    assert run.returncode == 0, run.stderr
+    res = json.loads(run.stdout.split("RESULT ", 1)[1])
+    assert 1 <= res["burstWrites"] <= 2, res                       # the debounce holds
+    assert res["draft"] == {"writes": 1, "texts": ["from draft"], "shown": "from draft"}, res
+    assert res["idleWrites"] == 0, res                             # nothing new, nothing written
+    assert res["focus"]["submitted"] == res["focus"]["shown"], res  # Send submits what is shown
+    assert res["focus"]["typedStill"] == "mine", res
+    assert res["malformed"]["good"] == 1 and res["malformed"]["bad"] == 0, res
+    assert res["malformed"]["errors"] == [], res

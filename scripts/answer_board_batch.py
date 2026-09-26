@@ -20,6 +20,7 @@ from answer_sheet import SheetError, parse_sheet  # noqa: E402
 
 OUT_DIR = ROOT / "docs" / "reference" / "answer-board" / "batches"
 MAX_BYTES = 256 * 1024  # the db's per-document cap
+MAX_TITLE = 120  # the Send note carries the title and must stay well under 4 KiB
 
 
 def slug(text):
@@ -56,6 +57,9 @@ def main(argv=None):
         sheet = parse_sheet(path.read_text(encoding="utf-8"))
     except (SheetError, OSError) as e:
         print(f"{path}: {e}", file=sys.stderr)
+        return 1
+    if len(sheet["title"]) > MAX_TITLE:
+        print(f"{path}: the sheet title is over {MAX_TITLE} characters; shorten it", file=sys.stderr)
         return 1
     if a.date:
         date, asked_at = a.date, f"{a.date}T12:00:00Z"

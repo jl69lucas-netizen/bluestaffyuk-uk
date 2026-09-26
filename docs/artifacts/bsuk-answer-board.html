@@ -17,14 +17,16 @@ a{color:var(--blue)}
 .muted{font-size:12px;color:var(--ink-3);margin:6px 0}
 .navbatch{display:flex;justify-content:space-between;gap:8px;margin:16px 0 4px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none}
 .navbatch small{color:var(--ink-3);font-weight:600}
-.new{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--brass);color:var(--on-blue);border-radius:4px;padding:1px 5px;margin-left:6px}
+.new{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--brass);color:var(--ink);border-radius:4px;padding:1px 5px;margin-left:6px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .new{color:var(--on-blue)}}
+:root[data-theme="dark"] .new{color:var(--on-blue)}
 .navq{display:flex;gap:8px;align-items:center;padding:3px 4px;border-radius:4px;font-size:13px;color:var(--ink-2);text-decoration:none}
 .navq:hover{background:var(--blue-soft)}.navq b{min-width:18px;color:var(--blue)}
 .dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink-3);flex:none}
 [data-state="answered"] .dot{background:var(--ok);border-color:var(--ok)}
 [data-state="skip"] .dot{background:var(--brass);border-color:var(--brass)}
 [data-state="not_yet"] .dot{border-style:dashed;border-color:var(--steel);background:var(--blue-soft)}
-.main{padding:32px clamp(16px,4vw,56px) 96px;min-width:0}.main>*{max-width:1120px}
+.main{padding:32px clamp(16px,4vw,56px) 96px;min-width:0;overflow-wrap:anywhere}.main>*{max-width:1120px}
 header.mast{padding-bottom:16px;border-bottom:3px solid var(--blue);margin-bottom:16px}
 h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0}
 .note{background:var(--blue-soft);border:1px solid var(--line);border-radius:6px;padding:10px 14px;font-size:15px;margin:0 0 16px}
@@ -99,7 +101,13 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
   var rendered = {};    // id -> signature of the rendered batch
   var isNew = {};       // id -> true until the batch is scrolled into view
   var written = {}, timers = {}, inflight = {}, again = {};
-  var db = null, comments = null, downloads = null, demo = false, firstBatches = true;
+  var later = {};       // id::key -> newest board record held back while that question is being edited
+  var drafted = {};     // id -> true once the browser draft was written up (first answers snapshot)
+  var observers = {};   // id -> IntersectionObserver clearing the New badge
+  var sending = {};     // id -> status text while a Send is in progress
+  var db = null, comments = null, downloads = null, demo = false, firstBatches = true, batchesLoaded = false;
+  var canSend = "off";  // cached comments.canSendToClaude(), so the click goes straight to the send
+  var DOWNLOAD_OFF = ["unavailable", "not_granted", "capability_disabled", "capability_removed"];
 
   function $(id) { return document.getElementById(id); }
   function setText(el, s) { if (typeof el === "string") el = $(el); if (el) el.textContent = s; }
@@ -135,7 +143,12 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}") || {}; } catch (e) { return {}; }
   }
   function writeDraft() {
-    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(answers)); } catch (e) { /* storage blocked */ }
+    // Keep only open batches once the board's batches have loaded (in demo, only "demo").
+    var keep = demo || batchesLoaded ? {} : Object.assign({}, draft);
+    Object.keys(answers).forEach(function (id) {
+      if (demo ? id === "demo" : !batchesLoaded || (batches[id] && batches[id].status !== "received")) keep[id] = answers[id];
+    });
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(keep)); } catch (e) { /* storage blocked */ }
   }
   var draft = readDraft();
   function adopt(id, key, rec) {
@@ -146,6 +159,33 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     a.status = STATUSES.indexOf(rec.status) >= 0 ? rec.status : derive(questionOf(id, key), a, null);
     a.updatedAt = rec.updatedAt;
     return true;
+  }
+  // A batch from db is checked before it is used; a bad one is skipped, never the whole snapshot.
+  function str(v) { return typeof v === "string" ? v : ""; }
+  function cleanBatch(raw, id) {
+    if (!raw || !Array.isArray(raw.questions) || !Array.isArray(raw.sections)) return null;
+    var b = JSON.parse(JSON.stringify(raw)), keys = {};
+    b.id = id;
+    ["title", "askedAt", "intro", "project", "status", "receivedAt", "receivedCommit"].forEach(function (f) { b[f] = str(b[f]); });
+    for (var i = 0; i < b.sections.length; i++) {
+      var s = b.sections[i];
+      if (!s || typeof s !== "object") return null;
+      b.sections[i] = { title: str(s.title), lead: str(s.lead) };
+    }
+    for (var j = 0; j < b.questions.length; j++) {
+      var q = b.questions[j];
+      if (!q || typeof q !== "object" || typeof q.key !== "string" || !/^q\d{2,}$/.test(q.key) || keys[q.key]) return null;
+      if (typeof q.question !== "string" || (q.kind !== "text" && q.kind !== "choice")) return null;
+      if (!Number.isInteger(q.section) || q.section < 0 || q.section >= b.sections.length) return null;
+      if (q.kind === "choice" && !(Array.isArray(q.options) && q.options.length && q.options.every(function (o) {
+        return o && typeof o.id === "string" && typeof o.label === "string";
+      }))) return null;
+      keys[q.key] = true;
+      q.options = q.kind === "choice" ? q.options.map(function (o) { return { id: o.id, label: o.label }; }) : [];
+      q.context = str(q.context); q.where = str(q.where);
+      q.n = Number.isInteger(q.n) ? q.n : parseInt(q.key.slice(1), 10);
+    }
+    return b;
   }
   function ensureAnswers(id) {
     // Also run when a batch is re-posted: a question new to this view gets a blank record.
@@ -162,11 +202,11 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
   function cardHtml(b, q) {
     var id = b.id, dom = id + "--" + q.key;
     var h = '<article class="q" id="' + esc(dom) + '" data-batch="' + esc(id) + '" data-key="' + esc(q.key) + '" data-state="empty">' +
-      '<h4><span class="qn">' + esc(q.n) + "</span>" + inline(q.question) + "</h4>" +
+      '<h4 id="h-' + esc(dom) + '"><span class="qn">' + esc(q.n) + "</span>" + inline(q.question) + "</h4>" +
       '<div class="ctx">' + paras(q.context) + "</div>" +
       (q.where ? '<p class="where"><strong>Where it goes:</strong> ' + inline(q.where) + "</p>" : "");
     if (q.kind === "choice") {
-      h += '<div class="opts" role="group" aria-label="Options">' + q.options.map(function (o) {
+      h += '<div class="opts" role="group" aria-labelledby="h-' + esc(dom) + '">' + q.options.map(function (o) {
         return '<button type="button" class="opt" data-choice="' + esc(o.id) + '" aria-pressed="false"><b>' +
           esc(o.id.toUpperCase()) + "</b>" + inline(o.label) + "</button>";
       }).join("") + "</div>" +
@@ -176,9 +216,10 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
       h += '<label class="lab" for="a-' + esc(dom) + '">Your answer</label>' +
         '<textarea id="a-' + esc(dom) + '" rows="3" autocomplete="off" placeholder="Type your answer…"></textarea>';
     }
-    return h + '<div class="row"><button type="button" class="chip" data-status="not_yet" aria-pressed="false">Not yet</button>' +
+    return h + '<div class="row" role="group" aria-labelledby="h-' + esc(dom) + '">' +
+      '<button type="button" class="chip" data-status="not_yet" aria-pressed="false">Not yet</button>' +
       '<button type="button" class="chip" data-status="skip" aria-pressed="false">' + esc(skipLabel(b)) + "</button>" +
-      '<span class="tick" aria-live="polite"></span></div></article>';
+      '<span class="tick"></span></div></article>';
   }
   function batchHtml(b) {
     var h = '<section class="batch" id="b-' + esc(b.id) + '" data-batch="' + esc(b.id) + '">' +
@@ -207,13 +248,14 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
       });
   }
   function hasFocusIn(el) { return el && document.activeElement && el.contains(document.activeElement); }
+  function batchSig(b) { return JSON.stringify([b.title, b.project, b.askedAt, b.intro, b.sections, b.questions]); }
   function renderBatches() {
     var host = $("batches"), ids = openIds();
     Object.keys(rendered).forEach(function (id) {
       if (ids.indexOf(id) < 0) { var gone = $("b-" + id); if (gone) gone.remove(); delete rendered[id]; }
     });
     ids.forEach(function (id, i) {
-      var b = batches[id], s = JSON.stringify([b.title, b.project, b.askedAt, b.intro, b.sections, b.questions]);
+      var b = batches[id], s = batchSig(b);
       var el = $("b-" + id);
       if (!el || (rendered[id] !== s && !hasFocusIn(el))) {
         var wrap = document.createElement("div");
@@ -230,15 +272,16 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     renderRail();
     renderDone();
     paintTotals();
+    refreshCanSend();
     if (!ids.length) setText("status-line", demo ? "Demo batch" : "No open questions right now. New batches appear here as soon as Claude posts them.");
     else setText("status-line", demo ? "Demo mode: answers are saved in this browser only." : "");
     $("status-line").hidden = !$("status-line").textContent;
   }
-  function paintCard(id, key) {
+  function paintCard(id, key, force) {
     var a = answers[id][key], card = $(id + "--" + key);
     if (!card) return;
     var ta = card.querySelector("textarea");
-    if (ta && document.activeElement !== ta && ta.value !== a.text) { ta.value = a.text; grow(ta); }
+    if (ta && (force || document.activeElement !== ta) && ta.value !== a.text) { ta.value = a.text; grow(ta); }
     card.querySelectorAll("[data-status]").forEach(function (btn) {
       btn.setAttribute("aria-pressed", String(btn.getAttribute("data-status") === a.status));
     });
@@ -320,6 +363,19 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     clearTimeout(timers[k(id, key)]);
     timers[k(id, key)] = setTimeout(function () { flush(id, key); }, 800);
   }
+  function busy(id, key) {
+    var card = $(id + "--" + key), ta = card && card.querySelector("textarea");
+    return !!timers[k(id, key)] || !!(ta && document.activeElement === ta);
+  }
+  // A board record that arrived while the viewer was editing this question is applied when
+  // they leave it (focusout) or once the pending save settles, if it is still the newer one.
+  function applyLater(id, key, leaving) {
+    var t = k(id, key), rec = later[t];
+    if (!rec || (!leaving && busy(id, key))) return;
+    delete later[t];
+    if (adopt(id, key, rec)) { paintCard(id, key, true); writeDraft(); renderRail(); paintTotals(); }
+    if (!timers[t]) flush(id, key);
+  }
   function flush(id, key) {
     var t = k(id, key);
     clearTimeout(timers[t]); delete timers[t];
@@ -337,6 +393,7 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     }).then(function () {
       delete inflight[t];
       if (again[t]) { delete again[t]; return flush(id, key); }
+      if (later[t] && !busy(id, key)) applyLater(id, key, false);
     });
     inflight[t] = p;
     return p;
@@ -354,22 +411,37 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     return out.join("\n");
   }
   function flash(el, msg) { setText(el, msg); setTimeout(function () { setText(el, ""); }, 2500); }
+  function refreshCanSend() {
+    if (!comments) { canSend = "off"; return; }
+    comments.canSendToClaude().then(function (v) { canSend = v; }, function () { canSend = "off"; });
+  }
+  function sendCard(id) { return document.querySelector('[data-send-card="' + cssId(id) + '"]'); }
+  function showSending(id) {
+    var card = sendCard(id);
+    if (!card) return;
+    card.querySelector("[data-send]").setAttribute("aria-disabled", String(!!sending[id]));
+    if (sending[id]) setText(card.querySelector("[data-send-status]"), sending[id]);
+  }
+  function sendResult(id, msg) {
+    delete sending[id];
+    showSending(id);
+    var card = sendCard(id);  // the card may have been re-rendered while sending
+    if (card) setText(card.querySelector("[data-send-status]"), msg);
+  }
   function onSend(id, card) {
-    var btn = card.querySelector("[data-send]"), status = card.querySelector("[data-send-status]");
-    if (!db) { setText(status, "This view cannot send. Use Copy answers."); return; }
-    btn.disabled = true;
-    setText(status, "Sending…");
+    if (sending[id]) return;
+    if (!db) { setText(card.querySelector("[data-send-status]"), "This view cannot send. Use Copy answers."); return; }
+    sending[id] = "Sending…";
+    showSending(id);
     var sid = "s-" + new Date().toISOString().replace(/[:.]/g, "-"), c = counts(id), b = batches[id];
-    var note = "Answers submitted — " + b.title + " (" + id + "). Snapshot " + sid + ": " + c.answered + " answered, " +
+    var note = "Answers submitted — " + b.title.slice(0, 120) + " (" + id + "). Snapshot " + sid + ": " + c.answered + " answered, " +
       c.skip + " skip, " + c.not_yet + " not yet, " + c.empty + " empty. Read db batches/" + id + "/submissions/" + sid + ".";
     // The send must start inside this click (it needs the viewer's recent gesture), so it runs
-    // beside the saves; Claude reads the snapshot seconds later.
-    var sending = !comments ? Promise.resolve("off") : comments.canSendToClaude().then(function (v) {
-      if (v !== "available") return v;
-      return comments.anchorFor(card).then(function (anchor) {
-        return comments.sendToClaude({ anchor: anchor, text: note });
-      }).then(function () { return "sent"; });
-    }).catch(function (e) { return (e && e.code) || "error"; });
+    // beside the saves and uses the cached canSendToClaude(); Claude reads the snapshot seconds later.
+    var sendingP = (canSend !== "available" ? Promise.resolve(canSend) : comments.anchorFor(card).then(function (anchor) {
+      return comments.sendToClaude({ anchor: anchor, text: note });
+    }).then(function () { return "sent"; })).catch(function (e) { return (e && e.code) || "error"; })
+      .then(function (how) { refreshCanSend(); return how; });
     var saving = flushBatch(id).then(function () {
       return db.collection("batches/" + id + "/submissions").doc(sid).set({
         at: new Date().toISOString(), id: sid, batchId: id, counts: c,
@@ -380,15 +452,17 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
         })
       });
     });
-    Promise.all([saving, sending]).then(function (r) {
+    Promise.all([saving, sendingP]).then(function (r) {
       var how = r[1];
-      if (how === "sent") setText(status, "Sent to Claude Code (copy " + sid + "). Claude's reply will appear in the comment thread.");
-      else if (how === "rate_limited") setText(status, "Saved as copy " + sid + ". Sending is limited for a moment; wait, then press Send again.");
-      else if (how === "no_session") setText(status, "Saved on the board as copy " + sid + ", but no Claude Code session is watching this board right now. Tell Claude Code \"read my answers\", or use Copy answers.");
-      else setText(status, "Saved on the board as copy " + sid + ", but sending to Claude isn't available here. Tell Claude Code \"read my answers\", or use Copy answers.");
+      if (how === "sent") sendResult(id, "Sent to Claude Code (copy " + sid + "). Claude's reply will appear in the comment thread.");
+      else if (how === "rate_limited") sendResult(id, "Saved as copy " + sid + ". Sending is limited for a moment; wait, then press Send again.");
+      else if (how === "consent_required") sendResult(id, "Saved as copy " + sid + ". You didn't allow comments from this page. Press Send again to allow it.");
+      else if (how === "forbidden" || how === "writers_only") sendResult(id, "Saved as copy " + sid + ". Only an editor of this board can send to Claude.");
+      else if (how === "no_session") sendResult(id, "Saved on the board as copy " + sid + ", but no Claude Code session is watching this board right now. Tell Claude Code \"read my answers\", or use Copy answers.");
+      else sendResult(id, "Saved on the board as copy " + sid + ", but sending to Claude isn't available here. Tell Claude Code \"read my answers\", or use Copy answers.");
     }, function (e) {
-      setText(status, "The copy could not be saved (" + ((e && e.code) || "error") + "). Your answers are still here. Press Send again.");
-    }).then(function () { btn.disabled = false; });
+      sendResult(id, "The copy could not be saved (" + ((e && e.code) || "error") + "). Your answers are still here. Press Send again.");
+    });
   }
   function copyText(text, el) {
     if (!navigator.clipboard) { flash(el, "Copy is blocked in this view"); return; }
@@ -400,11 +474,14 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     section.querySelectorAll("article.q").forEach(function (card) {
       var key = card.getAttribute("data-key"), q = questionOf(id, key), ta = card.querySelector("textarea");
       ta.addEventListener("input", function () {
-        var a = answers[id][key];
+        var a = answers[id][key], was = a.text;
         a.text = ta.value;
-        a.status = derive(q, a, CHIPS.indexOf(a.status) >= 0 ? a.status : null);
+        // Typing an answer into an empty "Not yet" question answers it; Skip stays until un-chipped.
+        if (q.kind === "text" && a.status === "not_yet" && !was.trim() && a.text.trim()) a.status = "answered";
+        else a.status = derive(q, a, CHIPS.indexOf(a.status) >= 0 ? a.status : null);
         grow(ta); touch(id, key);
       });
+      card.addEventListener("focusout", function () { applyLater(id, key, true); });
       card.querySelectorAll("[data-choice]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var a = answers[id][key], c = btn.getAttribute("data-choice");
@@ -423,8 +500,11 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     });
     var card = section.querySelector("[data-send-card]");
     var sendBtn = card.querySelector("[data-send]");
-    sendBtn.disabled = !db;
+    sendBtn.disabled = !db;  // disabled only when this view cannot send at all
     if (!db) setText(card.querySelector("[data-send-status]"), demo ? "Demo: sending is off. Copy answers works." : "");
+    showSending(id);
+    card.addEventListener("pointerenter", refreshCanSend);
+    card.addEventListener("focusin", refreshCanSend);
     sendBtn.addEventListener("click", function () { onSend(id, card); });
     card.querySelector("[data-copy]").addEventListener("click", function () {
       copyText(answersMarkdown(id), card.querySelector("[data-fallback]"));
@@ -436,13 +516,17 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
       downloads.save({ filename: id + "-answers.md", data: answersMarkdown(id) }).then(function (r) {
         flash(card.querySelector("[data-fallback]"), r && r.status === "saved" ? "Downloaded" : "");
       }, function (e) {
-        if (e && e.code === "unavailable") dl.hidden = true;
+        if (e && DOWNLOAD_OFF.indexOf(e.code) >= 0) {
+          downloads = null;
+          document.querySelectorAll("[data-download]").forEach(function (x) { x.hidden = true; });
+        }
         flash(card.querySelector("[data-fallback]"), "Download didn't happen (" + ((e && e.code) || "error") + ")");
       });
     });
+    if (observers[id]) { observers[id].disconnect(); delete observers[id]; }
     if (isNew[id] && "IntersectionObserver" in window) {
-      var io = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) { delete isNew[id]; io.disconnect(); renderRail(); }
+      var io = observers[id] = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { delete isNew[id]; io.disconnect(); delete observers[id]; renderRail(); }
       });
       io.observe(section);
     }
@@ -452,17 +536,27 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
   function subscribeAnswers(id) {
     if (subs[id]) return;
     subs[id] = db.collection("batches/" + id + "/answers").onSnapshot(function (snap) {
+      if (!answers[id]) return;
       snap.docs.forEach(function (d) {
-        var rec = d.data();
-        if (!rec || !answers[id][d.id]) return;
-        written[k(id, d.id)] = sig({ text: rec.text || "", choice: rec.choice || "", status: rec.status });
+        var rec = d.data(), a = answers[id][d.id], t = k(id, d.id);
+        if (!rec || !a) return;
+        written[t] = sig({ text: rec.text || "", choice: rec.choice || "", status: rec.status });
+        if (busy(id, d.id)) {
+          // Never change a question under the viewer's hands; keep the newest record for later.
+          if (typeof rec.updatedAt === "number" && rec.updatedAt > a.updatedAt &&
+              (!later[t] || rec.updatedAt > later[t].updatedAt)) later[t] = rec;
+          return;
+        }
         if (adopt(id, d.id, rec)) paintCard(id, d.id);
       });
-      // A browser draft newer than the board is written up.
-      Object.keys(answers[id]).forEach(function (key) {
-        var a = answers[id][key];
-        if (a.updatedAt && written[k(id, key)] !== sig(a)) flush(id, key);
-      });
+      // A browser draft newer than the board is written up once, on the batch's first snapshot.
+      if (!drafted[id]) {
+        drafted[id] = true;
+        Object.keys(answers[id]).forEach(function (key) {
+          var a = answers[id][key], t = k(id, key);
+          if (a.updatedAt && !timers[t] && !inflight[t] && written[t] !== sig(a)) flush(id, key);
+        });
+      }
       writeDraft(); renderRail(); paintTotals();
     }, function (e) {
       setText("saved", "Answers for one batch stopped syncing (" + ((e && e.code) || "error") + "). Reload the page.");
@@ -471,10 +565,12 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
   function onBatches(snap) {
     var seen = {};
     snap.docs.forEach(function (d) {
-      var b = d.data();
-      if (!b || !Array.isArray(b.questions) || !Array.isArray(b.sections)) return;
-      b = JSON.parse(JSON.stringify(b));
-      b.id = d.id;
+      var b = cleanBatch(d.data(), d.id);
+      if (!b) {
+        console.warn("answer board: skipped malformed batch " + d.id);
+        if (batches[d.id]) seen[d.id] = true;  // keep the last good version on screen
+        return;
+      }
       seen[d.id] = true;
       if (!batches[d.id] && !firstBatches) isNew[d.id] = true;
       batches[d.id] = b;
@@ -485,7 +581,7 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     Object.keys(batches).forEach(function (id) {
       if (!seen[id]) { if (subs[id]) { subs[id](); delete subs[id]; } delete batches[id]; }
     });
-    firstBatches = false;
+    if (!(snap.metadata && snap.metadata.fromCache)) { firstBatches = false; batchesLoaded = true; }
     renderBatches();
   }
   function noBoard() {
@@ -496,14 +592,14 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
   }
   function startDemo() {
     demo = true;
-    batches.demo = DEMO;
+    batches.demo = cleanBatch(DEMO, "demo");
     ensureAnswers("demo");
     renderBatches();
   }
   function connect() {
     var use = window.claude && window.claude.use;
     if (typeof use !== "function") { noBoard(); return; }
-    use.call(window.claude, "comments").then(function (ns) { if (!ns) return; comments = ns; }, function () {});
+    use.call(window.claude, "comments").then(function (ns) { if (!ns) return; comments = ns; refreshCanSend(); }, function () {});
     use.call(window.claude, "downloads").then(function (ns) {
       if (!ns) return;
       downloads = ns;
@@ -519,6 +615,12 @@ details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px F
     }, function () { noBoard(); });
   }
 
+  // A re-render deferred because focus was inside a batch happens once focus leaves it.
+  $("batches").addEventListener("focusout", function () {
+    setTimeout(function () {
+      if (openIds().some(function (id) { return rendered[id] !== batchSig(batches[id]); })) renderBatches();
+    }, 0);
+  });
   if (location.hash === "#demo") startDemo(); else connect();
 })();
 </script>

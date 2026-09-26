@@ -40,14 +40,16 @@ a{color:var(--blue)}
 .muted{font-size:12px;color:var(--ink-3);margin:6px 0}
 .navbatch{display:flex;justify-content:space-between;gap:8px;margin:16px 0 4px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none}
 .navbatch small{color:var(--ink-3);font-weight:600}
-.new{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--brass);color:var(--on-blue);border-radius:4px;padding:1px 5px;margin-left:6px}
+.new{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--brass);color:var(--ink);border-radius:4px;padding:1px 5px;margin-left:6px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .new{color:var(--on-blue)}}
+:root[data-theme="dark"] .new{color:var(--on-blue)}
 .navq{display:flex;gap:8px;align-items:center;padding:3px 4px;border-radius:4px;font-size:13px;color:var(--ink-2);text-decoration:none}
 .navq:hover{background:var(--blue-soft)}.navq b{min-width:18px;color:var(--blue)}
 .dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink-3);flex:none}
 [data-state="answered"] .dot{background:var(--ok);border-color:var(--ok)}
 [data-state="skip"] .dot{background:var(--brass);border-color:var(--brass)}
 [data-state="not_yet"] .dot{border-style:dashed;border-color:var(--steel);background:var(--blue-soft)}
-.main{padding:32px clamp(16px,4vw,56px) 96px;min-width:0}.main>*{max-width:1120px}
+.main{padding:32px clamp(16px,4vw,56px) 96px;min-width:0;overflow-wrap:anywhere}.main>*{max-width:1120px}
 header.mast{padding-bottom:16px;border-bottom:3px solid var(--blue);margin-bottom:16px}
 h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0}
 .note{background:var(--blue-soft);border:1px solid var(--line);border-radius:6px;padding:10px 14px;font-size:15px;margin:0 0 16px}
@@ -98,7 +100,7 @@ def demo_batch():
 
 
 def render_shell(demo):
-    blob = json.dumps(demo, ensure_ascii=False, sort_keys=True).replace("</", "<\\/")
+    blob = json.dumps(demo, ensure_ascii=False, sort_keys=True).replace("</", "<\\/").replace("<!--", "<\\u0021--")
     client = CLIENT_JS.read_text(encoding="utf-8").replace("</script", "<\\/script")
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
