@@ -2,7 +2,7 @@
 
 One standing claude.ai board, **Questions for You**, holds every batch of questions Claude has
 for the user (spec `docs/superpowers/specs/2026-09-26-answer-board-design.md`). Board URL:
-recorded here by the Task 7 publish.
+https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf.
 
 ## Post a batch
 

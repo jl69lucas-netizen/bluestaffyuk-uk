@@ -223,7 +223,8 @@ work is done rather than how a page is built, so they are stated here.
 ## Questions for the user — the answer board
 
 - Two or more questions for the user, or any question that needs a written answer, go to the
-  answer board as a batch (`python3 scripts/answer_board_batch.py`), never as a list in chat.
+  answer board (https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf) as a batch (`python3 scripts/answer_board_batch.py`), never as a
+  list in chat.
   Chat then says only "N new questions on the board: <link>".
 - A single blocking either/or pick may still be asked in chat. Visual picks keep their browser
   mockups, and the board question links to the mockup.

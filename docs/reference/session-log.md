@@ -297,7 +297,7 @@ gives (London, Manchester and Liverpool stub rebuilds first), starting with Know
 
 ## Answer board tool build (2026-09-26) — COMPLETE
 
-Branch `answer-board` (worktree `/Users/apple/Downloads/BSUK-answers`), cut from `foundation` at `e9b3c1b`. Spec: `docs/superpowers/specs/2026-09-26-answer-board-design.md` (Artifact https://claude.ai/artifact/53L9VZvUS3Q4UfnqyDAYWV). Plan: `docs/superpowers/plans/2026-09-26-answer-board.md`.
+Branch `answer-board` (worktree `/Users/apple/Downloads/BSUK-answers`), cut from `foundation` at `e9b3c1b`. Spec: `docs/superpowers/specs/2026-09-26-answer-board-design.md` (Artifact https://claude.ai/artifact/53L9VZvUS3Q4UfnqyDAYWV). Plan: `docs/superpowers/plans/2026-09-26-answer-board.md` (Artifact https://claude.ai/artifact/1RYiRJ7TKniXQBJCyyijhA). **The board: https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf** (published 2026-09-26 with `db` rules read/write `admin`, `comments`, `downloads`; Lisa's batch posted at version 1; a non-editor reads nothing).
 
 What it added:
 - **One standing board, "Questions for You"** (`scripts/build_answer_board.py` → `docs/artifacts/bsuk-answer-board.html`). Every batch of questions for the user is posted there; the user answers in place (text, or a choice plus a note; Not yet / Skip on every question) and presses **Send to Claude Code** per batch. Layout A: sticky progress rail, wide question column, a top bar on phones.
