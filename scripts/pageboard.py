@@ -1574,7 +1574,7 @@ def perf_findings(slug, stage, perf_dir=None, dist_page=None):
     for prof in PERF_PROFILES:
         local, psi = read(f"{slug}--{prof}"), read(f"{slug}--{prof}--psi")
         if local is None:
-            add("perf-record-missing", "FAIL", f"no {prof} perf record — python3 scripts/perf_audit.py {slug}{' --mobile' if prof == 'mobile' else ''} --runs 3")
+            add("perf-record-missing", "FAIL", f"no {prof} perf record — python3 scripts/perf_audit.py {slug}{' --mobile' if prof == 'mobile' else ''} (5 runs, the default)")
         else:
             if dist_page.exists() and local.get("dist_mtime", 0) < dist_page.stat().st_mtime:
                 add("perf-record-stale", "FAIL", f"{prof} perf record predates the current build — re-run perf_audit.py")

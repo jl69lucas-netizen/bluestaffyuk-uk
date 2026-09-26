@@ -8,6 +8,7 @@ rather than hard-coding a domain BSUK does not have.
 import importlib.util
 import json
 import subprocess
+import re
 import urllib.error
 
 import pytest
@@ -197,3 +198,105 @@ def test_parse_only_survives_a_report_with_no_categories_block(tmp_path, capsys)
 def _touch(p):
     p.write_text("#!/bin/sh\n")
     return p
+
+
+# --- the run protocol: five runs, the warm median of runs 2-5, no CLS verdict on fewer ----
+# CAG parity audit 19b.5 / M7. CLS on this site is bimodal and the first Lighthouse run of a
+# session is cold (Chrome start, empty caches), so one run proves nothing and a median that
+# includes the cold run is not a warm number. The docstring already said `--runs 5`; the
+# code defaulted to 1, the perf-gate skill said 3, and the release gate's hint said 3.
+
+class _NoServer:
+    def shutdown(self):
+        pass
+
+
+def _fake_runs(monkeypatch, tmp_path, reports):
+    """Run main() against canned Lighthouse reports; returns (calls, perf_dir, dist)."""
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    (dist / "index.html").write_text("<html></html>")
+    perf_dir = tmp_path / "perf"
+    calls = []
+
+    def fake(url, out, profile):
+        calls.append(url)
+        return reports[len(calls) - 1]
+    monkeypatch.setattr(pa, "serve", lambda root: _NoServer())
+    monkeypatch.setattr(pa, "run_lighthouse", fake)
+    monkeypatch.setattr(pa, "PERF_DIR", perf_dir)
+    return calls, perf_dir, dist
+
+
+def lh(perf=1, cls=0.0):
+    return {"lighthouseVersion": "13.4.1",
+            "categories": {k: {"score": perf if k == "performance" else 1} for k in pa.CATEGORIES},
+            "audits": {"cumulative-layout-shift": {"numericValue": cls}}}
+
+
+def test_the_default_is_five_runs(monkeypatch, tmp_path):
+    calls, _, dist = _fake_runs(monkeypatch, tmp_path, [lh()] * 5)
+    assert pa.main(["", "--dist", str(dist)]) == 0
+    assert len(calls) == 5
+
+
+def test_the_cold_first_run_is_not_judged():
+    runs = [lh(perf=0.5), lh(perf=0.99), lh(perf=1), lh(perf=1), lh(perf=0.99)]
+    assert pa.judge(runs) == ["performance"]           # all five: median 0.99
+    assert pa.warm(runs) == runs[1:]
+    assert pa.judge(pa.warm(runs)) == []               # runs 2-5: median 0.995
+
+
+def test_one_run_is_its_own_warm_set():
+    one = [lh()]
+    assert pa.warm(one) == one
+
+
+def test_the_record_carries_the_warm_median_and_its_spread(monkeypatch, tmp_path, capsys):
+    reports = [lh(perf=0.5), lh(perf=0.99), lh(perf=1), lh(perf=1), lh(perf=0.99)]
+    _, perf_dir, dist = _fake_runs(monkeypatch, tmp_path, reports)
+    assert pa.main(["", "--dist", str(dist)]) == 0
+    out = capsys.readouterr().out
+    assert "warm median of runs 2–5" in out
+    rec = json.loads((perf_dir / "home--desktop.json").read_text())
+    assert rec["runs"] == 5 and rec["warm_runs"] == 4
+    assert rec["median"]["performance"] == 0.995
+    assert rec["spread"]["performance"] == [0.99, 1]
+    assert rec["cold"]["performance"] == 0.5
+
+
+def test_fewer_than_five_runs_gives_no_cls_verdict(monkeypatch, tmp_path, capsys):
+    _, perf_dir, dist = _fake_runs(monkeypatch, tmp_path, [lh(cls=0.3)] * 3)
+    assert pa.main(["", "--dist", str(dist), "--runs", "3"]) == 0
+    assert "no CLS verdict" in capsys.readouterr().out
+    rec = json.loads((perf_dir / "home--desktop.json").read_text())
+    assert rec["cls"]["verdict"] is None
+
+
+def test_five_runs_judge_cls_on_the_warm_median(monkeypatch, tmp_path, capsys):
+    # the cold run's 0.0 does not rescue four warm runs at 0.25
+    reports = [lh(cls=0.0)] + [lh(cls=0.25)] * 4
+    _, perf_dir, dist = _fake_runs(monkeypatch, tmp_path, reports)
+    assert pa.main(["", "--dist", str(dist)]) == 1
+    rec = json.loads((perf_dir / "home--desktop.json").read_text())
+    assert rec["cls"]["verdict"] == "FAIL" and rec["cls"]["median"] == 0.25
+    assert "cumulative-layout-shift" in rec["failed"]
+
+
+def test_five_warm_runs_under_the_cls_line_pass(monkeypatch, tmp_path):
+    _, perf_dir, dist = _fake_runs(monkeypatch, tmp_path, [lh(cls=0.3)] + [lh(cls=0.02)] * 4)
+    assert pa.main(["", "--dist", str(dist)]) == 0
+    assert json.loads((perf_dir / "home--desktop.json").read_text())["cls"]["verdict"] == "PASS"
+
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+FEW_RUNS = re.compile(r"--runs[ =]+[1-4]\b")
+
+
+def test_no_instruction_or_hint_asks_for_fewer_than_five_runs():
+    files = ([ROOT / "CLAUDE.md", ROOT / "scripts/pageboard.py", ROOT / "scripts/perf_audit.py"]
+             + sorted((ROOT / ".claude").rglob("*.md")) + sorted((ROOT / "docs/reference").glob("*.md"))
+             + sorted((ROOT / "rules").glob("*.md")))
+    bad = [f"{p.relative_to(ROOT)}:{n}" for p in files
+           for n, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1) if FEW_RUNS.search(line)]
+    assert bad == [], bad

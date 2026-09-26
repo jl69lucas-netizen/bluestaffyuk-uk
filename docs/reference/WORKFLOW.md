@@ -615,7 +615,7 @@ bsuk-llm-keyword-intel <slug>
               scripts, intrinsic image sizes) in src/, never dist/
    → Measures with python3 scripts/perf_audit.py <slug>, then again with --mobile: Lighthouse on
               dist/, five categories (Performance, Accessibility, Best Practices, SEO, Agentic Browsing)
-   → Target: every category's median score over the runs ≥0.995 (the 100 PageSpeed Insights shows);
+   → Target: every category's warm median (runs 2–5 of the default five) ≥0.995 (the 100 PageSpeed Insights shows);
               --psi is the record that counts, and it refuses until project 6 sets a real SITE_URL
 
 3. bsuk-canonical-fixer  ← CRITICAL — NEVER SKIP

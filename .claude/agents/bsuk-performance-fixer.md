@@ -68,4 +68,4 @@ See Fix 8 above; fix the component, never the built page.
 
 ## Verification
 
-`python3 scripts/perf_audit.py <slug>` (`npm run test:perf -- <slug>`, `npm run test:perf:mobile -- <slug>`) runs Lighthouse against `dist/` and judges the median of the runs; CLS is bimodal here, so judge `--runs 5`. `--live` and `--psi` refuse until project 6 gives the site a real `SITE_URL`. Never point Lighthouse at `SITE_URL_PLACEHOLDER`.
+`python3 scripts/perf_audit.py <slug>` (`npm run test:perf -- <slug>`, `npm run test:perf:mobile -- <slug>`) runs Lighthouse five times against `dist/` and judges the warm median of runs 2–5 (run 1 is cold); CLS is bimodal here, so it gives no CLS verdict on fewer than five runs. `--live` and `--psi` refuse until project 6 gives the site a real `SITE_URL`. Never point Lighthouse at `SITE_URL_PLACEHOLDER`.
