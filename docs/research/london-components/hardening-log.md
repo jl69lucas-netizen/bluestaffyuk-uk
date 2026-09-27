@@ -276,3 +276,27 @@ genetic health guarantee; delivery £200 to £350 by DEFRA-approved transport, p
 distance, or collection in Carlisle; no licence, travel time, distance, age or invented claim;
 no em dashes in our own visible copy (the two em dashes on the canvas are inside Rachel L.'s
 verbatim review, and the video's accessible name is the guide board's existing title).
+
+## Review round (Task 8 review, 2026-09-27)
+
+`impeccable:impeccable` was invoked again with the Skill tool (brand register, no `PRODUCT.md`)
+on the changed variants: the detector on video a and b, image and text a and c, reviews b and c
+(only the known false-positive classes: `cramped-padding` on wrapper padding and hairline rows,
+`side-tab` on the full-width 4px masthead rules of video b and image and text a), and a review
+of re-shot frames at 375 / 768 / 1024 / 1280.
+
+**Served alt text (working rule 11).** Every served image now carries its served alt word for
+word, copied from `dist/`: `ethical-staffy-puppy-london-delivery.webp` (image and text a and c,
+video b), `maggie-blue-staffy-dam-with-pups.webp` (video a, image and text c),
+`jones-strong-staffy-sire-temperament.webp` (video a) and `jones-magnificent-blue-staffy-sire.webp`
+(reviews c). The unconfirmed ages and the "Mark and Emma P." credit they contain are listed in
+`plan2-notes.md` under "Alt text — awaiting the user's ruling"; the visible captions state none
+of them.
+
+| Component | Variant | Review finding | Fixed | Widths |
+|---|---|---|---|---|
+| video | a | **Critical:** the 88px round Jones thumbnail was a token, so "Screening room" was honestly S3's facade on a band (one axis). | Redesigned as **Double bill**: the facade takes two thirds of the row and a full-height print of Jones, the sire, takes the other third at the same height, named on a plate at its foot clear of his face; two notes run under the pair (caption; parents and DNA). Below 768px the screen runs full width and the print (a third of the row) sits beside the notes. Axes `double-bill / right / airy / band`: from S3 media and framing, from S2 layout and media. First re-shoot: at 768 a tall caption plate covered Jones's face; the plate now carries only his name. | 375 · 768 · 1024 · 1280 |
+| video | b | Rewritten alt on the owner photo. | Served alt restored. | 375 · 768 · 1024 · 1280 |
+| image-text | a, c | Rewritten alts on the owner and Maggie photos. | Served alts restored. | 375 · 768 · 1024 · 1280 |
+| reviews | b | Vennie's muzzle cut at the foot of the banner. | Crop 50% 40%. | 375 · 768 · 1024 · 1280 |
+| reviews | c | "Buy From Us Again" asked what the review does not literally answer; rewritten alt on Jones. | Heading "Would a London Owner Recommend Us?" (answering paragraph kept); served alt restored. | 375 · 768 · 1024 · 1280 |

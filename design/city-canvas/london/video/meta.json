@@ -2,17 +2,17 @@
  "component": "video",
  "variants": {
   "a": {
-   "name": "Screening room",
-   "description": "A deep-steel band: the question centred, one wide click-to-play screen, and a programme line with a print of Jones, the sire.",
+   "name": "Double bill",
+   "description": "A deep-steel band: the click-to-play screen on two thirds of the row beside a tall print of Jones, the sire, on the other third.",
    "idea_sources": [
     "/Users/apple/Downloads/BSUK/BSUK-refs/london/video/mfs-home-1280-01.png",
     "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Video-YouTube-desing-component.png",
     "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/puppy-card-shop-idea.png"
    ],
-   "differs_from": "A facade with a section photo of the sire under the screen on a deep band; S2 is an iframe with no photo, S3 a plain facade with none.",
+   "differs_from": "A facade and a full-height section photo of the sire side by side on a deep band; S2 is an iframe with no photo, S3 a plain facade with none.",
    "axes": {
-    "layout": "screening",
-    "media": "bottom",
+    "layout": "double-bill",
+    "media": "right",
     "density": "airy",
     "framing": "band"
    }

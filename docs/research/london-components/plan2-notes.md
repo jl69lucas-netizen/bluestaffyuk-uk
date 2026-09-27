@@ -75,12 +75,26 @@ Added to by each Plan 1 task review; read before writing Plan 2.
   slot; no AggregateRating or stars. Reviews A pairs Mark J with `mark-blue-staffy-london.webp`
   (the homepage's own pairing, original alt); B and C use puppy and sire photos and credit them
   in a visible caption so they never read as the reviewer's dog. Keep those captions.
-- **Alt text.** Image and text B keeps `blue-staffy-testimonial-london-happy-owner.webp`'s served
-  alt word for word ("... sharing a testimonial"), per working rule 11, although the section is
-  not a review; if B is picked, ask the breeder whether that alt may change or use a different
-  photo. Video A and reviews C describe `jones-strong-staffy-sire-temperament.webp` and
-  `jones-magnificent-blue-staffy-sire.webp` without the served alts' "3-year-old" (an age the
-  facts file does not hold); Plan 2 decides with the breeder which wins.
 - **Image and text C's H3 photos use the kit's `.bl-img` class** so `layout-h3-image-first`
   counts them; build them with `BodyImage.astro`.
 - **Inline `style="object-position:…"`** on image and text C moves into a class or a focus prop.
+
+## Alt text — awaiting the user's ruling
+
+Working rule 11 keeps a served image's filename, path AND alt text. After the Task 8 review
+every served image on the canvas carries its served alt word for word (copied from `dist/`),
+including wording the facts files do not confirm. The controller is asking the user whether
+the unconfirmed ages and customer names may be dropped; until then, nothing is rewritten.
+
+| Image | Canvas variants | Served alt (verbatim) | Unconfirmed wording |
+|---|---|---|---|
+| `ethical-staffy-puppy-london-delivery.webp` | image-text a, image-text c, video b | "An ethical blue Staffy puppy, delivered professionally by BlueStaffyUK, happily with its new owners Mark and Emma P. in London." | the owners' names "Mark and Emma P." (no review or file names them), "delivered professionally" |
+| `maggie-blue-staffy-dam-with-pups.webp` | video a, image-text c | "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups." | Maggie's age, "2-year-old" |
+| `jones-strong-staffy-sire-temperament.webp` | video a | "Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament." | Jones's age, "3-year-old" |
+| `jones-magnificent-blue-staffy-sire.webp` | reviews c | "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire." | Jones's age, "3-year-old" |
+
+Also served verbatim and noted for the same ruling: `blue-staffy-testimonial-london-happy-owner.webp`
+(image-text b) keeps "Happy Blue Staffy puppy owner from London sharing a testimonial" although
+that section is not a review; `mark-blue-staffy-london.webp` (reviews a) keeps "Mark with their
+healthy blue Staffy puppy from BlueStaffyUK.uk in London.". The validator accepted every served
+alt (0 problems).
