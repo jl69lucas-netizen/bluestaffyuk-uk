@@ -14,8 +14,12 @@ data/page-dates.json (same routes, new bytes) and public/search-index.json — a
 git-ignored dist/. The gate report is stamped with the real `gate_page.git_head` and
 `gate_page.page_hash`, and the real `measurement_ledger` M8 and M10 read it.
 
-CLOSE_ORDER_SCRIPTS=<dir> replays the sequence against another revision's scripts/ (the proof
-that this test fails at 769465d, before dd29aec set the build outputs aside).
+CLOSE_ORDER_SCRIPTS=<dir>/scripts replays the sequence against another revision's scripts/ (the
+proof that this test fails at 769465d, before dd29aec set the build outputs aside). The scripts
+read their own repo root, so <dir> must hold that revision's data/, src/ and tests/render/ beside
+scripts/ — `git archive <rev> scripts data src tests/render docs/reference package.json | tar -x
+-C <dir>`. The git calls run with GIT_CONFIG_GLOBAL=/dev/null and GIT_CONFIG_NOSYSTEM=1, so no
+machine config (hooks, signing, init.defaultBranch) reaches the throwaway repository.
 """
 import importlib.util
 import json
@@ -46,7 +50,7 @@ def _head_module(name):
 
 GPD = _head_module("generate_page_dates")
 GIT_ENV = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t",
-               GIT_COMMITTER_EMAIL="t@t")
+               GIT_COMMITTER_EMAIL="t@t", GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
 KEY, ROUTE = "newtown", "uk-locations/newtown"
 CHECKS_TS = "register({ id: 'layout-min-font-size', family: 'LAYOUT', severity: 'blocking', describe: 'x' });\n"
 
@@ -110,6 +114,9 @@ def ledger_rows(root):
 
 @pytest.fixture
 def tree(tmp_path, monkeypatch):
+    # the scripts under test call git with os.environ, so the same isolation applies to them
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
     sources(tmp_path)
     git(tmp_path, "init", "-q")
     commit(tmp_path, "sources")
@@ -154,3 +161,10 @@ def test_gating_before_the_commit_reads_stale(tree):
     rows = ledger_rows(tree)
     assert rows["M8"]["status"] == "STALE", rows["M8"]
     assert rows["M10"]["status"] == "STALE", rows["M10"]
+
+
+def test_the_replay_ignores_the_machine_git_config():
+    """Review 2026-09-28: a user's global or system git config (hooks, signing, a default
+    branch) must not change what the throwaway repository does."""
+    assert GIT_ENV.get("GIT_CONFIG_GLOBAL") == os.devnull
+    assert GIT_ENV.get("GIT_CONFIG_NOSYSTEM") == "1"
