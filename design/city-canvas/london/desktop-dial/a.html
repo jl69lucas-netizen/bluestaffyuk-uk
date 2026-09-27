@@ -2,8 +2,8 @@
 /* Dial A — Page map. From 1024px a steel band runs down the left edge of the page, and on
    it the page is drawn as a map: one block per section, each block as tall as its section is
    long, so the reader sees where the long reads are before choosing one. The current block
-   fills brass (CSS only: :target, or a scroll-driven animation where the browser has it),
-   and a window frame slides down the map with the scroll. Hidden below 1024px. */
+   fills brass (CSS only: a scroll-driven animation, or :target where the browser has no
+   scroll timelines; nothing is marked rather than the wrong block). Hidden below 1024px. */
 .dlA{background:var(--color-surface);timeline-scope:--dlA-1,--dlA-2,--dlA-3,--dlA-4,--dlA-5,--dlA-6,--dlA-7,--dlA-8}
 .dlA .page{padding:0 var(--space-4)}
 .dlA .map{display:none}
@@ -27,18 +27,7 @@
   .dlA li a{flex:1;display:flex;align-items:flex-start;padding:var(--space-2) var(--space-3);background-image:repeating-linear-gradient(to bottom,transparent 0 9px,var(--color-steel-500) 9px 11px);background-size:calc(100% - 2 * var(--space-3)) calc(100% - 40px);background-position:var(--space-3) 32px;background-repeat:no-repeat;border:1px solid var(--color-steel-500);border-radius:var(--radius-sm);background-color:var(--color-steel-700);color:var(--color-text-on-inverse);font-size:var(--text-sm);font-weight:600;line-height:1.25;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
   .dlA li a:hover{border-color:var(--color-cta-soft);text-decoration:underline;text-underline-offset:3px}
   .dlA li a:focus-visible{outline:3px solid var(--color-focus-on-inverse);outline-offset:2px}
-  .dlA .win{display:none}
-  @supports not (animation-timeline: view()){.dlA:not(:has(.stub:target)) li:first-child a{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
-.dlA:has(#dlA-puppies:target) a[href="#dlA-puppies"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
-.dlA:has(#dlA-prices:target) a[href="#dlA-prices"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
-.dlA:has(#dlA-deposit:target) a[href="#dlA-deposit"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
-.dlA:has(#dlA-delivery:target) a[href="#dlA-delivery"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
-.dlA:has(#dlA-health:target) a[href="#dlA-health"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
-.dlA:has(#dlA-raising:target) a[href="#dlA-raising"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
-.dlA:has(#dlA-faq:target) a[href="#dlA-faq"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
-.dlA:has(#dlA-enquire:target) a[href="#dlA-enquire"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}}
-@media (prefers-reduced-motion:reduce){.dlA:not(:has(.stub:target)) li:first-child a{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
-.dlA:has(#dlA-puppies:target) a[href="#dlA-puppies"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
+  @supports not (animation-timeline: view()){.dlA:has(#dlA-puppies:target) a[href="#dlA-puppies"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
 .dlA:has(#dlA-prices:target) a[href="#dlA-prices"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
 .dlA:has(#dlA-deposit:target) a[href="#dlA-deposit"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
 .dlA:has(#dlA-delivery:target) a[href="#dlA-delivery"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}
@@ -48,8 +37,7 @@
 .dlA:has(#dlA-enquire:target) a[href="#dlA-enquire"]{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}}
 }
 @keyframes dlA-on{from,to{background:var(--color-cta);color:var(--color-cta-ink);border-color:var(--color-cta)}}
-@keyframes dlA-win{from{top:0}to{top:82%}}
-@supports (animation-timeline: view()){@media (prefers-reduced-motion:no-preference){
+@supports (animation-timeline: view()){@media all{
 .dlA #dlA-puppies{view-timeline-name:--dlA-1}
 .dlA #dlA-prices{view-timeline-name:--dlA-2}
 .dlA #dlA-deposit{view-timeline-name:--dlA-3}
@@ -58,15 +46,14 @@
 .dlA #dlA-raising{view-timeline-name:--dlA-6}
 .dlA #dlA-faq{view-timeline-name:--dlA-7}
 .dlA #dlA-enquire{view-timeline-name:--dlA-8}
-.dlA a[href="#dlA-puppies"]{animation:dlA-on linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--dlA-1;animation-range:cover 50vh cover calc(100% - 50vh)}
-.dlA a[href="#dlA-prices"]{animation:dlA-on linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--dlA-2;animation-range:cover 50vh cover calc(100% - 50vh)}
-.dlA a[href="#dlA-deposit"]{animation:dlA-on linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--dlA-3;animation-range:cover 50vh cover calc(100% - 50vh)}
-.dlA a[href="#dlA-delivery"]{animation:dlA-on linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--dlA-4;animation-range:cover 50vh cover calc(100% - 50vh)}
-.dlA a[href="#dlA-health"]{animation:dlA-on linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--dlA-5;animation-range:cover 50vh cover calc(100% - 50vh)}
-.dlA a[href="#dlA-raising"]{animation:dlA-on linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--dlA-6;animation-range:cover 50vh cover calc(100% - 50vh)}
-.dlA a[href="#dlA-faq"]{animation:dlA-on linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--dlA-7;animation-range:cover 50vh cover calc(100% - 50vh)}
-.dlA a[href="#dlA-enquire"]{animation:dlA-on linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--dlA-8;animation-range:cover 50vh cover calc(100% - 50vh)}
-@media (min-width:1024px){.dlA .win{display:block;position:absolute;left:-6px;right:-6px;top:0;height:18%;border:2px solid var(--color-cta-soft);border-radius:var(--radius-md);pointer-events:none;animation:dlA-win linear both;animation-duration:auto;animation-timeline:scroll(root)}}
+.dlA a[href="#dlA-puppies"]{animation-name:dlA-on!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-timeline:--dlA-1!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.dlA a[href="#dlA-prices"]{animation-name:dlA-on!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-timeline:--dlA-2!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.dlA a[href="#dlA-deposit"]{animation-name:dlA-on!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-timeline:--dlA-3!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.dlA a[href="#dlA-delivery"]{animation-name:dlA-on!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-timeline:--dlA-4!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.dlA a[href="#dlA-health"]{animation-name:dlA-on!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-timeline:--dlA-5!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.dlA a[href="#dlA-raising"]{animation-name:dlA-on!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-timeline:--dlA-6!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.dlA a[href="#dlA-faq"]{animation-name:dlA-on!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-timeline:--dlA-7!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.dlA a[href="#dlA-enquire"]{animation-name:dlA-on!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-timeline:--dlA-8!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
 }}
 </style>
 <section data-component="desktop-dial" data-variant="a" class="dlA">
@@ -85,50 +72,49 @@
           <li style="flex-grow:1.1"><a href="#dlA-faq"><span class="lab">Questions</span></a></li>
           <li style="flex-grow:0.8"><a href="#dlA-enquire"><span class="lab">Enquire</span></a></li>
         </ol>
-        <span class="win" aria-hidden="true"></span>
       </div>
     </nav>
   </aside>
   <div class="page">
-      <p class="note">The dial shows from 1024px wide. Below that, the sticky jump links take over, so this frame shows only the London page sections.</p>
-    <section class="stub" id="dlA-puppies" style="min-height:calc(1.2 * 50vh)">
+      <p class="note" data-canvas-only>The dial shows from 1024px wide. Below that, the sticky jump links take over, so this frame shows only the London page sections.</p>
+    <section class="stub" data-canvas-only id="dlA-puppies" style="min-height:calc(1.2 * 50vh)">
       <h2>Which Puppies Are Ready for a London Home Now?</h2>
       <p>Six puppies are ready now: three boys, Roman, Byrd and Ince, and three girls, Vennie, Christa and Cheryl, all raised in our home in Carlisle.</p>
       <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
     </section>
-    <section class="stub" id="dlA-prices" style="min-height:calc(0.8 * 50vh)">
+    <section class="stub" data-canvas-only id="dlA-prices" style="min-height:calc(0.8 * 50vh)">
       <h2>How Much Does a Blue Staffy Puppy Cost?</h2>
       <p>A boy is £1,500 and a girl is £1,700, and the price of the puppy is the same whether you live in London or collect in Carlisle.</p>
       <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
     </section>
-    <section class="stub" id="dlA-deposit" style="min-height:calc(0.7 * 50vh)">
+    <section class="stub" data-canvas-only id="dlA-deposit" style="min-height:calc(0.7 * 50vh)">
       <h2>What Does the £500 Deposit Do?</h2>
       <p>The £500 deposit books your viewing and reserves your puppy, so nobody else can take your pick while you plan the day.</p>
       <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
     </section>
-    <section class="stub" id="dlA-delivery" style="min-height:calc(1.0 * 50vh)">
+    <section class="stub" data-canvas-only id="dlA-delivery" style="min-height:calc(1.0 * 50vh)">
       <h2>How Does a Puppy Reach a London Home?</h2>
       <p>We deliver to your London door by DEFRA-approved transport for £200 to £350, priced by distance, or you can collect your puppy in Carlisle.</p>
       <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
     </section>
-    <section class="stub" id="dlA-health" style="min-height:calc(1.3 * 50vh)">
+    <section class="stub" data-canvas-only id="dlA-health" style="min-height:calc(1.3 * 50vh)">
       <h2>Which Health Tests Do the Parents Have?</h2>
       <p>Maggie, the dam, and Jones, the sire, are KC registered, DNA-tested for <span style='white-space:nowrap'>L-2-HGA</span> and <span style='white-space:nowrap'>HC-HSF4</span> and screened for eyes and elbows, and you may speak to our vet.</p>
       <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
     </section>
-    <section class="stub" id="dlA-raising" style="min-height:calc(0.9 * 50vh)">
+    <section class="stub" data-canvas-only id="dlA-raising" style="min-height:calc(0.9 * 50vh)">
       <h2>How Are the Puppies Raised Before They Travel?</h2>
       <p>Every puppy is raised in the home with Puppy Culture and early neurological stimulation, the everyday sounds and handling of a family house before the trip to London.</p>
       <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
     </section>
-    <section class="stub" id="dlA-faq" style="min-height:calc(1.1 * 50vh)">
+    <section class="stub" data-canvas-only id="dlA-faq" style="min-height:calc(1.1 * 50vh)">
       <h2>What Do London Buyers Ask Before They Reserve?</h2>
-      <p>Most London buyers ask about delivery, the deposit and the health tests first, and the questions in this part of the page answer each one in plain words.</p>
+      <p>The questions here cover delivery, the deposit and the health tests, and each one is answered in plain words before you reserve.</p>
       <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
     </section>
-    <section class="stub" id="dlA-enquire" style="min-height:calc(0.8 * 50vh)">
+    <section class="stub" data-canvas-only id="dlA-enquire" style="min-height:calc(0.8 * 50vh)">
       <h2>How Do You Ask About a Puppy From London?</h2>
-      <p>Send Lisa Bright a message with the puppy you like and your London postcode, and she can price the delivery and offer you a viewing time.</p>
+      <p>Send Lisa Bright a message with the puppy you like and your London postcode, and she can price the delivery; you book a viewing with the £500 deposit.</p>
       <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
     </section>
   </div>

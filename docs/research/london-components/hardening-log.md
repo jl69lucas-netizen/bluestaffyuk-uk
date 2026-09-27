@@ -125,3 +125,39 @@ and elbows screened, the buyer may speak to our vet; Puppy Culture and ENS; deli
 £350 by DEFRA-approved transport, priced by distance, or collection in Carlisle; no licence,
 travel time, distance, score or invented claim; no em dashes in visible copy. Stub sections are
 labelled as stand-ins.
+
+## Review round (Task 6 review, 2026-09-27)
+
+The quality review found three important faults and a set of minor ones. `impeccable:impeccable`
+was invoked again with the Skill tool (brand register) on all nine changed variants: the detector
+(only the known false-positive classes: `cramped-padding` on wrapper padding and hairline rows,
+`side-tab` on contents a's full-width masthead rule) and a review of re-shot frames at 375 / 768 /
+1024 / 1280 plus the scrolled, sheet-open and after-jump viewport shots.
+
+**Current-section marking (every dial and strip).** The scroll-driven marker was inside
+`@media (prefers-reduced-motion:no-preference)`, so reduced-motion readers fell back to `:target`
+and to a "first section is current" default: a mark stuck on section 1, or on the last jump. The
+marker is state, not motion, so it now runs whatever the motion preference (its `animation-*`
+longhands are `!important`, which also outranks the frame's reduced-motion reset). `:target` is
+kept only where the browser has no scroll timelines, and every "first section is current" default
+is deleted: nothing is marked rather than the wrong thing. Where a readout would then be empty it
+shows a neutral base line ("Scroll, or point at a stop"; "8 sections on this London page";
+"London page · 8 sections"), covered by the current name when there is one. Measured in Chromium
+with `reducedMotion: 'reduce'` and `'no-preference'`: at the top and after a 1,900px scroll, all
+six mark section 1 and then section 6, the same under both.
+
+| Component | Variant | Review finding | Fixed | Widths |
+|---|---|---|---|---|
+| contents-list | a | About 690–850px tall on phones before the puppies; the lede claimed an order "most London buyers ask" (unverified). | Below 768px: five rows, then a `<details>` "5 more sections" holding rows 6–10 (all ten in two columns from 768px). Lede no longer claims buyer behaviour. Stubs tagged `data-canvas-only`. | 375 · 768 · 1024 · 1280 |
+| contents-list | b | "The page runs in three stages". | "The sections fall into three stages". Stubs tagged `data-canvas-only`. | 375 · 768 · 1024 · 1280 |
+| contents-list | c | About 850px on phones; the lede claimed what "some London buyers" want; meta said "litter photo". | Below 640px: five rows and a "5 more sections" disclosure, photo cropped 2:1; lede rewritten; meta says "puppy photo". | 375 · 768 · 1024 · 1280 |
+| desktop-dial | a | The sliding window and the brass current block disagreed near the foot (two timelines, approximate block heights). | Window removed; the brass block is the only marker. | 1024 · 1280 |
+| desktop-dial | b | Readout defaulted to section one. | Base line "Scroll, or point at a stop" under the current name; hover and focus still name any stop. | 1024 · 1280 |
+| desktop-dial | c | Default first-row mark. | Removed; scroll timeline marks the row, `:target` only without scroll timelines. | 1024 · 1280 |
+| jump-links | a | Below 600px the dots showed only numbers, so a buyer could not tell 5 was Health; the opener's `aria-label` ("See all 8 sections") did not contain its visible text. | Each stop is a line icon (paw, pound, ticket, van, shield, house, question, envelope), its name in `.lab` for screen readers and shown under it from 600px. The opener has no `aria-label`: its name is the current section plus "All 8" and a hidden " sections". The sheet row for the current section is tinted and bold. Axes unchanged (a stepper on a band). | 375 · 768 |
+| jump-links | b | The 44px Maggie thumbnail had alt text though it is decorative. | The validator refuses `alt=""`, so the thumbnail is a CSS background on an `aria-hidden` span (media still `left`). The "Now 6 of 8 · Raising" line is part of the control's name. Sheet tile for the current section is outlined. | 375 · 768 |
+| jump-links | c | Default first page in the tray. | A base "8 sections · On this London page" sits under the pages; the current page covers it. Sheet row for the current section is tinted. | 375 · 768 |
+
+Copy: the FAQ stub no longer says what "most London buyers" ask; the Enquire stub reads "she can
+price the delivery; you book a viewing with the £500 deposit". The "which one navigates at this
+width" notes and every stub section carry `data-canvas-only` so Plan 2 never ports them.
