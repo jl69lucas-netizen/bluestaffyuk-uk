@@ -32,6 +32,9 @@ CANVAS = ROOT / "design" / "city-canvas"
 #: whose file is also shown in the body WITH its served alt. They are real under the rule's
 #: letter, so they are listed, counted and exact: a new hit fails, and fixing one fails until
 #: its row is removed here. (page, file, alt on the page)
+# The four hero-mosaic tiles below keep their live alts by the user's ruling of 2026-09-28
+# (Known Issue 93): a served alt on the tile would duplicate the body copy's alt, which Rule 50b
+# (board_gate asset-alt-duplicate) blocks. This is a permanent, counted exception.
 KNOWN = {
     ("buy-blue-staffy-puppies-uk", "blue-staffy-pups-near-you.webp",
      "Blue Staffy puppies available near you in the UK"),
