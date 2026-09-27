@@ -1,0 +1,19 @@
+{
+  "_comment": "Files that carried a bare NOT FETCHED when scripts/not_fetched_lint.py arrived (parity build Task 21), by sha256 of their content. An entry exempts that exact content only: edit the file and it is linted like a new one. Never regenerate this file to clear a finding.",
+  "files": {
+    "data/queries/blue-staffy-puppies-for-sale-leeds.json": "4d7d99d2730aaeda5a9d8d11bfde75877359843e54b916aafc4b3061d074d607",
+    "docs/research/competitors/bsuk.md": "00a0296bf5b669488d9fbc5018ba9da5ec5b1af3efb4690549b35558196a14d3",
+    "docs/research/competitors/bullscaff.md": "fa04a2ffadd7fe0d9eb61c65c3aa758522e133b732a5610d32e8a02138b79de0",
+    "docs/research/competitors/dogstrust.md": "bdcc31ad45d22346addd8cd8e2a3901d904e0615a7b7cd101acf1ca88d826b19",
+    "docs/research/competitors/foreverpuppy.md": "e72d74c154d8e7e0c0ac3db5a9c2bb11fd6e87cb53179e52b85e8a6aa0398556",
+    "docs/research/competitors/gumtree.md": "a7af7bb7ad501f3c3f79e0f89b1c7e0712625c0c767b6757b7ea8dae5cb17fd5",
+    "docs/research/competitors/petify.md": "91331738541825fea8de5e2e0ae7985ee78aafd151d2a20c1e48745a4dd16c4c",
+    "docs/research/competitors/pets4homes.md": "335abe52fd503a763b726f52e6de0e2507d65211d3ca066e3afef4122aedbc94",
+    "docs/research/competitors/petsforlove.md": "f41788949bea86073d5063f5d4e62636ab68b5bda53a7165c28419b63cb203af",
+    "docs/research/competitors/royalkennelclub.md": "5ce0181b7948f826af1ba0a504645dd265908818d47b0eb55d9ae7f9dfc4bf8f",
+    "docs/research/competitors/staffordshirebullterrierkennel.md": "4821d15a331fccfc2d92352d533f6653fe7d685ccb1d3a854e86a761bd7ade1e",
+    "docs/research/competitors/vaderblustaf.md": "d7f01b2b2565f71c9243fc048caa8d12ca647b5304bf76e0ded79a29377dc773",
+    "docs/research/keyword-gap-2026-09-25.md": "23596e80dca181895330e4882b141c49a0d0826155855791ea4864040882e035",
+    "docs/research/competitors/bsuk.json": "a12af5a97f0c814c668d34ce0e87fb28c54db5287dccababdabf3751c1723a3c"
+  }
+}

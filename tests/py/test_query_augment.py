@@ -612,7 +612,7 @@ def test_build_writes_a_schema_valid_file(tmp_path):
     data = json.loads((root / "data/queries/m.json").read_text())
     jsonschema.validate(data, SCHEMA)
     assert data["sources"]["serp_google"] == "ok"
-    assert data["sources"]["serp_bing"] == "NOT FETCHED"
+    assert data["sources"]["serp_bing"] == "NOT FETCHED — no data/queries/raw/m/serp_bing.json"
     assert data["sources"]["bank"] == "ok"
     assert data["section_target"] == {"matched": 4, "set_by": "https://a.example",
                                       "extra": 3, "floor": 9, "total": 9}
@@ -842,7 +842,7 @@ def test_short_carries_the_blocked_list(tmp_path):
 def test_a_missing_bank_is_not_fetched(tmp_path):
     root = make_root(tmp_path)
     (root / "data/faq.json").unlink()
-    assert Q.bank_candidates(root) == ([], "NOT FETCHED")
+    assert Q.bank_candidates(root) == ([], "NOT FETCHED — no data/faq.json")
     assert Q.bank_candidates(make_root(tmp_path))[1] == "ok"
 
 

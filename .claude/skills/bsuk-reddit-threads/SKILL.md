@@ -97,7 +97,8 @@ breeder?"). Never reshape a question to fit a bank answer.
 - Every thread you used is in `threads` with all seven keys; `subreddit` holds the forum name
   for a forum thread; `score` is the Step C total, not a vote count.
 - `status` is `ok`, `fallback` (only the lower rungs worked) or `NOT FETCHED` (write the file
-  with empty `questions` and `threads` lists and say which rungs failed).
+  with empty `questions` and `threads` lists and a `"reason"` naming which rungs failed —
+  `npm run check:barriers` fails a bare `NOT FETCHED`).
 
 ## Linking `fact_source`
 

@@ -1551,18 +1551,31 @@ def _status(d, path):
     return st
 
 
+def _source_status(d, path, rel):
+    """A raw file's status for the question file's `sources`. A NOT FETCHED carries its
+    barrier (parity build Task 21): the file's own "reason" or "barrier", else a note that
+    the file names none."""
+    st = _status(d, path)
+    if st != "NOT FETCHED":
+        return st
+    why = next((d[k].strip() for k in ("reason", "barrier")
+                if isinstance(d.get(k), str) and d[k].strip()), None)
+    return f"NOT FETCHED — {why or rel + ' names no reason'}"
+
+
 def load_candidates(slug, root=ROOT):
     raw = Path(root) / "data/queries/raw" / slug
     cands, status = [], {}
     for src in CANDIDATE_SOURCES:
         path = raw / f"{src}.json"
+        rel = f"data/queries/raw/{slug}/{src}.json"
         d = _load(path, None)
         if d is None:
-            status[src] = "NOT FETCHED"
+            status[src] = f"NOT FETCHED — no {rel}"
             continue
         if not isinstance(d, dict):
             raise BadInput(path, "top level must be an object")
-        status[src] = _status(d, path)
+        status[src] = _source_status(d, path, rel)
         items = d.get("questions", [])
         if not isinstance(items, list):
             raise BadInput(path, "questions must be a list")
@@ -1580,11 +1593,11 @@ def load_candidates(slug, root=ROOT):
 
 
 def bank_candidates(root=ROOT):
-    """(candidates, status). A missing bank is "NOT FETCHED"; a malformed one is BadInput."""
+    """(candidates, status). A missing bank is NOT FETCHED; a malformed one is BadInput."""
     path = Path(root) / "data/faq.json"
     rows = _load(path, None)
     if rows is None:
-        return [], "NOT FETCHED"
+        return [], "NOT FETCHED — no data/faq.json"
     if not isinstance(rows, list):
         raise BadInput(path, "top level must be a list")
     out, unproven = [], _unproven_claims(root)
@@ -1602,10 +1615,11 @@ def load_competitors(slug, root=ROOT):
     path = Path(root) / "data/queries/raw" / slug / "competitors.json"
     d = _load(path, None)
     if d is None:
-        return {"status": "NOT FETCHED", "pages": []}
+        return {"status": f"NOT FETCHED — no data/queries/raw/{slug}/competitors.json",
+                "pages": []}
     if not isinstance(d, dict):
         raise BadInput(path, "top level must be an object")
-    _status(d, path)
+    _source_status(d, path, f"data/queries/raw/{slug}/competitors.json")
     pages = d.get("pages")
     if not isinstance(pages, list):
         raise BadInput(path, "pages must be a list")
@@ -1793,7 +1807,9 @@ def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
             "blocked": None if m["fact_source"] else "unverified fact", "covered_by": None})
     assert len({q["id"] for q in questions}) == len(questions), "question id collision"
     comp = load_competitors(slug, root)
-    status["competitors"] = comp.get("status", "ok")
+    rel = f"data/queries/raw/{slug}/competitors.json"
+    status["competitors"] = (comp["status"] if comp.get("status", "").startswith("NOT FETCHED — ")
+                             else _source_status(comp, Path(root) / rel, rel))
     target, rows = section_target(comp["pages"])
     for row, p in zip(rows, comp["pages"]):
         if isinstance(p.get("metrics"), dict):

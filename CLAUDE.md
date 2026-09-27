@@ -126,7 +126,9 @@ row, so the cap is untouched. Every other rule moved to a pack.
    `dup-no-sibling-crossover`, but the rule is about method: a page copied and then reworded
    passes the test and still breaks the rule.
 9. **No fabricated claims.** Never invent credentials, prices, reviews, test results or
-   competitor metrics. Un-fetched data is written `NOT FETCHED`, never inferred. The
+   competitor metrics. Un-fetched data is written `NOT FETCHED — <barrier>` (what was tried
+   and what stopped it), never inferred; `npm run check:barriers` holds new and changed
+   board, query and research files to it. The
    guarantee length is `NOT FETCHED` — `data/settings.json` has `guarantee_days: null` and
    no page may state a number until the breeder gives one. An unconfirmed licence or statute
    claim is written `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER`, never asserted.
@@ -254,8 +256,8 @@ npm run test:render:pages
 
 `check:all` chains `check:parity`, `check:facts`, `check:links`, `check:verbatim`,
 `check:outline`, `check:redirects`, `check:schema`, `check:queries`, `check:competitors`,
-`check:gaps`, `check:sitemaps`, `check:placeholders`, `check:retired`, `check:boards`, `check:workflow`, `check:markers` and
-`agents`, in that order (`tests/py/test_package_scripts.py` pins the chain and
+`check:gaps`, `check:barriers`, `check:sitemaps`, `check:placeholders`, `check:retired`,
+`check:boards`, `check:workflow`, `check:markers` and `agents`, in that order (`tests/py/test_package_scripts.py` pins the chain and
 `tests/py/test_doc_drift.py` pins this sentence to it). Run `npm run -s build` first: `check:boards` reads dist/ and fails a stale build. Every gate in the chain must be
 green. `test:render:meta` is the gate that checks the checkers — run it **before** trusting
 any page result. `test:render:pages` measures the target pages at 375/768/1280 in a real
