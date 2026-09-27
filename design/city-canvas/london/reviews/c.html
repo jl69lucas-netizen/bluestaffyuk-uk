@@ -1,0 +1,47 @@
+<style>
+/* Reviews C — Kennel wall. A photo of Jones, the sire, runs from the middle of the section to
+   the right edge of the page (bleed); a bone plate overlaps its left edge, clear of his face,
+   and holds the question, its answer and one review set large in the display face, Rachel
+   L.'s from London. The photo is credited so it never reads as the reviewer's own dog. Below
+   1024px the photo runs full width on top and the plate rises over its foot. Regular
+   density; no stars, no score. */
+.rvC{position:relative;background:var(--color-surface)}
+.rvC .ph{margin:0}
+.rvC .ph img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:68% 38%;background:var(--color-bone-50)}
+.rvC .ph figcaption{position:absolute;right:var(--space-3);top:var(--space-3);padding:var(--space-1) var(--space-3);border-radius:var(--radius-pill);background:var(--color-surface-deep);color:var(--color-text-on-inverse);font-size:var(--text-xs)}
+.rvC .plate{position:relative;margin:calc(-1 * var(--space-8)) var(--space-3) 0;padding:var(--space-5) var(--space-4) var(--space-6);background:var(--color-bone-50);box-shadow:inset 0 0 0 1px var(--color-border);border-radius:var(--radius-md) var(--radius-md) 0 0}
+.rvC h2{margin:0 0 var(--space-3);font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance}
+.rvC .lede{margin:0 0 var(--space-5);color:var(--color-text)}
+.rvC .slot{margin:0;padding-top:var(--space-4);border-top:1px solid var(--color-border)}
+.rvC blockquote{margin:0}
+.rvC blockquote p{margin:0;font-family:var(--font-display);font-weight:600;font-size:var(--text-xl);line-height:1.35;color:var(--color-brand)}
+.rvC .sig{margin:var(--space-3) 0 0;font-size:var(--text-sm);color:var(--color-ink-2)}
+.rvC .sig cite{font-style:normal;font-weight:700;color:var(--color-text)}
+@media (min-width:768px){
+  .rvC .plate{margin:calc(-1 * var(--space-11)) var(--space-8) 0;padding:var(--space-7) var(--space-7) var(--space-7)}
+}
+@media (min-width:1024px){
+  .rvC{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);min-height:520px;align-items:center}
+  .rvC .ph{position:absolute;top:0;bottom:0;right:0;width:55%}
+  .rvC .ph img{height:100%;aspect-ratio:auto;object-position:60% 40%}
+  .rvC .plate{grid-column:1;margin:var(--space-8) 0 var(--space-8) max(var(--space-6),calc((100vw - 1160px) / 2));padding:var(--space-7);border-radius:0 var(--radius-md) var(--radius-md) 0;width:calc(100% + 80px);max-width:560px;box-sizing:border-box}
+  .rvC h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .rvC blockquote p{font-size:var(--text-2xl);line-height:1.3}
+}
+</style>
+<section data-component="reviews" data-variant="c" class="rvC">
+  <figure class="ph">
+    <img src="/images/jones-magnificent-blue-staffy-sire.webp" alt="Jones, our blue Staffordshire Bull Terrier sire, lying on a carpet in front of his crate" width="780" height="780" loading="lazy">
+    <figcaption>Photo: Jones, the sire of the six</figcaption>
+  </figure>
+  <div class="plate">
+    <h2>Would a London Owner Buy From Us Again?</h2>
+    <p class="lede">Rachel L., who gave London as home, answered that herself in the review she sent us, and we quote it here word for word.</p>
+    <figure class="slot" data-review-slot>
+      <blockquote data-review="2">
+        <p>The health checks, the communication, and the home-raised environment — everything was top-notch. I wouldn’t go anywhere else for a Staffy.</p>
+      </blockquote>
+      <figcaption class="sig"><cite>Rachel L.</cite>, London</figcaption>
+    </figure>
+  </div>
+</section>

@@ -1,0 +1,69 @@
+<style>
+/* Image + text A — Flanked portrait. The question and its answer centred under a steel
+   masthead rule; then one tall portrait photo stands in the middle of the section with three
+   numbered points ruled off on each side of it, so the photo sits inline between two text
+   columns rather than beside or above the prose. Framed by rules only: no band, no card,
+   no shadow. Below 1024px the photo, cropped 4:3 round the faces, comes straight after the
+   answer and the six points follow (two columns from 640px, one on a phone). */
+.itA{background:var(--color-surface);border-top:4px solid var(--color-brand)}
+.itA .in{max-width:1160px;margin:0 auto;padding:var(--space-7) var(--space-4)}
+.itA .head{max-width:720px;margin:0 auto var(--space-6);text-align:center}
+.itA h2{margin:0 0 var(--space-3);font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance}
+.itA .lede{margin:0;color:var(--color-text)}
+.itA .body{display:grid;gap:var(--space-5)}
+.itA .photo{margin:0;justify-self:center;width:100%;max-width:520px}
+.itA .photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 30%;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.itA .photo figcaption{margin-top:var(--space-2);font-size:var(--text-xs);color:var(--color-text-muted);text-align:center}
+.itA ol{margin:0;padding:0;list-style:none;display:grid}
+.itA .body > .right li:first-child{border-top:0}
+.itA .body > .left{margin-bottom:calc(-1 * var(--space-5))}
+.itA li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:var(--space-3);padding:var(--space-4) 0;border-bottom:1px solid var(--color-border)}
+.itA li:first-child{border-top:1px solid var(--color-border)}
+.itA .n{display:grid;place-items:center;width:36px;height:36px;border:2px solid var(--color-brand);border-radius:50%;font-family:var(--font-display);font-weight:600;color:var(--color-brand);font-variant-numeric:tabular-nums}
+.itA .k{margin:0;font-weight:700;color:var(--color-brand)}
+.itA .v{margin:2px 0 0;font-size:var(--text-sm);line-height:1.5;color:var(--color-ink-2)}
+.itA .nb{white-space:nowrap}
+@media (min-width:640px) and (max-width:1023px){
+  .itA .body{grid-template-columns:1fr 1fr;column-gap:var(--space-6)}
+  .itA .photo{grid-column:1/-1}
+  .itA .body > .left{margin-bottom:0}
+  .itA .body > .right li:first-child{border-top:1px solid var(--color-border)}
+}
+@media (min-width:1024px){
+  .itA .in{padding:var(--space-10) var(--space-5)}
+  .itA .body > .left{margin-bottom:0}
+  .itA .photo{max-width:340px}
+  .itA .photo img{aspect-ratio:540/664;object-position:50% 50%}
+  .itA h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .itA .body{grid-template-columns:minmax(0,1fr) 340px minmax(0,1fr);gap:var(--space-7);align-items:center}
+  .itA .photo{order:2}
+  .itA .left{order:1}
+  .itA .right{order:3}
+  .itA li:first-child{border-top:0}
+  .itA li:last-child{border-bottom:0}
+}
+</style>
+<section data-component="image-text" data-variant="a" class="itA">
+  <div class="in">
+    <div class="head">
+      <h2>What Does Every Puppy Bring Home to London From Us?</h2>
+      <p class="lede">The same start, whichever of the six you choose and whether you collect in Carlisle or we bring your puppy to London by DEFRA-approved transport.</p>
+    </div>
+    <div class="body">
+      <figure class="photo" data-media>
+        <img src="/images/ethical-staffy-puppy-london-delivery.webp" alt="A Blue Staffy puppy with its new owner" width="540" height="664" loading="lazy">
+        <figcaption>A blue Staffy puppy with its new owner.</figcaption>
+      </figure>
+      <ol class="left">
+        <li><span class="n" aria-hidden="true">1</span><div><p class="k">Parents you can name</p><p class="v">Maggie, the dam, and Jones, the sire.</p></div></li>
+        <li><span class="n" aria-hidden="true">2</span><div><p class="k">DNA-tested parents</p><p class="v">Both clear of <span class="nb">L-2-HGA and HC-HSF4</span>.</p></div></li>
+        <li><span class="n" aria-hidden="true">3</span><div><p class="k">Eyes and elbows screened</p><p class="v">Both parents, alongside the DNA tests.</p></div></li>
+      </ol>
+      <ol class="right" start="4">
+        <li><span class="n" aria-hidden="true">4</span><div><p class="k">Puppy Culture and ENS</p><p class="v">The way we raise every litter in our home.</p></div></li>
+        <li><span class="n" aria-hidden="true">5</span><div><p class="k">Our vet, on request</p><p class="v">You are welcome to speak to our vet before you decide.</p></div></li>
+        <li><span class="n" aria-hidden="true">6</span><div><p class="k">A two-year genetic health guarantee</p><p class="v">It comes with every puppy we sell.</p></div></li>
+      </ol>
+    </div>
+  </div>
+</section>

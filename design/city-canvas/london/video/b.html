@@ -1,0 +1,55 @@
+<style>
+/* Video B — Portrait reel. Framed by rules only: a 4px steel rule over the section and a
+   hairline under it, no band, no card. The copy column carries the question, a short steel
+   accent rule, the answer and, inline in the text, a small captioned print of a puppy with
+   its new owner (the section's own photo); beside it stands a tall 4:5 click-to-play poster
+   of Cheryl, one of the six, with a brass play disc and a credit line. On a phone the copy
+   and print come first and the poster follows at full width. */
+.vdB{background:var(--color-surface);border-top:4px solid var(--color-brand);border-bottom:1px solid var(--color-border)}
+.vdB .in{max-width:1080px;margin:0 auto;padding:var(--space-7) var(--space-4);display:grid;gap:var(--space-6)}
+.vdB h2{margin:0;font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:20ch}
+.vdB h2::after{content:"";display:block;width:72px;height:3px;margin:var(--space-4) 0;background:var(--color-brand)}
+.vdB .lede{margin:0 0 var(--space-4);max-width:54ch;color:var(--color-text)}
+.vdB .print{display:grid;grid-template-columns:112px minmax(0,1fr);gap:var(--space-3);align-items:center;margin:0 0 var(--space-4);padding:var(--space-3) 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}
+.vdB .print img{display:block;width:112px;height:140px;aspect-ratio:4/5;object-fit:cover;object-position:40% 25%;border-radius:var(--radius-sm);background:var(--color-bone-50)}
+.vdB .print figcaption{font-size:var(--text-sm);line-height:1.45;color:var(--color-ink-2)}
+.vdB .more{margin:0;max-width:54ch;color:var(--color-ink-2);font-size:var(--text-sm)}
+.vdB .nb{white-space:nowrap}
+.vdB .reel{margin:0;justify-self:center;width:100%;max-width:420px}
+.vdB .play{position:relative;display:block;width:100%;padding:0;font:inherit;border:0;border-radius:var(--radius-md);background:var(--color-bone-50);cursor:pointer;overflow:hidden}
+.vdB .play img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 38%;transition:opacity var(--dur-base) var(--ease-out)}
+.vdB .play:hover img{opacity:.9}
+.vdB .disc{position:absolute;left:50%;bottom:var(--space-5);display:grid;place-items:center;width:64px;height:64px;margin-left:-32px;border-radius:50%;background:var(--color-cta);color:var(--color-cta-ink);box-shadow:var(--shadow-card);transition:transform var(--dur-fast) var(--ease-out)}
+.vdB .play:hover .disc{transform:scale(1.06)}
+.vdB .disc svg{width:26px;height:26px;margin-left:3px}
+.vdB .reel figcaption{margin-top:var(--space-2);font-size:var(--text-xs);color:var(--color-text-muted)}
+@media (min-width:768px){
+  .vdB .in{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:var(--space-8);align-items:center;padding:var(--space-9) var(--space-6)}
+  .vdB .reel{justify-self:end}
+}
+@media (min-width:1024px){
+  .vdB h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .vdB .print{grid-template-columns:144px minmax(0,1fr)}
+  .vdB .print img{width:144px;height:180px}
+}
+</style>
+<section data-component="video" data-variant="b" class="vdB" data-video-id="g9iV9RVr_Sk">
+  <div class="in">
+    <div class="copy">
+      <h2>Can You Watch Our Puppies Before You Enquire From London?</h2>
+      <p class="lede">Yes. Our film of puppies from one of our litters is here to watch whenever you like, so you can see how a Staffy puppy moves and plays before you write to us.</p>
+      <figure class="print">
+        <img src="/images/ethical-staffy-puppy-london-delivery.webp" alt="A Blue Staffy puppy with its new owner" width="540" height="664" loading="lazy">
+        <figcaption>A blue Staffy puppy with its new owner. When yours is ready, we bring it to you by DEFRA-approved transport for <span class="nb">£200–£350</span>, or you collect in Carlisle.</figcaption>
+      </figure>
+      <p class="more">Nothing loads from YouTube until you press play, so this page stays quick to open.</p>
+    </div>
+    <figure class="reel">
+      <button type="button" class="play" data-play aria-label="Play the video: Staffordshire Bull Terrier puppies — a litter of ours on film">
+        <img src="/puppies/Cheryl1.jpeg" alt="Cheryl, a blue Staffy girl with a white blaze, lying on a wooden floor" width="1080" height="1350" loading="lazy">
+        <span class="disc" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
+      </button>
+      <figcaption>A litter of ours, on film. Poster photo: Cheryl, one of the six available now.</figcaption>
+    </figure>
+  </div>
+</section>

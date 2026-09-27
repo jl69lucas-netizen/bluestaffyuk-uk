@@ -1,0 +1,53 @@
+<style>
+/* Image + text C — Two chapters. A sunk steel-100 tray (no shadow, no raised surface) that
+   reads like two short chapters of one story, Carlisle then London. Each chapter is an H3
+   question in a left rail, then its own photo, then the prose that answers it, so the photo
+   always comes straight after its heading (layout-h3-image-first) and sits inline in the
+   flow. Brass numerals mark the chapters; a hairline divides them. Compact: two chapters,
+   one tray. On a phone each chapter runs heading, photo, prose in one column. */
+.itC{background:var(--color-surface);padding:var(--space-6) var(--space-3)}
+.itC .tray{max-width:1100px;margin:0 auto;background:var(--color-brand-soft);border-radius:var(--radius-lg);padding:var(--space-5) var(--space-4)}
+.itC h2{margin:0 0 var(--space-2);font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:26ch}
+.itC .lede{margin:0 0 var(--space-5);max-width:62ch;color:var(--color-text)}
+.itC .ch{display:grid;gap:var(--space-3);padding:var(--space-5) 0;border-top:1px solid var(--color-steel-300)}
+.itC .num{display:block;margin-bottom:var(--space-1);font-family:var(--font-display);font-size:var(--text-sm);font-weight:600;letter-spacing:.08em;color:var(--color-ink-2)}
+.itC .num b{display:inline-grid;place-items:center;width:28px;height:28px;margin-right:var(--space-2);border-radius:50%;background:var(--color-cta);color:var(--color-cta-ink);font-size:var(--text-sm)}
+.itC h3{margin:0;font-size:var(--text-xl);line-height:1.25;text-wrap:balance}
+.itC .bl-img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;object-position:50% 35%;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.itC .ch p{margin:0;color:var(--color-text)}
+.itC .nb{white-space:nowrap}
+@media (min-width:768px){
+  .itC .tray{padding:var(--space-7) var(--space-6)}
+  .itC .ch{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);grid-template-areas:"head head" "img text";column-gap:var(--space-5);row-gap:var(--space-3);align-items:start}
+  .itC .hd{grid-area:head}
+  .itC .bl-img{grid-area:img}
+  .itC .ch p{grid-area:text}
+}
+@media (min-width:1024px){
+  .itC h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .itC .ch{grid-template-columns:220px 340px minmax(0,1fr);grid-template-areas:"head img text";column-gap:var(--space-6)}
+  .itC .bl-img{max-width:340px}
+}
+</style>
+<section data-component="image-text" data-variant="c" class="itC">
+  <div class="tray">
+    <h2>Where Does Your Puppy Start, and How Does It Reach London?</h2>
+    <p class="lede">In our home in Carlisle, Cumbria, with its mother close by, and then at your door in London or in your arms at collection, whichever suits you.</p>
+    <div class="ch">
+      <div class="hd">
+        <span class="num"><b aria-hidden="true">1</b>Carlisle</span>
+        <h3>Who Raises Your Puppy Before It Leaves Carlisle?</h3>
+      </div>
+      <img class="bl-img" data-media src="/images/maggie-blue-staffy-dam-with-pups.webp" alt="Maggie, the blue Staffy dam, sitting on a sofa beside two of her blue puppies" width="780" height="585" loading="lazy">
+      <p>We do, in our own home, with Maggie beside her puppies. Every litter is raised with Puppy Culture and ENS, and both parents, Maggie and Jones, are DNA-tested clear of <span class="nb">L-2-HGA and HC-HSF4</span> with their eyes and elbows screened.</p>
+    </div>
+    <div class="ch">
+      <div class="hd">
+        <span class="num"><b aria-hidden="true">2</b>London</span>
+        <h3>How Does Your Puppy Get From Us to Your Door?</h3>
+      </div>
+      <img class="bl-img" data-media src="/images/ethical-staffy-puppy-london-delivery.webp" alt="A Blue Staffy puppy with its new owner" width="540" height="664" loading="lazy" style="object-position:50% 30%">
+      <p>By DEFRA-approved transport, for <span class="nb">£200 to £350</span> priced by distance, or you collect from us in Carlisle. The £500 deposit books your viewing and reserves your puppy, and it comes off the price.</p>
+    </div>
+  </div>
+</section>

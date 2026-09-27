@@ -230,3 +230,49 @@ on layout and framing; Family sheet B carries a real section photo.
 
 The deposit is phrased one way everywhere: "£500 books your viewing and reserves your puppy,
 and it comes off the price" (`data/faq.json` `home-price-range`).
+
+## Task 8: video, image and text, reviews (2026-09-27)
+
+**How the passes ran.** `frontend-design:frontend-design` was invoked with the Skill tool on the
+brief in the plan's Task 8 Step 3, after every capture and idea sheet the three ideas-index
+sections cite was opened with the Read tool (4 for video, 24 for image and text, 8 for reviews),
+and `VideoEmbed.astro`, `data/settings.json` `youtube_embeds`, `data/reviews.json` and the
+served images' own alt text (`data/verbatim/*.json`, `data/locations.json`) were read. **One media
+convention for all three:** `media` is read at section level. For video the poster inside the
+facade is the video, not section media (the built S3 facade row is `media: none`), so each video
+variant carries a real section photo besides its poster; with every must-differ row at
+`media: none` and framing `card` / `band` / `plain`, every variant differs from every row on
+media AND framing (and a reviewer who reads every video layout as `facade` still finds two axes
+from S3). `impeccable:impeccable` was then invoked with the Skill tool (brand register; no
+`PRODUCT.md`, whose loader reported `hasProduct: false`, so the brand context came from the
+design-context files as in Tasks 5 to 7): the detector (`npx impeccable --json` on the nine
+fragments) and a design review of the shots at 375 / 768 / 1024 / 1280. Detector results:
+`cramped-padding` rows are the known false-positive class (padding on inner wrappers, hairline
+rows); `side-tab` on video B and image and text A is the full-width 4px masthead rule over the
+section; the `side-tab` on reviews C was real (a 4px steel stripe on the plate) and was replaced
+by a 1px inset border. Every video is the facade for `g9iV9RVr_Sk` (the one id in
+`data/settings.json` the guide page carries); its accessible name is the guide board's existing
+title, never a new one, and nothing loads from YouTube.
+
+| Component | Variant | frontend-design direction | impeccable findings | Fixed | Widths |
+|---|---|---|---|---|---|
+| video | a | **Screening room.** A deep-steel band like a darkened cinema: the question centred, one wide 16:9 facade (Maggie and two puppies as the poster), and a programme line under it with the caption and a round print of Jones, the sire. Axes `screening / bottom / airy / band`. | The centred play disc sat on the grey sofa between the dogs and read as part of the photo; the frame ran wider than the 780px poster, so the image was upscaled at 1280. | Disc moved to the poster's clear lower-left corner; screen held to 780px so the poster is never upscaled; `font:inherit` on the button. | 375 · 768 · 1024 · 1280 |
+| video | b | **Portrait reel.** Rules only (4px steel masthead, hairline foot): the copy column with a short accent rule, the answer and an inline print of a puppy with its new owner, beside a tall 4:5 facade of Cheryl with a brass disc at its foot. Axes `reel / inline / regular / rule`. | The validator refused a `<span>` accent rule between the heading and its paragraph; the inline print's caption hung at the print's foot, leaving a gap. | Accent rule drawn as the heading's `::after`; the print caption centred on the photo. | 375 · 768 · 1024 · 1280 |
+| video | c | **Side panel.** A sunk steel-100 tray: a wide 16:9 facade of Christa with a brass "Play the film" pill, beside a panel with Ince's photo and three ruled facts (parents, price, getting home). Axes `side-panel / right / compact / inset`. | At 768 the panel was a narrow column under a short screen, with a tall empty area below the screen; Christa's ear tips were cut at 16:9. | Below 1024 the panel drops under the screen, Ince's photo beside the facts from 640px; the poster crop anchored near the top (50% 4%). | 375 · 768 · 1024 · 1280 |
+| image-text | a | **Flanked portrait.** Under a steel masthead rule, a centred question and answer; a tall photo of a young owner hugging a blue puppy stands in the middle with three numbered, ruled points on each side (parents, DNA, eyes and elbows; Puppy Culture and ENS, the vet, the guarantee). Axes `flank / inline / regular / rule`. | On a phone the 540×664 photo ran about 420px tall before the first point, and the two lists met with a double rule. | Below 1024 the photo is cropped 4:3 round the faces and the points run two columns from 640px; the double rule removed. | 375 · 768 · 1024 · 1280 |
+| image-text | b | **Offset block.** A steel-100 block bleeds off the left page edge with the London owner photo offset on it at no more than its own 400px; to the right the question, a label and value spec sheet (deposit, price, getting home, parents, guarantee) and a brass Ask pill. Axes `offset / left / regular / bleed`. | The lede promised "agreed in writing", which no file states; the alt had been rewritten. | Lede reworded to what the page shows; the image keeps its served alt text word for word (working rule 11). | 375 · 768 · 1024 · 1280 |
+| image-text | c | **Two chapters.** A sunk steel-100 tray, Carlisle then London: each chapter a brass numeral, an H3 question, its own photo straight after the heading, then the answering prose (`layout-h3-image-first`). Axes `chapters / inline / compact / inset`. | At 4:3 the phone photos ran tall; the London photo's crop sat low. | Photos 3:2 with a focus near the faces. | 375 · 768 · 1024 · 1280 |
+| reviews | a | **Owner's letter.** Mark J's London review word for word on a raised card (surface, card border, card shadow), his own photo from the site at the left (the pairing the homepage already makes), a large quote mark and a signed foot. Axes `letter / left / airy / card`. | The brass quote mark failed AA (2.42:1) as text on white; the photo was painted at 260px beside the quote at 768 with dead space under it; a caption implied more than the file says. | Quote mark in steel-500; two columns from 1024 only (photo at its own 319px width above the quote below that); the caption removed. | 375 · 768 · 1024 · 1280 |
+| reviews | b | **Two London notes.** A sunk steel-100 tray that opens on a wide, credited photo of Vennie, then the two reviews that give London as home, one per slot, stacked in one column; the second stepped in from the left. Axes `stack / top / compact / inset`. | Both quotes were the same heavy display face, so the long review ran about 900px on a phone; the 21:9 photo was a sliver at 375. | The short review is set large in the display face, the long one in the body face; the photo is 16:9 below 768. | 375 · 768 · 1024 · 1280 |
+| reviews | c | **Kennel wall.** A photo of Jones, credited as the sire so it never reads as the reviewer's dog, bleeds to the right page edge; a bone plate overlaps its left edge with the question and Rachel L.'s review set large. On a phone the photo leads and the plate rises over its foot. Axes `overlap / right / regular / bleed`. | Detector `side-tab`: a 4px steel stripe on the plate. | Stripe replaced by a 1px inset border; the quote set at weight 600. | 375 · 768 · 1024 · 1280 |
+
+Copy checks common to all nine: every heading is a Title Case buyer question with a 12+ word
+answering paragraph that names London; reviews are only `data/reviews.json` rows 1 (Mark J) and 2
+(Rachel L.), word for word with `data-review`, one per slot, with no star, score or
+AggregateRating; the deposit reads "£500 books your viewing and reserves your puppy, and it
+comes off the price"; the parents are Maggie and Jones, DNA-tested clear of L-2-HGA and HC-HSF4,
+eyes and elbows screened; Puppy Culture and ENS; the buyer may speak to our vet; a two-year
+genetic health guarantee; delivery £200 to £350 by DEFRA-approved transport, priced by
+distance, or collection in Carlisle; no licence, travel time, distance, age or invented claim;
+no em dashes in our own visible copy (the two em dashes on the canvas are inside Rachel L.'s
+verbatim review, and the video's accessible name is the guide board's existing title).

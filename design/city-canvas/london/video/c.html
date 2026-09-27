@@ -1,0 +1,68 @@
+<style>
+/* Video C — Side panel. A sunk steel-100 tray (no shadow, no raised surface): the question
+   and its answer across the top, then a wide 16:9 click-to-play screen of Christa beside a
+   narrow panel on the right with the section's own photo (Ince, one of the six) over three
+   ruled facts a viewer is likely to want next. Compact: everything in one tray; below 1024px the
+   panel drops under the screen (photo beside the facts from 640px). */
+.vdC{background:var(--color-surface);padding:var(--space-6) var(--space-3)}
+.vdC .tray{max-width:1160px;margin:0 auto;background:var(--color-brand-soft);border-radius:var(--radius-lg);padding:var(--space-5) var(--space-4)}
+.vdC h2{margin:0 0 var(--space-2);font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:26ch}
+.vdC .lede{margin:0 0 var(--space-5);max-width:64ch;color:var(--color-text)}
+.vdC .grid{display:grid;gap:var(--space-4)}
+.vdC .screen{margin:0}
+.vdC .play{position:relative;display:block;width:100%;padding:0;font:inherit;border:0;border-radius:var(--radius-md);background:var(--color-bone-50);cursor:pointer;overflow:hidden}
+.vdC .play img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% 4%;transition:opacity var(--dur-base) var(--ease-out)}
+.vdC .play:hover img{opacity:.9}
+.vdC .chip{position:absolute;left:var(--space-3);bottom:var(--space-3);display:inline-flex;align-items:center;gap:var(--space-2);min-height:48px;padding:0 var(--space-4) 0 var(--space-2);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;font-size:var(--text-sm);box-shadow:var(--shadow-card);transition:background-color var(--dur-fast) var(--ease-out)}
+.vdC .play:hover .chip{background:var(--color-cta-hover)}
+.vdC .chip i{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--color-cta-ink);color:var(--color-cta)}
+.vdC .chip svg{width:16px;height:16px;margin-left:2px}
+.vdC .screen figcaption{margin-top:var(--space-2);font-size:var(--text-xs);color:var(--color-ink-2)}
+.vdC .side{margin:0;display:grid;grid-template-columns:120px minmax(0,1fr);gap:var(--space-3);align-content:start}
+.vdC .side img{display:block;width:120px;height:120px;aspect-ratio:1/1;object-fit:cover;object-position:62% 30%;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.vdC .side .who{margin:0;font-size:var(--text-sm);color:var(--color-ink-2);align-self:center}
+.vdC .side .who b{display:block;font-family:var(--font-display);font-size:var(--text-lg);color:var(--color-brand)}
+.vdC .facts{grid-column:1/-1;margin:0;padding:0;list-style:none;border-top:1px solid var(--color-steel-300)}
+.vdC .facts li{padding:var(--space-2) 0;border-bottom:1px solid var(--color-steel-300);font-size:var(--text-sm);line-height:1.45}
+.vdC .facts b{color:var(--color-brand)}
+.vdC .nb{white-space:nowrap}
+@media (min-width:640px) and (max-width:1023px){
+  .vdC .side{grid-template-columns:200px minmax(0,1fr);column-gap:var(--space-5);align-items:start}
+  .vdC .side img{grid-row:1 / span 2;width:200px;height:200px}
+  .vdC .side .who{align-self:end}
+  .vdC .facts{grid-column:2}
+}
+@media (min-width:768px){
+  .vdC .tray{padding:var(--space-7) var(--space-6)}
+}
+@media (min-width:1024px){
+  .vdC h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .vdC .grid{grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
+  .vdC .side{grid-template-columns:1fr}
+  .vdC .side img{width:100%;height:auto;aspect-ratio:4/3}
+}
+</style>
+<section data-component="video" data-variant="c" class="vdC" data-video-id="g9iV9RVr_Sk">
+  <div class="tray">
+    <h2>How Lively Is a Blue Staffy Puppy at Home?</h2>
+    <p class="lede">Very, and our short film of puppies from one of our litters shows it better than we can say it; watch it from London before you choose between the six.</p>
+    <div class="grid">
+      <figure class="screen">
+        <button type="button" class="play" data-play aria-label="Play the video: Staffordshire Bull Terrier puppies — a litter of ours on film">
+          <img src="/puppies/Christa.jpeg" alt="Christa, a blue Staffy girl with a white chest, sitting on a sheepskin rug" width="1080" height="1080" loading="lazy">
+          <span class="chip" aria-hidden="true"><i><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg></i>Play the film</span>
+        </button>
+        <figcaption>A litter of ours, on film; it loads from YouTube only when you press play. Poster photo: Christa, one of the six available now.</figcaption>
+      </figure>
+      <aside class="side" aria-label="About the six available now">
+        <img src="/puppies/Ince1.jpg" alt="Ince, a solid blue Staffy boy, standing on a patio" width="1080" height="1079" loading="lazy">
+        <p class="who"><b>Ince</b>A solid blue boy, one of the six available now.</p>
+        <ul class="facts">
+          <li><b>Parents:</b> Maggie and Jones, DNA-tested clear of <span class="nb">L-2-HGA and HC-HSF4</span></li>
+          <li><b>Price:</b> £1,500 for a boy, £1,700 for a girl</li>
+          <li><b>Getting home:</b> DEFRA-approved transport for <span class="nb">£200–£350</span>, or collect in Carlisle</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>

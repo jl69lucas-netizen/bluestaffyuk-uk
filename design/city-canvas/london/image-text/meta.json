@@ -1,0 +1,53 @@
+{
+ "component": "image-text",
+ "variants": {
+  "a": {
+   "name": "Flanked portrait",
+   "description": "A tall London owner photo in the middle with three numbered, ruled points on each side, under a centred question and a steel rule.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/image-text/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-6-subs+image-design-component.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-with-image.png"
+   ],
+   "differs_from": "The photo stands inline between two text columns under rules; the built rows put it right of one column, above two, or leave it out on a band.",
+   "axes": {
+    "layout": "flank",
+    "media": "inline",
+    "density": "regular",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Offset block",
+   "description": "The photo offset on a steel-100 block that bleeds off the left edge; the question, a label and value spec sheet and a brass pill right.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea5.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Section-Slipt-Image+Text-Design-component.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-idea1.png"
+   ],
+   "differs_from": "Photo on the left on a block that bleeds to the page edge, with a spec sheet; S1 puts the image right in plain prose, S2 above, S3 has none.",
+   "axes": {
+    "layout": "offset",
+    "media": "left",
+    "density": "regular",
+    "framing": "bleed"
+   }
+  },
+  "c": {
+   "name": "Two chapters",
+   "description": "A sunk steel-100 tray with two H3 chapters, Carlisle then London: heading rail, its own photo, then the prose that answers it.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/image-text/sister-for-sale-1280-02.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/image-text/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/image-text/mfs-home-375-01.png"
+   ],
+   "differs_from": "Two H3 chapters, each image straight after its heading in the text flow, in a sunk tray; no built row has H3 chapters or an inset frame.",
+   "axes": {
+    "layout": "chapters",
+    "media": "inline",
+    "density": "compact",
+    "framing": "inset"
+   }
+  }
+ }
+}

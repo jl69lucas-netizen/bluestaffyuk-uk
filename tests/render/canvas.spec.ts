@@ -156,6 +156,14 @@ const PROBES: Record<string, Probe> = {
     const n = await page.evaluate(() => document.querySelectorAll('main table').length);
     return n ? [] : ['no <table> in main, so layout-table-stacks-on-mobile examined nothing'];
   },
+  video: async (page) => {
+    const out = await brokenImages(page);
+    const box = await page.locator('[data-play]').boundingBox();
+    if (!box || box.width < 44 || box.height < 44) out.push('the play control is under 44×44px');
+    return out;
+  },
+  'image-text': async (page) => [...(await allVisible(page, 'data-media')), ...(await brokenImages(page))],
+  reviews: (page) => allVisible(page, 'data-review-slot'),
 };
 
 type Frame = { component: string; variant: string; path: string };

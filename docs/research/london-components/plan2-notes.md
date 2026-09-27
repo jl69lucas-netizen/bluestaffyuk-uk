@@ -61,3 +61,26 @@ Added to by each Plan 1 task review; read before writing Plan 2.
 - **Figures come from data.** "£1,500 a boy / £1,700 a girl", the £500 deposit and the
   £200–£350 band are rendered from `data/puppies.json`, `data/price-matrix.json` and
   `data/settings.json`, never typed.
+
+## Task 8: video, image and text, reviews
+
+- **Video is built on `VideoEmbed.astro`** (`play="facade"`, id `g9iV9RVr_Sk`, title and caption
+  from the board record), not from the fragment's `<button>`: the kit injects the
+  youtube-nocookie player on click and carries the `<noscript>` iframe. The canvas poster is a
+  served photo only because a mockup may not load YouTube's thumbnail; if the picked variant
+  keeps a served poster, add a `poster` prop to `VideoEmbed` (reserved box kept), never a
+  second video id. Only the ids in `data/settings.json` `youtube_embeds` may appear.
+- **Reviews are built on `Testimonial.astro` from `data/reviews.json`** by name (as
+  `buy-blue-staffy-puppies-uk` selects Rachel L.), never by pasting the quote; one review per
+  slot; no AggregateRating or stars. Reviews A pairs Mark J with `mark-blue-staffy-london.webp`
+  (the homepage's own pairing, original alt); B and C use puppy and sire photos and credit them
+  in a visible caption so they never read as the reviewer's dog. Keep those captions.
+- **Alt text.** Image and text B keeps `blue-staffy-testimonial-london-happy-owner.webp`'s served
+  alt word for word ("... sharing a testimonial"), per working rule 11, although the section is
+  not a review; if B is picked, ask the breeder whether that alt may change or use a different
+  photo. Video A and reviews C describe `jones-strong-staffy-sire-temperament.webp` and
+  `jones-magnificent-blue-staffy-sire.webp` without the served alts' "3-year-old" (an age the
+  facts file does not hold); Plan 2 decides with the breeder which wins.
+- **Image and text C's H3 photos use the kit's `.bl-img` class** so `layout-h3-image-first`
+  counts them; build them with `BodyImage.astro`.
+- **Inline `style="object-position:…"`** on image and text C moves into a class or a focus prop.
