@@ -63,6 +63,7 @@
     "check:workflow": "python3 scripts/workflow_ref_check.py",
     "check:barriers": "python3 scripts/not_fetched_lint.py",
     "check:threads": "python3 scripts/thread_ledger.py --check",
+    "check:canvas": "python3 scripts/check_city_canvas.py",
     "check:all": "npm run check:parity && npm run check:facts && npm run check:links && npm run check:verbatim && npm run check:outline && npm run check:redirects && npm run check:schema && npm run check:queries && npm run check:competitors && npm run check:gaps && npm run check:barriers && npm run check:threads && npm run check:sitemaps && npm run check:placeholders && npm run check:retired && npm run check:boards && npm run check:workflow && npm run check:markers && npm run agents",
     "test:py": "python3 -m pytest tests/py -q",
     "test:render": "playwright test -c tests/render/playwright.config.ts",
