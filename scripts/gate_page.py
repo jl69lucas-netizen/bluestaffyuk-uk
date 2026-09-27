@@ -36,7 +36,9 @@ The profile is --type, else the board's meta.page_type, else `location` for a ci
 
 --skip-record leaves out the page-run-record and check-all steps. It is the form the verification pass runs
 and records, because the full gate cannot pass before that record exists.
---json PATH moves the report from docs/reports/gate-page/<slug>.json.
+--json PATH moves the report from docs/reports/gate-page/<slug>.json. The report records
+`head`: the commit the gates ran on (`git rev-parse HEAD`, `-dirty` when the tree had
+uncommitted changes), so scripts/measurement_ledger.py can refuse a report from another commit.
 
 Exit 0 when every step passes in both runs and the runs agree; 1 on any FAIL or any
 difference; 2 on a bad invocation (a slug no data file knows, no built page, no profile).
@@ -119,6 +121,22 @@ def run_check_all(root=ROOT):
     return p.returncode, tail(p.stderr + "\n" + p.stdout)
 
 
+def git_head(root=ROOT):
+    """HEAD's sha, plus `-dirty` when the work tree has uncommitted changes; None outside a
+    git work tree. Stamped on the report so a reader can tell which commit it judged."""
+    try:
+        p = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"], capture_output=True,
+                           text=True, timeout=60)
+        sha = p.stdout.strip()
+        if p.returncode != 0 or not sha:
+            return None
+        s = subprocess.run(["git", "-C", str(root), "status", "--porcelain"],
+                           capture_output=True, text=True, timeout=60)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return sha + "-dirty" if s.returncode != 0 or s.stdout.strip() else sha
+
+
 def stale_build(key, route, root=ROOT):
     """A message when the built page is older than any of the page's sources on disk — its
     board, facts and verbatim files, route files (a folder counts by its files) and, for a
@@ -180,11 +198,13 @@ def one_run(key, route, profile, runner, record, root):
     return steps
 
 
-def gate(key, route, profile, runs=RUNS, runner=None, record=True, root=ROOT, check_all=None):
+def gate(key, route, profile, runs=RUNS, runner=None, record=True, root=ROOT, check_all=None,
+         head=None):
     """The report: both runs, per-step agreement, and the verdict. `runner(step, route,
     profile)` -> (exit, payload[, stderr tail]) defaults to the real audits; `check_all(root)`
     -> (exit, tail) to the real `npm run -s check:all`, which only the full gate (record=True)
-    runs, once."""
+    runs, once. `head` defaults to git_head(root), read before the first run."""
+    head = git_head(root) if head is None else head
     if runner is None:
         runner = functools.partial(run_audit, new=FR.is_new_page(key))
     all_runs = [one_run(key, route, profile, runner, record, root) for _ in range(runs)]
@@ -201,7 +221,7 @@ def gate(key, route, profile, runs=RUNS, runner=None, record=True, root=ROOT, ch
         steps.append({"step": CHECK_ALL_STEP, "ok": [code == 0], "problems": [int(code != 0)],
                       "identical": True, "exit": code, "stderr": [ca_tail]})
     verdict = "PASS" if all(all(s["ok"]) and s["identical"] for s in steps) else "FAIL"
-    return {"slug": key, "route": route, "page_type": profile, "runs": runs,
+    return {"slug": key, "route": route, "page_type": profile, "head": head, "runs": runs,
             "record_checked": record, "steps": steps,
             "identical": all(s["identical"] for s in steps), "verdict": verdict,
             "evidence": [[{"step": s["step"], "evidence": s["evidence"]} for s in r] for r in all_runs]}

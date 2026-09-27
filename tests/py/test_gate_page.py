@@ -77,6 +77,31 @@ def test_the_site_wide_dup_audit_judges_only_findings_that_name_the_page():
     assert report["verdict"] == "FAIL"
 
 
+def test_the_report_records_the_commit_it_judged():
+    report = run(scripted())
+    sha = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True,
+                         text=True).stdout.strip()
+    assert report["head"] in (sha, sha + "-dirty")
+    assert GP.gate("p", "p", "location", runner=scripted(), record=False, head="abc")["head"] == "abc"
+
+
+def test_git_head_marks_a_dirty_tree_and_is_none_outside_git(tmp_path):
+    assert GP.git_head(tmp_path) is None
+    env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t",
+               GIT_COMMITTER_EMAIL="t@t")
+    git = lambda *a: subprocess.run(["git", "-C", str(tmp_path), *a], check=True, env=env,
+                                    capture_output=True)
+    git("init", "-q")
+    (tmp_path / "f").write_text("1", encoding="utf-8")
+    git("add", "f")
+    git("commit", "-qm", "x")
+    sha = subprocess.run(["git", "-C", str(tmp_path), "rev-parse", "HEAD"], capture_output=True,
+                         text=True).stdout.strip()
+    assert GP.git_head(tmp_path) == sha
+    (tmp_path / "f").write_text("2", encoding="utf-8")
+    assert GP.git_head(tmp_path) == sha + "-dirty"
+
+
 def test_a_failing_audit_fails_the_page():
     report = run(scripted({"aeo": (1, {"pages": [{"slug": "p", "findings": [
         {"severity": "WARN", "message": "no binomial"}]}], "errors": 0, "warns": 1})}))
