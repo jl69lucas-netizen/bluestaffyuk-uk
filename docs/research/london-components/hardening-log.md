@@ -204,3 +204,29 @@ Puppy Culture and ENS; a two-year genetic health guarantee; the buyer may speak 
 delivery £200 to £350 by DEFRA-approved transport, priced by distance, or collection in
 Carlisle; no licence, travel time, distance, score, age or invented claim; no em dashes in
 visible copy. Every `<td>` carries `data-label`, every table has a `<caption>` and `<th scope>`.
+
+## Review round (Task 7 review, 2026-09-27)
+
+`impeccable:impeccable` was invoked again with the Skill tool (brand register) on the seven
+changed variants (puppy cards a, b and c, tables a, b and c, key takeaways b): the detector
+(only the known false-positive classes: `cramped-padding` on wrapper padding and hairline rows,
+`side-tab` on the full-width 4px masthead rules of puppy cards a and tables c) and a review of
+re-shot frames at 375 / 768 / 1024 / 1280.
+
+**One media convention for puppy cards.** `media` is read at section level: a photo on each
+card is not section media (the built S1–S3 rows are `media: none` though their cards carry
+photos). Ledger A and Litter wall C therefore declare `media: none` and differ from every row
+on layout and framing; Family sheet B carries a real section photo.
+
+| Component | Variant | Review finding | Fixed | Widths |
+|---|---|---|---|---|
+| puppy-cards | a | No delivery line on the cards; two ruled columns at 1024+ could honestly read as S2's two-up grid. | One ruled column of line entries (photo, name, sex, colour, Available, the canonical delivery line, price in a fixed column, Ask pill); boys then girls. Axes `ledger / none / compact / rule`. | 375 · 768 · 1024 · 1280 |
+| puppy-cards | b | **Critical:** "Contact sheet" was S1's shipped three-up photo-topped grid on a tray, differing on framing only. | Redesigned as **Family sheet**: the sunk tray opens with a section-level photo of Maggie, the dam, with her puppies beside the question and answer, then the six prints (each now with the delivery line). Axes `grid-3 / left / regular / inset` (row slug kept verbatim; differs from S1 on media and framing). Lede "before you ask" (no phone is published). | 375 · 768 · 1024 · 1280 |
+| puppy-cards | c | No delivery line; density declared airy for an edge-to-edge wall with 2px seams; Roman's ear tips cut at 1280; below 1024 an even three-across grid. | Delivery line on every plate (band held on one line; fits at 375 in three short lines); density `compact`, media `none`; Roman shows his gallery photo `Roman1.jpg` with his face clear of the plate; from 640 to 1023 Cheryl and Christa run full width around a two-across middle. | 375 · 768 · 1024 · 1280 |
+| tables | a | Stacked rows ran about 1,580px; the footnote did not say delivery is extra. | Each stacked row is two lines (photo, name and price; then sex · colour · Available), about 510px for the six; footnote: delivery is extra (£200 to £350 by distance) or collect in Carlisle, and the £500 comes off the price. | 375 · 768 · 1024 · 1280 |
+| tables | b | "What you pay" beside "Three payments, in order" invited adding the £500 twice; the caption was sentimental. | Caption "Three figures, in order"; columns Step / Figure / What it means; step 2 "The puppy's price": "the £500 deposit comes off it, so it is never paid twice"; photo caption "A blue Staffy puppy in a family garden". | 375 · 768 · 1024 · 1280 |
+| tables | c | Roman's ear tips cut in the column photo. | Crop anchored near the top (22% 5%). | 375 · 768 · 1024 · 1280 |
+| key-takeaways | b | "The price on the card is the price" left out getting the puppy home. | "The price on the card is the puppy's price, plus delivery or collection". | 375 · 768 · 1024 · 1280 |
+
+The deposit is phrased one way everywhere: "£500 books your viewing and reserves your puppy,
+and it comes off the price" (`data/faq.json` `home-price-range`).

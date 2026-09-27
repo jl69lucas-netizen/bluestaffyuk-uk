@@ -41,10 +41,18 @@ Added to by each Plan 1 task review; read before writing Plan 2.
   keep the label "Ask About <name>" and keep one tap target per card (Contact sheet B and
   Litter wall C stretch the link over the card; a second link to the same place inside the
   card is `tabindex="-1"`, as the kit card does).
-- **The delivery line.** `rules/puppies.md` `delivery-band-on-every-card` wants the delivery
-  band on every card. Ledger A and Litter wall C carry it in the section, not on each card;
-  whichever is picked, Plan 2 adds the canonical line per card (or records the ruling that a
-  section-level line satisfies it) before `tests/py/test_puppy_card_delivery.py` is pointed at it.
+- **The delivery line.** `rules/puppies.md` `delivery-band-on-every-card` (test-enforced by
+  `tests/py/test_puppy_card_delivery.py`) wants the canonical line
+  `UK home delivery £200–£350 by distance · or collect in Carlisle` on every card. After the
+  Task 7 review all three variants carry it on every card as `<p class="deliv">` (the band
+  held on one line). The kit reads the band and the town from `data/settings.json`, as
+  `PuppyCard.astro` does; point the test at the picked card's markup.
+- **Photos per variant.** Litter wall C shows Roman's gallery photo (`Roman1.jpg`, face
+  higher in the frame, so the corner plate never covers it); the others show his
+  `card_photo` (`Roman2.jpg`). If C is picked, add a per-variant photo choice (or a focus
+  field) rather than changing `card_photo`.
+- **Family sheet B's section photo** is the site's served `maggie-blue-staffy-dam-with-pups.webp`
+  (working rule 11: reuse, keep filename and alt).
 - **Tables are built on `DataTable.astro` semantics** (caption, `th scope="col"`, row `th`,
   `data-label` from the column list). The canvas tables carry their own stacking CSS because
   the frame has no `global.css`; the kit keeps `.stack-table` and the picked style becomes a
