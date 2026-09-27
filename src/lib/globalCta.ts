@@ -10,6 +10,9 @@
 // re-board has `approval: null` and its old approval in `approval_previous`; that is the
 // approval in force (as in src/lib/pickedStyle.ts), so the page keeps what was last agreed.
 // A stale record_hash (global_cta edited after approval) is caught by check:boards, not here.
+// A city page lives at /uk-locations/<slug>/ but its board is keyed by the bare slug
+// (Known Issue 39), so the flattened route is tried first and the bare last segment second,
+// the same two spellings tests/render/lib/promotions.ts isNewPage tries.
 // tests/py/test_global_cta.py.
 type BoardCta = {
   approval?: unknown;
@@ -25,8 +28,10 @@ export const boardSlugFor = (pathname: string): string => {
 };
 
 export function globalCtaShown(pathname: string): boolean {
-  const file = `../../data/boards/${boardSlugFor(pathname).replace(/\//g, '--')}.json`;
-  const record = RECORDS[file];
+  const slug = boardSlugFor(pathname);
+  const bare = slug.split('/').pop() ?? slug;
+  const record = RECORDS[`../../data/boards/${slug.replace(/\//g, '--')}.json`]
+    ?? RECORDS[`../../data/boards/${bare}.json`];
   if (!record || !(record.approval ?? record.approval_previous)) return true;
   return record.brief?.cta?.global_cta !== 'hidden';
 }

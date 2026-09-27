@@ -12,6 +12,8 @@ import json
 import pathlib
 import re
 
+import sys
+
 import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -31,7 +33,17 @@ def approved_boards():
 
 
 def built(slug):
-    return DIST / ("index.html" if slug == "index" else f"{slug}/index.html")
+    """The built page of a board's slug through pageboard.built_page, so a city board (keyed by
+    its bare slug) is looked for at dist/uk-locations/<slug>/index.html rather than skipped."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from pageboard import built_page
+    return built_page(slug, dist=DIST)
+
+
+def test_a_city_boards_built_page_is_looked_for_under_uk_locations():
+    assert built("blue-staffy-puppies-for-sale-leeds") == (
+        DIST / "uk-locations/blue-staffy-puppies-for-sale-leeds/index.html")
+    assert built("index") == DIST / "index.html"
 
 
 def test_there_are_approved_boards_of_both_kinds():
@@ -43,7 +55,9 @@ def test_there_are_approved_boards_of_both_kinds():
 def test_the_built_page_honours_its_boards_global_cta(slug, global_cta):
     page = built(slug)
     if not page.exists():
-        pytest.skip("run npm run build first")
+        # Only an UNBUILT page skips: the path comes from the same resolver the gates use, so a
+        # built city page is always found and always tested.
+        pytest.skip(f"{page.relative_to(ROOT)} is not built — run npm run build first")
     has_band = bool(BAND.search(page.read_text(encoding="utf-8")))
     assert has_band == (global_cta == "shown"), (slug, global_cta, has_band)
 
@@ -127,3 +141,16 @@ def test_a_nested_route_finds_its_board_the_way_slug_file_names_it(tmp_path):
     got = run_global_cta(tmp_path, {stem: _record("hidden", approval={"approved_at": "x"})},
                          ["/uk-locations/blue-staffy-puppies-london/"])
     assert got == [False], got
+
+
+def test_a_city_page_finds_its_board_under_the_bare_slug(tmp_path):
+    # City boards are keyed by the bare slug (data/boards/<slug>.json, Known Issue 39), while
+    # the page lives at /uk-locations/<slug>/. Both spellings are tried, flattened route first,
+    # the way tests/render/lib/promotions.ts isNewPage does (Task 28a).
+    got = run_global_cta(tmp_path, {
+        "blue-staffy-puppies-for-sale-leeds": _record("hidden", approval={"approved_at": "x"}),
+        "uk-locations--blue-staffy-puppies-london": _record("hidden", approval={"approved_at": "x"}),
+        "blue-staffy-puppies-london": _record("shown", approval={"approved_at": "x"}),
+    }, ["/uk-locations/blue-staffy-puppies-for-sale-leeds/",
+        "/uk-locations/blue-staffy-puppies-london/"])
+    assert got == [False, False], got

@@ -126,7 +126,21 @@ def test_head_is_marked_dirty_by_uncommitted_work_but_not_by_its_own_outputs(tmp
         assert _cli(tmp_path, "--base", str(old), "--json", "--record-manifest").returncode == 0
         head = json.loads((tmp_path / "docs/reports/rendered-changes.json").read_text())["head"]
         assert len(head) == 40 and not head.endswith("-dirty")
+    # An untracked file is not uncommitted work on the build (page_run_record.dirty_tracked,
+    # the one definition of dirty the gate report uses too — Task 28a).
     (tmp_path / "stray.txt").write_text("x", encoding="utf-8")
+    assert _cli(tmp_path, "--base", str(old), "--json").returncode == 0
+    head = json.loads((tmp_path / "docs/reports/rendered-changes.json").read_text())["head"]
+    assert not head.endswith("-dirty")
+    # A committed manifest rewritten by --record-manifest is its own output, not dirt.
+    subprocess.run(["git", "add", "data/quality/dist-hashes.json"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "man"],
+                   cwd=tmp_path, check=True)
+    _dist(tmp_path / "dist", {"index": "c"})
+    assert _cli(tmp_path, "--base", str(old), "--json", "--record-manifest").returncode == 0
+    head = json.loads((tmp_path / "docs/reports/rendered-changes.json").read_text())["head"]
+    assert not head.endswith("-dirty")
+    (tmp_path / ".gitignore").write_text("old/\ndist/\nx\n", encoding="utf-8")  # a tracked edit
     assert _cli(tmp_path, "--base", str(old), "--json", "--record-manifest").returncode == 0
     rep = json.loads((tmp_path / "docs/reports/rendered-changes.json").read_text())
     man = json.loads((tmp_path / "data/quality/dist-hashes.json").read_text())

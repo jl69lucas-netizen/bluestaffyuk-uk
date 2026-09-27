@@ -29,6 +29,7 @@ CLEAN = {
     "hardening": (0, {"pages": [{"slug": "p/", "status": "OK", "checks": []}]}),
     "aeo": (0, {"pages": [{"slug": "p", "findings": []}], "errors": 0, "warns": 0}),
     "evidence": (0, {"pages": [{"slug": "p", "findings": []}], "errors": 0, "warns": 0}),
+    "board": (0, {"exit": 0, "lines": ["board-gate p [build] — 9 sections examined", "0 FAIL · 0 WARN"]}),
 }
 
 
@@ -60,7 +61,8 @@ def run(runner, record=False):
 def test_a_clean_page_passes_both_runs():
     report = run(scripted())
     assert report["verdict"] == "PASS" and report["runs"] == 2 and report["identical"] is True
-    assert [s["step"] for s in report["steps"]] == list(GP.AUDIT_STEPS)
+    # "p" is a new page, so the board gate runs after the six audits (Task 28a).
+    assert [s["step"] for s in report["steps"]] == list(GP.AUDIT_STEPS) + [GP.BOARD_STEP]
     assert all(s["ok"] == [True, True] for s in report["steps"])
 
 
@@ -345,3 +347,75 @@ def test_the_real_audits_run_twice_on_a_built_page_and_agree(tmp_path):
     assert report["runs"] == 2 and len(report["evidence"]) == 2
     assert [s["step"] for s in report["steps"]] == list(GP.AUDIT_STEPS)
     assert report["identical"] is True, [s for s in report["steps"] if not s["identical"]]
+
+
+# ---- the board gate and the rebuilt/targets barrier (Task 28a) ------------------------------
+def test_the_board_gate_is_a_step_on_a_new_page_only():
+    seen = []
+
+    def runner(step, route, profile):
+        seen.append(step)
+        return CLEAN[step]
+    GP.gate("blue-staffy-health-uk", "blue-staffy-health-uk", "guide", runner=runner,
+            record=False, head="abc")
+    assert GP.BOARD_STEP not in seen, "a frozen page keeps its six audits"
+    seen.clear()
+    report = GP.gate("p", "p", "location", runner=runner, record=False, head="abc")
+    assert seen.count(GP.BOARD_STEP) == 2
+    assert step(report, GP.BOARD_STEP)["ok"] == [True, True]
+
+
+def test_the_board_step_runs_board_gate_on_the_key():
+    # board_gate.py takes the board's key (a city's bare slug), not the route the audits take
+    argv = GP.argv_for(GP.BOARD_STEP, "uk-locations/x", "location", "o.json", key="x")
+    assert argv[0].endswith("scripts/board_gate.py") and argv[1:] == ["x"]
+
+
+def test_a_failing_board_gate_fails_the_page():
+    bad = {GP.BOARD_STEP: (1, {"exit": 1, "lines": ["  FAIL asset-required-missing hero", "1 FAIL · 0 WARN"]})}
+    report = run(scripted(bad))
+    b = step(report, GP.BOARD_STEP)
+    assert b["ok"] == [False, False] and b["problems"] == [1, 1] and report["verdict"] == "FAIL"
+
+
+def _approved_board(root, key):
+    (root / "data/boards").mkdir(parents=True, exist_ok=True)
+    (root / f"data/boards/{key}.json").write_text(json.dumps(
+        {"meta": {"slug": key}, "approval": {"approved_at": "x"}}), encoding="utf-8")
+
+
+def _lists(root, rebuilt, targets):
+    (root / "data/facts").mkdir(parents=True, exist_ok=True)
+    (root / "data/facts/rebuilt.json").write_text(json.dumps(rebuilt), encoding="utf-8")
+    (root / "tests/render").mkdir(parents=True, exist_ok=True)
+    (root / "tests/render/targets.json").write_text(
+        json.dumps({"pages": [{"slug": s, "page_type": "location"} for s in targets]}),
+        encoding="utf-8")
+
+
+def test_a_new_page_with_an_approved_board_must_be_in_rebuilt_and_targets(tmp_path):
+    _approved_board(tmp_path, "p")
+    _lists(tmp_path, [], [])
+    report = GP.gate("p", "uk-locations/p", "location", runner=scripted(), record=False,
+                     root=tmp_path, head="abc")
+    listed = step(report, GP.LISTED_STEP)
+    assert listed["ok"] == [False, False] and report["verdict"] == "FAIL"
+    found = next(e for e in report["evidence"][0] if e["step"] == GP.LISTED_STEP)["evidence"]["findings"]
+    assert any("data/facts/rebuilt.json" in f for f in found), found
+    assert any("tests/render/targets.json" in f for f in found), found
+    # listed under its key in the ledger and under its route in the render targets: passes
+    _lists(tmp_path, ["p"], ["uk-locations/p"])
+    report = GP.gate("p", "uk-locations/p", "location", runner=scripted(), record=False,
+                     root=tmp_path, head="abc")
+    assert step(report, GP.LISTED_STEP)["ok"] == [True, True] and report["verdict"] == "PASS"
+
+
+def test_the_listing_barrier_leaves_a_page_with_no_approved_board_and_a_frozen_page_alone(tmp_path):
+    _lists(tmp_path, [], [])
+    report = GP.gate("p", "p", "location", runner=scripted(), record=False, root=tmp_path,
+                     head="abc")
+    assert GP.LISTED_STEP not in [s["step"] for s in report["steps"]]
+    _approved_board(tmp_path, "blue-staffy-health-uk")
+    report = GP.gate("blue-staffy-health-uk", "blue-staffy-health-uk", "guide",
+                     runner=scripted(), record=False, root=tmp_path, head="abc")
+    assert GP.LISTED_STEP not in [s["step"] for s in report["steps"]]

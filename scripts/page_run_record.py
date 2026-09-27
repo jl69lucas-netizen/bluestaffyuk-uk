@@ -20,13 +20,14 @@ sources have uncommitted changes, because the record's commit would not contain 
   python3 scripts/page_run_record.py <slug> impeccable --findings 7 --fixed 6 --deferred "why"
   python3 scripts/page_run_record.py <slug> frontend-design --findings 3 --fixed 3
   python3 scripts/page_run_record.py <slug> verification \\
-      --run "npm run -s check:all" --run "npm run -s build" \\
+      --run "npm run -s build" --run "npm run -s check:all" \\
       --run "npm run gate:page -- <slug> --skip-record" --claim "the page passes every gate twice"
 
 `verification` RUNS each `--run` command itself and records its exit code and the first
 `examined N` its output prints (a command past 1800 s is exit 124), so the record is evidence
-rather than a claim about evidence. It refuses while any tracked file outside data/page-runs/
-and docs/reports/ has uncommitted changes, because it stamps HEAD. The exit codes it records
+rather than a claim about evidence. It refuses while any tracked file outside data/page-runs/,
+docs/reports/, data/quality/scorecards/ and the build's two tracked outputs
+(BUILD_OUTPUT_PATHS) has uncommitted changes, because it stamps HEAD. The exit codes it records
 are informational: the full `npm run gate:page -- <slug>` re-runs `npm run -s check:all`
 itself. A Harden pass is refused for a page with no sources yet.
 
@@ -181,15 +182,23 @@ def dirty_sources(key, root=ROOT):
 # scripts/build_scorecard.mjs names a card <slug>-<run date>.json: a second render run on the
 # day a card was committed rewrites that TRACKED file (a new day adds an untracked one).
 MEASUREMENT_PATHS = ("data/page-runs/", "docs/reports/", "data/quality/scorecards/")
+#: Tracked files every `npm run build` rewrites (package.json): prebuild's
+#: data/page-dates.json is derived from COMMITTED git history of the page files, and postbuild's
+#: public/search-index.json from the built dist/. Neither is an input anyone edits, both are
+#: reproduced exactly from what is committed, so rewriting them is not a page change. Without
+#: this, the close order docs/reference/page-run.md row 21 documents (build, then gate) would
+#: stamp every gate report `-dirty` and the ledger would read M8 and M10 as STALE.
+BUILD_OUTPUT_PATHS = ("data/page-dates.json", "public/search-index.json")
 
 
 def dirty_tracked(root=ROOT):
-    """Tracked files with uncommitted changes, outside MEASUREMENT_PATHS. The one definition
-    of a dirty tree: the record writer refuses on it and scripts/gate_page.py git_head marks
-    its report `-dirty` on it."""
+    """Tracked files with uncommitted changes, outside MEASUREMENT_PATHS and
+    BUILD_OUTPUT_PATHS. The one definition of a dirty tree: the record writer refuses on it,
+    scripts/gate_page.py git_head marks its report `-dirty` on it and
+    scripts/rendered_changes.py head_sha stamps its report with it."""
     p = _git(root, "status", "--porcelain", "--untracked-files=no")
     return [l[3:] for l in p.stdout.splitlines() if l.strip()
-            and not l[3:].startswith(MEASUREMENT_PATHS)]
+            and not l[3:].startswith(MEASUREMENT_PATHS + BUILD_OUTPUT_PATHS)]
 
 
 def load(key, root=ROOT):

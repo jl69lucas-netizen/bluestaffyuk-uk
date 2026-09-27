@@ -414,3 +414,18 @@ def test_dirty_tracked_ignores_records_reports_and_rewritten_scorecards(tmp_path
     assert PRR.dirty_tracked(tmp_path) == []
     (tmp_path / "src.astro").write_text("2", encoding="utf-8")
     assert PRR.dirty_tracked(tmp_path) == ["src.astro"]
+
+
+def test_dirty_tracked_ignores_the_two_tracked_build_outputs(tmp_path):
+    # `npm run build` rewrites data/page-dates.json (prebuild) and public/search-index.json
+    # (postbuild). Both are derived from committed sources and history, so the documented
+    # close order (build, then gate) must not stamp every report `-dirty` (Task 28a).
+    for rel in ("src.astro", "data/page-dates.json", "public/search-index.json"):
+        (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / rel).write_text("1", encoding="utf-8")
+    git(tmp_path, "init", "-q")
+    git(tmp_path, "add", "-A")
+    git(tmp_path, "commit", "-qm", "x")
+    (tmp_path / "data/page-dates.json").write_text("2", encoding="utf-8")
+    (tmp_path / "public/search-index.json").write_text("2", encoding="utf-8")
+    assert PRR.dirty_tracked(tmp_path) == []

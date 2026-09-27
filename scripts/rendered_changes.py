@@ -26,8 +26,8 @@ route (`uk-locations/<city>`), `index` for the root.
                      unsubmitted pages would drop out of the next diff. Commit it.
 
 `head` is the commit the build was made on top of (HEAD when this runs), with `-dirty`
-appended when the working tree has uncommitted changes other than the report and the manifest
-themselves. The manifest belongs to the commit that adds it, one after its `head`.
+appended when a tracked file has uncommitted changes (scripts/page_run_record.py dirty_tracked,
+the manifest aside; the report is under docs/reports/, which that test already sets aside). The manifest belongs to the commit that adds it, one after its `head`.
 
 What the hash counts. Inline <style>, non-JSON-LD <script> and /_astro/ asset links are
 stripped, so a shared CSS or bundle edit alone is not a change. Still counted as a change
@@ -49,6 +49,9 @@ import pathlib
 import re
 import subprocess
 import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import page_run_record as PRR  # noqa: E402
 
 ROOT = pathlib.Path(os.environ.get("RENDERED_CHANGES_ROOT") or pathlib.Path(__file__).resolve().parent.parent)
 MANIFEST = pathlib.Path("data") / "quality" / "dist-hashes.json"
@@ -130,18 +133,22 @@ def base_hashes(base):
 
 
 def head_sha():
-    """HEAD's sha, plus `-dirty` when the tree has uncommitted changes (report/manifest aside)."""
+    """HEAD's sha, plus `-dirty` when a tracked file has uncommitted changes.
+
+    Dirty is scripts/page_run_record.py dirty_tracked, the definition the gate report's `head`
+    uses: untracked files, records, reports (this one included), rewritten scorecards and the
+    build's own tracked outputs are not uncommitted work. The manifest this script records is
+    its own output too, so it is set aside here."""
     r = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True)
     sha = r.stdout.strip()
     if r.returncode != 0 or not re.fullmatch(r"[0-9a-f]{40}", sha):
         why = (r.stderr or r.stdout).strip() or "no output"
         raise HeadError(f"cannot read git HEAD in {ROOT}: {why}")
-    s = subprocess.run(["git", "status", "--porcelain", "--", ".",
-                        f":(exclude){REPORT.as_posix()}", f":(exclude){MANIFEST.as_posix()}"],
-                       cwd=ROOT, capture_output=True, text=True)
+    s = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True)
     if s.returncode != 0:
         raise HeadError(f"git status failed in {ROOT}: {s.stderr.strip()}")
-    return sha + "-dirty" if s.stdout.strip() else sha
+    dirty = [f for f in PRR.dirty_tracked(ROOT) if f != MANIFEST.as_posix()]
+    return sha + "-dirty" if dirty else sha
 
 
 def main(argv=None):

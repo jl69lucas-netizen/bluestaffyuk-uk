@@ -225,9 +225,16 @@ def refuse_on_new_page_rules(b, ont):
     re-approval, on the record as approved, not first at the build gate: a record the build
     would refuse must never be approved, because fixing it afterwards moves the hash and forces
     a second approval. Board block 7b shows the same findings. A no-op for every page
-    applies() leaves out, so the twelve built pages approve exactly as before."""
+    applies() leaves out, so the twelve built pages approve exactly as before.
+
+    A BLOCKED entity (CLAUDE.md rule 2) is refused here too, as `entity-blocked`: the build
+    gate's pageboard.gate_findings FAILs it, board block 5 says "the board cannot be approved"
+    and docs/reference/page-run.md row 7 says approval refuses it, so approval must."""
     fails = [(c, m) for c, sev, m in PB.FR.findings(b, ont)
              if sev == "FAIL" and c not in APPROVAL_EXEMPT]
+    if PB.FR.applies(b):
+        fails += [("entity-blocked", f"{e} is BLOCKED (CLAUDE.md rule 2)")
+                  for e in PB.authorization_check(b, ont)["blocked"]]
     if fails:
         raise PB.BoardError(
             "this record breaks the rules for new pages — fix the record and board it again:\n"

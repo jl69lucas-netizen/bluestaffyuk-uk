@@ -16,6 +16,12 @@ only on a new page):
   hardening         scripts/page_hardening_scan.py <route>
   aeo               scripts/aeo_audit.py <route>
   evidence          scripts/evidence_audit.py <route> --type <profile>
+  board             a new page only: scripts/board_gate.py <slug>, the Page Board gate (approval
+                    hash, Asset Gate, rule 16) for this one page, judged by its exit code
+  listed            a new page with an approved board only: its key is in
+                    data/facts/rebuilt.json and its route (or key) in tests/render/targets.json
+                    (page-run.md row 12 step 4) — without them check:boards and the render suite
+                    never examine it, so a pass elsewhere would be a pass on nothing
   page-run-record   data/page-runs/<slug>.json holds the session open and the impeccable,
                     frontend-design and verification-before-completion passes, current
                     (scripts/page_run_record.py; the twelve frozen pages are exempt)
@@ -67,6 +73,10 @@ REPORTS = ROOT / "docs" / "reports" / "gate-page"
 RUNS = 2
 PROFILES = sorted(set(final_page_audit.PROFILES) & set(evidence_audit.PAGE_TYPES))
 AUDIT_STEPS = ("dup-body", "dup-headers", "final-audit", "hardening", "aeo", "evidence")
+BOARD_STEP = "board"      # new pages only (scripts/family_rules.py is_new_page)
+LISTED_STEP = "listed"    # new pages with an approved board only
+REBUILT = pathlib.Path("data") / "facts" / "rebuilt.json"
+TARGETS = pathlib.Path("tests") / "render" / "targets.json"
 RECORD_STEP = "page-run-record"
 CHECK_ALL_STEP = "check-all"
 AUDIT_TIMEOUT = 600      # seconds per audit run; past it the step fails with exit 124
@@ -81,11 +91,14 @@ def tail(text, n=TAIL):
     return [l for l in (text or "").splitlines() if l.strip()][-n:]
 
 
-def argv_for(step, route, profile, out, new=True):
+def argv_for(step, route, profile, out, new=True, key=None):
     """The command a step runs, writing its JSON to `out`. `new`: the page is a project 5
-    page (scripts/family_rules.py is_new_page), so the evidence audit fails on WARN too."""
+    page (scripts/family_rules.py is_new_page), so the evidence audit fails on WARN too.
+    `key` is the board's key (a city's bare slug) for the board step; it defaults to the
+    route. board_gate.py writes no JSON: run_audit keeps its printed lines as the payload."""
     s = str(ROOT / "scripts") + "/"
     return {
+        BOARD_STEP: [s + "board_gate.py", key or route],
         "dup-body": [s + "dup_content_audit.py", "--json", out],
         "dup-headers": [s + "dup_content_audit.py", "--headers", "--json", out],
         "final-audit": [s + "final_page_audit.py", route, "--type", profile,
@@ -97,17 +110,21 @@ def argv_for(step, route, profile, out, new=True):
     }[step]
 
 
-def run_audit(step, route, profile, new=True):
+def run_audit(step, route, profile, new=True, key=None):
     """(exit code, JSON payload or None, stderr tail) for one audit step, run from the repo
-    root. A run past AUDIT_TIMEOUT is exit 124 with no payload."""
+    root. A run past AUDIT_TIMEOUT is exit 124 with no payload. The board step's payload is
+    {"exit", "lines"}: board_gate.py's printed verdict, which is what the two runs are diffed on."""
     with tempfile.TemporaryDirectory() as tmp:
         out = str(pathlib.Path(tmp) / "out.json")
         try:
-            p = subprocess.run([sys.executable] + argv_for(step, route, profile, out, new),
+            p = subprocess.run([sys.executable] + argv_for(step, route, profile, out, new, key),
                                cwd=str(ROOT), capture_output=True, text=True,
                                timeout=AUDIT_TIMEOUT)
         except subprocess.TimeoutExpired as e:
             return 124, None, tail(e.stderr, TAIL - 1) + [f"timed out after {AUDIT_TIMEOUT} s"]
+        if step == BOARD_STEP:
+            lines = [l for l in p.stdout.splitlines() if l.strip()]
+            return p.returncode, ({"exit": p.returncode, "lines": lines} if lines else None), tail(p.stderr)
         try:
             payload = json.loads(pathlib.Path(out).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
@@ -181,6 +198,9 @@ def judge(step, code, payload, page):
         mine = sorted((f for f in payload.get("findings", []) if page in (f.get("a"), f.get("b"))),
                       key=lambda f: (f.get("a"), f.get("b"), f.get("run")))
         return not mine, len(mine), {"pages": payload.get("pages"), "findings": mine}
+    if step == BOARD_STEP:
+        fails = sum(1 for l in payload.get("lines", []) if l.lstrip().startswith("FAIL "))
+        return code == 0, fails, {"exit": code, "lines": payload.get("lines", [])}
     if step == "dup-headers":
         mine = sorted((f for f in payload.get("findings", []) if page in f.get("pages", [])),
                       key=lambda f: (f.get("kind"), f.get("text")))
@@ -190,14 +210,57 @@ def judge(step, code, payload, page):
     return code == 0, problems, {"exit": code, "payload": payload}
 
 
-def one_run(key, route, profile, runner, record, root):
+def approved_board(key, root=ROOT):
+    """True when data/boards/<key with / as -->.json carries `approval` or, under re-board,
+    `approval_previous` (the approval in force, as board_gate and the render promotions read it)."""
+    p = pathlib.Path(root) / "data" / "boards" / (key.replace("/", "--") + ".json")
+    try:
+        b = json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    return isinstance(b, dict) and bool(b.get("approval") or b.get("approval_previous"))
+
+
+def listing_findings(key, route, root=ROOT):
+    """What keeps an approved new page out of the site-wide gates: its key missing from
+    data/facts/rebuilt.json (check:boards judges only those) or its route missing from
+    tests/render/targets.json (the render suite measures only those). An unreadable file is a
+    finding, never a pass."""
+    root = pathlib.Path(root)
+    out = []
+    try:
+        rebuilt = json.loads((root / REBUILT).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        rebuilt = None
+        out.append(f"{REBUILT.as_posix()} is unreadable: {e}")
+    if rebuilt is not None and key not in rebuilt:
+        out.append(f"{key} has an approved board but is not in {REBUILT.as_posix()} — add it "
+                   "(docs/reference/page-run.md row 12 step 4), or check:boards never judges it")
+    try:
+        pages = json.loads((root / TARGETS).read_text(encoding="utf-8")).get("pages", [])
+        slugs = {p.get("slug") for p in pages if isinstance(p, dict)}
+    except (OSError, ValueError, AttributeError) as e:
+        slugs = None
+        out.append(f"{TARGETS.as_posix()} is unreadable: {e}")
+    if slugs is not None and not ({route, key} & slugs):
+        out.append(f"{route or key} has an approved board but is not a page in "
+                   f"{TARGETS.as_posix()} — add it (docs/reference/page-run.md row 12 step 4), "
+                   "or the render suite never measures it")
+    return out
+
+
+def one_run(key, route, profile, runner, record, root, new=False, listed=False):
     page = route or "index"
     steps = []
-    for step in AUDIT_STEPS:
+    for step in AUDIT_STEPS + ((BOARD_STEP,) if new else ()):
         code, payload, *rest = runner(step, route, profile)
         ok, problems, evidence = judge(step, code, payload, page)
         steps.append({"step": step, "ok": ok, "problems": problems, "evidence": evidence,
                       "stderr": rest[0] if rest else []})
+    if listed:
+        found = listing_findings(key, route, root)
+        steps.append({"step": LISTED_STEP, "ok": not found, "problems": len(found),
+                      "evidence": {"findings": found}, "stderr": []})
     if record:
         # The record step reads git and one file; its second run cannot flake the way an audit
         # can, but it runs in both so every step has the same two-run shape — and a record
@@ -220,9 +283,12 @@ def gate(key, route, profile, runs=RUNS, runner=None, record=True, root=ROOT, ch
     read before the first run."""
     head = git_head(root) if head is None else head
     built_hash = page_hash(route, root)
+    new = FR.is_new_page(key)
+    listed = new and approved_board(key, root)
     if runner is None:
-        runner = functools.partial(run_audit, new=FR.is_new_page(key))
-    all_runs = [one_run(key, route, profile, runner, record, root) for _ in range(runs)]
+        runner = functools.partial(run_audit, new=new, key=key)
+    all_runs = [one_run(key, route, profile, runner, record, root, new, listed)
+                for _ in range(runs)]
     steps = []
     for i, first in enumerate(all_runs[0]):
         mine = [r[i] for r in all_runs]

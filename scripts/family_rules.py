@@ -41,6 +41,11 @@ def register(fn):
     return fn
 
 
+# The other three new-page predicates narrow this one for their inputs: evidence_audit.is_new_page
+# also needs a new-family type AND a slug in rebuilt.json (it judges built pages only);
+# tests/render/lib/promotions.ts isNewPage (render_baseline.is_new_page) also needs a type and
+# rebuilt OR an approved board (promotions block from approval on); measurement_ledger takes
+# rebuilt.json rows through this predicate (it measures the ledger's pages only).
 def is_new_page(board_or_slug):
     """True for a page built from project 5 on: a slug that is not one of the twelve frozen
     pages and not a `_`-prefixed fixture (`_demo`). Takes a board or a bare slug, so a script
