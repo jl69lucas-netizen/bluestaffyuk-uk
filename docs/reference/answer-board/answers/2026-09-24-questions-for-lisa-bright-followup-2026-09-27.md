@@ -23,3 +23,16 @@ answered them in chat on 2026-09-27. Recorded as the user gave them:
 | Q16 | Puppy Culture or ENS | "both" | Litters follow both Puppy Culture and early neurological stimulation (ENS). |
 
 Every question in this batch now has an answer. The coefficient of inbreeding (Q11) stays off the site.
+
+## Which parents (the user, in chat, 2026-09-27)
+
+"OLd Litter ="Maggie and Jones" and NEW 6 pups =Angie and Lays"
+
+- The six puppies now for sale (Roman, Byrd, Ince, Vennie, Christa, Cheryl) are from Angie and
+  Lays. A new page names Angie and Lays as their parents.
+- Maggie and Jones are the parents of the earlier litter. `data/faq.json` (rows at lines 71, 185,
+  365 and 371) and the Glasgow breeding-dogs page still present Maggie and Jones as "our dam" and
+  "our sire". Those rows are verbatim or frozen-page copy, so they are not changed in this pass;
+  the next page that uses one of them re-words it for the current litter.
+- Which of Angie and Lays is the dam and which is the sire is not yet recorded; pages say "the
+  parents, Angie and Lays" until the user says.
