@@ -21,7 +21,9 @@ What is refused, per fragment:
   hero       — the first <img>/<picture> comes before the first <h1>/<h2> in source
   assets     — every src/srcset/poster/url() is /images/<file> (public/images) or
                /puppies/<file> (src/assets/puppies) and exists; <a href> is "#…" or "/…";
-               every <img> has a non-empty alt and numeric width and height (no layout shift);
+               every <img> has a non-empty alt (or alt="" marked aria-hidden="true" /
+               role="presentation" when it is decorative) and numeric width and height (no
+               layout shift);
                a served /images/ file keeps an alt it was served with, word for word
                (working rule 11; served_alts())
   copy       — the word "London" appears; every £ amount is a price, the deposit or a
@@ -398,8 +400,12 @@ def validate_fragment(component, variant, text, ctx):
         if tag == "form" and a.get("action", "#")[:1] != "#":
             p.append(f"asset: <form action=\"{a['action']}\"> — a mockup form posts nowhere")
         if tag == "img":
-            if not a.get("alt", "").strip():
-                p.append(f"asset: <img src=\"{a.get('src', '')}\"> has no alt text")
+            decorative = a.get("aria-hidden") == "true" or a.get("role") in ("presentation", "none")
+            if "alt" in a and not a["alt"].strip() and decorative:
+                pass    # alt="" marked decorative is the correct markup (learning loop, L9)
+            elif not a.get("alt", "").strip():
+                p.append(f"asset: <img src=\"{a.get('src', '')}\"> has no alt text (a decorative "
+                         "image carries alt=\"\" with aria-hidden=\"true\" or role=\"presentation\")")
             elif a.get("src", "").startswith("/images/"):
                 name = served_name(a["src"][len("/images/"):], ctx.served_alts)
                 served = ctx.served_alts.get(name)

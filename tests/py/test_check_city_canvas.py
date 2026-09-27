@@ -299,3 +299,20 @@ def test_the_real_parents_pass():
     ok = HERO.replace("<a href", "<p>The parents, Maggie and Jones, live with us. Maggie, our dam, "
                                  "and Jones, our sire, are both tested.</p><a href")
     assert probs("hero", "a", ok, c) == []
+
+
+DECOR = f'<img src="{IMG}" alt="" width="44" height="44"'
+
+
+@pytest.mark.parametrize("marks", [' aria-hidden="true"', ' role="presentation"', ' role="none"'])
+def test_a_decorative_image_may_carry_an_empty_alt(marks):
+    """Learning loop 2026-09-27 (L9, shortlist #8b): jump b's decorative 44px thumbnail had to
+    become a CSS background on an aria-hidden span because the validator refused alt="" — the
+    gate pushed the author off the correct markup. Empty alt marked decorative is accepted."""
+    ok = HERO.replace("<a href", f"{DECOR}{marks}><a href")
+    assert probs("hero", "a", ok) == []
+
+
+def test_an_empty_alt_not_marked_decorative_is_still_refused():
+    bad = HERO.replace("<a href", f"{DECOR}><a href")
+    assert any("no alt text" in x for x in probs("hero", "a", bad))
