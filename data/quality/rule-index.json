@@ -439,6 +439,13 @@
    "severity": "blocking"
   },
   {
+   "id": "claim-unledgered",
+   "family": "COPY",
+   "enforced": "test",
+   "test": "scripts/evidence_audit.py::claim-unledgered",
+   "severity": "blocking"
+  },
+  {
    "id": "statement-labels-present",
    "family": "COPY",
    "enforced": "test",

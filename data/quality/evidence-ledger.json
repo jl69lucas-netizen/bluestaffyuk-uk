@@ -8,5 +8,15 @@
       "anchor": "dna-tests",
       "confirmed": null
     }
-  ]
+  ],
+  "_vocabulary_comment": "Health and credential vocabulary (parity build Task 20). evidence_audit.py `claim-unledgered` reads every sentence of <main> that matches one of these patterns and requires a `claims` row whose pattern matches the same sentence, or a LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER. A question is not a claim. ERROR on a new location, comparison or blog page; WARN elsewhere. To state a new claim, add its `claims` row first (proof NOT FETCHED until the document is on file) — never widen or delete a vocabulary pattern to clear a finding.",
+  "vocabulary": {
+    "hip-elbow-score": "\\bBVA\\b|\\bhip\\s+(?:and\\s+elbow\\s+)?(?:scores?|scored|graded?)\\b|\\belbow\\s+(?:scores?|scored|graded?)\\b",
+    "dna-test": "\\bDNA[- ]?(?:tested|tests?|profiled)\\b",
+    "dna-clear": "\\b(?:tested|certified|recorded)\\s+clear\\b|\\bclear\\s+(?:DNA\\s+)?results?\\b|\\bclear\\s+of\\s+(?:L-?2-?HGA|HC(?:-HSF4)?|PHPV)\\b",
+    "kc-registered": "\\bKC[- ]registered\\b|\\bKennel\\s+Club[- ]registered\\b",
+    "licensed-breeder": "\\blicen[cs]ed\\s+(?:dog\\s+)?breeders?\\b|\\bcouncil[- ]licen[cs]ed\\b|\\bbreeding\\s+licen[cs]e\\b",
+    "vet-checked": "\\bvet(?:erinary)?[- ](?:checked|health[- ]checked|examined|certified)\\b",
+    "health-tested": "\\bhealth[- ]tested\\b|\\bhealth\\s+certificates?\\b"
+  }
 }
