@@ -12,7 +12,8 @@ import './checks/img.js';
  * The London component canvas smoke (docs/superpowers/plans/2026-09-27-london-component-design-pass.md).
  * Every variant frame scripts/build_component_canvas.py --emit-frames wrote is painted at 375,
  * 768 and 1280 and held to:
- *   - the registered checks in REUSED, run as they are (no second copy of their logic);
+ *   - the registered checks in REUSED, run as they are (no second copy of their logic); an
+ *     advisory one (img-not-upscaled) prints its hits as `[advisory]` lines and never fails;
  *   - the component's own probe in PROBES (the hero's photo-first rule, the jump links'
  *     sticky strip, the dial's desktop-only display, the six puppy cards, …), keyed on the
  *     data hooks scripts/check_city_canvas.py HOOKS requires.
@@ -31,6 +32,7 @@ const REUSED = [
   'a11y-text-contrast-aa',
   'a11y-no-duplicate-ids',
   'img-alt-present-and-unique',
+  'img-not-upscaled',
 ];
 const CTX = { pageType: 'location', slug: 'canvas', siblings: async () => [] };
 const PUPPY_NAMES: string[] = JSON.parse(readFileSync(resolve(REPO, 'data/puppies.json'), 'utf8'))
@@ -294,7 +296,14 @@ for (const f of frames) {
       const check = registry.find((c) => c.id === id);
       expect(check, `${id} is registered`).toBeTruthy();
       const r = await runCheck(check!, page, viewport, CTX);
-      for (const d of r.defects) failures.push(`${id}: ${d.message}`);
+      for (const d of r.defects) {
+        // An advisory check reports and never fails the smoke (bsuk-learning-loop Step 4: a new
+        // check earns blocking after a clean cluster). Its hits are printed and annotated.
+        if (check!.severity === 'advisory') {
+          console.log(`[advisory] ${f.component}/${f.variant} @ ${viewport}px ${id}: ${d.message}`);
+          testInfo.annotations.push({ type: 'advisory', description: `${id}: ${d.message}` });
+        } else failures.push(`${id}: ${d.message}`);
+      }
     }
     await page.evaluate(() => window.scrollTo(0, 0));
     const probe = PROBES[f.component];

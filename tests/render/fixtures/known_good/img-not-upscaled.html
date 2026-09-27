@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>image painted at or below its own size</title>
+<!-- The twin of known_broken/img-not-upscaled.html: the same square crop from a file with the
+     pixels for it (1600x900 into 320x320 is 0.36x under cover), and the narrow file painted
+     below its own width. The third image is the check's own first bug: with a w-descriptor
+     srcset the browser reports naturalWidth corrected by density (file width x sizes / w), so a
+     1600px file under sizes="100px" reads as 100px wide and looked 3.2x upscaled at 320px. The
+     check has to measure the file's own pixels. -->
+<style>body{margin:0;font:16px/1.5 system-ui}.sq{display:block;width:320px;height:320px;object-fit:cover}.w{display:block;width:340px;height:auto}</style>
+</head><body>
+<h1>Image sharpness</h1>
+<img class="sq" src="../assets/wide-1600.png" width="1600" height="900" alt="Blue Staffy puppy on a garden step, cropped square">
+<img class="w" src="../assets/narrow-400.png" width="400" height="225" alt="Blue Staffy puppy on a lawn">
+<img class="sq" srcset="../assets/wide-1600.png 1600w" sizes="100px" src="../assets/wide-1600.png" width="1600" height="900" alt="Blue Staffy puppy asleep in the sun">
+</body></html>

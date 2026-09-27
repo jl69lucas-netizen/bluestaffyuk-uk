@@ -137,6 +137,78 @@ register({
   },
 });
 
+/**
+ * The other side of img-srcset-within-2x's ratio (learning loop 2026-09-27, L6). That check
+ * fails an image carrying more than 2x the pixels it paints and never reads the case where it
+ * carries FEWER: four London canvas variants shipped soft photos (a 1080px square painted
+ * across 1280, a 400x500 litter photo stretched) and nothing measured them. The scale is the
+ * one the browser applies — under `object-fit: cover` the LARGER of the two axis ratios, which
+ * is what blows a wide file up in a square box; the width ratio otherwise — times the device
+ * pixel ratio. Over 1.05 is a defect. Advisory: it enters as bsuk-learning-loop Step 4 says.
+ */
+register({
+  id: 'img-not-upscaled',
+  family: 'IMG',
+  severity: 'advisory',
+  describe: 'no image is painted larger than its own pixels (object-fit: cover counted)',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await settlePage(page);
+    await page.evaluate(async () => {
+      const pending = Array.from(document.images).filter((i) => !i.complete);
+      await Promise.race([
+        Promise.allSettled(pending.map((i) => i.decode().catch(() => null))),
+        new Promise((res) => setTimeout(res, 5000)),
+      ]);
+    });
+    const r = await page.evaluate(async () => {
+      const dpr = window.devicePixelRatio || 1;
+      let examined = 0;
+      const bad: string[] = [];
+      // The FILE's own pixels. With a w-descriptor srcset, img.naturalWidth is corrected by
+      // density (file width x sizes / w), so a 1600px file under sizes="100px" reads 100px:
+      // this check's first draft fired on exactly that (known_good/img-not-upscaled.html).
+      const own = new Map<string, [number, number]>();
+      const pixels = async (src: string): Promise<[number, number]> => {
+        if (!own.has(src)) {
+          const probe = new Image();
+          probe.src = src;
+          await probe.decode().catch(() => null);
+          own.set(src, [probe.naturalWidth, probe.naturalHeight]);
+        }
+        return own.get(src)!;
+      };
+      for (const img of Array.from(document.images)) {
+        const box = img.getBoundingClientRect();
+        if (box.width < 1 || box.height < 1) continue;
+        if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) continue;
+        const src = img.currentSrc || img.src || '';
+        if (/\.svg(\?|$)/i.test(src) || src.startsWith('data:image/svg')) continue;
+        const [nw, nh] = await pixels(src);
+        if (!nw || !nh) continue;
+        examined++;
+        const fit = getComputedStyle(img).objectFit;
+        const sw = box.width / nw;
+        const sh = box.height / nh;
+        const scale = (fit === 'cover' ? Math.max(sw, sh) : sw) * dpr;
+        if (scale > 1.05) {
+          bad.push(`${src.split('/').pop()} file=${nw}x${nh} ` +
+            `painted=${Math.round(box.width)}x${Math.round(box.height)} ${fit} ${scale.toFixed(2)}x`);
+        }
+      }
+      return { examined, bad: bad.slice(0, 10), count: bad.length };
+    });
+    const defects = r.count ? [{
+      checkId: 'img-not-upscaled',
+      family: 'IMG' as const,
+      viewport,
+      count: r.count,
+      message: `${r.count} upscaled image(s): ${r.bad.join(' | ')}`,
+    }] : [];
+    return { examined: r.examined, defects };
+  },
+});
+
 register({
   id: 'img-alt-present-and-unique',
   family: 'IMG',
