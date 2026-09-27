@@ -13,8 +13,10 @@ file — and everything else it reads is intact. The contract is exact: exit non
 "not a pass". A traceback is not a refusal (the review of 2026-09-28 found three gates "passing"
 this test by crashing on a missing file, and three failing for reasons unrelated to their input).
 
-check:outline and check:queries judge only project 5 (new-family) pages, examine 0 on this repo
-by design and must exit 0, or check:all would fail; their rows are a strict xfail.
+check:outline and check:queries judge only project 5 (new-family) pages. While no approved
+new-family board exists, they examine 0 on this repo by design and must exit 0, or check:all
+would fail; their rows are a strict xfail ONLY while that holds (family_rules.is_new_page over
+data/boards), so the day the first city board is approved the xfail lifts and they must refuse.
 """
 import json
 import pathlib
@@ -27,6 +29,8 @@ import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCRIPTS = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))["scripts"]
+sys.path.insert(0, str(ROOT / "scripts"))
+import family_rules  # noqa: E402
 
 
 def _write(root, rel, data):
@@ -125,7 +129,19 @@ SEED = {
 }
 
 
-#: Pass on zero input by design.
+def no_approved_new_family_board(root=ROOT):
+    """True while no data/boards/<slug>.json is an approved project 5 (new-family) board."""
+    for f in sorted((pathlib.Path(root) / "data" / "boards").glob("*.json")):
+        try:
+            board = json.loads(f.read_text(encoding="utf-8"))
+        except ValueError:
+            continue
+        if board.get("approval") and family_rules.is_new_page(f.stem):
+            return False
+    return True
+
+
+#: Pass on zero input by design, but only while the condition holds.
 KNOWN_ZERO_PASS = {
     "check:outline": "judges new-family (project 5) pages only, and no approved new-family "
                      "board exists yet",
@@ -156,7 +172,8 @@ def _params():
     for gate in sorted(SEED):
         marks = []
         if gate in KNOWN_ZERO_PASS:
-            marks = [pytest.mark.xfail(strict=True, reason=KNOWN_ZERO_PASS[gate])]
+            marks = [pytest.mark.xfail(no_approved_new_family_board(), strict=True,
+                                       reason=KNOWN_ZERO_PASS[gate])]
         yield pytest.param(gate, marks=marks, id=gate)
 
 
@@ -172,6 +189,17 @@ def test_a_gate_refuses_its_zero_input(gate, committed, tmp_path):
     assert "Traceback" not in out, f"{gate} crashed instead of refusing:\n{tail}"
     assert r.returncode != 0 and "not a pass" in out, \
         f"{gate} (exit {r.returncode}) did not refuse its zero input:\n{tail}"
+
+
+def test_the_xfail_condition_reads_the_boards(tmp_path):
+    """No board -> condition holds; an approved new-family board -> it lifts."""
+    assert no_approved_new_family_board(tmp_path)
+    city = next(s for s in ("blue-staffy-puppies-london", "staffy-puppies-london")
+                if family_rules.is_new_page(s))
+    _write(tmp_path, f"data/boards/{city}.json", {"approval": None})
+    assert no_approved_new_family_board(tmp_path)
+    _write(tmp_path, f"data/boards/{city}.json", {"approval": {"by": "user"}})
+    assert not no_approved_new_family_board(tmp_path)
 
 
 #: The same gates with their input MISSING, not empty: each died with a traceback in the first
