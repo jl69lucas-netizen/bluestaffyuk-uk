@@ -253,7 +253,8 @@ CLOSERS = "\"'”’)]"
 ABBREVIATIONS = re.compile(r"(?:\b(?:Dr|Mr|Mrs|Ms|St|approx)|\be\.g|\bi\.e)\.$", re.I)
 SENTENCE_END = re.compile(r"[.!?][" + re.escape(CLOSERS) + r"]*\s+")
 # Not a claim: a denial just before the hit, advice to the buyer, a reference to a page about it.
-DENIAL = re.compile(r"\b(?:not|never|no|without)\b", re.I)
+# `without` is not a denial: "No puppy leaves without being vet checked" is a claim.
+DENIAL = re.compile(r"\b(?:not|never|no)\b", re.I)
 ADVICE = re.compile(r"^\W*ask\s+(?:to\s+see|for)\b", re.I)
 REFERENCE = re.compile(r"\b(?:page\s+(?:on|for)|results\s+for|about\s+the)\b", re.I)
 

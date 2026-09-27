@@ -184,6 +184,7 @@ def test_block_boundaries_split_sentences(html, expected):
     ("We are licensed by the local council.", "licensed-breeder"),
     ("Both parents are DNA screened.", "dna-test"),
     ("The BVA hip scores are on file.", "hip-elbow-score"),
+    ("No puppy leaves without being vet checked.", "vet-checked"),
 ])
 def test_wider_recall(sentence, vocab):
     assert ids(page(f"<p>{sentence}</p>")) == [vocab]
