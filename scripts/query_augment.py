@@ -1551,16 +1551,20 @@ def _status(d, path):
     return st
 
 
-def _source_status(d, path, rel):
+def _source_status(d, path):
     """A raw file's status for the question file's `sources`. A NOT FETCHED carries its
-    barrier (parity build Task 21): the file's own "reason" or "barrier", else a note that
-    the file names none."""
+    barrier (parity build Task 21): the file's own "reason" or "barrier". A raw NOT FETCHED
+    file that names no real barrier is BadInput — `npm run check:barriers` would fail the
+    question file it produced."""
     st = _status(d, path)
     if st != "NOT FETCHED":
         return st
-    why = next((d[k].strip() for k in ("reason", "barrier")
-                if isinstance(d.get(k), str) and d[k].strip()), None)
-    return f"NOT FETCHED — {why or rel + ' names no reason'}"
+    from not_fetched_lint import real_barrier  # here, not at the top: only this path needs it
+    why = next((d[k].strip() for k in ("reason", "barrier") if real_barrier(d.get(k))), None)
+    if why is None:
+        raise BadInput(path, 'status NOT FETCHED needs a "reason" naming the barrier '
+                             "(at least two words, never a placeholder such as TODO)")
+    return f"NOT FETCHED — {why}"
 
 
 def load_candidates(slug, root=ROOT):
@@ -1575,7 +1579,7 @@ def load_candidates(slug, root=ROOT):
             continue
         if not isinstance(d, dict):
             raise BadInput(path, "top level must be an object")
-        status[src] = _source_status(d, path, rel)
+        status[src] = _source_status(d, path)
         items = d.get("questions", [])
         if not isinstance(items, list):
             raise BadInput(path, "questions must be a list")
@@ -1612,14 +1616,17 @@ def bank_candidates(root=ROOT):
 
 
 def load_competitors(slug, root=ROOT):
+    """(record, status). The record is the file as read (competitor_metrics writes it back
+    unchanged but for metrics); status is the question file's `sources.competitors` string,
+    a NOT FETCHED carrying its barrier."""
     path = Path(root) / "data/queries/raw" / slug / "competitors.json"
     d = _load(path, None)
     if d is None:
-        return {"status": f"NOT FETCHED — no data/queries/raw/{slug}/competitors.json",
-                "pages": []}
+        return ({"status": "NOT FETCHED", "pages": []},
+                f"NOT FETCHED — no data/queries/raw/{slug}/competitors.json")
     if not isinstance(d, dict):
         raise BadInput(path, "top level must be an object")
-    _source_status(d, path, f"data/queries/raw/{slug}/competitors.json")
+    status = _source_status(d, path)
     pages = d.get("pages")
     if not isinstance(pages, list):
         raise BadInput(path, "pages must be a list")
@@ -1641,7 +1648,7 @@ def load_competitors(slug, root=ROOT):
             problem = _metrics_problem(p["metrics"])
             if problem:
                 raise BadInput(path, f"pages[{i}].metrics {problem}")
-    return d
+    return d, status
 
 
 METRIC_COUNTS = ("word_count", "intro_words", "h3_count", "images", "videos", "tables",
@@ -1691,7 +1698,7 @@ def competitor_metrics(slug, root=ROOT):
     if not path.exists():
         raise BadInput(path, "missing — write competitors.json (bsuk-query-augmentation "
                              "Step 3) first")
-    d = load_competitors(slug, root)
+    d, _ = load_competitors(slug, root)
     cache = Path(root) / "data/queries/cache" / slug
     measured, missing, dropped = 0, [], []
     for n, p in enumerate(d["pages"], 1):
@@ -1806,10 +1813,7 @@ def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
             "fact_source": m["fact_source"], "must_answer": False, "faq": None,
             "blocked": None if m["fact_source"] else "unverified fact", "covered_by": None})
     assert len({q["id"] for q in questions}) == len(questions), "question id collision"
-    comp = load_competitors(slug, root)
-    rel = f"data/queries/raw/{slug}/competitors.json"
-    status["competitors"] = (comp["status"] if comp.get("status", "").startswith("NOT FETCHED — ")
-                             else _source_status(comp, Path(root) / rel, rel))
+    comp, status["competitors"] = load_competitors(slug, root)
     target, rows = section_target(comp["pages"])
     for row, p in zip(rows, comp["pages"]):
         if isinstance(p.get("metrics"), dict):

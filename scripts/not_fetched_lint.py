@@ -6,9 +6,19 @@ knows what to try next. So in the research a page is built from — data/boards/
 data/queries/**/*.json and docs/research/**/*.{md,json} — every NOT FETCHED is written
 
   text   NOT FETCHED — <barrier>      (an en dash, a colon or an opening bracket also count;
-                                       backticks or bold around the token are fine)
-  JSON   "NOT FETCHED — <barrier>", or "NOT FETCHED" with a non-empty "reason" or
-         "barrier" string beside it in the same object
+                                       backticks or bold around the token are fine; in a
+                                       markdown table, `| NOT FETCHED | <barrier> |` — the
+                                       next cell names it)
+  JSON   "NOT FETCHED — <barrier>", or "NOT FETCHED" with a "reason" or "barrier" string
+         beside it in the same object. A "reason"/"barrier" value is never linted itself:
+         it may quote the token ("left NOT FETCHED by the controller").
+
+A barrier is real: at least two words or eight word characters, and not wholly a
+placeholder (todo, tbd, n/a, na, none, unknown, ?, x). "NOT FETCHED — TODO" is still bare.
+
+Quoting the rule in a scoped doc: write it with a real example barrier
+(`NOT FETCHED — <what stopped the fetch>`), never the bare token in backticks, or the doc
+fails its own check.
 
 Files that already carried a bare one when this check arrived are grandfathered BY CONTENT
 HASH in data/quality/not-fetched-baseline.json. Editing such a file ends its exemption:
@@ -17,6 +27,9 @@ name the barrier instead.
 
 Out of scope: gitignored working folders (data/boards/inbox, data/boards/previews,
 data/queries/cache) and every other tree.
+
+Stale baseline entries (the file is gone, or it no longer carries a bare token) print a
+WARN line and never fail the run; delete them by hand — the baseline only shrinks.
 
 Usage:
   python3 scripts/not_fetched_lint.py [--root DIR]      exit 0 clean · 1 problems · 2 no baseline
@@ -36,14 +49,43 @@ SCOPE = (("data/boards", ("*.json",)), ("data/queries", ("**/*.json",)),
          ("docs/research", ("**/*.md", "**/*.json")))
 IGNORED = ("data/boards/inbox/", "data/boards/previews/", "data/queries/cache/")
 TOKEN = re.compile(r"NOT FETCHED")
-# After the token: optional closing markup, then a dash, colon or bracket, then a word.
-NAMED = re.compile(r"[`*_\"']*\s*(?:—|–|:|\()\s*[`*_\"']*\w")
+# After the token: optional closing markup, then a dash, colon or bracket; group 1 = the rest.
+NAMED = re.compile(r"[`*_\"']*\s*(?:—|–|:|\()(.*)")
+# A markdown table cell holding only the token: the next cell is the barrier.
+CELL = re.compile(r"[`*_]*\s*\|([^|]*)")
+PLACEHOLDER = re.compile(r"(?:todo|tbd|n/?a|none|unknown|\?|x)", re.I)
 REASON_KEYS = ("reason", "barrier")
-FIX = "a bare NOT FETCHED — name the barrier: `NOT FETCHED — <barrier>`"
+FIX = ("a bare NOT FETCHED — name the barrier: `NOT FETCHED — <barrier>` (an em dash, "
+       "en dash, colon or opening bracket before it; in a table, the next cell; in JSON, "
+       'the inline form or a sibling "reason" or "barrier"; at least two words or eight '
+       "letters, never a placeholder such as TODO or n/a)")
 
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def real_barrier(s):
+    """True when `s` names a barrier someone could act on."""
+    if not isinstance(s, str):
+        return False
+    core = s.strip().strip("`*_\"'()[]{}.,;:—–- ")
+    if not core or PLACEHOLDER.fullmatch(core):
+        return False
+    words = re.findall(r"\w+", core)
+    return len(words) >= 2 or sum(map(len, words)) >= 8
+
+
+def _named(line, start, end):
+    m = NAMED.match(line, end)
+    if m:
+        rest = m.group(1)
+        if line[m.start(1) - 1] == "(":
+            rest = rest.split(")", 1)[0]
+        return real_barrier(rest.split("|", 1)[0].split("NOT FETCHED", 1)[0])
+    before = line[:start].rstrip().rstrip("`*_").rstrip()
+    c = CELL.match(line, end)
+    return bool(c and before.endswith("|") and real_barrier(c.group(1)))
 
 
 def bare_in_text(text):
@@ -51,16 +93,19 @@ def bare_in_text(text):
     out = []
     for i, line in enumerate(text.splitlines(), 1):
         for m in TOKEN.finditer(line):
-            if not NAMED.match(line, m.end()):
+            if not _named(line, m.start(), m.end()):
                 out.append(i)
     return out
 
 
 def bare_in_json(node, path="$", parent=None):
-    """[JSON path] of every string value carrying a bare NOT FETCHED."""
+    """[JSON path] of every string value carrying a bare NOT FETCHED. A "reason" or
+    "barrier" value is the barrier itself and is never linted."""
     out = []
     if isinstance(node, dict):
         for k, v in node.items():
+            if k in REASON_KEYS:
+                continue
             out += bare_in_json(v, f"{path}.{k}", node)
     elif isinstance(node, list):
         for i, v in enumerate(node):
@@ -68,7 +113,7 @@ def bare_in_json(node, path="$", parent=None):
     elif isinstance(node, str) and TOKEN.search(node):
         if bare_in_text(node):
             sibling = parent is not None and node.strip() == "NOT FETCHED" and any(
-                isinstance(parent.get(k), str) and parent[k].strip() for k in REASON_KEYS)
+                real_barrier(parent.get(k)) for k in REASON_KEYS)
             if not sibling:
                 out.append(path)
     return out
@@ -125,6 +170,17 @@ def lint(root=ROOT):
     return probs, examined, kept
 
 
+def stale_entries(root=ROOT):
+    """Baseline entries whose file is gone or no longer carries a bare token."""
+    base = load_baseline(root) or {}
+    out = []
+    for rel in sorted(base):
+        path = pathlib.Path(root) / rel
+        if not path.is_file() or not problems_in(rel, path):
+            out.append(rel)
+    return out
+
+
 def write_baseline(root):
     files = {}
     for rel, path in scoped_files(root):
@@ -162,6 +218,10 @@ def main(argv=None):
         return 2
     for p in probs:
         print(f"  {p}")
+    stale = stale_entries(root)
+    if stale:
+        print(f"not-fetched-lint: WARN: {len(stale)} stale baseline entries (file gone or now "
+              f"clean) — delete them from {BASELINE}: {', '.join(stale)}")
     print(f"not-fetched-lint: examined {examined} files ({kept} grandfathered); "
           f"{len(probs)} problems")
     return 1 if probs else 0

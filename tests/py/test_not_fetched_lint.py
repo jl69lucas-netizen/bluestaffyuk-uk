@@ -66,8 +66,9 @@ def _root(tmp_path, files, baseline=None):
 def test_a_new_file_with_a_bare_token_fails(tmp_path):
     root = _root(tmp_path, {"docs/research/new.md": "Bing: NOT FETCHED.\n"}, {"files": {}})
     probs, examined, kept = L.lint(root)
-    assert probs == ["docs/research/new.md:1  a bare NOT FETCHED — name the barrier: "
-                     "`NOT FETCHED — <barrier>`"]
+    assert probs == [f"docs/research/new.md:1  {L.FIX}"]
+    for sep in ("em dash", "en dash", "colon", "opening bracket", '"reason"'):
+        assert sep in L.FIX
     assert examined == 1 and kept == 0
 
 
@@ -109,7 +110,7 @@ def test_write_baseline_refuses_to_overwrite(tmp_path):
 
 def test_write_baseline_then_check_passes(tmp_path):
     root = _root(tmp_path, {"docs/research/old.md": "NOT FETCHED.\n",
-                            "docs/research/clean.md": "NOT FETCHED — named.\n"})
+                            "docs/research/clean.md": "NOT FETCHED — named in full.\n"})
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(root), "--write-baseline"],
                        capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
@@ -120,7 +121,7 @@ def test_write_baseline_then_check_passes(tmp_path):
 
 
 def test_a_missing_baseline_is_not_a_pass(tmp_path):
-    root = _root(tmp_path, {"docs/research/clean.md": "NOT FETCHED — named.\n"})
+    root = _root(tmp_path, {"docs/research/clean.md": "NOT FETCHED — named in full.\n"})
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(root)], capture_output=True, text=True)
     assert r.returncode == 2 and "baseline" in r.stdout + r.stderr
 
@@ -143,3 +144,85 @@ def test_the_question_file_query_augment_writes_names_every_barrier(tmp_path):
     assert L.bare_in_json(data) == []
     assert data["sources"]["threads"] == "NOT FETCHED — reddit refused the headless browser"
     assert data["sources"]["ai_engines"] == "NOT FETCHED — no data/queries/raw/m/ai_engines.json"
+
+
+# --- Task 21 quality review: reason values, real barriers, table cells, stale entries ---
+
+def test_a_reason_value_that_mentions_the_token_is_not_linted():
+    # docs/research/competitors/bsuk.json's shape: the reason itself quotes the token.
+    node = {"lighthouse_performance": {"status": "NOT FETCHED",
+            "reason": "no Lighthouse run on the local preview; left NOT FETCHED by the controller"}}
+    assert L.bare_in_json(node) == []
+    assert L.bare_in_json({"a": {"barrier": "NOT FETCHED", "status": "ok"}}) == []
+
+
+@pytest.mark.parametrize("text", [
+    "Bing: NOT FETCHED — TODO",
+    "Bing: NOT FETCHED — n/a",
+    "Bing: NOT FETCHED: 0",
+    "Bing: NOT FETCHED (x)",
+    "Bing: NOT FETCHED — tbd.",
+    "Bing: NOT FETCHED — unknown",
+    "Bing: NOT FETCHED — ?",
+    "Bing: NOT FETCHED — none",
+    "Bing: NOT FETCHED — timeout",   # one word of 7 characters: too thin to act on
+])
+def test_a_placeholder_barrier_is_bare(text):
+    assert len(L.bare_in_text(text)) == 1
+
+
+@pytest.mark.parametrize("text", [
+    "Bing: NOT FETCHED — no Bing export contains query rows",
+    "Bing: NOT FETCHED — homepage-timeout",
+    "Bing: NOT FETCHED (certificate not on file).",
+])
+def test_a_real_barrier_passes(text):
+    assert L.bare_in_text(text) == []
+
+
+@pytest.mark.parametrize("reason", ["TODO", "   ", 5, "n/a", None])
+def test_a_placeholder_sibling_reason_is_bare(reason):
+    assert L.bare_in_json({"s": {"status": "NOT FETCHED", "reason": reason}}) == ["$.s.status"]
+
+
+def test_a_real_sibling_reason_passes():
+    assert L.bare_in_json({"s": {"status": "NOT FETCHED",
+                                 "reason": "no Bing export contains query rows"}}) == []
+
+
+def test_a_table_cell_carries_its_barrier_in_the_next_cell():
+    assert L.bare_in_text("| Bing | NOT FETCHED | the export holds no query rows |") == []
+    assert L.bare_in_text("| Bing | **NOT FETCHED** | homepage status 403 |") == []
+    assert len(L.bare_in_text("| Bing | NOT FETCHED |  |")) == 1
+    assert len(L.bare_in_text("| Bing | NOT FETCHED | TODO |")) == 1
+
+
+def test_stale_baseline_entries_are_a_warning_not_a_failure(tmp_path):
+    root = _root(tmp_path, {"docs/research/clean.md": "NOT FETCHED — named in full.\n"},
+                 {"files": {"docs/research/clean.md": "0" * 64, "docs/research/gone.md": "1" * 64}})
+    assert L.stale_entries(root) == ["docs/research/clean.md", "docs/research/gone.md"]
+    r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(root)], capture_output=True, text=True)
+    assert r.returncode == 0
+    assert "WARN: 2 stale baseline entries" in r.stdout
+
+
+def test_the_real_baseline_has_no_stale_entries():
+    assert L.stale_entries(ROOT) == []
+
+
+AGENTS = ["bsuk-competitor-intel.md", "bsuk-competitive-keyword-gap-agent.md"]
+REQUIRED_FORM = ('Un-fetched data is written "NOT FETCHED — <barrier>" (in JSON, "NOT FETCHED" '
+                 'with a sibling "reason"); `npm run check:barriers` fails a bare one.')
+
+
+@pytest.mark.parametrize("name", AGENTS)
+def test_the_writing_agents_state_the_required_form(name):
+    text = (ROOT / ".claude/agents" / name).read_text(encoding="utf-8")
+    assert REQUIRED_FORM in " ".join(text.split())
+
+
+def test_the_keyword_gap_agent_code_writes_barriers():
+    text = (ROOT / ".claude/agents/bsuk-competitive-keyword-gap-agent.md").read_text(encoding="utf-8")
+    assert 'p.get("fetched_on", "NOT FETCHED")' not in text
+    assert "NOT FETCHED — no fetched_on recorded" in text
+    assert "pages NOT FETCHED)" not in text

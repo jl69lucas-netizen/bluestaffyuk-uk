@@ -161,7 +161,7 @@ def test_load_competitors_refuses_malformed_metrics(tmp_path, bad):
 
 def test_load_competitors_accepts_a_file_with_no_metrics(tmp_path):
     root = _repo(tmp_path, [_record("https://a.example/", PAGE, 1)], {})
-    assert Q.load_competitors(SLUG, root)["pages"][0]["url"] == "https://a.example/"
+    assert Q.load_competitors(SLUG, root)[0]["pages"][0]["url"] == "https://a.example/"
 
 
 def test_word_target_is_the_median_of_the_measured_pages():

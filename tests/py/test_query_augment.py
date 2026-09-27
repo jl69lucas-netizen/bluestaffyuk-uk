@@ -1780,3 +1780,25 @@ def test_every_location_row_gets_a_clean_question():
     for r in rows:
         q = Q.location_question(r["city"])
         assert "(" not in q and "near UK" not in q, (r["slug"], q)
+
+
+# --- Task 21 review: a raw NOT FETCHED file must name its barrier ---------------------------
+
+def test_a_raw_not_fetched_file_without_a_reason_is_bad_input(tmp_path):
+    root = make_root(tmp_path)
+    seed(root)
+    write_raw(root, "m", "threads", {"source": "threads", "status": "NOT FETCHED", "questions": []})
+    with pytest.raises(Q.BadInput, match="reason"):
+        Q.load_candidates("m", root)
+
+
+def test_load_competitors_returns_its_status_without_touching_the_record(tmp_path):
+    root = make_root(tmp_path)
+    d, status = Q.load_competitors("m", root)
+    assert status == "NOT FETCHED — no data/queries/raw/m/competitors.json" and d["pages"] == []
+    write_raw(root, "m", "competitors", {"status": "NOT FETCHED",
+                                         "reason": "every result page refused the scraper",
+                                         "pages": []})
+    d, status = Q.load_competitors("m", root)
+    assert status == "NOT FETCHED — every result page refused the scraper"
+    assert d["status"] == "NOT FETCHED"

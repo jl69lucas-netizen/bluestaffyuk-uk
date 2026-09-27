@@ -153,7 +153,7 @@ pmap = json.load(open("data/page-map.json"))["pages"]
 noindex = [p for p in pmap if "stub-noindexed" in p.get("refresh_flags", []) + p.get("defects", [])]
 b = json.load(open(src))
 if "id" in b and b["pages"]["status"] != "ok":  # the profile holds no pages: fall back, and say so
-    src, b = f"data/page-map.json (fallback: {src} pages NOT FETCHED)", {"pages": pmap}
+    src, b = f"data/page-map.json (fallback: {src} NOT FETCHED — pages status {b['pages']['status']})", {"pages": pmap}
 if "id" in b:  # the profile: indexable pages only (intel), used as they are
     bsuk = b["pages"]["values"]
     noindex = [p for p in noindex if route(p["url"]) not in {route(x["url"]) for x in bsuk}]  # label lookup only
@@ -173,7 +173,7 @@ for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
     tier = tiers.get(r["id"], "unknown")
     p = r["pages"]
     if p["status"] != "ok" or (today - datetime.date.fromisoformat(p["fetched_on"])).days > 30:
-        out["stale_tier5" if tier == 5 else "stale"].append({"id": r["id"], "tier": tier, "fetched_on": p.get("fetched_on", "NOT FETCHED")})
+        out["stale_tier5" if tier == 5 else "stale"].append({"id": r["id"], "tier": tier, "fetched_on": p.get("fetched_on", "NOT FETCHED — no fetched_on recorded")})
         continue
     out["used"].append({"id": r["id"], "tier": tier, "fetched_on": p["fetched_on"]})
     for page in p["values"]:
@@ -245,6 +245,8 @@ docs/research/keyword-gap-<YYYY-MM-DD>.md:
 3. **Already covered** — Topic · Competitor URL · BSUK page.
 4. **High gaps** — one line each on why; "None" when none.
 5. **Handoff** lines.
+
+Un-fetched data is written "NOT FETCHED — <barrier>" (in JSON, "NOT FETCHED" with a sibling "reason"); `npm run check:barriers` fails a bare one. A stale competitor's line says what stopped it (its `pages` reason, or its age).
 
 URLs as their source gives them. With `--type`, only that type's rows. Then `python3 tests/py/test_no_third_party_contacts.py docs/research/keyword-gap-<YYYY-MM-DD>.md` must print 0 — remove a hit, never change the test; it misses some formats, so leave contacts out as you write.
 
