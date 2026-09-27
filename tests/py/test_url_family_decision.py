@@ -46,6 +46,7 @@ def test_the_on_disk_facts_match_the_data_file():
         assert r["Robots"] == ("noindex" if "noindex" in row["robots"] else "index"), r
         assert r["Mode"] == ("stub" if "stub" in row["defects"] else "migrated"), r
         assert r["H1"] == ("EMPTY" if not row["h1"] else "set"), r
+        assert r["In sitemap"] == ("no" if "noindex" in row["robots"] else "yes"), r
 
 
 def test_every_row_carries_a_decision_and_an_intent():
@@ -74,7 +75,10 @@ def test_the_comparison_section_answers_known_issue_62_with_a_slug():
     text = DOC.read_text(encoding="utf-8")
     section = text[text.index("## Comparison slugs"):]
     assert "blue and black staffy" in section
-    assert re.search(r"\*\*\(a\)[^|]*`/[a-z0-9-]+/`[^|]*\(Recommended\)\*\*", section)
+    m = re.search(r"^\| \*\*\(a\)[^|]*`/([a-z0-9-]+)/`[^|]*\(Recommended\)\*\* \| `([a-z0-9-]+)` \|",
+                  section, re.M)
+    assert m, "the comparison (a) row names its slug in bold and in the Slug cell"
+    assert m.group(1) == m.group(2), "the bold slug and the Slug cell name the same URL"
 
 
 def test_the_page_run_points_at_the_decision_without_a_pending_marker():
@@ -82,3 +86,21 @@ def test_the_page_run_points_at_the_decision_without_a_pending_marker():
     line = next(l for l in run.splitlines() if "2026-09-26-url-family-decision.md" in l)
     assert "(arrives in Task" not in line
     assert "(arrives in Task" not in run, "every arrival marker in the page run has arrived"
+
+
+def test_the_hub_body_gap_is_named_and_acted_on():
+    """The national bullet names the indexable city pages the UK hub's body did not link on the
+    2026-09-26 build (read from the doc, not from dist/, so it stays true once project 5's hub
+    refresh closes the gap): each is an indexable row, and its Decision cell carries the fix."""
+    text = DOC.read_text(encoding="utf-8")
+    bullet = " ".join(text[text.index("- **National:**"):text.index("- **Glasgow:**")].split())
+    gap = re.search(r"does not link these (\w+) indexable city pages from its body: ([^.]*)\.", bullet)
+    assert gap, "the national bullet names the indexable pages the hub body misses"
+    named = re.findall(r"`([a-z0-9-]+)`", gap.group(2))
+    assert len(named) == 9 and gap.group(1) == "nine", named
+    assert "links all 10 other indexable pages from its body" in bullet, "the project 5 action is stated"
+    data = cities()
+    rows = {r["Slug"].strip("`"): r for r in family_rows()}
+    for slug in named:
+        assert "noindex" not in data[slug]["robots"], slug
+        assert "the hub links it from its body" in rows[slug]["Decision"], slug
