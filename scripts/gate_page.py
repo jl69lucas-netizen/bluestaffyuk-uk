@@ -23,8 +23,9 @@ only on a new page):
                     exit code. The exit codes a verification record holds are informational;
                     the gate re-verifies rather than trusting them.
 
-Before any step, the built page must be newer than the last commit that touched the page's
-own sources; an older dist/ fails the gate with "rebuild first" (npm run -s build).
+Before any step, the built page's file must be newer than every one of the page's source
+files on disk (data/locations.json included for a city); an older dist/ fails the gate with
+"rebuild first" (npm run -s build). File times, not commit times.
 An audit that runs past 600 s is a failed step with exit 124; the last 20 lines of a step's
 stderr are kept in the report beside its evidence (never inside the diffed evidence).
 
@@ -119,20 +120,25 @@ def run_check_all(root=ROOT):
 
 
 def stale_build(key, route, root=ROOT):
-    """A message when the built page is older than the last commit that touched the page's own
-    sources (dist/ does not show what was committed); None when it is current."""
+    """A message when the built page is older than any of the page's sources on disk — its
+    board, facts and verbatim files, route files (a folder counts by its files) and, for a
+    city, data/locations.json; None when the build is current. File times, not commit times:
+    edit, build, then commit is current; an edit after the build is not."""
     root = pathlib.Path(root)
     built = root / "dist" / route / "index.html" if route else root / "dist" / "index.html"
-    srcs = PRR.page_sources(key, root)
-    if not built.is_file() or not srcs:
+    if not built.is_file():
         return None
-    p = subprocess.run(["git", "-C", str(root), "log", "-1", "--format=%ct", "--", *srcs],
-                       capture_output=True, text=True)
-    if p.returncode != 0 or not p.stdout.strip():
-        return None
-    if built.stat().st_mtime < int(p.stdout.strip()):
-        return (f"{built.relative_to(root)} is older than the last commit to the page's sources "
-                "— rebuild first (npm run -s build)")
+    files = []
+    for rel in PRR.page_sources(key, root):
+        path = root / rel
+        files += [f for f in path.rglob("*") if f.is_file()] if path.is_dir() else [path]
+    if PRR.city_row(key, root) is not None:
+        files.append(root / "data" / "locations.json")
+    newer = sorted(f.relative_to(root).as_posix() for f in files
+                   if f.stat().st_mtime > built.stat().st_mtime)
+    if newer:
+        return (f"{built.relative_to(root)} is older than {', '.join(newer)} — rebuild first "
+                "(npm run -s build)")
     return None
 
 
@@ -165,7 +171,10 @@ def one_run(key, route, profile, runner, record, root):
         # The record step reads git and one file; its second run cannot flake the way an audit
         # can, but it runs in both so every step has the same two-run shape — and a record
         # rewritten between the runs (a concurrent writer) shows up as a difference.
-        found = PRR.findings(key, root)
+        try:
+            found = PRR.findings(key, root)
+        except PRR.RecordError as e:  # no git history, say: a failed step, not a traceback
+            found = [f"page-run record could not be checked: {e}"]
         steps.append({"step": RECORD_STEP, "ok": not found, "problems": len(found),
                       "evidence": {"findings": found}, "stderr": []})
     return steps

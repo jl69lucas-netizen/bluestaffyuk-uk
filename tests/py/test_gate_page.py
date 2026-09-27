@@ -175,25 +175,66 @@ def test_the_stderr_tail_is_the_last_twenty_lines():
     assert GP.tail("\n".join(str(i) for i in range(50))) == [str(i) for i in range(30, 50)]
 
 
-def test_a_built_page_older_than_its_sources_fails_rebuild_first(tmp_path):
-    def git(*args):
-        subprocess.run(["git", "-C", str(tmp_path), *args], check=True, capture_output=True)
+def _built_city(tmp_path):
     (tmp_path / "data/boards").mkdir(parents=True)
     (tmp_path / "data/locations.json").write_text(json.dumps([{"slug": "p"}]), encoding="utf-8")
     (tmp_path / "data/boards/p.json").write_text("{}\n", encoding="utf-8")
     built = tmp_path / "dist/uk-locations/p/index.html"
     built.parent.mkdir(parents=True)
     built.write_text("<html></html>", encoding="utf-8")
+    for f in (tmp_path / "data/locations.json", tmp_path / "data/boards/p.json"):
+        os.utime(f, (1_000_000, 1_000_000))
+    os.utime(built, (2_000_000, 2_000_000))
+    return built
+
+
+def test_edit_then_build_then_commit_is_not_stale(tmp_path):
+    # File times, not commit times: a commit made after the build does not stale it.
+    _built_city(tmp_path)
+    def git(*args):
+        subprocess.run(["git", "-C", str(tmp_path), *args], check=True, capture_output=True)
     git("init", "-q")
     git("config", "user.email", "t@example.invalid")
     git("config", "user.name", "t")
     git("add", "data")
-    git("commit", "-qm", "page")
-    os.utime(built, (1_000_000, 1_000_000))
-    msg = GP.stale_build("p", "uk-locations/p", tmp_path)
-    assert msg and "rebuild first" in msg
-    os.utime(built, None)
+    git("commit", "-qm", "committed after the build")
     assert GP.stale_build("p", "uk-locations/p", tmp_path) is None
+
+
+def test_a_source_edited_after_the_build_fails_rebuild_first(tmp_path):
+    _built_city(tmp_path)
+    os.utime(tmp_path / "data/boards/p.json", (3_000_000, 3_000_000))
+    msg = GP.stale_build("p", "uk-locations/p", tmp_path)
+    assert msg and "rebuild first" in msg and "data/boards/p.json" in msg
+
+
+def test_a_city_row_edit_after_the_build_fails_rebuild_first(tmp_path):
+    _built_city(tmp_path)
+    os.utime(tmp_path / "data/locations.json", (3_000_000, 3_000_000))
+    msg = GP.stale_build("p", "uk-locations/p", tmp_path)
+    assert msg and "rebuild first" in msg and "data/locations.json" in msg
+
+
+def test_a_record_error_is_a_failed_record_step_not_a_traceback(tmp_path):
+    # A repo with no HEAD: head_commit() raises RecordError inside findings().
+    (tmp_path / "data/page-runs").mkdir(parents=True)
+    (tmp_path / "data/locations.json").write_text(json.dumps([{"slug": "p"}]), encoding="utf-8")
+    subprocess.run(["git", "-C", str(tmp_path), "init", "-q"], check=True, capture_output=True)
+    sha = "0" * 40
+    (tmp_path / "data/page-runs/p.json").write_text(json.dumps({
+        "slug": "p",
+        "session_open": {"ran_on": "2026-09-27", "skills": [
+            "grill-me", "superpowers:writing-plans", "bsuk-location-page-builder"]},
+        "verification_before_completion": {
+            "ran_on": "2026-09-27", "commit": sha, "claims_verified": ["x"],
+            "commands": [{"cmd": "npm run -s check:all", "exit": 0, "examined": 3}]}}),
+        encoding="utf-8")
+    report = GP.gate("p", "uk-locations/p", "location", runner=scripted(), record=True,
+                     root=tmp_path, check_all=passing_check_all)
+    rec = step(report, GP.RECORD_STEP)
+    assert rec["ok"] == [False, False] and report["verdict"] == "FAIL"
+    found = next(e for e in report["evidence"][0] if e["step"] == GP.RECORD_STEP)["evidence"]["findings"]
+    assert any("no git history" in f for f in found), found
 
 
 def test_the_profile_must_be_one_both_audits_know():
