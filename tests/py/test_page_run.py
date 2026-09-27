@@ -324,3 +324,16 @@ def test_the_strategy_stop_is_explained_as_a_deliberate_difference():
     diffs = _norm(text[text.index("## Deliberate differences"):])
     assert ("STOP 1 (strategy) applies only to a page with no row in the approved cluster "
             "strategy") in diffs
+
+
+def test_every_arrival_marker_cites_the_path_that_ends_it():
+    """tests/py/test_claude_md.py expires an `(arrives in Task N)` marker once every backticked
+    path on its line exists. A marked line that cites no path the guard recognises (a
+    `python3 scripts/x.py <slug>` command reads as no path) never expires, so the marker
+    would outlive the script and keep disarming check:workflow on that line."""
+    sys.path.insert(0, str(ROOT / "tests/py"))
+    from test_rules_index import BACKTICKED, _path_like
+    bad = [f"page-run.md:{n}" for n, line in enumerate(DOC.read_text(encoding="utf-8").splitlines(), 1)
+           if wrc.ARRIVES.search(line)
+           and not any(_path_like(tok) for tok in BACKTICKED.findall(line))]
+    assert bad == [], f"marked lines citing no path that would expire the marker: {bad}"
