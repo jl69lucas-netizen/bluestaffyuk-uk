@@ -144,7 +144,7 @@ def real_reviews(root=ROOT):
 
 
 _IMG_TAG = re.compile(r"<img\b[^>]*>", re.I)
-_SIZED = re.compile(r"^(?P<base>.+)-(?:240|400|760)(?P<ext>\.\w+)$")
+_SIZED = re.compile(r"^(?P<base>.+)-(?:\d{3,4})(?P<ext>\.\w+)$")
 
 
 def _tag_attr(tag, name):

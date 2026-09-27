@@ -112,3 +112,15 @@ def test_every_rebuilt_page_keeps_every_served_alt():
     assert examined >= 30, f"examined {examined} served images on {len(pages)} pages — not a pass"
     assert hits - KNOWN == set(), f"a served alt was rewritten: {sorted(hits - KNOWN)}"
     assert KNOWN - hits == set(), f"fixed — remove from KNOWN: {sorted(KNOWN - hits)}"
+
+
+def test_every_width_variant_maps_to_its_served_file():
+    """Review 2026-09-28: the -440 variants (index's manchester family photo) were not mapped
+    back to their served file, so their alts went unchecked. Any 3–4 digit width suffix is."""
+    served = {"victoria-family-blue-staffy-manchester.webp": frozenset({"x"}),
+              "healthy-staffy-breed-guide-1.webp": frozenset({"y"})}
+    for w in (240, 400, 440, 760, 1080):
+        assert C.served_name(f"victoria-family-blue-staffy-manchester-{w}.webp", served) == \
+            "victoria-family-blue-staffy-manchester.webp"
+    assert C.served_name("healthy-staffy-breed-guide-1.webp", served) == "healthy-staffy-breed-guide-1.webp"
+    assert C.served_name("unknown-760.webp", served) == "unknown-760.webp"
