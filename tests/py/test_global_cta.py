@@ -154,3 +154,14 @@ def test_a_city_page_finds_its_board_under_the_bare_slug(tmp_path):
     }, ["/uk-locations/blue-staffy-puppies-for-sale-leeds/",
         "/uk-locations/blue-staffy-puppies-london/"])
     assert got == [False, False], got
+
+
+def test_only_a_city_route_falls_back_to_the_bare_slug(tmp_path):
+    # The bare-segment fallback exists for city boards (Known Issue 39). A nested route
+    # anywhere else must not pick up a top-level board that happens to share its last segment.
+    got = run_global_cta(tmp_path, {
+        "roman": _record("hidden", approval={"approved_at": "x"}),
+        "blue-staffy-puppies-leeds": _record("hidden", approval={"approved_at": "x"}),
+    }, ["/available-puppies/roman/", "/blog/blue-staffy-puppies-leeds/",
+        "/uk-locations/blue-staffy-puppies-leeds/"])
+    assert got == [True, True, False], got

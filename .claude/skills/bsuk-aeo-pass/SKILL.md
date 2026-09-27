@@ -10,7 +10,7 @@ asks *does the page render*; this asks *can an answer engine lift a correct sent
 out of it and attribute it to us*.
 
 ```bash
-npx astro build
+npm run -s build
 python3 scripts/aeo_audit.py <slug> [<slug> ...]     # pass slugs LITERALLY
 ```
 

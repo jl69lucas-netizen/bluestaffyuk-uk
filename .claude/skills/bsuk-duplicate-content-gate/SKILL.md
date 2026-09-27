@@ -8,7 +8,7 @@ allowed-tools: [Read, Write, Bash]
 
 ## Golden Rule
 > **Confidence Gate:** ≥97% before writing any site file; below it, run the Clarification Checkpoint.
-> **Verify rendered, not source** — both audit modes run on `dist/` (build first: `npx astro build`).
+> **Verify rendered, not source** — both audit modes run on `dist/` (build first: `npm run -s build`).
 > **Never "fix" duplication by deleting content** — rewrite with page-specific framing; same-content rule still holds.
 
 ---
@@ -20,7 +20,7 @@ allowed-tools: [Read, Write, Bash]
 ## The Two Tools (both on `dist/`)
 
 ```bash
-npx astro build   # always build first — audit rendered output
+npm run -s build   # always build first — audit rendered output
 
 # 1. Body-copy shingles: word-for-word passages ≥12 words shared between pages
 python3 scripts/dup_content_audit.py                       # whole site

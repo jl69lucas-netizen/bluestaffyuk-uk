@@ -144,9 +144,7 @@ def head_sha():
     if r.returncode != 0 or not re.fullmatch(r"[0-9a-f]{40}", sha):
         why = (r.stderr or r.stdout).strip() or "no output"
         raise HeadError(f"cannot read git HEAD in {ROOT}: {why}")
-    s = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True)
-    if s.returncode != 0:
-        raise HeadError(f"git status failed in {ROOT}: {s.stderr.strip()}")
+    # rev-parse above proved ROOT is a git work tree, so dirty_tracked's own status call runs.
     dirty = [f for f in PRR.dirty_tracked(ROOT) if f != MANIFEST.as_posix()]
     return sha + "-dirty" if dirty else sha
 

@@ -110,7 +110,7 @@ authority. In short: `npm run -s build` → `npm run -s check:all` → `python3 
 (and the slug in `data/facts/rebuilt.json`, the page in `tests/render/targets.json`) →
 `npm run test:render:meta` → `npm run test:render:pages` (row 13, BEFORE Harden) → the two
 Harden passes (rows 14–15) → `python3 scripts/page_hardening_scan.py <slug> --fail-on-error`
-(row 16) → commit, `python3 scripts/generate_page_dates.py --check`, then
+(row 16) → commit, `npm run -s build` again (the prebuild re-dates the page from that commit), then
 `npm run gate:page -- <slug> --skip-record` (row 17: dup, final audit on profile `blog`,
 hardening, AEO, evidence and the board gate, each run twice) → the verification record, committed,
 then `npm run gate:page -- <slug>` (row 18) → `python3 scripts/measurement_ledger.py <project> --slugs <slug>` (row 19).
@@ -212,7 +212,7 @@ Box sizes, crop and encode quality: `rules/images.md`. `img-srcset-within-2x` an
 2. **Fix CLS** — set each `<img width/height>` to the file's **native ratio** (don't trust the placeholder's guessed dims). Verify in preview that displayed ratio ≈ native ratio (no stretch).
 3. **The hero is the kit `Hero`**, fed the post's `featured_image` and `featured_image_alt`; hero dimensions, a `srcset` or a `src/assets/` hero need the §1 route change first (§7 A).
 4. **Add a visual to every long visual-less H2/H3** — the breeder's rule: tall/important sections must carry an image; weave real OG photos into them.
-5. **Rebuild** (`npx astro build`) → confirm every referenced `.webp` exists in `dist/` (grep the built HTML, fail on any missing) → **`python3 scripts/final_page_audit.py --blog`** must PASS → preview-verify images 200 + ratios → then commit.
+5. **Rebuild** (`npm run -s build`) → confirm every referenced `.webp` exists in `dist/` (grep the built HTML, fail on any missing) → **`python3 scripts/final_page_audit.py --blog`** must PASS → preview-verify images 200 + ratios → then commit.
 
 ### 11. Universal Special-Element Boxes (reuse on every page)
 

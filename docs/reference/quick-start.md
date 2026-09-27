@@ -53,7 +53,7 @@ profile; `docs/research/keyword-gap-*.md`) → `@bsuk-strategy-synthesizer` →
 
 ### "Give a page a final pass / is this page done?"
 → `.claude/skills/bsuk-final-page-pass/SKILL.md` (THE final gate, any page type)
-→ `npx astro build` → `python3 scripts/final_page_audit.py` → one PASS/WARN/FAIL verdict
+→ `npm run -s build` → `python3 scripts/final_page_audit.py` → one PASS/WARN/FAIL verdict
 → `python3 -m pytest tests/py -q` and `npm run check:all`
 
 ### "I want to list an available puppy"

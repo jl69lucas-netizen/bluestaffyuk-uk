@@ -8,7 +8,7 @@ description: Use when a BSUK page is about to be called done, or when a page rep
 **Run this AFTER `.claude/skills/anti-ai-writing/SKILL.md` and BEFORE `.claude/skills/bsuk-final-page-pass/SKILL.md`.** Hardening asks *does the page render*, the AEO pass asks *can an engine lift a sentence*; this asks *does the page prove what it asserts, or only repeat it*.
 
 ```bash
-npx astro build
+npm run -s build
 python3 scripts/evidence_audit.py <slug> [<slug> ...]      # slugs LITERALLY; `index` is the homepage
 ```
 `ERROR` = fix before deploy. `WARN` = read the section, then decide. `0 pages matched` is not a pass.

@@ -170,7 +170,7 @@ authority. In short: `npm run -s build` → `npm run -s check:all` → `python3 
 (and the slug in `data/facts/rebuilt.json`, the page in `tests/render/targets.json`) →
 `npm run test:render:meta` → `npm run test:render:pages` (row 13, BEFORE Harden) → the two
 Harden passes (rows 14–15) → `python3 scripts/page_hardening_scan.py <route> --fail-on-error`
-(row 16) → commit, `python3 scripts/generate_page_dates.py --check`, then
+(row 16) → commit, `npm run -s build` again (the prebuild re-dates the page from that commit), then
 `npm run gate:page -- <slug> --skip-record` (row 17: dup, final audit on profile `comparison`,
 hardening, AEO, evidence and the board gate, each run twice) → the verification record, committed,
 then `npm run gate:page -- <slug>` (row 18) → `python3 scripts/measurement_ledger.py <project> --slugs <slug>` (row 19).

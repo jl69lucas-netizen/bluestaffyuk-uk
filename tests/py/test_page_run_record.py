@@ -416,16 +416,36 @@ def test_dirty_tracked_ignores_records_reports_and_rewritten_scorecards(tmp_path
     assert PRR.dirty_tracked(tmp_path) == ["src.astro"]
 
 
-def test_dirty_tracked_ignores_the_two_tracked_build_outputs(tmp_path):
-    # `npm run build` rewrites data/page-dates.json (prebuild) and public/search-index.json
-    # (postbuild). Both are derived from committed sources and history, so the documented
-    # close order (build, then gate) must not stamp every report `-dirty` (Task 28a).
-    for rel in ("src.astro", "data/page-dates.json", "public/search-index.json"):
+def _dated_repo(tmp_path):
+    """A committed tree with one page, a committed (placeholder) page-date map and a search index."""
+    for rel in ("src/pages/index.astro", "data/page-dates.json", "public/search-index.json"):
         (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / rel).write_text("1", encoding="utf-8")
     git(tmp_path, "init", "-q")
     git(tmp_path, "add", "-A")
-    git(tmp_path, "commit", "-qm", "x")
-    (tmp_path / "data/page-dates.json").write_text("2", encoding="utf-8")
-    (tmp_path / "public/search-index.json").write_text("2", encoding="utf-8")
-    assert PRR.dirty_tracked(tmp_path) == []
+    git(tmp_path, "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "x")
+    return tmp_path
+
+
+def test_dirty_tracked_sets_aside_the_search_index_and_a_current_page_date_map(tmp_path):
+    # `npm run build` rewrites data/page-dates.json (prebuild) and public/search-index.json
+    # (postbuild). The index is derived from dist/, so it is always set aside; the page-date
+    # map only when it equals a fresh derivation from committed history — then the documented
+    # order (commit, build, gate) does not stamp the report `-dirty` (Task 28a).
+    import generate_page_dates as GPD
+    root = _dated_repo(tmp_path)
+    routes = GPD.derive_routes(root)
+    assert "/" in routes
+    (root / "data/page-dates.json").write_text(json.dumps({"routes": routes}), encoding="utf-8")
+    (root / "public/search-index.json").write_text("2", encoding="utf-8")
+    assert PRR.dirty_tracked(root) == []
+
+
+def test_a_stale_page_date_map_is_dirty(tmp_path):
+    root = _dated_repo(tmp_path)
+    (root / "data/page-dates.json").write_text(json.dumps({"routes": {"/": {
+        "datePublished": "2001-01-01", "dateModified": "2001-01-01", "selfDated": False}}}),
+        encoding="utf-8")
+    assert PRR.dirty_tracked(root) == ["data/page-dates.json"]
+    (root / "data/page-dates.json").write_text("not json", encoding="utf-8")
+    assert PRR.dirty_tracked(root) == ["data/page-dates.json"]

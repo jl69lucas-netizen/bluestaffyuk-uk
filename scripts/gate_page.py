@@ -30,7 +30,8 @@ only on a new page):
                     the gate re-verifies rather than trusting them.
 
 Before any step, the built page's file must be newer than every one of the page's source
-files on disk (data/locations.json included for a city); an older dist/ fails the gate with
+files on disk and the shared kit (src/layouts, components, lib, styles; data/locations.json
+too for a city); an older dist/ fails the gate with
 "rebuild first" (npm run -s build). File times, not commit times.
 An audit that runs past 600 s is a failed step with exit 124; the last 20 lines of a step's
 stderr are kept in the report beside its evidence (never inside the diffed evidence).
@@ -66,6 +67,7 @@ import family_rules as FR  # noqa: E402
 import final_page_audit  # noqa: E402
 import page_intake as PI  # noqa: E402
 import page_run_record as PRR  # noqa: E402
+import pageboard as PB  # noqa: E402
 import rendered_changes as RC  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -169,8 +171,9 @@ def page_hash(route, root=ROOT):
 
 def stale_build(key, route, root=ROOT):
     """A message when the built page is older than any of the page's sources on disk — its
-    board, facts and verbatim files, route files (a folder counts by its files) and, for a
-    city, data/locations.json; None when the build is current. File times, not commit times:
+    board, facts and verbatim files, route files (a folder counts by its files), the shared
+    shell every page renders through (pageboard.FRESHNESS_SHARED: src/layouts, components,
+    lib, styles) and, for a city, data/locations.json; None when the build is current. File times, not commit times:
     edit, build, then commit is current; an edit after the build is not."""
     root = pathlib.Path(root)
     built = root / "dist" / route / "index.html" if route else root / "dist" / "index.html"
@@ -180,6 +183,10 @@ def stale_build(key, route, root=ROOT):
     for rel in PRR.page_sources(key, root):
         path = root / rel
         files += [f for f in path.rglob("*") if f.is_file()] if path.is_dir() else [path]
+    for rel in PB.FRESHNESS_SHARED:
+        base = root / rel
+        if base.is_dir():
+            files += [f for f in base.rglob("*") if f.is_file()]
     if PRR.city_row(key, root) is not None:
         files.append(root / "data" / "locations.json")
     newer = sorted(f.relative_to(root).as_posix() for f in files

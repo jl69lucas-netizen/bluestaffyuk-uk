@@ -19,7 +19,7 @@ USE — a page (or batch) is "done" and you're about to pass/deploy it; ANY type
 (`.claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md`, which this gate calls for low scorers).
 
 ## Two-tier flow
-1. Mechanical: `npx astro build` then `python3 scripts/final_page_audit.py [--puppies]`.
+1. Mechanical: `npm run -s build` then `python3 scripts/final_page_audit.py [--puppies]`.
    Per-page PASS/WARN/FAIL + pre-triaged roll-up. Edit `PUPPIES`/`SLUGS` or add a profile to
    retarget.
    **1b. Dup-content gate (hard FAIL — breeder decision 2026-07-07):** run
@@ -121,7 +121,7 @@ the interior batch.
 
 ```text
 FINAL MANUAL PAGE CHECK — <page slug>            Updated: <Month Year>
-RUN FIRST: npx astro build  →  python3 scripts/final_page_audit.py [--puppies]
+RUN FIRST: npm run -s build  →  python3 scripts/final_page_audit.py [--puppies]
 
 STRUCTURE
 [ ] H1 ×1 exactly; H1–H4 all present; no level skips (utility pages may lack H4 — ACCEPTED)

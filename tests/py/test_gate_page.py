@@ -279,6 +279,22 @@ def test_a_city_row_edit_after_the_build_fails_rebuild_first(tmp_path):
     assert msg and "rebuild first" in msg and "data/locations.json" in msg
 
 
+@pytest.mark.parametrize("shared", ["src/components/kit/Hero.astro", "src/layouts/PageShell.astro",
+                                    "src/lib/globalCta.ts", "src/styles/tokens.css"])
+def test_a_kit_edit_after_the_build_fails_rebuild_first(tmp_path, shared):
+    # The shared shell renders every page (pageboard.FRESHNESS_SHARED): a kit edit with no
+    # rebuild would gate a page nobody built (Task 28a review).
+    _built_city(tmp_path)
+    f = tmp_path / shared
+    f.parent.mkdir(parents=True)
+    f.write_text("x", encoding="utf-8")
+    os.utime(f, (1_500_000, 1_500_000))
+    assert GP.stale_build("p", "uk-locations/p", tmp_path) is None
+    os.utime(f, (3_000_000, 3_000_000))
+    msg = GP.stale_build("p", "uk-locations/p", tmp_path)
+    assert msg and "rebuild first" in msg and shared in msg
+
+
 def test_a_record_error_is_a_failed_record_step_not_a_traceback(tmp_path):
     # A repo with no HEAD: head_commit() raises RecordError inside findings().
     (tmp_path / "data/page-runs").mkdir(parents=True)

@@ -30,7 +30,7 @@ SEO; this one audits whether the page actually *renders* correctly.
 ## 0. The static half
 
 ```bash
-npx astro build                                    # nothing below works on a stale dist/
+npm run -s build                                   # nothing below works on a stale dist/
 python3 scripts/page_hardening_scan.py <slug>      # 21 checks
 ```
 

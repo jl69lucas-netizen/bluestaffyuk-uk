@@ -440,7 +440,7 @@ browser. A pass that proposes a visual change is previewed before it is applied 
 (`docs/reference/page-run.md`, rows 14 and 15).
 
 ```
-0. npx astro build                      ← nothing below works on a stale dist/
+0. npm run -s build                      ← nothing below works on a stale dist/
 
 1. python3 scripts/page_hardening_scan.py <slug>
    → 21 static checks. ERROR = shipped-broken. WARN = eyeball it.
@@ -528,7 +528,7 @@ never skipped) at the end of this sprint, before a page is called done or ready 
 and record what it ran in the page's run record (`docs/reference/page-run.md`, row 18).
 
 ```
-1. npx astro build
+1. npm run -s build
 2. python3 scripts/final_page_audit.py [--puppies]
    → page-type-aware, nested-slug aware. SUPERSEDES the source repo's interior audit, which was never ported.
    → headings: all six levels, no skipped levels, Title Case; ≥5 H5/H6 advisory on homepage + location pages (2026-09-09)
@@ -932,7 +932,7 @@ builds, and `npm run sitemaps` (the build's postbuild) lists it.
 
 ### If any URL returns 404 after deploy:
 1. Check the page's own `index.astro` under `src/pages/` exists
-2. Run `npx astro build` locally — check for build errors
+2. Run `npm run -s build` locally — check for build errors
 3. Check `data/redirects.json` for a conflicting rule, then `python3 scripts/redirect_check.py`
 4. Check `astro.config.mjs` for route configuration
 

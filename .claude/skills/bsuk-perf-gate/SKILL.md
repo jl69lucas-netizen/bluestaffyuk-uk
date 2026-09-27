@@ -18,7 +18,7 @@ done on a local number once PSI is available.
 ## Run it
 
 ```bash
-npx astro build
+npm run -s build
 python3 scripts/perf_audit.py <slug>                     # desktop, dist/, 5 runs
 python3 scripts/perf_audit.py <slug> --mobile            # mobile, dist/, 5 runs
 python3 scripts/perf_audit.py <slug> --live --mobile     # project 6 only: edge injections

@@ -325,7 +325,7 @@ record (`scripts/page_run_record.py`).
 
 In page-run order (row 12's build and site checks, with the slug added to
 `data/facts/rebuilt.json` and `tests/render/targets.json`; row 13 render; rows 14–15 Harden,
-each committed then recorded; row 16 static scan; row 17 commit, then the two-run gate; row 18
+each committed then recorded; row 16 static scan; row 17 commit, rebuild so the page is dated from that commit, then the two-run gate; row 18
 the verification record, committed, then the full gate; row 19 the ledger):
 
 ```bash
@@ -337,7 +337,7 @@ npm run test:render:pages
 python3 scripts/page_run_record.py <slug> impeccable --findings <n> --fixed <n>
 python3 scripts/page_run_record.py <slug> frontend-design --findings <n> --fixed <n>
 python3 scripts/page_hardening_scan.py uk-locations/<slug> --fail-on-error
-python3 scripts/generate_page_dates.py --check
+npm run -s build
 npm run gate:page -- <slug> --skip-record
 python3 scripts/page_run_record.py <slug> verification --run "npm run -s build" --run "npm run -s check:all" --run "npm run gate:page -- <slug> --skip-record" --claim "<claim>"
 npm run gate:page -- <slug>

@@ -237,7 +237,7 @@ npm run test:render:pages
 python3 scripts/page_run_record.py <slug> impeccable --findings <n> --fixed <n>
 python3 scripts/page_run_record.py <slug> frontend-design --findings <n> --fixed <n>
 python3 scripts/page_hardening_scan.py uk-locations/<slug> --fail-on-error
-python3 scripts/generate_page_dates.py --check
+npm run -s build
 npm run gate:page -- <slug> --skip-record
 python3 scripts/page_run_record.py <slug> verification --run "npm run -s build" --run "npm run -s check:all" --run "npm run gate:page -- <slug> --skip-record" --claim "<claim>"
 npm run gate:page -- <slug>
