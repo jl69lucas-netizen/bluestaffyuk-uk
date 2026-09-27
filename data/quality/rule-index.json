@@ -406,7 +406,7 @@
    "family": "LAYOUT",
    "enforced": "test",
    "pack": "rules/design.md",
-   "test": "tests/py/test_design_components.py",
+   "test": "tests/py/test_design_components.py + tests/render/checks/layout.ts::layout-hero-image-first-mobile",
    "severity": "blocking"
   },
   {

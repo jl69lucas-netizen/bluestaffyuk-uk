@@ -830,6 +830,12 @@ if (showPhoto && !(layout === 'mosaic' && mosaic.length >= 2)) {
        column. The height is auto there for rule 10's own reason: a phone hero that clipped
        its own CTA would be worse than a tall one. */
     @media (max-width: 900px) {
+      /* The photo PAINTS first on a phone, not only in source (rule 10; the user's ruling of
+         2026-09-27, "ALL HEROES images come first on MOBILE"). The two-column `order` above
+         puts the photo second, which is right beside the copy and wrong once there is one
+         column. Measured by tests/render/checks/layout.ts::layout-hero-image-first-mobile. */
+      .pic { order: 1; }
+      .copy { order: 2; }
       .kit-hero[data-hero-layout="panel"] .inner,
       .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1fr; }
       .kit-hero[data-hero-layout="panel"] .pic,

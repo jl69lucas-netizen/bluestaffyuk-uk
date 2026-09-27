@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 31
+    "checks": 32
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -22,6 +22,7 @@
     "layout-image-box-reserved": 9,
     "layout-table-stacks-on-mobile": 0,
     "hero-aside-no-clip": 3,
+    "layout-hero-image-first-mobile": 3,
     "img-srcset-within-2x": 45,
     "img-alt-present-and-unique": 45,
     "img-sizes-matches-box": 9,
@@ -38,7 +39,7 @@
     "schema-date-modified-present": 21,
     "schema-no-visible-date": 3,
     "css-class-resolves": 1401,
-    "css-no-dead-component-rule": 912,
+    "css-no-dead-component-rule": 918,
     "css-component-color-not-overridden": 61,
     "dup-no-sibling-crossover": 180,
     "a11y-text-contrast-aa": 900,

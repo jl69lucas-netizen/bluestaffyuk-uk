@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a hero whose heading comes before its photo</title>
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui; }
+  .inner { display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; padding: 24px; align-items: center; }
+  .pic { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; background: #dde3ea; }
+  .title { font-size: 32px; margin: 0 0 8px; }
+  @media (max-width: 900px) { .inner { grid-template-columns: 1fr; } .pic { aspect-ratio: 3 / 2; } }
+</style>
+</head><body>
+<section class="kit-hero" data-hero-layout="split">
+  <div class="inner">
+    <div class="copy"><h1 class="title">Where can I meet a blue Staffy puppy?</h1>
+      <p>The heading is first in source, so the photo is second everywhere.</p></div>
+    <div class="pic" role="img" aria-label="A blue Staffy puppy"></div>
+  </div>
+</section>
+</body></html>

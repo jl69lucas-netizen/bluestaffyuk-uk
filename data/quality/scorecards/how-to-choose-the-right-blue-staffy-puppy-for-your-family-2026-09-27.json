@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 31
+    "checks": 32
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -22,6 +22,7 @@
     "layout-image-box-reserved": 0,
     "layout-table-stacks-on-mobile": 0,
     "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 0,
     "img-srcset-within-2x": 0,
     "img-alt-present-and-unique": 0,
     "img-sizes-matches-box": 0,
@@ -38,7 +39,7 @@
     "schema-date-modified-present": 12,
     "schema-no-visible-date": 3,
     "css-class-resolves": 258,
-    "css-no-dead-component-rule": 753,
+    "css-no-dead-component-rule": 759,
     "css-component-color-not-overridden": 26,
     "dup-no-sibling-crossover": 180,
     "a11y-text-contrast-aa": 157,
@@ -53,11 +54,11 @@
   },
   "instances": {
     "SEM": 12,
-    "CSS": 438,
+    "CSS": 441,
     "DUP": 3
   },
   "total": 9,
-  "total_instances": 453,
+  "total_instances": 456,
   "overrides": [],
   "details": [
     {
@@ -69,8 +70,8 @@
     {
       "viewport": 1280,
       "checkId": "css-no-dead-component-rule",
-      "count": 146,
-      "message": "146 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "count": 147,
+      "message": "147 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 1280,
@@ -87,8 +88,8 @@
     {
       "viewport": 375,
       "checkId": "css-no-dead-component-rule",
-      "count": 146,
-      "message": "146 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "count": 147,
+      "message": "147 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 375,
@@ -105,8 +106,8 @@
     {
       "viewport": 768,
       "checkId": "css-no-dead-component-rule",
-      "count": 146,
-      "message": "146 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "count": 147,
+      "message": "147 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 768,

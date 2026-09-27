@@ -2038,3 +2038,26 @@ test.describe('promotions: every blocking check is on record, and new-page promo
     }
   });
 });
+
+/**
+ * layout-hero-image-first-mobile has two halves (source order, paint order), and the generic
+ * fixture pair fires on the SOURCE half at every width — so on its own it could not tell a
+ * working paint half from a dead one. This fixture has the source order right and the paint
+ * order wrong below 900px, which is exactly what Hero.astro shipped before 2026-09-27.
+ */
+test.describe('layout-hero-image-first-mobile sees a paint-order defect on its own', () => {
+  test('fires on one-column widths and is silent at 1280', async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    const res = await page.goto(fixtureUrl('known_broken', 'hero-image-first-order-only'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const check = registry.find((c) => c.id === 'layout-hero-image-first-mobile')!;
+    const r = await runCheck(check, page, viewport, FIXTURE_CTX);
+    expect(r.examined, 'one hero with a photo and a heading').toBe(1);
+    if (viewport <= 900) {
+      expect(r.defects.length, 'the paint half must fire without the source half').toBe(1);
+      expect(r.defects[0].message).toContain('paints');
+    } else {
+      expect(r.defects.map((d) => d.message), 'two columns: nothing to paint in order').toEqual([]);
+    }
+  });
+});

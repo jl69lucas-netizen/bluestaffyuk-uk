@@ -626,3 +626,67 @@ register({
     };
   },
 });
+
+/**
+ * THE HERO PHOTO COMES FIRST ON A PHONE (rules/design.md rule 10; the user's answer-board
+ * ruling of 2026-09-27: "ALL HEROES images come first on MOBILE").
+ *
+ * Rule 10 already puts the photo first in SOURCE, and test_design_components.py proves it on
+ * the built pages. What nothing measured was the PAINT: the split, bleed and mosaic layouts
+ * gave `.pic` `order: 2` at every width, so below 900px — where every arrangement is one
+ * column — the phone reader met the heading and the lede first and the photo underneath them.
+ *
+ * Two readings, split the way layout-table-stacks-on-mobile splits its own, because the meta
+ * gate runs every fixture at all three widths and requires the broken one to fire at each:
+ *   - SOURCE ORDER, judged at every width: the photo (`.pic`) precedes the heading (`.title`).
+ *   - PAINT ORDER, judged where the hero is one column (the document is 900px wide or less):
+ *     the photo's top is above the heading's top.
+ * The paint half is proven on its own by the `hero-image-first-order-only` fixture in
+ * meta.spec.ts, which has the source order right and the paint order wrong.
+ *
+ * THE UNIT IS ONE HERO with both a photo and a heading. A photoless hero (`media: 'none'`) is
+ * not a violation and is not counted.
+ */
+register({
+  id: 'layout-hero-image-first-mobile',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'the hero photo precedes the heading in source and paints above it on one-column widths',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await settlePage(page);
+    const r = await page.evaluate(() => {
+      const oneColumn = document.documentElement.clientWidth <= 900;
+      let examined = 0;
+      const bad: string[] = [];
+      for (const hero of Array.from(document.querySelectorAll('.kit-hero'))) {
+        const pic = hero.querySelector('.pic');
+        const title = hero.querySelector('.title');
+        if (!pic || !title) continue;
+        const pb = pic.getBoundingClientRect();
+        const tb = title.getBoundingClientRect();
+        if (pb.width < 1 || pb.height < 1 || tb.width < 1 || tb.height < 1) continue;
+        examined++;
+        const layout = hero.getAttribute('data-hero-layout') || 'split';
+        if (!(title.compareDocumentPosition(pic) & Node.DOCUMENT_POSITION_PRECEDING)) {
+          bad.push(`${layout}: the heading precedes the photo in source`);
+        } else if (oneColumn && pb.top >= tb.top) {
+          bad.push(`${layout}: the photo paints ${Math.round(pb.top - tb.top)}px below the heading's top`);
+        }
+      }
+      return { examined, bad };
+    });
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{
+          checkId: 'layout-hero-image-first-mobile',
+          family: 'LAYOUT' as const,
+          viewport,
+          count: r.bad.length,
+          message: r.bad.join(' | '),
+        }]
+        : [],
+    };
+  },
+});
