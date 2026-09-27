@@ -858,8 +858,10 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     # Block 0: the page's starting state, read from the files by scripts/page_intake.py —
     # the brief's target block, where the mode is found by looking and never assumed. Only
     # when the caller passes one, so a board rendered in a test stays exactly as it was.
+    # Every key and value goes through md(): an H1 or a data row is text from a file, and a
+    # pipe, an asterisk or a `</script>` in it must show literally, not end the block.
     if intake is not None:
-        parts.append(("0. Intake — found by looking", PI.render_md(intake)
+        parts.append(("0. Intake — found by looking", PI.render_md(intake, cell=md)
                       + "\n\nRead from `data/locations.json`, `data/page-map.json`, the record, "
                         "the built page and its sitemap by `python3 scripts/page_intake.py "
                       + esc(slug) + "`. Nothing here is typed by hand."))
@@ -1128,10 +1130,14 @@ def main():
     routes = load_routes()
     # Candidates, thumbnails and generated previews only for the pages the image rule binds.
     images = IR.board_images(board) if PB.FR.applies(board) else None
+    # The demo record and a record-only page the data files never name have no intake, and
+    # an intake that cannot be read must not stop the board: it renders without block 0 and
+    # says why.
     try:
         intake = PI.intake(slug)
-    except PI.UnknownSlug:
-        intake = None      # the demo record and a record-only page the data files never name
+    except Exception as e:  # noqa: BLE001 — any intake failure only drops block 0
+        intake = None
+        print(f"board: no block 0 for {slug} — {type(e).__name__}: {e}", file=sys.stderr)
     out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images,
                           intake), encoding="utf-8")
     n_int = sum(len(s["links"]["internal"]) for s in board["sections"])

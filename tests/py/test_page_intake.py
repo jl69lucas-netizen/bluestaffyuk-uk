@@ -11,9 +11,9 @@ last tests run the intake on this repo, and one closes Known Issue 63: a city pa
 file now reads as stale when the dynamic route that renders it changes.
 """
 import json
+import os
 import pathlib
 import sys
-import time
 
 import pytest
 
@@ -71,7 +71,8 @@ def repo(tmp_path):
         "uk-locations/oldtown": page("<p>Puppies £850 to £1,500. Delivery a flat £100. "
                                      "The deposit is non-refundable. We are council-licensed. "
                                      "Deposit £500.</p>"),
-        "done-page": page('<p>See <a href="/uk-locations/oldtown/">Oldtown</a>.</p>'),
+        "done-page": page('<h1>Done, rebuilt</h1>'
+                          '<p>See <a href="/uk-locations/oldtown/">Oldtown</a>.</p>'),
     }.items():
         (dist / route).mkdir(parents=True)
         (dist / route / "index.html").write_text(html, encoding="utf-8")
@@ -84,7 +85,7 @@ def test_a_stub_city_reads_as_a_stub_with_its_empty_h1_and_no_verbatim_set(tmp_p
     it = PI.intake("stubtown", repo(tmp_path))
     assert it["mode"] == "stub" and it["route"] == "uk-locations/stubtown"
     assert it["robots"] == "noindex, follow", "robots is read from the built page"
-    assert it["h1"] == "EMPTY"
+    assert it["h1"] == "EMPTY" and it["h1_source"] == "migrated row"
     assert it["verbatim"].startswith("stub — no verbatim set")
     assert it["sitemap"] is False and it["question_file"] is False and it["llm_intel"] is None
     assert it["page_type"] == "location"
@@ -102,7 +103,7 @@ def test_a_migrated_city_reports_its_retired_terms_sitemap_and_research(tmp_path
     assert it["llm_intel"] == {"file": "docs/research/llm-intel/oldtown-2026-09-25.json",
                                "status": "ok"}
     assert it["verbatim"].startswith("not extracted — run python3 scripts/verbatim_set_check.py")
-    assert it["baseline"] == "NOT FETCHED — test barrier"
+    assert it["baseline"] == "NOT FETCHED — test barrier (data/page-map.json)"
 
 
 def test_inbound_links_count_other_pages_main_not_the_site_chrome(tmp_path):
@@ -112,11 +113,113 @@ def test_inbound_links_count_other_pages_main_not_the_site_chrome(tmp_path):
     assert PI.intake("stubtown", root)["inbound_links"] == 0
 
 
+def test_inbound_links_skip_the_kit_specimen_routes(tmp_path):
+    """A specimen route (board-preview/, kit-preview/) is not a page a reader reaches; a
+    real page whose first segment merely starts with the same letters still counts."""
+    root = repo(tmp_path)
+    link = page('<p><a href="/uk-locations/oldtown/">Oldtown</a></p>')
+    for route in ("board-preview/demo", "kit-preview", "board-previews-guide"):
+        (root / "dist" / route).mkdir(parents=True)
+        (root / "dist" / route / "index.html").write_text(link, encoding="utf-8")
+    assert PI.intake("oldtown", root)["inbound_links"] == 2, "done-page + board-previews-guide"
+
+
+def test_the_root_is_listed_only_by_its_own_loc_and_its_inbound_links_are_not_counted(tmp_path):
+    root = repo(tmp_path)
+    pm = json.loads((root / "data/page-map.json").read_text(encoding="utf-8"))
+    pm["pages"].append({"url": "/", "h1": "Home", "baseline_gsc": "NOT FETCHED — test barrier"})
+    (root / "data/page-map.json").write_text(json.dumps(pm), encoding="utf-8")
+    (root / "dist/index.html").write_text(page("<h1>Home</h1>"), encoding="utf-8")
+    it = PI.intake("index", root)
+    assert it["sitemap"] is False, "…/oldtown/</loc> is not the root's entry"
+    assert it["inbound_links"] is None
+    assert dict(PI.rows(it))["Inbound links (other pages' main)"] == "not counted for the root"
+    (root / "dist/page-sitemap.xml").write_text(
+        "<urlset><url><loc>https://x/</loc></url></urlset>", encoding="utf-8")
+    assert PI.intake("index", root)["sitemap"] is True
+
+
 def test_a_rebuilt_page_reads_as_rebuilt_with_its_verbatim_count(tmp_path):
     it = PI.intake("done-page", repo(tmp_path))
     assert it["mode"] == "rebuilt"
     assert it["verbatim"] == 4 and it["verbatim_applies"] is True
     assert it["built"]["path"] == "dist/done-page/index.html"
+
+
+def test_a_rebuilt_page_reports_its_built_h1_not_the_migrated_row(tmp_path):
+    it = PI.intake("done-page", repo(tmp_path))
+    assert (it["h1"], it["h1_source"]) == ("Done, rebuilt", "built")
+    assert ("H1 (built)", "Done, rebuilt") in PI.rows(it)
+
+
+def test_the_h1_falls_back_to_the_board_pick_then_the_migrated_row(tmp_path):
+    root = repo(tmp_path)
+    (root / "dist/done-page/index.html").write_text(page("<p>no heading</p>"), encoding="utf-8")
+    assert (PI.intake("done-page", root)["h1"], PI.intake("done-page", root)["h1_source"]) == (
+        "Done", "migrated row")
+    (root / "data/boards/done-page.json").write_text(json.dumps(
+        {"meta": {"slug": "done-page", "page_type": "guide", "status": "approved"},
+         "h1": {"variants": ["Picked", "Other"], "recommended": 1, "pick": 0}}), encoding="utf-8")
+    it = PI.intake("done-page", root)
+    assert (it["h1"], it["h1_source"]) == ("Picked", "board pick")
+
+
+def test_an_excluded_page_says_so_and_why(tmp_path):
+    root = repo(tmp_path)
+    (root / "data/verbatim/applies.json").write_text(json.dumps(
+        {"slugs": [], "excluded": {"comment": "x", "done-page": "rebuilt before rule 15"}}),
+        encoding="utf-8")
+    (root / "data/verbatim/done-page.json").unlink()
+    it = PI.intake("done-page", root)
+    assert it["verbatim"] == "excluded from rule 15 — rebuilt before rule 15"
+    assert it["verbatim_applies"] is False
+    assert dict(PI.rows(it))["Rule 15 applies"] == "no"
+
+
+def test_a_rebuilt_page_with_no_set_on_disk_is_not_called_new(tmp_path):
+    root = repo(tmp_path)
+    (root / "data/verbatim/done-page.json").unlink()
+    it = PI.intake("done-page", root)
+    assert it["mode"] == "rebuilt" and not it["verbatim"].startswith("none — a new page")
+
+
+def test_the_three_pages_rebuilt_before_rule_15_read_as_excluded():
+    excluded = json.loads((ROOT / "data/verbatim/applies.json").read_text(encoding="utf-8"))[
+        "excluded"]
+    slugs = sorted(k for k in excluded if k != "comment")
+    assert slugs == ["privacy-policy-uk", "thank-you-blue-staffy-puppies-journey",
+                     "uk-blue-staffy-breeders-contact"]
+    for slug in slugs:
+        it = PI.intake(slug)
+        assert it["mode"] == "rebuilt"
+        assert it["verbatim"] == f"excluded from rule 15 — {excluded[slug]}", slug
+        assert it["verbatim_applies"] is False
+
+
+def test_robots_falls_back_to_the_page_map_row_before_not_built(tmp_path):
+    root = repo(tmp_path)
+    pm = json.loads((root / "data/page-map.json").read_text(encoding="utf-8"))
+    pm["pages"].append({"url": "/unbuilt/", "h1": "U", "robots": "noindex, nofollow",
+                        "baseline_gsc": "NOT FETCHED — test barrier"})
+    pm["pages"].append({"url": "/bare/", "h1": "B", "baseline_gsc": "NOT FETCHED — test barrier"})
+    (root / "data/page-map.json").write_text(json.dumps(pm), encoding="utf-8")
+    assert PI.intake("unbuilt", root)["robots"] == "noindex, nofollow"
+    assert PI.intake("bare", root)["robots"] == "NOT FETCHED — not built yet"
+
+
+def test_a_malformed_data_file_is_a_clear_intake_error(tmp_path):
+    root = repo(tmp_path)
+    (root / "data/page-map.json").write_text("[]", encoding="utf-8")
+    with pytest.raises(PI.IntakeError, match="data/page-map.json"):
+        PI.intake("oldtown", root)
+    root2 = repo(tmp_path / "b")
+    (root2 / "data/boards/oldtown.json").write_text("[1, 2]", encoding="utf-8")
+    with pytest.raises(PI.IntakeError, match="data/boards/oldtown.json"):
+        PI.intake("oldtown", root2)
+    root3 = repo(tmp_path / "c")
+    (root3 / "data/locations.json").write_text("not json", encoding="utf-8")
+    with pytest.raises(PI.IntakeError, match="data/locations.json is not readable JSON"):
+        PI.intake("oldtown", root3)
 
 
 def test_a_page_known_only_by_its_board_is_new(tmp_path):
@@ -163,18 +266,22 @@ def test_render_md_is_a_two_column_table_with_every_field(tmp_path):
     md = PI.render_md(PI.intake("oldtown", repo(tmp_path)))
     lines = md.splitlines()
     assert lines[:2] == ["| Field | Value |", "|---|---|"]
-    for field in ("Mode", "Robots", "Built page", "Sitemap entry", "H1", "Verbatim set",
-                  "Question file", "LLM intel", "Board", "Search Console baseline",
+    for field in ("Mode", "Robots", "Built page", "Sitemap entry", "H1 (migrated row)",
+                  "Verbatim set", "Rule 15 applies", "Question file", "LLM intel", "Board", "Search Console baseline",
                   "Inbound links (other pages' main)", "Retired-term hits"):
         assert any(l.startswith(f"| {field} |") for l in lines), field
 
 
-def test_main_exits_2_on_an_unknown_slug_and_0_on_a_known_one(capsys):
-    assert PI.main(["no-such-page-anywhere"]) == 2
+def test_main_exits_2_on_an_unknown_slug_and_0_on_a_known_one(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(PI, "ROOT", repo(tmp_path))
+    assert PI.main(["nowhere"]) == 2
     assert "page-intake ERROR" in capsys.readouterr().out
-    assert PI.main(["blue-staffy-puppies-manchester-uk", "--json"]) == 0
+    assert PI.main(["oldtown", "--json"]) == 0
     out = json.loads(capsys.readouterr().out)
-    assert out["mode"] in PI.MODES and out["route"] == "uk-locations/blue-staffy-puppies-manchester-uk"
+    assert out["mode"] == "migrated" and out["route"] == "uk-locations/oldtown"
+    (tmp_path / "data/page-map.json").write_text("{\"pages\": 3}", encoding="utf-8")
+    assert PI.main(["oldtown"]) == 2
+    assert "page-intake ERROR" in capsys.readouterr().out
 
 
 # ── block 0 on the board ──────────────────────────────────────────────────────────────────
@@ -188,6 +295,20 @@ def test_the_board_renders_block_0_when_given_an_intake():
     assert "| Mode | rebuilt |" in html
     first = html.index('data-title="0. Intake')
     assert first < html.index('data-title="1. Brief"'), "block 0 comes before the brief"
+
+
+def test_block_0_escapes_every_value_and_keeps_the_rest_of_the_board():
+    """Block 0 goes through the board's md(): an H1 carrying markdown, a pipe and a
+    `</script>` shows literally and cannot end the text/markdown block early."""
+    board = PB.load_board("_demo")
+    args = (board, PB.load_ontology(), PB.load_ledger(), {}, {}, "_demo")
+    it = dict(PI.intake("index"), h1="A *b* </script> |")
+    html = BPB.render(*args, intake=it)
+    plain = BPB.render(*args)
+    assert html.count("</script>") == plain.count("</script>") + 1, "only block 0's own close"
+    assert "A \\*b\\* &lt;/script&gt; \\|" in html
+    assert html.index('data-title="0. Intake') < html.index('data-title="1. Brief"')
+    assert html.count("data-title=") == plain.count("data-title=") + 1
 
 
 def test_the_board_has_no_block_0_without_an_intake():
@@ -216,11 +337,12 @@ def test_a_city_page_is_stale_after_its_dynamic_route_changes(tmp_path):
     template.write_text("template", encoding="utf-8")
     built = tmp_path / "dist/uk-locations/oldtown/index.html"
     built.parent.mkdir(parents=True)
-    time.sleep(0.01)
     built.write_text("x", encoding="utf-8")
+    for f in (tmp_path / "data/locations.json", template):
+        os.utime(f, (1_000_000, 1_000_000))
+    os.utime(built, (2_000_000, 2_000_000))
     assert PB.dist_page_is_fresh(built, tmp_path, slug="oldtown")
-    time.sleep(0.01)
-    template.write_text("edited", encoding="utf-8")
+    os.utime(template, (3_000_000, 3_000_000))
     assert not PB.dist_page_is_fresh(built, tmp_path, slug="oldtown"), (
         "Known Issue 63: an edit to the dynamic route must make the city page stale")
 
@@ -235,8 +357,8 @@ def test_the_city_hub_page_is_not_one_of_its_sources(tmp_path):
     hub.write_text("hub", encoding="utf-8")
     built = tmp_path / "dist/uk-locations/oldtown/index.html"
     built.parent.mkdir(parents=True)
-    time.sleep(0.01)
     built.write_text("x", encoding="utf-8")
-    time.sleep(0.01)
-    hub.write_text("edited", encoding="utf-8")
+    os.utime(tmp_path / "data/locations.json", (1_000_000, 1_000_000))
+    os.utime(built, (2_000_000, 2_000_000))
+    os.utime(hub, (3_000_000, 3_000_000))
     assert PB.dist_page_is_fresh(built, tmp_path, slug="oldtown")

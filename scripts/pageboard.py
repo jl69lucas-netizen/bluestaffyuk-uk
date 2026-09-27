@@ -1669,6 +1669,12 @@ def freshness_inputs(root, slug=None):
     # uk-locations/<slug>) is rendered by the parent's dynamic route file, never by a
     # src/pages/<slug>/ of its own. Every `[...]` file in the parent directory is one of its
     # sources; the parent's own index.astro renders the hub, not this page.
+    # Two cases this still does not cover: (1) a top-level page rendered by the root catch-all
+    # src/pages/[...post].astro — its route has no parent, and counting the catch-all for
+    # every top-level page would mark the rebuilt pages (which have their own
+    # src/pages/<slug>/) stale on an edit that cannot reach them; (2) a data file below a
+    # data/ subdirectory (data/verbatim/, data/queries/…) that a template reads — only the
+    # top-level data/*.json are counted.
     try:
         _, route = _resolve_page(slug, root)
     except ValueError:

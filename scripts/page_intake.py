@@ -21,8 +21,9 @@ Usage:
   python3 scripts/page_intake.py <slug>          # print the intake
   python3 scripts/page_intake.py <slug> --json   # print it as JSON
 
-Exit 0 with the intake printed; 2 when the slug is malformed or no data file knows it (not in
-data/locations.json, not in data/page-map.json, and no data/boards/<slug>.json).
+Exit 0 with the intake printed; 2 when the slug is malformed, no data file knows it (not in
+data/locations.json, not in data/page-map.json, and no data/boards/<slug>.json), or one of
+those files is not the shape it should be.
 """
 import argparse
 import json
@@ -34,6 +35,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB  # noqa: E402
 import retired_facts_check as RFC  # noqa: E402
 import verbatim_set_check as VSC  # noqa: E402
+from _html import text_of  # noqa: E402
 from _slugs import resolve_page  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -45,12 +47,45 @@ RETIRED_LABEL = {"amount": "{} (not a locked amount)", "term": "{}",
 ROBOTS = re.compile(r"""<meta\s+name=["']robots["']\s+content=["']([^"']*)["']""", re.I)
 MAIN = re.compile(r"<main\b[\s\S]*?</main>", re.I)
 HREF = re.compile(r"""href=["']([^"'#?]+)""")
-#: Built pages that are specimens of the kit, not pages a reader reaches.
+H1 = re.compile(r"<h1\b[^>]*>([\s\S]*?)</h1>", re.I)
+LOC = re.compile(r"<loc>\s*([^<]*?)\s*</loc>", re.I)
+HOST = re.compile(r"^https?://[^/]+")
+#: First path segments of built pages that are specimens of the kit, not pages a reader
+#: reaches.
 SPECIMENS = ("board-preview", "kit-preview")
 
 
-class UnknownSlug(Exception):
-    pass
+class IntakeError(Exception):
+    """The intake cannot be read: a data file it needs is not the shape it should be."""
+
+
+class UnknownSlug(IntakeError):
+    """The slug is malformed, or no data file knows it."""
+
+
+def _rel(path, root):
+    return path.relative_to(root).as_posix() if root in path.parents else str(path)
+
+
+def _shaped(path, value, kind, root):
+    """`value` when it is a `kind` (or None: absent), else IntakeError naming the file."""
+    if value is not None and not isinstance(value, kind):
+        raise IntakeError(f"{_rel(path, root)} is not a JSON {'object' if kind is dict else 'array'}"
+                          f" where the intake expects one — fix the file before reading the intake")
+    return value
+
+
+def _load(path, kind, root):
+    """A data file the intake cannot do without: None when absent, IntakeError when it is not
+    JSON or not a `kind`."""
+    if not path.is_file():
+        return None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        raise IntakeError(f"{_rel(path, root)} is not readable JSON ({e}) — fix the file "
+                          "before reading the intake")
+    return _shaped(path, value, kind, root)
 
 
 def _read_json(path, default):
@@ -86,10 +121,10 @@ def inbound_links(route, dist):
     pages = 0
     for page in sorted(dist.rglob("index.html")):
         rel = page.relative_to(dist).as_posix()
-        if page == own or rel.startswith(SPECIMENS):
+        if page == own or rel.split("/", 1)[0] in SPECIMENS:
             continue
         m = MAIN.search(page.read_text(encoding="utf-8", errors="ignore"))
-        if m and any(re.sub(r"^https?://[^/]+", "", h).rstrip("/") + "/" == target
+        if m and any(HOST.sub("", h).rstrip("/") + "/" == target
                      for h in HREF.findall(m.group(0))):
             pages += 1
     return pages
@@ -99,17 +134,20 @@ def intake(slug, root=None, dist=None):
     """The page's starting state as a dict. Raises UnknownSlug when no data file knows it."""
     root = pathlib.Path(root) if root is not None else ROOT
     dist = pathlib.Path(dist) if dist is not None else root / "dist"
+    # Shapes first: resolve_page reads both files too, and would fail with a bare TypeError.
+    loc_path, pm_path = root / "data/locations.json", root / "data/page-map.json"
+    cities = _load(loc_path, list, root) or []
+    page_map = _load(pm_path, dict, root) or {}
+    pm_rows = _shaped(pm_path, page_map.get("pages"), list, root) or []
     try:
         key, route = resolve_page(slug, root)
         board_file = root / "data/boards" / (PB.slug_file(key) + ".json")
     except (ValueError, PB.BoardError) as e:
         raise UnknownSlug(str(e))
-    city = next((r for r in _read_json(root / "data/locations.json", [])
-                 if isinstance(r, dict) and r.get("slug") == key), None)
-    pm_rows = _read_json(root / "data/page-map.json", {}).get("pages", [])
+    city = next((r for r in cities if isinstance(r, dict) and r.get("slug") == key), None)
     pm = next((r for r in pm_rows if isinstance(r, dict)
-               and r.get("url", "").strip("/") == route), None)
-    board = _read_json(board_file, None) if board_file.is_file() else None
+               and str(r.get("url", "")).strip("/") == route), None)
+    board = _load(board_file, dict, root)
     if city is None and pm is None and board is None:
         raise UnknownSlug(f"{slug}: not in data/locations.json, not in data/page-map.json, "
                           f"and no {board_file.relative_to(root)}")
@@ -126,40 +164,60 @@ def intake(slug, root=None, dist=None):
 
     built = dist / route / "index.html" if route else dist / "index.html"
     html = built.read_text(encoding="utf-8", errors="ignore") if built.is_file() else ""
+    # Robots: what the built page says; else what the data row recorded; else not built.
     m = ROBOTS.search(html)
+    row_robots = (city or {}).get("robots") or (pm or {}).get("robots")
     if m:
         robots = m.group(1)
-    elif city is not None:
-        robots = city.get("robots") or "NOT FETCHED — the data row carries no robots value"
+    elif row_robots:
+        robots = row_robots
+    elif html:
+        robots = "NOT FETCHED — the built page carries no robots meta and no data row records one"
     else:
         robots = "NOT FETCHED — not built yet"
 
+    # Sitemap: a <loc> whose path (host stripped) is exactly this page's.
     if not dist.is_dir():
         sitemap = None
     else:
         loc = "/" + route + "/" if route else "/"
-        sitemap = any(f"{loc}</loc>" in p.read_text(encoding="utf-8", errors="ignore")
-                      for p in dist.glob("*.xml"))
+        sitemap = any(HOST.sub("", v) == loc for p in dist.glob("*.xml")
+                      for v in LOC.findall(p.read_text(encoding="utf-8", errors="ignore")))
 
-    h1 = (city or pm or {}).get("h1")
-    if board is not None and not h1:
-        bh = board.get("h1") or {}
-        pick = bh.get("pick") if bh.get("pick") is not None else bh.get("recommended")
+    # H1: what ships first (the built page's <main>), then the approved board's pick, then
+    # the migrated data row — a rebuilt page's row still holds the old, migrated H1.
+    h1, h1_source = None, None
+    main_m = MAIN.search(html)
+    h1_m = H1.search(main_m.group(0)) if main_m else None
+    if h1_m and text_of(h1_m.group(1)).strip():
+        h1, h1_source = " ".join(text_of(h1_m.group(1)).split()), "built"
+    if h1 is None and board is not None:
+        bh = board.get("h1") if isinstance(board.get("h1"), dict) else {}
         variants = bh.get("variants") or []
-        if isinstance(pick, int) and 0 <= pick < len(variants):
-            h1 = variants[pick]
+        for field, label in (("pick", "board pick"), ("recommended", "board recommendation")):
+            i = bh.get(field)
+            if isinstance(i, int) and 0 <= i < len(variants) and variants[i]:
+                h1, h1_source = variants[i], label
+                break
+    if h1 is None and (city or pm) is not None:
+        h1, h1_source = (city or pm).get("h1") or None, "migrated row"
 
-    applies = _read_json(root / "data/verbatim/applies.json", {}).get("slugs", [])
+    applies = _read_json(root / "data/verbatim/applies.json", {})
+    applies = applies if isinstance(applies, dict) else {}
+    excluded = applies.get("excluded") if isinstance(applies.get("excluded"), dict) else {}
     vfile = root / "data/verbatim" / f"{key}.json"
-    if mode == "stub":
+    if key in excluded and key != "comment":
+        verbatim = f"excluded from rule 15 — {excluded[key]}"
+    elif mode == "stub":
         verbatim = "stub — no verbatim set (Known Issue 79)"
     elif vfile.is_file():
         verbatim = len(VSC.elements(_read_json(vfile, {})))
-    elif mode == "migrated":
-        verbatim = (f"not extracted — run python3 scripts/verbatim_set_check.py --extract {key} "
-                    "before any rewrite")
-    else:
+    elif mode == "new":
         verbatim = "none — a new page has no migrated wording"
+    else:
+        verbatim = (f"not extracted — run python3 scripts/verbatim_set_check.py --extract {key} "
+                    + ("before any rewrite" if mode == "migrated" else
+                       "(a rebuilt page with no set on disk)"))
 
     llm = sorted((root / "docs/research/llm-intel").glob(f"{key}-*.json"))
     llm_status = None
@@ -167,7 +225,7 @@ def intake(slug, root=None, dist=None):
         llm_status = (_read_json(llm[-1], {}).get("fetched") or {}).get("status")
 
     if pm is not None and pm.get("baseline_gsc"):
-        baseline = pm["baseline_gsc"]
+        baseline = f"{pm['baseline_gsc']} (data/page-map.json)"
     elif (root / "data/analytics").is_dir():
         baseline = "data/analytics/ exists — read it before writing NOT FETCHED"
     else:
@@ -189,14 +247,16 @@ def intake(slug, root=None, dist=None):
                   if built.is_file() else None),
         "sitemap": sitemap,
         "h1": h1 if h1 else "EMPTY",
+        "h1_source": h1_source,
         "verbatim": verbatim,
-        "verbatim_applies": key in applies,
+        "verbatim_applies": key in (applies.get("slugs") or []),
         "question_file": (root / "data/queries" / f"{key}.json").is_file(),
         "llm_intel": ({"file": llm[-1].relative_to(root).as_posix(), "status": llm_status}
                       if llm else None),
         "board": (board or {}).get("meta", {}).get("status") if board else None,
         "baseline": baseline,
-        "inbound_links": inbound_links(route, dist) if dist.is_dir() and route else 0,
+        # None for the root (every page's logo links it) and when there is no dist/.
+        "inbound_links": inbound_links(route, dist) if dist.is_dir() and route else None,
         "retired": retired_hits(markup, locked_amounts(root), key) if markup else {},
     }
 
@@ -215,26 +275,31 @@ def rows(it):
                                 "fresh" if built["fresh"] else "STALE: run npm run build")),
         ("Sitemap entry", "no dist/ to read" if it["sitemap"] is None else
          ("listed" if it["sitemap"] else "not listed")),
-        ("H1", it["h1"]),
+        ("H1 (%s)" % it["h1_source"] if it["h1_source"] else "H1", it["h1"]),
         ("Verbatim set", "%s element(s)" % it["verbatim"] if isinstance(it["verbatim"], int)
          else it["verbatim"]),
+        ("Rule 15 applies", "yes" if it["verbatim_applies"] else "no"),
         ("Question file", "data/queries/%s.json" % it["slug"] if it["question_file"]
          else "none — run bsuk-query-augmentation"),
         ("LLM intel", "none — run bsuk-llm-keyword-intel" if llm is None else
          "%s (%s)" % (llm["file"], llm["status"])),
         ("Board", it["board"] or "none"),
         ("Search Console baseline", it["baseline"]),
-        ("Inbound links (other pages' main)", str(it["inbound_links"])),
+        ("Inbound links (other pages' main)",
+         "not counted for the root" if not it["route"] else
+         "no dist/ to read" if it["inbound_links"] is None else str(it["inbound_links"])),
         ("Retired-term hits", ", ".join("%s × %d" % (k, n) for k, n in sorted(it["retired"].items()))
          or "none"),
     ]
 
 
-def render_md(it):
-    """The intake as a two-column markdown table, the form block 0 of the board shows."""
-    esc = lambda v: str(v).replace("|", "\\|")
+def render_md(it, cell=None):
+    """The intake as a two-column markdown table, the form block 0 of the board shows.
+    `cell` escapes each key and value; the board passes its md() (HTML, markdown punctuation
+    and `</script>`), and the default only guards the column separator."""
+    cell = cell or (lambda v: str(v).replace("|", "\\|"))
     lines = ["| Field | Value |", "|---|---|"]
-    lines += ["| %s | %s |" % (esc(k), esc(v)) for k, v in rows(it)]
+    lines += ["| %s | %s |" % (cell(k), cell(v)) for k, v in rows(it)]
     return "\n".join(lines)
 
 
@@ -245,7 +310,7 @@ def main(argv=None):
     ns = ap.parse_args(argv)
     try:
         it = intake(ns.slug)
-    except UnknownSlug as e:
+    except IntakeError as e:
         print(f"page-intake ERROR {e}")
         return 2
     if ns.json:
