@@ -114,6 +114,20 @@ def _gate_words(text):
     return QA.normalise(text).split()
 
 
+def norm_words(text):
+    """`text` as the title gate reads it (query_augment.normalise: plurals and synonyms
+    folded, so "Staffies" is "staffy"), small words dropped."""
+    return [w for w in _gate_words(text) if w not in STOP]
+
+
+def norm_phrase_count(term, text):
+    """How many times `term` occurs in `text` as a contiguous phrase, both read by
+    norm_words(): "Staffies in Leeds" carries "staffy leeds", "Blue Staffy Puppy Care"
+    carries "blue staffy puppies". An empty term matches nothing."""
+    t = norm_words(text)
+    return len(_starts(norm_words(term), t, _index(t)))
+
+
 def front_load_problem(primary, title):
     """Why `title` is not front-loaded with `primary` (the title gate), or None."""
     p = [w for w in _gate_words(primary) if w not in STOP]

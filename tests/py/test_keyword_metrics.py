@@ -36,6 +36,14 @@ def test_matching_ignores_small_words_and_case():
     assert not KM.front_loaded("blue staffy puppies manchester", "Home-Raised Blue Staffy Puppies Manchester")
 
 
+def test_norm_phrase_count_matches_like_the_title_gate():
+    # query_augment.normalise folds plurals and synonyms; small words drop; phrases are contiguous
+    assert KM.norm_phrase_count("staffy leeds", "Staffies in Leeds") == 1
+    assert KM.norm_phrase_count("blue staffy puppies", "Blue Staffy Puppy Care") == 1
+    assert KM.norm_phrase_count("blue staffy puppies", "Blue Care for Staffy Puppies") == 0
+    assert KM.norm_phrase_count("", "anything") == 0
+
+
 def test_first_100_words_is_measured_on_main_only():
     filler = " ".join(["word"] * 100)
     late = f"<nav>{PRIMARY}</nav><main><p>{filler}</p><p>{PRIMARY}</p></main>"
