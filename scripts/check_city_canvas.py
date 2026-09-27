@@ -148,8 +148,12 @@ _SIZED = re.compile(r"^(?P<base>.+)-(?:\d{3,4})(?P<ext>\.\w+)$")
 
 
 def _tag_attr(tag, name):
-    m = re.search(r'\s%s\s*=\s*"([^"]*)"' % name, tag)
-    return html.unescape(m.group(1)) if m else None
+    """An attribute's value, double- or single-quoted; "" for a bare attribute (`alt`, as Astro
+    renders alt=""); None when the tag does not carry it."""
+    m = re.search(r"""\s%s\s*=\s*(?:"([^"]*)"|'([^']*)')""" % name, tag)
+    if m:
+        return html.unescape(m.group(1) if m.group(1) is not None else m.group(2))
+    return "" if re.search(r"\s%s(?=[\s>/])" % name, tag) else None
 
 
 def served_alts(root=ROOT):

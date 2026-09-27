@@ -46,12 +46,25 @@ KNOWN = {
 IMG = re.compile(r"<img\b[^>]*>", re.I)
 
 
-def _attr(tag, name):
-    m = re.search(r'\s%s\s*=\s*"([^"]*)"' % name, tag)
-    if m:
-        import html
-        return html.unescape(m.group(1))
-    return "" if re.search(r"\s%s(?=[\s>/])" % name, tag) else None
+def judge_page(html_text, served, changed):
+    """(served images examined, [(file, alt on the page)] that break the rule). An empty alt is
+    a decorative repeat and passes; a MISSING alt attribute (None) is a rewrite, never
+    decorative."""
+    examined, hits = 0, []
+    for tag in IMG.findall(html_text):
+        src, alt = C._tag_attr(tag, "src"), C._tag_attr(tag, "alt")
+        if not src or not src.startswith("/images/"):
+            continue
+        name = C.served_name(src[len("/images/"):], served)
+        if name not in served:
+            continue
+        examined += 1
+        if alt is not None:
+            alt = " ".join(alt.split())
+            if alt == "" or alt in served[name] or alt in changed.get(name, ()):
+                continue
+        hits.append((name, alt))
+    return examined, hits
 
 
 def test_the_served_alts_are_read_and_not_empty():
@@ -96,19 +109,9 @@ def test_every_rebuilt_page_keeps_every_served_alt():
     served = C.served_alts()
     examined, hits = 0, set()
     for slug, path in pages:
-        changed = _changed_alts(slug)
-        for tag in IMG.findall(path.read_text(encoding="utf-8")):
-            src, alt = _attr(tag, "src"), _attr(tag, "alt")
-            if not src or not src.startswith("/images/"):
-                continue
-            name = C.served_name(src[len("/images/"):], served)
-            if name not in served:
-                continue
-            examined += 1
-            alt = " ".join((alt or "").split())
-            if alt == "" or alt in served[name] or alt in changed.get(name, ()):
-                continue
-            hits.add((slug, name, alt))
+        n, found = judge_page(path.read_text(encoding="utf-8"), served, _changed_alts(slug))
+        examined += n
+        hits |= {(slug, name, alt) for name, alt in found}
     assert examined >= 30, f"examined {examined} served images on {len(pages)} pages — not a pass"
     assert hits - KNOWN == set(), f"a served alt was rewritten: {sorted(hits - KNOWN)}"
     assert KNOWN - hits == set(), f"fixed — remove from KNOWN: {sorted(KNOWN - hits)}"
@@ -124,3 +127,23 @@ def test_every_width_variant_maps_to_its_served_file():
             "victoria-family-blue-staffy-manchester.webp"
     assert C.served_name("healthy-staffy-breed-guide-1.webp", served) == "healthy-staffy-breed-guide-1.webp"
     assert C.served_name("unknown-760.webp", served) == "unknown-760.webp"
+
+
+
+def test_a_missing_alt_is_a_rewrite_not_a_decorative_image():
+    """Review 2026-09-28: an <img> with NO alt attribute was read as alt="" and exempted."""
+    served = {"maggie-blue-staffy-dam-with-pups.webp": frozenset({"Maggie"})}
+    html = ('<img src="/images/maggie-blue-staffy-dam-with-pups.webp">'
+            '<img src="/images/maggie-blue-staffy-dam-with-pups.webp" alt="">'
+            "<img src='/images/maggie-blue-staffy-dam-with-pups.webp' alt='Maggie'>"
+            "<img src='/images/maggie-blue-staffy-dam-with-pups.webp' alt='Someone else'>")
+    examined, hits = judge_page(html, served, {})
+    assert examined == 4
+    assert hits == [("maggie-blue-staffy-dam-with-pups.webp", None),
+                    ("maggie-blue-staffy-dam-with-pups.webp", "Someone else")]
+
+
+def test_the_attribute_reader_takes_both_quotes():
+    assert C._tag_attr("<img src='/images/a.webp' alt='It&#39;s Maggie'>", "alt") == "It's Maggie"
+    assert C._tag_attr('<img src="/images/a.webp" alt="Maggie">', "alt") == "Maggie"
+    assert C._tag_attr('<img src="/images/a.webp">', "alt") is None
