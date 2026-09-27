@@ -266,3 +266,36 @@ def test_a_served_image_keeps_its_served_alt_word_for_word():
     assert any("served alt" in x and "maggie-blue-staffy-dam-with-pups.webp" in x for x in out), out
     # a file the old site never served carries whatever alt the variant gives it
     assert "no-such-served-file.webp" not in c.served_alts
+
+
+def test_the_parents_are_read_from_the_faq():
+    assert C.parent_names() == frozenset({"Maggie", "Jones"})
+
+
+@pytest.mark.parametrize("line,needle", [
+    # the parents' names, reversed by the user in 7ce341a after 5793200 wrote them as fact
+    ("The parents, Angie and Lays, are both health tested in Carlisle.", "'angie'"),
+    ("Angie and Lays, both parents, live with us in Carlisle.", "'lays'"),
+    ("Angie, our dam, raises every litter at home.", "'angie'"),
+    ("Our sire (Lays) is calm around children.", "'lays'"),
+    # audience and promise claims no file confirms (fc23018, 447cdfd, 62df243 review rounds)
+    ("Plenty of London families find us between litters.", "plenty of london families"),
+    ("Most London buyers collect in Carlisle.", "most london buyers"),
+    ("Every term is agreed in writing before you pay.", "in writing"),
+    ("Each puppy is handled daily from birth.", "handled daily"),
+    ("One litter a year, raised at home.", "one litter"),
+])
+def test_a_canonical_fact_is_never_contradicted_or_invented(line, needle):
+    """Learning loop 2026-09-27 (L3 i–ii): parent names must be data/faq.json's; audience
+    and promise claims are refused until a file records them."""
+    c = ctx(parents=C.parent_names())
+    bad = HERO.replace("<a href", f"<p>{line}</p><a href")
+    out = probs("hero", "a", bad, c)
+    assert any(needle in x.lower() and x.startswith("copy:") for x in out), out
+
+
+def test_the_real_parents_pass():
+    c = ctx(parents=C.parent_names())
+    ok = HERO.replace("<a href", "<p>The parents, Maggie and Jones, live with us. Maggie, our dam, "
+                                 "and Jones, our sire, are both tested.</p><a href")
+    assert probs("hero", "a", ok, c) == []

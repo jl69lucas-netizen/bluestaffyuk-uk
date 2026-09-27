@@ -25,7 +25,9 @@ What is refused, per fragment:
                a served /images/ file keeps an alt it was served with, word for word
                (working rule 11; served_alts())
   copy       — the word "London" appears; every £ amount is a price, the deposit or a
-               delivery bound from data/; no phone number (PHONE_PLACEHOLDER only); no
+               delivery bound from data/; a parent is named only as data/faq.json names them;
+               no unconfirmed audience or promise claim (UNCONFIRMED_CLAIMS); no phone
+               number (PHONE_PLACEHOLDER only); no
                source-project marker (scripts/marker_check.py MARKERS) and no reference-site
                host name (docs/research/2026-09-27-location-component-design-sources.md)
   reviews    — in `reviews`, every <blockquote> is either data-placeholder="review" or
@@ -111,6 +113,7 @@ class Context:
     reviews: tuple = ()
     image_roots: dict = dataclasses.field(default_factory=lambda: dict(IMAGE_ROOTS))
     served_alts: dict = dataclasses.field(default_factory=dict)
+    parents: frozenset = frozenset()
 
 
 def banned_words(sources_doc=SOURCES_DOC):
@@ -171,6 +174,48 @@ def served_alts(root=ROOT):
     return {k: frozenset(v - {""}) for k, v in out.items() if v - {""}}
 
 
+#: Parent-name phrasings (learning loop 2026-09-27, L3 i): a capitalised name the copy gives the
+#: dam, the sire or "the parents". The same patterns read the allowed set out of data/faq.json,
+#: so the canvas can only name the parents the facts name (Maggie and Jones, 7ce341a).
+_NAME = r"([A-Z][a-z]+)"
+_PARENT_WORD = r"(?i:dam|sire|mother|father|mum|dad)"
+PARENT_PATTERNS = (
+    re.compile(r"\b(?i:parents?)\b[,:]?\s+(?:(?i:are|were)\s+)?" + _NAME + r"\s+(?:and|&)\s+" + _NAME + r"\b"),
+    re.compile(_NAME + r"\s+(?:and|&)\s+" + _NAME
+               + r",?\s+(?:(?i:both|our|the)\s+)*(?i:parents|dam and sire|sire and dam)\b"),
+    re.compile(r"\b" + _NAME + r",?\s+(?i:our|the|a|her|his|their)\s+(?:[\w-]+\s+){0,2}?"
+               + _PARENT_WORD + r"\b"),
+    re.compile(r"\b" + _PARENT_WORD + r"\b[,:]?\s+(?:(?i:is|was)\s+)?\(?" + _NAME + r"\b"),
+)
+#: Capitalised words the patterns can catch that are not names (Title Case headings, sentence starts).
+NOT_NAMES = frozenset({
+    "A", "An", "And", "Are", "Blue", "Both", "Carlisle", "Cumbria", "Dam", "Do", "Does", "Each",
+    "Every", "Father", "Has", "Have", "Health", "Her", "His", "In", "Is", "London", "Meet",
+    "Mother", "Of", "Our", "Parent", "Parents", "Photo", "See", "Sire", "Staffy", "Tests", "The",
+    "Their", "Was", "What", "Which", "Who", "Your"})
+#: Claims no file records (learning loop 2026-09-27, L3 ii): an audience majority, a promise in
+#: writing, a handling routine, a litter count. Refused until the breeder confirms one.
+UNCONFIRMED_CLAIMS = (
+    re.compile(r"\b(?:most|many|some|plenty of)\s+(?:\w+\s+)?(?:buyers|families|owners|people)\b", re.I),
+    re.compile(r"\bin writing\b", re.I),
+    re.compile(r"\bhandled daily\b", re.I),
+    re.compile(r"\bone litter\b", re.I),
+)
+
+
+def named_parents(text):
+    """Every name the text gives a parent, in order (NOT_NAMES removed)."""
+    return [g for rx in PARENT_PATTERNS for m in rx.finditer(text)
+            for g in m.groups() if g and g not in NOT_NAMES]
+
+
+def parent_names(root=ROOT):
+    """The parents data/faq.json names (each at least twice, so a stray capital is not one)."""
+    rows = json.loads((pathlib.Path(root) / "data" / "faq.json").read_text(encoding="utf-8"))
+    found = named_parents(" ".join(f"{r.get('q', '')}. {r.get('a', '')}" for r in rows))
+    return frozenset(n for n in found if found.count(n) >= 2)
+
+
 def served_name(name, served):
     """The served file a srcset width (`x-760.webp`) belongs to; the name itself otherwise."""
     if name in served:
@@ -192,7 +237,8 @@ def default_context():
     md = json.loads(MUST_DIFFER.read_text(encoding="utf-8"))["components"] if MUST_DIFFER.exists() else {}
     ideas = ideas_sections(IDEAS_INDEX.read_text(encoding="utf-8")) if IDEAS_INDEX.exists() else {}
     return Context(banned_words=banned_words(), allowed_pounds=allowed_pounds(),
-                   must_differ=md, ideas=ideas, reviews=real_reviews(), served_alts=served_alts())
+                   must_differ=md, ideas=ideas, reviews=real_reviews(), served_alts=served_alts(),
+                   parents=parent_names())
 
 
 class _Walk(html.parser.HTMLParser):
@@ -378,6 +424,14 @@ def validate_fragment(component, variant, text, ctx):
                      "from data/ (never invent a figure)")
     for m in PHONE.finditer(body):
         p.append(f"copy: {m.group(0)!r} looks like a phone number — write PHONE_PLACEHOLDER")
+    for name in dict.fromkeys(named_parents(body)):
+        if name not in ctx.parents:
+            p.append(f"copy: {name!r} is named as a parent; data/faq.json names "
+                     f"{sorted(ctx.parents)} (never invent a fact)")
+    for rx in UNCONFIRMED_CLAIMS:
+        for m in rx.finditer(body):
+            p.append(f"copy: {m.group(0)!r} is a claim no file records — write only what "
+                     "data/ confirms")
     low = text.lower()
     for marker in marker_check.MARKERS:
         if marker_check._present(marker, low):
