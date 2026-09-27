@@ -223,3 +223,18 @@ def test_the_client_in_a_browser_against_a_fake_db(tmp_path):
     assert res["readOnly"]["disabled"] is True, res
     assert res["readOnly"]["status"].startswith("Read-only view"), res
     assert res["seeded"] == "c", res                                    # a stored pick is shown
+
+
+def test_emitted_frames_carry_the_declared_axes(tmp_path):
+    """The canvas smoke compares what a variant declares against what it paints (learning loop
+    2026-09-27, shortlist #3), so every index row carries its meta.json axes; --root emits a
+    canvas from any folder, which is how a past revision's fragments are replayed."""
+    root = _canvas(tmp_path, n=1)
+    out = ROOT / "docs" / "artifacts" / "canvas" / "frames-pytest-axes"
+    try:
+        assert B.main(["--root", str(root), "--emit-frames", str(out)]) == 0
+        index = json.loads((out / "index.json").read_text(encoding="utf-8"))
+        assert [r["axes"] for r in index] == [
+            {"layout": v, "media": "none", "density": "airy", "framing": "plain"} for v in "abc"]
+    finally:
+        shutil.rmtree(out, ignore_errors=True)

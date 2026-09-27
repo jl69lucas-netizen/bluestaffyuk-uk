@@ -276,10 +276,11 @@ Copy in the previews is placeholder London copy; reviews are marked placeholders
 """
 
 
-def emit_frames(frags, out_dir, tokens):
+def emit_frames(frags, out_dir, tokens, metas=None):
     """Write each variant as a standalone document under out_dir, plus index.json. The files
     the previous index listed are removed first, so a dropped variant cannot linger and be
-    measured."""
+    measured. With `metas`, each row carries the variant's declared meta.json axes, which the
+    canvas smoke holds against the paint (tests/render/canvas.spec.ts, learning loop 2026-09-27)."""
     out_dir = pathlib.Path(out_dir)
     old = out_dir / "index.json"
     if old.is_file():
@@ -293,8 +294,11 @@ def emit_frames(frags, out_dir, tokens):
             p = out_dir / cid / f"{v}.html"
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_text(frame_document(text, SERVED_ASSETS, tokens), encoding="utf-8")
-            index.append({"component": cid, "variant": v,
-                          "path": str(p.resolve().relative_to(ROOT))})
+            row = {"component": cid, "variant": v, "path": str(p.resolve().relative_to(ROOT))}
+            axes = (((metas or {}).get(cid) or {}).get("variants", {}).get(v) or {}).get("axes")
+            if axes is not None:
+                row["axes"] = axes
+            index.append(row)
     (out_dir / "index.json").write_text(json.dumps(index, indent=1) + "\n", encoding="utf-8")
     return index
 
@@ -308,11 +312,13 @@ def main(argv=None):
     ap.add_argument("--allow-partial", action="store_true")
     ap.add_argument("--final", action="store_true")
     ap.add_argument("--emit-frames")
+    ap.add_argument("--root", help="read the canvas from this folder instead of "
+                    "design/city-canvas/<city> (a past revision's fragments, replayed)")
     a = ap.parse_args(argv)
-    frags, metas = load_canvas(CANVAS_ROOT / a.city)
+    frags, metas = load_canvas(pathlib.Path(a.root) if a.root else CANVAS_ROOT / a.city)
     tokens = frame_tokens()
     if a.emit_frames:
-        index = emit_frames(frags, a.emit_frames, tokens)
+        index = emit_frames(frags, a.emit_frames, tokens, metas)
         print(f"{a.emit_frames}: {len(index)} frames from {len(frags)} components")
         if not index:
             print("emitted 0 frames — nothing to render, not a pass")

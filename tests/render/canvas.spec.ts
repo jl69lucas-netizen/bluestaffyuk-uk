@@ -20,7 +20,9 @@ import './checks/img.js';
  */
 const here = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(here, '../..');
-const INDEX = resolve(REPO, 'docs/artifacts/canvas/london-frames/index.json');
+// CANVAS_FRAMES_INDEX replays another emit (a past revision's fragments, emitted with
+// build_component_canvas.py --root <dir> --emit-frames docs/artifacts/canvas/<name>).
+const INDEX = resolve(REPO, process.env.CANVAS_FRAMES_INDEX ?? 'docs/artifacts/canvas/london-frames/index.json');
 const REUSED = [
   'layout-no-horizontal-overflow',
   'layout-min-font-size',
@@ -181,7 +183,92 @@ const PROBES: Record<string, Probe> = {
   'contact-form': (page) => fieldsTall(page, '[data-contact-form]'),
 };
 
-type Frame = { component: string; variant: string; path: string };
+
+/**
+ * Declared axes vs the paint (learning loop 2026-09-27, shortlist #3). check_city_canvas.py
+ * enforces "≥ 2 axes from every must-differ row" on the axes a variant DECLARES in meta.json;
+ * six variants passed it while painting something else (a declared `inset` drawn as a raised
+ * card, a "contact sheet" whose only photos sat inside the cards). This probe measures the two
+ * axes that are readable from paint, at the desktop width the axes describe, and fails on a
+ * contradiction. It reads media at SECTION level (the hardening-log's Task 7 convention): an
+ * image inside a repeated item (two or more of one data hook — puppy cards, figures, review
+ * slots, …) is that item's, not the section's; anything under [data-canvas-only] is ignored.
+ *   framing — a section-level container (≥ 40% of the section wide, ≥ 30% of it tall) with an
+ *             outer box-shadow paints as a card, so it must be declared `card`.
+ *   media   — `none` means no section-level image is painted; any other value means one is;
+ *             `left`/`right` mean one sits left/right of the section's centre, `top`/`bottom`
+ *             one centred above/below its middle, `background` one covering ≥ 60% of it.
+ * layout and density stay the reviewer's. jump-links is measured for framing only: its media
+ * lives in the phone strip and sheet, which are not painted at a desktop width.
+ */
+type Axes = { layout: string; media: string; density: string; framing: string };
+const AXES_WIDTH = 1280;
+const ITEM_HOOKS = ['data-figure', 'data-trust-item', 'data-takeaway', 'data-puppy',
+  'data-review-slot', 'data-faq-q', 'data-faq-block'];
+
+async function axesMatchPaint(page: Page, component: string, axes: Axes): Promise<string[]> {
+  const got = await page.evaluate((hooks) => {
+    const sec = document.querySelector('[data-component]')!;
+    const sb = sec.getBoundingClientRect();
+    const painted = (el: Element) => {
+      const b = el.getBoundingClientRect();
+      if (b.width < 2 || b.height < 2) return false;
+      for (let e: Element | null = el; e; e = e.parentElement) {
+        const cs = getComputedStyle(e);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') return false;
+      }
+      return true;
+    };
+    const repeated = hooks.filter((h) => sec.querySelectorAll(`[${h}]`).length >= 2);
+    const inItem = (el: Element) => {
+      for (let e: Element | null = el; e && e !== sec; e = e.parentElement) {
+        if (e.hasAttribute('data-canvas-only') || repeated.some((h) => e!.hasAttribute(h))) return true;
+      }
+      return false;
+    };
+    const imgs: { x: number; y: number; w: number; h: number }[] = [];
+    let cards = 0;
+    for (const el of [sec, ...Array.from(sec.querySelectorAll('*'))]) {
+      if (el !== sec && inItem(el)) continue;
+      if (!painted(el)) continue;
+      const cs = getComputedStyle(el);
+      const b = el.getBoundingClientRect();
+      if (el.tagName === 'IMG' || /url\(/.test(cs.backgroundImage)) {
+        imgs.push({ x: b.left - sb.left, y: b.top - sb.top, w: b.width, h: b.height });
+      }
+      const outer = cs.boxShadow !== 'none'
+        && cs.boxShadow.split(/,(?![^(]*\))/).some((sh) => !sh.includes('inset'));
+      if (outer && b.width >= 0.4 * sb.width && b.height >= 0.3 * sb.height) cards += 1;
+    }
+    return { w: sb.width, h: sb.height, imgs, cards };
+  }, ITEM_HOOKS);
+  const out: string[] = [];
+  const say = (axis: string, why: string) => out.push(`declared ${axis} "${(axes as any)[axis]}" but ${why}`);
+  if (got.cards && axes.framing !== 'card') say('framing', 'a section-level container casts an outer shadow (a card)');
+  if (component === 'jump-links') return out;
+  const { imgs, w, h } = got;
+  if (axes.media === 'none') {
+    if (imgs.length) say('media', `${imgs.length} section-level image(s) are painted`);
+    return out;
+  }
+  if (!imgs.length) {
+    say('media', 'no section-level image is painted (images inside repeated items are the items\')');
+    return out;
+  }
+  const cx = (i: typeof imgs[0]) => i.x + i.w / 2;
+  const cy = (i: typeof imgs[0]) => i.y + i.h / 2;
+  const side: Record<string, () => boolean> = {
+    left: () => imgs.some((i) => cx(i) < w / 2),
+    right: () => imgs.some((i) => cx(i) > w / 2),
+    top: () => imgs.some((i) => cy(i) < h / 2),
+    bottom: () => imgs.some((i) => cy(i) > h / 2),
+    background: () => imgs.some((i) => i.w * i.h >= 0.6 * w * h),
+  };
+  if (side[axes.media] && !side[axes.media]()) say('media', `no section-level image is painted to the ${axes.media}`);
+  return out;
+}
+
+type Frame = { component: string; variant: string; path: string; axes?: Axes };
 const frames: Frame[] = existsSync(INDEX) ? JSON.parse(readFileSync(INDEX, 'utf8')) : [];
 
 test('the frames were emitted', () => {
@@ -212,6 +299,10 @@ for (const f of frames) {
     await page.evaluate(() => window.scrollTo(0, 0));
     const probe = PROBES[f.component];
     if (probe) failures.push(...(await probe(page, viewport)));
+    if (viewport === AXES_WIDTH) {
+      if (!f.axes) failures.push('the frame index carries no declared axes (re-emit the frames)');
+      else failures.push(...(await axesMatchPaint(page, f.component, f.axes)).map((m) => `axes: ${m}`));
+    }
     expect(failures, `${f.component}/${f.variant} at ${viewport}px`).toEqual([]);
   });
 }
