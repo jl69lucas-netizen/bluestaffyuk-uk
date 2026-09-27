@@ -3,12 +3,12 @@
  "variants": {
   "a": {
    "name": "Price slip",
-   "description": "One torn-edge receipt slip, a single column of five lines with a running rule between label and figure, and no total.",
+   "description": "A torn-edge receipt pressed flat into a steel-100 panel, no shadow: five lines, a running rule, no total; two columns from 1024.",
    "idea_sources": [
     "/Users/apple/Downloads/BSUK-refs/london/counter-strip/mfs-home-375-01.png",
     "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/4-counter-snippet-design-component.png"
    ],
-   "differs_from": "A single-column slip inset in the bed, not a row of tiles, cells or ruled columns; no built strip is a receipt and none sits inset.",
+   "differs_from": "A receipt sunk flat into a panel, with a running rule and no total; built strips are tiles, cells or ruled columns, plain, on a band or carded.",
    "axes": {
     "layout": "receipt",
     "media": "none",

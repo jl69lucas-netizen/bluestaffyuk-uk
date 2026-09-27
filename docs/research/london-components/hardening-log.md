@@ -35,7 +35,7 @@ Copy checks common to all nine: every heading is a Title Case buyer question wit
 answering paragraph; the deposit is always "£500 … books your viewing and reserves your puppy",
 never plainly "refundable"; no licence, council or score claim; the guarantee appears only as
 "a two-year genetic health guarantee" (the user's 2026-09-27 ruling); the parents are "the
-parents, Angie and Lays"; no em dashes in visible copy.
+parents, Angie and Lays" (superseded 2026-09-27 by the user: the parents are Maggie, the dam, and Jones, the sire; see the round-2 section); no em dashes in visible copy.
 
 ## Review round (Task 5 review, 2026-09-27)
 
@@ -51,10 +51,32 @@ at 1024/1100/1280; hero b 436 / 422 / 422; hero c 430.
 |---|---|---|---|---|---|
 | hero | a | **Masthead** (replaces Broadsheet, which rendered copy-left/photo-right, the built `split/right` rows). Two tiers: the headline (up to 22ch) with a delivery ear, a rule, then three ruled columns: photo under the headline, the deck, the actions. No tilted postcard. Honest axes masthead / bottom / regular / rule. | A panoramic crop of Roman showed only his eyes at 1280; the CTA wrapped, then ran 3px past the content edge at 1024; detector repeats (masthead rule, short caps dateline) are false positives. | Photo column narrowed to 5/12 so the crop keeps the face; action column held to 256px minimum, CTA `nowrap` with tighter padding. | 375 · 768 · 1024 · 1280 |
 | hero | b | Unchanged direction. | 464px tall at 1024 (rule 10 is 390–450); "One litter" is unconfirmed; the pill name tags looked tappable. | 1024–1199: heading at `--text-2xl`, strip photos 120px tall (436px at 1024); eyebrow "Six puppies · Carlisle to London"; tags are square corner plates on steel-900 with no pointer events. | 375 · 768 · 1024 · 1280 |
-| hero | c | The photo now fills the whole band (`inset:0`) behind the ticket card. Honest axes ticket / background / regular / card. | "Door to door" was hidden under 480px; with the photo full width the ticket hid the puppy's face at 1024. | Route line reads "Carlisle → Your London door" at every width; the photo is Vennie, and the ticket sits on the right so her face stays clear. | 375 · 768 · 1024 · 1280 |
+| hero | c | The photo now fills the whole band (`inset:0`) behind the ticket card. Honest axes ticket / background / regular / card. | "Door to door" was hidden under 480px; with the photo full width the ticket hid the puppy's face at 1024. | Route line reads "Carlisle → Your London door" at every width; the photo became Vennie with the ticket on the right. (Correction from round 2: at 1024 the ticket still covered half of Vennie's face, the 1080px square was upscaled and soft at 1280, and Vennie reads white on a Blue Staffy hero; fixed in round 2 below.) |
 | counter-strip | a | **Price slip** (replaces Docket, which rendered as the built ruled columns beside a title). One torn-edge receipt slip inset in the bed, a single column read count, boy, girl, deposit, delivery, a running dotted rule between label and figure, and no total. Honest axes receipt / none / compact / inset. | The running rule first collided with "£200–£350"; figure hooks on `display:contents` rows had no box. | The rule is now each figure's own left border, so it runs unbroken and never overlaps; `data-figure` moved onto the figures. "3 + 3" dropped. Foot: "Each line is its own figure, not a running total." | 375 · 768 · 1024 · 1280 |
 | counter-strip | b | Unchanged direction; framing relabelled `rule` (same bed and 3px rule as its siblings). | The newborn litter photo (about eight pups, some black) contradicted "6 puppies ready now" and was soft; "3 boys … three girls" was inconsistent. | A 2×3 grid of the six real puppies; "3 boys … 3 girls", each a figure. | 375 · 768 · 1024 · 1280 |
 | counter-strip | c | Unchanged direction; relabelled so it never reads as a bill. | Boys and girls read as two consecutive charges and the deposit as an add-on. | Lead "Every figure you will meet, smallest to largest"; the price is one forked stop, "£1,500 a boy or £1,700 a girl, the price of one puppy"; the deposit says only what it does. | 375 · 768 · 1024 · 1280 |
 | trust-strip | a | Unchanged direction. | Below 1024 the vertical line ran past the last (brass) stop; collection in Carlisle sat on the London stop; the eye stop did not say elbows. | The phone line is drawn per stop, from each roundel to the next, so it ends on the last one; collection moved to the intro; stop reads "Eyes and elbows screened". | 375 · 768 · 1024 · 1280 |
 | trust-strip | b | Unchanged direction. | The bold pale-brass kicker read like a link. | Kicker emphasis is the display face in bone, not a link colour. | 375 · 768 · 1024 · 1280 |
 | trust-strip | c | Unchanged direction; framing relabelled `card` (raised surface, card border, card shadow). | The same newborn litter photo, soft at 400×500. | Photo is the puppy-and-owner image at its own 400×437 ratio in a 360px column. | 375 · 768 · 1024 · 1280 |
+
+## Review round 2 (Task 5, 2026-09-27)
+
+`impeccable:impeccable` was invoked again (Skill tool, brand register): the detector on the
+nine fragments (only the known false-positive classes: wrapper padding, short caps labels, the
+masthead rule) and a shot review at 375 / 1024 / 1280 of every changed variant. Measured at
+1024 / 1280: hero a 420 / 420px, hero b 436 / 422px, hero c 430 / 430px; counter a 275 / 255px.
+
+**Parents (the user's ruling, 2026-09-27):** the parents are Maggie, the dam, and Jones, the
+sire, as `data/faq.json` says. Every "Angie and Lays" is gone from the fragments (trust a, b
+and c); trust c now shows the site's own photo of Maggie with her puppies
+(`/images/maggie-blue-staffy-dam-with-pups.webp`), captioned as such.
+
+| Component | Variant | frontend-design direction | impeccable findings | Fixed | Widths |
+|---|---|---|---|---|---|
+| hero | a | Masthead, unchanged. | The delivery note (not the deck) sits beside the headline, so the meta description was wrong; dead space beside the headline at 1280; Roman's ears cut off by the crop. | Meta description corrected; the headline runs full width on its first line and the delivery ear is a ruled column with the £200–£350 figure set in the display face; crop anchored near the top (ears mostly in, at the source's own edge). | 375 · 1024 · 1280 |
+| hero | c | Rail ticket, unchanged direction. | See the correction above. | Photo is Cheryl, a solid blue girl with a white blaze (1080×1350, the tallest source). From 1024 to 1279 the photo is held at 1280px and anchored right so her face slides clear of the ticket; ticket narrowed to 440px (460 at 1280). Face clear at 1024 and 1280. | 375 · 1024 · 1280 |
+| counter-strip | a | Price slip, made honestly inset. | The slip was drawn as a card (raised surface and card shadow) while declared inset; at 1024+ it was a 600×540 block, not a strip. | The receipt is pressed flat into a steel-100 panel with no shadow and no raised surface; from 1024 the five lines flow into two columns inside the one slip (count, boy, girl / deposit, delivery), figures in a fixed-width column; the "not a running total" note moved into the header. 255px tall at 1280. | 375 · 1024 · 1280 |
+| counter-strip | c | Price scale, unchanged. | The lead was long. | Lead reads "6 puppies. What each part costs". | 375 · 1024 · 1280 |
+| trust-strip | a | Route line, unchanged. | Parent names. | "The parents, Maggie and Jones". | 375 · 1024 · 1280 |
+| trust-strip | b | Seal band, unchanged. | The kicker mixed two typefaces. | Kicker is one typeface (body), emphasis by weight only. | 375 · 1024 · 1280 |
+| trust-strip | c | Photo ledger, unchanged direction. | The owner photo was soft and floated mid-card; parent names. | Photo is Maggie with her puppies at its own 780×585 ratio in a 390px column (sharp at 2x), top-aligned with the heading and captioned. Open: at 1024 the ledger is taller than the photo, leaving space under the caption; stretching the photo to fill it would upscale and soften it, so the space stays. | 375 · 1024 · 1280 |

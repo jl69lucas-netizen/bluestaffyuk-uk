@@ -3,7 +3,7 @@
  "variants": {
   "a": {
    "name": "Masthead",
-   "description": "Two-tier front page: headline with a deck beside it, then under a rule a panoramic photo and a ruled-off action column.",
+   "description": "Two-tier front page: the headline with a delivery note ruled off beside it, then photo, deck and actions in three ruled columns.",
    "idea_sources": [
     "/Users/apple/Downloads/BSUK-refs/london/hero/mfs-home-1280-01.png",
     "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-1.png",
@@ -35,7 +35,7 @@
   },
   "c": {
    "name": "Rail ticket",
-   "description": "The photo fills the whole band behind the copy, which is printed on a notched bone ticket card with a Carlisle to London route line.",
+   "description": "A blue puppy photo fills the whole band behind the copy, printed on a notched bone ticket card with a Carlisle to London route line.",
    "idea_sources": [
     "/Users/apple/Downloads/BSUK-refs/london/hero/sister-comparison-1280-01.png",
     "/Users/apple/Downloads/BSUK-refs/london/hero/sister-comparison-375-01.png",

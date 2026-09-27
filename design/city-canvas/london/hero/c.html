@@ -1,11 +1,13 @@
 <style>
 /* Hero C — Rail ticket. The photo fills the whole band edge to edge, behind the copy; the
-   copy is printed on a bone ticket card laid over its right side, with a Carlisle to London route line, a
-   perforation and punched notches. On a phone the photo comes first and the ticket slides
-   up over its foot. */
+   copy is printed on a bone ticket card laid over its right side, with a Carlisle to London
+   route line, a perforation and punched notches. Cheryl's face sits left of centre, so the
+   ticket never covers it: from 1024 to 1279px the photo is held at 1280px wide and anchored
+   right, which slides her face left clear of the ticket. On a phone the photo comes first and
+   the ticket slides up over its foot. */
 .hbC{position:relative;background:var(--color-steel-100);overflow-x:clip}
 .hbC .win{margin:0}
-.hbC .win img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:60% 55%;background:var(--color-steel-100)}
+.hbC .win img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 40%;background:var(--color-steel-100)}
 .hbC .ticket{position:relative;margin:calc(-1 * var(--space-8)) var(--space-4) var(--space-5);background:var(--color-bone-50);border-radius:var(--radius-md);box-shadow:var(--shadow-lift);padding:var(--space-4) var(--space-5) var(--space-5);
   -webkit-mask:radial-gradient(circle 11px at 0 64px,transparent 10px,var(--color-ink) 11px) left/51% 100% no-repeat,radial-gradient(circle 11px at 100% 64px,transparent 10px,var(--color-ink) 11px) right/51% 100% no-repeat;
   mask:radial-gradient(circle 11px at 0 64px,transparent 10px,var(--color-ink) 11px) left/51% 100% no-repeat,radial-gradient(circle 11px at 100% 64px,transparent 10px,var(--color-ink) 11px) right/51% 100% no-repeat}
@@ -22,13 +24,15 @@
 @media (min-width:1024px){
   .hbC{height:430px}
   .hbC .win{position:absolute;inset:0}
-  .hbC .win img{width:100%;height:100%;aspect-ratio:auto;object-position:50% 62%}
-  .hbC .ticket{position:absolute;top:50%;right:max(var(--space-5),calc(50% - 600px));transform:translateY(-50%);width:540px;margin:0;padding:var(--space-5) var(--space-6) var(--space-6)}
+  .hbC .win{overflow:hidden}
+  .hbC .win img{width:max(100%,1280px);max-width:none;height:100%;margin-left:calc(100% - max(100%,1280px));aspect-ratio:auto;object-position:50% 38%}
+  .hbC .ticket{position:absolute;top:50%;right:max(var(--space-5),calc(50% - 600px));transform:translateY(-50%);width:440px;margin:0;padding:var(--space-5) var(--space-5) var(--space-6)}
 }
+@media (min-width:1280px){.hbC .ticket{width:460px}}
 </style>
 <section data-component="hero" data-variant="c" class="hbC">
   <figure class="win">
-    <img src="/puppies/Vennie.jpeg" alt="Vennie, a blue and white Staffy girl, curled on a cream fleece with her blue eyes on the camera" width="1080" height="1080" fetchpriority="high">
+    <img src="/puppies/Cheryl1.jpeg" alt="Cheryl, a blue Staffy girl with a white blaze, lying on a wooden floor and looking up at the camera" width="1080" height="1350" fetchpriority="high">
   </figure>
   <div class="ticket">
     <p class="route"><span>Carlisle</span><svg viewBox="0 0 48 12" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 6h40M36 1l6 5-6 5"/></svg><span>Your London door</span></p>
