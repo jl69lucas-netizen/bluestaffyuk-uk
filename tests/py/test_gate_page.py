@@ -85,6 +85,18 @@ def test_the_report_records_the_commit_it_judged():
     assert GP.gate("p", "p", "location", runner=scripted(), record=False, head="abc")["head"] == "abc"
 
 
+def test_the_report_records_the_content_hash_of_the_page_it_judged(tmp_path):
+    import rendered_changes as RC
+    html = "<main><p>page</p></main><style>x{}</style>"
+    (tmp_path / "dist/p").mkdir(parents=True)
+    (tmp_path / "dist/p/index.html").write_text(html, encoding="utf-8")
+    report = GP.gate("p", "p", "location", runner=scripted(), record=False, root=tmp_path,
+                     head="abc")
+    assert report["page_hash"] == RC.content_hash(html)
+    assert GP.gate("q", "q", "location", runner=scripted(), record=False, root=tmp_path,
+                   head="abc")["page_hash"] is None
+
+
 def test_git_head_marks_a_dirty_tree_and_is_none_outside_git(tmp_path):
     assert GP.git_head(tmp_path) is None
     env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t",

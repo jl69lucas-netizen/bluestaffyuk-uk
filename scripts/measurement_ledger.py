@@ -23,9 +23,23 @@ is_new_page counts as a project 5 page (not one of the twelve frozen pages, not 
 Nothing measured is never a pass. A project-scope row with no page in scope reads EMPTY and is
 listed under `empty`; --require-pages makes an empty scope, or any EMPTY row, exit 1.
 
-An input older than what it judges is STALE, not evidence: a gate:page report whose `head` is
-not HEAD or whose file is older than the built page (M8, M10), a scorecard older than the built
-page (M6), and a rendered-changes.json written for another commit (M13, reported, not failed).
+An input that judged another build or another commit is STALE, not evidence. Only four rows
+can be STALE:
+  M6   a scorecard file older than the built page. File times: the scorecards are written by
+       scripts/build_scorecard.mjs and carry no page hash, so a fresh checkout (which resets
+       times) reads current until the next render run.
+  M8   a gate:page report gated on a dirty tree; or whose `head` is not HEAD or an ancestor of
+       it; or whose page's sources (and, for a city, its data/locations.json row) changed
+       between that head and HEAD (scripts/page_run_record.py is_ancestor, changed_between);
+       or whose `page_hash` is not the rendered_changes.py content_hash of today's built page.
+       The page's own gate stays good across commits that do not touch the page.
+  M10  the same report, strictly: gated on a dirty tree, `head` not HEAD itself, or the page
+       hash differs. Dup crossover is site-wide — any other page's edit can create one — so
+       only a gate at the final commit counts, and the close re-gates at that commit.
+  M13  a rendered-changes.json written for another commit (reported, not failed).
+The close order that keeps every input current, in docs/reference/page-run.md row 21:
+build, test:render:pages, gate:page per page, rendered_changes.py --json, this ledger with
+--require-pages, then commit — no rebuild after gating.
 
 Scorecards are the newest card of each page tests/render/targets.json still targets (as
 tests/render/lib/examined.ts latestCards reads them); a card that does not parse fails M1 by
@@ -33,7 +47,7 @@ file name. A number that cannot be read is written `NOT FETCHED — <barrier>`, 
 a malformed input is a named barrier, never a traceback.
 
 Writes docs/reports/<project>-ledger.json and prints the markdown table; --md PATH also writes
-the table, under a one-line header (project, date, scope, HEAD, failed, empty), to PATH for the
+the table, under a one-line header (project, date, scope, HEAD, failed, stale, empty), to PATH for the
 gate report. <project> is [a-z0-9-]+.
 
 Exit 1 when M1, M2, M6, M8 or M10 is FAIL or STALE (or --require-pages finds nothing in scope);
@@ -49,6 +63,8 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import family_rules as FR  # noqa: E402
+import page_run_record as PRR  # noqa: E402
+import rendered_changes as RC  # noqa: E402
 import render_baseline as RB  # noqa: E402
 from _slugs import resolve_page  # noqa: E402
 
@@ -58,6 +74,7 @@ MIN_FONT = "layout-min-font-size"
 DUP_STEPS = ("dup-body", "dup-headers")
 PROJECT = re.compile(r"[a-z0-9-]+")
 DATED = re.compile(r"\d{4}-\d{2}-\d{2}")
+SHA = re.compile(r"[0-9a-f]{7,40}")
 
 
 def _json(path, default=None):
@@ -241,8 +258,12 @@ def m6(root, routes, date, cards):
     return row("M6", name, value, _verdict(hard, stale), "; ".join(hard + stale))
 
 
-def gate_report(root, key, route, head):
-    """(report or None, hard problems, stale problems) for one page's gate:page report."""
+def gate_report(root, key, route, head, strict):
+    """(report or None, hard problems, stale problems) for one page's gate:page report.
+
+    `strict` (M10): the report's head must be HEAD. Otherwise (M8) an ancestor of HEAD will
+    do while the page's sources are the same at both. Either way a dirty-tree gate and a page
+    hash that is not today's built page are stale."""
     path = root / "docs/reports/gate-page" / (key.replace("/", "--") + ".json")
     if not path.is_file():
         return None, [f"{key}: no gate:page report"], []
@@ -253,11 +274,25 @@ def gate_report(root, key, route, head):
     if not built.is_file():
         return rep, [f"{key}: not built ({rel})"], []
     stale = []
-    if not same_commit(rep.get("head"), head):
-        stale.append(f"{key}: report is for {rep.get('head')}, HEAD is {head} — re-run "
-                     f"npm run gate:page -- {key}")
-    if path.stat().st_mtime < built.stat().st_mtime:
-        stale.append(f"{key}: report older than {rel} — re-run npm run gate:page -- {key}")
+    rh = rep.get("head")
+    again = f"re-run npm run gate:page -- {key}"
+    if isinstance(rh, str) and rh.endswith("-dirty"):
+        stale.append(f"{key}: gated on a dirty tree — re-gate after commit")
+    elif not head:
+        stale.append(f"{key}: HEAD unreadable — the report's commit cannot be checked")
+    elif strict:
+        if not same_commit(rh, head):
+            stale.append(f"{key}: report is for {rh}, HEAD is {head} — dup crossover is "
+                         f"site-wide; {again} at the final commit")
+    elif not (isinstance(rh, str) and SHA.fullmatch(rh) and PRR.is_ancestor(rh, head, root)):
+        stale.append(f"{key}: report is for {rh}, not an ancestor of HEAD {head} — {again}")
+    else:
+        changed = PRR.changed_between(key, rh, head, root)
+        if changed:
+            stale.append(f"{key}: sources changed since {rh[:12]}: {', '.join(changed)} — {again}")
+    current = RC.content_hash(built.read_text(encoding="utf-8", errors="replace"))
+    if rep.get("page_hash") != current:
+        stale.append(f"{key}: built page differs from the one gated ({rel}) — {again}")
     return rep, [], stale
 
 
@@ -267,7 +302,7 @@ def m8(root, pages, head):
         return row("M8", name, "no project 5 page in scope yet", "EMPTY")
     hard, stale, clean = [], [], 0
     for k, route in pages:
-        r, h, s = gate_report(root, k, route, head)
+        r, h, s = gate_report(root, k, route, head, strict=False)
         if r is not None and not h:
             runs = r.get("runs") if isinstance(r.get("runs"), int) else 0
             if runs < 2 or r.get("verdict") != "PASS" or r.get("identical") is not True:
@@ -311,7 +346,7 @@ def m10(root, pages, head):
     body = heads = read = 0
     hard, stale = [], []
     for k, route in pages:
-        r, h, s = gate_report(root, k, route, head)
+        r, h, s = gate_report(root, k, route, head, strict=True)
         hard += h
         stale += s
         if r is None:
@@ -413,9 +448,11 @@ def ledger(project, slugs=None, root=ROOT, today=None, head=None):
 
 
 def header(led):
-    return "Measurement ledger — %s · %s · scope %s · HEAD %s · failed: %s · empty: %s" % (
+    return ("Measurement ledger — %s · %s · scope %s · HEAD %s · failed: %s · stale: %s · "
+            "empty: %s") % (
         led["project"], led["date"], ", ".join(led["scope"]) or "none", led["head"],
-        ", ".join(led["failed"]) or "none", ", ".join(led["empty"]) or "none")
+        ", ".join(led["failed"]) or "none", ", ".join(led["stale"]) or "none",
+        ", ".join(led["empty"]) or "none")
 
 
 def markdown(led):

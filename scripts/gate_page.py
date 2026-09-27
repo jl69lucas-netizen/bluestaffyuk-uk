@@ -38,7 +38,9 @@ The profile is --type, else the board's meta.page_type, else `location` for a ci
 and records, because the full gate cannot pass before that record exists.
 --json PATH moves the report from docs/reports/gate-page/<slug>.json. The report records
 `head`: the commit the gates ran on (`git rev-parse HEAD`, `-dirty` when the tree had
-uncommitted changes), so scripts/measurement_ledger.py can refuse a report from another commit.
+uncommitted changes), and `page_hash`: scripts/rendered_changes.py content_hash of the built
+dist/<route>/index.html it judged, so scripts/measurement_ledger.py can refuse a report from
+another commit or for another build of the page. Gate a page after committing it.
 
 Exit 0 when every step passes in both runs and the runs agree; 1 on any FAIL or any
 difference; 2 on a bad invocation (a slug no data file knows, no built page, no profile).
@@ -57,6 +59,7 @@ import family_rules as FR  # noqa: E402
 import final_page_audit  # noqa: E402
 import page_intake as PI  # noqa: E402
 import page_run_record as PRR  # noqa: E402
+import rendered_changes as RC  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "docs" / "reports" / "gate-page"
@@ -137,6 +140,15 @@ def git_head(root=ROOT):
     return sha + "-dirty" if s.returncode != 0 or s.stdout.strip() else sha
 
 
+def page_hash(route, root=ROOT):
+    """rendered_changes.content_hash of the built page, or None when it is not built."""
+    root = pathlib.Path(root)
+    built = root / "dist" / route / "index.html" if route else root / "dist" / "index.html"
+    if not built.is_file():
+        return None
+    return RC.content_hash(built.read_text(encoding="utf-8", errors="replace"))
+
+
 def stale_build(key, route, root=ROOT):
     """A message when the built page is older than any of the page's sources on disk — its
     board, facts and verbatim files, route files (a folder counts by its files) and, for a
@@ -203,8 +215,10 @@ def gate(key, route, profile, runs=RUNS, runner=None, record=True, root=ROOT, ch
     """The report: both runs, per-step agreement, and the verdict. `runner(step, route,
     profile)` -> (exit, payload[, stderr tail]) defaults to the real audits; `check_all(root)`
     -> (exit, tail) to the real `npm run -s check:all`, which only the full gate (record=True)
-    runs, once. `head` defaults to git_head(root), read before the first run."""
+    runs, once. `head` defaults to git_head(root) and `page_hash` is the built page's, both
+    read before the first run."""
     head = git_head(root) if head is None else head
+    built_hash = page_hash(route, root)
     if runner is None:
         runner = functools.partial(run_audit, new=FR.is_new_page(key))
     all_runs = [one_run(key, route, profile, runner, record, root) for _ in range(runs)]
@@ -221,7 +235,8 @@ def gate(key, route, profile, runs=RUNS, runner=None, record=True, root=ROOT, ch
         steps.append({"step": CHECK_ALL_STEP, "ok": [code == 0], "problems": [int(code != 0)],
                       "identical": True, "exit": code, "stderr": [ca_tail]})
     verdict = "PASS" if all(all(s["ok"]) and s["identical"] for s in steps) else "FAIL"
-    return {"slug": key, "route": route, "page_type": profile, "head": head, "runs": runs,
+    return {"slug": key, "route": route, "page_type": profile, "head": head,
+            "page_hash": built_hash, "runs": runs,
             "record_checked": record, "steps": steps,
             "identical": all(s["identical"] for s in steps), "verdict": verdict,
             "evidence": [[{"step": s["step"], "evidence": s["evidence"]} for s in r] for r in all_runs]}
