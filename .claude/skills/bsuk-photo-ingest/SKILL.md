@@ -14,7 +14,7 @@ allowed-tools: [Read, Write, Bash]
 ## When to use
 
 A board slot whose `source` is `assets-folder` and whose pick is `assets:<filename>`: the
-breeder's own photograph in `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/` fits the
+breeder's own photograph in `/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Images/` fits the
 section. A slot whose `source` is `existing` needs no ingest: the image is already in
 `public/images/` and is reused at its original path and alt (CLAUDE.md rule 11). A generated
 image goes through the draft and publish commands of the `bsuk-image-generation` skill.
@@ -49,7 +49,7 @@ slot's `assets[]` row names another file. An SEO stem is almost always another n
 ## Phase 3: Ingest
 
 ```bash
-python3 scripts/ingest_image.py folder "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/Roman1.jpg" --stem blue-staffy-puppy-roman-garden-carlisle --og-style A --board <slug> --slot <slot> --dry-run
+python3 scripts/ingest_image.py folder "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Images/Roman1.jpg" --stem blue-staffy-puppy-roman-garden-carlisle --og-style A --board <slug> --slot <slot> --dry-run
 ```
 
 Read the dry run, then run it again without `--dry-run`. It:

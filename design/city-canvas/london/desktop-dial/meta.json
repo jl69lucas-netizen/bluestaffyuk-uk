@@ -4,21 +4,21 @@
   "a": {
    "name": "Page map",
    "description": "A steel band down the left edge drawing the page as blocks sized to each section's length; current block brass, a window slides with the scroll.",
-   "idea_sources": ["/Users/apple/Downloads/BSUK-refs/london/desktop-dial/sister-comparison-1280-01.png", "/Users/apple/Downloads/BSUK-refs/london/desktop-dial/sister-for-sale-1280-01.png"],
+   "idea_sources": ["/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-comparison-1280-01.png", "/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-for-sale-1280-01.png"],
    "differs_from": "A proportional map of the page on a full-height steel band, no numbers and no ring; the built dials are plain numbered or labelled lists with or without a ring.",
    "axes": {"layout": "page-map", "media": "none", "density": "compact", "framing": "band"}
   },
   "b": {
    "name": "Clock face",
    "description": "A raised card with the eight sections as icon stops round a ring, a puppy photo in the middle and a readout naming the current stop.",
-   "idea_sources": ["/Users/apple/Downloads/BSUK-refs/london/desktop-dial/sister-near-me-1280-01.png", "/Users/apple/Downloads/BSUK-refs/london/desktop-dial/sister-for-sale-1280-01.png"],
+   "idea_sources": ["/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-near-me-1280-01.png", "/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-for-sale-1280-01.png"],
    "differs_from": "The sections are the stops on the ring itself, round a puppy photo, in a raised card; the built ring dials put a progress ring above a plain list.",
    "axes": {"layout": "clock-face", "media": "inline", "density": "regular", "framing": "card"}
   },
   "c": {
    "name": "Photo marker",
    "description": "A sunk steel-100 panel in the left margin: a puppy photo at its head, then labels along a thin track, the current one barred and raised.",
-   "idea_sources": ["/Users/apple/Downloads/BSUK-refs/london/desktop-dial/sister-comparison-1280-01.png", "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/component-idea3.png"],
+   "idea_sources": ["/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-comparison-1280-01.png", "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea3.png"],
    "differs_from": "A photo heads a sunk panel and a track bar marks the place; the built dials are unframed plain lists with no image.",
    "axes": {"layout": "photo-track", "media": "top", "density": "airy", "framing": "inset"}
   }

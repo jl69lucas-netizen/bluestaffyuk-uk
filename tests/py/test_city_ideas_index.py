@@ -14,9 +14,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from city_components import COMPONENT_IDS  # noqa: E402
 
 INDEX = ROOT / "docs" / "research" / "london-components" / "ideas-index.md"
-REFS = pathlib.Path("/Users/apple/Downloads/BSUK-refs/london")
+REFS = pathlib.Path("/Users/apple/Downloads/BSUK/BSUK-refs/london")
 FOLDERS = (pathlib.Path("/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS"),
-           pathlib.Path("/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas"))
+           pathlib.Path("/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas"))
 UNUSED = "## Sheets not used by a city component"
 ENTRY = re.compile(r"^- (`(/[^`]+)`|<(https?://[^>]+)>) — (.{12,})$", re.M)
 
@@ -41,7 +41,7 @@ def test_every_component_cites_at_least_three_sources_including_a_capture():
         entries = ENTRY.findall(body)
         assert len(entries) >= 3, (cid, len(entries))
         assert any(p.startswith(str(REFS)) for _all, p, _u, _i in entries), \
-            f"{cid}: no Playwright capture from /Users/apple/Downloads/BSUK-refs/london/"
+            f"{cid}: no Playwright capture from /Users/apple/Downloads/BSUK/BSUK-refs/london/"
 
 
 def test_the_four_reference_pages_are_named():

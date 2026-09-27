@@ -198,7 +198,7 @@ row, so the cap is untouched. Every other rule moved to a pack.
     `scripts/pageboard.py`, gated by `tests/py/test_rule16_gate.py`). The counter's figures are that page's own facts
     (from `data/*.json` and the page's record, never invented) and each board offers three hero
     styles and three counter styles designed for that page from the breeder's idea sheets
-    (outside this repo, at `~/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/`) on the same
+    (inside the BSUK folder but outside git, at `~/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/`) on the same
     tokens. Every other section carries a small, deliberate refresh delta per page — layout,
     accent role or motif, never the palette — per
     `.claude/skills/bsuk-component-refresh/SKILL.md` and

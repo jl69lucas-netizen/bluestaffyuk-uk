@@ -65,7 +65,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 #: The breeder's image folder. It sits outside the repo, so it is named absolutely, the way
 #: scripts/bake_images.py names its source tree; BSUK_ASSETS_DIR overrides it.
 ASSETS_DIR = pathlib.Path(os.environ.get("BSUK_ASSETS_DIR",
-                                         "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images"))
+                                         "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Images"))
 POOLS = ("own", "served", "assets")
 IMAGE_EXTS = (".webp", ".png", ".jpg", ".jpeg")
 SIZE_SUFFIX = re.compile(r"-(\d{2,4})$")

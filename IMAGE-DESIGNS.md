@@ -129,7 +129,7 @@ Append this string to every prompt. It is non-negotiable:
 
 The migrated page's own images come first, always (CLAUDE.md rule 11). A slot is only
 generated when no existing image fits: not the migrated page's images, not `public/images/`,
-and not the breeder's folder `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/`.
+and not the breeder's folder `/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Images/`.
 
 ---
 

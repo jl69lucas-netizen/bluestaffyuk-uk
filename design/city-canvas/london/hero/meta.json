@@ -5,9 +5,9 @@
    "name": "Masthead",
    "description": "Two-tier front page: the headline with a delivery note ruled off beside it, then photo, deck and actions in three ruled columns.",
    "idea_sources": [
-    "/Users/apple/Downloads/BSUK-refs/london/hero/mfs-home-1280-01.png",
-    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-1.png",
-    "/Users/apple/Downloads/BSUK-refs/london/hero/mfs-home-375-01.png"
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/hero/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-1.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/hero/mfs-home-375-01.png"
    ],
    "differs_from": "The photo sits under the headline tier with the actions ruled off beside it, a media position no built hero uses; framed by rules, not a band or card.",
    "axes": {
@@ -21,9 +21,9 @@
    "name": "Litter filmstrip",
    "description": "Deep-steel panel inset in the page; the six puppies run as a contact strip along its foot, copy in two columns above.",
    "idea_sources": [
-    "/Users/apple/Downloads/BSUK-refs/london/hero/sister-for-sale-1280-01.png",
-    "/Users/apple/Downloads/BSUK-refs/london/hero/sister-for-sale-375-01.png",
-    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea.png"
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/hero/sister-for-sale-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/hero/sister-for-sale-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea.png"
    ],
    "differs_from": "The photos sit under the copy, a media position no built hero uses, in an inset panel rather than a band or card; the mosaics are grids beside or above the copy.",
    "axes": {
@@ -37,9 +37,9 @@
    "name": "Rail ticket",
    "description": "A blue puppy photo fills the whole band behind the copy, printed on a notched bone ticket card with a Carlisle to London route line.",
    "idea_sources": [
-    "/Users/apple/Downloads/BSUK-refs/london/hero/sister-comparison-1280-01.png",
-    "/Users/apple/Downloads/BSUK-refs/london/hero/sister-comparison-375-01.png",
-    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png"
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/hero/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/hero/sister-comparison-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png"
    ],
    "differs_from": "The photo is the background of the whole band under an overlaid ticket card, which no built hero does; built heroes put the photo beside or above the copy.",
    "axes": {

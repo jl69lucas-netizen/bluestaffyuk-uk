@@ -5,7 +5,7 @@
    "name": "Price slip",
    "description": "A torn-edge receipt pressed flat into a steel-100 panel, no shadow: five lines, a running rule, no total; two columns from 1024.",
    "idea_sources": [
-    "/Users/apple/Downloads/BSUK-refs/london/counter-strip/mfs-home-375-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/counter-strip/mfs-home-375-01.png",
     "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/4-counter-snippet-design-component.png"
    ],
    "differs_from": "A receipt sunk flat into a panel, with a running rule and no total; built strips are tiles, cells or ruled columns, plain, on a band or carded.",
@@ -20,7 +20,7 @@
    "name": "Figure sentence",
    "description": "The figures set inside one spoken sentence beside a 2x3 grid of the six puppies, each raised on a steel-100 highlight.",
    "idea_sources": [
-    "/Users/apple/Downloads/BSUK-refs/london/counter-strip/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/counter-strip/mfs-home-1280-01.png",
     "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/COUNTERR-SNIPPET.png"
    ],
    "differs_from": "The only counter strip with photos, and the figures live inside a sentence instead of tiles, cells or columns; every built strip is photo-free tiles.",
@@ -35,8 +35,8 @@
    "name": "Price scale",
    "description": "Figures as labelled stops on one broken number line, smallest to largest; the price forks into a boy or a girl.",
    "idea_sources": [
-    "/Users/apple/Downloads/BSUK-refs/london/counter-strip/sister-near-me-1280-01.png",
-    "/Users/apple/Downloads/BSUK-refs/london/counter-strip/sister-near-me-375-01.png"
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/counter-strip/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/counter-strip/sister-near-me-375-01.png"
    ],
    "differs_from": "A number line that orders the figures by size with the price as a fork, not a row of cells; no built strip draws an axis or sits in an inset panel.",
    "axes": {

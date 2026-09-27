@@ -1,7 +1,7 @@
 # London Component Variants — Design and Hardening Log
 
 One row per variant: the frontend-design direction it came from, what the impeccable pass found,
-what changed, and the widths it was checked at. Shots: `/Users/apple/Downloads/BSUK-refs/london/_variants/`.
+what changed, and the widths it was checked at. Shots: `/Users/apple/Downloads/BSUK/BSUK-refs/london/_variants/`.
 
 **How the passes ran (Task 5: hero, counter strip, trust strip).** `frontend-design:frontend-design`
 was invoked with the Skill tool on the brief in the plan's Task 5 Step 5 and the references its

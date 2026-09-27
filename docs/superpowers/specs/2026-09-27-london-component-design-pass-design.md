@@ -55,7 +55,7 @@ three variants, at the user's request.
 `docs/research/2026-09-27-location-component-design-sources.md` (the MFS homepage and three
 sister-site pages) at 1280 and 375 widths. Each page is also cut section by section into
 per-component crops. With the 20 PNGs in `/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS`
-and the 42 in `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas`, these form a
+and the 42 in `/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas`, these form a
 per-component ideas index, kept outside the repo. The repo keeps only a summary: what idea each
 variant took, from where.
 

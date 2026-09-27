@@ -202,7 +202,7 @@ motion). One `meta.json` per component describes all three.
   "a": {
    "name": "Postcard stack",
    "description": "Photo as a postcard above a ruled copy block; one brass CTA.",
-   "idea_sources": ["/Users/apple/Downloads/BSUK-refs/london/hero/mfs-home-375-01.png"],
+   "idea_sources": ["/Users/apple/Downloads/BSUK/BSUK-refs/london/hero/mfs-home-375-01.png"],
    "differs_from": "No built page frames its hero with rules and an inset photo; H-GD2 is a card.",
    "axes": {"layout": "postcard", "media": "top", "density": "airy", "framing": "rule"}
   },
@@ -268,7 +268,7 @@ phone, a jump strip that does not stick).
 - Create: `tests/py/test_city_ideas_index.py`
 - Create: `docs/research/london-components/ideas-index.md`
 - Modify: `docs/reference/system-registry.md` (regenerated)
-- Outside the repo: `/Users/apple/Downloads/BSUK-refs/london/` (screenshots; never committed)
+- Outside the repo: `/Users/apple/Downloads/BSUK/BSUK-refs/london/` (screenshots; never committed)
 
 - [ ] **Step 1: Write the shared component list**
 
@@ -376,9 +376,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from city_components import COMPONENT_IDS  # noqa: E402
 
 INDEX = ROOT / "docs" / "research" / "london-components" / "ideas-index.md"
-REFS = pathlib.Path("/Users/apple/Downloads/BSUK-refs/london")
+REFS = pathlib.Path("/Users/apple/Downloads/BSUK/BSUK-refs/london")
 FOLDERS = (pathlib.Path("/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS"),
-           pathlib.Path("/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas"))
+           pathlib.Path("/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas"))
 UNUSED = "## Sheets not used by a city component"
 ENTRY = re.compile(r"^- (`(/[^`]+)`|<(https?://[^>]+)>) — (.{12,})$", re.M)
 
@@ -403,7 +403,7 @@ def test_every_component_cites_at_least_three_sources_including_a_capture():
         entries = ENTRY.findall(body)
         assert len(entries) >= 3, (cid, len(entries))
         assert any(p.startswith(str(REFS)) for _all, p, _u, _i in entries), \
-            f"{cid}: no Playwright capture from /Users/apple/Downloads/BSUK-refs/london/"
+            f"{cid}: no Playwright capture from /Users/apple/Downloads/BSUK/BSUK-refs/london/"
 
 
 def test_the_four_reference_pages_are_named():
@@ -454,7 +454,7 @@ these keys, and use the keys in every file name: `mfs-home` (the MFS homepage),
 doc's order).
 
 ```bash
-mkdir -p /Users/apple/Downloads/BSUK-refs/london/_full
+mkdir -p /Users/apple/Downloads/BSUK/BSUK-refs/london/_full
 ```
 
 For each page and each width, with the Playwright MCP:
@@ -465,7 +465,7 @@ For each page and each width, with the Playwright MCP:
    (or close it). Never sign in, never submit a form, never accept terms.
 4. `mcp__plugin_playwright_playwright__browser_take_screenshot` with `fullPage: true`,
    `type: "png"` and `filename: "<key>-<width>.png"`. The tool reports where it saved the file;
-   move it to `/Users/apple/Downloads/BSUK-refs/london/_full/<key>-<width>.png` with `mv`.
+   move it to `/Users/apple/Downloads/BSUK/BSUK-refs/london/_full/<key>-<width>.png` with `mv`.
 
 Expected: 8 files in `_full/`.
 
@@ -478,7 +478,7 @@ takeaways, puppy/product cards, tables, video, image-and-text sections, reviews,
 newsletter, contact form), then take an element screenshot of it with
 `mcp__plugin_playwright_playwright__browser_take_screenshot` (`element` = a short description,
 `ref` = the snapshot ref, `type: "png"`). Move each file to
-`/Users/apple/Downloads/BSUK-refs/london/<component id>/<key>-<width>-<nn>.png` (`nn` counts from
+`/Users/apple/Downloads/BSUK/BSUK-refs/london/<component id>/<key>-<width>-<nn>.png` (`nn` counts from
 `01` per component, key and width). For the sticky jump links and the dial, scroll first
 (`mcp__plugin_playwright_playwright__browser_evaluate` with `() => window.scrollTo(0, 1500)`) so
 the sticky state is what is captured, and for the sheet, open it with
@@ -486,7 +486,7 @@ the sticky state is what is captured, and for the sheet, open it with
 have is simply not captured from that page.
 
 ```bash
-ls /Users/apple/Downloads/BSUK-refs/london/*/ | head -80
+ls /Users/apple/Downloads/BSUK/BSUK-refs/london/*/ | head -80
 ```
 
 Expected: a folder per component the four pages carry, and `_full/`.
@@ -499,7 +499,7 @@ Create `docs/research/london-components/ideas-index.md` in this shape (the test 
 # London Component Ideas — Index
 
 Where each London component variant can take its idea from. Nothing here is copied into the
-repo: the captures live in `/Users/apple/Downloads/BSUK-refs/london/` (Playwright MCP,
+repo: the captures live in `/Users/apple/Downloads/BSUK/BSUK-refs/london/` (Playwright MCP,
 <date>), the idea sheets in the two folders below. Ideas only; every variant is built fresh
 on BSUK's tokens and carries no reference-site text or image.
 
@@ -510,12 +510,12 @@ on BSUK's tokens and carries no reference-site text or image.
 | `sister-for-sale` | <URL> |
 | `sister-near-me` | <URL> |
 
-Full-page captures: `/Users/apple/Downloads/BSUK-refs/london/_full/` (1280 and 375 per key).
+Full-page captures: `/Users/apple/Downloads/BSUK/BSUK-refs/london/_full/` (1280 and 375 per key).
 
 ## hero — Hero
 
-- `/Users/apple/Downloads/BSUK-refs/london/hero/mfs-home-375-01.png` — <one-line idea, 12+ characters>
-- `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png` — <idea>
+- `/Users/apple/Downloads/BSUK/BSUK-refs/london/hero/mfs-home-375-01.png` — <one-line idea, 12+ characters>
+- `/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png` — <idea>
 - <https://…the page URL…> — <idea>
 
 ## counter-strip — Counter strip
@@ -523,15 +523,15 @@ Full-page captures: `/Users/apple/Downloads/BSUK-refs/london/_full/` (1280 and 3
 
 ## Sheets not used by a city component
 
-- `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/footer-idea.png` — <what it shows>
+- `/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/footer-idea.png` — <what it shows>
 ```
 
 Rules the test holds you to: the fifteen `## <id> — <name>` sections in city-page order; at least
 three entries each, as `` - `<absolute path>` — <idea> `` or `- <URL> — <idea>`; at least one
-entry per component from `/Users/apple/Downloads/BSUK-refs/london/` (a component no reference page
+entry per component from `/Users/apple/Downloads/BSUK/BSUK-refs/london/` (a component no reference page
 carries cites the `_full/` shot it is missing from, and says so); every PNG in
 `/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS` (20) and
-`/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas` (42) cited somewhere, under the
+`/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas` (42) cited somewhere, under the
 component it helps or under the closing "Sheets not used" heading; every one of the four URLs
 named. Open each sheet with the Read tool before writing its line: the idea is what the image
 shows, not what its file name suggests. Keep no phone number, email or postcode in the file
@@ -2906,15 +2906,15 @@ meta; never weaken the validator.
 - [ ] **Step 8: Smoke at 375 / 768 / 1280 and keep the shots**
 
 ```bash
-mkdir -p /Users/apple/Downloads/BSUK-refs/london/_variants
-CANVAS_SHOTS=/Users/apple/Downloads/BSUK-refs/london/_variants npm run test:render:canvas
+mkdir -p /Users/apple/Downloads/BSUK/BSUK-refs/london/_variants
+CANVAS_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_variants npm run test:render:canvas
 ```
 Expected: every test passes (`the frames were emitted` plus 9 variants, at three widths).
 
 - [ ] **Step 9: Critique and harden every variant with impeccable**
 
 Invoke the `impeccable:impeccable` skill with the Skill tool on the nine variants, reading the
-27 shots in `/Users/apple/Downloads/BSUK-refs/london/_variants/` (`<component>-<variant>-<width>.png`).
+27 shots in `/Users/apple/Downloads/BSUK/BSUK-refs/london/_variants/` (`<component>-<variant>-<width>.png`).
 Ask it to critique hierarchy, spacing, type, contrast, focus and tap targets, motion, responsive
 behaviour and anything that reads as generic, then fix what it finds in the fragments. Re-run
 Steps 7 and 8 until both are clean.
@@ -2927,7 +2927,7 @@ Create `docs/research/london-components/hardening-log.md`:
 # London Component Variants — Design and Hardening Log
 
 One row per variant: the frontend-design direction it came from, what the impeccable pass found,
-what changed, and the widths it was checked at. Shots: `/Users/apple/Downloads/BSUK-refs/london/_variants/`.
+what changed, and the widths it was checked at. Shots: `/Users/apple/Downloads/BSUK/BSUK-refs/london/_variants/`.
 
 | Component | Variant | frontend-design direction | impeccable findings | Fixed | Widths |
 |---|---|---|---|---|---|
@@ -3046,14 +3046,14 @@ Expected: `examined 9 fragments, 3 meta files; 0 problems`.
 - [ ] **Step 6: Smoke every emitted variant and keep the shots**
 
 ```bash
-CANVAS_SHOTS=/Users/apple/Downloads/BSUK-refs/london/_variants npm run test:render:canvas
+CANVAS_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_variants npm run test:render:canvas
 ```
 Expected: all pass — the 18 variants so far, at three widths.
 
 - [ ] **Step 7: Critique and harden with impeccable**
 
 Invoke the `impeccable:impeccable` skill on the nine new variants, reading their shots in
-`/Users/apple/Downloads/BSUK-refs/london/_variants/`. Fix what it finds; re-run Steps 5 and 6 until
+`/Users/apple/Downloads/BSUK/BSUK-refs/london/_variants/`. Fix what it finds; re-run Steps 5 and 6 until
 clean.
 
 - [ ] **Step 8: Record the passes**
@@ -3140,7 +3140,7 @@ Expected: `examined 9 fragments, 3 meta files; 0 problems`.
 - [ ] **Step 6: Smoke every emitted variant and keep the shots**
 
 ```bash
-CANVAS_SHOTS=/Users/apple/Downloads/BSUK-refs/london/_variants npm run test:render:canvas
+CANVAS_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_variants npm run test:render:canvas
 ```
 Expected: all pass — 27 variants at three widths.
 
@@ -3230,7 +3230,7 @@ Expected: `examined 9 fragments, 3 meta files; 0 problems`.
 - [ ] **Step 6: Smoke every emitted variant and keep the shots**
 
 ```bash
-CANVAS_SHOTS=/Users/apple/Downloads/BSUK-refs/london/_variants npm run test:render:canvas
+CANVAS_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_variants npm run test:render:canvas
 ```
 Expected: all pass — 36 variants at three widths.
 
@@ -3328,7 +3328,7 @@ Expected: `check-city-canvas london: examined 45 fragments, 15 meta files; 0 pro
 - [ ] **Step 6: Smoke every variant and keep the shots**
 
 ```bash
-CANVAS_SHOTS=/Users/apple/Downloads/BSUK-refs/london/_variants npm run test:render:canvas
+CANVAS_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_variants npm run test:render:canvas
 ```
 Expected: all pass — 45 variants at three widths.
 
@@ -3551,7 +3551,7 @@ console.log(`${rows.length} pages examined -> ${resolve(OUT, 'heroes.json')}`);
 
 ```bash
 npm run -s build
-node scripts/hero_phone_shots.mjs /Users/apple/Downloads/BSUK-refs/london/_hero-fix/before
+node scripts/hero_phone_shots.mjs /Users/apple/Downloads/BSUK/BSUK-refs/london/_hero-fix/before
 ```
 Expected (measured by the plan writer at `bfa3626`):
 ```
@@ -3790,7 +3790,7 @@ they are, so the frozen pages keep their desktop contracts.
 
 ```bash
 npm run -s build
-node scripts/hero_phone_shots.mjs /Users/apple/Downloads/BSUK-refs/london/_hero-fix/after
+node scripts/hero_phone_shots.mjs /Users/apple/Downloads/BSUK/BSUK-refs/london/_hero-fix/after
 ```
 Expected: `photo-first=true` on all 12. Eight phone views change: `blue-staffy-blog-guides`,
 `blue-staffy-health-uk`, `buy-blue-staffy-puppies-uk`, `buy-staffy-puppies-for-sale-uk`, `index`,
@@ -3805,7 +3805,7 @@ Create `docs/research/london-components/hero-mobile-fix.md` with one row per pag
 
 `src/components/kit/Hero.astro` now paints the photo first at 900px and below (Plan 1 Task 11).
 Shots at 375×812, top of page to the hero's foot, before and after:
-`/Users/apple/Downloads/BSUK-refs/london/_hero-fix/{before,after}/<slug>.png`.
+`/Users/apple/Downloads/BSUK/BSUK-refs/london/_hero-fix/{before,after}/<slug>.png`.
 
 | Page | Hero pick | Layout | Before (375px) | After (375px) | Changed |
 |---|---|---|---|---|---|

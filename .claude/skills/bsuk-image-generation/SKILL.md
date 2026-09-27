@@ -16,7 +16,7 @@ allowed-tools: [Read, Write, Bash]
 Only for a slot whose `source` is `generate`, and only after the reuse check in
 IMAGE-DESIGNS.md §5 has come back empty: nothing on the migrated page fits, nothing in
 `public/images/` fits, and nothing in the breeder's folder
-`/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/` fits (CLAUDE.md rule 11: reuse first).
+`/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Images/` fits (CLAUDE.md rule 11: reuse first).
 An infographic is never generated here; it is built by the `bsuk-infographic` skill.
 
 ## How an image is generated in this environment
@@ -72,7 +72,7 @@ hero. Style `B` (Blur-Fill) is retired for in-body images on new pages (user rul
 
 Invoke the `compound-engineering:ce-gemini-imagegen` skill with the prompt and aspect ratio.
 Save the returned master as PNG in the breeder's folder, under
-`/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/generated/<slug file>-<slot>.png`, so the
+`/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Images/generated/<slug file>-<slot>.png`, so the
 master sits beside the breeder's own photographs and is never lost to a scratch directory.
 
 ## Step 4: Audit before handoff
@@ -91,7 +91,7 @@ Open the master and check every line. One failure means regenerate, never ship:
 1. **Bake the draft** (the final bytes, framed in the slot's style):
 
    ```bash
-   python3 scripts/ingest_image.py draft "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/generated/<slug file>-<slot>.png" --board <slug> --slot <slot> --og-style A
+   python3 scripts/ingest_image.py draft "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Images/generated/<slug file>-<slot>.png" --board <slug> --slot <slot> --og-style A
    ```
 
    It writes `data/boards/generated/<slug file>/<slot>.webp` (never under `public/`) and
