@@ -1,0 +1,20 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "BSUK city component picks",
+ "comment": "One city's fifteen component picks from its component design pass (docs/superpowers/specs/2026-09-27-london-component-design-pass-design.md §2, Freeze). Read by scripts/pageboard.py city_rule16_findings. Each value names one canvas variant, <city>/<component>/<a|b|c>. The component list is scripts/city_components.py COMPONENT_IDS; tests/py/test_city_uniqueness_gate.py holds the two equal.",
+ "type": "object",
+ "required": ["slug", "canvas", "canvas_url", "approved_at", "picks"],
+ "additionalProperties": false,
+ "properties": {
+  "slug": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+  "canvas": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+  "canvas_url": {"type": "string", "pattern": "^https://claude\\.ai/(code/)?artifact/[A-Za-z0-9-]+$"},
+  "approved_at": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2})?Z$"},
+  "picks": {
+   "type": "object",
+   "required": ["hero", "counter-strip", "trust-strip", "contents-list", "desktop-dial", "jump-links", "key-takeaways", "puppy-cards", "tables", "video", "image-text", "reviews", "faq-blocks", "newsletter", "contact-form"],
+   "propertyNames": {"enum": ["hero", "counter-strip", "trust-strip", "contents-list", "desktop-dial", "jump-links", "key-takeaways", "puppy-cards", "tables", "video", "image-text", "reviews", "faq-blocks", "newsletter", "contact-form"]},
+   "additionalProperties": {"type": "string", "pattern": "^[a-z0-9-]+/[a-z-]+/[abc]$"}
+  }
+ }
+}

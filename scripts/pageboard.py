@@ -1489,10 +1489,134 @@ def rule16_message(shape, pick, others):
 
 def rule16_findings(board, boards):
     """Board-gate findings for working rule 16's uniqueness half: one FAIL per arrangement this
-    record shares outside the utility exemption (RULE16_EXEMPT). Kept out of gate_findings(),
-    which is pure over one record; board_gate.py adds these from `load_all_boards()`."""
-    return [{"check": "rule16-shared", "sev": "FAIL", "msg": rule16_message(shape, pick, others)}
-            for shape, pick, others in rule16_shares(board, boards)]
+    record shares outside the utility exemption (RULE16_EXEMPT), plus — for a city page — the
+    city pool's findings over all fifteen components (`city_rule16_findings`). Kept out of
+    gate_findings(), which is pure over one record; board_gate.py adds these from
+    `load_all_boards()`."""
+    return ([{"check": "rule16-shared", "sev": "FAIL", "msg": rule16_message(shape, pick, others)}
+             for shape, pick, others in rule16_shares(board, boards)]
+            + city_rule16_findings(board))
+
+
+# ── working rule 16 for the city pages: the `city` family and the city pool ────────────────
+#
+# Known Issue 60: a `location` page mapped to the guide family, whose three heroes the guides
+# own, so 28 city pages had three arrangements between them. The user's answer (answer board,
+# 2026-09-27, q01 (c)) is a component design pass per city: each city picks one of three new
+# variants for each of the fifteen components (scripts/city_components.py) on its own canvas,
+# and the picks are saved in data/design/city-picks/<city slug>.json. The unpicked variants go
+# to data/design/city-pool.json for later cities. A city pick FAILS when it is another city's
+# pick, when it is within one structural axis of another city's pick, or when it is within one
+# axis of an arrangement a built page wears (data/design/city-must-differ.json rows with a
+# `used_by`). The axes are the canvas's four (city_components.AXES), read from each variant's
+# design/city-canvas/<city>/<component>/meta.json.
+CITY_FAMILY = "city"
+CITY_PICKS_DIR = ROOT / "data" / "design" / "city-picks"
+CITY_POOL = ROOT / "data" / "design" / "city-pool.json"
+CITY_MUST_DIFFER = ROOT / "data" / "design" / "city-must-differ.json"
+
+
+def load_city_picks(folder=None):
+    """{city slug: picks record} for every data/design/city-picks/*.json, each validated."""
+    folder = CITY_PICKS_DIR if folder is None else pathlib.Path(folder)
+    out = {}
+    for p in sorted(folder.glob("*.json")) if folder.is_dir() else []:
+        doc = _read_json(p)
+        _validate(doc, "city-picks.schema.json")
+        if doc["slug"] != p.stem:
+            raise BoardError(f"{p}: slug {doc['slug']!r} does not match its file name")
+        out[doc["slug"]] = doc
+    return out
+
+
+def load_city_pool(path=None):
+    doc = _read_json(CITY_POOL if path is None else path)
+    _validate(doc, "city-pool.schema.json")
+    return doc
+
+
+def canvas_axes(key, canvas_root=None):
+    """The four canonical axes of one canvas variant (`<city>/<component>/<a|b|c>`), read from
+    that component's meta.json; None when the variant does not exist."""
+    from city_components import CANVAS_ROOT
+    city, component, variant = key.split("/")
+    meta = (CANVAS_ROOT if canvas_root is None else pathlib.Path(canvas_root)) / city / component / "meta.json"
+    if not meta.is_file():
+        return None
+    row = ((_read_json(meta).get("variants") or {}).get(variant) or {})
+    return row.get("axes")
+
+
+def city_pick_findings(slug, picks, must_differ, axes_of):
+    """FAILs for one city's picks against every other city's picks and every built page's."""
+    from city_components import axis_distance
+    doc, out = picks[slug], []
+
+    def fail(check, msg):
+        out.append({"check": check, "sev": "FAIL", "msg": msg})
+
+    for comp, key in sorted(doc["picks"].items()):
+        city, kcomp, _v = key.split("/")
+        if kcomp != comp or city != doc["canvas"]:
+            fail("city-pick-malformed", f"{comp}: {key} is not a {doc['canvas']}/{comp}/… variant")
+            continue
+        axes = axes_of(key)
+        if axes is None:
+            fail("city-pick-unknown", f"{comp}: {key} has no meta.json entry on its canvas")
+            continue
+        for other, odoc in sorted(picks.items()):
+            if other == slug:
+                continue
+            okey = odoc["picks"].get(comp)
+            if okey == key:
+                fail("city-pick-shared", f"{comp} {key} is already worn by {other} (working rule 16)")
+                continue
+            oaxes = axes_of(okey) if okey else None
+            if oaxes and axis_distance(axes, oaxes) < 2:
+                fail("city-pick-too-close", f"{comp} {key} is within one axis of {other}'s {okey}")
+        for row in must_differ.get(comp, []):
+            if row.get("used_by") and axis_distance(axes, row["axes"]) < 2:
+                fail("city-pick-matches-built",
+                     f"{comp} {key} is within one axis of {row['id']} ({row['name']}), worn by "
+                     f"{', '.join(row['used_by'])}")
+    return out
+
+
+def city_pool_findings(pool, picks, axes_of):
+    """FAILs for pool entries that are malformed, unknown, or already picked by a city."""
+    picked = {k: s for s, d in picks.items() for k in d["picks"].values()}
+    out = []
+    for comp, keys in sorted(pool["available"].items()):
+        for key in keys:
+            if key.split("/")[1] != comp:
+                out.append({"check": "city-pool-malformed", "sev": "FAIL",
+                            "msg": f"{comp}: {key} is filed under the wrong component"})
+            elif axes_of(key) is None:
+                out.append({"check": "city-pool-unknown", "sev": "FAIL",
+                            "msg": f"{comp}: {key} has no meta.json entry on its canvas"})
+            elif key in picked:
+                out.append({"check": "city-pool-picked", "sev": "FAIL",
+                            "msg": f"{comp}: {key} is in the pool and picked by {picked[key]}"})
+    return out
+
+
+def city_rule16_findings(board, picks=None, pool=None, must_differ=None, axes_of=None):
+    """Rule 16 for a record whose layout family is `city`; [] for every other record."""
+    meta = board.get("meta") or {}
+    if meta.get("layout_type") != CITY_FAMILY:
+        return []
+    slug = (meta.get("slug") or "").rsplit("/", 1)[-1]
+    picks = load_city_picks() if picks is None else picks
+    if slug not in picks:
+        return [{"check": "city-picks-missing", "sev": "FAIL",
+                 "msg": f"a city page's fifteen picks live in data/design/city-picks/{slug}.json "
+                        "(its component design pass); none is saved"}]
+    if must_differ is None:
+        must_differ = (_read_json(CITY_MUST_DIFFER).get("components") or {}) if CITY_MUST_DIFFER.exists() else {}
+    axes_of = canvas_axes if axes_of is None else axes_of
+    pool = load_city_pool() if pool is None else pool
+    return (city_pick_findings(slug, picks, must_differ, axes_of)
+            + city_pool_findings(pool, picks, axes_of))
 
 
 GATE_STAGES = ("build", "release")

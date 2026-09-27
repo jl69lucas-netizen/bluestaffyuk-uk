@@ -205,13 +205,21 @@ const def = (id: StyleDef['id'], name: string, layout: Layout): StyleDef => ({ i
 // between them. `layoutTypeFor()` below is the mapping, and a record may state its own
 // `meta.layout_type` when the mapping would guess wrong.
 
-/** The six layout families the hero and the counter strip are cut for. */
+/** The layout families. The first six are the ones the hero and the counter strip are cut
+ *  for in this file. `city` is the seventh (Known Issue 60, closed by the London component
+ *  design pass): a city page takes all fifteen of its components from its OWN component pass
+ *  (`data/design/city-picks/<slug>.json`, gated by `scripts/pageboard.py`
+ *  `city_rule16_findings`), so this file cuts no trio for it. */
 export type LayoutType =
-  | 'home' | 'for-sale' | 'interior-guide' | 'interior-about' | 'interior-utility' | 'blog';
+  | 'home' | 'for-sale' | 'interior-guide' | 'interior-about' | 'interior-utility' | 'blog'
+  | 'city';
 
 export const LAYOUT_TYPES: readonly LayoutType[] = [
-  'home', 'for-sale', 'interior-guide', 'interior-about', 'interior-utility', 'blog',
+  'home', 'for-sale', 'interior-guide', 'interior-about', 'interior-utility', 'blog', 'city',
 ];
+
+/** The families whose hero and counter trios live in this file: every family but `city`. */
+export type PerPageFamily = Exclude<LayoutType, 'city'>;
 
 /** `meta.page_type` -> the layout family, when the record does not state one itself. The
  *  `interior` fallback is the GUIDE set, because that is what most interior pages are; the
@@ -234,7 +242,7 @@ const LAYOUT_BY_PAGE_TYPE: Record<PageType, LayoutType> = {
   contact: 'interior-utility',
   interior: 'interior-guide',
   comparison: 'interior-guide',
-  location: 'interior-guide',
+  location: 'city',
 };
 
 /** The layout family a record belongs to. An explicit `meta.layout_type` wins; anything
@@ -253,7 +261,7 @@ export function layoutTypeFor(pageType: string, explicit?: string | null): Layou
  *  and `bleed` release the ceiling where the arrangement is no longer a split hero (a 450px
  *  cap over a stacked hero is a guillotine, not a clamp) — board-styles.css does that, and
  *  scripts/measure_canvas_heights.mjs measures what actually happens. */
-export const HERO_STYLES_BY_PAGE_TYPE: Record<LayoutType, [StyleDef, StyleDef, StyleDef]> = {
+export const HERO_STYLES_BY_PAGE_TYPE: Record<PerPageFamily, [StyleDef, StyleDef, StyleDef]> = {
   // hero-idea00 (copy left on a band, photo card right, a credentials card beneath it),
   // hero-idea (a photo mosaic with figure tiles under it), hero-idea-1 (a full-bleed photo
   // filling one half, one CTA, quiet copy beside it).
@@ -333,7 +341,7 @@ export const HERO_STYLES_BY_PAGE_TYPE: Record<LayoutType, [StyleDef, StyleDef, S
  *  exists exactly, so every one of the eighteen `frame`/`columns`/`label` combinations is used
  *  once. That is a tight fit, and it is recorded here so the next person does not try to add a
  *  nineteenth. */
-export const COUNTER_STYLES_BY_PAGE_TYPE: Record<LayoutType, [StyleDef, StyleDef, StyleDef]> = {
+export const COUNTER_STYLES_BY_PAGE_TYPE: Record<PerPageFamily, [StyleDef, StyleDef, StyleDef]> = {
   // hero-idea (the figure tiles under the mosaic), component-idea3 (columns with vertical
   // rules), component-idea55 (the ruled meta block at the foot of a card).
   home: [
@@ -520,7 +528,9 @@ export const STYLES_BY_ID: Record<string, StyleDef> = Object.fromEntries(
  *  rendered with an empty option set. Omitting `layout` keeps the LEGACY S1/S2/S3 trio for
  *  the hero and the counter, which is what the four pages built before this rule still name. */
 export function stylesFor(shape: string, layout?: LayoutType | null): [StyleDef, StyleDef, StyleDef] {
-  if (layout) {
+  // A `city` page has no trio here: its hero and counter come from its component pass, so a
+  // board asking for one gets the shape-wide trio rather than another family's three.
+  if (layout && layout !== 'city') {
     if (shape === 'hero') return HERO_STYLES_BY_PAGE_TYPE[layout] ?? STYLES.hero;
     if (shape === 'stats') return COUNTER_STYLES_BY_PAGE_TYPE[layout] ?? STYLES.stats;
   }

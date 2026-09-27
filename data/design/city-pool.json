@@ -1,0 +1,20 @@
+{
+ "_comment": "The city design pool: canvas variants no city has picked, per component, open to a later city's pass. Written when a city's picks freeze (London: Plan 2 of the London component design pass). Every entry is <city>/<component>/<a|b|c>; scripts/pageboard.py city_pool_findings refuses an entry that is malformed, unknown on its canvas, or already picked.",
+ "available": {
+  "hero": [],
+  "counter-strip": [],
+  "trust-strip": [],
+  "contents-list": [],
+  "desktop-dial": [],
+  "jump-links": [],
+  "key-takeaways": [],
+  "puppy-cards": [],
+  "tables": [],
+  "video": [],
+  "image-text": [],
+  "reviews": [],
+  "faq-blocks": [],
+  "newsletter": [],
+  "contact-form": []
+ }
+}

@@ -280,11 +280,13 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/settings.json`
 - `data/verbatim/`
 
-## Schemas — 9
+## Schemas — 11
 
 Every JSON Schema in `schemas/` — the contract a data file or report is validated against.
 
 - `schemas/board.schema.json`
+- `schemas/city-picks.schema.json`
+- `schemas/city-pool.schema.json`
 - `schemas/competitor-report.schema.json`
 - `schemas/competitors.schema.json`
 - `schemas/component-ledger.schema.json`

@@ -1252,6 +1252,15 @@ numbers.
     in `.claude/skills/bsuk-location-page-builder/SKILL.md` (as Known Issue 39's STOP was); the
     readiness pass left that skill untouched at close-out, so project 5 adds the line before its
     first city board or the user's decision makes it moot.
+    **Decided and built (2026-09-27):** the user chose a component design pass per city (answer
+    board q01 (c)). `src/lib/boardStyles.ts` maps `location` to a seventh family, `city`, that
+    cuts no hero or counter trio; each city's fifteen component picks are saved in
+    `data/design/city-picks/<slug>.json`, and `scripts/pageboard.py` `city_rule16_findings`
+    (called from `rule16_findings`, so the board gate and approval both apply it) refuses a pick
+    another city wears, one within one structural axis of another city's pick, or one within
+    one axis of an arrangement a built page wears. Unpicked variants go to
+    `data/design/city-pool.json`. Tested by `tests/py/test_city_uniqueness_gate.py`. London's
+    picks are the first entries (Plan 2 of the London component design pass).
 
 61. **Where a rebuilt city page's source lives (project 5 decision).** Every city page is built today
     by `src/pages/uk-locations/[slug].astro` from its `data/locations.json` row (the migrated body).

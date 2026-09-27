@@ -1,0 +1,17 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "BSUK city design pool",
+ "comment": "The canvas variants no city has picked, per component, open to a later city's pass (docs/superpowers/specs/2026-09-27-london-component-design-pass-design.md §3.4). Read by scripts/pageboard.py city_pool_findings. The component list is scripts/city_components.py COMPONENT_IDS; tests/py/test_city_uniqueness_gate.py holds the two equal.",
+ "type": "object",
+ "required": ["_comment", "available"],
+ "additionalProperties": false,
+ "properties": {
+  "_comment": {"type": "string"},
+  "available": {
+   "type": "object",
+   "required": ["hero", "counter-strip", "trust-strip", "contents-list", "desktop-dial", "jump-links", "key-takeaways", "puppy-cards", "tables", "video", "image-text", "reviews", "faq-blocks", "newsletter", "contact-form"],
+   "propertyNames": {"enum": ["hero", "counter-strip", "trust-strip", "contents-list", "desktop-dial", "jump-links", "key-takeaways", "puppy-cards", "tables", "video", "image-text", "reviews", "faq-blocks", "newsletter", "contact-form"]},
+   "additionalProperties": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9-]+/[a-z-]+/[abc]$"}}
+  }
+ }
+}
