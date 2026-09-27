@@ -1,0 +1,136 @@
+{
+  "slug": "uk-staffordshire-bull-terrier-guide",
+  "date": "2026-09-27",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 31
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1257,
+    "layout-tap-target-size": 218,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 6,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 3,
+    "hero-aside-no-clip": 3,
+    "img-srcset-within-2x": 51,
+    "img-alt-present-and-unique": 51,
+    "img-sizes-matches-box": 3,
+    "nav-anchors-resolve": 201,
+    "nav-jump-target-lands": 51,
+    "nav-bottom-chrome-clear": 34,
+    "sem-heading-order": 324,
+    "sem-all-six-levels": 324,
+    "sem-title-case-headings": 324,
+    "sem-section-opening-paragraph": 324,
+    "sem-statement-label-visible": 12,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 21,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1557,
+    "css-no-dead-component-rule": 966,
+    "css-component-color-not-overridden": 76,
+    "dup-no-sibling-crossover": 180,
+    "a11y-text-contrast-aa": 1218,
+    "a11y-no-duplicate-ids": 72,
+    "a11y-hero-ledge-contrast": 3,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "LAYOUT": 3,
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "LAYOUT": 6,
+    "CSS": 195,
+    "DUP": 42
+  },
+  "total": 12,
+  "total_instances": 243,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "layout-h3-image-first",
+      "count": 2,
+      "message": "2 H3 block(s) put prose before their image: Staffy Myths vs. Facts: Dispelling Common Misconce | The True Cost of a Staffy: What to Expect Financia"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-cols-1 x7, bl-list-stack x7, bl-head-above x7, bl-chrome-ruled x7, bl-media-none x7, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 57,
+      "message": "57 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 14,
+      "message": "14 passage(s) shared with a sibling: 123w vs /board-preview/uk-staffordshire-bull-terrier-guide/ \"staffordshire bull terrier breed facts at a glance trait the staffordshire bull terrier he\" | 21w vs /board-preview/uk-staffordshire-bull-terrier-guide/ \"in this guide the breed standard trait by trait temperament and the myths about it daily c\" | 20w vs /board-preview/uk-staffordshire-bull-terrier-guide/ \"they are there after you leave advice for the life of the dog and a puppy taken back if yo\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "layout-h3-image-first",
+      "count": 2,
+      "message": "2 H3 block(s) put prose before their image: Staffy Myths vs. Facts: Dispelling Common Misconce | The True Cost of a Staffy: What to Expect Financia"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-cols-1 x7, bl-list-stack x7, bl-head-above x7, bl-chrome-ruled x7, bl-media-none x7, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 57,
+      "message": "57 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 14,
+      "message": "14 passage(s) shared with a sibling: 123w vs /board-preview/uk-staffordshire-bull-terrier-guide/ \"staffordshire bull terrier breed facts at a glance trait the staffordshire bull terrier he\" | 21w vs /board-preview/uk-staffordshire-bull-terrier-guide/ \"in this guide the breed standard trait by trait temperament and the myths about it daily c\" | 20w vs /board-preview/uk-staffordshire-bull-terrier-guide/ \"they are there after you leave advice for the life of the dog and a puppy taken back if yo\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "layout-h3-image-first",
+      "count": 2,
+      "message": "2 H3 block(s) put prose before their image: Staffy Myths vs. Facts: Dispelling Common Misconce | The True Cost of a Staffy: What to Expect Financia"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-cols-1 x7, bl-list-stack x7, bl-head-above x7, bl-chrome-ruled x7, bl-media-none x7, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 57,
+      "message": "57 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 14,
+      "message": "14 passage(s) shared with a sibling: 123w vs /board-preview/uk-staffordshire-bull-terrier-guide/ \"staffordshire bull terrier breed facts at a glance trait the staffordshire bull terrier he\" | 21w vs /board-preview/uk-staffordshire-bull-terrier-guide/ \"in this guide the breed standard trait by trait temperament and the myths about it daily c\" | 20w vs /board-preview/uk-staffordshire-bull-terrier-guide/ \"they are there after you leave advice for the life of the dog and a puppy taken back if yo\""
+    }
+  ]
+}

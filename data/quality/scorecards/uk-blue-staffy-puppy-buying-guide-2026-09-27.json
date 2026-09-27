@@ -1,0 +1,136 @@
+{
+  "slug": "uk-blue-staffy-puppy-buying-guide",
+  "date": "2026-09-27",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 31
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1448,
+    "layout-tap-target-size": 235,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 21,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 9,
+    "hero-aside-no-clip": 0,
+    "img-srcset-within-2x": 69,
+    "img-alt-present-and-unique": 69,
+    "img-sizes-matches-box": 3,
+    "nav-anchors-resolve": 267,
+    "nav-jump-target-lands": 63,
+    "nav-bottom-chrome-clear": 42,
+    "sem-heading-order": 303,
+    "sem-all-six-levels": 303,
+    "sem-title-case-headings": 303,
+    "sem-section-opening-paragraph": 303,
+    "sem-statement-label-visible": 12,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 21,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1701,
+    "css-no-dead-component-rule": 966,
+    "css-component-color-not-overridden": 64,
+    "dup-no-sibling-crossover": 180,
+    "a11y-text-contrast-aa": 1385,
+    "a11y-no-duplicate-ids": 84,
+    "a11y-hero-ledge-contrast": 12,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "LAYOUT": 3,
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "LAYOUT": 21,
+    "CSS": 231,
+    "DUP": 92
+  },
+  "total": 12,
+  "total_instances": 344,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "layout-h3-image-first",
+      "count": 7,
+      "message": "7 H3 block(s) put prose before their image: Step Five: Collection or Delivery | How to Find Excellent Blue Staffy Breeders UK?: Wh | What Are the Pros and Cons of Owning a Blue Staffy | What to Look for in a Healthy Blue Staffy Pup? | What You Need to Buy for a New Staffy Puppy | Gentle Handling"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-media-none x9, bl-list-stack x8, bl-chrome-ruled x8, bl-cols-1 x7, bl-head-above x7, bl-head-eyebrow x1, counter-wrap x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 70,
+      "message": "70 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 34,
+      "message": "34 passage(s) shared with a sibling: 320w vs /board-preview/uk-blue-staffy-puppy-buying-guide/ \"fifteen questions to ask a blue staffy breeder and the answer to listen for ask the breede\" | 168w vs /board-preview/uk-blue-staffy-puppy-buying-guide/ \"ethical breeder against puppy farm topic by topic topic an ethical breeder a puppy farm or\" | 35w vs /how-to-choose-the-right-blue-staffy-puppy-for-your-family/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "layout-h3-image-first",
+      "count": 7,
+      "message": "7 H3 block(s) put prose before their image: Step Five: Collection or Delivery | How to Find Excellent Blue Staffy Breeders UK?: Wh | What Are the Pros and Cons of Owning a Blue Staffy | What to Look for in a Healthy Blue Staffy Pup? | What You Need to Buy for a New Staffy Puppy | Gentle Handling"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-media-none x9, bl-list-stack x8, bl-chrome-ruled x8, bl-cols-1 x7, bl-head-above x7, bl-head-eyebrow x1, counter-wrap x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 70,
+      "message": "70 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 29,
+      "message": "29 passage(s) shared with a sibling: 320w vs /board-preview/uk-blue-staffy-puppy-buying-guide/ \"fifteen questions to ask a blue staffy breeder and the answer to listen for ask the breede\" | 168w vs /board-preview/uk-blue-staffy-puppy-buying-guide/ \"ethical breeder against puppy farm topic by topic topic an ethical breeder a puppy farm or\" | 35w vs /how-to-choose-the-right-blue-staffy-puppy-for-your-family/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "layout-h3-image-first",
+      "count": 7,
+      "message": "7 H3 block(s) put prose before their image: Step Five: Collection or Delivery | How to Find Excellent Blue Staffy Breeders UK?: Wh | What Are the Pros and Cons of Owning a Blue Staffy | What to Look for in a Healthy Blue Staffy Pup? | What You Need to Buy for a New Staffy Puppy | Gentle Handling"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-media-none x9, bl-list-stack x8, bl-chrome-ruled x8, bl-cols-1 x7, bl-head-above x7, bl-head-eyebrow x1, counter-wrap x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 70,
+      "message": "70 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 29,
+      "message": "29 passage(s) shared with a sibling: 320w vs /board-preview/uk-blue-staffy-puppy-buying-guide/ \"fifteen questions to ask a blue staffy breeder and the answer to listen for ask the breede\" | 168w vs /board-preview/uk-blue-staffy-puppy-buying-guide/ \"ethical breeder against puppy farm topic by topic topic an ethical breeder a puppy farm or\" | 35w vs /how-to-choose-the-right-blue-staffy-puppy-for-your-family/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\""
+    }
+  ]
+}

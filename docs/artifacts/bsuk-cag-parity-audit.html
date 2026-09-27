@@ -163,6 +163,42 @@ gets skipped on page 14. **Trade-off:** one more document to keep current. The
 | D6 ✔ | IndexNow `--changed` cannot see any city page | `scripts/indexnow_submit.py` matches only `src/pages/<x>/index.astro`; cities render from `uk-locations/[slug].astro` | Project 6 would submit none of project 5's 28 pages |
 </script>
 <script type="text/markdown" data-title="Gaps to close before project 5">
+> **Closed by (2026-09-27, the brief-parity build, branch `cag-parity`):** every gap below and both decisions are closed. The gate report `docs/reports/brief-parity-gate-report.md` counts 24 PASS, 5 PASS-WITH-DEVIATION and 0 FAIL.
+>
+> | Gap | Task | Commits |
+> |---|---|---|
+> | 1 | 1 | `4c921ce 90db8fd 1b148de` |
+> | 2 | 2 | `c6b0756 82ab14b` |
+> | 3 | 3 | `65ba9da` |
+> | 4 | 4 | `4506872 1cc2bd3 7dd7744` |
+> | 5 | 5 | `a265b7b c11204f` |
+> | 6 | 6 | `98533d1 4751ee3` |
+> | Decision: global CTA (a) | 7 | `fb32212 13623cf dd29aec` |
+> | Decision: image box (a) | 8 | `036c444 a7a6e36 1146507 cc26cf5` |
+> | 7 | 9 | `d196042 7c270a5 eed8178` (deviation: 61 allowlisted, not 48) |
+> | 8 | 10 | `f8f68d6 9384e77` |
+> | 9 | 11 | `3e540d3 5f9c858 43e2df0` |
+> | 10 | 12 | `8f8d1b7 f57659f` |
+> | 11 | 13 | `ed36bc0 06beb90 53e3125` |
+> | 12 | 14 | `7305f0d 791ec39 8add6ce` (deviation: h3-image-first not yet passed on a real page) |
+> | 13 | 15 | `63e2776 93af5da` |
+> | 14 | 16 | `dd3bd1e 57995dd` |
+> | 15 | 17 | `0f4dc70 f58abd8 96d9a3c 317622c 8e773e5` (deviation: Manchester word target NOT FETCHED; Leeds has no cache) |
+> | 16 | 18 | `6884f13 fddd147` |
+> | 17 | 19 | `01b6e0d a8126d4` |
+> | 18 | 20 | `8a74f5a e5b7eef 9241914 664993b` |
+> | 19 | 21 | `aed837b b714435` |
+> | 20 | 22 | `d8bb154 749b628 3a95384` |
+> | 21 | 23 | `160d7ad 09c2bf3 21c8547 f0c19b3 ee0bf14` |
+> | 21b | 23, 25 | as 21 and 23 (deviation: the harden record is self-reported) |
+> | 21c | 23, 25 | as 21 and 23 |
+> | 22 | 24 | `71d961d 05b79a4` |
+> | 23 | 25 | `fed0d17 1fc65a6 862bf1c dd29aec 0c7bf89` |
+> | 24 | 26 | `54d5e1c fdc2222 677946f 769465d` |
+> | 25 | 27 | `2c35b2f c9ce585` (deviation: the decision waits on the answer board) |
+>
+> The live defects close the same way: D1 by Task 1, D2 by Task 2, D3 by Task 7, D4 by Task 3, D5 by Task 9 and D6 by Task 16. D5 is closed as a failing gate, and its offenders stay live until each page is rebuilt.
+
 Grouped into four waves, easiest first. Each item names the CAG section and the audit row.
 
 ### Wave 1 — Fix and clean up (small, no decisions)

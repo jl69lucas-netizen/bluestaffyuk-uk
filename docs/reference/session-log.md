@@ -305,6 +305,94 @@ What it added:
 - **The rule:** CLAUDE.md "Questions for the user — the answer board"; the procedure is `docs/reference/answer-board/README.md`. Lisa's 21 questions are the first batch (`docs/reference/answer-board/batches/2026-09-24-questions-for-lisa-bright.json`).
 - **Any additional questions** (2026-09-26, branch `answer-board-extra`, merged `5f4a8c7`; board republished as version 2): one free-text section after the open batches where the user types extra questions or sub-tasks and sends them; saved as `drafts/additional`, sent as a snapshot `additional/s-…`; receiving is in `docs/reference/answer-board/README.md` ("Additional questions").
 
+## Brief parity build (2026-09-26/27) — CLOSED ON THE BRANCH, merge waits for the user
+
+This build closes the gaps that the parity audit of CAG's *Universal Page Build Brief* found before project 5 (26 sections, 423 items, 27 gaps, 2 decisions). It runs on the parity branch in worktree `/Users/apple/Downloads/BSUK-cag`, cut from `foundation` at `0454a96`. The branch's full name, the audit's and the plan's paths are given in the gate report, because the marker gate keeps the brief's file prefix out of `docs/reference/`.
+
+- **Commits:** 83, `b99d7d6..5893869`, then the close-out's docs commit. Every one carries the Fable 5.1 trailer, and nothing is pushed.
+- **Plan:** 28 tasks, replayed green by the controller before execution.
+- **Gate report:** `docs/reports/brief-parity-gate-report.md` (Artifact: published at close).
+- **Answer board:** https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf.
+
+**Gates** (run by the controller at `5893869`):
+- The build exits 0, and `npm run -s check:all` exits 0 on both runs.
+- `python3 -m pytest tests/py -q -p no:cacheprovider` gives `6222 passed, 12 skipped, 1 xfailed` on both runs.
+- `npm run test:render:meta` gives 415 passed and 38 skipped.
+- `npm run test:render:pages` gives 57 passed and 3 failed. All three failures are the pre-existing NAV row on the UK hub (Known Issue 81).
+- The zero-examined guard: 31 checks, none at zero.
+- `scripts/rendered_changes.py` against `foundation`'s `dist/` reports 12 changed of 51, exactly the 12 rebuilt pages.
+- `scripts/measurement_ledger.py brief-parity` exits 0, with none failed and none stale. M6, M8, M10 and M12 are empty because no project 5 page exists yet.
+
+**Definition of done:** 29 rows, 24 PASS, 5 PASS-WITH-DEVIATION and 0 FAIL. The deviations are:
+- the retired-facts allowlist is 61, not 48;
+- `layout-h3-image-first` has never passed on a real page;
+- Manchester's word target is NOT FETCHED and Leeds has no cache;
+- the harden record is self-reported;
+- the URL-family decision is not yet taken.
+
+What it added, by wave:
+- **Wave 1:**
+  - the invented method label is gone and linted;
+  - evidence budgets are per city, and the brand has a budget;
+  - puppy cards carry the delivery line;
+  - Rule 18 is a ceiling with no floor;
+  - the perf gate uses a warm median of 5;
+  - seven drifted instructions are pinned;
+  - `global_cta` is wired (board answer (a));
+  - new pages use the uniform in-body image box, with no blurfill bleed (board answer (a), plus the user's design-colour note).
+- **Wave 2:**
+  - `check:retired`;
+  - every rebuilt page is a render target;
+  - the page run ends in the zero-examined guard;
+  - `check:boards`;
+  - approval refuses a header collision;
+  - `layout-h3-image-first` is retargeted to `.bl-img`, and a `promotions` record means four checks block new pages;
+  - the hardening scope covers the city template, its data and the kit;
+  - `scripts/rendered_changes.py` runs at every close, and IndexNow `--changed` reads it.
+- **Wave 3:**
+  - competitor page metrics and Rule 27's word target;
+  - `scripts/keyword_metrics.py` (board block 4b);
+  - geo-token and two-keyword-header checks;
+  - the claim ledger inverted (`claim-unledgered`);
+  - `check:barriers`;
+  - `check:threads`.
+- **Wave 4:**
+  - `docs/reference/page-run.md`, guarded by `check:workflow`, with `impeccable`, `frontend-design` and `superpowers:verification-before-completion` mandatory on every page;
+  - board block 0, the page intake (closes Known Issue 63);
+  - `npm run gate:page -- <slug>`, which runs every page gate twice and diffs them, plus the run-twice rule;
+  - `scripts/measurement_ledger.py`;
+  - the URL-family decision `docs/research/2026-09-26-url-family-decision.md`.
+- **Beyond the plan:**
+  - Task 28a's whole-branch review fixes (`dd29aec`, `ee0bf14`, `0c7bf89`):
+    - the global CTA's city lookup;
+    - `gate:page`'s board and listed steps;
+    - an entity-blocked board refuses approval;
+    - the dirty-tree rule for build outputs and page dates;
+    - the close order;
+    - the grill-me route;
+    - the builder gate lists;
+    - a sweep from `npx astro build` to `npm run -s build`.
+  - Task 26's review rounds (`fdc2222`, `677946f`, `769465d`).
+  - Task 27's review (`c9ce585`).
+
+The audit's live defects are all closed:
+- **D1**, the invented method label: Task 1 (`4c921ce`, `90db8fd`, `1b148de`).
+- **D2**, the city-term budget hard-coded to one city: Task 2 (`c6b0756`, `82ab14b`).
+- **D3**, `global_cta` ignored: Task 7 (`fb32212`, `13623cf`), with the city lookup fixed in `dd29aec`.
+- **D4**, puppy cards without a delivery line: Task 3 (`65ba9da`).
+- **D5**, retired facts unswept: Task 9 (`d196042`, `7c270a5`, `eed8178`). It is closed as a failing gate. The 61 allowlisted offenders stay live until each page is rebuilt (Known Issues 65 and 82).
+- **D6**, IndexNow blind to city pages: Task 16 (`dd3bd1e`, `57995dd`).
+
+Answer board:
+- Batch `2026-09-26-brief-parity-two-decisions-before-project-5` is answered (`ac01ec0`: q01 (a), where bleed uses the design colours and never grey or black; q02 (a)).
+- Batch `2026-09-27-brief-parity-close-three-decisions-before-the-london-page` is posted (`5893869`) and **open**. It asks about the URL family, the comparison slug and the fallback word band.
+
+**Open items:**
+- Known Issues 81–92 are new.
+- Known Issue 73 is extended, and Known Issue 63 is closed.
+- The other open items are as the readiness pass left them.
+- **Next:** read the open board batch, merge `--no-ff` into `foundation` after the user confirms, then start project 5, London first.
+
 ## Known Issues
 
 Seeded from the Foundation gate report's "Open items" 1–8 and extended by projects 2 and 3.
@@ -316,7 +404,8 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
 project 5 readiness pass closed 19, 21, 24, 32, 35, 37, 38, 39, 45–52, 56, 57 and 58, the
 first half of 31, the buying-guide half of 30, the homepage and sharing halves of 33, all but two
 items of 53 and the instruction items of 40; corrected 23; moved 27 to project 6 and 16 on to its
-location-page remainder; and added 59–69 and 75–80. The system gaps bridge build added 70–74.
+location-page remainder; and added 59–69 and 75–80. The system gaps bridge build added 70–74. The brief-parity build closed 63, extended 73
+and added 81–92.
 Renumbered at the merge of `foundation` into `p5-readiness` (2026-09-25): the readiness pass first
 numbered its items 59–75, and its 70–75 became 75–80 so the system gaps build keeps 70–74 (70 → 75,
 71 → 76, 72 → 77, 73 → 78, 74 → 79, 75 → 80). Commit messages from before that merge cite the old
@@ -694,7 +783,8 @@ numbers.
     CLOSED (project 5 readiness pass):** `/available-puppies/` opens each card at H2 —
     `src/components/PuppyList.astro` with `heading="none"` — so `sem-heading-order` is 3 rows
     → 0 there, guarded by `tests/py/test_puppy_hub_headings.py`. The location route's anchor
-    row (the second bullet below) stays **build 5**'s.
+    row (the second bullet below) stays **build 5**'s. Re-measured at the brief-parity close (2026-09-27): now
+    Known Issue 81.
     `test:render:pages` fails six rows on two pages project 4 did not rebuild, and the two are
     DIFFERENT failures — this entry first said both were SEM, and the close-out audit's run
     shows otherwise:
@@ -1214,6 +1304,9 @@ numbers.
     indexable defects under the facts rules. **The user decides** whether to correct them now as a
     fix (not a page build) or leave them to the rebuilds; the strategy ranks Oxford and Sunderland
     mid-order, so waiting keeps them live for longer.
+    **2026-09-27 (brief-parity build, Task 9):** `npm run check:retired` (in `check:all`) now fails
+    on any new offender in `data/`, `src/` or `dist/`. The live ones are allowlisted (61 entries)
+    and burn down page by page (Known Issue 82).
 
 66. **Board records and board forms (project 5 readiness pass).**
     - **Refresh notes that describe another arrangement.** Many hero and counter `refresh` notes
@@ -1284,7 +1377,7 @@ numbers.
 70. **Generated images wait for the user's key (system gaps, 2026-09-24).** `google-genai==1.47.0` is installed and pinned, and the whole generate → approve → publish flow is tested on synthetic images. The one real smoke image (plan Task 11b Step 3) waits until the user sets `GEMINI_API_KEY` in `.env`. Until then, slots use an existing image or an infographic. The system Python is 3.9.6: google-auth warns that 3.9 is past end of life, and urllib3 warns that it was built with LibreSSL. Consider a newer Python before project 6.
 71. **Organisation and regulation entities have no owner page (system gaps).** The 12 organisations and 6 regulations in `data/bsuk-ontology.json` have `owner_page` unset. The first project 5 page that makes one of them its subject should claim it at boarding.
 72. **One research row in the link library (system gaps).** Only the PubMed Central copy of Pegram et al. 2020 could be verified with `curl`. The RVC VetCompass page blocks bots (403), so it needs a headless-browser check before it can be a row. The four-source-type rule does not need a research row.
-73. **Committed board HTML lags the renderer (system gaps).** `docs/artifacts/boards/*.html` for the 12 built pages still shows the old block 5 graph and the old "7. Asset slots" title. The boards render correctly from `scripts/build_page_board.py`; republish them the next time any of them is touched.
+73. **Committed board HTML lags the renderer (system gaps).** `docs/artifacts/boards/*.html` for the 12 built pages still shows the old block 5 graph and the old "7. Asset slots" title. The boards render correctly from `scripts/build_page_board.py`; republish them the next time any of them is touched. **2026-09-27 (brief-parity close):** still stale. The Task 19 review measured about 1.5k lines of drift against the current renderer. The boards were not regenerated at this close, and no approval changed. Regenerate and republish a board when its page is next touched, and check that its `approval` is unchanged.
 74. **Small helper duplicates (system gaps).**
     - `slug_file` exists in `pageboard`, `image_candidates` and `ingest_image`; only the first validates.
     - `route_of` exists in `image_candidates` and `build_page_board`.
@@ -1381,3 +1474,57 @@ numbers.
     gate report (https://claude.ai/artifact/YHsi2sEDq1uUpgYsQTjUdU). No Artifact URL for the
     Foundation report is recorded in the repo, so it had nothing to republish; a published copy,
     if one exists, is republished from the committed HTML.
+
+81. **The UK hub's in-page anchor misses the landing band (the brief-parity close; carries Known Issue 31's second half).**
+    - **Where:** `npm run test:render:pages` fails `nav-jump-target-lands` on `uk-locations/blue-staffy-puppies-uk` at all three widths: `[NAV] 1 of 2 in-page links land outside` the band, first `#Staffy-adoption` at 2847px (375), 3495px (768) and 3493px (1280).
+    - **Why it matters:** these are the only rows keeping the page run from a clean exit (ledger M3 blocking 3). The migrated body's anchor target sits outside the band that the sticky header leaves.
+    - **Next:** project 5's hub refresh rebuilds the body and its anchor target, and the render run must then exit 0. Do not fix it inside another task (plan execution note 8).
+82. **Burn down the retired-facts allowlist, city page by city page (the brief-parity build, Task 9; Known Issue 65).**
+    - **Where:** `data/quality/retired-facts-allowlist.json` holds **61** entries on 11 pages. The pages are the UK hub, `staffy-breeding-dogs-glasgow`, Aberdeen, Dundee, Edinburgh, Hull, Inverness, Middlesbrough, Oxford, Sunderland and York; the entries cover both `data/locations.json` and `dist/`.
+    - **Why it grew:** the plan froze 48. The Task 9 review rounds widened detection to 'to' ranges, unprefixed ranges and former-home claims, so the list went 48 → 57 (`7c270a5`) → 61 (`eed8178`).
+    - **What the gate does:** `check:retired` fails on any new offender and on any stale entry, and `tests/py/test_retired_facts_check.py` pins the ceiling.
+    - **Next:** each rebuilt city page deletes its own entries in its build commit, because a rebuilt page left on the list fails the gate. The terms stay live on those indexable pages until then (Known Issue 65's decision).
+83. **The four new-page promotions stay scoped to new pages (the brief-parity build, Task 14).**
+    - **Where:** `tests/render/targets.json` `promotions` gives `layout-h3-image-first`, `layout-hero-counter-separation`, `sem-section-opening-paragraph` and `sem-title-case-headings` the scope `new-pages`. They block a project 5 page from board approval on, and they stay advisory on the frozen and migrated pages.
+    - **Why:** `layout-h3-image-first` has never passed on a real page, and its reports on the frozen pages are true reports (Known Issue 90).
+    - **Next:** widen any of them to `all` only after one full project 5 cluster runs clean with `false_reports` 0. The first page builder confirms a `BodyImage` after every H3.
+    - **Keep in sync:** `approvedBoards` (TypeScript) and `approved_boards` (Python) both treat any truthy `approval` or `approval_previous` as approved. If the board's definition of "approved" changes, update both, because the parity test compares only the two with each other.
+84. **Leeds has no competitor HTML cache; Manchester has no word target (the brief-parity build, Task 17).**
+    - **Leeds:** `data/queries/raw/blue-staffy-puppies-for-sale-leeds/competitors.json` lists 8 pages with no `metrics`. The gitignored cache `data/queries/cache/` holds Manchester only, so `--competitor-metrics` had nothing to backfill.
+    - **Manchester:** its 8 pages are measured, but all 8 are marketplace listings or blocked, so Rule 27's `word_target` is NOT FETCHED. Many city searches will look the same.
+    - **Next:** Leeds's page run re-fetches its pool with `--extract-h2`, which saves the cache and the metrics. A city whose target stays NOT FETCHED takes the fallback band that the user picks (Known Issue 85).
+85. **Three decisions on the answer board before the London board (the brief-parity close).**
+    - **Where:** batch `2026-09-27-brief-parity-close-three-decisions-before-the-london-page` (`5893869`, https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf) is open. It asks:
+      - q1: the URL family for the 28 city-cluster pages (`docs/research/2026-09-26-url-family-decision.md`; recommended (a): keep every slug, add no redirect, keep both intent pairs);
+      - q2: the first comparison page's slug (recommended (a) `/blue-and-black-staffy-uk/`);
+      - q3: the fallback word band when the competitor median is NOT FETCHED (recommended (a) 1,500–2,000 words).
+    - **Next:** read the answers before the London board and apply them where each question says: city boards' `meta.slug` and `data/redirects.json`, the comparison board, and each city board's word target.
+86. **The UK hub's body does not link the 9 indexable city pages (the brief-parity build, Task 27 review).**
+    - **Where:** on the 2026-09-26 build, `uk-locations/blue-staffy-puppies-uk` links 18 of the other 27 location pages from its body. It misses Aberdeen, Dundee, Edinburgh, Hull, Inverness, Middlesbrough, Oxford, Sunderland and York, which only the header and footer city list reach (`docs/research/2026-09-26-url-family-decision.md`).
+    - **Next:** the hub refresh links all 10 other indexable pages from its body, whatever the URL-family answer.
+87. **The city template bypasses `PageShell`, so `global_cta` cannot reach a city page (the brief-parity build, Task 7 review).**
+    - **Where:** `src/pages/uk-locations/[slug].astro` uses `BaseLayout` and the legacy `SiteFooter`, which never had the CTA band. `search`, `board-preview` and `kit-preview` also bypass `PageShell`.
+    - **Next:** project 5's city template (Known Issue 61) moves to `PageShell`, so the board's `global_cta` applies. Check the footer spacing without the band in the page's impeccable pass.
+88. **Hardening debt: 369 pre-existing `header-not-title-case` ERRORs (the brief-parity build, Task 15).**
+    - **Where:** `python3 scripts/page_hardening_scan.py` (2026-09-27, report-only) gives `369 ERROR · 35 WARN`. The 369 split into board-preview 306, uk-locations 41 (the legacy city FAQ H3s), kit-preview 19 and available-puppies 3.
+    - **Why it matters:** `npm run gate:page -- <slug>` runs the scan with `--fail-on-error`, so it fails on any legacy city page until project 5 rebuilds it. That is expected, not a gate fault.
+    - **Advisory kit WARNs, unverified:**
+      - opacity .85 on `SiteFooterKit` `.tag`, `.plain` and `.legal` and on the testimonial (contrast unmeasured);
+      - `Hero.astro` `.ticks` `align-items`;
+      - a `Button.astro` `kit-btn` false positive (a JS const the scan does not read).
+    - **Next:** each city rebuild clears its own rows. The board-preview demo rows need a decision: exempt the route, or title-case the demo.
+89. **Evidence debt on migrated and frozen pages; the ledger's `dna-clear` row also matches PHPV (the brief-parity build, Task 20).**
+    - **Where:** `python3 scripts/evidence_audit.py --all` (2026-09-27) exits 1 with `examined 61 pages; 42 problems (192 WARN)`. The 42 ERRORs are term budgets on migrated pages. 133 of the WARNs are `claim-unledgered` (kc-registered 54, health-tested 28, vet-checked 27, dna-test 22, dna-clear 2); the Task 20 run counted 222 before its review narrowed the patterns. `check:all` does not run this audit, and `gate:page` fails only a new page on it.
+    - **PHPV:** the `dna-clear` pattern in `data/quality/evidence-ledger.json` also matches "clear of PHPV", so a PHPV claim binds to `parents-dna-clear`. That row's proof covers L-2-HGA and HC-HSF4 only (PHPV pending, Known Issue 68).
+    - **Next:** narrow the pattern, or add a PHPV row when the breeder answers. Each rebuild clears its page's budget and claim rows.
+90. **Frozen-page debt: H3 image-first and the opening copy (the brief-parity build, Tasks 14 and 18).**
+    - **H3 image-first:** the 2026-09-27 scorecards carry advisory `layout-h3-image-first` reports, where prose comes before the photo. Per viewport: the buying guide 7, the breed guide 2, the for-sale page 1 and the homepage 1.
+    - **Opening copy:** `scripts/keyword_metrics.py` finds the primary keyword missing from the first 100 words on 11 of the 12 frozen pages (only `blue-staffy-pup-sale-uk` has it), and the title does not front-load it on 6.
+    - **Title gate slack:** a title such as "Blue Staffy Puppies | BlueStaffyUK Manchester" passes, which is brand before city (Rule 21) and would need its own check.
+    - **Next:** these pages keep their contracts (`BUILT_BEFORE_SYSTEM_GAPS`). Fix them only when a page is next re-boarded.
+91. **The harden passes are self-recorded (the brief-parity build, Task 25).** `data/page-runs/<slug>.json` records the `impeccable`, `frontend-design` and verification passes, and the operator writes it. It is an honour system.
+    - **What the gate does:** `gate:page` forces a re-record after any later page change and re-runs `check:all` itself rather than trusting the record's exit codes.
+    - **Next:** the controller spot-checks that each record's widths and findings match a real run (screenshots at 375/768/1280) before a page is called done.
+92. **M18: 17 of 81 rules in the rule index are untested (the brief-parity ledger).**
+    - **The rules:** `design-context-read-first`, `entity-4-move-loop`, `header-style-declared`, `image-keyword-distribution`, `link-first-anchors`, `meaningful-words-no-stop-words`, `no-credential-in-a-committed-file`, `no-head-cropped-portraits`, `puppies-extended-meta`, `read-card-thumb-is-target-hero`, `release-guarded-publication`, `reuse-every-image-and-video`, `same-content-on-redesign`, `src-pages-is-deployed`, `verify-the-gate-first`, `visual-companion-always` and `visual-first-workflow`.
+    - **Next:** the ledger reports the count at every close. Give a rule a test when a project 5 page first exercises it; `link-first-anchors` can ride along with the first city page (the audit's "Adopt later").
