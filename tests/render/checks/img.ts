@@ -142,9 +142,12 @@ register({
  * fails an image carrying more than 2x the pixels it paints and never reads the case where it
  * carries FEWER: four London canvas variants shipped soft photos (a 1080px square painted
  * across 1280, a 400x500 litter photo stretched) and nothing measured them. The scale is the
- * one the browser applies — under `object-fit: cover` the LARGER of the two axis ratios, which
- * is what blows a wide file up in a square box; the width ratio otherwise — times the device
- * pixel ratio. Over 1.05 is a defect. Advisory: it enters as bsuk-learning-loop Step 4 says.
+ * one the browser applies to the CONTENT box (padding and border are not image): under
+ * `object-fit: cover` or `fill` the LARGER of the two axis ratios (what blows a wide file up in
+ * a square box), under `contain` the smaller, under `scale-down` the smaller capped at 1, under
+ * `none` 1 — times the device pixel ratio. Over 1.05 is a defect. An image clipped out of sight
+ * by an overflow ancestor is skipped; a partly clipped one is judged at its scale and reports
+ * its visible crop. Advisory: it enters as bsuk-learning-loop Step 4 says.
  */
 register({
   id: 'img-not-upscaled',
@@ -184,16 +187,47 @@ register({
         if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) continue;
         const src = img.currentSrc || img.src || '';
         if (/\.svg(\?|$)/i.test(src) || src.startsWith('data:image/svg')) continue;
+        // The VISIBLE crop: the box clipped by every overflow-clipping ancestor. An image
+        // clipped out of sight paints nothing and is skipped; a partly clipped one keeps its
+        // scale (clipping hides pixels, it does not enlarge them) and reports its visible size.
+        let vis = { l: box.left, t: box.top, r: box.right, b: box.bottom };
+        for (let e = img.parentElement; e; e = e.parentElement) {
+          const o = getComputedStyle(e);
+          if (/(hidden|clip|scroll|auto)/.test(o.overflowX + o.overflowY)) {
+            const c = e.getBoundingClientRect();
+            vis = { l: Math.max(vis.l, c.left), t: Math.max(vis.t, c.top),
+              r: Math.min(vis.r, c.right), b: Math.min(vis.b, c.bottom) };
+          }
+        }
+        if (vis.r - vis.l < 1 || vis.b - vis.t < 1) continue;
         const [nw, nh] = await pixels(src);
         if (!nw || !nh) continue;
         examined++;
-        const fit = getComputedStyle(img).objectFit;
-        const sw = box.width / nw;
-        const sh = box.height / nh;
-        const scale = (fit === 'cover' ? Math.max(sw, sh) : sw) * dpr;
+        // The CONTENT box paints the pixels: padding and border are not image (review
+        // 2026-09-28 — a 40px-padded 380px image read 460px, 1.15x, from its border box).
+        const cs = getComputedStyle(img);
+        const px = (v: string) => parseFloat(v) || 0;
+        const cw = box.width - px(cs.paddingLeft) - px(cs.paddingRight)
+          - px(cs.borderLeftWidth) - px(cs.borderRightWidth);
+        const ch = box.height - px(cs.paddingTop) - px(cs.paddingBottom)
+          - px(cs.borderTopWidth) - px(cs.borderBottomWidth);
+        if (cw < 1 || ch < 1) continue;
+        const fit = cs.objectFit;
+        const sw = cw / nw;
+        const sh = ch / nh;
+        // cover fills the box (the larger ratio); contain letterboxes (the smaller);
+        // scale-down is contain but never above 1; none paints the file at its own size;
+        // fill stretches each axis, so the larger stretch is the soft one.
+        const byFit: Record<string, number> = {
+          cover: Math.max(sw, sh), contain: Math.min(sw, sh),
+          'scale-down': Math.min(1, Math.min(sw, sh)), none: 1, fill: Math.max(sw, sh),
+        };
+        const scale = (byFit[fit] ?? Math.max(sw, sh)) * dpr;
+        const box_ = { width: cw, height: ch };
         if (scale > 1.05) {
           bad.push(`${src.split('/').pop()} file=${nw}x${nh} ` +
-            `painted=${Math.round(box.width)}x${Math.round(box.height)} ${fit} ${scale.toFixed(2)}x`);
+            `painted=${Math.round(box_.width)}x${Math.round(box_.height)} ` +
+            `visible=${Math.round(vis.r - vis.l)}x${Math.round(vis.b - vis.t)} ${fit} ${scale.toFixed(2)}x`);
         }
       }
       return { examined, bad: bad.slice(0, 10), count: bad.length };

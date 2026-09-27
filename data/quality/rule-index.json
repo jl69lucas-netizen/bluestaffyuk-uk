@@ -14,7 +14,7 @@
    "enforced": "test",
    "test": "tests/render/checks/img.ts::img-not-upscaled",
    "severity": "advisory",
-   "_note": "Learning loop 2026-09-27 (L6, shortlist #6). No image is painted larger than its own file's pixels (object-fit: cover counted). Advisory until a clean cluster; at its introduction it reported 146 instances on the 12 rebuilt pages and 4 on the London canvas (docs/reference/session-log.md)."
+   "_note": "Learning loop 2026-09-27 (L6, shortlist #6). No image is painted larger than its own file's pixels (object-fit: cover counted). Advisory until a clean cluster; at its introduction it reported 145 instances (content-box measure) on the 12 rebuilt pages and 4 on the London canvas (docs/reference/session-log.md)."
   },
   {
    "id": "img-alt-present-and-unique",

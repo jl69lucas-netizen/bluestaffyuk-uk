@@ -5,11 +5,22 @@
      below its own width. The third image is the check's own first bug: with a w-descriptor
      srcset the browser reports naturalWidth corrected by density (file width x sizes / w), so a
      1600px file under sizes="100px" reads as 100px wide and looked 3.2x upscaled at 320px. The
-     check has to measure the file's own pixels. -->
-<style>body{margin:0;font:16px/1.5 system-ui}.sq{display:block;width:320px;height:320px;object-fit:cover}.w{display:block;width:340px;height:auto}</style>
+     check has to measure the file's own pixels.
+     Review 2026-09-28: the fourth image carries 40px of padding, so its border box (460px) is
+     1.15x the file while the content box that paints the pixels is 380px, 0.95x; the check
+     measures the content box. The fifth is object-fit: contain in a tall box: the file is
+     letterboxed at 0.95x, never blown up to the box's height. The sixth sits in a clipped
+     frame: clipping hides part of it but does not change its scale. -->
+<style>body{margin:0;font:16px/1.5 system-ui}.sq{display:block;width:320px;height:320px;object-fit:cover}.w{display:block;width:340px;height:auto}
+.pad{display:block;box-sizing:content-box;width:380px;height:auto;padding:40px;background:#eee}
+.con{display:block;width:380px;height:400px;object-fit:contain}
+.clip{width:200px;height:120px;overflow:hidden}.clip img{display:block;width:900px;height:auto}</style>
 </head><body>
 <h1>Image sharpness</h1>
 <img class="sq" src="../assets/wide-1600.png" width="1600" height="900" alt="Blue Staffy puppy on a garden step, cropped square">
 <img class="w" src="../assets/narrow-400.png" width="400" height="225" alt="Blue Staffy puppy on a lawn">
 <img class="sq" srcset="../assets/wide-1600.png 1600w" sizes="100px" src="../assets/wide-1600.png" width="1600" height="900" alt="Blue Staffy puppy asleep in the sun">
+<img class="pad" src="../assets/narrow-400.png" width="400" height="225" alt="Blue Staffy puppy on a garden bench">
+<img class="con" src="../assets/narrow-400.png" width="400" height="225" alt="Blue Staffy puppy on a kitchen floor">
+<div class="clip"><img src="../assets/wide-1600.png" width="1600" height="900" alt="Blue Staffy puppy on a beach"></div>
 </body></html>
