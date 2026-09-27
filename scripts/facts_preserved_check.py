@@ -430,6 +430,10 @@ def main(argv=None):
                 print(f"{slug}: missing {kind} {v!r}")
                 problems += 1
     print(f"examined {len(rebuilt)} rebuilt pages; {problems} problems")
+    if not rebuilt:
+        # tests/py/test_gates_refuse_nothing.py: a gate never passes on nothing.
+        print("examined 0 rebuilt pages — data/facts/rebuilt.json is empty, not a pass")
+        return 1
     return 1 if problems else 0
 
 

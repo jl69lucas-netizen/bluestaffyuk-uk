@@ -527,9 +527,12 @@ def do_check():
             print(f"{slug}: {m}")
         print(f"{slug}: examined {examined} elements; {changed} changed; {len(misses)} missing")
         problems += len(misses)
-    if not slugs:
-        print("examined 0 elements; 0 changed; 0 missing (no rebuilt page is under rule 15 yet)")
     print(f"examined {len(slugs)} applicable pages; {problems} problems")
+    if not slugs:
+        # tests/py/test_gates_refuse_nothing.py: rule 15 has reached nine rebuilt pages, so an
+        # empty scope now means the scope was lost, not that the rule has not started.
+        print("examined 0 applicable pages (rebuilt AND in data/verbatim/applies.json) — not a pass")
+        return 1
     return 1 if problems else 0
 
 

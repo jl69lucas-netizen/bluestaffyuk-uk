@@ -149,6 +149,11 @@ def main(root=ROOT, dist=None, release=None):
         print("FAIL: no dist/ to scan — a build that does not exist is not placeholder-free.")
         return 1
 
+    if not any(dist.rglob("*.html")):
+        # tests/py/test_gates_refuse_nothing.py: a count of 0 over no built page is not a count.
+        print("FAIL: examined 0 built pages in dist/ — not a pass (run npm run -s build)")
+        return 1
+
     counts, files = scan(dist, (), root=root, files=source_files(root))
     total = sum(counts.values())
     mode = "release" if release else "pre-launch"

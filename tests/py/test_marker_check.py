@@ -5,7 +5,18 @@ import pytest
 from marker_check import MARKERS, PRINT_CAP, hits_in, main, scan_roots
 
 
+#: The gate refuses when a fixed root is missing (tests/py/test_gates_refuse_nothing.py), so every
+#: fixture repo carries a clean one of each; a test's own `files` overwrite them.
+CLEAN_ROOTS = (("CLAUDE.md", "Blue Staffy guide.\n"), ("rules/README.md", "Rules.\n"),
+               ("docs/reference/README.md", "Reference.\n"), ("package.json", "{}\n"),
+               ("tests/render/README.md", "Render.\n"), ("scripts/dup_content_audit.py", "# dup\n"))
+
+
 def _repo(tmp_path, manifest_rows=(), files=()):
+    for rel, text in CLEAN_ROOTS:
+        p = tmp_path / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(text, encoding="utf-8")
     (tmp_path / "data").mkdir(parents=True, exist_ok=True)
     (tmp_path / "data/port-manifest.json").write_text(json.dumps(list(manifest_rows)), encoding="utf-8")
     for rel, text in files:
@@ -134,7 +145,8 @@ def test_a_text_file_that_is_not_utf8_is_still_read_and_reported(tmp_path):
 def test_a_rebase_row_whose_dst_is_not_written_yet_is_skipped(tmp_path):
     rows = [{"src": "rules/cag-x.md", "dst": "rules/bsuk-x.md", "mode": "rebase", "notes": "n"}]
     repo = _repo(tmp_path, rows)
-    assert scan_roots(repo) == []
+    assert repo / "rules/bsuk-x.md" not in scan_roots(repo)
+    assert {p.relative_to(repo).as_posix() for p in scan_roots(repo)} == {r for r, _ in CLEAN_ROOTS}
     assert main(repo) == 0
 
 
@@ -145,7 +157,7 @@ def test_output_is_capped_and_the_count_is_not(tmp_path, capsys):
     assert main(repo) == 1
     out = capsys.readouterr().out
     assert "\u2026 and 5 more" in out
-    assert "examined 1 files; %d problems" % (PRINT_CAP + 5) in out
+    assert "examined %d files; %d problems" % (len(CLEAN_ROOTS) + 1, PRINT_CAP + 5) in out
     assert out.count("[parrot]") == PRINT_CAP
 
 
@@ -223,3 +235,11 @@ def test_both_passes_number_lines_one_way(tmp_path):
     repo = _repo(tmp_path, files=[("CLAUDE.md", text)])
     assert [(n, m) for n, m, _ in hits_in(repo / "CLAUDE.md")] == [
         (2, "african grey"), (3, "african grey")]
+
+
+def test_a_missing_fixed_root_is_not_a_pass(tmp_path, capsys):
+    """Learning loop 2026-09-27 (#7): a root that is absent was not scanned."""
+    repo = _repo(tmp_path)
+    (repo / "CLAUDE.md").unlink()
+    assert main(repo) == 1
+    assert "not scanned (missing): CLAUDE.md" in capsys.readouterr().out

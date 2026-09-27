@@ -3,7 +3,7 @@
 competitor the registry marks `link_allowed: false`.
 
   python3 scripts/competitor_registry_check.py [--root DIR]
-      exit 0 ok, or no registry yet (says "nothing to check") · 1 problems (listed)
+      exit 0 ok · 1 problems (listed), or no registry (examined 0 entries, not a pass)
 
 What a schema cannot say is checked here: at most 30 entries, `_meta.total` equals the count,
 bare root domains, never the site's own domain, no duplicate id or domain, tier 5 never
@@ -236,8 +236,10 @@ def main(argv=None):
     root = ap.parse_args(argv).root
     path = root / "data/competitors.json"
     if not path.is_file():
-        print("competitors: no data/competitors.json yet — nothing to check")
-        return 0
+        # tests/py/test_gates_refuse_nothing.py: the registry has existed since the competitor
+        # bridge build, so a missing file is a lost input, not a registry not started yet.
+        print("competitors: no data/competitors.json — examined 0 entries, not a pass")
+        return 1
     try:
         reg = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError, UnicodeDecodeError) as exc:

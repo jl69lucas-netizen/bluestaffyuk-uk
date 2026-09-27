@@ -348,6 +348,10 @@ def main(root=ROOT, dist=None):
     out.write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines))
     print(summary)
+    if not pages:
+        # tests/py/test_gates_refuse_nothing.py: an empty dist/ is not a schema-clean site.
+        print("examined 0 pages in dist/ — not a pass (run npm run -s build)")
+        sys.exit(1)
     if blocking:
         sys.exit(1)
 

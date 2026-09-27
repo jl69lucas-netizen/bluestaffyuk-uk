@@ -18,6 +18,8 @@ def _repo(tmp_path, dist_files=(), skill_files=(), agent_files=(), other_files=(
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(text, encoding="utf-8")
     (tmp_path / "dist").mkdir(parents=True, exist_ok=True)
+    if not dist_files:   # the gate refuses a dist/ with no built page (test_gates_refuse_nothing)
+        (tmp_path / "dist" / "index.html").write_text("<main>Blue Staffy puppies</main>", encoding="utf-8")
     for base, group in ((".claude/skills", skill_files), (".claude/agents", agent_files)):
         for rel, text in group:
             p = tmp_path / base / rel
@@ -149,3 +151,10 @@ def test_non_text_suffix_in_skills_is_not_counted(tmp_path):
     root = _repo(tmp_path, skill_files=[("x/diagram.png", token)])
     counts, files = _scan(root)
     assert counts[token] == 0 and files[token] == []
+
+
+def test_a_dist_with_no_built_page_is_not_a_pass(tmp_path, capsys):
+    """Learning loop 2026-09-27 (#7): a count of 0 over no built page is not a count."""
+    (tmp_path / "dist").mkdir()
+    assert main(root=tmp_path, dist=tmp_path / "dist", release=False) == 1
+    assert "examined 0 built pages" in capsys.readouterr().out

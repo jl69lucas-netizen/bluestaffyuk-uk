@@ -146,10 +146,12 @@ def test_a_link_to_an_allowed_competitor_or_a_lookalike_is_fine(tmp_path):
     assert C.suspect_links(reg, root)[0] == []
 
 
-def test_cli_passes_with_no_registry(tmp_path):
+def test_cli_refuses_with_no_registry(tmp_path):
+    """Learning loop 2026-09-27 (#7): the registry exists since the competitor bridge build;
+    a missing one is a lost input, and examining 0 entries is not a pass."""
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(make_root(tmp_path))],
                        capture_output=True, text=True)
-    assert r.returncode == 0 and "nothing to check" in r.stdout
+    assert r.returncode == 1 and "not a pass" in r.stdout
 
 
 def test_cli_fails_on_a_bad_registry(tmp_path):

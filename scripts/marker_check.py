@@ -165,6 +165,12 @@ def main(root=ROOT):
     if problems > PRINT_CAP:
         print("  … and %d more" % (problems - PRINT_CAP))
     print("examined %d files; %d problems" % (len(files), problems))
+    missing = [r for r in FIXED_ROOTS if not (root / r).exists()]
+    if missing:
+        # tests/py/test_gates_refuse_nothing.py: a fixed root that is absent was not scanned,
+        # and a scan that silently narrowed is the gate passing on less than it claims.
+        print("FAIL — not scanned (missing): %s; not a pass" % ", ".join(missing))
+        return 1
     if problems:
         print("FAIL — a parrot marker is a re-base that did not happen. There is no allowlist.")
         return 1
