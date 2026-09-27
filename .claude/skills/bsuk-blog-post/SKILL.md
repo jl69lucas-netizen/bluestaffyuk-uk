@@ -13,6 +13,8 @@ THIS PAGE CONTAIN THE CHATGTP RESEARCH WORK DONE FOR ALL BLOG POST AND HUB PAGES
 
 ## BlueStaffyUK Blog System (binding)
 
+**Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
+
 > **Precedence:** `CLAUDE.md` and the rule packs in `rules/` win over this file; where they are silent, the sections below are the method. The source repo's blog-cluster spec was **not ported — source repo only**.
 
 ### 1. 14-Step Section Architecture + Special-Element Slots
@@ -181,6 +183,8 @@ Layer these onto the 14-step architecture — they are how we beat commodity + A
 ### 10. Visual Production Pipeline + Image-Placeholder Workflow
 
 **Placeholder-first (default).** Build the page with image constants + `<figure>` slots wired to **exact final paths**, but treat every generated asset as a PLACEHOLDER until the breeder confirms design/size. Existing photos are reused at their `/images/…` URLs (`CLAUDE.md` rule 11); a new photo or infographic the breeder supplies becomes a new master under `src/assets/`, served through `astro:assets` (§7 A). A manifest in the strategy doc lists every image the post uses — its `/images/…` URL or its `src/assets/` path. **Do NOT commit while any referenced image 404s** — build, then confirm every referenced file is in `dist/`.
+
+In-body image bleed uses design colours (bone), never grey or black; new portraits are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user ruling 2026-09-26, rules/images.md.
 
 **Asset categories & sizes** (art direction from `rules/images.md` + `rules/design.md`; palette steel blue `#1F3A52` (= `--color-brand`), brass `#C9A227` (= `--color-cta`), bone `#F4F1EA` (= `--color-surface`); type Fraunces headings, Source Sans 3 body; line icons, no emoji/logos/other species/visible price overlays):
 | Category | Per post | Source | On-page render |

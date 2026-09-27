@@ -12,6 +12,8 @@ description: The comparison-page builder for BlueStaffyUK — a section list der
 
 This skill **supersedes the section template inside `.claude/agents/bsuk-comparison-builder.md`** — the agent now executes THIS blueprint. Same design system, same reference page idioms, deeper structure.
 
+**Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
+
 ---
 
 ## 1. Page Inventory & Build Order
@@ -158,6 +160,8 @@ with a Recommended pick + why + trade-off.
 ## 9. Imagery (Gemini / Nano Banana — no Higgsfield credit)
 
 After outline approval, give the hero and every body H2 and body H3 its image slot — an OG photo, a generated image or an IG-style infographic (IG-3 Comparison Split is made for these pages), by `rules/images.md` "An image under every body heading" and `IMAGE-DESIGNS.md` §7–§9 (§11 item 2). AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. A generated image goes through `.claude/skills/bsuk-image-generation/SKILL.md`, which needs `GEMINI_API_KEY` in `.env` (named in `docs/reference/credentials.md`, never committed); until the user sets it, a slot takes an existing image or an infographic (Known Issue 70). Image SEO 5-element on every image.
+
+In-body image bleed uses design colours (bone), never grey or black; new portraits are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user ruling 2026-09-26, rules/images.md.
 
 ## 10. Pass Gates (page is NOT done until ALL pass)
 

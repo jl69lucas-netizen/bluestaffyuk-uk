@@ -192,6 +192,8 @@ Before proceeding to Sprint 0.5:
 ## Sprint 0.5 — Session Orientation
 *Run once per page build, after Sprint 0 Gate passes. grill-me now runs here — with full intelligence data loaded.*
 
+**Session open for a project 5 page (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill, i.e. the page type's builder named in `docs/reference/page-run.md` (row 1), each invoked with the Skill tool by name.
+
 ```
 grill-me skill
   → Reads: CLAUDE.md + the traffic baseline (deferred to project 6) + the reference docs in docs/reference/ + the per-page competitor research of seo-rules Rule 11 + last session brief
@@ -895,7 +897,7 @@ Retired on 2026-09-07: the `<!-- EFFORT:START/END -->` prose directive (the nati
 9. **Canonical Before Deploy** — `bsuk-canonical-fixer` must run before every deploy. Relative canonicals = zero indexing.
 10. **Data Files Are Truth** — Never fabricate data. All claims come from data files, real page fetches, or direct breeder input. GSC and GA4 are NOT FETCHED, so nothing may be sourced from them.
 11. **Phone Number Policy (Rule 61)** — Phone number PHONE_PLACEHOLDER appears ONLY in the footer and schema markup. All body copy CTAs must link to `/contact-us/` form — never display or link a phone number in page body content.
-12. **Image Rules Lookup Required** — Before any image generation or infographic work, read `rules/images.md` for the sizing and placement rules of the current page type, and `data/image-manifest.json` for the dimensions of the images that exist.
+12. **Image Rules Lookup Required** — Before any image generation or infographic work, read `rules/images.md` for the sizing and placement rules of the current page type, and `data/image-manifest.json` for the dimensions of the images that exist. In-body image bleed uses design colours (bone), never grey or black; new portraits are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user ruling 2026-09-26, rules/images.md.
 13. **Project 5 page rules (system-gaps)** — Every location, comparison and blog-post board runs, in Sprint 1 before it is boarded: `python3 scripts/keyword_variants.py <board slug or query-cache folder>` (the four extra keyword types), `python3 scripts/ontology_seed.py --check` (every entity the outline names is in the ontology with a source), and `python3 scripts/image_candidates.py <slug> --write` (images for the hero and every body H2/H3). The board then shows the entities by class, the link diversity line and block 7 "Images & styles", and the gates `keyword-variants-missing`, `external-links-six-diverse`, `anchor-type-variation`, `anchor-reuse-sitewide`, `outline-heading-repeat` and the `image-*` checks hold it (`scripts/family_rules.py`). Block 7b lists them as approval will see them, and `scripts/board_approve.py` refuses approval, and any re-approval, while one FAILs — except the build-gate image checks (`image-generated-unapproved`, `image-generated-not-ingested`, `image-asset-not-ingested`, `image-existing-missing`, `image-pick-invalid`), which can only pass after the image is approved and published. A generated image is drafted with `scripts/ingest_image.py draft`, approved on a second pass of the same board, and published with `scripts/ingest_image.py publish`. After Sprint 2 builds the page, `npm run check:outline` (in `check:all`) proves it was written from its approved outline and shares no heading or passage with a sibling. `IMAGE-DESIGNS.md` governs every picture.
 
 ---

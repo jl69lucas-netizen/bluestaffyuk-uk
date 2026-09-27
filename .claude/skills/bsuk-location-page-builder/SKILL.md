@@ -9,6 +9,8 @@ allowed-tools: [Read, Write, Bash]
 One page per UK city under `/uk-locations/<slug>/`. The 28 slugs are `data/locations.json`
 and nowhere else. This file says how the page is shaped; the packs say how it is written.
 
+**Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
+
 ## What wins when this file and something else disagree
 
 | Source | It owns |
@@ -142,6 +144,8 @@ its `section_target.total`.
 | — | Footer | `SiteFooterKit` | inherited from `BaseLayout`; never hand-written, not a frame part |
 
 **Four checks block from board approval on.** `layout-hero-counter-separation`, `layout-h3-image-first`, `sem-section-opening-paragraph` and `sem-title-case-headings` are blocking on a new page as soon as its board is approved (`tests/render/targets.json` `promotions`, scope `new-pages`), so the first build is held to them: place each `BodyImage` directly after its H3 and before that block's prose, or the first build blocks.
+
+In-body image bleed uses design colours (bone), never grey or black; new portraits are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user ruling 2026-09-26, rules/images.md.
 
 **No `variant` prop and no letter — but the arrangement props are the page's own.** The
 letters in `data/design/picks.json` are a record of project 3's component picks, never a prop:

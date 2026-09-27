@@ -205,3 +205,45 @@ def test_workflow_names_verification_at_the_gates_and_at_close():
     gates = text[text.index("## Sprint 4"):text.index("## Sprint 5")]
     close = text[text.index("## Sprint 6"):]
     assert f"`{VERIFY_SKILL}`" in gates and f"`{VERIFY_SKILL}`" in close
+
+
+# The user's image rulings (2026-09-26, rules/images.md): an in-body image's bleed is a design
+# colour (bone), never grey or black, and a new portrait bakes contain, never blurfill.
+BLEED_LINE = ("In-body image bleed uses design colours (bone), never grey or black; new portraits "
+              "are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user "
+              "ruling 2026-09-26, rules/images.md.")
+SESSION_OPEN = "grill-me → superpowers:writing-plans → this builder skill"
+
+
+def _norm(text):
+    return " ".join(text.split())
+
+
+def test_every_page_type_reads_the_images_pack():
+    rows = _rows(DOC.read_text(encoding="utf-8"), PAGE_TYPE_HEADER)
+    bad = [r[0] for r in rows if "images" not in (p.strip() for p in r[4].split(","))]
+    assert bad == [], f"page types that do not read rules/images.md: {bad}"
+
+
+def test_the_image_bleed_ruling_is_routed_everywhere_a_page_is_built():
+    run = DOC.read_text(encoding="utf-8")
+    row11 = next(r for r in _run_rows() if r[1].startswith("§15"))
+    assert "bone" in row11[3] and "`--og-style A` (contain)" in row11[3], row11[3]
+    assert "never blurfill" in row11[3] and "reframe_og.py --style" not in run, row11[3]
+    missing = [doc for doc in ("docs/reference/WORKFLOW.md",) + BUILDER_SKILLS
+               if BLEED_LINE not in _norm((ROOT / doc).read_text(encoding="utf-8"))]
+    assert missing == [], f"the image-bleed ruling is not routed in: {missing}"
+
+
+def test_the_session_open_order_is_routed_everywhere_a_page_is_built():
+    first = _run_rows()[0][2]
+    assert first.index("grill-me") < first.index(PLAN_SKILL) < first.index("builder skill"), first
+    missing = [doc for doc in ("docs/reference/WORKFLOW.md",) + BUILDER_SKILLS
+               if SESSION_OPEN not in _norm((ROOT / doc).read_text(encoding="utf-8"))]
+    assert missing == [], f"the session-open order is not routed in: {missing}"
+
+
+def test_the_keyword_metrics_gate_names_every_fail():
+    row6 = next(r for r in _run_rows() if r[1].startswith("§7"))
+    assert ("exits 1 on any FAIL (title-front-load, first-100-words, or a missing primary "
+            "keyword)") in row6[4], row6[4]
