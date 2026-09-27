@@ -1,0 +1,68 @@
+{
+ "canvas": "https://claude.ai/artifact/EHMKbn9kV3qcfJfPrJhhXN",
+ "submission": "s-2026-09-27T20-49-24-674Z",
+ "at": "2026-09-27T20:49:24.675Z",
+ "notes": "",
+ "picks": {
+  "hero": {
+   "pick": "b",
+   "note": ""
+  },
+  "counter-strip": {
+   "pick": "c",
+   "note": ""
+  },
+  "trust-strip": {
+   "pick": "c",
+   "note": ""
+  },
+  "contents-list": {
+   "pick": "c",
+   "note": ""
+  },
+  "desktop-dial": {
+   "pick": "c",
+   "note": ""
+  },
+  "jump-links": {
+   "pick": "a",
+   "note": ""
+  },
+  "key-takeaways": {
+   "pick": "a",
+   "note": ""
+  },
+  "puppy-cards": {
+   "pick": "b",
+   "note": ""
+  },
+  "tables": {
+   "pick": "a",
+   "note": ""
+  },
+  "video": {
+   "pick": "c",
+   "note": ""
+  },
+  "image-text": {
+   "pick": "c",
+   "note": ""
+  },
+  "reviews": {
+   "pick": "a",
+   "note": ""
+  },
+  "faq-blocks": {
+   "pick": "a",
+   "note": ""
+  },
+  "newsletter": {
+   "pick": "a",
+   "note": ""
+  },
+  "contact-form": {
+   "pick": "b",
+   "note": ""
+  }
+ }
+}
