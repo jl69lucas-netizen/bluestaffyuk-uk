@@ -41,6 +41,7 @@ GATES = [
     ("scripts/competitor_registry_check.py", "`data/competitors.json` is well formed; no unlinkable competitor is linked"),
     ("scripts/gap_matrix.py", "the newest gap matrix matches the intel reports (`--check`)"),
     ("scripts/not_fetched_lint.py", "a NOT FETCHED in a new or changed board, query or research file names its barrier"),
+    ("scripts/thread_ledger.py", "the shared Reddit and forum thread ledger matches every page's threads file (`--check`)"),
     ("scripts/workflow_ref_check.py", "WORKFLOW.md and quick-start.md name only agents, scripts and npm scripts that exist"),
     ("scripts/marker_check.py", "no source-repo marker survives anywhere in the scanned roots"),
     ("scripts/placeholder_check.py", "counts launch placeholders; fails only under `BSUK_RELEASE=1`"),

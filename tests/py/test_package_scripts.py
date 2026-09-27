@@ -107,6 +107,8 @@ def test_the_check_all_chain_is_the_documented_one():
     # check:gaps follows check:competitors: the matrix is rebuilt from the registry's reports.
     # check:barriers follows check:gaps (parity build Task 21): the last research guard — a
     # NOT FETCHED in a new or changed board, query or research file names its barrier.
+    # check:threads follows it (parity build Task 22): the shared thread ledger matches the
+    # threads files, so no city page re-opens a thread another page has read.
     # check:workflow sits just before check:markers: both judge the instruction tree rather
     # than the site — markers asks whether a source-repo word survived, workflow asks whether
     # WORKFLOW.md / quick-start.md name an agent, script or npm script that is not there
@@ -119,9 +121,9 @@ def test_the_check_all_chain_is_the_documented_one():
     # data/facts/rebuilt.json, so no rebuilt page ships on a board that stopped matching.
     expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
                 "check:outline", "check:redirects", "check:schema", "check:queries",
-                "check:competitors", "check:gaps", "check:barriers", "check:sitemaps",
-                "check:placeholders", "check:retired", "check:boards", "check:workflow",
-                "check:markers", "agents"]
+                "check:competitors", "check:gaps", "check:barriers", "check:threads",
+                "check:sitemaps", "check:placeholders", "check:retired", "check:boards",
+                "check:workflow", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected
 
 

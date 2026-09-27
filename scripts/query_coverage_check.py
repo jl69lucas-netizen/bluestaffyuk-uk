@@ -60,9 +60,9 @@ FRAME_IDS = {"top", "key-takeaways", "newsletter"}
 FRAME_CLASSES = {"kit-hero", "kit-counter", "kit-trust", "kit-nav", "kit-quote", "kit-faq"}
 HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
 RAW = {"script", "style", "template"}   # their text is never page text
-# The spend guard's two ledgers (scripts/query_augment.py) share data/queries/ with the
-# question files; neither is one.
-LEDGERS = {"spend.json", "dashboard.json"}
+# The spend guard's two ledgers (scripts/query_augment.py) and the shared thread ledger
+# (scripts/thread_ledger.py) share data/queries/ with the question files; none is one.
+LEDGERS = {"spend.json", "dashboard.json", "thread-ledger.json"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
         "source", "track", "wbr"}
 

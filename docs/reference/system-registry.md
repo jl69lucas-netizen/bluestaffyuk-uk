@@ -154,7 +154,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 84
+## Scripts — 85
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -241,6 +241,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/schema_check.py`
 - `scripts/sitemap_check.py`
 - `scripts/strategy_cite_check.py`
+- `scripts/thread_ledger.py`
 - `scripts/verbatim_set_check.py`
 - `scripts/workflow_ref_check.py`
 
@@ -299,6 +300,7 @@ and exits non-zero on a problem.
 | `scripts/competitor_registry_check.py` | `data/competitors.json` is well formed; no unlinkable competitor is linked |
 | `scripts/gap_matrix.py` | the newest gap matrix matches the intel reports (`--check`) |
 | `scripts/not_fetched_lint.py` | a NOT FETCHED in a new or changed board, query or research file names its barrier |
+| `scripts/thread_ledger.py` | the shared Reddit and forum thread ledger matches every page's threads file (`--check`) |
 | `scripts/workflow_ref_check.py` | WORKFLOW.md and quick-start.md name only agents, scripts and npm scripts that exist |
 | `scripts/marker_check.py` | no source-repo marker survives anywhere in the scanned roots |
 | `scripts/placeholder_check.py` | counts launch placeholders; fails only under `BSUK_RELEASE=1` |
