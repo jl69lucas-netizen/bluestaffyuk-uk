@@ -7,7 +7,7 @@
 .hbB .strip{list-style:none;margin:0;padding:0;display:grid;align-items:start;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-2)}
 .hbB .strip li{position:relative;margin:0;max-width:none}
 .hbB .strip img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:var(--radius-sm);background:var(--color-steel-700)}
-.hbB .tag{position:absolute;left:var(--space-2);bottom:var(--space-2);background:var(--color-bone-50);color:var(--color-ink);font-size:var(--text-xs);line-height:1.2;font-weight:700;padding:3px var(--space-2);border-radius:var(--radius-pill)}
+.hbB .tag{position:absolute;left:0;bottom:0;background:var(--color-surface-deep);color:var(--color-text-on-inverse);font-size:var(--text-xs);line-height:1.2;font-weight:600;letter-spacing:.04em;padding:4px var(--space-2) 3px;border-radius:0 var(--radius-sm) 0 var(--radius-sm);pointer-events:none}
 .hbB .copy{padding:0 var(--space-2) var(--space-3)}
 .hbB .eyebrow{margin:0 0 var(--space-2);font-size:var(--text-xs);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--color-link-on-inverse)}
 .hbB h1{color:var(--color-text-on-inverse);font-size:var(--text-3xl);line-height:var(--text-3xl--line-height);margin:0 0 var(--space-3);text-wrap:balance}
@@ -26,6 +26,10 @@
   .hbB .copy{grid-area:copy;padding:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--space-8);align-items:end}
   .hbB .head{align-self:start}
   .hbB h1{margin:0}
+}
+@media (min-width:1024px) and (max-width:1199px){
+  .hbB h1{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height)}
+  .hbB .strip img{height:120px}
   .hbB .lede{margin-bottom:var(--space-4)}
 }
 </style>
@@ -41,7 +45,7 @@
     </ul>
     <div class="copy">
       <div class="head">
-        <p class="eyebrow">One litter · Carlisle to London</p>
+        <p class="eyebrow">Six puppies · Carlisle to London</p>
         <h1>Where Can I Find a Blue Staffy Puppy Near London?</h1>
       </div>
       <div>

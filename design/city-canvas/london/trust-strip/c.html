@@ -1,11 +1,11 @@
 <style>
-/* Trust C — Photo ledger. A raised sheet inset in the bone page: a photo of a litter on the
-   left, and on the right a question heading, its answer, then the claims as a two-column
+/* Trust C — Photo ledger. A card on the bone page (raised surface, card border, card
+   shadow): a photo of a puppy with its new owner on the left, and on the right a question heading, its answer, then the claims as a two-column
    ledger, each a line icon, a bold claim and one plain line of detail. Airy and unhurried. */
 .tsC{background:var(--color-surface);padding:var(--space-6) var(--space-3)}
 .tsC .sheet{max-width:1200px;margin:0 auto;background:var(--color-surface-raised);border:var(--card-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:var(--space-3);display:grid;gap:var(--space-5)}
 .tsC .pic{margin:0}
-.tsC .pic img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius-md);background:var(--color-surface)}
+.tsC .pic img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 30%;border-radius:var(--radius-md);background:var(--color-surface)}
 .tsC .body{padding:0 var(--space-2) var(--space-3)}
 .tsC h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);text-wrap:balance}
 .tsC .intro{margin:0 0 var(--space-5);color:var(--color-ink-2)}
@@ -19,14 +19,14 @@
 @media (min-width:768px){.tsC ul{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-6) var(--space-6)}}
 @media (min-width:1024px){
   .tsC{padding:var(--space-10) var(--space-5)}
-  .tsC .sheet{grid-template-columns:400px minmax(0,1fr);gap:var(--space-8);padding:var(--space-4) var(--space-8) var(--space-4) var(--space-4);align-items:center}
-  .tsC .pic img{aspect-ratio:4/5;height:auto}
+  .tsC .sheet{grid-template-columns:360px minmax(0,1fr);gap:var(--space-8);padding:var(--space-4) var(--space-8) var(--space-4) var(--space-4);align-items:center}
+  .tsC .pic img{aspect-ratio:400/437;height:auto}
   .tsC .body{padding:var(--space-6) 0}
 }
 </style>
 <section data-component="trust-strip" data-variant="c" class="tsC">
   <div class="sheet">
-    <figure class="pic"><img src="/images/kc-registered-blue-staffy-pups-london.webp" alt="Newborn blue Staffy puppies sleeping in a heap on a yellow blanket" width="640" height="480" loading="lazy"></figure>
+    <figure class="pic"><img src="/images/blue-staffy-testimonial-london-happy-owner.webp" alt="A smiling woman holds a blue Staffy puppy cheek to cheek" width="400" height="437" loading="lazy"></figure>
     <div class="body">
       <h2>What Should You Check Before Buying a Blue Staffy in London?</h2>
       <p class="intro">The health of the parents, how the litter was raised and what happens if something goes wrong. Here is where each of ours stands.</p>

@@ -33,7 +33,7 @@
   },
   "c": {
    "name": "Photo ledger",
-   "description": "Inset white sheet: litter photo left, question heading and a two-column ledger of icon claims right.",
+   "description": "A card with a puppy-and-owner photo left, a question heading and a two-column ledger of icon claims right.",
    "idea_sources": [
     "/Users/apple/Downloads/BSUK-refs/london/trust-strip/mfs-home-1280-01.png",
     "/Users/apple/Downloads/BSUK-refs/london/trust-strip/mfs-home-375-01.png",
@@ -44,7 +44,7 @@
     "layout": "photo-ledger",
     "media": "left",
     "density": "airy",
-    "framing": "inset"
+    "framing": "card"
    }
   }
  }

@@ -20,6 +20,9 @@ export default defineConfig({
   projects: [
     { name: 'vp375', use: { viewport: { width: 375, height: 812 } } },
     { name: 'vp768', use: { viewport: { width: 768, height: 1024 } } },
+    // 1024 is where rules/design.md rule 10's 390–450px hero band starts; measuring only at
+    // 1280 let a hero that is too tall at the narrowest desktop width pass (review, Task 5).
+    { name: 'vp1024', use: { viewport: { width: 1024, height: 768 } } },
     { name: 'vp1280', use: { viewport: { width: 1280, height: 800 } } },
   ],
   webServer: [{

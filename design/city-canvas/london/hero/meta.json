@@ -2,18 +2,18 @@
  "component": "hero",
  "variants": {
   "a": {
-   "name": "Broadsheet",
-   "description": "Editorial front page: heavy steel rule, column rule between copy and a tilted postcard photo with a caption plate.",
+   "name": "Masthead",
+   "description": "Two-tier front page: headline with a deck beside it, then under a rule a panoramic photo and a ruled-off action column.",
    "idea_sources": [
     "/Users/apple/Downloads/BSUK-refs/london/hero/mfs-home-1280-01.png",
-    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea66.png",
-    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-5.png"
+    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-1.png",
+    "/Users/apple/Downloads/BSUK-refs/london/hero/mfs-home-375-01.png"
    ],
-   "differs_from": "No built hero frames itself with rules: every row is plain, band or card, and none is a broadsheet with a column rule and a mounted postcard photo.",
+   "differs_from": "The photo sits under the headline tier with the actions ruled off beside it, a media position no built hero uses; framed by rules, not a band or card.",
    "axes": {
-    "layout": "broadsheet",
-    "media": "right",
-    "density": "airy",
+    "layout": "masthead",
+    "media": "bottom",
+    "density": "regular",
     "framing": "rule"
    }
   },
@@ -35,18 +35,18 @@
   },
   "c": {
    "name": "Rail ticket",
-   "description": "Edge-to-edge photo behind the band with the copy printed on a notched bone ticket, Carlisle to London route line.",
+   "description": "The photo fills the whole band behind the copy, which is printed on a notched bone ticket card with a Carlisle to London route line.",
    "idea_sources": [
     "/Users/apple/Downloads/BSUK-refs/london/hero/sister-comparison-1280-01.png",
     "/Users/apple/Downloads/BSUK-refs/london/hero/sister-comparison-375-01.png",
     "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png"
    ],
-   "differs_from": "The photo is the background under an overlaid ticket, which no built hero does; the bleed heroes put the photo beside or above the copy, never under it.",
+   "differs_from": "The photo is the background of the whole band under an overlaid ticket card, which no built hero does; built heroes put the photo beside or above the copy.",
    "axes": {
     "layout": "ticket",
     "media": "background",
     "density": "regular",
-    "framing": "bleed"
+    "framing": "card"
    }
   }
  }
