@@ -311,7 +311,7 @@ This build closes the gaps that the parity audit of CAG's *Universal Page Build 
 
 - **Commits:** 83, `b99d7d6..5893869`, then the close-out's docs commit. Every one carries the Fable 5.1 trailer, and nothing is pushed.
 - **Plan:** 28 tasks, replayed green by the controller before execution.
-- **Gate report:** `docs/reports/brief-parity-gate-report.md` (Artifact: published at close).
+- **Gate report:** `docs/reports/brief-parity-gate-report.md` (Artifact: https://claude.ai/artifact/MiQXGY16rYKz1betiZR6q1).
 - **Answer board:** https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf.
 
 **Gates** (run by the controller at `5893869`):

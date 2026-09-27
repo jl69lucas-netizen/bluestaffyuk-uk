@@ -1,7 +1,7 @@
 # Brief Parity — Gate Report
 
 **Build:** the brief-parity bridge between the project 5 readiness pass and project 5, 2026-09-26/27. It closes the gaps that the CAG page-brief parity audit found (`docs/reports/cag-brief-parity-audit.md`). **Branch:** `cag-parity` (worktree `/Users/apple/Downloads/BSUK-cag`), cut from `foundation` at `0454a96`. HEAD at the gate run was `5893869`, 83 commits `b99d7d6..5893869`, and every one carries the Fable 5.1 trailer. Nothing is pushed. **Plan:** `docs/superpowers/plans/2026-09-26-cag-parity.md` (28 tasks, replayed green by the controller before execution). **Execution:** subagent-driven. Every task had an Opus implementer, a spec review and a quality review, re-reviewed until both passed. A whole-branch review followed (Task 28a).
-**Artifact:** (published at close)
+**Artifact:** https://claude.ai/artifact/MiQXGY16rYKz1betiZR6q1
 
 ## Verdict
 
