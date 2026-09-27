@@ -16,7 +16,7 @@ import evidence_audit as E  # noqa: E402
 REAL_LEDGER = json.loads((ROOT / "data/quality/evidence-ledger.json").read_text(encoding="utf-8"))
 LEDGER = {"claims": [
     {"id": "parents-dna-clear", "pattern": r"(?:certified|tested)\s+clear", "proof": "NOT FETCHED",
-     "anchor": "dna-tests", "confirmed": None}],
+     "anchor": "dna-tests", "confirmed": None, "covers": ["dna-clear", "dna-test"]}],
     "vocabulary": REAL_LEDGER["vocabulary"]}
 
 
@@ -116,3 +116,115 @@ def test_the_cli_exits_1_on_a_new_page_with_an_unledgered_claim(tmp_path):
                        capture_output=True, text=True)
     assert r.returncode == 1, r.stdout
     assert "ERROR un-ledgered claim" in r.stdout
+
+
+# ── Task 20 review: covers, every hit, finer sentences, wider recall, precision ──────────────
+def ids(html, ledger=LEDGER):
+    return [v for v, _ in E.unledgered_claims(html, ledger)]
+
+
+def test_a_ledger_row_clears_only_the_vocabulary_it_covers_and_every_hit_is_reported():
+    html = page("<p>Parents tested clear, KC registered and vet checked.</p>")
+    assert ids(html) == ["kc-registered", "vet-checked"]
+
+
+def test_an_unrelated_ledger_row_cannot_clear_a_claim():
+    ledger = {"claims": [{"id": "vet-travel", "pattern": r"vet\s+cleared\s+for\s+travel",
+                          "proof": "NOT FETCHED", "covers": ["vet-checked"]}],
+              "vocabulary": REAL_LEDGER["vocabulary"]}
+    assert ids(page("<p>Every puppy is KC registered and vet cleared for travel.</p>"), ledger) \
+        == ["kc-registered"]
+
+
+def test_a_row_without_covers_clears_nothing():
+    ledger = {"claims": [{"id": "x", "pattern": r"tested\s+clear", "proof": "NOT FETCHED"}],
+              "vocabulary": REAL_LEDGER["vocabulary"]}
+    assert ids(page("<p>Parents tested clear.</p>"), ledger) == ["dna-clear"]
+
+
+def test_the_real_ledger_row_covers_the_dna_vocabulary():
+    row = next(c for c in REAL_LEDGER["claims"] if c["id"] == "parents-dna-clear")
+    assert row["covers"] == ["dna-clear", "dna-test"]
+
+
+def test_a_question_excuses_only_the_claim_inside_it():
+    html = page("<p>Why does it matter? Every puppy is KC registered.</p>")
+    assert ids(html) == ["kc-registered"]
+    html = page('<p>Buyers ask \u201cAre they health tested?\u201d and every puppy is KC registered.</p>')
+    assert ids(html) == ["kc-registered"]
+
+
+def test_a_placeholder_excuses_only_its_own_claim():
+    html = page("<p>We are a LICENCE_CLAIM_PLACEHOLDER licensed breeder and every pup is KC registered.</p>")
+    assert ids(html) == ["kc-registered"]
+    html = page("<p>LEGAL_CLAIM_PLACEHOLDER Every puppy is KC registered.</p>")
+    assert ids(html) == ["kc-registered"]
+
+
+@pytest.mark.parametrize("html,expected", [
+    ('<div class="card">Our pups are KC registered</div><div class="card">DNA tests</div>',
+     [("kc-registered", "Our pups are KC registered"), ("dna-test", "DNA tests")]),
+    ("<ul><li>KC registered<li>Vet checked</ul>",
+     [("kc-registered", "KC registered"), ("vet-checked", "Vet checked")]),
+    ("<p>KC registered<br>Vet checked</p>",
+     [("kc-registered", "KC registered"), ("vet-checked", "Vet checked")]),
+])
+def test_block_boundaries_split_sentences(html, expected):
+    assert E.unledgered_claims(page(html), LEDGER) == expected
+
+
+@pytest.mark.parametrize("sentence,vocab", [
+    ("Both parents are hip-scored.", "hip-elbow-score"),
+    ("Both parents have elbow-graded results.", "hip-elbow-score"),
+    ("Every pup has a vet check before leaving.", "vet-checked"),
+    ("Every pup is checked by our vet.", "vet-checked"),
+    ("Each litter has a veterinary check at eight weeks.", "vet-checked"),
+    ("Every puppy is registered with the Kennel Club.", "kc-registered"),
+    ("Every puppy is registered with the KC.", "kc-registered"),
+    ("We are licensed by the local council.", "licensed-breeder"),
+    ("Both parents are DNA screened.", "dna-test"),
+    ("The BVA hip scores are on file.", "hip-elbow-score"),
+])
+def test_wider_recall(sentence, vocab):
+    assert ids(page(f"<p>{sentence}</p>")) == [vocab]
+
+
+@pytest.mark.parametrize("sentence", [
+    "Our puppies are not KC registered.",
+    "Our pups have never been DNA tested.",
+    "We are not a licensed breeder.",
+    "Ask to see the DNA test results for both parents.",
+    "Ask for the vet check paperwork.",
+    "The registry's own page on the L-2-HGA DNA test says what it screens.",
+    "The registry's page for the HC-HSF4 DNA test explains it.",
+    "Our dogs undergo BVA/KC eye examinations.",
+    "The BVA's own description of the eye scheme sets out who may carry one out.",
+])
+def test_precision_denial_advice_reference_and_bva_eye_scheme(sentence):
+    assert ids(page(f"<p>{sentence}</p>")) == []
+
+
+@pytest.mark.parametrize("html,expected", [
+    ('<p>She said \u201cthey are KC registered.\u201d Then we met Dr. Smith. Our pups are vet checked.</p>',
+     ["She said \u201cthey are KC registered.\u201d", "Then we met Dr. Smith.",
+      "Our pups are vet checked."]),
+])
+def test_splitter_quotes_and_abbreviations(html, expected):
+    assert E.sentences(page(html)) == expected
+
+
+def test_a_question_in_closing_quotes_is_still_a_question():
+    assert ids(page('<p>\u201cAre the pups KC registered?\u201d</p>')) == []
+
+
+def test_preview_pages_are_not_claim_checked():
+    html = page("<p>Our DNA-tested parents live with us.</p>")
+    budgets = {"budgets": {}, "terms": {}}
+    for slug in ("board-preview/index", "kit-preview"):
+        f = E.audit(slug, html, "interior", budgets, LEDGER)
+        assert not [m for _, m in f if "un-ledgered" in m]
+
+
+def test_a_missing_rebuilt_file_warns_on_stderr(tmp_path, capsys):
+    assert E.rebuilt_slugs(tmp_path / "nope.json") == set()
+    assert "rebuilt" in capsys.readouterr().err

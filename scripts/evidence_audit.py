@@ -15,6 +15,8 @@ Checks (ids are the rule-index ids):
   claim-unledgered            a sentence using the ledger's health/credential `vocabulary` that no
                               ledger claim matches (ERROR on a new location, comparison or blog
                               page — rebuilt, outside family_rules' frozen twelve; WARN elsewhere)
+                              — a ledger row clears only the ids in its `covers`; preview pages
+                              (board-preview/, kit-preview) are not checked
   statement-labels-present    sections carrying species/health/comparison facts carry a .stmt-label
   no-not-fetched-in-prose     the literal NOT FETCHED never ships in visible text
   no-unsourced-superlatives   "world's best" etc. without a link in the same sentence
@@ -237,39 +239,100 @@ def claim_binding(html, ledger):
 
 
 # ── claim-unledgered ───────────────────────────────────────────────────────
-PLACEHOLDERS = ("LICENCE_CLAIM_PLACEHOLDER", "LEGAL_CLAIM_PLACEHOLDER")
-# A block ends a sentence even without a full stop: a heading never runs into its paragraph.
-BLOCK_END = re.compile(r"</(?:p|h[1-6]|li|td|th|dt|dd|figcaption|blockquote|caption|summary)\s*>", re.I)
+# A placeholder excuses only the vocabulary it stands in for. No legal vocabulary id exists
+# yet, so LEGAL_CLAIM_PLACEHOLDER excuses none of today's ids.
+PLACEHOLDER_COVERS = {"LICENCE_CLAIM_PLACEHOLDER": {"licensed-breeder"},
+                      "LEGAL_CLAIM_PLACEHOLDER": set()}
+# A block ends a sentence even without a full stop: a heading never runs into its paragraph,
+# two card <div>s never run together, and an unclosed <li> or a <br> still breaks the line.
+BLOCK_BREAK = re.compile(
+    r"</(?:p|h[1-6]|li|td|th|dt|dd|figcaption|blockquote|caption|summary|div|section|article)\s*>"
+    r"|<br\s*/?>|<(?:li|p|h[1-6]|div)\b[^>]*>", re.I)
+CLOSERS = "\"'”’)]"
+# A full stop after one of these does not end the sentence.
+ABBREVIATIONS = re.compile(r"(?:\b(?:Dr|Mr|Mrs|Ms|St|approx)|\be\.g|\bi\.e)\.$", re.I)
+SENTENCE_END = re.compile(r"[.!?][" + re.escape(CLOSERS) + r"]*\s+")
+# Not a claim: a denial just before the hit, advice to the buyer, a reference to a page about it.
+DENIAL = re.compile(r"\b(?:not|never|no|without)\b", re.I)
+ADVICE = re.compile(r"^\W*ask\s+(?:to\s+see|for)\b", re.I)
+REFERENCE = re.compile(r"\b(?:page\s+(?:on|for)|results\s+for|about\s+the)\b", re.I)
+
+
+def _split_sentences(text):
+    out, start = [], 0
+    for m in SENTENCE_END.finditer(text):
+        head = text[start:m.start() + 1]
+        if m.group(0)[0] == "." and ABBREVIATIONS.search(head):
+            continue
+        out.append(text[start:m.end()].strip())
+        start = m.end()
+    out.append(text[start:].strip())
+    return [s for s in out if s]
 
 
 def sentences(html):
-    """The sentences of <main>, split at block ends and at . ! ? — script/style dropped."""
+    """The sentences of <main>, split at block boundaries and at . ! ? (a closing quote or
+    bracket may follow; Dr. / e.g. / approx. and the like do not end one) — script/style dropped."""
     body = re.sub(r"<(script|style)\b[^>]*>.*?</\1>", " ", main_html(html), flags=re.S | re.I)
     out = []
-    for block in BLOCK_END.split(body):
-        out += [s for s in re.split(r"(?<=[.!?])\s+", text_of(block)) if s]
+    for block in BLOCK_BREAK.split(body):
+        out += _split_sentences(text_of(block))
     return out
 
 
+def _in_question(s, pos):
+    """True when the clause holding `pos` ends in a question mark (closing quotes allowed)."""
+    for m in re.finditer(r"[^?]*\?[" + re.escape(CLOSERS) + r"]*|[^?]+$", s):
+        if m.start() <= pos < m.end():
+            return m.group(0).rstrip().rstrip(CLOSERS).endswith("?")
+    return False
+
+
+def _is_claim(s, m):
+    """A vocabulary match `m` in sentence `s` is a claim unless it sits in a question clause,
+    follows a denial within three words, or is the object of a reference to a page about it."""
+    if _in_question(s, m.start()):
+        return False
+    before = s[:m.start()].split()
+    if DENIAL.search(" ".join(before[-3:])):
+        return False
+    return not REFERENCE.search(" ".join(before[-6:]))
+
+
 def unledgered_claims(html, ledger):
-    """[(vocabulary id, sentence)] for every sentence that uses the ledger's health or
-    credential vocabulary and that no ledger claim pattern matches. A question, and a
-    sentence carrying a claim placeholder, is not a claim. A ledger with no `vocabulary`
-    checks nothing."""
+    """[(vocabulary id, sentence)] — one row per vocabulary id a sentence claims that no ledger
+    row covers. A ledger row clears a hit only when its pattern matches the same sentence AND its
+    `covers` list names that vocabulary id. A placeholder excuses only its own id. A ledger with
+    no `vocabulary` checks nothing."""
     vocab = ledger.get("vocabulary") or {}
     if not vocab:
         return []
     out = []
     for s in sentences(html):
-        if s.rstrip().endswith("?") or any(p in s for p in PLACEHOLDERS):
+        if ADVICE.search(s):
             continue
-        if any(re.search(c["pattern"], s, flags=re.I) for c in ledger.get("claims", [])):
-            continue
+        covered = set()
+        for c in ledger.get("claims", []):
+            if c.get("covers") and re.search(c["pattern"], s, flags=re.I):
+                covered.update(c["covers"])
+        for ph, ids in PLACEHOLDER_COVERS.items():
+            if ph in s:
+                covered |= ids
         for vid, pat in vocab.items():
-            if re.search(pat, s, flags=re.I):
+            if vid in covered:
+                continue
+            if any(_is_claim(s, m) for m in re.finditer(pat, s, flags=re.I)):
                 out.append((vid, s))
-                break
     return out
+
+
+PREVIEW_PREFIXES = ("board-preview", "kit-preview")
+
+
+def is_preview(slug):
+    """board-preview/* and kit-preview render fixtures and board demos, not site copy."""
+    first = slug.strip("/").split("/", 1)[0]
+    return first in PREVIEW_PREFIXES
 
 
 def is_new_page(slug, page_type, rebuilt):
@@ -288,7 +351,9 @@ def rebuilt_slugs(path=REBUILT_PATH):
     (no page is then new, so claim-unledgered only WARNs)."""
     try:
         rows = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+    except (OSError, ValueError) as e:
+        print(f"WARN evidence-audit: rebuilt list unreadable at {path} ({e.__class__.__name__}) — "
+              "no page counts as new, so claim-unledgered only WARNs", file=sys.stderr)
         return set()
     return {r for r in rows if isinstance(r, str)} if isinstance(rows, list) else set()
 
@@ -343,7 +408,7 @@ def audit(slug, html, page_type, budgets, ledger, new_page=False):
             f.append(("WARN", f"claim '{cid}' made {n}x; proof object NOT FETCHED — say it once and link the trust section"))
         else:
             f.append(("ERROR", f"claim '{cid}' made {n}x without linking its proof {proof}"))
-    for vid, sentence in unledgered_claims(html, ledger):
+    for vid, sentence in ([] if is_preview(slug) else unledgered_claims(html, ledger)):
         f.append(("ERROR" if new_page else "WARN",
                   f"un-ledgered claim ({vid}): \"{sentence[:120]}\" — add its row to "
                   "data/quality/evidence-ledger.json (proof NOT FETCHED until the document is "
