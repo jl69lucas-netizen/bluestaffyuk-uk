@@ -1,0 +1,32 @@
+<style>
+/* Counter A — Docket. The figures read as an itemised bill: label, dotted leader, figure,
+   right-aligned in the display face with tabular numerals. Its own bone-50 bed and a steel
+   top rule part it from the hero; hairlines rule each line of the docket. */
+.csA{background:var(--counter-bed);border-top:1px solid var(--color-border);box-shadow:inset 0 3px 0 var(--color-brand)}
+.csA .in{max-width:1200px;margin:0 auto;padding:var(--space-5) var(--space-4) var(--space-4);display:grid;gap:var(--space-3)}
+.csA .title{margin:0;font-size:var(--text-xs);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--color-brand)}
+.csA dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr);column-gap:var(--space-7)}
+.csA .line{display:flex;align-items:baseline;gap:var(--space-2);padding:var(--space-2) 0;border-bottom:1px solid var(--color-border)}
+.csA dt{flex:1 1 auto;display:flex;align-items:baseline;gap:var(--space-2);font-size:var(--text-sm);color:var(--color-ink-2)}
+.csA dt::after{content:"";flex:1 1 var(--space-4);min-width:var(--space-4);border-bottom:2px dotted var(--color-steel-300)}
+.csA dd{margin:0;font-family:var(--font-display);font-weight:700;font-size:var(--text-xl);line-height:1.1;color:var(--color-brand);font-variant-numeric:tabular-nums lining-nums;white-space:nowrap}
+@media (min-width:768px){.csA dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1024px){
+  .csA .in{grid-template-columns:150px minmax(0,1fr);align-items:start;padding:var(--space-5) var(--space-5)}
+  .csA .title{padding-top:var(--space-3);line-height:1.5}
+  .csA dl{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+</style>
+<section data-component="counter-strip" data-variant="a" class="csA">
+  <div class="in">
+    <p class="title">Your London puppy, itemised</p>
+    <dl>
+      <div class="line" data-figure><dt>Puppies ready now</dt><dd>6</dd></div>
+      <div class="line" data-figure><dt>Boys: Roman, Byrd, Ince</dt><dd>£1,500</dd></div>
+      <div class="line" data-figure><dt>Deposit, books your viewing</dt><dd>£500</dd></div>
+      <div class="line" data-figure><dt>Boys and girls</dt><dd>3 + 3</dd></div>
+      <div class="line" data-figure><dt>Girls: Vennie, Christa, Cheryl</dt><dd>£1,700</dd></div>
+      <div class="line" data-figure><dt>Delivery</dt><dd>£200–£350</dd></div>
+    </dl>
+  </div>
+</section>

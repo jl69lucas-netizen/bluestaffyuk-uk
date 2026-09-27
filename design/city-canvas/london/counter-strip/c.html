@@ -1,0 +1,48 @@
+<style>
+/* Counter C — Price scale. The figures are stops on one number line, read left to right
+   the way the money goes out: delivery, deposit, then the price. The line breaks between
+   £500 and £1,500 so the stops stay legible. On a phone the line turns vertical. The panel
+   is inset in its own bone-50 bed, under a hairline and a steel top rule. */
+.csC{background:var(--counter-bed);border-top:1px solid var(--color-border);box-shadow:inset 0 3px 0 var(--color-brand);padding:var(--space-5) var(--space-3)}
+.csC .panel{max-width:1200px;margin:0 auto;background:var(--color-brand-soft);border-radius:var(--radius-md);padding:var(--space-5) var(--space-4)}
+.csC .count{display:flex;align-items:baseline;gap:var(--space-3);margin:0 0 var(--space-4)}
+.csC .count .n{font-family:var(--font-display);font-weight:700;font-size:var(--text-3xl);line-height:1;color:var(--color-brand)}
+.csC .count .l{font-size:var(--text-sm);color:var(--color-ink);font-weight:600}
+.csC ol{list-style:none;margin:0;padding:0 0 0 var(--space-5);position:relative;display:grid;gap:var(--space-4)}
+.csC ol::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--color-brand)}
+.csC li{position:relative;margin:0;max-width:none}
+.csC li::before{content:"";position:absolute;left:calc(-1 * var(--space-5) + 1px);top:6px;width:14px;height:14px;border-radius:50%;background:var(--color-brand-soft);border:3px solid var(--color-brand)}
+.csC li.range::before{height:30px;border-radius:var(--radius-pill);background:var(--color-brand)}
+.csC li.brk{height:18px}
+.csC li.brk::before{content:none}
+.csC li.brk span{position:absolute;left:calc(-1 * var(--space-5) - 2px);top:0;width:20px;height:18px;background:var(--color-brand-soft)}
+.csC li.brk svg{position:absolute;left:calc(-1 * var(--space-5) - 2px);top:0;width:20px;height:18px;color:var(--color-brand)}
+.csC .n{display:block;font-family:var(--font-display);font-weight:700;font-size:var(--text-2xl);line-height:1.1;color:var(--color-brand);font-variant-numeric:lining-nums}
+.csC .l{display:block;font-size:var(--text-sm);color:var(--color-ink);margin-top:2px}
+@media (min-width:768px){
+  .csC{padding:var(--space-6) var(--space-5)}
+  .csC .panel{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--space-7);padding:var(--space-6) var(--space-6) var(--space-5)}
+  .csC .count{flex-direction:column;gap:var(--space-1);margin:0;max-width:14ch}
+  .csC .count .n{font-size:var(--text-4xl)}
+  .csC ol{padding:0;display:flex;gap:var(--space-4);align-items:flex-start}
+  .csC ol::before{left:0;right:0;top:10px;bottom:auto;width:auto;height:2px}
+  .csC li{flex:1 1 0;padding-top:var(--space-7)}
+  .csC li::before{left:0;top:3px}
+  .csC li.range{flex:1.3 1 0}
+  .csC li.range::before{width:min(160px,70%);height:16px;top:3px}
+  .csC li.brk{flex:0 0 20px;height:22px;padding:0}
+  .csC li.brk span,.csC li.brk svg{left:0;top:2px}
+}
+</style>
+<section data-component="counter-strip" data-variant="c" class="csC">
+  <div class="panel">
+    <p class="count" data-figure><span class="n">6</span><span class="l">puppies, and what one costs you in London</span></p>
+    <ol>
+      <li class="range" data-figure><span class="n">£200–£350</span><span class="l">delivery, priced by distance</span></li>
+      <li data-figure><span class="n">£500</span><span class="l">deposit: books your viewing, reserves your puppy</span></li>
+      <li class="brk" aria-hidden="true"><span></span><svg viewBox="0 0 20 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16 9 2M11 16l5-14"/></svg></li>
+      <li data-figure><span class="n">£1,500</span><span class="l">each boy: Roman, Byrd, Ince</span></li>
+      <li data-figure><span class="n">£1,700</span><span class="l">each girl: Vennie, Christa, Cheryl</span></li>
+    </ol>
+  </div>
+</section>

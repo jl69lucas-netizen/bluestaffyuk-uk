@@ -1,0 +1,50 @@
+{
+ "component": "counter-strip",
+ "variants": {
+  "a": {
+   "name": "Docket",
+   "description": "The figures as an itemised bill: label, dotted leader, right-set figure, three ruled columns under a steel top rule.",
+   "idea_sources": [
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/4-counter-snippet-design-component.png",
+    "/Users/apple/Downloads/BSUK-refs/london/counter-strip/sister-for-sale-1280-01.png"
+   ],
+   "differs_from": "Leader lines in a ruled docket, not tiles: no built strip pairs label and figure along a dotted leader, and none is framed by rules alone.",
+   "axes": {
+    "layout": "docket",
+    "media": "none",
+    "density": "compact",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Figure sentence",
+   "description": "The figures set inside one spoken sentence beside a litter photo, each raised on a steel-100 highlight; bleed bed under a steel rule.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK-refs/london/counter-strip/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/COUNTERR-SNIPPET.png"
+   ],
+   "differs_from": "The only counter strip with a photo, and the figures live inside a sentence instead of tiles, cells or columns; every built strip is photo-free tiles.",
+   "axes": {
+    "layout": "sentence",
+    "media": "left",
+    "density": "airy",
+    "framing": "bleed"
+   }
+  },
+  "c": {
+   "name": "Price scale",
+   "description": "Figures as stops on one broken number line, delivery to deposit to price; vertical on phones, inset on a steel-100 panel.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK-refs/london/counter-strip/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK-refs/london/counter-strip/sister-near-me-375-01.png"
+   ],
+   "differs_from": "A number line that orders the figures by what you pay, not a row of cells; no built strip draws an axis, and none sits in an inset panel.",
+   "axes": {
+    "layout": "scale",
+    "media": "none",
+    "density": "regular",
+    "framing": "inset"
+   }
+  }
+ }
+}

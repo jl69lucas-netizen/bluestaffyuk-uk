@@ -1,0 +1,53 @@
+{
+ "component": "hero",
+ "variants": {
+  "a": {
+   "name": "Broadsheet",
+   "description": "Editorial front page: heavy steel rule, column rule between copy and a tilted postcard photo with a caption plate.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK-refs/london/hero/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea66.png",
+    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-5.png"
+   ],
+   "differs_from": "No built hero frames itself with rules: every row is plain, band or card, and none is a broadsheet with a column rule and a mounted postcard photo.",
+   "axes": {
+    "layout": "broadsheet",
+    "media": "right",
+    "density": "airy",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Litter filmstrip",
+   "description": "Deep-steel panel inset in the page; the six puppies run as a contact strip along its foot, copy in two columns above.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK-refs/london/hero/sister-for-sale-1280-01.png",
+    "/Users/apple/Downloads/BSUK-refs/london/hero/sister-for-sale-375-01.png",
+    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea.png"
+   ],
+   "differs_from": "The photos sit under the copy, a media position no built hero uses, in an inset panel rather than a band or card; the mosaics are grids beside or above the copy.",
+   "axes": {
+    "layout": "filmstrip",
+    "media": "bottom",
+    "density": "compact",
+    "framing": "inset"
+   }
+  },
+  "c": {
+   "name": "Rail ticket",
+   "description": "Edge-to-edge photo behind the band with the copy printed on a notched bone ticket, Carlisle to London route line.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK-refs/london/hero/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK-refs/london/hero/sister-comparison-375-01.png",
+    "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png"
+   ],
+   "differs_from": "The photo is the background under an overlaid ticket, which no built hero does; the bleed heroes put the photo beside or above the copy, never under it.",
+   "axes": {
+    "layout": "ticket",
+    "media": "background",
+    "density": "regular",
+    "framing": "bleed"
+   }
+  }
+ }
+}
