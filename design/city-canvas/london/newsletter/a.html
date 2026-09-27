@@ -1,0 +1,53 @@
+<style>
+/* Newsletter A — Litter notice. A raised card on the raised surface (card border, card radius, card shadow)
+   set in the bone page: a square photo of Christa on its left at 768+, on top as a short
+   strip on a phone; on the right a small ruled eyebrow, the question, its answer and a
+   stacked email field over a full-width brass submit. It says exactly what the list is for. */
+.nlA{background:var(--color-surface)}
+.nlA .in{max-width:1040px;margin:0 auto;padding:var(--space-7) var(--space-4)}
+.nlA .card{display:grid;overflow:hidden;background:var(--color-surface-raised);border:var(--card-border);border-radius:var(--card-radius);box-shadow:var(--shadow-card)}
+.nlA .ph{margin:0;background:var(--color-bone-50)}
+.nlA .ph img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% 30%}
+.nlA .body{padding:var(--space-6) var(--space-5)}
+.nlA .eye{display:flex;align-items:center;gap:var(--space-2);margin:0 0 var(--space-3);font-size:var(--text-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-brand)}
+.nlA .eye::before{content:"";width:24px;height:2px;background:var(--color-cta)}
+.nlA h2{margin:0;font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:20ch}
+.nlA .lede{margin:var(--space-3) 0 var(--space-5);max-width:46ch;color:var(--color-text)}
+.nlA form{display:grid;gap:var(--space-3);max-width:440px}
+.nlA label{font-size:var(--text-sm);font-weight:600;color:var(--color-text)}
+.nlA input{width:100%;min-height:48px;padding:10px 14px;font:inherit;color:var(--color-text);background:var(--color-bone-50);border:1px solid var(--color-steel-300);border-radius:var(--btn-form-radius)}
+.nlA input:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px;border-color:var(--color-brand)}
+.nlA input:user-invalid{border-color:var(--color-warn)}
+.nlA .err{display:none;margin:0;font-size:var(--text-sm);color:var(--color-warn)}
+.nlA form:has(input:user-invalid) .err{display:block}
+.nlA button{min-height:48px;padding:10px 20px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out)}
+.nlA button:hover{background:var(--color-cta-hover)}
+.nlA .small{margin:0;font-size:var(--text-sm);color:var(--color-text-muted)}
+@media (min-width:768px){
+  .nlA .in{padding:var(--space-9) var(--space-6)}
+  .nlA .card{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+  .nlA .ph img{height:100%;aspect-ratio:auto;min-height:360px;object-position:45% 35%}
+  .nlA .body{padding:var(--space-7) var(--space-7)}
+}
+</style>
+<section data-component="newsletter" data-variant="a" class="nlA">
+  <div class="in">
+    <div class="card">
+      <figure class="ph">
+        <img src="/puppies/Christa.jpeg" alt="Christa, a blue Staffy girl, sitting up on a fleece rug and looking at the camera" width="1080" height="1080" loading="lazy">
+      </figure>
+      <div class="body">
+        <p class="eye">Litter notes</p>
+        <h2>Want a Note When Our Next Litter Is Due?</h2>
+        <p class="lede">Leave your email and we will write to you in London when our next litter is on the way. It is one short note, and that is all this list is for.</p>
+        <form data-newsletter aria-label="Litter notes sign-up">
+          <label for="nlA-email">Your email address</label>
+          <input id="nlA-email" name="email" type="email" autocomplete="email" required>
+          <p class="err" id="nlA-err">Please check the email address: it needs an @ and a full address.</p>
+          <button type="submit">Send me the litter note</button>
+          <p class="small">We use your email only for this note.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

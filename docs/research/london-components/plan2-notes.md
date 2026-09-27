@@ -107,3 +107,28 @@ key-takeaways a) and `ethical-staffy-puppy-london-delivery.webp` (jump-links c, 
 are now restored from `dist/`, so every `/images/` file in the canvas carries its served alt.
 Puppy photos (`/puppies/…`) already carry different alts on different built pages, so a variant's
 own puppy alt does not breach the rule.
+
+## Task 9: FAQ blocks, newsletter, contact form
+
+- **FAQ blocks are built from a question file, never from the fragment.** On the London page the
+  three blocks sit at the template's three places (top, middle, bottom), not together as on the
+  canvas; each block renders its rows through `Faq.astro` semantics (question `<h3>` inside the
+  `<summary>`, `titleCase()` at render) and the FAQPage schema carries exactly the visible
+  questions. Numbering (FAQ a) runs across the three blocks, so the kit takes a `start` index.
+- **FAQ a's rail facts** (deposit, delivery, guarantee) are read from `data/settings.json` and
+  `data/puppies.json`, never typed; if the three blocks are split across the page, the rail
+  goes with the top block only.
+- **Forms are built on `ContactFormKit.astro`**, which carries what the mockups leave out: the
+  `_gotcha` honeypot, the hidden `_next` and `_subject`, `method="POST"` and the one endpoint
+  (`#contact` until `PUBLIC_FORMSPREE_ID` is set). The puppy options come from
+  `data/puppies.json`; `scripts/form_contract_audit.py` must pass on the built page. Contact a
+  (letter) keeps every control a labelled field with its own `for`; its phrases are UI copy,
+  so the dup gate's `form` exclusion still applies.
+- **The newsletter posts to the same endpoint** and must stay a one-email-field form so the
+  audit classes it `newsletter`. The kit has no newsletter component yet; add one.
+- **Contact b's six photos** are built from `data/puppies.json` (`card_photo`), and the inline
+  `style="object-position:…"` crops move into the puppy focus map noted under Task 7.
+- **`:user-invalid` error states** are the CSS floor; the kit keeps native validation and may
+  add `aria-describedby` from each field to its error line.
+- **Served alts.** FAQ a keeps Maggie's served alt and contact c the London owner photo's
+  served alt, both listed above under "Alt text — awaiting the user's ruling".

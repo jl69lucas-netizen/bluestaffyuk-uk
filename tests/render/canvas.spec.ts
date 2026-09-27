@@ -164,6 +164,21 @@ const PROBES: Record<string, Probe> = {
   },
   'image-text': async (page) => [...(await allVisible(page, 'data-media')), ...(await brokenImages(page))],
   reviews: (page) => allVisible(page, 'data-review-slot'),
+  'faq-blocks': async (page) => {
+    const out = await allVisible(page, 'data-faq-block');
+    const before = await page.evaluate(() => {
+      const d = document.querySelector('[data-faq-q]')?.closest('details');
+      return d ? d.open : null;
+    });
+    if (before !== null) {
+      await page.locator('[data-faq-q]').first().click();
+      const after = await page.evaluate(() => document.querySelector('[data-faq-q]')!.closest('details')!.open);
+      if (after === before) out.push('pressing the first question does not toggle its answer');
+    }
+    return out;
+  },
+  newsletter: (page) => fieldsTall(page, '[data-newsletter]'),
+  'contact-form': (page) => fieldsTall(page, '[data-contact-form]'),
 };
 
 type Frame = { component: string; variant: string; path: string };

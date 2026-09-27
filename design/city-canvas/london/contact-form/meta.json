@@ -1,0 +1,53 @@
+{
+ "component": "contact-form",
+ "variants": {
+  "a": {
+   "name": "Letter to Carlisle",
+   "description": "The enquiry written as a ruled letter, Dear Lisa: every blank a labelled field inside the sentence, then the message and a brass send.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/newsletter-idea1.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/mfs-home-375-01.png"
+   ],
+   "differs_from": "Fields set inline in a ruled letter, not a stacked form; S1 is a plain form under its heading, S2 and S3 sit beside reasons or a heading.",
+   "axes": {
+    "layout": "letter",
+    "media": "none",
+    "density": "airy",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Litter line-up",
+   "description": "A deep-steel band: the question, a line-up of the six puppies' photos with name and price plates, then a compact three-across form.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/sister-for-sale-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/sister-near-me-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/new-modern-card-idea.png"
+   ],
+   "differs_from": "A photo line-up of all six puppies over the form on a deep band; the built rows have no photo and sit plain or in a card.",
+   "axes": {
+    "layout": "lineup",
+    "media": "grid",
+    "density": "compact",
+    "framing": "band"
+   }
+  },
+  "c": {
+   "name": "Doorstep tray",
+   "description": "A sunk steel-100 tray: a London puppy-and-family photo with the ways to reach us on the left, the question and a two-up form right.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/sister-for-sale-375-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/mfs-home-1280-01.png"
+   ],
+   "differs_from": "A section photo beside the form inside a sunk tray (no shadow); S3 is a raised card with no photo, S1 and S2 plain with none.",
+   "axes": {
+    "layout": "photo-split",
+    "media": "left",
+    "density": "regular",
+    "framing": "inset"
+   }
+  }
+ }
+}

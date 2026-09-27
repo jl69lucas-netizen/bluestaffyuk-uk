@@ -300,3 +300,54 @@ of them.
 | image-text | a, c | Rewritten alts on the owner and Maggie photos. | Served alts restored. | 375 · 768 · 1024 · 1280 |
 | reviews | b | Vennie's muzzle cut at the foot of the banner. | Crop 50% 40%. | 375 · 768 · 1024 · 1280 |
 | reviews | c | "Buy From Us Again" asked what the review does not literally answer; rewritten alt on Jones. | Heading "Would a London Owner Recommend Us?" (answering paragraph kept); served alt restored. | 375 · 768 · 1024 · 1280 |
+
+## Task 9: FAQ blocks, newsletter, contact form (2026-09-27)
+
+`frontend-design:frontend-design` was invoked with the Skill tool on the plan's Task 9 Step 3
+brief and the three components' ideas-index entries (every capture and sheet cited in the three
+`meta.json` files opened with the Read tool). It set three directions per component before any
+file was written; the fonts and colours are the fixed BSUK tokens. `impeccable:impeccable` was
+then invoked with the Skill tool (brand register). No `PRODUCT.md` exists and only
+`/impeccable teach` (interactive, with the user) may write one, so the brand context was taken
+from `rules/design.md`, `src/styles/tokens.css`, `data/settings.json`, `src/styles/global.css`
+and the foundation spec, as in Tasks 5 to 8. Both assessments ran: the detector
+(`npx impeccable --json` on the nine fragments: only the known false-positive classes,
+`cramped-padding` on wrapper padding and hairline `<details>` rows whose padding sits on the
+`<summary>`, and `side-tab` on the full-width 4px rules of FAQ c, newsletter c and contact a)
+and a review of the shots at 375 / 768 / 1024 / 1280. The smoke passed first time; every fix
+below came from the shot review, and the smoke and `check:canvas` were re-run after it.
+
+**Copy (all nine).** The FAQ carries 19 questions in three blocks (6 buying from London, 6
+checking us from afar, 7 a Staffy in a London home), the location template's top / middle /
+bottom split; every question and block heading is a Title Case buyer question ("If" capitalised,
+as `rules/headings.md` lists it among no lowercase words), every answer 20+ words, and no
+question repeats a block heading. Facts only: the six puppies, sexes and colours from
+`data/puppies.json`; £1,500 / £1,700; the £500 deposit "books your viewing and reserves your
+puppy, and it comes off the price" (never plainly refundable; the 70% no-show refund was left
+out rather than risk misstating it); delivery £200–£350 by DEFRA-approved transport, priced by
+distance, or collection in Carlisle; Maggie the dam and Jones the sire, KC registered, DNA
+tested clear of L-2-HGA and HC-HSF4, eyes and elbows screened (no grade); buyers may contact
+our vet; a two-year genetic health guarantee; take-back if the fault is ours or the owner can
+no longer keep the puppy; Puppy Culture and ENS; the 24 to 48 business-hour reply
+(`data/faq.json`); breed answers from `data/faq.json` (flats, exercise, children, time alone,
+training, first dogs, the 12 to 14 year lifespan from the Staffordshire Bull Terrier Club). No
+age, licence, statute, distance, travel time, score or "most buyers". The newsletters promise
+nothing but a note when a litter is due. The forms carry the `bsuk-contact-form` field
+contract (name, email, phone, location, puppy, message; labels "Your name", "Email", "Phone",
+"Town or postcode", "Which puppy?", "Message"; name, email, puppy and message required; the six
+puppies plus the next litter as options), no `action`, `PHONE_PLACEHOLDER` where a number would
+be, submits on `--btn-form-radius`, and error states drawn with `:user-invalid` (a warn border
+and a one-line message per required field, no script); the success state is the reply line
+beside each submit.
+
+| Component | Variant | frontend-design direction | impeccable findings | Fixed | Widths |
+|---|---|---|---|---|---|
+| faq-blocks | a | **Steel ledger.** One deep-steel band: the site's photo of Maggie with two pups on a sticky rail at the left from 1024, the three blocks as one numbered ledger (01 to 19) beside it, brass-200 numbers, a brass plus that turns to a minus. On a phone the photo is a short 16:9 strip on top. Axes `photo-rail / left / regular / band`. | At 1280 the 4:5 crop cut Maggie in half and lost a pup; below the photo the rail was an empty column. | Whole-scene 4:3 crop at 1024+ (all three dogs, faces clear); three figures in brief under the caption (deposit, delivery, guarantee) as a ruled `<dl>`, not links, so the rail reads as content and never as a jump list. | 375 · 768 · 1024 · 1280 |
+| faq-blocks | b | **Three trays.** The three blocks side by side from 1024 as sunk steel-100 trays (hairline edge, no shadow), each with a "1 of 3" tag, its question and answer and tight chevron rows; one 720px column below 1024. Axes `tri-column / none / compact / inset`. | Clean at every width; the rows are 48px, the chevron is drawn in CSS, and the hover underline sits on the question only. | No change. | 375 · 768 · 1024 · 1280 |
+| faq-blocks | c | **Lead answer.** Each block under a 4px steel rule: question left, answer right from 1024; the block's first question open as a large lead; the rest folded into a two-column grid of hairline rows with plus marks. Axes `lead-grid / none / airy / rule`. | The lead answer was set in the display face, which the frame loads only at 600/700, so it painted bold, and rule 2 keeps body copy in `--font-body`. | Lead answer in the body face at `--text-lg`, weight 400. | 375 · 768 · 1024 · 1280 |
+| newsletter | a | **Litter notice.** A raised card (card border, radius, shadow): Christa's photo on the left from 768, a strip on top on a phone; a ruled eyebrow, the question, its answer, a stacked email field over a full-width brass submit. Axes `split / left / regular / card`. | Clean; Christa's face clear at every crop. | No change. | 375 · 768 · 1024 · 1280 |
+| newsletter | b | **Steel band.** A compact centred steel-700 band: a brass line-icon envelope, the question in bone, one joined row of field and brass submit (stacked on a phone). Axes `centred / none / compact / band`. | The lede left a one-word orphan ("for.") at 1280. | Lede to 58ch with `text-wrap: pretty`. | 375 · 768 · 1024 · 1280 |
+| newsletter | c | **Ruled row.** Open bone page between a 4px steel rule and a hairline: question left, field and submit on one line right from 1024, two ticked lines under it. Axes `inline-row / none / airy / rule`. | The submit was a steel fill; rule 1 gives every button the brass CTA role. A lede line ("Plenty of London families find us between litters") was an unsupported claim. | Brass submit with `--color-cta-ink`; lede rewritten to what the list is for. | 375 · 768 · 1024 · 1280 |
+| contact-form | a | **Letter to Carlisle.** The enquiry as a ruled letter: "Dear Lisa," then one sentence per line, each ending in a real field with its label printed under it (name, part of London, which puppy, email, phone), then the message and "Send my letter". Axes `letter / none / airy / rule`. | Two blanks per sentence wrapped at 1280 and left ", London." and "." stranded on their own lines at 375; the letter lines were in the display face (bold, and against rule 2). | One blank per line with no trailing punctuation ("My part of London is ___", "If it is easier, call me on ___"); letter lines in the body face at `--text-lg`. | 375 · 768 · 1024 · 1280 |
+| contact-form | b | **Litter line-up.** A deep-steel band: the question, the six puppies as a line-up of square photos with name, sex and price plates (3 × 2 on a phone, 6 across from 768; `pointer-events: none`, no hover, so nothing looks pressable), then a compact form straight on the band, three fields to a row at 1024. Axes `lineup / grid / compact / band`. | Default `<p>` margins opened 40px gaps between the fields, so "compact" was not true. | Field wrappers `margin: 0`. | 375 · 768 · 1024 · 1280 |
+| contact-form | c | **Doorstep tray.** A sunk steel-100 tray: the site's photo of a puppy with its new family in London (served alt kept) on the left from 1024 with a caption and "Rather talk it through? Call PHONE_PLACEHOLDER" at its foot; the question, its answer and a two-up form on the right. Axes `photo-split / left / regular / inset`. | At 1024 and 1280 the photo stopped halfway down a column the form made twice as tall. | The photo grows to the form's height (flex, cover, focus 45% 50%; about 650px tall at 1280, close to its 664px source height, a little taller at 1024); the call line sits at the column foot. | 375 · 768 · 1024 · 1280 |
