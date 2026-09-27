@@ -44,8 +44,8 @@ one component and is then listed under each.
 - `/Users/apple/Downloads/BSUK-refs/london/counter-strip/sister-for-sale-375-01.png` — Phone: the same figures become a two-column grid of rounded tiles.
 - `/Users/apple/Downloads/BSUK-refs/london/counter-strip/sister-near-me-1280-01.png` — Eight-cell figure strip directly under the hero, small grey labels, no icons.
 - `/Users/apple/Downloads/BSUK-refs/london/counter-strip/sister-near-me-375-01.png` — Phone: two-by-four tile grid, figure in brand red, label beneath in muted grey.
-- `/Users/apple/Downloads/BSUK-refs/london/counter-strip/mfs-home-1280-01.png` — A single boxed proof line (tick, family count, stars, short quote) with a pill button at the right end.
-- `/Users/apple/Downloads/BSUK-refs/london/counter-strip/mfs-home-375-01.png` — Phone: the proof line wraps into a small card with the button below.
+- `/Users/apple/Downloads/BSUK-refs/london/counter-strip/mfs-home-1280-01.png` — Not a figure row but a proof line: one boxed strip (tick, family count, stars, short quote) with a pill button at the right end; kept here as the one-line alternative to a figure row.
+- `/Users/apple/Downloads/BSUK-refs/london/counter-strip/mfs-home-375-01.png` — Phone: the same proof line (not figures) wraps into a small card with the button below.
 - `/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/4-counter-snippet-design-component.png` — Four figure cells in one bordered card, bold figure over small caps label, vertical dividers.
 - `/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/COUNTERR-SNIPPET.png` — Full-width dark band with figure and label inline on one line, four pairs spread across.
 - <https://congoafricangreys.com/african-grey-parrots-for-sale/> — Figures placed straight after the hero so the page proves itself before the first section.
@@ -237,4 +237,4 @@ one component and is then listed under each.
 ## Sheets not used by a city component
 
 - `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/footer-idea.png` — Light footer with four link columns, a giving-back badge column and an email signup at the right.
-- `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/footer-idea00.png` — Dark footer with a small prompt field on the left and five dense link columns.
+- `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/footer-idea00.png` — Dark footer with a small prompt field on the left and four dense link columns.
