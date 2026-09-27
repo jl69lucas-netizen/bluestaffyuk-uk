@@ -91,7 +91,9 @@ def test_a_boarded_location_record_owes_a_slot_under_every_body_heading():
         f"slot {s} (section {sid}): names no source (existing, assets-folder, generate or infographic)"
         for s, sid in (("opening-photo", "opening"), ("opening-tile-2", "opening"),
                        ("opening-tile-3", "opening"), ("raise-photo", "how-we-raise"))]
-    assert all(sev == "FAIL" for c, sev, m in found)
+    # The image rules FAIL; other family rules on the same record (the advisory geo and
+    # header-keyword checks, parity build Task 19) may WARN.
+    assert all(sev == "FAIL" for c, sev, m in found if c.startswith("image-"))
 
 
 def test_a_fully_sourced_record_passes_the_slot_rule():

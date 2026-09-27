@@ -191,3 +191,51 @@ def keyword_placement(board, ont):
     """title-front-load (FAIL from `boarded`, WARN on a draft) and first-100-words (FAIL on a
     rebuilt, built page)."""
     return KM.findings(board)
+
+
+# ── parity build Task 19: the geo token and two-keyword headers (audit rows 7b.9, 12.6) ─────
+# Advisory: WARN at every status. Terms are matched as keyword_metrics matches them (words,
+# case and small words ignored), so "Puppies in Manchester" carries "puppies manchester".
+GEO_ALWAYS = ("UK",)
+
+
+def _geo_terms(board):
+    terms = [t.strip() for s in board["sections"] for t in s["keywords"].get("geo", []) if t.strip()]
+    return list(dict.fromkeys(terms + list(GEO_ALWAYS)))
+
+
+@register
+def geo_token(board, ont):
+    """A location page names a geo term (a `geo` keyword, or UK) in at least one body H2 and
+    in the picked meta description — the token that decides a local query's retrieval."""
+    if board["meta"]["page_type"] != "location":
+        return
+    import pageboard as PB   # lazy, as keyword_metrics does: pageboard imports this module
+    geo = _geo_terms(board)
+    named = ", ".join(repr(t) for t in geo)
+    if not any(KM.phrase_count(t, s["heading"]) for s in PS.body_sections(board) for t in geo):
+        yield ("geo-token-missing", "WARN",
+               f"no body H2 names a geo term ({named}) — put the city or UK in at least one")
+    _, desc = PB.meta_pick(board)
+    if not any(KM.phrase_count(t, desc) for t in geo):
+        yield ("geo-token-missing", "WARN",
+               f"the picked meta description names no geo term ({named})")
+
+
+@register
+def two_keyword_header(board, ont):
+    """Every body section carries at least two keyword types, and its H2 names a term of at
+    least one of them (the SEO master checklist's Two-Keyword Headers)."""
+    for s in PS.body_sections(board):
+        types = [k for k, vals in s["keywords"].items() if any(t.strip() for t in vals)]
+        if len(types) < 2:
+            yield ("two-keyword-header", "WARN",
+                   f"section {s['id']!r} carries {len(types)} keyword type"
+                   f"{'' if len(types) == 1 else 's'} ({', '.join(types) or 'none'}) — a body "
+                   "header is planned on two")
+            continue
+        terms = [t for k in types for t in s["keywords"][k] if t.strip()]
+        if not any(KM.phrase_count(t, s["heading"]) for t in terms):
+            yield ("two-keyword-header", "WARN",
+                   f"section {s['id']!r}: the H2 {s['heading']!r} carries none of its own "
+                   f"{', '.join(types)} terms")
