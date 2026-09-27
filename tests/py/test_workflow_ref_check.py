@@ -118,6 +118,14 @@ def test_the_arrives_in_task_marker_excuses_the_line(tmp_path):
     assert problems == [] and examined == 2
 
 
+def test_the_arrival_marker_reads_only_a_task_number(tmp_path):
+    # One regex, shared with tests/py/test_claude_md.py: `Task 25`, `Task 18b`, `Task R3`.
+    assert wrc.ARRIVES.search("(arrives in Task 18b)") and wrc.ARRIVES.search("(arrives in Task R3)")
+    root = tree(tmp_path, "# Workflow\n", page_run="`npm run gate:ghost` (arrives in Task soon)\n")
+    problems, _ = wrc.check(root)
+    assert problems == ["page-run.md:1  npm run gate:ghost"]
+
+
 def test_a_missing_doc_is_an_error_not_a_silent_pass(tmp_path):
     root = tree(tmp_path, "# Workflow\n")
     (root / "docs/reference/page-run.md").unlink()

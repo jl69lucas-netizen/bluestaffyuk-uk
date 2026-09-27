@@ -12,11 +12,15 @@ every build. It gets the same guards the rule packs get, plus two of its own.
 """
 import pathlib
 import re
+import sys
 
 from test_rules_index import BACKTICKED, MARKERS, _cited_paths, _path_like,\
     _unmarked_missing_paths
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+from workflow_ref_check import ARRIVES  # noqa: E402  (one marker regex, shared with check:workflow)
+
 CLAUDE_MD = ROOT / "CLAUDE.md"
 RULES_DIR = ROOT / "rules"
 
@@ -95,7 +99,7 @@ def test_no_line_instructs_a_push_outside_the_inactive_section():
 # elsewhere: the guard above SUPPRESSES the missing-path check on any marked line, so a
 # stale marker silently disarms it for every other path on that line.
 # A Phase 3b task is named by its ruling (`Task R3`), so the marker reads that form too.
-ARRIVES = re.compile(r"\(arrives in Task (?:\d+[a-z]?|R\d+)\)")
+# ARRIVES is imported from scripts/workflow_ref_check.py above: one definition for both gates.
 # `(not ported — source repo only)` expires the same way, and worse: it asserts the file
 # will NEVER exist here. Task 13 left one on a line citing `docs/reference/system-registry.md`
 # minutes after writing that file. Same rule, same report.

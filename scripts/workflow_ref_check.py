@@ -27,7 +27,10 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DOCS = ("docs/reference/WORKFLOW.md", "docs/reference/quick-start.md",
         "docs/reference/page-run.md")
-MARKER = re.compile(r"\([^()]*\bnot ported\b[^()]*\)|\(arrives in Task \w+\)")
+# The arrival marker, defined once: tests/py/test_claude_md.py imports it to expire a marker
+# whose paths exist. A task is a number with an optional letter (`18b`) or a ruling (`R3`).
+ARRIVES = re.compile(r"\(arrives in Task (?:\d+[a-z]?|R\d+)\)")
+MARKER = re.compile(r"\([^()]*\bnot ported\b[^()]*\)|" + ARRIVES.pattern)
 AGENT = re.compile(r"(?<![\w./-])@?(bsuk-[a-z0-9_-]*[a-z0-9])(?![\w-])(?!\.\w|/)")
 SCRIPT = re.compile(r"(?<![\w./-])(scripts/[\w./-]+)")
 NPM = re.compile(r"\bnpm run (?:(?:-s|--silent) )?([\w:-]+)")

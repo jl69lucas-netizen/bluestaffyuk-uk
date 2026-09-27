@@ -192,7 +192,7 @@ Before proceeding to Sprint 0.5:
 ## Sprint 0.5 — Session Orientation
 *Run once per page build, after Sprint 0 Gate passes. grill-me now runs here — with full intelligence data loaded.*
 
-**Session open for a project 5 page (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill, i.e. the page type's builder named in `docs/reference/page-run.md` (row 1), each invoked with the Skill tool by name.
+**Session open for a project 5 page (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → the page type's builder skill (`docs/reference/page-run.md` row 1), each invoked with the Skill tool by name.
 
 ```
 grill-me skill

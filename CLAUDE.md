@@ -78,7 +78,7 @@ capped at nine (`judgment_cap: 9`); a tenth exemption is a rule that has to earn
 | buy / for-sale | `bsuk-puppy-page-builder` | puppies, images, headings |
 | puppy `/available-puppies/<slug>/` | `bsuk-puppy-page-builder` | puppies, schema, images |
 | hub | `bsuk-site-patterns` | links, headings |
-| location | `bsuk-location-page-builder` | copy, links |
+| location | `bsuk-location-page-builder` | copy, links, images |
 | blog | `bsuk-blog-post` | headings, images |
 | about / contact | `bsuk-contact-form`, `bsuk-trust-signals` | copy, links |
 | comparison | `bsuk-comparison-page-builder` | images, headings, copy |

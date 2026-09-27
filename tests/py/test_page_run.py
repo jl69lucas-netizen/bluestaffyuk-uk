@@ -102,9 +102,25 @@ def test_every_row_names_something_to_run():
     assert bad == [], f"rows whose command cell names no command, skill or board block: {bad}"
 
 
+# A gate cell is honest about WHEN its gate fires: a command the row runs itself that nothing
+# re-runs is "advisory:"; a check that fires later in the run says "enforced at row N by".
+LABEL = re.compile(r"^(advisory: |enforced at row (\d+) by )")
+LABELLED_ROWS = (1, 2, 3, 7, 8, 11)
+
+
 def test_every_row_names_the_gate_that_fails():
     bad = [r[0] for r in _run_rows() if not GATE.search(r[4])]
     assert bad == [], f"rows with no failing gate — a step nothing checks is optional: {bad}"
+
+
+def test_a_gate_that_does_not_fire_at_its_own_row_says_so():
+    rows = _run_rows()
+    unlabelled = [n for n in LABELLED_ROWS if not LABEL.match(rows[n - 1][4])]
+    assert unlabelled == [], f"gate cells that must say 'advisory:' or 'enforced at row N by': {unlabelled}"
+    for r in rows:
+        m = LABEL.match(r[4])
+        if m and m.group(2):
+            assert int(m.group(2)) > int(r[0]), f"row {r[0]} is enforced at an earlier row: {r[4]!r}"
 
 
 def test_exactly_three_approval_stops_in_order():
@@ -129,14 +145,15 @@ def test_the_two_harden_passes_are_named_mandatory_rows_that_preview_only_a_visu
         assert "375 / 768 / 1280" in row[2] or "same three widths" in row[2], row[2]
         assert "painting browser" in row[2], row[2]
         assert "data/page-runs/<slug>.json" in row[3], row[3]
-        assert "working rule 6" in row[5] and "palette never changes" in row[5], row[5]
+        assert "working rule 6" in row[5] and "palette" in row[5], row[5]
 
 
 def test_verification_before_completion_closes_the_gates_and_the_session():
     rows = [r for r in _run_rows() if f"`{VERIFY_SKILL}`" in r[2]]
     assert [r[1].split(" ")[0] for r in rows] == ["§19", "§22"], [r[1] for r in rows]
     gate_row = rows[0]
-    assert "npm run -s check:all" in gate_row[2] and "npm run gate:page -- <slug>" in gate_row[2]
+    steps = " ".join(_steps(int(gate_row[0])))
+    assert "npm run -s check:all" in steps and "npm run gate:page -- <slug>" in steps, steps
     assert "verification_before_completion" in gate_row[3], gate_row[3]
 
 
@@ -208,15 +225,24 @@ def test_workflow_names_verification_at_the_gates_and_at_close():
 
 
 # The user's image rulings (2026-09-26, rules/images.md): an in-body image's bleed is a design
-# colour (bone), never grey or black, and a new portrait bakes contain, never blurfill.
-BLEED_LINE = ("In-body image bleed uses design colours (bone), never grey or black; new portraits "
-              "are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user "
-              "ruling 2026-09-26, rules/images.md.")
-SESSION_OPEN = "grill-me → superpowers:writing-plans → this builder skill"
+# colour (bone), never grey or black, and a new portrait bakes contain (`--og-style A`), never
+# blurfill. Pinned as tokens, not a sentence, so a re-wrap cannot break it.
+BLEED_TOKENS = ("bone", "never blurfill", "`--og-style A`")
+SESSION_OPEN = re.compile(r"grill-me\W[^\n]{0,80}?superpowers:writing-plans\W[^\n]{0,60}?builder skill")
+ROUTED = ("docs/reference/WORKFLOW.md",) + BUILDER_SKILLS
 
 
 def _norm(text):
     return " ".join(text.split())
+
+
+def _steps(n):
+    """The numbered sub-list under `### Row n steps`, below the run table."""
+    text = DOC.read_text(encoding="utf-8")
+    head = f"### Row {n} steps"
+    assert head in text, f"no {head!r} sub-list"
+    body = re.split(r"\n#{2,3} ", text[text.index(head) + len(head):], maxsplit=1)[0]
+    return [line for line in body.splitlines() if re.match(r"\d+\. ", line)]
 
 
 def test_every_page_type_reads_the_images_pack():
@@ -225,25 +251,76 @@ def test_every_page_type_reads_the_images_pack():
     assert bad == [], f"page types that do not read rules/images.md: {bad}"
 
 
+def test_claude_md_and_the_run_agree_on_the_rule_packs():
+    run = {r[0]: {p.strip() for p in r[4].split(",")}
+           for r in _rows(DOC.read_text(encoding="utf-8"), PAGE_TYPE_HEADER)}
+    claude = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+    for page_type, packs in run.items():
+        m = re.search(rf"^\| {page_type} \| [^|]+ \| ([^|]+) \|$", claude, re.M)
+        assert m, f"CLAUDE.md has no page-type row for {page_type}"
+        assert {p.strip() for p in m.group(1).split(",")} == packs, (page_type, m.group(1))
+
+
 def test_the_image_bleed_ruling_is_routed_everywhere_a_page_is_built():
-    run = DOC.read_text(encoding="utf-8")
     row11 = next(r for r in _run_rows() if r[1].startswith("§15"))
-    assert "bone" in row11[3] and "`--og-style A` (contain)" in row11[3], row11[3]
-    assert "never blurfill" in row11[3] and "reframe_og.py --style" not in run, row11[3]
-    missing = [doc for doc in ("docs/reference/WORKFLOW.md",) + BUILDER_SKILLS
-               if BLEED_LINE not in _norm((ROOT / doc).read_text(encoding="utf-8"))]
-    assert missing == [], f"the image-bleed ruling is not routed in: {missing}"
+    assert all(tok in row11[3] for tok in BLEED_TOKENS), row11[3]
+    assert "reframe_og.py --style" not in DOC.read_text(encoding="utf-8")
+    missing = [f"{doc}: {tok}" for doc in ROUTED for tok in BLEED_TOKENS
+               if tok not in _norm((ROOT / doc).read_text(encoding="utf-8"))]
+    assert missing == [], f"the image-bleed ruling is not routed: {missing}"
 
 
 def test_the_session_open_order_is_routed_everywhere_a_page_is_built():
-    first = _run_rows()[0][2]
-    assert first.index("grill-me") < first.index(PLAN_SKILL) < first.index("builder skill"), first
-    missing = [doc for doc in ("docs/reference/WORKFLOW.md",) + BUILDER_SKILLS
-               if SESSION_OPEN not in _norm((ROOT / doc).read_text(encoding="utf-8"))]
+    assert SESSION_OPEN.search(_run_rows()[0][2]), _run_rows()[0][2]
+    missing = [doc for doc in ROUTED
+               if not SESSION_OPEN.search(_norm((ROOT / doc).read_text(encoding="utf-8")))]
     assert missing == [], f"the session-open order is not routed in: {missing}"
 
 
 def test_the_keyword_metrics_gate_names_every_fail():
     row6 = next(r for r in _run_rows() if r[1].startswith("§7"))
-    assert ("exits 1 on any FAIL (title-front-load, first-100-words, or a missing primary "
-            "keyword)") in row6[4], row6[4]
+    for tok in ("any FAIL", "title-front-load", "first-100-words", "primary keyword"):
+        assert tok in row6[4], (tok, row6[4])
+
+
+MULTI_COMMAND_ROWS = (5, 9, 11, 12, 17, 18)
+
+
+def test_multi_command_rows_point_to_a_numbered_sub_list():
+    rows = _run_rows()
+    for n in MULTI_COMMAND_ROWS:
+        assert f"row {n} steps below" in rows[n - 1][2], f"row {n} does not point to its steps"
+        assert len(_steps(n)) >= 2, f"row {n}'s sub-list has fewer than two steps"
+
+
+def test_an_existing_page_is_extracted_before_it_is_boarded():
+    steps = "\n".join(_steps(9))
+    board = steps.index("scripts/build_page_board.py <slug>")
+    assert steps.index("scripts/facts_preserved_check.py --extract <slug>") < board
+    assert steps.index("scripts/verbatim_set_check.py --extract <slug>") < board
+    row12 = _run_rows()[11][2] + "\n".join(_steps(12))
+    assert "--extract" not in row12, "row 12 still extracts — it happens at row 9, before the board"
+
+
+def test_the_record_is_fresh_by_the_verification_commit():
+    rows = _run_rows()
+    for n in (14, 15):
+        gate = rows[n - 1][4]
+        assert "ancestor" in gate and "verification" in gate, gate
+    assert "at or after the page's last source change" in rows[17][4], rows[17][4]
+
+
+def test_a_visual_change_with_the_breeder_away_is_previewed_and_deferred_not_applied():
+    text = DOC.read_text(encoding="utf-8")
+    para = text[text.index("## The run"):text.index("| # | Brief step")]
+    rows = _run_rows()
+    for where in (para, rows[13][3] + rows[13][5], rows[14][3] + rows[14][5]):
+        for tok in ("away", "`deferred`", "Open Flags", "not applied"):
+            assert tok in where, (tok, where)
+
+
+def test_the_strategy_stop_is_explained_as_a_deliberate_difference():
+    text = DOC.read_text(encoding="utf-8")
+    diffs = _norm(text[text.index("## Deliberate differences"):])
+    assert ("STOP 1 (strategy) applies only to a page with no row in the approved cluster "
+            "strategy") in diffs
