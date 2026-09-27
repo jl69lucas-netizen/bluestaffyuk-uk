@@ -41,12 +41,24 @@ def register(fn):
     return fn
 
 
+# The other three new-page predicates narrow this one for their inputs: evidence_audit.is_new_page
+# also needs a new-family type AND a slug in rebuilt.json (it judges built pages only);
+# tests/render/lib/promotions.ts isNewPage (render_baseline.is_new_page) also needs a type and
+# rebuilt OR an approved board (promotions block from approval on); measurement_ledger takes
+# rebuilt.json rows through this predicate (it measures the ledger's pages only).
+def is_new_page(board_or_slug):
+    """True for a page built from project 5 on: a slug that is not one of the twelve frozen
+    pages and not a `_`-prefixed fixture (`_demo`). Takes a board or a bare slug, so a script
+    that knows only the slug (scripts/ingest_image.py) asks the same question as the gate."""
+    if isinstance(board_or_slug, dict):
+        board_or_slug = (board_or_slug.get("meta") or {}).get("slug")
+    slug = board_or_slug or ""
+    return bool(slug) and slug not in BUILT_BEFORE_SYSTEM_GAPS and not slug.startswith("_")
+
+
 def applies(board):
     m = board["meta"]
-    slug = m["slug"]
-    return (m["page_type"] in NEW_FAMILY_PAGE_TYPES
-            and slug not in BUILT_BEFORE_SYSTEM_GAPS
-            and not slug.startswith("_"))
+    return m["page_type"] in NEW_FAMILY_PAGE_TYPES and is_new_page(m["slug"])
 
 
 def findings(board, ont):
@@ -170,3 +182,140 @@ def image_build_ready(board, ont):
     """On an approved record every slot resolves to a file the build may use: a served file,
     an ingested folder file, or the generated image whose bytes the breeder approved."""
     return IR.build_findings(board)
+
+
+# ── parity build Task 18: the primary keyword's placement (CAG §7a.7, §7d.6) ─────────────────
+# The logic and the ours-vs-top-5 table are scripts/keyword_metrics.py; imported at the
+# bottom for the same reason image_rules is. keyword_metrics imports pageboard only inside
+# its functions, so this import can never see a half-built module.
+import keyword_metrics as KM  # noqa: E402
+
+
+@register
+def keyword_placement(board, ont):
+    """title-front-load (FAIL from `boarded`, WARN on a draft) and first-100-words (FAIL on a
+    rebuilt, built page)."""
+    return KM.findings(board)
+
+
+# ── parity build Task 19: the geo token and two-keyword headers (audit rows 7b.9, 12.6) ─────
+# Advisory: WARN at every status. Header terms match as the title gate reads them
+# (keyword_metrics.norm_phrase_count: query_augment.normalise folds plurals and synonyms and
+# small words drop), so "Blue Staffy Puppy Care" carries "blue staffy puppies" and
+# "Staffies in Leeds" carries "staffy leeds".
+import json as _json  # noqa: E402
+import pathlib as _pathlib  # noqa: E402
+
+import evidence_audit as EA  # noqa: E402  (stdlib + _slugs/_html only: no cycle)
+
+SETTINGS_PATH = _pathlib.Path(__file__).resolve().parents[1] / "data" / "settings.json"
+# The brand carries "UK" but names no place: it is stripped before any geo match.
+BRAND_NAME = _re.compile(r"blue[\s-]*staffy[\s-]*uk(?:\.co\.uk)?", _re.I)
+DOTTED_UK = _re.compile(r"\bU\.K\.?", _re.I)
+NATIONAL_GEO = "UK"
+H2_LIST_MAX, H2_TEXT_MAX = 4, 40
+
+
+def _home_geo():
+    """The breeder's own place (data/settings.json address: city, region). It never
+    satisfies another city's page: a Manchester page that says only Carlisle is not local."""
+    try:
+        addr = _json.loads(SETTINGS_PATH.read_text(encoding="utf-8")).get("address") or {}
+    except (OSError, ValueError):
+        return []
+    return [addr[k] for k in ("city", "region") if addr.get(k)]
+
+
+def page_city(board):
+    """The city a location board is about (evidence_audit.city_for over data/locations.json),
+    or None for a national page or a slug the table does not list."""
+    slug = board["meta"]["slug"]
+    return EA.city_for(slug if slug.startswith("uk-locations/") else "uk-locations/" + slug)
+
+
+def _geo_text(text):
+    return DOTTED_UK.sub("UK", BRAND_NAME.sub(" ", text or ""))
+
+
+def names_geo(text, city):
+    """True when `text` names the page's geo: its own city (evidence_audit.city_pattern) on a
+    city page, UK on a national one. The brand never counts; U.K. is UK. A section's planned
+    `geo` terms are not accepted on their own: the only one that could count is the city
+    itself, which the city pattern already matches."""
+    t = _geo_text(text)
+    if city:
+        return bool(_re.search(EA.city_pattern(city), t, _re.I))
+    return KM.norm_phrase_count(NATIONAL_GEO, t) > 0
+
+
+def _short(text, n):
+    text = " ".join((text or "").split())
+    return text if len(text) <= n else text[:n - 1].rstrip() + "…"
+
+
+def _h2_list(headings):
+    shown = ", ".join(repr(_short(h, H2_TEXT_MAX)) for h in headings[:H2_LIST_MAX])
+    more = len(headings) - H2_LIST_MAX
+    return (shown or "none") + (f" … +{more} more" if more > 0 else "")
+
+
+@register
+def geo_token(board, ont):
+    """A location page names its geo — its own city, or UK on a national page — in at least
+    one body H2 and in the picked (or recommended) meta description: the token that decides a
+    local query's retrieval."""
+    if board["meta"]["page_type"] != "location":
+        return
+    import pageboard as PB   # lazy, as keyword_metrics does: pageboard imports this module
+    city = page_city(board)
+    want = f"the page's city {city!r}" if city else f"{NATIONAL_GEO!r} (a national page)"
+    home = [h for h in _home_geo() if not (city and names_geo(h, city))]
+
+    def home_note(texts):
+        hit = [h for h in home if any(_re.search(EA.city_pattern(h), t, _re.I) for t in texts)]
+        return (f"; {', '.join(hit)} {'is' if len(hit) == 1 else 'are'} the breeder's home "
+                "and does not count"
+                if hit else "")
+
+    heads = [s["heading"] for s in PS.body_sections(board)]
+    if not any(names_geo(h, city) for h in heads):
+        yield ("geo-token-missing", "WARN",
+               f"no body H2 names {want} — H2s read: {_h2_list(heads)}{home_note(heads)}")
+    _, desc = PB.meta_pick(board)
+    if not names_geo(desc, city):
+        yield ("geo-token-missing", "WARN",
+               f"the picked (or recommended) meta description does not name {want}"
+               f"{home_note([desc])}")
+
+
+def _keyword_types(section):
+    """{type: [terms]} for the section's header keyword types: `brand` left out, blank terms
+    dropped, and a type whose normalised terms repeat an earlier type's counted once."""
+    seen, out = set(), {}
+    for k, vals in section["keywords"].items():
+        if k == "brand":
+            continue
+        terms = [t for t in vals if KM.norm_words(t)]
+        key = frozenset(tuple(KM.norm_words(t)) for t in terms)
+        if key and key not in seen:
+            seen.add(key)
+            out[k] = terms
+    return out
+
+
+@register
+def two_keyword_header(board, ont):
+    """Every body section carries at least two keyword types, and its H2 names a term of at
+    least one of them (the SEO master checklist's Two-Keyword Headers)."""
+    for s in PS.body_sections(board):
+        types = _keyword_types(s)
+        if len(types) < 2:
+            yield ("two-keyword-header", "WARN",
+                   f"section {s['id']!r} carries {len(types)} keyword type"
+                   f"{'' if len(types) == 1 else 's'} ({', '.join(types) or 'none'}) — a body "
+                   "header is planned on two")
+            continue
+        if not any(KM.norm_phrase_count(t, s["heading"]) for ts in types.values() for t in ts):
+            yield ("two-keyword-header", "WARN",
+                   f"section {s['id']!r}: the H2 {s['heading']!r} carries none of its own "
+                   f"{', '.join(types)} terms")

@@ -67,7 +67,7 @@ Produce a complete Page Outline document in this exact format and STOP:
 #### C. Keyword Distribution (Section by Section)
 | Section # | Section Heading | Primary KW | LSI KWs | Longtail KWs | NLP/Conv. | Comparison | Word Count |
 |---|---|---|---|---|---|---|---|
-[One row per section; total row at bottom must hit 85–105× per Rule 18]
+[One row per section; total row at bottom stays at or under 105 per Rule 18 — a ceiling, no floor]
 
 #### D. Special Elements Plan (positions from competitor research)
 | Element Type | Section Position | Why Here |

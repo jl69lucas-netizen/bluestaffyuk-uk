@@ -18,7 +18,10 @@ from ingest_image import (PICK, Refused, default_stem, draft, file_sha, folder,
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 DAY = datetime.date(2026, 9, 24)
-SLUG = "uk-locations/blue-staffy-leeds"
+# A page built before project 5: style B (blurfill) is retired for new pages (user ruling
+# 2026-09-26, tests/py/test_no_blurfill_bleed.py) and kept only for these, so the B cases
+# below exercise the frozen-page path.
+SLUG = "blue-staffy-health-uk"
 STEM = "blue-staffy-puppy-garden-carlisle"
 
 
@@ -197,7 +200,7 @@ def test_default_stem_and_slug_file():
     assert [default_stem(n) for n in NAMES] == ["roman1", "defra-pet-transport-process",
                                                 "blue-staffy-for-sale-uk", "christa",
                                                 "sbt-history-v2", ""]
-    assert slug_file(SLUG) == "uk-locations--blue-staffy-leeds"
+    assert slug_file("uk-locations/blue-staffy-leeds") == "uk-locations--blue-staffy-leeds"
 
 
 def test_the_names_match_the_candidates_script(tmp_path):

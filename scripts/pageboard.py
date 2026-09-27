@@ -905,9 +905,11 @@ def _is_specimen(rel):
     return DUP.is_specimen("" if rel == "." else rel)
 
 
-def live_headings(dist=DIST):
+def live_headings(dist=None):
     """{page: [heading text, ...]} from every built page, minus the specimen routes.
-    Empty when dist/ is absent."""
+    Empty when dist/ is absent. DIST is read at call time, like built_page(), so a test
+    can point it elsewhere."""
+    dist = DIST if dist is None else dist
     out = {}
     for page in sorted(pathlib.Path(dist).glob("**/index.html")):
         rel = page.parent.relative_to(dist).as_posix()
@@ -1555,6 +1557,14 @@ PERF_DIR = ROOT / "data" / "quality" / "perf"
 PERF_PROFILES = ("mobile", "desktop")
 
 
+def _perf_failed(rec, check, score=False):
+    """One failed item of a perf record. CLS is not a 0-1 category score, so it shows the
+    warm CLS median from the record's `cls` block, never a median x 100 that is not there."""
+    if check == "cumulative-layout-shift":
+        return f"{check} (CLS median {(rec.get('cls') or {}).get('median')})"
+    return f"{check} {round((rec.get('median') or {}).get(check, 0) * 100)}" if score else check
+
+
 def perf_findings(slug, stage, perf_dir=None, dist_page=None):
     """PageSpeed at release: 100 in all five categories (scripts/perf_audit.py records).
 
@@ -1574,18 +1584,18 @@ def perf_findings(slug, stage, perf_dir=None, dist_page=None):
     for prof in PERF_PROFILES:
         local, psi = read(f"{slug}--{prof}"), read(f"{slug}--{prof}--psi")
         if local is None:
-            add("perf-record-missing", "FAIL", f"no {prof} perf record — python3 scripts/perf_audit.py {slug}{' --mobile' if prof == 'mobile' else ''} --runs 3")
+            add("perf-record-missing", "FAIL", f"no {prof} perf record — python3 scripts/perf_audit.py {slug}{' --mobile' if prof == 'mobile' else ''} (5 runs, the default)")
         else:
             if dist_page.exists() and local.get("dist_mtime", 0) < dist_page.stat().st_mtime:
                 add("perf-record-stale", "FAIL", f"{prof} perf record predates the current build — re-run perf_audit.py")
             judged = [c for c in local.get("failed", []) if not (prof == "mobile" and c == "performance")]
             if judged:
-                add("perf-below-100", "FAIL", f"{prof} (dist) under 100: {', '.join(judged)}")
+                add("perf-below-100", "FAIL", f"{prof} (dist) under 100: {', '.join(_perf_failed(local, c) for c in judged)}")
         if psi is None or (local is not None and psi.get("measured_at", "") < local.get("measured_at", "")):
             add("perf-psi-pending", "WARN", f"{prof}: confirm on PageSpeed after deploy — perf_audit.py {slug} --psi{' --mobile' if prof == 'mobile' else ''}")
             continue
         if psi.get("failed"):
-            got = ", ".join(f"{c} {round((psi.get('median') or {}).get(c, 0) * 100)}" for c in psi["failed"])
+            got = ", ".join(_perf_failed(psi, c, score=True) for c in psi["failed"])
             add("perf-psi-below-100", "FAIL", f"{prof} on PageSpeed under 100: {got}")
         if psi.get("edge_blocking"):
             add("perf-edge-injected", "FAIL", f"{prof}: Cloudflare injects scripts dist/ never ships: {', '.join(psi['edge_blocking'])}")
@@ -1655,6 +1665,25 @@ def freshness_inputs(root, slug=None):
             yield base
         elif base.is_dir():
             yield from (f for f in base.rglob("*") if f.is_file())
+    # Known Issue 63: a page whose route sits under a parent (a city page is built at
+    # uk-locations/<slug>) is rendered by the parent's dynamic route file, never by a
+    # src/pages/<slug>/ of its own. Every `[...]` file in the parent directory is one of its
+    # sources; the parent's own index.astro renders the hub, not this page.
+    # Two cases this still does not cover: (1) a top-level page rendered by the root catch-all
+    # src/pages/[...post].astro — its route has no parent, and counting the catch-all for
+    # every top-level page would mark the rebuilt pages (which have their own
+    # src/pages/<slug>/) stale on an edit that cannot reach them; (2) a data file below a
+    # data/ subdirectory (data/verbatim/, data/queries/…) that a template reads — only the
+    # top-level data/*.json are counted.
+    try:
+        _, route = _resolve_page(slug, root)
+    except ValueError:
+        route = slug
+    if "/" in route:
+        parent = root / "src" / "pages" / route.rsplit("/", 1)[0]
+        if parent.is_dir():
+            yield from (f for f in sorted(parent.iterdir())
+                        if f.is_file() and f.name.startswith("["))
     for rel in FRESHNESS_SHARED:
         base = root / rel
         if base.exists():

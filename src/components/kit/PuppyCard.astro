@@ -10,12 +10,19 @@
 //
 // Brass is a FILL here (the price chip carries --color-cta-ink), never a text colour on
 // the bone card: it is 2.1:1 there.
+//
+// THE DELIVERY LINE (rules/puppies.md `delivery-band-on-every-card`; CAG parity audit D4).
+// A card never ships without what it costs to get the puppy home, in the pack's canonical
+// words: "UK home delivery £200–£350 by distance · or collect in Carlisle". The band and the
+// town are data/settings.json's, so the card cannot disagree with the price table or the
+// FAQ. The line is a whitelisted stem in scripts/dup_content_audit.py (it repeats on every
+// page that mounts a card, by design). tests/py/test_puppy_card_delivery.py.
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import { puppyImage } from '../../lib/puppyImages';
 import Button from './Button.astro';
 import pups from '../../../data/puppies.json';
-import type { PuppyRow } from '../../lib/site';
+import { SITE, gbp, type PuppyRow } from '../../lib/site';
 type Props = HTMLAttributes<'article'> & { slug?: string };
 const { slug = 'roman', class: cls, ...rest } = Astro.props;
 const list = pups as PuppyRow[];
@@ -24,6 +31,8 @@ const img = puppyImage(p.card_photo);
 const price = `£${p.price_gbp.toLocaleString('en-GB')}`;
 const avail = p.status === 'Available';
 const href = `/available-puppies/${p.slug}/`;
+const delivery = `UK home delivery £${gbp(SITE.delivery_min_gbp)}–£${gbp(SITE.delivery_max_gbp)} `
+  + `by distance · or collect in ${SITE.address.city}`;
 ---
 <article {...rest} class:list={['kit-card', 'kit-card--lift', 'kit-pup', cls]}>
   <a href={href} class="photo" tabindex="-1">
@@ -44,6 +53,7 @@ const href = `/available-puppies/${p.slug}/`;
       <span class="kit-chip strong">{price}</span>
       <span class:list={['kit-chip', avail && 'ok']}>{p.status}</span>
     </p>
+    <p class="deliv">{delivery}</p>
     <Button kind="primary" href={href} label={`Ask about ${p.name}`} />
   </div>
 </article>
@@ -65,5 +75,7 @@ const href = `/available-puppies/${p.slug}/`;
     .meta { margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
     .kit-chip.strong { background: var(--color-cta-soft); color: var(--color-cta-ink); }
     .kit-chip.ok { color: var(--color-ok); }
+    /* --color-text-muted on the raised card is a measured pair in data/design/contrast.json. */
+    .deliv { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
   }
 </style>

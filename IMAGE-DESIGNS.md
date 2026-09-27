@@ -165,19 +165,23 @@ baked style centres the dog full-height, so a later mobile cover crop only trims
 
 | Id | Name | Engine | When to use | Whole dog? |
 |---|---|---|---|---|
-| `A` | Contain on Bone | `--style contain` | wide shots, scenes, or when a blur behind the dog reads busy | yes |
-| `B` | Blur-Fill | `--style blurfill` | the default for any single-dog portrait OG photo | yes |
+| `A` | Contain on Bone | `--style contain` | the default for any in-body photo on a new page, portraits included: wide shots, scenes, single dogs | yes |
+| `B` | Blur-Fill | `--style blurfill` | social OG images only; the twelve built pages' existing in-body images | yes |
 | `C` | Editorial Split | CSS component, master baked native | a "meet the puppy" moment: photo beside a steel caption panel | yes |
 | `D` | Portrait Frame | CSS component, master baked native | a matted 3:4 portrait inside the 16:9 box | yes |
 | `E` | Top-Anchored Cover | `--style topcover` | a photo that should fill the box; the head is never cut, paws may crop | head-safe |
 | `H` | Duo Strip | CSS component, two masters baked native | two puppies or a pair, two portraits side by side | yes |
 
-**Mobile counterparts** (full-bleed, taller): **mA** 4:5 top-cover · **mB** 4:5 contain ·
-**mC** 4:5 blur-fill (matches B) · **mG** stacked two-up (matches H) · **mH** 3:4 top-cover.
+**Style `B`:** Retired for in-body images on new pages (user ruling 2026-09-26: bleeds use design colours — bone — never a blurred/grey/black bed). Social OG only. `scripts/ingest_image.py` refuses `--og-style B` for any page not in `BUILT_BEFORE_SYSTEM_GAPS` (`scripts/family_rules.py`), and board block 7 does not offer it there.
 
-**Standing default:** a single-dog or pair portrait is baked with
-`--style blurfill --mobcrop 4:5`, which keeps the sharp dog inside both the desktop 16:9 box
-and a mobile 4:5 crop, so it is never clipped at either width. A wide scene or an infographic
+**Mobile counterparts** (full-bleed, taller): **mA** 4:5 top-cover · **mB** 4:5 contain ·
+**mC** 4:5 blur-fill (matches B; retired for new pages, user ruling 2026-09-26 — use mB, 4:5 contain on bone, instead) · **mG** stacked two-up (matches H) · **mH** 3:4 top-cover.
+
+**Standing default:** a single-dog or pair portrait on a new page is baked with
+`--style contain` (Style `A`), which keeps the whole dog centred full-height over the bone
+gradient, so a desktop 16:9 box or a mobile 4:5 crop only trims bone, never the dog, and the
+bleed is always a design-system colour. The twelve built pages keep their existing
+`--style blurfill --mobcrop 4:5` images. A wide scene or an infographic
 keeps the standard 16:9 box and is never forced into 4:5.
 
 ---

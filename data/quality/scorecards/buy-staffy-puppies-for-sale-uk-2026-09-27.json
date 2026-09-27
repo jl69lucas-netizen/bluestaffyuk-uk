@@ -1,0 +1,136 @@
+{
+  "slug": "buy-staffy-puppies-for-sale-uk",
+  "date": "2026-09-27",
+  "page_type": "for-sale",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 31
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1260,
+    "layout-tap-target-size": 245,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 3,
+    "layout-image-box-reserved": 2,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "img-srcset-within-2x": 60,
+    "img-alt-present-and-unique": 60,
+    "img-sizes-matches-box": 0,
+    "nav-anchors-resolve": 213,
+    "nav-jump-target-lands": 51,
+    "nav-bottom-chrome-clear": 34,
+    "sem-heading-order": 276,
+    "sem-all-six-levels": 276,
+    "sem-title-case-headings": 276,
+    "sem-section-opening-paragraph": 276,
+    "sem-statement-label-visible": 24,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 18,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 2076,
+    "css-no-dead-component-rule": 990,
+    "css-component-color-not-overridden": 79,
+    "dup-no-sibling-crossover": 180,
+    "a11y-text-contrast-aa": 1221,
+    "a11y-no-duplicate-ids": 93,
+    "a11y-hero-ledge-contrast": 12,
+    "form-inquiry-contract": 3
+  },
+  "defects": {
+    "LAYOUT": 3,
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "LAYOUT": 3,
+    "CSS": 228,
+    "DUP": 24
+  },
+  "total": 12,
+  "total_instances": 255,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "layout-h3-image-first",
+      "count": 1,
+      "message": "1 H3 block(s) put prose before their image: What KC Registered Staffy Bull Puppies Are for Sal"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x14, bl-list-stack x12, bl-head-above x10, bl-cols-1 x9, bl-media-none x8, bl-head-eyebrow x3, counter-wrap x1, bl-aside-infocard x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 68,
+      "message": "68 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 8,
+      "message": "8 passage(s) shared with a sibling: 17w vs /kit-preview/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /kit-preview/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /kit-preview/ \"how can i tell if my puppy is an american or an english staffy\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "layout-h3-image-first",
+      "count": 1,
+      "message": "1 H3 block(s) put prose before their image: What KC Registered Staffy Bull Puppies Are for Sal"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x14, bl-list-stack x12, bl-head-above x10, bl-cols-1 x9, bl-media-none x8, bl-head-eyebrow x3, counter-wrap x1, bl-aside-infocard x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 68,
+      "message": "68 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 8,
+      "message": "8 passage(s) shared with a sibling: 17w vs /kit-preview/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /kit-preview/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /kit-preview/ \"how can i tell if my puppy is an american or an english staffy\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "layout-h3-image-first",
+      "count": 1,
+      "message": "1 H3 block(s) put prose before their image: What KC Registered Staffy Bull Puppies Are for Sal"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x14, bl-list-stack x12, bl-head-above x10, bl-cols-1 x9, bl-media-none x8, bl-head-eyebrow x3, counter-wrap x1, bl-aside-infocard x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 68,
+      "message": "68 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 8,
+      "message": "8 passage(s) shared with a sibling: 17w vs /kit-preview/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /kit-preview/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /kit-preview/ \"how can i tell if my puppy is an american or an english staffy\""
+    }
+  ]
+}

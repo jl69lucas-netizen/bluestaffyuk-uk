@@ -85,7 +85,7 @@ wherever the band is stated (`rules/puppies.md` `delivery-band-on-every-card`).
 ## Gates — run them in this order
 
 ```bash
-npx astro build
+npm run -s build
 python3 scripts/form_contract_audit.py --json /tmp/bsuk-forms.json   # every page in dist/, exit 1 on any miss
 npm run test:render:pages                                            # harness, incl. the FORM family
 ```

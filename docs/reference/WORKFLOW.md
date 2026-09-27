@@ -2,6 +2,8 @@
 
 > **Read this before starting any new page, sprint, or monitoring cycle.**
 > This is the authoritative end-to-end sequence for every agent in `.claude/agents/`.
+> **Building one project 5 page?** Walk `docs/reference/page-run.md` top to bottom: it is this
+> pipeline as one ordered run per page, each row backed by a command and a gate.
 
 The 7-sprint model is domain-neutral and stands as written. What changed in the project 2
 re-base is the cast. The agent roster is whatever `data/agent-registry.json` lists —
@@ -174,7 +176,7 @@ SESSION CONTEXT:
 - Component Style: [informational 760px | transactional 1200px | hybrid]
 - Visual Plan: [section → type mapping, or "decide during build"]
 - Audit Status: [complete | pending → run bsuk-content-audit-agent first]
-- LLM Visibility: [0–10 score | "not measured" → run bsuk-llm-keyword-intel]
+- LLM Visibility: [cited | not cited | NOT FETCHED — <reason> (`bsuk_cited` in docs/research/llm-intel/<slug>-<date>.json) | "not measured" → run bsuk-llm-keyword-intel]
 - Page Record: [existing page — its row in data/page-map.json, the extractor's record of the old site | new page — no page-map row; its board data/boards/<slug>.json, written first]
 - Hub Page: [/url/ of parent hub | "needs to be built first"]
 - Internal Links Needed: [from workflow gate check, or "TBD after audit"]
@@ -189,6 +191,8 @@ Before proceeding to Sprint 0.5:
 
 ## Sprint 0.5 — Session Orientation
 *Run once per page build, after Sprint 0 Gate passes. grill-me now runs here — with full intelligence data loaded.*
+
+**Session open for a project 5 page (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → the page type's builder skill (`docs/reference/page-run.md` row 1), each invoked with the Skill tool by name.
 
 ```
 grill-me skill
@@ -428,8 +432,15 @@ moment Harden becomes a bullet, it becomes the bullet that gets skipped.*
 
 **REQUIRED SKILL:** `bsuk-page-hardening` (v2.0) · **REQUIRED FIRST:** `bsuk-gate-integrity`
 
+**REQUIRED ON EVERY PROJECT 5 PAGE (the user's ruling, 2026-09-26):** invoke the
+`impeccable:impeccable` skill, then the `frontend-design:frontend-design` skill, with the Skill
+tool (never paraphrased, never skipped) on the built page at 375 / 768 / 1280 in a painting
+browser. A pass that proposes a visual change is previewed before it is applied (working rule
+6); the palette never changes. Each pass is recorded in the page's run record
+(`docs/reference/page-run.md`, rows 14 and 15).
+
 ```
-0. npx astro build                      ← nothing below works on a stale dist/
+0. npm run -s build                      ← nothing below works on a stale dist/
 
 1. python3 scripts/page_hardening_scan.py <slug>
    → 21 static checks. ERROR = shipped-broken. WARN = eyeball it.
@@ -493,14 +504,14 @@ it to us*.
 ```
 python3 scripts/aeo_audit.py <slug>
   → ERROR: no dateModified in JSON-LD · any VISIBLE date (banned)
-  → WARN:  no binomial · no breeder-name entity · no brand-owned method label
+  → WARN:  no binomial · no breeder-name entity
            · pronoun-heavy · buried answers (PROXY, read them) · no stat header
 ```
 
 - [ ] Zero ERROR from `scripts/aeo_audit.py`
 - [ ] `python3 scripts/generate_page_dates.py --check` current, map committed
 - [ ] Facts correct: **LICENCE_CLAIM_PLACEHOLDER** · **£1,500 / £1,700** · **£500 refundable deposit** · guarantee length is not established, so no guarantee is written
-- [ ] One of the two approved method labels present and defined
+- [ ] No invented house-method name on the page (the breeder has never given one)
 - [ ] Part 2 (atomic sections) checked BY HAND — three sections read in isolation
 
 ---
@@ -511,8 +522,13 @@ python3 scripts/aeo_audit.py <slug>
 **REQUIRED SKILL:** `bsuk-final-page-pass` — THE final gate for EVERY page type,
 including the puppy `/available/` and for-sale pages the old interior gate excluded.
 
+**REQUIRED BEFORE ANY "PAGE DONE" CLAIM (the user's ruling, 2026-09-26):** invoke the
+`superpowers:verification-before-completion` skill with the Skill tool (never paraphrased,
+never skipped) at the end of this sprint, before a page is called done or ready for approval,
+and record what it ran in the page's run record (`docs/reference/page-run.md`, row 18).
+
 ```
-1. npx astro build
+1. npm run -s build
 2. python3 scripts/final_page_audit.py [--puppies]
    → page-type-aware, nested-slug aware. SUPERSEDES the source repo's interior audit, which was never ported.
    → headings: all six levels, no skipped levels, Title Case; ≥5 H5/H6 advisory on homepage + location pages (2026-09-09)
@@ -615,7 +631,7 @@ bsuk-llm-keyword-intel <slug>
               scripts, intrinsic image sizes) in src/, never dist/
    → Measures with python3 scripts/perf_audit.py <slug>, then again with --mobile: Lighthouse on
               dist/, five categories (Performance, Accessibility, Best Practices, SEO, Agentic Browsing)
-   → Target: every category's median score over the runs ≥0.995 (the 100 PageSpeed Insights shows);
+   → Target: every category's warm median (runs 2–5 of the default five) ≥0.995 (the 100 PageSpeed Insights shows);
               --psi is the record that counts, and it refuses until project 6 sets a real SITE_URL
 
 3. bsuk-canonical-fixer  ← CRITICAL — NEVER SKIP
@@ -694,9 +710,14 @@ bsuk-llm-keyword-intel <slug>
 *The step that makes the next page cheaper. Skipping it is why three of the 2026-07-28
 lessons never reached the skill that enforces them.*
 
+Before the gate report says PASS, invoke the `superpowers:verification-before-completion`
+skill again with the Skill tool (the user's ruling, 2026-09-26): every PASS in the report is a
+command run in this session, with its output read.
+
 ```
 1. session-closer skill        → fill the brief's What's Next
-2. Write the lessons doc       → a dated file under docs/superpowers/sessions/
+2. Write the lessons           → the project's gate report, docs/reports/<project>-gate-report.md,
+                                 under `## Open items` (a live defect also gets a Known Issue)
 3. BACK-PROPAGATE every lesson into the artifact that ENFORCES it:
      a render defect      → a check in scripts/page_hardening_scan.py + a RED test
      a gate that lied     → .claude/skills/bsuk-gate-integrity/SKILL.md
@@ -837,8 +858,8 @@ full `ls data/`.
 | `data/settings.json` | Manual | the build | Rare |
 | `data/quality/rule-index.json` | Manual | `scripts/quality_report.py` | New or retired rule |
 | `data/quality/evidence-budgets.json` | Manual | `scripts/evidence_audit.py` | Budget changes |
-| `data/quality/evidence-ledger.json` | evidence-pass | `scripts/evidence_audit.py` | Per claim — empty today |
-| `data/quality/rework-ledger.json` | learning-loop | `scripts/quality_report.py` | Per rework window — empty today |
+| `data/quality/evidence-ledger.json` | evidence-pass | `scripts/evidence_audit.py` | Per claim — one row today, `parents-dna-clear` at proof NOT FETCHED (Known Issue 68) |
+| `data/quality/rework-ledger.json` | learning-loop (appended by hand; the source repo's writer was not ported) | `scripts/quality_report.py` | Per rework window — empty today |
 | `data/boards/` | the page-type builder (the record, `schemas/board.schema.json`), `scripts/board_approve.py` (the approval) | `scripts/build_page_board.py` (renders the board Artifact), `scripts/board_gate.py` | Per page board |
 
 ---
@@ -876,7 +897,7 @@ Retired on 2026-09-07: the `<!-- EFFORT:START/END -->` prose directive (the nati
 9. **Canonical Before Deploy** — `bsuk-canonical-fixer` must run before every deploy. Relative canonicals = zero indexing.
 10. **Data Files Are Truth** — Never fabricate data. All claims come from data files, real page fetches, or direct breeder input. GSC and GA4 are NOT FETCHED, so nothing may be sourced from them.
 11. **Phone Number Policy (Rule 61)** — Phone number PHONE_PLACEHOLDER appears ONLY in the footer and schema markup. All body copy CTAs must link to `/contact-us/` form — never display or link a phone number in page body content.
-12. **Image Rules Lookup Required** — Before any image generation or infographic work, read `rules/images.md` for the sizing and placement rules of the current page type, and `data/image-manifest.json` for the dimensions of the images that exist.
+12. **Image Rules Lookup Required** — Before any image generation or infographic work, read `rules/images.md` for the sizing and placement rules of the current page type, and `data/image-manifest.json` for the dimensions of the images that exist. In-body image bleed uses design colours (bone), never grey or black; new portraits are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user ruling 2026-09-26, rules/images.md.
 13. **Project 5 page rules (system-gaps)** — Every location, comparison and blog-post board runs, in Sprint 1 before it is boarded: `python3 scripts/keyword_variants.py <board slug or query-cache folder>` (the four extra keyword types), `python3 scripts/ontology_seed.py --check` (every entity the outline names is in the ontology with a source), and `python3 scripts/image_candidates.py <slug> --write` (images for the hero and every body H2/H3). The board then shows the entities by class, the link diversity line and block 7 "Images & styles", and the gates `keyword-variants-missing`, `external-links-six-diverse`, `anchor-type-variation`, `anchor-reuse-sitewide`, `outline-heading-repeat` and the `image-*` checks hold it (`scripts/family_rules.py`). Block 7b lists them as approval will see them, and `scripts/board_approve.py` refuses approval, and any re-approval, while one FAILs — except the build-gate image checks (`image-generated-unapproved`, `image-generated-not-ingested`, `image-asset-not-ingested`, `image-existing-missing`, `image-pick-invalid`), which can only pass after the image is approved and published. A generated image is drafted with `scripts/ingest_image.py draft`, approved on a second pass of the same board, and published with `scripts/ingest_image.py publish`. After Sprint 2 builds the page, `npm run check:outline` (in `check:all`) proves it was written from its approved outline and shares no heading or passage with a sibling. `IMAGE-DESIGNS.md` governs every picture.
 
 ---
@@ -911,7 +932,7 @@ builds, and `npm run sitemaps` (the build's postbuild) lists it.
 
 ### If any URL returns 404 after deploy:
 1. Check the page's own `index.astro` under `src/pages/` exists
-2. Run `npx astro build` locally — check for build errors
+2. Run `npm run -s build` locally — check for build errors
 3. Check `data/redirects.json` for a conflicting rule, then `python3 scripts/redirect_check.py`
 4. Check `astro.config.mjs` for route configuration
 

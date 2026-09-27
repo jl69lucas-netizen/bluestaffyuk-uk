@@ -27,7 +27,9 @@ image goes through the draft and publish commands of the `bsuk-image-generation`
 2. Check the dog against IMAGE-DESIGNS.md §0: a blue Staffordshire Bull Terrier, natural
    rose or half-pricked ears, nothing from the §3 negative list in frame (no spiked or chain
    collar, no aggression, no clutter). A photo that fails is not placed.
-3. Note its shape. Portrait or near-square → Style `B` (Blur-Fill) with `--mobcrop 4:5`.
+3. Note its shape. Portrait or near-square → Style `A` (Contain on Bone); Style `B`
+   (Blur-Fill) is retired for in-body images on new pages (user ruling 2026-09-26: no grey
+   or black bleed on phones) and `scripts/ingest_image.py` refuses it.
    Wide scene → `A` or `E`. Pair of puppies in two photos → `H`. A baked infographic →
    `--infographic IG-n`.
 
@@ -47,7 +49,7 @@ slot's `assets[]` row names another file. An SEO stem is almost always another n
 ## Phase 3: Ingest
 
 ```bash
-python3 scripts/ingest_image.py folder "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/Roman1.jpg" --stem blue-staffy-puppy-roman-garden-carlisle --og-style B --mobcrop 4:5 --board <slug> --slot <slot> --dry-run
+python3 scripts/ingest_image.py folder "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/Roman1.jpg" --stem blue-staffy-puppy-roman-garden-carlisle --og-style A --board <slug> --slot <slot> --dry-run
 ```
 
 Read the dry run, then run it again without `--dry-run`. It:

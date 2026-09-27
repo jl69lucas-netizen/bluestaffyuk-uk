@@ -25,6 +25,10 @@ the traffic.
 `check:*` is a pass/fail gate (non-zero exit blocks the work), `audit:*` writes a report and
 is read by a human, `test:*` runs a test suite or a measurement harness. `npm run check:all`
 chains every gate; nothing else is chained, so an audit can never silently gate a commit.
+`gate:page` is the one per-page runner: `npm run gate:page -- <slug>` runs every page gate for
+one page twice and diffs the runs (`rules/gates.md` `run-every-gate-twice`); without
+`--skip-record` it also checks the page-run record and re-runs `check:all` once itself, so a
+recorded exit code is never trusted. It is never chained into `check:all`.
 
 ## Deploy — inactive until project 6
 
@@ -78,10 +82,18 @@ capped at nine (`judgment_cap: 9`); a tenth exemption is a rule that has to earn
 | buy / for-sale | `bsuk-puppy-page-builder` | puppies, images, headings |
 | puppy `/available-puppies/<slug>/` | `bsuk-puppy-page-builder` | puppies, schema, images |
 | hub | `bsuk-site-patterns` | links, headings |
-| location | `bsuk-location-page-builder` | copy, links |
+| location | `bsuk-location-page-builder` | copy, links, images |
 | blog | `bsuk-blog-post` | headings, images |
 | about / contact | `bsuk-contact-form`, `bsuk-trust-signals` | copy, links |
 | comparison | `bsuk-comparison-page-builder` | images, headings, copy |
+
+**Every project 5 page (location, comparison, blog) walks `docs/reference/page-run.md`.** The
+session opens with `grill-me`, then the `superpowers:writing-plans` skill, then the builder
+skill above. After the build, the Harden sprint invokes the `impeccable:impeccable` skill, then
+`frontend-design:frontend-design`, on the built page at 375 / 768 / 1280 in a painting browser,
+and `superpowers:verification-before-completion` runs before any "page done" claim and again
+before a gate report says PASS. Each is invoked with the Skill tool by that name, never
+paraphrased and never skipped (the user's rulings, 2026-09-26).
 
 The generic skills already ported live at `.claude/skills/` — `grill-me`,
 `section-auditor`, `internal-link-agent`, `keyword-cluster`, `anti-ai-writing` and the
@@ -95,8 +107,8 @@ Rules 1–9 have **no mechanical decision procedure**, which is exactly why they
 delegated to a test and must stay in context. They are the nine `enforced: judgment` rows in
 `data/quality/rule-index.json`, and that file's `judgment_cap: 9` is what stops that list
 growing. Rules 10–17 are the breeder's standing working rules (2026-09-18 to 2026-09-24).
-Each has a row in the same file, keyed `claude_md`: 12, 14, 15, 16 and 17 are `enforced: test`
-and name the test behind their gate, 10, 11 and 13 are `untested`, and none is a judgment
+Each has a row in the same file, keyed `claude_md`: 12, 13, 14, 15, 16 and 17 are `enforced: test`
+and name the test behind their gate, 10 and 11 are `untested`, and none is a judgment
 row, so the cap is untouched. Every other rule moved to a pack.
 
 1. **First-person brand voice.** Write as Lisa Bright: *we / us / our / here at
@@ -126,7 +138,9 @@ row, so the cap is untouched. Every other rule moved to a pack.
    `dup-no-sibling-crossover`, but the rule is about method: a page copied and then reworded
    passes the test and still breaks the rule.
 9. **No fabricated claims.** Never invent credentials, prices, reviews, test results or
-   competitor metrics. Un-fetched data is written `NOT FETCHED`, never inferred. The
+   competitor metrics. Un-fetched data is written `NOT FETCHED — <barrier>` (what was tried
+   and what stopped it), never inferred; `npm run check:barriers` holds new and changed
+   board, query and research files to it. The
    guarantee length is `NOT FETCHED` — `data/settings.json` has `guarantee_days: null` and
    no page may state a number until the breeder gives one. An unconfirmed licence or statute
    claim is written `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER`, never asserted.
@@ -253,13 +267,18 @@ npm run test:render:pages
 ```
 
 `check:all` chains `check:parity`, `check:facts`, `check:links`, `check:verbatim`,
-`check:redirects`, `check:schema`, `check:queries`, `check:competitors`, `check:gaps`,
-`check:sitemaps`, `check:placeholders`, `check:workflow`, `check:markers` and `agents`, in
-that order (`tests/py/test_package_scripts.py` pins it). Every gate in the chain must be
+`check:outline`, `check:redirects`, `check:schema`, `check:queries`, `check:competitors`,
+`check:gaps`, `check:barriers`, `check:threads`, `check:sitemaps`, `check:placeholders`,
+`check:retired`, `check:boards`, `check:workflow`, `check:markers` and `agents`, in that order (`tests/py/test_package_scripts.py` pins the chain and
+`tests/py/test_doc_drift.py` pins this sentence to it). Run `npm run -s build` first: `check:boards` reads dist/ (an empty dist/ exits 2; a page older than its sources is a `dist-stale` WARN and its headings are read from the record tree instead). Every gate in the chain must be
 green. `test:render:meta` is the gate that checks the checkers — run it **before** trusting
 any page result. `test:render:pages` measures the target pages at 375/768/1280 in a real
-browser.
+browser and then, after every full run, pass or fail, runs `node scripts/build_scorecard.mjs`
+(`scripts/render_pages.mjs`), which fails a run where a registered check examined zero nodes
+and writes the scorecards `test:render:meta` reads back. A filtered, stopped-early or
+never-started run skips the scorecard and says why.
 
+Per page: `npm run gate:page -- <slug>` (every page gate, twice; `docs/reference/page-run.md`).
 Also: `python3 scripts/board_gate.py <slug>` · `python3 scripts/final_page_audit.py` ·
 `python3 scripts/page_hardening_scan.py` · `python3 scripts/dup_content_audit.py [--headers]` ·
 `python3 scripts/aeo_audit.py --all` · `python3 scripts/evidence_audit.py --all` ·
@@ -270,7 +289,8 @@ The page audits report only by default; pass `--fail-on-error` to make them exit
 and `--json` to write the machine-readable result under `docs/reports/`.
 
 **No page is built without an approved board.** `python3 scripts/board_gate.py <slug>`
-refuses when `data/boards/<slug>.json` is missing or unapproved;
+refuses when `data/boards/<slug>.json` is missing or unapproved (`npm run check:boards`, in
+`check:all`, runs it with `--all` over every page in `data/facts/rebuilt.json`);
 `python3 scripts/build_page_board.py <slug>` builds one and
 `python3 scripts/board_approve.py <slug>` records the approval. The homepage board
 (`data/boards/index.json`) is the worked example.
@@ -325,8 +345,10 @@ components are listed in `data/design/components.json`, and rebuilt pages render
 - `docs/reference/quick-start.md` — task → entry point, and the reference-doc index
 - `docs/reference/session-log.md` — build history and **Known Issues**
 - `docs/reference/WORKFLOW.md` — the sprint model
+- `docs/reference/page-run.md` — the ordered per-page run for a project 5 page: each brief
+  step, the command that does it, what it leaves on disk, the gate that fails and the stop
 - `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
-  A–J. That is a different count from `data/quality/rule-index.json`'s 79 (of which 9 are
+  A–J. That is a different count from `data/quality/rule-index.json`'s 81 (of which 9 are
   `enforced: judgment`, capped there): the ledger indexes the `rules/` packs, the
   render-harness checks and working rules 10–17; seo-rules.md numbers its own categories.
   `docs/reference/quick-start.md` states both, and all three files change together.

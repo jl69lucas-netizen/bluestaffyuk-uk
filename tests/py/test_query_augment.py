@@ -612,7 +612,7 @@ def test_build_writes_a_schema_valid_file(tmp_path):
     data = json.loads((root / "data/queries/m.json").read_text())
     jsonschema.validate(data, SCHEMA)
     assert data["sources"]["serp_google"] == "ok"
-    assert data["sources"]["serp_bing"] == "NOT FETCHED"
+    assert data["sources"]["serp_bing"] == "NOT FETCHED — no data/queries/raw/m/serp_bing.json"
     assert data["sources"]["bank"] == "ok"
     assert data["section_target"] == {"matched": 4, "set_by": "https://a.example",
                                       "extra": 3, "floor": 9, "total": 9}
@@ -842,7 +842,7 @@ def test_short_carries_the_blocked_list(tmp_path):
 def test_a_missing_bank_is_not_fetched(tmp_path):
     root = make_root(tmp_path)
     (root / "data/faq.json").unlink()
-    assert Q.bank_candidates(root) == ([], "NOT FETCHED")
+    assert Q.bank_candidates(root) == ([], "NOT FETCHED — no data/faq.json")
     assert Q.bank_candidates(make_root(tmp_path))[1] == "ok"
 
 
@@ -956,8 +956,10 @@ def test_cli_extract_h2_prints_the_json_list(tmp_path):
     r = subprocess.run([sys.executable, str(SCRIPT), "--extract-h2", str(f)],
                        capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
-    assert json.loads(r.stdout) == {"h2": ["21 Staffie Puppies For Sale In Manchester",
-                                           "Buyer's Advice"], "h2_all": 4, "blocked": False}
+    out = json.loads(r.stdout)
+    assert out.pop("metrics")["sections"][0]["h2"] == "21 Staffie Puppies For Sale In Manchester"
+    assert out == {"h2": ["21 Staffie Puppies For Sale In Manchester",
+                          "Buyer's Advice"], "h2_all": 4, "blocked": False}
     assert r.stderr == ""
 
 
@@ -1083,7 +1085,9 @@ def test_cli_extract_h2_warns_on_a_blocked_page_and_exits_0(tmp_path):
     r = subprocess.run([sys.executable, str(SCRIPT), "--extract-h2", str(f)],
                        capture_output=True, text=True)
     assert r.returncode == 0
-    assert json.loads(r.stdout) == {"h2": [], "h2_all": 0, "blocked": True}
+    out = json.loads(r.stdout)
+    assert out.pop("metrics")["sections"] == []
+    assert out == {"h2": [], "h2_all": 0, "blocked": True}
     lines = r.stderr.strip().splitlines()
     assert len(lines) == 1 and "blocked" in lines[0] and "cf.html" in lines[0]
 
@@ -1776,3 +1780,25 @@ def test_every_location_row_gets_a_clean_question():
     for r in rows:
         q = Q.location_question(r["city"])
         assert "(" not in q and "near UK" not in q, (r["slug"], q)
+
+
+# --- Task 21 review: a raw NOT FETCHED file must name its barrier ---------------------------
+
+def test_a_raw_not_fetched_file_without_a_reason_is_bad_input(tmp_path):
+    root = make_root(tmp_path)
+    seed(root)
+    write_raw(root, "m", "threads", {"source": "threads", "status": "NOT FETCHED", "questions": []})
+    with pytest.raises(Q.BadInput, match="reason"):
+        Q.load_candidates("m", root)
+
+
+def test_load_competitors_returns_its_status_without_touching_the_record(tmp_path):
+    root = make_root(tmp_path)
+    d, status = Q.load_competitors("m", root)
+    assert status == "NOT FETCHED — no data/queries/raw/m/competitors.json" and d["pages"] == []
+    write_raw(root, "m", "competitors", {"status": "NOT FETCHED",
+                                         "reason": "every result page refused the scraper",
+                                         "pages": []})
+    d, status = Q.load_competitors("m", root)
+    assert status == "NOT FETCHED — every result page refused the scraper"
+    assert d["status"] == "NOT FETCHED"

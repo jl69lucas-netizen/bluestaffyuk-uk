@@ -186,6 +186,31 @@ def build():
     return routes, skipped, None
 
 
+def derive_routes(root=None):
+    """build()'s routes for another checkout (a test's tmp repo), in-process: every helper
+    reads the module's ROOT, so it is pointed at `root` for the call and restored after.
+    Raises NoGit as build() does."""
+    global ROOT
+    saved = ROOT
+    ROOT = pathlib.Path(root) if root is not None else ROOT
+    try:
+        return build()[0]
+    finally:
+        ROOT = saved
+
+
+def is_current(root=None):
+    """True when <root>/data/page-dates.json holds exactly the routes a fresh derivation from
+    committed history gives — the --check test, in-process. An unreadable map, or no git, is
+    not current. scripts/page_run_record.py dirty_tracked sets the map aside only then."""
+    base = pathlib.Path(root) if root is not None else ROOT
+    try:
+        old = json.loads((base / "data" / "page-dates.json").read_text(encoding="utf-8"))["routes"]
+        return old == derive_routes(base)
+    except (NoGit, OSError, ValueError, KeyError, TypeError):
+        return False
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Generate data/page-dates.json from git history.")
     mode = ap.add_mutually_exclusive_group()

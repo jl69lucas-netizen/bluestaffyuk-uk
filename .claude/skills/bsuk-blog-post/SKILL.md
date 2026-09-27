@@ -13,6 +13,8 @@ THIS PAGE CONTAIN THE CHATGTP RESEARCH WORK DONE FOR ALL BLOG POST AND HUB PAGES
 
 ## BlueStaffyUK Blog System (binding)
 
+**Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
+
 > **Precedence:** `CLAUDE.md` and the rule packs in `rules/` win over this file; where they are silent, the sections below are the method. The source repo's blog-cluster spec was **not ported — source repo only**.
 
 ### 1. 14-Step Section Architecture + Special-Element Slots
@@ -103,6 +105,26 @@ does not replace it.
 
 ### 5. Baked-in Gates (non-negotiable, every blog page)
 
+The gates are rows 12 to 21 of `docs/reference/page-run.md`, in that order; that file is the
+authority. In short: `npm run -s build` → `npm run -s check:all` → `python3 scripts/board_gate.py <slug>`
+(and the slug in `data/facts/rebuilt.json`, the page in `tests/render/targets.json`) →
+`npm run test:render:meta` → `npm run test:render:pages` (row 13, BEFORE Harden) → the two
+Harden passes (rows 14–15) → `python3 scripts/page_hardening_scan.py <slug> --fail-on-error`
+(row 16) → commit, `npm run -s build` again (the prebuild re-dates the page from that commit), then
+`npm run gate:page -- <slug> --skip-record` (row 17: dup, final audit on profile `blog`,
+hardening, AEO, evidence and the board gate, each run twice) → the verification record, committed,
+then `npm run gate:page -- <slug>` (row 18) → `python3 scripts/measurement_ledger.py <project> --slugs <slug>` (row 19).
+
+**Mandatory on every project 5 page (the user's rulings, 2026-09-26).** After the render gates
+(row 13), invoke the `impeccable:impeccable` skill, then the
+`frontend-design:frontend-design` skill, with the Skill tool (never paraphrased, never skipped),
+on the built page at 375 / 768 / 1280 in a painting browser; commit each pass's fixes and record
+it (`python3 scripts/page_run_record.py <slug> impeccable --findings <n> --fixed <n>`, then
+`frontend-design`). A pass that proposes a visual change is previewed before it is applied
+(working rule 6), and the palette never changes. Before any "page done" or "ready for approval"
+claim, invoke the `superpowers:verification-before-completion` skill and record it with
+`python3 scripts/page_run_record.py <slug> verification` (page-run.md row 18 steps).
+
 - **Heading Outline Gate** — present full H1→H6 outline (all six levels, sequential, ≥5 H5 AND ≥5 H6) + get explicit approval **BEFORE any page code**. No skipped levels. See `rules/headings.md` (`heading-hierarchy-outline-gate`); the rule moved out of CLAUDE.md on 2026-08-02. For a post, `scripts/final_page_audit.py` exempts the six-level outline, the ≥5 H5 / ≥5 H6 floor and the FAQPage check (`POST_EXEMPT_CHECKS`), so that floor is checked by hand at this gate.
 - **Line-icons not emoji** — Coat-style SVGs (`1em`, `currentColor`). Keep only ✔ ✗ ★ text glyphs. Never use 💡 ⚠ or any pictograph emoji.
 - **Delivery line on every card** — `UK home delivery by DEFRA-approved transport, priced by distance, £200–£350 · or collect in Carlisle`. Pull from `data/settings.json` (as §1 step 11) and `data/price-matrix.json`. No hardcoded figures.
@@ -173,6 +195,8 @@ Layer these onto the 14-step architecture — they are how we beat commodity + A
 
 **Placeholder-first (default).** Build the page with image constants + `<figure>` slots wired to **exact final paths**, but treat every generated asset as a PLACEHOLDER until the breeder confirms design/size. Existing photos are reused at their `/images/…` URLs (`CLAUDE.md` rule 11); a new photo or infographic the breeder supplies becomes a new master under `src/assets/`, served through `astro:assets` (§7 A). A manifest in the strategy doc lists every image the post uses — its `/images/…` URL or its `src/assets/` path. **Do NOT commit while any referenced image 404s** — build, then confirm every referenced file is in `dist/`.
 
+In-body image bleed uses design colours (bone), never grey or black; new portraits are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user ruling 2026-09-26, rules/images.md.
+
 **Asset categories & sizes** (art direction from `rules/images.md` + `rules/design.md`; palette steel blue `#1F3A52` (= `--color-brand`), brass `#C9A227` (= `--color-cta`), bone `#F4F1EA` (= `--color-surface`); type Fraunces headings, Source Sans 3 body; line icons, no emoji/logos/other species/visible price overlays):
 | Category | Per post | Source | On-page render |
 |---|---|---|---|
@@ -188,7 +212,7 @@ Box sizes, crop and encode quality: `rules/images.md`. `img-srcset-within-2x` an
 2. **Fix CLS** — set each `<img width/height>` to the file's **native ratio** (don't trust the placeholder's guessed dims). Verify in preview that displayed ratio ≈ native ratio (no stretch).
 3. **The hero is the kit `Hero`**, fed the post's `featured_image` and `featured_image_alt`; hero dimensions, a `srcset` or a `src/assets/` hero need the §1 route change first (§7 A).
 4. **Add a visual to every long visual-less H2/H3** — the breeder's rule: tall/important sections must carry an image; weave real OG photos into them.
-5. **Rebuild** (`npx astro build`) → confirm every referenced `.webp` exists in `dist/` (grep the built HTML, fail on any missing) → **`python3 scripts/final_page_audit.py --blog`** must PASS → preview-verify images 200 + ratios → then commit.
+5. **Rebuild** (`npm run -s build`) → confirm every referenced `.webp` exists in `dist/` (grep the built HTML, fail on any missing) → **`python3 scripts/final_page_audit.py --blog`** must PASS → preview-verify images 200 + ratios → then commit.
 
 ### 11. Universal Special-Element Boxes (reuse on every page)
 

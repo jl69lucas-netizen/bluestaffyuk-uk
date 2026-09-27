@@ -4,7 +4,7 @@ partner endpoints they proxy to.
 
   python3 scripts/indexnow_submit.py <slug>                 # one page
   python3 scripts/indexnow_submit.py <slug> <slug> ...      # several
-  python3 scripts/indexnow_submit.py --changed              # pages changed vs origin/main
+  python3 scripts/indexnow_submit.py --changed              # pages rendered_changes.py listed
   python3 scripts/indexnow_submit.py --all                  # every sitemap URL
   python3 scripts/indexnow_submit.py --dry-run <slug>       # print the URLs, send nothing
 
@@ -108,26 +108,47 @@ def urls_from_sitemaps():
     return sorted(set(out))
 
 
-def changed_slugs(ref="origin/main"):
-    """Page slugs whose source changed vs a git ref, plus anything uncommitted."""
-    cmds = [
-        ["git", "diff", "--name-only", f"{ref}...HEAD"],
-        ["git", "diff", "--name-only", "HEAD"],
-        ["git", "ls-files", "--others", "--exclude-standard"],
-    ]
-    files = set()
-    for c in cmds:
-        r = subprocess.run(c, capture_output=True, text=True)
-        if r.returncode == 0:
-            files.update(x for x in r.stdout.split("\n") if x.strip())
-    slugs = set()
-    for f in files:
-        m = re.match(r"src/pages/(.+)/index\.(astro|html)$", f)
-        if m:
-            slugs.add(m.group(1))
-        elif f == "src/pages/index.astro":
-            slugs.add("")
-    return sorted(slugs)
+RENDERED_CHANGES = pathlib.Path("docs") / "reports" / "rendered-changes.json"
+
+
+def git_head():
+    """`git rev-parse HEAD`, or None when git cannot say."""
+    r = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True)
+    return r.stdout.strip() if r.returncode == 0 else None
+
+
+def changed_slugs():
+    """Page slugs whose RENDERED output changed: docs/reports/rendered-changes.json, written by
+    `python3 scripts/rendered_changes.py --base <dir-or-ref> --json` from a dist-hash diff.
+
+    The source diff this replaced matched `src/pages/<x>/index.astro` only, so it never named a
+    city page (`uk-locations/[slug].astro`), a puppy, a blog post or a page changed through a
+    shared component (audit D6). `index` is the root and maps to "".
+
+    Refuses a report older than any built page: a rebuild after the diff can change pages the
+    report never saw. Warns (does not refuse) when the report was made on another commit or on
+    an uncommitted tree — the build may still be the one that was diffed."""
+    if not RENDERED_CHANGES.is_file():
+        die(f"{RENDERED_CHANGES} not found — run `python3 scripts/rendered_changes.py --base "
+            "<dir-or-ref> --json` after the build, then --changed submits what it lists")
+    try:
+        report = json.loads(RENDERED_CHANGES.read_text(encoding="utf-8"))
+        rows, made_on = report["changed"], str(report.get("head", ""))
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        die(f"cannot read {RENDERED_CHANGES}: {e}")
+    stamp = RENDERED_CHANGES.stat().st_mtime
+    if any(p.stat().st_mtime > stamp for p in SITEMAP_DIR.glob("**/index.html")):
+        die(f"{RENDERED_CHANGES}: report is older than the current build — rerun "
+            "rendered_changes.py --json")
+    head = git_head()
+    if made_on.removesuffix("-dirty") != head:
+        print(f"WARNING: {RENDERED_CHANGES} was made on {made_on[:12] or '?'}, HEAD is "
+              f"{(head or 'unreadable')[:12]} — check the build is the one that was diffed",
+              file=sys.stderr)
+    elif made_on.endswith("-dirty"):
+        print(f"WARNING: {RENDERED_CHANGES} was made on an uncommitted tree ({made_on[:12]}-dirty)",
+              file=sys.stderr)
+    return sorted("" if s == "index" else s for s in rows)
 
 
 def to_url(token: str) -> str:
@@ -139,7 +160,8 @@ def to_url(token: str) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Submit BSUK URLs to IndexNow.")
     ap.add_argument("slugs", nargs="*", help="page slugs or full URLs")
-    ap.add_argument("--changed", action="store_true", help="derive slugs from git changes vs origin/main")
+    ap.add_argument("--changed", action="store_true",
+                    help="the slugs docs/reports/rendered-changes.json lists (scripts/rendered_changes.py)")
     ap.add_argument("--all", action="store_true", help="every URL in the sitemaps")
     ap.add_argument("--dry-run", action="store_true", help="print the URLs, submit nothing")
     ap.add_argument("--skip-live-check", action="store_true",
@@ -161,7 +183,7 @@ def main() -> int:
     elif a.changed:
         slugs = changed_slugs()
         if not slugs:
-            print("no changed page sources vs origin/main — nothing to submit")
+            print(f"{RENDERED_CHANGES} lists no changed page — nothing to submit")
             return 0
         urls = [to_url(s) for s in slugs]
     elif a.slugs:

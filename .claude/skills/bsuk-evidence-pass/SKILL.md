@@ -8,7 +8,7 @@ description: Use when a BSUK page is about to be called done, or when a page rep
 **Run this AFTER `.claude/skills/anti-ai-writing/SKILL.md` and BEFORE `.claude/skills/bsuk-final-page-pass/SKILL.md`.** Hardening asks *does the page render*, the AEO pass asks *can an engine lift a sentence*; this asks *does the page prove what it asserts, or only repeat it*.
 
 ```bash
-npx astro build
+npm run -s build
 python3 scripts/evidence_audit.py <slug> [<slug> ...]      # slugs LITERALLY; `index` is the homepage
 ```
 `ERROR` = fix before deploy. `WARN` = read the section, then decide. `0 pages matched` is not a pass.
@@ -16,7 +16,7 @@ python3 scripts/evidence_audit.py <slug> [<slug> ...]      # slugs LITERALLY; `i
 > **Read `.claude/skills/bsuk-gate-integrity/SKILL.md` first.** Term counts are exact. The statement-label and superlative checks are proxies: confirm a flagged section by reading it.
 
 ## Why this gate exists (measured 2026-09-09, `dist/`)
-In the source repo the homepage `<main>` said one licence term 44×, the brand 66×, DNA 40× and one statute term 28× across 8,830 words, and credited one review quote to two different buyers. Not one credential on the site linked to a proof object. Four house rules (a keyword floor of 85, "150+ entity mentions", ≥5 H5 + ≥5 H6, a title that was "never short") were the cause. The breeder's ruling: **sections stay; repetition goes; proof replaces assertion.**
+In the source repo the homepage `<main>` said one licence term 44×, the brand 66×, DNA 40× and one statute term 28× across 8,830 words, and credited one review quote to two different buyers. Not one credential on the site linked to a proof object. Four house rules (a keyword floor (85 mentions), "150+ entity mentions", ≥5 H5 + ≥5 H6, a title that was "never short") were the cause. The breeder's ruling: **sections stay; repetition goes; proof replaces assertion.**
 
 ## The four rules this skill owns
 | Rule | What it means on the page |
@@ -53,7 +53,7 @@ Every row quotes or paraphrases an entry in the source repo's 2026-09-09 evidenc
 | "Location Entities (the weakest category on this page — the rule asks for 80+ page-wide)" [#10] | There is no page-wide location quota. A range-map paragraph is welcome if the outline calls for it; a list of seven countries written to lift a category count is filler. |
 | "Stat-bearing H6 'The Kennel Club Endangered Since 2016, LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER Since 2017' carrying the LICENCE_CLAIM_PLACEHOLDER framing CLAUDE.md rule 2 requires" [#11] | Rule 2 requires the framing to be **correct** wherever it appears, not to appear again. LEGAL_CLAIM_PLACEHOLDER has a page budget of 1–2. One correct **Fact**-labelled sentence with its LICENCE_CLAIM_PLACEHOLDER source link is compliance; a second heading is a budget overrun. |
 | "New FAQ 3 (H5) 'What health testing does a BlueStaffyUK puppy come with?' + H6 … Rule 57 category 3 Medical entities; `rules/headings.md` ≥5 H5/H6" [#12] | An FAQ is added when GSC / PAA shows the question is asked, never to raise a medical-entity count or a heading count. If the health section already answers it, link there. |
-| "Lisa Bright home-raise every BlueStaffyUK puppy… have its sex confirmed by the vet, and supply LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred documentation with a written health guarantee (its length is NOT FETCHED)" — one SplitFeature body [#8] | One sentence carrying five trust terms is a term-budget overrun in miniature. The SplitFeature body says what the puppy gets and links the trust section for the paperwork. Brand-owned method labels are NOT FETCHED — the breeder has not named a house method, so none may be written. The guarantee is named only with its length from `guarantee_days` (null today). |
+| "Lisa Bright home-raise every BlueStaffyUK puppy… have its sex confirmed by the vet, and supply LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred documentation with a written health guarantee (its length is NOT FETCHED)" — one SplitFeature body [#8] | One sentence carrying five trust terms is a term-budget overrun in miniature. The SplitFeature body says what the puppy gets and links the trust section for the paperwork. The breeder has not named a house method, so none may be written. The guarantee is named only with its length from `guarantee_days` (null today). |
 | "Repeating LEGAL_CLAIM_PLACEHOLDER is compliance-safe" [paraphrase of #11] | Saying it once correctly is compliance. Saying it 28 times is a pattern Google's spam guidance names. |
 | "The breeder wants trust signals everywhere" [paraphrase of #4] | The breeder approved Strategy A: say it once, prove it, move on. Proof is the trust signal. |
 | "I'll add the proof link later" [what #4 and #8 left undone] | A claim made twice without its proof is an ERROR today. Say it once, or link the trust section now. |

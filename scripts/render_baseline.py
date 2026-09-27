@@ -9,6 +9,12 @@ sources. That is the one coupling worth stating out loud — if a check's severi
 the .ts file, this table changes without any scorecard changing, which is the intended
 behaviour and the reason `--check` belongs in the sweep.
 
+Severity is also per PAGE. An advisory check with a scope `new-pages` entry in
+`tests/render/targets.json` `promotions` blocks on a project 5 page (`new_page_rule`), so a
+row it reports on such a page is counted as blocking — the same decision
+`tests/render/pages.spec.ts` makes through `tests/render/lib/promotions.ts`, mirrored here by
+`is_new_page` and `severity_for` (tested against scripts/family_rules.py).
+
     python3 scripts/render_baseline.py                      # print the table for the latest run
     python3 scripts/render_baseline.py --date 2026-09-17    # ... for one run
     python3 scripts/render_baseline.py --compare 2026-09-16 # per-check deltas, other -> chosen
@@ -43,6 +49,9 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCORECARDS = ROOT / "data/quality/scorecards"
 CHECKS = ROOT / "tests/render/checks"
+TARGETS = ROOT / "tests/render/targets.json"
+REBUILT = ROOT / "data/facts/rebuilt.json"
+BOARDS = ROOT / "data/boards"
 # The live baseline. Project 2's and project 3's files are published records of runs that are
 # over: neither is the default and neither is regenerated here (Known Issue 25, closed when
 # project 4 repointed this at its own file).
@@ -70,6 +79,66 @@ def load_checks(checks_dir):
     return out
 
 
+def approved_boards(boards_dir):
+    """Board file stems (pageboard.slug_file spelling) whose record carries an `approval` or
+    an `approval_previous`. A missing directory is an empty set; a file that does not parse
+    is not an approved board. Mirrors lib/promotions.ts approvedBoards."""
+    boards_dir = pathlib.Path(boards_dir)
+    out = set()
+    if not boards_dir.is_dir():
+        return out
+    for p in boards_dir.glob("*.json"):
+        try:
+            b = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if isinstance(b, dict) and (b.get("approval") or b.get("approval_previous")):
+            out.add(p.stem)
+    return out
+
+
+def is_new_page(slug, page_type, rule, rebuilt, boards):
+    """lib/promotions.ts isNewPage, in Python: a new-family page type, not frozen, not a
+    `_` fixture, and rebuilt or (with `or_board_approved`) carrying an approved board. The
+    route, its board-file spelling (`/` -> `--`) and the bare last segment are all tried."""
+    if not rule or page_type not in rule["page_types"]:
+        return False
+    bare = slug.split("/")[-1]
+    keys = (slug, bare)
+    if any(k in rule["built_before"] for k in keys):
+        return False
+    prefix = rule.get("excluded_prefix") or ""
+    if prefix and any(k.startswith(prefix) for k in keys):
+        return False
+    if any(k in rebuilt for k in keys):
+        return True
+    return bool(rule.get("or_board_approved")) and any(
+        k in boards for k in (slug.replace("/", "--"), bare)
+    )
+
+
+def load_promotions(targets, rebuilt, boards):
+    """(promotions, new_page_rule, rebuilt set, approved-board set). A missing targets file
+    means no promotions, so every row keeps its registered severity."""
+    targets = pathlib.Path(targets)
+    t = json.loads(targets.read_text(encoding="utf-8")) if targets.is_file() else {}
+    rebuilt = pathlib.Path(rebuilt)
+    done = set(json.loads(rebuilt.read_text(encoding="utf-8"))) if rebuilt.is_file() else set()
+    return t.get("promotions", {}), t.get("new_page_rule"), done, approved_boards(boards)
+
+
+def severity_for(check, registered, slug, page_type, promo):
+    """lib/promotions.ts severityFor: the severity a check's row carries on one page."""
+    if registered == "blocking":
+        return "blocking"
+    promotions, rule, rebuilt, boards = promo
+    if (promotions.get(check) or {}).get("scope") == "new-pages" and is_new_page(
+        slug, page_type, rule, rebuilt, boards
+    ):
+        return "blocking"
+    return "advisory"
+
+
 def dates_present(cards_dir):
     return sorted({p.stem[-10:] for p in cards_dir.glob("*.json") if p.stem[-10:].count("-") == 2})
 
@@ -89,8 +158,9 @@ def rows_for(cards_dir, date):
     return rows, pages, slugs
 
 
-def render(cards_dir, checks_dir, date):
+def render(cards_dir, checks_dir, date, promo=None):
     meta = load_checks(checks_dir)
+    promo = promo or ({}, None, set(), set())
     rows, pages, slugs = rows_for(cards_dir, date)
     unknown = sorted(c for c in rows if c not in meta)
     if unknown:
@@ -98,10 +168,16 @@ def render(cards_dir, checks_dir, date):
 
     fam_rows = collections.Counter()
     fam_pages = collections.defaultdict(set)
-    for check, count in rows.items():
-        family, severity = meta[check]
-        fam_rows[(family, severity)] += count
-        fam_pages[family] |= pages[check]
+    for check in rows:
+        fam_pages[meta[check][0]] |= pages[check]
+    # Severity per row per page: a `new-pages` promotion blocks on a project 5 page only.
+    for card in sorted(cards_dir.glob(f"*-{date}.json")):
+        data = json.loads(card.read_text(encoding="utf-8"))
+        slug = data.get("slug", card.stem)
+        for row in data.get("details", []):
+            family, registered = meta[row["checkId"]]
+            sev = severity_for(row["checkId"], registered, slug, data.get("page_type", ""), promo)
+            fam_rows[(family, sev)] += 1
     families = sorted({fam for fam, _ in meta.values()} | set(fam_pages))
 
     out = [
@@ -166,6 +242,9 @@ def main():
     ap.add_argument("--check", action="store_true", help="exit 1 if the report is stale")
     ap.add_argument("--scorecards-dir", default=str(SCORECARDS))
     ap.add_argument("--checks-dir", default=str(CHECKS))
+    ap.add_argument("--targets", default=str(TARGETS), help="targets.json with `promotions`")
+    ap.add_argument("--rebuilt", default=str(REBUILT), help="data/facts/rebuilt.json")
+    ap.add_argument("--boards-dir", default=str(BOARDS), help="data/boards")
     args = ap.parse_args()
 
     cards_dir = pathlib.Path(args.scorecards_dir)
@@ -177,7 +256,8 @@ def main():
     if date not in available:
         sys.exit(f"no scorecards for {date}; present: {', '.join(available)}")
 
-    block = render(cards_dir, checks_dir, date)
+    block = render(cards_dir, checks_dir, date,
+                   load_promotions(args.targets, args.rebuilt, args.boards_dir))
     report = pathlib.Path(args.write) if args.write else REPORT
 
     if args.check:

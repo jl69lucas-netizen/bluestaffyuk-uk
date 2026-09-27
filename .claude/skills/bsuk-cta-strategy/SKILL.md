@@ -363,6 +363,12 @@ Not written until `guarantee_days` in `data/settings.json` is set (null today). 
 
 ## Section 22: Footer / Final CTA
 
+**The site-wide band is the board's call.** The footer's CTA band ("Ready to meet the
+litter?") renders only when the page's approved board says `brief.cta.global_cta: "shown"`;
+`"hidden"` removes it from the built page (`src/lib/globalCta.ts` through
+`src/layouts/PageShell.astro`, tested by `tests/py/test_global_cta.py`). Choose `hidden` when
+the page already closes on its own final CTA, so the reader is not asked twice in a row.
+
 🛡️ **Trust & Security:**
 > "Still have questions? Lisa Bright answer every inquiry personally."
 > **Button:** Contact the Breeders

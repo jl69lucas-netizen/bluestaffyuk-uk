@@ -232,9 +232,11 @@
   {
    "id": "tables-three-styles-stacked-on-mobile",
    "family": "LAYOUT",
-   "enforced": "untested",
+   "enforced": "test",
+   "severity": "blocking",
    "claude_md": 13,
-   "_note": "CLAUDE.md working rule 13. The stacking half is measured by the render check tests/render/checks/layout.ts::layout-table-stacks-on-mobile; the board half has only a partial check: tests/py/test_board_previews.py proves the `table` shape offers three rendered styles on its `chrome` axis, but nothing requires a table-rendering section to use that shape, so the rule as a whole stays untested."
+   "test": "tests/render/checks/layout.ts::layout-table-stacks-on-mobile",
+   "_note": "CLAUDE.md working rule 13. The stacking half is the blocking render check tests/render/checks/layout.ts::layout-table-stacks-on-mobile (every table stacks into labelled rows below 640px, caption included); the board half is proven on the `table` shape by tests/py/test_board_previews.py, which offers three rendered styles on its `chrome` axis, though no gate yet requires a table section to use that shape. Re-classed from untested on 2026-09-26 (CAG parity audit 19d.8)."
   },
   {
    "id": "every-video-reused-at-its-id",
@@ -295,8 +297,10 @@
   {
    "id": "uniform-inbody-image-sizing",
    "family": "IMG",
-   "enforced": "untested",
-   "pack": "rules/images.md"
+   "enforced": "test",
+   "pack": "rules/images.md",
+   "test": "tests/py/test_uniform_image_box.py",
+   "_note": "Built 2026-09-26 (answer-board ruling (a), CAG parity audit \u00a715a): BodyImage box=\"uniform\" / \"tall\" and the .bl-img.sec-img / .og-tall rules in src/styles/board-styles.css, for project 5 pages; the twelve built pages keep the natural .bl-img. The box's bleed is bone (--color-surface), per the user's ruling note; portraits bake with reframe_og.py --style contain."
   },
   {
    "id": "link-first-anchors",
@@ -343,8 +347,10 @@
   {
    "id": "delivery-band-on-every-card",
    "family": "COPY",
-   "enforced": "untested",
-   "pack": "rules/puppies.md"
+   "enforced": "test",
+   "pack": "rules/puppies.md",
+   "test": "tests/py/test_puppy_card_delivery.py",
+   "_note": "The card half: every built puppy card carries the canonical line from data/settings.json (CAG parity audit D4, 2026-09-26). The delivery-section half stays with the builders' outlines."
   },
   {
    "id": "design-system-nine",
@@ -430,6 +436,13 @@
    "family": "COPY",
    "enforced": "test",
    "test": "scripts/evidence_audit.py::claim-bound-to-proof",
+   "severity": "blocking"
+  },
+  {
+   "id": "claim-unledgered",
+   "family": "COPY",
+   "enforced": "test",
+   "test": "scripts/evidence_audit.py::claim-unledgered",
    "severity": "blocking"
   },
   {
@@ -552,6 +565,13 @@
    "test": "tests/py/test_image_rules.py",
    "pack": "rules/images.md",
    "severity": "blocking"
+  },
+  {
+   "id": "run-every-gate-twice",
+   "family": "GATE",
+   "enforced": "test",
+   "test": "tests/py/test_gate_page.py",
+   "pack": "rules/gates.md"
   }
  ]
 }

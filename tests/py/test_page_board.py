@@ -2340,6 +2340,22 @@ def test_perf_failing_psi_record_fails_release(tmp_path):
         ("perf-psi-below-100", "FAIL")]
 
 
+def test_perf_cls_failure_reports_the_cls_median_not_a_score(tmp_path):
+    # CLS is not a 0-1 category score: "cumulative-layout-shift 0" (a missing median x 100)
+    # would hide the number the page failed on.
+    cls = {"verdict": "FAIL", "median": 0.125, "min": 0.05, "max": 0.2, "runs": 5, "runs_needed": 5}
+    _perf(tmp_path, "s--desktop", failed=["cumulative-layout-shift"], cls=cls); _perf(tmp_path, "s--mobile")
+    _perf(tmp_path, "s--mobile--psi", failed=["performance", "cumulative-layout-shift"],
+          median={"performance": 0.77}, cls=cls)
+    _perf(tmp_path, "s--desktop--psi")
+    found = PB.perf_findings("s", "release", perf_dir=tmp_path, dist_page=_page(tmp_path))
+    local = [x["msg"] for x in found if x["check"] == "perf-below-100"]
+    psi = [x["msg"] for x in found if x["check"] == "perf-psi-below-100"]
+    assert len(local) == 1 and "CLS median 0.125" in local[0]
+    assert len(psi) == 1 and "performance 77" in psi[0] and "CLS median 0.125" in psi[0]
+    assert "cumulative-layout-shift 0" not in psi[0]
+
+
 def test_perf_edge_injected_script_fails_release(tmp_path):
     _perf(tmp_path, "s--desktop"); _perf(tmp_path, "s--mobile")
     _perf(tmp_path, "s--mobile--psi", edge_blocking=["https://example-host.test/70de/"])

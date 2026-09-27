@@ -57,7 +57,7 @@ Excluded from field additions (endpoint still enforced): `/`, `/uk-blue-staffy-b
 
 ### Find All Forms
 ```bash
-npx astro build > /dev/null 2>&1
+npm run -s build > /dev/null 2>&1
 python3 scripts/form_contract_audit.py            # every form in dist/, classified inquiry / newsletter
 # Forms missing accessibility labels on one built page
 grep -n "<input\|<textarea\|<select" dist/[slug]/index.html | grep -v "aria-label\|id=" | head -20
@@ -94,7 +94,7 @@ import ContactFormKit from '../../components/kit/ContactFormKit.astro';
 ## Replacement Protocol
 
 After updating any form, run the three gates in the skill (audit → browser → harness) against a fresh
-`npx astro build`, and cross-check the audit's `forms examined` count as the skill shows.
+`npm run -s build`, and cross-check the audit's `forms examined` count as the skill shows.
 
 ---
 

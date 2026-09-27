@@ -283,7 +283,11 @@ def test_the_location_builder_agent_runs_exactly_the_skills_step_6_gates():
     skill = (ROOT / ".claude/skills/bsuk-location-page-builder/SKILL.md").read_text(encoding="utf-8")
     agent = (ROOT / ".claude/agents/bsuk-location-builder.md").read_text(encoding="utf-8")
     gates = _fenced_commands(skill, "## Step 6 — gates")
-    assert len(gates) == 8, gates
+    assert len(gates) == 13, gates
+    # page-run.md order: render (row 13) before the Harden records (rows 14-15), then the gate
+    assert gates.index("npm run test:render:pages") < gates.index(
+        "python3 scripts/page_run_record.py <slug> impeccable --findings <n> --fixed <n>")
+    assert "npm run gate:page -- <slug>" in gates
     assert _fenced_commands(agent, "## After Each Page Built") == gates
 
 

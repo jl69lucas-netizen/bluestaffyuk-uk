@@ -230,7 +230,7 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
 </section>
 ```
 
-**Puppy photos:** each row's `card_photo` and `gallery` name real files; render `{puppy.card_photo}` rather than a hero placeholder. A 4:5 blur-fill portrait, never head-cropped (`rules/images.md`).
+**Puppy photos:** each row's `card_photo` and `gallery` name real files; render `{puppy.card_photo}` rather than a hero placeholder. A new portrait is baked 4:5 with the bone-gradient contain style (`python3 scripts/reframe_og.py … --style contain`), never head-cropped and never blur-fill (user ruling 2026-09-26: no grey or black bleed on phones; `rules/images.md`). Puppy images already baked are unchanged.
 
 **To mark a puppy as reserved/sold:** set `status` in `data/puppies.json`, then filter: `puppies.filter(p => p.status === 'Available')`. The same field drives schema availability — `InStock` only on an available pup (`rules/puppies.md`).
 

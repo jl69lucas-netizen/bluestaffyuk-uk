@@ -268,3 +268,34 @@ def test_re_approval_takes_the_ontology_it_is_given():
     import inspect
     p = inspect.signature(BA.apply_reapproval).parameters["ont"]
     assert p.default is inspect.Parameter.empty
+
+
+# ── a BLOCKED entity refuses approval on a new page (Task 28a) ──────────────────────────────
+def _with_entity(b, authorization):
+    eid = "ont:probe-entity"
+    b["sections"][0]["entities"] = list(b["sections"][0]["entities"]) + [eid]
+    return b, {"entities": [{"id": eid, "name": "Probe", "aliases": [], "class": "Organism",
+                             "authorization": authorization, "source": "test",
+                             "owner_page": None}]}
+
+
+def test_a_blocked_entity_refuses_a_new_pages_approval(monkeypatch):
+    # docs/reference/page-run.md row 7 and board block 5 ("The board cannot be approved") say
+    # so; until Task 28a only the build gate's `entity-blocked` FAIL did.
+    monkeypatch.setattr(FR, "CHECKS", [])
+    b, ont = _with_entity(_board(), "BLOCKED")
+    with pytest.raises(PB.BoardError) as e:
+        BA.apply_approval(b, _inbox(b), ont, LEDGER)
+    assert "entity-blocked: ont:probe-entity is BLOCKED" in str(e.value)
+
+
+def test_a_proposed_entity_does_not_refuse_approval(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [])
+    b, ont = _with_entity(_board(), "PROPOSED")
+    assert BA.apply_approval(b, _inbox(b), ont, LEDGER)["board"]["meta"]["status"] == "approved"
+
+
+def test_a_blocked_entity_leaves_a_frozen_pages_approval_as_before(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [])
+    b, ont = _with_entity(_board(slug="blue-staffy-health-uk", page_type="guide"), "BLOCKED")
+    BA.refuse_on_new_page_rules(b, ont)          # no raise: FR.applies leaves it out

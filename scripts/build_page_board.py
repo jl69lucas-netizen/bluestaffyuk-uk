@@ -21,7 +21,9 @@ import pageboard as PB
 import link_diversity as LD
 import verbatim_set_check as VSC
 import image_rules as IR          # block 7's image pickers (system-gaps build, Task 10b)
+import keyword_metrics as KM       # block 4b, the ours-vs-top-5 table (parity build Task 18)
 import board_entities as BE
+import page_intake as PI          # block 0, the intake (the brief's target block)
 from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 
 OUT = PB.ROOT / "docs" / "artifacts" / "boards"
@@ -840,7 +842,8 @@ def rules_block(findings):
     return RULES_CSS + f'<div class="rules">{"".join(rows)}</div>', refused
 
 
-def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None):
+def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None,
+           intake=None):
     previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
     nav = nav if nav is not None else {"css": "", "blocks": {}}
     routes = routes if routes is not None else load_routes()
@@ -851,6 +854,17 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     approved = PB.approval_matches(board)
     m = board["meta"]
     parts = []
+
+    # Block 0: the page's starting state, read from the files by scripts/page_intake.py —
+    # the brief's target block, where the mode is found by looking and never assumed. Only
+    # when the caller passes one, so a board rendered in a test stays exactly as it was.
+    # Every key and value goes through md(): an H1 or a data row is text from a file, and a
+    # pipe, an asterisk or a `</script>` in it must show literally, not end the block.
+    if intake is not None:
+        parts.append(("0. Intake — found by looking", PI.render_md(intake, cell=md)
+                      + "\n\nRead from `data/locations.json`, `data/page-map.json`, the record, "
+                        "the built page and its sitemap by `python3 scripts/page_intake.py "
+                      + esc(slug) + "`. Nothing here is typed by hand."))
 
     brief = board["brief"]
     parts.append(("1. Brief", "\n".join([
@@ -923,6 +937,16 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                   + "\n\n**Why each section is here**\n\n"
                   + md_table(["Section", "Group", "Framework", "Why", "Source"], why_rows)))
 
+    # parity build Task 18: CAG §7a's ours-vs-top-5 table, on a new-family page only, so the
+    # twelve built boards render byte-for-byte as before.
+    if new_family:
+        kt = KM.table(board)
+        parts.append(("4b. Keyword metrics",
+                      f"Primary keyword **{md(kt['primary_keyword'])}** against the first five "
+                      f"unblocked competitor pages, over the board's {kt['terms']} keyword terms. "
+                      f"{md(KM.CAPTION)} `python3 scripts/keyword_metrics.py "
+                      f"{md(slug)}` prints the same table.\n\n"
+                      + md_table(KM.COLUMNS, [[md(c) for c in KM.cells(r)] for r in kt["rows"]])))
     ent_md = (BE.entities_html(BE.group_entities(board, ont))
               + (f"\n\n**BLOCKED referenced: {', '.join(md(e) for e in auth['blocked'])}.** The board cannot be approved." if auth["blocked"] else "")
               + (f"\n\nPROPOSED (need a source): {', '.join(md(e) for e in auth['proposed'])}." if auth["proposed"] else ""))
@@ -1106,7 +1130,16 @@ def main():
     routes = load_routes()
     # Candidates, thumbnails and generated previews only for the pages the image rule binds.
     images = IR.board_images(board) if PB.FR.applies(board) else None
-    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images), encoding="utf-8")
+    # The demo record and a record-only page the data files never name have no intake, and
+    # an intake that cannot be read must not stop the board: it renders without block 0 and
+    # says why.
+    try:
+        intake = PI.intake(slug)
+    except Exception as e:  # noqa: BLE001 — any intake failure only drops block 0
+        intake = None
+        print(f"board: no block 0 for {slug} — {type(e).__name__}: {e}", file=sys.stderr)
+    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images,
+                          intake), encoding="utf-8")
     n_int = sum(len(s["links"]["internal"]) for s in board["sections"])
     n_ext = sum(len(s["links"]["external"]) for s in board["sections"])
     unresolved = sorted({l["href"] for s in board["sections"] for l in s["links"]["internal"]

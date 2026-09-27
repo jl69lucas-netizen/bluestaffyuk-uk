@@ -39,6 +39,20 @@ r/puppy101, r/AskUK, r/unitedkingdom, and UK dog forums the search turns up.
 — pass an absolute scratch path as the filename. Nothing goes in any repo; if a
 `.playwright-mcp/` folder appears in a repo, delete it before you finish.
 
+**Read the ledger before you open anything.** Every thread another page has read is in
+`data/queries/thread-ledger.json`. Run
+
+```bash
+python3 scripts/thread_ledger.py --known <permalink> [<permalink> ...]
+```
+
+`reuse` = read in the last 180 days: do not open it again. `python3 scripts/thread_ledger.py
+--seed <permalink> ...` prints its `threads` rows and `questions` in Step E's shape — copy them
+in, then score each row for THIS page in Step C (`score` comes out `null`; `stale` is
+recomputed for today; keep each row's `seeded_from`). `fetch` = new or older than 180 days:
+open it as below. A `/r/<sub>/s/<code>` share link is refused — open it and use the resolved
+permalink.
+
 ## Step C — score each candidate (keep 5 or more with a score of 5+)
 
 | Signal | Points |
@@ -95,9 +109,20 @@ breeder?"). Never reshape a question to fit a bank answer.
   from, and that thread is in the `threads` list. When a question is kept only because a
   UK-scoring thread also asks it, `detail` is that UK-scoring thread.
 - Every thread you used is in `threads` with all seven keys; `subreddit` holds the forum name
-  for a forum thread; `score` is the Step C total, not a vote count.
+  for a forum thread; `score` is the Step C total, not a vote count. A row copied from
+  `thread_ledger.py --seed` also keeps its eighth key, `"seeded_from": "YYYY-MM-DD"` (the read
+  it came from) — leave it in, so the ledger never counts the copy as a fresh read.
 - `status` is `ok`, `fallback` (only the lower rungs worked) or `NOT FETCHED` (write the file
-  with empty `questions` and `threads` lists and say which rungs failed).
+  with empty `questions` and `threads` lists and a `"reason"` naming which rungs failed —
+  `npm run check:barriers` fails a bare `NOT FETCHED`).
+
+Then rebuild the ledger so the next page reuses what this one read:
+
+```bash
+python3 scripts/thread_ledger.py --write
+```
+
+`npm run check:threads` fails while the ledger and the threads files disagree.
 
 ## Linking `fact_source`
 
@@ -118,6 +143,7 @@ fact taken from the thread.
 
 - Reporting `NOT FETCHED` after the first rung.
 - Spending calls rediscovering the ladder — Step B's table already says which rung works.
+- Opening a thread the ledger says another page read in the last 180 days — `--seed` it.
 - Recording a question from a search snippet without opening the thread.
 - Quoting a poster at length instead of paraphrasing the question.
 - Carrying the poster's premise into the question ("Why are most blue litters from backyard

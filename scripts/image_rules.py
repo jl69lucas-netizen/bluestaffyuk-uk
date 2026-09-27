@@ -70,6 +70,10 @@ DRAFT_EXTS = (".webp", ".png", ".jpg")
 
 # Not a build-gate id: approval and board block 7b show it and refuse it (Task 12a).
 ASSET_ROW_MISSING = "image-asset-row-missing"
+# Style B (blurfill) on a new page's slot (user ruling 2026-09-26: "No grey or black bleed on
+# phones"). Also not a build-gate id: approval refuses it, so it is fixed before the board is
+# approved. scripts/ingest_image.py refuses to bake it, and block 7 does not offer it.
+OG_STYLE_RETIRED = "image-og-style-retired"
 
 # The ids build_findings() can emit, and nothing else (a test drives every branch).
 PICK_INVALID = "image-pick-invalid"
@@ -135,6 +139,12 @@ def picks(board):
     return (board.get("approval") or {}).get("picks") or {}
 
 
+def _new_page(board):
+    """True for a page built from project 5 on (family_rules.is_new_page, the one helper)."""
+    import family_rules  # noqa: E402  (lazy: family_rules imports this module)
+    return family_rules.is_new_page(board)
+
+
 def slot_findings(board):
     """Part (a): the slots a boarded record owes, and what an approved one owes on top."""
     status = board["meta"]["status"]
@@ -161,6 +171,14 @@ def slot_findings(board):
         where = f"section {s['id']}" + (f", H3 {n['heading']!r}" if n is not None else "")
         for why in slot_problems(img):
             out.append(("image-slot-fields", "FAIL", f"slot {img['slot']} ({where}): {why}"))
+        pick = parse_pick(picks(board).get(PICK_PREFIX + img["slot"]) or "")
+        picked_b = bool(pick) and pick["kind"] == "og" and pick["style"] == "B"
+        if (img.get("og_style") == "B" or picked_b) and _new_page(board):
+            how = "its record names og_style B" if img.get("og_style") == "B" else "its pick is og:B"
+            out.append((OG_STYLE_RETIRED, "FAIL",
+                        f"slot {img['slot']} ({where}): {how}; style B (blurfill) is retired for "
+                        "in-body images on new pages — user ruling 2026-09-26: no grey or black "
+                        "bleed on phones; use A (contain, bone gradient) or E (topcover)"))
     # Task 12a: the row ingest and publish fill. Either adding it later would change the
     # record hash and un-approve the page, so it is planned now, with the slot.
     for s, n, img in IC.iter_slots(board):
@@ -525,6 +543,11 @@ def _slot_html(board, sec, node, img, row, images, current):
         label, styles, prefix, want = "Or make an infographic, style", IG_STYLES, "ig:", img.get("infographic_style")
     else:
         label, styles, prefix, want = "Or generate an OG photo, style", OG_STYLES, "og:", img.get("og_style")
+        # Style B (blurfill) is retired for a new page's in-body image (user ruling 2026-09-26:
+        # no grey or black bleed on phones). The ids stay stable; B is only not offered, unless
+        # it is the pick already stored, which stays visible. scripts/ingest_image.py refuses it.
+        if _new_page(board) and current != "og:B":
+            styles = tuple(st for st in styles if st != "B")
     named = _label_map(images.get("styles")).get("infographic" if prefix == "ig:" else "og", {})
 
     def _style(st):

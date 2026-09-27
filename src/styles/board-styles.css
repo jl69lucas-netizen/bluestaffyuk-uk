@@ -119,6 +119,39 @@
     .bl-media-left .bl-prose > .bl-img { max-width: 420px; grid-column: auto; }
     .bl-media-left .bl-prose > .bl-img { order: -1; justify-self: start; }
     .bl-media-right .bl-prose > .bl-img { order: 99; justify-self: end; }
+    /* The uniform box never takes the 420px side cap: its size is the whole point. At full
+       width it sits directly under its heading (rule 17, image-first), never after the prose
+       as the natural right-hand image does. */
+    .bl-media-left .bl-prose > .bl-img.sec-img,
+    .bl-media-right .bl-prose > .bl-img.sec-img { max-width: 760px; grid-column: 1 / -1; justify-self: center; order: -1; }
+  }
+
+  /* THE UNIFORM BOX (rules/images.md `uniform-inbody-image-sizing`; answer-board ruling (a),
+     2026-09-26). A project 5 page paints every in-body image — photo or infographic — in ONE
+     rectangle: 760px wide, 1408:768 (16:9), cropped by `object-fit: cover` rather than
+     squashed, the same at every width. BodyImage's `focal` prop moves the crop, never the box.
+     A fixed ratio reserves its height before the file arrives, so it cannot shift the page.
+     The twelve pages built before project 5 keep the natural `.bl-img` until they are touched.
+     The background is bone (`--color-surface`), per the user's note on the ruling: "No grey or
+     black bleed on phones" — any letterbox, crop edge or still-loading area shows a
+     design-system colour, never grey, black or the page behind it.
+     tests/py/test_uniform_image_box.py. */
+  .bl-img.sec-img {
+    width: 100%;
+    max-width: 760px;
+    aspect-ratio: 1408 / 768;
+    height: auto;
+    object-fit: cover;
+    margin-inline: auto;
+    background-color: var(--color-surface);
+  }
+  /* A portrait (`box="tall"`) keeps the box on desktop and turns 4:5 on a phone or a tablet
+     held upright, full width of the column (never 100vw: that overflows by the scrollbar), so
+     a standing dog is not cropped to its shoulders. A landscape phone keeps the 16:9 box.
+     899.98px pairs with the min-width: 900px rules above without a 1px overlap. The `sizes`
+     for this box is TALL_SIZES (src/lib/assets.ts). */
+  @media (max-width: 899.98px) and (orientation: portrait) {
+    .bl-img.sec-img.og-tall { aspect-ratio: 4 / 5; max-width: 100%; }
   }
 
   /* THE HERO'S OWN PHOTO. The kit Hero is a two-column grid whose photo is first in source

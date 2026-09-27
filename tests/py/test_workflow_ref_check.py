@@ -15,14 +15,16 @@ import json
 import pathlib
 import sys
 
+import pytest
+
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import workflow_ref_check as wrc  # noqa: E402
 
 
-def tree(tmp_path, workflow, quick_start="# Quick start\n"):
-    """A minimal repo: one agent, one skill, one script, two npm scripts, the two docs."""
+def tree(tmp_path, workflow, quick_start="# Quick start\n", page_run="# Page run\n"):
+    """A minimal repo: one agent, one skill, one script, two npm scripts, the three docs."""
     (tmp_path / ".claude/agents").mkdir(parents=True)
     (tmp_path / ".claude/agents/bsuk-real-agent.md").write_text("---\n---\n", encoding="utf-8")
     (tmp_path / ".claude/skills/bsuk-real-skill").mkdir(parents=True)
@@ -37,6 +39,7 @@ def tree(tmp_path, workflow, quick_start="# Quick start\n"):
     ref.mkdir(parents=True)
     (ref / "WORKFLOW.md").write_text(workflow, encoding="utf-8")
     (ref / "quick-start.md").write_text(quick_start, encoding="utf-8")
+    (ref / "page-run.md").write_text(page_run, encoding="utf-8")
     return tmp_path
 
 
@@ -98,6 +101,38 @@ def test_quick_start_is_checked_too(tmp_path):
     assert problems == ["quick-start.md:1  bsuk-angle-ghost"]
 
 
+def test_the_page_run_is_checked_too(tmp_path):
+    # docs/reference/page-run.md is the ordered per-page run: every row names a command, and
+    # a row naming a command that does not exist is the row that gets skipped on page 14.
+    root = tree(tmp_path, "# Workflow\n", page_run="| 1 | `npm run gate:ghost -- <slug>` |\n")
+    problems, _ = wrc.check(root)
+    assert problems == ["page-run.md:1  npm run gate:ghost"]
+
+
+def test_the_arrives_in_task_marker_excuses_the_line(tmp_path):
+    # The page run is written before two of the scripts it names (plan Tasks 25 and 26), and
+    # tests/py/test_claude_md.py already expires the same marker the moment its path exists.
+    root = tree(tmp_path, "# Workflow\n",
+                page_run="`python3 scripts/ghost.py` then `npm run gate:ghost` (arrives in Task 25)\n")
+    problems, examined = wrc.check(root)
+    assert problems == [] and examined == 2
+
+
+def test_the_arrival_marker_reads_only_a_task_number(tmp_path):
+    # One regex, shared with tests/py/test_claude_md.py: `Task 25`, `Task 18b`, `Task R3`.
+    assert wrc.ARRIVES.search("(arrives in Task 18b)") and wrc.ARRIVES.search("(arrives in Task R3)")
+    root = tree(tmp_path, "# Workflow\n", page_run="`npm run gate:ghost` (arrives in Task soon)\n")
+    problems, _ = wrc.check(root)
+    assert problems == ["page-run.md:1  npm run gate:ghost"]
+
+
+def test_a_missing_doc_is_an_error_not_a_silent_pass(tmp_path):
+    root = tree(tmp_path, "# Workflow\n")
+    (root / "docs/reference/page-run.md").unlink()
+    with pytest.raises(FileNotFoundError):
+        wrc.check(root)
+
+
 def test_main_exits_1_on_a_problem_and_0_when_clean(tmp_path, capsys):
     bad = tree(tmp_path / "bad", "bsuk-ghost-agent\n")
     assert wrc.main(bad) == 1
@@ -106,7 +141,7 @@ def test_main_exits_1_on_a_problem_and_0_when_clean(tmp_path, capsys):
 
     good = tree(tmp_path / "good", "bsuk-real-agent\n")
     assert wrc.main(good) == 0
-    assert "examined 1 references in 2 files; 0 problems" in capsys.readouterr().out
+    assert "examined 1 references in 3 files; 0 problems" in capsys.readouterr().out
 
 
 def test_a_name_with_an_underscore_is_read_whole(tmp_path):

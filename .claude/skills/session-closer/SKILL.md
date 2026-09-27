@@ -50,6 +50,12 @@ Only after reading all five do you begin the closing process.
 
 ## Closing Sequence
 
+**Verify before you close (the user's ruling, 2026-09-26).** Before the session summary, the
+gate report or anything else says PASS, done or complete, invoke the
+`superpowers:verification-before-completion` skill with the Skill tool (never paraphrased,
+never skipped), run the commands it asks for, and read their output. A claim with no command
+behind it is not a PASS.
+
 ### Step 1 — Session Summary
 
 Tell the user what you found:

@@ -23,8 +23,14 @@
 // IT TAKES THE ASSET ROW WHOLE rather than four props, because the row is the unit
 // `bakedAssets()` returns and splitting it at every call site is how a width and a height
 // drift apart from the file they measure.
+//
+// THE BOX (rules/images.md `uniform-inbody-image-sizing`, 2026-09-26). `natural` is the
+// twelve built pages' `.bl-img`: natural ratio, 420px beside the prose. `uniform` is the
+// project 5 box: `.bl-img.sec-img`, 760px at 1408:768, cropped with `object-fit: cover`.
+// `tall` is that box for a portrait, which turns 4:5 below 900px held upright (`.og-tall`). Every
+// body image keeps `.bl-img`, so a check that looks for in-body images reads one class.
 import type { FilledAsset } from '../lib/assets';
-import { BODY_SIZES } from '../lib/assets';
+import { BODY_SIZES, TALL_SIZES, UNIFORM_SIZES } from '../lib/assets';
 
 interface Props {
   /** The record's baked row: original path, original alt, measured intrinsic size. */
@@ -33,15 +39,29 @@ interface Props {
   srcset?: string;
   /** The box the photo paints, for a page whose prose column is not `PageShell`'s. */
   sizes?: string;
+  /** Which box: the built pages' natural `.bl-img`, or project 5's uniform box. */
+  box?: 'natural' | 'uniform' | 'tall';
+  /**
+   * The crop's focal point, as `object-position` percentages ("50% 30%"). It matters for the
+   * tall box (the 4:5 strip of a 16:9 file) and for a source that is not 16:9; a 1408x768
+   * file in the uniform box fills it exactly and has nothing to move. Anything that is not
+   * two percentages is ignored, and the natural box never takes one.
+   */
+  focal?: string;
 }
-const { asset, srcset, sizes = BODY_SIZES } = Astro.props;
+const FOCAL = /^\d{1,3}% \d{1,3}%$/;
+const { asset, srcset, box = 'natural', focal } = Astro.props;
+const sizes = Astro.props.sizes ?? (box === 'tall' ? TALL_SIZES : box === 'uniform' ? UNIFORM_SIZES : BODY_SIZES);
+const cls = ['bl-img', box !== 'natural' && 'sec-img', box === 'tall' && 'og-tall'];
+const style = box !== 'natural' && focal && FOCAL.test(focal) ? `object-position: ${focal}` : undefined;
 ---
 {/* `loading="lazy"` and `decoding="async"` are right for every in-body photograph and wrong
     for a hero: the hero is the LCP element and is eager with `fetchpriority="high"`, which is
     `Hero.astro`'s own business. This component is for the body only, which is why neither is
     a prop. */}
 <img
-  class="bl-img"
+  class:list={cls}
+  style={style}
   src={asset.file}
   alt={asset.alt}
   width={asset.w}

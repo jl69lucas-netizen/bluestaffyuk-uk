@@ -45,14 +45,15 @@ family: COPY
 
 ## Evidence — say it once, then prove it (2026-09-09)
 
-**Not a rule and deliberately carries no front-matter.** Each of the seven checks below is its own row in `data/quality/rule-index.json` (`term-budget-per-page` … `no-unsourced-superlatives`); an umbrella `evidence-pass` row on top of them would count the same enforcement twice.
+**Not a rule and deliberately carries no front-matter.** Each of the eight checks below is its own row in `data/quality/rule-index.json` (`term-budget-per-page` … `no-unsourced-superlatives`); an umbrella `evidence-pass` row on top of them would count the same enforcement twice.
 
-Seven checks in `scripts/evidence_audit.py`, run per slug against `dist/`. Budgets: `data/quality/evidence-budgets.json` · proof ledger: `data/quality/evidence-ledger.json` · method: `.claude/skills/bsuk-evidence-pass/SKILL.md`.
+Eight checks in `scripts/evidence_audit.py`, run per slug against `dist/`. Budgets: `data/quality/evidence-budgets.json` · proof ledger: `data/quality/evidence-ledger.json` · method: `.claude/skills/bsuk-evidence-pass/SKILL.md`.
 
 **Review placement on a page (spec §11 amendment 3e, 2026-09-18; the paragraph moved out of the check list below in Task 19, where it read as a fifth bullet).** A page's reviews are the rows in `data/reviews.json` whose `source` is that page. A page with one such row renders one `single` block; a page with three or more renders one `grid` plus the remainder as `single` blocks. `Testimonial` takes both: `mode` says which shape, and an explicit `reviews` array is the list the block renders in full, which is how the remainder is placed. None are dropped — a row with nowhere to go is a placement bug, not a trim — and none are invented, so a slot with no real review takes the review placeholder token rather than a written one. Where the blocks sit on the page, top / middle / bottom, is a board decision made per page, not a property of the component.
 
 - `term-budget-per-page` (blocking) — every calibrated term stays within its per-page budget; uncalibrated pages report, they do not pass. Per-slug override: `budgets_by_slug` — a number replaces the page-type ceiling, `null` removes it.
 - `claim-bound-to-proof` (blocking) — every health / credential / price claim resolves to a ledger entry; un-ledgered = not assertable.
+- `claim-unledgered` (blocking on new location, comparison and blog pages; advisory elsewhere) — a sentence that uses the ledger's health or credential `vocabulary` (BVA hip and elbow scores, DNA tests and "clear" results, KC registration, a breeder licence, vet checks, health testing) must match, in the same sentence, a ledger `claims` row whose `covers` names that vocabulary id, or carry the placeholder for that claim. A question, a denial, advice to the buyer and a reference to a page about the test are not claims; preview pages are not checked. The fix is a ledger row (proof `NOT FETCHED` until the document is on file), never a wider vocabulary pattern.
 - `statement-labels-present` (advisory) — a `StatementLabel` sits on each proven claim so the reader can see what is proven and what is opinion.
 - `review-attribution-unique` (blocking) — no reviewer quote is attributed to two different people across the site (`data/reviews.json` is the single source; it landed in project 3 and holds only quotes that exist verbatim on a migrated page, each row naming that page in `source`; a slot with no real review takes the review placeholder token that `scripts/placeholder_check.py` counts, never an invented quote).
 

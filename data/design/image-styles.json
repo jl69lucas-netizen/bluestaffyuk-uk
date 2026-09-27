@@ -2,11 +2,11 @@
   "og": {
     "A": {
       "name": "Contain on Bone",
-      "use": "wide shots, scenes, or when a blur behind the dog reads busy"
+      "use": "the default for any in-body photo on a new page, portraits included: wide shots, scenes, single dogs"
     },
     "B": {
       "name": "Blur-Fill",
-      "use": "the default for any single-dog portrait OG photo"
+      "use": "social OG images only; the twelve built pages' existing in-body images"
     },
     "C": {
       "name": "Editorial Split",

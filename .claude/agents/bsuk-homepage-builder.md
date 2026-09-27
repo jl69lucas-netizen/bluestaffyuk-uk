@@ -71,7 +71,7 @@ The outline must include:
 
 **A. H1–H6 Heading Tree** — every live section (derive the map below) shown with its heading levels. H1 is locked. All other headings (H2→H6) must be shown for approval. No heading level skipping. ≥5 H5 / ≥5 H6 are advisory on the homepage (WARN, evidence pass 2026-09-09) — never add a heading to hit a count; no skipped levels stays hard.
 
-**B. Keyword Distribution Table** — section by section: primary KW, LSI, longtail, NLP/conversational, comparison KWs, word count per section, rolling total vs 85–105× target.
+**B. Keyword Distribution Table** — section by section: primary KW, LSI, longtail, NLP/conversational, comparison KWs, word count per section, rolling total against the Rule 18 ceiling of 105 (no floor).
 
 **C. Competitor Snapshot** — top 5 competitors for "Blue Staffy for sale" homepage: their H2 topics, word count, special elements, keywords BSUK is missing.
 

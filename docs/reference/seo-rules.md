@@ -108,7 +108,7 @@ Top-of-funnel impression volume; every informational page needs CTR-optimised me
 
 **Rule 18 — Keyword Frequency Table (Per Page)**
 
-| Keyword Type | Target Count | Note |
+| Keyword Type | Cap (no more than) | Note |
 |---|---|---|
 | Primary keyword (exact) | 30–35× | 1–2% density; natural, not stuffed |
 | LSI keywords | 20–25× | Synonyms and related terms |
@@ -119,7 +119,19 @@ Top-of-funnel impression volume; every informational page needs CTR-optimised me
 | Solution keywords | 5–10× | |
 | Related keywords | 10–15× | |
 | Transactional keywords | 15× | Buy, for sale, available, pricing |
-| **TOTAL** | **≈85–105×** | Hard target per page |
+| **TOTAL** | **≤105 (no minimum)** | |
+
+Each row caps that keyword type; the page total is capped at 105. The rows are not summed and never a number to reach — a short, focused page that uses far fewer is correct. Where a row shows a range, the upper figure is the cap.
+
+The authority for this table is `.claude/agents/bsuk-keyword-verifier.md`, which judges the
+count; this block follows it (`tests/py/test_rule18_frequency.py`):
+- There is **no floor**. A page is never "under-optimized" by count (retired 2026-09-09: the
+  floor manufactured the repetition the evidence pass now fails). The per-type counts above
+  are ceilings to stay under, never numbers to reach.
+- A full page with >110 total keyword mentions is flagged **OVER-STUFFED**; trust-concept
+  terms additionally answer to `data/quality/evidence-budgets.json` via
+  `scripts/evidence_audit.py`.
+- Short pages (<1,500 words): scale proportionally; do not apply full-page thresholds.
 
 **Rule 19 — Keyword Density Per Section**
 Primary keyword 0.8–1.2% per section. LSI distributed naturally, never force-inserted.
@@ -186,8 +198,11 @@ No default. A page's body-section count is `section_target.total` in its questio
 than 9 (`docs/reference/location-page-template.md`, "Section count").
 
 **Rule 27 — Word Count (Dynamic)**
-The competitors' median word count, from the competitor scan; `NOT FETCHED` until that scan
-exists. Never fix a word count before running competitor research, and never pick a number
+The competitors' median word count, from the competitor scan: `word_target.median` in the
+question file (`data/queries/<slug>.json`), measured by `query_augment.py --competitor-metrics`
+from the saved competitor HTML. Only prose pages count: listings, blocked pages and same-site
+repeats are excluded and named with a reason. `NOT FETCHED — <barrier>` (its `status`) until
+that scan exists, or when no competitor page is prose. Never fix a word count before running competitor research, and never pick a number
 first and write to fill it.
 
 **Rule 28 — Header Count Targets**
@@ -341,7 +356,7 @@ reason, and its section angle.
 | Section | Heading | Primary KW | LSI KWs | Longtail KWs | NLP/Conversational | Comparison KWs | Word Count |
 |---|---|---|---|---|---|---|---|
 
-One row per section from hero to final CTA; the total row hits 85–105× per Rule 18.
+One row per section from hero to final CTA; the total row stays at or under 105 (Rule 18 — a ceiling, no floor).
 
 **E. Special Elements Plan** — newsletter signup, comparison table, price card, calculator
 or quiz, the 4 counters (Rule 31), trust badge bar, the 3 inquiry forms (Rule 32), video,

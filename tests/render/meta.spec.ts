@@ -17,6 +17,8 @@ import { fileURLToPath } from 'node:url';
 import { registry, MAX_DEFECT_ROWS, type Check, type Defect } from './lib/registry.js';
 import { runCheck } from './lib/runCheck.js';
 import { flattenSlug } from './lib/scorecard.js';
+import { latestCards, notYetMeasured, readScorecards, zeroExamined } from './lib/examined.js';
+import { severityFor, isNewPage, approvedBoards, type Promotion, type NewPageRule } from './lib/promotions.js';
 import { fixtureUrl, FIXTURE_BASE } from './lib/servers.js';
 import { measureTopChrome, waitForScrollSettle } from './lib/probes.js';
 import { checkDistFreshness, builtRoutesWithoutSource } from './lib/freshness.js';
@@ -1796,5 +1798,243 @@ test.describe('a11y-text-contrast-aa [kit Hero aside]', () => {
     expect(r.defects.length, 'the pair differs by one declaration').toBe(1);
     expect(r.defects[0].message).toMatch(/aside-quote/);
     expect(r.defects[0].message).toMatch(/1\.0\d:1/);
+  });
+});
+
+/**
+ * Every check a page run registers must have examined something on a real page.
+ *
+ * build_scorecard.mjs Guard 2 is the corpus-level alarm for a check that ran and judged
+ * nothing, but it only fires when somebody runs it — and for most of this harness's life
+ * nobody did, because `test:render:pages` stopped at Playwright. It is now chained after the
+ * page run (package.json), and this is the other half: the scorecards on disk are the
+ * durable record of the last page run, so the meta gate reads them and refuses a registered,
+ * non-deferred check whose examined count is zero across the newest card of every target.
+ * A skip, never a pass, when no target has a card: no data must not read as verified.
+ *
+ * This reads the last successful scorecard run; the runner's exit code (Guard 2) is the live
+ * guard. So a check registered SINCE that run has no key in any card: it is reported by name
+ * as "not yet measured" (annotation + console), never failed — the next full page run's Guard 2
+ * judges it. Only a check the cards DID measure, at zero everywhere, fails here.
+ */
+test.describe('zero-examined guard: every non-deferred check examined > 0 in the latest scorecards', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const root = resolve(here, '..', '..');
+  const targetsFile = JSON.parse(readFileSync(resolve(here, 'targets.json'), 'utf8')) as {
+    deferred_checks?: Record<string, string>;
+    pages: { slug: string }[];
+  };
+
+  test('latestCards keeps the newest card per slug and only the slugs asked for', () => {
+    const cards = [
+      { slug: 'a', date: '2026-09-16', examined_by_check: { x: 5 } },
+      { slug: 'a', date: '2026-09-22', examined_by_check: { x: 0 } },
+      { slug: 'b', date: '2026-09-19', examined_by_check: { x: 1 } },
+      { slug: 'gone', date: '2026-09-22', examined_by_check: { x: 9 } },
+    ];
+    const got = latestCards(cards, ['a', 'b']).map((c) => `${c.slug}@${c.date}`).sort();
+    expect(got).toEqual(['a@2026-09-22', 'b@2026-09-19']);
+  });
+
+  const synthetic = [
+    { slug: 'a', date: '2026-09-22', examined_by_check: { live: 3, dead: 0, parked: 0 } },
+    { slug: 'b', date: '2026-09-22', examined_by_check: { live: 1, dead: 0 } },
+  ];
+
+  test('zeroExamined names a measured check that judged nothing, and never a deferred or unmeasured one', () => {
+    expect(zeroExamined(['live', 'dead', 'parked', 'unwired'], { parked: 'reason' }, synthetic)).toEqual([
+      'dead',
+    ]);
+  });
+
+  test('notYetMeasured names a registered check absent from every card, and never a deferred one', () => {
+    expect(
+      notYetMeasured(['live', 'dead', 'parked', 'unwired', 'shelved'], { shelved: 'reason' }, synthetic),
+    ).toEqual(['unwired']);
+  });
+
+  test('readScorecards names the file it could not parse', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'cards-'));
+    try {
+      writeFileSync(join(dir, 'good-2026-09-22.json'), JSON.stringify({ slug: 'good', date: '2026-09-22' }));
+      writeFileSync(join(dir, 'broken-2026-09-22.json'), '{ not json');
+      expect(() => readScorecards(dir)).toThrow(/broken-2026-09-22\.json/);
+      expect(readScorecards(join(dir, 'absent'))).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test('the REAL latest scorecards examined every registered, non-deferred check', () => {
+    const cards = latestCards(
+      readScorecards(join(root, 'data', 'quality', 'scorecards')),
+      targetsFile.pages.map((p) => p.slug),
+    );
+    if (cards.length === 0) {
+      test.skip(true, 'no scorecard for any target — run `npm run test:render:pages` (it builds them)');
+      return;
+    }
+    const ids = registry.map((c) => c.id);
+    const deferred = targetsFile.deferred_checks ?? {};
+    const unmeasured = notYetMeasured(ids, deferred, cards);
+    if (unmeasured.length > 0) {
+      const note =
+        `not yet measured (no key in the newest scorecard of any target; the next full ` +
+        `\`npm run test:render:pages\` judges them): ${unmeasured.join(', ')}`;
+      test.info().annotations.push({ type: 'not yet measured', description: note });
+      console.warn(note);
+    }
+    const dead = zeroExamined(ids, deferred, cards);
+    expect(
+      dead,
+      `examined zero nodes across the newest scorecard of ${cards.length} target page(s): ` +
+        `${dead.join(', ')} — a check that judged nothing is not a pass. Point it at markup the ` +
+        `pages really carry, or defer it in targets.json with a promotion condition.`,
+    ).toEqual([]);
+  });
+});
+
+/**
+ * The image class a rebuilt page really renders.
+ *
+ * `layout-h3-image-first` counted only `img.sec-img`, which ships on /kit-preview/ alone:
+ * every rebuilt page renders its body photographs through src/components/BodyImage.astro as
+ * `img.bl-img`, so on the pages rule 17 puts an image under every H3 the check examined zero
+ * blocks. This pair is BodyImage's own markup.
+ */
+test.describe('layout-h3-image-first [BodyImage .bl-img]', () => {
+  const check = () => registry.find((c) => c.id === 'layout-h3-image-first')!;
+
+  test('is silent when each H3 opens on its body photograph', async ({ page }, testInfo) => {
+    const res = await page.goto(`${FIXTURE_BASE}/tests/render/fixtures/known_good/h3-image-first-bl-img.html`);
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'both H3 blocks own a .bl-img').toBe(2);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires when the body photograph follows the prose', async ({ page }, testInfo) => {
+    const res = await page.goto(`${FIXTURE_BASE}/tests/render/fixtures/known_broken/h3-image-first-bl-img.html`);
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(2);
+    expect(r.defects[0]?.count, 'both blocks are offenders').toBe(2);
+  });
+});
+
+/**
+ * Promotion is a record, not a flag flip.
+ *
+ * targets.json's `_comment` says a check enters advisory and is promoted after it has
+ * passed its fixtures and made zero false reports across one full cluster — and until the
+ * parity plan's Task 14 nothing recorded when that had happened, so `blocking` checks carried
+ * no evidence of an advisory period at all. `promotions` is that record: every blocking check
+ * has an entry, and a `new-pages` entry makes an advisory check blocking on the project 5
+ * pages only (new-family page type, rebuilt from its board, not one of the twelve frozen
+ * pages — `new_page_rule`, pinned to scripts/family_rules.py by tests/py/test_targets_coverage.py).
+ */
+test.describe('promotions: every blocking check is on record, and new-page promotions bind new pages only', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const t = JSON.parse(readFileSync(resolve(here, 'targets.json'), 'utf8')) as {
+    promotions: Record<string, Promotion>;
+    new_page_rule: NewPageRule;
+  };
+  const rule: NewPageRule = {
+    page_types: ['location', 'comparison', 'blog'],
+    built_before: ['blue-staffy-blog-guides'],
+    excluded_prefix: '_',
+    or_board_approved: true,
+  };
+  const rebuilt = new Set(['blue-staffy-puppies-hull', 'blue-staffy-blog-guides', 'index']);
+  const promo: Record<string, Promotion> = {
+    promoted: { scope: 'new-pages', since: '2026-09-26', cluster_cleared: 'x', false_reports: 0 },
+  };
+
+  test('isNewPage is a new-family, rebuilt, unfrozen page — by route or by bare key', () => {
+    expect(isNewPage({ slug: 'uk-locations/blue-staffy-puppies-hull', page_type: 'location' }, rule, rebuilt)).toBe(true);
+    expect(isNewPage({ slug: 'uk-locations/blue-staffy-puppies-leeds', page_type: 'location' }, rule, rebuilt)).toBe(false); // migrated, not rebuilt
+    expect(isNewPage({ slug: 'blue-staffy-blog-guides', page_type: 'blog' }, rule, rebuilt)).toBe(false); // frozen
+    expect(isNewPage({ slug: 'index', page_type: 'home' }, rule, rebuilt)).toBe(false); // not a new family
+  });
+
+  test('severityFor blocks a promoted check on a new page and nowhere else', () => {
+    const hull = { slug: 'uk-locations/blue-staffy-puppies-hull', page_type: 'location' };
+    const leeds = { slug: 'uk-locations/blue-staffy-puppies-leeds', page_type: 'location' };
+    expect(severityFor({ id: 'promoted', severity: 'advisory' }, hull, promo, rule, rebuilt)).toBe('blocking');
+    expect(severityFor({ id: 'promoted', severity: 'advisory' }, leeds, promo, rule, rebuilt)).toBe('advisory');
+    expect(severityFor({ id: 'other', severity: 'advisory' }, hull, promo, rule, rebuilt)).toBe('advisory');
+    expect(severityFor({ id: 'other', severity: 'blocking' }, leeds, promo, rule, rebuilt)).toBe('blocking');
+  });
+
+  test('every blocking check has a promotions entry with scope all', () => {
+    const missing = registry
+      .filter((c) => c.severity === 'blocking' && t.promotions[c.id]?.scope !== 'all')
+      .map((c) => c.id)
+      .sort();
+    expect(missing, `blocking with no promotion on record: ${missing.join(', ')}`).toEqual([]);
+  });
+
+  test('every promotion names a registered check, fits its severity and records zero false reports', () => {
+    const bad: string[] = [];
+    for (const [id, p] of Object.entries(t.promotions)) {
+      const c = registry.find((x) => x.id === id);
+      if (!c) bad.push(`${id}: not a registered check`);
+      else if (p.scope === 'all' && c.severity !== 'blocking') bad.push(`${id}: scope all but registered ${c.severity}`);
+      else if (p.scope === 'new-pages' && c.severity !== 'advisory') bad.push(`${id}: new-pages scope on a ${c.severity} check`);
+      if (!['all', 'new-pages'].includes(p.scope)) bad.push(`${id}: unknown scope ${p.scope}`);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(p.since)) bad.push(`${id}: since ${p.since} is not a date`);
+      if (p.false_reports !== 0) bad.push(`${id}: ${p.false_reports} false reports — not promotable`);
+      if (!(p.cluster_cleared ?? '').trim()) bad.push(`${id}: no cluster_cleared evidence`);
+    }
+    expect(bad).toEqual([]);
+  });
+
+  test('a new page is new from board approval on, before it is in rebuilt.json', () => {
+    const york = { slug: 'uk-locations/blue-staffy-puppies-york', page_type: 'location' };
+    const leeds = { slug: 'uk-locations/blue-staffy-puppies-leeds', page_type: 'location' };
+    const boards = new Set(['uk-locations--blue-staffy-puppies-york', '_demo', 'blue-staffy-blog-guides']);
+    // Approved board, not yet rebuilt: the four checks already block its first build.
+    expect(isNewPage(york, rule, rebuilt, boards)).toBe(true);
+    expect(severityFor({ id: 'promoted', severity: 'advisory' }, york, promo, rule, rebuilt, boards)).toBe('blocking');
+    // Bare-key board spelling is found too.
+    expect(isNewPage(york, rule, rebuilt, new Set(['blue-staffy-puppies-york']))).toBe(true);
+    // A legacy city page has no board and is not rebuilt: advisory.
+    expect(isNewPage(leeds, rule, rebuilt, boards)).toBe(false);
+    expect(severityFor({ id: 'promoted', severity: 'advisory' }, leeds, promo, rule, rebuilt, boards)).toBe('advisory');
+    // A frozen page and a `_` fixture stay out whatever their board says.
+    expect(isNewPage({ slug: 'blue-staffy-blog-guides', page_type: 'blog' }, rule, rebuilt, boards)).toBe(false);
+    expect(isNewPage({ slug: '_demo', page_type: 'blog' }, rule, rebuilt, boards)).toBe(false);
+    // With or_board_approved off, the board alone is not enough.
+    expect(isNewPage(york, { ...rule, or_board_approved: false }, rebuilt, boards)).toBe(false);
+  });
+
+  test('approvedBoards reads approval or approval_previous and nothing else', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'boards-'));
+    try {
+      writeFileSync(join(dir, 'uk-locations--a.json'), JSON.stringify({ approval: { approved_at: 'x' } }));
+      writeFileSync(join(dir, 'b.json'), JSON.stringify({ approval: null, approval_previous: { approved_at: 'x' } }));
+      writeFileSync(join(dir, 'c.json'), JSON.stringify({ approval: null }));
+      writeFileSync(join(dir, 'notes.txt'), 'not a board');
+      expect([...approvedBoards(dir)].sort()).toEqual(['b', 'uk-locations--a']);
+      expect([...approvedBoards(join(dir, 'missing'))]).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test('targets.json records the board-approval condition and the fixture prefix', () => {
+    expect(t.new_page_rule.or_board_approved).toBe(true);
+    expect(t.new_page_rule.excluded_prefix).toBe('_');
+  });
+
+  test('the four project 5 promotions are on record', () => {
+    for (const id of [
+      'layout-hero-counter-separation',
+      'layout-h3-image-first',
+      'sem-section-opening-paragraph',
+      'sem-title-case-headings',
+    ]) {
+      expect(t.promotions[id]?.scope, id).toBe('new-pages');
+    }
   });
 });

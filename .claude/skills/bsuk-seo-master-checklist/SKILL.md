@@ -472,7 +472,7 @@ Every heading on the page with:
 | Section | Heading | Primary KW | LSI KWs | Longtail KWs | NLP/Conv | Comparison | Word Count |
 |---|---|---|---|---|---|---|---|
 
-Total row at bottom must hit 85–105× total keyword distribution target (Rule 18).
+Total row at bottom stays at or under 105 total keyword mentions (Rule 18 — a ceiling, no floor).
 
 **E. Special Elements Plan**
 - Newsletter: one block only, frame part 10 — `InfoCard kind="recommendation" label="Newsletter"` with `id="newsletter"`; no offer, no subscriber count

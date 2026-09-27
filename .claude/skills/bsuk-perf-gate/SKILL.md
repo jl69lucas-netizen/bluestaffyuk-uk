@@ -18,13 +18,20 @@ done on a local number once PSI is available.
 ## Run it
 
 ```bash
-npx astro build
-python3 scripts/perf_audit.py <slug> --runs 3            # desktop, dist/
-python3 scripts/perf_audit.py <slug> --mobile --runs 3   # mobile, dist/
+npm run -s build
+python3 scripts/perf_audit.py <slug>                     # desktop, dist/, 5 runs
+python3 scripts/perf_audit.py <slug> --mobile            # mobile, dist/, 5 runs
 python3 scripts/perf_audit.py <slug> --live --mobile     # project 6 only: edge injections
 python3 scripts/perf_audit.py <slug> --psi --mobile      # project 6 only: THE record
 python3 scripts/perf_audit.py <slug> --psi               # project 6 only, desktop
 ```
+
+Five runs is the default. Run 1 is cold and is never judged: the verdict is the **warm
+median of runs 2–5**, printed with the spread of those runs and the cold run beside it. A
+CLS verdict (warm median at or under 0.1) is given only on five or more runs — on fewer,
+the output says `no CLS verdict` and the record carries `"verdict": null`. `--psi`
+defaults to one run (each PSI call is fresh and the quota is per day). `--parse` judges
+saved reports by the same protocol: pass the files in run order — the first is the cold run.
 
 Every floor is 0.995 (what PSI displays as 100). Lighthouse is pinned to 13.4.1 with
 `scripts/lighthouse/agentic-*.mjs`. `--preset=desktop` is ignored alongside a config path,

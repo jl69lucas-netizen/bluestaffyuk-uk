@@ -1,0 +1,18 @@
+<!doctype html><meta charset=utf-8><title>known-good: BodyImage .bl-img above the prose under each H3</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<style>body{margin:0;font:16px/1.5 system-ui;padding:16px}.bl-prose{display:grid;gap:16px}.bl-img{width:100%;height:auto;display:block}</style>
+<main>
+  <!-- The markup src/components/BodyImage.astro renders on a rebuilt page: a bare
+       img.bl-img as a sibling of the heading and its paragraphs inside .bl-prose. -->
+  <section><div class="bl-prose">
+    <h2>A Section Heading</h2>
+    <p>An H2 lead paragraph that precedes its image, which is correct: the rule is scoped to H3 blocks only.</p>
+    <img class="bl-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="h2 photo" width="1" height="1" loading="lazy" decoding="async">
+    <h3>Step One: The Image Leads</h3>
+    <img class="bl-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="first step photo" width="1" height="1" loading="lazy" decoding="async">
+    <p>This paragraph is comfortably longer than the forty-character prose floor and follows its image.</p>
+    <h3>Step Two: The Image Leads Again</h3>
+    <img class="bl-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="second step photo" width="1" height="1" loading="lazy" decoding="async">
+    <p>Another block of real prose, placed after the body photograph that belongs to this heading.</p>
+  </div></section>
+</main>

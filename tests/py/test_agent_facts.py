@@ -567,3 +567,62 @@ def test_the_guarantee_gate_actually_fires(tmp_path):
         "Every puppy has a health guarantee, and their paperwork is in order.\n", encoding="utf-8")
     assert [b.split("  ")[0] for b in ungated_guarantees(p)] == [
         "SKILL.md:1", "SKILL.md:2", "SKILL.md:3", "SKILL.md:7"]
+
+
+# ── an invented house-method label (CAG parity audit D1, 2026-09-26) ─────
+# BSUK has no named house method: Lisa Bright has never given one, CLAUDE.md rule 9 forbids
+# inventing a credential, and scripts/aeo_audit.py keeps LABELED_METHODS empty. The source
+# repo's rule 12 required two "brand-owned method labels", and the port left one invented
+# label ("The Carlisle Socialization Method"), a second invented one in the manual auditor
+# ("the BSUK Home-Raised Method") and the requirement itself in the AEO pass, the entity
+# graph and the Sprint 3 gate of WORKFLOW.md. An agent that follows any of them prints a
+# made-up credential on every page it builds. This lint reads the whole instruction tree:
+# agents, skills, the reference docs, the rule packs and CLAUDE.md.
+METHOD_LABEL = re.compile(
+    r"(?i:\bsociali[sz]ation method\b|\bhome-raised method\b|\bapproved method (?:labels?|names?)\b"
+    r"|\bapproved labels?\b|\bbrand-owned method (?:labels?|names?|nodes?)\b)"
+    r"|\b(?:Carlisle|BSUK|BlueStaffyUK|Blue Staff(?:y|ies)|Lisa|Bright)\b[^|\n.]{0,40}?"
+    r"\b(?:Method|Protocol|Programme|Program)\b")
+
+
+def method_label_targets():
+    return (targets() + sorted((ROOT / ".claude/skills").glob("*/references/*.md"))
+            + sorted((ROOT / "rules").glob("*.md")) + [ROOT / "CLAUDE.md"])
+
+
+def method_labels(path: pathlib.Path):
+    return ["%s:%d  %s" % (path.name, n, line.strip()[:110])
+            for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+            if METHOD_LABEL.search(line)]
+
+
+@pytest.mark.parametrize("path", method_label_targets(), ids=lambda p: p.parent.name + "/" + p.name)
+def test_no_instruction_file_names_or_requires_a_house_method(path):
+    bad = method_labels(path)
+    assert bad == [], (
+        "BSUK has no named house method — the breeder has never given one and CLAUDE.md rule 9 "
+        "forbids inventing it. Delete the label and any line that requires one; if the breeder "
+        "names a method, it goes in scripts/aeo_audit.py LABELED_METHODS first:\n  "
+        + "\n  ".join(bad))
+
+
+def test_the_method_label_lint_actually_fires(tmp_path):
+    p = tmp_path / "SKILL.md"
+    p.write_text(
+        "| **The Carlisle Socialization Method** | family handling |\n"
+        "Named house method (\"the BSUK Home-Raised Method\") used where home-rearing is discussed\n"
+        "- [ ] One of the two approved method labels present and defined\n"
+        "| 6a Labeled | one of the two approved method names present | yes |\n"
+        "are first-class entities and the only two approved labels.\n"
+        "  → WARN:  no binomial · no breeder-name entity · no brand-owned method label\n"
+        "Lisa Bright's Puppy Method is taught on every page.\n"
+        "Every litter follows The BSUK Puppy Protocol from day one.\n"
+        "The Blue Staffy Rearing Programme starts at three weeks.\n"
+        # silent: a named framework, a research step, the rule that forbids a label, and a
+        # sentence break between a name and the word Method
+        "**Two-Keyword Header Method (apply to every header):**\n"
+        "### 3. Tiered Sprint 0.5 Research Method + 17-Field Output Format\n"
+        "BSUK has no named house method; never invent one.\n"
+        "Lisa Bright, our breeder. Method: we weigh daily.\n", encoding="utf-8")
+    assert [b.split("  ")[0] for b in method_labels(p)] == [
+        "SKILL.md:%d" % n for n in range(1, 10)]

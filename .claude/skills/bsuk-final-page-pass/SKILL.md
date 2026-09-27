@@ -19,7 +19,7 @@ USE — a page (or batch) is "done" and you're about to pass/deploy it; ANY type
 (`.claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md`, which this gate calls for low scorers).
 
 ## Two-tier flow
-1. Mechanical: `npx astro build` then `python3 scripts/final_page_audit.py [--puppies]`.
+1. Mechanical: `npm run -s build` then `python3 scripts/final_page_audit.py [--puppies]`.
    Per-page PASS/WARN/FAIL + pre-triaged roll-up. Edit `PUPPIES`/`SLUGS` or add a profile to
    retarget.
    **1b. Dup-content gate (hard FAIL — breeder decision 2026-07-07):** run
@@ -66,7 +66,6 @@ script.
 | `wordcount_in_band` | **700–1,000 words** (script checks 600–1,200 with buffer for chrome); not the pillar "+1,000" floor |
 | `newsletter_present` | **NA** — puppy pages are exempt from newsletter requirement (footer newsletter only, per 2026-06-18 decision) |
 | `all_h1_h4` | WARN — H1×1 + H2/H3 required; H4 where structure exists on a lean puppy page; H5/H6 only on genuine depth |
-| `house_method` | **WARN** — flag until breeder confirms a term; `CLAUDE.md` rule 9 forbids inventing a house-method name |
 | `lifespan_12_14` | WARN — at least one "12–14 year" breed-lifespan reference (not hard-FAIL on a lean puppy page) |
 | `real_hero_image` | WARN — hero must not be a placeholder/logo; flags if first content image src contains "placeholder", "coming-soon", or "default" |
 
@@ -74,14 +73,14 @@ script.
 
 The `rich` pages in `data/page-map.json`. Key differences from puppy: `no_aggregateoffer`,
 `shipping_line`, `wordcount_in_band` and `real_hero_image` are all `NA` (not applicable).
-`house_method` = WARN. The source repo's separate interior audit script was not ported —
+The source repo's separate interior audit script was not ported —
 source repo only; `scripts/final_page_audit.py` with no flag IS the interior profile.
 
 ### Other page types — compact one-row summary
 
 | Page type | Key hard gates | Key scaled / scoped | Notes |
 |---|---|---|---|
-| **Interior** (`rich` pages) | single_canonical, no_phone_in_body, no_visible_date, jsonld_valid, faqpage_present | house_method WARN | `python3 scripts/final_page_audit.py` with no flag |
+| **Interior** (`rich` pages) | single_canonical, no_phone_in_body, no_visible_date, jsonld_valid, faqpage_present | none — no WARN checks; four NA (see above); the rest FAIL | `python3 scripts/final_page_audit.py` with no flag |
 | **For-sale / variant** (`/blue-staffy-pup-sale-uk/`, `/buy-staffy-puppies-for-sale-uk/`) | sold_not_instock; single_canonical; the £200–£350 delivery band | word count 1,000–2,000; `no_aggregateoffer` WARN — a hub may aggregate, a single pup may not | one `Product` per pup, one `Offer` each (`rules/puppies.md`) |
 | **Location** (`/uk-locations/<slug>/`, 28 cities) | single_canonical; no_visible_date; BreadcrumbList; delivery band | word count 3,000–5,000; the city entity in H1; FAQPage present | every city comes from `data/locations.json` |
 | **Comparison** (`/uk-staffordshire-bull-terrier-guide/` etc.) | single_canonical; comparison table present; no_visible_date | word count 1,500–3,000; H1 contains "vs" or "versus" | `bsuk-comparison-builder` handles schema |
@@ -97,7 +96,7 @@ an unmapped type.
 
 ## Verdict model
 - **FAIL** — any REAL hard-gate check fails (per the active profile). Ship-blocking; fix before deploy.
-- **PASS-WITH-WARNINGS** — no hard fails, but ≥1 soft item (Flesch 55–60, `house_method` WARN, alt marginally >190, a missing-but-recommended entity). Shippable; fixes logged for follow-up.
+- **PASS-WITH-WARNINGS** — no hard fails, but ≥1 soft item (Flesch 55–60, alt marginally >190, a missing-but-recommended entity). Shippable; fixes logged for follow-up.
 - **PASS** — clean.
 
 Every `✗` is triaged **REAL** (fix now) / **ACCEPTED** (correct for page type) / **FALSE
@@ -122,7 +121,7 @@ the interior batch.
 
 ```text
 FINAL MANUAL PAGE CHECK — <page slug>            Updated: <Month Year>
-RUN FIRST: npx astro build  →  python3 scripts/final_page_audit.py [--puppies]
+RUN FIRST: npm run -s build  →  python3 scripts/final_page_audit.py [--puppies]
 
 STRUCTURE
 [ ] H1 ×1 exactly; H1–H4 all present; no level skips (utility pages may lack H4 — ACCEPTED)
@@ -154,7 +153,7 @@ SUBJECTIVE (read 3 sample pages: 1 transactional, 1 pillar, 1 trust)
 [ ] ≤1 Honesty-Policy humor beat/section; none on legal/health
 [ ] Flesch 60–70 (floor ~55 for entity-dense pages)
 [ ] ≥1 high-resolution breeder detail / ~500 words; no "both make exceptional companions" filler
-[ ] A named house method is used ONLY once the breeder confirms one — never invented (WARN until then)
+[ ] No house-method name on the page — none is on file, and one is never invented
 [ ] LSI/NLP keyword coverage: "blue Staffy", "blue and white Staffy", "home-raised",
     "Staffordshire Bull Terrier puppy", "UK home delivery by DEFRA-approved transport",
     "collection in Carlisle" present where natural — not forced, not stuffed
@@ -178,7 +177,6 @@ SCALED / SCOPED (WARN — shippable, log for follow-up)
 [ ] Real hero photo — not a placeholder, coming-soon image, or logo
 [ ] H1 ×1 + H2/H3 present; H4 only where page depth warrants it
 [ ] The 12–14 year breed lifespan mentioned at least once
-[ ] House-method naming (WARN until breeder confirms a term)
 
 EXEMPT on puppy pages
 [ ] Newsletter — footer newsletter is sufficient; mid-page newsletter NOT required
@@ -191,7 +189,7 @@ FIRST-PERSON VOICE (puppy page)
 
 These are recommendations surfaced for the breeder — the gate never auto-resolves them:
 
-- **House-method name** (WARN on all pages until confirmed) — upgrade check from WARN to enforced only after the breeder supplies a confirmed term for inclusion in `data/quality/evidence-ledger.json`.
+- **House-method name** — none is on file. If the breeder supplies one, add it to `LABELED_METHODS` in `scripts/aeo_audit.py` before any page names it.
 - **Extra authority-link targets** — beyond the standard library (The Kennel Club, the RSPCA, a veterinary school, a government animal-welfare page), the gate may suggest further credible `.org/.ac.uk/.gov.uk` targets for link variety. Verify 200 before inserting; the external-link library is deferred to project 6.
 - **Delivery and local-authority entities** — the gate flags *whether a given page type warrants* logistics entities (DEFRA-approved transport, the delivery band, collection in Carlisle) or local-authority signals. Puppy listing pages generally inherit these from the price/delivery cluster rather than carrying them inline; the flag is informational only.
 

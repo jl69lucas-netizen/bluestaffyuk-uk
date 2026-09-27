@@ -32,8 +32,11 @@ import { SITE, NAV } from '../../lib/site';
 import Mark from './Mark.astro';
 import Button from './Button.astro';
 
-type Props = HTMLAttributes<'footer'>;
-const { class: cls, ...rest } = Astro.props;
+// `cta` is the page's approved `brief.cta.global_cta` (src/lib/globalCta.ts, via PageShell):
+// false when the board said "hidden". It defaults to true, so the kit preview and any page
+// without an approved board keep the band.
+type Props = HTMLAttributes<'footer'> & { cta?: boolean };
+const { class: cls, cta = true, ...rest } = Astro.props;
 
 const year = new Date().getFullYear();
 // The platforms spell their own names; `youtube`.toUpperCase-the-first-letter gives
@@ -72,12 +75,14 @@ const legal = [{ href: '/privacy-policy-uk/', label: 'Privacy policy' }];
   class:list={['kit-ftr', cls]}
   data-surface="inverse"
 >
-  <div class="cta-band">
-    <div class="container row">
-      <p>Ready to meet the litter?</p>
-      <Button kind="primary" href="/buy-blue-staffy-puppies-uk/" label="See available puppies" />
+  {cta && (
+    <div class="cta-band">
+      <div class="container row">
+        <p>Ready to meet the litter?</p>
+        <Button kind="primary" href="/buy-blue-staffy-puppies-uk/" label="See available puppies" />
+      </div>
     </div>
-  </div>
+  )}
 
   <div class="container grid">
     <div class="brand">

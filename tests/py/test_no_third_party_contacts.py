@@ -14,7 +14,7 @@ import pytest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 RAW = "data/queries/raw"
 RESEARCH = "docs/research"
-SCANNED = (RAW, RESEARCH)
+SCANNED = (RAW, RESEARCH, "data/queries/thread-ledger.json")
 
 PATTERNS = {
     # Any UK number, mobile or landline: national 0 + 9–10 digits (01/02/03/07/08…), or

@@ -26,11 +26,24 @@ examines the page's own file plus the components it actually imports, plus
 BaseLayout.astro/global.css — see src_files()/imports_of(). Before this date
 a scoped run examined only the page file itself and could miss a defect
 shipped in an imported component.
+
+2026-09-26: a page rendered by a DYNAMIC route (a city at uk-locations/<city>, a
+puppy, a blog post) resolves to its template — `src/pages/uk-locations/[slug].astro`
+— and that template's imports, data/locations.json among them (page_source()).
+The site sweep recurses into src/components/, so the kit is read too.
+Imports are followed breadth-first to any depth (page → layout → kit → kit), every
+file under src/ once. A slug with no built page exits 2 instead of scanning nothing.
+
+Files the scope lists that are not markup or CSS — data/*.json, src/lib/*.ts, *.js —
+are PROVENANCE ONLY: they are counted and named in the report so a reader sees what the
+page is built from, but no CSS/markup check reads them (css_checked()).
 """
 import re, sys, glob, os, json, pathlib, argparse
-from _slugs import select_pages
+from _slugs import select_pages, resolve_page
 
-SRC_GLOBS = ["src/pages/**/*.astro", "src/components/*.astro",
+# `src/components/**` recurses: the kit (`src/components/kit/`) is where every rebuilt and
+# project 5 page's sections live, and a non-recursive glob never read one of its files.
+SRC_GLOBS = ["src/pages/**/*.astro", "src/components/**/*.astro",
              "src/layouts/*.astro", "src/styles/*.css"]
 DIST = "dist"
 
@@ -50,9 +63,9 @@ def lines_of(path):
     except Exception:
         return []
 
-# Matches single-line `import ... from '...'` only — a multi-line destructured
-# import (`import {\n  Foo,\n} from '../x'`) is not followed. None exist in the
-# repo as of 2026-09-10.
+# Matches `import ... from './x'` / `'../x'`, multi-line destructured imports included:
+# `[^'"]*?` crosses newlines, so `import {\n  Foo,\n} from '../x'` is followed too.
+# Bare package specifiers (`astro:assets`, `react`) are not relative and are skipped.
 IMPORT_RE = re.compile(
     r"""^\s*import\b[^'"]*?['"](\.\.?/[^'"]+)['"]""", re.M)
 
@@ -95,6 +108,36 @@ def imports_of(astro_path, root="."):
     return found
 
 
+def page_source(slug, root="."):
+    """The source file a built page is rendered from, or None.
+
+    A static page is `src/pages/<route>/index.astro` (`src/pages/index.astro` for the root).
+    Every other page is a DYNAMIC route: a city is `uk-locations/<city>` rendered by
+    `src/pages/uk-locations/[slug].astro`, a puppy by `available-puppies/[slug].astro`, a
+    blog post by `src/pages/[...post].astro`. Before 2026-09-26 only the static form was
+    tried, so a city page's scoped run read BaseLayout and global.css and nothing of the page.
+    A bare city key is resolved to its route first (scripts/_slugs.py, Known Issue 39); the
+    dynamic file is looked up in the route's parent directory with os.listdir, because glob
+    reads the `[` in `[slug].astro` as a character class."""
+    try:
+        route = resolve_page(slug, root)[1]
+    except ValueError:
+        return None
+    if not route:
+        return "src/pages/index.astro"
+    static = f"src/pages/{route}/index.astro"
+    if os.path.isfile(os.path.join(root, static)):
+        return static
+    parent = os.path.dirname(route)
+    folder = os.path.join(root, "src", "pages", parent)
+    if not os.path.isdir(folder):
+        return None
+    dynamic = sorted(f for f in os.listdir(folder) if f.startswith("[") and f.endswith("].astro"))
+    if not dynamic:
+        return None
+    return "/".join(p for p in ("src/pages", parent, dynamic[0]) if p)
+
+
 def src_files(slugs, root="."):
     """A scoped run examines the page's OWN source file plus the components
     it actually imports (one level, plus one more level for
@@ -120,7 +163,7 @@ def src_files(slugs, root="."):
             for p in glob.glob(os.path.join(root, "src/pages/**/*.astro"), recursive=True)
         ))
         shared_files = []
-        for g in ("src/components/*.astro", "src/layouts/*.astro", "src/styles/*.css"):
+        for g in ("src/components/**/*.astro", "src/layouts/*.astro", "src/styles/*.css"):
             shared_files += [
                 os.path.relpath(p, root).replace(os.sep, "/")
                 for p in glob.glob(os.path.join(root, g), recursive=True)
@@ -129,19 +172,40 @@ def src_files(slugs, root="."):
 
     result = set(always)
     for s in slugs:
-        if s in ("index", "", "/"):
-            page_file = "src/pages/index.astro"
-        else:
-            page_file = f"src/pages/{s.strip('/')}/index.astro"
-        if not os.path.isfile(os.path.join(root, page_file)):
+        page_file = page_source(s, root)
+        if page_file is None:
             continue
-        result.add(page_file)
-        first_level = imports_of(page_file, root=root)
-        result |= first_level
-        for imp in first_level:
-            if imp.startswith("src/components/") and imp.endswith(".astro"):
-                result |= imports_of(imp, root=root)
+        result |= import_closure(page_file, root)
     return sorted(result)
+
+
+_FOLLOW_EXTS = (".astro", ".ts", ".js", ".mjs")
+
+
+def import_closure(start, root="."):
+    """`start` plus every file it imports, breadth-first, to any depth: page → layout
+    (PageShell) → kit (SiteHeaderKit) → kit (PageNav, Mark). Only files under src/ are
+    walked into; a resolved import outside it (data/locations.json) is listed but has no
+    imports of its own to follow. A visited set ends import cycles. Before the Task 15
+    review this was two fixed levels, so a PageShell page never reached the kit's own
+    imports."""
+    seen, queue = {start}, [start]
+    while queue:
+        cur = queue.pop(0)
+        if not (cur.startswith("src/") and cur.endswith(_FOLLOW_EXTS)):
+            continue
+        for imp in sorted(imports_of(cur, root=root)):
+            if imp not in seen:
+                seen.add(imp)
+                queue.append(imp)
+    return seen
+
+
+def css_checked(files):
+    """The files the CSS/markup checks read: .astro and .css only. data/*.json and
+    src/lib/*.ts/.js are in the scope as provenance (what the page is built from) and are
+    named in the report, but none of this scanner's checks means anything on them."""
+    return [f for f in files if f.endswith((".astro", ".css"))]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -151,15 +215,39 @@ def src_files(slugs, root="."):
 #    This is why a for-sale page shipped a 48px h1 and a 524px hero while the
 #    source said 2.26rem / ~400px (found 2026-07-23). Utterly invisible in review.
 # ─────────────────────────────────────────────────────────────────────────────
+_MATH_FN = re.compile(r"(?<![\w-])(?:clamp|calc|min|max)\(")
+
+
+def _math_exprs(ln):
+    r"""Each outermost clamp()/calc()/min()/max() on a line, read to its BALANCED closing
+    parenthesis. `[^)]*\)` stopped at the first `)`, so in `calc(var(--a)+var(--b))` it saw
+    `calc(var(--a)` and never the `+`. An expression still open at the end of the line is
+    read to the end of the line."""
+    pos = 0
+    while True:
+        m = _MATH_FN.search(ln, pos)
+        if not m:
+            return
+        depth, j = 0, m.end() - 1
+        while j < len(ln):
+            depth += {"(": 1, ")": -1}.get(ln[j], 0)
+            if depth == 0:
+                break
+            j += 1
+        yield ln[m.start():j + 1]
+        pos = j + 1
+
+
 def check_css_math(files):
-    pat = re.compile(r"(?:clamp|calc|min|max)\([^)]*\)")
-    bad = re.compile(r"[0-9a-z%)]\s*[+\-]\s*(?=[.\d])(?<![ ])|(?<=[0-9a-z%)])[+\-][.\d]")
     for f in files:
         for i, ln in enumerate(lines_of(f), 1):
-            for m in pat.finditer(ln):
-                expr = m.group(0)
+            for expr in _math_exprs(ln):
+                # A custom property's NAME is not arithmetic: `var(--space-4)` read as
+                # `e-4` failed every kit component on 2026-09-26, the day the scan first
+                # read src/components/kit/. Names are blanked before the test.
+                bare = re.sub(r"--[\w-]+", "--v", expr)
                 # a +/- with a non-space on either side, ignoring signs after ( or ,
-                if re.search(r"(?<=[0-9a-z%\)])\+(?=[^\s])|(?<=[0-9a-z%\)])\s\-(?=[^\s])|(?<=[0-9a-z%\)])\-(?=[.\d])", expr):
+                if re.search(r"(?<=[0-9a-z%\)])\+(?=[^\s])|(?<=[0-9a-z%\)])\s\-(?=[^\s])|(?<=[0-9a-z%\)])\-(?=[.\d])", bare):
                     add("ERROR", "css-math-spacing", f, i,
                         f"invalid CSS math (needs spaces around +/-): {expr}",
                         "rewrite as clamp(1.5rem, 1.02rem + 1.55vw, 1.98rem) — "
@@ -922,9 +1010,19 @@ def check_smooth_scroll(sources):
 # Components the for-sale spec mandates. Sourced from
 # sessions/2026-07-19-for-sale-component-map.md + the 2026-07-28 harden pass,
 # where all of these shipped as CSS with no markup behind them.
+#
+# Re-based 2026-09-26. The set above was the source repo's for-sale components, none of which
+# any BSUK file renders, so the ERROR half of this check could never fire here. These are the
+# KIT CLASSES WHOSE OWN FILE MUST KEEP RENDERING THEM: each is styled in its kit file, and a
+# kit file that keeps the CSS but drops the markup is an ERROR. It is NOT a presence check —
+# nothing here says a page must use the component. The members: the counter strip (rule 16;
+# layout-hero-counter-separation hooks on .counter-wrap), the stacking table (rule 13), the
+# hero (rule 16), the page dial, the page nav, the section sheet, the FAQ block and the
+# statement label. A page importing the component may restyle its class (_kit_rendered()).
+# tests/py/test_page_hardening_scope.py holds every member to a class a kit file renders.
 SPEC_MANDATED = {
-    "doc-stack", "otA", "geo-pin", "geo-arrow", "read-img",
-    "vflags", "chkB", "fs-video", "xsell", "seam",
+    "counter-wrap", "stack-table", "kit-hero", "kit-dial", "kit-nav", "kit-sheet",
+    "kit-faq", "stmt-label",
 }
 
 _QUOTED = re.compile(r'"([^"]*)"|\'([^\']*)\'')
@@ -972,15 +1070,37 @@ def _rendered_classes(markup):
     for m in re.finditer(r"class(?:Name)?=\{([^}]*)\}", markup):
         for q in _QUOTED.findall(m.group(1)):
             harvested.update((q[0] or q[1]).split())
+    # Astro's class:list={['kit-dial', cls]} — how every kit component renders its root. Not
+    # read before 2026-09-26, so each kit root would have read as styled-but-never-rendered.
+    # The value is an array or an object literal, spaced or not: `{ ['sp'] }`, `{{'on': x}}`,
+    # and an object's unquoted keys are classes too: `{{active: on}}` renders `active`.
+    for m in re.finditer(r"class:list=\{\s*([\[{].*?[\]}])\s*\}", markup, re.S):
+        body = m.group(1)
+        for q in _QUOTED.findall(body):
+            harvested.update((q[0] or q[1]).split())
+        harvested.update(re.findall(r"[{,]\s*([A-Za-z_][\w-]*)\s*:", body))
     return harvested, literal
+
+
+def _kit_rendered(f):
+    """Classes rendered by the kit components `f` imports (to any depth). A page that
+    restyles `.kit-hero` in its own <style> is adjusting a component it renders through
+    <Hero />, not styling a component it forgot to render."""
+    out = set()
+    for imp in import_closure(f) - {f}:
+        if imp.startswith("src/components/kit/") and imp.endswith(".astro"):
+            text = "\n".join(lines_of(imp))
+            i = text.find("<style>")
+            out |= _rendered_classes(text if i == -1 else text[:i])[0]
+    return out
 
 
 def _global_css():
     """The project-wide sheets, cached. A class styled here is not an orphan."""
     if not hasattr(_global_css, "_cache"):
         text = ""
-        for g in ("src/styles/*.css", "src/layouts/*.astro", "src/components/*.astro"):
-            for p in glob.glob(g):
+        for g in ("src/styles/*.css", "src/layouts/*.astro", "src/components/**/*.astro"):
+            for p in glob.glob(g, recursive=True):
                 text += "\n".join(lines_of(p))
         _global_css._cache = text
     return _global_css._cache
@@ -995,6 +1115,7 @@ def check_class_drift(src_pairs):
         css = css[:css.find("<script")] if "<script" in css else css
         css = _strip_css_comments(css)
         used, literal = _rendered_classes(markup)
+        used = used | _kit_rendered(f)
         defined = set(re.findall(r"^\s*\.([A-Za-z][\w-]*)", css, re.M))
 
         unrendered = sorted(defined - used)
@@ -1277,9 +1398,22 @@ def main(argv=None):
     ns = ap.parse_args(sys.argv[1:] if argv is None else argv)
     args = ns.slugs
     fail_on_error = ns.fail_on_error
-    files = src_files(args)
-    pages = sorted(glob.glob(f"{DIST}/**/index.html", recursive=True))
-    pages = select_pages(pages, args)
+    all_pages = sorted(glob.glob(f"{DIST}/**/index.html", recursive=True))
+    routes = []
+    for s in args:
+        try:
+            route = resolve_page(s, ".")[1] or "index"
+        except ValueError:
+            route = None
+        if route is None or not select_pages(all_pages, [route]):
+            # A typo, or a page not built yet: scanning nothing and printing "clean" would
+            # pass a gate on a page it never read.
+            print(f"no built page for {s} — typo or run npm run -s build")
+            return 2
+        routes.append(route)
+    pages = select_pages(all_pages, routes)
+    listed = src_files(args)
+    files = css_checked(listed)
 
     check_css_math(files)
     check_bottom_bar_z(files)
@@ -1322,7 +1456,7 @@ def main(argv=None):
 
     errs = [f for f in findings if f["sev"] == "ERROR"]
     warns = [f for f in findings if f["sev"] == "WARN"]
-    print(f"BSUK page-hardening scan — {len(files)} source files, {len(pages)} built pages\n")
+    print(f"BSUK page-hardening scan — {len(listed)} source files, {len(pages)} built pages\n")
     for group, title in ((errs, "ERROR"), (warns, "WARN")):
         if not group:
             continue
@@ -1335,7 +1469,7 @@ def main(argv=None):
     else:
         print(f"{len(errs)} ERROR · {len(warns)} WARN")
     if ns.json:
-        labels = list(files) + [p.replace(DIST + "/", "").replace("/index.html", "/")
+        labels = list(listed) + [p.replace(DIST + "/", "").replace("/index.html", "/")
                                 for p in pages]
         out = write_json_report(ns.json, labels)
         print(f"JSON report → {out}")

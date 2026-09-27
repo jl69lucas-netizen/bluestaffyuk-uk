@@ -178,10 +178,10 @@ WORKFLOW GATE CHECK (run silently after Q6, report findings before Q7):
    - NO → flag: "This page hasn't been audited yet. The audit takes 10 minutes and prevents wasted work — should we run @bsuk-content-audit-agent first?"
    - YES → continue
 
-3. What is the LLM Visibility score for this keyword?
+3. Is BSUK cited by an AI engine for this keyword?
    - Check docs/research/llm-intel/ for a `<slug>-<date>.json` file, and data/queries/<slug>.json for the question file it read (search-console data is NOT FETCHED until project 6, Known Issue 14)
    - NO FILE → note: "LLM Visibility hasn't been measured for this keyword. We should run @bsuk-llm-keyword-intel before publishing."
-   - FILE → report the score (e.g., "LLM Visibility: 3/10 — BSUK is cited in 1 of 5 AI engines")
+   - FILE → report its `bsuk_cited` for its one `engine` (e.g., "LLM Visibility: not cited — chatgpt, 2026-09-25"). There is no score: one engine is asked per page, so the answer is cited, not cited, or NOT FETCHED with its reason
 
 4. What is the page's hub page?
    - The hub comes from the route, since data/page-map.json records each page's `kind`, not a parent: `/uk-locations/<slug>/` → `/uk-locations/`, `/available-puppies/<slug>/` → `/available-puppies/`, a blog post (an entry of `src/content/blog/`, served at `/<slug>/`) → `/blue-staffy-blog-guides/`; any other top-level page has no hub
@@ -290,7 +290,7 @@ Below the `<!-- Synthesized fields -->` marker, fill in:
 - Component Style: [informational 760px | transactional 1200px | hybrid]
 - Visual Plan: [section → type mapping from Q12, or "decide during build"]
 - Audit Status: [complete | pending → run bsuk-content-audit-agent first]
-- LLM Visibility: [0–10 score | "not measured" → run bsuk-llm-keyword-intel]
+- LLM Visibility: [cited | not cited | NOT FETCHED — <reason> (`bsuk_cited` in docs/research/llm-intel/<slug>-<date>.json) | "not measured" → run bsuk-llm-keyword-intel]
 - Structure.json Entry: [yes | no → run bsuk-structure-architect first]
 - Hub Page: [/<hub>/ of parent hub | "needs to be built first"]
 - Internal Links Needed: [from workflow gate check, or "TBD after audit"]
@@ -374,6 +374,9 @@ After writing (or skipping) the CLAUDE.md patch, say:
 >
 > Based on your session context, here's the recommended next step:
 > [Insert one of the following based on SESSION CONTEXT:]
+>
+> **If this session builds a project 5 page (a location, comparison or blog page):**
+> → This brief is grill-me's part of row 1 of `docs/reference/page-run.md`. Next invoke the `superpowers:writing-plans` skill for this page's plan, then the page-type builder skill (`.claude/skills/bsuk-location-page-builder/SKILL.md`, `.claude/skills/bsuk-comparison-page-builder/SKILL.md` or `.claude/skills/bsuk-blog-post/SKILL.md`), then record the open with `python3 scripts/page_run_record.py <slug> session-open --builder <builder skill>`. The page then walks page-run.md from row 2; the routes below apply only where that run sends you to them.
 >
 > **If Sprint 0 not done (no gap matrix):**
 > → Run `@bsuk-competitor-registry` → `@bsuk-competitor-intel --all` → `@bsuk-gsc-analytics` → then re-run grill-me with full data

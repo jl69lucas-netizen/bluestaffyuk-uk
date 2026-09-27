@@ -154,7 +154,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 79
+## Scripts — 89
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -200,6 +200,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/final_page_audit.py`
 - `scripts/form_contract_audit.py`
 - `scripts/gap_matrix.py`
+- `scripts/gate_page.py`
 - `scripts/generate_page_dates.py`
 - `scripts/generate_sitemaps.py`
 - `scripts/health-sweep.sh`
@@ -208,6 +209,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/image_rules.py`
 - `scripts/indexnow_submit.py`
 - `scripts/ingest_image.py`
+- `scripts/keyword_metrics.py`
 - `scripts/keyword_variants.py`
 - `scripts/link_diversity.py`
 - `scripts/link_library.py`
@@ -215,10 +217,14 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/marker_check.py`
 - `scripts/measure_canvas_heights.mjs`
 - `scripts/measure_chrome.py`
+- `scripts/measurement_ledger.py`
 - `scripts/migration_parity.py`
+- `scripts/not_fetched_lint.py`
 - `scripts/ontology_seed.py`
 - `scripts/outline_provenance_check.py`
 - `scripts/page_hardening_scan.py`
+- `scripts/page_intake.py`
+- `scripts/page_run_record.py`
 - `scripts/page_sections.py`
 - `scripts/pageboard.py`
 - `scripts/perf_audit.py`
@@ -233,9 +239,13 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/reframe_og.py`
 - `scripts/release_guard.sh`
 - `scripts/render_baseline.py`
+- `scripts/render_pages.mjs`
+- `scripts/rendered_changes.py`
+- `scripts/retired_facts_check.py`
 - `scripts/schema_check.py`
 - `scripts/sitemap_check.py`
 - `scripts/strategy_cite_check.py`
+- `scripts/thread_ledger.py`
 - `scripts/verbatim_set_check.py`
 - `scripts/workflow_ref_check.py`
 
@@ -265,7 +275,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/settings.json`
 - `data/verbatim/`
 
-## Schemas — 8
+## Schemas — 9
 
 Every JSON Schema in `schemas/` — the contract a data file or report is validated against.
 
@@ -275,6 +285,7 @@ Every JSON Schema in `schemas/` — the contract a data file or report is valida
 - `schemas/component-ledger.schema.json`
 - `schemas/llm-intel.schema.json`
 - `schemas/ontology.schema.json`
+- `schemas/page-run-record.schema.json`
 - `schemas/port-manifest.schema.json`
 - `schemas/queries.schema.json`
 
@@ -293,9 +304,13 @@ and exits non-zero on a problem.
 | `scripts/query_coverage_check.py` | a built page with a query pool carries its FAQ blocks and questions |
 | `scripts/competitor_registry_check.py` | `data/competitors.json` is well formed; no unlinkable competitor is linked |
 | `scripts/gap_matrix.py` | the newest gap matrix matches the intel reports (`--check`) |
+| `scripts/not_fetched_lint.py` | a NOT FETCHED in a new or changed board, query or research file names its barrier |
+| `scripts/thread_ledger.py` | the shared Reddit and forum thread ledger matches every page's threads file (`--check`) |
 | `scripts/workflow_ref_check.py` | WORKFLOW.md and quick-start.md name only agents, scripts and npm scripts that exist |
 | `scripts/marker_check.py` | no source-repo marker survives anywhere in the scanned roots |
 | `scripts/placeholder_check.py` | counts launch placeholders; fails only under `BSUK_RELEASE=1` |
+| `scripts/board_gate.py` | every rebuilt page's board is approved as it stands and its Asset Gate holds (`--all`) |
+| `scripts/retired_facts_check.py` | no retired figure, retired wording or former-city claim on a built page, in rendered data or in src/ (Known Issue 65 allowlist only shrinks) |
 | `scripts/final_page_audit.py` | headings, six levels, the H5/H6 minimums |
 | `scripts/schema_check.py` | structured data on every built page |
 | `scripts/sitemap_check.py` | sitemap shards and what is excluded from them |

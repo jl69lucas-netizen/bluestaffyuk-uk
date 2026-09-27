@@ -63,9 +63,10 @@ Subject: <one sentence from this section's outline>.
 Avoid: <§3 negative list, verbatim>
 ```
 
-**Aspect ratio:** ask for 3:4 or 4:5 when the slot's style is `B` (a portrait master baked
-with Blur-Fill keeps the whole dog), 16:9 for `A` or `E` scenes, 16:9 at 1600×900 or larger
-for a hero.
+**Aspect ratio:** ask for 3:4 or 4:5 for a portrait (baked with `A`, Contain on Bone, it keeps
+the whole dog over a bone bed), 16:9 for `A` or `E` scenes, 16:9 at 1600×900 or larger for a
+hero. Style `B` (Blur-Fill) is retired for in-body images on new pages (user ruling
+2026-09-26: no grey or black bleed on phones); `scripts/ingest_image.py` refuses it.
 
 ## Step 3: Generate
 
@@ -90,7 +91,7 @@ Open the master and check every line. One failure means regenerate, never ship:
 1. **Bake the draft** (the final bytes, framed in the slot's style):
 
    ```bash
-   python3 scripts/ingest_image.py draft "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/generated/<slug file>-<slot>.png" --board <slug> --slot <slot> --og-style B --mobcrop 4:5
+   python3 scripts/ingest_image.py draft "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/generated/<slug file>-<slot>.png" --board <slug> --slot <slot> --og-style A
    ```
 
    It writes `data/boards/generated/<slug file>/<slot>.webp` (never under `public/`) and

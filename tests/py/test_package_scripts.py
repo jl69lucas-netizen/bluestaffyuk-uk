@@ -105,12 +105,33 @@ def test_the_check_all_chain_is_the_documented_one():
     # new-family page — was it written from its own approved outline, or from a sibling.
     # check:competitors sits after check:queries: both guard research the page builders read.
     # check:gaps follows check:competitors: the matrix is rebuilt from the registry's reports.
+    # check:barriers follows check:gaps (parity build Task 21): the last research guard — a
+    # NOT FETCHED in a new or changed board, query or research file names its barrier.
+    # check:threads follows it (parity build Task 22): the shared thread ledger matches the
+    # threads files, so no city page re-opens a thread another page has read.
     # check:workflow sits just before check:markers: both judge the instruction tree rather
     # than the site — markers asks whether a source-repo word survived, workflow asks whether
     # WORKFLOW.md / quick-start.md name an agent, script or npm script that is not there
     # (Known Issue 56).
+    # check:retired follows check:placeholders: both judge what the built site SAYS — a
+    # placeholder is a fact not yet supplied, a retired fact is one that has been withdrawn
+    # (Known Issue 65; its allowlist only shrinks).
+    # check:boards follows check:retired: `board_gate.py --all` runs the build-stage board
+    # gate (approval hash, Asset Gate image checks, header collisions) over every page in
+    # data/facts/rebuilt.json, so no rebuilt page ships on a board that stopped matching.
     expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
                 "check:outline", "check:redirects", "check:schema", "check:queries",
-                "check:competitors", "check:gaps", "check:sitemaps", "check:placeholders",
+                "check:competitors", "check:gaps", "check:barriers", "check:threads",
+                "check:sitemaps", "check:placeholders", "check:retired", "check:boards",
                 "check:workflow", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected
+
+
+def test_the_page_run_ends_in_the_zero_examined_guard():
+    """`build_scorecard.mjs` holds Guard 1 (a page that wrote no partial) and Guard 2 (a
+    check that examined zero nodes across every page), and until parity plan Task 11 it ran
+    only when somebody remembered to type it. `scripts/render_pages.mjs` runs the page suite
+    and then the scorecard, whatever the page run's result (tests/py/test_render_pages_runner.py).
+    Not an npm `post` hook: npm skips that when the page run fails."""
+    assert SCRIPTS["test:render:pages"] == "node scripts/render_pages.mjs"
+    assert "posttest:render:pages" not in SCRIPTS

@@ -12,6 +12,8 @@ description: The comparison-page builder for BlueStaffyUK — a section list der
 
 This skill **supersedes the section template inside `.claude/agents/bsuk-comparison-builder.md`** — the agent now executes THIS blueprint. Same design system, same reference page idioms, deeper structure.
 
+**Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
+
 ---
 
 ## 1. Page Inventory & Build Order
@@ -159,9 +161,31 @@ with a Recommended pick + why + trade-off.
 
 After outline approval, give the hero and every body H2 and body H3 its image slot — an OG photo, a generated image or an IG-style infographic (IG-3 Comparison Split is made for these pages), by `rules/images.md` "An image under every body heading" and `IMAGE-DESIGNS.md` §7–§9 (§11 item 2). AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. A generated image goes through `.claude/skills/bsuk-image-generation/SKILL.md`, which needs `GEMINI_API_KEY` in `.env` (named in `docs/reference/credentials.md`, never committed); until the user sets it, a slot takes an existing image or an infographic (Known Issue 70). Image SEO 5-element on every image.
 
+In-body image bleed uses design colours (bone), never grey or black; new portraits are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user ruling 2026-09-26, rules/images.md.
+
 ## 10. Pass Gates (page is NOT done until ALL pass)
 
-`npx astro build` → verify in `dist/` → `python3 scripts/final_page_audit.py` → then the full breeder gate list: **SEO · AIO · GEO · AEO · entity coverage · topical authority · anti-AI · non-commodity · humor policy · keyword variation · keyword-verifier · technical SEO · Lighthouse (warm median-of-3)**. Preview before apply. Commit after every approved build — never push (no remote until project 6) — on the branch the plan names, never the trunk. Sitemaps regenerate after any page change.
+The gates are rows 12 to 21 of `docs/reference/page-run.md`, in that order; that file is the
+authority. In short: `npm run -s build` → `npm run -s check:all` → `python3 scripts/board_gate.py <slug>`
+(and the slug in `data/facts/rebuilt.json`, the page in `tests/render/targets.json`) →
+`npm run test:render:meta` → `npm run test:render:pages` (row 13, BEFORE Harden) → the two
+Harden passes (rows 14–15) → `python3 scripts/page_hardening_scan.py <route> --fail-on-error`
+(row 16) → commit, `npm run -s build` again (the prebuild re-dates the page from that commit), then
+`npm run gate:page -- <slug> --skip-record` (row 17: dup, final audit on profile `comparison`,
+hardening, AEO, evidence and the board gate, each run twice) → the verification record, committed,
+then `npm run gate:page -- <slug>` (row 18) → `python3 scripts/measurement_ledger.py <project> --slugs <slug>` (row 19).
+
+**Mandatory on every project 5 page (the user's rulings, 2026-09-26).** After the render gates
+(row 13), invoke the `impeccable:impeccable` skill, then the
+`frontend-design:frontend-design` skill, with the Skill tool (never paraphrased, never skipped),
+on the built page at 375 / 768 / 1280 in a painting browser; commit each pass's fixes and record
+it (`python3 scripts/page_run_record.py <slug> impeccable --findings <n> --fixed <n>`, then
+`frontend-design`). A pass that proposes a visual change is previewed before it is applied
+(working rule 6), and the palette never changes. Before any "page done" or "ready for approval"
+claim, invoke the `superpowers:verification-before-completion` skill and record it with
+`python3 scripts/page_run_record.py <slug> verification` (page-run.md row 18 steps).
+
+Alongside those, the breeder's gate list is judged on the built page in `dist/`: **SEO · AIO · GEO · AEO · entity coverage · topical authority · anti-AI · non-commodity · humor policy · keyword variation · keyword-verifier · technical SEO · Lighthouse (warm median-of-3)**. Preview before apply. Commit after every approved build — never push (no remote until project 6) — on the branch the plan names, never the trunk. Sitemaps regenerate after any page change.
 
 ## 11. Breeder-Review Component Standard (BINDING for every comparison page)
 

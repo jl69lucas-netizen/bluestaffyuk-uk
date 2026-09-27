@@ -330,10 +330,14 @@ register({
  * Under an H3, the sectional image comes before the prose. H2 blocks keep
  * lead-paragraph-first — this rule is H3-scoped, deliberately.
  *
- * Judged unit: H3 blocks that OWN a `.sec-img`. An H3 with no image of its own is not a
- * violation of an ordering rule, so counting it would inflate `examined` with units the
- * predicate never ran against. Seam emblems and icons are excluded on purpose: they are
- * decorative and would otherwise register as "the image" and fail every clean page.
+ * Judged unit: H3 blocks that OWN a sectional image — `img.sec-img` (the kit specimen on
+ * /kit-preview/) or `img.bl-img` (src/components/BodyImage.astro, the body photograph every
+ * rebuilt page renders). Until 2026-09-26 only `.sec-img` counted, and no real page carries
+ * one, so the check examined zero blocks on exactly the pages rule 17 puts an H3 image on.
+ * An H3 with no image of its own is not a violation of an ordering rule, so counting it
+ * would inflate `examined` with units the predicate never ran against. Seam emblems and
+ * icons are excluded on purpose: they are decorative and would otherwise register as "the
+ * image" and fail every clean page.
  */
 register({
   id: 'layout-h3-image-first',
@@ -355,9 +359,13 @@ register({
         // The block ends at the next heading of equal or higher rank.
         for (let n = h.nextElementSibling; n && !/^H[123]$/.test(n.tagName); n = n.nextElementSibling) {
           i++;
-          const isImg =
-            (n.tagName === 'IMG' && n.classList.contains('sec-img')) || !!n.querySelector?.('img.sec-img');
+          const isImg = n.matches('img.sec-img, img.bl-img') || !!n.querySelector?.('img.sec-img, img.bl-img');
           if (isImg && imgAt === -1) imgAt = i;
+          // Known limitations, both deliberate: prose is a direct <p> sibling of 40+ characters,
+          // so text inside a wrapper (<div><p>, a list, a card) is not seen as prose and cannot
+          // make the block an offender; and the image must carry `.sec-img` or `.bl-img` on the
+          // <img> itself — a <picture> or figure whose class sits only on the wrapper, or an
+          // image rendered by another component, is not counted as the block's image.
           const isProse = n.tagName === 'P' && (n.textContent ?? '').trim().length > 40;
           if (isProse && proseAt === -1) proseAt = i;
         }

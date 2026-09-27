@@ -9,6 +9,8 @@ allowed-tools: [Read, Write, Bash]
 One page per UK city under `/uk-locations/<slug>/`. The 28 slugs are `data/locations.json`
 and nowhere else. This file says how the page is shaped; the packs say how it is written.
 
+**Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
+
 ## What wins when this file and something else disagree
 
 | Source | It owns |
@@ -140,6 +142,10 @@ its `section_target.total`.
 | 12 | FAQ — bottom | `Faq` | `sem-heading-order` · FAQPage schema below |
 | 13 | Enquiry form | `ContactFormKit` | `form-inquiry-contract` · `layout-tap-target-size` |
 | — | Footer | `SiteFooterKit` | inherited from `BaseLayout`; never hand-written, not a frame part |
+
+**Four checks block from board approval on.** `layout-hero-counter-separation`, `layout-h3-image-first`, `sem-section-opening-paragraph` and `sem-title-case-headings` are blocking on a new page as soon as its board is approved (`tests/render/targets.json` `promotions`, scope `new-pages`), so the first build is held to them: place each `BodyImage` directly after its H3 and before that block's prose, or the first build blocks.
+
+In-body image bleed uses design colours (bone), never grey or black; new portraits are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user ruling 2026-09-26, rules/images.md.
 
 **No `variant` prop and no letter — but the arrangement props are the page's own.** The
 letters in `data/design/picks.json` are a record of project 3's component picks, never a prop:
@@ -304,18 +310,49 @@ the visible questions, no visible date. `scripts/query_coverage_check.py` holds 
 
 ## Step 6 — gates
 
-Build first (`npm run build` — the gates measure `dist/`), then, in order:
+The gates are rows 12 to 21 of `docs/reference/page-run.md`, in that order: that file is the
+authority, and this is its city-page spelling. The render rows come BEFORE Harden (row 13, then
+rows 14 and 15), and every page gate runs twice through one command, `npm run gate:page -- <slug>`.
+
+**Mandatory on every project 5 page (the user's rulings, 2026-09-26).** After the render gates
+(row 13), invoke the `impeccable:impeccable` skill, then the
+`frontend-design:frontend-design` skill, with the Skill tool (never paraphrased, never skipped),
+on the built page at 375 / 768 / 1280 in a painting browser; a pass that proposes a visual
+change is previewed before it is applied (working rule 6), and the palette never changes.
+Before any "page done" or "ready for approval" claim, invoke the
+`superpowers:verification-before-completion` skill. Each pass is recorded in the page's run
+record (`scripts/page_run_record.py`).
+
+In page-run order (row 12's build and site checks, with the slug added to
+`data/facts/rebuilt.json` and `tests/render/targets.json`; row 13 render; rows 14–15 Harden,
+each committed then recorded; row 16 static scan; row 17 commit, rebuild so the page is dated from that commit, then the two-run gate; row 18
+the verification record, committed, then the full gate; row 19 the ledger):
 
 ```bash
-npm run check:all
+npm run -s build
+npm run -s check:all
 python3 scripts/board_gate.py <slug>
-python3 scripts/final_page_audit.py uk-locations/<slug> --type location
-python3 scripts/dup_content_audit.py
-python3 scripts/aeo_audit.py uk-locations/<slug>
-python3 scripts/evidence_audit.py uk-locations/<slug> --type location
 npm run test:render:meta
 npm run test:render:pages
+python3 scripts/page_run_record.py <slug> impeccable --findings <n> --fixed <n>
+python3 scripts/page_run_record.py <slug> frontend-design --findings <n> --fixed <n>
+python3 scripts/page_hardening_scan.py uk-locations/<slug> --fail-on-error
+npm run -s build
+npm run gate:page -- <slug> --skip-record
+python3 scripts/page_run_record.py <slug> verification --run "npm run -s build" --run "npm run -s check:all" --run "npm run gate:page -- <slug> --skip-record" --claim "<claim>"
+npm run gate:page -- <slug>
+python3 scripts/measurement_ledger.py <project> --slugs <slug>
 ```
+
+`npm run gate:page -- <slug>` takes the bare key and runs, twice each and diffed:
+`python3 scripts/dup_content_audit.py` (body and `--headers`),
+`python3 scripts/final_page_audit.py uk-locations/<slug> --type location`,
+`python3 scripts/page_hardening_scan.py uk-locations/<slug>`,
+`python3 scripts/aeo_audit.py uk-locations/<slug>`,
+`python3 scripts/evidence_audit.py uk-locations/<slug> --type location --fail-on-error` and
+`python3 scripts/board_gate.py <slug>`, and fails an approved city page missing from
+`data/facts/rebuilt.json` or `tests/render/targets.json`. Run any of them by hand to read a
+finding, never instead of the gate.
 
 `test:render:meta` is the gate that checks the checkers — run it before trusting any page
 result. A gate's output is a hypothesis about the page: confirm a reported defect on the
