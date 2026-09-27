@@ -35,8 +35,8 @@ The URL-family decision for the city cluster and the comparison slugs is one tab
 
 ## The run
 
-Three rows stop for the breeder, and only three: the brief (stop 1), the board (stop 2) and
-the Asset Gate (stop 3), as `docs/reference/WORKFLOW.md` sets for a session that runs with
+Three rows stop for the breeder, and only three: the research board (stop 1, the brief), the
+board (stop 2) and the Asset Gate (stop 3), as `docs/reference/WORKFLOW.md` sets for a session that runs with
 the breeder away. The two Harden passes (rows 14 and 15) are mandatory on every project 5
 page and pause only for a PREVIEW: when a pass proposes a visual change, it is previewed and
 approved before it is applied. With the breeder away, the proposed change is written as a
@@ -55,9 +55,9 @@ narrow question, keep building what is not blocked.
 | 5 | §6 Competitor research and query fan-out | `bsuk-query-augmentation` for the slug (top 5 on Google and Bing, merged), then the row 5 steps below | `data/queries/<slug>.json` (competitors with their metrics, `section_target`, `word_target`, `extra_sections`, FAQ picks) and `docs/research/llm-intel/<slug>-<date>.json`; when `word_target` has no median (every competitor a marketplace listing), the barrier is recorded on the board and the word band is the breeder's decision on the answer board | `npm run check:queries`, `npm run check:competitors`, `npm run check:gaps`, `npm run check:threads` | none |
 | 6 | §7 Keyword deliverables and metrics | `python3 scripts/keyword_variants.py <slug>` for the four extra types; `python3 scripts/keyword_metrics.py <slug>` for the ours-vs-top-5 table on the board (block 4b; its JSON report is git-ignored) | the section keywords in the record, and the metric table (unique terms, variations, exact match per tag, first 100 words, title front-load) | `keyword-variants-missing` in `scripts/family_rules.py`; `python3 scripts/keyword_metrics.py <slug>` exits 1 on any FAIL (title-front-load, first-100-words, or a missing primary keyword) | none |
 | 7 | §8 Entities and co-occurrence | `python3 scripts/ontology_seed.py --check`; board block 5 groups the entities by class | every entity a section names, in `data/bsuk-ontology.json` with a source | enforced at row 10 by `python3 scripts/board_approve.py <slug>`: a BLOCKED entity refuses approval as `entity-blocked` (board block 5 names it), and the build gate `python3 scripts/board_gate.py <slug>` FAILs it too; `python3 scripts/ontology_seed.py --check` is advisory | none |
-| 8 | §9–§10 Gaps, angles and the strategy | the page's row in the approved cluster strategy (`docs/superpowers/sessions/2026-09-25-location-pages-strategy.md`); `grill-me --brief` for a page that strategy does not name; `bsuk-strategy-synthesizer` when a new strategy is needed | board block 1: goal, scope, gates, done, out of scope, strategy and why, the angles considered | advisory: `python3 scripts/strategy_cite_check.py <strategy.md>` on any new strategy | STOP 1 — the brief, only for a page with no row in the approved strategy |
-| 9 | §11–§12 Distribution matrix and the H1–H6 outline | for a page that exists, `python3 scripts/facts_preserved_check.py --extract <slug>` first, then the row 9 steps below: blocks 2 (H1 and meta), 3 (outline, heading collisions, every link), 3a (verbatim set) and 4 (distribution, why each section is here) | the approved outline: sections derived from the competitors' count + 3, grouped, each with its framework and `why_source` | `schemas/board.schema.json` through `scripts/pageboard.py`; `python3 scripts/board_approve.py <slug>` (after `npm run -s build`: it reads the built site) refuses a header that collides with a built page or with another approved-but-unbuilt board, and any block 7b FAIL | none — approved with row 10 |
-| 10 | §13–§14 Components, hero refresh and the tool decision | `python3 scripts/build_board_previews.py <slug>`, then the board: block 3c (navigation), block 5b (the kit), block 6 (three styles per section at 1280 / 768 / 375), block 7b (the project 5 rules) | the component tuple, the page's own hero and counter styles, a refresh delta on every section | `python3 scripts/board_approve.py <slug>`; `tests/py/test_rule16_gate.py` refuses a shared hero or counter | STOP 2 — the breeder approves the board, which carries rows 2 and 6–10 |
+| 8 | §9–§10 Gaps, angles and the strategy — the research board | the research board, assembled from what rows 4–7 left on disk by the row 8 steps below: the research, then 3 angle options with hooks (`bsuk-angle-agent`), 2–3 strategy directions (the page's row in the approved cluster strategy, `docs/superpowers/sessions/2026-09-25-location-pages-strategy.md`, is one of the strategy directions whenever it has one; `bsuk-strategy-synthesizer` writes the alternatives) and the framework options per planned section group (`framework-*` skills, routed by `bsuk-content-architect`), each choice with one option marked (Recommended) | the research board page (`docs/artifacts/research/<slug>.html`, published as an Artifact) and the user's picks, saved as `docs/reference/answer-board/answers/<batchId>-<date>.json` and `.md`; board block 1 (goal, scope, gates, done, out of scope, strategy and why, the angles considered) is written from those picks at row 9 | advisory: `python3 scripts/strategy_cite_check.py <strategy.md>` on any new strategy direction; the routing is pinned by `tests/py/test_research_board_rule.py`, and the per-page check that a board cites its picks is tooling: built with the first page | STOP 1 — the research board (the brief), on every project 5 page: every city, comparison and blog post, whether or not the strategy has a row for it (the user's ruling, 2026-09-27); nothing from row 9 on starts until its picks are recorded |
+| 9 | §11–§12 Distribution matrix and the H1–H6 outline | comes after row 8's picks are recorded, and is written from them: for a page that exists, `python3 scripts/facts_preserved_check.py --extract <slug>` first, then the row 9 steps below: blocks 2 (H1 and meta), 3 (outline, heading collisions, every link), 3a (verbatim set) and 4 (distribution, why each section is here) | the approved outline, citing the research-board picks (the chosen angle, strategy and frameworks, and the answers file they came from): sections derived from the competitors' count + 3, grouped, each with its framework and `why_source` | `schemas/board.schema.json` through `scripts/pageboard.py`; `python3 scripts/board_approve.py <slug>` (after `npm run -s build`: it reads the built site) refuses a header that collides with a built page or with another approved-but-unbuilt board, and any block 7b FAIL | none — approved with row 10 |
+| 10 | §13–§14 Components, hero refresh and the tool decision | `python3 scripts/build_board_previews.py <slug>`, then the board: block 3c (navigation), block 5b (the kit), block 6 (three styles per section at 1280 / 768 / 375), block 7b (the project 5 rules) | the component tuple, the page's own hero and counter styles, a refresh delta on every section; block 1 shows the research-board picks the outline was written from | `python3 scripts/board_approve.py <slug>`; `tests/py/test_rule16_gate.py` refuses a shared hero or counter | STOP 2 — the breeder approves the board, which carries rows 2 and 6–10 |
 | 11 | §15 Images and the Asset Gate | `python3 scripts/image_candidates.py <slug> --write`, then the row 11 steps below; board block 7 on its second pass | an image on the hero and every body H2 and H3, each with its `assets[]` row and an approved file; each body image directly after its heading in the uniform box (`box="uniform"`, or `box="tall"` for a portrait); a new portrait baked with `--og-style A` (contain), never blurfill, and any bleed around an in-body image in the design colour (bone), never grey or black | enforced at row 12 by `npm run check:boards` (inside `npm run check:all`, after a fresh `npm run -s build`), which runs `scripts/board_gate.py` for every rebuilt page; run `python3 scripts/board_gate.py <slug>` by hand before then | STOP 3 — the Asset Gate: a generated image is approved by its sha12 pick before it is published |
 | 12 | §16 Build from the outline | the builder skill from the table above (`bsuk-location-page-builder`, `bsuk-comparison-page-builder` or `bsuk-blog-post`), then the row 12 steps below | the built page in `dist/<route>/index.html`, written from its own outline and nothing else | `npm run check:all` (parity, facts, links, verbatim, outline, board gate, retired facts) | none |
 | 13 | §17 Responsive typography, spacing and scroll | `npm run test:render:meta` first, then `npm run test:render:pages` (375 / 768 / 1280), which rebuilds the scorecards | `data/quality/scorecards/<slug>-<date>.json` with every check's examined count | `npm run test:render:pages`: a blocking IMG, LAYOUT or NAV row, a check that examined zero nodes, or on a new page (from board approval on) any of the four promoted checks: `hero-counter-separation`, `h3-image-first`, `sem-section-opening-paragraph`, `sem-title-case-headings` | none |
@@ -81,6 +81,25 @@ Each row above names its first command; the rest run in this order.
 3. `python3 scripts/query_augment.py --competitor-metrics <slug>` fills each page's metrics from the saved HTML; when `word_target` has no median (every competitor a marketplace listing), record the barrier on the board — the word band is the breeder's decision on the answer board
 4. `bsuk-reddit-threads` against the shared thread ledger: `python3 scripts/thread_ledger.py --known <url>` before a thread is read, `--seed` for a new page's questions
 5. `bsuk-llm-keyword-intel` for the slug
+
+### Row 8 steps
+
+The research board is STOP 1 on every project 5 page — every city, comparison and blog post —
+and it comes before the outline. The user's ruling (2026-09-27), asked when they get to choose
+the page, the angles, the frameworks, the keyword universe and the strategy: "a research board
+first … a must on all pages". A page whose row exists in the approved cluster strategy still
+gets the board; the row is one of the strategy directions on it, never a reason to skip it.
+
+1. assemble the research from what rows 4–7 left on disk; a figure that is not there is written `NOT FETCHED — <barrier>`, never guessed:
+   - the competitor scan: the top 5 on Google and Bing, merged, from `data/queries/<slug>.json`, each with its section count, and the page's word target (or `NOT FETCHED — <barrier>` when it has no median)
+   - the query fan-out: the PAA questions (`bsuk-paa-agent`), the Reddit threads (`bsuk-reddit-threads`) and the LLM intel (`docs/research/llm-intel/<slug>-<date>.json`, from `bsuk-llm-keyword-intel`)
+   - the keyword universe grouped by intent, each keyword with its volume or `NOT FETCHED — <barrier>`, and the four extra keyword types from `python3 scripts/keyword_variants.py <slug>`
+   - the entities, by class, from `data/bsuk-ontology.json`
+2. add the options: 3 angle options with hooks (`bsuk-angle-agent`); 2–3 strategy directions (the page's strategy row as one of them when it has one, `bsuk-strategy-synthesizer` for the alternatives); the framework options per planned section group (`framework-*` skills, routed by `bsuk-content-architect`)
+3. mark exactly one option per choice (Recommended), with its why from the research above and its named trade-off (`CLAUDE.md` working rule 4)
+4. publish the board from `docs/artifacts/research/<slug>.html` as an Artifact (copy buttons and a `.md` download, like every deliverable), then post the choices as one answer-board batch with `python3 scripts/answer_board_batch.py docs/reference/answer-board/batches/<date>-research-<slug>.md --project project-5`, each question linking to the research board page (`docs/reference/answer-board/README.md`)
+5. save the user's answers as `docs/reference/answer-board/answers/<batchId>-<date>.json` and `.md`, and commit: they are the picks, and rows 9 and 10 are written from them and cite them (block 1's angles and strategy are the picked ones; `brief.strategy.why` names the answers file)
+6. tooling: built with the first page — the script that assembles the research board page from rows 4–7 is written in London's page run, its first use; until then the board is assembled from the same files by hand
 
 ### Row 9 steps
 
@@ -123,6 +142,8 @@ Each row above names its first command; the rest run in this order.
 Each item is a file, not a claim that the step was considered:
 
 - `data/queries/<slug>.json` and `docs/research/llm-intel/<slug>-<date>.json` (Sprint 0)
+- the research board page `docs/artifacts/research/<slug>.html` and the user's picks under
+  `docs/reference/answer-board/answers/` (Sprint 0.5, STOP 1)
 - `data/boards/<slug>.json`, approved, and its board page under `docs/artifacts/boards/` (Sprint 1)
 - every image slot's file and approved sha12 pick in the record's `assets[]` (Asset Gate)
 - `dist/<route>/index.html`, the slug in `data/facts/rebuilt.json` and the page in
@@ -136,9 +157,11 @@ Each item is a file, not a claim that the step was considered:
 
 ## Deliberate differences from the brief
 
-Recorded and still correct: three stops instead of one per sprint; exactly two strategies; one
-LLM engine per page, so the visibility denominator is 1, not 30; four counters, not eight; the
-section count is the competitors' highest real count + 3, never a fixed number; no seam
-dividers, so the seam-parity check has nothing to count; no push and no IndexNow until
-project 6. STOP 1 (strategy) applies only to a page with no row in the approved cluster
-strategy; the cluster strategy was approved once.
+Recorded and still correct: three stops instead of one per sprint; 2–3 strategy directions on
+the research board, never one; one LLM engine per page, so the visibility denominator is 1, not
+30; four counters, not eight; the section count is the competitors' highest real count + 3,
+never a fixed number; no seam dividers, so the seam-parity check has nothing to count; no push
+and no IndexNow until project 6. STOP 1 (the research board) applies to every project 5 page,
+whether or not the approved cluster strategy has a row for it: the strategy row is one of the
+directions the user picks from, never a reason to skip the board (the user's ruling,
+2026-09-27).

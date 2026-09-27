@@ -11,6 +11,8 @@ and nowhere else. This file says how the page is shaped; the packs say how it is
 
 **Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
 
+**Research board before the outline (STOP 1, every page — the user's ruling, 2026-09-27):** after the research (page-run rows 4–7) the page goes through its research board, `docs/reference/page-run.md` row 8: the competitor scan (top 5 on Google and Bing, section counts, word target or `NOT FETCHED`), the query fan-out (PAA, Reddit, LLM intel), the keyword universe by intent with the four extra keyword types, the entities, 3 angle options (`bsuk-angle-agent`), 2–3 strategy directions and the framework options per section group, one option per choice marked (Recommended). The user picks on it, the picks are saved under `docs/reference/answer-board/answers/`, and the outline and the board are written from them and cite them. Nothing is outlined before the picks are recorded. Every city gets its research board: the city's row in `docs/superpowers/sessions/2026-09-25-location-pages-strategy.md` is one of the strategy directions on it, never a reason to go without it.
+
 ## What wins when this file and something else disagree
 
 | Source | It owns |

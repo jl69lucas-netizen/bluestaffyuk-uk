@@ -182,6 +182,12 @@ When the breeder requests a batch build, hand off to `bsuk-batch-rebuilder`, whi
 
 ---
 
+## Pre-Build: the Research Board (STOP 1 — every city, MANDATORY)
+
+Before the outline, every city page goes through its research board, `docs/reference/page-run.md` row 8 (the user's ruling, 2026-09-27: "a research board first"). It shows the city's competitor scan (top 5 on Google and Bing, section counts, word target or `NOT FETCHED`), the query fan-out (PAA, Reddit, LLM intel), the keyword universe by intent with the four extra keyword types, the entities, 3 angle options (`bsuk-angle-agent`), 2–3 strategy directions and the framework options per section group, one option per choice marked (Recommended). The city's row in `docs/superpowers/sessions/2026-09-25-location-pages-strategy.md` is one of the strategy directions on the board, never a reason to go without it. The user's picks are saved under `docs/reference/answer-board/answers/`; the outline below is written from them and cites them. In batch mode each city has its own research board.
+
+**⏸ STOP — Do not write the outline until the user's research-board picks are recorded.**
+
 ## Pre-Build: Outline First (Rule 51 — MANDATORY)
 
 Before building ANY city location page (single or batch mode), produce the Page Outline and obtain explicit user approval. Do NOT write section 1 until approval is received.
@@ -259,7 +265,7 @@ python3 scripts/measurement_ledger.py <project> --slugs <slug>
 6. **Sitemaps are generated** — `npm run build` writes them; never hand-edit one
 7. **Batch mode requires explicit user approval** before dispatching all cities at once
 8. **Licence and legal claims stay placeholders** — a licensing or legal sentence is LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER, except the banned-breed line under "What you may NOT write into a city page" (Known Issue 46); the paperwork a puppy goes home with is only what `data/faq.json` `whyus-paperwork` lists
-9. **Outline first (Rule 51)** — produce and get approval of the Page Outline before writing any section; this applies in both single and batch mode; batch outline covers all cities at once
+9. **Research board, then outline first (Rule 51)** — the research board and its picks come before the outline (`docs/reference/page-run.md` row 8); produce and get approval of the Page Outline before writing any section; this applies in both single and batch mode; batch outline covers all cities at once
 10. **Header/Footer: NEVER TOUCH (Rule 53)** — location pages inherit header and footer from `src/layouts/BaseLayout.astro` automatically; never write `<header>` or `<footer>` HTML in page files; start all content at the hero `<section>`; this rule applies to every child agent in batch mode
 
 ---

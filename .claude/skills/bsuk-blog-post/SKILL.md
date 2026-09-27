@@ -15,6 +15,8 @@ THIS PAGE CONTAIN THE CHATGTP RESEARCH WORK DONE FOR ALL BLOG POST AND HUB PAGES
 
 **Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
 
+**Research board before the outline (STOP 1, every page — the user's ruling, 2026-09-27):** after the research (page-run rows 4–7) the page goes through its research board, `docs/reference/page-run.md` row 8: the competitor scan (top 5 on Google and Bing, section counts, word target or `NOT FETCHED`), the query fan-out (PAA, Reddit, LLM intel), the keyword universe by intent with the four extra keyword types, the entities, 3 angle options (`bsuk-angle-agent`), 2–3 strategy directions and the framework options per section group, one option per choice marked (Recommended). The user picks on it, the picks are saved under `docs/reference/answer-board/answers/`, and the outline and the board are written from them and cite them. Nothing is outlined before the picks are recorded. The strategy doc's field 17 options (below) are the board's choices; the breeder selects on the board.
+
 > **Precedence:** `CLAUDE.md` and the rule packs in `rules/` win over this file; where they are silent, the sections below are the method. The source repo's blog-cluster spec was **not ported — source repo only**.
 
 ### 1. 14-Step Section Architecture + Special-Element Slots
@@ -90,7 +92,7 @@ does not replace it.
 16. Internal-link + image plan (silo links + image → section map)
 17. **Framework / angle / keyword OPTIONS for breeder to select** — each marked (Recommended) + why + named trade-off
 
-**The breeder selects** frameworks, angles, entities, keywords, variations before any code is written.
+**The breeder selects** frameworks, angles, entities, keywords, variations on the research board (`docs/reference/page-run.md` row 8), before the outline and before any code is written.
 
 ---
 

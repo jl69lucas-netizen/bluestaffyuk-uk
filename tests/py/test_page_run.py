@@ -328,10 +328,12 @@ def test_a_visual_change_with_the_breeder_away_is_previewed_and_deferred_not_app
 
 
 def test_the_strategy_stop_is_explained_as_a_deliberate_difference():
+    # The user's ruling (2026-09-27) replaced the old exemption: STOP 1 is the research board
+    # on every page (tests/py/test_research_board_rule.py pins the rest).
     text = DOC.read_text(encoding="utf-8")
     diffs = _norm(text[text.index("## Deliberate differences"):])
-    assert ("STOP 1 (strategy) applies only to a page with no row in the approved cluster "
-            "strategy") in diffs
+    assert "STOP 1 (the research board) applies to every project 5 page" in diffs
+    assert "applies only to a page with no row" not in diffs
 
 
 def test_every_arrival_marker_cites_the_path_that_ends_it():

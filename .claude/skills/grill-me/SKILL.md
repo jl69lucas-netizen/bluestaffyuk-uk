@@ -376,7 +376,7 @@ After writing (or skipping) the CLAUDE.md patch, say:
 > [Insert one of the following based on SESSION CONTEXT:]
 >
 > **If this session builds a project 5 page (a location, comparison or blog page):**
-> → This brief is grill-me's part of row 1 of `docs/reference/page-run.md`. Next invoke the `superpowers:writing-plans` skill for this page's plan, then the page-type builder skill (`.claude/skills/bsuk-location-page-builder/SKILL.md`, `.claude/skills/bsuk-comparison-page-builder/SKILL.md` or `.claude/skills/bsuk-blog-post/SKILL.md`), then record the open with `python3 scripts/page_run_record.py <slug> session-open --builder <builder skill>`. The page then walks page-run.md from row 2; the routes below apply only where that run sends you to them.
+> → This brief is grill-me's part of row 1 of `docs/reference/page-run.md`. Next invoke the `superpowers:writing-plans` skill for this page's plan, then the page-type builder skill (`.claude/skills/bsuk-location-page-builder/SKILL.md`, `.claude/skills/bsuk-comparison-page-builder/SKILL.md` or `.claude/skills/bsuk-blog-post/SKILL.md`), then record the open with `python3 scripts/page_run_record.py <slug> session-open --builder <builder skill>`. The page then walks page-run.md from row 2, and its research board (`docs/reference/page-run.md` row 8, STOP 1) comes before the outline on every page, a city with a row in the approved strategy included: the user picks the angle, strategy direction and frameworks there (the user's ruling, 2026-09-27). The routes below apply only where that run sends you to them.
 >
 > **If Sprint 0 not done (no gap matrix):**
 > → Run `@bsuk-competitor-registry` → `@bsuk-competitor-intel --all` → `@bsuk-gsc-analytics` → then re-run grill-me with full data
@@ -389,7 +389,7 @@ After writing (or skipping) the CLAUDE.md patch, say:
 >
 > **If audit done and ready to build:**
 > → SECTION MAP + COMPONENT GATE (mandatory before any writing):
->    List every section Hero → final CTA, assign a kit component per section from `src/components/kit/_registry.ts` (no variants — the arrangement is the page's board pick, working rule 16), get approval — THEN run `@bsuk-angle-agent`
+>    List every section Hero → final CTA, assign a kit component per section from `src/components/kit/_registry.ts` (no variants — the arrangement is the page's board pick, working rule 16), get approval — THEN run `@bsuk-angle-agent` (for a project 5 page its angles go on the research board, not straight into the outline)
 >
 > See `docs/reference/WORKFLOW.md` for the full sprint sequence."
 

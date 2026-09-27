@@ -23,7 +23,7 @@ or a traffic baseline is inert today. No number from those sources may be quoted
 
 Fable 5.1 sessions run with the breeder away: a mid-task question blocks the build. So the
 pipeline has exactly **three places where an agent may stop and ask** — the `[APPROVE]` gates at
-Sprint 0.5 (the brief), Sprint 1 (outline + distribution matrix + header style) and the ASSET GATE.
+Sprint 0.5 (the brief: the research board), Sprint 1 (outline + distribution matrix + header style) and the ASSET GATE.
 Everywhere else the Clarification Checkpoint applies: write the finished part to disk, log the
 question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked.
 Agents no longer open with a "which mode?" interview; they read the mode from the invocation or the
@@ -43,7 +43,8 @@ no deploy until project 6; IndexNow and every live step wait for it (Sprint 5).
 ```
 Sprint 0    Intel      competitor-intel --all + keyword-gap + gsc-analytics
                        + research-recency                            [REVIEW]
-Sprint 0.5  Orient     grill-me + full fan-out queries               [APPROVE]
+Sprint 0.5  Orient     grill-me + full fan-out queries
+                       + the RESEARCH BOARD (every project 5 page)   [APPROVE]
 Sprint 1    Blueprint  visual companion + image-framing letters
                        + distribution matrix (A/B/C categories)
                        + full H1–H6 outline + HEADER STYLE + WHY
@@ -194,6 +195,14 @@ Before proceeding to Sprint 0.5:
 
 **Session open for a project 5 page (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → the page type's builder skill (`docs/reference/page-run.md` row 1), each invoked with the Skill tool by name.
 
+**The research board closes Sprint 0.5 on every project 5 page (the user's ruling, 2026-09-27):**
+after the research, and before the outline, the page's research board — `docs/reference/page-run.md`
+row 8, STOP 1 — shows the competitor scan, the query fan-out, the keyword universe by intent, the
+entities, 3 angle options, 2–3 strategy directions and the framework options, one option per choice
+marked (Recommended). The user picks on it; Sprint 1's outline and board are written from those
+picks and cite them. Every city gets one: a page's row in the approved cluster strategy is one of
+the directions on the board, never a reason to go without it.
+
 ```
 grill-me skill
   → Reads: CLAUDE.md + the traffic baseline (deferred to project 6) + the reference docs in docs/reference/ + the per-page competitor research of seo-rules Rule 11 + last session brief
@@ -208,6 +217,7 @@ grill-me skill
 
 ### Sprint 0.5 Gate
 Before proceeding to Sprint 1:
+- [ ] The research board published and the user's picks saved under `docs/reference/answer-board/answers/` (`docs/reference/page-run.md` row 8)
 - [ ] Session brief written with full SESSION CONTEXT block
 - [ ] Framework chosen + reason documented
 - [ ] AIO/GEO approach chosen

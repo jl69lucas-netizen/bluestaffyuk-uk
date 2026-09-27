@@ -89,9 +89,12 @@ capped at nine (`judgment_cap: 9`); a tenth exemption is a rule that has to earn
 
 **Every project 5 page (location, comparison, blog) walks `docs/reference/page-run.md`.** The
 session opens with `grill-me`, then the `superpowers:writing-plans` skill, then the builder
-skill above. After the build, the Harden sprint invokes the `impeccable:impeccable` skill, then
-`frontend-design:frontend-design`, on the built page at 375 / 768 / 1280 in a painting browser,
-and `superpowers:verification-before-completion` runs before any "page done" claim and again
+skill above. Before the outline, every one of them — every city included — stops at its
+research board (page-run row 8), where the user picks the angle, strategy and frameworks
+(`rules/gates.md` `research-board-before-outline`). After the build, the Harden sprint
+invokes the `impeccable:impeccable` skill, then `frontend-design:frontend-design`, on the
+built page at 375 / 768 / 1280 in a painting browser, and
+`superpowers:verification-before-completion` runs before any "page done" claim and again
 before a gate report says PASS. Each is invoked with the Skill tool by that name, never
 paraphrased and never skipped (the user's rulings, 2026-09-26).
 
@@ -348,7 +351,7 @@ components are listed in `data/design/components.json`, and rebuilt pages render
 - `docs/reference/page-run.md` — the ordered per-page run for a project 5 page: each brief
   step, the command that does it, what it leaves on disk, the gate that fails and the stop
 - `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
-  A–J. That is a different count from `data/quality/rule-index.json`'s 81 (of which 9 are
+  A–J. That is a different count from `data/quality/rule-index.json`'s 82 (of which 9 are
   `enforced: judgment`, capped there): the ledger indexes the `rules/` packs, the
   render-harness checks and working rules 10–17; seo-rules.md numbers its own categories.
   `docs/reference/quick-start.md` states both, and all three files change together.
