@@ -230,6 +230,8 @@ def test_workflow_names_verification_at_the_gates_and_at_close():
 BLEED_TOKENS = ("bone", "never blurfill", "`--og-style A`")
 SESSION_OPEN = re.compile(r"grill-me\W[^\n]{0,80}?superpowers:writing-plans\W[^\n]{0,60}?builder skill")
 ROUTED = ("docs/reference/WORKFLOW.md",) + BUILDER_SKILLS
+# grill-me is where row 1 starts, so its handoff names the rest of the order too (Task 28a).
+SESSION_ROUTED = ROUTED + (".claude/skills/grill-me/SKILL.md",)
 
 
 def _norm(text):
@@ -272,7 +274,7 @@ def test_the_image_bleed_ruling_is_routed_everywhere_a_page_is_built():
 
 def test_the_session_open_order_is_routed_everywhere_a_page_is_built():
     assert SESSION_OPEN.search(_run_rows()[0][2]), _run_rows()[0][2]
-    missing = [doc for doc in ROUTED
+    missing = [doc for doc in SESSION_ROUTED
                if not SESSION_OPEN.search(_norm((ROOT / doc).read_text(encoding="utf-8")))]
     assert missing == [], f"the session-open order is not routed in: {missing}"
 
@@ -343,3 +345,12 @@ def test_every_arrival_marker_cites_the_path_that_ends_it():
            if wrc.ARRIVES.search(line)
            and not any(_path_like(tok) for tok in BACKTICKED.findall(line))]
     assert bad == [], f"marked lines citing no path that would expire the marker: {bad}"
+
+
+def test_grill_me_hands_a_project_5_page_to_the_plan_the_builder_and_the_record():
+    text = _norm((ROOT / ".claude/skills/grill-me/SKILL.md").read_text(encoding="utf-8"))
+    handoff = text[text.index("### Step 3"):]
+    plan = handoff.index(f"`{PLAN_SKILL}`")
+    builder = handoff.index("builder skill", plan)
+    record = handoff.index("scripts/page_run_record.py <slug> session-open --builder", builder)
+    assert plan < builder < record

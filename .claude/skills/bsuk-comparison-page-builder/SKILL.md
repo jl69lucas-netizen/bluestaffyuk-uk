@@ -165,16 +165,27 @@ In-body image bleed uses design colours (bone), never grey or black; new portrai
 
 ## 10. Pass Gates (page is NOT done until ALL pass)
 
-**Mandatory on every project 5 page (the user's rulings, 2026-09-26).** After the build and
-before the audits, invoke the `impeccable:impeccable` skill, then the
-`frontend-design:frontend-design` skill, with the Skill tool (never paraphrased, never skipped),
-on the built page at 375 / 768 / 1280 in a painting browser; a pass that proposes a visual
-change is previewed before it is applied (working rule 6), and the palette never changes.
-Before any "page done" or "ready for approval" claim, invoke the
-`superpowers:verification-before-completion` skill. Each pass is recorded in the page's run
-record; the order is `docs/reference/page-run.md`, rows 14 to 18.
+The gates are rows 12 to 21 of `docs/reference/page-run.md`, in that order; that file is the
+authority. In short: `npm run -s build` → `npm run -s check:all` → `python3 scripts/board_gate.py <slug>`
+(and the slug in `data/facts/rebuilt.json`, the page in `tests/render/targets.json`) →
+`npm run test:render:meta` → `npm run test:render:pages` (row 13, BEFORE Harden) → the two
+Harden passes (rows 14–15) → `python3 scripts/page_hardening_scan.py <route> --fail-on-error`
+(row 16) → commit, `python3 scripts/generate_page_dates.py --check`, then
+`npm run gate:page -- <slug> --skip-record` (row 17: dup, final audit on profile `comparison`,
+hardening, AEO, evidence and the board gate, each run twice) → the verification record, committed,
+then `npm run gate:page -- <slug>` (row 18) → `python3 scripts/measurement_ledger.py <project> --slugs <slug>` (row 19).
 
-`npx astro build` → verify in `dist/` → `python3 scripts/final_page_audit.py` → then the full breeder gate list: **SEO · AIO · GEO · AEO · entity coverage · topical authority · anti-AI · non-commodity · humor policy · keyword variation · keyword-verifier · technical SEO · Lighthouse (warm median-of-3)**. Preview before apply. Commit after every approved build — never push (no remote until project 6) — on the branch the plan names, never the trunk. Sitemaps regenerate after any page change.
+**Mandatory on every project 5 page (the user's rulings, 2026-09-26).** After the render gates
+(row 13), invoke the `impeccable:impeccable` skill, then the
+`frontend-design:frontend-design` skill, with the Skill tool (never paraphrased, never skipped),
+on the built page at 375 / 768 / 1280 in a painting browser; commit each pass's fixes and record
+it (`python3 scripts/page_run_record.py <slug> impeccable --findings <n> --fixed <n>`, then
+`frontend-design`). A pass that proposes a visual change is previewed before it is applied
+(working rule 6), and the palette never changes. Before any "page done" or "ready for approval"
+claim, invoke the `superpowers:verification-before-completion` skill and record it with
+`python3 scripts/page_run_record.py <slug> verification` (page-run.md row 18 steps).
+
+Alongside those, the breeder's gate list is judged on the built page in `dist/`: **SEO · AIO · GEO · AEO · entity coverage · topical authority · anti-AI · non-commodity · humor policy · keyword variation · keyword-verifier · technical SEO · Lighthouse (warm median-of-3)**. Preview before apply. Commit after every approved build — never push (no remote until project 6) — on the branch the plan names, never the trunk. Sitemaps regenerate after any page change.
 
 ## 11. Breeder-Review Component Standard (BINDING for every comparison page)
 

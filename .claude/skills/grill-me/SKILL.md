@@ -375,6 +375,9 @@ After writing (or skipping) the CLAUDE.md patch, say:
 > Based on your session context, here's the recommended next step:
 > [Insert one of the following based on SESSION CONTEXT:]
 >
+> **If this session builds a project 5 page (a location, comparison or blog page):**
+> → This brief is grill-me's part of row 1 of `docs/reference/page-run.md`. Next invoke the `superpowers:writing-plans` skill for this page's plan, then the page-type builder skill (`.claude/skills/bsuk-location-page-builder/SKILL.md`, `.claude/skills/bsuk-comparison-page-builder/SKILL.md` or `.claude/skills/bsuk-blog-post/SKILL.md`), then record the open with `python3 scripts/page_run_record.py <slug> session-open --builder <builder skill>`. The page then walks page-run.md from row 2; the routes below apply only where that run sends you to them.
+>
 > **If Sprint 0 not done (no gap matrix):**
 > → Run `@bsuk-competitor-registry` → `@bsuk-competitor-intel --all` → `@bsuk-gsc-analytics` → then re-run grill-me with full data
 >
