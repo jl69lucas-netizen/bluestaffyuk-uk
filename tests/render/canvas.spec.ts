@@ -12,8 +12,8 @@ import './checks/img.js';
  * The London component canvas smoke (docs/superpowers/plans/2026-09-27-london-component-design-pass.md).
  * Every variant frame scripts/build_component_canvas.py --emit-frames wrote is painted at 375,
  * 768 and 1280 and held to:
- *   - the registered checks in REUSED, run as they are (no second copy of their logic); an
- *     advisory one (img-not-upscaled) prints its hits as `[advisory]` lines and never fails;
+ *   - the registered checks in REUSED, run as they are (no second copy of their logic); those
+ *     in CANVAS_ADVISORY (img-not-upscaled) print their hits as `[advisory]` lines and never fail;
  *   - the component's own probe in PROBES (the hero's photo-first rule, the jump links'
  *     sticky strip, the dial's desktop-only display, the six puppy cards, …), keyed on the
  *     data hooks scripts/check_city_canvas.py HOOKS requires.
@@ -34,6 +34,10 @@ const REUSED = [
   'img-alt-present-and-unique',
   'img-not-upscaled',
 ];
+// The REUSED checks whose hits the smoke PRINTS instead of failing on, named here and pinned by
+// tests/py/test_canvas_advisory_set.py. Never derived from registry severity: that demoted
+// a11y-text-contrast-aa and a11y-no-duplicate-ids (advisory on pages, blocking here) in 4214d23.
+const CANVAS_ADVISORY = new Set(['img-not-upscaled']);
 const CTX = { pageType: 'location', slug: 'canvas', siblings: async () => [] };
 const PUPPY_NAMES: string[] = JSON.parse(readFileSync(resolve(REPO, 'data/puppies.json'), 'utf8'))
   .map((p: { name: string }) => p.name);
@@ -297,9 +301,9 @@ for (const f of frames) {
       expect(check, `${id} is registered`).toBeTruthy();
       const r = await runCheck(check!, page, viewport, CTX);
       for (const d of r.defects) {
-        // An advisory check reports and never fails the smoke (bsuk-learning-loop Step 4: a new
-        // check earns blocking after a clean cluster). Its hits are printed and annotated.
-        if (check!.severity === 'advisory') {
+        // A check in CANVAS_ADVISORY reports and never fails the smoke (bsuk-learning-loop
+        // Step 4: a new check earns blocking after a clean cluster). Every other REUSED check fails.
+        if (CANVAS_ADVISORY.has(id)) {
           console.log(`[advisory] ${f.component}/${f.variant} @ ${viewport}px ${id}: ${d.message}`);
           testInfo.annotations.push({ type: 'advisory', description: `${id}: ${d.message}` });
         } else failures.push(`${id}: ${d.message}`);
