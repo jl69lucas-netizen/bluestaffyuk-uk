@@ -49,7 +49,9 @@ python3 scripts/thread_ledger.py --known <permalink> [<permalink> ...]
 `reuse` = read in the last 180 days: do not open it again. `python3 scripts/thread_ledger.py
 --seed <permalink> ...` prints its `threads` rows and `questions` in Step E's shape — copy them
 in, then score each row for THIS page in Step C (`score` comes out `null`; `stale` is
-recomputed for today). `fetch` = new or older than 180 days: open it as below.
+recomputed for today; keep each row's `seeded_from`). `fetch` = new or older than 180 days:
+open it as below. A `/r/<sub>/s/<code>` share link is refused — open it and use the resolved
+permalink.
 
 ## Step C — score each candidate (keep 5 or more with a score of 5+)
 
@@ -107,7 +109,9 @@ breeder?"). Never reshape a question to fit a bank answer.
   from, and that thread is in the `threads` list. When a question is kept only because a
   UK-scoring thread also asks it, `detail` is that UK-scoring thread.
 - Every thread you used is in `threads` with all seven keys; `subreddit` holds the forum name
-  for a forum thread; `score` is the Step C total, not a vote count.
+  for a forum thread; `score` is the Step C total, not a vote count. A row copied from
+  `thread_ledger.py --seed` also keeps its eighth key, `"seeded_from": "YYYY-MM-DD"` (the read
+  it came from) — leave it in, so the ledger never counts the copy as a fresh read.
 - `status` is `ok`, `fallback` (only the lower rungs worked) or `NOT FETCHED` (write the file
   with empty `questions` and `threads` lists and a `"reason"` naming which rungs failed —
   `npm run check:barriers` fails a bare `NOT FETCHED`).

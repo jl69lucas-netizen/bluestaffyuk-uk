@@ -2,24 +2,8 @@
   "_comment": "Derived by scripts/thread_ledger.py --write from every data/queries/raw/<slug>/threads.json; never hand-edited. `npm run check:threads` fails when it is stale. bsuk-reddit-threads reads it before opening a thread.",
   "files": 2,
   "threads": {
-    "https://www.reddit.com/r/AskUK/comments/1okt0wb/buying_puppy_in_uk_are_we_getting_scamed/": {
-      "title": "Buying puppy in uk, are we getting scamed?",
-      "subreddit": "r/AskUK",
-      "posted": "2025-10",
-      "replies": 49,
-      "first_fetched": "2026-09-23",
-      "last_fetched": "2026-09-23",
-      "questions": [
-        {
-          "text": "How can I be sure a puppy's Kennel Club registration will be issued if the papers are delayed?",
-          "fact_source": null
-        }
-      ],
-      "used_by": [
-        "blue-staffy-puppies-for-sale-leeds"
-      ]
-    },
-    "https://www.reddit.com/r/StaffordBullTerriers/comments/1gliy8v/blue_staffy/": {
+    "https://www.reddit.com/comments/1gliy8v/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1gliy8v/blue_staffy/",
       "title": "Blue staffy",
       "subreddit": "r/StaffordBullTerriers",
       "posted": "2024-11",
@@ -32,7 +16,8 @@
         "blue-staffy-puppies-manchester-uk"
       ]
     },
-    "https://www.reddit.com/r/StaffordBullTerriers/comments/1hq5cz3/is_my_puppy_an_american_or_english_staffy/": {
+    "https://www.reddit.com/comments/1hq5cz3/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1hq5cz3/is_my_puppy_an_american_or_english_staffy/",
       "title": "Is my puppy an American or English staffy",
       "subreddit": "r/StaffordBullTerriers",
       "posted": "2024-12",
@@ -44,7 +29,8 @@
         "blue-staffy-puppies-for-sale-leeds"
       ]
     },
-    "https://www.reddit.com/r/StaffordBullTerriers/comments/1keeqmx/to_blue_or_not_to_blue/": {
+    "https://www.reddit.com/comments/1keeqmx/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1keeqmx/to_blue_or_not_to_blue/",
       "title": "To blue or not to blue?",
       "subreddit": "r/StaffordBullTerriers",
       "posted": "2025-05",
@@ -57,7 +43,8 @@
         "blue-staffy-puppies-manchester-uk"
       ]
     },
-    "https://www.reddit.com/r/StaffordBullTerriers/comments/1kwpx24/vibrant_staffordshire_is_it_a_real_breeder_or_a/": {
+    "https://www.reddit.com/comments/1kwpx24/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1kwpx24/vibrant_staffordshire_is_it_a_real_breeder_or_a/",
       "title": "\"Vibrant Staffordshire\" is it a real breeder or a scam?",
       "subreddit": "r/StaffordBullTerriers",
       "posted": "2025-05",
@@ -69,7 +56,8 @@
         "blue-staffy-puppies-for-sale-leeds"
       ]
     },
-    "https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/": {
+    "https://www.reddit.com/comments/1o4hazd/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/",
       "title": "A question for owners of blues",
       "subreddit": "r/StaffordBullTerriers",
       "posted": "2025-10",
@@ -123,7 +111,39 @@
         "blue-staffy-puppies-manchester-uk"
       ]
     },
-    "https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/": {
+    "https://www.reddit.com/comments/1okt0wb/": {
+      "permalink": "https://www.reddit.com/r/AskUK/comments/1okt0wb/buying_puppy_in_uk_are_we_getting_scamed/",
+      "title": "Buying puppy in uk, are we getting scamed?",
+      "subreddit": "r/AskUK",
+      "posted": "2025-10",
+      "replies": 49,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [
+        {
+          "text": "How can I be sure a puppy's Kennel Club registration will be issued if the papers are delayed?",
+          "fact_source": null
+        }
+      ],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds"
+      ]
+    },
+    "https://www.reddit.com/comments/1pcj7ph/": {
+      "permalink": "https://www.reddit.com/r/puppy101/comments/1pcj7ph/getting_a_staffy_puppy_soon_but_i_live_on_a_2nd/",
+      "title": "Getting a Staffy puppy soon but I live on a 2nd floor flat advice on potty training?",
+      "subreddit": "r/puppy101",
+      "posted": "2025-12",
+      "replies": 17,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-manchester-uk"
+      ]
+    },
+    "https://www.reddit.com/comments/1r9a4ad/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/",
       "title": "Help before buying",
       "subreddit": "r/StaffordBullTerriers",
       "posted": "2026-02",
@@ -185,7 +205,8 @@
         "blue-staffy-puppies-manchester-uk"
       ]
     },
-    "https://www.reddit.com/r/StaffordBullTerriers/comments/1ryr5gg/first_dog/": {
+    "https://www.reddit.com/comments/1ryr5gg/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1ryr5gg/first_dog/",
       "title": "First Dog",
       "subreddit": "r/StaffordBullTerriers",
       "posted": "2026-03",
@@ -197,31 +218,8 @@
         "blue-staffy-puppies-for-sale-leeds"
       ]
     },
-    "https://www.reddit.com/r/StaffordBullTerriers/comments/1u2gjst/anyone_here_with_a_staffy_a_first_time_dog_owner/": {
-      "title": "Anyone here with a Staffy a first time dog owner? Would you recommend it?",
-      "subreddit": "r/StaffordBullTerriers",
-      "posted": "2026-06",
-      "replies": 71,
-      "first_fetched": "2026-09-23",
-      "last_fetched": "2026-09-23",
-      "questions": [],
-      "used_by": [
-        "blue-staffy-puppies-for-sale-leeds"
-      ]
-    },
-    "https://www.reddit.com/r/StaffordBullTerriers/comments/1wayqzb/hi_everyone_id_love_some_advice_please/": {
-      "title": "Hi everyone, I’d love some advice please!",
-      "subreddit": "r/StaffordBullTerriers",
-      "posted": "2026-09",
-      "replies": 31,
-      "first_fetched": "2026-09-23",
-      "last_fetched": "2026-09-23",
-      "questions": [],
-      "used_by": [
-        "blue-staffy-puppies-manchester-uk"
-      ]
-    },
-    "https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/": {
+    "https://www.reddit.com/comments/1sdvsvv/": {
+      "permalink": "https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
       "title": "Reputable Staffordshire Bull Terrier breeders (UK)",
       "subreddit": "r/UK_Pets",
       "posted": "2026-04",
@@ -267,7 +265,21 @@
         "blue-staffy-puppies-manchester-uk"
       ]
     },
-    "https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/": {
+    "https://www.reddit.com/comments/1u2gjst/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1u2gjst/anyone_here_with_a_staffy_a_first_time_dog_owner/",
+      "title": "Anyone here with a Staffy a first time dog owner? Would you recommend it?",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2026-06",
+      "replies": 71,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds"
+      ]
+    },
+    "https://www.reddit.com/comments/1uil782/": {
+      "permalink": "https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/",
       "title": "Pets4homesuk",
       "subreddit": "r/UK_Pets",
       "posted": "2026-06",
@@ -297,7 +309,8 @@
         "blue-staffy-puppies-manchester-uk"
       ]
     },
-    "https://www.reddit.com/r/UK_Pets/comments/1v3ixmh/adoptingbuying_a_dog/": {
+    "https://www.reddit.com/comments/1v3ixmh/": {
+      "permalink": "https://www.reddit.com/r/UK_Pets/comments/1v3ixmh/adoptingbuying_a_dog/",
       "title": "Adopting/Buying a dog",
       "subreddit": "r/UK_Pets",
       "posted": "2026-07",
@@ -314,11 +327,12 @@
         "blue-staffy-puppies-for-sale-leeds"
       ]
     },
-    "https://www.reddit.com/r/puppy101/comments/1pcj7ph/getting_a_staffy_puppy_soon_but_i_live_on_a_2nd/": {
-      "title": "Getting a Staffy puppy soon but I live on a 2nd floor flat advice on potty training?",
-      "subreddit": "r/puppy101",
-      "posted": "2025-12",
-      "replies": 17,
+    "https://www.reddit.com/comments/1wayqzb/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1wayqzb/hi_everyone_id_love_some_advice_please/",
+      "title": "Hi everyone, I’d love some advice please!",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2026-09",
+      "replies": 31,
       "first_fetched": "2026-09-23",
       "last_fetched": "2026-09-23",
       "questions": [],
