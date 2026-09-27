@@ -10,7 +10,9 @@ today's pages. The last test runs the real audits twice on a real built page and
 what must hold on any page: two runs, recorded, and identical.
 """
 import json
+import os
 import pathlib
+import subprocess
 import sys
 
 import pytest
@@ -41,6 +43,14 @@ def scripted(overrides=None, second=None):
             return second[step]
         return (overrides or {}).get(step, CLEAN[step])
     return runner
+
+
+def passing_check_all(root):
+    return 0, []
+
+
+def step(report, name):
+    return next(s for s in report["steps"] if s["step"] == name)
 
 
 def run(runner, record=False):
@@ -93,9 +103,10 @@ def test_an_audit_that_writes_no_report_is_a_failure_not_a_pass():
 def test_the_page_run_record_is_a_step_unless_skipped(tmp_path):
     (tmp_path / "data").mkdir()
     (tmp_path / "data/locations.json").write_text(json.dumps([{"slug": "p"}]), encoding="utf-8")
-    report = GP.gate("p", "uk-locations/p", "location", runner=scripted(), record=True, root=tmp_path)
-    rec = report["steps"][-1]
-    assert rec["step"] == GP.RECORD_STEP and rec["ok"] == [False, False]
+    report = GP.gate("p", "uk-locations/p", "location", runner=scripted(), record=True,
+                     root=tmp_path, check_all=passing_check_all)
+    rec = step(report, GP.RECORD_STEP)
+    assert rec["ok"] == [False, False]
     assert report["verdict"] == "FAIL", "a page with no data/page-runs record never passes the full gate"
     assert GP.gate("p", "uk-locations/p", "location", runner=scripted(), record=False,
                    root=tmp_path)["verdict"] == "PASS"
@@ -108,11 +119,81 @@ def test_a_new_page_whose_session_open_is_out_of_order_fails_the_gate(tmp_path):
         "slug": "p", "session_open": {"ran_on": "2026-09-27", "skills": [
             "bsuk-location-page-builder", "grill-me", "superpowers:writing-plans"]}}),
         encoding="utf-8")
-    report = GP.gate("p", "uk-locations/p", "location", runner=scripted(), record=True, root=tmp_path)
-    rec = report["steps"][-1]
+    report = GP.gate("p", "uk-locations/p", "location", runner=scripted(), record=True,
+                     root=tmp_path, check_all=passing_check_all)
+    rec = step(report, GP.RECORD_STEP)
     assert rec["ok"] == [False, False] and report["verdict"] == "FAIL"
-    found = report["evidence"][0][-1]["evidence"]["findings"]
+    found = next(e for e in report["evidence"][0] if e["step"] == GP.RECORD_STEP)["evidence"]["findings"]
     assert any("session_open/skills/0" in f for f in found), found
+
+
+def test_the_full_gate_re_runs_check_all_once_and_fails_on_non_zero(tmp_path):
+    # Exit codes in the record are informational; the full gate re-verifies check:all itself.
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data/locations.json").write_text(json.dumps([{"slug": "p"}]), encoding="utf-8")
+    calls = []
+
+    def failing(root):
+        calls.append(root)
+        return 1, ["check-facts: 1 problem"]
+    report = GP.gate("privacy-policy-uk", "privacy-policy-uk", "interior", runner=scripted(),
+                     record=True, root=tmp_path, check_all=failing)
+    ca = step(report, GP.CHECK_ALL_STEP)
+    assert len(calls) == 1 and ca["ok"] == [False] and ca["stderr"] == [["check-facts: 1 problem"]]
+    assert step(report, GP.RECORD_STEP)["ok"] == [True, True], "a frozen page is record-exempt"
+    assert report["verdict"] == "FAIL"
+    ok = GP.gate("privacy-policy-uk", "privacy-policy-uk", "interior", runner=scripted(),
+                 record=True, root=tmp_path, check_all=passing_check_all)
+    assert ok["verdict"] == "PASS"
+    skipped = GP.gate("privacy-policy-uk", "privacy-policy-uk", "interior", runner=scripted(),
+                      record=False, root=tmp_path, check_all=failing)
+    assert GP.CHECK_ALL_STEP not in [s["step"] for s in skipped["steps"]] and len(calls) == 1
+
+
+def test_a_timeout_is_a_failed_step_with_exit_124(monkeypatch):
+    def slow(*a, **kw):
+        raise subprocess.TimeoutExpired(cmd=a[0], timeout=kw.get("timeout"), stderr=b"line\nstuck")
+    monkeypatch.setattr(GP.subprocess, "run", slow)
+    code, payload, tail = GP.run_audit("aeo", "p", "location")
+    assert code == 124 and payload is None and tail[-1].startswith("timed out after 600")
+    report = run(scripted({"aeo": (124, None, ["timed out after 600 s"])}))
+    aeo = step(report, "aeo")
+    assert aeo["ok"] == [False, False] and aeo["stderr"][0] == ["timed out after 600 s"]
+    assert report["verdict"] == "FAIL"
+
+
+def test_a_crash_keeps_its_stderr_beside_the_evidence_not_inside_it():
+    tail = ["Traceback (most recent call last):", "ZeroDivisionError: boom"]
+    report = run(scripted({"final-audit": (1, None, tail)}))
+    fa = step(report, "final-audit")
+    assert fa["ok"] == [False, False] and fa["stderr"] == [tail, tail] and fa["identical"]
+    ev = next(e for e in report["evidence"][0] if e["step"] == "final-audit")
+    assert "Traceback" not in json.dumps(ev)
+
+
+def test_the_stderr_tail_is_the_last_twenty_lines():
+    assert GP.tail("\n".join(str(i) for i in range(50))) == [str(i) for i in range(30, 50)]
+
+
+def test_a_built_page_older_than_its_sources_fails_rebuild_first(tmp_path):
+    def git(*args):
+        subprocess.run(["git", "-C", str(tmp_path), *args], check=True, capture_output=True)
+    (tmp_path / "data/boards").mkdir(parents=True)
+    (tmp_path / "data/locations.json").write_text(json.dumps([{"slug": "p"}]), encoding="utf-8")
+    (tmp_path / "data/boards/p.json").write_text("{}\n", encoding="utf-8")
+    built = tmp_path / "dist/uk-locations/p/index.html"
+    built.parent.mkdir(parents=True)
+    built.write_text("<html></html>", encoding="utf-8")
+    git("init", "-q")
+    git("config", "user.email", "t@example.invalid")
+    git("config", "user.name", "t")
+    git("add", "data")
+    git("commit", "-qm", "page")
+    os.utime(built, (1_000_000, 1_000_000))
+    msg = GP.stale_build("p", "uk-locations/p", tmp_path)
+    assert msg and "rebuild first" in msg
+    os.utime(built, None)
+    assert GP.stale_build("p", "uk-locations/p", tmp_path) is None
 
 
 def test_the_profile_must_be_one_both_audits_know():
@@ -154,9 +235,10 @@ def test_the_run_twice_rule_is_in_the_gates_pack_and_the_ledger():
                     reason="needs a built dist/ (npm run build)")
 def test_the_real_audits_run_twice_on_a_built_page_and_agree(tmp_path):
     out = tmp_path / "report.json"
-    code = GP.main(["privacy-policy-uk", "--json", str(out)])
+    # --skip-record: the full gate would also re-run check:all, which the suite does not nest
+    code = GP.main(["privacy-policy-uk", "--skip-record", "--json", str(out)])
     report = json.loads(out.read_text(encoding="utf-8"))
     assert code in (0, 1)
     assert report["runs"] == 2 and len(report["evidence"]) == 2
-    assert [s["step"] for s in report["steps"]] == list(GP.AUDIT_STEPS) + [GP.RECORD_STEP]
+    assert [s["step"] for s in report["steps"]] == list(GP.AUDIT_STEPS)
     assert report["identical"] is True, [s for s in report["steps"] if not s["identical"]]

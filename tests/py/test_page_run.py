@@ -302,12 +302,18 @@ def test_an_existing_page_is_extracted_before_it_is_boarded():
     assert "--extract" not in row12, "row 12 still extracts — it happens at row 9, before the board"
 
 
-def test_the_record_is_fresh_by_the_verification_commit():
+def test_the_record_is_fresh_against_head_and_the_harden_passes_are_ordered():
+    # Task 25 review: freshness is judged against HEAD by diffing the page's sources, the
+    # impeccable pass precedes frontend-design, an edit after frontend-design stales it, and
+    # the full gate re-runs check:all rather than trusting a recorded exit code.
     rows = _run_rows()
-    for n in (14, 15):
-        gate = rows[n - 1][4]
-        assert "ancestor" in gate and "verification" in gate, gate
-    assert "at or after the page's last source change" in rows[17][4], rows[17][4]
+    assert "ancestor of the `frontend_design` commit" in rows[13][4], rows[13][4]
+    assert ("the page changed after the frontend-design pass; re-run it" in rows[14][4]
+            and "verification" in rows[14][4]), rows[14][4]
+    ver = rows[17][4]
+    for tok in ("in HEAD's history", "unchanged between it and HEAD", "`data/locations.json` row",
+                "re-runs `npm run -s check:all`", "`npm run -s build`", "rebuild first"):
+        assert tok in ver, (tok, ver)
 
 
 def test_a_visual_change_with_the_breeder_away_is_previewed_and_deferred_not_applied():

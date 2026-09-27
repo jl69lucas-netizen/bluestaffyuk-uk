@@ -19,13 +19,21 @@ only on a new page):
   page-run-record   data/page-runs/<slug>.json holds the session open and the impeccable,
                     frontend-design and verification-before-completion passes, current
                     (scripts/page_run_record.py; the twelve frozen pages are exempt)
+  check-all         the full gate only: `npm run -s check:all`, run ONCE and judged by its own
+                    exit code. The exit codes a verification record holds are informational;
+                    the gate re-verifies rather than trusting them.
+
+Before any step, the built page must be newer than the last commit that touched the page's
+own sources; an older dist/ fails the gate with "rebuild first" (npm run -s build).
+An audit that runs past 600 s is a failed step with exit 124; the last 20 lines of a step's
+stderr are kept in the report beside its evidence (never inside the diffed evidence).
 
 `<slug>` is the page's key (a city's bare slug); the audits get its route (uk-locations/<slug>).
 The profile is --type, else the board's meta.page_type, else `location` for a city.
 
   python3 scripts/gate_page.py <slug> [--type PROFILE] [--skip-record] [--json PATH]
 
---skip-record leaves out the page-run-record step. It is the form the verification pass runs
+--skip-record leaves out the page-run-record and check-all steps. It is the form the verification pass runs
 and records, because the full gate cannot pass before that record exists.
 --json PATH moves the report from docs/reports/gate-page/<slug>.json.
 
@@ -53,6 +61,17 @@ RUNS = 2
 PROFILES = sorted(set(final_page_audit.PROFILES) & set(evidence_audit.PAGE_TYPES))
 AUDIT_STEPS = ("dup-body", "dup-headers", "final-audit", "hardening", "aeo", "evidence")
 RECORD_STEP = "page-run-record"
+CHECK_ALL_STEP = "check-all"
+AUDIT_TIMEOUT = 600      # seconds per audit run; past it the step fails with exit 124
+CHECK_ALL_TIMEOUT = 1800
+TAIL = 20                # stderr lines kept per step and run
+
+
+def tail(text, n=TAIL):
+    """The last n non-empty lines of a stream."""
+    if isinstance(text, bytes):
+        text = text.decode("utf-8", "replace")
+    return [l for l in (text or "").splitlines() if l.strip()][-n:]
 
 
 def argv_for(step, route, profile, out, new=True):
@@ -72,16 +91,49 @@ def argv_for(step, route, profile, out, new=True):
 
 
 def run_audit(step, route, profile, new=True):
-    """(exit code, JSON payload or None) for one audit step, run from the repo root."""
+    """(exit code, JSON payload or None, stderr tail) for one audit step, run from the repo
+    root. A run past AUDIT_TIMEOUT is exit 124 with no payload."""
     with tempfile.TemporaryDirectory() as tmp:
         out = str(pathlib.Path(tmp) / "out.json")
-        p = subprocess.run([sys.executable] + argv_for(step, route, profile, out, new),
-                           cwd=str(ROOT), capture_output=True, text=True)
+        try:
+            p = subprocess.run([sys.executable] + argv_for(step, route, profile, out, new),
+                               cwd=str(ROOT), capture_output=True, text=True,
+                               timeout=AUDIT_TIMEOUT)
+        except subprocess.TimeoutExpired as e:
+            return 124, None, tail(e.stderr, TAIL - 1) + [f"timed out after {AUDIT_TIMEOUT} s"]
         try:
             payload = json.loads(pathlib.Path(out).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             payload = None
-    return p.returncode, payload
+    return p.returncode, payload, tail(p.stderr)
+
+
+def run_check_all(root=ROOT):
+    """(exit code, stderr+stdout tail) of `npm run -s check:all`, run once."""
+    try:
+        p = subprocess.run(["npm", "run", "-s", "check:all"], cwd=str(root), capture_output=True,
+                           text=True, timeout=CHECK_ALL_TIMEOUT)
+    except subprocess.TimeoutExpired as e:
+        return 124, tail(e.stderr, TAIL - 1) + [f"timed out after {CHECK_ALL_TIMEOUT} s"]
+    return p.returncode, tail(p.stderr + "\n" + p.stdout)
+
+
+def stale_build(key, route, root=ROOT):
+    """A message when the built page is older than the last commit that touched the page's own
+    sources (dist/ does not show what was committed); None when it is current."""
+    root = pathlib.Path(root)
+    built = root / "dist" / route / "index.html" if route else root / "dist" / "index.html"
+    srcs = PRR.page_sources(key, root)
+    if not built.is_file() or not srcs:
+        return None
+    p = subprocess.run(["git", "-C", str(root), "log", "-1", "--format=%ct", "--", *srcs],
+                       capture_output=True, text=True)
+    if p.returncode != 0 or not p.stdout.strip():
+        return None
+    if built.stat().st_mtime < int(p.stdout.strip()):
+        return (f"{built.relative_to(root)} is older than the last commit to the page's sources "
+                "— rebuild first (npm run -s build)")
+    return None
 
 
 def judge(step, code, payload, page):
@@ -105,19 +157,25 @@ def one_run(key, route, profile, runner, record, root):
     page = route or "index"
     steps = []
     for step in AUDIT_STEPS:
-        code, payload = runner(step, route, profile)
+        code, payload, *rest = runner(step, route, profile)
         ok, problems, evidence = judge(step, code, payload, page)
-        steps.append({"step": step, "ok": ok, "problems": problems, "evidence": evidence})
+        steps.append({"step": step, "ok": ok, "problems": problems, "evidence": evidence,
+                      "stderr": rest[0] if rest else []})
     if record:
+        # The record step reads git and one file; its second run cannot flake the way an audit
+        # can, but it runs in both so every step has the same two-run shape — and a record
+        # rewritten between the runs (a concurrent writer) shows up as a difference.
         found = PRR.findings(key, root)
         steps.append({"step": RECORD_STEP, "ok": not found, "problems": len(found),
-                      "evidence": {"findings": found}})
+                      "evidence": {"findings": found}, "stderr": []})
     return steps
 
 
-def gate(key, route, profile, runs=RUNS, runner=None, record=True, root=ROOT):
+def gate(key, route, profile, runs=RUNS, runner=None, record=True, root=ROOT, check_all=None):
     """The report: both runs, per-step agreement, and the verdict. `runner(step, route,
-    profile)` defaults to the real audits."""
+    profile)` -> (exit, payload[, stderr tail]) defaults to the real audits; `check_all(root)`
+    -> (exit, tail) to the real `npm run -s check:all`, which only the full gate (record=True)
+    runs, once."""
     if runner is None:
         runner = functools.partial(run_audit, new=FR.is_new_page(key))
     all_runs = [one_run(key, route, profile, runner, record, root) for _ in range(runs)]
@@ -127,7 +185,12 @@ def gate(key, route, profile, runs=RUNS, runner=None, record=True, root=ROOT):
         same = all(json.dumps(m["evidence"], sort_keys=True) == json.dumps(first["evidence"], sort_keys=True)
                    and m["ok"] == first["ok"] for m in mine)
         steps.append({"step": first["step"], "ok": [m["ok"] for m in mine],
-                      "problems": [m["problems"] for m in mine], "identical": same})
+                      "problems": [m["problems"] for m in mine], "identical": same,
+                      "stderr": [m["stderr"] for m in mine]})
+    if record:
+        code, ca_tail = (check_all or run_check_all)(root)
+        steps.append({"step": CHECK_ALL_STEP, "ok": [code == 0], "problems": [int(code != 0)],
+                      "identical": True, "exit": code, "stderr": [ca_tail]})
     verdict = "PASS" if all(all(s["ok"]) and s["identical"] for s in steps) else "FAIL"
     return {"slug": key, "route": route, "page_type": profile, "runs": runs,
             "record_checked": record, "steps": steps,
@@ -160,16 +223,22 @@ def main(argv=None):
     except (PI.UnknownSlug, ValueError) as e:
         print(f"gate-page ERROR {e}")
         return 2
+    stale = stale_build(key, route)
+    if stale:
+        print(f"gate-page FAIL {stale}")
+        return 1
     report = gate(key, route, profile, record=not ns.skip_record)
     out = pathlib.Path(ns.json) if ns.json else REPORTS / (key.replace("/", "--") + ".json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"gate:page /{route}/ — profile {profile}, {RUNS} runs")
+    print(f"gate:page /{route}/ — profile {profile}, {report['runs']} runs")
     for s in report["steps"]:
         state = "PASS" if all(s["ok"]) and s["identical"] else (
             "UNSTABLE" if not s["identical"] else "FAIL")
         print(f"  {state:<8} {s['step']:<16} problems per run {s['problems']}")
-    print(f"{report['verdict']} — {len(report['steps'])} steps x {RUNS} runs; runs identical: "
+    twice = [x for x in report["steps"] if x["step"] != CHECK_ALL_STEP]
+    once = " + check-all once" if len(twice) < len(report["steps"]) else ""
+    print(f"{report['verdict']} — {len(twice)} steps x {report['runs']} runs{once}; runs identical: "
           f"{report['identical']}; report {out}")
     return 0 if report["verdict"] == "PASS" else 1
 

@@ -26,8 +26,9 @@ the traffic.
 is read by a human, `test:*` runs a test suite or a measurement harness. `npm run check:all`
 chains every gate; nothing else is chained, so an audit can never silently gate a commit.
 `gate:page` is the one per-page runner: `npm run gate:page -- <slug>` runs every page gate for
-one page twice and diffs the runs (`rules/gates.md` `run-every-gate-twice`); it is never
-chained into `check:all`.
+one page twice and diffs the runs (`rules/gates.md` `run-every-gate-twice`); without
+`--skip-record` it also checks the page-run record and re-runs `check:all` once itself, so a
+recorded exit code is never trusted. It is never chained into `check:all`.
 
 ## Deploy — inactive until project 6
 

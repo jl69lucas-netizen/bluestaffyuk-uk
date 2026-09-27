@@ -20,27 +20,37 @@ sources have uncommitted changes, because the record's commit would not contain 
   python3 scripts/page_run_record.py <slug> impeccable --findings 7 --fixed 6 --deferred "why"
   python3 scripts/page_run_record.py <slug> frontend-design --findings 3 --fixed 3
   python3 scripts/page_run_record.py <slug> verification \\
-      --run "npm run -s check:all" --run "npm run gate:page -- <slug> --skip-record" \\
-      --claim "the page passes every gate twice"
+      --run "npm run -s check:all" --run "npm run -s build" \\
+      --run "npm run gate:page -- <slug> --skip-record" --claim "the page passes every gate twice"
 
 `verification` RUNS each `--run` command itself and records its exit code and the first
-`examined N` its output prints, so the record is evidence rather than a claim about evidence.
+`examined N` its output prints (a command past 1800 s is exit 124), so the record is evidence
+rather than a claim about evidence. It refuses while any tracked file outside data/page-runs/
+and docs/reports/ has uncommitted changes, because it stamps HEAD. The exit codes it records
+are informational: the full `npm run gate:page -- <slug>` re-runs `npm run -s check:all`
+itself. A Harden pass is refused for a page with no sources yet.
 
 Check a page (what the gate reports):  python3 scripts/page_run_record.py <slug> --check
 
 The gate fails a page when: the record is missing or breaks the schema (a `session_open` whose
 skills are out of order breaks it); a pass or the `session_open` key is missing; a Harden pass
 lacks one of 375 / 768 / 1280 or leaves a finding neither fixed nor deferred (a visual change
-that waits for the breeder is `--deferred "<reason>"`); a verification command exited
-non-zero, or `npm run -s check:all` or the page's own `npm run gate:page -- <slug>` run is not
-among its commands; the record is stale; or the page's sources have uncommitted changes.
+that waits for the breeder is `--deferred "<reason>"`); the session open is dated after the
+impeccable pass; a verification command exited non-zero or examined 0, `npm run -s check:all`
+or the page's own `npm run gate:page -- <slug>` run is not among its commands, or
+`npm run -s build` did not run before that gate run; the record is stale; the page's sources
+have uncommitted changes; or the record itself is not committed.
 
-Freshness is the verification pass's: the record is fresh when the
-`verification_before_completion` commit is at or after the last commit that changed the
-page's own sources (`git merge-base --is-ancestor`). Each Harden pass's commit must be at or
-before the verification commit, so a Harden fix committed after the impeccable pass does not
-stale it — the verification run that follows covers the fix. The twelve pages built before
-these rules (scripts/family_rules.py BUILT_BEFORE_SYSTEM_GAPS) are exempt.
+Freshness. The page's sources are its board, facts and verbatim files, its route file or
+folder, its parent's `[...]` route files, a blog post's content file, and a city's own row of
+data/locations.json (compared as a row, so another city's edit stales nothing). The record
+is fresh when the verification commit is in HEAD's history and
+`git diff --quiet <verify> HEAD -- <sources>` is clean (a change a merge brought in counts).
+The Harden passes: the impeccable commit is an ancestor of the frontend-design commit, and
+the page is unchanged between the frontend-design commit and the verification commit — a fix
+committed between the two Harden passes stales nothing; an edit after the frontend-design
+pass stales it ("the page changed after the frontend-design pass; re-run it"). The twelve
+pages built before these rules (scripts/family_rules.py BUILT_BEFORE_SYSTEM_GAPS) are exempt.
 
 Exit codes: 0 written / clean; 1 --check found problems; 2 bad invocation, dirty sources or
 no git history to stamp.
@@ -69,6 +79,8 @@ SESSION_FIRST = ("grill-me", "superpowers:writing-plans")
 KEYS = ("impeccable", "frontend_design", VERIFY)
 EXAMINED = re.compile(r"\bexamined (\d+)")
 CHECK_ALL = re.compile(r"^npm run (?:-s |--silent )?check:all$")
+BUILD = re.compile(r"^npm run (?:-s |--silent )?build$")
+COMMAND_TIMEOUT = 1800  # seconds; a verification command past it is recorded as exit 124
 
 
 class RecordError(Exception):
@@ -81,13 +93,18 @@ def record_path(key, root=ROOT):
 
 def page_sources(key, root=ROOT):
     """The files that are this page's own source, relative to root: its board record, its
-    src/pages/<route> file or folder, the `[...]` route files of a nested page's parent (a
-    city page is rendered by src/pages/uk-locations/[slug].astro — Known Issue 63) and a blog
-    post's content file. The shared kit and data/*.json are deliberately not here: an edit
-    to them would stale every page's record at once."""
+    facts and verbatim files, its src/pages/<route> file or folder, the `[...]` route files of
+    a nested page's parent (a city page is rendered by src/pages/uk-locations/[slug].astro —
+    Known Issue 63) and a blog post's content file. A city's own row of data/locations.json is
+    a source too, compared as a row (city_row), not as the file. The shared kit and the rest of
+    data/*.json are deliberately not here: an edit to them would stale every page's record at
+    once."""
     root = pathlib.Path(root)
     _, route = resolve_page(key, root)
-    cands = [root / "data" / "boards" / (key.replace("/", "--") + ".json"),
+    stem = key.replace("/", "--") + ".json"
+    cands = [root / "data" / "boards" / stem,
+             root / "data" / "facts" / stem,
+             root / "data" / "verbatim" / stem,
              root / "src" / "pages" / route,
              root / "src" / "pages" / (route + ".astro"),
              root / "src" / "content" / "blog" / (key + ".md"),
@@ -110,28 +127,61 @@ def head_commit(root=ROOT):
     return p.stdout.strip()
 
 
+def city_row(key, root=ROOT, rev=None):
+    """This page's own data/locations.json row as canonical JSON — at `rev`, or in the working
+    tree when rev is None; None when there is no such row (not a city, or no file)."""
+    if rev is None:
+        p = pathlib.Path(root) / "data" / "locations.json"
+        text = p.read_text(encoding="utf-8") if p.is_file() else None
+    else:
+        g = _git(root, "show", f"{rev}:data/locations.json")
+        text = g.stdout if g.returncode == 0 else None
+    try:
+        rows = json.loads(text) if text else []
+    except json.JSONDecodeError:
+        return "unreadable"
+    row = next((r for r in rows if isinstance(r, dict) and r.get("slug") == key), None) \
+        if isinstance(rows, list) else None
+    return json.dumps(row, sort_keys=True) if row is not None else None
+
+
+def changed_between(key, a, b, root=ROOT):
+    """The page's sources that differ between commits a and b (`git diff --quiet a b -- ...`,
+    plus its own locations row); [] when the page is the same at both."""
+    srcs = page_sources(key, root)
+    out = []
+    if srcs:
+        p = _git(root, "diff", "--name-only", a, b, "--", *srcs)
+        if p.returncode != 0:
+            return [f"(git diff {a[:12]} {b[:12]} failed: {p.stderr.strip()})"]
+        out = [l for l in p.stdout.splitlines() if l.strip()]
+    if city_row(key, root, a) != city_row(key, root, b):
+        out.append(f"data/locations.json (the {key} row)")
+    return out
+
+
+def is_ancestor(a, b, root=ROOT):
+    """True when commit a is b or one of b's ancestors."""
+    return _git(root, "merge-base", "--is-ancestor", a, b).returncode == 0
+
+
 def dirty_sources(key, root=ROOT):
     srcs = page_sources(key, root)
-    if not srcs:
-        return []
-    p = _git(root, "status", "--porcelain", "--", *srcs)
-    return [l[3:] for l in p.stdout.splitlines() if l.strip()]
+    out = []
+    if srcs:
+        p = _git(root, "status", "--porcelain", "--", *srcs)
+        out = [l[3:] for l in p.stdout.splitlines() if l.strip()]
+    if _git(root, "rev-parse", "--verify", "-q", "HEAD").returncode == 0 and \
+            city_row(key, root, "HEAD") != city_row(key, root):
+        out.append(f"data/locations.json (the {key} row)")
+    return out
 
 
-def last_source_commit(key, root=ROOT):
-    srcs = page_sources(key, root)
-    if not srcs:
-        return None
-    p = _git(root, "log", "-1", "--format=%H", "--", *srcs)
-    return p.stdout.strip() or None
-
-
-def covers(record_commit, last, root=ROOT):
-    """True when `last` (the newest commit touching the page's sources) is `record_commit`
-    or one of its ancestors — the pass ran on a tree that already held that change."""
-    if last is None:
-        return True
-    return _git(root, "merge-base", "--is-ancestor", last, record_commit).returncode == 0
+def dirty_tracked(root=ROOT):
+    """Tracked files with uncommitted changes, outside data/page-runs/ and docs/reports/."""
+    p = _git(root, "status", "--porcelain", "--untracked-files=no")
+    return [l[3:] for l in p.stdout.splitlines() if l.strip()
+            and not l[3:].startswith(("data/page-runs/", "docs/reports/"))]
 
 
 def load(key, root=ROOT):
@@ -148,8 +198,35 @@ def schema_errors(record, schema_path=SCHEMA):
                   for e in v.iter_errors(record))
 
 
+def _verification_findings(rel, key, rec):
+    out = []
+    for c in rec["commands"]:
+        if c["exit"] != 0:
+            out.append(f"{rel}: verification ran `{c['cmd']}` and it exited {c['exit']}")
+        if c["examined"] == 0:
+            out.append(f"{rel}: verification ran `{c['cmd']}` and it examined 0 — a gate that "
+                       "examined nothing proved nothing")
+    cmds = [c["cmd"].strip() for c in rec["commands"]]
+    if not any(CHECK_ALL.match(c) for c in cmds):
+        out.append(f"{rel}: verification did not run `npm run -s check:all`")
+    gate = re.compile(r"^npm run (?:-s |--silent )?gate:page -- " + re.escape(key) + r"(?:\s|$)")
+    gates = [i for i, c in enumerate(cmds) if gate.match(c)]
+    if not gates:
+        out.append(f"{rel}: verification did not run `npm run gate:page -- {key}`")
+    elif not any(BUILD.match(c) for c in cmds[:gates[0]]):
+        out.append(f"{rel}: verification did not run `npm run -s build` before "
+                   f"`npm run gate:page -- {key}` — the gate read a stale dist/")
+    return out
+
+
 def findings(key, root=ROOT, schema_path=SCHEMA):
-    """[message] — every reason the gate fails this page's record; [] means it passes."""
+    """[message] — every reason the gate fails this page's record; [] means it passes.
+
+    Freshness: the verification commit is in HEAD's history and the page (its sources and
+    its own locations row) is the same at that commit and at HEAD. The Harden passes: the
+    impeccable commit is an ancestor of the frontend-design commit, and the page is the same
+    at the frontend-design commit and at the verification commit — so a fix committed between
+    the two Harden passes stales nothing, and an edit after frontend-design stales that pass."""
     root = pathlib.Path(root)
     if not FR.is_new_page(key):
         return []
@@ -161,51 +238,65 @@ def findings(key, root=ROOT, schema_path=SCHEMA):
     out = [f"{rel} breaks the schema at {e}" for e in schema_errors(record, schema_path)]
     if out:
         return out
-    if SESSION not in record:
+    session = record.get(SESSION)
+    if session is None:
         out.append(f"{rel}: the {SESSION} key is missing — record grill-me, "
                    "superpowers:writing-plans and the builder skill (page-run.md row 1)")
-    last = last_source_commit(key, root)
-    verify = record.get(VERIFY)
     for name in KEYS:
-        rec = record.get(name)
-        if rec is None:
+        if name not in record:
             out.append(f"{rel}: the {name} pass is missing")
+    imp, fd, ver = (record.get(k) for k in KEYS)
+    if session and imp and session["ran_on"] > imp["ran_on"]:
+        out.append(f"{rel}: the {SESSION} ran on {session['ran_on']}, after the impeccable pass "
+                   f"({imp['ran_on']}) — the session opens before the page is hardened")
+    for name, rec in (("impeccable", imp), ("frontend_design", fd)):
+        if rec is None:
             continue
-        if name == VERIFY and not covers(rec["commit"], last, root):
-            out.append(f"{rel}: the {name} pass ran at {rec['commit'][:12]}, older than the page's "
-                       f"last source change {last[:12]} — run it again")
-        if name != VERIFY and verify is not None and not covers(verify["commit"], rec["commit"], root):
-            out.append(f"{rel}: the {name} pass ran at {rec['commit'][:12]}, after the verification "
-                       f"commit {verify['commit'][:12]} (or on no ancestor of it) — run "
-                       "verification-before-completion again")
-        if name != VERIFY:
-            missing = [w for w in WIDTHS if w not in rec["widths"]]
-            if missing:
-                out.append(f"{rel}: the {name} pass did not check {missing}")
-            if rec["fixed"] + len(rec["deferred"]) != rec["findings"]:
-                out.append(f"{rel}: the {name} pass found {rec['findings']} but fixed "
-                           f"{rec['fixed']} and deferred {len(rec['deferred'])} — every finding "
-                           "is fixed or deferred with its reason")
-            continue
-        for c in rec["commands"]:
-            if c["exit"] != 0:
-                out.append(f"{rel}: verification ran `{c['cmd']}` and it exited {c['exit']}")
-        cmds = [c["cmd"].strip() for c in rec["commands"]]
-        if not any(CHECK_ALL.match(c) for c in cmds):
-            out.append(f"{rel}: verification did not run `npm run -s check:all`")
-        gate = re.compile(r"^npm run (?:-s |--silent )?gate:page -- " + re.escape(key) + r"(?:\s|$)")
-        if not any(gate.match(c) for c in cmds):
-            out.append(f"{rel}: verification did not run `npm run gate:page -- {key}`")
+        missing = [w for w in WIDTHS if w not in rec["widths"]]
+        if missing:
+            out.append(f"{rel}: the {name} pass did not check {missing}")
+        if rec["fixed"] + len(rec["deferred"]) != rec["findings"]:
+            out.append(f"{rel}: the {name} pass found {rec['findings']} but fixed "
+                       f"{rec['fixed']} and deferred {len(rec['deferred'])} — every finding "
+                       "is fixed or deferred with its reason")
+    if imp and fd and not is_ancestor(imp["commit"], fd["commit"], root):
+        out.append(f"{rel}: the impeccable pass ran at {imp['commit'][:12]}, after the "
+                   f"frontend-design pass {fd['commit'][:12]} (or off its history) — impeccable "
+                   "runs first; run frontend-design and verification again")
+    if ver is not None:
+        head = head_commit(root)
+        if not is_ancestor(ver["commit"], head, root):
+            out.append(f"{rel}: the {VERIFY} pass ran at {ver['commit'][:12]}, which is not in "
+                       "HEAD's history — run it again")
+        else:
+            changed = changed_between(key, ver["commit"], head, root)
+            if changed:
+                out.append(f"{rel}: the {VERIFY} pass ran at {ver['commit'][:12]}, older than the "
+                           f"page's last source change (changed since: {', '.join(changed)}) — "
+                           "run it again")
+        if fd is not None:
+            changed = changed_between(key, fd["commit"], ver["commit"], root)
+            if changed:
+                out.append(f"{rel}: the page changed after the frontend-design pass; re-run it "
+                           f"(changed: {', '.join(changed)})")
+        out += _verification_findings(rel, key, ver)
     dirty = dirty_sources(key, root)
     if dirty:
         out.append(f"{rel}: the page's sources have uncommitted changes the record cannot "
                    f"cover: {', '.join(dirty)}")
+    if _git(root, "status", "--porcelain", "--", rel).stdout.strip():
+        out.append(f"{rel}: commit {rel} — an uncommitted record is not evidence")
     return out
 
 
-def run_command(cmd, root=ROOT):
-    """{cmd, exit, examined} for one shell command run from the repo root."""
-    p = subprocess.run(cmd, shell=True, cwd=str(root), capture_output=True, text=True)
+def run_command(cmd, root=ROOT, timeout=COMMAND_TIMEOUT):
+    """{cmd, exit, examined} for one shell command run from the repo root; a command that
+    runs past `timeout` seconds is recorded as exit 124."""
+    try:
+        p = subprocess.run(cmd, shell=True, cwd=str(root), capture_output=True, text=True,
+                           timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return {"cmd": cmd, "exit": 124, "examined": None}
     m = EXAMINED.search(p.stdout + "\n" + p.stderr)
     return {"cmd": cmd, "exit": p.returncode, "examined": int(m.group(1)) if m else None}
 
@@ -224,6 +315,14 @@ def write_pass(key, which, root=ROOT, today=None, **kw):
         raise RecordError("commit the page's sources first — uncommitted: " + ", ".join(dirty))
     commit = head_commit(root)
     record = load(key, root) or {"slug": key}
+    if which in HARDEN and not page_sources(key, root):
+        raise RecordError(f"{key} has no sources yet (no board, template or content file) — "
+                          "build the page before hardening it")
+    if which == "verification":
+        dirty = dirty_tracked(root)
+        if dirty:
+            raise RecordError("commit everything first — verification stamps HEAD, and these "
+                              "tracked files differ from it: " + ", ".join(dirty))
     if which in HARDEN:
         record[HARDEN[which]] = {"ran_on": ran_on, "widths": list(kw.get("widths") or WIDTHS),
                                  "findings": kw["findings"], "fixed": kw["fixed"],
