@@ -1,0 +1,49 @@
+# Brief parity close · three decisions before the London page
+
+The brief-parity build is closing. Three things it measured are yours to decide before the first
+city board: which URLs the city pages keep, what slug the first comparison page takes, and how
+long a city page should be when the competitor pages cannot tell us. The full decision table is
+`docs/research/2026-09-26-url-family-decision.md`. Claude's recommendation is marked.
+
+## URLs
+
+1. **Which URLs should the 28 city-cluster pages keep?** 11 of the 28 are indexable and in the
+   sitemap; 17 are noindex stubs spread over 11 slug patterns. Search Console is not readable
+   yet (the domain's property is unverified), so no data shows a renamed slug would earn more.
+   Recommended: (a) — keep every slug, add no redirect, and keep both intent pairs (the UK hub
+   and the UK breeder trust page; the Glasgow city page and the Glasgow breeding-dogs page) as
+   two pages each, as the approved strategy says. Trade-off: some slugs, such as
+   `buy-blue-staffy-puppy-coventry-area`, do not carry the page's keyword; the H1, title and
+   meta carry it instead. Found on the way: the UK hub's body does not link the 9 indexable
+   city pages; project 5's hub refresh adds those links whatever you pick.
+   **Where it goes:** every city board's `meta.slug`; `data/redirects.json`.
+   - (a) Keep all 28 slugs; no rename, no new redirect; both pairs stay two pages
+   - (b) Rename the 17 stubs to `blue-staffy-puppies-<city>` with a 301 from each old slug
+   - (c) Merge each pair into one page with a 301 (two fewer pages)
+2. **What slug should the first comparison page ("blue and black staffy") take?** No comparison
+   page or hub exists yet. Recommended: (a) — every page rebuilt so far sits at the top level,
+   most with `uk` in the slug, and a top-level page needs no hub built first. Trade-off: a
+   comparison hub built later would not contain it in the URL; the hub links to it instead.
+   **Where it goes:** the comparison page's board; later comparison pages follow the same
+   pattern.
+   - (a) `/blue-and-black-staffy-uk/` (top level)
+   - (b) `/staffy-comparisons/blue-and-black-staffy/` (a new hub, built first)
+   - (c) `/blue-staffy-blog-guides/blue-and-black-staffy/` (under the guides hub)
+
+## Page length
+
+3. **How long should a city page be when no competitor page gives a word count?** The word
+   target is the median length of the prose pages ranking for the city. For Manchester, all 8
+   ranking pages were marketplace listings or blocked, so there is no median, and many city
+   searches will look the same. Today's indexable city pages run about 415–455 words; the UK hub
+   about 1,770. The locked city structure (the competitors' section count plus 3 research
+   picks, and 15–20 FAQ questions in 3 blocks) comes to roughly 1,500–2,000 words written at a
+   natural length. Recommended: (a) — a band that follows from the structure you already
+   approved. Trade-off: a fixed band is not proof that the length beats this city's
+   competitors; the page records the barrier, and project 6 re-checks against Search Console.
+   **Where it goes:** each city board's word target when the competitor median is NOT FETCHED.
+   - (a) 1,500–2,000 words
+   - (b) The UK hub's length, about 1,770 words, give or take 15%
+   - (c) No band: the outline's sections and FAQ count decide the length
+
+## Anything else
