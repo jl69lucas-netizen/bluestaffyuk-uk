@@ -1012,6 +1012,25 @@ def site_of(url):
     return ".".join(labels[-n:])
 
 
+def listing_reason(metrics):
+    """Why a page's metrics (page_metrics) read as a listing, or None: a card grid holding
+    more than LISTING_SHARE of the prose, or listing JSON-LD with a grid over LISTING_LD_SHARE
+    or under LISTING_LD_SECTION_SHARE of the prose in content sections. Only the listing
+    tests, so a marketplace page with no content H2 is still named a listing. Public: the
+    word target (_prose_problem) and scripts/keyword_metrics.py read the same answer."""
+    if not isinstance(metrics, dict):
+        return None
+    if metrics.get("listing"):
+        return metrics["listing"]
+    listed = ", ".join(sorted(LISTING_TYPES & set(metrics.get("schema_types") or [])))
+    share, in_sections = metrics.get("grid_share", 0), metrics.get("section_share", 0)
+    if listed and share > 100 * LISTING_LD_SHARE:
+        return f"JSON-LD {listed}, card grid holds {share}% of the prose"
+    if listed and in_sections < 100 * LISTING_LD_SECTION_SHARE:
+        return f"JSON-LD {listed}, only {in_sections}% of the prose sits in content sections"
+    return None
+
+
 def _prose_problem(p):
     """Why a competitor page cannot count toward the word target, or None."""
     m = p.get("metrics")
@@ -1023,16 +1042,8 @@ def _prose_problem(p):
         return "no words measured"
     if not m.get("sections", [None]):
         return "no content H2"
-    if m.get("listing"):
-        return f"listing: {m['listing']}"
-    listed = ", ".join(sorted(LISTING_TYPES & set(m.get("schema_types", []))))
-    share, in_sections = m.get("grid_share", 0), m.get("section_share", 0)
-    if listed and share > 100 * LISTING_LD_SHARE:
-        return f"listing: JSON-LD {listed}, card grid holds {share}% of the prose"
-    if listed and in_sections < 100 * LISTING_LD_SECTION_SHARE:
-        return (f"listing: JSON-LD {listed}, only {in_sections}% of the prose sits in content "
-                "sections")
-    return None
+    why = listing_reason(m)
+    return f"listing: {why}" if why else None
 
 
 def _prose_note(p):

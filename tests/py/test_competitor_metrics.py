@@ -550,3 +550,21 @@ def test_word_target_with_some_metrics_keeps_the_two_page_wording():
     wt = Q.word_target([_measured("https://a.example/", 1, 300),
                         _record("https://b.example/", PAGE, 2)])
     assert wt["status"] == "NOT FETCHED — fewer than two prose competitor pages (1 used)"
+
+
+def test_listing_reason_is_public_and_independent_of_the_prose_checks():
+    # Task 18 review: keyword_metrics marks listing rows through this one public helper.
+    assert Q.listing_reason(None) is None
+    assert Q.listing_reason({"listing": None, "schema_types": []}) is None
+    assert Q.listing_reason({"listing": "card grid holds 90% of the prose"}) == \
+        "card grid holds 90% of the prose"
+    # a marketplace page with no content H2 at all is still a listing (the prose checks
+    # would stop at "no content H2" first)
+    market = {"word_count": 700, "sections": [], "listing": None, "schema_types": ["ItemList"],
+              "grid_share": 0, "section_share": 0}
+    assert Q.listing_reason(market) == "JSON-LD ItemList, only 0% of the prose sits in content sections"
+    assert Q._prose_problem({"metrics": market}) == "no content H2"
+    grid = dict(market, sections=[{"h2": "x", "words": 5, "h3_count": 0, "h3": []}],
+                grid_share=55, section_share=90)
+    assert Q.listing_reason(grid) == "JSON-LD ItemList, card grid holds 55% of the prose"
+    assert Q._prose_problem({"metrics": grid}) == "listing: " + Q.listing_reason(grid)

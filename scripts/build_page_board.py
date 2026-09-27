@@ -931,8 +931,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         parts.append(("4b. Keyword metrics",
                       f"Primary keyword **{md(kt['primary_keyword'])}** against the first five "
                       f"unblocked competitor pages, over the board's {kt['terms']} keyword terms. "
-                      "Title / H1 / H2 / Alt / Description count the primary keyword's exact "
-                      "matches; a dash is not measured. `python3 scripts/keyword_metrics.py "
+                      f"{md(KM.CAPTION)} `python3 scripts/keyword_metrics.py "
                       f"{md(slug)}` prints the same table.\n\n"
                       + md_table(KM.COLUMNS, [[md(c) for c in KM.cells(r)] for r in kt["rows"]])))
     ent_md = (BE.entities_html(BE.group_entities(board, ont))

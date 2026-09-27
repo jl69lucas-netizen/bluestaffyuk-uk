@@ -24,7 +24,8 @@ def test_measure_html_counts_the_saved_competitor_page():
     m = KM.measure_html(PAGE, PRIMARY, TERMS, ["blue staffies manchester"])
     assert m == {"words": 59, "unique_terms": 4, "mentions": 4, "variations": 0,
                  "exact": {"title": 1, "h1": 1, "h2": 0, "alt": 0, "description": 1},
-                 "first_100": True, "title_front": True}
+                 # the primary keyword is only in the H1: the opening copy after it lacks it
+                 "first_100": False, "title_front": True}
 
 
 def test_matching_ignores_small_words_and_case():
@@ -60,7 +61,7 @@ def _board(status="boarded", title="Blue Staffy Puppies Manchester | BlueStaffyU
 def test_board_row_measures_the_planned_tags_before_the_page_is_built():
     row = KM.board_row(_board())
     assert row["who"] == "ours (board)" and row["title_front"] is True
-    assert row["exact"] == {"title": 1, "h1": 1, "h2": 1, "alt": None, "description": 0}
+    assert row["exact"] == {"title": 1, "h1": 1, "h2": 1, "alt": 0, "description": 0}
     assert row["words"] is None and row["first_100"] is None
     assert row["note"].startswith("not built")
 
@@ -191,3 +192,96 @@ def test_listing_competitors_are_marked_not_read_as_prose(tmp_path, monkeypatch)
     assert cached["listing"] == "card grid holds 80% of the prose"
     assert cached["note"] == ("LISTING — card grid holds 80% of the prose; body columns count "
                               "card text, not prose · measured from data/queries/cache")
+
+
+# ── Task 18 review ───────────────────────────────────────────────────────────────────────────
+FILLER = " ".join(["word"] * 120)
+
+
+def test_first_100_words_starts_after_the_h1():
+    only_h1 = (f"<main><section class='hero'><p class='eyebrow'>{PRIMARY}</p>"
+               f"<h1>{PRIMARY}</h1></section><p>{FILLER}</p></main>")
+    assert KM.measure_html(only_h1, PRIMARY, [], [])["first_100"] is False
+    opening = (f"<main><section class='hero'><p class='eyebrow'>Breeders</p><h1>Pups</h1>"
+               f"<p class='lede'>Our {PRIMARY} are raised at home.</p></section>"
+               f"<p>{FILLER}</p></main>")
+    assert KM.measure_html(opening, PRIMARY, [], [])["first_100"] is True
+    hidden = (f"<main><h1>Pups</h1><div hidden>{PRIMARY}</div><p aria-hidden='true'>{PRIMARY}</p>"
+              f"<p style='display: none'>{PRIMARY}</p><p>{FILLER} {PRIMARY}</p></main>")
+    assert KM.measure_html(hidden, PRIMARY, [], [])["first_100"] is False
+    no_main = f"<body><nav>{PRIMARY}</nav><h1>Pups</h1><p>Meet our {PRIMARY}.</p><p>{FILLER}</p></body>"
+    assert KM.measure_html(no_main, PRIMARY, [], [])["first_100"] is True
+    no_main_late = f"<body><h1>{PRIMARY}</h1><p>{FILLER} {PRIMARY}</p></body>"
+    assert KM.measure_html(no_main_late, PRIMARY, [], [])["first_100"] is False
+
+
+def test_words_column_is_page_metrics_word_count_for_every_measured_row(tmp_path):
+    rows = KM.competitor_rows(SLUG, PRIMARY, TERMS, [], _repo(tmp_path))
+    assert rows[0]["words"] == KM.QA.page_metrics(PAGE)["word_count"]
+    assert KM.measure_html(PAGE, PRIMARY, [], [])["words"] == KM.QA.page_metrics(PAGE)["word_count"]
+
+
+def test_a_marketplace_page_with_no_content_h2_is_still_marked_listing(tmp_path):
+    root = _repo(tmp_path)
+    raw = root / "data/queries/raw" / SLUG / "competitors.json"
+    data = json.loads(raw.read_text())
+    data["pages"][2]["metrics"].update(sections=[], schema_types=["ItemList"], grid_share=0,
+                                       section_share=0, listing=None)
+    raw.write_text(json.dumps(data))
+    row = KM.competitor_rows(SLUG, PRIMARY, TERMS, [], root)[1]
+    assert row["listing"] == "JSON-LD ItemList, only 0% of the prose sits in content sections"
+    assert row["note"].startswith("LISTING — ")
+    assert "_prose_problem" not in SCRIPT.read_text()
+
+
+def test_title_gate_normalises_plurals_and_allows_connectors():
+    assert KM.front_loaded(PRIMARY, "Blue Staffy Puppies for Sale in Manchester | BlueStaffyUK")
+    assert KM.front_loaded(PRIMARY, "Blue Staffy Puppy Manchester")
+    assert KM.front_loaded(PRIMARY, "Blue Staffies Puppies in Manchester")
+    why = KM.front_load_problem(PRIMARY, "Manchester Blue Staffy Puppies")
+    assert "manchester" in why and "order" in why
+    late = "Blue Staffy Puppies Raised With Love At Home In Manchester"
+    assert "manchester" in KM.front_load_problem(PRIMARY, late)
+    b = _board(title="Manchester Blue Staffy Puppies | BlueStaffyUK")
+    [(check, sev, msg)] = KM.findings(b, rebuilt=set())
+    assert (check, sev) == ("title-front-load", "FAIL") and "order" in msg
+
+
+def test_a_board_without_a_primary_keyword_fails_clearly():
+    b = _board()
+    b["brief"]["primary_keyword"] = "  "
+    assert KM.findings(b, rebuilt=set()) == [
+        ("primary-keyword", "FAIL", "board has no primary keyword")]
+    del b["brief"]["primary_keyword"]
+    assert [f[:2] for f in KM.findings(b, rebuilt=set())] == [("primary-keyword", "FAIL")]
+    assert KM.table(b, rebuilt=set())["primary_keyword"] == ""
+
+
+def test_mentions_count_the_longest_match_per_span():
+    body = "<main><p>Our blue staffy puppies in Manchester. Puppies Manchester again.</p></main>"
+    m = KM.measure_html(body, PRIMARY, [PRIMARY, "puppies manchester"], [])
+    assert m["unique_terms"] == 2 and m["mentions"] == 2
+
+
+def test_board_row_alt_reads_the_boards_image_alts():
+    b = _board()
+    assert KM.board_row(b)["exact"]["alt"] == 0
+    b["assets"][0]["alt"] = "Blue staffy puppies in Manchester at home"
+    assert KM.board_row(b)["exact"]["alt"] == 1
+    b["assets"] = []
+    assert KM.board_row(b)["exact"]["alt"] is None
+
+
+def test_a_rebuilt_slug_with_no_built_page_is_the_board_row(tmp_path):
+    b = _board(title="Home-Raised Blue Staffy Puppies Manchester")
+    slug = b["meta"]["slug"]
+    assert KM.ours_row(b, dist=tmp_path, rebuilt={slug})["who"] == "ours (board)"
+    assert [f[0] for f in KM.findings(b, dist=tmp_path, rebuilt={slug})] == ["title-front-load"]
+
+
+def test_markdown_escapes_pipes_in_notes_and_urls():
+    row = {"who": "https://x.example/a|b", "note": "one | two", "exact": {}}
+    md = KM.markdown({"rows": [row]})
+    line = md.splitlines()[2]
+    assert "a\\|b" in line and "one \\| two" in line
+    assert len(line.replace("\\|", "").split("|")) - 2 == len(KM.COLUMNS)
