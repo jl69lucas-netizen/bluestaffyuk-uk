@@ -132,3 +132,15 @@ own puppy alt does not breach the rule.
   add `aria-describedby` from each field to its error line.
 - **Served alts.** FAQ a keeps Maggie's served alt and contact c the London owner photo's
   served alt, both listed above under "Alt text — awaiting the user's ruling".
+
+## From the Task 9 review
+
+- No real section heading may repeat an FAQ question. On the canvas, "What Does the £500
+  Deposit Do?" and "Which Health Tests Do the Parents Have?" are both the headings of the
+  `data-canvas-only` stubs and FAQ questions.
+- The forms' error messages (`.err`) are not tied to their fields. Build on `ContactFormKit` with
+  `aria-describedby` and `aria-invalid`.
+- Contact b's six-puppy strip invites a tap but selects nothing. Either make each photo
+  preselect its puppy option, or style the strip as plainly non-interactive.
+- Contact a's fill-in-the-sentence layout collapses to label-above-field rows below about 480px.
+  Keep the sentence and field on one line as far down as it fits.
