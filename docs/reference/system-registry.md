@@ -154,7 +154,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 86
+## Scripts — 88
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -200,6 +200,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/final_page_audit.py`
 - `scripts/form_contract_audit.py`
 - `scripts/gap_matrix.py`
+- `scripts/gate_page.py`
 - `scripts/generate_page_dates.py`
 - `scripts/generate_sitemaps.py`
 - `scripts/health-sweep.sh`
@@ -222,6 +223,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/outline_provenance_check.py`
 - `scripts/page_hardening_scan.py`
 - `scripts/page_intake.py`
+- `scripts/page_run_record.py`
 - `scripts/page_sections.py`
 - `scripts/pageboard.py`
 - `scripts/perf_audit.py`
@@ -272,7 +274,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/settings.json`
 - `data/verbatim/`
 
-## Schemas — 8
+## Schemas — 9
 
 Every JSON Schema in `schemas/` — the contract a data file or report is validated against.
 
@@ -282,6 +284,7 @@ Every JSON Schema in `schemas/` — the contract a data file or report is valida
 - `schemas/component-ledger.schema.json`
 - `schemas/llm-intel.schema.json`
 - `schemas/ontology.schema.json`
+- `schemas/page-run-record.schema.json`
 - `schemas/port-manifest.schema.json`
 - `schemas/queries.schema.json`
 

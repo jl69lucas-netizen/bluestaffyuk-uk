@@ -25,6 +25,9 @@ the traffic.
 `check:*` is a pass/fail gate (non-zero exit blocks the work), `audit:*` writes a report and
 is read by a human, `test:*` runs a test suite or a measurement harness. `npm run check:all`
 chains every gate; nothing else is chained, so an audit can never silently gate a commit.
+`gate:page` is the one per-page runner: `npm run gate:page -- <slug>` runs every page gate for
+one page twice and diffs the runs (`rules/gates.md` `run-every-gate-twice`); it is never
+chained into `check:all`.
 
 ## Deploy — inactive until project 6
 
@@ -274,6 +277,7 @@ browser and then, after every full run, pass or fail, runs `node scripts/build_s
 and writes the scorecards `test:render:meta` reads back. A filtered, stopped-early or
 never-started run skips the scorecard and says why.
 
+Per page: `npm run gate:page -- <slug>` (every page gate, twice; `docs/reference/page-run.md`).
 Also: `python3 scripts/board_gate.py <slug>` · `python3 scripts/final_page_audit.py` ·
 `python3 scripts/page_hardening_scan.py` · `python3 scripts/dup_content_audit.py [--headers]` ·
 `python3 scripts/aeo_audit.py --all` · `python3 scripts/evidence_audit.py --all` ·
@@ -343,7 +347,7 @@ components are listed in `data/design/components.json`, and rebuilt pages render
 - `docs/reference/page-run.md` — the ordered per-page run for a project 5 page: each brief
   step, the command that does it, what it leaves on disk, the gate that fails and the stop
 - `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
-  A–J. That is a different count from `data/quality/rule-index.json`'s 79 (of which 9 are
+  A–J. That is a different count from `data/quality/rule-index.json`'s 81 (of which 9 are
   `enforced: judgment`, capped there): the ledger indexes the `rules/` packs, the
   render-harness checks and working rules 10–17; seo-rules.md numbers its own categories.
   `docs/reference/quick-start.md` states both, and all three files change together.

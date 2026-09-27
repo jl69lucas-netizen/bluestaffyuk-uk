@@ -565,6 +565,13 @@
    "test": "tests/py/test_image_rules.py",
    "pack": "rules/images.md",
    "severity": "blocking"
+  },
+  {
+   "id": "run-every-gate-twice",
+   "family": "GATE",
+   "enforced": "test",
+   "test": "tests/py/test_gate_page.py",
+   "pack": "rules/gates.md"
   }
  ]
 }

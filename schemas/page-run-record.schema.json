@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BSUK per-page run record (data/page-runs/<slug>.json)",
+  "description": "The mandatory skill passes of one project 5 page's run (docs/reference/page-run.md rows 1, 14, 15 and 18): the session open (grill-me, then superpowers:writing-plans, then the page-type builder skill, in that order), the impeccable and frontend-design Harden passes and verification-before-completion. Written by scripts/page_run_record.py; judged by scripts/gate_page.py. A key may be absent while the run is in progress; the gate fails until all four are present. Freshness is the verification pass's: its commit must be at or after the page's last source change, and each Harden pass's commit at or before the verification commit.",
+  "type": "object",
+  "required": ["slug"],
+  "additionalProperties": false,
+  "properties": {
+    "slug": {"type": "string", "pattern": "^_?[a-z0-9-]+(/[a-z0-9-]+)*$"},
+    "session_open": {"$ref": "#/$defs/session_open"},
+    "impeccable": {"$ref": "#/$defs/harden_pass"},
+    "frontend_design": {"$ref": "#/$defs/harden_pass"},
+    "verification_before_completion": {"$ref": "#/$defs/verification"}
+  },
+  "$defs": {
+    "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "session_open": {
+      "type": "object",
+      "required": ["ran_on", "skills"],
+      "additionalProperties": false,
+      "properties": {
+        "ran_on": {"$ref": "#/$defs/date"},
+        "skills": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "grill-me"},
+            {"const": "superpowers:writing-plans"},
+            {"enum": ["bsuk-location-page-builder", "bsuk-comparison-page-builder",
+                      "bsuk-blog-post", "bsuk-puppy-page-builder"]}
+          ],
+          "items": false,
+          "minItems": 3
+        }
+      }
+    },
+    "harden_pass": {
+      "type": "object",
+      "required": ["ran_on", "widths", "findings", "fixed", "deferred", "commit"],
+      "additionalProperties": false,
+      "properties": {
+        "ran_on": {"$ref": "#/$defs/date"},
+        "widths": {
+          "type": "array",
+          "items": {"enum": [375, 768, 1280]},
+          "uniqueItems": true,
+          "minItems": 3
+        },
+        "findings": {"type": "integer", "minimum": 0},
+        "fixed": {"type": "integer", "minimum": 0},
+        "deferred": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "commit": {"$ref": "#/$defs/sha"}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["ran_on", "commit", "commands", "claims_verified"],
+      "additionalProperties": false,
+      "properties": {
+        "ran_on": {"$ref": "#/$defs/date"},
+        "commit": {"$ref": "#/$defs/sha"},
+        "commands": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["cmd", "exit", "examined"],
+            "additionalProperties": false,
+            "properties": {
+              "cmd": {"type": "string", "minLength": 1},
+              "exit": {"type": "integer"},
+              "examined": {"type": ["integer", "null"], "minimum": 0}
+            }
+          }
+        },
+        "claims_verified": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}
