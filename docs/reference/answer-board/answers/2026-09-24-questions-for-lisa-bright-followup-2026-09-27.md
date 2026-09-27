@@ -33,3 +33,10 @@ First: "OLd Litter ="Maggie and Jones" and NEW 6 pups =Angie and Lays". Then, su
   same parent images the site already uses (`data/faq.json` rows at lines 71, 185, 365 and 371,
   and the Glasgow breeding-dogs page). "Angie and Lays" appears on no page.
 - The Q10 row above ("ANGIE and LAYS") is superseded by this ruling.
+
+## The deposit and the price (the user, in chat, 2026-09-27)
+
+Asked "does the £500 deposit come off the puppy's price?", the user answered "yes".
+
+- Pages may say the £500 deposit comes off the puppy's price. This confirms the existing FAQ
+  wording (`data/faq.json` `home-price-range`).
