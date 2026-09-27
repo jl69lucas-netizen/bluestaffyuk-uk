@@ -229,3 +229,27 @@ def test_preview_pages_are_not_claim_checked():
 def test_a_missing_rebuilt_file_warns_on_stderr(tmp_path, capsys):
     assert E.rebuilt_slugs(tmp_path / "nope.json") == set()
     assert "rebuilt" in capsys.readouterr().err
+
+
+# ── Task 20 re-review: no claim hides behind another clause's question, negation or advice ──
+@pytest.mark.parametrize("sentence,expected", [
+    ("Every puppy is KC registered — want to know why?", ["kc-registered"]),
+    ("Every puppy is KC registered, want to know why?", ["kc-registered"]),
+    ("Every puppy is KC registered; is that rare?", ["kc-registered"]),
+    ("No hidden fees, KC registered and vet checked.", ["kc-registered", "vet-checked"]),
+    ("Not only KC registered, our pups are health tested.", ["kc-registered", "health-tested"]),
+    ("Read all about the KC registered puppies we breed.", ["kc-registered"]),
+    ("Ask for details: every pup is KC registered.", ["kc-registered"]),
+])
+def test_no_bypass_through_another_clause(sentence, expected):
+    assert ids(page(f"<p>{sentence}</p>")) == expected
+
+
+@pytest.mark.parametrize("sentence", [
+    "Want to know why every pup is KC registered?",
+    "Every puppy is healthy — but is it KC registered?",
+    "Read more about the KC registered scheme on the registry site.",
+    "The registry's page about the DNA test explains it.",
+])
+def test_clause_scoped_exclusions_still_hold(sentence):
+    assert ids(page(f"<p>{sentence}</p>")) == []

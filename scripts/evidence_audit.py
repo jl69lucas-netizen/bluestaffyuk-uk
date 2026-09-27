@@ -253,10 +253,19 @@ CLOSERS = "\"'”’)]"
 ABBREVIATIONS = re.compile(r"(?:\b(?:Dr|Mr|Mrs|Ms|St|approx)|\be\.g|\bi\.e)\.$", re.I)
 SENTENCE_END = re.compile(r"[.!?][" + re.escape(CLOSERS) + r"]*\s+")
 # Not a claim: a denial just before the hit, advice to the buyer, a reference to a page about it.
-# `without` is not a denial: "No puppy leaves without being vet checked" is a claim.
+# Each is judged inside the hit's own clause, so "KC registered — want to know why?" and
+# "Ask for details: every pup is KC registered" still claim.
+# `without` is not a denial: "No puppy leaves without being vet checked" is a claim; nor is
+# "not only" ("Not only KC registered, …").
 DENIAL = re.compile(r"\b(?:not|never|no)\b", re.I)
+NOT_ONLY = re.compile(r"\bnot\s+only\b", re.I)
 ADVICE = re.compile(r"^\W*ask\s+(?:to\s+see|for)\b", re.I)
-REFERENCE = re.compile(r"\b(?:page\s+(?:on|for)|results\s+for|about\s+the)\b", re.I)
+REFERENCE = re.compile(r"\b(?:page\s+(?:on|for|about)\s+the|results\s+for|more\s+about\s+the)\b", re.I)
+QUESTION_WORDS = r"(?:why|how|what|who|when|where|want|is|are|do|does|can|should|would|will)"
+# A clause ends at a dash, ; or :, at a question mark (closing quotes allowed), and at a comma
+# that opens a question ("…, want to know why?").
+CLAUSE_END = re.compile(r"[\u2014\u2013;:]|\?[" + re.escape(CLOSERS) + r"]*"
+                        r"|,(?=\s*" + QUESTION_WORDS + r"\b)", re.I)
 
 
 def _split_sentences(text):
@@ -281,23 +290,28 @@ def sentences(html):
     return out
 
 
-def _in_question(s, pos):
-    """True when the clause holding `pos` ends in a question mark (closing quotes allowed)."""
-    for m in re.finditer(r"[^?]*\?[" + re.escape(CLOSERS) + r"]*|[^?]+$", s):
-        if m.start() <= pos < m.end():
-            return m.group(0).rstrip().rstrip(CLOSERS).endswith("?")
-    return False
+def _clause(s, pos):
+    """(start, clause text) of the clause of sentence `s` holding position `pos`."""
+    start = 0
+    for m in CLAUSE_END.finditer(s):
+        if m.end() > pos:
+            return start, s[start:m.end()]
+        start = m.end()
+    return start, s[start:]
 
 
 def _is_claim(s, m):
-    """A vocabulary match `m` in sentence `s` is a claim unless it sits in a question clause,
-    follows a denial within three words, or is the object of a reference to a page about it."""
-    if _in_question(s, m.start()):
+    """A vocabulary match `m` in sentence `s` is a claim unless, within its own clause, it sits
+    in a question, is buyer advice, follows a denial within three words (not across a comma;
+    "not only" is no denial), or is the object of a reference to a page about it."""
+    start, clause = _clause(s, m.start())
+    if clause.rstrip().rstrip(CLOSERS).endswith("?") or ADVICE.search(clause):
         return False
-    before = s[:m.start()].split()
-    if DENIAL.search(" ".join(before[-3:])):
+    before = s[start:m.start()]
+    if REFERENCE.search(" ".join(before.split()[-6:])):
         return False
-    return not REFERENCE.search(" ".join(before[-6:]))
+    near = NOT_ONLY.sub(" ", before.rsplit(",", 1)[-1])
+    return not DENIAL.search(" ".join(near.split()[-3:]))
 
 
 def unledgered_claims(html, ledger):
@@ -310,8 +324,6 @@ def unledgered_claims(html, ledger):
         return []
     out = []
     for s in sentences(html):
-        if ADVICE.search(s):
-            continue
         covered = set()
         for c in ledger.get("claims", []):
             if c.get("covers") and re.search(c["pattern"], s, flags=re.I):
