@@ -31,8 +31,7 @@ page-run record and the gate runner (row 17) take the key.
 | blog | `.claude/skills/bsuk-blog-post/SKILL.md` | `<slug>` (a post in `src/content/blog/` builds at `/<slug>/`) | `blog` | headings, images |
 
 The URL-family decision for the city cluster and the comparison slugs is one table,
-`docs/research/2026-09-26-url-family-decision.md` (arrives in Task 27). Read the page's row
-before row 3.
+`docs/research/2026-09-26-url-family-decision.md`. Read the page's row before row 3.
 
 ## The run
 
