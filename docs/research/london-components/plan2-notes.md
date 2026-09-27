@@ -98,3 +98,12 @@ Also served verbatim and noted for the same ruling: `blue-staffy-testimonial-lon
 that section is not a review; `mark-blue-staffy-london.webp` (reviews a) keeps "Mark with their
 healthy blue Staffy puppy from BlueStaffyUK.uk in London.". The validator accepted every served
 alt (0 problems).
+
+## Served alt text across every component (controller, after the Task 8 review)
+
+Working rule 11 keeps a served image's alt text word for word. Tasks 5–7 had also rewritten the
+alts of `maggie-blue-staffy-dam-with-pups.webp` (trust-strip c, jump-links c, puppy-cards b,
+key-takeaways a) and `ethical-staffy-puppy-london-delivery.webp` (jump-links c, tables b). All
+are now restored from `dist/`, so every `/images/` file in the canvas carries its served alt.
+Puppy photos (`/puppies/…`) already carry different alts on different built pages, so a variant's
+own puppy alt does not breach the rule.
