@@ -73,8 +73,9 @@ def _reddit_id(p):
 def canonical(url):
     """The ledger key of a thread. Reddit: https://www.reddit.com/comments/<id>/ whatever the
     host, port, subreddit case, slug, comment or .json suffix. Anything else: https, lower-case
-    host, one trailing slash (none after a file name such as viewtopic.php), only its id parameters (sorted), no fragment. Raises ValueError for
-    a Reddit share link or a Reddit URL with no thread id."""
+    host, one trailing slash (none after a file name such as viewtopic.php), only its id
+    parameters (sorted; with `t` or `topic`, phpBB's post `p` and `id` go), no fragment.
+    Raises ValueError for a Reddit share link or a Reddit URL with no thread id."""
     p = urlsplit(url.strip())
     host = (p.hostname or "").lower()
     if _is_reddit(host) or host == "redd.it":
@@ -82,7 +83,10 @@ def canonical(url):
         if not rid:
             raise ValueError(f"{url}: not a Reddit thread permalink (no /comments/<id>)")
         return f"https://www.reddit.com/comments/{rid}/"
-    keep = sorted((k, v) for k, v in parse_qsl(p.query) if k.lower() in FORUM_ID_PARAMS)
+    keep = [(k, v) for k, v in parse_qsl(p.query) if k.lower() in FORUM_ID_PARAMS]
+    if any(k.lower() in ("t", "topic") for k, _ in keep):   # phpBB: the topic is the thread
+        keep = [(k, v) for k, v in keep if k.lower() not in ("p", "id")]
+    keep.sort()
     path = p.path.rstrip("/")
     if "." not in path.rsplit("/", 1)[-1]:      # a directory-style path ends in one slash;
         path += "/"                              # a script (viewtopic.php) never does
@@ -90,13 +94,16 @@ def canonical(url):
 
 
 def display(url):
-    """The permalink as people read it: Reddit hosts → www.reddit.com, no query, fragment or
-    .json; other hosts keep their id parameters (canonical())."""
+    """The permalink as people read it: Reddit hosts → www.reddit.com, no query, fragment,
+    .json or comment segment (the thread, /r/<sub>/comments/<id>/<slug>/); other hosts are
+    canonical()."""
     p = urlsplit(url.strip())
     host = (p.hostname or "").lower()
     if not _is_reddit(host):
         return canonical(url)
-    path = re.sub(r"\.json$", "", p.path).rstrip("/") + "/"
+    path = re.sub(r"\.json$", "", p.path).rstrip("/")
+    m = re.match(r"(.*?/comments/[^/]+(?:/[^/]+)?)", path)
+    path = (m.group(1) if m else path) + "/"
     return urlunsplit(("https", "www.reddit.com", path, "", ""))
 
 
@@ -298,7 +305,15 @@ def main(argv=None):
         print(f"thread-ledger: {LEDGER} is missing — run python3 scripts/thread_ledger.py --write",
               file=sys.stderr)
         return 2
-    ledger = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        ledger = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(ledger, dict) or not isinstance(ledger.get("threads"), dict):
+            raise ValueError("not a ledger object with a `threads` map")
+    except (OSError, UnicodeDecodeError, ValueError) as e:
+        reason = f"not valid JSON ({e.msg})" if isinstance(e, json.JSONDecodeError) else str(e)
+        print(f"thread-ledger: {LEDGER.as_posix()}: {reason} — run "
+              "python3 scripts/thread_ledger.py --write", file=sys.stderr)
+        return 2
     try:
         if a.known:
             for k in known(ledger, a.known, a.today):

@@ -246,3 +246,28 @@ def test_known_and_seed_read_the_committed_ledger_without_rebuilding(tmp_path):
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(root), "--today", "2026-10-01",
                         "--seed", A], capture_output=True, text=True)
     assert r.returncode == 0 and json.loads(r.stdout)["threads"][0]["seeded_from"] == "2026-09-20"
+
+
+def test_a_phpbb_topic_drops_its_post_and_id_parameters():
+    assert T.canonical("https://forum.example.co.uk/viewtopic.php?f=2&t=9&p=77") == \
+        T.canonical("https://forum.example.co.uk/viewtopic.php?t=9")
+    assert T.canonical("https://forum.example.co.uk/viewtopic.php?p=77") == \
+        "https://forum.example.co.uk/viewtopic.php?p=77"          # a bare post link keeps p
+
+
+def test_display_shows_the_thread_not_the_comment():
+    assert T.display("https://old.reddit.com/r/UK_Pets/comments/aaa111/first_dog/c9x8y7z/?x=1") == A
+    assert T.display(A + "c9x8y7z.json") == A
+
+
+@pytest.mark.parametrize("body", ["{broken", "[]", json.dumps({"threads": []})[:-1]])
+def test_known_and_seed_fail_cleanly_on_a_corrupt_ledger(tmp_path, body):
+    root = two_pages(tmp_path)
+    (root / "data/queries").mkdir(parents=True, exist_ok=True)
+    (root / "data/queries/thread-ledger.json").write_text(body)
+    for flag in ("--known", "--seed"):
+        r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(root), "--today",
+                            "2026-10-01", flag, A], capture_output=True, text=True)
+        out = r.stdout + r.stderr
+        assert r.returncode == 2 and "Traceback" not in out, out
+        assert "thread-ledger: data/queries/thread-ledger.json:" in out
