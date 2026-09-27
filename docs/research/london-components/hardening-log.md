@@ -161,3 +161,46 @@ six mark section 1 and then section 6, the same under both.
 Copy: the FAQ stub no longer says what "most London buyers" ask; the Enquire stub reads "she can
 price the delivery; you book a viewing with the £500 deposit". The "which one navigates at this
 width" notes and every stub section carry `data-canvas-only` so Plan 2 never ports them.
+
+## Task 7: key takeaways, puppy cards, tables (2026-09-27)
+
+**How the passes ran.** `frontend-design:frontend-design` was invoked with the Skill tool on the
+brief in the plan's Task 7 Step 3, after the captures and idea sheets the three ideas-index
+sections cite were opened with the Read tool, and `PuppyCard.astro`, `InfoCard.astro`,
+`DataTable.astro`, `global.css` `.stack-table` and the `layout-table-stacks-on-mobile` check
+were read. Every must-differ row for these three components is `media: none`, and every
+`framing` is `plain`, `band` or `card`, so each variant was built to differ on **media and
+framing** at once (never on layout alone), so an honest re-reading of its layout cannot bring it
+within one axis of a row. Puppy cards B is honestly a three-up grid, so it uses the row's slug
+`grid-3` verbatim and differs on media (photo top) and framing (inset). `impeccable:impeccable`
+was then invoked with the Skill tool (brand register; no `PRODUCT.md`, so the brand context came
+from the design-context files, as in Tasks 5 and 6): the detector (`npx impeccable --json` on
+the nine fragments) and a design review of the shots at 375 / 768 / 1024 / 1280. Detector
+results: `cramped-padding` rows are the known false-positive class (padding on inner wrappers,
+hairline rows); `side-tab` on key takeaways A, puppy cards A and tables C is the full-width 4px
+masthead rule over the section; the six `side-tab` rows on puppy cards C were real (a 3px steel
+top stripe on each name plate) and were removed. Mid-task the user moved the worktree to
+`/Users/apple/Downloads/BSUK/BSUK-london` and the captures to `/Users/apple/Downloads/BSUK/BSUK-refs/`;
+the shots were re-taken there.
+
+| Component | Variant | frontend-design direction | impeccable findings | Fixed | Widths |
+|---|---|---|---|---|---|
+| key-takeaways | a | **Answer ledger.** An answer sheet under a steel masthead rule: Maggie and her puppies at the left, then five ruled rows of a short caps label and one sentence (the six, the deposit, the route, the parents, the promise). | At 1024+ the 4:3 photo left ~250px of dead space under it beside the taller list; stretching the photo to fill it upscaled the 780×585 source and cut Maggie's face; the lede said "one line each" over two-line rows. | From 1024 the heading and lede run across the top as one ruled-off row and the photo (1:1, focus on Maggie) sits beside the list only; lede reads "one sentence each". | 375 · 768 · 1024 · 1280 |
+| key-takeaways | b | **Tick card.** One raised card on the bone page: a wide crop of Ince across its top, the question, four large-type lines each with a brass-filled tick disc, an Ask pill and a line about speaking to our vet. | Clean at every width; brass is a fill with steel-900 ink (AA), never text. | None needed. | 375 · 768 · 1024 · 1280 |
+| key-takeaways | c | **Numbered decisions.** A sunk steel-100 panel: three decisions, each a large display numeral, a bold lead and one sentence, beside a tall photo of Cheryl filling the panel's right side (first on phones). | The lede called the puppy "she", which is wrong for the three boys. | "how your puppy reaches your door". | 375 · 768 · 1024 · 1280 |
+| puppy-cards | a | **Kennel ledger.** The six as ruled ledger rows, not cards: square photo left, name in the display face, sex and colour, a green Available mark, the price set large at the right and a brass Ask pill; boys and girls as two ruled columns from 1024px. | The column heads repeated each row's price ("£1,500 each" over three £1,500 rows). | Heads read "3 available". | 375 · 768 · 1024 · 1280 |
+| puppy-cards | b | **Contact sheet.** Six prints on a sunk steel-100 tray: a 4:5 photo (1:1 from 1024), a bone-50 mount with the name, a brass price tag, sex and colour, Available and an Ask link stretched over the whole print, so the print is the tap target. | On a phone the price tag sat beside some names and under others, and "Ask About Christa" wrapped to two lines with the arrow orphaned. | Below 768 the tag always sits under the name, the Ask line is one line at `--text-xs` with no arrow. | 375 · 768 · 1024 · 1280 |
+| puppy-cards | c | **Litter wall.** An edge-to-edge photo mosaic with 2px bone seams; from 1024 Cheryl's tall photo takes a double square and the other five fill the squares round it, each named on a small raised plate in its lower corner; below 1024 an even two- or three-across wall with the plate under each photo. | The first mosaic used 2:1 wide panes: Vennie's face was cut by the full-width plate and Christa's was cropped to her nose; each plate carried a 3px steel top stripe (detector `side-tab`). | Mosaic rebuilt as a 3×3 grid (one 2×2, five near-square singles), plates shrunk to corner cards with no stripe; faces clear at 1024 and 1280. | 375 · 768 · 1024 · 1280 |
+| tables | a | **Litter roster.** One real table of the six sunk in a steel-100 tray: a round photo and the name lead each row, then sex, colour, price in tabular figures and Available; no header band, zebra or brass rules. Rows become mini sheets on the tray below 640px. | The stacked view ran about 2,050px at 375 (every value on its own line); a first two-column fix used `display:grid` on the row, which the stacking check (rightly) reads as "not stacked". | Rows stay `display:block`; the four labelled values sit two to a line as inline blocks, label over value; about 1,580px at 375. | 375 · 768 · 1024 · 1280 |
+| tables | b | **Payment schedule.** A full-width steel band: one table read as three steps (reserve, the puppy, getting home) on a brass numbered rail, bone text, pale-brass column heads, with a photo of a young owner hugging a blue puppy beside it (first on phones). | The heading asked "and When", which the table does not answer (it gives order, not dates); the caption repeated the heading; the lede called the puppy "her". | Heading "What Will You Pay for a Puppy in London, Step by Step?"; caption "Three payments, in order"; lede reworded. | 375 · 768 · 1024 · 1280 |
+| tables | c | **Boy or girl.** A two-column comparison headed by photos of Roman and Vennie with "Boys" / "Girls" under them; rows of price, names, colours, deposit and delivery between hairlines under a steel masthead rule; on a phone the photos stay side by side and each row stacks into two labelled answers. | The empty corner cell showed a stray "Compare" label; the lede claimed "everything else is the same". | Corner label is screen-reader only ("What differs"); lede says only that the deposit and delivery are the same for both. | 375 · 768 · 1024 · 1280 |
+
+Copy checks common to all nine: every heading is a Title Case buyer question with a 12+ word
+answering paragraph; the six puppies, sexes, colours and prices are `data/puppies.json`'s; the
+deposit "books your viewing and reserves your puppy" and "comes off the price"
+(`data/faq.json` `home-price-range`), never plainly "refundable"; the parents are Maggie and
+Jones, DNA-tested clear of L-2-HGA and HC-HSF4 (held on one line), eyes and elbows screened;
+Puppy Culture and ENS; a two-year genetic health guarantee; the buyer may speak to our vet;
+delivery £200 to £350 by DEFRA-approved transport, priced by distance, or collection in
+Carlisle; no licence, travel time, distance, score, age or invented claim; no em dashes in
+visible copy. Every `<td>` carries `data-label`, every table has a `<caption>` and `<th scope>`.

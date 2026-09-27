@@ -1,0 +1,102 @@
+<style>
+/* Tables A — Litter roster. One real table of the six, sunk into a steel-100 tray (no
+   shadow, no raised surface): each row opens with a small round photo and the puppy's name
+   in the display face, then sex, colour, the price in tabular figures and Available. No
+   header band, no zebra, no brass rules: the rows are separated by space and a hairline.
+   At 640px and below every row becomes a labelled mini sheet on the tray, photo and name
+   on top, each value on its own line beside its label, with no sideways scroll. */
+.tbA{background:var(--color-surface);padding:var(--space-6) var(--space-3)}
+.tbA .tray{max-width:1000px;margin:0 auto;background:var(--color-brand-soft);border-radius:var(--radius-lg);padding:var(--space-5) var(--space-3) var(--space-4)}
+.tbA .head{padding:0 var(--space-2) var(--space-4)}
+.tbA h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);text-wrap:balance}
+.tbA .lede{margin:0;color:var(--color-text);max-width:60ch}
+.tbA table{width:100%;border-collapse:collapse;font-size:var(--text-base);color:var(--color-text)}
+.tbA caption{caption-side:top;text-align:left;padding:0 var(--space-2) var(--space-3);font-size:var(--text-xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-brand)}
+.tbA thead th{padding:0 var(--space-3) var(--space-2);font-size:var(--text-sm);font-weight:600;text-align:left;color:var(--color-ink-2);border-bottom:2px solid var(--color-brand)}
+.tbA tbody th,.tbA tbody td{padding:var(--space-3);text-align:left;vertical-align:middle;border-bottom:1px solid var(--color-steel-300)}
+.tbA tbody tr:last-child th,.tbA tbody tr:last-child td{border-bottom:0}
+.tbA .who{display:flex;align-items:center;gap:var(--space-3)}
+.tbA .who img{flex:none;display:block;width:56px;height:56px;aspect-ratio:1/1;object-fit:cover;border-radius:50%;background:var(--color-bone-50)}
+.tbA .nm{font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;color:var(--color-brand)}
+.tbA .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.tbA thead th.num{text-align:right}
+.tbA .ok{font-weight:600;color:var(--color-ok)}
+.tbA .foot{margin:var(--space-4) var(--space-2) 0;font-size:var(--text-sm);color:var(--color-ink-2)}
+@media (max-width:640px){
+  .tbA table,.tbA thead,.tbA tbody,.tbA tr,.tbA th,.tbA td,.tbA caption{display:block}
+  .tbA thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .tbA tbody{display:grid;gap:var(--space-2)}
+  .tbA tbody tr{display:block;font-size:0;background:var(--counter-bed);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4)}
+  .tbA tbody th,.tbA tbody tr:last-child th{font-size:var(--text-base);padding:0 0 var(--space-2);border-bottom:1px solid var(--color-border);margin-bottom:var(--space-1)}
+  .tbA .who img{width:48px;height:48px}
+  .tbA tbody td,.tbA tbody tr:last-child td,.tbA tbody td.num{display:inline-block;width:50%;vertical-align:top;padding:4px var(--space-2) 4px 0;border-bottom:0;text-align:left;font-size:var(--text-sm);line-height:1.35}
+  .tbA tbody td::before{content:attr(data-label);display:block;font-size:var(--text-xs);font-weight:600;color:var(--color-ink-2)}
+}
+@media (min-width:1024px){
+  .tbA{padding:var(--space-10) var(--space-5)}
+  .tbA .tray{padding:var(--space-7) var(--space-7) var(--space-5)}
+  .tbA .head{padding:0 0 var(--space-5)}
+  .tbA h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .tbA caption{padding-left:0}
+  .tbA .foot{margin-left:0}
+}
+</style>
+<section data-component="tables" data-variant="a" class="tbA">
+  <div class="tray">
+    <div class="head">
+      <h2>How Do the Six Puppies Compare Side by Side?</h2>
+      <p class="lede">Here is the whole litter on one sheet, so you can weigh up a boy against a girl from your London kitchen table: every puppy's sex, colour and price, taken straight from our list.</p>
+    </div>
+    <table data-table>
+      <caption>The six puppies, as listed</caption>
+      <thead>
+        <tr><th scope="col">Puppy</th><th scope="col">Sex</th><th scope="col">Colour</th><th scope="col" class="num">Price</th><th scope="col">Status</th></tr>
+      </thead>
+      <tbody>
+          <tr>
+            <th scope="row"><span class="who"><img src="/puppies/Roman2.jpg" alt="Roman, a blue and white Staffy boy with blue eyes, lying on a lawn" width="1080" height="1081" loading="lazy" style="object-position:22% 40%"><span class="nm">Roman</span></span></th>
+            <td data-label="Sex">Boy</td>
+            <td data-label="Colour">Blue and white</td>
+            <td data-label="Price" class="num">£1,500</td>
+            <td data-label="Status"><span class="ok">Available</span></td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="who"><img src="/puppies/Byrd1.jpg" alt="Byrd, a white Staffy boy, standing on decking" width="1080" height="1080" loading="lazy" style="object-position:50% 35%"><span class="nm">Byrd</span></span></th>
+            <td data-label="Sex">Boy</td>
+            <td data-label="Colour">White</td>
+            <td data-label="Price" class="num">£1,500</td>
+            <td data-label="Status"><span class="ok">Available</span></td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="who"><img src="/puppies/Ince1.jpg" alt="Ince, a solid blue Staffy boy, standing on a patio" width="1080" height="1079" loading="lazy" style="object-position:62% 35%"><span class="nm">Ince</span></span></th>
+            <td data-label="Sex">Boy</td>
+            <td data-label="Colour">Blue</td>
+            <td data-label="Price" class="num">£1,500</td>
+            <td data-label="Status"><span class="ok">Available</span></td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="who"><img src="/puppies/Vennie.jpeg" alt="Vennie, a white Staffy girl with blue patches, curled on a sheepskin rug" width="1080" height="1080" loading="lazy" style="object-position:38% 62%"><span class="nm">Vennie</span></span></th>
+            <td data-label="Sex">Girl</td>
+            <td data-label="Colour">Blue and white</td>
+            <td data-label="Price" class="num">£1,700</td>
+            <td data-label="Status"><span class="ok">Available</span></td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="who"><img src="/puppies/Christa.jpeg" alt="Christa, a blue Staffy girl with a white chest, sitting on a sheepskin rug" width="1080" height="1080" loading="lazy" style="object-position:50% 30%"><span class="nm">Christa</span></span></th>
+            <td data-label="Sex">Girl</td>
+            <td data-label="Colour">Blue</td>
+            <td data-label="Price" class="num">£1,700</td>
+            <td data-label="Status"><span class="ok">Available</span></td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="who"><img src="/puppies/Cheryl1.jpeg" alt="Cheryl, a blue Staffy girl with a white blaze, lying on a wooden floor" width="1080" height="1350" loading="lazy" style="object-position:52% 42%"><span class="nm">Cheryl</span></span></th>
+            <td data-label="Sex">Girl</td>
+            <td data-label="Colour">Blue with white blaze</td>
+            <td data-label="Price" class="num">£1,700</td>
+            <td data-label="Status"><span class="ok">Available</span></td>
+          </tr>
+      </tbody>
+    </table>
+    <p class="foot">The price on the card is the price you pay. £500 books your viewing and reserves your puppy.</p>
+  </div>
+</section>

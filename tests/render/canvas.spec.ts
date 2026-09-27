@@ -143,6 +143,19 @@ const PROBES: Record<string, Probe> = {
     if (!(await isShown(page, '[data-jump-sheet]'))) out.push('pressing the opener does not show the sheet');
     return out;
   },
+  'key-takeaways': (page) => allVisible(page, 'data-takeaway'),
+  'puppy-cards': async (page) => {
+    const out = await allVisible(page, 'data-puppy');
+    const texts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-puppy]')).map((c) => c.textContent || ''));
+    const missing = PUPPY_NAMES.filter((n) => !texts.some((t) => t.includes(n)));
+    if (missing.length) out.push(`no card for ${missing.join(', ')} (data/puppies.json)`);
+    return out;
+  },
+  tables: async (page) => {
+    const n = await page.evaluate(() => document.querySelectorAll('main table').length);
+    return n ? [] : ['no <table> in main, so layout-table-stacks-on-mobile examined nothing'];
+  },
 };
 
 type Frame = { component: string; variant: string; path: string };

@@ -28,3 +28,28 @@ Added to by each Plan 1 task review; read before writing Plan 2.
   current section with its scroll-spy script.
 - Contents a and c duplicate rows 6–10 (a desktop copy and a phone `<details>` copy). Build one
   list and hide rows 6–10 on phones behind the disclosure instead.
+
+## Task 7: key takeaways, puppy cards, tables
+
+- **Puppy cards are built from `data/puppies.json`**, never from the fragment's six repeated
+  blocks: name, sex (`male`/`female` shown as Boy/Girl), colour, `price_gbp`, `status` and
+  `card_photo`. The per-card `style="object-position:…"` crops move into a small map keyed by
+  slug (or a `focus` field added to the data), not inline styles. Photos go through
+  `astro:assets` as `PuppyCard.astro` already does (srcset, lazy), with the reserved box kept.
+- **The Ask target.** The canvas links every Ask to `#contact`. In the kit the picked card
+  links wherever the site's puppy CTA goes (the kit card links `/available-puppies/<slug>/`);
+  keep the label "Ask About <name>" and keep one tap target per card (Contact sheet B and
+  Litter wall C stretch the link over the card; a second link to the same place inside the
+  card is `tabindex="-1"`, as the kit card does).
+- **The delivery line.** `rules/puppies.md` `delivery-band-on-every-card` wants the delivery
+  band on every card. Ledger A and Litter wall C carry it in the section, not on each card;
+  whichever is picked, Plan 2 adds the canonical line per card (or records the ruling that a
+  section-level line satisfies it) before `tests/py/test_puppy_card_delivery.py` is pointed at it.
+- **Tables are built on `DataTable.astro` semantics** (caption, `th scope="col"`, row `th`,
+  `data-label` from the column list). The canvas tables carry their own stacking CSS because
+  the frame has no `global.css`; the kit keeps `.stack-table` and the picked style becomes a
+  board-style class. A stacked row must stay `display:block` (the stacking check reads it);
+  lay values two-up inside it with inline blocks, never by making the row a grid.
+- **Figures come from data.** "£1,500 a boy / £1,700 a girl", the £500 deposit and the
+  £200–£350 band are rendered from `data/puppies.json`, `data/price-matrix.json` and
+  `data/settings.json`, never typed.

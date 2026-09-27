@@ -1,0 +1,53 @@
+{
+ "component": "key-takeaways",
+ "variants": {
+  "a": {
+   "name": "Answer ledger",
+   "description": "Maggie's photo left; right, the question, its answer and five ruled rows of a caps label and one sentence, under a steel rule.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/key-takeaways/sister-for-sale-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/key-takeaways/sister-for-sale-375-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/key-takeaways/mfs-home-1280-01.png"
+   ],
+   "differs_from": "Labelled ruled rows beside a photo, framed by rules; the built takeaways are imageless cards stacked, in a grid on a band, or in a rail.",
+   "axes": {
+    "layout": "ledger",
+    "media": "left",
+    "density": "regular",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Tick card",
+   "description": "One raised card with a wide photo of Ince across its top, then four large-type ticked lines and an Ask pill.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/key-takeaways/sister-near-me-375-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/key-takeaways/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea444.png"
+   ],
+   "differs_from": "A single raised card holding a photo and a tick list; the built takeaways are several imageless cards on the page or on a band.",
+   "axes": {
+    "layout": "checklist",
+    "media": "top",
+    "density": "airy",
+    "framing": "card"
+   }
+  },
+  "c": {
+   "name": "Numbered decisions",
+   "description": "A sunk steel-100 panel: three decisions with large display numerals beside a tall photo of Cheryl filling the right side.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/key-takeaways/mfs-home-375-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Section-Module-design4.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea3.png"
+   ],
+   "differs_from": "Three numbered decisions in a sunk panel beside a photo; the built takeaways have no photo and sit plain or on a band.",
+   "axes": {
+    "layout": "numbered",
+    "media": "right",
+    "density": "compact",
+    "framing": "inset"
+   }
+  }
+ }
+}

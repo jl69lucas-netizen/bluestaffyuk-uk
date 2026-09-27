@@ -1,0 +1,53 @@
+{
+ "component": "puppy-cards",
+ "variants": {
+  "a": {
+   "name": "Kennel ledger",
+   "description": "The six as ruled rows, square photo left, price right, brass Ask pill; boys and girls as two ruled columns from 1024px.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/puppy-cards/mfs-home-1280-02.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/puppy-cards/mfs-home-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea33.png"
+   ],
+   "differs_from": "Image-left rows grouped by sex and framed by rules; the built puppy sections are imageless card grids or a rail on a band.",
+   "axes": {
+    "layout": "ledger",
+    "media": "left",
+    "density": "compact",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Contact sheet",
+   "description": "Six prints on a sunk steel-100 tray: 4:5 photo, bone mount with name, brass price tag, Available and a stretched Ask link.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/puppy-cards/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/puppy-cards/sister-for-sale-375-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/PageSectionComponent-Available Display-Cards.png"
+   ],
+   "differs_from": "A three-up grid like S1, but photo-topped prints sunk in an inset tray rather than plain cards on the page; differs on media and framing.",
+   "axes": {
+    "layout": "grid-3",
+    "media": "top",
+    "density": "regular",
+    "framing": "inset"
+   }
+  },
+  "c": {
+   "name": "Litter wall",
+   "description": "An edge-to-edge photo mosaic, Cheryl on a double square; a bone plate at each tile's foot names, prices and links the puppy.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/puppy-cards/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/puppy-card-idea2.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/puppy-card-shop-idea.png"
+   ],
+   "differs_from": "Photos are the tiles themselves in a full-bleed mosaic of mixed sizes; the built sections are even card grids or a rail on a band.",
+   "axes": {
+    "layout": "mosaic",
+    "media": "background",
+    "density": "airy",
+    "framing": "bleed"
+   }
+  }
+ }
+}
