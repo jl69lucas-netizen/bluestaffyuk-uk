@@ -20,3 +20,11 @@ Added to by each Plan 1 task review; read before writing Plan 2.
   or computed props.
 - **Anything marked `data-canvas-only` is never ported**: the stand-in sections (`.stub`,
   `.stubs`), the "which one navigates at this width" notes, and the fixed zero-size close anchor.
+
+## From the Task 6 re-review
+
+- The `!important` animation longhands in the nav fragments exist only to defeat the canvas frame's
+  reduced-motion reset (`scripts/build_component_canvas.py`). Never port them: the kit marks the
+  current section with its scroll-spy script.
+- Contents a and c duplicate rows 6–10 (a desktop copy and a phone `<details>` copy). Build one
+  list and hide rows 6–10 on phones behind the disclosure instead.
