@@ -21,8 +21,8 @@
 @media (min-width:1024px){
   .tsC{padding:var(--space-10) var(--space-5)}
   .tsC .sheet{grid-template-columns:390px minmax(0,1fr);align-items:start;gap:var(--space-8);padding:var(--space-4) var(--space-8) var(--space-4) var(--space-4)}
-  .tsC .pic{padding-top:var(--space-4)}
-  .tsC .pic img{aspect-ratio:780/585;object-position:50% 50%}
+  .tsC .pic{padding-top:var(--space-4);align-self:stretch;display:flex;flex-direction:column}
+  .tsC .pic img{flex:1;min-height:0;aspect-ratio:auto;height:auto;object-position:80% 50%}
   .tsC .body{padding:var(--space-4) 0}
 }
 </style>
