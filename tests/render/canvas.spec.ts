@@ -107,6 +107,42 @@ const PROBES: Record<string, Probe> = {
   },
   'counter-strip': (page) => allVisible(page, 'data-figure'),
   'trust-strip': (page) => allVisible(page, 'data-trust-item'),
+  'contents-list': async (page) => [
+    ...(await allVisible(page, 'data-contents')),
+    ...(await anchorsResolve(page, '[data-contents]')),
+  ],
+  'desktop-dial': async (page, viewport) => {
+    const out = await anchorsResolve(page, '[data-dial]');
+    const shown = await isShown(page, '[data-dial]');
+    if (viewport >= 1024 && !shown) out.push('the dial is not painted at a desktop width');
+    if (viewport < 1024 && shown) out.push('the dial is painted below 1024px, where the jump links navigate');
+    return out;
+  },
+  'jump-links': async (page, viewport) => {
+    const out = await anchorsResolve(page, '[data-jump-strip]');
+    const strip = await isShown(page, '[data-jump-strip]');
+    if (viewport >= 1024) {
+      if (strip) out.push('the jump strip is painted at a desktop width, where the dial navigates');
+      return out;
+    }
+    if (!strip) return [...out, 'the jump strip is not painted below 1024px'];
+    const room = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
+    if (room < 600) {
+      out.push(`the frame scrolls only ${room}px; give it stub sections so the strip can be seen sticking`);
+    } else {
+      await page.evaluate(() => window.scrollTo(0, 600));
+      const top = await page.evaluate(() => document.querySelector('[data-jump-strip]')!.getBoundingClientRect().top);
+      if (top < -1 || top > 80) out.push(`after a 600px scroll the strip sits at ${Math.round(top)}px, not stuck to the top`);
+      await page.evaluate(() => window.scrollTo(0, 0));
+    }
+    const opener = page.locator('[data-jump-open]');
+    const box = await opener.boundingBox();
+    if (!box || box.height < 44) out.push('the sheet opener is under 44px tall');
+    await opener.click();
+    await page.waitForTimeout(250);
+    if (!(await isShown(page, '[data-jump-sheet]'))) out.push('pressing the opener does not show the sheet');
+    return out;
+  },
 };
 
 type Frame = { component: string; variant: string; path: string };

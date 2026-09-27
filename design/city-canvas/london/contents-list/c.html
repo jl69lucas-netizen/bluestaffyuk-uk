@@ -1,0 +1,72 @@
+<style>
+/* Contents C — Photo index. The contents list pressed into a steel-100 panel (sunk, no
+   shadow) with a photo of the litter at its left: a question heading, its answer, then the
+   ten sections as generous arrow rows in two columns. The photo sits on top on phones. */
+.clC{background:var(--color-surface);padding:var(--space-6) var(--space-4)}
+.clC .panel{max-width:1200px;margin:0 auto;background:var(--color-brand-soft);border-radius:var(--radius-lg);overflow:hidden;display:grid}
+.clC figure{margin:0;background:var(--color-surface)}
+.clC img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:50% 30%}
+@media (min-width:640px) and (max-width:1023px){.clC img{aspect-ratio:21/9;object-position:50% 28%}}
+.clC .body{padding:var(--space-6) var(--space-5) var(--space-7)}
+.clC h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);max-width:22ch;text-wrap:balance}
+.clC .lede{margin:0 0 var(--space-6);color:var(--color-ink-2);max-width:56ch}
+.clC ul{list-style:none;margin:0;padding:0;display:grid;gap:0 var(--space-6)}
+.clC li{border-top:1px solid var(--color-steel-300)}
+.clC a{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);min-height:56px;padding:var(--space-3) var(--space-1);color:var(--color-brand);font-weight:600;text-decoration:none}
+.clC a svg{flex:none;width:20px;height:20px;transition:transform var(--dur-fast) var(--ease-out)}
+.clC a:hover span{text-decoration:underline;text-underline-offset:3px}
+.clC a:hover svg{transform:translateX(4px)}
+.clC a:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px;border-radius:var(--radius-sm)}
+.clC .stubs{max-width:1200px;margin:var(--space-7) auto 0;display:grid;gap:var(--space-2)}
+.clC .stub{scroll-margin-top:var(--space-4);padding:var(--space-3) var(--space-4);border:1px dashed var(--color-border);border-radius:var(--radius-sm);font-size:var(--text-sm);color:var(--color-ink-2);background:var(--color-surface-raised)}
+.clC .stub:target{border-color:var(--color-brand);border-style:solid;color:var(--color-ink)}
+@media (min-width:640px){ .clC ul{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (min-width:1024px){
+  .clC{padding:var(--space-9) var(--space-5)}
+  .clC .panel{grid-template-columns:minmax(0,4fr) minmax(0,8fr)}
+  .clC figure{display:flex;flex-direction:column;background:var(--color-surface)}
+  .clC img{flex:1;aspect-ratio:auto;min-height:100%}
+  .clC .body{padding:var(--space-8) var(--space-7)}
+}
+@media (min-width:1200px){
+  .clC .body{padding:var(--space-9) var(--space-8)}
+  .clC .stubs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+<section data-component="contents-list" data-variant="c" class="clC">
+  <div class="panel">
+    <figure>
+      <img src="/puppies/Christa.jpeg" width="1080" height="1080" alt="Christa, a blue girl from the Carlisle litter">
+    </figure>
+    <div class="body">
+      <h2>Which Part of Buying a Puppy Do You Need First?</h2>
+      <p class="lede">Start wherever your question is. Some London buyers want the puppies and prices straight away, others want the delivery and the health tests first, and every part is one tap away.</p>
+      <nav aria-label="On this page" data-contents>
+        <ul>
+          <li><a href="#clC-puppies"><span>The six puppies ready now</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#clC-prices"><span>Prices for a boy or a girl</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#clC-deposit"><span>What the £500 deposit does</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#clC-delivery"><span>Delivery to your London door</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#clC-collect"><span>Collection in Carlisle</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#clC-parents"><span>The parents, Maggie and Jones</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#clC-health"><span>Health tests and screening</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#clC-raised"><span>How the puppies are raised</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#clC-faq"><span>Questions London buyers ask</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#clC-enquire"><span>Ask about a puppy</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <div class="stubs">
+    <div class="stub" id="clC-puppies">The six puppies ready now (page section)</div>
+    <div class="stub" id="clC-prices">Prices for a boy or a girl (page section)</div>
+    <div class="stub" id="clC-deposit">What the £500 deposit does (page section)</div>
+    <div class="stub" id="clC-delivery">Delivery to your London door (page section)</div>
+    <div class="stub" id="clC-collect">Collection in Carlisle (page section)</div>
+    <div class="stub" id="clC-parents">The parents, Maggie and Jones (page section)</div>
+    <div class="stub" id="clC-health">Health tests and screening (page section)</div>
+    <div class="stub" id="clC-raised">How the puppies are raised (page section)</div>
+    <div class="stub" id="clC-faq">Questions London buyers ask (page section)</div>
+    <div class="stub" id="clC-enquire">Ask about a puppy (page section)</div>
+  </div>
+</section>

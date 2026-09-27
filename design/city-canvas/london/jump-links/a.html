@@ -1,0 +1,214 @@
+<style>
+/* Jump links A — Stepper band. Below 1024px a steel band sticks to the top of the page. Its
+   top row is the page as eight numbered stops on one line, every stop in reach without
+   scrolling sideways; the current stop swells brass. Its second row names the section you
+   are in and is itself the key that raises a sheet from the bottom with every section as the
+   question it answers. CSS only: the sheet is the :target of its key, and a jump or Close
+   retargets away from it; the current stop and name follow :target, or a scroll-driven
+   animation where the browser has it. Hidden at 1024px and up. */
+.jlA{background:var(--color-surface);timeline-scope:--jlA-1,--jlA-2,--jlA-3,--jlA-4,--jlA-5,--jlA-6,--jlA-7,--jlA-8}
+.jlA .strip{position:sticky;top:0;z-index:20;background:var(--color-surface-inverse);color:var(--color-text-on-inverse);padding:2px var(--space-2) 6px}
+.jlA .rail ol{list-style:none;margin:0 auto;padding:0;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));max-width:720px}
+.jlA .rail li{position:relative}
+.jlA .rail li::before{content:"";position:absolute;left:0;right:0;top:21px;height:2px;background:var(--color-brand-mid)}
+.jlA .rail li:first-child::before{left:50%}
+.jlA .rail li:last-child::before{right:50%}
+.jlA .rail a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:44px;padding-top:8px;color:var(--color-text-on-inverse);text-decoration:none;border-radius:var(--radius-sm)}
+.jlA .dot{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--color-surface-inverse);border:2px solid var(--color-steel-100);font-size:var(--text-xs);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;transition:transform var(--dur-fast) var(--ease-out)}
+.jlA .rail a:hover .dot{border-color:var(--color-cta-soft)}
+.jlA .lab{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.jlA .strip a:focus-visible{outline:3px solid var(--color-focus-on-inverse);outline-offset:-1px}
+.jlA .all{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);max-width:720px;min-height:44px;margin:4px auto 0;padding:0 var(--space-3);border-radius:var(--radius-sm);background:var(--color-surface-deep);color:var(--color-text-on-inverse);text-decoration:none}
+.jlA .now{display:grid;min-width:0;font-size:var(--text-sm);font-weight:600;line-height:1.2}
+.jlA .now span{grid-area:1/1;visibility:hidden;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jlA .now b{font-family:var(--font-display);color:var(--color-cta-soft);margin-right:4px}
+.jlA .key{flex:none;display:inline-flex;align-items:center;gap:6px;font-size:var(--text-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--color-cta-soft)}
+.jlA .key svg{width:18px;height:18px}
+@media (min-width:600px){
+  .jlA .rail a{padding-bottom:4px}
+  .jlA .lab{position:static;width:auto;height:auto;overflow:visible;clip-path:none;margin-top:4px;font-size:var(--text-xs);font-weight:600;line-height:1.2}
+}
+.jlA .sheet{display:none}
+.jlA .sheet:target{display:block;position:fixed;inset:0;z-index:50}
+.jlA .sheet .panel{position:absolute;left:0;right:0;bottom:0;max-height:88vh;overflow-y:auto;z-index:1;background:var(--color-surface-raised);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:var(--space-3) var(--space-4) var(--space-5);box-shadow:var(--shadow-lift);animation:jlA-up var(--dur-base) var(--ease-out)}
+.jlA .sheet .grab{width:40px;height:4px;margin:0 auto var(--space-3);border-radius:2px;background:var(--color-border)}
+.jlA .sheet .top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-2)}
+.jlA .sheet .t{margin:0;font-family:var(--font-display);font-weight:700;font-size:var(--text-lg);line-height:1.25;color:var(--color-brand)}
+.jlA .close{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 var(--space-3);border-radius:var(--btn-radius);border:1px solid var(--color-border);color:var(--color-brand);font-weight:600;font-size:var(--text-sm);text-decoration:none}
+.jlA .close svg{width:16px;height:16px}
+.jlA .sheet ol{list-style:none;margin:0;padding:0}
+.jlA .sheet li + li{border-top:1px solid var(--color-border)}
+.jlA .sheet li a{display:grid;grid-template-columns:36px minmax(0,1fr);gap:var(--space-2);align-items:baseline;min-height:52px;padding:var(--space-3) var(--space-1);color:var(--color-ink);font-weight:600;line-height:1.35;text-decoration:none}
+.jlA .sheet .n{font-family:var(--font-display);font-weight:700;color:var(--color-brand)}
+.jlA .sheet li a:hover{background:var(--color-brand-soft)}
+.jlA .sheet a:focus-visible{outline:3px solid var(--color-focus);outline-offset:-3px}
+@media (min-width:600px){.jlA .sheet .panel{left:50%;right:auto;width:560px;margin-left:-280px}}
+@keyframes jlA-up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+.jlA .stub{padding:var(--space-7) var(--space-4) var(--space-6);border-bottom:1px solid var(--color-border);scroll-margin-top:calc(116px + var(--space-3))}
+.jlA .stub h2{font-size:var(--text-xl);line-height:var(--text-xl--line-height);margin:0 0 var(--space-3);max-width:24ch;text-wrap:balance}
+.jlA .stub p{margin:0 0 var(--space-3);max-width:62ch}
+.jlA .stub .fill{color:var(--color-ink-2);font-size:var(--text-sm)}
+.jlA .shut{position:fixed;top:0;left:0;width:1px;height:1px;pointer-events:none}
+.jlA .note{display:none}
+.jlA .scrim{position:fixed;inset:0;background:color-mix(in srgb,var(--color-steel-900) 55%,transparent);z-index:0}
+@media (min-width:1024px){
+  .jlA .jl-only{display:none!important}
+  .jlA .note{display:block;max-width:1200px;margin:var(--space-5) auto 0;padding:var(--space-3) var(--space-4);background:var(--color-brand-soft);border-radius:var(--radius-sm);font-size:var(--text-sm);color:var(--color-ink)}
+  .jlA .stub{max-width:1200px;margin:0 auto;padding-left:var(--space-5);padding-right:var(--space-5)}
+}
+@supports not (animation-timeline: view()){.jlA:not(:has(.stub:target)) .rail li:first-child .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:not(:has(.stub:target)) .now span:first-child{visibility:visible}
+.jlA:has(#jlA-puppies:target) .rail a[href="#jlA-puppies"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-puppies:target) .now [data-for="puppies"]{visibility:visible}
+.jlA:has(#jlA-prices:target) .rail a[href="#jlA-prices"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-prices:target) .now [data-for="prices"]{visibility:visible}
+.jlA:has(#jlA-deposit:target) .rail a[href="#jlA-deposit"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-deposit:target) .now [data-for="deposit"]{visibility:visible}
+.jlA:has(#jlA-delivery:target) .rail a[href="#jlA-delivery"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-delivery:target) .now [data-for="delivery"]{visibility:visible}
+.jlA:has(#jlA-health:target) .rail a[href="#jlA-health"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-health:target) .now [data-for="health"]{visibility:visible}
+.jlA:has(#jlA-raising:target) .rail a[href="#jlA-raising"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-raising:target) .now [data-for="raising"]{visibility:visible}
+.jlA:has(#jlA-faq:target) .rail a[href="#jlA-faq"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-faq:target) .now [data-for="faq"]{visibility:visible}
+.jlA:has(#jlA-enquire:target) .rail a[href="#jlA-enquire"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-enquire:target) .now [data-for="enquire"]{visibility:visible}}
+@media (prefers-reduced-motion:reduce){.jlA:not(:has(.stub:target)) .rail li:first-child .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:not(:has(.stub:target)) .now span:first-child{visibility:visible}
+.jlA:has(#jlA-puppies:target) .rail a[href="#jlA-puppies"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-puppies:target) .now [data-for="puppies"]{visibility:visible}
+.jlA:has(#jlA-prices:target) .rail a[href="#jlA-prices"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-prices:target) .now [data-for="prices"]{visibility:visible}
+.jlA:has(#jlA-deposit:target) .rail a[href="#jlA-deposit"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-deposit:target) .now [data-for="deposit"]{visibility:visible}
+.jlA:has(#jlA-delivery:target) .rail a[href="#jlA-delivery"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-delivery:target) .now [data-for="delivery"]{visibility:visible}
+.jlA:has(#jlA-health:target) .rail a[href="#jlA-health"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-health:target) .now [data-for="health"]{visibility:visible}
+.jlA:has(#jlA-raising:target) .rail a[href="#jlA-raising"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-raising:target) .now [data-for="raising"]{visibility:visible}
+.jlA:has(#jlA-faq:target) .rail a[href="#jlA-faq"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-faq:target) .now [data-for="faq"]{visibility:visible}
+.jlA:has(#jlA-enquire:target) .rail a[href="#jlA-enquire"] .dot{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}
+.jlA:has(#jlA-enquire:target) .now [data-for="enquire"]{visibility:visible}}
+@keyframes jlA-dot{from,to{background:var(--color-cta);border-color:var(--color-cta);color:var(--color-cta-ink);transform:scale(1.2)}}
+@keyframes jlA-show{from,to{visibility:visible}}
+@supports (animation-timeline: view()){@media (prefers-reduced-motion:no-preference){
+.jlA #jlA-puppies{view-timeline-name:--jlA-1}
+.jlA #jlA-prices{view-timeline-name:--jlA-2}
+.jlA #jlA-deposit{view-timeline-name:--jlA-3}
+.jlA #jlA-delivery{view-timeline-name:--jlA-4}
+.jlA #jlA-health{view-timeline-name:--jlA-5}
+.jlA #jlA-raising{view-timeline-name:--jlA-6}
+.jlA #jlA-faq{view-timeline-name:--jlA-7}
+.jlA #jlA-enquire{view-timeline-name:--jlA-8}
+.jlA .rail a[href="#jlA-puppies"] .dot{animation:jlA-dot linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-1;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .rail a[href="#jlA-prices"] .dot{animation:jlA-dot linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-2;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .rail a[href="#jlA-deposit"] .dot{animation:jlA-dot linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-3;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .rail a[href="#jlA-delivery"] .dot{animation:jlA-dot linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-4;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .rail a[href="#jlA-health"] .dot{animation:jlA-dot linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-5;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .rail a[href="#jlA-raising"] .dot{animation:jlA-dot linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-6;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .rail a[href="#jlA-faq"] .dot{animation:jlA-dot linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-7;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .rail a[href="#jlA-enquire"] .dot{animation:jlA-dot linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-8;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .now [data-for="puppies"]{animation:jlA-show linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-1;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .now [data-for="prices"]{animation:jlA-show linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-2;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .now [data-for="deposit"]{animation:jlA-show linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-3;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .now [data-for="delivery"]{animation:jlA-show linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-4;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .now [data-for="health"]{animation:jlA-show linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-5;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .now [data-for="raising"]{animation:jlA-show linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-6;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .now [data-for="faq"]{animation:jlA-show linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-7;animation-range:cover 50vh cover calc(100% - 50vh)}
+.jlA .now [data-for="enquire"]{animation:jlA-show linear both;animation-duration:auto;animation-fill-mode:none;animation-timeline:--jlA-8;animation-range:cover 50vh cover calc(100% - 50vh)}
+}}
+</style>
+<section data-component="jump-links" data-variant="a" class="jlA">
+  <span class="shut" id="jlA-shut"></span>
+  <div class="strip jl-only" data-jump-strip>
+    <nav class="rail" aria-label="Jump to a section">
+      <ol>
+        <li><a href="#jlA-puppies"><span class="dot" aria-hidden="true">1</span><span class="lab">Puppies</span></a></li>
+        <li><a href="#jlA-prices"><span class="dot" aria-hidden="true">2</span><span class="lab">Prices</span></a></li>
+        <li><a href="#jlA-deposit"><span class="dot" aria-hidden="true">3</span><span class="lab">Deposit</span></a></li>
+        <li><a href="#jlA-delivery"><span class="dot" aria-hidden="true">4</span><span class="lab">Delivery</span></a></li>
+        <li><a href="#jlA-health"><span class="dot" aria-hidden="true">5</span><span class="lab">Health</span></a></li>
+        <li><a href="#jlA-raising"><span class="dot" aria-hidden="true">6</span><span class="lab">Raising</span></a></li>
+        <li><a href="#jlA-faq"><span class="dot" aria-hidden="true">7</span><span class="lab">Questions</span></a></li>
+        <li><a href="#jlA-enquire"><span class="dot" aria-hidden="true">8</span><span class="lab">Enquire</span></a></li>
+      </ol>
+    </nav>
+    <a class="all" href="#jlA-sheet" data-jump-open aria-label="See all 8 sections">
+      <span class="now" aria-hidden="true">
+        <span data-for="puppies"><b>01</b> The six puppies ready now</span>
+        <span data-for="prices"><b>02</b> Prices for a boy or a girl</span>
+        <span data-for="deposit"><b>03</b> What the £500 deposit does</span>
+        <span data-for="delivery"><b>04</b> Delivery to your London door</span>
+        <span data-for="health"><b>05</b> The parents' health tests</span>
+        <span data-for="raising"><b>06</b> How the puppies are raised</span>
+        <span data-for="faq"><b>07</b> Questions London buyers ask</span>
+        <span data-for="enquire"><b>08</b> Ask about a puppy</span>
+      </span>
+      <span class="key" aria-hidden="true">All 8<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></span>
+    </a>
+  </div>
+  <div class="sheet jl-only" id="jlA-sheet" data-jump-sheet>
+    <a class="scrim" href="#jlA-shut" tabindex="-1" aria-hidden="true"></a>
+    <nav class="panel" aria-labelledby="jlA-st">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="top">
+        <p class="t" id="jlA-st">Every section on this page</p>
+        <a class="close" href="#jlA-shut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>Close</a>
+      </div>
+      <ol>
+          <li><a href="#jlA-puppies"><span class="n">01</span><span>Which Puppies Are Ready for a London Home Now?</span></a></li>
+          <li><a href="#jlA-prices"><span class="n">02</span><span>How Much Does a Blue Staffy Puppy Cost?</span></a></li>
+          <li><a href="#jlA-deposit"><span class="n">03</span><span>What Does the £500 Deposit Do?</span></a></li>
+          <li><a href="#jlA-delivery"><span class="n">04</span><span>How Does a Puppy Reach a London Home?</span></a></li>
+          <li><a href="#jlA-health"><span class="n">05</span><span>Which Health Tests Do the Parents Have?</span></a></li>
+          <li><a href="#jlA-raising"><span class="n">06</span><span>How Are the Puppies Raised Before They Travel?</span></a></li>
+          <li><a href="#jlA-faq"><span class="n">07</span><span>What Do London Buyers Ask Before They Reserve?</span></a></li>
+          <li><a href="#jlA-enquire"><span class="n">08</span><span>How Do You Ask About a Puppy From London?</span></a></li>
+      </ol>
+    </nav>
+  </div>
+  <p class="note">At 1024px and wider the desktop dial navigates, so the jump links and their sheet are hidden and this frame shows only the London page sections.</p>
+    <section class="stub" id="jlA-puppies" style="min-height:calc(1.2 * 45vh)">
+      <h2>Which Puppies Are Ready for a London Home Now?</h2>
+      <p>Six puppies are ready now: three boys, Roman, Byrd and Ince, and three girls, Vennie, Christa and Cheryl, all raised in our home in Carlisle.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" id="jlA-prices" style="min-height:calc(0.8 * 45vh)">
+      <h2>How Much Does a Blue Staffy Puppy Cost?</h2>
+      <p>A boy is £1,500 and a girl is £1,700, and the price of the puppy is the same whether you live in London or collect in Carlisle.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" id="jlA-deposit" style="min-height:calc(0.7 * 45vh)">
+      <h2>What Does the £500 Deposit Do?</h2>
+      <p>The £500 deposit books your viewing and reserves your puppy, so nobody else can take your pick while you plan the day.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" id="jlA-delivery" style="min-height:calc(1.0 * 45vh)">
+      <h2>How Does a Puppy Reach a London Home?</h2>
+      <p>We deliver to your London door by DEFRA-approved transport for £200 to £350, priced by distance, or you can collect your puppy in Carlisle.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" id="jlA-health" style="min-height:calc(1.3 * 45vh)">
+      <h2>Which Health Tests Do the Parents Have?</h2>
+      <p>Maggie, the dam, and Jones, the sire, are KC registered, DNA-tested for <span style='white-space:nowrap'>L-2-HGA</span> and <span style='white-space:nowrap'>HC-HSF4</span> and screened for eyes and elbows, and you may speak to our vet.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" id="jlA-raising" style="min-height:calc(0.9 * 45vh)">
+      <h2>How Are the Puppies Raised Before They Travel?</h2>
+      <p>Every puppy is raised in the home with Puppy Culture and early neurological stimulation, the everyday sounds and handling of a family house before the trip to London.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" id="jlA-faq" style="min-height:calc(1.1 * 45vh)">
+      <h2>What Do London Buyers Ask Before They Reserve?</h2>
+      <p>Most London buyers ask about delivery, the deposit and the health tests first, and the questions in this part of the page answer each one in plain words.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" id="jlA-enquire" style="min-height:calc(0.8 * 45vh)">
+      <h2>How Do You Ask About a Puppy From London?</h2>
+      <p>Send Lisa Bright a message with the puppy you like and your London postcode, and she can price the delivery and offer you a viewing time.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way a full London page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+</section>

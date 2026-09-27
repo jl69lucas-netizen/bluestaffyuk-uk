@@ -80,3 +80,48 @@ and c); trust c now shows the site's own photo of Maggie with her puppies
 | trust-strip | a | Route line, unchanged. | Parent names. | "The parents, Maggie and Jones". | 375 · 1024 · 1280 |
 | trust-strip | b | Seal band, unchanged. | The kicker mixed two typefaces. | Kicker is one typeface (body), emphasis by weight only. | 375 · 1024 · 1280 |
 | trust-strip | c | Photo ledger, unchanged direction. | The owner photo was soft and floated mid-card; parent names. | Photo is Maggie with her puppies at its own 780×585 ratio in a 390px column (sharp at 2x), top-aligned with the heading and captioned. Open: at 1024 the ledger is taller than the photo, leaving space under the caption; stretching the photo to fill it would upscale and soften it, so the space stays. | 375 · 1024 · 1280 |
+
+## Task 6: contents list, desktop dial, jump links (2026-09-27)
+
+**How the passes ran.** `frontend-design:frontend-design` was invoked with the Skill tool on the
+brief in the plan's Task 6 Step 3, after every capture and idea sheet the three ideas-index
+sections cite was opened with the Read tool, and the shipped `PageNav`, `PageDial`,
+`SectionStrip` and `SectionSheet` were read. It set three directions per component. Every
+must-differ row for these three components is `media: none`, `framing: plain`, so each
+variant was built to differ on its layout **and** on framing (and, where the layout could be
+read as a list, on media too), so that no honest re-reading of a layout brings it within one
+axis of a row. `impeccable:impeccable` was then invoked with the Skill tool (brand register;
+no `PRODUCT.md`, so the brand context came from the design-context files, as in Task 5): the
+detector (`npx impeccable --json` on the nine fragments) and a design review of the shots at
+375 / 768 / 1024 / 1280, plus viewport shots taken scrolled, with the sheet open and after a
+jump from the sheet (`<component>-<v>-<width>-{top,scrolled,sheet,jumped}.png`). Detector
+results: `cramped-padding` rows on every fragment are the known false-positive class (padding
+on inner wrappers, hairline rows); `side-tab` on contents A is its full-width masthead rule.
+
+**Interaction, all CSS.** The dials and the strips mark the current section with `:target`
+(first section by default), and with a scroll-driven animation (`view-timeline` per section,
+`timeline-scope` on the root, `animation-range: cover 50vh cover calc(100% - 50vh)`) where the
+browser supports it and motion is not reduced. Each sheet is the `:target` of its opener; a
+jump, the Close link or a tap on the scrim retargets to a fixed, zero-size anchor, so the sheet
+closes without the page moving. Measured after a jump from the sheet at 375 and 768: the sheet
+is closed and the target lands 12–28px below the strip on all three.
+
+| Component | Variant | frontend-design direction | impeccable findings | Fixed | Widths |
+|---|---|---|---|---|---|
+| contents-list | a | **Ruled index.** A numbered index under a question heading and a steel masthead rule: display numeral, bold name and a one-line summary, hairline rows, two columns from 768px (from the numbered 'on this page' column and the hairline index sheet). | On phones the ten two-line rows ran about 950px under the hero; detector `side-tab` is the masthead rule. | Phone rows tightened (40px numeral column, 56px minimum rows). | 375 · 768 · 1024 · 1280 |
+| contents-list | b | **Three stages.** The sections sorted by what the buyer is doing (Choose / Pay and book / Bring home) as three ruled link columns on a full-width steel band, bone text, brass stage numerals. | Clean at every width; stage labels are pale brass on steel (AA). | None needed. | 375 · 768 · 1024 · 1280 |
+| contents-list | c | **Photo index.** A sunk steel-100 panel (no shadow) with a puppy photo at its left and the sections as generous arrow rows in two columns. | The first photo was the soft newborn litter shot with black pups (the photo Task 5's review rejected); at 768 the 4:3 photo on top ran 540px; at 1024 the two link columns wrapped every label. | Photo is Christa (1080px, sharp); 21:9 crop from 640 to 1023, 16:10 on phones; at 1024 the photo column is 4/12 so labels hold one line. | 375 · 768 · 1024 · 1280 |
+| desktop-dial | a | **Page map.** A full-height steel band down the left edge draws the page as blocks, each as tall as its section, with faint text lines; the current block fills brass and a window frame slides down the map with the scroll. | Empty blocks read as broken buttons; the window was a fixed 64px, not the share of the page a screen shows. | Blocks carry faint text lines so the map reads as a page thumbnail; window is 18% of the map. | 375 (hidden) · 768 (hidden) · 1024 · 1280 |
+| desktop-dial | b | **Clock face.** A raised card with the eight sections as line-icon stops round a ring, Roman's photo in the middle, and a readout naming the current stop; pointing at or tabbing to a stop names that one. | Icons alone do not name a section, so the readout and the hover/focus naming carry it, plus hidden link text for screen readers. | Readout default is section one; hover/focus overrides the scroll marker without a second name showing. | 375 (hidden) · 768 (hidden) · 1024 · 1280 |
+| desktop-dial | c | **Photo marker.** A sunk steel-100 panel in the left margin: Cheryl's photo at its head, then the sections as plain labels along a thin track. | The current label was marked with a 4px left border, impeccable's side-stripe ban. | Rebuilt as stops on the track: every row has a small steel stop, the current one swells to a 14px steel stop with a raised row and bold type. | 375 (hidden) · 768 (hidden) · 1024 · 1280 |
+| jump-links | a | **Stepper band.** A sticky steel band: eight numbered stops on one line (names under them from 600px), the current stop brass; a second row names the current section and is itself the key that raises the bottom sheet of section questions. | The first build scrolled the stops sideways, so after scrolling to Health the current stop was off screen with nothing marked. | All eight stops fit the width at 375 (44px each), no sideways scroll; the named row makes the place explicit. | 375 · 768 · 1024 (hidden) · 1280 (hidden) |
+| jump-links | b | **Drop panel.** A sticky raised card: Maggie's photo, a wide "Jump to a section" control and a brass Enquire pill; the control drops a grid of icon tiles straight down from the card. | The strip showed no current section. | The control's small line now reads "Now 5 of 8 · Health", following the scroll. | 375 · 768 · 1024 (hidden) · 1280 (hidden) |
+| jump-links | c | **Photo pager** (was "Photo tiles"). A sticky sunk steel-100 tray showing only the section you are in: its photo, "n of 8" and its name, with a step back and a step on; the All key slides in a side sheet. | The first build (a sideways row of eight photo tiles) hid the current tile off screen, as jump A did; the current name was cut with an ellipsis at 375. | Rebuilt as the pager (the steps work by `:target` alone); names wrap to two lines inside a 56px row; meta name, layout slug and description updated. | 375 · 768 · 1024 (hidden) · 1280 (hidden) |
+
+Copy checks common to all nine: every heading is a Title Case buyer question with a 12+ word
+answering paragraph; the deposit "books your viewing and reserves your puppy"; the parents are
+Maggie, the dam, and Jones, the sire; DNA tests L-2-HGA and HC-HSF4 (held on one line), eyes
+and elbows screened, the buyer may speak to our vet; Puppy Culture and ENS; delivery £200 to
+£350 by DEFRA-approved transport, priced by distance, or collection in Carlisle; no licence,
+travel time, distance, score or invented claim; no em dashes in visible copy. Stub sections are
+labelled as stand-ins.

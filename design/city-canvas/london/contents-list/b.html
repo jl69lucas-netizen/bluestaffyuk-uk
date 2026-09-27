@@ -1,0 +1,84 @@
+<style>
+/* Contents B — Three stages. The contents list printed on a full-width steel band and
+   sorted by what the buyer is doing: choosing a puppy, paying and booking, bringing the
+   puppy home. Three ruled columns from 768px, stacked on phones; tight rows. */
+.clB{background:var(--color-surface-inverse);color:var(--color-text-on-inverse)}
+.clB .in{max-width:1200px;margin:0 auto;padding:var(--space-6) var(--space-4)}
+.clB h2{color:var(--color-text-on-inverse);font-size:var(--text-xl);line-height:var(--text-xl--line-height);margin:0 0 var(--space-2);text-wrap:balance}
+.clB .lede{margin:0 0 var(--space-5);max-width:62ch;font-size:var(--text-sm);line-height:var(--text-sm--line-height)}
+.clB .groups{display:grid;gap:var(--space-5)}
+.clB .stage{margin:0 0 var(--space-1);display:flex;align-items:baseline;gap:var(--space-2);font-size:var(--text-xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-cta-soft)}
+.clB .stage b{font-family:var(--font-display);font-size:var(--text-lg);letter-spacing:0;color:var(--color-cta)}
+.clB ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--color-brand-mid)}
+.clB li{border-bottom:1px solid var(--color-brand-mid)}
+.clB a{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);min-height:44px;padding:var(--space-1) 0;color:var(--color-text-on-inverse);text-decoration:none;font-weight:600;font-size:var(--text-sm)}
+.clB a svg{flex:none;width:16px;height:16px;color:var(--color-cta-soft);transition:transform var(--dur-fast) var(--ease-out)}
+.clB a:hover{color:var(--color-cta-soft)}
+.clB a:hover svg{transform:translateX(3px)}
+.clB a:focus-visible{outline:3px solid var(--color-focus-on-inverse);outline-offset:2px;border-radius:var(--radius-sm)}
+.clB .stubs{background:var(--color-surface);color:var(--color-ink-2)}
+.clB .stubs .in{display:grid;gap:var(--space-2);padding-top:var(--space-5);padding-bottom:var(--space-5)}
+.clB .stub{scroll-margin-top:var(--space-4);padding:var(--space-3) var(--space-4);border:1px dashed var(--color-border);border-radius:var(--radius-sm);font-size:var(--text-sm);background:var(--color-surface-raised)}
+.clB .stub:target{border-color:var(--color-brand);border-style:solid;color:var(--color-ink)}
+@media (min-width:768px){
+  .clB .in{padding:var(--space-7) var(--space-5)}
+  .clB .top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-6);align-items:end;margin-bottom:var(--space-5)}
+  .clB .lede{margin:0}
+  .clB .groups{grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+  .clB .grp{padding:0 var(--space-5);border-left:1px solid var(--color-brand-mid)}
+  .clB .grp:first-child{padding-left:0;border-left:0}
+  .clB .grp:last-child{padding-right:0}
+  .clB .stubs .in{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+<section data-component="contents-list" data-variant="b" class="clB">
+  <div class="in">
+    <div class="top">
+      <h2>Where Is Everything a London Buyer Needs?</h2>
+      <p class="lede">The page runs in three stages, the same three you will go through yourself: choose your puppy, pay the deposit and book, then bring your puppy home to London.</p>
+    </div>
+    <nav aria-label="On this page" data-contents>
+      <div class="groups">
+        <div class="grp">
+          <p class="stage" id="clB-g1"><b>1</b> Choose</p>
+          <ul aria-labelledby="clB-g1">
+            <li><a href="#clB-puppies">The six puppies ready now<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><a href="#clB-parents">The parents, Maggie and Jones<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><a href="#clB-health">Health tests and screening<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><a href="#clB-raised">How the puppies are raised<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          </ul>
+        </div>
+        <div class="grp">
+          <p class="stage" id="clB-g2"><b>2</b> Pay and book</p>
+          <ul aria-labelledby="clB-g2">
+            <li><a href="#clB-prices">£1,500 a boy, £1,700 a girl<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><a href="#clB-deposit">What the £500 deposit does<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><a href="#clB-enquire">Ask about a puppy<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          </ul>
+        </div>
+        <div class="grp">
+          <p class="stage" id="clB-g3"><b>3</b> Bring home</p>
+          <ul aria-labelledby="clB-g3">
+            <li><a href="#clB-delivery">Delivery to your London door<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><a href="#clB-collect">Collection in Carlisle<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><a href="#clB-faq">Questions London buyers ask<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="stubs">
+    <div class="in">
+      <div class="stub" id="clB-puppies">The six puppies ready now (page section)</div>
+      <div class="stub" id="clB-parents">The parents, Maggie and Jones (page section)</div>
+      <div class="stub" id="clB-health">Health tests and screening (page section)</div>
+      <div class="stub" id="clB-raised">How the puppies are raised (page section)</div>
+      <div class="stub" id="clB-prices">Prices for a boy or a girl (page section)</div>
+      <div class="stub" id="clB-deposit">What the £500 deposit does (page section)</div>
+      <div class="stub" id="clB-enquire">Ask about a puppy (page section)</div>
+      <div class="stub" id="clB-delivery">Delivery to your London door (page section)</div>
+      <div class="stub" id="clB-collect">Collection in Carlisle (page section)</div>
+      <div class="stub" id="clB-faq">Questions London buyers ask (page section)</div>
+    </div>
+  </div>
+</section>

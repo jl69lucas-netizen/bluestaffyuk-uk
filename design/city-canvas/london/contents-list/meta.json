@@ -1,0 +1,26 @@
+{
+ "component": "contents-list",
+ "variants": {
+  "a": {
+   "name": "Ruled index",
+   "description": "Ten sections as a numbered index under a question heading: display numeral, name and a one-line summary, hairline rows, two columns from 768px.",
+   "idea_sources": ["/Users/apple/Downloads/BSUK-refs/london/contents-list/sister-comparison-1280-01.png", "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/component-idea44.png"],
+   "differs_from": "A headed, numbered index of ruled rows with a summary line each; the shipped PageNav is an unheaded wrapping row of pills with names only.",
+   "axes": {"layout": "ruled-index", "media": "none", "density": "regular", "framing": "rule"}
+  },
+  "b": {
+   "name": "Three stages",
+   "description": "The sections sorted into Choose, Pay and book, and Bring home, as three ruled link columns on a full-width steel band.",
+   "idea_sources": ["/Users/apple/Downloads/BSUK-refs/london/contents-list/sister-near-me-1280-01.png", "/Users/apple/Downloads/BSUK-refs/london/contents-list/sister-near-me-375-01.png"],
+   "differs_from": "Grouped by buying stage into three ruled columns on a steel band; the shipped PageNav is one ungrouped row of pills on the page surface.",
+   "axes": {"layout": "stage-columns", "media": "none", "density": "compact", "framing": "band"}
+  },
+  "c": {
+   "name": "Photo index",
+   "description": "A sunk steel-100 panel with a litter photo at the left and the sections as generous arrow rows in two columns beside it.",
+   "idea_sources": ["/Users/apple/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/component-idea44.png", "/Users/apple/Downloads/BSUK-refs/london/contents-list/sister-near-me-375-01.png"],
+   "differs_from": "A photo beside the list inside a sunk panel, with a question heading and arrow rows; the shipped PageNav carries no image, no heading and no panel.",
+   "axes": {"layout": "photo-index", "media": "left", "density": "airy", "framing": "inset"}
+  }
+ }
+}
