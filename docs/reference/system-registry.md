@@ -154,7 +154,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 90
+## Scripts — 91
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -188,6 +188,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/build_spec_artifact.py`
 - `scripts/build_system_registry.py`
 - `scripts/city_components.py`
+- `scripts/city_must_differ.py`
 - `scripts/competitor_registry_check.py`
 - `scripts/design_system_publish_manifest.py`
 - `scripts/dup_content_audit.py`
@@ -311,6 +312,7 @@ and exits non-zero on a problem.
 | `scripts/marker_check.py` | no source-repo marker survives anywhere in the scanned roots |
 | `scripts/placeholder_check.py` | counts launch placeholders; fails only under `BSUK_RELEASE=1` |
 | `scripts/board_gate.py` | every rebuilt page's board is approved as it stands and its Asset Gate holds (`--all`) |
+| `scripts/city_must_differ.py` | the city must-differ inventory matches boardStyles.ts and the built pages' picks (`--check`) |
 | `scripts/retired_facts_check.py` | no retired figure, retired wording or former-city claim on a built page, in rendered data or in src/ (Known Issue 65 allowlist only shrinks) |
 | `scripts/final_page_audit.py` | headings, six levels, the H5/H6 minimums |
 | `scripts/schema_check.py` | structured data on every built page |
