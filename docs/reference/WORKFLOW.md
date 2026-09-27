@@ -869,7 +869,7 @@ full `ls data/`.
 | `data/quality/rule-index.json` | Manual | `scripts/quality_report.py` | New or retired rule |
 | `data/quality/evidence-budgets.json` | Manual | `scripts/evidence_audit.py` | Budget changes |
 | `data/quality/evidence-ledger.json` | evidence-pass | `scripts/evidence_audit.py` | Per claim — one row today, `parents-dna-clear` at proof NOT FETCHED (Known Issue 68) |
-| `data/quality/rework-ledger.json` | learning-loop (appended by hand; the source repo's writer was not ported) | `scripts/quality_report.py` | Per rework window — empty today |
+| `data/quality/rework-ledger.json` | learning-loop (appended by hand; the source repo's writer was not ported) | `scripts/quality_report.py` | Per rework window — two windows since 2026-09-27 (brief-parity, london-components) |
 | `data/boards/` | the page-type builder (the record, `schemas/board.schema.json`), `scripts/board_approve.py` (the approval) | `scripts/build_page_board.py` (renders the board Artifact), `scripts/board_gate.py` | Per page board |
 
 ---

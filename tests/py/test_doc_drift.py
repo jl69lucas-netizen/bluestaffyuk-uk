@@ -78,11 +78,23 @@ def _entries(doc):
     raise AssertionError(f"no known record list in {sorted(doc)}")
 
 
+#: A row that counts its records ("two windows since …") must count them right. The rework
+#: ledger was the only row "empty today" until the 2026-09-27 learning loop appended two windows,
+#: so the guard now reads both kinds and refuses only when it reads neither.
+LEDGER_COUNTED = re.compile(r"^\| `(data/quality/[\w-]+\.json)` \|.*\b(one|two|three|four|five|six|"
+                            r"seven|eight|nine|ten) (?:windows|claims|entries|rows)\b", re.M)
+NUMBER = {w: i for i, w in enumerate("one two three four five six seven eight nine ten".split(), 1)}
+
+
 def test_a_ledger_workflow_calls_empty_is_empty():
     rows = LEDGER_ROW.findall(WORKFLOW)
-    assert rows, "WORKFLOW.md has no ledger rows marked empty — the guard would read nothing"
+    counted = LEDGER_COUNTED.findall(WORKFLOW)
+    assert rows or counted, "WORKFLOW.md describes no ledger's size — the guard would read nothing"
     full = [p for p in rows if _entries(json.loads((ROOT / p).read_text(encoding="utf-8")))]
     assert full == [], f"WORKFLOW.md calls these ledgers empty, and they are not: {full}"
+    wrong = [(p, n) for p, n in counted
+             if len(_entries(json.loads((ROOT / p).read_text(encoding="utf-8")))) != NUMBER[n]]
+    assert wrong == [], f"WORKFLOW.md miscounts these ledgers: {wrong}"
 
 
 # 4 ─────────────────────────────────────────────────────────────────────────────────────
