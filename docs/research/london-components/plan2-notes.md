@@ -144,3 +144,22 @@ own puppy alt does not breach the rule.
   preselect its puppy option, or style the strip as plainly non-interactive.
 - Contact a's fill-in-the-sentence layout collapses to label-above-field rows below about 480px.
   Keep the sentence and field on one line as far down as it fits.
+
+## Framing honesty stays a review check (from the Task 13b review)
+
+A full paint-to-framing mapping (shadow → card, sunk and narrower → inset, full width → band, a
+top rule of 3px or more → rule, else plain) was tried on the 45 frames. It mismatched 16, mostly
+because of harness limits rather than dishonest labels:
+- The nav frames are 2,900–3,200px tall with canvas-only stubs, so the size thresholds never reach
+  the real component.
+- The mapping has no `bleed`.
+- 1px or per-row rules read as `plain`.
+
+It was not committed. The committed probe keeps its two sound checks: an outer shadow must be
+declared `card`, and media presence and side must match. Framing beyond that stays with the spec
+reviewer, who compares each frame with its declared axes.
+
+The one user pick among the 16 is desktop-dial C (declared `inset`, derived `plain` through the
+tall stub). The Task 6 reviewer checked it by eye and found it truly sunk (brand-soft, no shadow).
+When Plan 2 builds the real components, measure framing on the component itself, not the canvas
+frame.
