@@ -1175,7 +1175,12 @@ numbers.
     page. The strategy's first comparison is the blue or black Staffy page; its slug, and whether a
     hub comes first, are the plan's.
 
-63. **Pageboard freshness does not see a city page's sources (project 5).** `freshness_inputs()` in
+63. **CLOSED (the brief-parity build, Task 24) — `freshness_inputs()` in `scripts/pageboard.py`
+    now counts every `[...]` route file in a nested page's parent directory, so an edit to
+    `src/pages/uk-locations/[slug].astro` makes a city page's built file read as stale; the page
+    intake (`scripts/page_intake.py`, block 0 of the board) reports that freshness, and
+    `tests/py/test_page_intake.py` holds both.** Was: **Pageboard freshness does not see a city
+    page's sources (project 5).** `freshness_inputs()` in
     `scripts/pageboard.py` measures a page against `src/pages/<slug>/`, its record, the shared shell
     and top-level `data/*.json`. A city page's markup comes from `src/pages/uk-locations/[slug].astro`,
     which is not `src/pages/<slug>`, so an edit there does not make its built page read as stale

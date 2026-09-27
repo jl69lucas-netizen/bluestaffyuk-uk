@@ -1665,6 +1665,19 @@ def freshness_inputs(root, slug=None):
             yield base
         elif base.is_dir():
             yield from (f for f in base.rglob("*") if f.is_file())
+    # Known Issue 63: a page whose route sits under a parent (a city page is built at
+    # uk-locations/<slug>) is rendered by the parent's dynamic route file, never by a
+    # src/pages/<slug>/ of its own. Every `[...]` file in the parent directory is one of its
+    # sources; the parent's own index.astro renders the hub, not this page.
+    try:
+        _, route = _resolve_page(slug, root)
+    except ValueError:
+        route = slug
+    if "/" in route:
+        parent = root / "src" / "pages" / route.rsplit("/", 1)[0]
+        if parent.is_dir():
+            yield from (f for f in sorted(parent.iterdir())
+                        if f.is_file() and f.name.startswith("["))
     for rel in FRESHNESS_SHARED:
         base = root / rel
         if base.exists():
