@@ -129,9 +129,10 @@ def test_check_passes_after_write_and_fails_after_a_hand_edit(tmp_path):
     assert r.returncode == 1 and "gap-matrix-2026-09-24.md" in r.stdout
 
 
-def test_check_with_nothing_written_passes(tmp_path):
+def test_check_with_no_reports_refuses(tmp_path):
+    """tests/py/test_gates_refuse_nothing.py: zero reports is a lost input, not a pass."""
     r = run("--check", "--root", str(tmp_path))
-    assert r.returncode == 0 and "nothing to check" in r.stdout
+    assert r.returncode == 1 and "examined 0 reports" in r.stdout and "not a pass" in r.stdout
 
 
 def test_check_with_reports_but_no_matrix_fails(tmp_path):

@@ -6,8 +6,8 @@
       cannot be written (its path is a directory, or no permission)
   python3 scripts/gap_matrix.py --check [--root DIR]
       validates every report, then rebuilds the newest gap-matrix-YYYY-MM-DD.md and compares
-      (older matrices and any other gap-matrix-* name are ignored) · exit 0 same, or nothing
-      written and no reports · 1 differs, or reports exist with no matrix
+      (older matrices and any other gap-matrix-* name are ignored) · exit 0 same · 1 differs,
+      reports exist with no matrix, or no report at all (examined 0 reports, not a pass)
   Every mode: 2 bad usage or an impossible --date · 6 bad input: a report is unreadable,
       breaks schemas/competitor-report.schema.json, or names a city that is not a `city` in
       data/locations.json; data/competitors.json is unreadable or not
@@ -317,13 +317,15 @@ def main(argv=None):
             return EXIT_OK
         reports = load_reports(root)
         _print_hints(reports)
+        if not (reports[0] or reports[1]):
+            # tests/py/test_gates_refuse_nothing.py: the intel reports exist since the competitor
+            # bridge build, so none at all is a lost input, whatever matrix sits beside it.
+            print(f"gaps: examined 0 reports in {REPORTS} — not a pass")
+            return EXIT_FAIL
         latest = _latest(root)
         if latest is None:
-            if reports[0] or reports[1]:
-                print("gaps: intel reports exist but no gap matrix — run gap_matrix.py --write")
-                return EXIT_FAIL
-            print("gaps: no reports and no gap matrix yet — nothing to check")
-            return EXIT_OK
+            print("gaps: intel reports exist but no gap matrix — run gap_matrix.py --write")
+            return EXIT_FAIL
         date = MATRIX_NAME.fullmatch(latest.name).group(1)
         try:
             found = latest.read_text(encoding="utf-8")

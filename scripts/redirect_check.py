@@ -249,7 +249,7 @@ def main(root=ROOT, dist=None):
     root = pathlib.Path(root)
     dist = pathlib.Path(dist) if dist else root / "dist"
     if not (dist / "index.html").is_file():
-        print("FAIL dist missing or unbuilt (run npm run build)")
+        print("FAIL dist missing or unbuilt: examined 0 built pages — not a pass (run npm run build)")
         sys.exit(1)
     rules = load_rules(root)
 

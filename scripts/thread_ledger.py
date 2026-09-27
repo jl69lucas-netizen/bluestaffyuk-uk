@@ -300,6 +300,11 @@ def main(argv=None):
             return 1
         print(f"thread-ledger: examined {fresh['files']} threads files, "
               f"{len(fresh['threads'])} threads; 0 problems")
+        if not fresh["files"]:
+            # tests/py/test_gates_refuse_nothing.py: an empty ledger that matches an empty
+            # threads folder is two empty things agreeing, not a check.
+            print("thread-ledger: examined 0 threads files — not a pass")
+            return 1
         return 0
     if not path.exists():
         print(f"thread-ledger: {LEDGER} is missing — run python3 scripts/thread_ledger.py --write",

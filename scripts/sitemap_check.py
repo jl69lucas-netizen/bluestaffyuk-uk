@@ -198,7 +198,7 @@ def main(root=ROOT, dist=None, base=BASE):
     base = base.rstrip("/")
 
     if not (dist / "index.html").is_file() or not (dist / "sitemap_index.xml").is_file():
-        print("FAIL dist or sitemap_index.xml missing "
+        print("FAIL dist or sitemap_index.xml missing: examined 0 built pages — not a pass "
               "(run npm run build && npm run sitemaps)")
         sys.exit(1)
 

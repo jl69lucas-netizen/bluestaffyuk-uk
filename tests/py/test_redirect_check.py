@@ -158,7 +158,8 @@ def test_main_fails_without_dist(tmp_path, capsys):
     with pytest.raises(SystemExit) as exc:
         main(root=root, dist=tmp_path / "nodist")
     assert exc.value.code == 1
-    assert "FAIL dist missing or unbuilt (run npm run build)" in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert "FAIL dist missing or unbuilt" in out and "not a pass" in out
 
 
 def test_summary_notes_refs_are_per_page_distinct(tmp_path, capsys):

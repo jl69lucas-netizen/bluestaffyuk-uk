@@ -224,6 +224,10 @@ def main(argv=None):
               f"clean) — delete them from {BASELINE}: {', '.join(stale)}")
     print(f"not-fetched-lint: examined {examined} files ({kept} grandfathered); "
           f"{len(probs)} problems")
+    if not examined:
+        # tests/py/test_gates_refuse_nothing.py: no board, query or research file was read.
+        print("not-fetched-lint: examined 0 files — not a pass")
+        return 1
     return 1 if probs else 0
 
 

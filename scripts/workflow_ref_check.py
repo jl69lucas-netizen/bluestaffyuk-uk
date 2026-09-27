@@ -63,11 +63,19 @@ def check(root=ROOT):
 
 
 def main(root=ROOT):
+    missing = [rel for rel in DOCS if not (pathlib.Path(root) / rel).is_file()]
+    if missing:
+        # tests/py/test_gates_refuse_nothing.py: refuse cleanly, never with a traceback.
+        print(f"workflow-ref-check: missing {', '.join(missing)} — examined 0 references, not a pass")
+        return 1
     problems, examined = check(root)
     for p in problems:
         print(f"  MISSING {p}")
     print(f"workflow-ref-check: examined {examined} references in {len(DOCS)} files; "
           f"{len(problems)} problems")
+    if not examined:
+        print("workflow-ref-check: examined 0 references — not a pass")
+        return 1
     return 1 if problems else 0
 
 

@@ -257,6 +257,10 @@ def main(argv=None):
     for p in out:
         print(f"competitors: {p}")
     print(f"competitors: {summary}")
+    if count == 0:
+        # tests/py/test_gates_refuse_nothing.py: a registry with no entry checked nothing.
+        print("competitors: examined 0 entries — not a pass")
+        return 1
     return 1 if out else 0
 
 

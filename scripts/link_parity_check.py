@@ -286,8 +286,8 @@ def main(argv=None):
 
     slugs = ns.slugs or (json.loads(REBUILT.read_text(encoding="utf-8")) if ns.check and REBUILT.exists() else [])
     if not slugs:
-        print("link-parity ERROR nothing to check — pass a slug or --check with a "
-              "non-empty data/facts/rebuilt.json")
+        print("link-parity ERROR examined 0 rebuilt pages, not a pass — pass a slug or --check "
+              "with a non-empty data/facts/rebuilt.json")
         return 2
 
     total, links = 0, 0

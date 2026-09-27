@@ -234,6 +234,10 @@ def main(root=ROOT, src=None, dist=None):
     out.write_text(report, encoding="utf-8")
     print(report)
     print(summary)
+    if not rows and not skipped:
+        # tests/py/test_gates_refuse_nothing.py: a page map with no page compared nothing.
+        print("examined 0 pages (data/page-map.json has none) — not a pass")
+        sys.exit(1)
     if failing:
         sys.exit(1)
 
