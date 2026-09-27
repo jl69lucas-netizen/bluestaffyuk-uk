@@ -81,10 +81,21 @@ def test_evidence_budgets_shape():
         assert unknown == [], f"budgets[{page_type}] caps terms with no pattern: {unknown}"
 
 
-def test_rework_ledger_is_empty_and_readable_by_quality_report():
+#: The two windows the 2026-09-27 learning loop measured (docs/reports/learning-loop-2026-09-27.md,
+#: Step 5), appended by hand as bsuk-learning-loop Step 5 says. A new window is appended here too.
+LEDGER_WINDOWS = ["brief-parity", "london-components"]
+
+
+def test_rework_ledger_is_readable_by_quality_report():
     r = _load("rework-ledger.json")
     # scripts/quality_report.py trend() reads `windows`, not `entries`.
-    assert r["windows"] == []
+    assert [w["window"] for w in r["windows"]] == LEDGER_WINDOWS
+    for w in r["windows"]:
+        assert {"from", "to", "total", "rework", "rate", "page_rework", "page_rate",
+                "harness_rework", "harness_rate"} <= set(w), w
+        assert w["rework"] <= w["total"] and w["page_rework"] + w["harness_rework"] <= w["rework"], w
+        assert abs(w["page_rate"] - w["page_rework"] / w["total"]) < 0.001, w
+        assert abs(w["harness_rate"] - w["harness_rework"] / w["total"]) < 0.001, w
 
 
 def test_evidence_ledger_rows_are_well_formed_and_readable_by_evidence_audit():
@@ -109,7 +120,10 @@ def test_the_gates_actually_load_all_three():
     sys.path.insert(0, str(ROOT / "scripts"))
     import evidence_audit, quality_report  # noqa: E402
 
-    assert quality_report.trend(_load("rework-ledger.json")) == (None, None)
+    latest, delta = quality_report.trend(_load("rework-ledger.json"))
+    # trend() sorts by `from`: london-components (page 3.2%) against brief-parity (page 4.7%).
+    assert latest["window"] == "london-components"
+    assert round(delta, 3) == -0.015
     assert evidence_audit.claim_binding("<main>anything at all</main>",
                                         _load("evidence-ledger.json")) == []
     assert quality_report.broken_test_links(index(), quality_report.registry_check_ids()) == []
