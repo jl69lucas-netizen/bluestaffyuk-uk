@@ -83,6 +83,14 @@ capped at nine (`judgment_cap: 9`); a tenth exemption is a rule that has to earn
 | about / contact | `bsuk-contact-form`, `bsuk-trust-signals` | copy, links |
 | comparison | `bsuk-comparison-page-builder` | images, headings, copy |
 
+**Every project 5 page (location, comparison, blog) walks `docs/reference/page-run.md`.** The
+session opens with `grill-me`, then the `superpowers:writing-plans` skill, then the builder
+skill above. After the build, the Harden sprint invokes the `impeccable:impeccable` skill, then
+`frontend-design:frontend-design`, on the built page at 375 / 768 / 1280 in a painting browser,
+and `superpowers:verification-before-completion` runs before any "page done" claim and again
+before a gate report says PASS. Each is invoked with the Skill tool by that name, never
+paraphrased and never skipped (the user's rulings, 2026-09-26).
+
 The generic skills already ported live at `.claude/skills/` — `grill-me`,
 `section-auditor`, `internal-link-agent`, `keyword-cluster`, `anti-ai-writing` and the
 `framework-*` set among them. Each is one SKILL.md file in its own directory.
@@ -332,6 +340,8 @@ components are listed in `data/design/components.json`, and rebuilt pages render
 - `docs/reference/quick-start.md` — task → entry point, and the reference-doc index
 - `docs/reference/session-log.md` — build history and **Known Issues**
 - `docs/reference/WORKFLOW.md` — the sprint model
+- `docs/reference/page-run.md` — the ordered per-page run for a project 5 page: each brief
+  step, the command that does it, what it leaves on disk, the gate that fails and the stop
 - `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
   A–J. That is a different count from `data/quality/rule-index.json`'s 79 (of which 9 are
   `enforced: judgment`, capped there): the ledger indexes the `rules/` packs, the

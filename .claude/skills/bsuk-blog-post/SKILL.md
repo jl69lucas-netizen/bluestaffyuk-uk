@@ -103,6 +103,15 @@ does not replace it.
 
 ### 5. Baked-in Gates (non-negotiable, every blog page)
 
+**Mandatory on every project 5 page (the user's rulings, 2026-09-26).** After the build and
+before the audits, invoke the `impeccable:impeccable` skill, then the
+`frontend-design:frontend-design` skill, with the Skill tool (never paraphrased, never skipped),
+on the built page at 375 / 768 / 1280 in a painting browser; a pass that proposes a visual
+change is previewed before it is applied (working rule 6), and the palette never changes.
+Before any "page done" or "ready for approval" claim, invoke the
+`superpowers:verification-before-completion` skill. Each pass is recorded in the page's run
+record; the order is `docs/reference/page-run.md`, rows 14 to 18.
+
 - **Heading Outline Gate** — present full H1→H6 outline (all six levels, sequential, ≥5 H5 AND ≥5 H6) + get explicit approval **BEFORE any page code**. No skipped levels. See `rules/headings.md` (`heading-hierarchy-outline-gate`); the rule moved out of CLAUDE.md on 2026-08-02. For a post, `scripts/final_page_audit.py` exempts the six-level outline, the ≥5 H5 / ≥5 H6 floor and the FAQPage check (`POST_EXEMPT_CHECKS`), so that floor is checked by hand at this gate.
 - **Line-icons not emoji** — Coat-style SVGs (`1em`, `currentColor`). Keep only ✔ ✗ ★ text glyphs. Never use 💡 ⚠ or any pictograph emoji.
 - **Delivery line on every card** — `UK home delivery by DEFRA-approved transport, priced by distance, £200–£350 · or collect in Carlisle`. Pull from `data/settings.json` (as §1 step 11) and `data/price-matrix.json`. No hardcoded figures.

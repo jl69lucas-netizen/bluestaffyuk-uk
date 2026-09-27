@@ -2,6 +2,8 @@
 
 > **Read this before starting any new page, sprint, or monitoring cycle.**
 > This is the authoritative end-to-end sequence for every agent in `.claude/agents/`.
+> **Building one project 5 page?** Walk `docs/reference/page-run.md` top to bottom: it is this
+> pipeline as one ordered run per page, each row backed by a command and a gate.
 
 The 7-sprint model is domain-neutral and stands as written. What changed in the project 2
 re-base is the cast. The agent roster is whatever `data/agent-registry.json` lists —
@@ -428,6 +430,13 @@ moment Harden becomes a bullet, it becomes the bullet that gets skipped.*
 
 **REQUIRED SKILL:** `bsuk-page-hardening` (v2.0) · **REQUIRED FIRST:** `bsuk-gate-integrity`
 
+**REQUIRED ON EVERY PROJECT 5 PAGE (the user's ruling, 2026-09-26):** invoke the
+`impeccable:impeccable` skill, then the `frontend-design:frontend-design` skill, with the Skill
+tool (never paraphrased, never skipped) on the built page at 375 / 768 / 1280 in a painting
+browser. A pass that proposes a visual change is previewed before it is applied (working rule
+6); the palette never changes. Each pass is recorded in the page's run record
+(`docs/reference/page-run.md`, rows 14 and 15).
+
 ```
 0. npx astro build                      ← nothing below works on a stale dist/
 
@@ -510,6 +519,11 @@ python3 scripts/aeo_audit.py <slug>
 
 **REQUIRED SKILL:** `bsuk-final-page-pass` — THE final gate for EVERY page type,
 including the puppy `/available/` and for-sale pages the old interior gate excluded.
+
+**REQUIRED BEFORE ANY "PAGE DONE" CLAIM (the user's ruling, 2026-09-26):** invoke the
+`superpowers:verification-before-completion` skill with the Skill tool (never paraphrased,
+never skipped) at the end of this sprint, before a page is called done or ready for approval,
+and record what it ran in the page's run record (`docs/reference/page-run.md`, row 18).
 
 ```
 1. npx astro build
@@ -693,6 +707,10 @@ bsuk-llm-keyword-intel <slug>
 ## Sprint 6 — Bank
 *The step that makes the next page cheaper. Skipping it is why three of the 2026-07-28
 lessons never reached the skill that enforces them.*
+
+Before the gate report says PASS, invoke the `superpowers:verification-before-completion`
+skill again with the Skill tool (the user's ruling, 2026-09-26): every PASS in the report is a
+command run in this session, with its output read.
 
 ```
 1. session-closer skill        → fill the brief's What's Next

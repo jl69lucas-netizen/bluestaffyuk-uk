@@ -306,6 +306,15 @@ the visible questions, no visible date. `scripts/query_coverage_check.py` holds 
 
 ## Step 6 — gates
 
+**Mandatory on every project 5 page (the user's rulings, 2026-09-26).** After the build and
+before the audits, invoke the `impeccable:impeccable` skill, then the
+`frontend-design:frontend-design` skill, with the Skill tool (never paraphrased, never skipped),
+on the built page at 375 / 768 / 1280 in a painting browser; a pass that proposes a visual
+change is previewed before it is applied (working rule 6), and the palette never changes.
+Before any "page done" or "ready for approval" claim, invoke the
+`superpowers:verification-before-completion` skill. Each pass is recorded in the page's run
+record; the order is `docs/reference/page-run.md`, rows 14 to 18.
+
 Build first (`npm run build` — the gates measure `dist/`), then, in order:
 
 ```bash
