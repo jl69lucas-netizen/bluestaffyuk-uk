@@ -21,7 +21,9 @@ What is refused, per fragment:
   hero       — the first <img>/<picture> comes before the first <h1>/<h2> in source
   assets     — every src/srcset/poster/url() is /images/<file> (public/images) or
                /puppies/<file> (src/assets/puppies) and exists; <a href> is "#…" or "/…";
-               every <img> has a non-empty alt and numeric width and height (no layout shift)
+               every <img> has a non-empty alt and numeric width and height (no layout shift);
+               a served /images/ file keeps an alt it was served with, word for word
+               (working rule 11; served_alts())
   copy       — the word "London" appears; every £ amount is a price, the deposit or a
                delivery bound from data/; no phone number (PHONE_PLACEHOLDER only); no
                source-project marker (scripts/marker_check.py MARKERS) and no reference-site
@@ -44,6 +46,7 @@ Exit 1 on any problem, 2 on a usage error. Prints its examined counts.
 """
 import argparse
 import dataclasses
+import html
 import html.parser
 import json
 import pathlib
@@ -107,6 +110,7 @@ class Context:
     ideas: dict
     reviews: tuple = ()
     image_roots: dict = dataclasses.field(default_factory=lambda: dict(IMAGE_ROOTS))
+    served_alts: dict = dataclasses.field(default_factory=dict)
 
 
 def banned_words(sources_doc=SOURCES_DOC):
@@ -134,6 +138,47 @@ def real_reviews(root=ROOT):
     return tuple(" ".join(r["quote"].split()) for r in rows)
 
 
+_IMG_TAG = re.compile(r"<img\b[^>]*>", re.I)
+_SIZED = re.compile(r"^(?P<base>.+)-(?:240|400|760)(?P<ext>\.\w+)$")
+
+
+def _tag_attr(tag, name):
+    m = re.search(r'\s%s\s*=\s*"([^"]*)"' % name, tag)
+    return html.unescape(m.group(1)) if m else None
+
+
+def served_alts(root=ROOT):
+    """{file under public/images/: frozenset(alt)} — every alt the old site served each file
+    with: the migrated pages' verbatim sets (data/verbatim/*.json `alts`) and the location pages'
+    body images (data/locations.json). Working rule 11 keeps these word for word wherever the
+    file is reused (learning loop 2026-09-27, L2)."""
+    root = pathlib.Path(root)
+    out = {}
+
+    def add(src, alt):
+        if src and alt is not None and "/images/" in src:
+            name = src.split("/images/", 1)[1].split("?", 1)[0]
+            if name and "/" not in name:
+                out.setdefault(name, set()).add(" ".join(alt.split()))
+    for f in sorted((root / "data" / "verbatim").glob("*.json")):
+        for row in json.loads(f.read_text(encoding="utf-8")).get("alts", []):
+            add(row.get("src"), row.get("alt"))
+    loc = root / "data" / "locations.json"
+    if loc.exists():
+        for row in json.loads(loc.read_text(encoding="utf-8")):
+            for tag in _IMG_TAG.findall(row.get("body_html") or ""):
+                add(_tag_attr(tag, "src"), _tag_attr(tag, "alt"))
+    return {k: frozenset(v - {""}) for k, v in out.items() if v - {""}}
+
+
+def served_name(name, served):
+    """The served file a srcset width (`x-760.webp`) belongs to; the name itself otherwise."""
+    if name in served:
+        return name
+    m = _SIZED.match(name)
+    return m.group("base") + m.group("ext") if m and m.group("base") + m.group("ext") in served else name
+
+
 def ideas_sections(text):
     """{component id: section text} out of the ideas index (`## <id> — <name>` headings)."""
     out = {}
@@ -147,7 +192,7 @@ def default_context():
     md = json.loads(MUST_DIFFER.read_text(encoding="utf-8"))["components"] if MUST_DIFFER.exists() else {}
     ideas = ideas_sections(IDEAS_INDEX.read_text(encoding="utf-8")) if IDEAS_INDEX.exists() else {}
     return Context(banned_words=banned_words(), allowed_pounds=allowed_pounds(),
-                   must_differ=md, ideas=ideas, reviews=real_reviews())
+                   must_differ=md, ideas=ideas, reviews=real_reviews(), served_alts=served_alts())
 
 
 class _Walk(html.parser.HTMLParser):
@@ -309,6 +354,12 @@ def validate_fragment(component, variant, text, ctx):
         if tag == "img":
             if not a.get("alt", "").strip():
                 p.append(f"asset: <img src=\"{a.get('src', '')}\"> has no alt text")
+            elif a.get("src", "").startswith("/images/"):
+                name = served_name(a["src"][len("/images/"):], ctx.served_alts)
+                served = ctx.served_alts.get(name)
+                if served and " ".join(a["alt"].split()) not in served:
+                    p.append(f"asset: {name} is a served image and keeps its served alt word for "
+                             f"word (working rule 11), not {a['alt']!r}")
             if not (a.get("width", "").isdigit() and a.get("height", "").isdigit()):
                 p.append(f"asset: <img src=\"{a.get('src', '')}\"> needs numeric width and "
                          "height so its box is reserved")

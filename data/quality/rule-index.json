@@ -217,9 +217,10 @@
   {
    "id": "reuse-every-image-and-video",
    "family": "IMG",
-   "enforced": "untested",
+   "enforced": "test",
    "claude_md": 11,
-   "_note": "CLAUDE.md working rule 11. No check compares public/images/ against the files it has served; facts_preserved_check.py reports an image a rebuilt page drops, which is a page fact, not the file's URL; tests/py/test_images.py::test_legacy_logo_rasters_are_still_served guards the two legacy logo rasters only."
+   "test": "tests/py/test_served_alt_preserved.py",
+   "_note": "CLAUDE.md working rule 11. The alt half is tested (learning loop 2026-09-27, shortlist #1): scripts/check_city_canvas.py refuses a canvas fragment that reuses a served public/images/ file under any alt other than one it was served with (read from data/verbatim/*.json and data/locations.json), and tests/py/test_served_alt_preserved.py holds every rebuilt page in dist/ to the same (a recorded verbatim.changed alt row or an empty decorative alt excepted; four hero-tile second instances are listed and counted there). Not tested: that no served file is renamed, deleted or re-encoded; facts_preserved_check.py reports an image a rebuilt page drops, and tests/py/test_images.py::test_legacy_logo_rasters_are_still_served guards the two legacy logo rasters only."
   },
   {
    "id": "every-link-on-the-board",

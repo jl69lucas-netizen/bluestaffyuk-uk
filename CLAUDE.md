@@ -110,8 +110,8 @@ Rules 1–9 have **no mechanical decision procedure**, which is exactly why they
 delegated to a test and must stay in context. They are the nine `enforced: judgment` rows in
 `data/quality/rule-index.json`, and that file's `judgment_cap: 9` is what stops that list
 growing. Rules 10–17 are the breeder's standing working rules (2026-09-18 to 2026-09-24).
-Each has a row in the same file, keyed `claude_md`: 12, 13, 14, 15, 16 and 17 are `enforced: test`
-and name the test behind their gate, 10 and 11 are `untested`, and none is a judgment
+Each has a row in the same file, keyed `claude_md`: 11, 12, 13, 14, 15, 16 and 17 are `enforced: test`
+and name the test behind their gate, 10 is `untested`, and none is a judgment
 row, so the cap is untouched. Every other rule moved to a pack.
 
 1. **First-person brand voice.** Write as Lisa Bright: *we / us / our / here at

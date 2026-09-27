@@ -243,3 +243,26 @@ def test_an_image_between_an_h3_and_its_opening_is_allowed():
       <figure data-media><img src="{IMG}" alt="Delivery to a London home" width="4" height="3"></figure>
       <p>{OPEN}</p></section>"""
     assert probs("image-text", "a", sec) == []
+
+
+MAGGIE = "/images/maggie-blue-staffy-dam-with-pups.webp"
+MAGGIE_ALT = ("A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, "
+              "lovingly tending to her pups.")
+
+
+def _maggie(alt, extra=""):
+    return HERO.replace(f'<img src="{IMG}" alt="A blue Staffy puppy ready for a London home"',
+                        f'<img src="{MAGGIE}" alt="{alt}"{extra}')
+
+
+def test_a_served_image_keeps_its_served_alt_word_for_word():
+    """Working rule 11 (learning loop 2026-09-27, L2): Tasks 5–8 rewrote the alt of a served
+    file four times and only a reviewer caught it. The served alts are data, so the canvas
+    gate compares against them."""
+    c = ctx(served_alts=C.served_alts())
+    assert MAGGIE_ALT in c.served_alts["maggie-blue-staffy-dam-with-pups.webp"]
+    assert probs("hero", "a", _maggie(MAGGIE_ALT), c) == []
+    out = probs("hero", "a", _maggie("Maggie, our blue Staffy dam, with her London-bound litter"), c)
+    assert any("served alt" in x and "maggie-blue-staffy-dam-with-pups.webp" in x for x in out), out
+    # a file the old site never served carries whatever alt the variant gives it
+    assert "no-such-served-file.webp" not in c.served_alts

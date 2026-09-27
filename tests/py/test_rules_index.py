@@ -474,8 +474,7 @@ def test_no_instruction_file_writes_the_town_twice():
 #: What each of the eight is held up by. The ones with a mechanical backstop name the pytest
 #: file that exercises it — the same `test` form `design-system-nine` uses — and the others
 #: are `untested`, which scripts/quality_report.py lists in §5 as deletion candidates. Rule 10
-#: governs how a decision is SHOWN, rule 11 what a page may do to a served file (only the two
-#: legacy logo rasters are guarded, tests/py/test_images.py), and rule 13's board half has only
+#: governs how a decision is SHOWN, and rule 13's board half has only
 #: a partial check (tests/py/test_board_previews.py: the `table` shape's three styles — nothing
 #: requires a table section to use that shape). Rule 16 gained its gate with the user's
 #: ruling R12 (tests/py/test_rule16_gate.py). Rule 17 arrived with the system-gaps build, whose
@@ -483,7 +482,10 @@ def test_no_instruction_file_writes_the_town_twice():
 #: `foundation` was merged into p5-readiness.
 CLAUDE_MD_RULES = {
     10: ("untested", None),
-    11: ("untested", None),
+    # the alt half of rule 11: a served file keeps its served alt wherever it is reused (canvas
+    # fragments via scripts/check_city_canvas.py, rebuilt pages in dist/) — learning loop
+    # 2026-09-27, shortlist #1
+    11: ("test", "tests/py/test_served_alt_preserved.py"),
     12: ("test", "tests/py/test_link_parity.py"),
     # the stacking half is a blocking render check; the board half's three styles are proven
     # on the `table` shape by tests/py/test_board_previews.py, though no gate yet requires a
