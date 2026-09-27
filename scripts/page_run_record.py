@@ -177,11 +177,19 @@ def dirty_sources(key, root=ROOT):
     return out
 
 
+# Written by the run itself, not page changes. data/quality/scorecards/ is here because
+# scripts/build_scorecard.mjs names a card <slug>-<run date>.json: a second render run on the
+# day a card was committed rewrites that TRACKED file (a new day adds an untracked one).
+MEASUREMENT_PATHS = ("data/page-runs/", "docs/reports/", "data/quality/scorecards/")
+
+
 def dirty_tracked(root=ROOT):
-    """Tracked files with uncommitted changes, outside data/page-runs/ and docs/reports/."""
+    """Tracked files with uncommitted changes, outside MEASUREMENT_PATHS. The one definition
+    of a dirty tree: the record writer refuses on it and scripts/gate_page.py git_head marks
+    its report `-dirty` on it."""
     p = _git(root, "status", "--porcelain", "--untracked-files=no")
     return [l[3:] for l in p.stdout.splitlines() if l.strip()
-            and not l[3:].startswith(("data/page-runs/", "docs/reports/"))]
+            and not l[3:].startswith(MEASUREMENT_PATHS)]
 
 
 def load(key, root=ROOT):

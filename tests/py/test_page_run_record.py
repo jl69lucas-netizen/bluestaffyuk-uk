@@ -396,3 +396,21 @@ def test_the_page_sources_of_a_city_are_its_record_and_its_route_file(tmp_path):
     root = repo(tmp_path)
     assert PRR.page_sources(KEY, root) == [f"data/boards/{KEY}.json",
                                            "src/pages/uk-locations/[slug].astro"]
+
+
+def test_dirty_tracked_ignores_records_reports_and_rewritten_scorecards(tmp_path):
+    # The render suite names a card by the run's date, so a second run on the day the card
+    # was committed rewrites a TRACKED file; that is a measurement, not a page change.
+    for rel in ("src.astro", "data/quality/scorecards/comp-2026-09-27.json",
+                "data/page-runs/comp.json"):
+        (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / rel).write_text("1", encoding="utf-8")
+    git(tmp_path, "init", "-q")
+    git(tmp_path, "add", "-A")
+    git(tmp_path, "commit", "-qm", "x")
+    (tmp_path / "data/quality/scorecards/comp-2026-09-27.json").write_text("2", encoding="utf-8")
+    (tmp_path / "data/page-runs/comp.json").write_text("2", encoding="utf-8")
+    (tmp_path / "untracked.txt").write_text("x", encoding="utf-8")
+    assert PRR.dirty_tracked(tmp_path) == []
+    (tmp_path / "src.astro").write_text("2", encoding="utf-8")
+    assert PRR.dirty_tracked(tmp_path) == ["src.astro"]

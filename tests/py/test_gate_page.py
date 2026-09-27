@@ -114,6 +114,31 @@ def test_git_head_marks_a_dirty_tree_and_is_none_outside_git(tmp_path):
     assert GP.git_head(tmp_path) == sha + "-dirty"
 
 
+def test_git_head_counts_tracked_changes_only_as_page_run_record_does(tmp_path):
+    # One definition of dirty (page_run_record.dirty_tracked): a stray untracked file, a new
+    # dated scorecard, a same-day scorecard re-written by the render suite, a page-run record
+    # or a report is not a change to the page the gate judged.
+    env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t",
+               GIT_COMMITTER_EMAIL="t@t")
+    git = lambda *a: subprocess.run(["git", "-C", str(tmp_path), *a], check=True, env=env,
+                                    capture_output=True)
+    cards = tmp_path / "data/quality/scorecards"
+    cards.mkdir(parents=True)
+    (cards / "comp-2026-09-27.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "src.astro").write_text("1", encoding="utf-8")
+    git("init", "-q")
+    git("add", "-A")
+    git("commit", "-qm", "x")
+    sha = subprocess.run(["git", "-C", str(tmp_path), "rev-parse", "HEAD"], capture_output=True,
+                         text=True).stdout.strip()
+    (tmp_path / "stray.txt").write_text("x", encoding="utf-8")
+    (cards / "comp-2026-09-28.json").write_text("{}", encoding="utf-8")
+    (cards / "comp-2026-09-27.json").write_text('{"rerun": 1}', encoding="utf-8")
+    assert GP.git_head(tmp_path) == sha
+    (tmp_path / "src.astro").write_text("2", encoding="utf-8")
+    assert GP.git_head(tmp_path) == sha + "-dirty"
+
+
 def test_a_failing_audit_fails_the_page():
     report = run(scripted({"aeo": (1, {"pages": [{"slug": "p", "findings": [
         {"severity": "WARN", "message": "no binomial"}]}], "errors": 0, "warns": 1})}))

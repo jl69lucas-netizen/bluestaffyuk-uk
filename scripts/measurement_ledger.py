@@ -32,7 +32,9 @@ can be STALE:
        it; or whose page's sources (and, for a city, its data/locations.json row) changed
        between that head and HEAD (scripts/page_run_record.py is_ancestor, changed_between);
        or whose `page_hash` is not the rendered_changes.py content_hash of today's built page.
-       The page's own gate stays good across commits that do not touch the page.
+       The page's own gate stays good across commits that do not touch the page. A CSS- or
+       JS-only change leaves page_hash equal; M6 (render re-measure) and the close's M10
+       re-gate cover it.
   M10  the same report, strictly: gated on a dirty tree, `head` not HEAD itself, or the page
        hash differs. Dup crossover is site-wide — any other page's edit can create one — so
        only a gate at the final commit counts, and the close re-gates at that commit.

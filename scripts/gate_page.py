@@ -37,8 +37,9 @@ The profile is --type, else the board's meta.page_type, else `location` for a ci
 --skip-record leaves out the page-run-record and check-all steps. It is the form the verification pass runs
 and records, because the full gate cannot pass before that record exists.
 --json PATH moves the report from docs/reports/gate-page/<slug>.json. The report records
-`head`: the commit the gates ran on (`git rev-parse HEAD`, `-dirty` when the tree had
-uncommitted changes), and `page_hash`: scripts/rendered_changes.py content_hash of the built
+`head`: the commit the gates ran on (`git rev-parse HEAD`, `-dirty` when a tracked file has
+uncommitted changes — scripts/page_run_record.py dirty_tracked, the record writer's own test),
+and `page_hash`: scripts/rendered_changes.py content_hash of the built
 dist/<route>/index.html it judged, so scripts/measurement_ledger.py can refuse a report from
 another commit or for another build of the page. Gate a page after committing it.
 
@@ -125,7 +126,8 @@ def run_check_all(root=ROOT):
 
 
 def git_head(root=ROOT):
-    """HEAD's sha, plus `-dirty` when the work tree has uncommitted changes; None outside a
+    """HEAD's sha, plus `-dirty` when page_run_record.dirty_tracked finds a tracked change
+    (untracked files, records, reports and scorecards are not page changes); None outside a
     git work tree. Stamped on the report so a reader can tell which commit it judged."""
     try:
         p = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"], capture_output=True,
@@ -133,11 +135,10 @@ def git_head(root=ROOT):
         sha = p.stdout.strip()
         if p.returncode != 0 or not sha:
             return None
-        s = subprocess.run(["git", "-C", str(root), "status", "--porcelain"],
-                           capture_output=True, text=True, timeout=60)
+        dirty = PRR.dirty_tracked(root)
     except (OSError, subprocess.SubprocessError):
         return None
-    return sha + "-dirty" if s.returncode != 0 or s.stdout.strip() else sha
+    return sha + "-dirty" if dirty else sha
 
 
 def page_hash(route, root=ROOT):
