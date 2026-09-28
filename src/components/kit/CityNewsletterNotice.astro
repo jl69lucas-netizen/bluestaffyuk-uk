@@ -54,8 +54,8 @@ const { action, live } = formEndpoint();
           <input type="hidden" name="_subject" value="Litter note sign-up" />
           <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <label for="city-news-email">Your email address</label>
-          <input id="city-news-email" name="email" type="email" autocomplete="email" required />
-          <p class="err" id="city-news-err">Please check the email address: it needs an @ and a full address.</p>
+          <input id="city-news-email" name="email" type="email" autocomplete="email" required placeholder=" " />
+          <p class="err" id="city-news-err"><span class="e-empty">Please give us your email address.</span><span class="e-bad">That address looks incomplete: it needs an @ and a full address.</span></p>
           <button type="submit">{button}</button>
           <p class="small">We use your email only for this note.</p>
         </form>
@@ -108,6 +108,11 @@ const { action, live } = formEndpoint();
     input[type='email']:user-invalid { border-color: var(--color-warn); }
     .err { display: none; margin: 0; font-size: var(--text-sm); color: var(--color-warn); }
     form:has(input:user-invalid) .err, [aria-invalid='true'] + .err { display: block; }
+    /* Empty or malformed, by CSS alone: the placeholder is one space, so :placeholder-shown means
+       nothing was typed (the Task 7b review). */
+    .e-bad { display: none; }
+    input:not(:placeholder-shown) + .err .e-empty { display: none; }
+    input:not(:placeholder-shown) + .err .e-bad { display: inline; }
     button {
       min-height: 48px; padding: 10px 20px; font: inherit; font-weight: 700; color: var(--color-cta-ink); background: var(--color-cta);
       border: 0; border-radius: var(--btn-form-radius); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out);

@@ -30,6 +30,13 @@ import { CITY_ICONS } from './cityIcons';
 
 type Props = HTMLAttributes<'div'> & { sections: SectionRef[]; chrome?: boolean };
 const { sections, chrome = true, class: cls, ...rest } = Astro.props;
+// Every stop sits on ONE line at 375px with no sideways scroll; past ten they overlap (the Task 7b
+// review), so a longer list is a page-plan problem, stopped here at build time — as the takeaways
+// and the trust ledger stop theirs.
+const MAX_STOPS = 10;
+if (sections.length > MAX_STOPS) {
+  throw new Error(`CityJumpStepper: ${sections.length} sections; the stepper holds ${MAX_STOPS} stops on a phone`);
+}
 const missing = sections.filter((s) => !s.question || !s.icon).map((s) => s.id);
 if (missing.length) {
   throw new Error(`CityJumpStepper: sections ${missing.join(', ')} need a question and an icon (src/lib/sections.ts)`);

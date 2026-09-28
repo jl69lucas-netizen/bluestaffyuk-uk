@@ -105,7 +105,7 @@ const [delivPre, delivPost] = deliveryLine.split(DELIVERY_BAND);
       outline: 2px solid transparent; outline-offset: 0; transition: outline-color var(--dur-fast) var(--ease-out);
     }
     .city-pup:hover { outline-color: var(--color-brand); }
-    .city-pup:focus-within { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .city-pup:has(.ask:focus-visible) { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     .city-pup :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-sm); background: var(--color-bone-100); }
     .txt { display: flex; flex-direction: column; flex: 1; padding: var(--space-3) var(--space-1) 0; }
     .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-1) var(--space-2); }

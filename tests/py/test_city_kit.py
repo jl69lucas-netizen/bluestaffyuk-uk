@@ -604,3 +604,44 @@ def test_the_city_page_specimen_lays_the_kit_out_as_a_city_page_does():
     # The column's width is written into sizes (min(100vw, 1200px) less the shell, dial and gap).
     assert "min(100vw, 1200px) - 368px" in html
     assert "min(100vw, 1200px) - 368px" not in PREVIEW.read_text(encoding="utf-8")
+
+
+# --------------------------------------------------------------------------- Task 7b minors
+
+def test_the_grid_forms_invalid_border_is_the_warn_colour_not_the_focus_brass():
+    src = (KIT / "ContactFormKit.astro").read_text(encoding="utf-8")
+    rule = re.search(r"\[data-layout='grid'\] :user-invalid \{([^}]*)\}", src).group(1)
+    assert "--color-warn" in rule and "--color-cta" not in rule
+
+
+def test_an_empty_email_and_a_malformed_one_get_different_error_lines():
+    """An empty required field is not 'incomplete': each email error line carries an empty and a
+    malformed message, and CSS shows one by :placeholder-shown (no script)."""
+    for cid, form in (("city-newsletter-notice", "data-newsletter"), ("city-contact-lineup", "data-contact-form")):
+        s = section(cid)
+        email = re.search(r'<input [^>]*type="email"[^>]*>', s).group(0)
+        assert 'placeholder=" "' in email, cid
+        assert s.count('class="e-empty"') == 1 and s.count('class="e-bad"') == 1, cid
+    for f in ("CityNewsletterNotice.astro", "ContactFormKit.astro"):
+        assert ":placeholder-shown" in (KIT / f).read_text(encoding="utf-8"), f
+
+
+def test_the_jump_stepper_refuses_more_stops_than_fit_a_phone():
+    src = (KIT / "CityJumpStepper.astro").read_text(encoding="utf-8")
+    assert re.search(r"const MAX_STOPS = \d+;", src)
+    assert "sections.length > MAX_STOPS" in src and "throw new Error" in src.split("sections.length > MAX_STOPS", 1)[1][:300]
+
+
+def test_a_print_rings_only_for_keyboard_focus_on_its_ask_link():
+    src = (KIT / "CityPuppySheet.astro").read_text(encoding="utf-8")
+    assert ".city-pup:has(.ask:focus-visible)" in src and ":focus-within" not in src
+
+
+def test_the_video_panels_side_notes_are_no_landmark():
+    assert "<aside" not in section("city-video-panel")
+
+
+def test_the_specimens_count_the_litter_from_the_data():
+    src = (KIT / "_registry.ts").read_text(encoding="utf-8")
+    for literal in ("Six puppies", "Three boys", "three boys", "three girls"):
+        assert literal not in src, literal

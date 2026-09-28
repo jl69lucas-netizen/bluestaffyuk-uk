@@ -64,12 +64,12 @@ const pieces = (text: string) => text.split(CODE);
     <div class="grid">
       <VideoEmbed id={videoId} title={videoTitle} caption={caption} poster={poster} playLabel="Play the film"
         posterSizes={posterSizes} />
-      <aside class="side" aria-label={`About ${side.name}`}>
+      <div class="side">
         <Image src={puppyImage(side.photo)} alt={side.alt} widths={[240, 400, 600]}
           sizes={sideSizes} class={focusClass(side.photo)} loading="lazy" decoding="async" />
         <p class="who"><b>{side.name}</b>{side.text}</p>
         <ul class="facts">{facts.map((f) => <li><b>{f.label}:</b> {pieces(f.text).map((s, i) => (i % 2 ? <span class="nb">{s}</span> : s))}</li>)}</ul>
-      </aside>
+      </div>
     </div>
   </div>
 </section>

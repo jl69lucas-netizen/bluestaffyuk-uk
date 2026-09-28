@@ -179,6 +179,13 @@ const pupsBySex = (sex: 'male' | 'female') => {
   const names = availablePuppies().filter((p) => p.sex === sex).map((p) => `${p.name} (${p.colour.toLowerCase()})`);
   return names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names.join('');
 };
+/** The litter's counts in words, from the data ("six", "three"), for specimen copy. */
+const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const inWords = (n: number) => WORDS[n] ?? String(n);
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const LITTER = inWords(availablePuppies().length);
+const BOYS = inWords(availablePuppies().filter((p) => p.sex === 'male').length);
+const GIRLS = inWords(availablePuppies().filter((p) => p.sex === 'female').length);
 const FAQ_BUY: CityFaqRow[] = [
   { q: 'How much does one of your blue Staffy puppies cost?', a: `${BOY_PRICE} for each of our boys and ${GIRL_PRICE} for each of our girls, and the price is the same wherever in the UK you live.` },
   { q: 'Which puppies can I ask about right now?', a: `Every one on our list: ${pupsBySex('male')} are the boys, and ${pupsBySex('female')} are the girls.` },
@@ -433,9 +440,9 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     C: CityHeroFilmstrip,
     demo: [{
       as: 'h2',
-      eyebrow: `Six puppies · ${SITE.address.city}`,
+      eyebrow: `${cap(LITTER)} puppies · ${SITE.address.city}`,
       title: 'Where Can I Find a Blue Staffy Puppy Near Me?',
-      lede: `Three boys and three girls, raised by ${SITE.breeder_name} in ${SITE.address.city}, with UK home delivery priced by distance.`,
+      lede: `${cap(BOYS)} boys and ${GIRLS} girls, raised by ${SITE.breeder_name} in ${SITE.address.city}, with UK home delivery priced by distance.`,
       cta: { label: 'Choose your puppy', href: '#kit-city-hero-filmstrip' },
       more: { label: 'How delivery works', href: '#kit-city-hero-filmstrip' },
     }],
@@ -498,7 +505,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       photo: 'jones-strong-staffy-sire-temperament.webp',
       caption: `Jones, the sire, at home in ${SITE.address.city}`,
       rows: [
-        { label: 'The six', text: `Three boys at ${BOY_PRICE} and three girls at ${GIRL_PRICE}, all available now.` },
+        { label: 'The six', text: `${cap(BOYS)} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, all available now.` },
         { label: 'The deposit', text: depositLine },
         { label: 'The route', text: `DEFRA-approved transport for ${DELIVERY_BAND}, priced by distance, or collection in ${SITE.address.city}.` },
         { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
@@ -512,7 +519,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     demo: [{
       fit: 'full',
       heading: 'Which Puppy Will You Ask About First?',
-      lede: `Maggie and Jones's six are laid out here like family prints, three boys at ${BOY_PRICE} and three girls at ${GIRL_PRICE}, so you can pick a favourite before you ask.`,
+      lede: `Maggie and Jones's six are laid out here like family prints, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, so you can pick a favourite before you ask.`,
       photo: 'maggie-blue-staffy-dam-with-pups.webp',
       caption: `Maggie, the dam, with her puppies in ${SITE.address.city}`,
     }],

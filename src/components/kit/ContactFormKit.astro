@@ -69,10 +69,11 @@ const fields = [
 // announced through aria-describedby once the script marks the control aria-invalid).
 const ERR: Record<string, string> = {
   name: 'Please tell us your name.',
-  email: 'That email address looks incomplete.',
   puppy: 'Please choose a puppy, or the next litter.',
   message: 'Please tell us what you would like to know.',
 };
+// The email line has two: one for a field left empty, one for an address that is not whole.
+const EMAIL_ERR = { empty: 'Please give us your email address.', bad: 'That email address looks incomplete: it needs an @ and a full address.' };
 ---
 {grid ? (
 <form
@@ -91,8 +92,11 @@ const ERR: Record<string, string> = {
   {fields.map((x) => (
     <p class="field">
       <label for={`${f}-${x.key}`}>{x.label}{' '}<span class="req">({x.required ? 'required' : 'optional'})</span></label>
-      <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} data-err={x.required ? `${f}-${x.key}-err` : undefined} />
-      {x.required && <span class="err" id={`${f}-${x.key}-err`}>{ERR[x.key]}</span>}
+      <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} data-err={x.required ? `${f}-${x.key}-err` : undefined}
+        placeholder={x.key === 'email' ? ' ' : undefined} />
+      {x.required && (x.key === 'email'
+        ? <span class="err" id={`${f}-${x.key}-err`}><span class="e-empty">{EMAIL_ERR.empty}</span><span class="e-bad">{EMAIL_ERR.bad}</span></span>
+        : <span class="err" id={`${f}-${x.key}-err`}>{ERR[x.key]}</span>)}
     </p>
   ))}
   <p class="field">
@@ -227,7 +231,14 @@ const ERR: Record<string, string> = {
     [data-layout='grid'] .err { display: none; font-size: var(--text-xs); color: var(--color-cta-soft); }
     [data-layout='grid'] .field:has(:user-invalid) .err,
     [data-layout='grid'] [aria-invalid='true'] + .err { display: block; }
-    [data-layout='grid'] :user-invalid { border: 2px solid var(--color-cta); }
+    /* The warn colour, not brass: brass is the focus ring's, and a field that is both focused and
+       invalid must read as two states (the Task 7b review). */
+    [data-layout='grid'] :user-invalid { border: 2px solid var(--color-warn); }
+    /* An empty required email and a malformed one read differently, by CSS alone: the field's
+       placeholder is a single space, so :placeholder-shown means "nothing typed". */
+    [data-layout='grid'] .err .e-bad { display: none; }
+    [data-layout='grid'] input:not(:placeholder-shown) + .err .e-empty { display: none; }
+    [data-layout='grid'] input:not(:placeholder-shown) + .err .e-bad { display: inline; }
     [data-layout='grid'] .go { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
     [data-layout='grid'] .note { color: inherit; font-size: var(--text-sm); }
     /* Underlined: the site's preflight drops it, and colour alone does not tell a link apart
