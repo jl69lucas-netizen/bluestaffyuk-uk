@@ -362,6 +362,20 @@ def test_the_video_embed_poster_and_label_are_opt_in():
     assert 'aria-label="Play the video: ' in kit and "data-play-label" not in kit
 
 
+def test_the_city_letter_sizes_its_photo_from_the_photos_own_record():
+    """Task 7b review, item 8: the letter's photograph takes its box and its `sizes` from the
+    photo's own width and height (data/image-focus.json through servedPhoto()), never from
+    numbers fitted to Mark's photo, so another city's letter can pin any served photo."""
+    src = (KIT / "CityLetter.astro").read_text(encoding="utf-8")
+    assert "319" not in src and "213" not in src
+    assert "${p.w}px" in src
+    s = section("city-letter")
+    img = re.search(r'<img [^>]*src="/images/([^"]+)"[^>]*>', s)
+    row = focus_rows()[img.group(1)]
+    assert f'width="{row["w"]}"' in img.group(0) and f'height="{row["h"]}"' in img.group(0)
+    assert f'{row["w"]}px' in re.search(r'sizes="([^"]*)"', img.group(0)).group(1)
+
+
 def test_built_city_chapters_put_each_photo_straight_after_its_heading():
     s = section("city-chapters")
     blocks = re.findall(r"<h3[^>]*>.*?</h3>\s*(<img [^>]*>)", s, re.S)

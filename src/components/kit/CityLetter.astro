@@ -22,6 +22,10 @@ const index = all.findIndex((r) => r.name === name);
 if (index < 0) throw new Error(`CityLetter: data/reviews.json has no review by ${name}`);
 const review = all[index];
 const p = servedPhoto(photo);
+// The photograph paints at its OWN width (its width/height attributes, from data/image-focus.json
+// through servedPhoto()), never wider, and shrinks with the card; pinned beside the letter it
+// takes the pin column, PIN px at most. Nothing here is fitted to one photo.
+const PIN = 300;
 ---
 <section {...rest} class:list={['city-kit', 'city-letter', cls]}>
   <div class="in">
@@ -31,7 +35,7 @@ const p = servedPhoto(photo);
     </div>
     <div class="card" data-review-slot>
       <figure class="pic">
-        <img src={p.file} srcset={p.srcset} sizes="(min-width: 1024px) 300px, 319px" alt={p.alt}
+        <img src={p.file} srcset={p.srcset} sizes={`(min-width: 1024px) ${Math.min(PIN, p.w)}px, ${p.w}px`} alt={p.alt}
           width={p.w} height={p.h} class={focusClass(photo)} loading="lazy" decoding="async" />
       </figure>
       <div>
@@ -58,8 +62,10 @@ const p = servedPhoto(photo);
       display: grid; gap: var(--space-5); padding: var(--space-5); background: var(--color-surface-raised);
       border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--shadow-card);
     }
-    .pic { margin: 0; justify-self: start; width: 100%; max-width: 319px; }
-    .pic img { display: block; width: 100%; height: auto; aspect-ratio: 319 / 213; object-fit: cover; border-radius: var(--radius-md); background: var(--color-bone-50); }
+    /* No width of its own: the img's width/height attributes are the photo's own size and
+       ratio, `justify-self: start` shrinks the figure to it, and max-width lets it give way. */
+    .pic { margin: 0; justify-self: start; max-width: 100%; }
+    .pic img { display: block; max-width: 100%; height: auto; border-radius: var(--radius-md); background: var(--color-bone-50); }
     blockquote { margin: 0; position: relative; }
     .mark { display: block; height: 44px; margin: 0 0 var(--space-1); font-family: var(--font-display); font-size: 88px; line-height: 1; color: var(--color-brand-mid); }
     blockquote p { margin: 0; font-size: var(--text-lg); line-height: 1.6; color: var(--color-text); }
