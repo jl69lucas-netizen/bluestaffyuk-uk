@@ -651,6 +651,12 @@ def test_the_specimens_count_the_litter_from_the_data():
     src = (KIT / "_registry.ts").read_text(encoding="utf-8")
     for literal in ("Six puppies", "Three boys", "three boys", "three girls"):
         assert literal not in src, literal
+    # No hand-typed litter size in any specimen string ('The six', 'the six', 'Six Puppies'):
+    # the word is LITTER, from availablePuppies().length (Task 7b spec review, gap 3).
+    code = "\n".join(l for l in src.splitlines()
+                     if not l.lstrip().startswith(("//", "*", "/*")) and "const WORDS" not in l)
+    typed = re.findall(r"""['`][^'`\n]*\b[Ss]ix\b[^'`\n]*['`]""", code)
+    assert not typed, typed
 
 
 IN_BODY = ("CityTakeawaysLedger", "CityPuppySheet", "CityRoster", "CityVideoPanel", "CityChapters",

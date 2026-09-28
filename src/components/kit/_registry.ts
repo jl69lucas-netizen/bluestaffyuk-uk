@@ -152,6 +152,13 @@ const PRICE_ROWS: (string | number)[][] = (puppies as { name: string; sex: strin
   .slice(0, 4)
   .map((p) => [p.name, p.sex === 'male' ? 'Male' : 'Female', money(p.price_gbp), money(prices.deposit_gbp)]);
 
+/** The litter's counts in words, from the data ("six", "three"), for specimen copy. */
+const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const inWords = (n: number) => WORDS[n] ?? String(n);
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const LITTER = inWords(availablePuppies().length);
+const BOYS = inWords(availablePuppies().filter((p) => p.sex === 'male').length);
+const GIRLS = inWords(availablePuppies().filter((p) => p.sex === 'female').length);
 /** The city nav set's demo sections: the city preview's OWN section anchors
  *  (`kit-<component id>`, which /kit-preview/city/ gives every section it renders), so every
  *  link resolves and the scroll-spy has real sections to observe — no stub block is needed. One
@@ -165,7 +172,7 @@ export const CITY_DEMO_SECTIONS: SectionRef[] = [
   { id: 'kit-city-dial-photo-marker', label: 'Dial', question: 'Where Are You on the Page?', icon: 'home' },
   { id: 'kit-city-jump-stepper', label: 'Jump', question: 'How Do You Jump to a Section on a Phone?', icon: 'faq' },
   { id: 'kit-city-takeaways-ledger', label: 'In short', question: 'What Should a Buyer Take From This Page?', icon: 'deposit' },
-  { id: 'kit-city-puppy-sheet', label: 'The six', question: 'Which Puppy Will You Ask About First?', icon: 'delivery' },
+  { id: 'kit-city-puppy-sheet', label: `The ${LITTER}`, question: 'Which Puppy Will You Ask About First?', icon: 'delivery' },
 ];
 
 /** The FAQ specimen's eighteen rows, in three blocks of six (the user's ruling for a city page:
@@ -179,13 +186,6 @@ const pupsBySex = (sex: 'male' | 'female') => {
   const names = availablePuppies().filter((p) => p.sex === sex).map((p) => `${p.name} (${p.colour.toLowerCase()})`);
   return names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names.join('');
 };
-/** The litter's counts in words, from the data ("six", "three"), for specimen copy. */
-const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
-const inWords = (n: number) => WORDS[n] ?? String(n);
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const LITTER = inWords(availablePuppies().length);
-const BOYS = inWords(availablePuppies().filter((p) => p.sex === 'male').length);
-const GIRLS = inWords(availablePuppies().filter((p) => p.sex === 'female').length);
 const FAQ_BUY: CityFaqRow[] = [
   { q: 'How much does one of your blue Staffy puppies cost?', a: `${BOY_PRICE} for each of our boys and ${GIRL_PRICE} for each of our girls, and the price is the same wherever in the UK you live.` },
   { q: 'Which puppies can I ask about right now?', a: `Every one on our list: ${pupsBySex('male')} are the boys, and ${pupsBySex('female')} are the girls.` },
@@ -492,7 +492,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   },
   'city-dial-photo-marker': {
     C: CityDialPhotoMarker,
-    demo: [{ sections: CITY_DEMO_SECTIONS, photo: 'Cheryl1.jpeg', photoAlt: 'Cheryl, a blue girl with a white blaze, one of the six puppies' }],
+    demo: [{ sections: CITY_DEMO_SECTIONS, photo: 'Cheryl1.jpeg', photoAlt: `Cheryl, a blue girl with a white blaze, one of the ${LITTER} puppies` }],
   },
   'city-jump-stepper': { C: CityJumpStepper, demo: [{ sections: CITY_DEMO_SECTIONS, chrome: false }] },
   // Each row states a fact the data files back; the figures are read from them.
@@ -505,7 +505,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       photo: 'jones-strong-staffy-sire-temperament.webp',
       caption: `Jones, the sire, at home in ${SITE.address.city}`,
       rows: [
-        { label: 'The six', text: `${cap(BOYS)} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, all available now.` },
+        { label: `The ${LITTER}`, text: `${cap(BOYS)} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, all available now.` },
         { label: 'The deposit', text: depositLine },
         { label: 'The route', text: `DEFRA-approved transport for ${DELIVERY_BAND}, priced by distance, or collection in ${SITE.address.city}.` },
         { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
@@ -519,7 +519,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     demo: [{
       fit: 'full',
       heading: 'Which Puppy Will You Ask About First?',
-      lede: `Maggie and Jones's six are laid out here like family prints, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, so you can pick a favourite before you ask.`,
+      lede: `Maggie and Jones's ${LITTER} are laid out here like family prints, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, so you can pick a favourite before you ask.`,
       photo: 'maggie-blue-staffy-dam-with-pups.webp',
       caption: `Maggie, the dam, with her puppies in ${SITE.address.city}`,
     }],
@@ -527,9 +527,9 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'city-roster': {
     C: CityRoster,
     demo: [{
-      heading: 'How Do the Six Puppies Compare Side by Side?',
+      heading: `How Do the ${cap(LITTER)} Puppies Compare Side by Side?`,
       lede: "Here is the whole litter on one sheet, so you can weigh up a boy against a girl: every puppy's sex, colour and price, taken straight from our list.",
-      caption: 'The six puppies, as listed',
+      caption: `The ${LITTER} puppies, as listed`,
     }],
   },
   // The id is the site's own (data/settings.json youtube_embeds); the component refuses any other.
@@ -538,12 +538,12 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     demo: [{
       fit: 'full',
       heading: 'How Lively Is a Blue Staffy Puppy at Home?',
-      lede: 'Very, and our short film of puppies from one of our litters shows it better than we can say it; watch it before you choose between the six.',
+      lede: `Very, and our short film of puppies from one of our litters shows it better than we can say it; watch it before you choose between the ${LITTER}.`,
       videoId: (settings as { youtube_embeds: string[] }).youtube_embeds[0],
       videoTitle: 'Staffordshire Bull Terrier puppies: a litter of ours on film',
-      caption: 'A litter of ours, on film; it loads from YouTube only when you press play. Poster photo: Christa, one of the six available now.',
+      caption: `A litter of ours, on film; it loads from YouTube only when you press play. Poster photo: Christa, one of the ${LITTER} available now.`,
       poster: 'Christa.jpeg',
-      side: { photo: 'Ince1.jpg', alt: 'Ince standing by the garden fence at home', name: 'Ince', text: 'A solid blue boy, one of the six available now.' },
+      side: { photo: 'Ince1.jpg', alt: 'Ince standing by the garden fence at home', name: 'Ince', text: `A solid blue boy, one of the ${LITTER} available now.` },
       facts: [
         { label: 'Parents', text: 'Maggie and Jones, DNA-tested for L-2-HGA and HC-HSF4' },
         { label: 'Price', text: `${BOY_PRICE} for a boy, ${GIRL_PRICE} for a girl` },
@@ -560,7 +560,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       lede: `In our home in ${SITE.address.city}, with its mother close by, and then at your door or in your arms at collection, whichever suits you.`,
       chapters: [
         { place: SITE.address.city, question: 'Who Raises Your Puppy Before It Leaves Home?', photo: 'Byrd1.jpg',
-          photoAlt: 'Byrd, one of the six, out on the garden decking',
+          photoAlt: `Byrd, one of the ${LITTER}, out on the garden decking`,
           text: 'We do, in our own home. Every litter is raised with Puppy Culture and ENS, and both parents, Maggie and Jones, are DNA-tested for L-2-HGA and HC-HSF4 with their eyes and elbows screened.' },
         { place: 'Your door', question: 'How Does Your Puppy Get From Us to Your Door?', photo: 'ethical-staffy-puppy-london-delivery.webp',
           text: `By DEFRA-approved transport, for ${DELIVERY_BAND} priced by distance, or you collect from us in ${SITE.address.city}. ${depositLine}` },
@@ -627,8 +627,8 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     C: CityContactLineup,
     demo: [{
       fit: 'full',
-      heading: 'Which of Our Six Puppies Would You Like to Ask About?',
-      lede: 'Here are all six as they are today. Choose one in the form, tell us where you live, and we reply by email with the answers to everything you asked.',
+      heading: `Which of Our ${cap(LITTER)} Puppies Would You Like to Ask About?`,
+      lede: `Here are all ${LITTER} as they are today. Choose one in the form, tell us where you live, and we reply by email with the answers to everything you asked.`,
     }],
   },
 };
