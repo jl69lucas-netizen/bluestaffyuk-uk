@@ -14,7 +14,9 @@ So: compute real dates HERE, from full local history, and commit the result.
 datePublished = the first commit that touched the page file — and never later than the
                 earliest datePublished any COMMITTED data/page-dates.json gave the route: a
                 URL that changes source (a city leaving the template for its own file, Plan 2
-                Task 8) was still published when it was first published.
+                Task 8) was still published when it was first published. The floor is
+                ONE-WAY: a date an old map got wrong is corrected by a `floor_override`
+                (route -> datePublished + reason) in data/page-dates-ignore.json.
 dateModified  = the most recent commit that touched it, less the commits
                 data/page-dates-ignore.json lists for that path: a commit that changed a
                 route's sources without changing its content (the template's own-file skip)
@@ -158,32 +160,104 @@ def _git(*args):
         raise NoGit(exc) from exc
 
 
-def ignored_commits():
-    """[(sha prefix, {paths})] from data/page-dates-ignore.json; [] when the file is absent.
-    A malformed file stops the run: silently dating by every commit is the defect it fixes."""
+class IgnoreFileError(ValueError):
+    """data/page-dates-ignore.json cannot be used. The date step stops (exit 2) with this one
+    sentence rather than dating by every commit, which is the defect the file exists to fix."""
+
+
+_SHA = re.compile(r"^[0-9a-fA-F]{7,40}$")
+_DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _load_ignore():
+    """The parsed ignore file, shape-checked, or None when there is none."""
     f = ROOT / IGNORE
     if not f.exists():
+        return None
+    try:
+        data = json.loads(f.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        raise IgnoreFileError(f"{IGNORE} is not readable JSON ({e}); fix it before any page is dated.")
+    if not isinstance(data, dict) or not isinstance(data.get("commits"), list):
+        raise IgnoreFileError(f"{IGNORE} must be an object with a `commits` list.")
+    for r in data["commits"]:
+        ok = (isinstance(r, dict) and isinstance(r.get("sha"), str) and _SHA.match(r["sha"])
+              and isinstance(r.get("paths"), list) and r["paths"]
+              and all(isinstance(x, str) and x for x in r["paths"])
+              and isinstance(r.get("reason"), str) and r["reason"].strip())
+        if not ok:
+            raise IgnoreFileError(f"{IGNORE}: every entry needs a `sha` of 7 to 40 hex characters, a "
+                                  f"non-empty `paths` list of strings and a `reason`; this one does not: {r!r}")
+    over = data.get("floor_override", {})
+    if not isinstance(over, dict) or not all(
+            isinstance(v, dict) and isinstance(v.get("datePublished"), str) and _DAY.match(v["datePublished"])
+            and isinstance(v.get("reason"), str) and v["reason"].strip() for v in over.values()):
+        raise IgnoreFileError(f"{IGNORE}: `floor_override` maps a route to a `datePublished` "
+                              "(YYYY-MM-DD) and a `reason`.")
+    return data
+
+
+def ignored_commits():
+    """[(full sha, {paths})] from data/page-dates-ignore.json; [] when the file is absent.
+    Every SHA is resolved ONCE to the one commit it names in this history (`git rev-parse
+    --verify`) and compared in full: a SHA that is missing or ambiguous here is refused, never
+    matched by prefix against whatever happens to share it."""
+    data = _load_ignore()
+    if not data:
         return []
-    rows = json.loads(f.read_text(encoding="utf-8"))["commits"]
     out = []
-    for r in rows:
-        if not (r.get("sha") and r.get("paths") and r.get("reason")):
-            raise ValueError(f"{IGNORE}: every entry needs sha, paths and reason: {r!r}")
-        out.append((r["sha"].lower(), set(r["paths"])))
+    for r in data["commits"]:
+        try:
+            full = _git("rev-parse", "--verify", "--quiet", f"{r['sha']}^{{commit}}").strip()
+        except subprocess.CalledProcessError:
+            full = ""
+        if not full:
+            raise IgnoreFileError(f"{IGNORE}: {r['sha']} is not exactly one commit of this "
+                                  "repository's history (missing or ambiguous); list its full SHA.")
+        out.append((full.lower(), set(r["paths"])))
     return out
 
 
+def floor_overrides():
+    """{route: datePublished} from the ignore file's optional `floor_override`."""
+    data = _load_ignore()
+    return {k: v["datePublished"] for k, v in (data or {}).get("floor_override", {}).items()}
+
+
 def published_floor():
-    """{route: earliest datePublished in any committed version of data/page-dates.json}."""
+    """{route: earliest datePublished in any committed version of data/page-dates.json}.
+
+    THE FLOOR IS ONE-WAY: once any commit of the map carried a date for a route, no later run
+    can move that route's datePublished later, only keep or lower it. A date that was WRONG in
+    an old map is therefore corrected by a `floor_override` (route -> datePublished + reason)
+    in data/page-dates-ignore.json, never by editing history. Every version is read through ONE
+    `git cat-file --batch` process, so the whole history costs two git calls."""
     floor = {}
     try:
         shas = _git("log", "--format=%H", "--", MAP).split()
     except subprocess.CalledProcessError:
         return floor
-    for sha in shas:
+    if not shas:
+        return floor
+    try:
+        raw = subprocess.run(["git", "cat-file", "--batch"], cwd=str(ROOT), capture_output=True,
+                             check=True, input="".join(f"{s}:{MAP}\n" for s in shas).encode()).stdout
+    except FileNotFoundError as exc:
+        raise NoGit(exc) from exc
+    except subprocess.CalledProcessError:
+        return floor
+    i = 0
+    while i < len(raw):
+        nl = raw.index(b"\n", i)
+        head = raw[i:nl].split()
+        i = nl + 1
+        if len(head) < 3 or head[1] != b"blob":
+            continue                       # "<rev> missing": that commit deleted the map
+        size = int(head[2])
+        body, i = raw[i:i + size], i + size + 1
         try:
-            routes = json.loads(_git("show", f"{sha}:{MAP}"))["routes"]
-        except (subprocess.CalledProcessError, ValueError, KeyError, TypeError):
+            routes = json.loads(body.decode("utf-8"))["routes"]
+        except (ValueError, KeyError, TypeError):
             continue
         for route, row in routes.items():
             d = isinstance(row, dict) and row.get("datePublished")
@@ -192,22 +266,29 @@ def published_floor():
     return floor
 
 
+_DATES_CACHE = {}
+
+
 def git_dates(path, ignore=()):
     """(first, last) commit dates for a path as YYYY-MM-DD, or (None, None), skipping every
-    commit `ignore` lists for this path."""
+    commit `ignore` lists for this path. Cached per (root, path, ignore) for the run: the
+    location and puppy templates share their two sources across every page they build."""
+    key = (str(ROOT), path, tuple((s, tuple(sorted(p))) for s, p in ignore))
+    if key in _DATES_CACHE:
+        return _DATES_CACHE[key]
     try:
         out = _git("log", "--follow", "--format=%H %cs", "--", path).split("\n")
     except subprocess.CalledProcessError:
-        return None, None
+        out = []
     dates = []
     for line in filter(None, out):
         sha, date = line.split()
-        if any(sha.startswith(pre) and path in paths for pre, paths in ignore):
+        if any(sha == full and path in paths for full, paths in ignore):
             continue
         dates.append(date)
-    if not dates:
-        return None, None
-    return dates[-1], dates[0]
+    got = (dates[-1], dates[0]) if dates else (None, None)
+    _DATES_CACHE[key] = got
+    return got
 
 
 def build():
@@ -222,7 +303,8 @@ def build():
         if (ROOT / template).exists():
             pages += expand(template, static_routes)
 
-    ignore, floor = ignored_commits(), published_floor()
+    _DATES_CACHE.clear()        # history may have moved since the last call in this process
+    ignore, floor, override = ignored_commits(), published_floor(), floor_overrides()
     routes, skipped = {}, []
     for route, sources in pages:
         if route is None:
@@ -237,6 +319,8 @@ def build():
         # The URL was published when it was first published, whatever builds it now.
         if route in floor and floor[route] < first:
             first = floor[route]
+        if route in override:            # a wrong committed date, corrected with its reason
+            first = override[route]
         # Does the page already emit its own dateModified? A page that builds its schema
         # inline in the BODY rather than passing it via the schemaJson prop cannot be
         # detected from props, and would end up with TWO contradicting dates. Detect it at
@@ -285,6 +369,9 @@ def main(argv=None):
 
     try:
         routes, skipped, _ = build()
+    except IgnoreFileError as e:
+        print(f"cannot run: {e}")
+        return 2
     except NoGit:
         print("cannot run: `git` is not on PATH, so no date in this map would be a real one. "
               "Install git, or check out with history — do NOT let the build proceed with the "

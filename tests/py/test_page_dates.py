@@ -144,6 +144,79 @@ def test_a_routes_date_published_never_moves_later_than_any_committed_map(repo):
     assert (got["datePublished"], got["dateModified"]) == ("2026-01-05", "2026-03-09")
 
 
+def _ignore(repo, entries, raw=None):
+    _write(repo, "data/page-dates-ignore.json", raw if raw is not None else json.dumps({"commits": entries}))
+
+
+@pytest.mark.parametrize("label, raw", [
+    ("bad JSON", "{not json"),
+    ("no commits key", json.dumps({"entries": []})),
+    ("paths not a list", json.dumps({"commits": [{"sha": "a" * 40, "paths": "src/x", "reason": "r"}]})),
+    ("empty paths", json.dumps({"commits": [{"sha": "a" * 40, "paths": [], "reason": "r"}]})),
+    ("a path not a string", json.dumps({"commits": [{"sha": "a" * 40, "paths": [3], "reason": "r"}]})),
+    ("no reason", json.dumps({"commits": [{"sha": "a" * 40, "paths": ["src/x"]}]})),
+    ("sha under 7", json.dumps({"commits": [{"sha": "abc12", "paths": ["src/x"], "reason": "r"}]})),
+    ("override without reason", json.dumps({"commits": [], "floor_override": {"/x/": {"datePublished": "2026-01-01"}}})),
+])
+def test_a_malformed_ignore_file_is_exit_2_with_one_sentence(repo, capsys, label, raw):
+    """A bad ignore file must stop the date step, never date by every commit silently, and say
+    why in a sentence rather than a traceback (the Task 8 quality review, M1)."""
+    _ignore(repo, None, raw=raw)
+    assert G.main([]) == 2, label
+    out = capsys.readouterr().out
+    assert "page-dates-ignore.json" in out and "Traceback" not in out, label
+
+
+def test_an_ignore_sha_that_is_not_a_commit_here_is_exit_2(repo, capsys):
+    """A SHA must resolve to exactly one commit of this history (I2): a typo or a commit from
+    another clone would otherwise ignore nothing, or the wrong thing, silently."""
+    _ignore(repo, [{"sha": "deadbeefdeadbeef", "paths": ["src/pages/uk-locations/[slug].astro"], "reason": "r"}])
+    assert G.main([]) == 2
+    assert "deadbeefdeadbeef" in capsys.readouterr().out
+
+
+def test_an_ignored_short_sha_is_compared_as_the_full_commit(repo):
+    """The 7-character prefix is resolved once; the comparison is on the full SHA."""
+    _write(repo, "src/pages/uk-locations/[slug].astro", "getStaticPaths // refactor")
+    _commit(repo, "2026-03-09")
+    full = _head(repo)
+    _ignore(repo, [{"sha": full[:7].upper(), "paths": ["src/pages/uk-locations/[slug].astro"], "reason": "r"}])
+    _commit(repo, "2026-03-10")
+    assert G.ignored_commits() == [(full, {"src/pages/uk-locations/[slug].astro"})]
+    assert G.build()[0]["/uk-locations/blue-staffies-glasgow/"]["dateModified"] == "2026-01-05"
+
+
+def test_the_floor_with_no_committed_map_leaves_git_dates_alone(repo):
+    """No committed data/page-dates.json yet: there is no floor, and a page is dated by git."""
+    assert G.published_floor() == {}
+    _write(repo, "src/pages/uk-locations/blue-staffies-glasgow.astro", "<h1>own page</h1>")
+    _commit(repo, "2026-03-09")
+    assert G.build()[0]["/uk-locations/blue-staffies-glasgow/"]["datePublished"] == "2026-03-09"
+
+
+def test_the_floor_with_no_git_raises_nogit(repo, monkeypatch):
+    def no_git(*a, **k):
+        raise FileNotFoundError(2, "No such file or directory: 'git'")
+    monkeypatch.setattr(G.subprocess, "run", no_git)
+    with pytest.raises(G.NoGit):
+        G.published_floor()
+
+
+def test_a_floor_override_corrects_a_wrong_committed_date(repo):
+    """The floor is one-way: once a committed map carries a date, a later run can only keep or
+    lower it. A wrong early date is corrected by a `floor_override` with its reason (M3)."""
+    route = "/uk-locations/blue-staffies-glasgow/"
+    _write(repo, "data/page-dates.json", json.dumps({"routes": {route: {
+        "datePublished": "2025-01-01", "dateModified": "2025-01-01", "selfDated": False}}}))
+    _commit(repo, "2026-01-06")
+    assert G.build()[0][route]["datePublished"] == "2025-01-01"
+    _ignore(repo, [])
+    _write(repo, "data/page-dates-ignore.json", json.dumps({"commits": [], "floor_override": {
+        route: {"datePublished": "2026-01-05", "reason": "the 2025 date was a typo in the old map"}}}))
+    _commit(repo, "2026-01-07")
+    assert G.build()[0][route]["datePublished"] == "2026-01-05"
+
+
 def test_the_puppies_template_expands_to_every_slug_in_puppies_json(repo):
     routes, _, _ = G.build()
     assert "/available-puppies/roman/" in routes and "/available-puppies/byrd/" in routes
