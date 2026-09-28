@@ -64,10 +64,12 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
        /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
        1280) — not the viewport. The tiers are the section's own box, tablet from 640px and
        desktop from 800px (the Task 7b review: the canvas's 1024 was never reached in the
-       column), less this root's own gutters (12px a side, 24px from a 1024px viewport): 592px and 752px. A full-width
+       column). The root has NO padding, so its content box is its box and the queries read
+       640 and 800 as written; the gutters are the tray's own margins, set in the same queries
+       (a container cannot query itself, so no rule here reads the viewport). A full-width
        copy switches where the canvas frames did at 375 / 768 / 1024 / 1280. */
-    .city-roster { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
-    .tray { max-width: 1000px; margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    .city-roster { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) 0; }
+    .tray { max-width: min(1000px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     .head { padding: 0 var(--space-2) var(--space-4); }
     h2 { margin: 0 0 var(--space-3); }
     .lede { margin: 0; font-size: var(--city-lead); color: var(--color-text); }
@@ -87,7 +89,9 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
     thead th.num, tbody td.num { text-align: right; font-feature-settings: 'tnum'; font-weight: 700; white-space: nowrap; }
     .ok { font-weight: 600; color: var(--color-ok); }
     .foot { margin: var(--space-4) var(--space-2) 0; font-size: var(--text-sm); color: var(--color-ink-2); }
-    @media (max-width: 640px) {
+    /* Rule 13: the table stacks into labelled rows below a 640px BOX (the viewport never
+       enters into it: in the 656px column at 1024 it is a table). */
+    @container (max-width: 639.98px) {
       caption { padding-left: var(--space-2); }
       tbody { display: grid; gap: var(--space-2); }
       tbody tr { position: relative; min-height: 72px; padding: var(--space-3) var(--space-4) var(--space-3) 72px; border: 0; border-radius: var(--radius-md); background: var(--counter-bed); }
@@ -104,8 +108,8 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
       tbody td.num, tbody tr:last-child td.num { position: absolute; right: var(--space-4); top: var(--space-3); font-size: var(--text-lg); color: var(--color-text); }
       tbody td.num::before { content: none; }
     }
-    @media (min-width: 1024px) { .city-roster { padding: var(--space-7) var(--space-5); } }
-    @container (min-width: 752px) {
+    @container (min-width: 800px) {
+      .tray { max-width: min(1000px, calc(100% - 2 * var(--space-5))); margin-block: var(--space-2); }
       .tray { padding: var(--space-6) var(--space-6) var(--space-5); }
       .head { padding: 0 0 var(--space-5); }
       caption, .foot { padding-left: 0; margin-left: 0; }

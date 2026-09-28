@@ -651,3 +651,18 @@ def test_the_specimens_count_the_litter_from_the_data():
     src = (KIT / "_registry.ts").read_text(encoding="utf-8")
     for literal in ("Six puppies", "Three boys", "three boys", "three girls"):
         assert literal not in src, literal
+
+
+IN_BODY = ("CityTakeawaysLedger", "CityPuppySheet", "CityRoster", "CityVideoPanel", "CityChapters",
+           "CityLetter", "CityFaqLedger", "CityNewsletterNotice", "CityContactLineup")
+
+
+def test_no_in_body_city_component_reads_the_viewport_width():
+    """Task 7b spec review, gap 2: an in-body component lays out for its own box, full width or in
+    the column beside the dial, so no width rule of one reads the viewport — not the roster's
+    stack (rule 13 now stacks below a 640px box) and not the padding steps. Motion and print
+    queries are not width rules."""
+    for name in IN_BODY:
+        css = (KIT / f"{name}.astro").read_text(encoding="utf-8").split("<style>", 1)[1]
+        width = re.findall(r"@media[^{]*\b(?:min|max)-width[^{]*\{", css)
+        assert not width, (name, width)

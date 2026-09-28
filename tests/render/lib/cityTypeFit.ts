@@ -20,16 +20,17 @@
  *     and order untouched, so it is held to the same line caps as any other paragraph;
  *   - `[data-city-jump-stepper]` and `[data-city-dial-photo-marker]`: sticky nav furniture, whose
  *     height is the page's section list, not reading text (the sheet is a closed dialog);
- *   - the puppy sheet's HEIGHT only, and only in a box of 1000px or more — the full-width specimen
- *     on /kit-preview/city/, which no city page produces (its body column is 832px at most). There
- *     the six prints are three to a row at about 360px each, and a print is the puppy's photograph
- *     at the size a buyer judges it by; in the column the same sheet is held to 1.6 viewports.
+ *   - the puppy sheet's HEIGHT only, and only on the full-width specimen route /kit-preview/city/
+ *     (the caller says so: `fullWidthSpecimen`), which no city page reproduces — a city page's
+ *     body column is 832px at most. There the six prints are three to a row at about 360px each,
+ *     and a print is the puppy's photograph at the size a buyer judges it by; on
+ *     /kit-preview/city-page/ and every real city page the sheet is held to 1.6 viewports.
  *     The roster needs no exemption.
  * Fixtures: tests/render/fixtures/city/type-fit-{broken,good}.html, judged in city-kit.spec.ts.
  */
 export interface TypeFitResult { examined: number; defects: string[] }
 
-export function cityTypeFit(viewport: number): TypeFitResult {
+export function cityTypeFit({ viewport, fullWidthSpecimen = false }: { viewport: number; fullWidthSpecimen?: boolean }): TypeFitResult {
   const CAP: Record<string, [number, number, number]> = { H1: [26, 30, 34], H2: [22, 25, 28], H3: [17, 18, 20] };
   const TIER = ['phone', 'tablet', 'desktop'];
   const defects: string[] = [];
@@ -86,7 +87,7 @@ export function cityTypeFit(viewport: number): TypeFitResult {
       if (n > max) defects.push(`${where}: a paragraph "${name(p)}" runs ${n} lines (${max} max at ${viewport}px)`);
     }
     const tall = viewport < 768 ? 2.5 : viewport >= 1280 ? 1.6 : Infinity;
-    const sheetFullWidth = root.matches('.city-sheet') && w >= 1000;
+    const sheetFullWidth = fullWidthSpecimen && root.matches('.city-sheet');
     if (Number.isFinite(tall) && !sheetFullWidth) {
       examined++;
       const h = root.getBoundingClientRect().height;

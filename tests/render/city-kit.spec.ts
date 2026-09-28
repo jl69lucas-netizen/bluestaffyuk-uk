@@ -291,7 +291,12 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       const SPEC: Record<string, { tablet: Fact[]; desktop: Fact[] }> = {
         '.city-takeaways-ledger': { tablet: [['beside', '.row dt', '.row dd']], desktop: [['beside', '.pic', 'dl']] },
         '.city-sheet': { tablet: [['row', '.city-pup', 3]], desktop: [['row', '.city-pup', 3], ['square', '.city-pup img']] },
-        '.city-roster': { tablet: [], desktop: [] },
+        // A table from a 640px box (rule 13 stacks it below): the five cells of a row side by side,
+        // under a painted head. Phone boxes are held by layout-table-stacks-on-mobile.
+        '.city-roster': {
+          tablet: [['row', 'tbody tr:first-child > *', 5], ['beside', 'tbody tr:first-child th', 'tbody tr:first-child td.num']],
+          desktop: [['row', 'tbody tr:first-child > *', 5], ['beside', 'tbody tr:first-child th', 'tbody tr:first-child td.num'], ['row', 'thead th', 5]],
+        },
         '.city-video': { tablet: [['beside', '.side > img', '.facts']], desktop: [['beside', '.grid > .kit-video', '.side']] },
         '.city-chapters': { tablet: [['beside', '.ch .media', '.ch p']], desktop: [['beside', '.ch h3', '.ch .media'], ['beside', '.ch .media', '.ch p']] },
         '.city-letter': { tablet: [], desktop: [['beside', '.pic', 'blockquote']] },
@@ -341,7 +346,8 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-type-fit': {
     present: '.city-kit',
     run: async (page, viewport) => {
-      const r = await page.evaluate(cityTypeFit, viewport);
+      const fullWidthSpecimen = new URL(page.url()).pathname === '/kit-preview/city/';
+      const r = await page.evaluate(cityTypeFit, { viewport, fullWidthSpecimen });
       console.log(`city-type-fit @ ${viewport}px: examined ${r.examined}`);
       return r.examined ? r.defects : ['city-type-fit examined nothing'];
     },
@@ -422,7 +428,7 @@ for (const kind of ['broken', 'good'] as const) {
   test(`city-type-fit on its known_${kind} fixture`, async ({ page }, testInfo) => {
     const viewport = testInfo.project.use.viewport!.width;
     await page.setContent(readFileSync(new URL(`./fixtures/city/type-fit-${kind}.html`, import.meta.url), 'utf8'));
-    const r = await page.evaluate(cityTypeFit, viewport);
+    const r = await page.evaluate(cityTypeFit, { viewport });
     expect(r.examined, 'the fixture must be examined').toBeGreaterThan(0);
     if (kind === 'broken') {
       // Each kind of defect fires on its own element, not merely "something fired".

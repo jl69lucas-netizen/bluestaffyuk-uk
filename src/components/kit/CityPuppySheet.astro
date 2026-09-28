@@ -88,10 +88,12 @@ const [delivPre, delivPost] = deliveryLine.split(DELIVERY_BAND);
        /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
        1280) — not the viewport. The tiers are the section's own box, tablet from 640px and
        desktop from 800px (the Task 7b review: the canvas's 1024 was never reached in the
-       column), less this root's own gutters (12px a side, 24px from a 1024px viewport): 592px and 752px. A full-width
+       column). The root has NO padding, so its content box is its box and the queries read
+       640 and 800 as written; the gutters are the tray's own margins, set in the same queries
+       (a container cannot query itself, so no rule here reads the viewport). A full-width
        copy switches where the canvas frames did at 375 / 768 / 1024 / 1280. */
-    .city-sheet { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
-    .tray { max-width: 1200px; margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    .city-sheet { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) 0; }
+    .tray { max-width: min(1200px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     .head { display: grid; gap: var(--space-4); margin-bottom: var(--space-5); padding: 0 var(--space-2); }
     .fam { margin: 0; }
     .fam img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--radius-md); background: var(--color-bone-50); }
@@ -127,19 +129,19 @@ const [delivPre, delivPost] = deliveryLine.split(DELIVERY_BAND);
     .ask:focus-visible { outline: none; }
     .city-pup:hover .ask svg { transform: translateX(3px); }
     .foot { margin: var(--space-4) var(--space-2) 0; font-size: var(--text-sm); color: var(--color-ink-2); }
-    @container (max-width: 591px) {
+    @container (max-width: 639.98px) {
       .top { flex-direction: column; align-items: flex-start; }
       .ask { font-size: var(--text-xs); gap: 0; }
       .ask svg { display: none; }
     }
-    @container (min-width: 592px) {
+    @container (min-width: 640px) {
       .tray { padding: var(--space-6) var(--space-6) var(--space-5); }
       .head { padding: 0; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-6); align-items: center; }
       .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
       .foot { margin: var(--space-5) 0 0; }
     }
-    @media (min-width: 1024px) { .city-sheet { padding: var(--space-7) var(--space-5); } }
-    @container (min-width: 752px) {
+    @container (min-width: 800px) {
+      .tray { max-width: min(1200px, calc(100% - 2 * var(--space-5))); margin-block: var(--space-2); }
       .grid { gap: var(--space-5); }
       .city-pup :global(img) { aspect-ratio: 1 / 1; }
     }
