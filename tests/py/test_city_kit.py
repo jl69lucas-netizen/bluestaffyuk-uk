@@ -360,3 +360,101 @@ def test_built_city_letter_quotes_its_review_word_for_word():
     assert _h.unescape(quote) == reviews[n]["quote"]
     assert reviews[n]["name"] in s
     assert "AggregateRating" not in s and "★" not in s
+
+
+# --------------------------------------------------------------------------- Task 6
+
+def _text(fragment):
+    import html as _h
+    return re.sub(r"\s+", " ", _h.unescape(re.sub(r"<[^>]+>", " ", fragment))).strip()
+
+
+def test_built_city_faq_ledger_blocks_number_on_and_carry_one_rail():
+    s = section("city-faq-ledger")
+    blocks = re.findall(r'data-faq-block="([a-z-]+)"', s)
+    assert len(blocks) == 3 and len(set(blocks)) == 3
+    nums = [int(n) for n in re.findall(r'<span class="n"[^>]*>(\d+)</span>', s)]
+    assert nums == list(range(1, len(nums) + 1)), nums
+    # The user's ruling for a city page's FAQ: three blocks, 15 to 20 questions.
+    assert 15 <= len(nums) <= 20, len(nums)
+    assert s.count('class="rail"') == 1, "the rail goes with the top block only"
+    qs = re.findall(r"<summary[^>]*>.*?<h3[^>]*data-faq-q[^>]*>(.*?)</h3>.*?</summary>", s, re.S)
+    assert len(qs) == len(nums)
+    # Title Case at render, as Faq.astro does (rules/headings.md).
+    assert all(q[0].isupper() for q in qs)
+    # No guarantee figure while data/settings.json guarantee_days is null.
+    assert json.loads((ROOT / "data/settings.json").read_text())["guarantee_days"] is None
+    assert "guarantee" not in s.lower()
+    # No licence detail, no refund clause, and the rail's served photo keeps its served alt.
+    assert "licen" not in s.lower() and "refund" not in s.lower()
+    src = re.search(r'<img [^>]*src="/images/([^"]+)"[^>]*>', s)
+    assert re.search(r'alt="([^"]*)"', src.group(0)).group(1) in served_alts()[src.group(1)]
+
+
+def test_no_heading_on_the_city_preview_repeats_an_faq_question():
+    """plan2-notes (from the Task 9 review): no real section heading may repeat an FAQ question."""
+    html = built()
+    faq = {_text(q).lower() for q in re.findall(r"<h3[^>]*data-faq-q[^>]*>(.*?)</h3>", html, re.S)}
+    assert faq
+    heads = [_text(h) for h in re.findall(r"<h[1-6](?![^>]*data-faq-q)[^>]*>(.*?)</h[1-6]>", html, re.S)]
+    assert not [h for h in heads if h.lower() in faq]
+
+
+def test_built_city_newsletter_is_one_email_field_on_the_one_endpoint():
+    s = section("city-newsletter")
+    form = re.search(r"<form[^>]*data-newsletter[^>]*>(.*?)</form>", s, re.S)
+    head = re.search(r"<form[^>]*data-newsletter[^>]*>", s).group(0)
+    assert 'method="POST"' in head
+    ctl = re.findall(r"<(input|select|textarea)\b([^>]*)>", form.group(1))
+    real = [a for t, a in ctl if 'type="hidden"' not in a and 'name="_gotcha"' not in a]
+    assert len(real) == 1 and 'type="email"' in real[0] and 'name="email"' in real[0]
+    for hidden in ("_next", "_subject"):
+        assert f'name="{hidden}"' in form.group(1)
+    assert 'name="_gotcha"' in form.group(1)
+    # The same endpoint as the site's enquiry form, built by the same build.
+    contact = ROOT / "dist/uk-blue-staffy-breeders-contact/index.html"
+    if contact.exists():
+        real_action = re.findall(r'<form[^>]*\saction="([^"]*)"', contact.read_text())
+        assert re.search(r'\saction="([^"]*)"', head).group(1) in real_action
+
+
+def test_built_city_contact_lineup_keeps_the_whole_form_contract():
+    s = section("city-contact-lineup")
+    form = re.search(r'<form[^>]*data-layout="grid"[^>]*>(.*?)</form>', s, re.S)
+    head = re.search(r'<form[^>]*data-layout="grid"[^>]*>', s).group(0)
+    assert form and 'method="POST"' in head and "data-contact-form" in head
+    body = form.group(1)
+    for name in ("name", "email", "phone", "location", "puppy", "message", "_gotcha", "_next", "_subject"):
+        assert f'name="{name}"' in body, name
+    assert 'value="waiting-list"' in body
+    for p in _available():
+        assert f'value="{p["slug"]}"' in body, p["slug"]
+    for key in ("name", "email", "puppy", "message"):
+        assert f'data-err="city-contact-{key}-err"' in body and f'id="city-contact-{key}-err"' in body, key
+    # Every control has its own label.
+    for cid in re.findall(r'<(?:input|select|textarea)[^>]*id="([^"]+)"', body):
+        assert f'for="{cid}"' in body, cid
+    # The line-up: every available puppy, pictures only.
+    lineup = s.split('class="pups"', 1)[1].split("</ul>", 1)[0]
+    assert lineup.count("<li") == len(_available())
+    assert "<a " not in lineup and "<button" not in lineup
+
+
+def test_the_grid_layout_of_the_kit_form_is_opt_in():
+    """ContactFormKit's `layout="grid"` is the city line-up's alone: every built page's form is
+    still the stepped form, with its own heading, three fieldsets and no error wiring."""
+    pages = [p for p in (ROOT / "dist").rglob("index.html")
+             if "kit-preview" not in p.parts and 'data-form="contact"' in p.read_text(encoding="utf-8")]
+    if not pages:
+        pytest.skip("run npm run build first")
+    for page in pages:
+        html = page.read_text(encoding="utf-8")
+        for f in re.findall(r'<form[^>]*data-form="contact"[^>]*>.*?</form>', html, re.S):
+            assert 'data-layout="grid"' not in f and "data-err=" not in f, page
+            assert f.count("<fieldset") == 3, page
+
+
+def test_every_canvas_component_names_its_kit_component_and_every_city_row_is_one():
+    from city_components import COMPONENT_IDS, KIT_ID
+    assert list(KIT_ID) == list(COMPONENT_IDS)
+    assert list(KIT_ID.values()) == [r["id"] for r in city_rows()]

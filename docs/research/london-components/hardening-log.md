@@ -452,3 +452,52 @@ Task 4 build except one reordered, byte-identical VideoEmbed style block on the 
 carry a video (the home, about and for-sale pages; no rule in the blocks it moves past can reach
 a video element). `npm run test:render:pages` against a build of `f010977`: every built page's
 scorecard is identical (the same three `uk-locations/blue-staffy-puppies-uk` rows, Known Issue 81).
+
+**Task 6: FAQ blocks A, newsletter A, contact form B (2026-09-28).** Built on `/kit-preview/city/` and
+shot at 375 / 768 / 1024 / 1280 (`CITY_SHOTS=… npm run test:render:city`, plus one element shot per
+component, `built-<component>-<width>.png`, the states `built-faq-blocks-a-<width>-open.png` (the
+first question of each block open) and `built-{newsletter-a,contact-form-b}-<width>-error.png` (an
+empty submit, with the contact form's phone field focused), and canvas-beside-built pairs,
+`pair-<component>-<width>[-open|-error].png`, all in `BSUK-refs/london/_plan2-shots/`, against
+`_variants/faq-blocks-a-*`, `newsletter-a-*` and `contact-form-b-*`). The element shots were taken
+at a 3200px-tall viewport with the preview's own site header removed: at 900px the preview's
+sticky header (259px tall at 375) cut the foot off an element shot. `impeccable:impeccable` ran
+first and `frontend-design:frontend-design` second. The `PRODUCT.md` gate is still unmet, for the
+reason given under Task 2. The detector (`npx impeccable --json`) found nothing in the three sources
+or in `ContactFormKit.astro`.
+
+The specimen FAQ is 18 questions in three blocks of six (the user's ruling: three blocks, 15 to 20),
+numbered 01 to 18 through `start`, the rail on the top block only. Every answer is a fact the data
+files or the breeder's confirmed answers back: the prices and the six by name (read from the data),
+the deposit ruling (`depositLine`, no refund clause), the delivery band and collection in Carlisle,
+Maggie and Jones, the two DNA tests, eye and elbow screening with no score, the vet, the take-back
+terms, what a puppy has had, Puppy Culture and ENS, and the breed facts `data/faq.json` already
+carries. The canvas's KC-registration, two-year guarantee and 24-to-48-hour lines are not carried;
+there is no guarantee row while `guarantee_days` is null and no licence detail. No heading on the
+preview repeats an FAQ question (new test). Measured in the painting browser: an empty submit marks
+the newsletter's email and the contact form's four required controls `aria-invalid="true"`, each
+described by its painted error line; the rings on both steel bands read `--color-focus-on-inverse`
+(brass-500) through `.on-inverse`; no width scrolls sideways.
+
+| Component | impeccable found | frontend-design found | Changed | Widths |
+|---|---|---|---|---|
+| FAQ blocks (CityFaqLedger, A) | A block without the rail ran its rows across the full band (1,150px at 1280), so a question and its plus sat a long glance apart; the canvas ledger was a 780px column beside the rail. | Deep band, sticky photo rail over the brief, brass-200 numbers, plus-to-minus, the open answer indented under its question, the 21:9 strip at 768 and the 16:9 strip on a phone match the frame. The rail photo is the London owner photo (Maggie's is the puppy sheet's; one served photo per page), served alt kept. At 768 the 400px master paints at 704px in the 21:9 strip (`img-not-upscaled` advisory, 1.76x): a photo choice for the page's board, not a component fix. The blocks sit as three sections, so the space between them is two section paddings, as on a city page, where they are apart. | A block without the rail keeps a 780px measure. | 375 768 1024 1280 |
+| newsletter (CityNewsletter, A) | No finding on the component. | Raised card on bone, Christa on the left from 768 and on top on a phone, ruled eyebrow, brass full-width submit on the form radius, warn-colour error line under the field: all match. The plan's alt ("looking up … from a fleece rug") did not match the photo, and the `scene` alt was already on the page, so the specimen's alt is its own, checked against the photo. | Specimen alt only. | 375 768 1024 1280 |
+| contact form (CityContactLineup + ContactFormKit `layout="grid"`, B) | The privacy link in the note painted without its underline (the site preflight), told apart by colour alone on the band (WCAG 1.4.1). The plan's `.req { opacity: 0.85 }` would trip `page_hardening_scan` `opacity-dims-text-contrast` (the bsuk-contact-form skill, trap 2). | Line-up three by two then six across, display-face names, the form three to a row from 1024, brass submit beside its note: match. In the error state a field that shares a row with a painted error line (phone, town) dropped and stretched, because `.field` stretched its rows; the frame sets `align-content: start`. The Button `submit` kind is `w-full` (Tailwind utilities layer), which a rule inside `@layer components` cannot override, so the width rule sits outside the layer. The note is the kit's ("We reply by email…"), not the frame's 24-to-48-hour line. | `.field { align-content: start }` and an underlined `.note a` in the grid layout; `.req` takes steel-100 instead of opacity; the submit's `width: auto` rule is unlayered. | 375 768 1024 1280 |
+
+The twelve built pages: `ContactFormKit` keeps its stepped form for every page that does not pass
+`layout="grid"` (new test `test_the_grid_layout_of_the_kit_form_is_opt_in`). Wrapping the stepped
+form in the `{grid ? … : …}` expression makes Astro drop whitespace-only text between its tags, and
+it dropped the one visible space, "Your name (required)", which is now an explicit `{' '}`. Against a
+build of `79196ea`, the contact form on the four pages that carry it
+(`uk-blue-staffy-breeders-contact`, `blue-staffy-pup-sale-uk`, `buy-blue-staffy-puppies-uk`,
+`buy-staffy-puppies-for-sale-uk`) has identical `innerText`, box and pixels at 375, 768 and 1280
+(one 1px scroll offset at 1280 on the buy page is the harness's own: it recurs comparing that build
+with itself). Every other built page's HTML is unchanged apart from the shared stylesheet, which
+gains the grid rules (matching nothing on a stepped form) and a `--color-warn` declaration Tailwind
+now emits because the newsletter reads it. `npm run test:render:pages` on this build and on a build
+of `79196ea`: 57 passed, 3 failed both times (`uk-locations/blue-staffy-puppies-uk`'s
+`nav-jump-target-lands`, Known Issue 81), and every scorecard's defects are identical. The one
+moved number is advisory: `css-no-dead-component-rule` counts 6 more unmatched rules per width on
+the four pages with a contact form (the grid rules), and 67 more on `/kit-preview/` (the three new
+components' CSS, bundled through the registry).

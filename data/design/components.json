@@ -28,5 +28,8 @@
   {"id": "city-roster",     "file": "CityRoster.astro",      "title": "C9 · City table (litter roster)",       "board_width": 1280, "project": 5},
   {"id": "city-video-panel", "file": "CityVideoPanel.astro", "title": "C10 · City video (side panel)",          "board_width": 1280, "project": 5},
   {"id": "city-chapters",   "file": "CityChapters.astro",    "title": "C11 · City image and text (two chapters)", "board_width": 1280, "project": 5},
-  {"id": "city-letter",     "file": "CityLetter.astro",      "title": "C12 · City review (owner's letter)",    "board_width": 1280, "project": 5}
+  {"id": "city-letter",     "file": "CityLetter.astro",      "title": "C12 · City review (owner's letter)",    "board_width": 1280, "project": 5},
+  {"id": "city-faq-ledger", "file": "CityFaqLedger.astro",   "title": "C13 · City FAQ blocks (steel ledger)",  "board_width": 1280, "project": 5},
+  {"id": "city-newsletter", "file": "CityNewsletter.astro",  "title": "C14 · City newsletter (litter notice)", "board_width": 1280, "project": 5},
+  {"id": "city-contact-lineup", "file": "CityContactLineup.astro", "title": "C15 · City contact form (litter line-up)", "board_width": 1280, "project": 5}
 ]

@@ -1,0 +1,86 @@
+---
+// src/components/kit/CityContactLineup.astro — city component 15, the contact form (London
+// pick: contact-form B, "Litter line-up"). A deep-steel band opens on its question, then the
+// available puppies in one line-up of small square photographs with name, sex and price (three
+// by two on a phone, one row from 768px), so the reader sees who they can ask about before
+// choosing one in the form below it.
+//
+// THE FORM IS ContactFormKit (plan2-notes, Task 9), `layout="grid"`: the six named controls,
+// the `_gotcha` honeypot, the hidden `_next` and `_subject`, `method="POST"` and the one
+// endpoint — scripts/form_contract_audit.py passes it exactly as it passes the site form. This
+// component adds the script that ties each required control to its error line (aria-describedby,
+// aria-invalid), so the pages that mount the stepped form ship nothing new.
+//
+// THE LINE-UP IS A PICTURE, NOT A CONTROL (the Task 9 review): no link, no hover, no pointer.
+// Each photo sits beside its printed name and price, so it is decorative (alt="") — a described
+// photo would read the puppy twice, and the same six photographs are described elsewhere on a
+// city page. The rows are data/puppies.json. Conventions 2 (`.on-inverse`), 4, 6.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import ContactFormKit from './ContactFormKit.astro';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+import { availablePuppies, money, sexWord } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & { heading: string; lede: string };
+const { heading, lede, class: cls, ...rest } = Astro.props;
+const pups = availablePuppies();
+---
+<section {...rest} class:list={['city-kit', 'city-contact', 'on-inverse', cls]}>
+  <div class="in">
+    <h2 id="city-contact-h">{heading}</h2>
+    <p class="lede">{lede}</p>
+    <ul class="pups" aria-label="The puppies available now">
+      {pups.map((p) => (
+        <li>
+          <Image src={puppyImage(p.card_photo)} alt="" widths={[200, 360]} sizes="(min-width: 768px) 170px, 30vw"
+            class={focusClass(p.card_photo)} loading="lazy" decoding="async" />
+          <span class="nm">{p.name}</span><span class="pr">{sexWord(p)} · {money(p.price_gbp)}</span>
+        </li>
+      ))}
+    </ul>
+    <ContactFormKit layout="grid" labelledBy="city-contact-h" idPrefix="city-contact" data-contact-form />
+  </div>
+</section>
+<script>
+  // The grid form's errors, tied to their controls. A control that fails native validation is
+  // marked aria-invalid and described by its error line; once it is valid again both go.
+  // Native validation still decides; this only tells assistive technology what it decided.
+  document.querySelectorAll<HTMLFormElement>('form[data-layout="grid"]').forEach((form) => {
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('[data-err]').forEach((el) => {
+      const mark = (bad: boolean) => {
+        if (bad) {
+          el.setAttribute('aria-invalid', 'true');
+          el.setAttribute('aria-describedby', el.dataset.err!);
+        } else {
+          el.removeAttribute('aria-invalid');
+          el.removeAttribute('aria-describedby');
+        }
+      };
+      el.addEventListener('invalid', () => mark(true));
+      el.addEventListener('input', () => { if (el.hasAttribute('aria-invalid')) mark(!el.checkValidity()); });
+      el.addEventListener('change', () => { if (el.hasAttribute('aria-invalid')) mark(!el.checkValidity()); });
+    });
+  });
+</script>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       root has no gutter, so full width it switches at the canvas's own widths. */
+    .city-contact { container-type: inline-size; background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
+    .in { max-width: 1160px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
+    h2 { margin: 0; max-width: 24ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); color: var(--color-text-on-inverse); text-wrap: balance; }
+    .lede { margin: var(--space-3) 0 var(--space-5); max-width: 60ch; color: var(--color-steel-100); }
+    .pups { list-style: none; margin: 0 0 var(--space-6); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
+    .pups li { margin: 0; display: grid; gap: 2px; }
+    .pups :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); margin-bottom: var(--space-1); }
+    .nm { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); line-height: 1.2; }
+    .pr { font-size: var(--text-xs); color: var(--color-steel-100); }
+    @container (min-width: 768px) {
+      .in { padding: var(--space-9) var(--space-6); }
+      .pups { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
+    @container (min-width: 1024px) { .pups { gap: var(--space-4); } }
+  }
+</style>

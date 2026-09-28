@@ -220,6 +220,54 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
     present: '.city-letter',
     run: (page) => allVisible(page, 'data-review-slot'),
   },
+  'city-faq-ledger': {
+    present: '.city-faq',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-faq-block');
+      const q = page.locator('.city-faq [data-faq-q]').first();
+      const before = await q.evaluate((h) => (h.closest('details') as HTMLDetailsElement).open);
+      await q.click();
+      const after = await q.evaluate((h) => (h.closest('details') as HTMLDetailsElement).open);
+      if (after === before) out.push('pressing the first question does not toggle its answer');
+      // The numbering runs on across the blocks: 01, 02, … with no gap and no repeat.
+      const nums = await page.evaluate(() => Array.from(document.querySelectorAll('.city-faq .n')).map((n) => Number(n.textContent)));
+      if (nums.some((n, i) => n !== i + 1)) out.push(`the ledger numbers run ${nums.join(',')}, not 1..${nums.length}`);
+      return out;
+    },
+  },
+  'city-newsletter': {
+    present: '[data-newsletter]',
+    run: async (page) => {
+      const out: string[] = [];
+      const email = page.locator('[data-newsletter] input[type="email"]');
+      const h = (await email.boundingBox())?.height ?? 0;
+      if (h < 44) out.push(`the email field is ${h}px tall`);
+      await page.locator('[data-newsletter] button[type="submit"]').click();
+      if ((await email.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the field aria-invalid');
+      const desc = await email.getAttribute('aria-describedby');
+      if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid field is not described by a painted error line');
+      return out;
+    },
+  },
+  'city-contact-lineup': {
+    present: '.city-contact',
+    run: async (page) => {
+      const out: string[] = [];
+      const short = await page.evaluate(() => Array.from(document.querySelectorAll(
+        '[data-contact-form] input:not([type="hidden"]):not([name="_gotcha"]), [data-contact-form] select, [data-contact-form] textarea, [data-contact-form] button'))
+        .filter((el) => el.getBoundingClientRect().height < 44).map((el) => el.getAttribute('name') || el.tagName));
+      if (short.length) out.push(`under 44px tall: ${short.join(', ')}`);
+      // The line-up is a picture: nothing in it takes a tap.
+      const tappable = await page.locator('.city-contact .pups a, .city-contact .pups button').count();
+      if (tappable) out.push(`${tappable} control(s) inside the line-up, which selects nothing`);
+      await page.locator('[data-contact-form] [type="submit"]').click();
+      const name = page.locator('[data-contact-form] [name="name"]');
+      if ((await name.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the name aria-invalid');
+      const desc = await name.getAttribute('aria-describedby');
+      if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid name is not described by a painted error line');
+      return out;
+    },
+  },
   // Learning loop 2026-09-27, L8: the current-section marker, under BOTH motion preferences.
   // Scroll the fourth section to the reading band and read which row is current, on the dial at
   // a desktop width and on the band's rail below it.

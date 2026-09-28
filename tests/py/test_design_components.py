@@ -24,7 +24,7 @@ IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-s
 #: order (scripts/city_components.py). tests/py/test_city_kit.py holds them.
 CITY_IDS = ["city-hero", "city-price-scale", "city-trust-ledger", "city-contents", "city-dial",
             "city-jump-band", "city-takeaways", "city-puppy-sheet", "city-roster", "city-video-panel",
-            "city-chapters", "city-letter"]
+            "city-chapters", "city-letter", "city-faq-ledger", "city-newsletter", "city-contact-lineup"]
 
 
 def load():

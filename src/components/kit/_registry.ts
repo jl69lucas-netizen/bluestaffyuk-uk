@@ -72,7 +72,10 @@ import CityRoster from './CityRoster.astro';
 import CityVideoPanel from './CityVideoPanel.astro';
 import CityChapters from './CityChapters.astro';
 import CityLetter from './CityLetter.astro';
-import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, deliveryLine, depositLine } from '../../lib/cityKit';
+import CityFaqLedger, { type CityFaqRow } from './CityFaqLedger.astro';
+import CityNewsletter from './CityNewsletter.astro';
+import CityContactLineup from './CityContactLineup.astro';
+import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine } from '../../lib/cityKit';
 import type { SectionRef } from '../../lib/sections';
 
 /** The counter specimen's availability figure, counted the way every page counts it. */
@@ -88,7 +91,7 @@ export type ComponentId =
   // page singleton like the kit's. data/design/components.json rows with `"project": 5`.
   | 'city-hero' | 'city-price-scale' | 'city-trust-ledger' | 'city-contents' | 'city-dial'
   | 'city-jump-band' | 'city-takeaways' | 'city-puppy-sheet' | 'city-roster' | 'city-video-panel'
-  | 'city-chapters' | 'city-letter';
+  | 'city-chapters' | 'city-letter' | 'city-faq-ledger' | 'city-newsletter' | 'city-contact-lineup';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -163,6 +166,42 @@ export const CITY_DEMO_SECTIONS: SectionRef[] = [
   { id: 'kit-city-jump-band', label: 'Jump', question: 'How Do You Jump to a Section on a Phone?', icon: 'faq' },
   { id: 'kit-city-takeaways', label: 'In short', question: 'What Should a Buyer Take From This Page?', icon: 'deposit' },
   { id: 'kit-city-puppy-sheet', label: 'The six', question: 'Which Puppy Will You Ask About First?', icon: 'delivery' },
+];
+
+/** The FAQ specimen's eighteen rows, in three blocks of six (the user's ruling for a city page:
+ *  three blocks, 15 to 20 questions). Every answer is a fact the data files or the breeder's
+ *  confirmed answers back (2026-09-27): the prices, the six by name, the deposit ruling, the
+ *  delivery band and collection, Maggie and Jones, the two DNA tests, eye and elbow screening
+ *  with no score, the vet, the take-back terms, Puppy Culture and ENS, and the breed facts
+ *  data/faq.json already carries. No guarantee (`guarantee_days` is null), no licence, no
+ *  refund clause, no age. The figures and names are read from the data, never typed. */
+const pupsBySex = (sex: 'male' | 'female') => {
+  const names = availablePuppies().filter((p) => p.sex === sex).map((p) => `${p.name} (${p.colour.toLowerCase()})`);
+  return names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names.join('');
+};
+const FAQ_BUY: CityFaqRow[] = [
+  { q: 'How much does one of your blue Staffy puppies cost?', a: `${BOY_PRICE} for each of our boys and ${GIRL_PRICE} for each of our girls, and the price is the same wherever in the UK you live.` },
+  { q: 'Which puppies can I ask about right now?', a: `Every one on our list: ${pupsBySex('male')} are the boys, and ${pupsBySex('female')} are the girls.` },
+  { q: 'What does the deposit do?', a: depositLine },
+  { q: 'Do you deliver a puppy to my door?', a: `Yes. We use DEFRA-approved transport anywhere in the UK, and delivery costs ${DELIVERY_BAND}, priced by distance.` },
+  { q: 'Can I collect my puppy myself?', a: `Yes. You are welcome to collect your puppy from us in ${TOWN} instead of paying for delivery.` },
+  { q: 'How do I reserve a puppy?', a: `Send us the enquiry form with the name of the puppy you like. We reply by email, and the ${DEPOSIT} deposit then books your viewing and holds that puppy for you.` },
+];
+const FAQ_TRUST: CityFaqRow[] = [
+  { q: 'Who are the parents of your puppies?', a: 'Maggie is our dam and Jones is our sire. Both are our own dogs.' },
+  { q: 'Which DNA tests have Maggie and Jones had?', a: 'Both are DNA tested clear of L-2-HGA and HC-HSF4. Each condition is recessive, so two clear parents cannot pass either one to a puppy.' },
+  { q: 'Are the parents screened for eye and elbow problems?', a: 'Yes. Both are screened for hereditary cataracts and other inherited eye diseases, and their elbows are screened as well. We quote no score or grade; our health page sets out what each check covers.' },
+  { q: 'Can I speak to your vet before I decide?', a: 'Yes. You are welcome to contact our vet about the parents and the litter before you commit to anything.' },
+  { q: 'What happens if I can no longer keep my puppy?', a: 'We take the puppy back, and we do the same if a fault is ours. Tell us as soon as you know and we will talk it through with you.' },
+  { q: 'What has a puppy had before it comes home?', a: 'A veterinary health check, its first vaccination, a microchip, and worming and flea treatment, all written on a vet-signed health card that travels with it.' },
+];
+const FAQ_LIFE: CityFaqRow[] = [
+  { q: 'How are your puppies raised?', a: 'In our home, not in a kennel, on Puppy Culture with early neurological stimulation (ENS), and among the everyday sounds of a family house.' },
+  { q: 'Can a Staffy live happily in a flat?', a: 'Yes, given its daily exercise and something to think about. The breed is medium-sized and people-focused, so regular walks matter more than a big garden.' },
+  { q: 'How much exercise does a Staffy need each day?', a: 'At least an hour of vigorous exercise, ideally split into two outings, plus play or training that works the mind as well as the legs.' },
+  { q: 'Can a Staffy be left alone while I am at work?', a: 'Not for long stretches. Staffies want company, so a puppy is built up to short spells alone a little at a time.' },
+  { q: 'Is a Staffy a good first dog?', a: 'Yes, for a household ready to socialise the puppy early and train it consistently with rewards. Staffies are eager to please but strong-willed, and they need company.' },
+  { q: 'How long does a Staffordshire Bull Terrier live?', a: 'Twelve to fourteen years is the figure the Staffordshire Bull Terrier Club gives for a healthy, well-cared-for dog.' },
 ];
 
 export const REGISTRY: Record<ComponentId, KitEntry> = {
@@ -524,6 +563,54 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       lede: 'Mark J wrote this review of the blue Staffy puppy he had from us, and these are his words exactly as he sent them.',
       name: 'Mark J',
       photo: 'mark-blue-staffy-london.webp',
+    }],
+  },
+  // Three blocks, as a city page mounts them: numbering runs on through `start`, and only the
+  // top block carries the rail. The rows are the specimen questions above. On a city page the
+  // FAQPage node is the page's (src/lib/cityKit.ts `faqPageNode`, fed these same rows); the
+  // preview is noindex and carries none.
+  'city-faq-ledger': {
+    C: CityFaqLedger,
+    demo: [
+      {
+        block: 'buy', start: 1,
+        heading: 'What Do Buyers Ask Before Reserving a Puppy?',
+        lede: 'The first questions are nearly always about money and the journey, so here are our straight answers on the prices, the deposit, delivery and collection.',
+        rail: { photo: 'blue-staffy-testimonial-london-happy-owner.webp', caption: 'One of our puppies with its new owner.' },
+        items: FAQ_BUY,
+      },
+      {
+        block: 'trust', start: FAQ_BUY.length + 1,
+        heading: 'How Can You Check Us Before You Travel?',
+        lede: 'You may live hours away, so we put the checks in your hands: the parents, their tests, our vet and what happens if something goes wrong.',
+        items: FAQ_TRUST,
+      },
+      {
+        block: 'life', start: FAQ_BUY.length + FAQ_TRUST.length + 1,
+        heading: 'Will a Staffy Suit Your Home and Your Days?',
+        lede: 'Flats, long working days and first dogs come up again and again, so these answers cover space, exercise, time alone and how long a Staffy shares your home.',
+        items: FAQ_LIFE,
+      },
+    ],
+  },
+  'city-newsletter': {
+    C: CityNewsletter,
+    demo: [{
+      eyebrow: 'Litter notes',
+      heading: 'Want a Note When Our Next Litter Is Due?',
+      lede: 'Leave your email and we will write to you when our next litter is on the way. It is one short note, and that is all this list is for.',
+      photo: 'Christa.jpeg',
+      // Its own words: the page's other Christa photos already say `short`, `scene` and the
+      // contents alt, and img-alt-present-and-unique refuses a repeat.
+      photoAlt: 'Christa, a blue Staffy girl with a white chest, sitting up and looking at the camera',
+    }],
+  },
+  // The form is ContactFormKit's contract, laid out on the band; the line-up is data/puppies.json.
+  'city-contact-lineup': {
+    C: CityContactLineup,
+    demo: [{
+      heading: 'Which of Our Six Puppies Would You Like to Ask About?',
+      lede: 'Here are all six as they are today. Choose one in the form, tell us where you live, and we reply by email with the answers to everything you asked.',
     }],
   },
 };
