@@ -15,9 +15,9 @@
  * src/styles/kit.css switches on). Only painted elements are judged.
  *
  * EXEMPTIONS, each named with its reason, never by pattern:
- *   - a `form p`: a form's `p.field` rows are layout (label over control), not reading text;
- *   - a `blockquote p`: a review is data/reviews.json word for word (seo-rules, the letter),
- *     so its length is the reviewer's, not a layout choice;
+ *   - a `form p`: a form's `p.field` rows are layout (label over control), not reading text.
+ *     A review is NOT exempt: CityLetter splits it into paragraphs at its sentence breaks, words
+ *     and order untouched, so it is held to the same line caps as any other paragraph;
  *   - `[data-city-jump-stepper]` and `[data-city-dial-photo-marker]`: sticky nav furniture, whose
  *     height is the page's section list, not reading text (the sheet is a closed dialog);
  *   - the puppy sheet's HEIGHT only, and only in a box of 1000px or more — the full-width specimen
@@ -76,7 +76,7 @@ export function cityTypeFit(viewport: number): TypeFitResult {
       if (n > 3) defects.push(`${where}: ${h.tagName} "${name(h)}" wraps to ${n} lines`);
     }
     for (const p of Array.from(root.querySelectorAll('p')).filter(painted)) {
-      if (p.closest('blockquote, form')) continue;
+      if (p.closest('form')) continue;
       examined++;
       const ch = chOf(p);
       const pw = contentWidth(p);

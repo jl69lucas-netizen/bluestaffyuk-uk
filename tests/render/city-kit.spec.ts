@@ -424,7 +424,20 @@ for (const kind of ['broken', 'good'] as const) {
     await page.setContent(readFileSync(new URL(`./fixtures/city/type-fit-${kind}.html`, import.meta.url), 'utf8'));
     const r = await page.evaluate(cityTypeFit, viewport);
     expect(r.examined, 'the fixture must be examined').toBeGreaterThan(0);
-    if (kind === 'broken') expect(r.defects.length, 'city-type-fit did not fire on its known_broken fixture').toBeGreaterThan(0);
+    if (kind === 'broken') {
+      // Each kind of defect fires on its own element, not merely "something fired".
+      const kinds: [string, RegExp][] = [
+        ['heading cap', /is [\d.]+px, over the \w+ cap/],
+        ['heading lines', /wraps to \d+ lines/],
+        ['75ch measure', /ch wide \(75 max\)/],
+        ['paragraph lines', /runs \d+ lines \(\d max/],
+      ];
+      // Section height is judged at a phone width and from 1280 only (the ruling's two caps).
+      if (viewport < 768 || viewport >= 1280) kinds.push(['section height', /the section is \d+px tall/]);
+      for (const [what, re] of kinds) {
+        expect(r.defects.some((d) => re.test(d)), `city-type-fit did not report the ${what} defect: ${r.defects.join(' | ')}`).toBe(true);
+      }
+    }
     else expect(r.defects, 'city-type-fit cried wolf on its known_good fixture').toEqual([]);
   });
 }

@@ -29,6 +29,21 @@ const all = reviewsJson as Review[];
 const index = all.findIndex((r) => r.name === name);
 if (index < 0) throw new Error(`CityLetter: data/reviews.json has no review by ${name}`);
 const review = all[index];
+// THE REVIEW IS SPLIT INTO PARAGRAPHS AT ITS SENTENCE BREAKS, at render (the Task 7b review): one
+// 436-character paragraph ran 12 lines on a phone and 9 in the city column, past the type-fit caps
+// (8 below 1024px, 6 from it). The words and their order are the data's exactly, nothing added,
+// removed or reworded, and data/reviews.json is untouched: sentences are joined greedily while a
+// paragraph stays within PARA_CHARS, which at the narrowest measure (about 38 characters a line at
+// 375px, about 48 in the 832px column) keeps a paragraph to 6 lines and 4 lines. A single sentence
+// longer than that is never cut; tests/render/lib/cityTypeFit.ts would report it.
+const PARA_CHARS = 200;
+const sentences = review.quote.split(/(?<=[.!?])\s+(?=[A-Z0-9“"‘'])/);
+const paras = sentences.reduce<string[]>((out, sentence) => {
+  const last = out[out.length - 1];
+  if (last !== undefined && last.length + 1 + sentence.length <= PARA_CHARS) out[out.length - 1] = `${last} ${sentence}`;
+  else out.push(sentence);
+  return out;
+}, []);
 const p = servedPhoto(photo);
 // The photograph paints at its OWN width (its width/height attributes, from data/image-focus.json
 // through servedPhoto()), never wider, and shrinks with the card; pinned beside the letter on
@@ -54,7 +69,7 @@ const sizes = citySizes(fit, {
       <div>
         <blockquote data-review={index}>
           <span class="mark" aria-hidden="true">“</span>
-          <p>{review.quote}</p>
+          {paras.map((t) => <p>{t}</p>)}
         </blockquote>
         <p class="sig"><cite>{review.name}</cite><span>{review.place}</span></p>
       </div>
@@ -85,6 +100,7 @@ const sizes = citySizes(fit, {
     blockquote { margin: 0; position: relative; }
     .mark { display: block; height: 44px; margin: 0 0 var(--space-1); font-family: var(--font-display); font-size: calc(var(--city-h2) * 2.4); line-height: 1; color: var(--color-brand-mid); }
     blockquote p { margin: 0; font-size: var(--city-lead); line-height: 1.6; color: var(--color-text); }
+    blockquote p + p { margin-top: 0.75em; }
     .sig {
       display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
       margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border);

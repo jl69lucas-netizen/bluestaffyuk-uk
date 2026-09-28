@@ -1,13 +1,22 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>city type-fit: known broken</title>
-<style>body{margin:0;font:17px/1.6 Georgia,serif} .city-kit{padding:24px} h2{font-size:40px;line-height:1.1;max-width:9ch} p{margin:0 0 16px} .tall{height:4000px}</style></head>
+<style>body{margin:0;font:17px/1.6 Georgia,serif} .city-kit{padding:24px} p{margin:0 0 16px}
+.chunky{font-size:40px;line-height:1.1}
+.tall-head{font-size:16px;line-height:1.2;max-width:6ch}
+.wide{width:90ch;max-width:none}
+.long{max-width:20ch}
+.tall{height:4000px}</style></head>
 <body>
-<!-- Every defect the check names: a chunky H2 that wraps past three lines, a paragraph wider than 75ch
-     and longer than eight lines, and a section taller than 2.5 viewports. -->
+<!-- One of each defect the check names, each on its own element so each fires by itself:
+     a heading over its cap, a heading over three lines, a paragraph wider than 75ch, a
+     paragraph over the line cap, and a section taller than the viewport cap. The review
+     paragraph is inside a blockquote: it is NOT exempt, and fires like any other. -->
 <section class="city-kit city-broken">
-  <h2>What Should a Buyer Take From This Page Today?</h2>
-  <p>This paragraph runs the full width of the page with no measure at all, which on a wide screen sets far more than seventy-five characters to the line and makes the eye hunt for the start of each next line. It goes on and on, because a paragraph that never ends is the second defect this fixture carries. It repeats itself to be long enough at every width the city suite paints: one line, two lines, three lines, four lines, five lines, six lines, seven lines, eight lines, nine lines, ten lines, eleven lines, twelve lines, thirteen lines, fourteen lines, fifteen lines, sixteen lines, seventeen lines, eighteen lines, nineteen lines, twenty lines, and more lines again, more lines again, more lines again, more lines again, more lines again, more lines again, more lines again, more lines again, more lines again, more lines again, more lines again, more lines again, more lines again, more lines again, more lines again.</p>
+  <h2 class="chunky">Chunky</h2>
+  <h3 class="tall-head">Which Puppy Will You Ask About First Today?</h3>
+  <p class="wide">Short but set far wider than seventy-five characters.</p>
+  <blockquote><p class="long">A review that is never split runs line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line.</p></blockquote>
   <div class="tall"></div>
 </section>
 </body></html>

@@ -423,9 +423,15 @@ def test_built_city_letter_quotes_its_review_word_for_word():
     s = section("city-letter")
     reviews = json.loads((ROOT / "data/reviews.json").read_text())
     n = int(re.search(r'data-review="(\d+)"', s).group(1))
-    quote = re.search(r"<blockquote[^>]*>.*?<p[^>]*>(.*?)</p>", s, re.S).group(1)
     import html as _h
-    assert _h.unescape(quote) == reviews[n]["quote"]
+    block = re.search(r"<blockquote[^>]*>(.*?)</blockquote>", s, re.S).group(1)
+    paras = [_h.unescape(x) for x in re.findall(r"<p[^>]*>(.*?)</p>", block, re.S)]
+    # Word for word and in order: the paragraphs rejoined at single spaces ARE the data's quote
+    # (the Task 7b review: split at sentence breaks so no paragraph breaks the line caps).
+    assert " ".join(paras) == reviews[n]["quote"]
+    assert len(paras) > 1, "the review is split at its sentence breaks"
+    for para in paras:
+        assert re.search(r"[.!?]$", para), f"a paragraph ends mid-sentence: {para!r}"
     assert reviews[n]["name"] in s
     assert "AggregateRating" not in s and "★" not in s
 
