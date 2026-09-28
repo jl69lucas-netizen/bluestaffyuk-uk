@@ -534,3 +534,15 @@ Heading sizes, before → after (min–max on the page):
 Everything else was judged and left: the hero's filmstrip and plates, the price scale's line, the
 trust ledger's two columns, the letter's quote (exempt from the paragraph length by name: a review
 is data word for word), and the FAQ ledger's numbers and plus signs.
+
+**Task 7b spec review (2026-09-28).** Four gaps closed after the review:
+- The letter's review is no longer exempt from the type-fit line caps. CityLetter splits it at
+  its sentence breaks at render (words and order exactly the data's; `data/reviews.json`
+  untouched), so its paragraphs run 5/4/3 lines at 375, 3/3/2 at 768 and 1024, and 4/3/2 in the
+  1280 column. Before, it was one paragraph of 12 lines at 375 and 9 in the column.
+- The roster's stack and the roster's and puppy sheet's gutters read their own box
+  (`@container` at 640 / 800), never the viewport. In the 656px column at 1024 they now take
+  the tablet gutters instead of the desktop ones.
+- The specimens' litter size ("six") is read from `availablePuppies()` in every string.
+- `city-nav-current-section` waits for the spy to settle instead of reading after a fixed
+  300ms; five consecutive city runs passed.
