@@ -496,9 +496,58 @@ def test_built_city_letter_quotes_its_review_word_for_word():
     assert " ".join(paras) == reviews[n]["quote"]
     assert len(paras) > 1, "the review is split at its sentence breaks"
     for para in paras:
-        assert re.search(r"[.!?]$", para), f"a paragraph ends mid-sentence: {para!r}"
+        assert _ends_a_sentence(para), f"a paragraph ends mid-sentence: {para!r}"
     assert reviews[n]["name"] in s
     assert "AggregateRating" not in s and "★" not in s
+
+
+_ABBREV = ("Mr.", "Mrs.", "Ms.", "Dr.", "St.", "Mt.", "No.", "vs.", "etc.", "e.g.", "i.e.")
+
+
+def _ends_a_sentence(text):
+    """A sentence end: . ! or ? with an optional closing quote, and never an abbreviation."""
+    return bool(re.search(r"[.!?][\"”’']?$", text)) and not text.endswith(_ABBREV)
+
+
+def run_split_review(tmp_path, cases):
+    """[(quote, max_chars)] -> [paragraphs] from the compiled src/lib/cityKit.ts splitReview()."""
+    import json as _json, shutil, subprocess
+    esbuild, node = ROOT / "node_modules/.bin/esbuild", shutil.which("node")
+    if not esbuild.exists() or not node:
+        pytest.skip("needs node and node_modules/.bin/esbuild (npm install)")
+    out = tmp_path / "cityKit.mjs"
+    subprocess.run([str(esbuild), str(ROOT / "src/lib/cityKit.ts"), "--bundle", "--format=esm",
+                    "--platform=node", "--define:import.meta.env={}", f"--outfile={out}", "--log-level=error"], check=True)
+    driver = (f"const m = await import({_json.dumps(out.as_uri())});"
+              f"console.log(JSON.stringify({_json.dumps(cases)}.map(([q, n]) => m.splitReview(q, n))));")
+    res = subprocess.run([node, "--input-type=module", "-e", driver], check=True, capture_output=True, text=True)
+    return _json.loads(res.stdout)
+
+
+def test_split_review_breaks_only_at_real_sentence_ends(tmp_path):
+    """M1: CityLetter's splitter is cityKit.splitReview(quote, maxChars). It joins sentences while a
+    paragraph stays within maxChars, keeps every word in order, never splits after an
+    abbreviation or inside a decimal, splits after a closing quote and after an ellipsis that ends
+    a sentence, and never cuts a single sentence longer than maxChars."""
+    long_one = "We " + "really " * 40 + "loved him."
+    cases = [
+        ("We met Mr. Bright and Dr. Jones at St. Mary's. They were kind.", 60),
+        ("It cost £1.5k all in, vs. £2k elsewhere. Worth it.", 30),
+        ('He said "we love him." Then we left.', 25),
+        ("We waited... It was worth it. And then... we smiled.", 20),
+        (long_one, 200),
+        ("One. Two. Three.", 200),
+    ]
+    got = run_split_review(tmp_path, cases)
+    assert got[0] == ["We met Mr. Bright and Dr. Jones at St. Mary's.", "They were kind."]
+    assert got[1] == ["It cost £1.5k all in, vs. £2k elsewhere.", "Worth it."]
+    assert got[2] == ['He said "we love him."', "Then we left."]
+    assert got[3] == ["We waited...", "It was worth it.", "And then... we smiled."]
+    assert got[4] == [long_one], "a sentence over the limit is kept whole, never cut"
+    assert got[5] == ["One. Two. Three."]
+    for (quote, _), paras in zip(cases, got):
+        assert " ".join(paras) == quote
+        assert all(_ends_a_sentence(p) for p in paras), paras
 
 
 # --------------------------------------------------------------------------- Task 6

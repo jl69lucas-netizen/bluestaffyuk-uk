@@ -113,3 +113,34 @@ export function citySizes(fit: CityFit, at: { phone: (B: string) => string; tabl
     : [`(min-width: ${TIER.desktop}px) ${at.desktop(vw)}`, `(min-width: ${TIER.tablet}px) ${at.tablet(vw)}`, at.phone(vw)];
   return list.join(', ');
 }
+
+/** Words a full stop ends without ending the sentence (lower-cased, without the stop). */
+const ABBREVIATIONS = new Set(['mr', 'mrs', 'ms', 'dr', 'st', 'mt', 'no', 'vs', 'etc', 'e.g', 'i.e']);
+
+/** A review, split into paragraphs at its sentence breaks for reading (the Task 7b spec review;
+ *  M1 of the quality review). Its words and their order are the quote's exactly: the paragraphs
+ *  rejoined with single spaces ARE the quote. A break is a `.`, `!` or `?` (after any closing quote
+ *  or ellipsis) followed by a space and a capital, digit or opening quote — never after an
+ *  abbreviation (Mr., Dr., St., vs. …), and never inside a figure (£1.5k has no space). Sentences
+ *  are joined greedily while a paragraph stays within `maxChars`; a single sentence longer than
+ *  that stays whole, never cut (the type-fit check then reports it, and the break is the page's
+ *  author's to find). */
+export function splitReview(quote: string, maxChars: number): string[] {
+  const sentences: string[] = [];
+  const brk = /[.!?]["”’']?\s+(?=[A-Z0-9“"‘'])/g;
+  let from = 0;
+  for (let m = brk.exec(quote); m; m = brk.exec(quote)) {
+    const upTo = m.index + m[0].trimEnd().length;
+    const lastWord = quote.slice(from, upTo).split(/\s+/).pop() ?? '';
+    if (ABBREVIATIONS.has(lastWord.replace(/[.!?]["”’']?$/, '').toLowerCase())) continue;
+    sentences.push(quote.slice(from, upTo));
+    from = m.index + m[0].length;
+  }
+  sentences.push(quote.slice(from));
+  return sentences.reduce<string[]>((out, sentence) => {
+    const last = out[out.length - 1];
+    if (last !== undefined && last.length + 1 + sentence.length <= maxChars) out[out.length - 1] = `${last} ${sentence}`;
+    else out.push(sentence);
+    return out;
+  }, []);
+}
