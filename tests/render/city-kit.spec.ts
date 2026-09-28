@@ -396,6 +396,20 @@ for (const route of ROUTES) {
     // CITY_SHOTS=<dir> keeps a full-page PNG per width for the impeccable and frontend-design
     // passes to read. Outside the repo, never committed.
     if (process.env.CITY_SHOTS) {
+      // Lazy images paint only once scrolled near: walk the page and wait for every image to
+      // decode, so the design passes judge photographs, not empty boxes (Plan 2 Task 8).
+      await page.evaluate(async () => {
+        for (let y = 0; y < document.body.scrollHeight; y += window.innerHeight / 2) {
+          window.scrollTo(0, y);
+          await new Promise((r) => requestAnimationFrame(() => r(null)));
+        }
+        // A lazy image that is never painted (display:none below a tier) never loads, so each
+        // wait is capped: the shot is for eyes, not a gate.
+        const settle = (i: HTMLImageElement) => Promise.race([i.decode().catch(() => null),
+          new Promise((r) => setTimeout(r, 3000))]);
+        await Promise.all(Array.from(document.images).map((i) => (i.complete ? null : settle(i))));
+        window.scrollTo(0, 0);
+      });
       await page.screenshot({ fullPage: true,
         path: `${process.env.CITY_SHOTS}/${route.replace(/\//g, '_')}-${viewport}.png` });
     }

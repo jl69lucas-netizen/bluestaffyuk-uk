@@ -546,3 +546,37 @@ is data word for word), and the FAQ ledger's numbers and plus signs.
 - The specimens' litter size ("six") is read from `availablePuppies()` in every string.
 - `city-nav-current-section` waits for the spy to settle instead of reading after a fixed
   300ms; five consecutive city runs passed.
+
+**Plan 2 Task 8: the London scaffold (2026-09-28).** Judged on the built scaffold,
+`/uk-locations/blue-staffy-puppies-london/` (the fifteen picks on `CityShell`, placeholder copy,
+noindex), full-page shots at 375 / 768 / 1024 / 1280 from
+`CITY_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_plan2-shots npm run test:render:city`,
+read in slices. `impeccable:impeccable` ran first and `frontend-design:frontend-design` second,
+type fit the headline lens. The `PRODUCT.md` gate is still unmet (the loader reports
+`hasProduct: false`), so the brand context came from the design-context files as before.
+
+| Where | impeccable found | frontend-design found | Changed | Widths |
+|---|---|---|---|---|
+| the shots themselves | Every lazy photograph below the first screen was an empty box in the full-page shot (trust, takeaways, sheet, roster, FAQ rail, chapters, letter, line-up), so a design pass could not judge them. | The same: the shots showed the frames, not the page. | The city spec, under `CITY_SHOTS` only, walks the page and waits (capped at 3s per image) for each photo to decode before the shot. No check's input changes. | 375 768 1024 1280 |
+| price scale (CityPriceScale) | At 768 the delivery range broke at its en dash, "£200–" over "£350": one figure read as two. | A figure is one unit; the tablet line should read left to right as four stops. | `.range .n` never wraps; from 640 to 1023px the range stop takes its figure's width (`min-content`) and the deposit and the fork share the rest (107 / 150px at 768, was 89px for the deposit when the range first took its label's width). 1280 is unchanged. | 768 (640–1023) |
+
+Measured after the fix (a painting browser): no horizontal overflow at 375, 768 or 1280; the
+range figure 173×33px at 768 and 250×33px at 1280, one line.
+
+Judged and left, with the reason:
+- **The sticky chrome on a phone** is the site header (121px at 375, two rows) plus the jump band
+  (100px, the stepper rail and the key): 221px, 27% of an 812px screen; at 768 it is 113 + 122px
+  (23%). The header is PageShell's (the twelve built pages' contract) and the band is the user's
+  pick (jump-links A, rail and key both), so neither is changed here. Flagged for the user's
+  side-by-side (Task 10): a phone band of the key alone would be about 52px.
+- **Money ranges inside running text** ("UK home delivery £200–" / "£350 …" in the video's
+  facts at 1280, the roster's foot) break at the en dash like any word. The strings are
+  `cityKit.deliveryLine`, which the built pages' cards and the tests read word for word; a
+  joiner character would change the text itself, so the break is left to the page run's copy.
+- **Test names at a line end** ("L-" / "2-HGA" in the takeaways at 1280) are placeholder copy;
+  London's outline rewrites it.
+- The rhythm of the fifteen together (bone, steel tray and deep-steel band alternating; three
+  FAQ bands at the top, middle and foot of the body, the contact band last) reads as one page;
+  headings stay two to three lines at every width and no paragraph runs past the type-fit caps
+  (`city-type-fit` examined 121 / 106 / 106 / 121 nodes at 375 / 768 / 1024 / 1280 with no
+  defect, and 121 / 106 at the 660 / 1160 edges).

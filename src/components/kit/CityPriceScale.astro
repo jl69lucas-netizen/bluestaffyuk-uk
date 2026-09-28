@@ -78,6 +78,9 @@ const count = availablePuppies().length;
     .n small { font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600; color: var(--color-ink); }
     .l { display: block; margin-top: 2px; font-size: var(--text-sm); color: var(--color-ink); }
     .fork .n { display: inline-block; }
+    /* A price range is one figure: it never breaks at its en dash ("£200–" over "£350" at 768,
+       the Plan 2 Task 8 design pass). Its stop takes the width the figure needs. */
+    .range .n { white-space: nowrap; }
     .or { display: inline-block; margin: 0 var(--space-2); font-size: var(--text-sm); font-style: italic; color: var(--color-ink-2); }
     @media (width >= 640px) {
       .city-scale { padding: var(--space-6) 0; }
@@ -96,6 +99,12 @@ const count = availablePuppies().length;
       li.range::before { width: min(160px, 70%); height: 16px; top: 3px; }
       li.brk { flex: 0 0 20px; height: 22px; padding: 0; }
       .brk svg { left: 0; top: 2px; }
+    }
+    /* At a tablet width the unbroken range takes the width it needs and the deposit and the fork
+       share the rest, so the deposit's words keep a readable column (the Task 8 design pass). */
+    @media (640px <= width < 1024px) {
+      li.range { flex: 0 0 min-content; }
+      li.fork { flex: 1.4 1 0; }
     }
   }
 </style>
