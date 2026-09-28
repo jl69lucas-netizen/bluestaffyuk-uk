@@ -649,19 +649,30 @@ def test_built_city_contact_lineup_keeps_the_whole_form_contract():
 
 
 def test_the_grid_layout_of_the_kit_form_is_opt_in():
-    """ContactFormKit's `layout="grid"` is the city line-up's alone: every built page's form is
-    still the stepped form, with its own heading, three fieldsets and no error wiring. A city
-    page (from the London scaffold, Plan 2 Task 8) mounts the line-up, whose form is the grid."""
+    """ContactFormKit's `layout="grid"` is the city line-up's alone: judged FORM BY FORM, every
+    grid form sits inside a city contact line-up (`section.city-contact`, the London scaffold from
+    Plan 2 Task 8), and every other form on every built page is still the stepped form, with
+    three fieldsets and no error wiring."""
     pages = [p for p in (ROOT / "dist").rglob("index.html")
-             if "kit-preview" not in p.parts and 'data-form="contact"' in p.read_text(encoding="utf-8")
-             and 'class="city-kit city-contact' not in p.read_text(encoding="utf-8")]
+             if "kit-preview" not in p.parts and 'data-form="contact"' in p.read_text(encoding="utf-8")]
     if not pages:
         pytest.skip("run npm run build first")
+    grids = 0
     for page in pages:
         html = page.read_text(encoding="utf-8")
-        for f in re.findall(r'<form[^>]*data-form="contact"[^>]*>.*?</form>', html, re.S):
-            assert 'data-layout="grid"' not in f and "data-err=" not in f, page
-            assert f.count("<fieldset") == 3, page
+        lineups = [(m.start(), html.index("</section>", m.start()))
+                   for m in re.finditer(r'<section[^>]*class="city-kit city-contact', html)]
+        for m in re.finditer(r'<form[^>]*data-form="contact"[^>]*>.*?</form>', html, re.S):
+            f = m.group(0)
+            inside = any(a < m.start() < b for a, b in lineups)
+            if 'data-layout="grid"' in f.split(">", 1)[0]:
+                grids += 1
+                assert inside, f"{page}: a grid form outside a city contact line-up"
+            else:
+                assert not inside, f"{page}: a city contact line-up without the grid form"
+                assert "data-err=" not in f, page
+                assert f.count("<fieldset") == 3, page
+    assert grids >= 1, "the London scaffold's line-up carries the grid form"
 
 
 def test_every_london_pick_names_its_kit_component_and_every_city_row_is_one():

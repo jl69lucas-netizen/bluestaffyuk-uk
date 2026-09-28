@@ -93,6 +93,57 @@ def test_a_city_with_its_own_page_file_is_dated_by_that_file_alone(repo):
     assert routes["/uk-locations/blue-staffies-glasgow/"]["dateModified"] == "2026-03-09"
 
 
+def _head(repo):
+    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=str(repo), capture_output=True,
+                          text=True, check=True).stdout.strip()
+
+
+def test_a_commit_on_the_ignore_list_does_not_move_the_routes_it_names(repo):
+    """A commit that changed a route's SOURCES without changing its CONTENT (the London
+    scaffold's template skip, Plan 2 Task 8) must not stamp a false dateModified on every page
+    the template builds. data/page-dates-ignore.json names the commit and the paths it is
+    ignored for; the city keeps its earlier date."""
+    _write(repo, "src/pages/uk-locations/[slug].astro", "getStaticPaths // skips own files")
+    _commit(repo, "2026-03-09")
+    route = "/uk-locations/blue-staffies-glasgow/"
+    assert G.build()[0][route]["dateModified"] == "2026-03-09", "control: the commit counts unlisted"
+    _write(repo, "data/page-dates-ignore.json", json.dumps({"commits": [{
+        "sha": _head(repo)[:7], "paths": ["src/pages/uk-locations/[slug].astro"],
+        "reason": "template refactor; no built page changed"}]}))
+    _commit(repo, "2026-03-10")
+    got = G.build()[0][route]
+    assert (got["datePublished"], got["dateModified"]) == ("2026-01-05", "2026-01-05")
+
+
+def test_an_ignored_commit_still_dates_the_paths_it_is_not_listed_for(repo):
+    """The skip is per path: the same commit that only refactored the template CREATED a city's
+    own file, and that file's date is real."""
+    _write(repo, "src/pages/uk-locations/[slug].astro", "getStaticPaths // skips own files")
+    _write(repo, "src/pages/uk-locations/blue-staffies-leeds.astro", "<h1>own page</h1>")
+    _commit(repo, "2026-03-09")
+    _write(repo, "data/page-dates-ignore.json", json.dumps({"commits": [{
+        "sha": _head(repo), "paths": ["src/pages/uk-locations/[slug].astro"], "reason": "r"}]}))
+    _commit(repo, "2026-03-10")
+    assert G.build()[0]["/uk-locations/blue-staffies-leeds/"]["dateModified"] == "2026-03-09"
+
+
+def test_a_routes_date_published_never_moves_later_than_any_committed_map(repo):
+    """A route that changes source (a city leaving the template for its own file) is the same
+    URL, published when it was first published: its datePublished may never move later than
+    the value a committed data/page-dates.json already gave it."""
+    route = "/uk-locations/blue-staffies-glasgow/"
+    _write(repo, "data/page-dates.json", json.dumps({"routes": {route: {
+        "datePublished": "2026-01-05", "dateModified": "2026-01-05", "selfDated": False}}}))
+    _commit(repo, "2026-01-06")
+    # A later committed map that already carries the moved date must not launder it.
+    _write(repo, "src/pages/uk-locations/blue-staffies-glasgow.astro", "<h1>own page</h1>")
+    _write(repo, "data/page-dates.json", json.dumps({"routes": {route: {
+        "datePublished": "2026-03-09", "dateModified": "2026-03-09", "selfDated": False}}}))
+    _commit(repo, "2026-03-09")
+    got = G.build()[0][route]
+    assert (got["datePublished"], got["dateModified"]) == ("2026-01-05", "2026-03-09")
+
+
 def test_the_puppies_template_expands_to_every_slug_in_puppies_json(repo):
     routes, _, _ = G.build()
     assert "/available-puppies/roman/" in routes and "/available-puppies/byrd/" in routes

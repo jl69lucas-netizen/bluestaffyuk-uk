@@ -142,3 +142,12 @@ def test_the_migrated_body_stays_word_for_word_for_parity():
     row = next(l for l in LOCATIONS if l["slug"] == SLUG)
     art = re.search(r'<article class="prose-migrated"[^>]*>(.*?)</article>', html, re.S)
     assert art and text(art.group(1)) == text(row["body_html"])
+
+
+def test_london_keeps_the_date_its_url_was_first_published():
+    """The URL has existed since the migration (2026-09-16); moving it from the template to its
+    own file changes its source, not its publication (Plan 2 Task 8 spec review)."""
+    dates = json.loads((ROOT / "data/page-dates.json").read_text())["routes"]
+    row = dates[f"/uk-locations/{SLUG}/"]
+    assert row["datePublished"] == "2026-09-16"
+    assert row["dateModified"] >= row["datePublished"]

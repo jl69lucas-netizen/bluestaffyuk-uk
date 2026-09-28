@@ -1,0 +1,13 @@
+{
+  "_meta": {
+    "description": "Commits that changed a page's SOURCES without changing what any built page says. scripts/generate_page_dates.py skips each commit for the source paths it names when it dates a route, so a refactor never stamps a false dateModified on the pages it did not change (working rule 9). A commit is listed only after the built pages it touched were diffed against the build before it. Never list a commit that changed a page's words, facts or images.",
+    "generated_by": "hand-maintained; read by scripts/generate_page_dates.py"
+  },
+  "commits": [
+    {
+      "sha": "65202670bad8309db18d879d73da7b64e8b43f44",
+      "paths": ["src/pages/uk-locations/[slug].astro"],
+      "reason": "Plan 2 Task 8: the location template skips a city with its own file (London); the other 27 city pages build byte-for-byte as before outside <style>. The same commit created London's own page file, which stays dated by it."
+    }
+  ]
+}

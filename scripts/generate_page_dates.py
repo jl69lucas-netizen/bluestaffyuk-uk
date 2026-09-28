@@ -11,8 +11,15 @@ AI crawlers every page changed today, every day.
 
 So: compute real dates HERE, from full local history, and commit the result.
 
-datePublished = the first commit that touched the page file.
-dateModified  = the most recent commit that touched it.
+datePublished = the first commit that touched the page file — and never later than the
+                earliest datePublished any COMMITTED data/page-dates.json gave the route: a
+                URL that changes source (a city leaving the template for its own file, Plan 2
+                Task 8) was still published when it was first published.
+dateModified  = the most recent commit that touched it, less the commits
+                data/page-dates-ignore.json lists for that path: a commit that changed a
+                route's sources without changing its content (the template's own-file skip)
+                is not a modification, and counting it stamps a false freshness date on
+                every page the template builds (working rule 9).
 
 Run after adding pages or before a freshness-relevant deploy, then commit the JSON. It is
 also `prebuild` in package.json, so every `npm run build` refreshes the map first and no
@@ -43,6 +50,10 @@ import argparse, json, os, re, subprocess, sys, glob, pathlib, tempfile
 # it produced zero routes and reported that as if the repo were empty.
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "page-dates.json"
+# Commits that changed a page's SOURCES without changing what the page says, each ignored for
+# the source paths it names (a commit that also created a real page stays real for that page).
+IGNORE = "data/page-dates-ignore.json"
+MAP = "data/page-dates.json"
 
 
 BLOG_DIR = "src/content/blog"
@@ -108,11 +119,11 @@ def route_for(path):
     return "/" + "/".join(seg) + "/" if seg else "/"
 
 
-def span(paths):
+def span(paths, ignore=()):
     """(earliest first-commit, latest last-commit) across every source of one page."""
     firsts, lasts = [], []
     for p in paths:
-        first, last = git_dates(p)
+        first, last = git_dates(p, ignore)
         if last:
             firsts.append(first)
             lasts.append(last)
@@ -139,19 +150,64 @@ class NoGit(Exception):
     no cause attached."""
 
 
-def git_dates(path):
-    """(first, last) commit dates for a path as YYYY-MM-DD, or (None, None)."""
+def _git(*args):
     try:
-        out = subprocess.run(
-            ["git", "log", "--follow", "--format=%cs", "--", path],
-            cwd=str(ROOT), capture_output=True, text=True, check=True).stdout.split()
+        return subprocess.run(["git", *args], cwd=str(ROOT), capture_output=True, text=True,
+                              check=True).stdout
     except FileNotFoundError as exc:
         raise NoGit(exc) from exc
+
+
+def ignored_commits():
+    """[(sha prefix, {paths})] from data/page-dates-ignore.json; [] when the file is absent.
+    A malformed file stops the run: silently dating by every commit is the defect it fixes."""
+    f = ROOT / IGNORE
+    if not f.exists():
+        return []
+    rows = json.loads(f.read_text(encoding="utf-8"))["commits"]
+    out = []
+    for r in rows:
+        if not (r.get("sha") and r.get("paths") and r.get("reason")):
+            raise ValueError(f"{IGNORE}: every entry needs sha, paths and reason: {r!r}")
+        out.append((r["sha"].lower(), set(r["paths"])))
+    return out
+
+
+def published_floor():
+    """{route: earliest datePublished in any committed version of data/page-dates.json}."""
+    floor = {}
+    try:
+        shas = _git("log", "--format=%H", "--", MAP).split()
+    except subprocess.CalledProcessError:
+        return floor
+    for sha in shas:
+        try:
+            routes = json.loads(_git("show", f"{sha}:{MAP}"))["routes"]
+        except (subprocess.CalledProcessError, ValueError, KeyError, TypeError):
+            continue
+        for route, row in routes.items():
+            d = isinstance(row, dict) and row.get("datePublished")
+            if d and (route not in floor or d < floor[route]):
+                floor[route] = d
+    return floor
+
+
+def git_dates(path, ignore=()):
+    """(first, last) commit dates for a path as YYYY-MM-DD, or (None, None), skipping every
+    commit `ignore` lists for this path."""
+    try:
+        out = _git("log", "--follow", "--format=%H %cs", "--", path).split("\n")
     except subprocess.CalledProcessError:
         return None, None
-    if not out:
+    dates = []
+    for line in filter(None, out):
+        sha, date = line.split()
+        if any(sha.startswith(pre) and path in paths for pre, paths in ignore):
+            continue
+        dates.append(date)
+    if not dates:
         return None, None
-    return out[-1], out[0]
+    return dates[-1], dates[0]
 
 
 def build():
@@ -166,6 +222,7 @@ def build():
         if (ROOT / template).exists():
             pages += expand(template, static_routes)
 
+    ignore, floor = ignored_commits(), published_floor()
     routes, skipped = {}, []
     for route, sources in pages:
         if route is None:
@@ -173,10 +230,13 @@ def build():
             continue
         if "[" in route or "]" in route:
             raise AssertionError(f"unexpanded template route {route!r} from {sources}")
-        first, last = span(sources)
+        first, last = span(sources, ignore)
         if not last:
             skipped.append(sources[-1])     # never committed yet — no honest date exists
             continue
+        # The URL was published when it was first published, whatever builds it now.
+        if route in floor and floor[route] < first:
+            first = floor[route]
         # Does the page already emit its own dateModified? A page that builds its schema
         # inline in the BODY rather than passing it via the schemaJson prop cannot be
         # detected from props, and would end up with TWO contradicting dates. Detect it at
