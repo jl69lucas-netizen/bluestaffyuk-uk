@@ -12,7 +12,18 @@ export interface SectionRef {
   id: string;
   /** The short label shown in the dial and the sheet, not the full heading. */
   label: string;
+  /** The section's heading, the buyer question it answers. The city set's sheet lists it
+   *  (CityJumpBand); the kit set never reads it. */
+  question?: string;
+  /** The line icon the city set's stepper shows for the section (src/components/kit/cityIcons.ts). */
+  icon?: CityIcon;
+  /** The one-word name under the city stepper's stop ("Puppies"); `label` when absent. */
+  stop?: string;
 }
+
+/** The line icons a city page's jump band draws, by name (src/components/kit/cityIcons.ts). */
+export type CityIcon = 'list' | 'puppies' | 'prices' | 'deposit' | 'delivery' | 'health'
+  | 'home' | 'play' | 'faq' | 'enquire';
 
 /** A board record's sections, narrowed to what the two nav components need.
  *  Typed structurally so `scripts/build_page_board.py`'s JSON can be handed over as-is. */

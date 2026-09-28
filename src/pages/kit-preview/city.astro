@@ -1,0 +1,41 @@
+---
+// src/pages/kit-preview/city.astro — the city components, once each, on one hidden page.
+//
+// The London component design pass (Plan 2) builds each city page's fifteen picks as kit
+// components: the `"project": 5` rows of data/design/components.json. They are previewed here
+// and not on /kit-preview/, because the city nav set (CityDial, CityJumpBand, CityContents) is
+// a page singleton like the kit's dial, strip and sheet — two sets on one document would be two
+// sticky bars and two scroll-spies over the same sections.
+//
+// What reads it: the city-kit render spec (tests/render/city-kit.spec.ts) at 375 / 768 / 1024 /
+// 1280, the dist assertions in tests/py/test_city_kit.py, and scripts/city_side_by_side.mjs,
+// which shoots each section beside its canvas frame for the user. No per-component branch: it
+// walks components.json, looks each id up in REGISTRY and renders one copy per fixture, exactly
+// as /kit-preview/ does. noindex, and under `kit-preview`, which form_contract_audit.py and
+// retired_facts_check.py already treat as a specimen route.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import componentsJson from '../../../data/design/components.json';
+import { REGISTRY, type ComponentRow } from '../../components/kit/_registry';
+const components = (componentsJson as ComponentRow[]).filter((c) => c.project === 5);
+const title = 'City kit preview — BlueStaffyUK (project 5)';
+---
+<BaseLayout title={title} description="Internal city component preview; not indexed." noindex={true}>
+  <div class="city-preview">
+    <h1 class="head">City kit preview</h1>
+    {components.map((c) => {
+      const { C, demo = [{}] } = REGISTRY[c.id];
+      return (
+        <section id={`kit-${c.id}`} data-component={c.id} data-width={c.board_width} class="kit-section">
+          <p class="cap">{c.title}</p>
+          {demo.map((props) => <C {...props} />)}
+        </section>
+      );
+    })}
+  </div>
+</BaseLayout>
+<style>
+  .city-preview { padding-block: var(--space-6); }
+  .head { font-family: var(--font-display); max-width: var(--container); margin: 0 auto var(--space-6); padding-inline: var(--space-5); }
+  .kit-section { margin-block: var(--space-8); }
+  .cap { max-width: var(--container); margin: 0 auto var(--space-3); padding-inline: var(--space-5); font-size: var(--text-sm); color: var(--color-text-muted); }
+</style>

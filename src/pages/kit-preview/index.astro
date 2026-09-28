@@ -31,7 +31,10 @@ import { REGISTRY, DEMO_SECTIONS, type ComponentRow } from '../../components/kit
 import Mark from '../../components/kit/Mark.astro';
 import specimen from '../../assets/puppies/Ince1.jpg';
 import pageDates from '../../../data/page-dates.json';
-const components = componentsJson as ComponentRow[];
+// The site kit only. The city components (`"project": 5`) have their own preview,
+// /kit-preview/city/: the city nav set is a page singleton exactly as the kit's is, so the two
+// sets cannot share one document.
+const components = (componentsJson as ComponentRow[]).filter((c) => c.project !== 5);
 const title = 'Kit preview — BlueStaffyUK (project 3)';
 // FRESHNESS LIVES IN SCHEMA AND ONLY THERE (`schema-date-modified-present`, blocking). Every
 // other page carries a WebPage node with its dates inside its ported meta; this page is

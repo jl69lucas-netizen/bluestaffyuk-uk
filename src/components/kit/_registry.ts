@@ -60,6 +60,9 @@ import SectionSheet from './SectionSheet.astro';
 import SectionStrip from './SectionStrip.astro';
 import DataTable from './DataTable.astro';
 import VideoEmbed from './VideoEmbed.astro';
+import CityHero from './CityHero.astro';
+import CityPriceScale from './CityPriceScale.astro';
+import CityTrustLedger from './CityTrustLedger.astro';
 
 /** The counter specimen's availability figure, counted the way every page counts it. */
 const availableNow = (puppies as PuppyRow[]).filter((p) => p.status === 'Available').length;
@@ -68,7 +71,11 @@ export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
   | 'info-card' | 'testimonial' | 'faq' | 'contact-form' | 'page-nav' | 'footer'
   | 'section-divider' | 'page-dial' | 'section-sheet' | 'section-strip' | 'data-table'
-  | 'video-embed';
+  | 'video-embed'
+  // The city components (project 5): each city page's picks from its component design pass,
+  // previewed on /kit-preview/city/ — never on /kit-preview/, because the city nav set is a
+  // page singleton like the kit's. data/design/components.json rows with `"project": 5`.
+  | 'city-hero' | 'city-price-scale' | 'city-trust-ledger';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -101,7 +108,7 @@ export interface ComponentRow {
   /** Which project added the component. The canvas, the picks board and the variant prune
    *  are records of project 3's closed five-option pick process and filter to `3`; the
    *  kit preview, this registry and the Design System artifact carry every row. */
-  project: 3 | 4;
+  project: 3 | 4 | 5;
 }
 
 /** The six sections the dial and the sheet both demo. One list, not two: the pair is one
@@ -344,6 +351,55 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       id: (settings as { youtube_embeds: string[] }).youtube_embeds[0],
       title: 'Blue Staffy puppies at home with us',
       caption: 'One of the videos the site already carries, reused at its original id.',
+    }],
+  },
+  // ── the city components (project 5), previewed on /kit-preview/city/ ──────────────────────
+  // ONE SERVED PHOTOGRAPH, ONCE PER PAGE. A served file keeps its served alt word for word
+  // (working rule 11) and `img-alt-present-and-unique` (blocking) refuses a repeated alt, so a
+  // served photo appears once on a page: the canvas gave Maggie's photo to five components, and
+  // here each takes a different one (data/image-focus.json lists them).
+  // THE SPECIMENS STATE PLACEHOLDER COPY, AND SAY SO. A city page's words come from its own
+  // research board and outline (docs/reference/page-run.md row 8); a specimen shows the
+  // component's shape, so its copy names no city and claims nothing the data files do not.
+  'city-hero': {
+    C: CityHero,
+    demo: [{
+      as: 'h2',
+      eyebrow: `Six puppies · ${SITE.address.city}`,
+      title: 'Where Can I Find a Blue Staffy Puppy Near Me?',
+      lede: `Three boys and three girls, raised by ${SITE.breeder_name} in ${SITE.address.city}, with UK home delivery priced by distance.`,
+      cta: { label: 'Choose your puppy', href: '#kit-city-hero' },
+      more: { label: 'How delivery works', href: '#kit-city-hero' },
+    }],
+  },
+  // The figures are the component's own reading of the data files; only the words are passed.
+  'city-price-scale': {
+    C: CityPriceScale,
+    demo: [{
+      labels: {
+        count: 'puppies. What each part costs',
+        delivery: 'UK home delivery, priced by distance',
+        deposit: 'deposit: books your viewing and reserves your puppy',
+        price: 'the price of one puppy',
+      },
+    }],
+  },
+  // Five claims the facts files and the breeder's answers back (the canvas's sixth, a
+  // guarantee length, is not stated while data/settings.json `guarantee_days` is null).
+  'city-trust-ledger': {
+    C: CityTrustLedger,
+    demo: [{
+      heading: 'What Should You Check Before Buying a Blue Staffy Puppy?',
+      intro: 'The health of the parents, how the litter was raised and what happens if something goes wrong. Here is where each of ours stands.',
+      photo: 'jones-magnificent-blue-staffy-sire.webp',
+      caption: 'Jones, the sire',
+      items: [
+        { icon: 'dna', claim: 'DNA-tested parents', detail: 'Maggie and Jones, tested for L-2-HGA and HC-HSF4' },
+        { icon: 'eye', claim: 'Eye and elbow screening', detail: 'Both parents screened before the litter' },
+        { icon: 'heart', claim: 'Puppy Culture and ENS', detail: 'Early neurological stimulation, raised in the home' },
+        { icon: 'return', claim: 'We take a puppy back', detail: 'If the fault is ours, or you can no longer care for it' },
+        { icon: 'delivery', claim: 'To your door', detail: 'DEFRA-approved transport, or collect in Carlisle' },
+      ],
     }],
   },
 };

@@ -19,6 +19,11 @@ IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-s
        # component 18, the video embed (working rule 14; spec §9 amendment 7).
        "data-table", "video-embed"]
 
+#: The city components (project 5; the London component design pass, Plan 2): one row per
+#: city component built from a city's picks, previewed on /kit-preview/city/, in city-page
+#: order (scripts/city_components.py). tests/py/test_city_kit.py holds them.
+CITY_IDS = ["city-hero", "city-price-scale", "city-trust-ledger"]
+
 
 def load():
     return json.loads(COMPONENTS.read_text())
@@ -26,7 +31,7 @@ def load():
 
 def test_every_component_in_spec_order():
     rows = load()
-    assert [r["id"] for r in rows] == IDS
+    assert [r["id"] for r in rows] == IDS + CITY_IDS
 
 
 def test_each_row_has_file_title_width():
@@ -37,7 +42,7 @@ def test_each_row_has_file_title_width():
         # Which project added the row. The canvas, the picks board and the variant prune
         # filter to 3 — they record project 3's closed five-option pick process; the kit
         # preview, _registry.ts and the Design System artifact carry every row.
-        assert r["project"] in (3, 4), r
+        assert r["project"] in (3, 4, 5), r
 
 
 def test_ids_and_files_are_unique():
@@ -835,10 +840,13 @@ def test_components_json_has_eighteen_rows_after_project_4_additions():
     because IDS above is the list every other test walks: if the five rows were ever moved
     ahead of the project 3 thirteen, the board sheets and the artboard numbering would
     silently renumber while `test_every_component_in_spec_order` stayed green."""
-    ids = [r["id"] for r in load()]
+    ids = [r["id"] for r in load() if r["project"] != 5]
     assert len(ids) == 18, ids
     assert ids[-5:] == PROJECT_4_IDS, ids[-5:]
     by_project = {r["id"]: r["project"] for r in load()}
+    # The city rows come after all eighteen and are the only project 5 rows.
+    assert [i for i, p in by_project.items() if p == 5] == CITY_IDS
+    assert [r["id"] for r in load()][18:] == CITY_IDS
     assert [i for i, p in by_project.items() if p == 4] == PROJECT_4_IDS
     assert len([i for i, p in by_project.items() if p == 3]) == 13
 

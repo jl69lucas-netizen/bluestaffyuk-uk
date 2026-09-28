@@ -1,0 +1,149 @@
+---
+// src/components/kit/CityHero.astro — city component 1, the hero (London pick: hero B,
+// "Litter filmstrip"; data/design/city-picks/blue-staffy-puppies-london.json). A deep-steel
+// panel inset in the bone page; the available puppies run as a contact-sheet strip, and the copy
+// sits under it in two editorial columns from 1024px.
+//
+// IT IS A `.kit-hero`, so every hero check judges it as it judges the built pages' heroes:
+// `.pic` (the strip) precedes `.title` in source and paints above it on a phone
+// (`layout-hero-image-first-mobile`), `img-sizes-matches-box` reads the strip's `sizes`, and the
+// band is 390-450px tall at 1280 with a 390px floor from 1024 (rules/design.md rule 10; the
+// city-kit render spec measures it). `data-hero-layout="filmstrip"` is a new arrangement, not
+// one of Hero.astro's five, so the frozen pages' hero is untouched.
+//
+// THE PUPPIES ARE DATA: data/puppies.json's available rows, their `card_photo`, cropped on their
+// faces by src/lib/imageFocus.ts — never six typed blocks and never an inline crop. The first
+// photo is the LCP candidate: eager, `fetchpriority="high"`; the rest are eager too (a strip
+// above the fold that pops in tile by tile is worse than one that costs five small requests).
+//
+// Conventions 2 (focus rings read --kit-ring; the band sets it via `.on-inverse`), 4, 6.
+// Brass is a FILL (the CTA) with --color-cta-ink text, never small text on the steel band.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass, puppyAlt } from '../../lib/imageFocus';
+import { availablePuppies } from '../../lib/cityKit';
+
+export interface HeroLink { label: string; href: string }
+type Props = HTMLAttributes<'section'> & {
+  as?: 'h1' | 'h2';
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  /** The brass call to action. */
+  cta: HeroLink;
+  /** The quieter text link beside it. */
+  more?: HeroLink;
+};
+const { as: H = 'h1', eyebrow, title, lede, cta, more, class: cls, ...rest } = Astro.props;
+const pups = availablePuppies();
+// MEASURED against the painted box at 375, 640, 768, 1024, 1100 and 1280 (img-sizes-matches-box
+// holds the promise to 0.9-1.25x): three across below 640px, six across above, and from 1280 the
+// panel is capped at 1232px so a thumb is 188px.
+const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25.333px), '
+  + '(min-width: 640px) calc(16.667vw - 14.667px), calc(33.333vw - 21.333px)';
+---
+<section {...rest} class:list={['city-kit', 'kit-hero', 'city-hero', cls]} data-hero-layout="filmstrip" data-hero-media="top">
+  <div class="inner on-inverse">
+    <ul class="pic" aria-label="The puppies available now">
+      {pups.map((p, i) => (
+        <li>
+          <Image
+            src={puppyImage(p.card_photo)}
+            alt={puppyAlt(p, 'short')}
+            widths={[240, 400]}
+            sizes={SIZES}
+            class={focusClass(p.card_photo)}
+            loading="eager"
+            fetchpriority={i === 0 ? 'high' : 'auto'}
+            decoding={i === 0 ? 'sync' : 'async'}
+          />
+          <span class="tag" aria-hidden="true">{p.name}</span>
+        </li>
+      ))}
+    </ul>
+    <div class="copy">
+      <div class="head">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <H class="title">{title}</H>
+      </div>
+      <div>
+        {lede && <p class="lede">{lede}</p>}
+        <div class="ctas">
+          <a class="cta" href={cta.href}>{cta.label}</a>
+          {more && <a class="more" href={more.href}>{more.label}</a>}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    .city-hero { background: var(--color-surface); padding: var(--space-3); }
+    .inner {
+      max-width: 1232px; margin: 0 auto; display: grid; gap: var(--space-5);
+      padding: var(--space-3); border-radius: var(--radius-lg);
+      background: var(--color-surface-deep); color: var(--color-text-on-inverse);
+    }
+    .pic {
+      list-style: none; margin: 0; padding: 0; display: grid; align-items: start;
+      grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2);
+    }
+    .pic li { position: relative; margin: 0; max-width: none; }
+    .pic :global(img) {
+      display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;
+      border-radius: var(--radius-sm); background: var(--color-steel-700);
+    }
+    /* The name plate sits in the photo's lower-left corner, clear of the face the focus class
+       centres; `img-face-visible` measures that it covers no more than 10% of one. */
+    .tag {
+      position: absolute; left: 0; bottom: 0; padding: 4px var(--space-2) 3px;
+      border-radius: 0 var(--radius-sm) 0 var(--radius-sm);
+      background: var(--color-surface-deep); color: var(--color-text-on-inverse);
+      font-size: var(--text-xs); line-height: 1.2; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .copy { padding: 0 var(--space-2) var(--space-3); }
+    .eyebrow {
+      margin: 0 0 var(--space-2); font-size: var(--text-xs); font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-link-on-inverse);
+    }
+    .title {
+      margin: 0 0 var(--space-3); font-family: var(--font-display); font-size: var(--text-3xl);
+      line-height: var(--text-3xl--line-height); color: var(--color-text-on-inverse); text-wrap: balance;
+    }
+    .lede { margin: 0 0 var(--space-4); max-width: 54ch; color: var(--color-text-on-inverse); }
+    .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
+    .cta {
+      display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--space-6);
+      border-radius: var(--btn-radius); background: var(--color-cta); color: var(--color-cta-ink);
+      font-weight: 700; text-decoration: none; transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    .cta:hover { background: var(--color-cta-hover); }
+    .more {
+      display: inline-flex; align-items: center; min-height: 44px; font-weight: 600;
+      color: var(--color-link-on-inverse); text-underline-offset: 4px;
+    }
+    .cta:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    @media (min-width: 640px) { .pic { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+    @media (min-width: 1024px) {
+      .city-hero { padding: var(--space-4) var(--space-5); }
+      /* From 1024px the copy reads above the strip (the pick's "copy" / "strip" areas); the
+         strip stays FIRST IN SOURCE, so a phone still paints it first (rule 10). */
+      .inner { min-height: 390px; padding: var(--space-6) var(--space-6) var(--space-5); grid-template-areas: "copy" "strip"; }
+      .pic { grid-area: strip; }
+      .pic :global(img) { aspect-ratio: auto; height: 148px; }
+      .copy {
+        grid-area: copy; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        column-gap: var(--space-8); align-items: end;
+      }
+      .head { align-self: start; }
+      .title { margin: 0; }
+    }
+    @media (min-width: 1024px) and (max-width: 1199px) {
+      .title { font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); }
+      .pic :global(img) { height: 120px; }
+    }
+    /* rules/design.md rule 10, "on a phone the photo also PAINTS first": the strip is first in
+       source and first in the grid at every width, so there is no `order` to undo here. */
+  }
+</style>

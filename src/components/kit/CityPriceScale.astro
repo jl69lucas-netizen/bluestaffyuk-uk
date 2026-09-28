@@ -1,0 +1,98 @@
+---
+// src/components/kit/CityPriceScale.astro — city component 2, the counter strip (London pick:
+// counter-strip C, "Price scale"). The figures are stops on one number line, smallest to
+// largest — the delivery band, the deposit, then the price, which forks into a boy or a girl —
+// each labelled for what it is, so the line never reads as a bill. A break mark sits between
+// the deposit and the price so the stops stay legible. On a phone the line runs down the left.
+//
+// THE FIGURES ARE DATA, NEVER PROPS (working rule 9; rule 16's "the counter's figures are that
+// page's own facts"): the available count from data/puppies.json, the band and the deposit from
+// data/settings.json, the two prices from data/price-matrix.json, all through src/lib/cityKit.ts.
+// Only the WORDS under them are the page's, because they name the city.
+//
+// `data-counters` puts it in `layout-hero-counter-separation`'s view: the bone-50 bed, a
+// hairline and a steel top rule separate it from the hero above (rules/design.md).
+// Conventions 4 and 6; tokens only; brass is never small text here.
+import type { HTMLAttributes } from 'astro/types';
+import { availablePuppies, BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  labels: {
+    /** After the count, e.g. "puppies. What each part costs". */
+    count: string;
+    delivery: string;
+    deposit: string;
+    price: string;
+  };
+};
+const { labels, class: cls, ...rest } = Astro.props;
+const count = availablePuppies().length;
+---
+<section {...rest} class:list={['city-kit', 'city-scale', cls]} data-counters aria-label="What each part costs">
+  <div class="panel">
+    <p class="count" data-figure><span class="n">{count}</span><span class="l">{labels.count}</span></p>
+    <ol>
+      <li class="range" data-figure><span class="n">{DELIVERY_BAND}</span><span class="l">{labels.delivery}</span></li>
+      <li data-figure><span class="n">{DEPOSIT}</span><span class="l">{labels.deposit}</span></li>
+      <li class="brk" aria-hidden="true">
+        <svg viewBox="0 0 20 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16 9 2M11 16l5-14" /></svg>
+      </li>
+      <li class="fork">
+        <span class="n" data-figure>{BOY_PRICE} <small>a boy</small></span><span class="or">or</span><span class="n" data-figure>{GIRL_PRICE} <small>a girl</small></span>
+        <span class="l">{labels.price}</span>
+      </li>
+    </ol>
+  </div>
+</section>
+<style>
+  @layer components {
+    .city-scale {
+      background: var(--counter-bed); border-top: 1px solid var(--color-border);
+      box-shadow: inset 0 3px 0 var(--color-brand); padding: var(--space-5) var(--space-3);
+    }
+    .panel { max-width: 1200px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-md); background: var(--color-brand-soft); }
+    .count { display: flex; align-items: baseline; gap: var(--space-3); margin: 0 0 var(--space-4); }
+    .count .n { font-size: var(--text-3xl); line-height: 1; }
+    .count .l { font-weight: 600; }
+    ol { list-style: none; margin: 0; padding: 0 0 0 var(--space-5); position: relative; display: grid; gap: var(--space-4); }
+    ol::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--color-brand); }
+    li { position: relative; margin: 0; max-width: none; }
+    li::before {
+      content: ""; position: absolute; left: calc(-1 * var(--space-5) + 1px); top: 6px; width: 14px; height: 14px;
+      border-radius: 50%; background: var(--color-brand-soft); border: 3px solid var(--color-brand);
+    }
+    li.range::before { height: 30px; border-radius: var(--radius-pill); background: var(--color-brand); }
+    li.brk { height: 18px; }
+    li.brk::before { content: none; }
+    .brk svg {
+      position: absolute; left: calc(-1 * var(--space-5) - 2px); top: 0; width: 20px; height: 18px;
+      background: var(--color-brand-soft); color: var(--color-brand);
+    }
+    .n {
+      display: block; font-family: var(--font-display); font-weight: 700; font-size: var(--text-2xl);
+      line-height: 1.1; color: var(--color-brand); font-feature-settings: 'lnum';
+    }
+    .n small { font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600; color: var(--color-ink); }
+    .l { display: block; margin-top: 2px; font-size: var(--text-sm); color: var(--color-ink); }
+    .fork .n { display: inline-block; }
+    .or { display: inline-block; margin: 0 var(--space-2); font-size: var(--text-sm); font-style: italic; color: var(--color-ink-2); }
+    @media (min-width: 768px) {
+      .city-scale { padding: var(--space-6) var(--space-5); }
+      .panel {
+        display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center;
+        gap: var(--space-7); padding: var(--space-6) var(--space-6) var(--space-5);
+      }
+      .count { flex-direction: column; gap: var(--space-1); margin: 0; max-width: 14ch; }
+      .count .n { font-size: var(--text-4xl); }
+      ol { padding: 0; display: flex; gap: var(--space-4); align-items: flex-start; }
+      ol::before { left: 0; right: 0; top: 10px; bottom: auto; width: auto; height: 2px; }
+      li { flex: 1 1 0; padding-top: var(--space-7); }
+      li::before { left: 0; top: 3px; }
+      li.range { flex: 1.1 1 0; }
+      li.fork { flex: 1.9 1 0; }
+      li.range::before { width: min(160px, 70%); height: 16px; top: 3px; }
+      li.brk { flex: 0 0 20px; height: 22px; padding: 0; }
+      .brk svg { left: 0; top: 2px; }
+    }
+  }
+</style>

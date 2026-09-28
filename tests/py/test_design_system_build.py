@@ -131,7 +131,7 @@ def test_composites_and_motion_are_left_out_of_the_grammar(tokens):
 # --------------------------------------------------------------------------- README.md
 
 def test_readme_names_the_locked_facts_and_the_system(settings):
-    rows = json.loads((ROOT / "data/design/components.json").read_text())
+    rows = D.site_kit(json.loads((ROOT / "data/design/components.json").read_text()))
     D.FILE_BY_ID.update({r["id"]: r["file"] for r in rows})
     r = D.readme(D.tokens_json(), settings, (ROOT / "rules/design.md").read_text(),
                  [x["id"] for x in rows])
@@ -145,7 +145,7 @@ def test_readme_names_the_locked_facts_and_the_system(settings):
 
 
 def test_readme_names_no_place_the_repo_has_not_locked(settings):
-    rows = json.loads((ROOT / "data/design/components.json").read_text())
+    rows = D.site_kit(json.loads((ROOT / "data/design/components.json").read_text()))
     D.FILE_BY_ID.update({r["id"]: r["file"] for r in rows})
     r = D.readme(D.tokens_json(), settings, (ROOT / "rules/design.md").read_text(),
                  [x["id"] for x in rows])
@@ -172,7 +172,7 @@ def built():
 
 def test_every_component_folder_plus_the_cover_each_carries_a_ds_card_line():
     out = built()
-    rows = json.loads((ROOT / "data/design/components.json").read_text())
+    rows = D.site_kit(json.loads((ROOT / "data/design/components.json").read_text()))
     expected = {D.COMPONENTS[r["id"]]["comp"] for r in rows} | {"Cover"}
     assert {p.name for p in (out / "components").iterdir()} == expected
     # Eighteen components and the cover. Unlike the canvas and the picks board, this artifact

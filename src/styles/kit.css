@@ -68,3 +68,27 @@
     color: var(--color-text-on-inverse);
   }
 }
+
+/* THE FOCUS CLASSES (the London component design pass, Plan 2). A photograph's crop comes from
+   data/image-focus.json through src/lib/imageFocus.ts `focusClass()`, which emits
+   `focus fx-NN fy-NN`: the centre of the file's faces, on a 5% grid. A crop is a CLASS, never
+   an inline `style="object-position:…"` (plan2-notes), and never a number typed beside one
+   image. `img-face-visible` (tests/render/checks/img.ts) measures what these paint. */
+@layer components {
+  .focus { object-position: var(--fx, 50%) var(--fy, 50%); }
+  .fx-0 { --fx: 0%; } .fx-5 { --fx: 5%; } .fx-10 { --fx: 10%; } .fx-15 { --fx: 15%; } .fx-20 { --fx: 20%; } .fx-25 { --fx: 25%; } .fx-30 { --fx: 30%; } .fx-35 { --fx: 35%; } .fx-40 { --fx: 40%; } .fx-45 { --fx: 45%; } .fx-50 { --fx: 50%; } .fx-55 { --fx: 55%; } .fx-60 { --fx: 60%; } .fx-65 { --fx: 65%; } .fx-70 { --fx: 70%; } .fx-75 { --fx: 75%; } .fx-80 { --fx: 80%; } .fx-85 { --fx: 85%; } .fx-90 { --fx: 90%; } .fx-95 { --fx: 95%; } .fx-100 { --fx: 100%; }
+  .fy-0 { --fy: 0%; } .fy-5 { --fy: 5%; } .fy-10 { --fy: 10%; } .fy-15 { --fy: 15%; } .fy-20 { --fy: 20%; } .fy-25 { --fy: 25%; } .fy-30 { --fy: 30%; } .fy-35 { --fy: 35%; } .fy-40 { --fy: 40%; } .fy-45 { --fy: 45%; } .fy-50 { --fy: 50%; } .fy-55 { --fy: 55%; } .fy-60 { --fy: 60%; } .fy-65 { --fy: 65%; } .fy-70 { --fy: 70%; } .fy-75 { --fy: 75%; } .fy-80 { --fy: 80%; } .fy-85 { --fy: 85%; } .fy-90 { --fy: 90%; } .fy-95 { --fy: 95%; } .fy-100 { --fy: 100%; }
+}
+
+/* THE CITY COMPONENTS' TYPE BASE (the London component design pass, Plan 2). The canvas the
+   user picked from painted every variant in a frame whose base (scripts/build_component_canvas.py
+   FRAME_BASE) set headings in the display face in brand steel, on the browser's own bold, with
+   no measure on paragraphs; the site's base (Tailwind's preflight, global.css) inherits the
+   weight and the colour and holds `main p, main li` to 70ch. Every city component root carries
+   `city-kit`, so the built component sets its type as the approved variant did. `:where()`
+   keeps this at one class of specificity: a component that paints a heading on a steel band, or
+   gives a paragraph its own measure, still wins with its own scoped rule. */
+@layer components {
+  .city-kit :where(h1, h2, h3) { font-weight: 700; color: var(--color-brand); }
+  .city-kit :where(p, li) { max-width: none; }
+}

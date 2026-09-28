@@ -60,6 +60,27 @@ KIT_ONLY = {
     "newsletter": [],
 }
 
+#: The kit component each canvas component is built as (the London component design pass,
+#: Plan 2): one `"project": 5` row of data/design/components.json per city component, whatever
+#: variant a city picked — the picked variant's design is what the component renders.
+KIT_ID = {
+    "hero": "city-hero",
+    "counter-strip": "city-price-scale",
+    "trust-strip": "city-trust-ledger",
+    "contents-list": "city-contents",
+    "desktop-dial": "city-dial",
+    "jump-links": "city-jump-band",
+    "key-takeaways": "city-takeaways",
+    "puppy-cards": "city-puppy-sheet",
+    "tables": "city-roster",
+    "video": "city-video-panel",
+    "image-text": "city-chapters",
+    "reviews": "city-letter",
+    "faq-blocks": "city-faq-ledger",
+    "newsletter": "city-newsletter",
+    "contact-form": "city-contact-lineup",
+}
+
 #: Where a city's canvas lives. One folder per city key, one sub-folder per component.
 CANVAS_ROOT = ROOT / "design" / "city-canvas"
 

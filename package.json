@@ -71,6 +71,7 @@
     "test:render:pages": "node scripts/render_pages.mjs",
     "test:render:search": "playwright test -c tests/render/playwright.config.ts kit-search.spec.ts",
     "test:render:canvas": "python3 scripts/build_component_canvas.py --emit-frames docs/artifacts/canvas/london-frames && playwright test -c tests/render/canvas.config.ts",
+    "test:render:city": "playwright test -c tests/render/city-kit.config.ts",
     "test:render:report": "playwright test -c tests/render/playwright.config.ts --reporter=html"
   },
   "dependencies": {

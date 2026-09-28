@@ -1129,6 +1129,17 @@ def index_json(asset_blobs, sizes, now):
 
 FILE_BY_ID = {}
 
+#: The projects whose rows this artifact documents: the site kit. A `"project": 5` row is a
+#: CITY component (the London component design pass, Plan 2): one city's pick, recorded with
+#: its canvas and its picks file (data/design/city-picks/) and previewed on /kit-preview/city/,
+#: not a site-wide component, so the Design System artifact does not carry it.
+SITE_KIT_PROJECTS = (3, 4)
+
+
+def site_kit(rows):
+    """The components.json rows this artifact documents, in their order."""
+    return [r for r in rows if r["project"] in SITE_KIT_PROJECTS]
+
 
 def load_asset_map():
     if not ASSET_MAP.exists():
@@ -1144,7 +1155,7 @@ def main(argv=None):
     ap.add_argument("--heights", default=str(ROOT / "data/design/canvas-heights.json"))
     a = ap.parse_args(argv)
 
-    rows = json.loads((ROOT / "data/design/components.json").read_text())
+    rows = site_kit(json.loads((ROOT / "data/design/components.json").read_text()))
     FILE_BY_ID.clear()
     FILE_BY_ID.update({r["id"]: r["file"] for r in rows})
     settings = json.loads((ROOT / "data/settings.json").read_text())
