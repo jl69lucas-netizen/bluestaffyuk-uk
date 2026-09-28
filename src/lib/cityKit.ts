@@ -144,3 +144,22 @@ export function splitReview(quote: string, maxChars: number): string[] {
     return out;
   }, []);
 }
+
+/** The most stops CityJumpStepper holds: every stop sits on ONE line at 375px with no sideways
+ *  scroll, and past ten they overlap (the Task 7b review). */
+export const MAX_STOPS = 10;
+
+/** CityJumpStepper's build-time guard, as a function so its behaviour is testable
+ *  (tests/py/test_city_kit.py): too many sections is a page-plan problem, stopped at build time
+ *  as the takeaways and the trust ledger stop theirs, and every section needs its question and
+ *  icon. Returns the sections unchanged. */
+export function stepperStops<S extends { id: string; question?: string; icon?: string }>(sections: S[]): S[] {
+  if (sections.length > MAX_STOPS) {
+    throw new Error(`CityJumpStepper: ${sections.length} sections; the stepper holds ${MAX_STOPS} stops on a phone`);
+  }
+  const missing = sections.filter((s) => !s.question || !s.icon).map((s) => s.id);
+  if (missing.length) {
+    throw new Error(`CityJumpStepper: sections ${missing.join(', ')} need a question and an icon (src/lib/sections.ts)`);
+  }
+  return sections;
+}

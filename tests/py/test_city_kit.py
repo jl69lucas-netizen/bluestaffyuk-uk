@@ -731,33 +731,59 @@ def test_the_city_page_specimen_lays_the_kit_out_as_a_city_page_does():
 
 # --------------------------------------------------------------------------- Task 7b minors
 
-def test_the_grid_forms_invalid_border_is_the_warn_colour_not_the_focus_brass():
+def _contrast(a, b):
+    def lum(h):
+        c = [int(h.lstrip("#")[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+        c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+        return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+    hi, lo = sorted((lum(a), lum(b)), reverse=True)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def test_the_grid_forms_invalid_border_is_a_warn_tint_that_reads_on_the_band():
+    """M7: the grid form sits on the steel-900 band; its invalid border is a warn tint, never the
+    focus brass, at 3:1 or more against the band (WCAG 1.4.11). --color-warn itself is 2.66:1
+    there, so the band uses --city-warn-on-inverse (src/styles/city.css)."""
     src = (KIT / "ContactFormKit.astro").read_text(encoding="utf-8")
     rule = re.search(r"\[data-layout='grid'\] :user-invalid \{([^}]*)\}", src).group(1)
-    assert "--color-warn" in rule and "--color-cta" not in rule
+    assert "var(--form-invalid, var(--color-warn))" in rule and "--color-cta" not in rule
+    lineup = (KIT / "CityContactLineup.astro").read_text(encoding="utf-8")
+    assert "--form-invalid: var(--city-warn-on-inverse)" in lineup
+    tokens = (ROOT / "src/styles/tokens.css").read_text(encoding="utf-8")
+    band = re.search(r"--color-steel-900:\s*(#[0-9A-Fa-f]{6})", tokens).group(1)
+    tint = re.search(r"--city-warn-on-inverse:\s*(#[0-9A-Fa-f]{6})", CITY_CSS.read_text(encoding="utf-8")).group(1)
+    assert _contrast(tint, band) >= 3, _contrast(tint, band)
 
 
-def test_an_empty_email_and_a_malformed_one_get_different_error_lines():
-    """An empty required field is not 'incomplete': each email error line carries an empty and a
-    malformed message, and CSS shows one by :placeholder-shown (no script)."""
-    for cid, form in (("city-newsletter-notice", "data-newsletter"), ("city-contact-lineup", "data-contact-form")):
-        s = section(cid)
-        email = re.search(r'<input [^>]*type="email"[^>]*>', s).group(0)
-        assert 'placeholder=" "' in email, cid
-        assert s.count('class="e-empty"') == 1 and s.count('class="e-bad"') == 1, cid
-    for f in ("CityNewsletterNotice.astro", "ContactFormKit.astro"):
-        assert ":placeholder-shown" in (KIT / f).read_text(encoding="utf-8"), f
-
-
-def test_the_jump_stepper_refuses_more_stops_than_fit_a_phone():
-    src = (KIT / "CityJumpStepper.astro").read_text(encoding="utf-8")
-    assert re.search(r"const MAX_STOPS = \d+;", src)
-    assert "sections.length > MAX_STOPS" in src and "throw new Error" in src.split("sections.length > MAX_STOPS", 1)[1][:300]
+def test_the_jump_stepper_refuses_more_stops_than_fit_a_phone(tmp_path):
+    """M8, as behaviour: the stepper's guard is cityKit.stepperStops(sections), which the component
+    calls at build time; ten sections pass, eleven stop the build with the reason."""
+    import json as _json, shutil, subprocess
+    esbuild, node = ROOT / "node_modules/.bin/esbuild", shutil.which("node")
+    if not esbuild.exists() or not node:
+        pytest.skip("needs node and node_modules/.bin/esbuild (npm install)")
+    out = tmp_path / "cityKit.mjs"
+    subprocess.run([str(esbuild), str(ROOT / "src/lib/cityKit.ts"), "--bundle", "--format=esm", "--platform=node",
+                    "--define:import.meta.env={}", f"--outfile={out}", "--log-level=error"], check=True)
+    mk = lambda n: [{"id": f"s{i}", "label": f"S{i}", "question": "Q?", "icon": "list"} for i in range(n)]  # noqa: E731
+    driver = (f"const m = await import({_json.dumps(out.as_uri())});"
+              "const r = [];"
+              f"for (const s of {_json.dumps([mk(10), mk(11)])}) {{ try {{ m.stepperStops(s); r.push('ok'); }} catch (e) {{ r.push(String(e.message)); }} }}"
+              "console.log(JSON.stringify(r));")
+    res = subprocess.run([node, "--input-type=module", "-e", driver], check=True, capture_output=True, text=True)
+    ten, eleven = _json.loads(res.stdout)
+    assert ten == "ok"
+    assert "11 sections" in eleven and "10 stops" in eleven
+    src = (KIT / "CityJumpStepper.astro").read_text(encoding="utf-8").split("---", 2)[1]
+    assert "stepperStops(sections)" in src
 
 
 def test_a_print_rings_only_for_keyboard_focus_on_its_ask_link():
-    src = (KIT / "CityPuppySheet.astro").read_text(encoding="utf-8")
-    assert ".city-pup:has(.ask:focus-visible)" in src and ":focus-within" not in src
+    """M6: the ring is the stretched link's own ::after, drawn on .ask:focus-visible, so it needs
+    no :has() (the render probe tabs to an Ask link and reads the ring)."""
+    src = (KIT / "CityPuppySheet.astro").read_text(encoding="utf-8").split("<style>", 1)[1]
+    assert re.search(r"\.ask:focus-visible::after \{[^}]*outline: 3px solid var\(--kit-ring\)", src)
+    assert ":has(" not in src and ":focus-within" not in src
 
 
 def test_the_video_panels_side_notes_are_no_landmark():

@@ -79,6 +79,8 @@ const pups = availablePuppies();
 <style>
   @layer components {
     /* A container (src/styles/city.css): its tiers read this section's own box. */
+    /* The band's invalid-border tint for the grid form (src/styles/city.css; 5.31:1 on steel-900). */
+    .city-contact { --form-invalid: var(--city-warn-on-inverse); }
     .city-contact { background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
     .in { max-width: 1160px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
     h2 { margin: 0; color: var(--color-text-on-inverse); }

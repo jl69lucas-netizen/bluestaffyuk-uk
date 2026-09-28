@@ -11,6 +11,12 @@
    `auto`, so the dial's width is this one number. */
 :root { --city-dial-w: 272px; }
 
+/* The warn tint an invalid field's border takes on a steel-900 band (the grid contact form):
+   #D9784F is 5.31:1 against steel-900, where --color-warn (#9A4A2A) is 2.66:1 (WCAG 1.4.11
+   asks 3:1). A tint of the same hue, never the focus ring's brass. tests/py/test_city_kit.py
+   measures it. */
+:root { --city-warn-on-inverse: #D9784F; }
+
 /* THE CITY COMPONENTS' TYPE BASE. The canvas the user picked from painted every variant in a frame
    whose base set headings in the display face in brand steel, on the browser's own bold, with no
    measure on paragraphs; the site's base inherits the weight and the colour and holds

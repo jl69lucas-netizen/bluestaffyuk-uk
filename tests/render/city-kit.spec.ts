@@ -58,6 +58,26 @@ async function allVisible(page: Page, attr: string): Promise<string[]> {
   return hidden ? [`${hidden} [${attr}] element(s) are not painted`] : [];
 }
 
+/** The email error line says one thing for an empty field and another for a malformed address
+ *  (M8, as behaviour): submit empty, then type "a", then clear it, and read which line paints. */
+async function emailMessages(page: Page, form: string, email: string): Promise<string[]> {
+  const out: string[] = [];
+  const shown = async (sel: string) => page.locator(`${form} ${sel}`).first().isVisible();
+  const expectLine = async (state: string, want: 'e-empty' | 'e-bad') => {
+    const other = want === 'e-empty' ? 'e-bad' : 'e-empty';
+    if (!(await shown(`.${want}`)) || (await shown(`.${other}`))) out.push(`${form}: a ${state} email does not paint its own line (.${want})`);
+  };
+  await page.locator(`${form} [type="submit"]`).click();
+  await expectLine('empty', 'e-empty');
+  await page.fill(email, 'a');
+  await page.locator(`${form} [type="submit"]`).click();
+  await expectLine('malformed', 'e-bad');
+  await page.fill(email, '');
+  await page.locator(`${form} [type="submit"]`).click();
+  await expectLine('cleared', 'e-empty');
+  return out;
+}
+
 /** Each probe: the selector that says its component is on the page, and what it measures. */
 const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-hero-filmstrip': {
@@ -180,6 +200,15 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
         return !(hit === a || a.contains(hit!));
       }).length);
       if (small) out.push(`${small} print(s) whose photo does not hand the tap to its Ask link`);
+      // M6: a keyboard focus on an Ask link rings its whole print, through the link's own ::after.
+      await page.evaluate(() => window.scrollTo(0, 0));
+      const ask = page.locator('.city-pup .ask').first();
+      await ask.focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+      const ring = await ask.evaluate((a) => ({ fv: a.matches(':focus-visible'), style: getComputedStyle(a, '::after').outlineStyle,
+        width: getComputedStyle(a, '::after').outlineWidth }));
+      if (!ring.fv || ring.style !== 'solid' || ring.width !== '3px') out.push(`a keyboard-focused Ask link draws no 3px ring on its print (${JSON.stringify(ring)})`);
       return out;
     },
   },
@@ -259,6 +288,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       if ((await email.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the field aria-invalid');
       const desc = await email.getAttribute('aria-describedby');
       if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid field is not described by a painted error line');
+      out.push(...(await emailMessages(page, '[data-newsletter]', '[data-newsletter] input[type="email"]')));
       return out;
     },
   },
@@ -278,6 +308,20 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       if ((await name.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the name aria-invalid');
       const desc = await name.getAttribute('aria-describedby');
       if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid name is not described by a painted error line');
+      out.push(...(await emailMessages(page, '[data-contact-form]', '[data-contact-form] [name="email"]')));
+      // M7: the invalid border reads at 3:1 or more against the band it sits on (WCAG 1.4.11).
+      const ratio = await page.evaluate(() => {
+        const lum = (rgb: string) => {
+          const c = (rgb.match(/[\d.]+/g) ?? []).slice(0, 3).map((v) => Number(v) / 255)
+            .map((x) => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4));
+          return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+        };
+        const field = document.querySelector('[data-contact-form] [name="name"]')!;
+        const band = getComputedStyle(document.querySelector('.city-contact')!).backgroundColor;
+        const [a, b] = [lum(getComputedStyle(field).borderTopColor), lum(band)].sort((x, y) => y - x);
+        return (a + 0.05) / (b + 0.05);
+      });
+      if (ratio < 3) out.push(`the invalid border is ${ratio.toFixed(2)}:1 against the band (3:1 needed)`);
       return out;
     },
   },

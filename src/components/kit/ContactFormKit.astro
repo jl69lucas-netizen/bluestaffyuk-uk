@@ -231,9 +231,11 @@ const EMAIL_ERR = { empty: 'Please give us your email address.', bad: 'That emai
     [data-layout='grid'] .err { display: none; font-size: var(--text-xs); color: var(--color-cta-soft); }
     [data-layout='grid'] .field:has(:user-invalid) .err,
     [data-layout='grid'] [aria-invalid='true'] + .err { display: block; }
-    /* The warn colour, not brass: brass is the focus ring's, and a field that is both focused and
-       invalid must read as two states (the Task 7b review). */
-    [data-layout='grid'] :user-invalid { border: 2px solid var(--color-warn); }
+    /* A warn tint, not brass: brass is the focus ring's, and a field that is both focused and
+       invalid must read as two states (the Task 7b review). The grid form sits on a steel-900
+       band, where --color-warn is 2.66:1, so the band that mounts it passes its own tint in
+       --form-invalid (CityContactLineup: 5.31:1; WCAG 1.4.11 asks 3:1). */
+    [data-layout='grid'] :user-invalid { border: 2px solid var(--form-invalid, var(--color-warn)); }
     /* An empty required email and a malformed one read differently, by CSS alone: the field's
        placeholder is a single space, so :placeholder-shown means "nothing typed". */
     [data-layout='grid'] .err .e-bad { display: none; }
