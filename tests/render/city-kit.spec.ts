@@ -419,7 +419,7 @@ for (const route of ROUTES) {
     if (process.env.CITY_SHOTS) {
       // Lazy images paint only once scrolled near: walk the page and wait for every image to
       // decode, so the design passes judge photographs, not empty boxes (Plan 2 Task 8).
-      await page.evaluate(async () => {
+      const unloaded = await page.evaluate(async () => {
         for (let y = 0; y < document.body.scrollHeight; y += window.innerHeight / 2) {
           window.scrollTo(0, y);
           await new Promise((r) => requestAnimationFrame(() => r(null)));
@@ -430,7 +430,14 @@ for (const route of ROUTES) {
           new Promise((r) => setTimeout(r, 3000))]);
         await Promise.all(Array.from(document.images).map((i) => (i.complete ? null : settle(i))));
         window.scrollTo(0, 0);
+        // A painted image that never decoded is an empty box in the shot: say so (M8).
+        return Array.from(document.images).filter((i) => (!i.complete || i.naturalWidth === 0)
+          && i.getBoundingClientRect().width > 0).map((i) => i.currentSrc || i.src);
       });
+      if (unloaded.length) {
+        console.warn(`[shots] ${route} @ ${viewport}px: ${unloaded.length} painted image(s) never loaded: ${unloaded.slice(0, 3).join(', ')}`);
+        testInfo.annotations.push({ type: 'shots', description: `${unloaded.length} image(s) never loaded` });
+      }
       await page.screenshot({ fullPage: true,
         path: `${process.env.CITY_SHOTS}/${route.replace(/\//g, '_')}-${viewport}.png` });
     }
