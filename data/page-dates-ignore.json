@@ -11,6 +11,20 @@
         "src/pages/uk-locations/[slug].astro"
       ],
       "reason": "Plan 2 Task 8: the location template skips a city with its own file (London); the other 27 city pages build byte-for-byte as before outside <style>. The same commit created London's own page file, which stays dated by it."
+    },
+    {
+      "sha": "c2705da7cbcb85cbc53c9b005ca5d917a7d6b1b2",
+      "paths": [
+        "src/pages/uk-locations/[slug].astro"
+      ],
+      "reason": "Task 8 quality review M4: the own-file glob also matches <slug>/index.astro; no city has that form, so the 27 template pages build byte-for-byte as before outside <style> (diffed against the 86632ce build)."
+    },
+    {
+      "sha": "142b3d6b56a834397a5cc8eab71bce9cd542577f",
+      "paths": [
+        "src/pages/uk-locations/blue-staffy-puppies-london.astro"
+      ],
+      "reason": "Task 8 quality review M5: header comment corrected and each section question defined once in a const; the built London page is identical apart from its own WebPage date node (diffed against a build of 8f87f1f)."
     }
   ],
   "floor_override": {}
