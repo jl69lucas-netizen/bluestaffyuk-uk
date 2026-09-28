@@ -86,6 +86,19 @@ def test_the_face_data_names_real_masters_at_their_real_size():
             assert x + w <= row["w"] and y + h <= row["h"], f"{name}: a face runs off the master"
 
 
+def test_every_puppy_photo_a_city_component_may_paint_records_its_face():
+    """Task 7b review, item 9: a puppy photo without a face box is one img-face-visible cannot
+    examine. Every card and gallery photo in data/puppies.json is one a city component may paint
+    (the litter wall's gallery choice, plan2-notes Task 7), so each carries its face and scene."""
+    rows = focus_rows()
+    for pup in json.loads((ROOT / "data/puppies.json").read_text()):
+        for name in {pup["card_photo"], *pup.get("gallery", [])}:
+            assert name in rows, f"data/image-focus.json has no face box for {name}"
+            assert rows[name]["src"] == "puppies" and rows[name]["scene"], name
+    scenes = [r["scene"] for r in rows.values() if r["src"] == "puppies"]
+    assert len(scenes) == len(set(scenes)), "two puppy photos share a scene, so puppyAlt() would repeat"
+
+
 def test_a_served_photo_keeps_its_served_alt_and_its_baked_siblings():
     served = served_alts()
     for name, row in focus_rows().items():
