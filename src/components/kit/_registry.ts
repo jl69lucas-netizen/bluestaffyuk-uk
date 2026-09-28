@@ -66,6 +66,10 @@ import CityTrustLedger from './CityTrustLedger.astro';
 import CityContents from './CityContents.astro';
 import CityDial from './CityDial.astro';
 import CityJumpBand from './CityJumpBand.astro';
+import CityTakeaways from './CityTakeaways.astro';
+import CityPuppySheet from './CityPuppySheet.astro';
+import CityRoster from './CityRoster.astro';
+import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, depositLine } from '../../lib/cityKit';
 import type { SectionRef } from '../../lib/sections';
 
 /** The counter specimen's availability figure, counted the way every page counts it. */
@@ -80,7 +84,7 @@ export type ComponentId =
   // previewed on /kit-preview/city/ — never on /kit-preview/, because the city nav set is a
   // page singleton like the kit's. data/design/components.json rows with `"project": 5`.
   | 'city-hero' | 'city-price-scale' | 'city-trust-ledger' | 'city-contents' | 'city-dial'
-  | 'city-jump-band';
+  | 'city-jump-band' | 'city-takeaways' | 'city-puppy-sheet' | 'city-roster';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -153,6 +157,8 @@ export const CITY_DEMO_SECTIONS: SectionRef[] = [
   { id: 'kit-city-contents', label: 'Contents', question: 'Which Part of Buying a Puppy Do You Need First?', icon: 'list' },
   { id: 'kit-city-dial', label: 'Dial', question: 'Where Are You on the Page?', icon: 'home' },
   { id: 'kit-city-jump-band', label: 'Jump', question: 'How Do You Jump to a Section on a Phone?', icon: 'faq' },
+  { id: 'kit-city-takeaways', label: 'In short', question: 'What Should a Buyer Take From This Page?', icon: 'deposit' },
+  { id: 'kit-city-puppy-sheet', label: 'The six', question: 'Which Puppy Will You Ask About First?', icon: 'delivery' },
 ];
 
 export const REGISTRY: Record<ComponentId, KitEntry> = {
@@ -438,4 +444,39 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     demo: [{ sections: CITY_DEMO_SECTIONS, photo: 'Cheryl1.jpeg', photoAlt: 'Cheryl, a blue girl with a white blaze, one of the six puppies' }],
   },
   'city-jump-band': { C: CityJumpBand, demo: [{ sections: CITY_DEMO_SECTIONS, chrome: false }] },
+  // Each row states a fact the data files back; the figures are read from them.
+  'city-takeaways': {
+    C: CityTakeaways,
+    demo: [{
+      heading: 'What Should a Buyer Take From This Page?',
+      lede: `Five plain answers, one sentence each, so you can decide whether a puppy from ${SITE.breeder_name}'s home in ${SITE.address.city} is right for you.`,
+      photo: 'jones-strong-staffy-sire-temperament.webp',
+      caption: `Jones, the sire, at home in ${SITE.address.city}`,
+      rows: [
+        { label: 'The six', text: `Three boys at ${BOY_PRICE} and three girls at ${GIRL_PRICE}, all available now.` },
+        { label: 'The deposit', text: depositLine },
+        { label: 'The route', text: `DEFRA-approved transport for ${DELIVERY_BAND}, priced by distance, or collection in ${SITE.address.city}.` },
+        { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
+        { label: 'The raising', text: 'Raised in the home with Puppy Culture and ENS, and you may speak to our vet.' },
+      ],
+    }],
+  },
+  // The prints are data/puppies.json; the demo passes only the words around them.
+  'city-puppy-sheet': {
+    C: CityPuppySheet,
+    demo: [{
+      heading: 'Which Puppy Will You Ask About First?',
+      lede: `Maggie and Jones's six are laid out here like family prints, three boys at ${BOY_PRICE} and three girls at ${GIRL_PRICE}, so you can pick a favourite before you ask.`,
+      photo: 'maggie-blue-staffy-dam-with-pups.webp',
+      caption: `Maggie, the dam, with her puppies in ${SITE.address.city}`,
+    }],
+  },
+  'city-roster': {
+    C: CityRoster,
+    demo: [{
+      heading: 'How Do the Six Puppies Compare Side by Side?',
+      lede: "Here is the whole litter on one sheet, so you can weigh up a boy against a girl: every puppy's sex, colour and price, taken straight from our list.",
+      caption: 'The six puppies, as listed',
+    }],
+  },
 };

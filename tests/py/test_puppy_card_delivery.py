@@ -23,7 +23,9 @@ import evidence_audit as ea  # noqa: E402
 CARD = ROOT / "src/components/kit/PuppyCard.astro"
 SETTINGS = json.loads((ROOT / "data/settings.json").read_text(encoding="utf-8"))
 DIST = ROOT / "dist"
-ARTICLE = re.compile(r'<article\b[^>]*class="[^"]*\bkit-pup\b[^"]*"[^>]*>(.*?)</article>', re.S)
+# The kit's card (`kit-pup`) and the city puppy sheet's print (`city-pup`, the London component
+# design pass, Plan 2): both are puppy cards, and both carry the line.
+ARTICLE = re.compile(r'<article\b[^>]*class="[^"]*\b(?:kit|city)-pup\b[^"]*"[^>]*>(.*?)</article>', re.S)
 DELIV = re.compile(r'<p\b[^>]*class="[^"]*\bdeliv\b[^"]*"[^>]*>(.*?)</p>', re.S)
 RULES = json.loads((ROOT / "data/quality/rule-index.json").read_text(encoding="utf-8"))["rules"]
 
@@ -54,7 +56,7 @@ def test_the_line_is_whitelisted_as_the_canonical_card_line():
 
 
 def built_pages_with_cards():
-    return [p for p in sorted(DIST.glob("**/index.html")) if "kit-pup" in p.read_text(encoding="utf-8")]
+    return [p for p in sorted(DIST.glob("**/index.html")) if ARTICLE.search(p.read_text(encoding="utf-8"))]
 
 
 def test_every_built_card_carries_the_delivery_line():

@@ -148,6 +148,46 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       return out;
     },
   },
+  'city-takeaways': {
+    present: '.city-takeaways',
+    run: (page) => allVisible(page, 'data-takeaway'),
+  },
+  'city-puppy-sheet': {
+    present: '.city-sheet',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-puppy');
+      // One tap target per print: the Ask link's box is the whole print.
+      // Each print is scrolled to the middle of the viewport first, clear of the sticky chrome,
+      // and the point tested is on its photograph.
+      const small = await page.evaluate(() => Array.from(document.querySelectorAll('.city-pup')).filter((card) => {
+        card.scrollIntoView({ block: 'center' });
+        const a = card.querySelector('.ask')!;
+        const img = card.querySelector('img')!.getBoundingClientRect();
+        const hit = document.elementFromPoint(img.left + img.width / 2, img.top + img.height / 2);
+        return !(hit === a || a.contains(hit!));
+      }).length);
+      if (small) out.push(`${small} print(s) whose photo does not hand the tap to its Ask link`);
+      return out;
+    },
+  },
+  'city-roster': {
+    present: '.city-roster',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      if (viewport <= 640) {
+        const overlap = await page.evaluate(() => Array.from(document.querySelectorAll('.city-roster tbody tr')).filter((tr) => {
+          const price = tr.querySelector('td.num')!.getBoundingClientRect();
+          // The name's TEXT, not its block box (which runs the row's width by design).
+          const range = document.createRange();
+          range.selectNodeContents(tr.querySelector('.nm')!);
+          const name = range.getBoundingClientRect();
+          return price.left < name.right - 1 && price.top < name.bottom - 1 && price.bottom > name.top + 1;
+        }).length);
+        if (overlap) out.push(`${overlap} stacked row(s) paint the price over the name`);
+      }
+      return out;
+    },
+  },
   // Learning loop 2026-09-27, L8: the current-section marker, under BOTH motion preferences.
   // Scroll the fourth section to the reading band and read which row is current, on the dial at
   // a desktop width and on the band's rail below it.

@@ -260,3 +260,51 @@ def test_pageshell_swaps_the_nav_set_only_for_a_city_page():
     for page in (ROOT / "src/pages").rglob("*.astro"):
         if page.name != "blue-staffy-puppies-london.astro":
             assert "cityNav" not in page.read_text(encoding="utf-8"), page
+
+
+# --------------------------------------------------------------------------- Task 4
+
+def _available():
+    return [p for p in json.loads((ROOT / "data/puppies.json").read_text()) if p["status"] == "Available"]
+
+
+def test_built_city_takeaways_is_a_ruled_ledger_with_a_served_photo():
+    s = section("city-takeaways")
+    assert 3 <= s.count("data-takeaway") <= 6
+    assert s.count("<dt") == s.count("data-takeaway") == s.count("<dd")
+    src = re.search(r'<img [^>]*src="/images/([^"]+)"[^>]*>', s)
+    alt = re.search(r'alt="([^"]*)"', src.group(0)).group(1)
+    assert alt in served_alts()[src.group(1)]
+    # The photo is first in source: a phone meets it before the facts.
+    assert s.find("<img") < s.find("<h2")
+
+
+def test_built_city_puppy_sheet_prints_every_available_puppy_from_the_data():
+    s = section("city-puppy-sheet")
+    pups = _available()
+    arts = re.findall(r'<article[^>]*class="city-pup[^"]*"[^>]*>(.*?)</article>', s, re.S)
+    assert len(arts) == len(pups)
+    for p, a in zip(pups, arts):
+        text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", a))
+        assert p["name"] in text and "£{:,}".format(p["price_gbp"]) in text, p["name"]
+        assert ("Boy" if p["sex"] == "male" else "Girl") in text and p["colour"] in text
+        hrefs = re.findall(r'href="([^"]+)"', a)
+        assert hrefs == [f"/available-puppies/{p['slug']}/"], "one link per print, to the puppy's page"
+        assert f"Ask About {p['name']}" in text
+        assert "focus fx-" in a
+    assert "books your viewing and reserves your puppy" in s
+
+
+def test_built_city_roster_is_a_semantic_table_that_stacks():
+    s = section("city-roster")
+    table = re.search(r"<table[^>]*>(.*?)</table>", s, re.S)
+    assert 'class="stack-table' in re.search(r"<table[^>]*>", s).group(0)
+    body = table.group(1)
+    assert "<caption" in body
+    assert body.count('scope="col"') == 5
+    assert body.count('scope="row"') == len(_available())
+    tds = re.findall(r"<td[^>]*>", body)
+    assert tds and all('data-label="' in td for td in tds)
+    text = re.sub(r"<[^>]+>", " ", body)
+    for p in _available():
+        assert p["name"] in text and "£{:,}".format(p["price_gbp"]) in text

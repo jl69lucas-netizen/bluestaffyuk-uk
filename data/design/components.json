@@ -22,5 +22,8 @@
   {"id": "city-trust-ledger", "file": "CityTrustLedger.astro", "title": "C3 · City trust strip (photo ledger)", "board_width": 1280, "project": 5},
   {"id": "city-contents",   "file": "CityContents.astro",    "title": "C4 · City contents list (photo index)", "board_width": 1280, "project": 5},
   {"id": "city-dial",       "file": "CityDial.astro",        "title": "C5 · City desktop dial (photo marker)", "board_width": 1280, "project": 5},
-  {"id": "city-jump-band",  "file": "CityJumpBand.astro",    "title": "C6 · City jump links (stepper band)",   "board_width": 640,  "project": 5}
+  {"id": "city-jump-band",  "file": "CityJumpBand.astro",    "title": "C6 · City jump links (stepper band)",   "board_width": 640,  "project": 5},
+  {"id": "city-takeaways",  "file": "CityTakeaways.astro",   "title": "C7 · City key takeaways (answer ledger)", "board_width": 1280, "project": 5},
+  {"id": "city-puppy-sheet", "file": "CityPuppySheet.astro", "title": "C8 · City puppy cards (family sheet)",   "board_width": 1280, "project": 5},
+  {"id": "city-roster",     "file": "CityRoster.astro",      "title": "C9 · City table (litter roster)",       "board_width": 1280, "project": 5}
 ]

@@ -23,7 +23,7 @@ IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-s
 #: city component built from a city's picks, previewed on /kit-preview/city/, in city-page
 #: order (scripts/city_components.py). tests/py/test_city_kit.py holds them.
 CITY_IDS = ["city-hero", "city-price-scale", "city-trust-ledger", "city-contents", "city-dial",
-            "city-jump-band"]
+            "city-jump-band", "city-takeaways", "city-puppy-sheet", "city-roster"]
 
 
 def load():
