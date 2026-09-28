@@ -351,3 +351,25 @@ beside each submit.
 | contact-form | a | **Letter to Carlisle.** The enquiry as a ruled letter: "Dear Lisa," then one sentence per line, each ending in a real field with its label printed under it (name, part of London, which puppy, email, phone), then the message and "Send my letter". Axes `letter / none / airy / rule`. | Two blanks per sentence wrapped at 1280 and left ", London." and "." stranded on their own lines at 375; the letter lines were in the display face (bold, and against rule 2). | One blank per line with no trailing punctuation ("My part of London is ___", "If it is easier, call me on ___"); letter lines in the body face at `--text-lg`. | 375 · 768 · 1024 · 1280 |
 | contact-form | b | **Litter line-up.** A deep-steel band: the question, the six puppies as a line-up of square photos with name, sex and price plates (3 × 2 on a phone, 6 across from 768; `pointer-events: none`, no hover, so nothing looks pressable), then a compact form straight on the band, three fields to a row at 1024. Axes `lineup / grid / compact / band`. | Default `<p>` margins opened 40px gaps between the fields, so "compact" was not true. | Field wrappers `margin: 0`. | 375 · 768 · 1024 · 1280 |
 | contact-form | c | **Doorstep tray.** A sunk steel-100 tray: the site's photo of a puppy with its new family in London (served alt kept) on the left from 1024 with a caption and "Rather talk it through? Call PHONE_PLACEHOLDER" at its foot; the question, its answer and a two-up form on the right. Axes `photo-split / left / regular / inset`. | At 1024 and 1280 the photo stopped halfway down a column the form made twice as tall. | The photo grows to the form's height (flex, cover, focus 45% 50%; about 650px tall at 1280, close to its 664px source height, a little taller at 1024); the call line sits at the column foot. | 375 · 768 · 1024 · 1280 |
+
+## Plan 2 — built components
+
+**Task 2: hero B, counter strip C, trust strip C (2026-09-28).** Built on `/kit-preview/city/` and shot
+at 375 / 768 / 1024 / 1280 (`CITY_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_plan2-shots npm
+run test:render:city`, plus one element shot per component, `built-<component>-<width>.png`, and a
+canvas-beside-built pair, `pair-<component>-<width>.png`, in the same folder, against
+`BSUK-refs/london/_variants/`). `impeccable:impeccable` ran first and `frontend-design:frontend-design`
+second (the controller's order for this task). As in Plan 1, impeccable's `PRODUCT.md` gate is
+unmet: no such file exists and only `/impeccable teach` with the user may write one, so the brand
+context came from the `design-context-read-first` files. Its detector (`npx impeccable --json`)
+found nothing in the three `.astro` sources. On the built preview it raised four warnings, none of
+them on a component: Fraunces is the locked display token (rule 2); the `side-tab` row is the
+counter bed's full-width 3px steel top rule, which rules/design.md's hero/counter separation asks
+for; `flat-type-hierarchy` read the preview page's own 16px heading; `clipped-overflow-container`
+is the site's `overflow-x: clip` on `html`.
+
+| Component | impeccable found | frontend-design found | Changed | Widths |
+|---|---|---|---|---|
+| hero (CityHero, B) | The "more" link painted without its underline: the site's preflight sets links to `text-decoration: inherit`, and the canvas frame, which has no preflight, underlined it. On the steel band it was told apart by colour alone (WCAG 1.4.1). | Strip, name plates, brass CTA and the 1024–1199 step match the frame; every face stays whole at 120px and 148px thumbs; the band is 422px at 1024 and 1280 (rule 10: 390–450). | `.more` restates `text-decoration: underline`. | 375 768 1024 1280 |
+| counter strip (CityPriceScale, C) | No finding on the component. | The number line, the pill range stop, the break mark and the boy/girl fork match at every width; the phone's vertical line is identical. | Nothing. | 375 768 1024 1280 |
+| trust strip (CityTrustLedger, C) | No finding on the component. | Card, stretched photo column and two-column ledger match. Jones stands in for Maggie (one served photo per page, Code facts 4) and the guarantee claim is dropped (`guarantee_days` null). The canvas held `L-2-HGA` / `HC-HSF4` in nowrap spans; the plain-string prop has no such guard. They do not break at the four widths, so this is left to the city page's copy step. | Nothing. | 375 768 1024 1280 |

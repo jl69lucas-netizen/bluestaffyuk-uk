@@ -255,7 +255,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/verbatim_set_check.py`
 - `scripts/workflow_ref_check.py`
 
-## Data files — 23
+## Data files — 24
 
 - `data/agent-registry.json`
 - `data/boards/`
@@ -266,6 +266,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/facts/`
 - `data/faq.json`
 - `data/image-centering.json`
+- `data/image-focus.json`
 - `data/image-ingest.json`
 - `data/image-manifest.json`
 - `data/locations.json`

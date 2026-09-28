@@ -122,6 +122,10 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
     .more {
       display: inline-flex; align-items: center; min-height: 44px; font-weight: 600;
       color: var(--color-link-on-inverse); text-underline-offset: 4px;
+      /* The canvas frame had no preflight, so the browser underlined this link; the site's
+         preflight sets `text-decoration: inherit`, and a link told apart by colour alone on the
+         steel band is not a link (WCAG 1.4.1). Restated, as the approved frame painted it. */
+      text-decoration: underline;
     }
     .cta:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     @media (min-width: 640px) { .pic { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
