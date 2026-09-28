@@ -1,0 +1,5771 @@
+# London Component Build — Plan 2 Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Freeze the user's fifteen London picks, build each one as a real kit component on the site's tokens and data, measure every recorded face in every crop, mount all fifteen on a noindex London scaffold on `PageShell`, chain the canvas gate, and put each built component beside its canvas frame for the user to confirm.
+
+**Architecture:** The picks freeze into `data/design/city-picks/blue-staffy-puppies-london.json` and the 30 unpicked variants into `data/design/city-pool.json`, so the rule-16 city gate judges real files. Each pick becomes a `City*.astro` kit component (a `"project": 5` row of `data/design/components.json`, registered in `_registry.ts`, previewed on a new `/kit-preview/city/` page) built from data — `data/puppies.json`, `data/settings.json`, `data/price-matrix.json`, `data/reviews.json` through `src/lib/cityKit.ts`, and one new data file, `data/image-focus.json`, whose face boxes place every crop (`src/lib/imageFocus.ts` → `focus fx-NN fy-NN` classes in `kit.css`) and feed a new render check, `img-face-visible`. `PageShell` gains a `cityNav` prop that swaps the kit's nav set for the city's (jump band, dial, contents) from the same `sections` list; the in-body city components are CSS containers, so they lay out for the box they are given (the full preview, or the column beside the dial). A new Playwright spec (`npm run test:render:city`) paints the city preview and the London scaffold at 375 / 768 / 1024 / 1280 and runs the registered checks plus one probe per component.
+
+**Tech Stack:** Astro 6 + Tailwind 4 (static), Python 3.9 scripts + pytest (`tests/py`), Playwright render harness (`tests/render`), the Artifact tool for the side-by-side page (controller only).
+
+**Scope.** This is **Plan 2** of the London component design pass (spec `docs/superpowers/specs/2026-09-27-london-component-design-pass-design.md` §2 Freeze, §3 Building the picks, §4 Done). Plan 1 (`docs/superpowers/plans/2026-09-27-london-component-design-pass.md`) built the canvas, the hero phone fix and the city gate, and the user picked on 2026-09-27 (`docs/research/london-components/picks-2026-09-27.{md,json}`). **Out of scope:** London's copy, research and SEO — the research board comes before any outline (`docs/reference/page-run.md` row 8), so this plan builds components and a noindex scaffold only, with the canvas's placeholder wording; the other 27 cities; the site header and footer; any change to the twelve built pages' contracts. Merge into `foundation` only when the user says so.
+
+**Binding inputs, read before Task 1:** the spec; Plan 1's header, execution notes and "The variant contract"; `docs/research/london-components/plan2-notes.md` (every review's build notes — this plan cites them where it honours them); `docs/research/london-components/hardening-log.md`; `docs/reports/learning-loop-2026-09-27.md` (shortlist item 2, the face check, is Task 7 here; the L8 current-section probe and the L11 heading-vs-FAQ test ride along in Tasks 3 and 8); `CLAUDE.md` (working rules 10–17, the answer board, the project 5 page rules); `rules/design.md`; `docs/reference/page-run.md`.
+
+**The user's rulings this plan honours (2026-09-27/28):**
+- Served image alts stay exactly as served (working rule 11; `tests/py/test_served_alt_preserved.py`). Puppy photos (`src/assets/puppies/`) take the component's own alt.
+- The puppies are 10 weeks old; the parents are Maggie (dam) and Jones (sire) — no age is printed by any component.
+- The £500 deposit books the viewing and reserves the puppy, and comes off the price. It is never called plainly "refundable": the components print no refund wording at all (`src/lib/cityKit.ts` `depositLine`), and print the refund clause only when `data/settings.json` states it (see "Code facts", item 9).
+- No licence details anywhere. No guarantee length while `guarantee_days` is `null`.
+- Every H2/H3 is a buyer question followed by a conversational opening paragraph (puppy names on prints are the one exemption, as on the canvas).
+- The hero photo paints first on phones; tables stack on phones; bone and steel bleeds, never grey or black.
+
+---
+
+## How this plan was verified
+
+The plan writer built every code task of this plan in a throwaway worktree of `london-components` at `7ef0509` (the branch has since gained `31cd221`, a session-log paragraph and a test comment that no step here touches) (`/Users/apple/Downloads/BSUK/BSUK-plan2-scratch`, `.env` and `data/queries/cache/` copied in, `npm ci`), then removed it. The code below is pasted from those files.
+
+- **Task 1:** `freeze_city_picks.py` wrote the real picks file and a 30-entry pool; `test_freeze_city_picks.py` 6 passed; `test_city_uniqueness_gate.py` (including `test_the_real_pool_and_picks_validate_and_pass`, now non-vacuous) passed; `build_component_canvas.py --final` rebuilt the canvas; `check:canvas` 45 fragments, 0 problems.
+- **Tasks 2–6:** all fifteen components built (`npm run -s build` exit 0); `tests/py/test_city_kit.py` 30 passed; `npm run test:render:city` **8 passed** (both routes × 375/768/1024/1280) once every fix recorded in this plan was in; `form_contract_audit.py` examined 10 forms, 0 problems (newsletter 1).
+- **Task 7:** the meta gate for `img-face-visible` 9 passed (the fixture pair and the crop-only fixture at three widths); on the London canvas frames it re-found the learning loop's own L4 cases (Maggie cut on FAQ a and key-takeaways a at 768, Vennie's muzzle on reviews b) as advisory lines; on the twelve built pages it examined 207 photographs and reported one advisory (the homepage's Maggie tile at 1280).
+- **Task 8:** `test_city_scaffold.py` 9 passed; the page-dates test was run red first (template dates overwrote the city's own) and green after; the intake test red first, green after; `check:parity` reads London's migrated body `4→4→4 PASS`.
+- **Tasks 9–10:** `test_package_scripts.py` red first, green after; `check:all` with `check:canvas` chained exit 0 (`check-city-canvas london: examined 45 fragments, 15 meta files; 0 problems`); `city_side_by_side.mjs` wrote 30 pairs (5.7 MB of JPEGs) and the page.
+- **Whole branch, at the end:** `npm run -s build` 0; `npm run -s check:all` 0; `python3 -m pytest tests/py` **6436 passed, 2 skipped, 3 xfailed** after the baseline report and the registry were regenerated (Task 11 Step 3); `npm run test:render:meta` 439 passed; `npm run test:render:canvas` 184 passed; `npm run test:render:pages` 57 passed, 3 failed — all three are `uk-locations/blue-staffy-puppies-uk`'s `nav-jump-target-lands` row, which the committed 2026-09-27 scorecard already carries at the same three widths (a legacy city body; not this plan's).
+- **Not run by the plan writer:** the `frontend-design` and `impeccable` passes (they are the implementers' and are recorded per task), the Artifact publish (controller), and the user's confirmation.
+
+## Execution notes — read before Task 1
+
+1. **Branch and worktree.** Work in `/Users/apple/Downloads/BSUK/BSUK-london` on `london-components`. Every BSUK file lives inside `/Users/apple/Downloads/BSUK` (the captures in `BSUK-refs/`, the idea sheets in `bluestaffyuk-cms/`). Commit after every task and never push. Every commit message ends with exactly `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`; subagents tend to substitute their own model name, so tell them. Merge into `foundation` only when the user says so.
+2. **Subagent-driven.** Each task gets an Opus implementer, then a spec review, then a quality review. Implementers never start background agents and never end a turn to "wait"; they run everything in the foreground and reply once the task is committed. Every status reply to the user shows the full progress table (Task, status, commit).
+3. **Do not touch** `data/boards/buy-blue-staffy-puppies-uk.json`, `data/boards/blue-staffy-uk-breeders.json` or `tests/py/test_served_alt_preserved.py` while Task 13c of Plan 1's follow-up runs; this plan needs none of them (Task 8's served-alt assertions live in `tests/py/test_city_scaffold.py`).
+4. **Controller tasks.** Task 1 Step 6 (republish the frozen canvas) and Task 10 Steps 3–5 (publish the side-by-side, STOP for the user) are the controller's: they use the Artifact tool, which loads `artifact-design` first and reads each page in full before publishing.
+5. **Build before `check:all`,** always: `check:boards` reads `dist/`. Run `npm run -s build` whenever `src/`, `data/*.json` or `data/boards/` changed, then `npm run -s check:all`.
+6. **A new page is committed BEFORE it is built.** `prebuild` dates every route from committed git history (`scripts/generate_page_dates.py`) and refuses to shrink `data/page-dates.json`; an uncommitted page has no date, and a route that loses its source (London, in Task 8) makes the map shrink and the build refuse. So Tasks 2 and 8 commit the page file first, build, then commit `data/page-dates.json` with the rest. `tests/py/test_page_dates.py::test_every_built_page_carries_either_its_ported_date_or_the_git_one_and_never_neither` fails until they do.
+7. **Markers and harness vocabulary.** `npm run check:markers` scans `CLAUDE.md`, `rules/`, `docs/reference/`, `package.json`, `tests/render/` and the ported files; never write the source project's prefix, the sister-site domain or the two source-animal words there. `tests/render/` is also held to `tests/py/test_harness_vocabulary.py`.
+8. **The system registry is generated.** After any task that adds a script, a schema or a data file, run `python3 scripts/build_system_registry.py` and commit `docs/reference/system-registry.md` with the task (`tests/py/test_system_registry.py::test_the_real_doc_is_in_sync`). Never hand-merge it. `check:all` also rewrites `docs/reports/{redirects,schema,sitemaps}.md` when the page count changes (Tasks 2 and 8): commit them with the task.
+9. **Run the full suite in the real worktree only at a task's end,** after the build. A few tests read git history and `data/queries/cache/` (git-ignored) exists only in the real checkout.
+10. **Render runs** need `PUBLIC_FORMSPREE_ID` in `.env`. Ports: the page harness `RENDER_SITE_PORT` / `RENDER_FIXTURE_PORT` (4321/4322), the canvas smoke `RENDER_CANVAS_PORT` (4331), the city spec `RENDER_CITY_PORT` (4351), the side-by-side `RENDER_SBS_PORT` (4361/4362). If another worktree holds a port, move this run's.
+11. **The design skills are mandatory** (the user's rulings, 2026-09-26). Every component task (2–6) invokes the `frontend-design:frontend-design` skill and then the `impeccable:impeccable` skill, each by name with the Skill tool, never paraphrased and never skipped, on the task's components as built — `CITY_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_plan2-shots npm run test:render:city` writes full-page shots at the four widths — and appends what each found and what changed to `docs/research/london-components/hardening-log.md` under a `## Plan 2 — built components` heading. A finding that changes a component is fixed in that task. `superpowers:verification-before-completion` runs before any "done" claim in Tasks 10 and 11.
+12. **Frozen pages.** The twelve built pages keep their contracts. This plan touches shared files (`PageShell.astro`, `VideoEmbed.astro`, `ContactFormKit.astro`, `BodyImage.astro`, `kit.css`) only with opt-in props and new rules that no built page reaches; each task names the test that proves the built pages' output did not move (`test_design_components.py`, `test_puppy_card_delivery.py`, `test_the_video_embed_poster_and_label_are_opt_in`, the page harness).
+13. **Never port from a canvas fragment:** anything marked `data-canvas-only` (stubs, width notes, the zero-size close anchor), the `!important` animation longhands, `:target` and scroll-driven marking, inline `style=` values, typed prices or delivery figures, or a second copy of the contents rows (plan2-notes). The fragments are the visual spec only.
+
+## Code facts that set this plan's boundaries
+
+These were found by reading and running the code, and each moved a boundary the brief left open.
+
+1. **`data/design/components.json` feeds the Design System artifact.** `scripts/build_design_system.py` documents every row (a `COMPONENTS` entry, a measured height, a `@dsCard` preview each), and `/kit-preview/` renders every row. City rows are `"project": 5`; the Design System artifact filters to the site kit (`site_kit()`, projects 3 and 4), `/kit-preview/` filters them out, and a new `/kit-preview/city/` renders them — the city nav set is a page singleton, like the kit's, so the two sets cannot share one document.
+2. **`check:parity` still measures London's migrated body** (London is not in `data/facts/rebuilt.json` until its page run). The scaffold keeps the 4-word migrated body word for word in an `article.prose-migrated` at its foot, labelled for what it is. No gate is widened.
+3. **`generate_page_dates.py` dated London from `[slug].astro` + `data/locations.json`** and would have overwritten the scaffold's own dates; `[slug].astro` would have built the route twice. Both now skip a city that has its own file beside the template (Task 8).
+4. **One served photograph, once per page.** A served file keeps its served alt word for word (rule 11), and `img-alt-present-and-unique` (blocking) refuses a repeated alt, as `board_gate`'s Rule 50b `asset-alt-duplicate` does on a board (the user's ruling on the four hero tiles, `31cd221`, Known Issue 93, meets the same conflict). The picks gave Maggie's photo to five components. The components take any served file named in `data/image-focus.json`, and the scaffold gives each a different one (Jones ×2, Maggie, the London owner, the London delivery photo, Mark). The side-by-side shows the swaps; see "Open questions".
+5. **The canvas frames painted headings bold and brand-coloured** (the frame base has no Tailwind preflight); the site's base inherits weight and colour. Every city root carries `city-kit`, and `kit.css` gives `.city-kit :where(h1, h2, h3)` the canvas's weight and colour at one class of specificity.
+6. **The canvas painted every component full width; on a city page the body sits beside a 272px dial.** At 1024 the column is ~656px. In-body city components are CSS containers (`container-type: inline-size`) whose breakpoints are the canvas's, less their own gutters, so a full-width copy switches exactly where its canvas frame did and a column copy lays out for the column. Before this, the scaffold overflowed by 59px at 1024 and decoded 2.2–2.8× oversized images.
+7. **`img-sizes-matches-box` misparses a `sizes` entry whose length holds a nested parenthesis followed by a space** (`calc((100vw - 152px) / 6)`): its greedy `^(\(.*\))\s+(.+)$` swallows the length into the media condition. The city hero writes its sizes without nested parentheses; the check itself is left as is and recorded as a Known Issue (Task 11), because nothing built today trips it.
+8. **`scripts/page_intake.py` reads a built page's H1 as the page's starting H1.** On a scaffold that is placeholder copy; the intake now skips a `data-city-scaffold` page's H1 (Task 8), so London's page run starts from its real state (`EMPTY`, Known Issue 59).
+9. **A parallel branch, `deposit-wording`,** has the user's answers (2026-09-27) to four deposit questions and plans `deposit_refund_max_pct` and `deposit_refund_condition` in `data/settings.json`; its Q3 answer words the 70% condition differently from this plan's brief. Neither key is on `london-components`, so the components print no refund clause and `depositRefundClause()` returns `null` until the keys land; the wording is then the data's, not a component's.
+10. **`scripts/check_city_canvas.py` refused `alt=""`** only for canvas fragments; the kit accepts decorative empty alts (`img-alt-present-and-unique` skips them), which the roster, the contact line-up and the video poster use where the name is printed beside the photo.
+
+## File structure
+
+| Path | Task | Responsibility |
+|---|---|---|
+| `scripts/freeze_city_picks.py`, `tests/py/test_freeze_city_picks.py` | 1 | Canvas Send snapshot → the picks record and the pool; idempotent; refuses a redesign. |
+| `data/design/city-picks/blue-staffy-puppies-london.json`, `data/design/city-pool.json` | 1 | London's fifteen picks (schema-valid); the 30 unpicked variants. |
+| `docs/artifacts/bsuk-london-component-canvas.html` | 1 | Rebuilt `--final` (controls disabled, the frozen banner). |
+| `data/image-focus.json` | 2 | Face boxes, scene words, served alts and baked widths of every photo the city kit paints. |
+| `src/lib/imageFocus.ts` | 2 | `focusClass()`, `focusPoint()`, `servedPhoto()`, `puppyAlt()`. |
+| `src/lib/cityKit.ts` | 2 | Every fact a city component prints, from the data files; `faqPageNode()`. |
+| `src/lib/sections.ts` | 2, 3 | `SectionRef` gains `question`, `icon`, `stop`; `CityIcon`; `CityNav`. |
+| `src/components/kit/cityIcons.ts` | 2 | The stepper and trust line icons. |
+| `src/styles/kit.css` | 2 | `.focus .fx-NN .fy-NN`; the `.city-kit` type base. |
+| `src/pages/kit-preview/city.astro`, `src/pages/kit-preview/index.astro` | 2 | The city preview page; the site preview filters city rows out. |
+| `data/design/components.json`, `src/components/kit/_registry.ts` | 2–6 | Fifteen `"project": 5` rows; their registry entries and `CITY_DEMO_SECTIONS`. |
+| `scripts/build_design_system.py`, `tests/py/test_design_system_build.py` | 2 | `site_kit()`: the Design System artifact documents projects 3 and 4 only. |
+| `scripts/city_components.py` | 2 | `KIT_ID`: canvas component → kit component id. |
+| `tests/render/city-kit.config.ts`, `tests/render/city-kit.spec.ts`, `package.json` (`test:render:city`) | 2–8 | The city render spec at four widths; one probe per component. |
+| `tests/py/test_city_kit.py`, `tests/py/test_design_components.py` | 2–6 | Dist assertions per component; the shared data contracts. |
+| `CityHero`, `CityPriceScale`, `CityTrustLedger` (`src/components/kit/*.astro`) | 2 | Hero B, counter-strip C, trust-strip C. |
+| `src/lib/scrollSpy.ts`, `CityContents`, `CityDial`, `CityJumpBand`, `src/layouts/PageShell.astro` | 3 | Contents C, dial C, jump-links A; PageShell `cityNav`. |
+| `CityTakeaways`, `CityPuppySheet`, `CityRoster`, `tests/py/test_puppy_card_delivery.py` | 4 | Key-takeaways A, puppy-cards B, tables A. |
+| `CityVideoPanel`, `CityChapters`, `CityLetter`, `VideoEmbed.astro`, `src/components/BodyImage.astro` | 5 | Video C, image-text C, reviews A; opt-in `poster`/`playLabel`; BodyImage `class`. |
+| `src/lib/formEndpoint.ts`, `CityFaqLedger`, `CityNewsletter`, `CityContactLineup`, `ContactFormKit.astro` | 6 | FAQ-blocks A, newsletter A, contact-form B; ContactFormKit `layout="grid"`. |
+| `tests/render/checks/img.ts` (`img-face-visible`), three fixtures, `meta.spec.ts`, `canvas.spec.ts`, `tests/py/test_canvas_advisory_set.py`, `data/quality/rule-index.json`, `rules/puppies.md` | 7 | The face check, advisory; `no-head-cropped-portraits` becomes `enforced: test`. |
+| `src/pages/uk-locations/blue-staffy-puppies-london.astro`, `src/pages/uk-locations/[slug].astro`, `scripts/generate_page_dates.py`, `scripts/page_intake.py`, `tests/py/test_city_scaffold.py`, `test_page_dates.py`, `test_page_intake.py`, `test_shell_chrome.py` | 8 | The noindex scaffold; one route, one source. |
+| `package.json`, `tests/py/test_package_scripts.py`, `CLAUDE.md` | 9 | `check:canvas` joins `check:all`. |
+| `scripts/city_side_by_side.mjs`, `docs/artifacts/bsuk-london-side-by-side.html` | 10 | Canvas frame beside built component at 375 / 1280, for the user. |
+| `docs/reference/session-log.md`, `docs/reports/render-baseline-project4.md`, `data/quality/scorecards/*` | 11 | Close. |
+
+## The fifteen picks and what they became
+
+| # | Canvas pick | Kit id / file | Built from | Plan-2-notes item honoured |
+|---|---|---|---|---|
+| 1 | `london/hero/b` Litter filmstrip | `city-hero` / `CityHero.astro` | `.kit-hero` `data-hero-layout="filmstrip"`; the available puppies from data | Photo first in source and paint on a phone; rule 10 band measured at 1024/1280. |
+| 2 | `london/counter-strip/c` Price scale | `city-price-scale` / `CityPriceScale.astro` | every figure from data; only the labels are props | `data-counters`, so `layout-hero-counter-separation` sees it. |
+| 3 | `london/trust-strip/c` Photo ledger | `city-trust-ledger` / `CityTrustLedger.astro` | claims as props; a served photo | No guarantee claim while `guarantee_days` is null. |
+| 4 | `london/contents-list/c` Photo index | `city-contents` / `CityContents.astro` | the page's `sections` | One list, rows 6+ behind a phone disclosure. |
+| 5 | `london/desktop-dial/c` Photo marker | `city-dial` / `CityDial.astro` | the page's `sections` | Current section by the kit's scroll-spy, not `:target`/scroll timelines. |
+| 6 | `london/jump-links/a` Stepper band | `city-jump-band` / `CityJumpBand.astro` | the page's `sections` (+ `question`, `icon`, `stop`) | SectionSheet's `<dialog>`/`showModal()`: Escape, focus trap, inert page, `aria-expanded` on the `close` event. |
+| 7 | `london/key-takeaways/a` Answer ledger | `city-takeaways` / `CityTakeaways.astro` | rows as props; a served photo | — |
+| 8 | `london/puppy-cards/b` Family sheet | `city-puppy-sheet` / `CityPuppySheet.astro` | `data/puppies.json`; the canonical delivery line | Focus map instead of inline crops; one tap target per print; link to `/available-puppies/<slug>/`. |
+| 9 | `london/tables/a` Litter roster | `city-roster` / `CityRoster.astro` | `data/puppies.json` | DataTable semantics; `.stack-table`; rows stay `display: block`. |
+| 10 | `london/video/c` Side panel | `city-video-panel` / `CityVideoPanel.astro` | `VideoEmbed` (id from `youtube_embeds` only) | `poster` prop, reserved box kept; no second id. |
+| 11 | `london/image-text/c` Two chapters | `city-chapters` / `CityChapters.astro` | `BodyImage` (`.bl-img`) or a puppy photo | The photo is the H3's next sibling. |
+| 12 | `london/reviews/a` Owner's letter | `city-letter` / `CityLetter.astro` | `data/reviews.json` by name | No stars, no score; the homepage's pairing (Mark J + his photo). |
+| 13 | `london/faq-blocks/a` Steel ledger | `city-faq-ledger` / `CityFaqLedger.astro` | a question file (props), `start` numbering, rail on the top block | Three blocks at three places; FAQPage = the visible questions. |
+| 14 | `london/newsletter/a` Litter notice | `city-newsletter` / `CityNewsletter.astro` | one email field on the one endpoint | Classed `newsletter` by `form_contract_audit.py`. |
+| 15 | `london/contact-form/b` Litter line-up | `city-contact-lineup` / `CityContactLineup.astro` | `ContactFormKit layout="grid"`; the line-up from data | `aria-describedby` + `aria-invalid`; the line-up is plainly a picture. |
+
+---
+
+## Task 1: Freeze the picks, fill the pool, mark the canvas final
+
+**Files:**
+- Create: `tests/py/test_freeze_city_picks.py`, `scripts/freeze_city_picks.py`
+- Create: `data/design/city-picks/blue-staffy-puppies-london.json` (written by the script)
+- Modify: `data/design/city-pool.json` (written by the script)
+- Modify: `docs/artifacts/bsuk-london-component-canvas.html` (rebuilt `--final`)
+- Modify: `docs/research/london-components/README.md`, `docs/reference/system-registry.md` (regenerated)
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_freeze_city_picks.py`:
+
+```python
+"""Freezing a city's canvas picks (the London component design pass, Plan 2 Task 1; spec §2
+"Freeze" and §3.4).
+
+`scripts/freeze_city_picks.py` turns the canvas Send snapshot the user made into
+data/design/city-picks/<slug>.json and moves every unpicked variant of that canvas into
+data/design/city-pool.json, so the rule-16 city gate (scripts/pageboard.py
+city_rule16_findings) judges the real files, not an empty folder.
+"""
+import json
+import pathlib
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+import freeze_city_picks as F  # noqa: E402
+import pageboard as PB  # noqa: E402
+from city_components import COMPONENT_IDS  # noqa: E402
+
+CANVAS_URL = "https://claude.ai/artifact/EHMKbn9kV3qcfJfPrJhhXN"
+
+
+def snapshot(**over):
+    picks = {c: {"pick": "a", "note": ""} for c in COMPONENT_IDS}
+    picks["hero"] = {"pick": "b", "note": ""}
+    doc = {"canvas": CANVAS_URL, "submission": "s-2026-09-27T20-49-24-674Z",
+           "at": "2026-09-27T20:49:24.675Z", "notes": "", "picks": picks}
+    doc.update(over)
+    return doc
+
+
+def empty_pool():
+    return {"_comment": "x", "available": {c: [] for c in COMPONENT_IDS}}
+
+
+def test_the_picks_record_names_one_variant_per_component():
+    rec = F.picks_record(snapshot(), slug="blue-staffy-puppies-london", canvas="london")
+    assert rec["slug"] == "blue-staffy-puppies-london"
+    assert rec["canvas"] == "london"
+    assert rec["canvas_url"] == CANVAS_URL
+    # The schema's pattern has no fraction of a second: the Send stamp is cut to the second.
+    assert rec["approved_at"] == "2026-09-27T20:49:24Z"
+    assert rec["picks"]["hero"] == "london/hero/b"
+    assert rec["picks"]["tables"] == "london/tables/a"
+    assert list(rec["picks"]) == list(COMPONENT_IDS)
+    PB._validate(rec, "city-picks.schema.json")
+
+
+def test_a_redesign_or_missing_pick_refuses_to_freeze():
+    snap = snapshot()
+    snap["picks"]["video"] = {"pick": "redesign", "note": "try again"}
+    with pytest.raises(F.FreezeError, match="video"):
+        F.picks_record(snap, slug="blue-staffy-puppies-london", canvas="london")
+    snap = snapshot()
+    del snap["picks"]["newsletter"]
+    with pytest.raises(F.FreezeError, match="newsletter"):
+        F.picks_record(snap, slug="blue-staffy-puppies-london", canvas="london")
+
+
+def test_the_pool_gains_the_thirty_unpicked_variants_and_loses_nothing_else():
+    rec = F.picks_record(snapshot(), slug="blue-staffy-puppies-london", canvas="london")
+    pool = F.pooled(empty_pool(), rec, canvas="london")
+    assert sum(len(v) for v in pool["available"].values()) == 30
+    assert pool["available"]["hero"] == ["london/hero/a", "london/hero/c"]
+    assert pool["available"]["tables"] == ["london/tables/b", "london/tables/c"]
+    PB._validate(pool, "city-pool.schema.json")
+
+
+def test_a_later_citys_freeze_removes_its_picks_from_the_pool():
+    """A pool entry a later city picks leaves the pool: city_pool_findings refuses a picked
+    entry, so a freeze that left it there would turn the gate red on its own output."""
+    pool = empty_pool()
+    pool["available"]["hero"] = ["london/hero/a", "london/hero/c"]
+    snap = snapshot()
+    rec = F.picks_record(snap, slug="blue-staffy-puppies-leeds", canvas="leeds")
+    rec["picks"]["hero"] = "london/hero/a"
+    out = F.pooled(pool, rec, canvas="leeds")
+    assert "london/hero/a" not in out["available"]["hero"]
+    assert "london/hero/c" in out["available"]["hero"]
+
+
+def test_freezing_twice_is_the_same_files(tmp_path):
+    snap_path = tmp_path / "snap.json"
+    snap_path.write_text(json.dumps(snapshot()))
+    pool_path = tmp_path / "pool.json"
+    pool_path.write_text(json.dumps(empty_pool()))
+    out_dir = tmp_path / "city-picks"
+    args = ["--snapshot", str(snap_path), "--slug", "blue-staffy-puppies-london", "--canvas", "london",
+            "--pool", str(pool_path), "--out-dir", str(out_dir)]
+    assert F.main(args) == 0
+    first = (out_dir / "blue-staffy-puppies-london.json").read_text(), pool_path.read_text()
+    assert F.main(args) == 0
+    assert ((out_dir / "blue-staffy-puppies-london.json").read_text(), pool_path.read_text()) == first
+
+
+def test_the_real_london_freeze_is_on_disk_and_passes_the_city_gate():
+    """The real files: London's picks match the user's Send snapshot, the pool holds the
+    thirty variants London did not pick, and the rule-16 city gate is green on both."""
+    snap = json.loads((ROOT / "docs/research/london-components/picks-2026-09-27.json").read_text())
+    rec = json.loads((ROOT / "data/design/city-picks/blue-staffy-puppies-london.json").read_text())
+    assert rec == F.picks_record(snap, slug="blue-staffy-puppies-london", canvas="london")
+    picks = PB.load_city_picks()
+    pool = PB.load_city_pool()
+    assert sum(len(v) for v in pool["available"].values()) == 30
+    assert PB.city_pool_findings(pool, picks, PB.canvas_axes) == []
+    md = json.loads(PB.CITY_MUST_DIFFER.read_text(encoding="utf-8"))["components"]
+    assert PB.city_pick_findings("blue-staffy-puppies-london", picks, md, PB.canvas_axes) == []
+```
+
+- [ ] **Step 2: Run it and see it fail**
+
+Run: `python3 -m pytest tests/py/test_freeze_city_picks.py -q -p no:cacheprovider`
+Expected: collection ERROR — `ModuleNotFoundError: No module named 'freeze_city_picks'`.
+
+- [ ] **Step 3: Write the script**
+
+Create `scripts/freeze_city_picks.py`:
+
+```python
+#!/usr/bin/env python3
+"""Freeze one city's component picks: the canvas Send snapshot → the picks record and the pool.
+
+Spec docs/superpowers/specs/2026-09-27-london-component-design-pass-design.md §2 ("Freeze") and
+§3.4. When every component on a city's canvas has a pick, the picks are saved in
+data/design/city-picks/<slug>.json (schemas/city-picks.schema.json) and every variant of that
+canvas the city did NOT pick joins data/design/city-pool.json, open to a later city. A pool
+entry this city picked (a variant another city left in the pool) leaves it. The rule-16 city
+gate (scripts/pageboard.py city_rule16_findings) then judges both files.
+
+    python3 scripts/freeze_city_picks.py --snapshot docs/research/london-components/picks-2026-09-27.json \\
+        --slug blue-staffy-puppies-london --canvas london
+
+Refuses (exit 1, nothing written) while any component's pick is missing or "redesign".
+Idempotent: freezing the same snapshot twice writes the same bytes.
+"""
+import argparse
+import json
+import pathlib
+import re
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from city_components import COMPONENT_IDS, ROOT, VARIANT_IDS, variant_key  # noqa: E402
+import pageboard as PB  # noqa: E402
+
+PICKS_DIR = ROOT / "data" / "design" / "city-picks"
+POOL = ROOT / "data" / "design" / "city-pool.json"
+#: The schema's `approved_at` has no fraction of a second; the canvas stamps milliseconds.
+_STAMP = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?:\.\d+)?Z$")
+
+
+class FreezeError(ValueError):
+    """The snapshot cannot be frozen yet (a component has no final pick)."""
+
+
+def picks_record(snapshot, slug, canvas):
+    """The data/design/city-picks/<slug>.json record for one canvas Send snapshot."""
+    got = snapshot.get("picks") or {}
+    missing = [c for c in COMPONENT_IDS if (got.get(c) or {}).get("pick") not in VARIANT_IDS]
+    if missing:
+        raise FreezeError("no final pick (a, b or c) for: " + ", ".join(missing))
+    m = _STAMP.match(snapshot.get("at", ""))
+    if not m:
+        raise FreezeError(f"the snapshot's `at` is not a UTC stamp: {snapshot.get('at')!r}")
+    rec = {
+        "slug": slug,
+        "canvas": canvas,
+        "canvas_url": snapshot["canvas"],
+        "approved_at": m.group(1) + "Z",
+        "picks": {c: variant_key(canvas, c, got[c]["pick"]) for c in COMPONENT_IDS},
+    }
+    PB._validate(rec, "city-picks.schema.json")
+    return rec
+
+
+def pooled(pool, record, canvas):
+    """`pool` with this canvas's unpicked variants added and this city's picks removed."""
+    picked = set(record["picks"].values())
+    out = {"_comment": pool["_comment"], "available": {}}
+    for c in COMPONENT_IDS:
+        keep = [k for k in pool["available"].get(c, []) if k not in picked]
+        new = [variant_key(canvas, c, v) for v in VARIANT_IDS
+               if variant_key(canvas, c, v) not in picked]
+        out["available"][c] = sorted(set(keep) | set(new))
+    PB._validate(out, "city-pool.schema.json")
+    return out
+
+
+def _dump(doc):
+    return json.dumps(doc, indent=1, ensure_ascii=False) + "\n"
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Freeze one city's component picks.")
+    ap.add_argument("--snapshot", required=True, help="the canvas Send snapshot (JSON)")
+    ap.add_argument("--slug", required=True, help="the city page's slug, e.g. blue-staffy-puppies-london")
+    ap.add_argument("--canvas", required=True, help="the canvas key, e.g. london")
+    ap.add_argument("--pool", default=str(POOL))
+    ap.add_argument("--out-dir", default=str(PICKS_DIR))
+    a = ap.parse_args(argv)
+    snap = json.loads(pathlib.Path(a.snapshot).read_text(encoding="utf-8"))
+    try:
+        rec = picks_record(snap, a.slug, a.canvas)
+    except FreezeError as exc:
+        print(f"REFUSED: {exc}", file=sys.stderr)
+        return 1
+    pool_path = pathlib.Path(a.pool)
+    pool = pooled(json.loads(pool_path.read_text(encoding="utf-8")), rec, a.canvas)
+    out = pathlib.Path(a.out_dir) / f"{a.slug}.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(_dump(rec), encoding="utf-8")
+    pool_path.write_text(_dump(pool), encoding="utf-8")
+    print(f"{out}: 15 picks; {pool_path}: {sum(len(v) for v in pool['available'].values())} pooled")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+- [ ] **Step 4: Run the unit tests (the real-file test still fails)**
+
+Run: `python3 -m pytest tests/py/test_freeze_city_picks.py -q -p no:cacheprovider`
+Expected: `1 failed, 5 passed` — `test_the_real_london_freeze_is_on_disk_and_passes_the_city_gate` fails with `FileNotFoundError` (no picks file yet).
+
+- [ ] **Step 5: Freeze London**
+
+```bash
+python3 scripts/freeze_city_picks.py --snapshot docs/research/london-components/picks-2026-09-27.json \
+  --slug blue-staffy-puppies-london --canvas london
+python3 -m pytest tests/py/test_freeze_city_picks.py tests/py/test_city_uniqueness_gate.py -q -p no:cacheprovider
+```
+Expected: `…/data/design/city-picks/blue-staffy-puppies-london.json: 15 picks; …/data/design/city-pool.json: 30 pooled`, then `20 passed`. The picks file reads `"approved_at": "2026-09-27T20:49:24Z"` and `"hero": "london/hero/b"` … `"contact-form": "london/contact-form/b"`; the pool lists, per component, the two variants London did not pick (`"hero": ["london/hero/a", "london/hero/c"]`). `test_the_real_pool_and_picks_validate_and_pass` in `test_city_uniqueness_gate.py` is now judging a real picks file and a real pool, not an empty folder.
+
+- [ ] **Step 6: Mark the canvas final (the controller republishes it)**
+
+```bash
+python3 scripts/build_component_canvas.py --final --files-map docs/artifacts/canvas/london-files.json
+npm run -s check:canvas
+python3 -m pytest tests/py/test_build_component_canvas.py tests/py/test_check_city_canvas.py -q -p no:cacheprovider
+```
+Expected: `docs/artifacts/bsuk-london-component-canvas.html — <bytes> bytes, 45 variants`, `docs/artifacts/canvas/london-files.json — 13 images`, `check-city-canvas london: examined 45 fragments, 15 meta files; 0 problems`, all tests pass. The page now carries `data-final="true"`, the "Final — these picks are frozen" banner and disabled controls.
+
+**Controller only:** read the rebuilt page in full, then republish it to the SAME URL with the Artifact tool (`action: publish`, `url: https://claude.ai/artifact/EHMKbn9kV3qcfJfPrJhhXN`, `file_path: docs/artifacts/bsuk-london-component-canvas.html`, `files`: the map in `docs/artifacts/canvas/london-files.json`; omit `icon` and `capabilities` so the page keeps them). Record the result in the progress table.
+
+- [ ] **Step 7: Record the freeze**
+
+In `docs/research/london-components/README.md`, after the `- **Reading picks:**` line, add:
+
+```markdown
+- **Frozen 2026-09-28 (Plan 2 Task 1):** the picks are saved in `data/design/city-picks/blue-staffy-puppies-london.json` (from `picks-2026-09-27.json`, by `scripts/freeze_city_picks.py`) and the 30 unpicked variants in `data/design/city-pool.json`. The canvas is rebuilt with `--final` (controls disabled) and republished to the same URL as the record of what was offered.
+```
+
+- [ ] **Step 8: Regenerate the registry, run the suite, commit**
+
+```bash
+python3 scripts/build_system_registry.py
+python3 -m pytest tests/py -q -p no:cacheprovider
+git add scripts/freeze_city_picks.py tests/py/test_freeze_city_picks.py data/design/city-picks/blue-staffy-puppies-london.json data/design/city-pool.json docs/artifacts/bsuk-london-component-canvas.html docs/research/london-components/README.md docs/reference/system-registry.md
+git commit -m "feat: London's component picks frozen; the city pool holds the 30 unpicked variants
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+Expected: pytest all pass (the registry gains `scripts/freeze_city_picks.py`).
+
+---
+
+## Task 2: The city kit's plumbing, and the hero, counter strip and trust strip
+
+**Files:**
+- Create: `data/image-focus.json`, `src/lib/imageFocus.ts`, `src/lib/cityKit.ts`, `src/components/kit/cityIcons.ts`
+- Create: `src/components/kit/CityHero.astro`, `src/components/kit/CityPriceScale.astro`, `src/components/kit/CityTrustLedger.astro`
+- Create: `src/pages/kit-preview/city.astro`
+- Create: `tests/render/city-kit.config.ts`, `tests/render/city-kit.spec.ts`, `tests/py/test_city_kit.py`
+- Modify: `src/lib/sections.ts`, `src/styles/kit.css`, `src/pages/kit-preview/index.astro`, `src/components/kit/_registry.ts`, `data/design/components.json`
+- Modify: `scripts/build_design_system.py`, `scripts/city_components.py`, `package.json`
+- Modify: `tests/py/test_design_components.py`, `tests/py/test_design_system_build.py`
+- Modify: `data/page-dates.json`, `docs/reports/{redirects,schema,sitemaps}.md`, `docs/reference/system-registry.md` (all regenerated)
+
+- [ ] **Step 1: Write the failing dist tests**
+
+Create `tests/py/test_city_kit.py` with the shared contracts and the first three components (Tasks 3–6 append to it):
+
+```python
+"""The city components (the London component design pass, Plan 2): the `"project": 5` rows of
+data/design/components.json, built from the user's frozen picks
+(data/design/city-picks/blue-staffy-puppies-london.json) and previewed on /kit-preview/city/.
+
+Kit convention 8 for the city set: one dist assertion per component on the built preview, plus
+the shared contracts every one of them leans on — the face data that places every crop
+(data/image-focus.json), served alts kept word for word (working rule 11), no inline style,
+no hex, and the render spec's four widths.
+"""
+import json
+import math
+import pathlib
+import re
+import sys
+
+import pytest
+from PIL import Image
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+from check_city_canvas import served_alts  # noqa: E402
+
+COMPONENTS = ROOT / "data/design/components.json"
+FOCUS = ROOT / "data/image-focus.json"
+KIT_CSS = ROOT / "src/styles/kit.css"
+KIT = ROOT / "src/components/kit"
+PREVIEW = ROOT / "dist/kit-preview/city/index.html"
+CONFIG = ROOT / "tests/render/city-kit.config.ts"
+
+
+def city_rows():
+    return [r for r in json.loads(COMPONENTS.read_text(encoding="utf-8")) if r["project"] == 5]
+
+
+def focus_rows():
+    return json.loads(FOCUS.read_text(encoding="utf-8"))["images"]
+
+
+def built():
+    if not PREVIEW.exists():
+        pytest.skip("run npm run build first")
+    return PREVIEW.read_text(encoding="utf-8")
+
+
+def section(cid):
+    """The built preview section for one city component. A registered component with no
+    section is a failure, not a skip: that is what a route regression looks like."""
+    html = built()
+    start = html.find(f'data-component="{cid}"')
+    assert start >= 0, f"/kit-preview/city/ has no section for {cid}"
+    nxt = html.find('data-component="city-', start + 10)
+    end = nxt if nxt >= 0 else html.find("</main>", start)
+    return html[start:end]
+
+
+def focus_point(file):
+    """The Python twin of src/lib/imageFocus.ts focusPoint(): the centre of the faces' union,
+    as whole percentages on the 5% grid."""
+    row = focus_rows()[file]
+    x0 = min(f[0] for f in row["faces"])
+    y0 = min(f[1] for f in row["faces"])
+    x1 = max(f[0] + f[2] for f in row["faces"])
+    y1 = max(f[1] + f[3] for f in row["faces"])
+    step = lambda n: min(100, max(0, int(math.floor(n / 5.0 + 0.5)) * 5))  # noqa: E731  (JS Math.round)
+    return step(100 * (x0 + x1) / 2 / row["w"]), step(100 * (y0 + y1) / 2 / row["h"])
+
+
+# --------------------------------------------------------------------------- the shared data
+
+def test_every_city_row_is_a_kit_file_with_a_city_id():
+    rows = city_rows()
+    assert rows, "no project 5 rows in data/design/components.json"
+    for r in rows:
+        assert r["id"].startswith("city-"), r
+        assert (ROOT / "src/components/kit" / r["file"]).is_file(), r
+
+
+def test_the_face_data_names_real_masters_at_their_real_size():
+    for name, row in focus_rows().items():
+        path = ROOT / ("src/assets/puppies" if row["src"] == "puppies" else "public/images") / name
+        assert path.is_file(), name
+        assert Image.open(path).size == (row["w"], row["h"]), name
+        assert row["faces"], f"{name}: a photo the city kit paints records at least one face"
+        for x, y, w, h in row["faces"]:
+            assert 0 <= x and 0 <= y and w > 0 and h > 0, name
+            assert x + w <= row["w"] and y + h <= row["h"], f"{name}: a face runs off the master"
+
+
+def test_a_served_photo_keeps_its_served_alt_and_its_baked_siblings():
+    served = served_alts()
+    for name, row in focus_rows().items():
+        if row["src"] != "images":
+            assert "alt" not in row, f"{name}: a puppy photo's alt is the component's, not a served one"
+            continue
+        assert row["alt"] in served.get(name, ()), f"{name}: alt is not the one the old site served"
+        stem, ext = name.rsplit(".", 1)
+        for w in row.get("widths", []):
+            assert (ROOT / "public/images" / f"{stem}-{w}.{ext}").is_file(), (name, w)
+
+
+def test_kit_css_has_a_focus_class_for_every_step():
+    css = KIT_CSS.read_text(encoding="utf-8")
+    assert ".focus { object-position: var(--fx, 50%) var(--fy, 50%); }" in css
+    for n in range(0, 101, 5):
+        assert f".fx-{n} {{ --fx: {n}%; }}" in css and f".fy-{n} {{ --fy: {n}%; }}" in css, n
+
+
+def test_the_city_render_spec_paints_the_four_boundary_widths():
+    got = {int(w) for w in re.findall(r"viewport:\s*\{\s*width:\s*(\d+)", CONFIG.read_text(encoding="utf-8"))}
+    assert {375, 768, 1024, 1280} <= got, sorted(got)
+
+
+# --------------------------------------------------------------------------- the built preview
+
+def test_the_city_preview_is_noindex_and_carries_every_city_row_in_order():
+    html = built()
+    assert 'content="noindex, nofollow"' in html
+    found = re.findall(r'<section[^>]*data-component="(city-[a-z-]+)"', html)
+    assert found == [r["id"] for r in city_rows()], found
+
+
+def test_no_city_section_writes_an_inline_style_or_a_hex():
+    """plan2-notes: every inline `style=` of the canvas moved into classes or computed props;
+    rule 1: no hex outside tokens.css."""
+    for r in city_rows():
+        s = section(r["id"])
+        assert "style=" not in s, (r["id"], re.findall(r'style="[^"]*"', s)[:3])
+        assert not re.findall(r"#[0-9A-Fa-f]{6}\b", s), r["id"]
+
+
+def test_the_site_preview_carries_no_city_component():
+    """The city nav set is a page singleton; /kit-preview/ keeps the site kit's."""
+    site = ROOT / "dist/kit-preview/index.html"
+    if not site.exists():
+        pytest.skip("run npm run build first")
+    assert 'data-component="city-' not in site.read_text(encoding="utf-8")
+
+
+def test_built_city_hero_is_a_filmstrip_kit_hero_with_the_litter_first():
+    s = section("city-hero")
+    assert 'class="city-kit kit-hero city-hero' in s and 'data-hero-layout="filmstrip"' in s
+    pups = [p for p in json.loads((ROOT / "data/puppies.json").read_text()) if p["status"] == "Available"]
+    imgs = re.findall(r"<img [^>]*>", s)
+    assert len(imgs) == len(pups), len(imgs)
+    # rule 10: the strip (.pic) precedes the heading (.title) in source.
+    assert s.find('class="pic') < s.find('class="title')
+    for p, tag in zip(pups, imgs):
+        x, y = focus_point(p["card_photo"])
+        assert f"focus fx-{x} fy-{y}" in tag, (p["name"], tag)
+        assert 'loading="eager"' in tag, p["name"]
+    assert 'fetchpriority="high"' in imgs[0]
+    assert s.count('fetchpriority="high"') == 1
+    assert 'class="cta"' in s
+
+
+def test_built_city_price_scale_reads_every_figure_from_the_data_files():
+    s = section("city-price-scale")
+    settings = json.loads((ROOT / "data/settings.json").read_text())
+    prices = json.loads((ROOT / "data/price-matrix.json").read_text())
+    count = sum(1 for p in json.loads((ROOT / "data/puppies.json").read_text()) if p["status"] == "Available")
+    gbp = lambda n: "£{:,}".format(n)  # noqa: E731
+    text = re.sub(r"<[^>]+>", " ", s)
+    for figure in (str(count), f"{gbp(settings['delivery_min_gbp'])}–{gbp(settings['delivery_max_gbp'])}",
+                   gbp(settings["deposit_gbp"]), gbp(prices["male_gbp"]), gbp(prices["female_gbp"])):
+        assert figure in text, figure
+    assert "data-counters" in s
+    assert 3 <= s.count("data-figure") <= 6
+    # The user's deposit ruling: never plainly "refundable".
+    assert "refundable" not in text.lower()
+
+
+def test_built_city_trust_ledger_keeps_its_served_photo_whole():
+    s = section("city-trust-ledger")
+    served = served_alts()
+    photo = re.search(r'<img [^>]*src="/images/([^"]+)"[^>]*>', s)
+    assert photo, "the ledger's photograph is a served /images/ file"
+    alt = re.search(r'alt="([^"]*)"', photo.group(0)).group(1)
+    assert alt.replace("&#39;", "'") in served[photo.group(1)]
+    assert "srcset=" in photo.group(0) and 'loading="lazy"' in photo.group(0)
+    assert 3 <= s.count("data-trust-item") <= 8
+    assert s.count("<svg") == s.count("data-trust-item")
+    assert "guarantee" not in s.lower(), "no guarantee length while guarantee_days is null"
+
+
+def test_every_city_root_carries_the_city_type_base():
+    """kit.css `.city-kit`: the headings and measures the canvas frames painted."""
+    for r in city_rows():
+        src = (KIT / r["file"]).read_text(encoding="utf-8")
+        assert "class:list={['city-kit', " in src, r["file"]
+    css = KIT_CSS.read_text(encoding="utf-8")
+    assert ".city-kit :where(h1, h2, h3) { font-weight: 700; color: var(--color-brand); }" in css
+```
+
+In `tests/py/test_design_components.py`, after the `IDS = [...]` list (it ends `"data-table", "video-embed"]`), add:
+
+```python
+#: The city components (project 5; the London component design pass, Plan 2): one row per
+#: city component built from a city's picks, previewed on /kit-preview/city/, in city-page
+#: order (scripts/city_components.py). tests/py/test_city_kit.py holds them.
+CITY_IDS = ["city-hero", "city-price-scale", "city-trust-ledger"]
+```
+
+and make three edits in the same file:
+- in `test_every_component_in_spec_order`, `assert [r["id"] for r in rows] == IDS` → `assert [r["id"] for r in rows] == IDS + CITY_IDS`;
+- in `test_each_row_has_file_title_width`, `assert r["project"] in (3, 4), r` → `assert r["project"] in (3, 4, 5), r`;
+- in `test_components_json_has_eighteen_rows_after_project_4_additions`, replace `ids = [r["id"] for r in load()]` with `ids = [r["id"] for r in load() if r["project"] != 5]`, and after `by_project = {r["id"]: r["project"] for r in load()}` add:
+
+```python
+    # The city rows come after all eighteen and are the only project 5 rows.
+    assert [i for i, p in by_project.items() if p == 5] == CITY_IDS
+    assert [r["id"] for r in load()][18:] == CITY_IDS
+```
+
+- [ ] **Step 2: Run them and see them fail**
+
+Run: `python3 -m pytest tests/py/test_city_kit.py tests/py/test_design_components.py -q -p no:cacheprovider`
+Expected: FAIL — `data/image-focus.json` missing (`FileNotFoundError`), `no project 5 rows`, and `test_every_component_in_spec_order` (the three ids are not in `components.json`).
+
+- [ ] **Step 3: The face data**
+
+Create `data/image-focus.json`. The face boxes are the plan writer's one-time judgement by eye on each master (source pixels; the learning loop asks for exactly that) — the implementer opens each file with the Read tool and confirms each box covers the eyes-to-chin of the named face before committing; a box that is off is corrected here, never in a component:
+
+```json
+{
+ "_comment": "Where the faces are in every photograph the city components paint (the London component design pass, Plan 2; learning loop 2026-09-27 shortlist item 2). `faces` are the boxes that must stay whole in any crop, as [x, y, w, h] in the MASTER's own pixels (`w` x `h`), recorded once per file by eye and approved with the pass. src/lib/imageFocus.ts derives each photo's crop (object-position) from the centre of its faces, and tests/render/checks/img.ts img-face-visible measures, on the painted page, that at least 90% of every face is painted and that no overlay covers more than 10% of one. A puppy photo carries its `scene` (what the photo shows, for the fuller alt src/lib/imageFocus.ts puppyAlt() writes where a component needs one that differs from the short one). A served file (/images/) also carries its served alt, word for word (working rule 11; tests/py/test_city_kit.py holds it to scripts/check_city_canvas.py served_alts()) and the width siblings baked beside it.",
+ "images": {
+  "Roman2.jpg": {"src": "puppies", "scene": "lying on the grass", "w": 1080, "h": 1081, "faces": [[130, 290, 410, 410]]},
+  "Byrd1.jpg": {"src": "puppies", "scene": "standing on garden decking", "w": 1080, "h": 1080, "faces": [[380, 270, 330, 300]]},
+  "Ince1.jpg": {"src": "puppies", "scene": "standing on a paved patio", "w": 1080, "h": 1079, "faces": [[590, 300, 220, 230]]},
+  "Vennie.jpeg": {"src": "puppies", "scene": "curled up on a sheepskin rug", "w": 1080, "h": 1080, "faces": [[300, 470, 360, 350]]},
+  "Christa.jpeg": {"src": "puppies", "scene": "sitting up on a sheepskin rug", "w": 1080, "h": 1080, "faces": [[420, 190, 310, 320]]},
+  "Cheryl1.jpeg": {"src": "puppies", "scene": "lying on a wooden floor", "w": 1080, "h": 1350, "faces": [[330, 480, 230, 250]]},
+  "maggie-blue-staffy-dam-with-pups.webp": {"src": "images", "w": 780, "h": 585, "widths": [400, 760],
+   "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+   "faces": [[525, 50, 190, 170]]},
+  "ethical-staffy-puppy-london-delivery.webp": {"src": "images", "w": 540, "h": 664, "widths": [],
+   "alt": "An ethical blue Staffy puppy, delivered professionally by BlueStaffyUK, happily with its new owners Mark and Emma P. in London.",
+   "faces": [[150, 125, 100, 140], [225, 200, 100, 85]]},
+  "jones-magnificent-blue-staffy-sire.webp": {"src": "images", "w": 780, "h": 780, "widths": [760],
+   "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.",
+   "faces": [[420, 225, 190, 180]]},
+  "jones-strong-staffy-sire-temperament.webp": {"src": "images", "w": 663, "h": 660, "widths": [],
+   "alt": "Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament.",
+   "faces": [[280, 140, 150, 140]]},
+  "blue-staffy-testimonial-london-happy-owner.webp": {"src": "images", "w": 400, "h": 437, "widths": [],
+   "alt": "Happy Blue Staffy puppy owner from London sharing a testimonial",
+   "faces": [[40, 100, 190, 190], [185, 140, 200, 170]]},
+  "mark-blue-staffy-london.webp": {"src": "images", "w": 319, "h": 213, "widths": [],
+   "alt": "Mark with their healthy blue Staffy puppy from BlueStaffyUK.uk in London.",
+   "faces": [[80, 30, 135, 145]]}
+ }
+}
+```
+
+Why these nine served files and six puppy photos: they are every photograph the London picks paint once each served photo appears only once per page (Code facts, item 4). `kc-registered-blue-staffy-pups-london.webp` is left out on purpose: it is a newborn litter under a served alt that names a child, and the learning loop recorded it contradicting a count (L3).
+
+- [ ] **Step 4: The libraries**
+
+Create `src/lib/imageFocus.ts`:
+
+```ts
+// src/lib/imageFocus.ts — where a photograph's crop sits, from where its faces are.
+//
+// data/image-focus.json records, once per file, the boxes that must stay whole in any crop
+// (the faces, in the master's own pixels). A city component never spells a crop by hand: the
+// canvas mockups carried `style="object-position:…"` per image, per variant, and a crop typed
+// beside one image is a crop the next layout gets wrong (learning loop 2026-09-27, L4 — the
+// commonest image defect of the pass). Here the crop is DERIVED: object-position is the centre
+// of the faces, as a fraction of the master, rounded to the 5% steps kit.css has classes for
+// (`.focus .fx-NN .fy-NN`). No inline style, and one number per file rather than one per use.
+// tests/render/checks/img.ts `img-face-visible` then measures the painted result.
+//
+// A served file (/images/…) also brings its SERVED alt and its baked width siblings, so a
+// component reuses the photograph whole (working rule 11), never re-describing it.
+import focusJson from '../../data/image-focus.json';
+import type { FilledAsset } from './assets';
+import { bakedSrcset, inPublic } from './assets';
+
+type Box = [number, number, number, number];
+interface FocusRow { src: 'puppies' | 'images'; w: number; h: number; faces: Box[]; scene?: string; alt?: string; widths?: number[] }
+const ROWS = (focusJson as { images: Record<string, FocusRow> }).images;
+
+/** The recorded row for one file, or a build error naming it. */
+export function focusRow(file: string): FocusRow {
+  const row = ROWS[file];
+  if (!row) throw new Error(`data/image-focus.json has no row for ${file} — record its faces first`);
+  return row;
+}
+
+const step = (n: number) => Math.min(100, Math.max(0, Math.round(n / 5) * 5));
+
+/** The centre of the union of a file's faces, as whole percentages on the 5% grid. */
+export function focusPoint(file: string): { x: number; y: number } {
+  const { w, h, faces } = focusRow(file);
+  const x0 = Math.min(...faces.map((f) => f[0]));
+  const y0 = Math.min(...faces.map((f) => f[1]));
+  const x1 = Math.max(...faces.map((f) => f[0] + f[2]));
+  const y1 = Math.max(...faces.map((f) => f[1] + f[3]));
+  return { x: step((100 * (x0 + x1)) / 2 / w), y: step((100 * (y0 + y1)) / 2 / h) };
+}
+
+/** The classes that put a file's crop on its faces: `focus fx-NN fy-NN` (kit.css). */
+export function focusClass(file: string): string {
+  const { x, y } = focusPoint(file);
+  return `focus fx-${x} fy-${y}`;
+}
+
+/** A served photograph as the asset row BodyImage and the city components take: its original
+ *  public path, its served alt, its intrinsic size — plus the srcset of its baked siblings. */
+export function servedPhoto(file: string): FilledAsset & { srcset?: string } {
+  const row = focusRow(file);
+  if (row.src !== 'images' || !row.alt) {
+    throw new Error(`${file} is not a served /images/ file with a recorded alt`);
+  }
+  const asset: FilledAsset = { slot: file, file: `/images/${file}`, w: row.w, h: row.h, alt: row.alt };
+  const widths = row.widths ?? [];
+  return widths.length ? { ...asset, srcset: bakedSrcset(asset, widths, inPublic) } : asset;
+}
+
+/** A puppy photo's alt. The same six photographs appear in several city components on one
+ *  page, and `img-alt-present-and-unique` (blocking) refuses a repeated alt, so each component
+ *  says a different true thing: `short` names the puppy ("Roman, a blue and white Staffy boy"),
+ *  `scene` adds what the photo shows (data/image-focus.json `scene`). Where the puppy's name is
+ *  printed beside the photo in the same cell or row, the photo is decorative and takes alt="". */
+export function puppyAlt(p: { name: string; colour: string; sex: 'male' | 'female'; card_photo: string },
+  style: 'short' | 'scene'): string {
+  const short = `${p.name}, a ${p.colour.toLowerCase()} Staffy ${p.sex === 'male' ? 'boy' : 'girl'}`;
+  if (style === 'short') return short;
+  const scene = focusRow(p.card_photo).scene;
+  if (!scene) throw new Error(`data/image-focus.json has no scene for ${p.card_photo}`);
+  return `${short}, ${scene}`;
+}
+```
+
+Create `src/lib/cityKit.ts`:
+
+```ts
+// src/lib/cityKit.ts — the facts every city component prints, from the data files, once.
+//
+// The canvas mockups typed "£1,500", "£200–£350" and "£500 books your viewing" into each
+// fragment because a mockup has no data. A kit component may not (working rule 9: never type
+// a price by hand), and fifteen components that each spelled the deposit line would be fifteen
+// places for the user's deposit ruling to drift. So the lines are built here from
+// data/settings.json, data/price-matrix.json and data/puppies.json.
+//
+// THE DEPOSIT (the user's rulings, 2026-09-27): £500 books the viewing and reserves the puppy,
+// and it comes off the price. It is never called plainly "refundable": the refund is partial
+// and conditional, and where the condition does not fit, no refund wording is printed at all
+// (answer board, deposit wording Q4). So `depositLine` carries no refund clause. When the
+// deposit-wording branch adds the refund fields to data/settings.json, `depositRefundClause`
+// prints them; until then it is null and nothing is printed.
+import settings from '../../data/settings.json';
+import prices from '../../data/price-matrix.json';
+import puppiesJson from '../../data/puppies.json';
+import { gbp, type PuppyRow } from './site';
+
+export const money = (n: number) => `£${gbp(n)}`;
+
+/** The puppies on sale today, in file order (data/puppies.json `status: Available`). */
+export const availablePuppies = (): PuppyRow[] =>
+  (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
+
+/** Boy or Girl — the canvas's word for `sex`, which the user approved with the picks. */
+export const sexWord = (p: PuppyRow) => (p.sex === 'male' ? 'Boy' : 'Girl');
+
+export const BOY_PRICE = money(prices.male_gbp);
+export const GIRL_PRICE = money(prices.female_gbp);
+export const DEPOSIT = money(settings.deposit_gbp);
+export const DELIVERY_BAND = `${money(settings.delivery_min_gbp)}–${money(settings.delivery_max_gbp)}`;
+export const TOWN = settings.address.city;
+
+/** rules/puppies.md `delivery-band-on-every-card`, in the pack's canonical words. */
+export const deliveryLine = `UK home delivery ${DELIVERY_BAND} by distance · or collect in ${TOWN}`;
+
+/** The deposit, in the user's ruling (2026-09-27). No refund wording: see the header. */
+export const depositLine = `${DEPOSIT} books your viewing and reserves your puppy, and it comes off the price.`;
+
+/** The refund clause, printed only when data/settings.json states both refund fields. */
+export const depositRefundClause = (): string | null => {
+  const s = settings as { deposit_refund_max_pct?: number; deposit_refund_condition?: string };
+  return s.deposit_refund_max_pct && s.deposit_refund_condition
+    ? `refundable up to ${s.deposit_refund_max_pct}% ${s.deposit_refund_condition}`
+    : null;
+};
+
+/** The guarantee's length, or null while the breeder has not given one (rule 9). */
+export const guaranteeDays = (): number | null => (settings as { guarantee_days: number | null }).guarantee_days;
+
+/** The FAQPage node for a city page's questions: EXACTLY the rows its FAQ blocks render, in
+ *  their file wording (the blocks Title Case the visible heading at render, as Faq.astro does). */
+export const faqPageNode = (rows: { q: string; a: string }[]) => ({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: rows.map((r) => ({ '@type': 'Question', name: r.q, acceptedAnswer: { '@type': 'Answer', text: r.a } })),
+});
+```
+
+In `src/lib/sections.ts`, replace:
+
+```ts
+  /** The short label shown in the dial and the sheet, not the full heading. */
+  label: string;
+}
+```
+
+with:
+
+```ts
+  /** The short label shown in the dial and the sheet, not the full heading. */
+  label: string;
+  /** The section's heading, the buyer question it answers. The city set's sheet lists it
+   *  (CityJumpBand); the kit set never reads it. */
+  question?: string;
+  /** The line icon the city set's stepper shows for the section (src/components/kit/cityIcons.ts). */
+  icon?: CityIcon;
+  /** The one-word name under the city stepper's stop ("Puppies"); `label` when absent. */
+  stop?: string;
+}
+
+/** The line icons a city page's jump band draws, by name (src/components/kit/cityIcons.ts). */
+export type CityIcon = 'list' | 'puppies' | 'prices' | 'deposit' | 'delivery' | 'health'
+  | 'home' | 'play' | 'faq' | 'enquire';
+```
+
+Create `src/components/kit/cityIcons.ts`:
+
+```ts
+// src/components/kit/cityIcons.ts — the line icons a city page's jump band draws.
+//
+// One path each on the same 24 grid, stroked in `currentColor` at 2px, so they read as one set
+// (the icons the London canvas's stepper band used, jump-links A). Kept in the kit folder beside
+// markShapes.ts because they are shapes, not data; `CityIcon` in src/lib/sections.ts names them.
+import type { CityIcon } from '../../lib/sections';
+
+export const CITY_ICONS: Record<CityIcon, string> = {
+  list: 'M4 7h16M4 12h16M4 17h10',
+  puppies: 'M8.5 9.5a1.8 2.3 0 1 0 0-.01zM15.5 9.5a1.8 2.3 0 1 0 0-.01zM5 13a1.6 2 0 1 0 0-.01zM19 13a1.6 2 0 1 0 0-.01zM12 13.5c-2.6 0-4.5 2.4-4.5 4.2 0 1.4 1.2 2 2.4 1.7 1-.3 1.4-.6 2.1-.6s1.1.3 2.1.6c1.2.3 2.4-.3 2.4-1.7 0-1.8-1.9-4.2-4.5-4.2z',
+  prices: 'M16 6.5A4 4 0 0 0 9 9v9M6.5 13h7M6 18h12',
+  deposit: 'M3 8h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM10 8v10',
+  delivery: 'M1 6h13v10H1zM14 10h4l3 3v3h-7M3.5 18.5a2 2 0 1 0 4 0 2 2 0 1 0-4 0M15.5 18.5a2 2 0 1 0 4 0 2 2 0 1 0-4 0',
+  health: 'M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5zM9 12l2 2 4-4',
+  home: 'M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6',
+  play: 'M4 5h16v14H4zM10 9v6l5-3z',
+  faq: 'M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01',
+  enquire: 'M3 5h18v14H3zM3 6l9 7 9-7',
+};
+
+/** The trust ledger's line icons (city component 3), on the same grid and stroke. */
+export type TrustIcon = 'dna' | 'eye' | 'shield' | 'heart' | 'return' | 'delivery';
+export const TRUST_ICONS: Record<TrustIcon, string> = {
+  dna: 'M8 2c0 5 8 5 8 10s-8 5-8 10M16 2c0 5-8 5-8 10s8 5 8 10M9 6h6M9 18h6',
+  eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM9 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0',
+  shield: 'M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5zM9 12l2 2 4-4',
+  heart: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z',
+  return: 'M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5',
+  delivery: CITY_ICONS.delivery,
+};
+```
+
+- [ ] **Step 5: The kit.css classes**
+
+Append to `src/styles/kit.css` (the 42 step classes are generated once by this one-liner and pasted; they are then ordinary source):
+
+```bash
+python3 - <<'EOF'
+xs = " ".join(f".fx-{n} {{ --fx: {n}%; }}" for n in range(0, 101, 5))
+ys = " ".join(f".fy-{n} {{ --fy: {n}%; }}" for n in range(0, 101, 5))
+open("src/styles/kit.css", "a").write(f"""
+/* THE FOCUS CLASSES (the London component design pass, Plan 2). A photograph's crop comes from
+   data/image-focus.json through src/lib/imageFocus.ts `focusClass()`, which emits
+   `focus fx-NN fy-NN`: the centre of the file's faces, on a 5% grid. A crop is a CLASS, never
+   an inline `style="object-position:…"` (plan2-notes), and never a number typed beside one
+   image. `img-face-visible` (tests/render/checks/img.ts) measures what these paint. */
+@layer components {{
+  .focus {{ object-position: var(--fx, 50%) var(--fy, 50%); }}
+  {xs}
+  {ys}
+}}
+
+/* THE CITY COMPONENTS' TYPE BASE (the London component design pass, Plan 2). The canvas the
+   user picked from painted every variant in a frame whose base (scripts/build_component_canvas.py
+   FRAME_BASE) set headings in the display face in brand steel, on the browser's own bold, with
+   no measure on paragraphs; the site's base (Tailwind's preflight, global.css) inherits the
+   weight and the colour and holds `main p, main li` to 70ch. Every city component root carries
+   `city-kit`, so the built component sets its type as the approved variant did. `:where()`
+   keeps this at one class of specificity: a component that paints a heading on a steel band, or
+   gives a paragraph its own measure, still wins with its own scoped rule. */
+@layer components {{
+  .city-kit :where(h1, h2, h3) {{ font-weight: 700; color: var(--color-brand); }}
+  .city-kit :where(p, li) {{ max-width: none; }}
+}}
+""")
+EOF
+```
+
+- [ ] **Step 6: The three components**
+
+Create `src/components/kit/CityHero.astro`:
+
+```astro
+---
+// src/components/kit/CityHero.astro — city component 1, the hero (London pick: hero B,
+// "Litter filmstrip"; data/design/city-picks/blue-staffy-puppies-london.json). A deep-steel
+// panel inset in the bone page; the available puppies run as a contact-sheet strip, and the copy
+// sits under it in two editorial columns from 1024px.
+//
+// IT IS A `.kit-hero`, so every hero check judges it as it judges the built pages' heroes:
+// `.pic` (the strip) precedes `.title` in source and paints above it on a phone
+// (`layout-hero-image-first-mobile`), `img-sizes-matches-box` reads the strip's `sizes`, and the
+// band is 390-450px tall at 1280 with a 390px floor from 1024 (rules/design.md rule 10; the
+// city-kit render spec measures it). `data-hero-layout="filmstrip"` is a new arrangement, not
+// one of Hero.astro's five, so the frozen pages' hero is untouched.
+//
+// THE PUPPIES ARE DATA: data/puppies.json's available rows, their `card_photo`, cropped on their
+// faces by src/lib/imageFocus.ts — never six typed blocks and never an inline crop. The first
+// photo is the LCP candidate: eager, `fetchpriority="high"`; the rest are eager too (a strip
+// above the fold that pops in tile by tile is worse than one that costs five small requests).
+//
+// Conventions 2 (focus rings read --kit-ring; the band sets it via `.on-inverse`), 4, 6.
+// Brass is a FILL (the CTA) with --color-cta-ink text, never small text on the steel band.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass, puppyAlt } from '../../lib/imageFocus';
+import { availablePuppies } from '../../lib/cityKit';
+
+export interface HeroLink { label: string; href: string }
+type Props = HTMLAttributes<'section'> & {
+  as?: 'h1' | 'h2';
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  /** The brass call to action. */
+  cta: HeroLink;
+  /** The quieter text link beside it. */
+  more?: HeroLink;
+};
+const { as: H = 'h1', eyebrow, title, lede, cta, more, class: cls, ...rest } = Astro.props;
+const pups = availablePuppies();
+// MEASURED against the painted box at 375, 640, 768, 1024, 1100 and 1280 (img-sizes-matches-box
+// holds the promise to 0.9-1.25x): three across below 640px, six across above, and from 1280 the
+// panel is capped at 1232px so a thumb is 188px.
+const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25.333px), '
+  + '(min-width: 640px) calc(16.667vw - 14.667px), calc(33.333vw - 21.333px)';
+---
+<section {...rest} class:list={['city-kit', 'kit-hero', 'city-hero', cls]} data-hero-layout="filmstrip" data-hero-media="top">
+  <div class="inner on-inverse">
+    <ul class="pic" aria-label="The puppies available now">
+      {pups.map((p, i) => (
+        <li>
+          <Image
+            src={puppyImage(p.card_photo)}
+            alt={puppyAlt(p, 'short')}
+            widths={[240, 400]}
+            sizes={SIZES}
+            class={focusClass(p.card_photo)}
+            loading="eager"
+            fetchpriority={i === 0 ? 'high' : 'auto'}
+            decoding={i === 0 ? 'sync' : 'async'}
+          />
+          <span class="tag" aria-hidden="true">{p.name}</span>
+        </li>
+      ))}
+    </ul>
+    <div class="copy">
+      <div class="head">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <H class="title">{title}</H>
+      </div>
+      <div>
+        {lede && <p class="lede">{lede}</p>}
+        <div class="ctas">
+          <a class="cta" href={cta.href}>{cta.label}</a>
+          {more && <a class="more" href={more.href}>{more.label}</a>}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    .city-hero { background: var(--color-surface); padding: var(--space-3); }
+    .inner {
+      max-width: 1232px; margin: 0 auto; display: grid; gap: var(--space-5);
+      padding: var(--space-3); border-radius: var(--radius-lg);
+      background: var(--color-surface-deep); color: var(--color-text-on-inverse);
+    }
+    .pic {
+      list-style: none; margin: 0; padding: 0; display: grid; align-items: start;
+      grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2);
+    }
+    .pic li { position: relative; margin: 0; max-width: none; }
+    .pic :global(img) {
+      display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;
+      border-radius: var(--radius-sm); background: var(--color-steel-700);
+    }
+    /* The name plate sits in the photo's lower-left corner, clear of the face the focus class
+       centres; `img-face-visible` measures that it covers no more than 10% of one. */
+    .tag {
+      position: absolute; left: 0; bottom: 0; padding: 4px var(--space-2) 3px;
+      border-radius: 0 var(--radius-sm) 0 var(--radius-sm);
+      background: var(--color-surface-deep); color: var(--color-text-on-inverse);
+      font-size: var(--text-xs); line-height: 1.2; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .copy { padding: 0 var(--space-2) var(--space-3); }
+    .eyebrow {
+      margin: 0 0 var(--space-2); font-size: var(--text-xs); font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-link-on-inverse);
+    }
+    .title {
+      margin: 0 0 var(--space-3); font-family: var(--font-display); font-size: var(--text-3xl);
+      line-height: var(--text-3xl--line-height); color: var(--color-text-on-inverse); text-wrap: balance;
+    }
+    .lede { margin: 0 0 var(--space-4); max-width: 54ch; color: var(--color-text-on-inverse); }
+    .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
+    .cta {
+      display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--space-6);
+      border-radius: var(--btn-radius); background: var(--color-cta); color: var(--color-cta-ink);
+      font-weight: 700; text-decoration: none; transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    .cta:hover { background: var(--color-cta-hover); }
+    .more {
+      display: inline-flex; align-items: center; min-height: 44px; font-weight: 600;
+      color: var(--color-link-on-inverse); text-underline-offset: 4px;
+    }
+    .cta:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    @media (min-width: 640px) { .pic { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+    @media (min-width: 1024px) {
+      .city-hero { padding: var(--space-4) var(--space-5); }
+      /* From 1024px the copy reads above the strip (the pick's "copy" / "strip" areas); the
+         strip stays FIRST IN SOURCE, so a phone still paints it first (rule 10). */
+      .inner { min-height: 390px; padding: var(--space-6) var(--space-6) var(--space-5); grid-template-areas: "copy" "strip"; }
+      .pic { grid-area: strip; }
+      .pic :global(img) { aspect-ratio: auto; height: 148px; }
+      .copy {
+        grid-area: copy; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        column-gap: var(--space-8); align-items: end;
+      }
+      .head { align-self: start; }
+      .title { margin: 0; }
+    }
+    @media (min-width: 1024px) and (max-width: 1199px) {
+      .title { font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); }
+      .pic :global(img) { height: 120px; }
+    }
+    /* rules/design.md rule 10, "on a phone the photo also PAINTS first": the strip is first in
+       source and first in the grid at every width, so there is no `order` to undo here. */
+  }
+</style>
+```
+
+Create `src/components/kit/CityPriceScale.astro`:
+
+```astro
+---
+// src/components/kit/CityPriceScale.astro — city component 2, the counter strip (London pick:
+// counter-strip C, "Price scale"). The figures are stops on one number line, smallest to
+// largest — the delivery band, the deposit, then the price, which forks into a boy or a girl —
+// each labelled for what it is, so the line never reads as a bill. A break mark sits between
+// the deposit and the price so the stops stay legible. On a phone the line runs down the left.
+//
+// THE FIGURES ARE DATA, NEVER PROPS (working rule 9; rule 16's "the counter's figures are that
+// page's own facts"): the available count from data/puppies.json, the band and the deposit from
+// data/settings.json, the two prices from data/price-matrix.json, all through src/lib/cityKit.ts.
+// Only the WORDS under them are the page's, because they name the city.
+//
+// `data-counters` puts it in `layout-hero-counter-separation`'s view: the bone-50 bed, a
+// hairline and a steel top rule separate it from the hero above (rules/design.md).
+// Conventions 4 and 6; tokens only; brass is never small text here.
+import type { HTMLAttributes } from 'astro/types';
+import { availablePuppies, BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  labels: {
+    /** After the count, e.g. "puppies. What each part costs". */
+    count: string;
+    delivery: string;
+    deposit: string;
+    price: string;
+  };
+};
+const { labels, class: cls, ...rest } = Astro.props;
+const count = availablePuppies().length;
+---
+<section {...rest} class:list={['city-kit', 'city-scale', cls]} data-counters aria-label="What each part costs">
+  <div class="panel">
+    <p class="count" data-figure><span class="n">{count}</span><span class="l">{labels.count}</span></p>
+    <ol>
+      <li class="range" data-figure><span class="n">{DELIVERY_BAND}</span><span class="l">{labels.delivery}</span></li>
+      <li data-figure><span class="n">{DEPOSIT}</span><span class="l">{labels.deposit}</span></li>
+      <li class="brk" aria-hidden="true">
+        <svg viewBox="0 0 20 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16 9 2M11 16l5-14" /></svg>
+      </li>
+      <li class="fork">
+        <span class="n" data-figure>{BOY_PRICE} <small>a boy</small></span><span class="or">or</span><span class="n" data-figure>{GIRL_PRICE} <small>a girl</small></span>
+        <span class="l">{labels.price}</span>
+      </li>
+    </ol>
+  </div>
+</section>
+<style>
+  @layer components {
+    .city-scale {
+      background: var(--counter-bed); border-top: 1px solid var(--color-border);
+      box-shadow: inset 0 3px 0 var(--color-brand); padding: var(--space-5) var(--space-3);
+    }
+    .panel { max-width: 1200px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-md); background: var(--color-brand-soft); }
+    .count { display: flex; align-items: baseline; gap: var(--space-3); margin: 0 0 var(--space-4); }
+    .count .n { font-size: var(--text-3xl); line-height: 1; }
+    .count .l { font-weight: 600; }
+    ol { list-style: none; margin: 0; padding: 0 0 0 var(--space-5); position: relative; display: grid; gap: var(--space-4); }
+    ol::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--color-brand); }
+    li { position: relative; margin: 0; max-width: none; }
+    li::before {
+      content: ""; position: absolute; left: calc(-1 * var(--space-5) + 1px); top: 6px; width: 14px; height: 14px;
+      border-radius: 50%; background: var(--color-brand-soft); border: 3px solid var(--color-brand);
+    }
+    li.range::before { height: 30px; border-radius: var(--radius-pill); background: var(--color-brand); }
+    li.brk { height: 18px; }
+    li.brk::before { content: none; }
+    .brk svg {
+      position: absolute; left: calc(-1 * var(--space-5) - 2px); top: 0; width: 20px; height: 18px;
+      background: var(--color-brand-soft); color: var(--color-brand);
+    }
+    .n {
+      display: block; font-family: var(--font-display); font-weight: 700; font-size: var(--text-2xl);
+      line-height: 1.1; color: var(--color-brand); font-feature-settings: 'lnum';
+    }
+    .n small { font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600; color: var(--color-ink); }
+    .l { display: block; margin-top: 2px; font-size: var(--text-sm); color: var(--color-ink); }
+    .fork .n { display: inline-block; }
+    .or { display: inline-block; margin: 0 var(--space-2); font-size: var(--text-sm); font-style: italic; color: var(--color-ink-2); }
+    @media (min-width: 768px) {
+      .city-scale { padding: var(--space-6) var(--space-5); }
+      .panel {
+        display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center;
+        gap: var(--space-7); padding: var(--space-6) var(--space-6) var(--space-5);
+      }
+      .count { flex-direction: column; gap: var(--space-1); margin: 0; max-width: 14ch; }
+      .count .n { font-size: var(--text-4xl); }
+      ol { padding: 0; display: flex; gap: var(--space-4); align-items: flex-start; }
+      ol::before { left: 0; right: 0; top: 10px; bottom: auto; width: auto; height: 2px; }
+      li { flex: 1 1 0; padding-top: var(--space-7); }
+      li::before { left: 0; top: 3px; }
+      li.range { flex: 1.1 1 0; }
+      li.fork { flex: 1.9 1 0; }
+      li.range::before { width: min(160px, 70%); height: 16px; top: 3px; }
+      li.brk { flex: 0 0 20px; height: 22px; padding: 0; }
+      .brk svg { left: 0; top: 2px; }
+    }
+  }
+</style>
+```
+
+Create `src/components/kit/CityTrustLedger.astro`:
+
+```astro
+---
+// src/components/kit/CityTrustLedger.astro — city component 3, the trust strip (London pick:
+// trust-strip C, "Photo ledger"). A raised card on the bone page: a served photograph filling
+// its column on the left (on top on a phone), and on the right a buyer question, its answer,
+// then the claims as a two-column ledger — each a line icon, a bold claim and one plain line.
+//
+// THE CLAIMS ARE THE PAGE'S, AND EACH ONE NEEDS A SOURCE. They are props because they are copy;
+// a claim with no backing file (a guarantee length while data/settings.json `guarantee_days` is
+// null, a licence) is never written here (working rule 9). The photograph is a SERVED file
+// named in data/image-focus.json: it keeps its path and its served alt word for word (working
+// rule 11), and its crop is its faces' (src/lib/imageFocus.ts), never an inline style. From
+// 1024px the photo STRETCHES to the ledger's height (object-fit: cover), so `sizes` asks for the
+// 760 sibling there: the 400 would paint upscaled 1.5-1.9x (img-not-upscaled, measured).
+// Conventions 4 and 6; tokens only.
+import type { HTMLAttributes } from 'astro/types';
+import { focusClass, servedPhoto } from '../../lib/imageFocus';
+import { TRUST_ICONS, type TrustIcon } from './cityIcons';
+
+export interface TrustClaim { icon: TrustIcon; claim: string; detail: string }
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  intro: string;
+  /** A served file named in data/image-focus.json, e.g. maggie-blue-staffy-dam-with-pups.webp. */
+  photo: string;
+  caption?: string;
+  items: TrustClaim[];
+};
+const { heading, intro, photo, caption, items, class: cls, ...rest } = Astro.props;
+if (items.length < 3 || items.length > 8) throw new Error(`CityTrustLedger: ${items.length} claims; the ledger holds 3 to 8`);
+const p = servedPhoto(photo);
+---
+<section {...rest} class:list={['city-kit', 'city-trust', cls]}>
+  <div class="sheet">
+    <figure class="pic">
+      <img src={p.file} srcset={p.srcset} sizes="(min-width: 1024px) 760px, calc(100vw - 48px)"
+        alt={p.alt} width={p.w} height={p.h} class={focusClass(photo)} loading="lazy" decoding="async" />
+      {caption && <figcaption>{caption}</figcaption>}
+    </figure>
+    <div class="body">
+      <h2>{heading}</h2>
+      <p class="intro">{intro}</p>
+      <ul>
+        {items.map((it) => (
+          <li data-trust-item>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={TRUST_ICONS[it.icon]} /></svg></span>
+            <span><span class="t">{it.claim}</span><span class="d">{it.detail}</span></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    .city-trust { background: var(--color-surface); padding: var(--space-6) var(--space-3); }
+    .sheet {
+      max-width: 1200px; margin: 0 auto; display: grid; gap: var(--space-5); padding: var(--space-3);
+      background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+    }
+    .pic { margin: 0; }
+    .pic img {
+      display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover;
+      border-radius: var(--radius-md); background: var(--color-surface);
+    }
+    figcaption { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-ink-2); }
+    .body { padding: 0 var(--space-2) var(--space-3); }
+    h2 { margin: 0 0 var(--space-3); font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .intro { margin: 0 0 var(--space-5); color: var(--color-ink-2); }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-5); }
+    li { margin: 0; max-width: none; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: var(--space-3); align-items: start; }
+    .ic {
+      display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-sm);
+      background: var(--color-brand-soft); color: var(--color-brand);
+    }
+    .ic svg { width: 20px; height: 20px; }
+    .t { display: block; font-weight: 700; line-height: 1.35; color: var(--color-ink); }
+    .d { display: block; margin-top: 2px; font-size: var(--text-sm); color: var(--color-ink-2); }
+    @media (min-width: 768px) { ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); } }
+    @media (min-width: 1024px) {
+      .city-trust { padding: var(--space-10) var(--space-5); }
+      .sheet {
+        grid-template-columns: 390px minmax(0, 1fr); align-items: start; gap: var(--space-8);
+        padding: var(--space-4) var(--space-8) var(--space-4) var(--space-4);
+      }
+      .pic { padding-top: var(--space-4); align-self: stretch; display: flex; flex-direction: column; }
+      .pic img { flex: 1; min-height: 0; aspect-ratio: auto; }
+      .body { padding: var(--space-4) 0; }
+    }
+  }
+</style>
+```
+
+- [ ] **Step 7: Register them, and give them their preview page**
+
+In `data/design/components.json`, replace the last row's line and the closing bracket:
+
+```json
+  {"id": "video-embed",     "file": "VideoEmbed.astro",      "title": "18 · Video embed",                      "board_width":  640, "project": 4}
+]
+```
+
+with:
+
+```json
+  {"id": "video-embed",     "file": "VideoEmbed.astro",      "title": "18 · Video embed",                      "board_width":  640, "project": 4},
+  {"id": "city-hero",       "file": "CityHero.astro",        "title": "C1 · City hero (litter filmstrip)",     "board_width": 1280, "project": 5},
+  {"id": "city-price-scale", "file": "CityPriceScale.astro", "title": "C2 · City counter strip (price scale)",  "board_width": 1280, "project": 5},
+  {"id": "city-trust-ledger", "file": "CityTrustLedger.astro", "title": "C3 · City trust strip (photo ledger)", "board_width": 1280, "project": 5}
+]
+```
+
+In `src/components/kit/_registry.ts`:
+- after `import VideoEmbed from './VideoEmbed.astro';` add:
+
+```ts
+import CityHero from './CityHero.astro';
+import CityPriceScale from './CityPriceScale.astro';
+import CityTrustLedger from './CityTrustLedger.astro';
+```
+
+- replace `  | 'video-embed';` (the end of `ComponentId`) with:
+
+```ts
+  | 'video-embed'
+  // The city components (project 5): each city page's picks from its component design pass,
+  // previewed on /kit-preview/city/ — never on /kit-preview/, because the city nav set is a
+  // page singleton like the kit's. data/design/components.json rows with `"project": 5`.
+  | 'city-hero' | 'city-price-scale' | 'city-trust-ledger';
+```
+
+- in `ComponentRow`, `project: 3 | 4;` → `project: 3 | 4 | 5;`;
+- at the end of `REGISTRY`, after the `'video-embed'` entry's closing `},` and before the final `};`, add:
+
+```ts
+  // ── the city components (project 5), previewed on /kit-preview/city/ ──────────────────────
+  // ONE SERVED PHOTOGRAPH, ONCE PER PAGE. A served file keeps its served alt word for word
+  // (working rule 11) and `img-alt-present-and-unique` (blocking) refuses a repeated alt, so a
+  // served photo appears once on a page: the canvas gave Maggie's photo to five components, and
+  // here each takes a different one (data/image-focus.json lists them).
+  // THE SPECIMENS STATE PLACEHOLDER COPY, AND SAY SO. A city page's words come from its own
+  // research board and outline (docs/reference/page-run.md row 8); a specimen shows the
+  // component's shape, so its copy names no city and claims nothing the data files do not.
+  'city-hero': {
+    C: CityHero,
+    demo: [{
+      as: 'h2',
+      eyebrow: `Six puppies · ${SITE.address.city}`,
+      title: 'Where Can I Find a Blue Staffy Puppy Near Me?',
+      lede: `Three boys and three girls, raised by ${SITE.breeder_name} in ${SITE.address.city}, with UK home delivery priced by distance.`,
+      cta: { label: 'Choose your puppy', href: '#kit-city-hero' },
+      more: { label: 'How delivery works', href: '#kit-city-hero' },
+    }],
+  },
+  // The figures are the component's own reading of the data files; only the words are passed.
+  'city-price-scale': {
+    C: CityPriceScale,
+    demo: [{
+      labels: {
+        count: 'puppies. What each part costs',
+        delivery: 'UK home delivery, priced by distance',
+        deposit: 'deposit: books your viewing and reserves your puppy',
+        price: 'the price of one puppy',
+      },
+    }],
+  },
+  // Five claims the facts files and the breeder's answers back (the canvas's sixth, a
+  // guarantee length, is not stated while data/settings.json `guarantee_days` is null).
+  'city-trust-ledger': {
+    C: CityTrustLedger,
+    demo: [{
+      heading: 'What Should You Check Before Buying a Blue Staffy Puppy?',
+      intro: 'The health of the parents, how the litter was raised and what happens if something goes wrong. Here is where each of ours stands.',
+      photo: 'jones-magnificent-blue-staffy-sire.webp',
+      caption: 'Jones, the sire',
+      items: [
+        { icon: 'dna', claim: 'DNA-tested parents', detail: 'Maggie and Jones, tested for L-2-HGA and HC-HSF4' },
+        { icon: 'eye', claim: 'Eye and elbow screening', detail: 'Both parents screened before the litter' },
+        { icon: 'heart', claim: 'Puppy Culture and ENS', detail: 'Early neurological stimulation, raised in the home' },
+        { icon: 'return', claim: 'We take a puppy back', detail: 'If the fault is ours, or you can no longer care for it' },
+        { icon: 'delivery', claim: 'To your door', detail: 'DEFRA-approved transport, or collect in Carlisle' },
+      ],
+    }],
+  },
+```
+
+In `src/pages/kit-preview/index.astro`, replace `const components = componentsJson as ComponentRow[];` with:
+
+```ts
+// The site kit only. The city components (`"project": 5`) have their own preview,
+// /kit-preview/city/: the city nav set is a page singleton exactly as the kit's is, so the two
+// sets cannot share one document.
+const components = (componentsJson as ComponentRow[]).filter((c) => c.project !== 5);
+```
+
+Create `src/pages/kit-preview/city.astro`:
+
+```astro
+---
+// src/pages/kit-preview/city.astro — the city components, once each, on one hidden page.
+//
+// The London component design pass (Plan 2) builds each city page's fifteen picks as kit
+// components: the `"project": 5` rows of data/design/components.json. They are previewed here
+// and not on /kit-preview/, because the city nav set (CityDial, CityJumpBand, CityContents) is
+// a page singleton like the kit's dial, strip and sheet — two sets on one document would be two
+// sticky bars and two scroll-spies over the same sections.
+//
+// What reads it: the city-kit render spec (tests/render/city-kit.spec.ts) at 375 / 768 / 1024 /
+// 1280, the dist assertions in tests/py/test_city_kit.py, and scripts/city_side_by_side.mjs,
+// which shoots each section beside its canvas frame for the user. No per-component branch: it
+// walks components.json, looks each id up in REGISTRY and renders one copy per fixture, exactly
+// as /kit-preview/ does. noindex, and under `kit-preview`, which form_contract_audit.py and
+// retired_facts_check.py already treat as a specimen route.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import componentsJson from '../../../data/design/components.json';
+import { REGISTRY, type ComponentRow } from '../../components/kit/_registry';
+const components = (componentsJson as ComponentRow[]).filter((c) => c.project === 5);
+const title = 'City kit preview — BlueStaffyUK (project 5)';
+---
+<BaseLayout title={title} description="Internal city component preview; not indexed." noindex={true}>
+  <div class="city-preview">
+    <h1 class="head">City kit preview</h1>
+    {components.map((c) => {
+      const { C, demo = [{}] } = REGISTRY[c.id];
+      return (
+        <section id={`kit-${c.id}`} data-component={c.id} data-width={c.board_width} class="kit-section">
+          <p class="cap">{c.title}</p>
+          {demo.map((props) => <C {...props} />)}
+        </section>
+      );
+    })}
+  </div>
+</BaseLayout>
+<style>
+  .city-preview { padding-block: var(--space-6); }
+  .head { font-family: var(--font-display); max-width: var(--container); margin: 0 auto var(--space-6); padding-inline: var(--space-5); }
+  .kit-section { margin-block: var(--space-8); }
+  .cap { max-width: var(--container); margin: 0 auto var(--space-3); padding-inline: var(--space-5); font-size: var(--text-sm); color: var(--color-text-muted); }
+</style>
+```
+
+In `scripts/city_components.py`, before `#: Where a city's canvas lives.`, add the map every later tool reads:
+
+```python
+#: The kit component each canvas component is built as (the London component design pass,
+#: Plan 2): one `"project": 5` row of data/design/components.json per city component, whatever
+#: variant a city picked — the picked variant's design is what the component renders.
+KIT_ID = {
+    "hero": "city-hero",
+    "counter-strip": "city-price-scale",
+    "trust-strip": "city-trust-ledger",
+    "contents-list": "city-contents",
+    "desktop-dial": "city-dial",
+    "jump-links": "city-jump-band",
+    "key-takeaways": "city-takeaways",
+    "puppy-cards": "city-puppy-sheet",
+    "tables": "city-roster",
+    "video": "city-video-panel",
+    "image-text": "city-chapters",
+    "reviews": "city-letter",
+    "faq-blocks": "city-faq-ledger",
+    "newsletter": "city-newsletter",
+    "contact-form": "city-contact-lineup",
+}
+```
+
+- [ ] **Step 8: Keep the Design System artifact to the site kit**
+
+In `scripts/build_design_system.py`, after `FILE_BY_ID = {}` add:
+
+```python
+#: The projects whose rows this artifact documents: the site kit. A `"project": 5` row is a
+#: CITY component (the London component design pass, Plan 2): one city's pick, recorded with
+#: its canvas and its picks file (data/design/city-picks/) and previewed on /kit-preview/city/,
+#: not a site-wide component, so the Design System artifact does not carry it.
+SITE_KIT_PROJECTS = (3, 4)
+
+
+def site_kit(rows):
+    """The components.json rows this artifact documents, in their order."""
+    return [r for r in rows if r["project"] in SITE_KIT_PROJECTS]
+```
+
+and in `main()` change `rows = json.loads((ROOT / "data/design/components.json").read_text())` to `rows = site_kit(json.loads((ROOT / "data/design/components.json").read_text()))`. In `tests/py/test_design_system_build.py`, make the same change on all three lines that read `rows = json.loads((ROOT / "data/design/components.json").read_text())` (in `test_readme_names_the_locked_facts_and_the_system`, `test_readme_names_no_place_the_repo_has_not_locked` and `test_every_component_folder_plus_the_cover_each_carries_a_ds_card_line`): `rows = D.site_kit(json.loads((ROOT / "data/design/components.json").read_text()))`. (`scripts/measure_canvas_heights.mjs` needs no change: it measures `/kit-preview/`, which no longer renders city rows; rule 10 for the city hero is measured by the city render spec.)
+
+- [ ] **Step 9: The city render spec**
+
+Create `tests/render/city-kit.config.ts`:
+
+```ts
+import { defineConfig } from '@playwright/test';
+import { loadEnv } from './lib/env.mjs';
+loadEnv(new URL('../../.env', import.meta.url));
+
+// The city-kit render spec (tests/render/city-kit.spec.ts): the built city components on
+// dist/, at the four widths the canvas smoke paints (tests/py/test_city_kit.py pins
+// them — 1024 is rule 10's and the dial's boundary). Serves dist/ itself on RENDER_CITY_PORT
+// (default 4351) so it can run beside the page harness and the canvas smoke. Build first.
+const PORT = Number(process.env.RENDER_CITY_PORT ?? 4351);
+
+export default defineConfig({
+  testDir: '.',
+  testMatch: ['city-kit.spec.ts'],
+  fullyParallel: true,
+  workers: 4,
+  timeout: 90_000,
+  reporter: [['list']],
+  use: { baseURL: `http://127.0.0.1:${PORT}`, deviceScaleFactor: 1 },
+  projects: [
+    { name: 'vp375', use: { viewport: { width: 375, height: 812 } } },
+    { name: 'vp768', use: { viewport: { width: 768, height: 1024 } } },
+    { name: 'vp1024', use: { viewport: { width: 1024, height: 768 } } },
+    { name: 'vp1280', use: { viewport: { width: 1280, height: 800 } } },
+  ],
+  webServer: [{
+    command: `python3 -m http.server ${PORT} --bind 127.0.0.1`,
+    cwd: '../../dist',
+    port: PORT,
+    reuseExistingServer: false,
+    timeout: 60_000,
+  }],
+});
+```
+
+Create `tests/render/city-kit.spec.ts` (Tasks 3–8 extend `PROBES`, `REUSED` and `ROUTES`):
+
+```ts
+import { test, expect, type Page } from '@playwright/test';
+import { registry } from './lib/registry.js';
+import { runCheck } from './lib/runCheck.js';
+import './checks/layout.js';
+import './checks/a11y.js';
+import './checks/img.js';
+import './checks/nav.js';
+
+/**
+ * The city-kit render spec (the London component design pass, Plan 2). Every built page that
+ * carries city components — the specimen page /kit-preview/city/ and, from Plan 2 Task 8, the
+ * London scaffold — is painted at 375, 768, 1024 and 1280 (tests/render/city-kit.config.ts) and
+ * held to:
+ *   - the registered checks in REUSED, run as they are; those in CITY_ADVISORY print their hits
+ *     as `[advisory]` lines and never fail (a new check earns blocking after a clean cluster);
+ *   - each city component's probe in PROBES, keyed on the data hooks the component renders (the
+ *     same hooks scripts/check_city_canvas.py HOOKS required of the canvas variants), run only
+ *     where that component is on the page.
+ * The kit's page harness (pages.spec.ts) paints 375/768/1280 only; this spec is where 1024 — the
+ * dial's and rule 10's boundary — is measured for the city set. A component that fails here is
+ * fixed in the component, never excused here.
+ */
+const ROUTES = ['/kit-preview/city/'];
+const REUSED = [
+  'layout-no-horizontal-overflow',
+  'layout-min-font-size',
+  'layout-tap-target-size',
+  'layout-table-stacks-on-mobile',
+  'layout-image-box-reserved',
+  'layout-hero-image-first-mobile',
+  'layout-h3-image-first',
+  'a11y-text-contrast-aa',
+  'a11y-no-duplicate-ids',
+  'img-alt-present-and-unique',
+  'img-srcset-within-2x',
+  'img-sizes-matches-box',
+  'img-not-upscaled',
+  'nav-anchors-resolve',
+];
+// Named, never derived from registry severity (the canvas smoke's lesson, 4214d23).
+const CITY_ADVISORY = new Set(['img-not-upscaled']);
+const CTX = { pageType: 'location', slug: 'city-kit', siblings: async () => [] };
+
+type Probe = (page: Page, viewport: number) => Promise<string[]>;
+
+/** Every element carrying `attr` is painted (a box of at least 1×1 and not visibility:hidden). */
+async function allVisible(page: Page, attr: string): Promise<string[]> {
+  const hidden = await page.evaluate((a) => Array.from(document.querySelectorAll(`[${a}]`))
+    .filter((el) => {
+      const b = el.getBoundingClientRect();
+      return b.width < 1 || b.height < 1 || getComputedStyle(el).visibility === 'hidden';
+    }).length, attr);
+  return hidden ? [`${hidden} [${attr}] element(s) are not painted`] : [];
+}
+
+/** Each probe: the selector that says its component is on the page, and what it measures. */
+const PROBES: Record<string, { present: string; run: Probe }> = {
+  'city-hero': {
+    present: '.city-hero',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const band = await page.evaluate(() =>
+        Math.round(document.querySelector('.city-hero')!.getBoundingClientRect().height));
+      // rules/design.md rule 10: 390px floor from 1024, 450px ceiling at 1280 and up.
+      if (viewport >= 1024 && band < 390) out.push(`hero band is ${band}px at ${viewport}px; the floor is 390`);
+      if (viewport >= 1280 && band > 450) out.push(`hero band is ${band}px at ${viewport}px; the ceiling is 450`);
+      const thumbs = await page.evaluate(() => document.querySelectorAll('.city-hero .pic img').length);
+      if (thumbs < 1) out.push('the filmstrip paints no puppy');
+      return out;
+    },
+  },
+  'city-price-scale': {
+    present: '.city-scale',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-figure');
+      // The stops are laid on one line: every figure's box stays inside the panel.
+      const spill = await page.evaluate(() => {
+        const panel = document.querySelector('.city-scale .panel')!.getBoundingClientRect();
+        return Array.from(document.querySelectorAll('.city-scale [data-figure]'))
+          .filter((f) => { const b = f.getBoundingClientRect(); return b.left < panel.left - 1 || b.right > panel.right + 1; }).length;
+      });
+      if (spill) out.push(`${spill} figure(s) run outside the panel`);
+      return out;
+    },
+  },
+  'city-trust-ledger': {
+    present: '.city-trust',
+    run: (page) => allVisible(page, 'data-trust-item'),
+  },
+};
+
+for (const route of ROUTES) {
+  test(`city components on ${route}`, async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    const res = await page.goto(route);
+    expect(res?.status(), `${route} must be built`).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+    // CITY_SHOTS=<dir> keeps a full-page PNG per width for the impeccable and frontend-design
+    // passes to read. Outside the repo, never committed.
+    if (process.env.CITY_SHOTS) {
+      await page.screenshot({ fullPage: true,
+        path: `${process.env.CITY_SHOTS}/${route.replace(/\//g, '_')}-${viewport}.png` });
+    }
+    const failures: string[] = [];
+    for (const id of REUSED) {
+      const check = registry.find((c) => c.id === id);
+      expect(check, `${id} is registered`).toBeTruthy();
+      const r = await runCheck(check!, page, viewport, CTX);
+      console.log(`${route} @ ${viewport}px ${id}: examined ${r.examined}`);
+      for (const d of r.defects) {
+        if (CITY_ADVISORY.has(id)) {
+          console.log(`[advisory] ${route} @ ${viewport}px ${id}: ${d.message}`);
+          testInfo.annotations.push({ type: 'advisory', description: `${id}: ${d.message}` });
+        } else failures.push(`${id}: ${d.message}`);
+      }
+    }
+    let probed = 0;
+    for (const [id, probe] of Object.entries(PROBES)) {
+      await page.evaluate(() => window.scrollTo(0, 0));
+      if (!(await page.locator(probe.present).count())) continue;
+      probed++;
+      failures.push(...(await probe.run(page, viewport)).map((m) => `${id}: ${m}`));
+    }
+    expect(probed, `${route} carries no city component a probe knows`).toBeGreaterThan(0);
+    expect(failures, `${route} at ${viewport}px`).toEqual([]);
+  });
+}
+```
+
+In `package.json`, after the `"test:render:canvas"` line add:
+
+```json
+    "test:render:city": "playwright test -c tests/render/city-kit.config.ts",
+```
+
+- [ ] **Step 10: Commit the new page first, then build**
+
+The preview route has no date until it is committed (Execution note 6), so commit before the first build:
+
+```bash
+git add src/pages/kit-preview/city.astro src/pages/kit-preview/index.astro src/components/kit/CityHero.astro src/components/kit/CityPriceScale.astro src/components/kit/CityTrustLedger.astro src/components/kit/cityIcons.ts src/components/kit/_registry.ts src/lib/imageFocus.ts src/lib/cityKit.ts src/lib/sections.ts src/styles/kit.css data/image-focus.json data/design/components.json scripts/build_design_system.py scripts/city_components.py tests/py/test_city_kit.py tests/py/test_design_components.py tests/py/test_design_system_build.py tests/render/city-kit.config.ts tests/render/city-kit.spec.ts package.json
+git commit -m "feat: city kit — hero, counter strip and trust strip from London's picks; /kit-preview/city/
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+npm run -s build
+```
+Expected: build exit 0, and `git status` shows `data/page-dates.json` modified (the new route dated).
+
+- [ ] **Step 11: Run the tests and the render check**
+
+```bash
+python3 -m pytest tests/py/test_city_kit.py tests/py/test_design_components.py tests/py/test_design_system_build.py tests/py/test_page_dates.py -q -p no:cacheprovider
+npm run test:render:city
+```
+Expected: pytest all pass. The render spec: `4 passed` (375, 768, 1024, 1280), with `examined` lines for every REUSED check (`layout-hero-image-first-mobile: examined 1`, `img-sizes-matches-box: examined 6`, `layout-table-stacks-on-mobile: examined 0` until Task 4). The hero band measures within 390–450px at 1280 and at least 390px at 1024.
+
+If `img-sizes-matches-box` reports a `sizes` resolving to the wrong width, check first that no entry's length has a nested parenthesis followed by a space (Code facts, item 7); the hero's entries are written as `calc(16.667vw - 25.333px)` for that reason.
+
+- [ ] **Step 12: The design passes**
+
+With the build fresh, `CITY_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_plan2-shots npm run test:render:city`, then invoke `frontend-design:frontend-design` and then `impeccable:impeccable` (Skill tool, by name) on the three components as shot, comparing each against its canvas frame (`python3 scripts/build_component_canvas.py --emit-frames docs/artifacts/canvas/london-frames`, then open `docs/artifacts/canvas/london-frames/<component>/<variant>.html`). Fix in the component anything either finds, re-run Step 11, and append the record to `docs/research/london-components/hardening-log.md` under `## Plan 2 — built components` (one line per component: what each skill found, what changed).
+
+- [ ] **Step 13: Gate, regenerate, commit**
+
+```bash
+npm run -s build
+npm run -s check:all
+python3 scripts/build_system_registry.py
+python3 -m pytest tests/py -q -p no:cacheprovider
+git add data/page-dates.json docs/reports/redirects.md docs/reports/schema.md docs/reports/sitemaps.md docs/reference/system-registry.md docs/research/london-components/hardening-log.md src/components/kit
+git commit -m "chore: /kit-preview/city/ dated; registry, reports and the Plan 2 hardening log
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+Expected: `check:all` exit 0 (`sitemap-check … examined 62 built pages`); pytest all pass (the registry gains `data/image-focus.json`).
+
+---
+
+## Task 3: The nav set — contents list, desktop dial, jump band and sheet — and PageShell `cityNav`
+
+**Files:**
+- Create: `src/lib/scrollSpy.ts`, `src/components/kit/CityContents.astro`, `src/components/kit/CityDial.astro`, `src/components/kit/CityJumpBand.astro`
+- Modify: `src/lib/sections.ts`, `src/layouts/PageShell.astro`, `src/components/kit/_registry.ts`, `data/design/components.json`
+- Modify: `tests/py/test_city_kit.py`, `tests/py/test_design_components.py`, `tests/render/city-kit.spec.ts`
+
+- [ ] **Step 1: Write the failing tests**
+
+Append to `tests/py/test_city_kit.py`:
+
+```python
+def _demo_sections():
+    """The ids the three nav demos name (CITY_DEMO_SECTIONS in _registry.ts)."""
+    src = (KIT / "_registry.ts").read_text(encoding="utf-8")
+    block = src.split("export const CITY_DEMO_SECTIONS", 1)[1].split("];", 1)[0]
+    return re.findall(r"id: '([^']+)'", block)
+
+
+@pytest.mark.parametrize("name", ["CityContents.astro", "CityDial.astro", "CityJumpBand.astro"])
+def test_the_city_nav_set_marks_by_script_never_by_target_or_scroll_timeline(name):
+    """plan2-notes: the canvas marked the current section with `:target` and scroll-driven
+    animations (a reduced-motion reader saw section one stuck, learning loop L8); the kit marks
+    it with src/lib/scrollSpy.ts. And no `!important` animation longhand is ever ported."""
+    src = (KIT / name).read_text(encoding="utf-8")
+    code = re.sub(r"/\*.*?\*/", "", re.sub(r"^\s*//.*$", "", src, flags=re.M), flags=re.S)
+    # The one sanctioned `!important`: CityContents' <noscript> rule, which must beat the
+    # phone rule it undoes for a reader with no scripting.
+    code = code.replace("NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}"
+                        ".city-contents .more{display:none!important}'", "")
+    for banned in (":target", "animation-timeline", "view-timeline", "timeline-scope", "!important"):
+        assert banned not in code, (name, banned)
+
+
+def test_built_city_contents_is_one_list_with_a_phone_disclosure():
+    s = section("city-contents")
+    ids = _demo_sections()
+    hrefs = re.findall(r'<a href="#([^"]+)"', s)
+    assert hrefs == ids, "one row per section, each once — no second copy for phones"
+    assert s.count("<ul") == 1
+    rest = len(re.findall(r"<li data-rest", s))
+    assert rest == max(0, len(ids) - 5)
+    if rest:
+        m = re.search(r'<button[^>]*class="more"[^>]*>', s)
+        assert m and 'aria-expanded="false"' in m.group(0)
+        assert 'aria-controls="city-contents-list"' in m.group(0) and 'id="city-contents-list"' in s
+    assert "<noscript>" in s, "a reader without scripting gets every row"
+
+
+def test_built_city_dial_is_a_labelled_track_with_one_current_row():
+    s = section("city-dial")
+    assert "data-city-dial" in s
+    assert 'aria-labelledby="city-dial-title"' in s and 'id="city-dial-title"' in s
+    assert re.findall(r'data-spy="([^"]+)"', s) == _demo_sections()
+    assert s.count('aria-current="location"') == 1
+    assert 'aria-current=""' not in s
+
+
+def test_built_city_jump_band_is_a_rail_and_a_native_dialog_sheet():
+    s = section("city-jump-band")
+    ids = _demo_sections()
+    assert "<dialog" in s and 'aria-labelledby="city-jump-sheet-title"' in s
+    key = re.search(r"<button[^>]*data-jump-open[^>]*>", s).group(0)
+    assert 'aria-haspopup="dialog"' in key and 'aria-expanded="false"' in key
+    assert "aria-label" not in key, "the key's name is its visible text (WCAG 2.5.3)"
+    spies = re.findall(r'data-spy="([^"]+)"', s)
+    assert spies == ids + ids, "one rail stop and one sheet row per section"
+    assert s.count("<svg") >= len(ids)
+    # The preview's band is a picture of the component, not this page's chrome.
+    assert "data-strip" not in s
+    src = (KIT / "CityJumpBand.astro").read_text(encoding="utf-8")
+    assert "showModal()" in src and "addEventListener('close'" in src
+
+
+def test_pageshell_swaps_the_nav_set_only_for_a_city_page():
+    src = (ROOT / "src/layouts/PageShell.astro").read_text(encoding="utf-8")
+    assert "cityNav" in src and "CityJumpBand" in src and "CityDial" in src and "CityContents" in src
+    # The site pages never pass cityNav, so they still mount the kit's set.
+    for page in (ROOT / "src/pages").rglob("*.astro"):
+        if page.name != "blue-staffy-puppies-london.astro":
+            assert "cityNav" not in page.read_text(encoding="utf-8"), page
+```
+
+In `tests/py/test_design_components.py`, extend `CITY_IDS` to:
+
+```python
+CITY_IDS = ["city-hero", "city-price-scale", "city-trust-ledger", "city-contents", "city-dial",
+            "city-jump-band"]
+```
+
+- [ ] **Step 2: Run them and see them fail**
+
+Run: `python3 -m pytest tests/py/test_city_kit.py tests/py/test_design_components.py -q -p no:cacheprovider`
+Expected: FAIL — `CityContents.astro` missing (`FileNotFoundError` in the parametrised test), `export const CITY_DEMO_SECTIONS` not in `_registry.ts`, and the spec-order test.
+
+- [ ] **Step 3: The scroll-spy module**
+
+Create `src/lib/scrollSpy.ts`:
+
+```ts
+// src/lib/scrollSpy.ts — which section is the reader in? The city nav set's one answer.
+//
+// PageDial, SectionStrip and SectionSheet each carry this logic inline (the twelve built pages
+// mount them and are frozen, so they are left as they are). The city set — CityDial and
+// CityJumpBand — imports it instead, so two components on one page cannot disagree about the
+// current section: the same reading band (`-40% 0px -55% 0px`), the same bottom-of-document
+// rule (a short last section can never reach the band, so at the bottom the last row wins),
+// and the same seed from the URL fragment. See the fuller notes in PageDial.astro.
+//
+// It is SCRIPT, not CSS, on purpose (plan2-notes; learning loop 2026-09-27, L8): the canvas
+// marked the current section with scroll-driven animations or `:target`, which a reader who
+// asks for reduced motion saw stuck on section one. An IntersectionObserver has no motion.
+// `aria-current="location"`, never a bare `aria-current` (the empty string is the token false).
+
+export interface SpyRow { link: HTMLAnchorElement; target: HTMLElement }
+
+/** `[data-spy]` links under `root`, each PAIRED with the section it names; unresolved ids drop
+ *  out one by one rather than shifting every later pair (the note in PageDial.astro). */
+export function spyRows(root: ParentNode): SpyRow[] {
+  return [...root.querySelectorAll<HTMLAnchorElement>('[data-spy]')]
+    .map((link) => ({ link, target: document.getElementById(link.dataset.spy!) }))
+    .filter((r): r is SpyRow => r.target !== null);
+}
+
+/** Mark row `i` of `links` current and every other row not. */
+export function markCurrent(links: HTMLAnchorElement[], i: number): void {
+  links.forEach((a, j) => {
+    if (j === i) a.setAttribute('aria-current', 'location');
+    else a.removeAttribute('aria-current');
+  });
+}
+
+/** Call `onChange(i)` with the index of the current section in `targets`, now and whenever it
+ *  changes. One observer per caller; the page mounts one dial and one band. */
+export function watchSections(targets: HTMLElement[], onChange: (i: number) => void): void {
+  const N = targets.length;
+  if (!N) return;
+  const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+  let fromObserver = 0;
+  let last = -1;
+  const apply = () => {
+    const i = atBottom() ? N - 1 : fromObserver;
+    if (i !== last) {
+      last = i;
+      onChange(i);
+    }
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (!visible[0]) return;
+      const i = targets.indexOf(visible[0].target as HTMLElement);
+      if (i >= 0) fromObserver = i;
+      apply();
+    },
+    { rootMargin: '-40% 0px -55% 0px' },
+  );
+  targets.forEach((t) => io.observe(t));
+  window.addEventListener('scroll', apply, { passive: true });
+  const fromHash = targets.findIndex((t) => t.id === decodeURIComponent(location.hash.slice(1)));
+  if (fromHash >= 0) fromObserver = fromHash;
+  apply();
+}
+```
+
+- [ ] **Step 4: The three components**
+
+At the end of `src/lib/sections.ts`, add:
+
+```ts
+
+/** What a city page's nav set shows beside its sections (PageShell `cityNav`): the contents
+ *  panel's question, answer and puppy photograph, and the dial's photograph. Photos are files in
+ *  src/assets/puppies named in data/image-focus.json; alts are the page's own words. */
+export interface CityNav {
+  contents: { heading: string; lede: string; photo: string; photoAlt: string };
+  dial: { photo: string; photoAlt: string; title?: string };
+}
+```
+
+Create `src/components/kit/CityContents.astro`:
+
+```astro
+---
+// src/components/kit/CityContents.astro — city component 4, the contents list (London pick:
+// contents-list C, "Photo index"). The page's sections pressed into a sunk steel-100 panel
+// (no shadow) with a puppy photograph at its left (on top on a phone): a buyer question, its
+// answer, then every section as a generous arrow row, two columns from 640px.
+//
+// ONE LIST (plan2-notes, from the Task 6 re-review). The canvas carried rows 6-10 twice — a
+// desktop copy and a phone `<details>` copy — which is two of every link in the tab order and to
+// a screen reader. Here the list is rendered once; below 640px the rows after the fifth are
+// hidden behind one "N more sections" button (`aria-expanded`, `aria-controls`), and a reader
+// with no scripting gets every row (the `<noscript>` rule). The rows are the page's own
+// `sections` (src/lib/sections.ts), the same list the dial and the jump band read, so the three
+// can never disagree about what the sections are.
+//
+// Mounted by PageShell (`navSet: 'city'`), once, after the hero. Conventions 2, 4, 6.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import type { SectionRef } from '../../lib/sections';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+
+type Props = HTMLAttributes<'section'> & {
+  sections: SectionRef[];
+  heading: string;
+  lede: string;
+  /** A puppy photo file in src/assets/puppies (named in data/image-focus.json) and its alt. */
+  photo: string;
+  photoAlt: string;
+  /** Rows shown on a phone before the disclosure. */
+  phoneRows?: number;
+};
+const { sections, heading, lede, photo, photoAlt, phoneRows = 5, class: cls, ...rest } = Astro.props;
+const more = Math.max(0, sections.length - phoneRows);
+const listId = 'city-contents-list';
+// The <noscript> rule, as a string: Astro would otherwise hoist it into the page stylesheet,
+// where it would show the hidden rows to everybody (the same trap VideoEmbed documents).
+const NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}.city-contents .more{display:none!important}';
+---
+<section {...rest} class:list={['city-kit', 'city-contents', cls]}>
+  <div class="panel">
+    <figure>
+      <Image src={puppyImage(photo)} alt={photoAlt} widths={[400, 800, 1080]}
+        sizes="(min-width: 1024px) 480px, calc(100vw - 32px)" class={focusClass(photo)} loading="lazy" decoding="async" />
+    </figure>
+    <div class="body">
+      <h2>{heading}</h2>
+      <p class="lede">{lede}</p>
+      <nav aria-label="On this page" data-contents>
+        <ul id={listId}>
+          {sections.map((s, i) => (
+            <li data-rest={i >= phoneRows ? '' : undefined}>
+              <a href={`#${s.id}`}><span>{s.label}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+        {more > 0 && (
+          <button type="button" class="more" aria-expanded="false" aria-controls={listId} data-more>
+            <span data-more-label>{more} more sections</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+        )}
+        <noscript><style is:inline set:html={NOSCRIPT_CSS}></style></noscript>
+      </nav>
+    </div>
+  </div>
+</section>
+<script>
+  // Singleton: a page mounts one contents list. The button only exists below 640px's worth of
+  // rows; above 640px every row is shown by CSS and the button is display:none.
+  const root = document.querySelector<HTMLElement>('.city-contents');
+  const btn = root?.querySelector<HTMLButtonElement>('[data-more]');
+  if (root && btn) {
+    const label = btn.querySelector<HTMLElement>('[data-more-label]')!;
+    const closed = label.textContent ?? '';
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open));
+      root.toggleAttribute('data-open', open);
+      label.textContent = open ? 'Fewer sections' : closed;
+    });
+  }
+</script>
+<style>
+  @layer components {
+    .city-contents { background: var(--color-surface); padding: var(--space-6) var(--space-4); }
+    .panel { max-width: 1200px; margin: 0 auto; display: grid; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    figure { margin: 0; background: var(--color-surface); }
+    figure :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; }
+    .body { padding: var(--space-6) var(--space-5) var(--space-7); }
+    h2 { margin: 0 0 var(--space-3); max-width: 22ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .lede { margin: 0 0 var(--space-6); max-width: 56ch; color: var(--color-ink-2); }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0 var(--space-6); }
+    li { border-top: 1px solid var(--color-steel-300); }
+    a, .more {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+      min-height: 56px; padding: var(--space-3) var(--space-1); color: var(--color-brand); font-weight: 600; text-decoration: none;
+    }
+    a svg, .more svg { flex: none; width: 20px; height: 20px; transition: transform var(--dur-fast) var(--ease-out); }
+    a:hover span { text-decoration: underline; text-underline-offset: 3px; }
+    a:hover svg { transform: translateX(4px); }
+    a:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+    .more {
+      width: 100%; font: inherit; font-weight: 700; background: none; border: 0;
+      border-top: 1px solid var(--color-steel-300); cursor: pointer;
+    }
+    .more[aria-expanded='true'] svg { transform: rotate(180deg); }
+    @media (max-width: 639px) {
+      [data-rest] { display: none; }
+      .city-contents[data-open] [data-rest] { display: block; }
+      figure :global(img) { aspect-ratio: 2 / 1; }
+      .body { padding: var(--space-5) var(--space-4); }
+      .lede { margin-bottom: var(--space-4); }
+    }
+    @media (min-width: 640px) {
+      ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .more { display: none; }
+    }
+    @media (min-width: 640px) and (max-width: 1023px) { figure :global(img) { aspect-ratio: 21 / 9; } }
+    @media (min-width: 1024px) {
+      .city-contents { padding: var(--space-9) var(--space-5); }
+      .panel { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
+      figure { display: flex; flex-direction: column; }
+      figure :global(img) { flex: 1; aspect-ratio: auto; min-height: 100%; }
+      .body { padding: var(--space-8) var(--space-7); }
+    }
+    @media (prefers-reduced-motion: reduce) { a svg, .more svg { transition: none; } }
+  }
+</style>
+```
+
+Create `src/components/kit/CityDial.astro`:
+
+```astro
+---
+// src/components/kit/CityDial.astro — city component 5, the desktop dial (London pick:
+// desktop-dial C, "Photo marker"). From 1024px a steel-100 panel is pressed into the left
+// column (sunk, no shadow): a puppy photograph at its head, then the sections as plain labels
+// along a thin steel track. The current label is marked by a swollen steel stop, a raised row
+// and bold type. Hidden below 1024px, where CityJumpBand navigates.
+//
+// THE CURRENT SECTION IS MARKED BY SCRIPT (src/lib/scrollSpy.ts, the kit's IntersectionObserver
+// and reading band), with `aria-current="location"` — never by the canvas's `:target` or its
+// scroll-driven animations, which a reader asking for reduced motion saw stuck on section one
+// (plan2-notes; learning loop L8). The first row is current at render, as PageDial's is.
+//
+// Mounted by PageShell (`navSet: 'city'`) in the 272px column. Conventions 2, 4, 6.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import type { SectionRef } from '../../lib/sections';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+
+type Props = HTMLAttributes<'aside'> & {
+  sections: SectionRef[];
+  title?: string;
+  photo: string;
+  photoAlt: string;
+};
+const { sections, title = 'Where you are on the page', photo, photoAlt, class: cls, ...rest } = Astro.props;
+---
+<aside {...rest} class:list={['city-kit', 'city-dial', cls]} data-city-dial>
+  <Image src={puppyImage(photo)} alt={photoAlt} widths={[280, 560]} sizes="272px"
+    class={focusClass(photo)} loading="lazy" decoding="async" />
+  <nav aria-labelledby="city-dial-title">
+    <p class="t" id="city-dial-title">{title}</p>
+    <ol>
+      {sections.map((s, i) => (
+        <li><a href={`#${s.id}`} data-spy={s.id} aria-current={i === 0 ? 'location' : undefined}>{s.label}</a></li>
+      ))}
+    </ol>
+  </nav>
+</aside>
+<script>
+  import { markCurrent, spyRows, watchSections } from '../../lib/scrollSpy';
+  const dial = document.querySelector<HTMLElement>('[data-city-dial]');
+  if (dial) {
+    const rows = spyRows(dial);
+    const links = rows.map((r) => r.link);
+    watchSections(rows.map((r) => r.target), (i) => markCurrent(links, i));
+  }
+</script>
+<style>
+  @layer components {
+    .city-dial { display: none; }
+    @media (min-width: 1024px) {
+      .city-dial {
+        display: block; position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px);
+        max-height: calc(100vh - var(--hdr) - 32px); overflow-y: auto;
+        width: 272px; margin-top: var(--space-6); border-radius: var(--radius-lg); background: var(--color-brand-soft);
+      }
+      .city-dial > :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+      nav { padding: var(--space-5) var(--space-5) var(--space-6); }
+      .t {
+        margin: 0 0 var(--space-4); font-size: var(--text-xs); font-weight: 700;
+        letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-2);
+      }
+      ol { list-style: none; margin: 0; padding: 0; position: relative; }
+      ol::before { content: ""; position: absolute; left: 7px; top: 22px; bottom: 22px; width: 2px; background: var(--color-steel-300); }
+      li + li { margin-top: var(--space-1); }
+      a {
+        --stop: var(--color-steel-300); --stop-size: 8px;
+        position: relative; display: flex; align-items: center; min-height: 44px;
+        padding: var(--space-2) var(--space-3) var(--space-2) 28px; border-radius: var(--radius-sm);
+        color: var(--color-ink); font-size: var(--text-sm); line-height: 1.3; text-decoration: none;
+      }
+      a::before {
+        content: ""; position: absolute; left: 8px; top: 50%; width: var(--stop-size); height: var(--stop-size);
+        border-radius: 50%; background: var(--stop); box-shadow: 0 0 0 3px var(--color-brand-soft); transform: translate(-50%, -50%);
+      }
+      a:hover { text-decoration: underline; text-underline-offset: 3px; }
+      a[aria-current='location'] {
+        --stop: var(--color-brand); --stop-size: 14px;
+        background: var(--color-surface-raised); color: var(--color-brand); font-weight: 700;
+      }
+      a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 0; }
+    }
+  }
+</style>
+```
+
+Create `src/components/kit/CityJumpBand.astro`:
+
+```astro
+---
+// src/components/kit/CityJumpBand.astro — city component 6, the phone jump links and their sheet
+// (London pick: jump-links A, "Stepper band"). Below 1024px a steel band sticks under the site
+// header. Its top row is the page as one icon stop per section on one line (names under them
+// from 600px), every stop in reach without scrolling sideways; the current stop swells brass.
+// Its second row names the section you are in and is the key that raises a bottom sheet listing
+// every section as the question it answers. Hidden at 1024px and up, where CityDial navigates.
+//
+// THE SHEET IS SectionSheet's PATTERN, NOT THE CANVAS'S (plan2-notes). The canvas opened it as
+// the `:target` of a link, which pushes a history entry per open and close and has no focus trap.
+// Here it is a native `<dialog>` opened with `showModal()`: Escape closes it, focus is trapped,
+// the page behind is inert, and the opener's `aria-expanded` follows the dialog's own `close`
+// event, so Escape and a backdrop click cannot leave it stuck on "true". A browser without the
+// dialog API gets the sheet as a plain open panel.
+//
+// THE CURRENT SECTION is marked by src/lib/scrollSpy.ts (the kit's reading band, no motion), on
+// the rail and in the sheet, with `aria-current="location"`; the key's line follows it.
+//
+// IT IS TOP CHROME, as SectionStrip is: every jump target has to clear it. The script publishes
+// the band's measured height as `--strip-h` (the variable SectionStrip uses, so the one
+// `[id] { scroll-margin-top }` expression below serves both), and a no-JS floor is set where the
+// band is visible. `data-strip` marks a band that IS this document's chrome; `chrome={false}` (the
+// preview) renders a static picture that moves no anchors. `nav-jump-target-lands` measures it.
+//
+// Conventions 2 (the steel band sets `--kit-ring` through `.on-inverse`), 4, 6. Icons are the
+// line set in cityIcons.ts, in `currentColor`.
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+import { CITY_ICONS } from './cityIcons';
+
+type Props = HTMLAttributes<'div'> & { sections: SectionRef[]; chrome?: boolean };
+const { sections, chrome = true, class: cls, ...rest } = Astro.props;
+const missing = sections.filter((s) => !s.question || !s.icon).map((s) => s.id);
+if (missing.length) {
+  throw new Error(`CityJumpBand: sections ${missing.join(', ')} need a question and an icon (src/lib/sections.ts)`);
+}
+const pad = (i: number) => String(i + 1).padStart(2, '0');
+const first = sections[0];
+---
+<div {...rest} class:list={['city-kit', 'city-jump', 'on-inverse', cls]} data-city-jump data-strip={chrome ? true : undefined}>
+  <nav class="rail" aria-label="Jump to a section">
+    <ol>
+      {sections.map((s, i) => (
+        <li>
+          <a href={`#${s.id}`} data-spy={s.id} data-label={s.label} aria-current={i === 0 ? 'location' : undefined}>
+            <span class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d={CITY_ICONS[s.icon!]} /></svg></span>
+            <span class="lab">{s.stop ?? s.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+  <button type="button" class="key" aria-haspopup="dialog" aria-expanded="false" data-jump-open>
+    <span class="now"><b data-now-n>{pad(0)}</b> <span data-now-t>{first.label}</span></span>
+    <span class="all">All {sections.length}<span class="sr"> sections</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6" /></svg>
+    </span>
+  </button>
+  <dialog class="sheet" aria-labelledby="city-jump-sheet-title" data-jump-sheet>
+    <div class="grab" aria-hidden="true"></div>
+    <div class="top">
+      <p class="st" id="city-jump-sheet-title">Every section on this page</p>
+      <button type="button" class="close" data-jump-close>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>Close
+      </button>
+    </div>
+    <ol>
+      {sections.map((s, i) => (
+        <li><a href={`#${s.id}`} data-spy={s.id} aria-current={i === 0 ? 'location' : undefined}><span class="n">{pad(i)}</span><span>{s.question}</span></a></li>
+      ))}
+    </ol>
+  </dialog>
+</div>
+<script>
+  import { markCurrent, spyRows, watchSections } from '../../lib/scrollSpy';
+  // Singleton by design: a page mounts one band, as it mounts one site header.
+  const band = document.querySelector<HTMLElement>('[data-city-jump]');
+  if (band) {
+    // --- the height every jump target has to clear (SectionStrip's contract) -------------
+    if (band.hasAttribute('data-strip')) {
+      const publish = () => {
+        const h = band.offsetParent === null ? 0 : Math.round(band.getBoundingClientRect().height);
+        document.documentElement.style.setProperty('--strip-h', h + 'px');
+      };
+      publish();
+      if (typeof ResizeObserver === 'function') new ResizeObserver(publish).observe(band);
+      window.matchMedia('(min-width: 1024px)').addEventListener('change', publish);
+    }
+    // --- the sheet --------------------------------------------------------------------------
+    const dlg = band.querySelector<HTMLDialogElement>('[data-jump-sheet]')!;
+    const opener = band.querySelector<HTMLButtonElement>('[data-jump-open]')!;
+    opener.addEventListener('click', () => {
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open', '');
+      opener.setAttribute('aria-expanded', 'true');
+    });
+    band.querySelector('[data-jump-close]')?.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => dlg.close()));
+    dlg.addEventListener('close', () => opener.setAttribute('aria-expanded', 'false'));
+    // --- the current section, on the rail, in the sheet and on the key ----------------------
+    const rail = spyRows(band.querySelector('.rail')!);
+    const sheet = spyRows(dlg);
+    const n = opener.querySelector<HTMLElement>('[data-now-n]')!;
+    const t = opener.querySelector<HTMLElement>('[data-now-t]')!;
+    watchSections(rail.map((r) => r.target), (i) => {
+      markCurrent(rail.map((r) => r.link), i);
+      markCurrent(sheet.map((r) => r.link), i);
+      n.textContent = String(i + 1).padStart(2, '0');
+      t.textContent = rail[i].link.dataset.label ?? '';
+    });
+  }
+</script>
+<style is:global>
+  /* Global, and it reaches `[id]`: the jump offset every target needs while the band is chrome.
+     The same expression SectionStrip writes, so a page carrying either clears either. The no-JS
+     FLOOR is scoped with :has() to a document whose band is chrome, below 1024px where it shows
+     (Astro may bundle this block into other pages' stylesheets — the note in SectionStrip.astro). */
+  @layer components {
+    [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + var(--strip-h, 0px) + 16px); }
+    @media (max-width: 1023px) {
+      :root:has(.city-jump[data-strip]) { --strip-h: 104px; }
+    }
+  }
+</style>
+<style>
+  @layer components {
+    .city-jump {
+      position: sticky; top: var(--hdr-measured, var(--hdr)); z-index: 30;
+      padding: 2px var(--space-2) 6px; background: var(--color-surface-inverse); color: var(--color-text-on-inverse);
+    }
+    .city-jump:not([data-strip]) { position: static; }
+    .rail ol {
+      list-style: none; margin: 0 auto; padding: 0; max-width: 720px;
+      display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+    }
+    .rail li { position: relative; }
+    .rail li::before { content: ""; position: absolute; left: 0; right: 0; top: 25px; height: 2px; background: var(--color-brand-mid); }
+    .rail li:first-child::before { left: 50%; }
+    .rail li:last-child::before { right: 50%; }
+    .rail a {
+      position: relative; display: flex; flex-direction: column; align-items: center; min-height: 44px;
+      padding-top: 8px; border-radius: var(--radius-sm); color: var(--color-text-on-inverse); text-decoration: none;
+    }
+    .dot {
+      display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+      background: var(--color-surface-inverse); border: 2px solid var(--color-steel-100);
+      transition: transform var(--dur-fast) var(--ease-out);
+    }
+    .dot svg { width: 18px; height: 18px; }
+    .rail a:hover .dot { border-color: var(--color-cta-soft); }
+    .rail a[aria-current='location'] .dot {
+      background: var(--color-cta); border-color: var(--color-cta); color: var(--color-cta-ink); transform: scale(1.2);
+    }
+    .lab, .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .city-jump a:focus-visible, .key:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -1px; }
+    .key {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+      width: 100%; max-width: 720px; min-height: 44px; margin: 4px auto 0; padding: 0 var(--space-3);
+      border: 0; border-radius: var(--radius-sm); background: var(--color-surface-deep);
+      color: var(--color-text-on-inverse); font: inherit; cursor: pointer; text-align: left;
+    }
+    .now { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-sm); font-weight: 600; }
+    .now b { margin-right: 4px; font-family: var(--font-display); color: var(--color-cta-soft); }
+    .all {
+      flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-xs);
+      font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-cta-soft);
+    }
+    .all svg { width: 18px; height: 18px; }
+    @media (min-width: 600px) {
+      .rail a { padding-bottom: 4px; }
+      .lab {
+        position: static; width: auto; height: auto; overflow: visible; clip-path: none;
+        margin-top: 4px; font-size: var(--text-xs); font-weight: 600; line-height: 1.2;
+      }
+    }
+    .sheet {
+      border: 0; width: min(100%, 560px); max-height: 88vh; margin: auto auto 0; padding: var(--space-3) var(--space-4) var(--space-5);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--color-surface-raised); color: var(--color-text);
+      box-shadow: var(--shadow-lift);
+    }
+    .sheet::backdrop { background: color-mix(in srgb, var(--color-steel-900) 55%, transparent); }
+    .sheet[open] { animation: city-jump-up var(--dur-base) var(--ease-out); }
+    .grab { width: 40px; height: 4px; margin: 0 auto var(--space-3); border-radius: 2px; background: var(--color-border); }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-2); }
+    .st { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: var(--text-lg); line-height: 1.25; color: var(--color-brand); }
+    .close {
+      flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 var(--space-3);
+      border: 1px solid var(--color-border); border-radius: var(--btn-radius); background: none;
+      color: var(--color-brand); font: 600 var(--text-sm) var(--font-body); cursor: pointer;
+    }
+    .close svg { width: 16px; height: 16px; }
+    .sheet ol { list-style: none; margin: 0; padding: 0; }
+    .sheet li + li { border-top: 1px solid var(--color-border); }
+    .sheet li a {
+      display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: var(--space-2); align-items: baseline;
+      min-height: 52px; padding: var(--space-3) var(--space-1); color: var(--color-ink); font-weight: 600; line-height: 1.35; text-decoration: none;
+    }
+    .sheet .n { font-family: var(--font-display); font-weight: 700; color: var(--color-brand); }
+    .sheet li a:hover, .sheet li a[aria-current='location'] { background: var(--color-brand-soft); }
+    .sheet li a[aria-current='location'] { font-weight: 700; }
+    .sheet a:focus-visible, .close:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -3px; }
+    @keyframes city-jump-up { from { transform: translateY(24px); opacity: 0.6; } to { transform: none; opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .sheet[open] { animation: none; } .dot { transition: none; } }
+    @media (min-width: 1024px) { .city-jump { display: none; } }
+    @media print { .city-jump { display: none; } }
+  }
+</style>
+```
+
+plan2-notes items this step honours: the sheet is SectionSheet's `<dialog>`/`showModal()` pattern (Escape, focus trap, inert page, `aria-expanded` driven by the `close` event, no history entry); current-section marking is the kit's IntersectionObserver band (`src/lib/scrollSpy.ts`), never `:target` or scroll timelines, and none of the canvas's `!important` animation longhands; ONE contents list, rows 6+ behind the phone disclosure; every stub, width note and zero-size anchor marked `data-canvas-only` is left behind. The note about dial A's block heights does not apply: the pick is dial C, which has no blocks.
+
+- [ ] **Step 5: PageShell mounts the city set for a page that passes `cityNav`**
+
+In `src/layouts/PageShell.astro`, replace:
+
+```astro
+import PageNav from '../components/kit/PageNav.astro';
+import type { SectionRef } from '../lib/sections';
+import { globalCtaShown } from '../lib/globalCta';
+
+// Every head prop is BaseLayout's, forwarded untouched; `sections` is the only one the shell
+// owns. Extending rather than restating means a prop added to the layout reaches the shell.
+interface Props extends BaseProps { sections?: SectionRef[] }
+const { sections = [], ...head } = Astro.props;
+const nav = sections.length >= 6;
+```
+
+with:
+
+```astro
+import PageNav from '../components/kit/PageNav.astro';
+import CityDial from '../components/kit/CityDial.astro';
+import CityJumpBand from '../components/kit/CityJumpBand.astro';
+import CityContents from '../components/kit/CityContents.astro';
+import type { CityNav, SectionRef } from '../lib/sections';
+import { globalCtaShown } from '../lib/globalCta';
+
+// Every head prop is BaseLayout's, forwarded untouched; `sections` and `cityNav` are the shell's
+// own. Extending rather than restating means a prop added to the layout reaches the shell.
+//
+// `cityNav` SWAPS THE WHOLE NAV SET (the London component design pass, Plan 2). A city page
+// mounts its own picks — CityJumpBand below 1024px, CityDial at 1024px and up, CityContents
+// once after the hero — from the SAME `sections` list and on the same six-section threshold, so
+// the set is still one component split by width. A city page puts its hero AND the strips that
+// open it (counter, trust) in `slot="hero"`, which renders full width ABOVE the dial's grid,
+// with the contents panel under it: the dial starts where the body starts. Every page that
+// passes no `cityNav` renders exactly as before.
+interface Props extends BaseProps { sections?: SectionRef[]; cityNav?: CityNav }
+const { sections = [], cityNav, ...head } = Astro.props;
+const nav = sections.length >= 6;
+const city = nav && cityNav !== undefined;
+```
+
+replace:
+
+```astro
+  <Fragment slot="header">
+    <SiteHeaderKit />
+    {nav && <SectionStrip sections={sections} />}
+  </Fragment>
+  <div class:list={['page-shell', { 'has-dial': nav }]}>
+    {nav && <PageDial sections={sections} />}
+    <div class="page-body">
+      <slot name="hero" />
+      {nav && <PageNav sections={sections} crumbs={false} class="page-toc" />}
+      <slot />
+    </div>
+  </div>
+  {nav && <SectionSheet sections={sections} />}
+```
+
+with:
+
+```astro
+  <Fragment slot="header">
+    <SiteHeaderKit />
+    {nav && !city && <SectionStrip sections={sections} />}
+    {city && <CityJumpBand sections={sections} />}
+  </Fragment>
+  {city && (
+    <Fragment>
+      <slot name="hero" />
+      <CityContents sections={sections} {...cityNav!.contents} />
+    </Fragment>
+  )}
+  <div class:list={['page-shell', { 'has-dial': nav && !city, 'has-city-dial': city }]}>
+    {nav && !city && <PageDial sections={sections} />}
+    {city && <CityDial sections={sections} {...cityNav!.dial} />}
+    <div class="page-body">
+      {!city && <slot name="hero" />}
+      {nav && !city && <PageNav sections={sections} crumbs={false} class="page-toc" />}
+      <slot />
+    </div>
+  </div>
+  {nav && !city && <SectionSheet sections={sections} />}
+```
+
+and in its `<style>`, before the `@media (min-width: 1024px) { .page-shell.has-dial {` block, add:
+
+```css
+    /* The city set's dial column is the pick's 272px panel (desktop-dial C). */
+    @media (min-width: 1024px) {
+      .page-shell.has-city-dial {
+        max-width: var(--container);
+        margin-inline: auto;
+        padding-inline: var(--space-5);
+        display: grid;
+        grid-template-columns: 272px minmax(0, 1fr);
+        gap: var(--space-8);
+        align-items: start;
+      }
+    }
+```
+
+- [ ] **Step 6: Register them**
+
+In `data/design/components.json`, change the `city-trust-ledger` row's closing `}` to `},` and add after it:
+
+```json
+  {"id": "city-contents",   "file": "CityContents.astro",    "title": "C4 · City contents list (photo index)", "board_width": 1280, "project": 5},
+  {"id": "city-dial",       "file": "CityDial.astro",        "title": "C5 · City desktop dial (photo marker)", "board_width": 1280, "project": 5},
+  {"id": "city-jump-band",  "file": "CityJumpBand.astro",    "title": "C6 · City jump links (stepper band)",   "board_width": 640,  "project": 5}
+```
+
+In `src/components/kit/_registry.ts`:
+- after `import CityTrustLedger from './CityTrustLedger.astro';` add:
+
+```ts
+import CityContents from './CityContents.astro';
+import CityDial from './CityDial.astro';
+import CityJumpBand from './CityJumpBand.astro';
+import type { SectionRef } from '../../lib/sections';
+```
+
+- replace `  | 'city-hero' | 'city-price-scale' | 'city-trust-ledger';` with:
+
+```ts
+  | 'city-hero' | 'city-price-scale' | 'city-trust-ledger' | 'city-contents' | 'city-dial'
+  | 'city-jump-band';
+```
+
+- directly before `export const REGISTRY: Record<ComponentId, KitEntry> = {`, add:
+
+```ts
+/** The city nav set's demo sections: the city preview's OWN section anchors
+ *  (`kit-<component id>`, which /kit-preview/city/ gives every section it renders), so every
+ *  link resolves and the scroll-spy has real sections to observe — no stub block is needed. One
+ *  list for all three nav components, for the reason DEMO_SECTIONS gives. Specimen wording: it
+ *  names no city. */
+export const CITY_DEMO_SECTIONS: SectionRef[] = [
+  { id: 'kit-city-hero', label: 'Puppies', question: 'Where Can I Find a Blue Staffy Puppy Near Me?', icon: 'puppies' },
+  { id: 'kit-city-price-scale', label: 'Prices', question: 'What Does Each Part of Buying a Puppy Cost?', icon: 'prices' },
+  { id: 'kit-city-trust-ledger', label: 'Checks', question: 'What Should You Check Before Buying?', icon: 'health' },
+  { id: 'kit-city-contents', label: 'Contents', question: 'Which Part of Buying a Puppy Do You Need First?', icon: 'list' },
+  { id: 'kit-city-dial', label: 'Dial', question: 'Where Are You on the Page?', icon: 'home' },
+  { id: 'kit-city-jump-band', label: 'Jump', question: 'How Do You Jump to a Section on a Phone?', icon: 'faq' },
+];
+```
+
+- at the end of `REGISTRY` (after the `'city-trust-ledger'` entry), add:
+
+```ts
+  // The three nav components share CITY_DEMO_SECTIONS. On a real page PageShell mounts them
+  // (`cityNav`); here the band is a picture (`chrome: false`), so it moves no anchor.
+  'city-contents': {
+    C: CityContents,
+    demo: [{
+      sections: CITY_DEMO_SECTIONS,
+      heading: 'Which Part of Buying a Puppy Do You Need First?',
+      lede: 'Start wherever your question is: the puppies and their prices, the delivery to your door or the health tests. Every part is one tap away.',
+      photo: 'Christa.jpeg',
+      photoAlt: 'Christa, a blue girl from the Carlisle litter',
+    }],
+  },
+  'city-dial': {
+    C: CityDial,
+    demo: [{ sections: CITY_DEMO_SECTIONS, photo: 'Cheryl1.jpeg', photoAlt: 'Cheryl, a blue girl with a white blaze, one of the six puppies' }],
+  },
+  'city-jump-band': { C: CityJumpBand, demo: [{ sections: CITY_DEMO_SECTIONS, chrome: false }] },
+```
+
+- [ ] **Step 7: The render probes**
+
+In `tests/render/city-kit.spec.ts`, inside `PROBES`, after the `'city-trust-ledger'` entry and before the closing `};`, add:
+
+```ts
+  'city-contents': {
+    present: '.city-contents',
+    run: async (page, viewport) => {
+      const out = await allVisible(page, 'data-contents');
+      const rest = page.locator('.city-contents [data-rest]');
+      if (!(await rest.count())) return out;
+      const shown = async () => rest.first().isVisible();
+      if (viewport < 640) {
+        if (await shown()) out.push('rows after the phone cut are painted before the disclosure is opened');
+        const more = page.locator('.city-contents [data-more]');
+        await more.click();
+        if (!(await shown())) out.push('opening the disclosure does not paint the rest of the rows');
+        if ((await more.getAttribute('aria-expanded')) !== 'true') out.push('the disclosure does not report aria-expanded="true"');
+        await more.click();
+      } else if (!(await shown())) out.push(`rows after the fifth are hidden at ${viewport}px`);
+      return out;
+    },
+  },
+  'city-dial': {
+    present: '[data-city-dial]',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const shown = await page.locator('[data-city-dial]').isVisible();
+      if (viewport >= 1024 && !shown) out.push('the dial is not painted at a desktop width');
+      if (viewport < 1024 && shown) out.push('the dial is painted below 1024px, where the jump band navigates');
+      const current = await page.locator('[data-city-dial] [aria-current="location"]').count();
+      if (current !== 1) out.push(`${current} dial rows are marked current; exactly one must be`);
+      return out;
+    },
+  },
+  'city-jump-band': {
+    present: '[data-city-jump]',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const band = page.locator('[data-city-jump]');
+      const shown = await band.isVisible();
+      if (viewport >= 1024) {
+        if (shown) out.push('the jump band is painted at a desktop width, where the dial navigates');
+        return out;
+      }
+      if (!shown) return ['the jump band is not painted below 1024px'];
+      if (await band.getAttribute('data-strip') !== null) {
+        await page.evaluate(() => window.scrollTo(0, 900));
+        await page.waitForTimeout(150);
+        const top = await band.evaluate((el) => el.getBoundingClientRect().top);
+        if (top < -1 || top > 160) out.push(`after a 900px scroll the band sits at ${Math.round(top)}px, not under the header`);
+        await page.evaluate(() => window.scrollTo(0, 0));
+      }
+      const opener = band.locator('[data-jump-open]');
+      const box = await opener.boundingBox();
+      if (!box || box.height < 44) out.push('the sheet key is under 44px tall');
+      await opener.click();
+      const open = await band.locator('[data-jump-sheet]').evaluate((d) => (d as HTMLDialogElement).open);
+      if (!open) out.push('pressing the key does not open the sheet');
+      if ((await opener.getAttribute('aria-expanded')) !== 'true') out.push('the key does not report aria-expanded="true"');
+      await page.keyboard.press('Escape');
+      const closed = await band.locator('[data-jump-sheet]').evaluate((d) => !(d as HTMLDialogElement).open);
+      if (!closed) out.push('Escape does not close the sheet');
+      if ((await opener.getAttribute('aria-expanded')) !== 'false') out.push('after Escape the key still reports aria-expanded="true"');
+      return out;
+    },
+  },
+  // Learning loop 2026-09-27, L8: the current-section marker, under BOTH motion preferences.
+  // Scroll the fourth section to the reading band and read which row is current, on the dial at
+  // a desktop width and on the band's rail below it.
+  'city-nav-current-section': {
+    present: '[data-city-dial], [data-city-jump]',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const scope = viewport >= 1024 ? '[data-city-dial]' : '[data-city-jump] .rail';
+      if (!(await page.locator(scope).isVisible())) return out;
+      for (const motion of ['reduce', 'no-preference'] as const) {
+        await page.emulateMedia({ reducedMotion: motion });
+        const want = await page.evaluate((s) => {
+          const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [data-spy]`));
+          const link = links[Math.min(3, links.length - 1)];
+          const target = document.getElementById(link.dataset.spy!)!;
+          // The target's top at 30% of the viewport: above the reading band (40–45%), so the
+          // section before it has left the band and this one fills it.
+          window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.3);
+          return link.dataset.spy!;
+        }, scope);
+        await page.waitForTimeout(300);
+        const got = await page.evaluate((s) => Array.from(document.querySelectorAll(`${s} [aria-current="location"]`))
+          .map((a) => (a as HTMLAnchorElement).dataset.spy), scope);
+        if (got.length !== 1 || got[0] !== want) {
+          out.push(`reducedMotion=${motion}: section ${want} in the reading band, current is [${got.join(', ')}]`);
+        }
+      }
+      await page.emulateMedia({ reducedMotion: null });
+      return out;
+    },
+  },
+```
+
+- [ ] **Step 8: Build, test, render**
+
+```bash
+npm run -s build
+python3 -m pytest tests/py/test_city_kit.py tests/py/test_design_components.py -q -p no:cacheprovider
+npm run test:render:city
+```
+Expected: pytest all pass; render `4 passed`. On the preview the band is a picture (`chrome: false`, no `data-strip`), so the stickiness half of its probe waits for Task 8's real page; the sheet's open / Escape / `aria-expanded` half and the current-section probe (under both `reducedMotion` settings) run here.
+
+- [ ] **Step 9: The design passes**
+
+As Task 2 Step 12, for the contents list, the dial and the jump band (the band and sheet at 375 and 768, the dial at 1024 and 1280).
+
+- [ ] **Step 10: Gate and commit**
+
+```bash
+npm run -s build
+npm run -s check:all
+python3 -m pytest tests/py -q -p no:cacheprovider
+git add src/lib/scrollSpy.ts src/lib/sections.ts src/components/kit/CityContents.astro src/components/kit/CityDial.astro src/components/kit/CityJumpBand.astro src/layouts/PageShell.astro src/components/kit/_registry.ts data/design/components.json tests/py/test_city_kit.py tests/py/test_design_components.py tests/render/city-kit.spec.ts docs/research/london-components/hardening-log.md
+git commit -m "feat: city nav set — contents list, dial, jump band and sheet; PageShell cityNav
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+Expected: `check:all` exit 0; pytest all pass (`test_every_rebuilt_page_mounts_the_toc_below_its_hero` and the dial/strip/sheet tests unchanged: no built page passes `cityNav`).
+
+---
+
+## Task 4: Key takeaways, puppy cards and the table
+
+**Files:**
+- Create: `src/components/kit/CityTakeaways.astro`, `src/components/kit/CityPuppySheet.astro`, `src/components/kit/CityRoster.astro`
+- Modify: `src/components/kit/_registry.ts`, `data/design/components.json`
+- Modify: `tests/py/test_city_kit.py`, `tests/py/test_design_components.py`, `tests/py/test_puppy_card_delivery.py`, `tests/render/city-kit.spec.ts`
+
+- [ ] **Step 1: Write the failing tests**
+
+Append to `tests/py/test_city_kit.py`:
+
+```python
+def _available():
+    return [p for p in json.loads((ROOT / "data/puppies.json").read_text()) if p["status"] == "Available"]
+
+
+def test_built_city_takeaways_is_a_ruled_ledger_with_a_served_photo():
+    s = section("city-takeaways")
+    assert 3 <= s.count("data-takeaway") <= 6
+    assert s.count("<dt") == s.count("data-takeaway") == s.count("<dd")
+    src = re.search(r'<img [^>]*src="/images/([^"]+)"[^>]*>', s)
+    alt = re.search(r'alt="([^"]*)"', src.group(0)).group(1)
+    assert alt in served_alts()[src.group(1)]
+    # The photo is first in source: a phone meets it before the facts.
+    assert s.find("<img") < s.find("<h2")
+
+
+
+def test_built_city_puppy_sheet_prints_every_available_puppy_from_the_data():
+    s = section("city-puppy-sheet")
+    pups = _available()
+    arts = re.findall(r'<article[^>]*class="city-pup[^"]*"[^>]*>(.*?)</article>', s, re.S)
+    assert len(arts) == len(pups)
+    for p, a in zip(pups, arts):
+        text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", a))
+        assert p["name"] in text and "£{:,}".format(p["price_gbp"]) in text, p["name"]
+        assert ("Boy" if p["sex"] == "male" else "Girl") in text and p["colour"] in text
+        hrefs = re.findall(r'href="([^"]+)"', a)
+        assert hrefs == [f"/available-puppies/{p['slug']}/"], "one link per print, to the puppy's page"
+        assert f"Ask About {p['name']}" in text
+        assert "focus fx-" in a
+    assert "books your viewing and reserves your puppy" in s
+
+
+def test_built_city_roster_is_a_semantic_table_that_stacks():
+    s = section("city-roster")
+    table = re.search(r"<table[^>]*>(.*?)</table>", s, re.S)
+    assert 'class="stack-table' in re.search(r"<table[^>]*>", s).group(0)
+    body = table.group(1)
+    assert "<caption" in body
+    assert body.count('scope="col"') == 5
+    assert body.count('scope="row"') == len(_available())
+    tds = re.findall(r"<td[^>]*>", body)
+    assert tds and all('data-label="' in td for td in tds)
+    text = re.sub(r"<[^>]+>", " ", body)
+    for p in _available():
+        assert p["name"] in text and "£{:,}".format(p["price_gbp"]) in text
+```
+
+Extend `CITY_IDS` in `tests/py/test_design_components.py` with `"city-takeaways", "city-puppy-sheet", "city-roster"`.
+
+`rules/puppies.md` `delivery-band-on-every-card` holds every puppy card to the canonical delivery line, and `tests/py/test_puppy_card_delivery.py` reads `article.kit-pup` only (plan2-notes: "point the test at the picked card's markup"). In that file replace:
+
+```python
+ARTICLE = re.compile(r'<article\b[^>]*class="[^"]*\bkit-pup\b[^"]*"[^>]*>(.*?)</article>', re.S)
+```
+
+with:
+
+```python
+# The kit's card (`kit-pup`) and the city puppy sheet's print (`city-pup`, the London component
+# design pass, Plan 2): both are puppy cards, and both carry the line.
+ARTICLE = re.compile(r'<article\b[^>]*class="[^"]*\b(?:kit|city)-pup\b[^"]*"[^>]*>(.*?)</article>', re.S)
+```
+
+and in `built_pages_with_cards()` replace `if "kit-pup" in p.read_text(encoding="utf-8")` with `if ARTICLE.search(p.read_text(encoding="utf-8"))`.
+
+- [ ] **Step 2: Run them and see them fail**
+
+Run: `python3 -m pytest tests/py/test_city_kit.py tests/py/test_design_components.py -q -p no:cacheprovider`
+Expected: FAIL — `/kit-preview/city/ has no section for city-takeaways` (and the spec-order test).
+
+- [ ] **Step 3: The three components**
+
+Create `src/components/kit/CityTakeaways.astro`:
+
+```astro
+---
+// src/components/kit/CityTakeaways.astro — city component 7, key takeaways (London pick:
+// key-takeaways A, "Answer ledger"). An editorial answer sheet framed by rules only (a 4px steel
+// rule over the section, hairlines between rows; no box, no band, no shadow): a served
+// photograph in the left column, and on the right the question, its answer (set across the top
+// from 1024px), then three to six ruled rows, each a short caps label and one plain sentence.
+// The photo is first in source, so a phone meets it before the facts.
+//
+// The rows are the page's own words and each states a fact the data files or the breeder's
+// answers back (working rule 9). The photograph is a served file with its served alt (working
+// rule 11), cropped on its faces (src/lib/imageFocus.ts). Conventions 4 and 6.
+import type { HTMLAttributes } from 'astro/types';
+import { focusClass, servedPhoto } from '../../lib/imageFocus';
+
+export interface Takeaway { label: string; text: string }
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  photo: string;
+  caption?: string;
+  rows: Takeaway[];
+};
+const { heading, lede, photo, caption, rows, class: cls, ...rest } = Astro.props;
+if (rows.length < 3 || rows.length > 6) throw new Error(`CityTakeaways: ${rows.length} rows; the ledger holds 3 to 6`);
+const p = servedPhoto(photo);
+---
+<section {...rest} class:list={['city-kit', 'city-takeaways', cls]}>
+  <div class="in">
+    <figure class="pic">
+      <img src={p.file} srcset={p.srcset} sizes="(min-width: 1024px) 760px, calc(100vw - 32px)"
+        alt={p.alt} width={p.w} height={p.h} class={focusClass(photo)} loading="lazy" decoding="async" />
+      {caption && <figcaption>{caption}</figcaption>}
+    </figure>
+    <div class="body">
+      <div class="head">
+        <h2>{heading}</h2>
+        <p class="lede">{lede}</p>
+      </div>
+      <dl>
+        {rows.map((r) => <div class="row" data-takeaway><dt>{r.label}</dt><dd>{r.text}</dd></div>)}
+      </dl>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       root has no gutter, so full width it switches at the canvas's own widths. */
+    .city-takeaways { container-type: inline-size; background: var(--color-surface); border-top: 4px solid var(--color-brand); border-bottom: 1px solid var(--color-border); }
+    .in { max-width: 1100px; margin: 0 auto; padding: var(--space-6) var(--space-4) var(--space-7); display: grid; gap: var(--space-5); }
+    .pic { margin: 0; }
+    .pic img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--radius-sm); background: var(--color-bone-50); }
+    figcaption { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-text-muted); }
+    h2 { margin: 0 0 var(--space-3); font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .lede { margin: 0 0 var(--space-4); max-width: 60ch; color: var(--color-ink-2); }
+    dl { margin: 0; border-top: 1px solid var(--color-brand); }
+    .row { display: grid; gap: var(--space-1); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+    dt { font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-brand); }
+    dd { margin: 0; color: var(--color-text); }
+    @container (min-width: 640px) { .row { grid-template-columns: 132px minmax(0, 1fr); gap: var(--space-4); align-items: baseline; } }
+    @container (min-width: 640px) and (max-width: 1023px) { .pic img { aspect-ratio: 21 / 9; } }
+    @container (min-width: 1024px) {
+      .in {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "head head" "pic list";
+        gap: var(--space-5) var(--space-8); padding: var(--space-9) var(--space-5);
+      }
+      .body { display: contents; }
+      .head { grid-area: head; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--space-8); align-items: end; }
+      .head h2 { margin: 0; font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
+      .lede { margin: 0; }
+      dl { grid-area: list; }
+      .pic { grid-area: pic; align-self: start; }
+      .pic img { aspect-ratio: 1 / 1; }
+    }
+  }
+</style>
+```
+
+Create `src/components/kit/CityPuppySheet.astro`:
+
+```astro
+---
+// src/components/kit/CityPuppySheet.astro — city component 8, the puppy cards (London pick:
+// puppy-cards B, "Family sheet"). A sunk steel-100 tray (no shadow) that opens with the family —
+// a served photograph of the dam with her puppies beside the question and its answer — and under
+// it the available puppies laid out like prints: a photo, a bone-50 mount with the name, a brass
+// price tag, sex and colour, the status, the delivery line and an Ask link stretched over the
+// whole print. Three across from 768px, two on a phone.
+//
+// THE PRINTS ARE data/puppies.json (plan2-notes, Task 7): name, sex (Boy/Girl), colour,
+// `price_gbp`, `status` and `card_photo`, through astro:assets with a bounded srcset and the crop
+// on the puppy's face (src/lib/imageFocus.ts) — never six pasted blocks and never an inline crop.
+// ONE TAP TARGET PER PRINT: the Ask link is the only link and its ::after covers the print. It
+// goes where the site's puppy links go (`/available-puppies/<slug>/`), labelled "Ask About <name>".
+// THE DELIVERY LINE is rules/puppies.md's canonical one from src/lib/cityKit.ts, on every print
+// (tests/py/test_puppy_card_delivery.py reads `.city-pup .deliv`). The foot is the user's deposit
+// ruling, from the same file. Conventions 4 and 6; brass is a fill with --color-cta-ink text.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass, puppyAlt, servedPhoto } from '../../lib/imageFocus';
+import { availablePuppies, deliveryLine, depositLine, money, sexWord } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  /** The family photograph: a served file named in data/image-focus.json. */
+  photo: string;
+  caption?: string;
+};
+const { heading, lede, photo, caption, class: cls, ...rest } = Astro.props;
+const fam = servedPhoto(photo);
+const pups = availablePuppies();
+---
+<section {...rest} class:list={['city-kit', 'city-sheet', cls]}>
+  <div class="tray">
+    <div class="head">
+      <figure class="fam">
+        <img src={fam.file} srcset={fam.srcset} sizes="(min-width: 768px) 460px, calc(100vw - 40px)"
+          alt={fam.alt} width={fam.w} height={fam.h} class={focusClass(photo)} loading="lazy" decoding="async" />
+        {caption && <figcaption>{caption}</figcaption>}
+      </figure>
+      <div>
+        <h2>{heading}</h2>
+        <p class="lede">{lede}</p>
+      </div>
+    </div>
+    <div class="grid">
+      {pups.map((p) => (
+        <article class="city-pup" data-puppy>
+          <Image src={puppyImage(p.card_photo)} alt={puppyAlt(p, 'scene')}
+            widths={[240, 400, 600]} sizes="(min-width: 1024px) 360px, (min-width: 768px) 30vw, 45vw"
+            class={focusClass(p.card_photo)} loading="lazy" decoding="async" />
+          <div class="txt">
+            <div class="top"><h3>{p.name}</h3><p class="price">{money(p.price_gbp)}</p></div>
+            <p class="meta">{sexWord(p)} · {p.colour}</p>
+            <p class="st">{p.status}</p>
+            <p class="deliv">{deliveryLine}</p>
+            <a class="ask" href={`/available-puppies/${p.slug}/`}>Ask About {p.name}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+    <p class="foot">{depositLine}</p>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       thresholds are the canvas's 640/768/1024 less this root's own gutters (12px a side,
+       24px from 1024), so a full-width copy switches exactly where the canvas frame did. */
+    .city-sheet { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
+    .tray { max-width: 1200px; margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    .head { display: grid; gap: var(--space-4); margin-bottom: var(--space-5); padding: 0 var(--space-2); }
+    .fam { margin: 0; }
+    .fam img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--radius-md); background: var(--color-bone-50); }
+    figcaption { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-ink-2); }
+    h2 { margin: 0 0 var(--space-3); font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .lede { margin: 0; max-width: 62ch; color: var(--color-text); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+    .city-pup {
+      position: relative; display: flex; flex-direction: column; padding: var(--space-2);
+      border-radius: var(--radius-md); background: var(--counter-bed);
+      outline: 2px solid transparent; outline-offset: 0; transition: outline-color var(--dur-fast) var(--ease-out);
+    }
+    .city-pup:hover { outline-color: var(--color-brand); }
+    .city-pup:focus-within { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .city-pup :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-sm); background: var(--color-bone-100); }
+    .txt { display: flex; flex-direction: column; flex: 1; padding: var(--space-3) var(--space-1) 0; }
+    .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-1) var(--space-2); }
+    h3 { margin: 0; font-size: var(--text-xl); line-height: 1.2; }
+    .price {
+      margin: 0; padding: 2px var(--space-2); border-radius: var(--radius-sm); background: var(--color-cta); color: var(--color-cta-ink);
+      font-weight: 700; font-size: var(--text-sm); font-feature-settings: 'tnum';
+    }
+    .meta { margin: var(--space-1) 0 0; font-size: var(--text-sm); line-height: 1.4; color: var(--color-ink-2); }
+    .st { margin: 2px 0 0; font-size: var(--text-sm); font-weight: 600; color: var(--color-ok); }
+    .deliv { margin: var(--space-1) 0 var(--space-2); font-size: var(--text-xs); line-height: 1.35; color: var(--color-ink-2); }
+    .ask {
+      margin-top: auto; display: flex; align-items: center; gap: var(--space-1); min-height: 44px; padding-top: var(--space-2);
+      border-top: 1px solid var(--color-border); font-weight: 700; font-size: var(--text-sm); color: var(--color-link); text-decoration: none;
+    }
+    .ask svg { width: 1em; height: 1em; flex: none; transition: transform var(--dur-fast) var(--ease-out); }
+    .ask::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius-md); }
+    .ask:focus-visible { outline: none; }
+    .city-pup:hover .ask svg { transform: translateX(3px); }
+    .foot { margin: var(--space-4) var(--space-2) 0; font-size: var(--text-sm); color: var(--color-ink-2); }
+    @container (max-width: 743px) {
+      .top { flex-direction: column; align-items: flex-start; }
+      .ask { font-size: var(--text-xs); gap: 0; }
+      .ask svg { display: none; }
+    }
+    @container (min-width: 744px) {
+      .tray { padding: var(--space-7) var(--space-6) var(--space-5); }
+      .head { padding: 0; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-6); align-items: center; }
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+      .foot { margin: var(--space-5) 0 0; }
+    }
+    @media (min-width: 1024px) { .city-sheet { padding: var(--space-10) var(--space-5); } }
+    @container (min-width: 976px) {
+      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
+      .grid { gap: var(--space-5); }
+      .city-pup :global(img) { aspect-ratio: 1 / 1; }
+    }
+    @media (prefers-reduced-motion: reduce) { .city-pup, .ask svg { transition: none; } }
+  }
+</style>
+```
+
+Create `src/components/kit/CityRoster.astro`:
+
+```astro
+---
+// src/components/kit/CityRoster.astro — city component 9, the table (London pick: tables A,
+// "Litter roster"). One real table of the litter sunk into a steel-100 tray (no shadow): each row
+// opens with a small round photograph and the puppy's name in the display face, then sex,
+// colour, the price in tabular figures and the status. No header band, no zebra, no brass rules.
+//
+// DataTable's SEMANTICS, NOT ITS LOOK (plan2-notes, Task 7): a real `<caption>`, `th scope="col"`,
+// a row `th scope="row"` (the photo and the name), and `data-label` on every `<td>` from the
+// column list. THE ROWS ARE data/puppies.json and data/price-matrix.json through
+// src/lib/cityKit.ts — no price is typed. The foot is the delivery line and the user's deposit
+// ruling, from the same file.
+//
+// IT STACKS BELOW 640px (working rule 13): `.stack-table` stays on the table, every row stays
+// `display: block` (what `layout-table-stacks-on-mobile` reads) and its values run on inline as
+// a two-line slip — photo, name and price on the first line, sex, colour and status on the
+// second — never a grid row, never a sideways scroll. The picked slip shows the values without
+// their column names (the separators say where one ends), so the global `.stack-table` label
+// prefix is replaced by the separator here; the names stay in `data-label` and in the `<thead>`
+// a screen reader announces. The round photo sits beside the puppy's name in the same row
+// header, so it is decorative (alt=""): a described photo would read the name twice.
+// Conventions 4 and 6.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+import { availablePuppies, deliveryLine, depositLine, money, sexWord } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & { heading: string; lede: string; caption: string };
+const { heading, lede, caption, class: cls, ...rest } = Astro.props;
+const pups = availablePuppies();
+const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
+---
+<section {...rest} class:list={['city-kit', 'city-roster', cls]}>
+  <div class="tray">
+    <div class="head">
+      <h2>{heading}</h2>
+      <p class="lede">{lede}</p>
+    </div>
+    <table class="stack-table" data-table>
+      <caption>{caption}</caption>
+      <thead><tr>{cols.map((c) => <th scope="col" class:list={[{ num: c === 'Price' }]}>{c}</th>)}</tr></thead>
+      <tbody>
+        {pups.map((p) => (
+          <tr>
+            <th scope="row"><span class="who">
+              <Image src={puppyImage(p.card_photo)} alt=""
+                widths={[96]} sizes="(max-width: 640px) 48px, 56px" class={focusClass(p.card_photo)} loading="lazy" decoding="async" />
+              <span class="nm">{p.name}</span>
+            </span></th>
+            <td data-label="Sex">{sexWord(p)}</td>
+            <td data-label="Colour">{p.colour}</td>
+            <td data-label="Price" class="num">{money(p.price_gbp)}</td>
+            <td data-label="Status"><span class="ok">{p.status}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="foot">{deliveryLine}. {depositLine}</p>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       thresholds are the canvas's 640/768/1024 less this root's own gutters (12px a side,
+       24px from 1024), so a full-width copy switches exactly where the canvas frame did. */
+    .city-roster { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
+    .tray { max-width: 1000px; margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    .head { padding: 0 var(--space-2) var(--space-4); }
+    h2 { margin: 0 0 var(--space-3); font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .lede { margin: 0; max-width: 60ch; color: var(--color-text); }
+    table { width: 100%; border-collapse: collapse; font-size: var(--text-base); color: var(--color-text); }
+    caption {
+      caption-side: top; text-align: left; padding: 0 var(--space-2) var(--space-3); font-size: var(--text-xs);
+      font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-brand);
+    }
+    thead th { padding: 0 var(--space-3) var(--space-2); font-size: var(--text-sm); font-weight: 600; text-align: left; color: var(--color-ink-2); border-bottom: 2px solid var(--color-brand); }
+    tbody th, tbody td { padding: var(--space-3); text-align: left; vertical-align: middle; border-bottom: 1px solid var(--color-steel-300); }
+    tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+    .who { display: flex; align-items: center; gap: var(--space-3); }
+    .who :global(img) { flex: none; display: block; width: 56px; height: 56px; object-fit: cover; border-radius: 50%; background: var(--color-bone-50); }
+    .nm { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; color: var(--color-brand); }
+    .num { text-align: right; font-feature-settings: 'tnum'; font-weight: 700; white-space: nowrap; }
+    .ok { font-weight: 600; color: var(--color-ok); }
+    .foot { margin: var(--space-4) var(--space-2) 0; font-size: var(--text-sm); color: var(--color-ink-2); }
+    @media (max-width: 640px) {
+      caption { padding-left: var(--space-2); }
+      tbody { display: grid; gap: var(--space-2); }
+      tbody tr { position: relative; min-height: 72px; padding: var(--space-3) var(--space-4) var(--space-3) 72px; border: 0; border-radius: var(--radius-md); background: var(--counter-bed); }
+      tbody th, tbody tr:last-child th { padding: 0; border: 0; }
+      .who { display: block; }
+      .who :global(img) { position: absolute; left: var(--space-3); top: var(--space-3); width: 48px; height: 48px; }
+      .nm { display: block; line-height: 1.3; padding-right: 80px; }
+      tbody td, tbody tr:last-child td {
+        display: inline; padding: 0; border: 0; font-size: var(--text-sm); line-height: 1.5; color: var(--color-ink-2);
+      }
+      /* The separator replaces .stack-table's "Label: " prefix (see the header). */
+      tbody td[data-label]::before { content: " · "; font-weight: 400; }
+      tbody td[data-label="Sex"]::before { content: none; }
+      tbody td.num { position: absolute; right: var(--space-4); top: var(--space-3); font-size: var(--text-lg); color: var(--color-text); }
+      tbody td.num::before { content: none; }
+    }
+    @media (min-width: 1024px) { .city-roster { padding: var(--space-10) var(--space-5); } }
+    @container (min-width: 976px) {
+      .tray { padding: var(--space-7) var(--space-7) var(--space-5); }
+      .head { padding: 0 0 var(--space-5); }
+      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
+      caption, .foot { padding-left: 0; margin-left: 0; }
+    }
+  }
+</style>
+```
+
+Why the in-body components are containers (Code facts, item 6): on a city page they sit in the column beside the 272px dial, ~656px wide at 1024; laid out by the viewport they overflowed the page by 59px and decoded images 2.2–2.8× too large. The container thresholds are the canvas's 640 / 768 / 1024 less the root's own gutters, so on the full-width preview they switch exactly where the canvas frames did. The roster's stack stays a VIEWPORT query: `layout-table-stacks-on-mobile` judges the document width.
+
+- [ ] **Step 4: Register them**
+
+In `data/design/components.json`, after the `city-jump-band` row (its `}` becomes `},`):
+
+```json
+  {"id": "city-takeaways",  "file": "CityTakeaways.astro",   "title": "C7 · City key takeaways (answer ledger)", "board_width": 1280, "project": 5},
+  {"id": "city-puppy-sheet", "file": "CityPuppySheet.astro", "title": "C8 · City puppy cards (family sheet)",   "board_width": 1280, "project": 5},
+  {"id": "city-roster",     "file": "CityRoster.astro",      "title": "C9 · City table (litter roster)",       "board_width": 1280, "project": 5}
+```
+
+In `src/components/kit/_registry.ts`:
+- after `import CityJumpBand from './CityJumpBand.astro';` add:
+
+```ts
+import CityTakeaways from './CityTakeaways.astro';
+import CityPuppySheet from './CityPuppySheet.astro';
+import CityRoster from './CityRoster.astro';
+import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, depositLine, deliveryLine } from '../../lib/cityKit';
+```
+
+- replace `  | 'city-jump-band';` with `  | 'city-jump-band' | 'city-takeaways' | 'city-puppy-sheet' | 'city-roster';`
+- in `CITY_DEMO_SECTIONS`, after the `kit-city-jump-band` row, add the two sections this task gives the preview (the stepper's eight stops, as on a city page):
+
+```ts
+  { id: 'kit-city-takeaways', label: 'In short', question: 'What Should a Buyer Take From This Page?', icon: 'deposit' },
+  { id: 'kit-city-puppy-sheet', label: 'The six', question: 'Which Puppy Will You Ask About First?', icon: 'delivery' },
+```
+
+- at the end of `REGISTRY` add:
+
+```ts
+  // Each row states a fact the data files back; the figures are read from them.
+  'city-takeaways': {
+    C: CityTakeaways,
+    demo: [{
+      heading: 'What Should a Buyer Take From This Page?',
+      lede: `Five plain answers, one sentence each, so you can decide whether a puppy from ${SITE.breeder_name}'s home in ${SITE.address.city} is right for you.`,
+      photo: 'jones-strong-staffy-sire-temperament.webp',
+      caption: `Jones, the sire, at home in ${SITE.address.city}`,
+      rows: [
+        { label: 'The six', text: `Three boys at ${BOY_PRICE} and three girls at ${GIRL_PRICE}, all available now.` },
+        { label: 'The deposit', text: depositLine },
+        { label: 'The route', text: `DEFRA-approved transport for ${DELIVERY_BAND}, priced by distance, or collection in ${SITE.address.city}.` },
+        { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
+        { label: 'The raising', text: 'Raised in the home with Puppy Culture and ENS, and you may speak to our vet.' },
+      ],
+    }],
+  },
+  // The prints are data/puppies.json; the demo passes only the words around them.
+  'city-puppy-sheet': {
+    C: CityPuppySheet,
+    demo: [{
+      heading: 'Which Puppy Will You Ask About First?',
+      lede: `Maggie and Jones's six are laid out here like family prints, three boys at ${BOY_PRICE} and three girls at ${GIRL_PRICE}, so you can pick a favourite before you ask.`,
+      photo: 'maggie-blue-staffy-dam-with-pups.webp',
+      caption: `Maggie, the dam, with her puppies in ${SITE.address.city}`,
+    }],
+  },
+  'city-roster': {
+    C: CityRoster,
+    demo: [{
+      heading: 'How Do the Six Puppies Compare Side by Side?',
+      lede: "Here is the whole litter on one sheet, so you can weigh up a boy against a girl: every puppy's sex, colour and price, taken straight from our list.",
+      caption: 'The six puppies, as listed',
+    }],
+  },
+```
+
+- [ ] **Step 5: The render probes**
+
+In `tests/render/city-kit.spec.ts`, inside `PROBES`, directly before the `// Learning loop 2026-09-27, L8` comment, add:
+
+```ts
+  'city-takeaways': {
+    present: '.city-takeaways',
+    run: (page) => allVisible(page, 'data-takeaway'),
+  },
+  'city-puppy-sheet': {
+    present: '.city-sheet',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-puppy');
+      // One tap target per print: the Ask link's box is the whole print.
+      // Each print is scrolled to the middle of the viewport first, clear of the sticky chrome,
+      // and the point tested is on its photograph.
+      const small = await page.evaluate(() => Array.from(document.querySelectorAll('.city-pup')).filter((card) => {
+        card.scrollIntoView({ block: 'center' });
+        const a = card.querySelector('.ask')!;
+        const img = card.querySelector('img')!.getBoundingClientRect();
+        const hit = document.elementFromPoint(img.left + img.width / 2, img.top + img.height / 2);
+        return !(hit === a || a.contains(hit!));
+      }).length);
+      if (small) out.push(`${small} print(s) whose photo does not hand the tap to its Ask link`);
+      return out;
+    },
+  },
+  'city-roster': {
+    present: '.city-roster',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      if (viewport <= 640) {
+        const overlap = await page.evaluate(() => Array.from(document.querySelectorAll('.city-roster tbody tr')).filter((tr) => {
+          const price = tr.querySelector('td.num')!.getBoundingClientRect();
+          // The name's TEXT, not its block box (which runs the row's width by design).
+          const range = document.createRange();
+          range.selectNodeContents(tr.querySelector('.nm')!);
+          const name = range.getBoundingClientRect();
+          return price.left < name.right - 1 && price.top < name.bottom - 1 && price.bottom > name.top + 1;
+        }).length);
+        if (overlap) out.push(`${overlap} stacked row(s) paint the price over the name`);
+      }
+      return out;
+    },
+  },
+```
+
+- [ ] **Step 6: Build, test, render**
+
+```bash
+npm run -s build
+python3 -m pytest tests/py/test_city_kit.py tests/py/test_design_components.py tests/py/test_puppy_card_delivery.py -q -p no:cacheprovider
+npm run test:render:city
+```
+Expected: pytest all pass (`test_every_built_card_carries_the_delivery_line` now examines the six prints too); render `4 passed`; `layout-table-stacks-on-mobile: examined 1` on the preview. `img-alt-present-and-unique` (blocking) passes because the three components describe the same six photos in three different true ways: the hero's short alt, the sheet's scene alt (`puppyAlt(p, 'scene')`), and none on the roster, whose round photo sits beside the name in the same row header (decorative, `alt=""`).
+
+- [ ] **Step 7: The design passes**
+
+As Task 2 Step 12, for the three components.
+
+- [ ] **Step 8: Gate and commit**
+
+```bash
+npm run -s build
+npm run -s check:all
+python3 -m pytest tests/py -q -p no:cacheprovider
+git add src/components/kit/CityTakeaways.astro src/components/kit/CityPuppySheet.astro src/components/kit/CityRoster.astro src/components/kit/_registry.ts data/design/components.json tests/py/test_city_kit.py tests/py/test_design_components.py tests/py/test_puppy_card_delivery.py tests/render/city-kit.spec.ts docs/research/london-components/hardening-log.md
+git commit -m "feat: city kit — key takeaways, puppy sheet and litter roster
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+Expected: `check:all` exit 0 (`retired-facts … 0 new`: no typed £ figure); pytest all pass.
+
+---
+
+## Task 5: Video, image and text, and the review
+
+**Files:**
+- Create: `src/components/kit/CityVideoPanel.astro`, `src/components/kit/CityChapters.astro`, `src/components/kit/CityLetter.astro`
+- Modify: `src/components/kit/VideoEmbed.astro` (opt-in `poster`, `posterSizes`, `playLabel`), `src/components/BodyImage.astro` (opt-in `class`)
+- Modify: `src/components/kit/_registry.ts`, `data/design/components.json`
+- Modify: `tests/py/test_city_kit.py`, `tests/py/test_design_components.py`, `tests/render/city-kit.spec.ts`
+
+- [ ] **Step 1: Write the failing tests**
+
+Append to `tests/py/test_city_kit.py`:
+
+```python
+def test_built_city_video_panel_is_a_facade_on_a_site_video_id():
+    s = section("city-video-panel")
+    ids = json.loads((ROOT / "data/settings.json").read_text())["youtube_embeds"]
+    found = set(re.findall(r"youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{6,})", s))
+    assert found and found <= set(ids), found
+    btn = re.search(r"<button[^>]*data-video-play[^>]*>", s).group(0)
+    assert 'aria-label="Play the film: ' in btn, "the visible chip text starts the accessible name"
+    assert "<noscript>" in s, "the no-JS player stays"
+    assert "iframe" in s.split("<noscript>", 1)[1]
+    # The poster is decorative (the button names the video); the side photo is described.
+    poster = re.search(r"<button[^>]*data-video-play[^>]*>\s*<img [^>]*>", s).group(0)
+    assert re.search(r'\balt(="")?[\s>]', poster)
+    assert "focus fx-" in poster
+
+
+def test_the_video_embed_poster_and_label_are_opt_in():
+    """The two new VideoEmbed props change nothing for a caller that passes neither: the kit
+    preview's facade still shows YouTube's thumbnail and the unlabelled round badge."""
+    site = ROOT / "dist/kit-preview/index.html"
+    if not site.exists():
+        pytest.skip("run npm run build first")
+    html = site.read_text(encoding="utf-8")
+    start = html.find('data-component="video-embed"')
+    kit = html[start:html.find("</section>", start)]
+    assert "i.ytimg.com" in kit or "img.youtube.com" in kit
+    assert 'aria-label="Play the video: ' in kit and "data-play-label" not in kit
+
+
+def test_built_city_chapters_put_each_photo_straight_after_its_heading():
+    s = section("city-chapters")
+    blocks = re.findall(r"<h3[^>]*>.*?</h3>\s*(<img [^>]*>)", s, re.S)
+    assert 1 <= len(blocks) <= 2 and len(blocks) == s.count("<h3")
+    for img in blocks:
+        assert re.search(r'class="[^"]*\bbl-img\b', img), img
+    served = served_alts()
+    for src, alt in re.findall(r'<img [^>]*src="/images/([^"]+)"[^>]*alt="([^"]*)"', s):
+        assert alt in served[src], src
+
+
+def test_built_city_letter_quotes_its_review_word_for_word():
+    s = section("city-letter")
+    reviews = json.loads((ROOT / "data/reviews.json").read_text())
+    n = int(re.search(r'data-review="(\d+)"', s).group(1))
+    quote = re.search(r"<blockquote[^>]*>.*?<p[^>]*>(.*?)</p>", s, re.S).group(1)
+    import html as _h
+    assert _h.unescape(quote) == reviews[n]["quote"]
+    assert reviews[n]["name"] in s
+    assert "AggregateRating" not in s and "★" not in s
+```
+
+Extend `CITY_IDS` with `"city-video-panel", "city-chapters", "city-letter"`.
+
+- [ ] **Step 2: Run them and see them fail**
+
+Run: `python3 -m pytest tests/py/test_city_kit.py -q -p no:cacheprovider`
+Expected: FAIL — no section for `city-video-panel`; `test_the_video_embed_poster_and_label_are_opt_in` passes already (it pins the unchanged default and must stay green through Step 3).
+
+- [ ] **Step 3: The two opt-in props on shared components**
+
+In `src/components/kit/VideoEmbed.astro`:
+- replace `import { youtubeEmbedUrl, youtubeThumbUrl } from '../../lib/video';` with:
+
+```ts
+import { Image } from 'astro:assets';
+import { youtubeEmbedUrl, youtubeThumbUrl } from '../../lib/video';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+```
+
+- replace:
+
+```ts
+  /** `facade` (the default) injects the player on click; `iframe` embeds it immediately. */
+  play?: 'facade' | 'iframe';
+};
+const { id, title, caption, play = 'facade', class: cls, ...rest } = Astro.props;
+```
+
+with:
+
+```ts
+  /** `facade` (the default) injects the player on click; `iframe` embeds it immediately. */
+  play?: 'facade' | 'iframe';
+  /** The facade's picture: a puppy photo file (src/assets/puppies, named in
+   *  data/image-focus.json) instead of YouTube's thumbnail, cropped on its faces. Added for the
+   *  city video panel (the London component design pass, Plan 2; plan2-notes): the id is still
+   *  the only video, and the box is the same reserved 16:9. No built page passes one. */
+  poster?: string;
+  /** The poster's `sizes`, for the box the facade paints in its caller. */
+  posterSizes?: string;
+  /** Visible words on the play badge ("Play the film"). The button's accessible name then
+   *  starts with them, so the name contains the visible label (WCAG 2.5.3). */
+  playLabel?: string;
+};
+const { id, title, caption, play = 'facade', poster, posterSizes = '(min-width: 1024px) 760px, 100vw',
+  playLabel, class: cls, ...rest } = Astro.props;
+const playName = `${playLabel ?? 'Play the video'}: ${title}`;
+```
+
+- replace the facade button:
+
+```astro
+      <button type="button" class="facade" data-video-play aria-label={`Play the video: ${title}`}>
+        {/* `alt=""`: the button already carries the name, and a described thumbnail would
+            make a screen reader read the same video twice. */}
+        <img src={thumb} alt="" width="480" height="360" loading="lazy" decoding="async" />
+        <span class="badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+        </span>
+      </button>
+```
+
+with:
+
+```astro
+      <button type="button" class="facade" data-video-play aria-label={playName} data-play-label={playLabel ? true : undefined}>
+        {/* `alt=""`: the button already carries the name, and a described thumbnail would
+            make a screen reader read the same video twice. */}
+        {poster
+          ? <Image src={puppyImage(poster)} alt="" widths={[480, 800, 1200]} sizes={posterSizes}
+              class={focusClass(poster)} loading="lazy" decoding="async" />
+          : <img src={thumb} alt="" width="480" height="360" loading="lazy" decoding="async" />}
+        <span class="badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+          {playLabel && <span class="badge-label">{playLabel}</span>}
+        </span>
+      </button>
+```
+
+- after `.facade:hover .badge { transform: scale(1.06); }` add:
+
+```css
+    /* A labelled badge (`playLabel`) is a brass pill in the lower-left corner, the icon in its
+       own ink disc: the city video panel's play chip. An unlabelled facade is unchanged. */
+    .facade[data-play-label] { place-items: end start; padding: var(--space-3); }
+    .facade[data-play-label] .badge {
+      grid-auto-flow: column; gap: var(--space-2); width: auto; height: 48px;
+      padding: 0 var(--space-4) 0 7px; border-radius: var(--btn-radius); font-weight: 700; font-size: var(--text-sm);
+    }
+    .facade[data-play-label] .badge svg {
+      width: 34px; height: 34px; padding: 9px 8px 9px 10px; border-radius: 50%;
+      background: var(--color-cta-ink); color: var(--color-cta);
+    }
+    .facade[data-play-label]:hover .badge { transform: none; background: var(--color-cta-hover); }
+```
+
+In `src/components/BodyImage.astro`:
+- after the `focal?: string;` prop (inside `interface Props`) add:
+
+```ts
+  /** Extra classes on the `<img>` (a city component's crop classes, `focus fx-NN fy-NN`). */
+  class?: string;
+```
+
+- `const { asset, srcset, box = 'natural', focal } = Astro.props;` → `const { asset, srcset, box = 'natural', focal, class: extra } = Astro.props;`
+- `const cls = ['bl-img', box !== 'natural' && 'sec-img', box === 'tall' && 'og-tall'];` → `const cls = ['bl-img', box !== 'natural' && 'sec-img', box === 'tall' && 'og-tall', extra];`
+
+- [ ] **Step 4: The three components**
+
+Create `src/components/kit/CityVideoPanel.astro`:
+
+```astro
+---
+// src/components/kit/CityVideoPanel.astro — city component 10, the video (London pick: video C,
+// "Side panel"). A sunk steel-100 tray (no shadow): the question and its answer across the top,
+// then a wide 16:9 click-to-play screen beside a narrow panel holding one of the puppies over
+// three ruled facts a viewer is likely to want next. Below 1024px the panel drops under the
+// screen (its photo beside the facts from 640px).
+//
+// THE SCREEN IS VideoEmbed (working rule 14; plan2-notes, Task 8): the facade injects the
+// youtube-nocookie player on click and carries the `<noscript>` iframe. The id must be one the
+// site already carries (data/settings.json `youtube_embeds`) — this component refuses any
+// other, so a new id cannot be minted here. The poster is a puppy photograph through
+// VideoEmbed's `poster` prop (the box stays reserved), and the brass chip says "Play the film"
+// through `playLabel`, which also starts the button's accessible name.
+// The facts are the page's words (props); each must be backed by the data files.
+// Conventions 4 and 6.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import settings from '../../../data/settings.json';
+import VideoEmbed from './VideoEmbed.astro';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+
+export interface VideoFact { label: string; text: string }
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  videoId: string;
+  videoTitle: string;
+  caption?: string;
+  /** Puppy photo files (src/assets/puppies) for the poster and the side panel, and the side
+   *  photo's alt (the poster's is empty: the play button carries the name). */
+  poster: string;
+  side: { photo: string; alt: string; name: string; text: string };
+  facts: VideoFact[];
+};
+const { heading, lede, videoId, videoTitle, caption, poster, side, facts, class: cls, ...rest } = Astro.props;
+if (!(settings.youtube_embeds as string[]).includes(videoId)) {
+  throw new Error(`CityVideoPanel: ${videoId} is not in data/settings.json youtube_embeds (working rule 14)`);
+}
+---
+<section {...rest} class:list={['city-kit', 'city-video', cls]}>
+  <div class="tray">
+    <h2>{heading}</h2>
+    <p class="lede">{lede}</p>
+    <div class="grid">
+      <VideoEmbed id={videoId} title={videoTitle} caption={caption} poster={poster} playLabel="Play the film"
+        posterSizes="(min-width: 1024px) 560px, calc(100vw - 56px)" />
+      <aside class="side" aria-label={`About ${side.name}`}>
+        <Image src={puppyImage(side.photo)} alt={side.alt} widths={[240, 400, 600]}
+          sizes="(min-width: 1024px) 300px, (min-width: 640px) 200px, 120px" class={focusClass(side.photo)} loading="lazy" decoding="async" />
+        <p class="who"><b>{side.name}</b>{side.text}</p>
+        <ul class="facts">{facts.map((f) => <li><b>{f.label}:</b> {f.text}</li>)}</ul>
+      </aside>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       thresholds are the canvas's 640/768/1024 less this root's own gutters (12px a side,
+       24px from 1024), so a full-width copy switches exactly where the canvas frame did. */
+    .city-video { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
+    .tray { max-width: 1160px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    h2 { margin: 0 0 var(--space-2); max-width: 26ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .lede { margin: 0 0 var(--space-5); max-width: 64ch; color: var(--color-text); }
+    .grid { display: grid; gap: var(--space-4); }
+    /* VideoEmbed's caption reads --kit-caption (convention 3). Its muted default measures 4.49:1
+       on the steel-100 tray, a hundredth under AA, so the tray re-points it at --color-ink-2. */
+    .grid > :global(.kit-video) { --kit-caption: var(--color-ink-2); }
+    .side { margin: 0; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--space-3); align-content: start; }
+    .side > :global(img) { display: block; width: 120px; height: 120px; object-fit: cover; border-radius: var(--radius-md); background: var(--color-bone-50); }
+    .who { margin: 0; align-self: center; font-size: var(--text-sm); color: var(--color-ink-2); }
+    .who b { display: block; font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-brand); }
+    .facts { grid-column: 1 / -1; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-steel-300); }
+    .facts li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-steel-300); font-size: var(--text-sm); line-height: 1.45; }
+    .facts b { color: var(--color-brand); }
+    @container (min-width: 616px) and (max-width: 975px) {
+      .side { grid-template-columns: 200px minmax(0, 1fr); column-gap: var(--space-5); align-items: start; }
+      .side > :global(img) { grid-row: 1 / span 2; width: 200px; height: 200px; }
+      .who { align-self: end; }
+      .facts { grid-column: 2; }
+    }
+    @container (min-width: 744px) { .tray { padding: var(--space-7) var(--space-6); } }
+    @container (min-width: 976px) {
+      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
+      .grid { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+      .side { grid-template-columns: 1fr; }
+      .side > :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 3; }
+    }
+  }
+</style>
+```
+
+Create `src/components/kit/CityChapters.astro`:
+
+```astro
+---
+// src/components/kit/CityChapters.astro — city component 11, image and text (London pick:
+// image-text C, "Two chapters"). A sunk steel-100 tray that reads like two short chapters of one
+// story: each chapter is a brass numeral and a place, an H3 question, its own photograph, then
+// the prose that answers it. A hairline divides the chapters. On a phone each runs numeral,
+// heading, photo, prose in one column; from 768px the photo and the prose sit side by side under
+// the heading; from 1024px heading, photo and prose are three columns.
+//
+// THE PHOTO IS THE H3's NEXT SIBLING (rule 17 and `layout-h3-image-first`): the check walks the
+// heading's following siblings, so the numeral sits BEFORE the heading and nothing wraps the
+// heading — the canvas's `.hd` wrapper would have hidden the photo from it. The photo carries
+// `.bl-img`: a served file renders through BodyImage (its path, its served alt, its baked
+// siblings — working rule 11), a puppy photo through astro:assets with the page's own alt; both
+// are cropped on their faces (src/lib/imageFocus.ts), never by an inline style.
+// Conventions 4 and 6; brass is a fill (the numeral disc) with --color-cta-ink text.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import BodyImage from '../BodyImage.astro';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass, focusRow, servedPhoto } from '../../lib/imageFocus';
+
+export interface Chapter { place: string; question: string; photo: string; photoAlt?: string; text: string }
+type Props = HTMLAttributes<'section'> & { heading: string; lede: string; chapters: Chapter[] };
+const { heading, lede, chapters, class: cls, ...rest } = Astro.props;
+if (chapters.length < 1 || chapters.length > 2) throw new Error('CityChapters: one or two chapters');
+const SIZES = '(min-width: 1024px) 340px, (min-width: 768px) 40vw, calc(100vw - 56px)';
+---
+<section {...rest} class:list={['city-kit', 'city-chapters', cls]}>
+  <div class="tray">
+    <h2>{heading}</h2>
+    <p class="lede">{lede}</p>
+    {chapters.map((c, i) => {
+      const served = focusRow(c.photo).src === 'images';
+      const asset = served ? servedPhoto(c.photo) : null;
+      if (!served && !c.photoAlt) throw new Error(`CityChapters: ${c.photo} is a puppy photo and needs its photoAlt`);
+      return (
+        <div class="ch">
+          <span class="num"><b aria-hidden="true">{i + 1}</b>{c.place}</span>
+          <h3>{c.question}</h3>
+          {asset
+            ? <BodyImage asset={asset} srcset={asset.srcset} sizes={SIZES} class={`${focusClass(c.photo)} media`} />
+            : <Image src={puppyImage(c.photo)} alt={c.photoAlt!} widths={[400, 700]} sizes={SIZES}
+                class={`bl-img media ${focusClass(c.photo)}`} loading="lazy" decoding="async" />}
+          <p>{c.text}</p>
+        </div>
+      );
+    })}
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       thresholds are the canvas's 640/768/1024 less this root's own gutters (12px a side,
+       24px from 1024), so a full-width copy switches exactly where the canvas frame did. */
+    .city-chapters { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
+    .tray { max-width: 1100px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    h2 { margin: 0 0 var(--space-2); max-width: 26ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .lede { margin: 0 0 var(--space-5); max-width: 62ch; color: var(--color-text); }
+    .ch {
+      display: grid; gap: var(--space-3); padding: var(--space-5) 0; border-top: 1px solid var(--color-steel-300);
+      grid-template-areas: "num" "h3" "img" "text";
+    }
+    .num { grid-area: num; display: block; font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.08em; color: var(--color-ink-2); }
+    .num b {
+      display: inline-grid; place-items: center; width: 28px; height: 28px; margin-right: var(--space-2);
+      border-radius: 50%; background: var(--color-cta); color: var(--color-cta-ink); font-size: var(--text-sm);
+    }
+    h3 { grid-area: h3; margin: 0; font-size: var(--text-xl); line-height: 1.25; text-wrap: balance; }
+    .ch :global(.media) {
+      grid-area: img; display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover;
+      border-radius: var(--radius-md); background: var(--color-bone-50);
+    }
+    .ch p { grid-area: text; margin: 0; color: var(--color-text); }
+    @container (min-width: 744px) {
+      .tray { padding: var(--space-7) var(--space-6); }
+      .ch {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); grid-template-areas: "num num" "h3 h3" "img text";
+        column-gap: var(--space-5); row-gap: var(--space-3); align-items: start;
+      }
+    }
+    @container (min-width: 976px) {
+      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
+      .ch {
+        grid-template-columns: 220px 340px minmax(0, 1fr); grid-template-rows: auto 1fr;
+        grid-template-areas: "num img text" "h3 img text"; column-gap: var(--space-6);
+      }
+      .ch :global(.media) { max-width: 340px; }
+    }
+  }
+</style>
+```
+
+Create `src/components/kit/CityLetter.astro`:
+
+```astro
+---
+// src/components/kit/CityLetter.astro — city component 12, the review (London pick: reviews A,
+// "Owner's letter"). One review set as a letter on a raised card: the owner's own photograph
+// from the site pinned at the left (on top on a phone, at no more than its own width), a large
+// steel quotation mark, the review word for word and a signed foot with the name and place. No
+// stars, no score (seo-rules Rule 33: no AggregateRating), one review per slot.
+//
+// THE REVIEW IS data/reviews.json, SELECTED BY NAME (plan2-notes, Task 8; the way
+// buy-blue-staffy-puppies-uk selects Rachel L.), never pasted: a name the file does not carry
+// stops the build, and the quote renders exactly as the file has it. The photograph is the
+// served file the homepage pairs with the same review, with its served alt (working rule 11).
+// Conventions 4 and 6.
+import type { HTMLAttributes } from 'astro/types';
+import reviewsJson from '../../../data/reviews.json';
+import { focusClass, servedPhoto } from '../../lib/imageFocus';
+
+interface Review { quote: string; name: string; place: string; source: string }
+type Props = HTMLAttributes<'section'> & { heading: string; lede: string; name: string; photo: string };
+const { heading, lede, name, photo, class: cls, ...rest } = Astro.props;
+const all = reviewsJson as Review[];
+const index = all.findIndex((r) => r.name === name);
+if (index < 0) throw new Error(`CityLetter: data/reviews.json has no review by ${name}`);
+const review = all[index];
+const p = servedPhoto(photo);
+---
+<section {...rest} class:list={['city-kit', 'city-letter', cls]}>
+  <div class="in">
+    <div class="head">
+      <h2>{heading}</h2>
+      <p class="lede">{lede}</p>
+    </div>
+    <div class="card" data-review-slot>
+      <figure class="pic">
+        <img src={p.file} srcset={p.srcset} sizes="(min-width: 1024px) 300px, 319px" alt={p.alt}
+          width={p.w} height={p.h} class={focusClass(photo)} loading="lazy" decoding="async" />
+      </figure>
+      <div>
+        <blockquote data-review={index}>
+          <span class="mark" aria-hidden="true">“</span>
+          <p>{review.quote}</p>
+        </blockquote>
+        <p class="sig"><cite>{review.name}</cite><span>{review.place}</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       root has no gutter, so full width it switches at the canvas's own widths. */
+    .city-letter { container-type: inline-size; background: var(--color-surface); }
+    .in { max-width: 1000px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
+    .head { max-width: 640px; margin: 0 0 var(--space-6); }
+    h2 { margin: 0 0 var(--space-3); font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .lede { margin: 0; color: var(--color-text); }
+    .card {
+      display: grid; gap: var(--space-5); padding: var(--space-5); background: var(--color-surface-raised);
+      border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--shadow-card);
+    }
+    .pic { margin: 0; justify-self: start; width: 100%; max-width: 319px; }
+    .pic img { display: block; width: 100%; height: auto; aspect-ratio: 319 / 213; object-fit: cover; border-radius: var(--radius-md); background: var(--color-bone-50); }
+    blockquote { margin: 0; position: relative; }
+    .mark { display: block; height: 44px; margin: 0 0 var(--space-1); font-family: var(--font-display); font-size: 88px; line-height: 1; color: var(--color-brand-mid); }
+    blockquote p { margin: 0; font-size: var(--text-lg); line-height: 1.6; color: var(--color-text); }
+    .sig {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
+      margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border);
+    }
+    cite { font-family: var(--font-display); font-style: normal; font-size: var(--text-xl); font-weight: 600; color: var(--color-brand); }
+    .sig span { font-size: var(--text-sm); color: var(--color-ink-2); }
+    @container (min-width: 768px) {
+      .in { padding: var(--space-9) var(--space-6); }
+      .card { padding: var(--space-7); }
+    }
+    @container (min-width: 1024px) {
+      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
+      .card { grid-template-columns: 300px minmax(0, 1fr); gap: var(--space-7); align-items: start; }
+      .pic { position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
+    }
+  }
+</style>
+```
+
+- [ ] **Step 5: Register them**
+
+In `data/design/components.json`, after the `city-roster` row:
+
+```json
+  {"id": "city-video-panel", "file": "CityVideoPanel.astro", "title": "C10 · City video (side panel)",          "board_width": 1280, "project": 5},
+  {"id": "city-chapters",   "file": "CityChapters.astro",    "title": "C11 · City image and text (two chapters)", "board_width": 1280, "project": 5},
+  {"id": "city-letter",     "file": "CityLetter.astro",      "title": "C12 · City review (owner's letter)",    "board_width": 1280, "project": 5}
+```
+
+In `src/components/kit/_registry.ts`:
+- after `import CityRoster from './CityRoster.astro';` add:
+
+```ts
+import CityVideoPanel from './CityVideoPanel.astro';
+import CityChapters from './CityChapters.astro';
+import CityLetter from './CityLetter.astro';
+```
+
+- replace `  | 'city-jump-band' | 'city-takeaways' | 'city-puppy-sheet' | 'city-roster';` with:
+
+```ts
+  | 'city-jump-band' | 'city-takeaways' | 'city-puppy-sheet' | 'city-roster' | 'city-video-panel'
+  | 'city-chapters' | 'city-letter';
+```
+
+- at the end of `REGISTRY` add:
+
+```ts
+  // The id is the site's own (data/settings.json youtube_embeds); the component refuses any other.
+  'city-video-panel': {
+    C: CityVideoPanel,
+    demo: [{
+      heading: 'How Lively Is a Blue Staffy Puppy at Home?',
+      lede: 'Very, and our short film of puppies from one of our litters shows it better than we can say it; watch it before you choose between the six.',
+      videoId: (settings as { youtube_embeds: string[] }).youtube_embeds[0],
+      videoTitle: 'Staffordshire Bull Terrier puppies: a litter of ours on film',
+      caption: 'A litter of ours, on film; it loads from YouTube only when you press play.',
+      poster: 'Christa.jpeg',
+      side: { photo: 'Ince1.jpg', alt: 'Ince standing by the garden fence at home', name: 'Ince', text: 'A solid blue boy, one of the six available now.' },
+      facts: [
+        { label: 'Parents', text: 'Maggie and Jones, DNA-tested for L-2-HGA and HC-HSF4' },
+        { label: 'Price', text: `${BOY_PRICE} for a boy, ${GIRL_PRICE} for a girl` },
+        { label: 'Getting home', text: deliveryLine },
+      ],
+    }],
+  },
+  // Chapter one is a puppy photo with the page's own alt; chapter two a served file, whole.
+  'city-chapters': {
+    C: CityChapters,
+    demo: [{
+      heading: 'Where Does Your Puppy Start, and How Does It Reach You?',
+      lede: `In our home in ${SITE.address.city}, with its mother close by, and then at your door or in your arms at collection, whichever suits you.`,
+      chapters: [
+        { place: SITE.address.city, question: 'Who Raises Your Puppy Before It Leaves Home?', photo: 'Byrd1.jpg',
+          photoAlt: 'Byrd, one of the six, out on the garden decking',
+          text: 'We do, in our own home. Every litter is raised with Puppy Culture and ENS, and both parents, Maggie and Jones, are DNA-tested for L-2-HGA and HC-HSF4 with their eyes and elbows screened.' },
+        { place: 'Your door', question: 'How Does Your Puppy Get From Us to Your Door?', photo: 'ethical-staffy-puppy-london-delivery.webp',
+          text: `By DEFRA-approved transport, for ${DELIVERY_BAND} priced by distance, or you collect from us in ${SITE.address.city}. ${depositLine}` },
+      ],
+    }],
+  },
+  // The review is data/reviews.json by name; the photo is the one the homepage pairs with it.
+  'city-letter': {
+    C: CityLetter,
+    demo: [{
+      heading: 'What Did a Family Say After Their Puppy Came Home?',
+      lede: 'Mark J wrote this review of the blue Staffy puppy he had from us, and these are his words exactly as he sent them.',
+      name: 'Mark J',
+      photo: 'mark-blue-staffy-london.webp',
+    }],
+  },
+```
+
+- [ ] **Step 6: The render probes**
+
+In `tests/render/city-kit.spec.ts`, directly before the `// Learning loop 2026-09-27, L8` comment in `PROBES`, add:
+
+```ts
+  'city-video-panel': {
+    present: '.city-video',
+    run: async (page) => {
+      const out: string[] = [];
+      const play = page.locator('.city-video [data-video-play]');
+      const box = await play.boundingBox();
+      if (!box || box.width < 44 || box.height < 44) out.push('the play control is under 44×44px');
+      const name = (await play.getAttribute('aria-label')) ?? '';
+      const label = ((await play.locator('.badge-label').textContent()) ?? '').trim();
+      if (!name.startsWith(label)) out.push(`the play button's name "${name}" does not contain its visible label "${label}" (WCAG 2.5.3)`);
+      await play.click();
+      const src = await page.locator('.city-video iframe').first().getAttribute('src');
+      if (!src || !/youtube-nocookie\.com\/embed\//.test(src)) out.push('pressing play does not load the youtube-nocookie player');
+      return out;
+    },
+  },
+  'city-chapters': {
+    present: '.city-chapters',
+    run: async (page) => {
+      const out: string[] = [];
+      const bad = await page.evaluate(() => Array.from(document.querySelectorAll('.city-chapters h3')).filter((h) => {
+        const next = h.nextElementSibling;
+        return !next || !next.matches('img.bl-img');
+      }).length);
+      if (bad) out.push(`${bad} chapter heading(s) not followed straight by their .bl-img photo (layout-h3-image-first)`);
+      return out;
+    },
+  },
+  'city-letter': {
+    present: '.city-letter',
+    run: (page) => allVisible(page, 'data-review-slot'),
+  },
+```
+
+- [ ] **Step 7: Build, test, render**
+
+```bash
+npm run -s build
+python3 -m pytest tests/py/test_city_kit.py tests/py/test_design_components.py -q -p no:cacheprovider
+npm run test:render:city
+```
+Expected: pytest all pass (the video-embed tests in `test_design_components.py` unchanged); render `4 passed`, `layout-h3-image-first: examined 2`. (VideoEmbed's caption is muted ink on bone by default, 4.49:1 on the steel-100 tray; the panel re-points `--kit-caption` at `--color-ink-2`, which is why `a11y-text-contrast-aa` passes.)
+
+- [ ] **Step 8: The design passes**
+
+As Task 2 Step 12, for the three components.
+
+- [ ] **Step 9: Gate and commit**
+
+```bash
+npm run -s build
+npm run -s check:all
+python3 -m pytest tests/py -q -p no:cacheprovider
+git add src/components/kit/CityVideoPanel.astro src/components/kit/CityChapters.astro src/components/kit/CityLetter.astro src/components/kit/VideoEmbed.astro src/components/BodyImage.astro src/components/kit/_registry.ts data/design/components.json tests/py/test_city_kit.py tests/py/test_design_components.py tests/render/city-kit.spec.ts docs/research/london-components/hardening-log.md
+git commit -m "feat: city kit — video side panel, two chapters, owner's letter; VideoEmbed poster
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+Expected: `check:all` exit 0 (`facts-preserved` unchanged: every video id is still the site's); pytest all pass.
+
+---
+
+## Task 6: FAQ blocks, the newsletter and the contact form
+
+**Files:**
+- Create: `src/lib/formEndpoint.ts`, `src/components/kit/CityFaqLedger.astro`, `src/components/kit/CityNewsletter.astro`, `src/components/kit/CityContactLineup.astro`
+- Modify: `src/components/kit/ContactFormKit.astro` (the endpoint from the new lib; opt-in `layout="grid"`)
+- Modify: `src/components/kit/_registry.ts`, `data/design/components.json`
+- Modify: `tests/py/test_city_kit.py`, `tests/py/test_design_components.py`, `tests/render/city-kit.spec.ts`
+
+- [ ] **Step 1: Write the failing tests**
+
+Append to `tests/py/test_city_kit.py`:
+
+```python
+def test_built_city_faq_ledger_blocks_number_on_and_carry_one_rail():
+    s = section("city-faq-ledger")
+    blocks = re.findall(r'data-faq-block="([a-z-]+)"', s)
+    assert len(blocks) == 3 and len(set(blocks)) == 3
+    nums = [int(n) for n in re.findall(r'<span class="n"[^>]*>(\d+)</span>', s)]
+    assert nums == list(range(1, len(nums) + 1)), nums
+    assert s.count('class="rail"') == 1, "the rail goes with the top block only"
+    qs = re.findall(r"<summary[^>]*>.*?<h3[^>]*data-faq-q[^>]*>(.*?)</h3>.*?</summary>", s, re.S)
+    assert len(qs) == len(nums)
+    # Title Case at render, as Faq.astro does (rules/headings.md).
+    assert all(q[0].isupper() for q in qs)
+    # No guarantee figure while data/settings.json guarantee_days is null.
+    assert json.loads((ROOT / "data/settings.json").read_text())["guarantee_days"] is None
+    assert "guarantee" not in s.lower()
+
+
+def test_built_city_newsletter_is_one_email_field_on_the_one_endpoint():
+    s = section("city-newsletter")
+    form = re.search(r"<form[^>]*data-newsletter[^>]*>(.*?)</form>", s, re.S)
+    head = re.search(r"<form[^>]*data-newsletter[^>]*>", s).group(0)
+    assert 'method="POST"' in head
+    ctl = re.findall(r"<(input|select|textarea)\b([^>]*)>", form.group(1))
+    real = [a for t, a in ctl if 'type="hidden"' not in a and 'name="_gotcha"' not in a]
+    assert len(real) == 1 and 'type="email"' in real[0] and 'name="email"' in real[0]
+    for hidden in ("_next", "_subject"):
+        assert f'name="{hidden}"' in form.group(1)
+    assert 'name="_gotcha"' in form.group(1)
+
+
+def test_built_city_contact_lineup_keeps_the_whole_form_contract():
+    s = section("city-contact-lineup")
+    form = re.search(r'<form[^>]*data-layout="grid"[^>]*>(.*?)</form>', s, re.S)
+    head = re.search(r'<form[^>]*data-layout="grid"[^>]*>', s).group(0)
+    assert form and 'method="POST"' in head and "data-contact-form" in head
+    body = form.group(1)
+    for name in ("name", "email", "phone", "location", "puppy", "message", "_gotcha", "_next", "_subject"):
+        assert f'name="{name}"' in body, name
+    assert 'value="waiting-list"' in body
+    for key in ("name", "email", "puppy", "message"):
+        assert f'data-err="city-contact-{key}-err"' in body and f'id="city-contact-{key}-err"' in body, key
+    # Every control has its own label.
+    for cid in re.findall(r'<(?:input|select|textarea)[^>]*id="([^"]+)"', body):
+        assert f'for="{cid}"' in body, cid
+    # The line-up: every available puppy, pictures only.
+    lineup = s.split('class="pups"', 1)[1].split("</ul>", 1)[0]
+    assert lineup.count("<li") == len(_available())
+    assert "<a " not in lineup and "<button" not in lineup
+
+
+def test_every_canvas_component_names_its_kit_component_and_every_city_row_is_one():
+    from city_components import COMPONENT_IDS, KIT_ID
+    assert list(KIT_ID) == list(COMPONENT_IDS)
+    assert list(KIT_ID.values()) == [r["id"] for r in city_rows()]
+```
+
+Extend `CITY_IDS` with `"city-faq-ledger", "city-newsletter", "city-contact-lineup"` (fifteen in all).
+
+- [ ] **Step 2: Run them and see them fail**
+
+Run: `python3 -m pytest tests/py/test_city_kit.py -q -p no:cacheprovider`
+Expected: FAIL — no section for `city-faq-ledger`, and `test_every_canvas_component_names_its_kit_component_and_every_city_row_is_one` (twelve rows for fifteen `KIT_ID` values).
+
+- [ ] **Step 3: One endpoint, and the grid layout of the kit form**
+
+Create `src/lib/formEndpoint.ts`:
+
+```ts
+// src/lib/formEndpoint.ts — the one form endpoint every enquiry and sign-up form posts to.
+//
+// Built from PUBLIC_FORMSPREE_ID, with a local '#contact' stub while the id is unset, so a dev
+// build has no live endpoint and no id is ever committed (ContactFormKit.astro's note; spec §8).
+// ContactFormKit and the city newsletter both read it here, so the two forms can never post to
+// two places. `data-live` on a form carries the same fact to a client script.
+export function formEndpoint(): { action: string; live: boolean } {
+  const fid = import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID_PLACEHOLDER';
+  const live = fid !== 'FORMSPREE_ID_PLACEHOLDER';
+  return { action: live ? `https://formspree.io/f/${fid}` : '#contact', live };
+}
+```
+
+In `src/components/kit/ContactFormKit.astro`, replace:
+
+```ts
+import { abs, type PuppyRow } from '../../lib/site';
+import Button from './Button.astro';
+
+// THE ID PREFIX IS A PROP because the board preview renders this form three times on one
+// document, once per style, and a `for`/`id` pair that repeats points every label at the
+// first form's field. A page mounts ONE form and never passes it.
+type Props = HTMLAttributes<'form'> & { idPrefix?: string };
+const { idPrefix = 'kit-contact-form', class: cls, ...rest } = Astro.props;
+
+const fid = import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID_PLACEHOLDER';
+const live = fid !== 'FORMSPREE_ID_PLACEHOLDER';
+const action = live ? `https://formspree.io/f/${fid}` : '#contact';
+```
+
+with:
+
+```ts
+import { abs, type PuppyRow } from '../../lib/site';
+import { formEndpoint } from '../../lib/formEndpoint';
+import Button from './Button.astro';
+
+// THE ID PREFIX IS A PROP because the board preview renders this form three times on one
+// document, once per style, and a `for`/`id` pair that repeats points every label at the
+// first form's field. A page mounts ONE form and never passes it.
+//
+// `layout` (the London component design pass, Plan 2): `stepped` is the picked site form —
+// three numbered fieldsets under its own heading — and every built page gets it unchanged.
+// `grid` is the city contact line-up's form (contact-form B): the SAME controls, honeypot,
+// hidden fields, method and endpoint, laid flat on the band three to a row, with no heading of
+// its own (the section's H2 names it, through `labelledBy`) and an error line per required
+// field, tied to its control with `aria-describedby` and `aria-invalid` (plan2-notes, Task 9) by
+// CityContactLineup's script — kept there, so the pages that mount the stepped form ship no
+// new script. The grid layout is drawn for a steel band: its text and links read on-inverse.
+type Props = HTMLAttributes<'form'> & {
+  idPrefix?: string;
+  layout?: 'stepped' | 'grid';
+  /** The id of the heading that names a `grid` form (its section's H2). */
+  labelledBy?: string;
+};
+const { idPrefix = 'kit-contact-form', layout = 'stepped', labelledBy, class: cls, ...rest } = Astro.props;
+const grid = layout === 'grid';
+const { action, live } = formEndpoint();
+```
+
+after the `fields` array (its closing `] as const;`) add:
+
+```ts
+// The `grid` form's error lines, one per required control (shown by CSS on :user-invalid and
+// announced through aria-describedby once the script marks the control aria-invalid).
+const ERR: Record<string, string> = {
+  name: 'Please tell us your name.',
+  email: 'That email address looks incomplete.',
+  puppy: 'Please choose a puppy, or the next litter.',
+  message: 'Please tell us what you would like to know.',
+};
+```
+
+replace the opening `<form … aria-labelledby={`${f}-h`}>` tag with the grid branch followed by the stepped form's opening tag — the whole `<form>` becomes `{grid ? (<form …grid…>…</form>) : (<form …stepped…>…</form>)}`:
+
+```astro
+{grid ? (
+<form
+  {...rest}
+  class:list={['kit-contact', cls]}
+  method="POST"
+  action={action}
+  data-form="contact"
+  data-layout="grid"
+  data-live={String(live)}
+  aria-labelledby={labelledBy}
+>
+  <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+  <input type="hidden" name="_subject" value="New Blue Staffy enquiry" />
+  <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  {fields.map((x) => (
+    <p class="field">
+      <label for={`${f}-${x.key}`}>{x.label}{' '}<span class="req">({x.required ? 'required' : 'optional'})</span></label>
+      <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} data-err={x.required ? `${f}-${x.key}-err` : undefined} />
+      {x.required && <span class="err" id={`${f}-${x.key}-err`}>{ERR[x.key]}</span>}
+    </p>
+  ))}
+  <p class="field">
+    <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
+    <select id={`${f}-puppy`} name="puppy" required data-err={`${f}-puppy-err`}>
+      <option value="" disabled selected>Choose a puppy…</option>
+      {puppies.map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Boy' : 'Girl'} · {gbp(p.price_gbp)}</option>)}
+      <option value="waiting-list">The next litter, please</option>
+    </select>
+    <span class="err" id={`${f}-puppy-err`}>{ERR.puppy}</span>
+  </p>
+  <p class="field wide">
+    <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
+    <textarea id={`${f}-message`} name="message" rows="4" required data-err={`${f}-message-err`}></textarea>
+    <span class="err" id={`${f}-message-err`}>{ERR.message}</span>
+  </p>
+  <div class="go">
+    <Button kind="submit" type="submit" label="Send my enquiry" />
+    <p class="note">We reply by email. Your details are used only to answer your enquiry. See our <a href="/privacy-policy-uk/">privacy policy</a>.</p>
+  </div>
+</form>
+) : (
+<form
+  {...rest}
+  class:list={['kit-card', 'kit-contact', cls]}
+  method="POST"
+  action={action}
+  data-form="contact"
+  data-live={String(live)}
+  aria-labelledby={`${f}-h`}
+>
+```
+
+and after the stepped form's closing `</form>` add the line `)}`. At the end of the scoped `<style>`'s `@layer components` block (after the `.note` rule), add:
+
+```css
+    /* THE GRID LAYOUT (`layout="grid"`): flat on its caller's band, no card shell, three
+       fields to a row from 1024px. Text colour comes from the band (`currentColor`), the
+       fields stay raised with ink text, and the ring reads --kit-ring (convention 2). */
+    .kit-contact[data-layout='grid'] { max-width: none; padding: var(--space-5) 0 0; gap: var(--space-3); color: inherit; border-top: 1px solid var(--color-steel-500); }
+    [data-layout='grid'] label { color: inherit; }
+    [data-layout='grid'] .req { color: inherit; opacity: 0.85; font-size: var(--text-sm); }
+    [data-layout='grid'] input, [data-layout='grid'] select, [data-layout='grid'] textarea { min-height: 46px; border-color: var(--color-steel-300); }
+    [data-layout='grid'] textarea { min-height: 112px; resize: vertical; }
+    [data-layout='grid'] .err { display: none; font-size: var(--text-xs); color: var(--color-cta-soft); }
+    [data-layout='grid'] .field:has(:user-invalid) .err,
+    [data-layout='grid'] [aria-invalid='true'] + .err { display: block; }
+    [data-layout='grid'] :user-invalid { border: 2px solid var(--color-cta); }
+    [data-layout='grid'] .go { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+    [data-layout='grid'] .go :global(.kit-btn) { width: auto; }
+    [data-layout='grid'] .note { color: inherit; font-size: var(--text-sm); }
+    [data-layout='grid'] .note a { color: var(--color-link-on-inverse); }
+    @container (min-width: 768px) {
+      .kit-contact[data-layout='grid'] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-4); }
+      [data-layout='grid'] .wide, [data-layout='grid'] .go { grid-column: 1 / -1; }
+    }
+    @container (min-width: 1024px) {
+      .kit-contact[data-layout='grid'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+```
+
+The built pages keep the stepped branch — the same controls, attributes, heading and endpoint (`test_built_contact_form_keeps_the_whole_form_contract` and `form_contract_audit.py` hold them) — and no script is added to them: the error wiring lives in `CityContactLineup` (below). The only change they carry is the grid rules in the component's stylesheet, which match nothing on a stepped form.
+
+- [ ] **Step 4: The three components**
+
+Create `src/components/kit/CityFaqLedger.astro`:
+
+```astro
+---
+// src/components/kit/CityFaqLedger.astro — city component 13, one FAQ block (London pick:
+// faq-blocks A, "Steel ledger"). A deep-steel band holding one block of questions as a numbered
+// ledger, each row a native `<details>` with a brass-200 number and a plus that turns to a minus.
+// The FIRST block of a page may carry the rail: a served photograph over three figures in brief,
+// sticky beside the ledger from 1024px, a short strip on top on a phone.
+//
+// A CITY PAGE MOUNTS THREE, at the template's three places (plan2-notes, Task 9), not together
+// as on the canvas: `start` carries the numbering across them (01–06, 07–12, 13–19), and the
+// rail goes with the top block only. The rows come from the page's question file, never from the
+// canvas fragment; each question is an `<h3>` inside its `<summary>` and is Title Cased at render
+// (Faq.astro's contract; rules/headings.md), while the FAQPage node keeps the file's wording
+// (src/lib/cityKit.ts `faqPageNode`, fed the same rows).
+//
+// THE RAIL'S FIGURES ARE DATA (src/lib/cityKit.ts): the deposit and its ruling, the delivery
+// band. A guarantee row is printed only when data/settings.json `guarantee_days` is set; today
+// it is null, so there is none (working rule 9). Conventions 2 (`.on-inverse` sets the ring), 4, 6.
+import type { HTMLAttributes } from 'astro/types';
+import { titleCase } from '../../lib/headings';
+import { focusClass, servedPhoto } from '../../lib/imageFocus';
+import { DELIVERY_BAND, DEPOSIT, guaranteeDays } from '../../lib/cityKit';
+
+export interface CityFaqRow { q: string; a: string }
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  items: CityFaqRow[];
+  /** The number of this block's first question (1 for the top block). */
+  start?: number;
+  /** The top block's rail: a served photograph and its caption. */
+  rail?: { photo: string; caption: string };
+  /** A stable key for the block (`data-faq-block`). */
+  block: string;
+};
+const { heading, lede, items, start = 1, rail, block, class: cls, ...rest } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+const photo = rail ? servedPhoto(rail.photo) : null;
+const days = guaranteeDays();
+const brief = [
+  { t: `${DEPOSIT} deposit`, d: 'Books your viewing, reserves your puppy and comes off the price.' },
+  { t: `${DELIVERY_BAND} delivery`, d: 'By DEFRA-approved transport, priced by distance.' },
+  ...(days ? [{ t: `${days}-day guarantee`, d: 'A genetic health guarantee with every puppy.' }] : []),
+];
+---
+<section {...rest} class:list={['city-kit', 'city-faq', 'on-inverse', { 'has-rail': rail }, cls]} data-faq-block={block}>
+  <div class="in">
+    {rail && photo && (
+      <div class="rail">
+        <figure>
+          <img src={photo.file} srcset={photo.srcset} sizes="(min-width: 1024px) 340px, calc(100vw - 32px)"
+            alt={photo.alt} width={photo.w} height={photo.h} class={focusClass(rail.photo)} loading="lazy" decoding="async" />
+          <figcaption>{rail.caption}</figcaption>
+        </figure>
+        <dl class="brief">{brief.map((b) => <div><dt>{b.t}</dt><dd>{b.d}</dd></div>)}</dl>
+      </div>
+    )}
+    <div class="blk">
+      <h2>{heading}</h2>
+      <p class="lede">{lede}</p>
+      <div class="list">
+        {items.map((it, i) => (
+          <details>
+            <summary><span class="n" aria-hidden="true">{pad(start + i)}</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>{titleCase(it.q)}</h3></summary>
+            <p>{it.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       root has no gutter, so full width it switches at the canvas's own widths. */
+    .city-faq { container-type: inline-size; background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
+    .in { max-width: 1200px; margin: 0 auto; padding: var(--space-7) var(--space-4) var(--space-8); display: grid; gap: var(--space-6); }
+    figure { margin: 0; }
+    .rail img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); }
+    figcaption { margin-top: var(--space-2); font-size: var(--text-sm); line-height: 1.45; color: var(--color-steel-100); }
+    .brief { display: none; margin: var(--space-5) 0 0; padding: 0; border-top: 1px solid var(--color-steel-500); }
+    .brief div { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-steel-500); }
+    dt { font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); line-height: 1.3; }
+    dd { margin: 2px 0 0; font-size: var(--text-sm); line-height: 1.45; color: var(--color-steel-100); }
+    h2 { margin: 0; max-width: 26ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); color: var(--color-text-on-inverse); text-wrap: balance; }
+    .lede { margin: var(--space-3) 0 var(--space-5); max-width: 60ch; color: var(--color-steel-100); }
+    .list { border-top: 1px solid var(--color-steel-500); }
+    details { border-bottom: 1px solid var(--color-steel-500); }
+    summary {
+      display: flex; align-items: baseline; gap: var(--space-3); min-height: 52px; padding: var(--space-3) var(--space-1);
+      cursor: pointer; list-style: none; border-radius: var(--radius-sm); transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary:hover { background: var(--color-steel-700); }
+    summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .n { flex: none; width: 2.2em; font-size: var(--text-sm); font-weight: 700; font-feature-settings: "tnum"; color: var(--color-cta-soft); }
+    h3 { flex: 1; margin: 0; font-size: var(--text-lg); line-height: 1.35; color: var(--color-text-on-inverse); }
+    .pm { order: 2; flex: none; position: relative; width: 16px; height: 16px; align-self: center; color: var(--color-cta); }
+    .pm::before, .pm::after { content: ""; position: absolute; left: 0; top: 7px; width: 16px; height: 2px; background: currentColor; transition: transform var(--dur-base) var(--ease-out); }
+    .pm::after { transform: rotate(90deg); }
+    details[open] .pm::after { transform: rotate(0deg); }
+    details > p { margin: 0; padding: 0 var(--space-1) var(--space-5) calc(2.2em * 15 / 17 + var(--space-3) + var(--space-1)); max-width: 64ch; color: var(--color-steel-100); }
+    @container (min-width: 768px) {
+      .in { padding: var(--space-9) var(--space-6); }
+      .rail img { aspect-ratio: 21 / 9; }
+    }
+    @container (min-width: 1024px) {
+      .has-rail .in { grid-template-columns: 340px minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+      .in { padding: var(--space-10) var(--space-6); }
+      .rail { position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
+      .rail img { aspect-ratio: 4 / 3; }
+      .brief { display: grid; }
+      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
+    }
+    @media (prefers-reduced-motion: reduce) { summary, .pm::before, .pm::after { transition: none; } }
+  }
+</style>
+```
+
+Create `src/components/kit/CityNewsletter.astro`:
+
+```astro
+---
+// src/components/kit/CityNewsletter.astro — city component 14, the newsletter (London pick:
+// newsletter A, "Litter notice"). A raised card in the bone page: a puppy photograph on its left
+// from 768px (a short strip on top on a phone), and on the right a small ruled eyebrow, the
+// question, its answer, and one email field over a brass submit. It says exactly what the list
+// is for.
+//
+// THE KIT HAD NO NEWSLETTER (plan2-notes, Task 9). It posts to the ONE endpoint every form uses
+// (src/lib/formEndpoint.ts), `method="POST"`, with the `_gotcha` honeypot and the hidden `_next`
+// and `_subject` — and it keeps exactly ONE real control, an email input with a name, so
+// scripts/form_contract_audit.py classes it `newsletter`. Its error line is tied to the field
+// with `aria-describedby` and `aria-invalid` once native validation fails it.
+// Conventions 2, 4, 6; the submit is a brass fill on the form radius.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { abs } from '../../lib/site';
+import { formEndpoint } from '../../lib/formEndpoint';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+
+type Props = HTMLAttributes<'section'> & {
+  eyebrow: string;
+  heading: string;
+  lede: string;
+  photo: string;
+  photoAlt: string;
+  button?: string;
+};
+const { eyebrow, heading, lede, photo, photoAlt, button = 'Send me the litter note', class: cls, ...rest } = Astro.props;
+const { action, live } = formEndpoint();
+---
+<section {...rest} class:list={['city-kit', 'city-news', cls]}>
+  <div class="in">
+    <div class="card">
+      <figure>
+        <Image src={puppyImage(photo)} alt={photoAlt} widths={[400, 600, 800]}
+          sizes="(min-width: 768px) 420px, calc(100vw - 32px)" class={focusClass(photo)} loading="lazy" decoding="async" />
+      </figure>
+      <div class="body">
+        <p class="eye">{eyebrow}</p>
+        <h2 id="city-news-h">{heading}</h2>
+        <p class="lede">{lede}</p>
+        <form method="POST" action={action} data-form="newsletter" data-newsletter data-live={String(live)} aria-labelledby="city-news-h">
+          <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+          <input type="hidden" name="_subject" value="Litter note sign-up" />
+          <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <label for="city-news-email">Your email address</label>
+          <input id="city-news-email" name="email" type="email" autocomplete="email" required />
+          <p class="err" id="city-news-err">Please check the email address: it needs an @ and a full address.</p>
+          <button type="submit">{button}</button>
+          <p class="small">We use your email only for this note.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  const input = document.querySelector<HTMLInputElement>('#city-news-email');
+  if (input) {
+    const mark = (bad: boolean) => {
+      if (bad) { input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', 'city-news-err'); }
+      else { input.removeAttribute('aria-invalid'); input.removeAttribute('aria-describedby'); }
+    };
+    input.addEventListener('invalid', () => mark(true));
+    input.addEventListener('input', () => { if (input.hasAttribute('aria-invalid')) mark(!input.checkValidity()); });
+  }
+</script>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       root has no gutter, so full width it switches at the canvas's own widths. */
+    .city-news { container-type: inline-size; background: var(--color-surface); }
+    .in { max-width: 1040px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
+    .card {
+      display: grid; overflow: hidden; background: var(--color-surface-raised); border: var(--card-border);
+      border-radius: var(--card-radius); box-shadow: var(--shadow-card);
+    }
+    figure { margin: 0; background: var(--color-bone-50); }
+    figure :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+    .body { padding: var(--space-6) var(--space-5); }
+    .eye {
+      display: flex; align-items: center; gap: var(--space-2); margin: 0 0 var(--space-3); font-size: var(--text-xs);
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-brand);
+    }
+    .eye::before { content: ""; width: 24px; height: 2px; background: var(--color-cta); }
+    h2 { margin: 0; max-width: 20ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .lede { margin: var(--space-3) 0 var(--space-5); max-width: 46ch; color: var(--color-text); }
+    form { display: grid; gap: var(--space-3); max-width: 440px; }
+    label { font-size: var(--text-sm); font-weight: 600; color: var(--color-text); }
+    input[type='email'] {
+      width: 100%; min-height: 48px; padding: 10px 14px; font: inherit; color: var(--color-text);
+      background: var(--color-bone-50); border: 1px solid var(--color-steel-300); border-radius: var(--btn-form-radius);
+    }
+    input[type='email']:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-color: var(--color-brand); }
+    input[type='email']:user-invalid { border-color: var(--color-warn); }
+    .err { display: none; margin: 0; font-size: var(--text-sm); color: var(--color-warn); }
+    form:has(input:user-invalid) .err, [aria-invalid='true'] + .err { display: block; }
+    button {
+      min-height: 48px; padding: 10px 20px; font: inherit; font-weight: 700; color: var(--color-cta-ink); background: var(--color-cta);
+      border: 0; border-radius: var(--btn-form-radius); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    button:hover { background: var(--color-cta-hover); }
+    button:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .small { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
+    @container (min-width: 768px) {
+      .in { padding: var(--space-9) var(--space-6); }
+      .card { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+      figure :global(img) { height: 100%; aspect-ratio: auto; min-height: 360px; }
+      .body { padding: var(--space-7); }
+    }
+  }
+</style>
+```
+
+Create `src/components/kit/CityContactLineup.astro`:
+
+```astro
+---
+// src/components/kit/CityContactLineup.astro — city component 15, the contact form (London
+// pick: contact-form B, "Litter line-up"). A deep-steel band opens on its question, then the
+// available puppies in one line-up of small square photographs with name, sex and price (three
+// by two on a phone, one row from 768px), so the reader sees who they can ask about before
+// choosing one in the form below it.
+//
+// THE FORM IS ContactFormKit (plan2-notes, Task 9), `layout="grid"`: the six named controls,
+// the `_gotcha` honeypot, the hidden `_next` and `_subject`, `method="POST"` and the one
+// endpoint — scripts/form_contract_audit.py passes it exactly as it passes the site form. This
+// component adds the script that ties each required control to its error line (aria-describedby,
+// aria-invalid), so the pages that mount the stepped form ship nothing new.
+//
+// THE LINE-UP IS A PICTURE, NOT A CONTROL (the Task 9 review): no link, no hover, no pointer.
+// Each photo sits beside its printed name and price, so it is decorative (alt="") — a described
+// photo would read the puppy twice, and the same six photographs are described elsewhere on a
+// city page. The rows are data/puppies.json. Conventions 2 (`.on-inverse`), 4, 6.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import ContactFormKit from './ContactFormKit.astro';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+import { availablePuppies, money, sexWord } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & { heading: string; lede: string };
+const { heading, lede, class: cls, ...rest } = Astro.props;
+const pups = availablePuppies();
+---
+<section {...rest} class:list={['city-kit', 'city-contact', 'on-inverse', cls]}>
+  <div class="in">
+    <h2 id="city-contact-h">{heading}</h2>
+    <p class="lede">{lede}</p>
+    <ul class="pups" aria-label="The puppies available now">
+      {pups.map((p) => (
+        <li>
+          <Image src={puppyImage(p.card_photo)} alt="" widths={[200, 360]} sizes="(min-width: 768px) 170px, 30vw"
+            class={focusClass(p.card_photo)} loading="lazy" decoding="async" />
+          <span class="nm">{p.name}</span><span class="pr">{sexWord(p)} · {money(p.price_gbp)}</span>
+        </li>
+      ))}
+    </ul>
+    <ContactFormKit layout="grid" labelledBy="city-contact-h" idPrefix="city-contact" data-contact-form />
+  </div>
+</section>
+<script>
+  // The grid form's errors, tied to their controls. A control that fails native validation is
+  // marked aria-invalid and described by its error line; once it is valid again both go.
+  // Native validation still decides; this only tells assistive technology what it decided.
+  document.querySelectorAll<HTMLFormElement>('form[data-layout="grid"]').forEach((form) => {
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('[data-err]').forEach((el) => {
+      const mark = (bad: boolean) => {
+        if (bad) {
+          el.setAttribute('aria-invalid', 'true');
+          el.setAttribute('aria-describedby', el.dataset.err!);
+        } else {
+          el.removeAttribute('aria-invalid');
+          el.removeAttribute('aria-describedby');
+        }
+      };
+      el.addEventListener('invalid', () => mark(true));
+      el.addEventListener('input', () => { if (el.hasAttribute('aria-invalid')) mark(!el.checkValidity()); });
+      el.addEventListener('change', () => { if (el.hasAttribute('aria-invalid')) mark(!el.checkValidity()); });
+    });
+  });
+</script>
+<style>
+  @layer components {
+    /* A CONTAINER, so the layout follows the box the section is given — the full page on
+       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
+       root has no gutter, so full width it switches at the canvas's own widths. */
+    .city-contact { container-type: inline-size; background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
+    .in { max-width: 1160px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
+    h2 { margin: 0; max-width: 24ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); color: var(--color-text-on-inverse); text-wrap: balance; }
+    .lede { margin: var(--space-3) 0 var(--space-5); max-width: 60ch; color: var(--color-steel-100); }
+    .pups { list-style: none; margin: 0 0 var(--space-6); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
+    .pups li { margin: 0; display: grid; gap: 2px; }
+    .pups :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); margin-bottom: var(--space-1); }
+    .nm { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); line-height: 1.2; }
+    .pr { font-size: var(--text-xs); color: var(--color-steel-100); }
+    @container (min-width: 768px) {
+      .in { padding: var(--space-9) var(--space-6); }
+      .pups { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
+    @container (min-width: 1024px) { .pups { gap: var(--space-4); } }
+  }
+</style>
+```
+
+- [ ] **Step 5: Register them**
+
+In `data/design/components.json`, after the `city-letter` row:
+
+```json
+  {"id": "city-faq-ledger", "file": "CityFaqLedger.astro",   "title": "C13 · City FAQ blocks (steel ledger)",  "board_width": 1280, "project": 5},
+  {"id": "city-newsletter", "file": "CityNewsletter.astro",  "title": "C14 · City newsletter (litter notice)", "board_width": 1280, "project": 5},
+  {"id": "city-contact-lineup", "file": "CityContactLineup.astro", "title": "C15 · City contact form (litter line-up)", "board_width": 1280, "project": 5}
+```
+
+In `src/components/kit/_registry.ts`:
+- after `import CityLetter from './CityLetter.astro';` add:
+
+```ts
+import CityFaqLedger from './CityFaqLedger.astro';
+import CityNewsletter from './CityNewsletter.astro';
+import CityContactLineup from './CityContactLineup.astro';
+```
+
+- replace `  | 'city-chapters' | 'city-letter';` with `  | 'city-chapters' | 'city-letter' | 'city-faq-ledger' | 'city-newsletter' | 'city-contact-lineup';`
+- at the end of `REGISTRY` add:
+
+```ts
+  // Three blocks, as a city page mounts them: numbering runs on through `start`, and only the
+  // top block carries the rail. The rows are specimen questions every data file backs.
+  'city-faq-ledger': {
+    C: CityFaqLedger,
+    demo: [
+      {
+        block: 'buy', start: 1,
+        heading: 'What Do Buyers Ask Before Reserving a Puppy?',
+        lede: 'The first questions are nearly always about money and the journey, so here are our straight answers on the prices, the deposit and delivery.',
+        rail: { photo: 'blue-staffy-testimonial-london-happy-owner.webp', caption: 'One of our puppies at home with its new owner.' },
+        items: [
+          { q: 'How much does a blue Staffy puppy cost?', a: `${BOY_PRICE} for each of our boys and ${GIRL_PRICE} for each of our girls.` },
+          { q: 'What does the deposit do?', a: depositLine },
+          { q: 'Do you deliver puppies?', a: `Yes: ${deliveryLine}.` },
+        ],
+      },
+      {
+        block: 'trust', start: 4,
+        heading: 'How Can You Check Us Before You Travel?',
+        lede: 'You cannot pop round the corner, so we put the checks in your hands: the parents, their tests and our vet.',
+        items: [
+          { q: 'Who are the parents of your puppies?', a: 'Maggie is our dam and Jones is our sire, and both are our own dogs.' },
+          { q: 'Which health tests do the parents have?', a: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with their eyes and elbows screened.' },
+        ],
+      },
+      {
+        block: 'life', start: 6,
+        heading: 'How Are the Puppies Raised Before They Leave?',
+        lede: 'In our home, not in a kennel, with the everyday sounds of a family house around them.',
+        items: [
+          { q: 'How are your puppies raised?', a: 'In our home, on Puppy Culture with Early Neurological Stimulation (ENS).' },
+        ],
+      },
+    ],
+  },
+  'city-newsletter': {
+    C: CityNewsletter,
+    demo: [{
+      eyebrow: 'Litter notes',
+      heading: 'Want a Note When Our Next Litter Is Due?',
+      lede: 'Leave your email and we will write to you when our next litter is on the way. It is one short note, and that is all this list is for.',
+      photo: 'Christa.jpeg',
+      photoAlt: 'Christa, a blue Staffy girl, looking up at the camera from a fleece rug',
+    }],
+  },
+  // The form is ContactFormKit's contract, laid out on the band; the line-up is data/puppies.json.
+  'city-contact-lineup': {
+    C: CityContactLineup,
+    demo: [{
+      heading: 'Which of Our Six Puppies Would You Like to Ask About?',
+      lede: 'Here are all six as they are today. Choose one in the form, tell us where you live, and we reply by email with the answers to everything you asked.',
+    }],
+  },
+```
+
+- [ ] **Step 6: The render probes**
+
+In `tests/render/city-kit.spec.ts`, directly before the `// Learning loop 2026-09-27, L8` comment in `PROBES`, add:
+
+```ts
+  'city-faq-ledger': {
+    present: '.city-faq',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-faq-block');
+      const q = page.locator('.city-faq [data-faq-q]').first();
+      const before = await q.evaluate((h) => (h.closest('details') as HTMLDetailsElement).open);
+      await q.click();
+      const after = await q.evaluate((h) => (h.closest('details') as HTMLDetailsElement).open);
+      if (after === before) out.push('pressing the first question does not toggle its answer');
+      // The numbering runs on across the blocks: 01, 02, … with no gap and no repeat.
+      const nums = await page.evaluate(() => Array.from(document.querySelectorAll('.city-faq .n')).map((n) => Number(n.textContent)));
+      if (nums.some((n, i) => n !== i + 1)) out.push(`the ledger numbers run ${nums.join(',')}, not 1..${nums.length}`);
+      return out;
+    },
+  },
+  'city-newsletter': {
+    present: '[data-newsletter]',
+    run: async (page) => {
+      const out: string[] = [];
+      const email = page.locator('[data-newsletter] input[type="email"]');
+      const h = (await email.boundingBox())?.height ?? 0;
+      if (h < 44) out.push(`the email field is ${h}px tall`);
+      await page.locator('[data-newsletter] button[type="submit"]').click();
+      if ((await email.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the field aria-invalid');
+      const desc = await email.getAttribute('aria-describedby');
+      if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid field is not described by a painted error line');
+      return out;
+    },
+  },
+  'city-contact-lineup': {
+    present: '.city-contact',
+    run: async (page) => {
+      const out: string[] = [];
+      const short = await page.evaluate(() => Array.from(document.querySelectorAll(
+        '[data-contact-form] input:not([type="hidden"]):not([name="_gotcha"]), [data-contact-form] select, [data-contact-form] textarea, [data-contact-form] button'))
+        .filter((el) => el.getBoundingClientRect().height < 44).map((el) => el.getAttribute('name') || el.tagName));
+      if (short.length) out.push(`under 44px tall: ${short.join(', ')}`);
+      // The line-up is a picture: nothing in it takes a tap.
+      const tappable = await page.locator('.city-contact .pups a, .city-contact .pups button').count();
+      if (tappable) out.push(`${tappable} control(s) inside the line-up, which selects nothing`);
+      await page.locator('[data-contact-form] [type="submit"]').click();
+      const name = page.locator('[data-contact-form] [name="name"]');
+      if ((await name.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the name aria-invalid');
+      const desc = await name.getAttribute('aria-describedby');
+      if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid name is not described by a painted error line');
+      return out;
+    },
+  },
+```
+
+- [ ] **Step 7: Build, test, audit the forms, render**
+
+```bash
+npm run -s build
+python3 -m pytest tests/py/test_city_kit.py tests/py/test_design_components.py tests/py/test_form_contract_audit.py -q -p no:cacheprovider
+set -a; . ./.env; set +a; python3 scripts/form_contract_audit.py | tail -1
+npm run test:render:city
+```
+Expected: pytest all pass (`test_built_contact_form_keeps_the_whole_form_contract` unchanged); the audit `examined 10 forms; 0 problems  (inquiry 9, in-scope 4, newsletter 1)`; render `4 passed` (the newsletter and contact probes submit empty and read `aria-invalid="true"` and a painted, described error line).
+
+- [ ] **Step 8: The design passes**
+
+As Task 2 Step 12, for the three components (the FAQ band and the contact band are steel: check the focus rings read `--color-focus-on-inverse` through `.on-inverse`).
+
+- [ ] **Step 9: Gate and commit**
+
+```bash
+npm run -s build
+npm run -s check:all
+python3 -m pytest tests/py -q -p no:cacheprovider
+git add src/lib/formEndpoint.ts src/components/kit/CityFaqLedger.astro src/components/kit/CityNewsletter.astro src/components/kit/CityContactLineup.astro src/components/kit/ContactFormKit.astro src/components/kit/_registry.ts data/design/components.json tests/py/test_city_kit.py tests/py/test_design_components.py tests/render/city-kit.spec.ts docs/research/london-components/hardening-log.md
+git commit -m "feat: city kit — FAQ ledger, litter newsletter, contact line-up on ContactFormKit
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+Expected: `check:all` exit 0; pytest all pass. All fifteen picks are now kit components.
+
+---
+
+## Task 7: The face check — `img-face-visible` (learning loop shortlist item 2)
+
+**Files:**
+- Create: `tests/render/fixtures/known_broken/img-face-visible.html`, `tests/render/fixtures/known_good/img-face-visible.html`, `tests/render/fixtures/known_broken/img-face-visible-crop.html`
+- Modify: `tests/render/checks/img.ts` (two imports; one check), `tests/render/meta.spec.ts` (one describe block)
+- Modify: `tests/render/canvas.spec.ts`, `tests/render/city-kit.spec.ts`, `tests/py/test_canvas_advisory_set.py`
+- Modify: `data/quality/rule-index.json`, `rules/puppies.md`
+
+The face boxes are already data (`data/image-focus.json`, Task 2) and already place every city crop; this task measures the paint. The rule it enforces is `rules/puppies.md` `no-head-cropped-portraits`, `enforced: untested` until now (Known Issue 92).
+
+- [ ] **Step 1: The fixtures (red first)**
+
+Create `tests/render/fixtures/known_broken/img-face-visible.html` — the Vennie-under-the-plate case the canvas shipped before `9cc9757`:
+
+```html
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a name plate over a puppy's face</title>
+<!-- Learning loop 2026-09-27 (L4): the Vennie tile of the London canvas's puppy wall before
+     9cc9757. Her face sits low in her photo, and the tile's raised name plate in its lower
+     corner covered the lower half of it. data/image-focus.json records her face; the plate is
+     painted over most of it. -->
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui; }
+  .tile { position: relative; width: 320px; height: 320px; margin: 24px; }
+  .tile img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 38% 62%; }
+  .plate { position: absolute; left: 12px; bottom: 12px; width: 240px; padding: 12px 16px; background: #fbf8f2; border-radius: 12px; }
+  .plate h3 { margin: 0 0 4px; font-size: 22px; }
+  .plate p { margin: 0 0 4px; }
+</style>
+</head><body>
+<h1>Litter wall</h1>
+<div class="tile">
+  <img src="/src/assets/puppies/Vennie.jpeg" width="1080" height="1080" alt="Vennie curled up on a sheepskin rug">
+  <div class="plate"><h3>Vennie</h3><p>£1,700 · Girl · Blue and white</p><p>Available</p><p>Ask about Vennie</p></div>
+</div>
+</body></html>
+```
+
+Create `tests/render/fixtures/known_good/img-face-visible.html` — the fix `9cc9757` shipped:
+
+```html
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>the name plate clear of the puppy's face</title>
+<!-- The fix 9cc9757 shipped: Vennie's plate moves to the top corner, above her face, which
+     data/image-focus.json records low in her photo. The whole face is painted and nothing
+     paints over it. -->
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui; }
+  .tile { position: relative; width: 320px; height: 320px; margin: 24px; }
+  .tile img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 38% 80%; }
+  .plate { position: absolute; left: 12px; top: 12px; width: 240px; padding: 8px 16px; background: #fbf8f2; border-radius: 12px; }
+  .plate h3 { margin: 0; font-size: 22px; }
+  .plate p { margin: 0; }
+</style>
+</head><body>
+<h1>Litter wall</h1>
+<div class="tile">
+  <img src="/src/assets/puppies/Vennie.jpeg" width="1080" height="1080" alt="Vennie curled up on a sheepskin rug">
+  <div class="plate"><h3>Vennie</h3><p>£1,700 · Available</p></div>
+</div>
+</body></html>
+```
+
+Create `tests/render/fixtures/known_broken/img-face-visible-crop.html` — the crop half on its own:
+
+```html
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a crop that cuts a puppy's head</title>
+<!-- The CROP half of img-face-visible on its own: nothing is painted over Roman, but a wide
+     letterbox pinned to the top of his photo (object-position: 50% 0%) shows the grass above
+     him and only the top of his head (data/image-focus.json). -->
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui; }
+  img { display: block; width: 340px; height: 106px; margin: 24px; object-fit: cover; object-position: 50% 0%; }
+</style>
+</head><body>
+<h1>Roman</h1>
+<img src="/src/assets/puppies/Roman2.jpg" width="1080" height="1081" alt="Roman lying on the grass">
+</body></html>
+```
+
+(The fixture server serves the repo root, so `/src/assets/puppies/<file>` is the master itself; the check matches a painted image to its row by the file's stem.)
+
+Append to `tests/render/meta.spec.ts`:
+
+```ts
+/**
+ * img-face-visible has two halves (the crop, the overlay), and the generic fixture pair fires on
+ * the OVERLAY half (the Vennie plate). This fixture has nothing painted over the photograph and
+ * a crop that shows only the top of Roman's head, so it proves the crop half works on its own.
+ */
+test.describe('img-face-visible sees a cropped face on its own', () => {
+  test('fires at every width with a crop message', async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    const res = await page.goto(fixtureUrl('known_broken', 'img-face-visible-crop'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const check = registry.find((c) => c.id === 'img-face-visible')!;
+    const r = await runCheck(check, page, viewport, FIXTURE_CTX);
+    expect(r.examined, 'one recorded photograph').toBe(1);
+    expect(r.defects.length, 'the crop half must fire without an overlay').toBe(1);
+    expect(r.defects[0].message).toContain('% painted');
+  });
+});
+```
+
+- [ ] **Step 2: See the meta gate fail**
+
+Run: `npm run test:render:meta -- -g "img-face-visible"`
+Expected: FAIL at 375/768/1280 — `TypeError: Cannot read properties of undefined (reading 'run')` (the check is not registered, so `registry.find` returns nothing). The generic fixture-pair tests do not exist yet for the same reason.
+
+- [ ] **Step 3: Write the check**
+
+In `tests/render/checks/img.ts`, replace the first three lines:
+
+```ts
+import { register, type CheckResult } from '../lib/registry.js';
+import { settlePage } from '../lib/probes.js';
+import type { Page } from '@playwright/test';
+```
+
+with:
+
+```ts
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { register, type CheckResult } from '../lib/registry.js';
+import { settlePage } from '../lib/probes.js';
+import type { Page } from '@playwright/test';
+```
+
+and append:
+
+```ts
+/**
+ * A FACE STAYS IN THE CROP AND CLEAR OF OVERLAYS (rules/puppies.md `no-head-cropped-portraits`;
+ * learning loop 2026-09-27, L4 / shortlist #2 — the commonest image defect of the London pass:
+ * ~12 crops cut a dog's head or slid a name plate over its face, every one caught by eye).
+ *
+ * Nothing knew where a face was, so nothing could measure it. data/image-focus.json now records
+ * the boxes that must stay whole, per file, in the master's own pixels. For every painted image
+ * whose file is recorded (matched by the file's STEM, so an astro:assets rename
+ * `Vennie.<hash>.webp` and a baked width sibling `maggie-…-760.webp` both map back to their
+ * master), this check computes where each face lands inside the painted crop — `object-fit` and
+ * `object-position` as the browser resolved them, on the CONTENT box, clipped by every
+ * overflow-clipping ancestor — and then samples the visible face for anything painted over it.
+ *   - CROP:    less than 90% of a face is painted.
+ *   - OVERLAY: more than 10% of the painted face is covered by another element that paints
+ *              something there (a background, an image or its own text). A transparent overlay —
+ *              a card's stretched link, say — covers nothing and is not counted; neither is
+ *              sticky or fixed chrome, which the image is scrolled clear of before sampling.
+ * An unrecorded file is not examined. Advisory: it enters as bsuk-learning-loop Step 4 says.
+ */
+const FOCUS_ROWS: Record<string, { w: number; h: number; faces: [number, number, number, number][] }> = (() => {
+  const file = fileURLToPath(new URL('../../../data/image-focus.json', import.meta.url));
+  const rows = JSON.parse(readFileSync(file, 'utf8')).images as Record<string, { w: number; h: number; faces: [number, number, number, number][] }>;
+  return Object.fromEntries(Object.entries(rows).map(([name, r]) => [name.replace(/\.[a-z0-9]+$/i, ''), r]));
+})();
+
+register({
+  id: 'img-face-visible',
+  family: 'IMG',
+  severity: 'advisory',
+  describe: 'every recorded face is at least 90% painted and less than 10% covered',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await settlePage(page);
+    const r = await page.evaluate((rows) => {
+      const stemOf = (src: string) => {
+        const name = decodeURIComponent(src.split('?')[0].split('/').pop() || '');
+        return name.split('.')[0].replace(/-\d{3,4}$/, '');
+      };
+      const pos = (token: string, room: number) =>
+        token.endsWith('%') ? (parseFloat(token) / 100) * room : parseFloat(token) || 0;
+      const chrome = (el: Element | null) => {
+        for (let e = el; e; e = e.parentElement) {
+          const p = getComputedStyle(e).position;
+          if (p === 'fixed' || p === 'sticky') return true;
+        }
+        return false;
+      };
+      // Does `el` paint anything at (x, y)? An image, a background — or its own TEXT, where
+      // the glyphs actually are: a stretched card link carries text elsewhere in the card and
+      // is transparent over the photograph, so it must not count as covering it.
+      const paints = (el: Element, x: number, y: number) => {
+        const cs = getComputedStyle(el);
+        if (el instanceof HTMLImageElement || el instanceof SVGElement || el instanceof HTMLVideoElement) return true;
+        if (cs.backgroundImage !== 'none') return true;
+        const bg = cs.backgroundColor.match(/[\d.]+/g);
+        if (bg && (bg.length < 4 || parseFloat(bg[3]) > 0)) return true;
+        return Array.from(el.childNodes).some((n) => {
+          if (n.nodeType !== 3 || !(n.textContent || '').trim()) return false;
+          const range = document.createRange();
+          range.selectNodeContents(n);
+          return Array.from(range.getClientRects()).some((q) => x >= q.left && x <= q.right && y >= q.top && y <= q.bottom);
+        });
+      };
+      let examined = 0;
+      const bad: string[] = [];
+      const y0 = window.scrollY;
+      for (const img of Array.from(document.images)) {
+        const row = rows[stemOf(img.currentSrc || img.src || '')];
+        if (!row) continue;
+        img.scrollIntoView({ block: 'center', inline: 'nearest' });
+        const box = img.getBoundingClientRect();
+        if (box.width < 2 || box.height < 2) continue;
+        const cs = getComputedStyle(img);
+        if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+        const px = (v: string) => parseFloat(v) || 0;
+        const cx = box.left + px(cs.borderLeftWidth) + px(cs.paddingLeft);
+        const cy = box.top + px(cs.borderTopWidth) + px(cs.paddingTop);
+        const cw = box.width - px(cs.paddingLeft) - px(cs.paddingRight) - px(cs.borderLeftWidth) - px(cs.borderRightWidth);
+        const ch = box.height - px(cs.paddingTop) - px(cs.paddingBottom) - px(cs.borderTopWidth) - px(cs.borderBottomWidth);
+        if (cw < 2 || ch < 2) continue;
+        const sw = cw / row.w;
+        const sh = ch / row.h;
+        const own = (img.naturalWidth || row.w) / row.w;
+        const fit = cs.objectFit;
+        const s = fit === 'cover' ? Math.max(sw, sh)
+          : fit === 'contain' ? Math.min(sw, sh)
+          : fit === 'none' ? own
+          : fit === 'scale-down' ? Math.min(own, Math.min(sw, sh)) : NaN;
+        const [ax, ay] = fit === 'fill' ? [sw, sh] : [s, s];
+        const pw = row.w * ax;
+        const ph = row.h * ay;
+        const [tx, ty = '50%'] = cs.objectPosition.split(/\s+/);
+        const ox = cx + pos(tx, cw - pw);
+        const oy = cy + pos(ty, ch - ph);
+        // The visible crop: the content box, clipped by every overflow-clipping ancestor.
+        let vis = { l: cx, t: cy, r: cx + cw, b: cy + ch };
+        for (let e = img.parentElement; e; e = e.parentElement) {
+          const o = getComputedStyle(e);
+          if (/(hidden|clip|scroll|auto)/.test(o.overflowX + o.overflowY)) {
+            const c = e.getBoundingClientRect();
+            vis = { l: Math.max(vis.l, c.left), t: Math.max(vis.t, c.top), r: Math.min(vis.r, c.right), b: Math.min(vis.b, c.bottom) };
+          }
+        }
+        examined++;
+        const name = stemOf(img.currentSrc || img.src);
+        row.faces.forEach(([fx, fy, fw, fh], k) => {
+          const f = { l: ox + fx * ax, t: oy + fy * ay, r: ox + (fx + fw) * ax, b: oy + (fy + fh) * ay };
+          const v = { l: Math.max(f.l, vis.l), t: Math.max(f.t, vis.t), r: Math.min(f.r, vis.r), b: Math.min(f.b, vis.b) };
+          const area = (x: typeof f) => Math.max(0, x.r - x.l) * Math.max(0, x.b - x.t);
+          const shown = area(f) ? area(v) / area(f) : 0;
+          if (shown < 0.9) {
+            bad.push(`${name} face ${k + 1}: ${Math.round(shown * 100)}% painted in a ${Math.round(cw)}x${Math.round(ch)} ${fit} crop`);
+            return;
+          }
+          // Sample the painted face on a 6x6 grid for anything painted over the image.
+          let covered = 0;
+          let samples = 0;
+          for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 6; j++) {
+              const x = v.l + ((i + 0.5) / 6) * (v.r - v.l);
+              const y = v.t + ((j + 0.5) / 6) * (v.b - v.t);
+              if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) continue;
+              samples++;
+              const top = document.elementsFromPoint(x, y).find((el) => !chrome(el) && paints(el, x, y));
+              if (top && top !== img && !top.contains(img)) covered++;
+            }
+          }
+          if (samples && covered / samples > 0.1) {
+            bad.push(`${name} face ${k + 1}: ${Math.round((100 * covered) / samples)}% covered by an overlay`);
+          }
+        });
+      }
+      window.scrollTo(0, y0);
+      return { examined, bad: bad.slice(0, 10), count: bad.length };
+    }, FOCUS_ROWS);
+    const defects = r.count ? [{
+      checkId: 'img-face-visible',
+      family: 'IMG' as const,
+      viewport,
+      count: r.count,
+      message: `${r.count} face(s) cropped or covered: ${r.bad.join(' | ')}`,
+    }] : [];
+    return { examined: r.examined, defects };
+  },
+});
+```
+
+(The `paints()` test reads TEXT only where its glyphs are: the puppy sheet's stretched Ask link carries text elsewhere on the print and is transparent over the photograph. A first draft that counted any element with a text child reported every print's face "100% covered".)
+
+- [ ] **Step 4: Run the meta gate**
+
+Run: `npm run test:render:meta -- -g "img-face-visible"`
+Expected: `9 passed` — the generic pair (fires on the broken plate, silent on the fixed one) and the crop-only fixture, at three widths.
+
+- [ ] **Step 5: Wire it into the two smokes, advisory**
+
+In `tests/render/canvas.spec.ts`, add `'img-face-visible',` as the last item of `REUSED`; change `const CANVAS_ADVISORY = new Set(['img-not-upscaled']);` to `const CANVAS_ADVISORY = new Set(['img-not-upscaled', 'img-face-visible']);`; and in the header comment change `in CANVAS_ADVISORY (img-not-upscaled) print their hits` to `in CANVAS_ADVISORY (img-not-upscaled, img-face-visible) print their hits`.
+
+In `tests/render/city-kit.spec.ts`, add `'img-face-visible',` to `REUSED` after `'img-not-upscaled',`, and change `const CITY_ADVISORY = new Set(['img-not-upscaled']);` to `const CITY_ADVISORY = new Set(['img-not-upscaled', 'img-face-visible']);`.
+
+In `tests/py/test_canvas_advisory_set.py`, replace:
+
+```python
+def test_the_canvas_advisory_set_is_exactly_img_not_upscaled():
+    assert _set("CANVAS_ADVISORY") == {"img-not-upscaled"}
+```
+
+with:
+
+```python
+def test_the_canvas_advisory_set_is_exactly_the_two_new_img_checks():
+    """img-not-upscaled (learning loop #6) and img-face-visible (#2, the London pass's Plan 2):
+    both new, both advisory until a clean cluster."""
+    assert _set("CANVAS_ADVISORY") == {"img-not-upscaled", "img-face-visible"}
+```
+
+- [ ] **Step 6: The rule is now tested**
+
+In `data/quality/rule-index.json`, replace the `no-head-cropped-portraits` row's body:
+
+```json
+   "id": "no-head-cropped-portraits",
+   "family": "IMG",
+   "enforced": "untested",
+   "pack": "rules/puppies.md"
+  },
+```
+
+with:
+
+```json
+   "id": "no-head-cropped-portraits",
+   "family": "IMG",
+   "enforced": "test",
+   "pack": "rules/puppies.md",
+   "test": "tests/render/checks/img.ts::img-face-visible",
+   "severity": "advisory",
+   "_note": "Learning loop 2026-09-27 (L4, shortlist #2), built in the London component pass Plan 2. The face boxes are data/image-focus.json; the check measures the painted crop and any overlay. Advisory until a clean cluster."
+  },
+```
+
+In `rules/puppies.md`, under `id: no-head-cropped-portraits`, change `enforced: untested` to `enforced: test`, and replace the rule's last sentence, `Reviewed by eye at build time; there is no check yet, which is exactly why this rule is a deletion candidate until one exists.`, with:
+
+```markdown
+Measured since the London component pass (Plan 2): `data/image-focus.json` records each photograph's face boxes, `src/lib/imageFocus.ts` derives the crop from them, and `tests/render/checks/img.ts::img-face-visible` (advisory) fails a face less than 90% painted or more than 10% covered by an overlay such as a name plate.
+```
+
+(No row is added, so the ledger count in `CLAUDE.md` and `docs/reference/quick-start.md` stays 83.)
+
+- [ ] **Step 7: Run everything that reads the check**
+
+```bash
+python3 -m pytest tests/py/test_canvas_advisory_set.py tests/py/test_rules_index.py tests/py/test_harness_vocabulary.py -q -p no:cacheprovider
+npm run -s build
+npm run test:render:city
+npm run test:render:canvas
+npm run -s check:markers
+```
+Expected: pytest all pass; the city spec `4 passed` with `img-face-visible: examined 35`/`36` per width and, on the preview, one advisory at 768 (the London owner photo in the FAQ rail's 21:9 strip, both faces ~90% painted — a photo choice for the page's board, not a component defect); the canvas smoke `184 passed` with `[advisory] … img-face-visible` lines that are the learning loop's own L4 findings (key-takeaways a and faq-blocks a at 768: Maggie cut; reviews b: Vennie's muzzle; video c at 375: the play chip over Christa) — none of them a pick London built; markers `0 problems`.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add tests/render/checks/img.ts tests/render/fixtures/known_broken/img-face-visible.html tests/render/fixtures/known_good/img-face-visible.html tests/render/fixtures/known_broken/img-face-visible-crop.html tests/render/meta.spec.ts tests/render/canvas.spec.ts tests/render/city-kit.spec.ts tests/py/test_canvas_advisory_set.py data/quality/rule-index.json rules/puppies.md
+git commit -m "harness: img-face-visible — a recorded face stays in its crop and clear of overlays (learning loop)
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+
+## Task 8: The London scaffold — one route, one source, noindex
+
+**Files:**
+- Create: `src/pages/uk-locations/blue-staffy-puppies-london.astro`, `tests/py/test_city_scaffold.py`
+- Modify: `src/pages/uk-locations/[slug].astro`, `scripts/generate_page_dates.py`, `scripts/page_intake.py`
+- Modify: `tests/py/test_page_dates.py`, `tests/py/test_page_intake.py`, `tests/py/test_shell_chrome.py`, `tests/render/city-kit.spec.ts`
+- Modify: `data/page-dates.json`, `docs/reports/*.md` (regenerated)
+
+- [ ] **Step 1: The dates test (red first)**
+
+In `tests/py/test_page_dates.py`, directly before `def test_the_puppies_template_expands_to_every_slug_in_puppies_json(repo):`, add:
+
+```python
+def test_a_city_with_its_own_page_file_is_dated_by_that_file_alone(repo):
+    """src/pages/uk-locations/[slug].astro skips a city whose page has its own file (the London
+    component design pass, Plan 2); the map must agree, or the city carries the template's dates."""
+    _write(repo, "src/pages/uk-locations/blue-staffies-glasgow.astro", "<h1>own page</h1>")
+    _commit(repo, "2026-03-09")
+    routes = G.build()[0]
+    assert routes["/uk-locations/blue-staffies-glasgow/"]["datePublished"] == "2026-03-09"
+    assert routes["/uk-locations/blue-staffies-glasgow/"]["dateModified"] == "2026-03-09"
+```
+
+Run: `python3 -m pytest tests/py/test_page_dates.py -q -p no:cacheprovider -k own_page_file`
+Expected: FAIL — `'2026-01-05' == '2026-03-09'` (the template's dynamic entry overwrites the city's own).
+
+- [ ] **Step 2: Date a city by its own file**
+
+In `scripts/generate_page_dates.py`, replace:
+
+```python
+def expand(template):
+    """(route, [source paths]) for every page `template` builds."""
+    kind = DYNAMIC[template]
+```
+
+with:
+
+```python
+def expand(template, static_routes=frozenset()):
+    """(route, [source paths]) for every page `template` builds. A data row whose route a
+    STATIC page already builds is not the template's: src/pages/uk-locations/[slug].astro skips
+    a city that has its own file (the London component design pass, Plan 2), so that city is
+    dated by its own file alone."""
+    kind = DYNAMIC[template]
+```
+
+replace:
+
+```python
+    data_file, base = kind
+    return [(f"{base}{slug}/", [template, data_file]) for slug in rows_with_slugs(data_file)]
+```
+
+with:
+
+```python
+    data_file, base = kind
+    return [(f"{base}{slug}/", [template, data_file]) for slug in rows_with_slugs(data_file)
+            if f"{base}{slug}/" not in static_routes]
+```
+
+and in `build()` replace:
+
+```python
+    pages = [(route_for(p), [p]) for p in static if "[" not in p]
+    for template in sorted(DYNAMIC):
+        if (ROOT / template).exists():
+            pages += expand(template)
+```
+
+with:
+
+```python
+    pages = [(route_for(p), [p]) for p in static if "[" not in p]
+    static_routes = frozenset(r for r, _ in pages)
+    for template in sorted(DYNAMIC):
+        if (ROOT / template).exists():
+            pages += expand(template, static_routes)
+```
+
+Run: `python3 -m pytest tests/py/test_page_dates.py -q -p no:cacheprovider`
+Expected: all pass.
+
+- [ ] **Step 3: The template skips a city with its own file**
+
+Replace the whole of `src/pages/uk-locations/[slug].astro` with:
+
+```astro
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import locations from '../../../data/locations.json';
+import type { LocationRow } from '../../lib/site';
+
+// A city whose page has its OWN file beside this one (src/pages/uk-locations/<slug>.astro —
+// London from the London component design pass, Plan 2; each later city from its own pass) is
+// built by that file, never by this template as well: one route, one source. The list is read
+// from the folder, so a city leaves this template the moment its file lands, with no second
+// list to keep in step. scripts/generate_page_dates.py dates such a city by its own file on the
+// same rule; tests/py/test_city_scaffold.py holds both.
+export function getStaticPaths() {
+  const own = new Set(Object.keys(import.meta.glob('./*.astro')).map((p) => p.replace(/^\.\/|\.astro$/g, '')));
+  return (locations as LocationRow[])
+    .filter((l) => !own.has(l.slug))
+    .map((l) => ({ params: { slug: l.slug }, props: { loc: l } }));
+}
+
+const { loc } = Astro.props as { loc: LocationRow };
+---
+<BaseLayout title={loc.title} description={loc.description} canonical={`/uk-locations/${loc.slug}/`} robots={loc.robots || 'index, follow'} ogType={loc.og_type || 'article'} schema={loc.schema} crumbTitle={loc.h1 || loc.city}>
+  <article class="container container-text prose-migrated">
+    <Fragment set:html={loc.body_html} />
+  </article>
+</BaseLayout>
+```
+
+- [ ] **Step 4: The intake does not take a scaffold's H1 (red first)**
+
+In `tests/py/test_page_intake.py`, directly before `def test_the_h1_falls_back_to_the_board_pick_then_the_migrated_row(tmp_path):`, add:
+
+```python
+def test_a_city_scaffolds_placeholder_h1_is_not_read_as_the_pages_h1(tmp_path):
+    """A city's component scaffold (the London component design pass, Plan 2) ships an H1 of
+    PLACEHOLDER copy, marked `data-city-scaffold`. The page run's intake must not take that as the
+    page's starting H1: it falls back as if nothing were built, to the board or the data row."""
+    root = repo(tmp_path)
+    (root / "dist/uk-locations/stubtown/index.html").write_text(page(
+        '<section class="kit-hero" data-city-scaffold="stubtown"><h1>Placeholder Question?</h1></section>',
+        robots="noindex, follow"), encoding="utf-8")
+    it = PI.intake("stubtown", root)
+    assert (it["h1"], it["h1_source"]) == ("EMPTY", "migrated row")
+```
+
+Run: `python3 -m pytest tests/py/test_page_intake.py -q -p no:cacheprovider -k scaffold` — Expected: FAIL (`('Placeholder Question?', 'built')`).
+
+In `scripts/page_intake.py`, replace:
+
+```python
+    h1, h1_source = None, None
+    main_m = MAIN.search(html)
+    h1_m = H1.search(main_m.group(0)) if main_m else None
+```
+
+with:
+
+```python
+    h1, h1_source = None, None
+    main_m = MAIN.search(html)
+    # A city's component SCAFFOLD (the London component design pass, Plan 2) ships placeholder
+    # copy, marked `data-city-scaffold`: its H1 is not the page's starting H1, so it is read as
+    # if nothing were built yet.
+    if main_m and "data-city-scaffold" in main_m.group(0):
+        main_m = None
+    h1_m = H1.search(main_m.group(0)) if main_m else None
+```
+
+Run the same test — Expected: PASS. (Without this, `test_every_city_row_has_an_intake_and_the_empty_h1s_are_counted` fails once the scaffold is built: 8 empty H1s counted for 9 empty rows.)
+
+- [ ] **Step 5: The chrome test knows a city with its own file is on the kit shell**
+
+In `tests/py/test_shell_chrome.py`, in `_expected_kit`, after its first `return True` block, add:
+
+```python
+    # A city page with its OWN file beside src/pages/uk-locations/[slug].astro is on PageShell
+    # from its component scaffold on (the London component design pass, Plan 2); the template
+    # still renders every other city on the legacy chrome.
+    parts = route.strip("/").split("/")
+    if len(parts) == 2 and parts[0] == "uk-locations" \
+            and (ROOT / "src/pages/uk-locations" / f"{parts[1]}.astro").is_file():
+        return True
+```
+
+- [ ] **Step 6: Write the scaffold's tests (red first)**
+
+Create `tests/py/test_city_scaffold.py`:
+
+```python
+"""The London page's scaffold (the London component design pass, Plan 2; spec §3.2).
+
+src/pages/uk-locations/blue-staffy-puppies-london.astro mounts the fifteen picked city
+components on PageShell with placeholder copy, kept out of the index until London's page run
+writes it. What must hold:
+  - one route, one source: the dynamic [slug].astro no longer builds London, and the other 27
+    cities are still built by it;
+  - noindex, and in no sitemap shard;
+  - all fifteen picks on the page, the city nav set mounted and the kit's not;
+  - the FAQPage node carries exactly the visible questions, and no other heading repeats one
+    (learning loop L11);
+  - the migrated body stays word for word for `check:parity` until London is rebuilt.
+"""
+import html as H
+import json
+import pathlib
+import re
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+SLUG = "blue-staffy-puppies-london"
+PAGE = ROOT / "src/pages/uk-locations" / f"{SLUG}.astro"
+DYNAMIC = ROOT / "src/pages/uk-locations/[slug].astro"
+BUILT = ROOT / "dist/uk-locations" / SLUG / "index.html"
+PICKS = json.loads((ROOT / "data/design/city-picks" / f"{SLUG}.json").read_text())
+LOCATIONS = json.loads((ROOT / "data/locations.json").read_text())
+
+#: The kit root each picked canvas variant was built as (the London component design pass).
+PICK_ROOTS = {
+    "london/hero/b": 'class="city-kit kit-hero city-hero',
+    "london/counter-strip/c": 'class="city-kit city-scale',
+    "london/trust-strip/c": 'class="city-kit city-trust',
+    "london/contents-list/c": 'class="city-kit city-contents',
+    "london/desktop-dial/c": "data-city-dial",
+    "london/jump-links/a": "data-city-jump",
+    "london/key-takeaways/a": 'class="city-kit city-takeaways',
+    "london/puppy-cards/b": 'class="city-kit city-sheet',
+    "london/tables/a": 'class="city-kit city-roster',
+    "london/video/c": 'class="city-kit city-video',
+    "london/image-text/c": 'class="city-kit city-chapters',
+    "london/reviews/a": 'class="city-kit city-letter',
+    "london/faq-blocks/a": 'class="city-kit city-faq',
+    "london/newsletter/a": 'class="city-kit city-news',
+    "london/contact-form/b": 'class="city-kit city-contact',
+}
+
+
+def built():
+    if not BUILT.exists():
+        pytest.skip("run npm run build first")
+    return BUILT.read_text(encoding="utf-8")
+
+
+def text(fragment):
+    return re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", fragment))).strip()
+
+
+def test_the_scaffold_file_exists_and_the_dynamic_route_skips_a_city_with_its_own_file():
+    assert PAGE.is_file()
+    src = DYNAMIC.read_text(encoding="utf-8")
+    assert "import.meta.glob('./*.astro')" in src and ".filter((l) => !own.has(l.slug))" in src
+
+
+def test_london_is_built_from_the_scaffold_and_every_other_city_from_the_template():
+    html = built()
+    assert f'data-city-scaffold="{SLUG}"' in html
+    others = [l["slug"] for l in LOCATIONS if l["slug"] != SLUG]
+    assert len(others) == 27
+    for slug in others:
+        page = ROOT / "dist/uk-locations" / slug / "index.html"
+        assert page.is_file(), slug
+        body = page.read_text(encoding="utf-8")
+        assert "prose-migrated" in body and "data-city-scaffold" not in body, slug
+
+
+def test_the_scaffold_is_noindex_and_in_no_sitemap():
+    html = built()
+    assert re.search(r'<meta name="robots" content="noindex[^"]*"', html)
+    for shard in (ROOT / "dist").glob("*sitemap*.xml"):
+        assert f"/uk-locations/{SLUG}/" not in shard.read_text(encoding="utf-8"), shard.name
+
+
+def test_every_pick_is_on_the_page_and_the_nav_set_is_the_citys():
+    html = built()
+    assert set(PICK_ROOTS) == set(PICKS["picks"].values())
+    for key, root in PICK_ROOTS.items():
+        assert root in html, key
+    assert html.count('data-faq-block="') == 3, "the three FAQ blocks, at the template's three places"
+    for kit in ('class="kit-dial', 'class="kit-strip', 'class="kit-sheet'):
+        assert kit not in html, kit
+    band = re.search(r"<div[^>]*data-city-jump[^>]*>", html).group(0)
+    assert "data-strip" in band, "on a real page the band is the top chrome"
+
+
+def test_every_nav_link_names_a_section_on_the_page():
+    html = built()
+    ids = set(re.findall(r'\bid="([^"]+)"', html))
+    spies = re.findall(r'data-spy="([^"]+)"', html)
+    assert len(set(spies)) >= 6
+    assert not [s for s in spies if s not in ids]
+
+
+def test_the_faq_schema_carries_exactly_the_visible_questions():
+    html = built()
+    visible = [text(q) for q in re.findall(r"<h3[^>]*data-faq-q[^>]*>(.*?)</h3>", html, re.S)]
+    assert 15 <= len(visible) <= 20, len(visible)
+    blocks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
+    nodes = [n for b in blocks for n in (b if isinstance(b, list) else [b]) if n.get("@type") == "FAQPage"]
+    assert len(nodes) == 1
+    named = [q["name"] for q in nodes[0]["mainEntity"]]
+    assert [n.lower() for n in named] == [v.lower() for v in visible]
+
+
+def test_no_section_heading_repeats_an_faq_question():
+    """Learning loop 2026-09-27, L11: a real heading that is also an FAQ question."""
+    html = built()
+    faq = {text(q).lower() for q in re.findall(r"<h3[^>]*data-faq-q[^>]*>(.*?)</h3>", html, re.S)}
+    heads = [text(h) for h in re.findall(r"<h[1-3](?![^>]*data-faq-q)[^>]*>(.*?)</h[1-3]>", html, re.S)]
+    assert not [h for h in heads if h.lower() in faq]
+
+
+def test_each_served_photo_appears_once_with_its_served_alt():
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from check_city_canvas import served_alts
+    served = served_alts()
+    html = built()
+    found = re.findall(r'<img [^>]*src="/images/([^"?]+)"[^>]*>', html)
+    main = html.split("<main", 1)[1].split("</main>", 1)[0]
+    body = re.findall(r'<img [^>]*src="/images/([^"?]+)"[^>]*alt="([^"]*)"', main)
+    assert body, "the scaffold reuses served photographs"
+    names = [n for n, _ in body]
+    assert len(names) == len(set(names)), "a served photo, and so its served alt, appears once"
+    for name, alt in body:
+        assert H.unescape(alt) in served[name], name
+    assert found
+
+
+def test_the_migrated_body_stays_word_for_word_for_parity():
+    html = built()
+    row = next(l for l in LOCATIONS if l["slug"] == SLUG)
+    art = re.search(r'<article class="prose-migrated"[^>]*>(.*?)</article>', html, re.S)
+    assert art and text(art.group(1)) == text(row["body_html"])
+```
+
+Run: `python3 -m pytest tests/py/test_city_scaffold.py -q -p no:cacheprovider` — Expected: FAIL (`PAGE.is_file()`; the built London page is the migrated stub).
+
+- [ ] **Step 7: The scaffold**
+
+Create `src/pages/uk-locations/blue-staffy-puppies-london.astro`:
+
+```astro
+---
+// src/pages/uk-locations/blue-staffy-puppies-london.astro — the London page's SCAFFOLD (the
+// London component design pass, Plan 2; spec §3.2).
+//
+// WHAT THIS IS. The fifteen components the user picked on the London component canvas
+// (data/design/city-picks/blue-staffy-puppies-london.json), mounted in city-page order on
+// PageShell with the city nav set, carrying PLACEHOLDER copy. It exists so the picks can be
+// judged together, at every width, before London's page run writes the page.
+//
+// WHAT THIS IS NOT. London's copy, research and SEO. Every heading, answer and label below is
+// the canvas's placeholder wording, kept only until London's page run (docs/reference/
+// page-run.md) — research board first (row 8), then the outline — replaces it word for word.
+// Facts are read from the data files (src/lib/cityKit.ts), never typed; there is no guarantee
+// length (data/settings.json `guarantee_days` is null) and no licence claim.
+//
+// KEPT OUT OF THE INDEX: `noindex, follow`, written HERE rather than read from
+// data/locations.json, so a data edit cannot publish a scaffold; scripts/generate_sitemaps.py
+// leaves a noindex page out of every shard. src/pages/uk-locations/[slug].astro no longer builds
+// this route (it skips a city with its own file). THE MIGRATED BODY STAYS, word for word, in an
+// `article.prose-migrated` at the foot: London is not in data/facts/rebuilt.json until its page
+// run, so `check:parity` still measures its migrated body, and it finds it here.
+//
+// ONE SERVED PHOTOGRAPH, ONCE: a served file keeps its served alt (working rule 11) and
+// `img-alt-present-and-unique` refuses a repeated alt, so where the canvas gave Maggie's photo to
+// five components, each takes a different served file here (data/image-focus.json).
+import PageShell from '../../layouts/PageShell.astro';
+import locations from '../../../data/locations.json';
+import settings from '../../../data/settings.json';
+import type { LocationRow } from '../../lib/site';
+import type { CityNav, SectionRef } from '../../lib/sections';
+import CityHero from '../../components/kit/CityHero.astro';
+import CityPriceScale from '../../components/kit/CityPriceScale.astro';
+import CityTrustLedger from '../../components/kit/CityTrustLedger.astro';
+import CityTakeaways from '../../components/kit/CityTakeaways.astro';
+import CityPuppySheet from '../../components/kit/CityPuppySheet.astro';
+import CityRoster from '../../components/kit/CityRoster.astro';
+import CityFaqLedger, { type CityFaqRow } from '../../components/kit/CityFaqLedger.astro';
+import CityVideoPanel from '../../components/kit/CityVideoPanel.astro';
+import CityChapters from '../../components/kit/CityChapters.astro';
+import CityLetter from '../../components/kit/CityLetter.astro';
+import CityNewsletter from '../../components/kit/CityNewsletter.astro';
+import CityContactLineup from '../../components/kit/CityContactLineup.astro';
+import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, deliveryLine, depositLine, faqPageNode } from '../../lib/cityKit';
+
+const SLUG = 'blue-staffy-puppies-london';
+const loc = (locations as LocationRow[]).find((l) => l.slug === SLUG);
+if (!loc) throw new Error(`data/locations.json has no row for ${SLUG}`);
+
+// The eight sections the nav set lists, in page order; each `question` is its section's H2.
+const sections: SectionRef[] = [
+  { id: 'checks', label: 'What to check before you buy', stop: 'Checks', icon: 'health', question: 'What Should You Check Before Buying a Blue Staffy in London?' },
+  { id: 'in-short', label: 'The page in five answers', stop: 'In short', icon: 'list', question: 'What Should a London Buyer Take From This Page?' },
+  { id: 'puppies', label: 'The six puppies ready now', stop: 'Puppies', icon: 'puppies', question: 'Which Puppy Will You Ask About First?' },
+  { id: 'prices', label: 'Prices for a boy or a girl', stop: 'Prices', icon: 'prices', question: 'How Do the Six Puppies Compare Side by Side?' },
+  { id: 'buying-questions', label: 'Questions London buyers ask', stop: 'Questions', icon: 'faq', question: 'What Do London Buyers Ask Before Reserving a Puppy?' },
+  { id: 'film', label: 'The puppies on film', stop: 'Film', icon: 'play', question: 'How Lively Is a Blue Staffy Puppy at Home?' },
+  { id: 'journey', label: 'From Carlisle to your door', stop: 'Journey', icon: 'delivery', question: 'Where Does Your Puppy Start, and How Does It Reach London?' },
+  { id: 'enquire', label: 'Ask about a puppy', stop: 'Enquire', icon: 'enquire', question: 'Which of Our Six Puppies Would You Like to Ask About?' },
+];
+const cityNav: CityNav = {
+  contents: {
+    heading: 'Which Part of Buying a Puppy Do You Need First?',
+    lede: 'Start wherever your question is: the puppies and their prices, the delivery to your London door or the health tests. Every part is one tap away.',
+    photo: 'Christa.jpeg',
+    photoAlt: `Christa, a blue girl from the ${TOWN} litter`,
+  },
+  dial: { photo: 'Cheryl1.jpeg', photoAlt: 'Cheryl, a blue girl with a white blaze, one of the six puppies' },
+};
+
+// The three FAQ blocks' rows, in file wording (the blocks Title Case them at render).
+const faqBuy: CityFaqRow[] = [
+  { q: 'How much does a blue Staffy puppy cost if I live in London?', a: `The price is the same wherever you live: ${BOY_PRICE} for each of our boys, Roman, Byrd and Ince, and ${GIRL_PRICE} for each of our girls, Vennie, Christa and Cheryl.` },
+  { q: 'Which puppies can I ask about right now?', a: 'All six are available: Roman (blue and white), Byrd (white) and Ince (blue) are the boys, and Vennie (blue and white), Christa (blue) and Cheryl (blue with a white blaze) are the girls.' },
+  { q: 'What does the deposit do?', a: `Your ${DEPOSIT} deposit books your viewing and reserves your puppy, and it comes off the price, so it is part of what you pay rather than an extra on top.` },
+  { q: 'Do you deliver puppies to London?', a: `Yes. We bring your puppy to your London door by DEFRA-approved transport, and delivery costs ${DELIVERY_BAND}, priced by distance.` },
+  { q: 'Can I collect my puppy from Carlisle instead?', a: `Yes. If you would rather make the trip yourself, you can collect your puppy from us in ${TOWN} instead of paying for home delivery.` },
+  { q: 'How do I reserve a puppy from London?', a: 'Send us the enquiry form with the name of the puppy you like, and we reply by email within 24 to 48 business hours to talk through the next steps.' },
+];
+const faqTrust: CityFaqRow[] = [
+  { q: 'Who are the parents of your puppies?', a: 'Maggie is our dam and Jones is our sire. Both are our own dogs, and both were health tested before the litter.' },
+  { q: 'Which health tests do the parents have?', a: 'Maggie and Jones are both DNA-tested for L-2-HGA and HC-HSF4, and both have had their eyes and elbows screened. Our health page explains what each test covers.' },
+  { q: 'Can I speak to your vet before I decide?', a: 'Yes. Buyers are welcome to contact our vet, so you can hear about the parents and the litter from someone other than us before you commit.' },
+  { q: 'What happens if I can no longer keep my puppy?', a: 'We take the puppy back, and we do the same if a fault is ours. Tell us as soon as you know, and we will talk it through with you.' },
+  { q: 'How are your puppies raised before they leave?', a: 'In our home, not in a kennel. Every litter is raised on Puppy Culture with Early Neurological Stimulation (ENS), among everyday household sights and sounds.' },
+];
+const faqLife: CityFaqRow[] = [
+  { q: 'Can a Staffy live happily in a London flat?', a: 'Yes, as long as the dog gets its daily exercise and something to think about. A Staffy is a medium-sized, people-focused dog, so a big garden matters less than regular walks.' },
+  { q: 'How much exercise does a Staffy need each day?', a: 'At least an hour of exercise a day, ideally split into two sessions, plus play or training that works the mind as well as the legs.' },
+  { q: 'Are Staffies good with children?', a: 'A well-socialised Staffordshire Bull Terrier is a patient family companion. Supervision still matters with any dog and any child.' },
+  { q: 'Can a Staffy be left alone while I am at work?', a: 'Not for long stretches. Staffies are people-focused dogs that want company, so a puppy needs to be built up to short spells alone, a little at a time.' },
+  { q: 'Are Staffies easy to train?', a: 'They learn quickly and they are strong-willed with it, so short, consistent sessions with rewards work far better than long ones or a raised voice.' },
+  { q: 'Is a Staffy a good first dog?', a: 'Yes, for a household ready to socialise the puppy early and train it consistently. Staffies are eager to please, but they need company, so the commitment matters most.' },
+];
+const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
+---
+<PageShell title={loc.title} description={loc.description} canonical={`/uk-locations/${SLUG}/`}
+  robots="noindex, follow" ogType="article" schema={schema} crumbTitle="London" sections={sections} cityNav={cityNav}>
+  <Fragment slot="hero">
+    <CityHero
+      eyebrow={`Six puppies · ${TOWN} to London`}
+      title="Where Can I Find a Blue Staffy Puppy Near London?"
+      lede={`These six, three boys at ${BOY_PRICE} and three girls at ${GIRL_PRICE}, raised by ${settings.breeder_name} in ${TOWN} and delivered to London homes.`}
+      cta={{ label: 'Choose your puppy', href: '#puppies' }}
+      more={{ label: `London delivery, ${DELIVERY_BAND}`, href: '#journey' }}
+      data-city-scaffold={SLUG}
+    />
+    <CityPriceScale labels={{
+      count: 'puppies. What each part costs',
+      delivery: 'delivery to London, priced by distance',
+      deposit: 'deposit: books your viewing and reserves your puppy',
+      price: 'the price of one puppy',
+    }} />
+    <CityTrustLedger id="checks"
+      heading="What Should You Check Before Buying a Blue Staffy in London?"
+      intro="The health of the parents, how the litter was raised and what happens if something goes wrong. Here is where each of ours stands."
+      photo="jones-magnificent-blue-staffy-sire.webp" caption="Jones, the sire"
+      items={[
+        { icon: 'dna', claim: 'DNA-tested parents', detail: 'Maggie and Jones, tested for L-2-HGA and HC-HSF4' },
+        { icon: 'eye', claim: 'Eye and elbow screening', detail: 'Both parents screened before the litter' },
+        { icon: 'heart', claim: 'Puppy Culture and ENS', detail: 'Early neurological stimulation, raised in the home' },
+        { icon: 'return', claim: 'We take a puppy back', detail: 'If the fault is ours, or you can no longer care for it' },
+        { icon: 'delivery', claim: 'To your London door', detail: `DEFRA-approved transport, or collect in ${TOWN}` },
+      ]} />
+  </Fragment>
+
+  <CityTakeaways id="in-short"
+    heading="What Should a London Buyer Take From This Page?"
+    lede={`Five plain answers, one sentence each, so you can decide from your London sofa whether a puppy from ${settings.breeder_name}'s home in ${TOWN} is right for you.`}
+    photo="jones-strong-staffy-sire-temperament.webp" caption={`Jones, the sire, at home in ${TOWN}`}
+    rows={[
+      { label: 'The six', text: `Roman, Byrd and Ince are ${BOY_PRICE} each; Vennie, Christa and Cheryl are ${GIRL_PRICE} each. All six are available.` },
+      { label: 'The deposit', text: depositLine },
+      { label: 'The route', text: `DEFRA-approved transport to your London door for ${DELIVERY_BAND}, priced by distance, or collection in ${TOWN}.` },
+      { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
+      { label: 'The raising', text: 'Raised in the home with Puppy Culture and ENS, and you may speak to our vet.' },
+    ]} />
+  <CityPuppySheet id="puppies"
+    heading="Which Puppy Will You Ask About First?"
+    lede={`Maggie and Jones's six are laid out here like family prints, three boys at ${BOY_PRICE} and three girls at ${GIRL_PRICE}, so you can pick a favourite from London before you ask.`}
+    photo="maggie-blue-staffy-dam-with-pups.webp" caption={`Maggie, the dam, with her puppies in ${TOWN}`} />
+  <CityRoster id="prices"
+    heading="How Do the Six Puppies Compare Side by Side?"
+    lede="Here is the whole litter on one sheet, so you can weigh up a boy against a girl from your London kitchen table: every puppy's sex, colour and price, taken straight from our list."
+    caption="The six puppies, as listed" />
+  <CityFaqLedger id="buying-questions" block="buy" start={1}
+    heading="What Do London Buyers Ask Before Reserving a Puppy?"
+    lede="The first questions from London are nearly always about money and the journey, so here are our straight answers on the prices, the deposit, delivery and collection."
+    rail={{ photo: 'blue-staffy-testimonial-london-happy-owner.webp', caption: 'One of our puppies, at home with its new owner.' }}
+    items={faqBuy} />
+  <CityVideoPanel id="film"
+    heading="How Lively Is a Blue Staffy Puppy at Home?"
+    lede="Very, and our short film of puppies from one of our litters shows it better than we can say it; watch it from London before you choose between the six."
+    videoId={settings.youtube_embeds[0]} videoTitle="Staffordshire Bull Terrier puppies: a litter of ours on film"
+    caption="A litter of ours, on film; it loads from YouTube only when you press play. Poster photo: Christa, one of the six available now."
+    poster="Christa.jpeg"
+    side={{ photo: 'Ince1.jpg', alt: 'Ince standing by the garden fence at home', name: 'Ince', text: 'A solid blue boy, one of the six available now.' }}
+    facts={[
+      { label: 'Parents', text: 'Maggie and Jones, DNA-tested for L-2-HGA and HC-HSF4' },
+      { label: 'Price', text: `${BOY_PRICE} for a boy, ${GIRL_PRICE} for a girl` },
+      { label: 'Getting home', text: deliveryLine },
+    ]} />
+  <CityChapters id="journey"
+    heading="Where Does Your Puppy Start, and How Does It Reach London?"
+    lede={`In our home in ${TOWN}, Cumbria, with its mother close by, and then at your door in London or in your arms at collection, whichever suits you.`}
+    chapters={[
+      { place: TOWN, question: `Who Raises Your Puppy Before It Leaves ${TOWN}?`, photo: 'Byrd1.jpg',
+        photoAlt: 'Byrd, one of the six, out on the garden decking',
+        text: 'We do, in our own home. Every litter is raised with Puppy Culture and ENS, and both parents, Maggie and Jones, are DNA-tested for L-2-HGA and HC-HSF4 with their eyes and elbows screened.' },
+      { place: 'London', question: 'How Does Your Puppy Get From Us to Your Door?', photo: 'ethical-staffy-puppy-london-delivery.webp',
+        text: `By DEFRA-approved transport, for ${DELIVERY_BAND} priced by distance, or you collect from us in ${TOWN}. ${depositLine}` },
+    ]} />
+  <CityFaqLedger id="checking-us" block="trust" start={faqBuy.length + 1}
+    heading="How Can You Check Us From London Before You Travel?"
+    lede="You cannot pop round the corner from London, so we put the checks in your hands: the parents, their tests, our vet and what happens if something goes wrong."
+    items={faqTrust} />
+  <CityLetter id="review"
+    heading="What Did a London Family Say After Their Puppy Came Home?"
+    lede="Mark J, who gave London as home, wrote this review of the blue Staffy puppy he had from us, and these are his words exactly as he sent them."
+    name="Mark J" photo="mark-blue-staffy-london.webp" />
+  <CityFaqLedger id="staffy-life" block="life" start={faqBuy.length + faqTrust.length + 1}
+    heading="Will a Staffy Suit Your London Home?"
+    lede="London life means flats, busy parks and long days at work, so these answers cover space, exercise, children, time alone, training and a first dog."
+    items={faqLife} />
+  <CityNewsletter id="litter-notes"
+    eyebrow="Litter notes"
+    heading="Want a Note When Our Next Litter Is Due?"
+    lede="Leave your email and we will write to you in London when our next litter is on the way. It is one short note, and that is all this list is for."
+    photo="Christa.jpeg" photoAlt="Christa, a blue Staffy girl, looking up at the camera from a fleece rug" />
+  <CityContactLineup id="enquire"
+    heading="Which of Our Six Puppies Would You Like to Ask About?"
+    lede="Here are all six as they are today. Choose one in the form, tell us where in London you live, and we reply by email with the answers to everything you asked." />
+
+  <section class="migrated" aria-label="The old page's words">
+    <p class="note">The old page's words, kept until this page is written:</p>
+    <article class="prose-migrated"><Fragment set:html={loc.body_html} /></article>
+  </section>
+</PageShell>
+<style>
+  .migrated { max-width: var(--container); margin: var(--space-8) auto; padding-inline: var(--space-5); color: var(--color-text-muted); font-size: var(--text-sm); }
+  .note { margin: 0 0 var(--space-1); }
+</style>
+```
+
+Where the copy comes from: every heading, lede and answer is the London canvas's placeholder wording (the variants the user saw when picking), less every claim no data file backs: no guarantee length, no licence, no ages, no cited lifespan. Facts are the data files' through `src/lib/cityKit.ts`. The FAQ is seventeen of the canvas's nineteen questions (the guarantee question and the lifespan citation are dropped), numbered on across three blocks at the top, middle and bottom of the body. The page run replaces all of it from London's approved outline.
+
+- [ ] **Step 8: Commit the page, then build**
+
+The route loses its template source and gains its own, so `prebuild` refuses to write a shrunk date map until the new file is committed (Execution note 6):
+
+```bash
+git add src/pages/uk-locations/blue-staffy-puppies-london.astro "src/pages/uk-locations/[slug].astro" scripts/generate_page_dates.py scripts/page_intake.py tests/py/test_page_dates.py tests/py/test_page_intake.py tests/py/test_shell_chrome.py tests/py/test_city_scaffold.py
+git commit -m "feat: the London scaffold — fifteen picks on PageShell, noindex; one route, one source
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+npm run -s build
+```
+Expected: build exit 0; `dist/uk-locations/blue-staffy-puppies-london/index.html` carries `data-city-scaffold="blue-staffy-puppies-london"` and `<meta name="robots" content="noindex, follow">`; no shard of `dist/*sitemap*.xml` lists it; 27 other city folders still hold `prose-migrated` bodies.
+
+- [ ] **Step 9: The render spec paints the scaffold**
+
+In `tests/render/city-kit.spec.ts`, change `const ROUTES = ['/kit-preview/city/'];` to:
+
+```ts
+const ROUTES = ['/kit-preview/city/', '/uk-locations/blue-staffy-puppies-london/'];
+```
+
+```bash
+python3 -m pytest tests/py/test_city_scaffold.py tests/py/test_page_dates.py tests/py/test_page_intake.py tests/py/test_shell_chrome.py tests/py/test_city_kit.py -q -p no:cacheprovider
+npm run test:render:city
+```
+Expected: pytest all pass; render `8 passed` (2 routes × 4 widths). On the scaffold the jump band IS the top chrome: its probe scrolls 900px and finds it pinned under the header, opens the sheet, closes it with Escape and reads `aria-expanded` back to `false`; the current-section probe finds the fourth section current under both motion settings; `layout-no-horizontal-overflow` passes at 1024 with the body in the column beside the dial.
+
+- [ ] **Step 10: The design passes on the whole scaffold**
+
+`CITY_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_plan2-shots npm run test:render:city`, then `frontend-design:frontend-design` and `impeccable:impeccable` (Skill tool, by name) on the scaffold's full-page shots at 375 / 768 / 1024 / 1280: the fifteen together, the rhythm between bands, the sticky chrome's share of a phone screen (header plus band), the column beside the dial. Fix in the components; record under `## Plan 2 — built components` in the hardening log as "Scaffold".
+
+- [ ] **Step 11: Gate and commit**
+
+```bash
+npm run -s check:all
+python3 -m pytest tests/py -q -p no:cacheprovider
+git add data/page-dates.json docs/reports tests/render/city-kit.spec.ts docs/research/london-components/hardening-log.md src/components/kit
+git commit -m "chore: the London scaffold dated and painted by the city render spec
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+Expected: `check:all` exit 0 — `check:parity` reads London's migrated body in the scaffold's `article.prose-migrated` (`/uk-locations/blue-staffy-puppies-london/ | 4→4→4 | … | PASS`), `check:sitemaps` examines 62 built pages (London was built before, from the template), `check:boards` still 12 (London has no board until its page run); pytest all pass.
+
+---
+
+## Task 9: `check:canvas` joins `check:all`
+
+**Files:**
+- Modify: `tests/py/test_package_scripts.py`, `package.json`, `CLAUDE.md` — in ONE commit (`tests/py/test_doc_drift.py` pins the CLAUDE.md sentence to the chain)
+
+- [ ] **Step 1: The test (red first)**
+
+In `tests/py/test_package_scripts.py`, replace:
+
+```python
+    # data/facts/rebuilt.json, so no rebuilt page ships on a board that stopped matching.
+    expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
+                "check:outline", "check:redirects", "check:schema", "check:queries",
+                "check:competitors", "check:gaps", "check:barriers", "check:threads",
+                "check:sitemaps", "check:placeholders", "check:retired", "check:boards",
+                "check:workflow", "check:markers", "agents"]
+```
+
+with:
+
+```python
+    # data/facts/rebuilt.json, so no rebuilt page ships on a board that stopped matching.
+    # check:canvas follows check:boards (the London component design pass, Plan 2): the city
+    # component canvas is the other thing the user approves before a city page is built, and
+    # its frozen variants are what data/design/city-picks/ and the city pool name. It joined
+    # the chain once the London canvas was complete and frozen (Plan 1 kept it standalone
+    # while the variants landed three at a time).
+    expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
+                "check:outline", "check:redirects", "check:schema", "check:queries",
+                "check:competitors", "check:gaps", "check:barriers", "check:threads",
+                "check:sitemaps", "check:placeholders", "check:retired", "check:boards",
+                "check:canvas", "check:workflow", "check:markers", "agents"]
+```
+
+Run: `python3 -m pytest tests/py/test_package_scripts.py -q -p no:cacheprovider` — Expected: `1 failed` (the chain has no `check:canvas`).
+
+- [ ] **Step 2: Chain it, and say so where the doc pins it**
+
+In `package.json`'s `"check:all"`, replace `npm run check:boards && npm run check:workflow` with `npm run check:boards && npm run check:canvas && npm run check:workflow`.
+
+In `CLAUDE.md`, in the sentence "`check:all` chains …", replace `` `check:retired`, `check:boards`, `check:workflow`, `check:markers` and `agents`, in that order `` with `` `check:retired`, `check:boards`, `check:canvas`, `check:workflow`, `check:markers` and `agents`, in that order ``.
+
+- [ ] **Step 3: Run the pins and the chain**
+
+```bash
+python3 -m pytest tests/py/test_package_scripts.py tests/py/test_doc_drift.py -q -p no:cacheprovider
+npm run -s build
+npm run -s check:all
+npm run -s check:markers
+```
+Expected: `27 passed`; `check:all` exit 0 with `check-city-canvas london: examined 45 fragments, 15 meta files; 0 problems` between the board gate and the workflow check; markers `0 problems`.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add tests/py/test_package_scripts.py package.json CLAUDE.md
+git commit -m "chore: check:canvas joins check:all now the London canvas is frozen
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+
+## Task 10: The side-by-side — every built component beside its canvas frame (then STOP)
+
+**Files:**
+- Create: `scripts/city_side_by_side.mjs`, `docs/artifacts/bsuk-london-side-by-side.html` (written by the script)
+- Modify: `data/design/artifacts.json` (one key, controller), `docs/reference/system-registry.md` (regenerated)
+
+- [ ] **Step 1: The script**
+
+Create `scripts/city_side_by_side.mjs`:
+
+```javascript
+#!/usr/bin/env node
+// node scripts/city_side_by_side.mjs [--city london] [--slug blue-staffy-puppies-london]
+//
+// The side-by-side the user confirms before a city's component pass is done (spec §3.5, "The
+// user sees each built component beside its canvas version and confirms the match"). For each of
+// the city's fifteen picks it shoots, at 375 and 1280:
+//   - the CANVAS frame the user picked (docs/artifacts/canvas/<city>-frames/<component>/<v>.html,
+//     emitted by `python3 scripts/build_component_canvas.py --emit-frames …`), and
+//   - the BUILT kit component, its section on dist/kit-preview/city/ (`#kit-<kit id>`),
+// and writes docs/artifacts/bsuk-<city>-side-by-side.html (committed, the Artifact's source)
+// with the shots in docs/artifacts/canvas/side-by-side/<city>/ (git-ignored) and the Artifact
+// publish's `files` map beside them (files.json). Build and emit the frames first. Serves
+// dist/ and the repo root itself on RENDER_SBS_PORT and RENDER_SBS_PORT+1 (default 4361).
+import { spawn } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { chromium } from '@playwright/test';
+
+const ROOT = resolve(new URL('..', import.meta.url).pathname);
+const arg = (name, fallback) => {
+  const i = process.argv.indexOf(`--${name}`);
+  return i > 0 ? process.argv[i + 1] : fallback;
+};
+const CITY = arg('city', 'london');
+const SLUG = arg('slug', 'blue-staffy-puppies-london');
+const PORT = Number(process.env.RENDER_SBS_PORT ?? 4361);
+const WIDTHS = [375, 1280];
+const picks = JSON.parse(readFileSync(resolve(ROOT, `data/design/city-picks/${SLUG}.json`), 'utf8')).picks;
+const rows = JSON.parse(readFileSync(resolve(ROOT, 'data/design/components.json'), 'utf8'))
+  .filter((r) => r.project === 5);
+// scripts/city_components.py KIT_ID, in city-page order: the same order the rows are in.
+const order = Object.keys(picks);
+if (rows.length !== order.length) {
+  console.error(`components.json has ${rows.length} city rows for ${order.length} picks`);
+  process.exit(1);
+}
+const FRAMES = resolve(ROOT, `docs/artifacts/canvas/${CITY}-frames`);
+if (!existsSync(resolve(FRAMES, 'index.json'))) {
+  console.error(`no frames at ${FRAMES}: python3 scripts/build_component_canvas.py --emit-frames docs/artifacts/canvas/${CITY}-frames`);
+  process.exit(2);
+}
+if (!existsSync(resolve(ROOT, 'dist/kit-preview/city/index.html'))) {
+  console.error('no dist/kit-preview/city/ — run npm run -s build first');
+  process.exit(2);
+}
+const OUT = resolve(ROOT, `docs/artifacts/canvas/side-by-side/${CITY}`);
+mkdirSync(OUT, { recursive: true });
+
+const serve = (cwd, port) => spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1'], { cwd, stdio: 'ignore' });
+const servers = [serve(resolve(ROOT, 'dist'), PORT), serve(ROOT, PORT + 1)];
+await new Promise((r) => setTimeout(r, 900));
+const browser = await chromium.launch();
+const shots = [];
+try {
+  for (const [i, component] of order.entries()) {
+    const key = picks[component];
+    const variant = key.split('/')[2];
+    const kitId = rows[i].id;
+    for (const width of WIDTHS) {
+      const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+      const frame = `${component}/${variant}.html`;
+      await page.goto(`http://127.0.0.1:${PORT + 1}/docs/artifacts/canvas/${CITY}-frames/${frame}`, { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      const canvasFile = `${component}-${width}-canvas.jpg`;
+      await page.locator('[data-component]').first().screenshot({ path: resolve(OUT, canvasFile), type: 'jpeg', quality: 78 });
+      await page.goto(`http://127.0.0.1:${PORT}/kit-preview/city/`, { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      // The preview's own site header is sticky and would sit over the section being shot.
+      await page.addStyleTag({ content: 'body > header, .site-header, .kit-hdr { display: none !important; }' });
+      const builtFile = `${component}-${width}-built.jpg`;
+      const section = page.locator(`#kit-${kitId}`);
+      await section.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(150);
+      await section.screenshot({ path: resolve(OUT, builtFile), type: 'jpeg', quality: 78 });
+      await page.close();
+      shots.push({ component, key, kitId, width, canvasFile, builtFile });
+      console.log(`${component} (${key} -> ${kitId}) @ ${width}px`);
+    }
+  }
+} finally {
+  await browser.close();
+  servers.forEach((s) => s.kill());
+}
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const cards = order.map((component, i) => {
+  const mine = shots.filter((s) => s.component === component);
+  const cols = mine.map((s) => `
+      <figure class="pair w${s.width}">
+        <figcaption>${s.width}px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/${s.canvasFile}" alt="${esc(component)} as picked on the canvas at ${s.width}px" loading="lazy"></div>
+          <div><p class="lab">Built</p><img src="side-by-side/${s.builtFile}" alt="${esc(component)} as built in the kit at ${s.width}px" loading="lazy"></div>
+        </div>
+      </figure>`).join('');
+  return `
+    <section class="card" id="${esc(component)}">
+      <h2><span class="n">${String(i + 1).padStart(2, '0')}</span> ${esc(component)} <small>${esc(picks[component])} → ${esc(rows[i].file)}</small></h2>
+      ${cols}
+    </section>`;
+}).join('');
+const page = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>London Side by Side</title>
+<style>
+:root{--bg:#fbf8f2;--ink:#1c2a36;--muted:#4a5a68;--card:#ffffff;--rule:#d9d2c3;--accent:#1f3a52}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121a22;--ink:#eef1f4;--muted:#b6c2cc;--card:#1b2631;--rule:#2c3a47;--accent:#9dbad3}}
+:root[data-theme="dark"]{--bg:#121a22;--ink:#eef1f4;--muted:#b6c2cc;--card:#1b2631;--rule:#2c3a47;--accent:#9dbad3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+main{max-width:1320px;margin:0 auto;padding:24px 16px 64px}
+h1{margin:0 0 8px;font-size:28px}.intro{margin:0 0 24px;color:var(--muted);max-width:70ch}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px;margin:0 0 24px}
+h2{margin:0 0 12px;font-size:20px}h2 small{font-weight:400;color:var(--muted);font-size:14px}.n{color:var(--accent)}
+.pair{margin:0 0 16px}.pair figcaption{font-weight:600;margin:0 0 8px;color:var(--muted)}
+.two{display:grid;gap:12px}.lab{margin:0 0 4px;font-size:13px;color:var(--muted)}
+.two img{display:block;max-width:100%;height:auto;border:1px solid var(--rule);border-radius:6px;background:var(--bg)}
+@media (min-width:900px){.w375 .two{grid-template-columns:repeat(2,minmax(0,375px))}.w1280 .two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body><main>
+<h1>London Components, Side by Side</h1>
+<p class="intro">Each of the fifteen components you picked on the London component canvas, beside the kit component built from it, at phone (375px) and desktop (1280px) width. The built copies carry placeholder copy and the site's data (puppies, prices, served photos with their served alt text). Tell us in chat which ones match, and what differs on any that do not.</p>
+${cards}
+</main></body></html>
+`;
+writeFileSync(resolve(ROOT, `docs/artifacts/bsuk-${CITY}-side-by-side.html`), page);
+const files = Object.fromEntries(shots.flatMap((s) => [
+  [`side-by-side/${s.canvasFile}`, `docs/artifacts/canvas/side-by-side/${CITY}/${s.canvasFile}`],
+  [`side-by-side/${s.builtFile}`, `docs/artifacts/canvas/side-by-side/${CITY}/${s.builtFile}`],
+]));
+writeFileSync(resolve(OUT, 'files.json'), JSON.stringify(files, null, 1) + '\n');
+console.log(`${shots.length} pairs -> docs/artifacts/bsuk-${CITY}-side-by-side.html; files map ${resolve(OUT, 'files.json')}`);
+```
+
+- [ ] **Step 2: Shoot the pairs**
+
+```bash
+npm run -s build
+python3 scripts/build_component_canvas.py --emit-frames docs/artifacts/canvas/london-frames
+node scripts/city_side_by_side.mjs
+python3 scripts/build_system_registry.py
+```
+Expected: 30 lines (`hero (london/hero/b -> city-hero) @ 375px` … `contact-form (london/contact-form/b -> city-contact-lineup) @ 1280px`), then `30 pairs -> docs/artifacts/bsuk-london-side-by-side.html; files map …/docs/artifacts/canvas/side-by-side/london/files.json`. About 6 MB of JPEGs under `docs/artifacts/canvas/side-by-side/london/` (git-ignored with the rest of `docs/artifacts/canvas/`). Open four pairs with the Read tool (hero 1280, puppy-cards 1280, jump-links 375, contact-form 375) and confirm each built shot is the component alone, with no sticky header over it.
+
+- [ ] **Step 3: Verify, then commit (implementer)**
+
+Invoke `superpowers:verification-before-completion`, then:
+
+```bash
+python3 -m pytest tests/py/test_system_registry.py -q -p no:cacheprovider
+git add scripts/city_side_by_side.mjs docs/artifacts/bsuk-london-side-by-side.html docs/reference/system-registry.md
+git commit -m "feat: the London side-by-side — each built component beside its canvas frame
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+- [ ] **Step 4: Publish (controller only)**
+
+Load the `artifact-design` skill. Read `docs/artifacts/bsuk-london-side-by-side.html` in full. Publish it with the Artifact tool: `action: publish`, `file_path: docs/artifacts/bsuk-london-side-by-side.html`, `icon: compare`, `description: "The fifteen London components as built, beside the canvas designs picked on 2026-09-27."`, `files`: the map in `docs/artifacts/canvas/side-by-side/london/files.json` (published path → source path). Record the URL in `data/design/artifacts.json` as `"london_side_by_side": "<URL>"` after `"london_component_canvas"`, and commit that one file:
+
+```bash
+git add data/design/artifacts.json
+git commit -m "docs: the London side-by-side published for the user's confirmation
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+- [ ] **Step 5: STOP for the user's confirmation**
+
+Tell the user, in chat: the link; that each of the fifteen shows the canvas pick beside the built component at 375 and 1280; which differences are deliberate and why (Code facts 4–6: a different served photo where the canvas repeated Maggie's; bold brand headings restored; container layouts beside the dial on the real page, shown in the scaffold, not here); and ask them to confirm, or name what differs. Two or more open questions go to the answer board as one batch (CLAUDE.md), never as a list in chat. A mismatch the user names is fixed in its component (with the render spec and the pytest file re-run) and the side-by-side re-shot and republished to the SAME URL (pass `url`). Task 11 waits for the confirmation.
+
+---
+
+## Task 11: Close Plan 2
+
+**Files:**
+- Modify: `docs/reference/session-log.md` (one entry; Known Issues 92 and 93; one new Known Issue), `docs/reports/render-baseline-project4.md` (regenerated), `data/quality/scorecards/*` (the page run)
+
+- [ ] **Step 1: Build and gate, twice**
+
+```bash
+npm run -s build
+npm run -s check:all; echo "check:all exit=$?"
+npm run -s check:all; echo "check:all exit=$?"
+python3 -m pytest tests/py -q -p no:cacheprovider
+python3 -m pytest tests/py -q -p no:cacheprovider
+npm run test:render:meta
+npm run test:render:pages
+npm run test:render:canvas
+npm run test:render:city
+```
+Expected: both `check:all` runs exit 0; both pytest runs show the same passed/skipped counts and 0 failed once Step 3 is done (before it, `test_render_baseline.py`'s two tests fail on the new scorecards — that is Step 3's job, not a defect); meta all green; the canvas smoke and the city spec green (advisories printed). The page run: every row green except `uk-locations/blue-staffy-puppies-uk`'s `nav-jump-target-lands` at 375/768/1280, which the committed 2026-09-27 scorecard already carries (a legacy city body: `#Staffy-adoption` lands outside the band) — name it in the report and do not fix it here. `img-face-visible` examines ~207 photographs across the pages and reports one advisory (the homepage's Maggie tile at 1280).
+
+- [ ] **Step 2: The design passes on the whole build, recorded**
+
+With the final build, invoke `impeccable:impeccable` and then `frontend-design:frontend-design` (Skill tool, by name) on the fifteen built components on `/kit-preview/city/` and on the London scaffold at 375 / 768 / 1280 in a painting browser (the shots from `CITY_SHOTS=… npm run test:render:city`). Record each skill's findings and what was changed in `docs/research/london-components/hardening-log.md` under `## Plan 2 — close`. A finding that changes a component re-runs Step 1.
+
+- [ ] **Step 3: Regenerate the baseline report and the registry**
+
+```bash
+python3 scripts/render_baseline.py --out docs/reports/render-baseline-project4.md
+python3 scripts/build_system_registry.py
+python3 -m pytest tests/py/test_render_baseline.py tests/py/test_system_registry.py -q -p no:cacheprovider
+```
+Expected: `wrote the generated block in docs/reports/render-baseline-project4.md`; the tests pass.
+
+- [ ] **Step 4: Verify before claiming**
+
+Invoke `superpowers:verification-before-completion`. Read the examined counts, not only the exit codes: `board-gate --all: examined 12 rebuilt pages`, `check-city-canvas london: examined 45 fragments`, the city spec's `examined` lines for each REUSED check on both routes, `img-face-visible` on the page run, the meta gate's passed count.
+
+- [ ] **Step 5: The session log**
+
+In `docs/reference/session-log.md`, append to Known Issue 92 (after its 2026-09-27 bullet):
+
+```markdown
+    - **2026-09-28 (London Plan 2):** `no-head-cropped-portraits` is now `enforced: test` (`tests/render/checks/img.ts::img-face-visible`, advisory; face boxes in `data/image-focus.json`), so 15 are untested.
+```
+
+Append to Known Issue 93's list:
+
+```markdown
+    - **Faces (`img-face-visible`, advisory, 2026-09-28):** one on the twelve built pages — `index` at 1280, `maggie-blue-staffy-dam-with-pups` 77% painted in a 182×189 tile; four on the London canvas (key-takeaways a and faq-blocks a at 768, reviews b, video c at 375), none of them a pick London built. Reported, not edited.
+```
+
+Add a Known Issue after the last one (number it one past the highest):
+
+```markdown
+N. **`img-sizes-matches-box` misparses a nested parenthesis in a `sizes` length (found 2026-09-28, London Plan 2).**
+    - `(min-width: 1024px) calc((100vw - 152px) / 6)` resolves to the NEXT entry: the check's `^(\(.*\))\s+(.+)$` is greedy, so the media condition swallows `calc((100vw - 152px)` and the length becomes `/ 6)`. The city hero writes its entries without nested parentheses (`calc(16.667vw - 25.333px)`), and no built page trips it today.
+    - **Next:** a known_broken fixture with a nested-paren entry that must resolve correctly, then a balanced-paren split in the check (the harness, not a new rule).
+```
+
+And, before `## Known Issues`, the entry:
+
+```markdown
+## London component design pass, Plan 2 (2026-09-28) — the picks built; side-by-side confirmed <date>
+
+Branch `london-components` (worktree `/Users/apple/Downloads/BSUK/BSUK-london`). Spec: `docs/superpowers/specs/2026-09-27-london-component-design-pass-design.md`. Plan: `docs/superpowers/plans/2026-09-28-london-component-build.md`. Side-by-side: <URL>.
+
+- **Frozen:** `data/design/city-picks/blue-staffy-puppies-london.json` (15 picks, from the 2026-09-27 Send) and `data/design/city-pool.json` (the 30 unpicked); the canvas rebuilt `--final` and republished; the city gate green on the real files.
+- **Built:** fifteen `City*.astro` kit components (`"project": 5` rows; `/kit-preview/city/`), from the data files through `src/lib/cityKit.ts`; every crop from `data/image-focus.json`; the nav set through PageShell `cityNav`; the in-body components are containers. `npm run test:render:city` paints them at 375/768/1024/1280.
+- **Face check:** `img-face-visible` (advisory), learning-loop item 2; `no-head-cropped-portraits` is tested.
+- **Scaffold:** `src/pages/uk-locations/blue-staffy-puppies-london.astro`, noindex, out of every sitemap; `[slug].astro` and the date map skip a city with its own file; placeholder copy only — London's page run starts at its research board.
+- **Chain:** `check:canvas` is in `check:all`.
+- **Gates at close:** <build exit, check:all ×2, pytest ×2 counts, meta count, city spec, canvas smoke, page run (the one inherited red row named)>.
+- **Next:** London's page run (`docs/reference/page-run.md`), research board first; the picks go on its board with real copy. Merge into `foundation` when the user says.
+```
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add docs/reference/session-log.md docs/reports/render-baseline-project4.md data/quality/scorecards docs/reference/system-registry.md docs/research/london-components/hardening-log.md
+git commit -m "docs: London component design pass Plan 2 closed on the branch
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+Report to the user: the side-by-side link and their confirmation, the gates' counts, the inherited red row, the advisories, and that merging into `foundation` waits for their word.
+
+---
+
+## Open questions this plan could not settle (for the controller to put to the user)
+
+1. **Served photos where the canvas repeated Maggie's.** One served photo may appear once per page (Code facts, item 4). The scaffold gives the trust ledger Jones's portrait, the takeaways Jones seated, the FAQ rail the London owner photo and chapter one Byrd; the puppy sheet keeps Maggie. The side-by-side shows every swap. The user may prefer different files (from the served set, or new photos added beside the old per working rule 11) — the page's board decides, and the component takes any file named in `data/image-focus.json`.
+2. **The deposit's refund clause.** The components print none (the user's Q4 on the `deposit-wording` branch: no refund wording where the condition does not fit). When that branch lands `deposit_refund_*` in `data/settings.json`, `depositRefundClause()` renders the data's wording; which of the two 70% conditions is right is the `deposit-wording` branch's to settle, not this plan's.
+3. **Phone chrome.** On the scaffold at 375 the kit header (~120px) plus the stepper band (~95px) pin about a quarter of the screen. It is the pick as designed; the scaffold's design pass (Task 8 Step 10) records whether it reads as too much, for the user to judge.
+4. **The contents panel at desktop.** The kit hides its contents list at 1024px and up (the dial repeats it); the picked contents C is a desktop design, so the city set shows it at every width. If the user wants the kit's behaviour, it is one media rule in `CityContents.astro`.
