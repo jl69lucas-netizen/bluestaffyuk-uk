@@ -83,7 +83,7 @@ const { action, live } = formEndpoint();
        root has no gutter, so those are the query widths as written; a full-width copy switches
        where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-newsletter-notice { container-type: inline-size; background: var(--color-surface); }
-    .in { max-width: 1040px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
+    .in { max-width: 1040px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
     .card {
       display: grid; overflow: hidden; background: var(--color-surface-raised); border: var(--card-border);
       border-radius: var(--card-radius); box-shadow: var(--shadow-card);
@@ -96,8 +96,8 @@ const { action, live } = formEndpoint();
       font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-brand);
     }
     .eye::before { content: ""; width: 24px; height: 2px; background: var(--color-cta); }
-    h2 { margin: 0; max-width: 20ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
-    .lede { margin: var(--space-3) 0 var(--space-5); max-width: 46ch; color: var(--color-text); }
+    h2 { margin: 0; }
+    .lede { margin: var(--space-3) 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); }
     form { display: grid; gap: var(--space-3); max-width: 440px; }
     label { font-size: var(--text-sm); font-weight: 600; color: var(--color-text); }
     input[type='email'] {
@@ -117,10 +117,10 @@ const { action, live } = formEndpoint();
     .small { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
     .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
     @container (min-width: 640px) {
-      .in { padding: var(--space-9) var(--space-6); }
+      .in { padding: var(--city-pad-y) var(--space-6); }
       .card { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
       figure :global(img) { height: 100%; aspect-ratio: auto; min-height: 360px; }
-      .body { padding: var(--space-7); }
+      .body { padding: var(--space-6); }
     }
   }
 </style>

@@ -65,8 +65,8 @@ const p = servedPhoto(photo);
     }
     figcaption { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-ink-2); }
     .body { padding: 0 var(--space-2) var(--space-3); }
-    h2 { margin: 0 0 var(--space-3); font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
-    .intro { margin: 0 0 var(--space-5); color: var(--color-ink-2); }
+    h2 { margin: 0 0 var(--space-3); }
+    .intro { margin: 0 0 var(--space-5); font-size: var(--city-lead); color: var(--color-ink-2); }
     ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-5); }
     li { margin: 0; max-width: none; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: var(--space-3); align-items: start; }
     .ic {
@@ -78,7 +78,7 @@ const p = servedPhoto(photo);
     .d { display: block; margin-top: 2px; font-size: var(--text-sm); color: var(--color-ink-2); }
     @media (min-width: 768px) { ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); } }
     @media (min-width: 1024px) {
-      .city-trust { padding: var(--space-10) var(--space-5); }
+      .city-trust { padding: var(--space-8) var(--space-5); }
       .sheet {
         grid-template-columns: 390px minmax(0, 1fr); align-items: start; gap: var(--space-8);
         padding: var(--space-4) var(--space-8) var(--space-4) var(--space-4);

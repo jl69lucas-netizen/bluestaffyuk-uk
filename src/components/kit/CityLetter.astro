@@ -70,10 +70,10 @@ const sizes = citySizes(fit, {
        root has no gutter, so those are the query widths as written; a full-width copy switches
        where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-letter { container-type: inline-size; background: var(--color-surface); }
-    .in { max-width: 1000px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
+    .in { max-width: 1000px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
     .head { max-width: 640px; margin: 0 0 var(--space-6); }
-    h2 { margin: 0 0 var(--space-3); font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
-    .lede { margin: 0; color: var(--color-text); }
+    h2 { margin: 0 0 var(--space-3); }
+    .lede { margin: 0; font-size: var(--city-lead); color: var(--color-text); }
     .card {
       display: grid; gap: var(--space-5); padding: var(--space-5); background: var(--color-surface-raised);
       border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--shadow-card);
@@ -83,20 +83,19 @@ const sizes = citySizes(fit, {
     .pic { margin: 0; justify-self: start; max-width: 100%; }
     .pic img { display: block; max-width: 100%; height: auto; border-radius: var(--radius-md); background: var(--color-bone-50); }
     blockquote { margin: 0; position: relative; }
-    .mark { display: block; height: 44px; margin: 0 0 var(--space-1); font-family: var(--font-display); font-size: 88px; line-height: 1; color: var(--color-brand-mid); }
-    blockquote p { margin: 0; font-size: var(--text-lg); line-height: 1.6; color: var(--color-text); }
+    .mark { display: block; height: 44px; margin: 0 0 var(--space-1); font-family: var(--font-display); font-size: calc(var(--city-h2) * 2.4); line-height: 1; color: var(--color-brand-mid); }
+    blockquote p { margin: 0; font-size: var(--city-lead); line-height: 1.6; color: var(--color-text); }
     .sig {
       display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
       margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border);
     }
-    cite { font-family: var(--font-display); font-style: normal; font-size: var(--text-xl); font-weight: 600; color: var(--color-brand); }
+    cite { font-family: var(--font-display); font-style: normal; font-size: var(--city-h3); font-weight: 600; color: var(--color-brand); }
     .sig span { font-size: var(--text-sm); color: var(--color-ink-2); }
     @container (min-width: 640px) {
-      .in { padding: var(--space-9) var(--space-6); }
-      .card { padding: var(--space-7); }
+      .in { padding: var(--city-pad-y) var(--space-6); }
+      .card { padding: var(--space-6); }
     }
     @container (min-width: 800px) {
-      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
       .card { grid-template-columns: minmax(0, 9fr) minmax(0, 16fr); gap: var(--space-7); align-items: start; }
       .pic { position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
     }

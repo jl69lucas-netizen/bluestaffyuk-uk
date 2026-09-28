@@ -591,7 +591,8 @@ def test_the_city_page_specimen_lays_the_kit_out_as_a_city_page_does():
     assert 'name="robots" content="noindex' in html
     for root in CITY_NAV_ROOTS:
         assert html.count(f"{root}") >= 1, root
-    assert html.count("data-city-jump-stepper") == 1 and html.count("data-city-dial-photo-marker") == 1
+    for hook in ("data-city-jump-stepper", "data-city-dial-photo-marker"):
+        assert len(re.findall(rf"<[a-z]+ [^>]*\b{hook}\b", html)) == 1, hook
     grid = html.index('class="page-shell has-own-dial')
     for cid in ("city-hero-filmstrip", "city-price-scale", "city-trust-ledger"):
         assert html.index(f'data-component="{cid}"') < grid, f"{cid} belongs above the dial's grid"

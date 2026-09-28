@@ -84,16 +84,16 @@ const pups = availablePuppies();
        root has no gutter, so those are the query widths as written; a full-width copy switches
        where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-contact { container-type: inline-size; background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
-    .in { max-width: 1160px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
-    h2 { margin: 0; max-width: 24ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); color: var(--color-text-on-inverse); text-wrap: balance; }
-    .lede { margin: var(--space-3) 0 var(--space-5); max-width: 60ch; color: var(--color-steel-100); }
+    .in { max-width: 1160px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
+    h2 { margin: 0; color: var(--color-text-on-inverse); }
+    .lede { margin: var(--space-3) 0 var(--space-5); font-size: var(--city-lead); color: var(--color-steel-100); }
     .pups { list-style: none; margin: 0 0 var(--space-6); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
     .pups li { margin: 0; display: grid; gap: 2px; }
     .pups :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); margin-bottom: var(--space-1); }
     .nm { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); line-height: 1.2; }
     .pr { font-size: var(--text-xs); color: var(--color-steel-100); }
     @container (min-width: 640px) {
-      .in { padding: var(--space-9) var(--space-6); }
+      .in { padding: var(--city-pad-y) var(--space-6); }
       .pups { grid-template-columns: repeat(6, minmax(0, 1fr)); }
     }
     @container (min-width: 800px) { .pups { gap: var(--space-4); } }

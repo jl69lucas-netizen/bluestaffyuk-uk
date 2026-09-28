@@ -5,6 +5,8 @@ import './checks/layout.js';
 import './checks/a11y.js';
 import './checks/img.js';
 import './checks/nav.js';
+import { readFileSync } from 'node:fs';
+import { cityTypeFit } from './lib/cityTypeFit.js';
 
 /**
  * The city-kit render spec (the London component design pass, Plan 2). Every built page that
@@ -280,27 +282,23 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   // canvas's full-width 1024 was never reached there. Each component's tier now follows ITS OWN
   // BOX — phone below 640px, tablet from 640, desktop from 800 — on the full-width preview and in
   // the column alike, and this probe reads the tier from the box and asserts the layout facts of
-  // that tier (two parts side by side, prints to a row, the square print, the 3xl heading).
+  // that tier (two parts side by side, prints to a row, the square print). Heading SIZE is
+  // city-type-fit's.
   'city-layout-follows-box': {
     present: '.city-kit',
     run: async (page) => page.evaluate(() => {
-      type Fact = ['beside', string, string] | ['row', string, number] | ['square', string] | ['h2-3xl'];
+      type Fact = ['beside', string, string] | ['row', string, number] | ['square', string];
       const SPEC: Record<string, { tablet: Fact[]; desktop: Fact[] }> = {
         '.city-takeaways-ledger': { tablet: [['beside', '.row dt', '.row dd']], desktop: [['beside', '.pic', 'dl']] },
-        '.city-sheet': { tablet: [['row', '.city-pup', 3]], desktop: [['row', '.city-pup', 3], ['square', '.city-pup img'], ['h2-3xl']] },
-        '.city-roster': { tablet: [], desktop: [['h2-3xl']] },
-        '.city-video': { tablet: [['beside', '.side > img', '.facts']], desktop: [['beside', '.grid > .kit-video', '.side'], ['h2-3xl']] },
-        '.city-chapters': { tablet: [['beside', '.ch .media', '.ch p']], desktop: [['beside', '.ch h3', '.ch .media'], ['beside', '.ch .media', '.ch p'], ['h2-3xl']] },
-        '.city-letter': { tablet: [], desktop: [['beside', '.pic', 'blockquote'], ['h2-3xl']] },
-        '.city-faq.has-rail': { tablet: [], desktop: [['beside', '.rail', '.blk'], ['h2-3xl']] },
+        '.city-sheet': { tablet: [['row', '.city-pup', 3]], desktop: [['row', '.city-pup', 3], ['square', '.city-pup img']] },
+        '.city-roster': { tablet: [], desktop: [] },
+        '.city-video': { tablet: [['beside', '.side > img', '.facts']], desktop: [['beside', '.grid > .kit-video', '.side']] },
+        '.city-chapters': { tablet: [['beside', '.ch .media', '.ch p']], desktop: [['beside', '.ch h3', '.ch .media'], ['beside', '.ch .media', '.ch p']] },
+        '.city-letter': { tablet: [], desktop: [['beside', '.pic', 'blockquote']] },
+        '.city-faq.has-rail': { tablet: [], desktop: [['beside', '.rail', '.blk']] },
         '.city-newsletter-notice': { tablet: [['beside', 'figure', '.body']], desktop: [['beside', 'figure', '.body']] },
         '.city-contact': { tablet: [['row', '.pups li', 6], ['row', '.field', 2]], desktop: [['row', '.pups li', 6], ['row', '.field', 3]] },
       };
-      const probe = document.createElement('p');
-      probe.style.fontSize = 'var(--text-3xl)';
-      document.body.append(probe);
-      const px3xl = getComputedStyle(probe).fontSize;
-      probe.remove();
       const out: string[] = [];
       for (const [sel, tiers] of Object.entries(SPEC)) {
         for (const root of Array.from(document.querySelectorAll<HTMLElement>(sel))) {
@@ -321,18 +319,25 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
               const top = els.length ? els[0].getBoundingClientRect().top : 0;
               const n = els.filter((e) => Math.abs(e.getBoundingClientRect().top - top) < 2).length;
               if (n !== f[2]) out.push(`${at}: ${n} ${f[1]} to the first row, not ${f[2]}`);
-            } else if (f[0] === 'square') {
+            } else {
               const r = root.querySelector(f[1])!.getBoundingClientRect();
               if (Math.abs(r.width - r.height) > 2) out.push(`${at}: ${f[1]} is ${Math.round(r.width)}×${Math.round(r.height)}, not square`);
-            } else {
-              const fs = getComputedStyle(root.querySelector('h2')!).fontSize;
-              if (fs !== px3xl) out.push(`${at}: its h2 is ${fs}, not the desktop ${px3xl}`);
             }
           }
         }
       }
       return out;
     }),
+  },
+  // Task 7b item 10 (the user's type-fit ruling): heading caps and lines, paragraph measure
+  // and length, section height, per tier (tests/render/lib/cityTypeFit.ts).
+  'city-type-fit': {
+    present: '.city-kit',
+    run: async (page, viewport) => {
+      const r = await page.evaluate(cityTypeFit, viewport);
+      console.log(`city-type-fit @ ${viewport}px: examined ${r.examined}`);
+      return r.examined ? r.defects : ['city-type-fit examined nothing'];
+    },
   },
   // Learning loop 2026-09-27, L8: the current-section marker, under BOTH motion preferences.
   // Scroll the fourth section to the reading band and read which row is current, on the dial at
@@ -401,5 +406,18 @@ for (const route of ROUTES) {
     }
     expect(probed, `${route} carries no city component a probe knows`).toBeGreaterThan(0);
     expect(failures, `${route} at ${viewport}px`).toEqual([]);
+  });
+}
+
+// The type-fit check against its own fixtures (the meta gate's discipline, for a check that lives
+// in this suite): it must fire on the page built to break it and stay silent on the clean one.
+for (const kind of ['broken', 'good'] as const) {
+  test(`city-type-fit on its known_${kind} fixture`, async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    await page.setContent(readFileSync(new URL(`./fixtures/city/type-fit-${kind}.html`, import.meta.url), 'utf8'));
+    const r = await page.evaluate(cityTypeFit, viewport);
+    expect(r.examined, 'the fixture must be examined').toBeGreaterThan(0);
+    if (kind === 'broken') expect(r.defects.length, 'city-type-fit did not fire on its known_broken fixture').toBeGreaterThan(0);
+    else expect(r.defects, 'city-type-fit cried wolf on its known_good fixture').toEqual([]);
   });
 }

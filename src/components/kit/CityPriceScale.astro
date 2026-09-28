@@ -52,7 +52,7 @@ const count = availablePuppies().length;
     }
     .panel { max-width: 1200px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-md); background: var(--color-brand-soft); }
     .count { display: flex; align-items: baseline; gap: var(--space-3); margin: 0 0 var(--space-4); }
-    .count .n { font-size: var(--text-3xl); line-height: 1; }
+    .count .n { font-size: var(--city-num); line-height: 1; }
     .count .l { font-weight: 600; }
     ol { list-style: none; margin: 0; padding: 0 0 0 var(--space-5); position: relative; display: grid; gap: var(--space-4); }
     ol::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--color-brand); }
@@ -83,7 +83,6 @@ const count = availablePuppies().length;
         gap: var(--space-7); padding: var(--space-6) var(--space-6) var(--space-5);
       }
       .count { flex-direction: column; gap: var(--space-1); margin: 0; max-width: 14ch; }
-      .count .n { font-size: var(--text-4xl); }
       ol { padding: 0; display: flex; gap: var(--space-4); align-items: flex-start; }
       ol::before { left: 0; right: 0; top: 10px; bottom: auto; width: auto; height: 2px; }
       li { flex: 1 1 0; padding-top: var(--space-7); }

@@ -69,8 +69,8 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
     .city-roster { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
     .tray { max-width: 1000px; margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     .head { padding: 0 var(--space-2) var(--space-4); }
-    h2 { margin: 0 0 var(--space-3); font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
-    .lede { margin: 0; max-width: 60ch; color: var(--color-text); }
+    h2 { margin: 0 0 var(--space-3); }
+    .lede { margin: 0; font-size: var(--city-lead); color: var(--color-text); }
     table { width: 100%; border-collapse: collapse; font-size: var(--text-base); color: var(--color-text); }
     caption {
       caption-side: top; text-align: left; padding: 0 var(--space-2) var(--space-3); font-size: var(--text-xs);
@@ -81,7 +81,7 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
     tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
     .who { display: flex; align-items: center; gap: var(--space-3); }
     .who :global(img) { flex: none; display: block; width: 56px; height: 56px; object-fit: cover; border-radius: 50%; background: var(--color-bone-50); }
-    .nm { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; color: var(--color-brand); }
+    .nm { font-family: var(--font-display); font-size: var(--city-h3); font-weight: 600; color: var(--color-brand); }
     /* Scoped selectors carry an attribute each, so a bare .num loses to `tbody td` above; the
        element-qualified pair wins and the price column sits right, as on the canvas. */
     thead th.num, tbody td.num { text-align: right; font-feature-settings: 'tnum'; font-weight: 700; white-space: nowrap; }
@@ -104,11 +104,10 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
       tbody td.num, tbody tr:last-child td.num { position: absolute; right: var(--space-4); top: var(--space-3); font-size: var(--text-lg); color: var(--color-text); }
       tbody td.num::before { content: none; }
     }
-    @media (min-width: 1024px) { .city-roster { padding: var(--space-10) var(--space-5); } }
+    @media (min-width: 1024px) { .city-roster { padding: var(--space-7) var(--space-5); } }
     @container (min-width: 752px) {
-      .tray { padding: var(--space-7) var(--space-7) var(--space-5); }
+      .tray { padding: var(--space-6) var(--space-6) var(--space-5); }
       .head { padding: 0 0 var(--space-5); }
-      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
       caption, .foot { padding-left: 0; margin-left: 0; }
     }
   }

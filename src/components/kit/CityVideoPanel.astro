@@ -83,8 +83,8 @@ const pieces = (text: string) => text.split(CODE);
        copy switches where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-video { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
     .tray { max-width: 1160px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
-    h2 { margin: 0 0 var(--space-2); max-width: 26ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
-    .lede { margin: 0 0 var(--space-5); max-width: 64ch; color: var(--color-text); }
+    h2 { margin: 0 0 var(--space-2); }
+    .lede { margin: 0 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); }
     .grid { display: grid; gap: var(--space-4); }
     /* VideoEmbed's caption reads --kit-caption (convention 3). Its muted default measures 4.49:1
        on the steel-100 tray, a hundredth under AA, so the tray re-points it at --color-ink-2. */
@@ -105,7 +105,7 @@ const pieces = (text: string) => text.split(CODE);
     .side { margin: 0; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--space-3); align-content: start; }
     .side > :global(img) { display: block; width: 120px; height: 120px; object-fit: cover; border-radius: var(--radius-md); background: var(--color-bone-50); }
     .who { margin: 0; align-self: center; font-size: var(--text-sm); color: var(--color-ink-2); }
-    .who b { display: block; font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-brand); }
+    .who b { display: block; font-family: var(--font-display); font-size: var(--city-h3); color: var(--color-brand); }
     .facts { grid-column: 1 / -1; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-steel-300); }
     .facts li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-steel-300); font-size: var(--text-sm); line-height: 1.45; }
     .facts b { color: var(--color-brand); }
@@ -116,9 +116,8 @@ const pieces = (text: string) => text.split(CODE);
       .who { align-self: end; }
       .facts { grid-column: 2; }
     }
-    @container (min-width: 616px) { .tray { padding: var(--space-7) var(--space-6); } }
+    @container (min-width: 616px) { .tray { padding: var(--space-6) var(--space-6); } }
     @container (min-width: 776px) {
-      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
       .grid { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
       .side { grid-template-columns: 1fr; }
       .side > :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 3; }

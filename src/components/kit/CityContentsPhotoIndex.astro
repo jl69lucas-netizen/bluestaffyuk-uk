@@ -90,8 +90,8 @@ const NOSCRIPT_CSS = '.city-contents-photo-index [data-rest]{display:block!impor
     figure { margin: 0; background: var(--color-surface); }
     figure :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; }
     .body { padding: var(--space-6) var(--space-5) var(--space-7); }
-    h2 { margin: 0 0 var(--space-3); max-width: 22ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
-    .lede { margin: 0 0 var(--space-6); max-width: 56ch; color: var(--color-ink-2); }
+    h2 { margin: 0 0 var(--space-3); }
+    .lede { margin: 0 0 var(--space-6); font-size: var(--city-lead); color: var(--color-ink-2); }
     ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0 var(--space-6); }
     li { border-top: 1px solid var(--color-steel-300); }
     a, .more {
@@ -120,13 +120,13 @@ const NOSCRIPT_CSS = '.city-contents-photo-index [data-rest]{display:block!impor
     }
     @media (min-width: 640px) and (max-width: 1023px) { figure :global(img) { aspect-ratio: 21 / 9; } }
     @media (min-width: 1024px) {
-      .city-contents-photo-index { padding: var(--space-9) var(--space-5); }
+      .city-contents-photo-index { padding: var(--space-8) var(--space-5); }
       .panel { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
       figure { display: flex; flex-direction: column; }
       figure :global(img) { flex: 1; aspect-ratio: auto; min-height: 100%; }
       .body { padding: var(--space-8) var(--space-7); }
     }
-    @media (min-width: 1200px) { .body { padding: var(--space-9) var(--space-8); } }
+    @media (min-width: 1200px) { .body { padding: var(--space-8) var(--space-8); } }
     @media (prefers-reduced-motion: reduce) { a svg, .more svg { transition: none; } }
   }
 </style>

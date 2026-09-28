@@ -88,16 +88,16 @@ const brief = [
        root has no gutter, so those are the query widths as written; a full-width copy switches
        where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-faq { container-type: inline-size; background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
-    .in { max-width: 1200px; margin: 0 auto; padding: var(--space-7) var(--space-4) var(--space-8); display: grid; gap: var(--space-6); }
+    .in { max-width: 1200px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); display: grid; gap: var(--space-6); }
     figure { margin: 0; }
     .rail img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); }
     figcaption { margin-top: var(--space-2); font-size: var(--text-sm); line-height: 1.45; color: var(--color-steel-100); }
     .brief { display: none; margin: var(--space-5) 0 0; padding: 0; border-top: 1px solid var(--color-steel-500); }
     .brief div { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-steel-500); }
-    dt { font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); line-height: 1.3; }
+    dt { font-family: var(--font-display); font-weight: 600; font-size: var(--city-h3); line-height: 1.3; }
     dd { margin: 2px 0 0; font-size: var(--text-sm); line-height: 1.45; color: var(--color-steel-100); }
-    h2 { margin: 0; max-width: 26ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); color: var(--color-text-on-inverse); text-wrap: balance; }
-    .lede { margin: var(--space-3) 0 var(--space-5); max-width: 60ch; color: var(--color-steel-100); }
+    h2 { margin: 0; color: var(--color-text-on-inverse); }
+    .lede { margin: var(--space-3) 0 var(--space-5); font-size: var(--city-lead); color: var(--color-steel-100); }
     /* A block without the rail keeps the ledger's own measure (the canvas column), so a
        question and its plus stay within one glance when the band is full width. */
     .city-faq:not(.has-rail) .blk { max-width: 780px; }
@@ -111,23 +111,21 @@ const brief = [
     summary:hover { background: var(--color-steel-700); }
     summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     .n { flex: none; width: 2.2em; font-size: var(--text-sm); font-weight: 700; font-feature-settings: "tnum"; color: var(--color-cta-soft); }
-    h3 { flex: 1; margin: 0; font-size: var(--text-lg); line-height: 1.35; color: var(--color-text-on-inverse); }
+    h3 { flex: 1; margin: 0; color: var(--color-text-on-inverse); }
     .pm { order: 2; flex: none; position: relative; width: 16px; height: 16px; align-self: center; color: var(--color-cta); }
     .pm::before, .pm::after { content: ""; position: absolute; left: 0; top: 7px; width: 16px; height: 2px; background: currentColor; transition: transform var(--dur-base) var(--ease-out); }
     .pm::after { transform: rotate(90deg); }
     details[open] .pm::after { transform: rotate(0deg); }
     details > p { margin: 0; padding: 0 var(--space-1) var(--space-5) calc(2.2em * 15 / 17 + var(--space-3) + var(--space-1)); max-width: 64ch; color: var(--color-steel-100); }
     @container (min-width: 640px) {
-      .in { padding: var(--space-9) var(--space-6); }
+      .in { padding: var(--city-pad-y) var(--space-6); }
       .rail img { aspect-ratio: 21 / 9; }
     }
     @container (min-width: 800px) {
       .has-rail .in { grid-template-columns: minmax(0, 4fr) minmax(0, 9fr); gap: var(--space-8); align-items: start; }
-      .in { padding: var(--space-10) var(--space-6); }
       .rail { position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
       .rail img { aspect-ratio: 4 / 3; }
       .brief { display: grid; }
-      h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
     }
     @media (prefers-reduced-motion: reduce) { summary, .pm::before, .pm::after { transition: none; } }
   }
