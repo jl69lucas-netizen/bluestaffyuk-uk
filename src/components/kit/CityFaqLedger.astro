@@ -6,19 +6,21 @@
 // sticky beside the ledger from 1024px, a short strip on top on a phone.
 //
 // A CITY PAGE MOUNTS THREE, at the template's three places (plan2-notes, Task 9), not together
-// as on the canvas: `start` carries the numbering across them (01–06, 07–12, 13–19), and the
+// as on the canvas: `start` carries the numbering across them (01–06, 07–12, 13–18 on the specimen), and the
 // rail goes with the top block only. The rows come from the page's question file, never from the
 // canvas fragment; each question is an `<h3>` inside its `<summary>` and is Title Cased at render
 // (Faq.astro's contract; rules/headings.md), while the FAQPage node keeps the file's wording
 // (src/lib/cityKit.ts `faqPageNode`, fed the same rows).
 //
-// THE RAIL'S FIGURES ARE DATA (src/lib/cityKit.ts): the deposit and its ruling, the delivery
-// band. A guarantee row is printed only when data/settings.json `guarantee_days` is set; today
-// it is null, so there is none (working rule 9). Conventions 2 (`.on-inverse` sets the ring), 4, 6.
+// THE RAIL'S FIGURES AND WORDS ARE DATA (src/lib/cityKit.ts): the deposit and its ruling
+// (`depositBrief`), the delivery band and how a puppy travels (`transportLine`, from
+// data/settings.json `delivery_note`). The guarantee row is `guaranteeRow()`, printed only when
+// data/settings.json carries both `guarantee_days` and `guarantee_note`; today the length is
+// null, so there is none (working rule 9). Conventions 2 (`.on-inverse` sets the ring), 4, 6.
 import type { HTMLAttributes } from 'astro/types';
 import { titleCase } from '../../lib/headings';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
-import { DELIVERY_BAND, DEPOSIT, guaranteeDays } from '../../lib/cityKit';
+import { DELIVERY_BAND, DEPOSIT, depositBrief, guaranteeRow, transportLine } from '../../lib/cityKit';
 
 export interface CityFaqRow { q: string; a: string }
 type Props = HTMLAttributes<'section'> & {
@@ -35,11 +37,11 @@ type Props = HTMLAttributes<'section'> & {
 const { heading, lede, items, start = 1, rail, block, class: cls, ...rest } = Astro.props;
 const pad = (n: number) => String(n).padStart(2, '0');
 const photo = rail ? servedPhoto(rail.photo) : null;
-const days = guaranteeDays();
+const guarantee = guaranteeRow();
 const brief = [
-  { t: `${DEPOSIT} deposit`, d: 'Books your viewing, reserves your puppy and comes off the price.' },
-  { t: `${DELIVERY_BAND} delivery`, d: 'By DEFRA-approved transport, priced by distance.' },
-  ...(days ? [{ t: `${days}-day guarantee`, d: 'A genetic health guarantee with every puppy.' }] : []),
+  { t: `${DEPOSIT} deposit`, d: depositBrief },
+  { t: `${DELIVERY_BAND} delivery`, d: transportLine },
+  ...(guarantee ? [guarantee] : []),
 ];
 ---
 <section {...rest} class:list={['city-kit', 'city-faq', 'on-inverse', { 'has-rail': rail }, cls]} data-faq-block={block}>

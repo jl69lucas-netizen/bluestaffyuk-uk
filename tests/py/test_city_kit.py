@@ -400,6 +400,26 @@ def test_built_city_faq_ledger_blocks_number_on_and_carry_one_rail():
     assert re.search(r'alt="([^"]*)"', src.group(0)).group(1) in served_alts()[src.group(1)]
 
 
+def test_the_faq_rail_prints_its_facts_from_the_one_source():
+    """Task 7b review, item 7: the rail's brief types no fact beside src/lib/cityKit.ts. The
+    deposit phrase and the transport line are cityKit exports (the transport from
+    data/settings.json `delivery_note`), and the guarantee row is `guaranteeRow()`, which is null
+    while `guarantee_days` is null and never carries wording the data does not."""
+    src = (KIT / "CityFaqLedger.astro").read_text(encoding="utf-8")
+    code = src.split("---", 2)[1]
+    for literal in ("DEFRA", "Books your viewing", "genetic", "-day guarantee"):
+        assert literal not in code, literal
+    for name in ("depositBrief", "transportLine", "guaranteeRow"):
+        assert name in code, name
+    kit = (ROOT / "src/lib/cityKit.ts").read_text(encoding="utf-8")
+    assert "delivery_note" in kit and "guarantee_note" in kit
+    settings = json.loads((ROOT / "data/settings.json").read_text())
+    rail = _text(section("city-faq-ledger").split('class="rail"', 1)[1].split("</dl>", 1)[0])
+    assert "By DEFRA-approved transport, priced by distance." in rail
+    assert settings["delivery_note"].endswith("by DEFRA-approved transport, priced by distance")
+    assert "Books your viewing and reserves your puppy, and it comes off the price." in rail
+
+
 def test_no_heading_on_the_city_preview_repeats_an_faq_question():
     """plan2-notes (from the Task 9 review): no real section heading may repeat an FAQ question."""
     html = built()

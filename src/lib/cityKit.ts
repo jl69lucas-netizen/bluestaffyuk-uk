@@ -35,11 +35,34 @@ export const TOWN = settings.address.city;
 /** rules/puppies.md `delivery-band-on-every-card`, in the pack's canonical words. */
 export const deliveryLine = `UK home delivery ${DELIVERY_BAND} by distance · or collect in ${TOWN}`;
 
-/** The deposit, in the user's ruling (2026-09-27). No refund wording: see the header. */
-export const depositLine = `${DEPOSIT} books your viewing and reserves your puppy, and it comes off the price.`;
+/** What the deposit does, in the user's ruling (2026-09-27). No refund wording: see the header. */
+const DEPOSIT_DOES = 'books your viewing and reserves your puppy, and it comes off the price';
+const sentence = (s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}.`;
+
+/** The deposit line: "£500 books your viewing …". */
+export const depositLine = `${DEPOSIT} ${DEPOSIT_DOES}.`;
+/** The same ruling without the figure, for a row whose label already carries it ("£500 deposit"). */
+export const depositBrief = sentence(DEPOSIT_DOES);
+
+/** How a puppy travels, from data/settings.json `delivery_note` ("UK home delivery by
+ *  DEFRA-approved transport, priced by distance"): "By DEFRA-approved transport, priced by
+ *  distance." A note without its "by …" clause stops the build rather than print a guess. */
+export const transportLine = (() => {
+  const m = settings.delivery_note.match(/\bby (.+)$/);
+  if (!m) throw new Error(`cityKit: data/settings.json delivery_note has no "by …" clause: ${settings.delivery_note}`);
+  return sentence(`by ${m[1]}`);
+})();
 
 /** The guarantee's length, or null while the breeder has not given one (rule 9). */
 export const guaranteeDays = (): number | null => (settings as { guarantee_days: number | null }).guarantee_days;
+
+/** A guarantee row ("<n>-day guarantee" over the breeder's own words), or null. It prints only
+ *  when data/settings.json carries BOTH the length (`guarantee_days`) and the wording
+ *  (`guarantee_note`): no component writes what a guarantee covers (working rule 9). */
+export const guaranteeRow = (): { t: string; d: string } | null => {
+  const s = settings as { guarantee_days: number | null; guarantee_note?: string };
+  return s.guarantee_days && s.guarantee_note ? { t: `${s.guarantee_days}-day guarantee`, d: s.guarantee_note } : null;
+};
 
 /** The FAQPage node for a city page's questions: EXACTLY the rows its FAQ blocks render, in
  *  their file wording (the blocks Title Case the visible heading at render, as Faq.astro does). */
