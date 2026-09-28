@@ -106,5 +106,12 @@ const count = availablePuppies().length;
       li.range { flex: 0 0 min-content; }
       li.fork { flex: 1.4 1 0; }
     }
+    /* Below 840px the count beside the line leaves the four stops too little room: the fork's
+       figures ran up to 53px off the panel at 640 (the Task 8 quality review, I1). The count
+       heads the panel instead, as it does on a phone, and the line takes the panel's width. */
+    @media (640px <= width < 840px) {
+      .panel { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+      .count { flex-direction: row; align-items: baseline; gap: var(--space-3); max-width: none; }
+    }
   }
 </style>

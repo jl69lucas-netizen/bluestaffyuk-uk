@@ -102,6 +102,19 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
       tbody td.num, tbody tr:last-child td.num { position: absolute; right: var(--space-4); top: var(--space-3); font-size: var(--text-lg); color: var(--color-text); }
       tbody td.num::before { content: none; }
     }
+    /* The site's `.stack-table` stacks at `max-width: 640px`, a viewport edge that INCLUDES 640,
+       while this table's tier reads its own box from 640 up. At a 640px box the two met and the
+       rows were blocks without the slip's layout (the Task 8 quality review's 640 run). From a
+       640px box the table is a table, whatever the viewport. */
+    @container (width >= 640px) {
+      table { display: table; }
+      caption { display: table-caption; }
+      thead { display: table-header-group; position: static; }
+      tbody { display: table-row-group; }
+      tr { display: table-row; border-bottom: 0; padding: 0; }
+      th, td { display: table-cell; }
+      tbody td[data-label]::before { content: none; }
+    }
     @container (width >= 800px) {
       .tray { max-width: min(1000px, calc(100% - 2 * var(--space-5))); margin-block: var(--space-2); }
       .tray { padding: var(--space-6) var(--space-6) var(--space-5); }

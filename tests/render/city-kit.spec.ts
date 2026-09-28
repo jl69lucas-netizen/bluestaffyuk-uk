@@ -78,6 +78,37 @@ async function emailMessages(page: Page, form: string, email: string): Promise<s
   return out;
 }
 
+/** The price scale's figures stay on the panel and on the number line (the Task 8 quality
+ *  review, I1): every figure's PAINTED text (a Range over its glyphs, so a no-wrap figure that
+ *  overflows its own box is caught) ends inside the panel's content edge and, where the stops are
+ *  laid on a horizontal line (from 640px), inside the line's right end. Returns the defects. */
+async function priceScaleSpill(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const out: string[] = [];
+    const root = document.querySelector('.city-scale');
+    if (!root) return out;
+    const panel = root.querySelector('.panel')!;
+    const ps = getComputedStyle(panel);
+    const pr = panel.getBoundingClientRect();
+    const panelRight = pr.right - parseFloat(ps.paddingRight);
+    const panelLeft = pr.left + parseFloat(ps.paddingLeft);
+    const ol = root.querySelector('ol')!;
+    const horizontal = getComputedStyle(ol).display === 'flex';
+    const lineRight = ol.getBoundingClientRect().right;
+    const figs = Array.from(root.querySelectorAll('[data-figure]'))
+      .flatMap((f) => (f.classList.contains('n') ? [f] : Array.from(f.querySelectorAll('.n'))));
+    if (!figs.length) return ['the price scale has no figure to measure'];
+    for (const f of figs) {
+      const r = document.createRange(); r.selectNodeContents(f);
+      const b = r.getBoundingClientRect();
+      const name = (f.textContent || '').replace(/\s+/g, ' ').trim();
+      if (b.right > panelRight + 1 || b.left < panelLeft - 1) out.push(`"${name}" paints ${Math.round(Math.max(b.right - panelRight, panelLeft - b.left))}px outside the panel`);
+      else if (horizontal && b.right > lineRight + 1) out.push(`"${name}" runs ${Math.round(b.right - lineRight)}px past the number line`);
+    }
+    return out;
+  });
+}
+
 /** Each probe: the selector that says its component is on the page, and what it measures. */
 const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-hero-filmstrip': {
@@ -96,17 +127,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   },
   'city-price-scale': {
     present: '.city-scale',
-    run: async (page) => {
-      const out = await allVisible(page, 'data-figure');
-      // The stops are laid on one line: every figure's box stays inside the panel.
-      const spill = await page.evaluate(() => {
-        const panel = document.querySelector('.city-scale .panel')!.getBoundingClientRect();
-        return Array.from(document.querySelectorAll('.city-scale [data-figure]'))
-          .filter((f) => { const b = f.getBoundingClientRect(); return b.left < panel.left - 1 || b.right > panel.right + 1; }).length;
-      });
-      if (spill) out.push(`${spill} figure(s) run outside the panel`);
-      return out;
-    },
+    run: async (page) => [...(await allVisible(page, 'data-figure')), ...(await priceScaleSpill(page))],
   },
   'city-trust-ledger': {
     present: '.city-trust',
@@ -495,7 +516,9 @@ test('city-layout-follows-box fails a page it cannot examine', async ({ page }, 
 for (const route of ROUTES) {
   test(`city type and layout at the tier edges on ${route}`, async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'vp1280', 'run once, at the edge widths it sets itself');
-    for (const width of [660, 1160]) {
+    // 640 is the tablet edge itself and 667 a phone held landscape (iPhone SE), where the price
+    // scale first lays its stops on one line (the Task 8 quality review, I1).
+    for (const width of [640, 660, 667, 1160]) {
       await page.setViewportSize({ width, height: 900 });
       const res = await page.goto(route);
       expect(res?.status()).toBe(200);
@@ -505,7 +528,8 @@ for (const route of ROUTES) {
       const l = await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER });
       console.log(`${route} @ ${width}px: city-type-fit examined ${t.examined}, city-layout-follows-box examined ${l.examined}`);
       expect(t.examined).toBeGreaterThan(0);
-      expect([...t.defects, ...l.defects], `${route} at ${width}px`).toEqual([]);
+      const scale = await priceScaleSpill(page);
+      expect([...t.defects, ...l.defects, ...scale], `${route} at ${width}px`).toEqual([]);
     }
   });
 }
