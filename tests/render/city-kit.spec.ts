@@ -20,7 +20,7 @@ import './checks/nav.js';
  * dial's and rule 10's boundary — is measured for the city set. A component that fails here is
  * fixed in the component, never excused here.
  */
-const ROUTES = ['/kit-preview/city/'];
+const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/'];
 const REUSED = [
   'layout-no-horizontal-overflow',
   'layout-min-font-size',
@@ -87,7 +87,8 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-trust-ledger': {
     present: '.city-trust',
     run: (page) => allVisible(page, 'data-trust-item'),
-  },  'city-contents-photo-index': {
+  },
+  'city-contents-photo-index': {
     present: '.city-contents-photo-index',
     run: async (page, viewport) => {
       const out = await allVisible(page, 'data-contents');
@@ -143,6 +144,11 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       if (!open) out.push('pressing the key does not open the sheet');
       if ((await opener.getAttribute('aria-expanded')) !== 'true') out.push('the key does not report aria-expanded="true"');
       await page.keyboard.press('Escape');
+      // The dialog's `close` event, which resets the key, is dispatched as a task after Escape:
+      // read the key once it has run (up to 1s), not in the same tick — the probe raced it on
+      // the chrome band (/kit-preview/city-page/) about one run in three.
+      await page.waitForFunction(() => document.querySelector('[data-city-jump-stepper] [data-jump-open]')
+        ?.getAttribute('aria-expanded') === 'false', null, { timeout: 1000 }).catch(() => {});
       const closed = await band.locator('[data-jump-sheet]').evaluate((d) => !(d as HTMLDialogElement).open);
       if (!closed) out.push('Escape does not close the sheet');
       if ((await opener.getAttribute('aria-expanded')) !== 'false') out.push('after Escape the key still reports aria-expanded="true"');
@@ -268,6 +274,65 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid name is not described by a painted error line');
       return out;
     },
+  },
+  // The Task 7b review, item 1: the in-body components are containers, and on a city page the
+  // body is the column beside the dial (656px at 1024, 832px at 1280), so a tier set for the
+  // canvas's full-width 1024 was never reached there. Each component's tier now follows ITS OWN
+  // BOX — phone below 640px, tablet from 640, desktop from 800 — on the full-width preview and in
+  // the column alike, and this probe reads the tier from the box and asserts the layout facts of
+  // that tier (two parts side by side, prints to a row, the square print, the 3xl heading).
+  'city-layout-follows-box': {
+    present: '.city-kit',
+    run: async (page) => page.evaluate(() => {
+      type Fact = ['beside', string, string] | ['row', string, number] | ['square', string] | ['h2-3xl'];
+      const SPEC: Record<string, { tablet: Fact[]; desktop: Fact[] }> = {
+        '.city-takeaways-ledger': { tablet: [['beside', '.row dt', '.row dd']], desktop: [['beside', '.pic', 'dl']] },
+        '.city-sheet': { tablet: [['row', '.city-pup', 3]], desktop: [['row', '.city-pup', 3], ['square', '.city-pup img'], ['h2-3xl']] },
+        '.city-roster': { tablet: [], desktop: [['h2-3xl']] },
+        '.city-video': { tablet: [['beside', '.side > img', '.facts']], desktop: [['beside', '.grid > .kit-video', '.side'], ['h2-3xl']] },
+        '.city-chapters': { tablet: [['beside', '.ch .media', '.ch p']], desktop: [['beside', '.ch h3', '.ch .media'], ['beside', '.ch .media', '.ch p'], ['h2-3xl']] },
+        '.city-letter': { tablet: [], desktop: [['beside', '.pic', 'blockquote'], ['h2-3xl']] },
+        '.city-faq.has-rail': { tablet: [], desktop: [['beside', '.rail', '.blk'], ['h2-3xl']] },
+        '.city-newsletter-notice': { tablet: [['beside', 'figure', '.body']], desktop: [['beside', 'figure', '.body']] },
+        '.city-contact': { tablet: [['row', '.pups li', 6], ['row', '.field', 2]], desktop: [['row', '.pups li', 6], ['row', '.field', 3]] },
+      };
+      const probe = document.createElement('p');
+      probe.style.fontSize = 'var(--text-3xl)';
+      document.body.append(probe);
+      const px3xl = getComputedStyle(probe).fontSize;
+      probe.remove();
+      const out: string[] = [];
+      for (const [sel, tiers] of Object.entries(SPEC)) {
+        for (const root of Array.from(document.querySelectorAll<HTMLElement>(sel))) {
+          const w = root.getBoundingClientRect().width;
+          const tier = w >= 800 ? 'desktop' : w >= 640 ? 'tablet' : null;
+          if (!tier) continue;
+          const at = `${sel} (${Math.round(w)}px box, ${tier})`;
+          for (const f of tiers[tier]) {
+            if (f[0] === 'beside') {
+              const a = root.querySelector(f[1]); const b = root.querySelector(f[2]);
+              if (!a || !b) { out.push(`${at}: ${f[1]} or ${f[2]} missing`); continue; }
+              const ra = a.getBoundingClientRect(); const rb = b.getBoundingClientRect();
+              if (!(ra.right <= rb.left + 1 && ra.top < rb.bottom && rb.top < ra.bottom)) {
+                out.push(`${at}: ${f[1]} is not beside ${f[2]}`);
+              }
+            } else if (f[0] === 'row') {
+              const els = Array.from(root.querySelectorAll(f[1])).filter((e) => e.getBoundingClientRect().height > 0);
+              const top = els.length ? els[0].getBoundingClientRect().top : 0;
+              const n = els.filter((e) => Math.abs(e.getBoundingClientRect().top - top) < 2).length;
+              if (n !== f[2]) out.push(`${at}: ${n} ${f[1]} to the first row, not ${f[2]}`);
+            } else if (f[0] === 'square') {
+              const r = root.querySelector(f[1])!.getBoundingClientRect();
+              if (Math.abs(r.width - r.height) > 2) out.push(`${at}: ${f[1]} is ${Math.round(r.width)}×${Math.round(r.height)}, not square`);
+            } else {
+              const fs = getComputedStyle(root.querySelector('h2')!).fontSize;
+              if (fs !== px3xl) out.push(`${at}: its h2 is ${fs}, not the desktop ${px3xl}`);
+            }
+          }
+        }
+      }
+      return out;
+    }),
   },
   // Learning loop 2026-09-27, L8: the current-section marker, under BOTH motion preferences.
   // Scroll the fourth section to the reading band and read which row is current, on the dial at

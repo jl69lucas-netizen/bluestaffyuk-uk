@@ -233,11 +233,13 @@ const ERR: Record<string, string> = {
     /* Underlined: the site's preflight drops it, and colour alone does not tell a link apart
        on the band (WCAG 1.4.1). */
     [data-layout='grid'] .note a { color: var(--color-link-on-inverse); text-decoration: underline; text-underline-offset: 2px; }
-    @container (min-width: 768px) {
+    /* The grid layout's tiers are the city band's box (CityContactLineup): tablet from 640px,
+       desktop from 800px, so the column beside a city dial reaches them (the Task 7b review). */
+    @container (min-width: 640px) {
       .kit-contact[data-layout='grid'] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-4); }
       [data-layout='grid'] .wide, [data-layout='grid'] .go { grid-column: 1 / -1; }
     }
-    @container (min-width: 1024px) {
+    @container (min-width: 800px) {
       .kit-contact[data-layout='grid'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
   }

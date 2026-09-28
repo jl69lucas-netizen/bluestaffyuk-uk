@@ -19,6 +19,7 @@ import settings from '../../../data/settings.json';
 import VideoEmbed from './VideoEmbed.astro';
 import { puppyImage } from '../../lib/puppyImages';
 import { focusClass } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
 
 export interface VideoFact { label: string; text: string }
 type Props = HTMLAttributes<'section'> & {
@@ -32,8 +33,22 @@ type Props = HTMLAttributes<'section'> & {
   poster: string;
   side: { photo: string; alt: string; name: string; text: string };
   facts: VideoFact[];
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
 };
-const { heading, lede, videoId, videoTitle, caption, poster, side, facts, class: cls, ...rest } = Astro.props;
+const { heading, lede, videoId, videoTitle, caption, poster, side, facts, fit = 'column', class: cls, ...rest } = Astro.props;
+// The tray is the box less 12px gutters, at most 1160px, less its padding (16px; 32px from tablet);
+// on desktop the screen and the side panel split it 1.9fr / 1fr with a 24px gap.
+const posterSizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1184px) - 56px)`,
+  tablet: (B) => `calc(min(${B}, 1184px) - 88px)`,
+  desktop: (B) => `calc((min(${B}, 1184px) - 112px) * 19 / 29)`,
+});
+const sideSizes = citySizes(fit, {
+  phone: () => '120px',
+  tablet: () => '200px',
+  desktop: (B) => `calc((min(${B}, 1184px) - 112px) * 10 / 29)`,
+});
 if (!(settings.youtube_embeds as string[]).includes(videoId)) {
   throw new Error(`CityVideoPanel: ${videoId} is not in data/settings.json youtube_embeds (working rule 14)`);
 }
@@ -48,10 +63,10 @@ const pieces = (text: string) => text.split(CODE);
     <p class="lede">{lede}</p>
     <div class="grid">
       <VideoEmbed id={videoId} title={videoTitle} caption={caption} poster={poster} playLabel="Play the film"
-        posterSizes="(min-width: 1024px) 560px, calc(100vw - 56px)" />
+        posterSizes={posterSizes} />
       <aside class="side" aria-label={`About ${side.name}`}>
         <Image src={puppyImage(side.photo)} alt={side.alt} widths={[240, 400, 600]}
-          sizes="(min-width: 1024px) 300px, (min-width: 640px) 200px, 120px" class={focusClass(side.photo)} loading="lazy" decoding="async" />
+          sizes={sideSizes} class={focusClass(side.photo)} loading="lazy" decoding="async" />
         <p class="who"><b>{side.name}</b>{side.text}</p>
         <ul class="facts">{facts.map((f) => <li><b>{f.label}:</b> {pieces(f.text).map((s, i) => (i % 2 ? <span class="nb">{s}</span> : s))}</li>)}</ul>
       </aside>
@@ -61,9 +76,11 @@ const pieces = (text: string) => text.split(CODE);
 <style>
   @layer components {
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
-       thresholds are the canvas's 640/768/1024 less this root's own gutters (12px a side,
-       24px from 1024), so a full-width copy switches exactly where the canvas frame did. */
+       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
+       1280) — not the viewport. The tiers are the section's own box, tablet from 640px and
+       desktop from 800px (the Task 7b review: the canvas's 1024 was never reached in the
+       column), less this root's own gutters (12px a side): 616px and 776px. A full-width
+       copy switches where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-video { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
     .tray { max-width: 1160px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     h2 { margin: 0 0 var(--space-2); max-width: 26ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
@@ -93,14 +110,14 @@ const pieces = (text: string) => text.split(CODE);
     .facts li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-steel-300); font-size: var(--text-sm); line-height: 1.45; }
     .facts b { color: var(--color-brand); }
     .nb { white-space: nowrap; }
-    @container (min-width: 616px) and (max-width: 975px) {
+    @container (min-width: 616px) and (max-width: 775px) {
       .side { grid-template-columns: 200px minmax(0, 1fr); column-gap: var(--space-5); align-items: start; }
       .side > :global(img) { grid-row: 1 / span 2; width: 200px; height: 200px; }
       .who { align-self: end; }
       .facts { grid-column: 2; }
     }
-    @container (min-width: 744px) { .tray { padding: var(--space-7) var(--space-6); } }
-    @container (min-width: 976px) {
+    @container (min-width: 616px) { .tray { padding: var(--space-7) var(--space-6); } }
+    @container (min-width: 776px) {
       h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
       .grid { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
       .side { grid-template-columns: 1fr; }

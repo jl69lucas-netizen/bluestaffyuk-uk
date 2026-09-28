@@ -18,7 +18,7 @@ import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import { puppyImage } from '../../lib/puppyImages';
 import { focusClass, puppyAlt, servedPhoto } from '../../lib/imageFocus';
-import { availablePuppies, DELIVERY_BAND, deliveryLine, depositLine, money, sexWord } from '../../lib/cityKit';
+import { availablePuppies, citySizes, DELIVERY_BAND, deliveryLine, depositLine, money, sexWord, type CityFit } from '../../lib/cityKit';
 
 type Props = HTMLAttributes<'section'> & {
   heading: string;
@@ -26,10 +26,24 @@ type Props = HTMLAttributes<'section'> & {
   /** The family photograph: a served file named in data/image-focus.json. */
   photo: string;
   caption?: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
 };
-const { heading, lede, photo, caption, class: cls, ...rest } = Astro.props;
+const { heading, lede, photo, caption, fit = 'column', class: cls, ...rest } = Astro.props;
 const fam = servedPhoto(photo);
 const pups = availablePuppies();
+// The tray is the box less the root's gutters (12px a side; 24px from a 1024px viewport, which
+// the desktop lines assume), at most 1200px, less its own padding (12px; 32px from tablet).
+const famSizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1224px) - 64px)`,
+  tablet: (B) => `calc((min(${B}, 1224px) - 120px) * 5 / 12)`,
+  desktop: (B) => `calc((min(${B}, 1248px) - 144px) * 5 / 12)`,
+});
+const printSizes = citySizes(fit, {
+  phone: (B) => `calc((min(${B}, 1224px) - 60px) / 2 - 16px)`,
+  tablet: (B) => `calc((min(${B}, 1224px) - 120px) / 3 - 16px)`,
+  desktop: (B) => `calc((min(${B}, 1248px) - 160px) / 3 - 16px)`,
+});
 // The canonical line, with its band held on one line (the canvas's nowrap; plan2-notes Task 7).
 // Split from deliveryLine itself, so the words stay the one source's.
 const [delivPre, delivPost] = deliveryLine.split(DELIVERY_BAND);
@@ -38,7 +52,7 @@ const [delivPre, delivPost] = deliveryLine.split(DELIVERY_BAND);
   <div class="tray">
     <div class="head">
       <figure class="fam">
-        <img src={fam.file} srcset={fam.srcset} sizes="(min-width: 768px) 460px, calc(100vw - 40px)"
+        <img src={fam.file} srcset={fam.srcset} sizes={famSizes}
           alt={fam.alt} width={fam.w} height={fam.h} class={focusClass(photo)} loading="lazy" decoding="async" />
         {caption && <figcaption>{caption}</figcaption>}
       </figure>
@@ -51,7 +65,7 @@ const [delivPre, delivPost] = deliveryLine.split(DELIVERY_BAND);
       {pups.map((p) => (
         <article class="city-pup" data-puppy>
           <Image src={puppyImage(p.card_photo)} alt={puppyAlt(p, 'scene')}
-            widths={[240, 400, 600]} sizes="(min-width: 1024px) 360px, (min-width: 768px) 30vw, 45vw"
+            widths={[240, 400, 600]} sizes={printSizes}
             class={focusClass(p.card_photo)} loading="lazy" decoding="async" />
           <div class="txt">
             <div class="top"><h3>{p.name}</h3><p class="price">{money(p.price_gbp)}</p></div>
@@ -71,9 +85,11 @@ const [delivPre, delivPost] = deliveryLine.split(DELIVERY_BAND);
 <style>
   @layer components {
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
-       thresholds are the canvas's 640/768/1024 less this root's own gutters (12px a side,
-       24px from 1024), so a full-width copy switches exactly where the canvas frame did. */
+       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
+       1280) — not the viewport. The tiers are the section's own box, tablet from 640px and
+       desktop from 800px (the Task 7b review: the canvas's 1024 was never reached in the
+       column), less this root's own gutters (12px a side, 24px from a 1024px viewport): 592px and 752px. A full-width
+       copy switches where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-sheet { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
     .tray { max-width: 1200px; margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     .head { display: grid; gap: var(--space-4); margin-bottom: var(--space-5); padding: 0 var(--space-2); }
@@ -111,19 +127,19 @@ const [delivPre, delivPost] = deliveryLine.split(DELIVERY_BAND);
     .ask:focus-visible { outline: none; }
     .city-pup:hover .ask svg { transform: translateX(3px); }
     .foot { margin: var(--space-4) var(--space-2) 0; font-size: var(--text-sm); color: var(--color-ink-2); }
-    @container (max-width: 743px) {
+    @container (max-width: 591px) {
       .top { flex-direction: column; align-items: flex-start; }
       .ask { font-size: var(--text-xs); gap: 0; }
       .ask svg { display: none; }
     }
-    @container (min-width: 744px) {
+    @container (min-width: 592px) {
       .tray { padding: var(--space-7) var(--space-6) var(--space-5); }
       .head { padding: 0; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-6); align-items: center; }
       .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
       .foot { margin: var(--space-5) 0 0; }
     }
     @media (min-width: 1024px) { .city-sheet { padding: var(--space-10) var(--space-5); } }
-    @container (min-width: 976px) {
+    @container (min-width: 752px) {
       h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
       .grid { gap: var(--space-5); }
       .city-pup :global(img) { aspect-ratio: 1 / 1; }

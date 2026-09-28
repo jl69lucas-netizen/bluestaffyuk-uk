@@ -18,12 +18,25 @@ import { Image } from 'astro:assets';
 import BodyImage from '../BodyImage.astro';
 import { puppyImage } from '../../lib/puppyImages';
 import { focusClass, focusRow, servedPhoto } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
 
 export interface Chapter { place: string; question: string; photo: string; photoAlt?: string; text: string }
-type Props = HTMLAttributes<'section'> & { heading: string; lede: string; chapters: Chapter[] };
-const { heading, lede, chapters, class: cls, ...rest } = Astro.props;
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  chapters: Chapter[];
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, chapters, fit = 'column', class: cls, ...rest } = Astro.props;
 if (chapters.length < 1 || chapters.length > 2) throw new Error('CityChapters: one or two chapters');
-const SIZES = '(min-width: 1024px) 340px, (min-width: 768px) 40vw, calc(100vw - 56px)';
+// The tray is the box less 12px gutters, at most 1100px, less its padding (16px; 32px from tablet):
+// the photo is the tray on a phone, 1fr of 2.3fr beside the prose, 7fr of 21fr (at most 340px) on desktop.
+const SIZES = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
+  tablet: (B) => `calc((min(${B}, 1124px) - 112px) / 2.3)`,
+  desktop: (B) => `min(340px, calc((min(${B}, 1124px) - 152px) * 7 / 21))`,
+});
 ---
 <section {...rest} class:list={['city-kit', 'city-chapters', cls]}>
   <div class="tray">
@@ -50,9 +63,11 @@ const SIZES = '(min-width: 1024px) 340px, (min-width: 768px) 40vw, calc(100vw - 
 <style>
   @layer components {
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
-       thresholds are the canvas's 640/768/1024 less this root's own gutters (12px a side,
-       24px from 1024), so a full-width copy switches exactly where the canvas frame did. */
+       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
+       1280) — not the viewport. The tiers are the section's own box, tablet from 640px and
+       desktop from 800px (the Task 7b review: the canvas's 1024 was never reached in the
+       column), less this root's own gutters (12px a side): 616px and 776px. A full-width
+       copy switches where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-chapters { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
     .tray { max-width: 1100px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     h2 { margin: 0 0 var(--space-2); max-width: 26ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
@@ -75,20 +90,25 @@ const SIZES = '(min-width: 1024px) 340px, (min-width: 768px) 40vw, calc(100vw - 
       border-radius: var(--radius-md); background: var(--color-bone-50);
     }
     .ch p { grid-area: text; margin: 0; color: var(--color-text); }
-    @container (min-width: 744px) {
+    @container (min-width: 616px) {
       .tray { padding: var(--space-7) var(--space-6); }
       .ch {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); grid-template-areas: "num num" "h3 h3" "img text";
         column-gap: var(--space-5); row-gap: var(--space-3); align-items: start;
       }
     }
-    @container (min-width: 976px) {
+    @container (min-width: 776px) {
       h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
       .ch {
-        grid-template-columns: 220px 340px minmax(0, 1fr); grid-template-rows: auto 1fr;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr) minmax(0, 9fr); grid-template-rows: auto 1fr;
         grid-template-areas: "num img text" "h3 img text"; column-gap: var(--space-6);
       }
       .ch :global(.media) { max-width: 340px; }
+    }
+    /* The column beside a city dial (a 776–975px box): the canvas's 5 / 7 / 9 split left the
+       heading 150px, five lines a question, so the heading column takes a little from the prose. */
+    @container (min-width: 776px) and (max-width: 975px) {
+      .ch { grid-template-columns: minmax(0, 6fr) minmax(0, 7fr) minmax(0, 8fr); }
     }
   }
 </style>

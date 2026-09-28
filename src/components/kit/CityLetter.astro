@@ -13,19 +13,32 @@
 import type { HTMLAttributes } from 'astro/types';
 import reviewsJson from '../../../data/reviews.json';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
 
 interface Review { quote: string; name: string; place: string; source: string }
-type Props = HTMLAttributes<'section'> & { heading: string; lede: string; name: string; photo: string };
-const { heading, lede, name, photo, class: cls, ...rest } = Astro.props;
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  name: string;
+  photo: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, name, photo, fit = 'column', class: cls, ...rest } = Astro.props;
 const all = reviewsJson as Review[];
 const index = all.findIndex((r) => r.name === name);
 if (index < 0) throw new Error(`CityLetter: data/reviews.json has no review by ${name}`);
 const review = all[index];
 const p = servedPhoto(photo);
 // The photograph paints at its OWN width (its width/height attributes, from data/image-focus.json
-// through servedPhoto()), never wider, and shrinks with the card; pinned beside the letter it
-// takes the pin column, PIN px at most. Nothing here is fitted to one photo.
-const PIN = 300;
+// through servedPhoto()), never wider, and shrinks with the card; pinned beside the letter on
+// desktop it takes the 9fr of the card's 9fr / 16fr split (the card inside a 1000px measure, less
+// 32px gutters, 40px padding and a 40px gap). Nothing here is fitted to one photo.
+const sizes = citySizes(fit, {
+  phone: () => `${p.w}px`,
+  tablet: () => `${p.w}px`,
+  desktop: (B) => `min(${p.w}px, calc((min(${B}, 1000px) - 184px) * 9 / 25))`,
+});
 ---
 <section {...rest} class:list={['city-kit', 'city-letter', cls]}>
   <div class="in">
@@ -35,7 +48,7 @@ const PIN = 300;
     </div>
     <div class="card" data-review-slot>
       <figure class="pic">
-        <img src={p.file} srcset={p.srcset} sizes={`(min-width: 1024px) ${Math.min(PIN, p.w)}px, ${p.w}px`} alt={p.alt}
+        <img src={p.file} srcset={p.srcset} sizes={sizes} alt={p.alt}
           width={p.w} height={p.h} class={focusClass(photo)} loading="lazy" decoding="async" />
       </figure>
       <div>
@@ -51,8 +64,11 @@ const PIN = 300;
 <style>
   @layer components {
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
-       root has no gutter, so full width it switches at the canvas's own widths. */
+       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
+       1280) — not the viewport. The tiers are the section's own box: tablet from 640px, desktop
+       from 800px (the Task 7b review: the canvas's 1024 was never reached in the column). The
+       root has no gutter, so those are the query widths as written; a full-width copy switches
+       where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-letter { container-type: inline-size; background: var(--color-surface); }
     .in { max-width: 1000px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
     .head { max-width: 640px; margin: 0 0 var(--space-6); }
@@ -75,13 +91,13 @@ const PIN = 300;
     }
     cite { font-family: var(--font-display); font-style: normal; font-size: var(--text-xl); font-weight: 600; color: var(--color-brand); }
     .sig span { font-size: var(--text-sm); color: var(--color-ink-2); }
-    @container (min-width: 768px) {
+    @container (min-width: 640px) {
       .in { padding: var(--space-9) var(--space-6); }
       .card { padding: var(--space-7); }
     }
-    @container (min-width: 1024px) {
+    @container (min-width: 800px) {
       h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
-      .card { grid-template-columns: 300px minmax(0, 1fr); gap: var(--space-7); align-items: start; }
+      .card { grid-template-columns: minmax(0, 9fr) minmax(0, 16fr); gap: var(--space-7); align-items: start; }
       .pic { position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
     }
   }

@@ -17,6 +17,7 @@ import { abs } from '../../lib/site';
 import { formEndpoint } from '../../lib/formEndpoint';
 import { puppyImage } from '../../lib/puppyImages';
 import { focusClass } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
 
 type Props = HTMLAttributes<'section'> & {
   eyebrow: string;
@@ -25,8 +26,16 @@ type Props = HTMLAttributes<'section'> & {
   photo: string;
   photoAlt: string;
   button?: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
 };
-const { eyebrow, heading, lede, photo, photoAlt, button = 'Send me the litter note', class: cls, ...rest } = Astro.props;
+const { eyebrow, heading, lede, photo, photoAlt, button = 'Send me the litter note', fit = 'column', class: cls, ...rest } = Astro.props;
+// The card is the .in column (max 1040px, 16px gutters; 32px from tablet); from tablet the photo is its 5fr of 12.
+const sizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1040px) - 32px)`,
+  tablet: (B) => `calc((min(${B}, 1040px) - 64px) * 5 / 12)`,
+  desktop: (B) => `calc((min(${B}, 1040px) - 64px) * 5 / 12)`,
+});
 const { action, live } = formEndpoint();
 ---
 <section {...rest} class:list={['city-kit', 'city-newsletter-notice', cls]}>
@@ -34,7 +43,7 @@ const { action, live } = formEndpoint();
     <div class="card">
       <figure>
         <Image src={puppyImage(photo)} alt={photoAlt} widths={[400, 600, 800]}
-          sizes="(min-width: 768px) 420px, calc(100vw - 32px)" class={focusClass(photo)} loading="lazy" decoding="async" />
+          sizes={sizes} class={focusClass(photo)} loading="lazy" decoding="async" />
       </figure>
       <div class="body">
         <p class="eye">{eyebrow}</p>
@@ -68,8 +77,11 @@ const { action, live } = formEndpoint();
 <style>
   @layer components {
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
-       root has no gutter, so full width it switches at the canvas's own widths. */
+       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
+       1280) — not the viewport. The tiers are the section's own box: tablet from 640px, desktop
+       from 800px (the Task 7b review: the canvas's 1024 was never reached in the column). The
+       root has no gutter, so those are the query widths as written; a full-width copy switches
+       where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-newsletter-notice { container-type: inline-size; background: var(--color-surface); }
     .in { max-width: 1040px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
     .card {
@@ -104,7 +116,7 @@ const { action, live } = formEndpoint();
     button:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     .small { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
     .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
-    @container (min-width: 768px) {
+    @container (min-width: 640px) {
       .in { padding: var(--space-9) var(--space-6); }
       .card { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
       figure :global(img) { height: 100%; aspect-ratio: auto; min-height: 360px; }

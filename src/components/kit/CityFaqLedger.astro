@@ -20,7 +20,7 @@
 import type { HTMLAttributes } from 'astro/types';
 import { titleCase } from '../../lib/headings';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
-import { DELIVERY_BAND, DEPOSIT, depositBrief, guaranteeRow, transportLine } from '../../lib/cityKit';
+import { citySizes, DELIVERY_BAND, DEPOSIT, depositBrief, guaranteeRow, transportLine, type CityFit } from '../../lib/cityKit';
 
 export interface CityFaqRow { q: string; a: string }
 type Props = HTMLAttributes<'section'> & {
@@ -33,8 +33,17 @@ type Props = HTMLAttributes<'section'> & {
   rail?: { photo: string; caption: string };
   /** A stable key for the block (`data-faq-block`). */
   block: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
 };
-const { heading, lede, items, start = 1, rail, block, class: cls, ...rest } = Astro.props;
+const { heading, lede, items, start = 1, rail, block, fit = 'column', class: cls, ...rest } = Astro.props;
+// The rail is the .in column (max 1200px, 16px gutters; 32px from tablet) and, on desktop, the
+// 4fr of its 4fr / 9fr split with a 48px gap.
+const railSizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1200px) - 32px)`,
+  tablet: (B) => `calc(min(${B}, 1200px) - 64px)`,
+  desktop: (B) => `calc((min(${B}, 1200px) - 112px) * 4 / 13)`,
+});
 const pad = (n: number) => String(n).padStart(2, '0');
 const photo = rail ? servedPhoto(rail.photo) : null;
 const guarantee = guaranteeRow();
@@ -49,7 +58,7 @@ const brief = [
     {rail && photo && (
       <div class="rail">
         <figure>
-          <img src={photo.file} srcset={photo.srcset} sizes="(min-width: 1024px) 340px, calc(100vw - 32px)"
+          <img src={photo.file} srcset={photo.srcset} sizes={railSizes}
             alt={photo.alt} width={photo.w} height={photo.h} class={focusClass(rail.photo)} loading="lazy" decoding="async" />
           <figcaption>{rail.caption}</figcaption>
         </figure>
@@ -73,8 +82,11 @@ const brief = [
 <style>
   @layer components {
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
-       root has no gutter, so full width it switches at the canvas's own widths. */
+       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
+       1280) — not the viewport. The tiers are the section's own box: tablet from 640px, desktop
+       from 800px (the Task 7b review: the canvas's 1024 was never reached in the column). The
+       root has no gutter, so those are the query widths as written; a full-width copy switches
+       where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-faq { container-type: inline-size; background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
     .in { max-width: 1200px; margin: 0 auto; padding: var(--space-7) var(--space-4) var(--space-8); display: grid; gap: var(--space-6); }
     figure { margin: 0; }
@@ -105,12 +117,12 @@ const brief = [
     .pm::after { transform: rotate(90deg); }
     details[open] .pm::after { transform: rotate(0deg); }
     details > p { margin: 0; padding: 0 var(--space-1) var(--space-5) calc(2.2em * 15 / 17 + var(--space-3) + var(--space-1)); max-width: 64ch; color: var(--color-steel-100); }
-    @container (min-width: 768px) {
+    @container (min-width: 640px) {
       .in { padding: var(--space-9) var(--space-6); }
       .rail img { aspect-ratio: 21 / 9; }
     }
-    @container (min-width: 1024px) {
-      .has-rail .in { grid-template-columns: 340px minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+    @container (min-width: 800px) {
+      .has-rail .in { grid-template-columns: minmax(0, 4fr) minmax(0, 9fr); gap: var(--space-8); align-items: start; }
       .in { padding: var(--space-10) var(--space-6); }
       .rail { position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
       .rail img { aspect-ratio: 4 / 3; }

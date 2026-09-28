@@ -20,10 +20,22 @@ import { Image } from 'astro:assets';
 import ContactFormKit from './ContactFormKit.astro';
 import { puppyImage } from '../../lib/puppyImages';
 import { focusClass } from '../../lib/imageFocus';
-import { availablePuppies, money, sexWord } from '../../lib/cityKit';
+import { availablePuppies, citySizes, money, sexWord, type CityFit } from '../../lib/cityKit';
 
-type Props = HTMLAttributes<'section'> & { heading: string; lede: string };
-const { heading, lede, class: cls, ...rest } = Astro.props;
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, fit = 'column', class: cls, ...rest } = Astro.props;
+// The line-up is the .in column (max 1160px, 16px gutters; 32px from tablet): three across with
+// 12px gaps on a phone, six across from tablet (16px gaps on desktop).
+const sizes = citySizes(fit, {
+  phone: (B) => `calc((min(${B}, 1160px) - 56px) / 3)`,
+  tablet: (B) => `calc((min(${B}, 1160px) - 124px) / 6)`,
+  desktop: (B) => `calc((min(${B}, 1160px) - 144px) / 6)`,
+});
 const pups = availablePuppies();
 ---
 <section {...rest} class:list={['city-kit', 'city-contact', 'on-inverse', cls]}>
@@ -33,7 +45,7 @@ const pups = availablePuppies();
     <ul class="pups" aria-label="The puppies available now">
       {pups.map((p) => (
         <li>
-          <Image src={puppyImage(p.card_photo)} alt="" widths={[200, 360]} sizes="(min-width: 768px) 170px, 30vw"
+          <Image src={puppyImage(p.card_photo)} alt="" widths={[200, 360]} sizes={sizes}
             class={focusClass(p.card_photo)} loading="lazy" decoding="async" />
           <span class="nm">{p.name}</span><span class="pr">{sexWord(p)} · {money(p.price_gbp)}</span>
         </li>
@@ -66,8 +78,11 @@ const pups = availablePuppies();
 <style>
   @layer components {
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
-       root has no gutter, so full width it switches at the canvas's own widths. */
+       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
+       1280) — not the viewport. The tiers are the section's own box: tablet from 640px, desktop
+       from 800px (the Task 7b review: the canvas's 1024 was never reached in the column). The
+       root has no gutter, so those are the query widths as written; a full-width copy switches
+       where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-contact { container-type: inline-size; background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
     .in { max-width: 1160px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
     h2 { margin: 0; max-width: 24ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); color: var(--color-text-on-inverse); text-wrap: balance; }
@@ -77,10 +92,10 @@ const pups = availablePuppies();
     .pups :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); margin-bottom: var(--space-1); }
     .nm { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); line-height: 1.2; }
     .pr { font-size: var(--text-xs); color: var(--color-steel-100); }
-    @container (min-width: 768px) {
+    @container (min-width: 640px) {
       .in { padding: var(--space-9) var(--space-6); }
       .pups { grid-template-columns: repeat(6, minmax(0, 1fr)); }
     }
-    @container (min-width: 1024px) { .pups { gap: var(--space-4); } }
+    @container (min-width: 800px) { .pups { gap: var(--space-4); } }
   }
 </style>

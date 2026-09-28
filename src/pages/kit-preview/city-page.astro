@@ -1,0 +1,70 @@
+---
+// src/pages/kit-preview/city-page.astro — the city kit laid out as a city page lays it out (the
+// London component design pass, Plan 2; the Task 7b review).
+//
+// /kit-preview/city/ paints every city component full width, one after another, which is how
+// the canvas frames painted them and what the side-by-side compares. A city page does not: its
+// body sits in the column beside the 272px dial from 1024px (src/layouts/CityShell.astro), so
+// each in-body component lays out for that column. This page is that arrangement — the city
+// layout with its nav set in PageShell's slots, the hero and its strips full width above, the
+// in-body components in the column — so the city render spec (tests/render/city-kit.spec.ts)
+// measures the layouts a reader of a real city page will get, at 375 / 768 / 1024 / 1280, before
+// any city page exists. Every component's props are its specimen in _registry.ts (placeholder
+// copy that names no city); only the anchors are this page's own. noindex, under kit-preview.
+import CityShell from '../../layouts/CityShell.astro';
+import { REGISTRY } from '../../components/kit/_registry';
+import CityJumpStepper from '../../components/kit/CityJumpStepper.astro';
+import CityDialPhotoMarker from '../../components/kit/CityDialPhotoMarker.astro';
+import CityContentsPhotoIndex from '../../components/kit/CityContentsPhotoIndex.astro';
+import type { CityIcon, SectionRef } from '../../lib/sections';
+
+/** The in-body components, in city-page order, with the nav's short label and icon for each. */
+const BODY: [id: string, label: string, icon: CityIcon][] = [
+  ['city-takeaways-ledger', 'In short', 'list'],
+  ['city-puppy-sheet', 'Puppies', 'puppies'],
+  ['city-roster', 'Prices', 'prices'],
+  ['city-video-panel', 'Film', 'play'],
+  ['city-chapters', 'Delivery', 'delivery'],
+  ['city-letter', 'Owners', 'home'],
+  ['city-faq-ledger', 'Questions', 'faq'],
+  ['city-newsletter-notice', 'Litter note', 'deposit'],
+  ['city-contact-lineup', 'Ask', 'enquire'],
+];
+const anchor = (id: string) => `pg-${id}`;
+const demo = (id: string) => (REGISTRY[id].demo ?? [{}]) as Record<string, unknown>[];
+const sections: SectionRef[] = BODY.map(([id, label, icon]) => ({
+  id: anchor(id), label, icon, question: String(demo(id)[0].heading),
+}));
+const navProps = (id: string) => {
+  const { sections: _s, ...props } = demo(id)[0];
+  return props;
+};
+const heroIds = ['city-hero-filmstrip', 'city-price-scale', 'city-trust-ledger'];
+// The hero's two links point at this page's own sections, not the preview's.
+const heroProps = (id: string) => (id === 'city-hero-filmstrip'
+  ? { ...demo(id)[0], as: 'h1', cta: { label: 'Choose your puppy', href: `#${anchor('city-puppy-sheet')}` },
+      more: { label: 'How delivery works', href: `#${anchor('city-chapters')}` } }
+  : demo(id)[0]);
+const title = 'City page layout preview — BlueStaffyUK (project 5)';
+---
+<CityShell title={title} description="Internal city page layout preview; not indexed." noindex={true}
+  sections={sections}
+  nav={{
+    bar: { component: CityJumpStepper },
+    dial: { component: CityDialPhotoMarker, props: navProps('city-dial-photo-marker') },
+    contents: { component: CityContentsPhotoIndex, props: navProps('city-contents-photo-index') },
+  }}>
+  <Fragment slot="hero">
+    {heroIds.map((id) => {
+      const { C } = REGISTRY[id];
+      return <C {...heroProps(id)} data-component={id} />;
+    })}
+  </Fragment>
+  {BODY.map(([id]) => {
+    const { C } = REGISTRY[id];
+    // `fit: 'column'`: the specimens are written for the full-width preview (`fit: 'full'`); here
+    // they sit in the column. The roster paints no photo that needs it.
+    const fit = 'fit' in demo(id)[0] ? { fit: 'column' } : {};
+    return demo(id).map((props, i) => <C {...props} {...fit} id={i === 0 ? anchor(id) : undefined} data-component={id} />);
+  })}
+</CityShell>

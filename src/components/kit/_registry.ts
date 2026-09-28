@@ -492,6 +492,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'city-takeaways-ledger': {
     C: CityTakeawaysLedger,
     demo: [{
+      fit: 'full',
       heading: 'What Should a Buyer Take From This Page?',
       lede: `Five plain answers, one sentence each, so you can decide whether a puppy from ${SITE.breeder_name}'s home in ${SITE.address.city} is right for you.`,
       photo: 'jones-strong-staffy-sire-temperament.webp',
@@ -509,6 +510,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'city-puppy-sheet': {
     C: CityPuppySheet,
     demo: [{
+      fit: 'full',
       heading: 'Which Puppy Will You Ask About First?',
       lede: `Maggie and Jones's six are laid out here like family prints, three boys at ${BOY_PRICE} and three girls at ${GIRL_PRICE}, so you can pick a favourite before you ask.`,
       photo: 'maggie-blue-staffy-dam-with-pups.webp',
@@ -527,6 +529,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'city-video-panel': {
     C: CityVideoPanel,
     demo: [{
+      fit: 'full',
       heading: 'How Lively Is a Blue Staffy Puppy at Home?',
       lede: 'Very, and our short film of puppies from one of our litters shows it better than we can say it; watch it before you choose between the six.',
       videoId: (settings as { youtube_embeds: string[] }).youtube_embeds[0],
@@ -545,6 +548,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'city-chapters': {
     C: CityChapters,
     demo: [{
+      fit: 'full',
       heading: 'Where Does Your Puppy Start, and How Does It Reach You?',
       lede: `In our home in ${SITE.address.city}, with its mother close by, and then at your door or in your arms at collection, whichever suits you.`,
       chapters: [
@@ -560,12 +564,16 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'city-letter': {
     C: CityLetter,
     demo: [{
+      fit: 'full',
       heading: 'What Did a Family Say After Their Puppy Came Home?',
       lede: 'Mark J wrote this review of the blue Staffy puppy he had from us, and these are his words exactly as he sent them.',
       name: 'Mark J',
       photo: 'mark-blue-staffy-london.webp',
     }],
   },
+  // `fit: 'full'` on every in-body specimen: /kit-preview/city/ paints each full width, as the
+  // canvas did, so its images' `sizes` describe the full page; a city page's copy sits in the
+  // column beside the dial (the default, 'column'; src/lib/cityKit.ts `citySizes`).
   // Three blocks, as a city page mounts them: numbering runs on through `start`, and only the
   // top block carries the rail. The rows are the specimen questions above. On a city page the
   // FAQPage node is the page's (src/lib/cityKit.ts `faqPageNode`, fed these same rows); the
@@ -574,20 +582,20 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     C: CityFaqLedger,
     demo: [
       {
-        block: 'buy', start: 1,
+        block: 'buy', start: 1, fit: 'full',
         heading: 'What Do Buyers Ask Before Reserving a Puppy?',
         lede: 'The first questions are nearly always about money and the journey, so here are our straight answers on the prices, the deposit, delivery and collection.',
         rail: { photo: 'blue-staffy-testimonial-london-happy-owner.webp', caption: 'One of our puppies with its new owner.' },
         items: FAQ_BUY,
       },
       {
-        block: 'trust', start: FAQ_BUY.length + 1,
+        block: 'trust', start: FAQ_BUY.length + 1, fit: 'full',
         heading: 'How Can You Check Us Before You Travel?',
         lede: 'You may live hours away, so we put the checks in your hands: the parents, their tests, our vet and what happens if something goes wrong.',
         items: FAQ_TRUST,
       },
       {
-        block: 'life', start: FAQ_BUY.length + FAQ_TRUST.length + 1,
+        block: 'life', start: FAQ_BUY.length + FAQ_TRUST.length + 1, fit: 'full',
         heading: 'Will a Staffy Suit Your Home and Your Days?',
         lede: 'Flats, long working days and first dogs come up again and again, so these answers cover space, exercise, time alone and how long a Staffy shares your home.',
         items: FAQ_LIFE,
@@ -597,6 +605,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'city-newsletter-notice': {
     C: CityNewsletterNotice,
     demo: [{
+      fit: 'full',
       eyebrow: 'Litter notes',
       heading: 'Want a Note When Our Next Litter Is Due?',
       lede: 'Leave your email and we will write to you when our next litter is on the way. It is one short note, and that is all this list is for.',
@@ -610,6 +619,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'city-contact-lineup': {
     C: CityContactLineup,
     demo: [{
+      fit: 'full',
       heading: 'Which of Our Six Puppies Would You Like to Ask About?',
       lede: 'Here are all six as they are today. Choose one in the form, tell us where you live, and we reply by email with the answers to everything you asked.',
     }],

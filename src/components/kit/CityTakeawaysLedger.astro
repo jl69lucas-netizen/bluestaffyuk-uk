@@ -11,6 +11,7 @@
 // rule 11), cropped on its faces (src/lib/imageFocus.ts). Conventions 4 and 6.
 import type { HTMLAttributes } from 'astro/types';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
 
 export interface Takeaway { label: string; text: string }
 type Props = HTMLAttributes<'section'> & {
@@ -19,15 +20,23 @@ type Props = HTMLAttributes<'section'> & {
   photo: string;
   caption?: string;
   rows: Takeaway[];
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
 };
-const { heading, lede, photo, caption, rows, class: cls, ...rest } = Astro.props;
+const { heading, lede, photo, caption, rows, fit = 'column', class: cls, ...rest } = Astro.props;
 if (rows.length < 3 || rows.length > 6) throw new Error(`CityTakeawaysLedger: ${rows.length} rows; the ledger holds 3 to 6`);
 const p = servedPhoto(photo);
+// The .in column (max 1100px, 16px gutters; 24px and a 5fr/7fr split with a 48px gap on desktop).
+const sizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1100px) - 32px)`,
+  tablet: (B) => `calc(min(${B}, 1100px) - 32px)`,
+  desktop: (B) => `calc((min(${B}, 1100px) - 96px) * 5 / 12)`,
+});
 ---
 <section {...rest} class:list={['city-kit', 'city-takeaways-ledger', cls]}>
   <div class="in">
     <figure class="pic">
-      <img src={p.file} srcset={p.srcset} sizes="(min-width: 1024px) 760px, calc(100vw - 32px)"
+      <img src={p.file} srcset={p.srcset} sizes={sizes}
         alt={p.alt} width={p.w} height={p.h} class={focusClass(photo)} loading="lazy" decoding="async" />
       {caption && <figcaption>{caption}</figcaption>}
     </figure>
@@ -45,8 +54,11 @@ const p = servedPhoto(photo);
 <style>
   @layer components {
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
-       root has no gutter, so full width it switches at the canvas's own widths. */
+       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
+       1280) — not the viewport. The tiers are the section's own box: tablet from 640px, desktop
+       from 800px (the Task 7b review: the canvas's 1024 was never reached in the column). The
+       root has no gutter, so those are the query widths as written; a full-width copy switches
+       where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-takeaways-ledger { container-type: inline-size; background: var(--color-surface); border-top: 4px solid var(--color-brand); border-bottom: 1px solid var(--color-border); }
     .in { max-width: 1100px; margin: 0 auto; padding: var(--space-6) var(--space-4) var(--space-7); display: grid; gap: var(--space-5); }
     .pic { margin: 0; }
@@ -59,8 +71,8 @@ const p = servedPhoto(photo);
     dt { font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-brand); }
     dd { margin: 0; color: var(--color-text); }
     @container (min-width: 640px) { .row { grid-template-columns: 132px minmax(0, 1fr); gap: var(--space-4); align-items: baseline; } }
-    @container (min-width: 640px) and (max-width: 1023px) { .pic img { aspect-ratio: 21 / 9; } }
-    @container (min-width: 1024px) {
+    @container (min-width: 640px) and (max-width: 799px) { .pic img { aspect-ratio: 21 / 9; } }
+    @container (min-width: 800px) {
       .in {
         grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "head head" "pic list";
         gap: var(--space-5) var(--space-8); padding: var(--space-9) var(--space-5);

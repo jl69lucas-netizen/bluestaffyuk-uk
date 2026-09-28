@@ -61,9 +61,11 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
 <style>
   @layer components {
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
-       thresholds are the canvas's 640/768/1024 less this root's own gutters (12px a side,
-       24px from 1024), so a full-width copy switches exactly where the canvas frame did. */
+       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
+       1280) — not the viewport. The tiers are the section's own box, tablet from 640px and
+       desktop from 800px (the Task 7b review: the canvas's 1024 was never reached in the
+       column), less this root's own gutters (12px a side, 24px from a 1024px viewport): 592px and 752px. A full-width
+       copy switches where the canvas frames did at 375 / 768 / 1024 / 1280. */
     .city-roster { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
     .tray { max-width: 1000px; margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     .head { padding: 0 var(--space-2) var(--space-4); }
@@ -103,7 +105,7 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
       tbody td.num::before { content: none; }
     }
     @media (min-width: 1024px) { .city-roster { padding: var(--space-10) var(--space-5); } }
-    @container (min-width: 976px) {
+    @container (min-width: 752px) {
       .tray { padding: var(--space-7) var(--space-7) var(--space-5); }
       .head { padding: 0 0 var(--space-5); }
       h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }

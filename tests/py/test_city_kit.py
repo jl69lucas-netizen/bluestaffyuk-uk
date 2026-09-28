@@ -575,3 +575,31 @@ def test_each_city_component_is_named_for_the_variant_it_builds():
         assert own & _words(row["file"].rsplit(".", 1)[0]), (key, name, row["file"])
         assert own & _words(kit_id), (key, name, kit_id)
         assert name.lower() in row["title"].lower(), (key, name, row["title"])
+
+
+CITY_PAGE = ROOT / "dist/kit-preview/city-page/index.html"
+
+
+def test_the_city_page_specimen_lays_the_kit_out_as_a_city_page_does():
+    """Task 7b review, item 1: /kit-preview/city-page/ is the city kit inside CityShell — the
+    nav set in PageShell's three slots, the hero strips full width above the dial's grid, and
+    every in-body component in the column (`has-own-dial`), each with its images' `sizes`
+    written for the column (src/lib/cityKit.ts citySizes, `fit` 'column')."""
+    if not CITY_PAGE.exists():
+        pytest.skip("run npm run build first")
+    html = CITY_PAGE.read_text(encoding="utf-8")
+    assert 'name="robots" content="noindex' in html
+    for root in CITY_NAV_ROOTS:
+        assert html.count(f"{root}") >= 1, root
+    assert html.count("data-city-jump-stepper") == 1 and html.count("data-city-dial-photo-marker") == 1
+    grid = html.index('class="page-shell has-own-dial')
+    for cid in ("city-hero-filmstrip", "city-price-scale", "city-trust-ledger"):
+        assert html.index(f'data-component="{cid}"') < grid, f"{cid} belongs above the dial's grid"
+    body = ("city-takeaways-ledger", "city-puppy-sheet", "city-roster", "city-video-panel", "city-chapters",
+            "city-letter", "city-faq-ledger", "city-newsletter-notice", "city-contact-lineup")
+    for cid in body:
+        assert html.index(f'data-component="{cid}"') > grid, f"{cid} belongs in the column"
+        assert f'id="pg-{cid}"' in html, cid
+    # The column's width is written into sizes (min(100vw, 1200px) less the shell, dial and gap).
+    assert "min(100vw, 1200px) - 368px" in html
+    assert "min(100vw, 1200px) - 368px" not in PREVIEW.read_text(encoding="utf-8")

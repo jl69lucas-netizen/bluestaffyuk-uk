@@ -71,3 +71,28 @@ export const faqPageNode = (rows: { q: string; a: string }[]) => ({
   '@type': 'FAQPage',
   mainEntity: rows.map((r) => ({ '@type': 'Question', name: r.q, acceptedAnswer: { '@type': 'Answer', text: r.a } })),
 });
+
+/** Where an in-body city component sits from a 1024px viewport, for its images' `sizes`, which
+ *  can read only the viewport: `column` — beside the city dial, as on every real city page
+ *  (src/layouts/CityShell.astro), the default — or `full`, the full-width specimen on
+ *  /kit-preview/city/. The component's LAYOUT needs no such word: it is a container and follows
+ *  its box; only an image's `sizes` has to be told (the Task 7b review, item 1). */
+export type CityFit = 'column' | 'full';
+
+/** The section's box on a city page from 1024px: --container less the shell's two 24px gutters,
+ *  --city-dial-w (272px) and the 48px gap — 656px at 1024, 832px at 1280. */
+const COLUMN = 'calc(min(100vw, 1200px) - 368px)';
+/** The viewport at which that column reaches the desktop tier (a box of 800px). */
+const COLUMN_DESKTOP_VW = 800 + 368;
+
+/** A `sizes` list for an image whose painted width is a function of its section's box B at each
+ *  tier the city components share — phone below a 640px box, tablet from 640, desktop from 800 —
+ *  with B written as the CSS length it is at each viewport for `fit`. */
+export function citySizes(fit: CityFit, at: { phone: (B: string) => string; tablet: (B: string) => string; desktop: (B: string) => string }): string {
+  const vw = '100vw';
+  const list = fit === 'column'
+    ? [`(min-width: ${COLUMN_DESKTOP_VW}px) ${at.desktop(COLUMN)}`, `(min-width: 1024px) ${at.tablet(COLUMN)}`,
+       `(min-width: 640px) ${at.tablet(vw)}`, at.phone(vw)]
+    : [`(min-width: 800px) ${at.desktop(vw)}`, `(min-width: 640px) ${at.tablet(vw)}`, at.phone(vw)];
+  return list.join(', ');
+}
