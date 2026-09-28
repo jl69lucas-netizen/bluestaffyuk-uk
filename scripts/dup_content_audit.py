@@ -171,7 +171,11 @@ WHITELIST_SNIPPETS = [
 # Defined HERE rather than in pageboard.py because pageboard imports this module for its
 # chrome-skipping walker, and the dependency must not run both ways. pageboard's
 # `live_headings()` reads the same list.
-SPECIMEN_PREFIXES = ("board-preview/", "kit-preview/")
+# The list lives in data/specimen-routes.json, which the render harness's DUP corpus
+# (tests/render/lib/dupCorpus.ts) reads too, so the two gates cannot drift (they did, until
+# the Task 7b quality review of 2026-09-28).
+SPECIMEN_PREFIXES = tuple(json.loads(
+    (Path(__file__).resolve().parent.parent / "data" / "specimen-routes.json").read_text(encoding="utf-8"))["prefixes"])
 
 
 def is_specimen(key):

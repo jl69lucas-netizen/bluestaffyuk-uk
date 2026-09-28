@@ -56,7 +56,7 @@ import page_run_record as PRR  # noqa: E402
 ROOT = pathlib.Path(os.environ.get("RENDERED_CHANGES_ROOT") or pathlib.Path(__file__).resolve().parent.parent)
 MANIFEST = pathlib.Path("data") / "quality" / "dist-hashes.json"
 REPORT = pathlib.Path("docs") / "reports" / "rendered-changes.json"
-SPECIMEN_PREFIXES = ("board-preview/", "kit-preview/")
+SPECIMEN_PREFIXES = tuple(json.loads((pathlib.Path(__file__).resolve().parent.parent / "data" / "specimen-routes.json").read_text(encoding="utf-8"))["prefixes"])
 
 
 class BaseError(Exception):

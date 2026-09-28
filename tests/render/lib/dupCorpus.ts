@@ -125,8 +125,20 @@ export function distSlugs(dist: string = join(REPO, 'dist')): string[] {
  * the page-type filter has not crept back.
  */
 export function siblingSlugsFor(target: Target, _targets: Target[], corpus: string[]): string[] {
-  return corpus.filter((slug) => slug !== target.slug);
+  return corpus.filter((slug) => slug !== target.slug && !isSpecimen(slug));
 }
+
+/** The specimen routes (noindex scaffolding) no DUP gate counts as a sibling: the ONE list,
+ *  data/specimen-routes.json, which scripts/dup_content_audit.py SPECIMEN_PREFIXES reads too.
+ *  Until the Task 7b quality review (2026-09-28) the harness had no copy, and a new specimen
+ *  route (/kit-preview/city-page/) added three crossovers to ten built pages that the Python
+ *  gate never saw. */
+export const SPECIMEN_PREFIXES: readonly string[] = JSON.parse(
+  readFileSync(join(REPO, 'data/specimen-routes.json'), 'utf8'),
+).prefixes;
+
+/** A page key under a specimen prefix, anchored — as dup_content_audit.is_specimen. */
+export const isSpecimen = (slug: string): boolean => SPECIMEN_PREFIXES.some((p) => `${slug}/`.startsWith(p));
 
 /** Forms are UI copy shared by design — the Python auditor skips them (SKIP_TAGS), so every
  *  text path here does too, or the two gates judge the same page differently. */
@@ -149,8 +161,18 @@ export function distText(slug: string): string | null {
 export function fixtureCorpus(dir: string): { slug: string; text: string }[] {
   const full = join(REPO, dir);
   if (!existsSync(full)) return [];
-  return readdirSync(full)
-    .filter((f) => f.endsWith('.html'))
+  // Walked to any depth, keyed by the path under `dir` (`kit-preview/specimen`), so a fixture
+  // can stand for a nested route exactly as distSlugs keys one.
+  const files: string[] = [];
+  const walk = (d: string, rel: string): void => {
+    for (const e of readdirSync(d, { withFileTypes: true })) {
+      if (e.isDirectory()) walk(join(d, e.name), rel ? `${rel}/${e.name}` : e.name);
+      else if (e.name.endsWith('.html')) files.push(rel ? `${rel}/${e.name}` : e.name);
+    }
+  };
+  walk(full, '');
+  return files
+    .filter((f) => !isSpecimen(f.replace(/\.html$/, '')))
     .map((f) => ({
       slug: f.replace(/\.html$/, ''),
       text: decodeEntities(

@@ -26,6 +26,7 @@ import {
   fixtureCorpus,
   distSlugs,
   siblingSlugsFor,
+  isSpecimen,
   loadWhitelist,
   normalise,
   REPO,
@@ -209,13 +210,16 @@ test.describe('dup-no-sibling-crossover judges every page against the whole buil
     // Pages no target names: a care page and a nested blog post, the shapes the Python gate
     // found crossovers on that the harness could not reach.
     const untargeted = ['blue-staffy-temperament-uk', 'blog/blue-staffy-puppy-first-week'];
-    const built = [...targetsFile.pages.map((p) => p.slug), ...untargeted];
+    // And two specimen routes (noindex scaffolding): built, keyed, never a sibling.
+    const specimens = ['kit-preview/city-page', 'board-preview/index'];
+    const built = [...targetsFile.pages.map((p) => p.slug), ...untargeted, ...specimens];
     for (const slug of built) {
       const dir = slug === 'index' ? dist : join(dist, slug);
       mkdirSync(dir, { recursive: true });
       writeFileSync(join(dir, 'index.html'), `<main><p>${slug}</p></main>`);
     }
     const corpus = distSlugs(dist);
+    expect(specimens.every(isSpecimen), 'the specimen list names kit-preview/ and board-preview/').toBe(true);
     expect(corpus, 'distSlugs keys pages as scripts/_slugs.py page_key does').toEqual([...built].sort());
 
     const blind = Object.entries(targetsFile.families_by_page_type)
@@ -226,11 +230,13 @@ test.describe('dup-no-sibling-crossover judges every page against the whole buil
     const short = targetsFile.pages
       .map((t) => {
         const got = siblingSlugsFor(t, targetsFile.pages, corpus);
-        const want = corpus.filter((s) => s !== t.slug);
-        return { t, got, missing: want.filter((s) => !got.includes(s)) };
+        // Every other built page EXCEPT a specimen route (data/specimen-routes.json; the /kit-preview/
+        // target itself is one), which dup_content_audit.py never counts either.
+        const want = corpus.filter((s) => s !== t.slug && !isSpecimen(s));
+        return { t, got, missing: want.filter((s) => !got.includes(s)), specimen: got.filter((s) => isSpecimen(s)) };
       })
-      .filter((r) => r.missing.length || r.got.includes(r.t.slug))
-      .map((r) => `${r.t.slug} [${r.t.page_type}]: ${r.got.length} siblings, missing ${r.missing.length}`);
+      .filter((r) => r.missing.length || r.specimen.length || r.got.includes(r.t.slug))
+      .map((r) => `${r.t.slug} [${r.t.page_type}]: ${r.got.length} siblings, missing ${r.missing.length}, specimen routes counted ${r.specimen.length}`);
     expect.soft(short, 'targets judged against less than the whole built corpus').toEqual([]);
   });
 });
