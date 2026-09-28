@@ -81,8 +81,11 @@ def rows_with_slugs(path):
     return [r["slug"] for r in data if isinstance(r, dict) and r.get("slug")]
 
 
-def expand(template):
-    """(route, [source paths]) for every page `template` builds."""
+def expand(template, static_routes=frozenset()):
+    """(route, [source paths]) for every page `template` builds. A data row whose route a
+    STATIC page already builds is not the template's: src/pages/uk-locations/[slug].astro skips
+    a city that has its own file (the London component design pass, Plan 2), so that city is
+    dated by its own file alone."""
     kind = DYNAMIC[template]
     if kind == "blog":
         out = []
@@ -91,7 +94,8 @@ def expand(template):
             out.append((f"/{slug}/" if slug else None, [template, md]))
         return out
     data_file, base = kind
-    return [(f"{base}{slug}/", [template, data_file]) for slug in rows_with_slugs(data_file)]
+    return [(f"{base}{slug}/", [template, data_file]) for slug in rows_with_slugs(data_file)
+            if f"{base}{slug}/" not in static_routes]
 
 
 def route_for(path):
@@ -157,9 +161,10 @@ def build():
     static = [p for p in sorted(_rel("src/pages/**/*.astro")) + sorted(_rel("src/pages/**/*.html"))
               if p not in DYNAMIC]
     pages = [(route_for(p), [p]) for p in static if "[" not in p]
+    static_routes = frozenset(r for r, _ in pages)
     for template in sorted(DYNAMIC):
         if (ROOT / template).exists():
-            pages += expand(template)
+            pages += expand(template, static_routes)
 
     routes, skipped = {}, []
     for route, sources in pages:

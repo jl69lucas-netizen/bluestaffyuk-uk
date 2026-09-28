@@ -83,6 +83,16 @@ def test_the_locations_template_expands_to_every_slug_in_locations_json(repo):
     assert "/uk-locations/blue-staffies-leeds/" in routes
 
 
+def test_a_city_with_its_own_page_file_is_dated_by_that_file_alone(repo):
+    """src/pages/uk-locations/[slug].astro skips a city whose page has its own file (the London
+    component design pass, Plan 2); the map must agree, or the city carries the template's dates."""
+    _write(repo, "src/pages/uk-locations/blue-staffies-glasgow.astro", "<h1>own page</h1>")
+    _commit(repo, "2026-03-09")
+    routes = G.build()[0]
+    assert routes["/uk-locations/blue-staffies-glasgow/"]["datePublished"] == "2026-03-09"
+    assert routes["/uk-locations/blue-staffies-glasgow/"]["dateModified"] == "2026-03-09"
+
+
 def test_the_puppies_template_expands_to_every_slug_in_puppies_json(repo):
     routes, _, _ = G.build()
     assert "/available-puppies/roman/" in routes and "/available-puppies/byrd/" in routes
