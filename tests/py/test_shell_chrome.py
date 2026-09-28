@@ -30,7 +30,9 @@ FOOTER_TAG = re.compile(r"<footer\b")
 
 # The hubs and the puppy pages moved onto PageShell in project 4 task 3 — chrome only, no
 # content change. The puppy pages are one template, so the whole directory is named.
-KIT_ROUTES = {"/available-puppies/", "/uk-locations/", "/blog/"}
+# /kit-preview/city-page/ (Task 7b of the London component pass, Plan 2) is the city kit laid out
+# as a city page, so it is on the kit shell through src/layouts/CityShell.astro (PageShell).
+KIT_ROUTES = {"/available-puppies/", "/uk-locations/", "/blog/", "/kit-preview/city-page/"}
 KIT_PREFIXES = ("/available-puppies/",)
 
 # EVERY POST OF THE `blog` CONTENT COLLECTION, which `src/pages/[...post].astro` builds at the
@@ -141,7 +143,7 @@ def test_a_rich_page_that_has_not_been_rebuilt_yet_is_still_on_the_legacy_chrome
     routes = _routes()
     remaining = [r for r in routes if r.strip("/") and r.strip("/") not in rebuilt
                  and not r.startswith("/available-puppies/") and not r.startswith("/uk-locations/")
-                 and r not in {"/blog/", "/kit-preview/"} and r not in POST_ROUTES
+                 and r not in {"/blog/", "/kit-preview/"} and r not in KIT_ROUTES and r not in POST_ROUTES
                  and not r.startswith("/board-preview/")]
     assert remaining, "no un-rebuilt rich pages left — retire this test with the legacy header"
     assert all('class="site-header' in routes[r] for r in remaining), remaining
