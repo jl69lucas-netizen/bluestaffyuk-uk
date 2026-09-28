@@ -60,25 +60,28 @@ KIT_ONLY = {
     "newsletter": [],
 }
 
-#: The kit component each canvas component is built as (the London component design pass,
-#: Plan 2): one `"project": 5` row of data/design/components.json per city component, whatever
-#: variant a city picked — the picked variant's design is what the component renders.
-KIT_ID = {
-    "hero": "city-hero",
-    "counter-strip": "city-price-scale",
-    "trust-strip": "city-trust-ledger",
-    "contents-list": "city-contents",
-    "desktop-dial": "city-dial",
-    "jump-links": "city-jump-band",
-    "key-takeaways": "city-takeaways",
-    "puppy-cards": "city-puppy-sheet",
-    "tables": "city-roster",
-    "video": "city-video-panel",
-    "image-text": "city-chapters",
-    "reviews": "city-letter",
-    "faq-blocks": "city-faq-ledger",
-    "newsletter": "city-newsletter",
-    "contact-form": "city-contact-lineup",
+#: The kit component each PICKED variant is built as (the London component design pass, Plan 2;
+#: the Task 7b review): one `"project": 5` row of data/design/components.json per variant, named
+#: for it (london/hero/b "Litter filmstrip" is CityHeroFilmstrip). Working rule 16 forbids a
+#: second city mounting the same pick, so a component is never "the city hero" — the next city's
+#: picks become components of their own, added here beside London's, and mount through the city
+#: layout's nav slots (src/layouts/CityShell.astro) without an edit to PageShell.
+KIT_OF_VARIANT = {
+    "london/hero/b": "city-hero-filmstrip",
+    "london/counter-strip/c": "city-price-scale",
+    "london/trust-strip/c": "city-trust-ledger",
+    "london/contents-list/c": "city-contents-photo-index",
+    "london/desktop-dial/c": "city-dial-photo-marker",
+    "london/jump-links/a": "city-jump-stepper",
+    "london/key-takeaways/a": "city-takeaways-ledger",
+    "london/puppy-cards/b": "city-puppy-sheet",
+    "london/tables/a": "city-roster",
+    "london/video/c": "city-video-panel",
+    "london/image-text/c": "city-chapters",
+    "london/reviews/a": "city-letter",
+    "london/faq-blocks/a": "city-faq-ledger",
+    "london/newsletter/a": "city-newsletter-notice",
+    "london/contact-form/b": "city-contact-lineup",
 }
 
 #: Where a city's canvas lives. One folder per city key, one sub-folder per component.

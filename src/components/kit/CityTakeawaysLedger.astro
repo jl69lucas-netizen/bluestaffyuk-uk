@@ -1,5 +1,5 @@
 ---
-// src/components/kit/CityTakeaways.astro — city component 7, key takeaways (London pick:
+// src/components/kit/CityTakeawaysLedger.astro — city component 7, key takeaways (London pick:
 // key-takeaways A, "Answer ledger"). An editorial answer sheet framed by rules only (a 4px steel
 // rule over the section, hairlines between rows; no box, no band, no shadow): a served
 // photograph in the left column, and on the right the question, its answer (set across the top
@@ -21,10 +21,10 @@ type Props = HTMLAttributes<'section'> & {
   rows: Takeaway[];
 };
 const { heading, lede, photo, caption, rows, class: cls, ...rest } = Astro.props;
-if (rows.length < 3 || rows.length > 6) throw new Error(`CityTakeaways: ${rows.length} rows; the ledger holds 3 to 6`);
+if (rows.length < 3 || rows.length > 6) throw new Error(`CityTakeawaysLedger: ${rows.length} rows; the ledger holds 3 to 6`);
 const p = servedPhoto(photo);
 ---
-<section {...rest} class:list={['city-kit', 'city-takeaways', cls]}>
+<section {...rest} class:list={['city-kit', 'city-takeaways-ledger', cls]}>
   <div class="in">
     <figure class="pic">
       <img src={p.file} srcset={p.srcset} sizes="(min-width: 1024px) 760px, calc(100vw - 32px)"
@@ -47,7 +47,7 @@ const p = servedPhoto(photo);
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
        /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
        root has no gutter, so full width it switches at the canvas's own widths. */
-    .city-takeaways { container-type: inline-size; background: var(--color-surface); border-top: 4px solid var(--color-brand); border-bottom: 1px solid var(--color-border); }
+    .city-takeaways-ledger { container-type: inline-size; background: var(--color-surface); border-top: 4px solid var(--color-brand); border-bottom: 1px solid var(--color-border); }
     .in { max-width: 1100px; margin: 0 auto; padding: var(--space-6) var(--space-4) var(--space-7); display: grid; gap: var(--space-5); }
     .pic { margin: 0; }
     .pic img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--radius-sm); background: var(--color-bone-50); }

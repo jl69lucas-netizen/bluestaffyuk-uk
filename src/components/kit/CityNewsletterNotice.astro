@@ -1,5 +1,5 @@
 ---
-// src/components/kit/CityNewsletter.astro — city component 14, the newsletter (London pick:
+// src/components/kit/CityNewsletterNotice.astro — city component 14, the newsletter (London pick:
 // newsletter A, "Litter notice"). A raised card in the bone page: a puppy photograph on its left
 // from 768px (a short strip on top on a phone), and on the right a small ruled eyebrow, the
 // question, its answer, and one email field over a brass submit. It says exactly what the list
@@ -29,7 +29,7 @@ type Props = HTMLAttributes<'section'> & {
 const { eyebrow, heading, lede, photo, photoAlt, button = 'Send me the litter note', class: cls, ...rest } = Astro.props;
 const { action, live } = formEndpoint();
 ---
-<section {...rest} class:list={['city-kit', 'city-news', cls]}>
+<section {...rest} class:list={['city-kit', 'city-newsletter-notice', cls]}>
   <div class="in">
     <div class="card">
       <figure>
@@ -70,7 +70,7 @@ const { action, live } = formEndpoint();
     /* A CONTAINER, so the layout follows the box the section is given — the full page on
        /kit-preview/city/, the column beside the dial on a city page — not the viewport. The
        root has no gutter, so full width it switches at the canvas's own widths. */
-    .city-news { container-type: inline-size; background: var(--color-surface); }
+    .city-newsletter-notice { container-type: inline-size; background: var(--color-surface); }
     .in { max-width: 1040px; margin: 0 auto; padding: var(--space-7) var(--space-4); }
     .card {
       display: grid; overflow: hidden; background: var(--color-surface-raised); border: var(--card-border);

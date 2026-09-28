@@ -56,16 +56,16 @@ async function allVisible(page: Page, attr: string): Promise<string[]> {
 
 /** Each probe: the selector that says its component is on the page, and what it measures. */
 const PROBES: Record<string, { present: string; run: Probe }> = {
-  'city-hero': {
-    present: '.city-hero',
+  'city-hero-filmstrip': {
+    present: '.city-hero-filmstrip',
     run: async (page, viewport) => {
       const out: string[] = [];
       const band = await page.evaluate(() =>
-        Math.round(document.querySelector('.city-hero')!.getBoundingClientRect().height));
+        Math.round(document.querySelector('.city-hero-filmstrip')!.getBoundingClientRect().height));
       // rules/design.md rule 10: 390px floor from 1024, 450px ceiling at 1280 and up.
       if (viewport >= 1024 && band < 390) out.push(`hero band is ${band}px at ${viewport}px; the floor is 390`);
       if (viewport >= 1280 && band > 450) out.push(`hero band is ${band}px at ${viewport}px; the ceiling is 450`);
-      const thumbs = await page.evaluate(() => document.querySelectorAll('.city-hero .pic img').length);
+      const thumbs = await page.evaluate(() => document.querySelectorAll('.city-hero-filmstrip .pic img').length);
       if (thumbs < 1) out.push('the filmstrip paints no puppy');
       return out;
     },
@@ -87,16 +87,16 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-trust-ledger': {
     present: '.city-trust',
     run: (page) => allVisible(page, 'data-trust-item'),
-  },  'city-contents': {
-    present: '.city-contents',
+  },  'city-contents-photo-index': {
+    present: '.city-contents-photo-index',
     run: async (page, viewport) => {
       const out = await allVisible(page, 'data-contents');
-      const rest = page.locator('.city-contents [data-rest]');
+      const rest = page.locator('.city-contents-photo-index [data-rest]');
       if (!(await rest.count())) return out;
       const shown = async () => rest.first().isVisible();
       if (viewport < 640) {
         if (await shown()) out.push('rows after the phone cut are painted before the disclosure is opened');
-        const more = page.locator('.city-contents [data-more]');
+        const more = page.locator('.city-contents-photo-index [data-more]');
         await more.click();
         if (!(await shown())) out.push('opening the disclosure does not paint the rest of the rows');
         if ((await more.getAttribute('aria-expanded')) !== 'true') out.push('the disclosure does not report aria-expanded="true"');
@@ -105,23 +105,23 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       return out;
     },
   },
-  'city-dial': {
-    present: '[data-city-dial]',
+  'city-dial-photo-marker': {
+    present: '[data-city-dial-photo-marker]',
     run: async (page, viewport) => {
       const out: string[] = [];
-      const shown = await page.locator('[data-city-dial]').isVisible();
+      const shown = await page.locator('[data-city-dial-photo-marker]').isVisible();
       if (viewport >= 1024 && !shown) out.push('the dial is not painted at a desktop width');
       if (viewport < 1024 && shown) out.push('the dial is painted below 1024px, where the jump band navigates');
-      const current = await page.locator('[data-city-dial] [aria-current="location"]').count();
+      const current = await page.locator('[data-city-dial-photo-marker] [aria-current="location"]').count();
       if (current !== 1) out.push(`${current} dial rows are marked current; exactly one must be`);
       return out;
     },
   },
-  'city-jump-band': {
-    present: '[data-city-jump]',
+  'city-jump-stepper': {
+    present: '[data-city-jump-stepper]',
     run: async (page, viewport) => {
       const out: string[] = [];
-      const band = page.locator('[data-city-jump]');
+      const band = page.locator('[data-city-jump-stepper]');
       const shown = await band.isVisible();
       if (viewport >= 1024) {
         if (shown) out.push('the jump band is painted at a desktop width, where the dial navigates');
@@ -149,8 +149,8 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       return out;
     },
   },
-  'city-takeaways': {
-    present: '.city-takeaways',
+  'city-takeaways-ledger': {
+    present: '.city-takeaways-ledger',
     run: (page) => allVisible(page, 'data-takeaway'),
   },
   'city-puppy-sheet': {
@@ -236,7 +236,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       return out;
     },
   },
-  'city-newsletter': {
+  'city-newsletter-notice': {
     present: '[data-newsletter]',
     run: async (page) => {
       const out: string[] = [];
@@ -273,10 +273,10 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   // Scroll the fourth section to the reading band and read which row is current, on the dial at
   // a desktop width and on the band's rail below it.
   'city-nav-current-section': {
-    present: '[data-city-dial], [data-city-jump]',
+    present: '[data-city-dial-photo-marker], [data-city-jump-stepper]',
     run: async (page, viewport) => {
       const out: string[] = [];
-      const scope = viewport >= 1024 ? '[data-city-dial]' : '[data-city-jump] .rail';
+      const scope = viewport >= 1024 ? '[data-city-dial-photo-marker]' : '[data-city-jump-stepper] .rail';
       if (!(await page.locator(scope).isVisible())) return out;
       for (const motion of ['reduce', 'no-preference'] as const) {
         await page.emulateMedia({ reducedMotion: motion });

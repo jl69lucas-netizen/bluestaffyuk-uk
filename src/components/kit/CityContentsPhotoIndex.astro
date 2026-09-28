@@ -1,5 +1,5 @@
 ---
-// src/components/kit/CityContents.astro — city component 4, the contents list (London pick:
+// src/components/kit/CityContentsPhotoIndex.astro — city component 4, the contents list (London pick:
 // contents-list C, "Photo index"). The page's sections pressed into a sunk steel-100 panel
 // (no shadow) with a puppy photograph at its left (on top on a phone): a buyer question, its
 // answer, then every section as a generous arrow row, two columns from 640px.
@@ -12,7 +12,8 @@
 // `sections` (src/lib/sections.ts), the same list the dial and the jump band read, so the three
 // can never disagree about what the sections are.
 //
-// Mounted by PageShell (`navSet: 'city'`), once, after the hero. Conventions 2, 4, 6.
+// Mounted by the city layout (src/layouts/CityShell.astro) in PageShell's `nav-contents` slot,
+// once, after the hero. Conventions 2, 4, 6.
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import type { SectionRef } from '../../lib/sections';
@@ -34,9 +35,9 @@ const more = Math.max(0, sections.length - phoneRows);
 const listId = 'city-contents-list';
 // The <noscript> rule, as a string: Astro would otherwise hoist it into the page stylesheet,
 // where it would show the hidden rows to everybody (the same trap VideoEmbed documents).
-const NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}.city-contents .more{display:none!important}';
+const NOSCRIPT_CSS = '.city-contents-photo-index [data-rest]{display:block!important}.city-contents-photo-index .more{display:none!important}';
 ---
-<section {...rest} class:list={['city-kit', 'city-contents', cls]}>
+<section {...rest} class:list={['city-kit', 'city-contents-photo-index', cls]}>
   <div class="panel">
     <figure>
       <Image src={puppyImage(photo)} alt={photoAlt} widths={[400, 800, 1080]}
@@ -69,7 +70,7 @@ const NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}.city-c
 <script>
   // Singleton: a page mounts one contents list. The button only exists below 640px's worth of
   // rows; above 640px every row is shown by CSS and the button is display:none.
-  const root = document.querySelector<HTMLElement>('.city-contents');
+  const root = document.querySelector<HTMLElement>('.city-contents-photo-index');
   const btn = root?.querySelector<HTMLButtonElement>('[data-more]');
   if (root && btn) {
     const label = btn.querySelector<HTMLElement>('[data-more-label]')!;
@@ -84,7 +85,7 @@ const NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}.city-c
 </script>
 <style>
   @layer components {
-    .city-contents { background: var(--color-surface); padding: var(--space-6) var(--space-4); }
+    .city-contents-photo-index { background: var(--color-surface); padding: var(--space-6) var(--space-4); }
     .panel { max-width: 1200px; margin: 0 auto; display: grid; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     figure { margin: 0; background: var(--color-surface); }
     figure :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; }
@@ -108,7 +109,7 @@ const NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}.city-c
     .more[aria-expanded='true'] svg { transform: rotate(180deg); }
     @media (max-width: 639px) {
       [data-rest] { display: none; }
-      .city-contents[data-open] [data-rest] { display: block; }
+      .city-contents-photo-index[data-open] [data-rest] { display: block; }
       figure :global(img) { aspect-ratio: 2 / 1; }
       .body { padding: var(--space-5) var(--space-4); }
       .lede { margin-bottom: var(--space-4); }
@@ -119,7 +120,7 @@ const NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}.city-c
     }
     @media (min-width: 640px) and (max-width: 1023px) { figure :global(img) { aspect-ratio: 21 / 9; } }
     @media (min-width: 1024px) {
-      .city-contents { padding: var(--space-9) var(--space-5); }
+      .city-contents-photo-index { padding: var(--space-9) var(--space-5); }
       .panel { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
       figure { display: flex; flex-direction: column; }
       figure :global(img) { flex: 1; aspect-ratio: auto; min-height: 100%; }

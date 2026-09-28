@@ -1,10 +1,10 @@
 ---
-// src/components/kit/CityJumpBand.astro — city component 6, the phone jump links and their sheet
+// src/components/kit/CityJumpStepper.astro — city component 6, the phone jump links and their sheet
 // (London pick: jump-links A, "Stepper band"). Below 1024px a steel band sticks under the site
 // header. Its top row is the page as one icon stop per section on one line (names under them
 // from 600px), every stop in reach without scrolling sideways; the current stop swells brass.
 // Its second row names the section you are in and is the key that raises a bottom sheet listing
-// every section as the question it answers. Hidden at 1024px and up, where CityDial navigates.
+// every section as the question it answers. Hidden at 1024px and up, where CityDialPhotoMarker navigates.
 //
 // THE SHEET IS SectionSheet's PATTERN, NOT THE CANVAS'S (plan2-notes). The canvas opened it as
 // the `:target` of a link, which pushes a history entry per open and close and has no focus trap.
@@ -32,12 +32,12 @@ type Props = HTMLAttributes<'div'> & { sections: SectionRef[]; chrome?: boolean 
 const { sections, chrome = true, class: cls, ...rest } = Astro.props;
 const missing = sections.filter((s) => !s.question || !s.icon).map((s) => s.id);
 if (missing.length) {
-  throw new Error(`CityJumpBand: sections ${missing.join(', ')} need a question and an icon (src/lib/sections.ts)`);
+  throw new Error(`CityJumpStepper: sections ${missing.join(', ')} need a question and an icon (src/lib/sections.ts)`);
 }
 const pad = (i: number) => String(i + 1).padStart(2, '0');
 const first = sections[0];
 ---
-<div {...rest} class:list={['city-kit', 'city-jump', 'on-inverse', cls]} data-city-jump data-strip={chrome ? true : undefined}>
+<div {...rest} class:list={['city-kit', 'city-jump-stepper', 'on-inverse', cls]} data-city-jump-stepper data-strip={chrome ? true : undefined}>
   <nav class="rail" aria-label="Jump to a section">
     <ol>
       {sections.map((s, i) => (
@@ -74,7 +74,7 @@ const first = sections[0];
 <script>
   import { markCurrent, spyRows, watchSections } from '../../lib/scrollSpy';
   // Singleton by design: a page mounts one band, as it mounts one site header.
-  const band = document.querySelector<HTMLElement>('[data-city-jump]');
+  const band = document.querySelector<HTMLElement>('[data-city-jump-stepper]');
   if (band) {
     // --- the height every jump target has to clear (SectionStrip's contract) -------------
     if (band.hasAttribute('data-strip')) {
@@ -119,17 +119,17 @@ const first = sections[0];
   @layer components {
     [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + var(--strip-h, 0px) + 16px); }
     @media (max-width: 1023px) {
-      :root:has(.city-jump[data-strip]) { --strip-h: 104px; }
+      :root:has(.city-jump-stepper[data-strip]) { --strip-h: 104px; }
     }
   }
 </style>
 <style>
   @layer components {
-    .city-jump {
+    .city-jump-stepper {
       position: sticky; top: var(--hdr-measured, var(--hdr)); z-index: 30;
       padding: 2px var(--space-2) 6px; background: var(--color-surface-inverse); color: var(--color-text-on-inverse);
     }
-    .city-jump:not([data-strip]) { position: static; }
+    .city-jump-stepper:not([data-strip]) { position: static; }
     .rail ol {
       list-style: none; margin: 0 auto; padding: 0; max-width: 720px;
       display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
@@ -153,7 +153,7 @@ const first = sections[0];
       background: var(--color-cta); border-color: var(--color-cta); color: var(--color-cta-ink); transform: scale(1.2);
     }
     .lab, .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-    .city-jump a:focus-visible, .key:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -1px; }
+    .city-jump-stepper a:focus-visible, .key:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -1px; }
     .key {
       display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
       width: 100%; max-width: 720px; min-height: 44px; margin: 4px auto 0; padding: 0 var(--space-3);
@@ -204,7 +204,7 @@ const first = sections[0];
     .sheet a:focus-visible, .close:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -3px; }
     @keyframes city-jump-up { from { transform: translateY(24px); opacity: 0.6; } to { transform: none; opacity: 1; } }
     @media (prefers-reduced-motion: reduce) { .sheet[open] { animation: none; } .dot { transition: none; } }
-    @media (min-width: 1024px) { .city-jump { display: none; } }
-    @media print { .city-jump { display: none; } }
+    @media (min-width: 1024px) { .city-jump-stepper { display: none; } }
+    @media print { .city-jump-stepper { display: none; } }
   }
 </style>

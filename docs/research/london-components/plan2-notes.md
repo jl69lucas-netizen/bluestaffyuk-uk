@@ -172,3 +172,20 @@ frame.
   Task 11 should move the city nav imports out of PageShell, into a city-only wrapper or a
   conditional import, so the 12 built pages ship none of the city CSS. Measure it with
   `css-no-dead-component-rule` before and after.
+
+## From the Task 7b review (controller-added fixes)
+
+- **City components are named for their variant** (working rule 16 forbids a second city mounting
+  the same pick): `CityHeroFilmstrip`, `CityContentsPhotoIndex`, `CityDialPhotoMarker`,
+  `CityJumpStepper`, `CityTakeawaysLedger`, `CityNewsletterNotice` (the other nine already were).
+  Ids and root classes follow (`city-hero-filmstrip`, …). `scripts/city_components.py` maps each
+  picked variant key to its kit id in `KIT_OF_VARIANT`; the next city adds its own rows.
+- **The nav set is pluggable; PageShell names no pick.** PageShell has three named slots,
+  `nav-bar`, `nav-contents` and `nav-dial`; the city layout `src/layouts/CityShell.astro` fills
+  them from the components a city page passes as `nav` (`src/lib/sections.ts` `CityNavSet`:
+  `{ bar, dial, contents }`, each `{ component, props }`) and hands all three the page's
+  `sections`. The `cityNav` prop is gone, so Task 8's scaffold mounts
+  `<CityShell sections={…} nav={{ bar: { component: CityJumpStepper }, dial: { component:
+  CityDialPhotoMarker, props: {…} }, contents: { component: CityContentsPhotoIndex, props: {…} } }}>`
+  instead of `<PageShell cityNav={…}>`. The twelve built pages ship none of the city nav CSS
+  (−11,665 bytes of inline CSS each; `css-no-dead-component-rule` −69 rules each).

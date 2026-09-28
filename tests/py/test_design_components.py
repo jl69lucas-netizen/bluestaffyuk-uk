@@ -22,9 +22,9 @@ IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-s
 #: The city components (project 5; the London component design pass, Plan 2): one row per
 #: city component built from a city's picks, previewed on /kit-preview/city/, in city-page
 #: order (scripts/city_components.py). tests/py/test_city_kit.py holds them.
-CITY_IDS = ["city-hero", "city-price-scale", "city-trust-ledger", "city-contents", "city-dial",
-            "city-jump-band", "city-takeaways", "city-puppy-sheet", "city-roster", "city-video-panel",
-            "city-chapters", "city-letter", "city-faq-ledger", "city-newsletter", "city-contact-lineup"]
+CITY_IDS = ["city-hero-filmstrip", "city-price-scale", "city-trust-ledger", "city-contents-photo-index", "city-dial-photo-marker",
+            "city-jump-stepper", "city-takeaways-ledger", "city-puppy-sheet", "city-roster", "city-video-panel",
+            "city-chapters", "city-letter", "city-faq-ledger", "city-newsletter-notice", "city-contact-lineup"]
 
 
 def load():

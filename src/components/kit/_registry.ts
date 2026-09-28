@@ -60,20 +60,20 @@ import SectionSheet from './SectionSheet.astro';
 import SectionStrip from './SectionStrip.astro';
 import DataTable from './DataTable.astro';
 import VideoEmbed from './VideoEmbed.astro';
-import CityHero from './CityHero.astro';
+import CityHeroFilmstrip from './CityHeroFilmstrip.astro';
 import CityPriceScale from './CityPriceScale.astro';
 import CityTrustLedger from './CityTrustLedger.astro';
-import CityContents from './CityContents.astro';
-import CityDial from './CityDial.astro';
-import CityJumpBand from './CityJumpBand.astro';
-import CityTakeaways from './CityTakeaways.astro';
+import CityContentsPhotoIndex from './CityContentsPhotoIndex.astro';
+import CityDialPhotoMarker from './CityDialPhotoMarker.astro';
+import CityJumpStepper from './CityJumpStepper.astro';
+import CityTakeawaysLedger from './CityTakeawaysLedger.astro';
 import CityPuppySheet from './CityPuppySheet.astro';
 import CityRoster from './CityRoster.astro';
 import CityVideoPanel from './CityVideoPanel.astro';
 import CityChapters from './CityChapters.astro';
 import CityLetter from './CityLetter.astro';
 import CityFaqLedger, { type CityFaqRow } from './CityFaqLedger.astro';
-import CityNewsletter from './CityNewsletter.astro';
+import CityNewsletterNotice from './CityNewsletterNotice.astro';
 import CityContactLineup from './CityContactLineup.astro';
 import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine } from '../../lib/cityKit';
 import type { SectionRef } from '../../lib/sections';
@@ -89,9 +89,9 @@ export type ComponentId =
   // The city components (project 5): each city page's picks from its component design pass,
   // previewed on /kit-preview/city/ — never on /kit-preview/, because the city nav set is a
   // page singleton like the kit's. data/design/components.json rows with `"project": 5`.
-  | 'city-hero' | 'city-price-scale' | 'city-trust-ledger' | 'city-contents' | 'city-dial'
-  | 'city-jump-band' | 'city-takeaways' | 'city-puppy-sheet' | 'city-roster' | 'city-video-panel'
-  | 'city-chapters' | 'city-letter' | 'city-faq-ledger' | 'city-newsletter' | 'city-contact-lineup';
+  | 'city-hero-filmstrip' | 'city-price-scale' | 'city-trust-ledger' | 'city-contents-photo-index' | 'city-dial-photo-marker'
+  | 'city-jump-stepper' | 'city-takeaways-ledger' | 'city-puppy-sheet' | 'city-roster' | 'city-video-panel'
+  | 'city-chapters' | 'city-letter' | 'city-faq-ledger' | 'city-newsletter-notice' | 'city-contact-lineup';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -158,13 +158,13 @@ const PRICE_ROWS: (string | number)[][] = (puppies as { name: string; sex: strin
  *  list for all three nav components, for the reason DEMO_SECTIONS gives. Specimen wording: it
  *  names no city. */
 export const CITY_DEMO_SECTIONS: SectionRef[] = [
-  { id: 'kit-city-hero', label: 'Puppies', question: 'Where Can I Find a Blue Staffy Puppy Near Me?', icon: 'puppies' },
+  { id: 'kit-city-hero-filmstrip', label: 'Puppies', question: 'Where Can I Find a Blue Staffy Puppy Near Me?', icon: 'puppies' },
   { id: 'kit-city-price-scale', label: 'Prices', question: 'What Does Each Part of Buying a Puppy Cost?', icon: 'prices' },
   { id: 'kit-city-trust-ledger', label: 'Checks', question: 'What Should You Check Before Buying?', icon: 'health' },
-  { id: 'kit-city-contents', label: 'Contents', question: 'Which Part of Buying a Puppy Do You Need First?', icon: 'list' },
-  { id: 'kit-city-dial', label: 'Dial', question: 'Where Are You on the Page?', icon: 'home' },
-  { id: 'kit-city-jump-band', label: 'Jump', question: 'How Do You Jump to a Section on a Phone?', icon: 'faq' },
-  { id: 'kit-city-takeaways', label: 'In short', question: 'What Should a Buyer Take From This Page?', icon: 'deposit' },
+  { id: 'kit-city-contents-photo-index', label: 'Contents', question: 'Which Part of Buying a Puppy Do You Need First?', icon: 'list' },
+  { id: 'kit-city-dial-photo-marker', label: 'Dial', question: 'Where Are You on the Page?', icon: 'home' },
+  { id: 'kit-city-jump-stepper', label: 'Jump', question: 'How Do You Jump to a Section on a Phone?', icon: 'faq' },
+  { id: 'kit-city-takeaways-ledger', label: 'In short', question: 'What Should a Buyer Take From This Page?', icon: 'deposit' },
   { id: 'kit-city-puppy-sheet', label: 'The six', question: 'Which Puppy Will You Ask About First?', icon: 'delivery' },
 ];
 
@@ -429,15 +429,15 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   // THE SPECIMENS STATE PLACEHOLDER COPY, AND SAY SO. A city page's words come from its own
   // research board and outline (docs/reference/page-run.md row 8); a specimen shows the
   // component's shape, so its copy names no city and claims nothing the data files do not.
-  'city-hero': {
-    C: CityHero,
+  'city-hero-filmstrip': {
+    C: CityHeroFilmstrip,
     demo: [{
       as: 'h2',
       eyebrow: `Six puppies · ${SITE.address.city}`,
       title: 'Where Can I Find a Blue Staffy Puppy Near Me?',
       lede: `Three boys and three girls, raised by ${SITE.breeder_name} in ${SITE.address.city}, with UK home delivery priced by distance.`,
-      cta: { label: 'Choose your puppy', href: '#kit-city-hero' },
-      more: { label: 'How delivery works', href: '#kit-city-hero' },
+      cta: { label: 'Choose your puppy', href: '#kit-city-hero-filmstrip' },
+      more: { label: 'How delivery works', href: '#kit-city-hero-filmstrip' },
     }],
   },
   // The figures are the component's own reading of the data files; only the words are passed.
@@ -470,10 +470,11 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       ],
     }],
   },
-  // The three nav components share CITY_DEMO_SECTIONS. On a real page PageShell mounts them
-  // (`cityNav`); here the band is a picture (`chrome: false`), so it moves no anchor.
-  'city-contents': {
-    C: CityContents,
+  // The three nav components share CITY_DEMO_SECTIONS. On a real page the city layout
+  // (src/layouts/CityShell.astro) mounts them in PageShell's nav slots; here the band is a
+  // picture (`chrome: false`), so it moves no anchor.
+  'city-contents-photo-index': {
+    C: CityContentsPhotoIndex,
     demo: [{
       sections: CITY_DEMO_SECTIONS,
       heading: 'Which Part of Buying a Puppy Do You Need First?',
@@ -482,14 +483,14 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       photoAlt: 'Christa, a blue girl from the Carlisle litter',
     }],
   },
-  'city-dial': {
-    C: CityDial,
+  'city-dial-photo-marker': {
+    C: CityDialPhotoMarker,
     demo: [{ sections: CITY_DEMO_SECTIONS, photo: 'Cheryl1.jpeg', photoAlt: 'Cheryl, a blue girl with a white blaze, one of the six puppies' }],
   },
-  'city-jump-band': { C: CityJumpBand, demo: [{ sections: CITY_DEMO_SECTIONS, chrome: false }] },
+  'city-jump-stepper': { C: CityJumpStepper, demo: [{ sections: CITY_DEMO_SECTIONS, chrome: false }] },
   // Each row states a fact the data files back; the figures are read from them.
-  'city-takeaways': {
-    C: CityTakeaways,
+  'city-takeaways-ledger': {
+    C: CityTakeawaysLedger,
     demo: [{
       heading: 'What Should a Buyer Take From This Page?',
       lede: `Five plain answers, one sentence each, so you can decide whether a puppy from ${SITE.breeder_name}'s home in ${SITE.address.city} is right for you.`,
@@ -593,8 +594,8 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       },
     ],
   },
-  'city-newsletter': {
-    C: CityNewsletter,
+  'city-newsletter-notice': {
+    C: CityNewsletterNotice,
     demo: [{
       eyebrow: 'Litter notes',
       heading: 'Want a Note When Our Next Litter Is Due?',

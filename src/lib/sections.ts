@@ -13,7 +13,7 @@ export interface SectionRef {
   /** The short label shown in the dial and the sheet, not the full heading. */
   label: string;
   /** The section's heading, the buyer question it answers. The city set's sheet lists it
-   *  (CityJumpBand); the kit set never reads it. */
+   *  (CityJumpStepper); the kit set never reads it. */
   question?: string;
   /** The line icon the city set's stepper shows for the section (src/components/kit/cityIcons.ts). */
   icon?: CityIcon;
@@ -42,10 +42,16 @@ export interface SectionSource {
 export const sectionsFromRecord = (record: SectionSource): SectionRef[] =>
   record.sections.map((s) => ({ id: s.id, label: s.heading.replace(/:.*$/, '').trim() }));
 
-/** What a city page's nav set shows beside its sections (PageShell `cityNav`): the contents
- *  panel's question, answer and puppy photograph, and the dial's photograph. Photos are files in
- *  src/assets/puppies named in data/image-focus.json; alts are the page's own words. */
-export interface CityNav {
-  contents: { heading: string; lede: string; photo: string; photoAlt: string };
-  dial: { photo: string; photoAlt: string; title?: string };
+/** One part of a page's own nav set (src/layouts/CityShell.astro): the picked component and its
+ *  own props. The layout hands every part the page's `sections` itself, so the bar, the dial
+ *  and the contents can never disagree about what the sections are. */
+export interface CityNavPart {
+  // An Astro component; typed loosely because each pick declares its own Props.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component: (props: any) => any;
+  props?: Record<string, unknown>;
 }
+
+/** A city page's picked nav set: the top bar below 1024px, the dial beside the body from
+ *  1024px, and the contents panel once after the hero. Each city names its own picks here. */
+export interface CityNavSet { bar: CityNavPart; dial: CityNavPart; contents: CityNavPart }

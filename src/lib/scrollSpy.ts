@@ -1,8 +1,8 @@
 // src/lib/scrollSpy.ts — which section is the reader in? The city nav set's one answer.
 //
 // PageDial, SectionStrip and SectionSheet each carry this logic inline (the twelve built pages
-// mount them and are frozen, so they are left as they are). The city set — CityDial and
-// CityJumpBand — imports it instead, so two components on one page cannot disagree about the
+// mount them and are frozen, so they are left as they are). The city set — CityDialPhotoMarker and
+// CityJumpStepper — imports it instead, so two components on one page cannot disagree about the
 // current section: the same reading band (`-40% 0px -55% 0px`), the same bottom-of-document
 // rule (a short last section can never reach the band, so at the bottom the last row wins),
 // and the same seed from the URL fragment. See the fuller notes in PageDial.astro.

@@ -150,8 +150,8 @@ def test_the_site_preview_carries_no_city_component():
 
 
 def test_built_city_hero_is_a_filmstrip_kit_hero_with_the_litter_first():
-    s = section("city-hero")
-    assert 'class="city-kit kit-hero city-hero' in s and 'data-hero-layout="filmstrip"' in s
+    s = section("city-hero-filmstrip")
+    assert 'class="city-kit kit-hero city-hero-filmstrip' in s and 'data-hero-layout="filmstrip"' in s
     pups = [p for p in json.loads((ROOT / "data/puppies.json").read_text()) if p["status"] == "Available"]
     imgs = re.findall(r"<img [^>]*>", s)
     assert len(imgs) == len(pups), len(imgs)
@@ -220,23 +220,23 @@ def _demo_sections():
     return re.findall(r"id: '([^']+)'", block)
 
 
-@pytest.mark.parametrize("name", ["CityContents.astro", "CityDial.astro", "CityJumpBand.astro"])
+@pytest.mark.parametrize("name", ["CityContentsPhotoIndex.astro", "CityDialPhotoMarker.astro", "CityJumpStepper.astro"])
 def test_the_city_nav_set_marks_by_script_never_by_target_or_scroll_timeline(name):
     """plan2-notes: the canvas marked the current section with `:target` and scroll-driven
     animations (a reduced-motion reader saw section one stuck, learning loop L8); the kit marks
     it with src/lib/scrollSpy.ts. And no `!important` animation longhand is ever ported."""
     src = (KIT / name).read_text(encoding="utf-8")
     code = re.sub(r"/\*.*?\*/", "", re.sub(r"^\s*//.*$", "", src, flags=re.M), flags=re.S)
-    # The one sanctioned `!important`: CityContents' <noscript> rule, which must beat the
+    # The one sanctioned `!important`: CityContentsPhotoIndex' <noscript> rule, which must beat the
     # phone rule it undoes for a reader with no scripting.
-    code = code.replace("NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}"
-                        ".city-contents .more{display:none!important}'", "")
+    code = code.replace("NOSCRIPT_CSS = '.city-contents-photo-index [data-rest]{display:block!important}"
+                        ".city-contents-photo-index .more{display:none!important}'", "")
     for banned in (":target", "animation-timeline", "view-timeline", "timeline-scope", "!important"):
         assert banned not in code, (name, banned)
 
 
 def test_built_city_contents_is_one_list_with_a_phone_disclosure():
-    s = section("city-contents")
+    s = section("city-contents-photo-index")
     ids = _demo_sections()
     hrefs = re.findall(r'<a href="#([^"]+)"', s)
     assert hrefs == ids, "one row per section, each once — no second copy for phones"
@@ -251,8 +251,8 @@ def test_built_city_contents_is_one_list_with_a_phone_disclosure():
 
 
 def test_built_city_dial_is_a_labelled_track_with_one_current_row():
-    s = section("city-dial")
-    assert "data-city-dial" in s
+    s = section("city-dial-photo-marker")
+    assert "data-city-dial-photo-marker" in s
     assert 'aria-labelledby="city-dial-title"' in s and 'id="city-dial-title"' in s
     assert re.findall(r'data-spy="([^"]+)"', s) == _demo_sections()
     assert s.count('aria-current="location"') == 1
@@ -260,7 +260,7 @@ def test_built_city_dial_is_a_labelled_track_with_one_current_row():
 
 
 def test_built_city_jump_band_is_a_rail_and_a_native_dialog_sheet():
-    s = section("city-jump-band")
+    s = section("city-jump-stepper")
     ids = _demo_sections()
     assert "<dialog" in s and 'aria-labelledby="city-jump-sheet-title"' in s
     key = re.search(r"<button[^>]*data-jump-open[^>]*>", s).group(0)
@@ -271,17 +271,49 @@ def test_built_city_jump_band_is_a_rail_and_a_native_dialog_sheet():
     assert s.count("<svg") >= len(ids)
     # The preview's band is a picture of the component, not this page's chrome.
     assert "data-strip" not in s
-    src = (KIT / "CityJumpBand.astro").read_text(encoding="utf-8")
+    src = (KIT / "CityJumpStepper.astro").read_text(encoding="utf-8")
     assert "showModal()" in src and "addEventListener('close'" in src
 
 
-def test_pageshell_swaps_the_nav_set_only_for_a_city_page():
-    src = (ROOT / "src/layouts/PageShell.astro").read_text(encoding="utf-8")
-    assert "cityNav" in src and "CityJumpBand" in src and "CityDial" in src and "CityContents" in src
-    # The site pages never pass cityNav, so they still mount the kit's set.
+CITY_NAV_ROOTS = ("city-contents-photo-index", "city-dial-photo-marker", "city-jump-stepper")
+
+
+def test_the_nav_set_is_pluggable_and_pageshell_carries_no_city_pick():
+    """Task 7b review, items 4 and 5. PageShell names no city component: a page's own nav set
+    comes in through three named slots (`nav-bar`, `nav-contents`, `nav-dial`), and the city
+    layout (src/layouts/CityShell.astro) fills them from the components a city page passes it,
+    so the next city mounts different picks without an edit to PageShell or CityShell."""
+    shell = (ROOT / "src/layouts/PageShell.astro").read_text(encoding="utf-8")
+    code = shell.split("---", 2)[1]
+    assert not re.search(r"import\s+City\w+", code), "PageShell imports a city component"
+    assert "cityNav" not in shell
+    for name in ("nav-bar", "nav-contents", "nav-dial"):
+        assert f'<slot name="{name}"' in shell, name
+    city = (ROOT / "src/layouts/CityShell.astro").read_text(encoding="utf-8")
+    ccode = city.split("---", 2)[1]
+    assert "import PageShell" in ccode
+    assert not re.search(r"import\s+City\w+", ccode), "CityShell names a city's picks"
+    for name in ("nav-bar", "nav-contents", "nav-dial"):
+        assert f'slot="{name}"' in city, name
+    # No site page mounts the city layout or names a city nav pick (London arrives in Task 8).
     for page in (ROOT / "src/pages").rglob("*.astro"):
-        if page.name != "blue-staffy-puppies-london.astro":
-            assert "cityNav" not in page.read_text(encoding="utf-8"), page
+        if "kit-preview" in page.parts or page.name == "blue-staffy-puppies-london.astro":
+            continue
+        text = page.read_text(encoding="utf-8")
+        assert "CityShell" not in text and "slot=\"nav-dial\"" not in text, page
+
+
+def test_the_built_pages_ship_none_of_the_city_nav_css():
+    """Task 7b review, item 5: with the picks out of PageShell, Astro bundles their CSS only
+    where a page imports them. The twelve built pages carry no rule of the city nav set."""
+    rebuilt = json.loads((ROOT / "data/facts/rebuilt.json").read_text())
+    for slug in rebuilt:
+        path = ROOT / "dist" / ("index.html" if slug == "index" else f"{slug}/index.html")
+        if not path.exists():
+            pytest.skip("run npm run build first")
+        css = " ".join(re.findall(r"<style[^>]*>(.*?)</style>", path.read_text(encoding="utf-8"), re.S))
+        for root in CITY_NAV_ROOTS + ("has-city-dial",):
+            assert f".{root}" not in css, (slug, root)
 
 
 # --------------------------------------------------------------------------- Task 4
@@ -291,7 +323,7 @@ def _available():
 
 
 def test_built_city_takeaways_is_a_ruled_ledger_with_a_served_photo():
-    s = section("city-takeaways")
+    s = section("city-takeaways-ledger")
     assert 3 <= s.count("data-takeaway") <= 6
     assert s.count("<dt") == s.count("data-takeaway") == s.count("<dd")
     src = re.search(r'<img [^>]*src="/images/([^"]+)"[^>]*>', s)
@@ -457,7 +489,7 @@ def test_no_heading_on_the_city_preview_repeats_an_faq_question():
 
 
 def test_built_city_newsletter_is_one_email_field_on_the_one_endpoint():
-    s = section("city-newsletter")
+    s = section("city-newsletter-notice")
     form = re.search(r"<form[^>]*data-newsletter[^>]*>(.*?)</form>", s, re.S)
     head = re.search(r"<form[^>]*data-newsletter[^>]*>", s).group(0)
     assert 'method="POST"' in head
@@ -510,7 +542,36 @@ def test_the_grid_layout_of_the_kit_form_is_opt_in():
             assert f.count("<fieldset") == 3, page
 
 
-def test_every_canvas_component_names_its_kit_component_and_every_city_row_is_one():
-    from city_components import COMPONENT_IDS, KIT_ID
-    assert list(KIT_ID) == list(COMPONENT_IDS)
-    assert list(KIT_ID.values()) == [r["id"] for r in city_rows()]
+def test_every_london_pick_names_its_kit_component_and_every_city_row_is_one():
+    from city_components import COMPONENT_IDS, KIT_OF_VARIANT
+    picks = json.loads((ROOT / "data/design/city-picks/blue-staffy-puppies-london.json").read_text())["picks"]
+    assert list(picks) == list(COMPONENT_IDS)
+    assert [KIT_OF_VARIANT[picks[c]] for c in COMPONENT_IDS] == [r["id"] for r in city_rows()]
+
+
+def _words(s):
+    """The words of a CamelCase file stem or a kebab-case id: CityHeroFilmstrip, city-hero-filmstrip."""
+    return {w.lower() for w in re.findall(r"[A-Z][a-z]*|[a-z]+", s)}
+
+
+def _name_words(name):
+    """A variant's name as words: "Litter line-up" -> {litter, lineup}."""
+    return set(re.sub(r"[-']", "", name.lower()).split())
+
+
+def test_each_city_component_is_named_for_the_variant_it_builds():
+    """Working rule 16 forbids reusing a pick across cities, so a city component is ONE variant,
+    named for it (Task 7b review, item 4): CityHeroFilmstrip is london/hero/b "Litter filmstrip",
+    never a generic CityHero the next city would be tempted to mount again. The kit id, the file
+    and the title each carry a word of the variant's own name; ids and files are unique."""
+    from city_components import KIT_OF_VARIANT
+    rows = {r["id"]: r for r in city_rows()}
+    assert len({r["file"] for r in rows.values()}) == len(rows)
+    for key, kit_id in KIT_OF_VARIANT.items():
+        city, comp, v = key.split("/")
+        name = json.loads((ROOT / "design/city-canvas" / city / comp / "meta.json").read_text())["variants"][v]["name"]
+        own = _name_words(name) - {"litter", "photo"} or _name_words(name)
+        row = rows[kit_id]
+        assert own & _words(row["file"].rsplit(".", 1)[0]), (key, name, row["file"])
+        assert own & _words(kit_id), (key, name, kit_id)
+        assert name.lower() in row["title"].lower(), (key, name, row["title"])

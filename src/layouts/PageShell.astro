@@ -37,26 +37,26 @@ import PageDial from '../components/kit/PageDial.astro';
 import SectionSheet from '../components/kit/SectionSheet.astro';
 import SectionStrip from '../components/kit/SectionStrip.astro';
 import PageNav from '../components/kit/PageNav.astro';
-import CityDial from '../components/kit/CityDial.astro';
-import CityJumpBand from '../components/kit/CityJumpBand.astro';
-import CityContents from '../components/kit/CityContents.astro';
-import type { CityNav, SectionRef } from '../lib/sections';
+import type { SectionRef } from '../lib/sections';
 import { globalCtaShown } from '../lib/globalCta';
 
-// Every head prop is BaseLayout's, forwarded untouched; `sections` and `cityNav` are the shell's
-// own. Extending rather than restating means a prop added to the layout reaches the shell.
+// Every head prop is BaseLayout's, forwarded untouched; `sections` is the shell's own. Extending
+// rather than restating means a prop added to the layout reaches the shell.
 //
-// `cityNav` SWAPS THE WHOLE NAV SET (the London component design pass, Plan 2). A city page
-// mounts its own picks — CityJumpBand below 1024px, CityDial at 1024px and up, CityContents
-// once after the hero — from the SAME `sections` list and on the same six-section threshold, so
-// the set is still one component split by width. A city page puts its hero AND the strips that
-// open it (counter, trust) in `slot="hero"`, which renders full width ABOVE the dial's grid,
-// with the contents panel under it: the dial starts where the body starts. Every page that
-// passes no `cityNav` renders exactly as before.
-interface Props extends BaseProps { sections?: SectionRef[]; cityNav?: CityNav }
-const { sections = [], cityNav, ...head } = Astro.props;
-const nav = sections.length >= 6;
-const city = nav && cityNav !== undefined;
+// A PAGE MAY BRING ITS OWN NAV SET, through three named slots, and the shell names none of its
+// parts (the London component design pass, Plan 2; the Task 7b review). `nav-bar` renders in the
+// header slot under the site header (top chrome, outside `#main`, as the strip is), `nav-contents`
+// once after the hero, and `nav-dial` in the column beside the body. A page that fills any of them
+// gets no kit dial, strip, sheet or TOC, and its `hero` slot renders full width ABOVE the column
+// grid, with the contents under it: the dial starts where the body starts. The city layout
+// (src/layouts/CityShell.astro) fills the three from the picks a city page passes it, so each
+// city mounts its own picks without an edit here, and a page that imports none ships none of
+// their CSS. Every page that fills none of the slots renders exactly as before.
+interface Props extends BaseProps { sections?: SectionRef[] }
+const { sections = [], ...head } = Astro.props;
+const own = Astro.slots.has('nav-bar') || Astro.slots.has('nav-contents') || Astro.slots.has('nav-dial');
+const ownDial = Astro.slots.has('nav-dial');
+const nav = !own && sections.length >= 6;
 // The approved board's `global_cta` decides the footer's CTA band (CAG parity audit D3).
 const cta = globalCtaShown(Astro.url.pathname);
 // A page that passes one to five sections gets NO in-page nav and no warning would be given
@@ -64,7 +64,7 @@ const cta = globalCtaShown(Astro.url.pathname);
 // and has to guess whether the threshold or their list is wrong. Say which, at build time,
 // once per page. Not an error: below six the pair is genuinely the wrong furniture, so the
 // page is correct as built and this is the sentence that explains it.
-if (sections.length > 0 && !nav) {
+if (!own && sections.length > 0 && !nav) {
   console.warn(`PageShell: ${head.canonical ?? head.title} passed ${sections.length} section(s); `
     + 'the dial and the section sheet need six. Rendering the page without them.');
 }
@@ -77,25 +77,25 @@ if (sections.length > 0 && !nav) {
       `#main` at 768 for exactly this). Outside it, `#main` begins below the whole band. */}
   <Fragment slot="header">
     <SiteHeaderKit />
-    {nav && !city && <SectionStrip sections={sections} />}
-    {city && <CityJumpBand sections={sections} />}
+    {nav && <SectionStrip sections={sections} />}
+    {own && <slot name="nav-bar" />}
   </Fragment>
-  {city && (
+  {own && (
     <Fragment>
       <slot name="hero" />
-      <CityContents sections={sections} {...cityNav!.contents} />
+      <slot name="nav-contents" />
     </Fragment>
   )}
-  <div class:list={['page-shell', { 'has-dial': nav && !city, 'has-city-dial': city }]}>
-    {nav && !city && <PageDial sections={sections} />}
-    {city && <CityDial sections={sections} {...cityNav!.dial} />}
+  <div class:list={['page-shell', { 'has-dial': nav, 'has-own-dial': ownDial }]}>
+    {nav && <PageDial sections={sections} />}
+    {ownDial && <slot name="nav-dial" />}
     <div class="page-body">
-      {!city && <slot name="hero" />}
-      {nav && !city && <PageNav sections={sections} crumbs={false} class="page-toc" />}
+      {!own && <slot name="hero" />}
+      {nav && <PageNav sections={sections} crumbs={false} class="page-toc" />}
       <slot />
     </div>
   </div>
-  {nav && !city && <SectionSheet sections={sections} />}
+  {nav && <SectionSheet sections={sections} />}
   <SiteFooterKit slot="footer" cta={cta} />
 </BaseLayout>
 <style>
@@ -120,14 +120,15 @@ if (sections.length > 0 && !nav) {
          repeating it beside itself. */
       .page-shell.has-dial > .page-body > .page-toc { display: none; }
     }
-    /* The city set's dial column is the pick's 272px panel (desktop-dial C). */
+    /* A page's own dial takes the column its own width asks for (`auto`): the shell names no
+       pick and no pick's width (a city dial reads --city-dial-w, global.css). */
     @media (min-width: 1024px) {
-      .page-shell.has-city-dial {
+      .page-shell.has-own-dial {
         max-width: var(--container);
         margin-inline: auto;
         padding-inline: var(--space-5);
         display: grid;
-        grid-template-columns: 272px minmax(0, 1fr);
+        grid-template-columns: auto minmax(0, 1fr);
         gap: var(--space-8);
         align-items: start;
       }

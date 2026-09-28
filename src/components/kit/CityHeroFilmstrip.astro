@@ -1,5 +1,5 @@
 ---
-// src/components/kit/CityHero.astro — city component 1, the hero (London pick: hero B,
+// src/components/kit/CityHeroFilmstrip.astro — city component 1, the hero (London pick: hero B,
 // "Litter filmstrip"; data/design/city-picks/blue-staffy-puppies-london.json). A deep-steel
 // panel inset in the bone page; the available puppies run as a contact-sheet strip, and the copy
 // sits under it in two editorial columns from 1024px.
@@ -43,7 +43,7 @@ const pups = availablePuppies();
 const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25.333px), '
   + '(min-width: 640px) calc(16.667vw - 14.667px), calc(33.333vw - 21.333px)';
 ---
-<section {...rest} class:list={['city-kit', 'kit-hero', 'city-hero', cls]} data-hero-layout="filmstrip" data-hero-media="top">
+<section {...rest} class:list={['city-kit', 'kit-hero', 'city-hero-filmstrip', cls]} data-hero-layout="filmstrip" data-hero-media="top">
   <div class="inner on-inverse">
     <ul class="pic" aria-label="The puppies available now">
       {pups.map((p, i) => (
@@ -79,7 +79,7 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
 </section>
 <style>
   @layer components {
-    .city-hero { background: var(--color-surface); padding: var(--space-3); }
+    .city-hero-filmstrip { background: var(--color-surface); padding: var(--space-3); }
     .inner {
       max-width: 1232px; margin: 0 auto; display: grid; gap: var(--space-5);
       padding: var(--space-3); border-radius: var(--radius-lg);
@@ -130,7 +130,7 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
     .cta:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     @media (min-width: 640px) { .pic { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
     @media (min-width: 1024px) {
-      .city-hero { padding: var(--space-4) var(--space-5); }
+      .city-hero-filmstrip { padding: var(--space-4) var(--space-5); }
       /* From 1024px the copy reads above the strip (the pick's "copy" / "strip" areas); the
          strip stays FIRST IN SOURCE, so a phone still paints it first (rule 10). */
       .inner { min-height: 390px; padding: var(--space-6) var(--space-6) var(--space-5); grid-template-areas: "copy" "strip"; }
