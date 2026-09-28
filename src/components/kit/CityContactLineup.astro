@@ -15,6 +15,7 @@
 // Each photo sits beside its printed name and price, so it is decorative (alt="") — a described
 // photo would read the puppy twice, and the same six photographs are described elsewhere on a
 // city page. The rows are data/puppies.json. Conventions 2 (`.on-inverse`), 4, 6.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import ContactFormKit from './ContactFormKit.astro';
@@ -77,13 +78,8 @@ const pups = availablePuppies();
 </script>
 <style>
   @layer components {
-    /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
-       1280) — not the viewport. The tiers are the section's own box: tablet from 640px, desktop
-       from 800px (the Task 7b review: the canvas's 1024 was never reached in the column). The
-       root has no gutter, so those are the query widths as written; a full-width copy switches
-       where the canvas frames did at 375 / 768 / 1024 / 1280. */
-    .city-contact { container-type: inline-size; background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-contact { background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
     .in { max-width: 1160px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
     h2 { margin: 0; color: var(--color-text-on-inverse); }
     .lede { margin: var(--space-3) 0 var(--space-5); font-size: var(--city-lead); color: var(--color-steel-100); }
@@ -92,10 +88,10 @@ const pups = availablePuppies();
     .pups :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); margin-bottom: var(--space-1); }
     .nm { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); line-height: 1.2; }
     .pr { font-size: var(--text-xs); color: var(--color-steel-100); }
-    @container (min-width: 640px) {
+    @container (width >= 640px) {
       .in { padding: var(--city-pad-y) var(--space-6); }
       .pups { grid-template-columns: repeat(6, minmax(0, 1fr)); }
     }
-    @container (min-width: 800px) { .pups { gap: var(--space-4); } }
+    @container (width >= 800px) { .pups { gap: var(--space-4); } }
   }
 </style>

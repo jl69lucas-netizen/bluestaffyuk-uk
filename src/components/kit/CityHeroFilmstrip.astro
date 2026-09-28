@@ -18,6 +18,7 @@
 //
 // Conventions 2 (focus rings read --kit-ring; the band sets it via `.on-inverse`), 4, 6.
 // Brass is a FILL (the CTA) with --color-cta-ink text, never small text on the steel band.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import { puppyImage } from '../../lib/puppyImages';
@@ -79,9 +80,11 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
 </section>
 <style>
   @layer components {
-    .city-hero-filmstrip { background: var(--color-surface); padding: var(--space-3); }
+    /* A full-width strip, the viewport wide, so its @media edges read its own box (src/styles/city.css).
+       Its gutters are the panel's own width, never root padding, so its content box is its box. */
+    .city-hero-filmstrip { background: var(--color-surface); padding: var(--space-3) 0; }
     .inner {
-      max-width: 1232px; margin: 0 auto; display: grid; gap: var(--space-5);
+      max-width: min(1232px, calc(100% - 2 * var(--space-3))); margin: 0 auto; display: grid; gap: var(--space-5);
       padding: var(--space-3); border-radius: var(--radius-lg);
       background: var(--color-surface-deep); color: var(--color-text-on-inverse);
     }
@@ -127,9 +130,10 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
       text-decoration: underline;
     }
     .cta:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
-    @media (min-width: 640px) { .pic { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
-    @media (min-width: 1024px) {
-      .city-hero-filmstrip { padding: var(--space-4) var(--space-5); }
+    @media (width >= 640px) { .pic { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+    @media (width >= 1024px) {
+      .city-hero-filmstrip { padding: var(--space-4) 0; }
+      .inner { max-width: min(1232px, calc(100% - 2 * var(--space-5))); }
       /* From 1024px the copy reads above the strip (the pick's "copy" / "strip" areas); the
          strip stays FIRST IN SOURCE, so a phone still paints it first (rule 10). */
       .inner { min-height: 390px; padding: var(--space-6) var(--space-6) var(--space-5); grid-template-areas: "copy" "strip"; }
@@ -142,7 +146,7 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
       .head { align-self: start; }
       .title { margin: 0; }
     }
-    @media (min-width: 1024px) and (max-width: 1199px) {
+    @media (1024px <= width < 1200px) {
       .pic :global(img) { height: 120px; }
     }
     /* rules/design.md rule 10, "on a phone the photo also PAINTS first": the strip is first in

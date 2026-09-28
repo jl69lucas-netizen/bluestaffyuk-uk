@@ -14,6 +14,7 @@
 //
 // Mounted by the city layout (src/layouts/CityShell.astro) in PageShell's `nav-contents` slot,
 // once, after the hero. Conventions 2, 4, 6.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import type { SectionRef } from '../../lib/sections';
@@ -85,8 +86,10 @@ const NOSCRIPT_CSS = '.city-contents-photo-index [data-rest]{display:block!impor
 </script>
 <style>
   @layer components {
-    .city-contents-photo-index { background: var(--color-surface); padding: var(--space-6) var(--space-4); }
-    .panel { max-width: 1200px; margin: 0 auto; display: grid; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    /* A full-width strip, the viewport wide, so its @media edges read its own box (src/styles/city.css).
+       Its gutters are the panel's own width, never root padding, so its content box is its box. */
+    .city-contents-photo-index { background: var(--color-surface); padding: var(--space-6) 0; }
+    .panel { max-width: min(1200px, calc(100% - 2 * var(--space-4))); margin: 0 auto; display: grid; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     figure { margin: 0; background: var(--color-surface); }
     figure :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; }
     .body { padding: var(--space-6) var(--space-5) var(--space-7); }
@@ -107,26 +110,27 @@ const NOSCRIPT_CSS = '.city-contents-photo-index [data-rest]{display:block!impor
       border-top: 1px solid var(--color-steel-300); cursor: pointer;
     }
     .more[aria-expanded='true'] svg { transform: rotate(180deg); }
-    @media (max-width: 639px) {
+    @media (width < 640px) {
       [data-rest] { display: none; }
       .city-contents-photo-index[data-open] [data-rest] { display: block; }
       figure :global(img) { aspect-ratio: 2 / 1; }
       .body { padding: var(--space-5) var(--space-4); }
       .lede { margin-bottom: var(--space-4); }
     }
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
       ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .more { display: none; }
     }
-    @media (min-width: 640px) and (max-width: 1023px) { figure :global(img) { aspect-ratio: 21 / 9; } }
-    @media (min-width: 1024px) {
-      .city-contents-photo-index { padding: var(--space-8) var(--space-5); }
+    @media (640px <= width < 1024px) { figure :global(img) { aspect-ratio: 21 / 9; } }
+    @media (width >= 1024px) {
+      .city-contents-photo-index { padding: var(--space-8) 0; }
+      .panel { max-width: min(1200px, calc(100% - 2 * var(--space-5))); }
       .panel { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
       figure { display: flex; flex-direction: column; }
       figure :global(img) { flex: 1; aspect-ratio: auto; min-height: 100%; }
       .body { padding: var(--space-8) var(--space-7); }
     }
-    @media (min-width: 1200px) { .body { padding: var(--space-8) var(--space-8); } }
+    @media (width >= 1200px) { .body { padding: var(--space-8) var(--space-8); } }
     @media (prefers-reduced-motion: reduce) { a svg, .more svg { transition: none; } }
   }
 </style>

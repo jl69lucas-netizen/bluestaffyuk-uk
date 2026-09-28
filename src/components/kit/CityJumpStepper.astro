@@ -24,6 +24,7 @@
 //
 // Conventions 2 (the steel band sets `--kit-ring` through `.on-inverse`), 4, 6. Icons are the
 // line set in cityIcons.ts, in `currentColor`.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import type { SectionRef } from '../../lib/sections';
 import { CITY_ICONS } from './cityIcons';
@@ -125,7 +126,7 @@ const first = sections[0];
      (Astro may bundle this block into other pages' stylesheets — the note in SectionStrip.astro). */
   @layer components {
     [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + var(--strip-h, 0px) + 16px); }
-    @media (max-width: 1023px) {
+    @media (width < 1024px) {
       :root:has(.city-jump-stepper[data-strip]) { --strip-h: 104px; }
     }
   }
@@ -174,7 +175,7 @@ const first = sections[0];
       font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-cta-soft);
     }
     .all svg { width: 18px; height: 18px; }
-    @media (min-width: 600px) {
+    @media (width >= 600px) {
       .rail a { padding-bottom: 4px; }
       .lab {
         position: static; width: auto; height: auto; overflow: visible; clip-path: none;
@@ -211,7 +212,7 @@ const first = sections[0];
     .sheet a:focus-visible, .close:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -3px; }
     @keyframes city-jump-up { from { transform: translateY(24px); opacity: 0.6; } to { transform: none; opacity: 1; } }
     @media (prefers-reduced-motion: reduce) { .sheet[open] { animation: none; } .dot { transition: none; } }
-    @media (min-width: 1024px) { .city-jump-stepper { display: none; } }
+    @media (width >= 1024px) { .city-jump-stepper { display: none; } }
     @media print { .city-jump-stepper { display: none; } }
   }
 </style>

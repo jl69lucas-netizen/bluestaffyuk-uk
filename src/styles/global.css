@@ -10,10 +10,7 @@
    `boxClass()` and has to resolve to the same rules. */
 @import "./board-styles.css";
 @source "../../src/**/*.{astro,mdx,md,ts,tsx,js,jsx}";
-:root { --hdr: 72px; --container: 1200px; --text-max: 760px; --city-dial-w: 272px; }
-/* --city-dial-w is the city dial's column (desktop-dial C, CityDialPhotoMarker): PageShell's own-dial
-   grid sizes that column `auto`, so the dial's width is the one number, here. Beside it on a
-   city page the body column is --container − 2 × 24px − --city-dial-w − 48px = 832px at 1280. */
+:root { --hdr: 72px; --container: 1200px; --text-max: 760px; }
 /* --hdr is the sticky header's height, and every in-page jump target is offset by it
    (`[id] { scroll-margin-top: calc(var(--hdr) + 16px) }` in @layer base below).
    At 375px the header wraps to two rows and actually measures 121px, so a 72px --hdr

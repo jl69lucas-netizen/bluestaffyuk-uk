@@ -79,11 +79,28 @@ export const faqPageNode = (rows: { q: string; a: string }[]) => ({
  *  its box; only an image's `sizes` has to be told (the Task 7b review, item 1). */
 export type CityFit = 'column' | 'full';
 
-/** The section's box on a city page from 1024px: --container less the shell's two 24px gutters,
- *  --city-dial-w (272px) and the 48px gap — 656px at 1024, 832px at 1280. */
-const COLUMN = 'calc(min(100vw, 1200px) - 368px)';
-/** The viewport at which that column reaches the desktop tier (a box of 800px). */
-const COLUMN_DESKTOP_VW = 800 + 368;
+/** THE TIERS — one pair of edges for type AND layout, on the section's own box (the Task 7b
+ *  quality review, I4): phone `width < 640px`, tablet `640px <= width < 800px`, desktop
+ *  `width >= 800px`. src/styles/city.css mirrors these in its comment and its type-scale queries;
+ *  every city component's container queries use them; tests/py/test_city_kit.py holds them equal. */
+export const TIER = { tablet: 640, desktop: 800 } as const;
+
+/** The city page's geometry, each mirroring a CSS value (tests/py/test_city_kit.py holds them
+ *  equal): the dial's column (--city-dial-w, src/styles/city.css), PageShell's own-dial grid
+ *  gutter (var(--space-5)) and gap (var(--space-8)), the site's --container (global.css), and the
+ *  viewport the dial takes its column at (PageShell, CityDialPhotoMarker). */
+export const DIAL_W = 272;
+export const SHELL_GUTTER = 24;
+export const DIAL_GAP = 48;
+export const CONTAINER = 1200;
+export const DIAL_FROM = 1024;
+/** Everything the column gives up beside the dial: 2 gutters, the dial and the gap (368px). */
+const BESIDE = 2 * SHELL_GUTTER + DIAL_W + DIAL_GAP;
+
+/** The section's box on a city page from DIAL_FROM: 656px at 1024, 832px at 1280. */
+const COLUMN = `calc(min(100vw, ${CONTAINER}px) - ${BESIDE}px)`;
+/** The viewport at which that column reaches the desktop tier. */
+const COLUMN_DESKTOP_VW = TIER.desktop + BESIDE;
 
 /** A `sizes` list for an image whose painted width is a function of its section's box B at each
  *  tier the city components share — phone below a 640px box, tablet from 640, desktop from 800 —
@@ -91,8 +108,8 @@ const COLUMN_DESKTOP_VW = 800 + 368;
 export function citySizes(fit: CityFit, at: { phone: (B: string) => string; tablet: (B: string) => string; desktop: (B: string) => string }): string {
   const vw = '100vw';
   const list = fit === 'column'
-    ? [`(min-width: ${COLUMN_DESKTOP_VW}px) ${at.desktop(COLUMN)}`, `(min-width: 1024px) ${at.tablet(COLUMN)}`,
-       `(min-width: 640px) ${at.tablet(vw)}`, at.phone(vw)]
-    : [`(min-width: 800px) ${at.desktop(vw)}`, `(min-width: 640px) ${at.tablet(vw)}`, at.phone(vw)];
+    ? [`(min-width: ${COLUMN_DESKTOP_VW}px) ${at.desktop(COLUMN)}`, `(min-width: ${DIAL_FROM}px) ${at.tablet(COLUMN)}`,
+       `(min-width: ${TIER.tablet}px) ${at.tablet(vw)}`, at.phone(vw)]
+    : [`(min-width: ${TIER.desktop}px) ${at.desktop(vw)}`, `(min-width: ${TIER.tablet}px) ${at.tablet(vw)}`, at.phone(vw)];
   return list.join(', ');
 }

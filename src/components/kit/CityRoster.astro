@@ -19,6 +19,7 @@
 // a screen reader announces. The round photo sits beside the puppy's name in the same row
 // header, so it is decorative (alt=""): a described photo would read the name twice.
 // Conventions 4 and 6.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import { puppyImage } from '../../lib/puppyImages';
@@ -60,15 +61,8 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
 </section>
 <style>
   @layer components {
-    /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
-       1280) — not the viewport. The tiers are the section's own box, tablet from 640px and
-       desktop from 800px (the Task 7b review: the canvas's 1024 was never reached in the
-       column). The root has NO padding, so its content box is its box and the queries read
-       640 and 800 as written; the gutters are the tray's own margins, set in the same queries
-       (a container cannot query itself, so no rule here reads the viewport). A full-width
-       copy switches where the canvas frames did at 375 / 768 / 1024 / 1280. */
-    .city-roster { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) 0; }
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-roster { background: var(--color-surface); padding: var(--space-6) 0; }
     .tray { max-width: min(1000px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     .head { padding: 0 var(--space-2) var(--space-4); }
     h2 { margin: 0 0 var(--space-3); }
@@ -91,7 +85,7 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
     .foot { margin: var(--space-4) var(--space-2) 0; font-size: var(--text-sm); color: var(--color-ink-2); }
     /* Rule 13: the table stacks into labelled rows below a 640px BOX (the viewport never
        enters into it: in the 656px column at 1024 it is a table). */
-    @container (max-width: 639.98px) {
+    @container (width < 640px) {
       caption { padding-left: var(--space-2); }
       tbody { display: grid; gap: var(--space-2); }
       tbody tr { position: relative; min-height: 72px; padding: var(--space-3) var(--space-4) var(--space-3) 72px; border: 0; border-radius: var(--radius-md); background: var(--counter-bed); }
@@ -108,7 +102,7 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
       tbody td.num, tbody tr:last-child td.num { position: absolute; right: var(--space-4); top: var(--space-3); font-size: var(--text-lg); color: var(--color-text); }
       tbody td.num::before { content: none; }
     }
-    @container (min-width: 800px) {
+    @container (width >= 800px) {
       .tray { max-width: min(1000px, calc(100% - 2 * var(--space-5))); margin-block: var(--space-2); }
       .tray { padding: var(--space-6) var(--space-6) var(--space-5); }
       .head { padding: 0 0 var(--space-5); }

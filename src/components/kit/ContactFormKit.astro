@@ -246,11 +246,11 @@ const EMAIL_ERR = { empty: 'Please give us your email address.', bad: 'That emai
     [data-layout='grid'] .note a { color: var(--color-link-on-inverse); text-decoration: underline; text-underline-offset: 2px; }
     /* The grid layout's tiers are the city band's box (CityContactLineup): tablet from 640px,
        desktop from 800px, so the column beside a city dial reaches them (the Task 7b review). */
-    @container (min-width: 640px) {
+    @container (width >= 640px) {
       .kit-contact[data-layout='grid'] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-4); }
       [data-layout='grid'] .wide, [data-layout='grid'] .go { grid-column: 1 / -1; }
     }
-    @container (min-width: 800px) {
+    @container (width >= 800px) {
       .kit-contact[data-layout='grid'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
   }

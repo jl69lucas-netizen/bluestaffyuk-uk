@@ -13,6 +13,7 @@
 // through `playLabel`, which also starts the button's accessible name.
 // The facts are the page's words (props); each must be backed by the data files.
 // Conventions 4 and 6.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import settings from '../../../data/settings.json';
@@ -75,14 +76,9 @@ const pieces = (text: string) => text.split(CODE);
 </section>
 <style>
   @layer components {
-    /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
-       1280) — not the viewport. The tiers are the section's own box, tablet from 640px and
-       desktop from 800px (the Task 7b review: the canvas's 1024 was never reached in the
-       column), less this root's own gutters (12px a side): 616px and 776px. A full-width
-       copy switches where the canvas frames did at 375 / 768 / 1024 / 1280. */
-    .city-video { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-3); }
-    .tray { max-width: 1160px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-video { background: var(--color-surface); padding: var(--space-6) 0; }
+    .tray { max-width: min(1160px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     h2 { margin: 0 0 var(--space-2); }
     .lede { margin: 0 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); }
     .grid { display: grid; gap: var(--space-4); }
@@ -110,14 +106,14 @@ const pieces = (text: string) => text.split(CODE);
     .facts li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-steel-300); font-size: var(--text-sm); line-height: 1.45; }
     .facts b { color: var(--color-brand); }
     .nb { white-space: nowrap; }
-    @container (min-width: 616px) and (max-width: 775px) {
+    @container (640px <= width < 800px) {
       .side { grid-template-columns: 200px minmax(0, 1fr); column-gap: var(--space-5); align-items: start; }
       .side > :global(img) { grid-row: 1 / span 2; width: 200px; height: 200px; }
       .who { align-self: end; }
       .facts { grid-column: 2; }
     }
-    @container (min-width: 616px) { .tray { padding: var(--space-6) var(--space-6); } }
-    @container (min-width: 776px) {
+    @container (width >= 640px) { .tray { padding: var(--space-6) var(--space-6); } }
+    @container (width >= 800px) {
       .grid { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
       .side { grid-template-columns: 1fr; }
       .side > :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 3; }

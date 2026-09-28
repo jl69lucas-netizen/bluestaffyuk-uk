@@ -11,11 +11,14 @@
 // (plan2-notes; learning loop L8). The first row is current at render, as PageDial's is.
 //
 // Mounted by the city layout (src/layouts/CityShell.astro) in PageShell's `nav-dial` slot; its
-// width is the column's (--city-dial-w, global.css; DIAL_W below for `sizes`). Conventions 2, 4, 6.
+// width is the column's (--city-dial-w, src/styles/city.css; cityKit DIAL_W for `sizes`, which
+// cannot read CSS). Conventions 2, 4, 6.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import type { SectionRef } from '../../lib/sections';
 import { puppyImage } from '../../lib/puppyImages';
+import { DIAL_W } from '../../lib/cityKit';
 import { focusClass } from '../../lib/imageFocus';
 
 type Props = HTMLAttributes<'aside'> & {
@@ -25,8 +28,6 @@ type Props = HTMLAttributes<'aside'> & {
   photoAlt: string;
 };
 const { sections, title = 'Where you are on the page', photo, photoAlt, class: cls, ...rest } = Astro.props;
-/** --city-dial-w (src/styles/global.css), for the photo's `sizes`: an attribute cannot read CSS. */
-const DIAL_W = 272;
 ---
 <aside {...rest} class:list={['city-kit', 'city-dial-photo-marker', cls]} data-city-dial-photo-marker>
   <Image src={puppyImage(photo)} alt={photoAlt} widths={[280, 560]} sizes={`${DIAL_W}px`}
@@ -52,7 +53,7 @@ const DIAL_W = 272;
 <style>
   @layer components {
     .city-dial-photo-marker { display: none; }
-    @media (min-width: 1024px) {
+    @media (width >= 1024px) {
       .city-dial-photo-marker {
         display: block; position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px);
         max-height: calc(100vh - var(--hdr-measured, var(--hdr)) - 32px); overflow-y: auto;

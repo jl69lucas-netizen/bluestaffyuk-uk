@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>city type-fit: the tier is the section's box</title>
+<style>body{margin:0;font:16px/1.6 Georgia,serif} .city-kit{padding:0;margin:0 0 24px} h2{font-size:27px;line-height:1.2;max-width:22ch}</style></head>
+<body>
+<!-- A 27px H2 is under the desktop cap (28) and over the tablet cap (25): it fires ONLY when the
+     tier is read from the section's own box, at the edges src/lib/cityKit.ts TIER names.
+     - A 650px box is tablet at every viewport. Read from the viewport (1024, 1280) it would be
+       desktop and pass.
+     - A 790px box is tablet at the 640/800 edges. Read at the old type edges (600/780) it would
+       be desktop and pass: the drift the Task 7b quality review (I4) found. -->
+<section class="city-kit city-narrow" style="width:650px"><h2>Which Puppy?</h2></section>
+<section class="city-kit city-edge" style="width:790px"><h2>Which Puppy?</h2></section>
+</body></html>

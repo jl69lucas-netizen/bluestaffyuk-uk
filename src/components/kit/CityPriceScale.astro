@@ -13,6 +13,7 @@
 // `data-counters` puts it in `layout-hero-counter-separation`'s view: the bone-50 bed, a
 // hairline and a steel top rule separate it from the hero above (rules/design.md).
 // Conventions 4 and 6; tokens only; brass is never small text here.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { availablePuppies, BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE } from '../../lib/cityKit';
 
@@ -46,11 +47,13 @@ const count = availablePuppies().length;
 </section>
 <style>
   @layer components {
+    /* A full-width strip, the viewport wide, so its @media edges read its own box (src/styles/city.css).
+       Its gutters are the panel's own width, never root padding, so its content box is its box. */
     .city-scale {
       background: var(--counter-bed); border-top: 1px solid var(--color-border);
-      box-shadow: inset 0 3px 0 var(--color-brand); padding: var(--space-5) var(--space-3);
+      box-shadow: inset 0 3px 0 var(--color-brand); padding: var(--space-5) 0;
     }
-    .panel { max-width: 1200px; margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-md); background: var(--color-brand-soft); }
+    .panel { max-width: min(1200px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-md); background: var(--color-brand-soft); }
     .count { display: flex; align-items: baseline; gap: var(--space-3); margin: 0 0 var(--space-4); }
     .count .n { font-size: var(--city-num); line-height: 1; }
     .count .l { font-weight: 600; }
@@ -76,8 +79,9 @@ const count = availablePuppies().length;
     .l { display: block; margin-top: 2px; font-size: var(--text-sm); color: var(--color-ink); }
     .fork .n { display: inline-block; }
     .or { display: inline-block; margin: 0 var(--space-2); font-size: var(--text-sm); font-style: italic; color: var(--color-ink-2); }
-    @media (min-width: 768px) {
-      .city-scale { padding: var(--space-6) var(--space-5); }
+    @media (width >= 640px) {
+      .city-scale { padding: var(--space-6) 0; }
+      .panel { max-width: min(1200px, calc(100% - 2 * var(--space-5))); }
       .panel {
         display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center;
         gap: var(--space-7); padding: var(--space-6) var(--space-6) var(--space-5);

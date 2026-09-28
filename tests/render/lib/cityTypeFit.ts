@@ -10,9 +10,10 @@
  *   3. no paragraph runs more than 8 lines below a 1024px viewport, or 6 from 1024;
  *   4. no section is taller than 2.5 viewports at a phone width (below 768) or 1.6 viewports
  *      from 1280.
- * A heading's tier is its section's: the content box of the nearest `.city-kit` root — phone
- * below 600px, tablet from 600, desktop from 780 (the tiers the city type scale in
- * src/styles/kit.css switches on). Only painted elements are judged.
+ * A heading's tier is its section's: the content box of its `.city-kit` root, against the edges
+ * the caller passes (tests/render/lib/cityTiers.ts, read from src/lib/cityKit.ts TIER: phone
+ * below 640px, tablet from 640, desktop from 800 — the edges src/styles/city.css switches type
+ * AND layout on). city-layout-follows-box reads the same box. Only painted elements are judged.
  *
  * EXEMPTIONS, each named with its reason, never by pattern:
  *   - a `form p`: a form's `p.field` rows are layout (label over control), not reading text.
@@ -30,7 +31,8 @@
  */
 export interface TypeFitResult { examined: number; defects: string[] }
 
-export function cityTypeFit({ viewport, fullWidthSpecimen = false }: { viewport: number; fullWidthSpecimen?: boolean }): TypeFitResult {
+export function cityTypeFit({ viewport, tier: edges, fullWidthSpecimen = false }:
+  { viewport: number; tier: { tablet: number; desktop: number }; fullWidthSpecimen?: boolean }): TypeFitResult {
   const CAP: Record<string, [number, number, number]> = { H1: [26, 30, 34], H2: [22, 25, 28], H3: [17, 18, 20] };
   const TIER = ['phone', 'tablet', 'desktop'];
   const defects: string[] = [];
@@ -66,7 +68,7 @@ export function cityTypeFit({ viewport, fullWidthSpecimen = false }: { viewport:
   const roots = Array.from(document.querySelectorAll('.city-kit')).filter((r) => painted(r) && !skipRoot(r));
   for (const root of roots) {
     const w = contentWidth(root);
-    const tier = w >= 780 ? 2 : w >= 600 ? 1 : 0;
+    const tier = w >= edges.desktop ? 2 : w >= edges.tablet ? 1 : 0;
     const where = `${(root.className.match(/city-[a-z-]+/g) ?? ['city-kit']).filter((c) => c !== 'city-kit')[0]} (${Math.round(w)}px, ${TIER[tier]})`;
     for (const h of Array.from(root.querySelectorAll('h1, h2, h3')).filter(painted)) {
       examined++;

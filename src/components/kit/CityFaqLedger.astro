@@ -17,6 +17,7 @@
 // data/settings.json `delivery_note`). The guarantee row is `guaranteeRow()`, printed only when
 // data/settings.json carries both `guarantee_days` and `guarantee_note`; today the length is
 // null, so there is none (working rule 9). Conventions 2 (`.on-inverse` sets the ring), 4, 6.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { titleCase } from '../../lib/headings';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
@@ -81,13 +82,8 @@ const brief = [
 </section>
 <style>
   @layer components {
-    /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
-       1280) — not the viewport. The tiers are the section's own box: tablet from 640px, desktop
-       from 800px (the Task 7b review: the canvas's 1024 was never reached in the column). The
-       root has no gutter, so those are the query widths as written; a full-width copy switches
-       where the canvas frames did at 375 / 768 / 1024 / 1280. */
-    .city-faq { container-type: inline-size; background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-faq { background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
     .in { max-width: 1200px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); display: grid; gap: var(--space-6); }
     figure { margin: 0; }
     .rail img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); }
@@ -117,11 +113,11 @@ const brief = [
     .pm::after { transform: rotate(90deg); }
     details[open] .pm::after { transform: rotate(0deg); }
     details > p { margin: 0; padding: 0 var(--space-1) var(--space-5) calc(2.2em * 15 / 17 + var(--space-3) + var(--space-1)); max-width: 64ch; color: var(--color-steel-100); }
-    @container (min-width: 640px) {
+    @container (width >= 640px) {
       .in { padding: var(--city-pad-y) var(--space-6); }
       .rail img { aspect-ratio: 21 / 9; }
     }
-    @container (min-width: 800px) {
+    @container (width >= 800px) {
       .has-rail .in { grid-template-columns: minmax(0, 4fr) minmax(0, 9fr); gap: var(--space-8); align-items: start; }
       .rail { position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
       .rail img { aspect-ratio: 4 / 3; }

@@ -204,13 +204,73 @@ def test_built_city_trust_ledger_keeps_its_served_photo_whole():
     assert "guarantee" not in s.lower(), "no guarantee length while guarantee_days is null"
 
 
+CITY_CSS = ROOT / "src/styles/city.css"
+
+
 def test_every_city_root_carries_the_city_type_base():
-    """kit.css `.city-kit`: the headings and measures the canvas frames painted."""
+    """src/styles/city.css `.city-kit`: the headings and measures the canvas frames painted,
+    imported by every city component and by the city layout, and by nothing site-wide (I2)."""
     for r in city_rows():
         src = (KIT / r["file"]).read_text(encoding="utf-8")
         assert "class:list={['city-kit', " in src, r["file"]
-    css = KIT_CSS.read_text(encoding="utf-8")
+        assert "import '../../styles/city.css';" in src.split("---", 2)[1], r["file"]
+    assert "import '../styles/city.css';" in (ROOT / "src/layouts/CityShell.astro").read_text(encoding="utf-8")
+    css = CITY_CSS.read_text(encoding="utf-8")
     assert ".city-kit :where(h1, h2, h3) { font-weight: 700; color: var(--color-brand); }" in css
+    for shared in (KIT_CSS, ROOT / "src/styles/global.css", ROOT / "src/styles/tokens.css"):
+        text = shared.read_text(encoding="utf-8")
+        assert ".city-kit" not in text and "--city-" not in text, shared.name
+
+
+def _ts_const(name):
+    src = (ROOT / "src/lib/cityKit.ts").read_text(encoding="utf-8")
+    return int(re.search(rf"export const {name} = (\d+);", src).group(1))
+
+
+def _px_token(css, token):
+    tokens = (ROOT / "src/styles/tokens.css").read_text(encoding="utf-8")
+    m = re.search(rf"{re.escape(token)}:\s*(\d+)px", css) or re.search(rf"{re.escape(token)}:\s*(\d+)px", tokens)
+    return int(m.group(1))
+
+
+def test_the_city_geometry_constants_equal_their_css():
+    """M3: cityKit's DIAL_W, SHELL_GUTTER, DIAL_GAP and CONTAINER are the CSS values the layout
+    paints with; the column in every `sizes` is derived from them."""
+    city = CITY_CSS.read_text(encoding="utf-8")
+    glob_css = (ROOT / "src/styles/global.css").read_text(encoding="utf-8")
+    shell = (ROOT / "src/layouts/PageShell.astro").read_text(encoding="utf-8")
+    own = shell.split(".page-shell.has-own-dial {", 1)[1].split("}", 1)[0]
+    gutter = re.search(r"padding-inline: var\((--space-\d+)\)", own).group(1)
+    gap = re.search(r"gap: var\((--space-\d+)\)", own).group(1)
+    assert _px_token(city, "--city-dial-w") == _ts_const("DIAL_W")
+    assert _px_token(glob_css, "--container") == _ts_const("CONTAINER")
+    assert _px_token("", gutter) == _ts_const("SHELL_GUTTER")
+    assert _px_token("", gap) == _ts_const("DIAL_GAP")
+    assert re.search(r"@media \(min-width: (\d+)px\)[^{]*\{\s*\.page-shell\.has-own-dial", shell).group(1) == str(_ts_const("DIAL_FROM"))
+
+
+def test_one_pair_of_tier_edges_for_type_and_layout():
+    """I4: type and layout switch at the same two edges of the section's own box, cityKit TIER,
+    mirrored in city.css; container-type is declared once, in city.css (M4); every query uses
+    range syntax (M2); the tier custom properties sit on `.city-kit > *` (M5)."""
+    src = (ROOT / "src/lib/cityKit.ts").read_text(encoding="utf-8")
+    tier = dict(re.findall(r"(tablet|desktop): (\d+)", re.search(r"export const TIER = \{([^}]*)\}", src).group(1)))
+    edges = {int(tier["tablet"]), int(tier["desktop"])}
+    city = CITY_CSS.read_text(encoding="utf-8")
+    assert set(int(x) for x in re.findall(r"@container \(width >= (\d+)px\)", city)) == edges
+    assert "phone    width < 640px" in city and "tablet   640px <= width < 800px" in city
+    assert ".city-kit > * {" in city and ".city-kit * {" not in city
+    assert city.count("container-type: inline-size") == 1
+    # Named sub-steps inside a tier (each documented where it is written).
+    SUB_STEPS = {("CityChapters.astro", 1000)}
+    for r in city_rows():
+        text = (KIT / r["file"]).read_text(encoding="utf-8")
+        css = text.split("<style>", 1)[1]
+        assert "container-type" not in css, r["file"]
+        assert not re.search(r"@(container|media)[^{]*\((min|max)-width", css), f"{r['file']}: not range syntax"
+        for n in re.findall(r"@container \(([^)]*)\)", css):
+            for px in (int(x) for x in re.findall(r"(\d+)px", n)):
+                assert px in edges or (r["file"], px) in SUB_STEPS, (r["file"], n)
 
 
 def _demo_sections():
@@ -305,15 +365,20 @@ def test_the_nav_set_is_pluggable_and_pageshell_carries_no_city_pick():
 
 def test_the_built_pages_ship_none_of_the_city_nav_css():
     """Task 7b review, item 5: with the picks out of PageShell, Astro bundles their CSS only
-    where a page imports them. The twelve built pages carry no rule of the city nav set."""
+    where a page imports them. The twelve built pages carry no rule of the city nav set, and no
+    rule or token of the city type scale either (the Task 7b quality review, I2)."""
     rebuilt = json.loads((ROOT / "data/facts/rebuilt.json").read_text())
     for slug in rebuilt:
         path = ROOT / "dist" / ("index.html" if slug == "index" else f"{slug}/index.html")
         if not path.exists():
             pytest.skip("run npm run build first")
         css = " ".join(re.findall(r"<style[^>]*>(.*?)</style>", path.read_text(encoding="utf-8"), re.S))
-        for root in CITY_NAV_ROOTS + ("has-city-dial",):
+        assert len(css) > 10_000, f"{slug}: collected no page CSS, so nothing was checked"
+        for root in CITY_NAV_ROOTS:
             assert f".{root}" not in css, (slug, root)
+        # Nor the city type base and scale, nor the dial token (src/styles/city.css: I2).
+        assert ".city-kit" not in css, slug
+        assert "--city-" not in css, slug
 
 
 # --------------------------------------------------------------------------- Task 4
@@ -607,9 +672,12 @@ def test_the_city_page_specimen_lays_the_kit_out_as_a_city_page_does():
     for cid in body:
         assert html.index(f'data-component="{cid}"') > grid, f"{cid} belongs in the column"
         assert f'id="pg-{cid}"' in html, cid
-    # The column's width is written into sizes (min(100vw, 1200px) less the shell, dial and gap).
-    assert "min(100vw, 1200px) - 368px" in html
-    assert "min(100vw, 1200px) - 368px" not in PREVIEW.read_text(encoding="utf-8")
+    # The column's width, derived from cityKit's geometry, is written into the images' sizes on the
+    # city page and on no full-width specimen.
+    beside = 2 * _ts_const("SHELL_GUTTER") + _ts_const("DIAL_W") + _ts_const("DIAL_GAP")
+    column = f"min(100vw, {_ts_const('CONTAINER')}px) - {beside}px"
+    assert column in html
+    assert column not in PREVIEW.read_text(encoding="utf-8")
 
 
 # --------------------------------------------------------------------------- Task 7b minors

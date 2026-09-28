@@ -12,6 +12,7 @@
 // 1024px the photo STRETCHES to the ledger's height (object-fit: cover), so `sizes` asks for the
 // 760 sibling there: the 400 would paint upscaled 1.5-1.9x (img-not-upscaled, measured).
 // Conventions 4 and 6; tokens only.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
 import { TRUST_ICONS, type TrustIcon } from './cityIcons';
@@ -52,9 +53,11 @@ const p = servedPhoto(photo);
 </section>
 <style>
   @layer components {
-    .city-trust { background: var(--color-surface); padding: var(--space-6) var(--space-3); }
+    /* A full-width strip, the viewport wide, so its @media edges read its own box (src/styles/city.css).
+       Its gutters are the sheet's own width, never root padding, so its content box is its box. */
+    .city-trust { background: var(--color-surface); padding: var(--space-6) 0; }
     .sheet {
-      max-width: 1200px; margin: 0 auto; display: grid; gap: var(--space-5); padding: var(--space-3);
+      max-width: min(1200px, calc(100% - 2 * var(--space-3))); margin: 0 auto; display: grid; gap: var(--space-5); padding: var(--space-3);
       background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--radius-lg);
       box-shadow: var(--shadow-card);
     }
@@ -76,9 +79,10 @@ const p = servedPhoto(photo);
     .ic svg { width: 20px; height: 20px; }
     .t { display: block; font-weight: 700; line-height: 1.35; color: var(--color-ink); }
     .d { display: block; margin-top: 2px; font-size: var(--text-sm); color: var(--color-ink-2); }
-    @media (min-width: 768px) { ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); } }
-    @media (min-width: 1024px) {
-      .city-trust { padding: var(--space-8) var(--space-5); }
+    @media (width >= 640px) { ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); } }
+    @media (width >= 1024px) {
+      .city-trust { padding: var(--space-8) 0; }
+      .sheet { max-width: min(1200px, calc(100% - 2 * var(--space-5))); }
       .sheet {
         grid-template-columns: 390px minmax(0, 1fr); align-items: start; gap: var(--space-8);
         padding: var(--space-4) var(--space-8) var(--space-4) var(--space-4);

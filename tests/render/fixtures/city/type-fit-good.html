@@ -14,4 +14,8 @@ blockquote{margin:0}</style></head>
   <!-- A form's rows are layout, not reading text: exempt by name. -->
   <form><p class="field" style="width:100%"><label>Your name <input></label></p></form>
 </section>
+<!-- The nav furniture is exempt by name (tests/render/lib/cityTypeFit.ts): its chrome is the page's
+     section list, never reading text. A chunky heading and a tall box here must stay silent. -->
+<div class="city-kit city-jump-stepper" data-city-jump-stepper><h2 style="font-size:40px">All Nine Sections of This Page Listed</h2><div style="height:4000px"></div></div>
+<aside class="city-kit city-dial-photo-marker" data-city-dial-photo-marker><h2 style="font-size:40px">Where You Are on the Page Right Now</h2><div style="height:4000px"></div></aside>
 </body></html>

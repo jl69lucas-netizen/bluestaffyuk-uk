@@ -7,6 +7,8 @@ import './checks/img.js';
 import './checks/nav.js';
 import { readFileSync } from 'node:fs';
 import { cityTypeFit } from './lib/cityTypeFit.js';
+import { cityLayoutFollowsBox } from './lib/cityLayoutFollowsBox.js';
+import { TIER } from './lib/cityTiers.js';
 
 /**
  * The city-kit render spec (the London component design pass, Plan 2). Every built page that
@@ -279,69 +281,14 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       return out;
     },
   },
-  // The Task 7b review, item 1: the in-body components are containers, and on a city page the
-  // body is the column beside the dial (656px at 1024, 832px at 1280), so a tier set for the
-  // canvas's full-width 1024 was never reached there. Each component's tier now follows ITS OWN
-  // BOX — phone below 640px, tablet from 640, desktop from 800 — on the full-width preview and in
-  // the column alike, and this probe reads the tier from the box and asserts the layout facts of
-  // that tier (two parts side by side, prints to a row, the square print). Heading SIZE is
-  // city-type-fit's.
+  // The Task 7b review, item 1 (I3 in the quality review): tests/render/lib/cityLayoutFollowsBox.ts.
   'city-layout-follows-box': {
     present: '.city-kit',
-    run: async (page) => page.evaluate(() => {
-      type Fact = ['beside', string, string] | ['row', string, number] | ['square', string] | ['fill', string, string];
-      const SPEC: Record<string, { tablet: Fact[]; desktop: Fact[] }> = {
-        '.city-takeaways-ledger': { tablet: [['beside', '.row dt', '.row dd']], desktop: [['beside', '.pic', 'dl']] },
-        '.city-sheet': { tablet: [['row', '.city-pup', 3]], desktop: [['row', '.city-pup', 3], ['square', '.city-pup img']] },
-        // A table from a 640px box (rule 13 stacks it below): the five cells of a row side by side,
-        // under a painted head. Phone boxes are held by layout-table-stacks-on-mobile.
-        '.city-roster': {
-          tablet: [['row', 'tbody tr:first-child > *', 5], ['beside', 'tbody tr:first-child th', 'tbody tr:first-child td.num']],
-          desktop: [['row', 'tbody tr:first-child > *', 5], ['beside', 'tbody tr:first-child th', 'tbody tr:first-child td.num'], ['row', 'thead th', 5]],
-        },
-        '.city-video': { tablet: [['beside', '.side > img', '.facts']], desktop: [['beside', '.grid > .kit-video', '.side']] },
-        '.city-chapters': { tablet: [['beside', '.ch .media', '.ch p']], desktop: [['beside', '.ch h3', '.ch .media'], ['beside', '.ch .media', '.ch p']] },
-        '.city-letter': { tablet: [], desktop: [['beside', '.pic', 'blockquote']] },
-        '.city-faq.has-rail': { tablet: [], desktop: [['beside', '.rail', '.blk']] },
-        '.city-newsletter-notice': { tablet: [['beside', 'figure', '.body']], desktop: [['beside', 'figure', '.body']] },
-        '.city-contact': { tablet: [['row', '.pups li', 6], ['row', '.field', 2], ['fill', '.field.wide', 'form']], desktop: [['row', '.pups li', 6], ['row', '.field', 3], ['fill', '.field.wide', 'form']] },
-      };
-      const out: string[] = [];
-      for (const [sel, tiers] of Object.entries(SPEC)) {
-        for (const root of Array.from(document.querySelectorAll<HTMLElement>(sel))) {
-          const w = root.getBoundingClientRect().width;
-          const tier = w >= 800 ? 'desktop' : w >= 640 ? 'tablet' : null;
-          if (!tier) continue;
-          const at = `${sel} (${Math.round(w)}px box, ${tier})`;
-          for (const f of tiers[tier]) {
-            if (f[0] === 'beside') {
-              const a = root.querySelector(f[1]); const b = root.querySelector(f[2]);
-              if (!a || !b) { out.push(`${at}: ${f[1]} or ${f[2]} missing`); continue; }
-              const ra = a.getBoundingClientRect(); const rb = b.getBoundingClientRect();
-              if (!(ra.right <= rb.left + 1 && ra.top < rb.bottom && rb.top < ra.bottom)) {
-                out.push(`${at}: ${f[1]} is not beside ${f[2]}`);
-              }
-            } else if (f[0] === 'row') {
-              const els = Array.from(root.querySelectorAll(f[1])).filter((e) => e.getBoundingClientRect().height > 0);
-              const top = els.length ? els[0].getBoundingClientRect().top : 0;
-              const n = els.filter((e) => Math.abs(e.getBoundingClientRect().top - top) < 2).length;
-              if (n !== f[2]) out.push(`${at}: ${n} ${f[1]} to the first row, not ${f[2]}`);
-            } else if (f[0] === 'fill') {
-              // A full-width row really runs the width of its box (the 65ch paragraph measure once
-              // caught the message field, a <p>, at 549px: the Task 7b design pass).
-              const el = root.querySelector(f[1]); const box = root.querySelector(f[2]);
-              if (el && box && el.getBoundingClientRect().width < box.clientWidth - 2) {
-                out.push(`${at}: ${f[1]} is ${Math.round(el.getBoundingClientRect().width)}px of its ${box.clientWidth}px ${f[2]}`);
-              }
-            } else {
-              const r = root.querySelector(f[1])!.getBoundingClientRect();
-              if (Math.abs(r.width - r.height) > 2) out.push(`${at}: ${f[1]} is ${Math.round(r.width)}×${Math.round(r.height)}, not square`);
-            }
-          }
-        }
-      }
-      return out;
-    }),
+    run: async (page, viewport) => {
+      const r = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER });
+      console.log(`city-layout-follows-box @ ${viewport}px: examined ${r.examined}`);
+      return r.defects;
+    },
   },
   // Task 7b item 10 (the user's type-fit ruling): heading caps and lines, paragraph measure
   // and length, section height, per tier (tests/render/lib/cityTypeFit.ts).
@@ -349,7 +296,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
     present: '.city-kit',
     run: async (page, viewport) => {
       const fullWidthSpecimen = new URL(page.url()).pathname === '/kit-preview/city/';
-      const r = await page.evaluate(cityTypeFit, { viewport, fullWidthSpecimen });
+      const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER, fullWidthSpecimen });
       console.log(`city-type-fit @ ${viewport}px: examined ${r.examined}`);
       return r.examined ? r.defects : ['city-type-fit examined nothing'];
     },
@@ -439,7 +386,7 @@ for (const kind of ['broken', 'good'] as const) {
   test(`city-type-fit on its known_${kind} fixture`, async ({ page }, testInfo) => {
     const viewport = testInfo.project.use.viewport!.width;
     await page.setContent(readFileSync(new URL(`./fixtures/city/type-fit-${kind}.html`, import.meta.url), 'utf8'));
-    const r = await page.evaluate(cityTypeFit, { viewport });
+    const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER });
     expect(r.examined, 'the fixture must be examined').toBeGreaterThan(0);
     if (kind === 'broken') {
       // Each kind of defect fires on its own element, not merely "something fired".
@@ -456,5 +403,51 @@ for (const kind of ['broken', 'good'] as const) {
       }
     }
     else expect(r.defects, 'city-type-fit cried wolf on its known_good fixture').toEqual([]);
+  });
+}
+
+// The type check reads the tier from the section's own box at cityKit's edges (I4, M9): a 27px H2
+// in a 650px and in a 790px box is over the TABLET cap, at every viewport.
+test('city-type-fit reads the tier from the section box, at the TIER edges', async ({ page }, testInfo) => {
+  const viewport = testInfo.project.use.viewport!.width;
+  await page.setContent(readFileSync(new URL('./fixtures/city/type-fit-tier-broken.html', import.meta.url), 'utf8'));
+  const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER });
+  for (const box of ['city-narrow', 'city-edge']) {
+    expect(r.defects.some((d) => d.startsWith(box) && /over the tablet cap of 25px/.test(d)),
+      `${box}: a 27px H2 was not judged against the tablet cap: ${r.defects.join(' | ')}`).toBe(true);
+  }
+});
+
+// city-layout-follows-box cannot pass having examined nothing (I3).
+test('city-layout-follows-box fails a page it cannot examine', async ({ page }, testInfo) => {
+  const viewport = testInfo.project.use.viewport!.width;
+  await page.setContent('<main><p>No city section here.</p></main>');
+  const r = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER });
+  expect(r.defects.some((d) => /matches no section on the page/.test(d)), 'a SPEC key with no root must be reported').toBe(true);
+  if (viewport >= 768) expect(r.defects.some((d) => /examined no layout fact/.test(d)), 'zero facts at 768+ must fail').toBe(true);
+  // A desktop sheet whose print has no photo: the square fact reports the missing node, never throws.
+  await page.setContent('<section class="city-sheet" style="width:900px"><div class="city-pup">a</div><div class="city-pup">b</div><div class="city-pup">c</div></section>');
+  const r2 = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER });
+  expect(r2.defects.some((d) => /\.city-sheet .*\.city-pup img missing/.test(d)), r2.defects.join(' | ')).toBe(true);
+});
+
+// The type and layout checks at the widths between the four (I4): 660 (just past the phone/tablet
+// edge; the 656px column at 1024 sits just past it too) and 1160 (the column just under the desktop
+// edge, a full-width box well past it). Run once, in the 1280 project, on both routes.
+for (const route of ROUTES) {
+  test(`city type and layout at the tier edges on ${route}`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'vp1280', 'run once, at the edge widths it sets itself');
+    for (const width of [660, 1160]) {
+      await page.setViewportSize({ width, height: 900 });
+      const res = await page.goto(route);
+      expect(res?.status()).toBe(200);
+      await page.evaluate(() => document.fonts.ready);
+      const fullWidthSpecimen = route === '/kit-preview/city/';
+      const t = await page.evaluate(cityTypeFit, { viewport: width, tier: TIER, fullWidthSpecimen });
+      const l = await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER });
+      console.log(`${route} @ ${width}px: city-type-fit examined ${t.examined}, city-layout-follows-box examined ${l.examined}`);
+      expect(t.examined).toBeGreaterThan(0);
+      expect([...t.defects, ...l.defects], `${route} at ${width}px`).toEqual([]);
+    }
   });
 }

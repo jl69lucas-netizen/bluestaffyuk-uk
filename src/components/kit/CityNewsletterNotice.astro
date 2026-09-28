@@ -11,6 +11,7 @@
 // scripts/form_contract_audit.py classes it `newsletter`. Its error line is tied to the field
 // with `aria-describedby` and `aria-invalid` once native validation fails it.
 // Conventions 2, 4, 6; the submit is a brass fill on the form radius.
+import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import { abs } from '../../lib/site';
@@ -76,13 +77,8 @@ const { action, live } = formEndpoint();
 </script>
 <style>
   @layer components {
-    /* A CONTAINER, so the layout follows the box the section is given — the full page on
-       /kit-preview/city/, the column beside the dial on a city page (656px at 1024, 832px at
-       1280) — not the viewport. The tiers are the section's own box: tablet from 640px, desktop
-       from 800px (the Task 7b review: the canvas's 1024 was never reached in the column). The
-       root has no gutter, so those are the query widths as written; a full-width copy switches
-       where the canvas frames did at 375 / 768 / 1024 / 1280. */
-    .city-newsletter-notice { container-type: inline-size; background: var(--color-surface); }
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-newsletter-notice { background: var(--color-surface); }
     .in { max-width: 1040px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
     .card {
       display: grid; overflow: hidden; background: var(--color-surface-raised); border: var(--card-border);
@@ -121,7 +117,7 @@ const { action, live } = formEndpoint();
     button:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     .small { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
     .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
-    @container (min-width: 640px) {
+    @container (width >= 640px) {
       .in { padding: var(--city-pad-y) var(--space-6); }
       .card { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
       figure :global(img) { height: 100%; aspect-ratio: auto; min-height: 360px; }
