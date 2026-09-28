@@ -48,11 +48,13 @@ interface Props {
    * two percentages is ignored, and the natural box never takes one.
    */
   focal?: string;
+  /** Extra classes on the `<img>` (a city component's crop classes, `focus fx-NN fy-NN`). */
+  class?: string;
 }
 const FOCAL = /^\d{1,3}% \d{1,3}%$/;
-const { asset, srcset, box = 'natural', focal } = Astro.props;
+const { asset, srcset, box = 'natural', focal, class: extra } = Astro.props;
 const sizes = Astro.props.sizes ?? (box === 'tall' ? TALL_SIZES : box === 'uniform' ? UNIFORM_SIZES : BODY_SIZES);
-const cls = ['bl-img', box !== 'natural' && 'sec-img', box === 'tall' && 'og-tall'];
+const cls = ['bl-img', box !== 'natural' && 'sec-img', box === 'tall' && 'og-tall', extra];
 const style = box !== 'natural' && focal && FOCAL.test(focal) ? `object-position: ${focal}` : undefined;
 ---
 {/* `loading="lazy"` and `decoding="async"` are right for every in-body photograph and wrong

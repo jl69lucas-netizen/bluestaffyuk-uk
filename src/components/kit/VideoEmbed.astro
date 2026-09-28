@@ -39,7 +39,10 @@
 // the muted ink and is re-pointed by board-styles.css on a band.
 // Convention 4: `...rest` on the root, `class` through `class:list`. Tokens only.
 import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
 import { youtubeEmbedUrl, youtubeThumbUrl } from '../../lib/video';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
 
 type Props = HTMLAttributes<'figure'> & {
   /** The YouTube video id — the eleven characters, never a url. */
@@ -50,8 +53,22 @@ type Props = HTMLAttributes<'figure'> & {
   caption?: string;
   /** `facade` (the default) injects the player on click; `iframe` embeds it immediately. */
   play?: 'facade' | 'iframe';
+  /** The facade's picture: a puppy photo file (src/assets/puppies, named in
+   *  data/image-focus.json) instead of YouTube's thumbnail, cropped on its faces. Added for the
+   *  city video panel (the London component design pass, Plan 2; plan2-notes): the id is still
+   *  the only video, and the box is the same reserved 16:9. No built page passes one. */
+  poster?: string;
+  /** The poster's `sizes`, for the box the facade paints in its caller. */
+  posterSizes?: string;
+  /** Visible words on the play badge ("Play the film"). The button's accessible name then
+   *  starts with them, so the name contains the visible label (WCAG 2.5.3). The labelled
+   *  badge's look belongs to its caller (CityVideoPanel styles `.facade[data-play-label]`), so
+   *  this stylesheet, which every built page with a video ships, carries no rule for it. */
+  playLabel?: string;
 };
-const { id, title, caption, play = 'facade', class: cls, ...rest } = Astro.props;
+const { id, title, caption, play = 'facade', poster, posterSizes = '(min-width: 1024px) 760px, 100vw',
+  playLabel, class: cls, ...rest } = Astro.props;
+const playName = `${playLabel ?? 'Play the video'}: ${title}`;
 
 // THE TWO URL SHAPES LIVE IN `src/lib/video.ts`, not here. A page that mints a VideoObject
 // needs the same embed url and the same thumbnail, and `scripts/generate_sitemaps.py` needs to
@@ -72,12 +89,15 @@ const NOSCRIPT_CSS = '.kit-video [data-video-play]{display:none}';
 <figure {...rest} class:list={['kit-video', cls]}>
   <div class="frame" data-video-frame data-src={`${src}?autoplay=1`} data-title={title}>
     {play === 'facade' ? (
-      <button type="button" class="facade" data-video-play aria-label={`Play the video: ${title}`}>
+      <button type="button" class="facade" data-video-play aria-label={playName} data-play-label={playLabel ? true : undefined}>
         {/* `alt=""`: the button already carries the name, and a described thumbnail would
             make a screen reader read the same video twice. */}
-        <img src={thumb} alt="" width="480" height="360" loading="lazy" decoding="async" />
+        {poster
+          ? <Image src={puppyImage(poster)} alt="" widths={[480, 800, 1200]} sizes={posterSizes}
+              class={focusClass(poster)} loading="lazy" decoding="async" />
+          : <img src={thumb} alt="" width="480" height="360" loading="lazy" decoding="async" />}
         <span class="badge" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="34" height="34" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+          <svg viewBox="0 0 24 24" width="34" height="34" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>{playLabel && <span class="badge-label">{playLabel}</span>}
         </span>
       </button>
     ) : (

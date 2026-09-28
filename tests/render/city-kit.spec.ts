@@ -188,6 +188,38 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       return out;
     },
   },
+  'city-video-panel': {
+    present: '.city-video',
+    run: async (page) => {
+      const out: string[] = [];
+      const play = page.locator('.city-video [data-video-play]');
+      const box = await play.boundingBox();
+      if (!box || box.width < 44 || box.height < 44) out.push('the play control is under 44×44px');
+      const name = (await play.getAttribute('aria-label')) ?? '';
+      const label = ((await play.locator('.badge-label').textContent()) ?? '').trim();
+      if (!name.startsWith(label)) out.push(`the play button's name "${name}" does not contain its visible label "${label}" (WCAG 2.5.3)`);
+      await play.click();
+      const src = await page.locator('.city-video iframe').first().getAttribute('src');
+      if (!src || !/youtube-nocookie\.com\/embed\//.test(src)) out.push('pressing play does not load the youtube-nocookie player');
+      return out;
+    },
+  },
+  'city-chapters': {
+    present: '.city-chapters',
+    run: async (page) => {
+      const out: string[] = [];
+      const bad = await page.evaluate(() => Array.from(document.querySelectorAll('.city-chapters h3')).filter((h) => {
+        const next = h.nextElementSibling;
+        return !next || !next.matches('img.bl-img');
+      }).length);
+      if (bad) out.push(`${bad} chapter heading(s) not followed straight by their .bl-img photo (layout-h3-image-first)`);
+      return out;
+    },
+  },
+  'city-letter': {
+    present: '.city-letter',
+    run: (page) => allVisible(page, 'data-review-slot'),
+  },
   // Learning loop 2026-09-27, L8: the current-section marker, under BOTH motion preferences.
   // Scroll the fourth section to the reading band and read which row is current, on the dial at
   // a desktop width and on the band's rail below it.

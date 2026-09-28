@@ -308,3 +308,55 @@ def test_built_city_roster_is_a_semantic_table_that_stacks():
     text = re.sub(r"<[^>]+>", " ", body)
     for p in _available():
         assert p["name"] in text and "£{:,}".format(p["price_gbp"]) in text
+
+
+# --------------------------------------------------------------------------- Task 5
+
+def test_built_city_video_panel_is_a_facade_on_a_site_video_id():
+    s = section("city-video-panel")
+    ids = json.loads((ROOT / "data/settings.json").read_text())["youtube_embeds"]
+    found = set(re.findall(r"youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{6,})", s))
+    assert found and found <= set(ids), found
+    btn = re.search(r"<button[^>]*data-video-play[^>]*>", s).group(0)
+    assert 'aria-label="Play the film: ' in btn, "the visible chip text starts the accessible name"
+    assert "<noscript>" in s, "the no-JS player stays"
+    assert "iframe" in s.split("<noscript>", 1)[1]
+    # The poster is decorative (the button names the video); the side photo is described.
+    poster = re.search(r"<button[^>]*data-video-play[^>]*>\s*<img [^>]*>", s).group(0)
+    assert re.search(r'\balt(="")?[\s>]', poster)
+    assert "focus fx-" in poster
+
+
+def test_the_video_embed_poster_and_label_are_opt_in():
+    """The two new VideoEmbed props change nothing for a caller that passes neither: the kit
+    preview's facade still shows YouTube's thumbnail and the unlabelled round badge."""
+    site = ROOT / "dist/kit-preview/index.html"
+    if not site.exists():
+        pytest.skip("run npm run build first")
+    html = site.read_text(encoding="utf-8")
+    start = html.find('data-component="video-embed"')
+    kit = html[start:html.find("</section>", start)]
+    assert "i.ytimg.com" in kit or "img.youtube.com" in kit
+    assert 'aria-label="Play the video: ' in kit and "data-play-label" not in kit
+
+
+def test_built_city_chapters_put_each_photo_straight_after_its_heading():
+    s = section("city-chapters")
+    blocks = re.findall(r"<h3[^>]*>.*?</h3>\s*(<img [^>]*>)", s, re.S)
+    assert 1 <= len(blocks) <= 2 and len(blocks) == s.count("<h3")
+    for img in blocks:
+        assert re.search(r'class="[^"]*\bbl-img\b', img), img
+    served = served_alts()
+    for src, alt in re.findall(r'<img [^>]*src="/images/([^"]+)"[^>]*alt="([^"]*)"', s):
+        assert alt in served[src], src
+
+
+def test_built_city_letter_quotes_its_review_word_for_word():
+    s = section("city-letter")
+    reviews = json.loads((ROOT / "data/reviews.json").read_text())
+    n = int(re.search(r'data-review="(\d+)"', s).group(1))
+    quote = re.search(r"<blockquote[^>]*>.*?<p[^>]*>(.*?)</p>", s, re.S).group(1)
+    import html as _h
+    assert _h.unescape(quote) == reviews[n]["quote"]
+    assert reviews[n]["name"] in s
+    assert "AggregateRating" not in s and "★" not in s

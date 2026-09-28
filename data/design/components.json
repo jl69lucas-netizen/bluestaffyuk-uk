@@ -25,5 +25,8 @@
   {"id": "city-jump-band",  "file": "CityJumpBand.astro",    "title": "C6 · City jump links (stepper band)",   "board_width": 640,  "project": 5},
   {"id": "city-takeaways",  "file": "CityTakeaways.astro",   "title": "C7 · City key takeaways (answer ledger)", "board_width": 1280, "project": 5},
   {"id": "city-puppy-sheet", "file": "CityPuppySheet.astro", "title": "C8 · City puppy cards (family sheet)",   "board_width": 1280, "project": 5},
-  {"id": "city-roster",     "file": "CityRoster.astro",      "title": "C9 · City table (litter roster)",       "board_width": 1280, "project": 5}
+  {"id": "city-roster",     "file": "CityRoster.astro",      "title": "C9 · City table (litter roster)",       "board_width": 1280, "project": 5},
+  {"id": "city-video-panel", "file": "CityVideoPanel.astro", "title": "C10 · City video (side panel)",          "board_width": 1280, "project": 5},
+  {"id": "city-chapters",   "file": "CityChapters.astro",    "title": "C11 · City image and text (two chapters)", "board_width": 1280, "project": 5},
+  {"id": "city-letter",     "file": "CityLetter.astro",      "title": "C12 · City review (owner's letter)",    "board_width": 1280, "project": 5}
 ]

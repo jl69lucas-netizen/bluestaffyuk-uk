@@ -69,7 +69,10 @@ import CityJumpBand from './CityJumpBand.astro';
 import CityTakeaways from './CityTakeaways.astro';
 import CityPuppySheet from './CityPuppySheet.astro';
 import CityRoster from './CityRoster.astro';
-import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, depositLine } from '../../lib/cityKit';
+import CityVideoPanel from './CityVideoPanel.astro';
+import CityChapters from './CityChapters.astro';
+import CityLetter from './CityLetter.astro';
+import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, deliveryLine, depositLine } from '../../lib/cityKit';
 import type { SectionRef } from '../../lib/sections';
 
 /** The counter specimen's availability figure, counted the way every page counts it. */
@@ -84,7 +87,8 @@ export type ComponentId =
   // previewed on /kit-preview/city/ — never on /kit-preview/, because the city nav set is a
   // page singleton like the kit's. data/design/components.json rows with `"project": 5`.
   | 'city-hero' | 'city-price-scale' | 'city-trust-ledger' | 'city-contents' | 'city-dial'
-  | 'city-jump-band' | 'city-takeaways' | 'city-puppy-sheet' | 'city-roster';
+  | 'city-jump-band' | 'city-takeaways' | 'city-puppy-sheet' | 'city-roster' | 'city-video-panel'
+  | 'city-chapters' | 'city-letter';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -477,6 +481,49 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       heading: 'How Do the Six Puppies Compare Side by Side?',
       lede: "Here is the whole litter on one sheet, so you can weigh up a boy against a girl: every puppy's sex, colour and price, taken straight from our list.",
       caption: 'The six puppies, as listed',
+    }],
+  },
+  // The id is the site's own (data/settings.json youtube_embeds); the component refuses any other.
+  'city-video-panel': {
+    C: CityVideoPanel,
+    demo: [{
+      heading: 'How Lively Is a Blue Staffy Puppy at Home?',
+      lede: 'Very, and our short film of puppies from one of our litters shows it better than we can say it; watch it before you choose between the six.',
+      videoId: (settings as { youtube_embeds: string[] }).youtube_embeds[0],
+      videoTitle: 'Staffordshire Bull Terrier puppies: a litter of ours on film',
+      caption: 'A litter of ours, on film; it loads from YouTube only when you press play. Poster photo: Christa, one of the six available now.',
+      poster: 'Christa.jpeg',
+      side: { photo: 'Ince1.jpg', alt: 'Ince standing by the garden fence at home', name: 'Ince', text: 'A solid blue boy, one of the six available now.' },
+      facts: [
+        { label: 'Parents', text: 'Maggie and Jones, DNA-tested for L-2-HGA and HC-HSF4' },
+        { label: 'Price', text: `${BOY_PRICE} for a boy, ${GIRL_PRICE} for a girl` },
+        { label: 'Getting home', text: deliveryLine },
+      ],
+    }],
+  },
+  // Chapter one is a puppy photo with the page's own alt; chapter two a served file, whole.
+  'city-chapters': {
+    C: CityChapters,
+    demo: [{
+      heading: 'Where Does Your Puppy Start, and How Does It Reach You?',
+      lede: `In our home in ${SITE.address.city}, with its mother close by, and then at your door or in your arms at collection, whichever suits you.`,
+      chapters: [
+        { place: SITE.address.city, question: 'Who Raises Your Puppy Before It Leaves Home?', photo: 'Byrd1.jpg',
+          photoAlt: 'Byrd, one of the six, out on the garden decking',
+          text: 'We do, in our own home. Every litter is raised with Puppy Culture and ENS, and both parents, Maggie and Jones, are DNA-tested for L-2-HGA and HC-HSF4 with their eyes and elbows screened.' },
+        { place: 'Your door', question: 'How Does Your Puppy Get From Us to Your Door?', photo: 'ethical-staffy-puppy-london-delivery.webp',
+          text: `By DEFRA-approved transport, for ${DELIVERY_BAND} priced by distance, or you collect from us in ${SITE.address.city}. ${depositLine}` },
+      ],
+    }],
+  },
+  // The review is data/reviews.json by name; the photo is the one the homepage pairs with it.
+  'city-letter': {
+    C: CityLetter,
+    demo: [{
+      heading: 'What Did a Family Say After Their Puppy Came Home?',
+      lede: 'Mark J wrote this review of the blue Staffy puppy he had from us, and these are his words exactly as he sent them.',
+      name: 'Mark J',
+      photo: 'mark-blue-staffy-london.webp',
     }],
   },
 };
