@@ -2,7 +2,8 @@
   "_meta": {
     "description": "Commits that changed a page's SOURCES without changing what any built page says. scripts/generate_page_dates.py skips each commit for the source paths it names when it dates a route, so a refactor never stamps a false dateModified on the pages it did not change (working rule 9). A commit is listed only after the built pages it touched were diffed against the build before it. Never list a commit that changed a page's words, facts or images.",
     "generated_by": "hand-maintained; read by scripts/generate_page_dates.py",
-    "floor_override": "Optional. route -> {datePublished, reason}. The publication floor is one-way (no run moves a route's datePublished later than any committed map gave it); a date an old map got WRONG is corrected here, with its reason, never by rewriting history."
+    "floor_override": "Optional. route -> {datePublished, reason}. The publication floor is one-way (no run moves a route's datePublished later than any committed map gave it); a date an old map got WRONG is corrected here, with its reason, never by rewriting history.",
+    "fanout_accepted": "Optional. [{sha, reason}]: a commit that moves dateModified on 3 or more routes because every one of those pages really changed. Without an entry here or in `commits`, such a commit stops the date step (the fan-out guard, Task 8b)."
   },
   "commits": [
     {
@@ -27,5 +28,6 @@
       "reason": "Task 8 quality review M5: header comment corrected and each section question defined once in a const; the built London page is identical apart from its own WebPage date node (diffed against a build of 8f87f1f)."
     }
   ],
-  "floor_override": {}
+  "floor_override": {},
+  "fanout_accepted": []
 }

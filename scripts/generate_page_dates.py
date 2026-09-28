@@ -188,6 +188,12 @@ def _load_ignore():
         if not ok:
             raise IgnoreFileError(f"{IGNORE}: every entry needs a `sha` of 7 to 40 hex characters, a "
                                   f"non-empty `paths` list of strings and a `reason`; this one does not: {r!r}")
+    fan = data.get("fanout_accepted", [])
+    if not isinstance(fan, list) or not all(
+            isinstance(r, dict) and isinstance(r.get("sha"), str) and _SHA.match(r["sha"])
+            and isinstance(r.get("reason"), str) and r["reason"].strip() for r in fan):
+        raise IgnoreFileError(f"{IGNORE}: `fanout_accepted` is a list of entries, each with a `sha` "
+                              "of 7 to 40 hex characters and a `reason`.")
     over = data.get("floor_override", {})
     if not isinstance(over, dict) or not all(
             isinstance(v, dict) and isinstance(v.get("datePublished"), str) and _DAY.match(v["datePublished"])
@@ -205,17 +211,25 @@ def ignored_commits():
     data = _load_ignore()
     if not data:
         return []
-    out = []
-    for r in data["commits"]:
-        try:
-            full = _git("rev-parse", "--verify", "--quiet", f"{r['sha']}^{{commit}}").strip()
-        except subprocess.CalledProcessError:
-            full = ""
-        if not full:
-            raise IgnoreFileError(f"{IGNORE}: {r['sha']} is not exactly one commit of this "
-                                  "repository's history (missing or ambiguous); list its full SHA.")
-        out.append((full.lower(), set(r["paths"])))
-    return out
+    return [(_resolve(r["sha"], "commits"), set(r["paths"])) for r in data["commits"]]
+
+
+def _resolve(sha, key):
+    try:
+        full = _git("rev-parse", "--verify", "--quiet", f"{sha}^{{commit}}").strip()
+    except subprocess.CalledProcessError:
+        full = ""
+    if not full:
+        raise IgnoreFileError(f"{IGNORE} `{key}`: {sha} is not exactly one commit of this "
+                              "repository's history (missing or ambiguous); list its full SHA.")
+    return full.lower()
+
+
+def accepted_fanout():
+    """{full sha} from `fanout_accepted`: commits whose re-dating of many routes is real, because
+    the content of every page they re-date really changed (checked by diffing the build)."""
+    data = _load_ignore()
+    return {_resolve(r["sha"], "fanout_accepted") for r in (data or {}).get("fanout_accepted", [])}
 
 
 def floor_overrides():
@@ -273,6 +287,12 @@ def git_dates(path, ignore=()):
     """(first, last) commit dates for a path as YYYY-MM-DD, or (None, None), skipping every
     commit `ignore` lists for this path. Cached per (root, path, ignore) for the run: the
     location and puppy templates share their two sources across every page they build."""
+    log = _counted_log(path, ignore)
+    return (log[-1][1], log[0][1]) if log else (None, None)
+
+
+def _counted_log(path, ignore=()):
+    """[(sha, YYYY-MM-DD)] newest first, for the commits that date `path` (ignored ones out)."""
     key = (str(ROOT), path, tuple((s, tuple(sorted(p))) for s, p in ignore))
     if key in _DATES_CACHE:
         return _DATES_CACHE[key]
@@ -280,15 +300,53 @@ def git_dates(path, ignore=()):
         out = _git("log", "--follow", "--format=%H %cs", "--", path).split("\n")
     except subprocess.CalledProcessError:
         out = []
-    dates = []
+    log = []
     for line in filter(None, out):
         sha, date = line.split()
         if any(sha == full and path in paths for full, paths in ignore):
             continue
-        dates.append(date)
-    got = (dates[-1], dates[0]) if dates else (None, None)
-    _DATES_CACHE[key] = got
-    return got
+        log.append((sha, date))
+    _DATES_CACHE[key] = log
+    return log
+
+
+#: route -> (sha, source path) of the commit that set its dateModified, filled by build().
+LAST_COMMIT = {}
+#: `fanout_accepted`, resolved by build() so a bad SHA stops every run, map or no map.
+ACCEPTED = set()
+
+
+def fanout_problems(routes):
+    """Sentences for every commit that moves dateModified on FANOUT or more routes, against the
+    map at HEAD, and is listed neither in `commits` (no content change: the dates stay) nor in
+    `fanout_accepted` (real content change on every page). A no-content commit to a shared
+    source re-dated every page it builds three times on the London branch (6520267, c2705da,
+    142b3d6) before this guard; each would have been refused here."""
+    try:
+        head = json.loads(_git("show", f"HEAD:{MAP}"))["routes"]
+    except (subprocess.CalledProcessError, ValueError, KeyError, TypeError):
+        return []
+    accepted = ACCEPTED
+    groups = {}
+    for route, row in routes.items():
+        old = head.get(route)
+        if not isinstance(old, dict) or old.get("dateModified") == row["dateModified"]:
+            continue
+        if route in LAST_COMMIT:
+            groups.setdefault(LAST_COMMIT[route], []).append(route)
+    out = []
+    for (sha, path), moved in sorted(groups.items()):
+        if len(moved) < FANOUT or sha in accepted:
+            continue
+        shown = ", ".join(sorted(moved)[:6]) + (f" and {len(moved) - 6} more" if len(moved) > 6 else "")
+        out.append(f"commit {sha[:10]} on {path} moves dateModified on {len(moved)} routes ({shown}); "
+                   "diff those built pages against the build before it, then list the commit in "
+                   f"{IGNORE} under `commits` for {path} if no page's content changed, or under "
+                   "`fanout_accepted` with a reason if every page's content really changed.")
+    return out
+
+
+FANOUT = 3
 
 
 def build():
@@ -304,6 +362,9 @@ def build():
             pages += expand(template, static_routes)
 
     _DATES_CACHE.clear()        # history may have moved since the last call in this process
+    LAST_COMMIT.clear()
+    ACCEPTED.clear()
+    ACCEPTED.update(accepted_fanout())
     ignore, floor, override = ignored_commits(), published_floor(), floor_overrides()
     routes, skipped = {}, []
     for route, sources in pages:
@@ -313,6 +374,10 @@ def build():
         if "[" in route or "]" in route:
             raise AssertionError(f"unexpanded template route {route!r} from {sources}")
         first, last = span(sources, ignore)
+        newest = [(log[0][1], log[0][0], p) for p in sources if (log := _counted_log(p, ignore))]
+        if newest:
+            _, sha, src = max(newest, key=lambda t: t[0])
+            LAST_COMMIT[route] = (sha, src)
         if not last:
             skipped.append(sources[-1])     # never committed yet — no honest date exists
             continue
@@ -369,6 +434,7 @@ def main(argv=None):
 
     try:
         routes, skipped, _ = build()
+        fanout = fanout_problems(routes)
     except IgnoreFileError as e:
         print(f"cannot run: {e}")
         return 2
@@ -390,6 +456,12 @@ def main(argv=None):
         "routes": routes,
     }
     new = json.dumps(payload, indent=2, sort_keys=False) + "\n"
+
+    if fanout:
+        # One refusal for write, --dry-run and --check alike: nothing is written.
+        for line in fanout:
+            print(f"REFUSING to re-date: {line}")
+        return 1
 
     if args.check:
         try:

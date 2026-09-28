@@ -217,6 +217,88 @@ def test_a_floor_override_corrects_a_wrong_committed_date(repo):
     assert G.build()[0][route]["datePublished"] == "2026-01-05"
 
 
+CITIES = ["blue-staffies-glasgow", "blue-staffies-leeds", "blue-staffies-york"]
+
+
+def _three_cities_mapped(repo):
+    """Three template cities, dated and their map COMMITTED (the guard compares with HEAD)."""
+    _write(repo, "data/locations.json", json.dumps([{"slug": c} for c in CITIES]))
+    _commit(repo, "2026-02-01")
+    assert G.main([]) == 0
+    _commit(repo, "2026-02-02", msg="map")
+
+
+def _template_refactor(repo):
+    _write(repo, "src/pages/uk-locations/[slug].astro", "getStaticPaths // a refactor")
+    _commit(repo, "2026-03-09")
+    return _head(repo)
+
+
+def test_an_unlisted_commit_that_redates_three_routes_is_refused(repo, capsys):
+    """Task 8b: a no-content commit to a shared source re-dated every route it builds, three
+    times (6520267, c2705da, 142b3d6). One unlisted commit that moves dateModified on 3+ routes
+    stops the run, names the commit, the source and the routes, and says what to do."""
+    _three_cities_mapped(repo)
+    sha = _template_refactor(repo)
+    before = (repo / "data/page-dates.json").read_text()
+    assert G.main([]) == 1
+    out = capsys.readouterr().out
+    assert sha[:7] in out and "[slug].astro" in out and "/uk-locations/blue-staffies-york/" in out
+    assert "fanout_accepted" in out and "commits" in out
+    assert (repo / "data/page-dates.json").read_text() == before, "a refusal writes nothing"
+    assert G.main(["--check"]) == 1
+    assert sha[:7] in capsys.readouterr().out
+
+
+def test_a_fanout_commit_listed_as_no_content_keeps_the_old_dates(repo):
+    _three_cities_mapped(repo)
+    sha = _template_refactor(repo)
+    _write(repo, "data/page-dates-ignore.json", json.dumps({"commits": [{
+        "sha": sha, "paths": ["src/pages/uk-locations/[slug].astro"], "reason": "no output change"}]}))
+    assert G.main([]) == 0
+    routes = json.loads((repo / "data/page-dates.json").read_text())["routes"]
+    assert {routes[f"/uk-locations/{c}/"]["dateModified"] for c in CITIES} == {"2026-02-01"}
+
+
+def test_a_fanout_commit_accepted_as_real_content_moves_the_dates(repo):
+    _three_cities_mapped(repo)
+    sha = _template_refactor(repo)
+    _write(repo, "data/page-dates-ignore.json", json.dumps({"commits": [], "fanout_accepted": [{
+        "sha": sha[:9], "reason": "every city gains the new footer line"}]}))
+    assert G.main([]) == 0
+    routes = json.loads((repo / "data/page-dates.json").read_text())["routes"]
+    assert {routes[f"/uk-locations/{c}/"]["dateModified"] for c in CITIES} == {"2026-03-09"}
+
+
+def test_a_fanout_under_three_routes_passes(repo):
+    """Two puppies share their template: a commit to it moves two routes, under the bar."""
+    assert G.main([]) == 0
+    _commit(repo, "2026-01-06", msg="map")
+    _write(repo, "src/pages/available-puppies/[slug].astro", "getStaticPaths // refactor")
+    _commit(repo, "2026-03-09")
+    assert G.main([]) == 0
+    routes = json.loads((repo / "data/page-dates.json").read_text())["routes"]
+    assert routes["/available-puppies/roman/"]["dateModified"] == "2026-03-09"
+
+
+@pytest.mark.parametrize("bad", [
+    [{"sha": "abc12", "reason": "r"}],
+    [{"sha": "a" * 40}],
+    "not a list",
+])
+def test_a_malformed_fanout_accepted_list_is_exit_2(repo, capsys, bad):
+    _write(repo, "data/page-dates-ignore.json", json.dumps({"commits": [], "fanout_accepted": bad}))
+    assert G.main([]) == 2
+    assert "fanout_accepted" in capsys.readouterr().out
+
+
+def test_a_fanout_accepted_sha_not_in_history_is_exit_2(repo, capsys):
+    _write(repo, "data/page-dates-ignore.json", json.dumps({"commits": [], "fanout_accepted": [
+        {"sha": "deadbeefdeadbeef", "reason": "r"}]}))
+    assert G.main([]) == 2
+    assert "deadbeefdeadbeef" in capsys.readouterr().out
+
+
 def test_the_puppies_template_expands_to_every_slug_in_puppies_json(repo):
     routes, _, _ = G.build()
     assert "/available-puppies/roman/" in routes and "/available-puppies/byrd/" in routes
