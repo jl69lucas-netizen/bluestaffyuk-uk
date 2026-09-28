@@ -86,7 +86,8 @@ async function priceScaleSpill(page: Page): Promise<string[]> {
   return page.evaluate(() => {
     const out: string[] = [];
     const root = document.querySelector('.city-scale');
-    if (!root) return out;
+    // Nothing to measure is a defect, never a pass (Task 8b, M-new-2).
+    if (!root) return ['the page has no price scale (.city-scale) to measure'];
     const panel = root.querySelector('.panel')!;
     const ps = getComputedStyle(panel);
     const pr = panel.getBoundingClientRect();
@@ -502,6 +503,15 @@ test('city-type-fit reads the tier from the section box, at the TIER edges', asy
     expect(r.defects.some((d) => d.startsWith(box) && /over the tablet cap of 25px/.test(d)),
       `${box}: a 27px H2 was not judged against the tablet cap: ${r.defects.join(' | ')}`).toBe(true);
   }
+});
+
+// The price-scale check cannot pass a page with no price scale (Task 8b, M-new-2): the edge-width
+// runs call it on every route, and an empty result there must mean "measured and clean".
+test('priceScaleSpill fails a page with no price scale', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp1280', 'run once');
+  await page.setContent('<main><p>No city section here.</p></main>');
+  const r = await priceScaleSpill(page);
+  expect(r.some((d) => /no price scale/.test(d)), r.join(' | ')).toBe(true);
 });
 
 // city-layout-follows-box cannot pass having examined nothing (I3).
