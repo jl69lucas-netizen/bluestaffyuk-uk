@@ -133,7 +133,9 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       if (!shown) return ['the jump band is not painted below 1024px'];
       if (await band.getAttribute('data-strip') !== null) {
         await page.evaluate(() => window.scrollTo(0, 900));
-        await page.waitForTimeout(150);
+        // Two animation frames: the sticky band's position is laid out on the frame after the
+        // scroll, and that is the condition, not a clock.
+        await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
         const top = await band.evaluate((el) => el.getBoundingClientRect().top);
         if (top < -1 || top > 160) out.push(`after a 900px scroll the band sits at ${Math.round(top)}px, not under the header`);
         await page.evaluate(() => window.scrollTo(0, 0));
@@ -372,7 +374,16 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
           window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.3);
           return link.dataset.spy!;
         }, scope);
-        await page.waitForTimeout(300);
+        // Wait on the SPY, not on a clock: an IntersectionObserver reports on a rendering
+        // opportunity after the scroll, and with four workers painting at once that took up to
+        // ~230ms here (measured: the dial still named the previous section 0–2 frames after
+        // the scroll, then settled), so a fixed 300ms read raced it about one run in three.
+        // The component is right when the named section becomes current; if it never does
+        // within 3s the read below reports what it shows instead.
+        await page.waitForFunction(({ s, w }) => {
+          const cur = Array.from(document.querySelectorAll(`${s} [aria-current="location"]`));
+          return cur.length === 1 && (cur[0] as HTMLAnchorElement).dataset.spy === w;
+        }, { s: scope, w: want }, { timeout: 3000, polling: 'raf' }).catch(() => {});
         const got = await page.evaluate((s) => Array.from(document.querySelectorAll(`${s} [aria-current="location"]`))
           .map((a) => (a as HTMLAnchorElement).dataset.spy), scope);
         if (got.length !== 1 || got[0] !== want) {
