@@ -9,9 +9,9 @@
 // THE DEPOSIT (the user's rulings, 2026-09-27): £500 books the viewing and reserves the puppy,
 // and it comes off the price. It is never called plainly "refundable": the refund is partial
 // and conditional, and where the condition does not fit, no refund wording is printed at all
-// (answer board, deposit wording Q4). So `depositLine` carries no refund clause. When the
-// deposit-wording branch adds the refund fields to data/settings.json, `depositRefundClause`
-// prints them; until then it is null and nothing is printed.
+// (answer board, deposit wording Q4). So `depositLine` carries no refund clause, and this file
+// carries no helper for one: the wording is being settled on the deposit-wording branch, and when
+// it lands it will be the data's (data/settings.json), not a component's.
 import settings from '../../data/settings.json';
 import prices from '../../data/price-matrix.json';
 import puppiesJson from '../../data/puppies.json';
@@ -37,14 +37,6 @@ export const deliveryLine = `UK home delivery ${DELIVERY_BAND} by distance · or
 
 /** The deposit, in the user's ruling (2026-09-27). No refund wording: see the header. */
 export const depositLine = `${DEPOSIT} books your viewing and reserves your puppy, and it comes off the price.`;
-
-/** The refund clause, printed only when data/settings.json states both refund fields. */
-export const depositRefundClause = (): string | null => {
-  const s = settings as { deposit_refund_max_pct?: number; deposit_refund_condition?: string };
-  return s.deposit_refund_max_pct && s.deposit_refund_condition
-    ? `refundable up to ${s.deposit_refund_max_pct}% ${s.deposit_refund_condition}`
-    : null;
-};
 
 /** The guarantee's length, or null while the breeder has not given one (rule 9). */
 export const guaranteeDays = (): number | null => (settings as { guarantee_days: number | null }).guarantee_days;

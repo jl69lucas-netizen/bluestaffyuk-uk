@@ -169,6 +169,15 @@ def test_built_city_price_scale_reads_every_figure_from_the_data_files():
     assert "refundable" not in text.lower()
 
 
+def test_the_city_kit_carries_no_refund_clause_helper():
+    """The deposit's refund wording is being settled on another branch (deposit-wording); until
+    it lands no city component prints a refund clause, so src/lib/cityKit.ts carries no dead
+    helper for it (Task 7b review, item 6). The wording will be the data's when it comes."""
+    src = (ROOT / "src/lib/cityKit.ts").read_text(encoding="utf-8")
+    assert "depositRefundClause" not in src
+    assert "deposit_refund" not in src
+
+
 def test_built_city_trust_ledger_keeps_its_served_photo_whole():
     s = section("city-trust-ledger")
     served = served_alts()
