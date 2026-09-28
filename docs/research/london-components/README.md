@@ -10,6 +10,7 @@ Plan 1 of the London component design pass (`docs/superpowers/plans/2026-09-27-l
   - `notes/general`: the general notes.
   - `submissions/<s-time>`: one snapshot per Send.
 - **Reading picks:** when the user sends (or says "read my picks"), use ArtifactData `list` on `picks`, or read the newest `submissions` document.
+- **Frozen 2026-09-28 (Plan 2 Task 1):** the picks are saved in `data/design/city-picks/blue-staffy-puppies-london.json` (from `picks-2026-09-27.json`, by `scripts/freeze_city_picks.py`) and the 30 unpicked variants in `data/design/city-pool.json`. The canvas is rebuilt with `--final` (controls disabled) and republished to the same URL as the record of what was offered.
 - `ideas-index.md`: where each idea came from. The captures live in `/Users/apple/Downloads/BSUK/BSUK-refs/london/`, and the sheets in the two idea folders.
 - `must-differ.md`: what the built pages already use (generated).
 - `hardening-log.md`: the frontend-design and impeccable record for each variant.
