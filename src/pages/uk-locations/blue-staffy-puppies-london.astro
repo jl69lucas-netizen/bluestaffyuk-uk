@@ -11,8 +11,15 @@
 // WHAT THIS IS NOT. London's copy, research and SEO. Every heading, answer and label below is
 // the canvas's placeholder wording, kept only until London's page run (docs/reference/
 // page-run.md) — research board first (row 8), then the outline — replaces it word for word.
-// Facts are read from the data files (src/lib/cityKit.ts), never typed; there is no guarantee
-// length (data/settings.json `guarantee_days` is null) and no licence claim.
+// The litter's figures (prices, deposit, delivery band, the litter's size, its boys and girls,
+// their names and colours, the town) are read from the data files (src/lib/cityKit.ts,
+// data/puppies.json), never typed. SOME FACTS ARE TYPED, AS PLACEHOLDERS: the parents' names
+// (Maggie and Jones), the test names (L-2-HGA, HC-HSF4, eyes and elbows), the take-back, access
+// to our vet, Puppy Culture and ENS, and the email reply time. The first five are the breeder's
+// answers on the answer board (2026-09-27); the reply time is the one the built pages and
+// data/faq.json already state. Each is placeholder wording until London's page run writes it
+// from the outline and the evidence ledger. There is no guarantee length (data/settings.json
+// `guarantee_days` is null) and no licence claim.
 //
 // KEPT OUT OF THE INDEX: `noindex, follow`, written HERE rather than read from
 // data/locations.json, so a data edit cannot publish a scaffold; scripts/generate_sitemaps.py
@@ -66,16 +73,27 @@ const andList = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, 
 const names = (ps: PuppyRow[]) => andList(ps.map((p) => p.name));
 const withColour = (ps: PuppyRow[]) => andList(ps.map((p) => `${p.name} (${p.colour.toLowerCase()})`));
 
+// Each nav section's question, ONCE: it is the section's H2 and the jump sheet's row.
+const Q = {
+  'checks': 'What Should You Check Before Buying a Blue Staffy in London?',
+  'in-short': 'What Should a London Buyer Take From This Page?',
+  'puppies': 'Which Puppy Will You Ask About First?',
+  'prices': `How Do the ${cap(LITTER)} Puppies Compare Side by Side?`,
+  'buying-questions': 'What Do London Buyers Ask Before Reserving a Puppy?',
+  'film': 'How Lively Is a Blue Staffy Puppy at Home?',
+  'journey': 'Where Does Your Puppy Start, and How Does It Reach London?',
+  'enquire': `Which of Our ${cap(LITTER)} Puppies Would You Like to Ask About?`,
+} as const;
 // The eight sections the nav set lists, in page order; each `question` is its section's H2.
 const sections: SectionRef[] = [
-  { id: 'checks', label: 'What to check before you buy', stop: 'Checks', icon: 'health', question: 'What Should You Check Before Buying a Blue Staffy in London?' },
-  { id: 'in-short', label: 'The page in five answers', stop: 'In short', icon: 'list', question: 'What Should a London Buyer Take From This Page?' },
-  { id: 'puppies', label: `The ${LITTER} puppies ready now`, stop: 'Puppies', icon: 'puppies', question: 'Which Puppy Will You Ask About First?' },
-  { id: 'prices', label: 'Prices for a boy or a girl', stop: 'Prices', icon: 'prices', question: `How Do the ${cap(LITTER)} Puppies Compare Side by Side?` },
-  { id: 'buying-questions', label: 'Questions London buyers ask', stop: 'Questions', icon: 'faq', question: 'What Do London Buyers Ask Before Reserving a Puppy?' },
-  { id: 'film', label: 'The puppies on film', stop: 'Film', icon: 'play', question: 'How Lively Is a Blue Staffy Puppy at Home?' },
-  { id: 'journey', label: `From ${TOWN} to your door`, stop: 'Journey', icon: 'delivery', question: 'Where Does Your Puppy Start, and How Does It Reach London?' },
-  { id: 'enquire', label: 'Ask about a puppy', stop: 'Enquire', icon: 'enquire', question: `Which of Our ${cap(LITTER)} Puppies Would You Like to Ask About?` },
+  { id: 'checks', label: 'What to check before you buy', stop: 'Checks', icon: 'health', question: Q['checks'] },
+  { id: 'in-short', label: 'The page in five answers', stop: 'In short', icon: 'list', question: Q['in-short'] },
+  { id: 'puppies', label: `The ${LITTER} puppies ready now`, stop: 'Puppies', icon: 'puppies', question: Q['puppies'] },
+  { id: 'prices', label: 'Prices for a boy or a girl', stop: 'Prices', icon: 'prices', question: Q['prices'] },
+  { id: 'buying-questions', label: 'Questions London buyers ask', stop: 'Questions', icon: 'faq', question: Q['buying-questions'] },
+  { id: 'film', label: 'The puppies on film', stop: 'Film', icon: 'play', question: Q['film'] },
+  { id: 'journey', label: `From ${TOWN} to your door`, stop: 'Journey', icon: 'delivery', question: Q['journey'] },
+  { id: 'enquire', label: 'Ask about a puppy', stop: 'Enquire', icon: 'enquire', question: Q['enquire'] },
 ];
 
 // The three FAQ blocks' rows, in file wording (the blocks Title Case them at render).
@@ -133,7 +151,7 @@ const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
       price: 'the price of one puppy',
     }} />
     <CityTrustLedger id="checks"
-      heading="What Should You Check Before Buying a Blue Staffy in London?"
+      heading={Q['checks']}
       intro="The health of the parents, how the litter was raised and what happens if something goes wrong. Here is where each of ours stands."
       photo="jones-magnificent-blue-staffy-sire.webp" caption="Jones, the sire"
       items={[
@@ -146,7 +164,7 @@ const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
   </Fragment>
 
   <CityTakeawaysLedger id="in-short"
-    heading="What Should a London Buyer Take From This Page?"
+    heading={Q['in-short']}
     lede={`Five plain answers, one sentence each, so you can decide from your London sofa whether a puppy from ${settings.breeder_name}'s home in ${TOWN} is right for you.`}
     photo="jones-strong-staffy-sire-temperament.webp" caption={`Jones, the sire, at home in ${TOWN}`}
     rows={[
@@ -157,20 +175,20 @@ const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
       { label: 'The raising', text: 'Raised in the home with Puppy Culture and ENS, and you may speak to our vet.' },
     ]} />
   <CityPuppySheet id="puppies"
-    heading="Which Puppy Will You Ask About First?"
+    heading={Q['puppies']}
     lede={`Maggie and Jones's ${LITTER} are laid out here like family prints, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, so you can pick a favourite from London before you ask.`}
     photo="maggie-blue-staffy-dam-with-pups.webp" caption={`Maggie, the dam, with her puppies in ${TOWN}`} />
   <CityRoster id="prices"
-    heading={`How Do the ${cap(LITTER)} Puppies Compare Side by Side?`}
+    heading={Q['prices']}
     lede="Here is the whole litter on one sheet, so you can weigh up a boy against a girl from your London kitchen table: every puppy's sex, colour and price, taken straight from our list."
     caption={`The ${LITTER} puppies, as listed`} />
   <CityFaqLedger id="buying-questions" block="buy" start={1}
-    heading="What Do London Buyers Ask Before Reserving a Puppy?"
+    heading={Q['buying-questions']}
     lede="The first questions from London are nearly always about money and the journey, so here are our straight answers on the prices, the deposit, delivery and collection."
     rail={{ photo: 'blue-staffy-testimonial-london-happy-owner.webp', caption: 'One of our puppies, at home with its new owner.' }}
     items={faqBuy} />
   <CityVideoPanel id="film"
-    heading="How Lively Is a Blue Staffy Puppy at Home?"
+    heading={Q['film']}
     lede={`Very, and our short film of puppies from one of our litters shows it better than we can say it; watch it from London before you choose between the ${LITTER}.`}
     videoId={settings.youtube_embeds[0]} videoTitle="Staffordshire Bull Terrier puppies: a litter of ours on film"
     caption={`A litter of ours, on film; it loads from YouTube only when you press play. Poster photo: Christa, one of the ${LITTER} available now.`}
@@ -182,7 +200,7 @@ const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
       { label: 'Getting home', text: deliveryLine },
     ]} />
   <CityChapters id="journey"
-    heading="Where Does Your Puppy Start, and How Does It Reach London?"
+    heading={Q['journey']}
     lede={`In our home in ${TOWN}, Cumbria, with its mother close by, and then at your door in London or in your arms at collection, whichever suits you.`}
     chapters={[
       { place: TOWN, question: `Who Raises Your Puppy Before It Leaves ${TOWN}?`, photo: 'Byrd1.jpg',
@@ -209,7 +227,7 @@ const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
     lede="Leave your email and we will write to you in London when our next litter is on the way. It is one short note, and that is all this list is for."
     photo="Christa.jpeg" photoAlt="Christa, a blue Staffy girl with a white chest, sitting up and looking at the camera" />
   <CityContactLineup id="enquire"
-    heading={`Which of Our ${cap(LITTER)} Puppies Would You Like to Ask About?`}
+    heading={Q['enquire']}
     lede={`Here are all ${LITTER} as they are today. Choose one in the form, tell us where in London you live, and we reply by email with the answers to everything you asked.`} />
 
   <section class="migrated" aria-label="The old page's words">
