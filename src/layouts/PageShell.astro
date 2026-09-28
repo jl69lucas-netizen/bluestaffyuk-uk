@@ -37,14 +37,26 @@ import PageDial from '../components/kit/PageDial.astro';
 import SectionSheet from '../components/kit/SectionSheet.astro';
 import SectionStrip from '../components/kit/SectionStrip.astro';
 import PageNav from '../components/kit/PageNav.astro';
-import type { SectionRef } from '../lib/sections';
+import CityDial from '../components/kit/CityDial.astro';
+import CityJumpBand from '../components/kit/CityJumpBand.astro';
+import CityContents from '../components/kit/CityContents.astro';
+import type { CityNav, SectionRef } from '../lib/sections';
 import { globalCtaShown } from '../lib/globalCta';
 
-// Every head prop is BaseLayout's, forwarded untouched; `sections` is the only one the shell
-// owns. Extending rather than restating means a prop added to the layout reaches the shell.
-interface Props extends BaseProps { sections?: SectionRef[] }
-const { sections = [], ...head } = Astro.props;
+// Every head prop is BaseLayout's, forwarded untouched; `sections` and `cityNav` are the shell's
+// own. Extending rather than restating means a prop added to the layout reaches the shell.
+//
+// `cityNav` SWAPS THE WHOLE NAV SET (the London component design pass, Plan 2). A city page
+// mounts its own picks — CityJumpBand below 1024px, CityDial at 1024px and up, CityContents
+// once after the hero — from the SAME `sections` list and on the same six-section threshold, so
+// the set is still one component split by width. A city page puts its hero AND the strips that
+// open it (counter, trust) in `slot="hero"`, which renders full width ABOVE the dial's grid,
+// with the contents panel under it: the dial starts where the body starts. Every page that
+// passes no `cityNav` renders exactly as before.
+interface Props extends BaseProps { sections?: SectionRef[]; cityNav?: CityNav }
+const { sections = [], cityNav, ...head } = Astro.props;
 const nav = sections.length >= 6;
+const city = nav && cityNav !== undefined;
 // The approved board's `global_cta` decides the footer's CTA band (CAG parity audit D3).
 const cta = globalCtaShown(Astro.url.pathname);
 // A page that passes one to five sections gets NO in-page nav and no warning would be given
@@ -65,17 +77,25 @@ if (sections.length > 0 && !nav) {
       `#main` at 768 for exactly this). Outside it, `#main` begins below the whole band. */}
   <Fragment slot="header">
     <SiteHeaderKit />
-    {nav && <SectionStrip sections={sections} />}
+    {nav && !city && <SectionStrip sections={sections} />}
+    {city && <CityJumpBand sections={sections} />}
   </Fragment>
-  <div class:list={['page-shell', { 'has-dial': nav }]}>
-    {nav && <PageDial sections={sections} />}
-    <div class="page-body">
+  {city && (
+    <Fragment>
       <slot name="hero" />
-      {nav && <PageNav sections={sections} crumbs={false} class="page-toc" />}
+      <CityContents sections={sections} {...cityNav!.contents} />
+    </Fragment>
+  )}
+  <div class:list={['page-shell', { 'has-dial': nav && !city, 'has-city-dial': city }]}>
+    {nav && !city && <PageDial sections={sections} />}
+    {city && <CityDial sections={sections} {...cityNav!.dial} />}
+    <div class="page-body">
+      {!city && <slot name="hero" />}
+      {nav && !city && <PageNav sections={sections} crumbs={false} class="page-toc" />}
       <slot />
     </div>
   </div>
-  {nav && <SectionSheet sections={sections} />}
+  {nav && !city && <SectionSheet sections={sections} />}
   <SiteFooterKit slot="footer" cta={cta} />
 </BaseLayout>
 <style>
@@ -99,6 +119,18 @@ if (sections.length > 0 && !nav) {
          persistent copy of this list — so the TOC steps out of the way rather than
          repeating it beside itself. */
       .page-shell.has-dial > .page-body > .page-toc { display: none; }
+    }
+    /* The city set's dial column is the pick's 272px panel (desktop-dial C). */
+    @media (min-width: 1024px) {
+      .page-shell.has-city-dial {
+        max-width: var(--container);
+        margin-inline: auto;
+        padding-inline: var(--space-5);
+        display: grid;
+        grid-template-columns: 272px minmax(0, 1fr);
+        gap: var(--space-8);
+        align-items: start;
+      }
     }
     @media (min-width: 1024px) {
       .page-shell.has-dial {

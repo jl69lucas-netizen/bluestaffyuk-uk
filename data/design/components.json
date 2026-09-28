@@ -19,5 +19,8 @@
   {"id": "video-embed",     "file": "VideoEmbed.astro",      "title": "18 · Video embed",                      "board_width":  640, "project": 4},
   {"id": "city-hero",       "file": "CityHero.astro",        "title": "C1 · City hero (litter filmstrip)",     "board_width": 1280, "project": 5},
   {"id": "city-price-scale", "file": "CityPriceScale.astro", "title": "C2 · City counter strip (price scale)",  "board_width": 1280, "project": 5},
-  {"id": "city-trust-ledger", "file": "CityTrustLedger.astro", "title": "C3 · City trust strip (photo ledger)", "board_width": 1280, "project": 5}
+  {"id": "city-trust-ledger", "file": "CityTrustLedger.astro", "title": "C3 · City trust strip (photo ledger)", "board_width": 1280, "project": 5},
+  {"id": "city-contents",   "file": "CityContents.astro",    "title": "C4 · City contents list (photo index)", "board_width": 1280, "project": 5},
+  {"id": "city-dial",       "file": "CityDial.astro",        "title": "C5 · City desktop dial (photo marker)", "board_width": 1280, "project": 5},
+  {"id": "city-jump-band",  "file": "CityJumpBand.astro",    "title": "C6 · City jump links (stepper band)",   "board_width": 640,  "project": 5}
 ]

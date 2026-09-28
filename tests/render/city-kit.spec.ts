@@ -86,6 +86,98 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-trust-ledger': {
     present: '.city-trust',
     run: (page) => allVisible(page, 'data-trust-item'),
+  },  'city-contents': {
+    present: '.city-contents',
+    run: async (page, viewport) => {
+      const out = await allVisible(page, 'data-contents');
+      const rest = page.locator('.city-contents [data-rest]');
+      if (!(await rest.count())) return out;
+      const shown = async () => rest.first().isVisible();
+      if (viewport < 640) {
+        if (await shown()) out.push('rows after the phone cut are painted before the disclosure is opened');
+        const more = page.locator('.city-contents [data-more]');
+        await more.click();
+        if (!(await shown())) out.push('opening the disclosure does not paint the rest of the rows');
+        if ((await more.getAttribute('aria-expanded')) !== 'true') out.push('the disclosure does not report aria-expanded="true"');
+        await more.click();
+      } else if (!(await shown())) out.push(`rows after the fifth are hidden at ${viewport}px`);
+      return out;
+    },
+  },
+  'city-dial': {
+    present: '[data-city-dial]',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const shown = await page.locator('[data-city-dial]').isVisible();
+      if (viewport >= 1024 && !shown) out.push('the dial is not painted at a desktop width');
+      if (viewport < 1024 && shown) out.push('the dial is painted below 1024px, where the jump band navigates');
+      const current = await page.locator('[data-city-dial] [aria-current="location"]').count();
+      if (current !== 1) out.push(`${current} dial rows are marked current; exactly one must be`);
+      return out;
+    },
+  },
+  'city-jump-band': {
+    present: '[data-city-jump]',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const band = page.locator('[data-city-jump]');
+      const shown = await band.isVisible();
+      if (viewport >= 1024) {
+        if (shown) out.push('the jump band is painted at a desktop width, where the dial navigates');
+        return out;
+      }
+      if (!shown) return ['the jump band is not painted below 1024px'];
+      if (await band.getAttribute('data-strip') !== null) {
+        await page.evaluate(() => window.scrollTo(0, 900));
+        await page.waitForTimeout(150);
+        const top = await band.evaluate((el) => el.getBoundingClientRect().top);
+        if (top < -1 || top > 160) out.push(`after a 900px scroll the band sits at ${Math.round(top)}px, not under the header`);
+        await page.evaluate(() => window.scrollTo(0, 0));
+      }
+      const opener = band.locator('[data-jump-open]');
+      const box = await opener.boundingBox();
+      if (!box || box.height < 44) out.push('the sheet key is under 44px tall');
+      await opener.click();
+      const open = await band.locator('[data-jump-sheet]').evaluate((d) => (d as HTMLDialogElement).open);
+      if (!open) out.push('pressing the key does not open the sheet');
+      if ((await opener.getAttribute('aria-expanded')) !== 'true') out.push('the key does not report aria-expanded="true"');
+      await page.keyboard.press('Escape');
+      const closed = await band.locator('[data-jump-sheet]').evaluate((d) => !(d as HTMLDialogElement).open);
+      if (!closed) out.push('Escape does not close the sheet');
+      if ((await opener.getAttribute('aria-expanded')) !== 'false') out.push('after Escape the key still reports aria-expanded="true"');
+      return out;
+    },
+  },
+  // Learning loop 2026-09-27, L8: the current-section marker, under BOTH motion preferences.
+  // Scroll the fourth section to the reading band and read which row is current, on the dial at
+  // a desktop width and on the band's rail below it.
+  'city-nav-current-section': {
+    present: '[data-city-dial], [data-city-jump]',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const scope = viewport >= 1024 ? '[data-city-dial]' : '[data-city-jump] .rail';
+      if (!(await page.locator(scope).isVisible())) return out;
+      for (const motion of ['reduce', 'no-preference'] as const) {
+        await page.emulateMedia({ reducedMotion: motion });
+        const want = await page.evaluate((s) => {
+          const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [data-spy]`));
+          const link = links[Math.min(3, links.length - 1)];
+          const target = document.getElementById(link.dataset.spy!)!;
+          // The target's top at 30% of the viewport: above the reading band (40–45%), so the
+          // section before it has left the band and this one fills it.
+          window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.3);
+          return link.dataset.spy!;
+        }, scope);
+        await page.waitForTimeout(300);
+        const got = await page.evaluate((s) => Array.from(document.querySelectorAll(`${s} [aria-current="location"]`))
+          .map((a) => (a as HTMLAnchorElement).dataset.spy), scope);
+        if (got.length !== 1 || got[0] !== want) {
+          out.push(`reducedMotion=${motion}: section ${want} in the reading band, current is [${got.join(', ')}]`);
+        }
+      }
+      await page.emulateMedia({ reducedMotion: null });
+      return out;
+    },
   },
 };
 

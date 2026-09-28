@@ -1,0 +1,85 @@
+---
+// src/components/kit/CityDial.astro — city component 5, the desktop dial (London pick:
+// desktop-dial C, "Photo marker"). From 1024px a steel-100 panel is pressed into the left
+// column (sunk, no shadow): a puppy photograph at its head, then the sections as plain labels
+// along a thin steel track. The current label is marked by a swollen steel stop, a raised row
+// and bold type. Hidden below 1024px, where CityJumpBand navigates.
+//
+// THE CURRENT SECTION IS MARKED BY SCRIPT (src/lib/scrollSpy.ts, the kit's IntersectionObserver
+// and reading band), with `aria-current="location"` — never by the canvas's `:target` or its
+// scroll-driven animations, which a reader asking for reduced motion saw stuck on section one
+// (plan2-notes; learning loop L8). The first row is current at render, as PageDial's is.
+//
+// Mounted by PageShell (`navSet: 'city'`) in the 272px column. Conventions 2, 4, 6.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import type { SectionRef } from '../../lib/sections';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+
+type Props = HTMLAttributes<'aside'> & {
+  sections: SectionRef[];
+  title?: string;
+  photo: string;
+  photoAlt: string;
+};
+const { sections, title = 'Where you are on the page', photo, photoAlt, class: cls, ...rest } = Astro.props;
+---
+<aside {...rest} class:list={['city-kit', 'city-dial', cls]} data-city-dial>
+  <Image src={puppyImage(photo)} alt={photoAlt} widths={[280, 560]} sizes="272px"
+    class={focusClass(photo)} loading="lazy" decoding="async" />
+  <nav aria-labelledby="city-dial-title">
+    <p class="t" id="city-dial-title">{title}</p>
+    <ol>
+      {sections.map((s, i) => (
+        <li><a href={`#${s.id}`} data-spy={s.id} aria-current={i === 0 ? 'location' : undefined}>{s.label}</a></li>
+      ))}
+    </ol>
+  </nav>
+</aside>
+<script>
+  import { markCurrent, spyRows, watchSections } from '../../lib/scrollSpy';
+  const dial = document.querySelector<HTMLElement>('[data-city-dial]');
+  if (dial) {
+    const rows = spyRows(dial);
+    const links = rows.map((r) => r.link);
+    watchSections(rows.map((r) => r.target), (i) => markCurrent(links, i));
+  }
+</script>
+<style>
+  @layer components {
+    .city-dial { display: none; }
+    @media (min-width: 1024px) {
+      .city-dial {
+        display: block; position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px);
+        max-height: calc(100vh - var(--hdr) - 32px); overflow-y: auto;
+        width: 272px; margin-top: var(--space-6); border-radius: var(--radius-lg); background: var(--color-brand-soft);
+      }
+      .city-dial > :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+      nav { padding: var(--space-5) var(--space-5) var(--space-6); }
+      .t {
+        margin: 0 0 var(--space-4); font-size: var(--text-xs); font-weight: 700;
+        letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-2);
+      }
+      ol { list-style: none; margin: 0; padding: 0; position: relative; }
+      ol::before { content: ""; position: absolute; left: 7px; top: 22px; bottom: 22px; width: 2px; background: var(--color-steel-300); }
+      li + li { margin-top: var(--space-1); }
+      a {
+        --stop: var(--color-steel-300); --stop-size: 8px;
+        position: relative; display: flex; align-items: center; min-height: 44px;
+        padding: var(--space-2) var(--space-3) var(--space-2) 28px; border-radius: var(--radius-sm);
+        color: var(--color-ink); font-size: var(--text-sm); line-height: 1.3; text-decoration: none;
+      }
+      a::before {
+        content: ""; position: absolute; left: 8px; top: 50%; width: var(--stop-size); height: var(--stop-size);
+        border-radius: 50%; background: var(--stop); box-shadow: 0 0 0 3px var(--color-brand-soft); transform: translate(-50%, -50%);
+      }
+      a:hover { text-decoration: underline; text-underline-offset: 3px; }
+      a[aria-current='location'] {
+        --stop: var(--color-brand); --stop-size: 14px;
+        background: var(--color-surface-raised); color: var(--color-brand); font-weight: 700;
+      }
+      a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 0; }
+    }
+  }
+</style>

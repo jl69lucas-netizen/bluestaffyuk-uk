@@ -373,3 +373,39 @@ is the site's `overflow-x: clip` on `html`.
 | hero (CityHero, B) | The "more" link painted without its underline: the site's preflight sets links to `text-decoration: inherit`, and the canvas frame, which has no preflight, underlined it. On the steel band it was told apart by colour alone (WCAG 1.4.1). | Strip, name plates, brass CTA and the 1024–1199 step match the frame; every face stays whole at 120px and 148px thumbs; the band is 422px at 1024 and 1280 (rule 10: 390–450). | `.more` restates `text-decoration: underline`. | 375 768 1024 1280 |
 | counter strip (CityPriceScale, C) | No finding on the component. | The number line, the pill range stop, the break mark and the boy/girl fork match at every width; the phone's vertical line is identical. | Nothing. | 375 768 1024 1280 |
 | trust strip (CityTrustLedger, C) | No finding on the component. | Card, stretched photo column and two-column ledger match. Jones stands in for Maggie (one served photo per page, Code facts 4) and the guarantee claim is dropped (`guarantee_days` null). The canvas held `L-2-HGA` / `HC-HSF4` in nowrap spans; the plain-string prop has no such guard. They do not break at the four widths, so this is left to the city page's copy step. | Nothing. | 375 768 1024 1280 |
+
+**Task 3: contents list C, desktop dial C, jump links A and the sheet (2026-09-28).** Built on
+`/kit-preview/city/` and shot at 375 / 768 / 1024 / 1280, with the states the canvas recorded:
+the contents disclosure open (375), the dial after a scroll (1024, 1280), the band after a scroll,
+with the sheet open, and after a jump from the sheet (375, 768). Element and state shots are
+`built-<component>-<width>[-state].png`, and canvas-beside-built pairs are
+`pair-<component>-<width>[-state].png`, all in `BSUK-refs/london/_plan2-shots/`, against
+`_variants/contents-list-c-*`, `desktop-dial-c-*` and `jump-links-a-*`. Two things were set up only
+for the shots. The preview's own site header was hidden so it could not cover an element shot. In
+the scrolled shots the dial and the band were pinned (`position: fixed`), because on the preview
+they sit in their own sections; on a city page they are PageShell's sticky column and header band
+(Task 8). `impeccable:impeccable` ran first and `frontend-design:frontend-design` second. The
+`PRODUCT.md` gate is still unmet, for the reason given under Task 2. The detector
+(`npx impeccable --json`) found nothing in the three `.astro` sources. On the built preview it
+raised the same three page-level warnings as in Task 2 (Fraunces, the counter bed's rule, `html`
+overflow clip) and none on a nav component.
+
+Behaviour, as measured in the painting browser:
+- Opening the sheet moves focus to Close. After 12 Tabs focus is still inside the dialog, so focus
+  is trapped.
+- Escape closes the sheet, and the key goes back to `aria-expanded="false"`.
+- Opening and closing the sheet adds 0 history entries. A sheet link adds one, as any in-page
+  anchor does.
+- After a scroll the rail, the sheet, the key's line ("03 Checks") and the dial all mark the
+  third section.
+- The render probe `city-nav-current-section` passes under `reducedMotion: reduce` and under
+  `no-preference`. To show it is not vacuous, the spy was frozen on row one, which is what the
+  canvas's reduced-motion reader saw (L8). The probe then failed at all four widths under both
+  settings ("section kit-city-contents in the reading band, current is [kit-city-hero]"), and it
+  passed again once the spy was restored.
+
+| Component | impeccable found | frontend-design found | Changed | Widths |
+|---|---|---|---|---|
+| contents list (CityContents, C) | The disclosure read "1 more sections" with the preview's six sections. The plan's CSS had no 1200px step: the frame's body padding grows to `space-9 space-8` there, and the built panel stayed at `space-8 space-7`, which is 8px short at each side. | Photo column, sunk steel-100 panel (no shadow), balanced heading, two-column arrow rows from 640px and the 2:1 / 21:9 phone crops match the frame. It is one list, and the phone disclosure opens it in place ("Fewer sections" when open). | The label is singular for one row. Added the `min-width: 1200px` padding step. | 375 768 1024 1280 |
+| desktop dial (CityDial, C) | No finding on the component. Its corners clip the photograph (checked by pixel). | Track, swollen brand stop, raised current row and uppercase title match the frame. The crop is the focus map's (`fx-40 fy-45`, the face's centre) rather than the frame's hand-set `50% 28%`: it sits about 100px lower in the portrait and trims the raised paws, but the face is whole. Hidden below 1024px. | Nothing. | 1024 1280 (375 and 768: not painted, by design) |
+| jump band and sheet (CityJumpBand, A) | The sheet had 20px gutters on a phone: the UA stylesheet's dialog `max-width: calc(100% - 2em - 6px)` beat `width: min(100%, 560px)`, and the frame's sheet runs edge to edge. | Stepper rail (brass current stop, names from 600px), the key with its brass numeral and "ALL n", the bottom sheet with its grab bar, Close pill and numbered question rows all match the frame at 375 and 768. On the preview a jump cannot bring its target to the top, because the preview's last sections sit at the foot of the page. The landing is measured on the real page by `nav-jump-target-lands` (Task 8). | The sheet sets `max-width: 100%`. | 375 768 (1024 and 1280: not painted, by design) |

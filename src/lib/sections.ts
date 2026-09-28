@@ -41,3 +41,11 @@ export interface SectionSource {
  */
 export const sectionsFromRecord = (record: SectionSource): SectionRef[] =>
   record.sections.map((s) => ({ id: s.id, label: s.heading.replace(/:.*$/, '').trim() }));
+
+/** What a city page's nav set shows beside its sections (PageShell `cityNav`): the contents
+ *  panel's question, answer and puppy photograph, and the dial's photograph. Photos are files in
+ *  src/assets/puppies named in data/image-focus.json; alts are the page's own words. */
+export interface CityNav {
+  contents: { heading: string; lede: string; photo: string; photoAlt: string };
+  dial: { photo: string; photoAlt: string; title?: string };
+}

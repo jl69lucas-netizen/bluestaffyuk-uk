@@ -63,6 +63,10 @@ import VideoEmbed from './VideoEmbed.astro';
 import CityHero from './CityHero.astro';
 import CityPriceScale from './CityPriceScale.astro';
 import CityTrustLedger from './CityTrustLedger.astro';
+import CityContents from './CityContents.astro';
+import CityDial from './CityDial.astro';
+import CityJumpBand from './CityJumpBand.astro';
+import type { SectionRef } from '../../lib/sections';
 
 /** The counter specimen's availability figure, counted the way every page counts it. */
 const availableNow = (puppies as PuppyRow[]).filter((p) => p.status === 'Available').length;
@@ -75,7 +79,8 @@ export type ComponentId =
   // The city components (project 5): each city page's picks from its component design pass,
   // previewed on /kit-preview/city/ — never on /kit-preview/, because the city nav set is a
   // page singleton like the kit's. data/design/components.json rows with `"project": 5`.
-  | 'city-hero' | 'city-price-scale' | 'city-trust-ledger';
+  | 'city-hero' | 'city-price-scale' | 'city-trust-ledger' | 'city-contents' | 'city-dial'
+  | 'city-jump-band';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -135,6 +140,20 @@ const money = (n: number) => `£${n.toLocaleString('en-GB')}`;
 const PRICE_ROWS: (string | number)[][] = (puppies as { name: string; sex: string; price_gbp: number }[])
   .slice(0, 4)
   .map((p) => [p.name, p.sex === 'male' ? 'Male' : 'Female', money(p.price_gbp), money(prices.deposit_gbp)]);
+
+/** The city nav set's demo sections: the city preview's OWN section anchors
+ *  (`kit-<component id>`, which /kit-preview/city/ gives every section it renders), so every
+ *  link resolves and the scroll-spy has real sections to observe — no stub block is needed. One
+ *  list for all three nav components, for the reason DEMO_SECTIONS gives. Specimen wording: it
+ *  names no city. */
+export const CITY_DEMO_SECTIONS: SectionRef[] = [
+  { id: 'kit-city-hero', label: 'Puppies', question: 'Where Can I Find a Blue Staffy Puppy Near Me?', icon: 'puppies' },
+  { id: 'kit-city-price-scale', label: 'Prices', question: 'What Does Each Part of Buying a Puppy Cost?', icon: 'prices' },
+  { id: 'kit-city-trust-ledger', label: 'Checks', question: 'What Should You Check Before Buying?', icon: 'health' },
+  { id: 'kit-city-contents', label: 'Contents', question: 'Which Part of Buying a Puppy Do You Need First?', icon: 'list' },
+  { id: 'kit-city-dial', label: 'Dial', question: 'Where Are You on the Page?', icon: 'home' },
+  { id: 'kit-city-jump-band', label: 'Jump', question: 'How Do You Jump to a Section on a Phone?', icon: 'faq' },
+];
 
 export const REGISTRY: Record<ComponentId, KitEntry> = {
   // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
@@ -402,4 +421,21 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       ],
     }],
   },
+  // The three nav components share CITY_DEMO_SECTIONS. On a real page PageShell mounts them
+  // (`cityNav`); here the band is a picture (`chrome: false`), so it moves no anchor.
+  'city-contents': {
+    C: CityContents,
+    demo: [{
+      sections: CITY_DEMO_SECTIONS,
+      heading: 'Which Part of Buying a Puppy Do You Need First?',
+      lede: 'Start wherever your question is: the puppies and their prices, the delivery to your door or the health tests. Every part is one tap away.',
+      photo: 'Christa.jpeg',
+      photoAlt: 'Christa, a blue girl from the Carlisle litter',
+    }],
+  },
+  'city-dial': {
+    C: CityDial,
+    demo: [{ sections: CITY_DEMO_SECTIONS, photo: 'Cheryl1.jpeg', photoAlt: 'Cheryl, a blue girl with a white blaze, one of the six puppies' }],
+  },
+  'city-jump-band': { C: CityJumpBand, demo: [{ sections: CITY_DEMO_SECTIONS, chrome: false }] },
 };

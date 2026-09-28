@@ -189,3 +189,74 @@ def test_every_city_root_carries_the_city_type_base():
         assert "class:list={['city-kit', " in src, r["file"]
     css = KIT_CSS.read_text(encoding="utf-8")
     assert ".city-kit :where(h1, h2, h3) { font-weight: 700; color: var(--color-brand); }" in css
+
+
+def _demo_sections():
+    """The ids the three nav demos name (CITY_DEMO_SECTIONS in _registry.ts)."""
+    src = (KIT / "_registry.ts").read_text(encoding="utf-8")
+    block = src.split("export const CITY_DEMO_SECTIONS", 1)[1].split("];", 1)[0]
+    return re.findall(r"id: '([^']+)'", block)
+
+
+@pytest.mark.parametrize("name", ["CityContents.astro", "CityDial.astro", "CityJumpBand.astro"])
+def test_the_city_nav_set_marks_by_script_never_by_target_or_scroll_timeline(name):
+    """plan2-notes: the canvas marked the current section with `:target` and scroll-driven
+    animations (a reduced-motion reader saw section one stuck, learning loop L8); the kit marks
+    it with src/lib/scrollSpy.ts. And no `!important` animation longhand is ever ported."""
+    src = (KIT / name).read_text(encoding="utf-8")
+    code = re.sub(r"/\*.*?\*/", "", re.sub(r"^\s*//.*$", "", src, flags=re.M), flags=re.S)
+    # The one sanctioned `!important`: CityContents' <noscript> rule, which must beat the
+    # phone rule it undoes for a reader with no scripting.
+    code = code.replace("NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}"
+                        ".city-contents .more{display:none!important}'", "")
+    for banned in (":target", "animation-timeline", "view-timeline", "timeline-scope", "!important"):
+        assert banned not in code, (name, banned)
+
+
+def test_built_city_contents_is_one_list_with_a_phone_disclosure():
+    s = section("city-contents")
+    ids = _demo_sections()
+    hrefs = re.findall(r'<a href="#([^"]+)"', s)
+    assert hrefs == ids, "one row per section, each once — no second copy for phones"
+    assert s.count("<ul") == 1
+    rest = len(re.findall(r"<li data-rest", s))
+    assert rest == max(0, len(ids) - 5)
+    if rest:
+        m = re.search(r'<button[^>]*class="more"[^>]*>', s)
+        assert m and 'aria-expanded="false"' in m.group(0)
+        assert 'aria-controls="city-contents-list"' in m.group(0) and 'id="city-contents-list"' in s
+    assert "<noscript>" in s, "a reader without scripting gets every row"
+
+
+def test_built_city_dial_is_a_labelled_track_with_one_current_row():
+    s = section("city-dial")
+    assert "data-city-dial" in s
+    assert 'aria-labelledby="city-dial-title"' in s and 'id="city-dial-title"' in s
+    assert re.findall(r'data-spy="([^"]+)"', s) == _demo_sections()
+    assert s.count('aria-current="location"') == 1
+    assert 'aria-current=""' not in s
+
+
+def test_built_city_jump_band_is_a_rail_and_a_native_dialog_sheet():
+    s = section("city-jump-band")
+    ids = _demo_sections()
+    assert "<dialog" in s and 'aria-labelledby="city-jump-sheet-title"' in s
+    key = re.search(r"<button[^>]*data-jump-open[^>]*>", s).group(0)
+    assert 'aria-haspopup="dialog"' in key and 'aria-expanded="false"' in key
+    assert "aria-label" not in key, "the key's name is its visible text (WCAG 2.5.3)"
+    spies = re.findall(r'data-spy="([^"]+)"', s)
+    assert spies == ids + ids, "one rail stop and one sheet row per section"
+    assert s.count("<svg") >= len(ids)
+    # The preview's band is a picture of the component, not this page's chrome.
+    assert "data-strip" not in s
+    src = (KIT / "CityJumpBand.astro").read_text(encoding="utf-8")
+    assert "showModal()" in src and "addEventListener('close'" in src
+
+
+def test_pageshell_swaps_the_nav_set_only_for_a_city_page():
+    src = (ROOT / "src/layouts/PageShell.astro").read_text(encoding="utf-8")
+    assert "cityNav" in src and "CityJumpBand" in src and "CityDial" in src and "CityContents" in src
+    # The site pages never pass cityNav, so they still mount the kit's set.
+    for page in (ROOT / "src/pages").rglob("*.astro"):
+        if page.name != "blue-staffy-puppies-london.astro":
+            assert "cityNav" not in page.read_text(encoding="utf-8"), page

@@ -1,0 +1,131 @@
+---
+// src/components/kit/CityContents.astro — city component 4, the contents list (London pick:
+// contents-list C, "Photo index"). The page's sections pressed into a sunk steel-100 panel
+// (no shadow) with a puppy photograph at its left (on top on a phone): a buyer question, its
+// answer, then every section as a generous arrow row, two columns from 640px.
+//
+// ONE LIST (plan2-notes, from the Task 6 re-review). The canvas carried rows 6-10 twice — a
+// desktop copy and a phone `<details>` copy — which is two of every link in the tab order and to
+// a screen reader. Here the list is rendered once; below 640px the rows after the fifth are
+// hidden behind one "N more sections" button (`aria-expanded`, `aria-controls`), and a reader
+// with no scripting gets every row (the `<noscript>` rule). The rows are the page's own
+// `sections` (src/lib/sections.ts), the same list the dial and the jump band read, so the three
+// can never disagree about what the sections are.
+//
+// Mounted by PageShell (`navSet: 'city'`), once, after the hero. Conventions 2, 4, 6.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import type { SectionRef } from '../../lib/sections';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+
+type Props = HTMLAttributes<'section'> & {
+  sections: SectionRef[];
+  heading: string;
+  lede: string;
+  /** A puppy photo file in src/assets/puppies (named in data/image-focus.json) and its alt. */
+  photo: string;
+  photoAlt: string;
+  /** Rows shown on a phone before the disclosure. */
+  phoneRows?: number;
+};
+const { sections, heading, lede, photo, photoAlt, phoneRows = 5, class: cls, ...rest } = Astro.props;
+const more = Math.max(0, sections.length - phoneRows);
+const listId = 'city-contents-list';
+// The <noscript> rule, as a string: Astro would otherwise hoist it into the page stylesheet,
+// where it would show the hidden rows to everybody (the same trap VideoEmbed documents).
+const NOSCRIPT_CSS = '.city-contents [data-rest]{display:block!important}.city-contents .more{display:none!important}';
+---
+<section {...rest} class:list={['city-kit', 'city-contents', cls]}>
+  <div class="panel">
+    <figure>
+      <Image src={puppyImage(photo)} alt={photoAlt} widths={[400, 800, 1080]}
+        sizes="(min-width: 1024px) 480px, calc(100vw - 32px)" class={focusClass(photo)} loading="lazy" decoding="async" />
+    </figure>
+    <div class="body">
+      <h2>{heading}</h2>
+      <p class="lede">{lede}</p>
+      <nav aria-label="On this page" data-contents>
+        <ul id={listId}>
+          {sections.map((s, i) => (
+            <li data-rest={i >= phoneRows ? '' : undefined}>
+              <a href={`#${s.id}`}><span>{s.label}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+        {more > 0 && (
+          <button type="button" class="more" aria-expanded="false" aria-controls={listId} data-more>
+            <span data-more-label>{more} more {more === 1 ? 'section' : 'sections'}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+        )}
+        <noscript><style is:inline set:html={NOSCRIPT_CSS}></style></noscript>
+      </nav>
+    </div>
+  </div>
+</section>
+<script>
+  // Singleton: a page mounts one contents list. The button only exists below 640px's worth of
+  // rows; above 640px every row is shown by CSS and the button is display:none.
+  const root = document.querySelector<HTMLElement>('.city-contents');
+  const btn = root?.querySelector<HTMLButtonElement>('[data-more]');
+  if (root && btn) {
+    const label = btn.querySelector<HTMLElement>('[data-more-label]')!;
+    const closed = label.textContent ?? '';
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open));
+      root.toggleAttribute('data-open', open);
+      label.textContent = open ? 'Fewer sections' : closed;
+    });
+  }
+</script>
+<style>
+  @layer components {
+    .city-contents { background: var(--color-surface); padding: var(--space-6) var(--space-4); }
+    .panel { max-width: 1200px; margin: 0 auto; display: grid; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    figure { margin: 0; background: var(--color-surface); }
+    figure :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; }
+    .body { padding: var(--space-6) var(--space-5) var(--space-7); }
+    h2 { margin: 0 0 var(--space-3); max-width: 22ch; font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); text-wrap: balance; }
+    .lede { margin: 0 0 var(--space-6); max-width: 56ch; color: var(--color-ink-2); }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0 var(--space-6); }
+    li { border-top: 1px solid var(--color-steel-300); }
+    a, .more {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+      min-height: 56px; padding: var(--space-3) var(--space-1); color: var(--color-brand); font-weight: 600; text-decoration: none;
+    }
+    a svg, .more svg { flex: none; width: 20px; height: 20px; transition: transform var(--dur-fast) var(--ease-out); }
+    a:hover span { text-decoration: underline; text-underline-offset: 3px; }
+    a:hover svg { transform: translateX(4px); }
+    a:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+    .more {
+      width: 100%; font: inherit; font-weight: 700; background: none; border: 0;
+      border-top: 1px solid var(--color-steel-300); cursor: pointer;
+    }
+    .more[aria-expanded='true'] svg { transform: rotate(180deg); }
+    @media (max-width: 639px) {
+      [data-rest] { display: none; }
+      .city-contents[data-open] [data-rest] { display: block; }
+      figure :global(img) { aspect-ratio: 2 / 1; }
+      .body { padding: var(--space-5) var(--space-4); }
+      .lede { margin-bottom: var(--space-4); }
+    }
+    @media (min-width: 640px) {
+      ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .more { display: none; }
+    }
+    @media (min-width: 640px) and (max-width: 1023px) { figure :global(img) { aspect-ratio: 21 / 9; } }
+    @media (min-width: 1024px) {
+      .city-contents { padding: var(--space-9) var(--space-5); }
+      .panel { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
+      figure { display: flex; flex-direction: column; }
+      figure :global(img) { flex: 1; aspect-ratio: auto; min-height: 100%; }
+      .body { padding: var(--space-8) var(--space-7); }
+    }
+    @media (min-width: 1200px) { .body { padding: var(--space-9) var(--space-8); } }
+    @media (prefers-reduced-motion: reduce) { a svg, .more svg { transition: none; } }
+  }
+</style>
