@@ -3,8 +3,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import locations from '../../../data/locations.json';
 import type { LocationRow } from '../../lib/site';
 
+// A city whose page has its OWN file beside this one (src/pages/uk-locations/<slug>.astro —
+// London from the London component design pass, Plan 2; each later city from its own pass) is
+// built by that file, never by this template as well: one route, one source. The list is read
+// from the folder, so a city leaves this template the moment its file lands, with no second
+// list to keep in step. scripts/generate_page_dates.py dates such a city by its own file on the
+// same rule; tests/py/test_city_scaffold.py holds both.
 export function getStaticPaths() {
-  return (locations as LocationRow[]).map((l) => ({ params: { slug: l.slug }, props: { loc: l } }));
+  const own = new Set(Object.keys(import.meta.glob('./*.astro')).map((p) => p.replace(/^\.\/|\.astro$/g, '')));
+  return (locations as LocationRow[])
+    .filter((l) => !own.has(l.slug))
+    .map((l) => ({ params: { slug: l.slug }, props: { loc: l } }));
 }
 
 const { loc } = Astro.props as { loc: LocationRow };

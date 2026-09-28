@@ -86,6 +86,13 @@ def _routes():
 def _expected_kit(route, rebuilt):
     if route in KIT_ROUTES or (route.startswith(KIT_PREFIXES) and route not in KIT_ROUTES):
         return True
+    # A city page with its OWN file beside src/pages/uk-locations/[slug].astro is on PageShell
+    # from its component scaffold on (the London component design pass, Plan 2); the template
+    # still renders every other city on the legacy chrome.
+    parts = route.strip("/").split("/")
+    if len(parts) == 2 and parts[0] == "uk-locations" \
+            and (ROOT / "src/pages/uk-locations" / f"{parts[1]}.astro").is_file():
+        return True
     # A collection post is on the kit through its shared template, not through rebuilt.json.
     if route in POST_ROUTES:
         return True

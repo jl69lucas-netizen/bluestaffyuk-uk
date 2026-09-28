@@ -188,6 +188,11 @@ def intake(slug, root=None, dist=None):
     # the migrated data row — a rebuilt page's row still holds the old, migrated H1.
     h1, h1_source = None, None
     main_m = MAIN.search(html)
+    # A city's component SCAFFOLD (the London component design pass, Plan 2) ships placeholder
+    # copy, marked `data-city-scaffold`: its H1 is not the page's starting H1, so it is read as
+    # if nothing were built yet.
+    if main_m and "data-city-scaffold" in main_m.group(0):
+        main_m = None
     h1_m = H1.search(main_m.group(0)) if main_m else None
     if h1_m and text_of(h1_m.group(1)).strip():
         h1, h1_source = " ".join(text_of(h1_m.group(1)).split()), "built"

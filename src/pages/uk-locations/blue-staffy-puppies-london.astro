@@ -1,0 +1,223 @@
+---
+// src/pages/uk-locations/blue-staffy-puppies-london.astro — the London page's SCAFFOLD (the
+// London component design pass, Plan 2; spec §3.2).
+//
+// WHAT THIS IS. The fifteen components the user picked on the London component canvas
+// (data/design/city-picks/blue-staffy-puppies-london.json), mounted in city-page order on the
+// city layout (src/layouts/CityShell.astro: PageShell with London's own nav set in its three nav
+// slots), carrying PLACEHOLDER copy. It exists so the picks can be judged together, at every
+// width, before London's page run writes the page.
+//
+// WHAT THIS IS NOT. London's copy, research and SEO. Every heading, answer and label below is
+// the canvas's placeholder wording, kept only until London's page run (docs/reference/
+// page-run.md) — research board first (row 8), then the outline — replaces it word for word.
+// Facts are read from the data files (src/lib/cityKit.ts), never typed; there is no guarantee
+// length (data/settings.json `guarantee_days` is null) and no licence claim.
+//
+// KEPT OUT OF THE INDEX: `noindex, follow`, written HERE rather than read from
+// data/locations.json, so a data edit cannot publish a scaffold; scripts/generate_sitemaps.py
+// leaves a noindex page out of every shard. src/pages/uk-locations/[slug].astro no longer builds
+// this route (it skips a city with its own file). THE MIGRATED BODY STAYS, word for word, in an
+// `article.prose-migrated` at the foot: London is not in data/facts/rebuilt.json until its page
+// run, so `check:parity` still measures its migrated body, and it finds it here.
+//
+// ONE SERVED PHOTOGRAPH, ONCE: a served file keeps its served alt (working rule 11) and
+// `img-alt-present-and-unique` refuses a repeated alt, so where the canvas gave Maggie's photo to
+// five components, each takes a different served file here (data/image-focus.json).
+import CityShell from '../../layouts/CityShell.astro';
+import locations from '../../../data/locations.json';
+import settings from '../../../data/settings.json';
+import type { LocationRow } from '../../lib/site';
+import type { SectionRef } from '../../lib/sections';
+import CityHeroFilmstrip from '../../components/kit/CityHeroFilmstrip.astro';
+import CityPriceScale from '../../components/kit/CityPriceScale.astro';
+import CityTrustLedger from '../../components/kit/CityTrustLedger.astro';
+import CityJumpStepper from '../../components/kit/CityJumpStepper.astro';
+import CityDialPhotoMarker from '../../components/kit/CityDialPhotoMarker.astro';
+import CityContentsPhotoIndex from '../../components/kit/CityContentsPhotoIndex.astro';
+import CityTakeawaysLedger from '../../components/kit/CityTakeawaysLedger.astro';
+import CityPuppySheet from '../../components/kit/CityPuppySheet.astro';
+import CityRoster from '../../components/kit/CityRoster.astro';
+import CityFaqLedger, { type CityFaqRow } from '../../components/kit/CityFaqLedger.astro';
+import CityVideoPanel from '../../components/kit/CityVideoPanel.astro';
+import CityChapters from '../../components/kit/CityChapters.astro';
+import CityLetter from '../../components/kit/CityLetter.astro';
+import CityNewsletterNotice from '../../components/kit/CityNewsletterNotice.astro';
+import CityContactLineup from '../../components/kit/CityContactLineup.astro';
+import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, deliveryLine, depositLine, faqPageNode } from '../../lib/cityKit';
+import { numberWord } from '../../lib/recordText';
+import type { PuppyRow } from '../../lib/site';
+
+const SLUG = 'blue-staffy-puppies-london';
+const loc = (locations as LocationRow[]).find((l) => l.slug === SLUG);
+if (!loc) throw new Error(`data/locations.json has no row for ${SLUG}`);
+
+// THE LITTER IS DATA: its size, its boys and girls, their names and colours are read from
+// data/puppies.json (the available rows), never typed, so a puppy sold or added moves every
+// sentence below with it.
+const pups = availablePuppies();
+const boys = pups.filter((p) => p.sex === 'male');
+const girls = pups.filter((p) => p.sex === 'female');
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const LITTER = numberWord(pups.length);
+const BOYS = numberWord(boys.length);
+const GIRLS = numberWord(girls.length);
+const andList = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
+const names = (ps: PuppyRow[]) => andList(ps.map((p) => p.name));
+const withColour = (ps: PuppyRow[]) => andList(ps.map((p) => `${p.name} (${p.colour.toLowerCase()})`));
+
+// The eight sections the nav set lists, in page order; each `question` is its section's H2.
+const sections: SectionRef[] = [
+  { id: 'checks', label: 'What to check before you buy', stop: 'Checks', icon: 'health', question: 'What Should You Check Before Buying a Blue Staffy in London?' },
+  { id: 'in-short', label: 'The page in five answers', stop: 'In short', icon: 'list', question: 'What Should a London Buyer Take From This Page?' },
+  { id: 'puppies', label: `The ${LITTER} puppies ready now`, stop: 'Puppies', icon: 'puppies', question: 'Which Puppy Will You Ask About First?' },
+  { id: 'prices', label: 'Prices for a boy or a girl', stop: 'Prices', icon: 'prices', question: `How Do the ${cap(LITTER)} Puppies Compare Side by Side?` },
+  { id: 'buying-questions', label: 'Questions London buyers ask', stop: 'Questions', icon: 'faq', question: 'What Do London Buyers Ask Before Reserving a Puppy?' },
+  { id: 'film', label: 'The puppies on film', stop: 'Film', icon: 'play', question: 'How Lively Is a Blue Staffy Puppy at Home?' },
+  { id: 'journey', label: `From ${TOWN} to your door`, stop: 'Journey', icon: 'delivery', question: 'Where Does Your Puppy Start, and How Does It Reach London?' },
+  { id: 'enquire', label: 'Ask about a puppy', stop: 'Enquire', icon: 'enquire', question: `Which of Our ${cap(LITTER)} Puppies Would You Like to Ask About?` },
+];
+
+// The three FAQ blocks' rows, in file wording (the blocks Title Case them at render).
+const faqBuy: CityFaqRow[] = [
+  { q: 'How much does a blue Staffy puppy cost if I live in London?', a: `The price is the same wherever you live: ${BOY_PRICE} for each of our boys, ${names(boys)}, and ${GIRL_PRICE} for each of our girls, ${names(girls)}.` },
+  { q: 'Which puppies can I ask about right now?', a: `All ${LITTER} are available: ${withColour(boys)} are the boys, and ${withColour(girls)} are the girls.` },
+  { q: 'What does the deposit do?', a: `Your ${DEPOSIT} deposit books your viewing and reserves your puppy, and it comes off the price, so it is part of what you pay rather than an extra on top.` },
+  { q: 'Do you deliver puppies to London?', a: `Yes. We bring your puppy to your London door by DEFRA-approved transport, and delivery costs ${DELIVERY_BAND}, priced by distance.` },
+  { q: `Can I collect my puppy from ${TOWN} instead?`, a: `Yes. If you would rather make the trip yourself, you can collect your puppy from us in ${TOWN} instead of paying for home delivery.` },
+  { q: 'How do I reserve a puppy from London?', a: 'Send us the enquiry form with the name of the puppy you like, and we reply by email within 24 to 48 business hours to talk through the next steps.' },
+];
+const faqTrust: CityFaqRow[] = [
+  { q: 'Who are the parents of your puppies?', a: 'Maggie is our dam and Jones is our sire. Both are our own dogs, and both were health tested before the litter.' },
+  { q: 'Which health tests do the parents have?', a: 'Maggie and Jones are both DNA-tested for L-2-HGA and HC-HSF4, and both have had their eyes and elbows screened. Our health page explains what each test covers.' },
+  { q: 'Can I speak to your vet before I decide?', a: 'Yes. Buyers are welcome to contact our vet, so you can hear about the parents and the litter from someone other than us before you commit.' },
+  { q: 'What happens if I can no longer keep my puppy?', a: 'We take the puppy back, and we do the same if a fault is ours. Tell us as soon as you know, and we will talk it through with you.' },
+  { q: 'How are your puppies raised before they leave?', a: 'In our home, not in a kennel. Every litter is raised on Puppy Culture with Early Neurological Stimulation (ENS), among everyday household sights and sounds.' },
+];
+const faqLife: CityFaqRow[] = [
+  { q: 'Can a Staffy live happily in a London flat?', a: 'Yes, as long as the dog gets its daily exercise and something to think about. A Staffy is a medium-sized, people-focused dog, so a big garden matters less than regular walks.' },
+  { q: 'How much exercise does a Staffy need each day?', a: 'At least an hour of exercise a day, ideally split into two sessions, plus play or training that works the mind as well as the legs.' },
+  { q: 'Are Staffies good with children?', a: 'A well-socialised Staffordshire Bull Terrier is a patient family companion. Supervision still matters with any dog and any child.' },
+  { q: 'Can a Staffy be left alone while I am at work?', a: 'Not for long stretches. Staffies are people-focused dogs that want company, so a puppy needs to be built up to short spells alone, a little at a time.' },
+  { q: 'Are Staffies easy to train?', a: 'They learn quickly and they are strong-willed with it, so short, consistent sessions with rewards work far better than long ones or a raised voice.' },
+  { q: 'Is a Staffy a good first dog?', a: 'Yes, for a household ready to socialise the puppy early and train it consistently. Staffies are eager to please, but they need company, so the commitment matters most.' },
+];
+const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
+---
+<CityShell title={loc.title} description={loc.description} canonical={`/uk-locations/${SLUG}/`}
+  robots="noindex, follow" ogType="article" schema={schema} crumbTitle="London" sections={sections}
+  nav={{
+    bar: { component: CityJumpStepper },
+    dial: { component: CityDialPhotoMarker, props: {
+      photo: 'Cheryl1.jpeg', photoAlt: `Cheryl, a blue girl with a white blaze, one of the ${LITTER} puppies` } },
+    contents: { component: CityContentsPhotoIndex, props: {
+      heading: 'Which Part of Buying a Puppy Do You Need First?',
+      lede: 'Start wherever your question is: the puppies and their prices, the delivery to your London door or the health tests. Every part is one tap away.',
+      photo: 'Christa.jpeg',
+      photoAlt: `Christa, a blue girl from the ${TOWN} litter`,
+    } },
+  }}>
+  <Fragment slot="hero">
+    <CityHeroFilmstrip
+      eyebrow={`${cap(LITTER)} puppies · ${TOWN} to London`}
+      title="Where Can I Find a Blue Staffy Puppy Near London?"
+      lede={`These ${LITTER}, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, raised by ${settings.breeder_name} in ${TOWN} and delivered to London homes.`}
+      cta={{ label: 'Choose your puppy', href: '#puppies' }}
+      more={{ label: `London delivery, ${DELIVERY_BAND}`, href: '#journey' }}
+      data-city-scaffold={SLUG}
+    />
+    <CityPriceScale labels={{
+      count: 'puppies. What each part costs',
+      delivery: 'delivery to London, priced by distance',
+      deposit: 'deposit: books your viewing and reserves your puppy',
+      price: 'the price of one puppy',
+    }} />
+    <CityTrustLedger id="checks"
+      heading="What Should You Check Before Buying a Blue Staffy in London?"
+      intro="The health of the parents, how the litter was raised and what happens if something goes wrong. Here is where each of ours stands."
+      photo="jones-magnificent-blue-staffy-sire.webp" caption="Jones, the sire"
+      items={[
+        { icon: 'dna', claim: 'DNA-tested parents', detail: 'Maggie and Jones, tested for L-2-HGA and HC-HSF4' },
+        { icon: 'eye', claim: 'Eye and elbow screening', detail: 'Both parents screened before the litter' },
+        { icon: 'heart', claim: 'Puppy Culture and ENS', detail: 'Early neurological stimulation, raised in the home' },
+        { icon: 'return', claim: 'We take a puppy back', detail: 'If the fault is ours, or you can no longer care for it' },
+        { icon: 'delivery', claim: 'To your London door', detail: `DEFRA-approved transport, or collect in ${TOWN}` },
+      ]} />
+  </Fragment>
+
+  <CityTakeawaysLedger id="in-short"
+    heading="What Should a London Buyer Take From This Page?"
+    lede={`Five plain answers, one sentence each, so you can decide from your London sofa whether a puppy from ${settings.breeder_name}'s home in ${TOWN} is right for you.`}
+    photo="jones-strong-staffy-sire-temperament.webp" caption={`Jones, the sire, at home in ${TOWN}`}
+    rows={[
+      { label: `The ${LITTER}`, text: `${names(boys)} are ${BOY_PRICE} each; ${names(girls)} are ${GIRL_PRICE} each. All ${LITTER} are available.` },
+      { label: 'The deposit', text: depositLine },
+      { label: 'The route', text: `DEFRA-approved transport to your London door for ${DELIVERY_BAND}, priced by distance, or collection in ${TOWN}.` },
+      { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
+      { label: 'The raising', text: 'Raised in the home with Puppy Culture and ENS, and you may speak to our vet.' },
+    ]} />
+  <CityPuppySheet id="puppies"
+    heading="Which Puppy Will You Ask About First?"
+    lede={`Maggie and Jones's ${LITTER} are laid out here like family prints, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, so you can pick a favourite from London before you ask.`}
+    photo="maggie-blue-staffy-dam-with-pups.webp" caption={`Maggie, the dam, with her puppies in ${TOWN}`} />
+  <CityRoster id="prices"
+    heading={`How Do the ${cap(LITTER)} Puppies Compare Side by Side?`}
+    lede="Here is the whole litter on one sheet, so you can weigh up a boy against a girl from your London kitchen table: every puppy's sex, colour and price, taken straight from our list."
+    caption={`The ${LITTER} puppies, as listed`} />
+  <CityFaqLedger id="buying-questions" block="buy" start={1}
+    heading="What Do London Buyers Ask Before Reserving a Puppy?"
+    lede="The first questions from London are nearly always about money and the journey, so here are our straight answers on the prices, the deposit, delivery and collection."
+    rail={{ photo: 'blue-staffy-testimonial-london-happy-owner.webp', caption: 'One of our puppies, at home with its new owner.' }}
+    items={faqBuy} />
+  <CityVideoPanel id="film"
+    heading="How Lively Is a Blue Staffy Puppy at Home?"
+    lede={`Very, and our short film of puppies from one of our litters shows it better than we can say it; watch it from London before you choose between the ${LITTER}.`}
+    videoId={settings.youtube_embeds[0]} videoTitle="Staffordshire Bull Terrier puppies: a litter of ours on film"
+    caption={`A litter of ours, on film; it loads from YouTube only when you press play. Poster photo: Christa, one of the ${LITTER} available now.`}
+    poster="Christa.jpeg"
+    side={{ photo: 'Ince1.jpg', alt: 'Ince standing by the garden fence at home', name: 'Ince', text: `A solid blue boy, one of the ${LITTER} available now.` }}
+    facts={[
+      { label: 'Parents', text: 'Maggie and Jones, DNA-tested for L-2-HGA and HC-HSF4' },
+      { label: 'Price', text: `${BOY_PRICE} for a boy, ${GIRL_PRICE} for a girl` },
+      { label: 'Getting home', text: deliveryLine },
+    ]} />
+  <CityChapters id="journey"
+    heading="Where Does Your Puppy Start, and How Does It Reach London?"
+    lede={`In our home in ${TOWN}, Cumbria, with its mother close by, and then at your door in London or in your arms at collection, whichever suits you.`}
+    chapters={[
+      { place: TOWN, question: `Who Raises Your Puppy Before It Leaves ${TOWN}?`, photo: 'Byrd1.jpg',
+        photoAlt: `Byrd, one of the ${LITTER}, out on the garden decking`,
+        text: 'We do, in our own home. Every litter is raised with Puppy Culture and ENS, and both parents, Maggie and Jones, are DNA-tested for L-2-HGA and HC-HSF4 with their eyes and elbows screened.' },
+      { place: 'London', question: 'How Does Your Puppy Get From Us to Your Door?', photo: 'ethical-staffy-puppy-london-delivery.webp',
+        text: `By DEFRA-approved transport, for ${DELIVERY_BAND} priced by distance, or you collect from us in ${TOWN}. ${depositLine}` },
+    ]} />
+  <CityFaqLedger id="checking-us" block="trust" start={faqBuy.length + 1}
+    heading="How Can You Check Us From London Before You Travel?"
+    lede="You cannot pop round the corner from London, so we put the checks in your hands: the parents, their tests, our vet and what happens if something goes wrong."
+    items={faqTrust} />
+  <CityLetter id="review"
+    heading="What Did a London Family Say After Their Puppy Came Home?"
+    lede="Mark J, who gave London as home, wrote this review of the blue Staffy puppy he had from us, and these are his words exactly as he sent them."
+    name="Mark J" photo="mark-blue-staffy-london.webp" />
+  <CityFaqLedger id="staffy-life" block="life" start={faqBuy.length + faqTrust.length + 1}
+    heading="Will a Staffy Suit Your London Home?"
+    lede="London life means flats, busy parks and long days at work, so these answers cover space, exercise, children, time alone, training and a first dog."
+    items={faqLife} />
+  <CityNewsletterNotice id="litter-notes"
+    eyebrow="Litter notes"
+    heading="Want a Note When Our Next Litter Is Due?"
+    lede="Leave your email and we will write to you in London when our next litter is on the way. It is one short note, and that is all this list is for."
+    photo="Christa.jpeg" photoAlt="Christa, a blue Staffy girl with a white chest, sitting up and looking at the camera" />
+  <CityContactLineup id="enquire"
+    heading={`Which of Our ${cap(LITTER)} Puppies Would You Like to Ask About?`}
+    lede={`Here are all ${LITTER} as they are today. Choose one in the form, tell us where in London you live, and we reply by email with the answers to everything you asked.`} />
+
+  <section class="migrated" aria-label="The old page's words">
+    <p class="note">The old page's words, kept until this page is written:</p>
+    <article class="prose-migrated"><Fragment set:html={loc.body_html} /></article>
+  </section>
+</CityShell>
+<style>
+  .migrated { max-width: var(--container); margin: var(--space-8) auto; padding-inline: var(--space-5); color: var(--color-text-muted); font-size: var(--text-sm); }
+  .note { margin: 0 0 var(--space-1); }
+</style>

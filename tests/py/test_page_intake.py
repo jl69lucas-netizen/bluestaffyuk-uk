@@ -152,6 +152,18 @@ def test_a_rebuilt_page_reports_its_built_h1_not_the_migrated_row(tmp_path):
     assert ("H1 (built)", "Done, rebuilt") in PI.rows(it)
 
 
+def test_a_city_scaffolds_placeholder_h1_is_not_read_as_the_pages_h1(tmp_path):
+    """A city's component scaffold (the London component design pass, Plan 2) ships an H1 of
+    PLACEHOLDER copy, marked `data-city-scaffold`. The page run's intake must not take that as the
+    page's starting H1: it falls back as if nothing were built, to the board or the data row."""
+    root = repo(tmp_path)
+    (root / "dist/uk-locations/stubtown/index.html").write_text(page(
+        '<section class="kit-hero" data-city-scaffold="stubtown"><h1>Placeholder Question?</h1></section>',
+        robots="noindex, follow"), encoding="utf-8")
+    it = PI.intake("stubtown", root)
+    assert (it["h1"], it["h1_source"]) == ("EMPTY", "migrated row")
+
+
 def test_the_h1_falls_back_to_the_board_pick_then_the_migrated_row(tmp_path):
     root = repo(tmp_path)
     (root / "dist/done-page/index.html").write_text(page("<p>no heading</p>"), encoding="utf-8")
