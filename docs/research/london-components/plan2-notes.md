@@ -163,3 +163,12 @@ The one user pick among the 16 is desktop-dial C (declared `inset`, derived `pla
 tall stub). The Task 6 reviewer checked it by eye and found it truly sunk (brand-soft, no shadow).
 When Plan 2 builds the real components, measure framing on the component itself, not the canvas
 frame.
+
+## From Plan 2 Task 3 (controller)
+
+- PageShell imports the three city nav components, so Astro bundles their CSS into every
+  PageShell page. That adds about 210 unmatched rules per page, which the advisory
+  `css-no-dead-component-rule` counts; nothing changes visually. Task 8 (the London scaffold) or
+  Task 11 should move the city nav imports out of PageShell, into a city-only wrapper or a
+  conditional import, so the 12 built pages ship none of the city CSS. Measure it with
+  `css-no-dead-component-rule` before and after.
