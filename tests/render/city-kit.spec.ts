@@ -24,7 +24,7 @@ import { TIER } from './lib/cityTiers.js';
  * dial's and rule 10's boundary — is measured for the city set. A component that fails here is
  * fixed in the component, never excused here.
  */
-const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/'];
+const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/', '/uk-locations/blue-staffy-puppies-london/'];
 const REUSED = [
   'layout-no-horizontal-overflow',
   'layout-min-font-size',

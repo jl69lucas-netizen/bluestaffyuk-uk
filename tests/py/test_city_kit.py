@@ -650,9 +650,11 @@ def test_built_city_contact_lineup_keeps_the_whole_form_contract():
 
 def test_the_grid_layout_of_the_kit_form_is_opt_in():
     """ContactFormKit's `layout="grid"` is the city line-up's alone: every built page's form is
-    still the stepped form, with its own heading, three fieldsets and no error wiring."""
+    still the stepped form, with its own heading, three fieldsets and no error wiring. A city
+    page (from the London scaffold, Plan 2 Task 8) mounts the line-up, whose form is the grid."""
     pages = [p for p in (ROOT / "dist").rglob("index.html")
-             if "kit-preview" not in p.parts and 'data-form="contact"' in p.read_text(encoding="utf-8")]
+             if "kit-preview" not in p.parts and 'data-form="contact"' in p.read_text(encoding="utf-8")
+             and 'class="city-kit city-contact' not in p.read_text(encoding="utf-8")]
     if not pages:
         pytest.skip("run npm run build first")
     for page in pages:
