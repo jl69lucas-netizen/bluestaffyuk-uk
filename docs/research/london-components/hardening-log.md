@@ -501,3 +501,36 @@ of `79196ea`: 57 passed, 3 failed both times (`uk-locations/blue-staffy-puppies-
 moved number is advisory: `css-no-dead-component-rule` counts 6 more unmatched rules per width on
 the four pages with a contact form (the grid rules), and 67 more on `/kit-preview/` (the three new
 components' CSS, bundled through the registry).
+
+**Task 7b: review fixes, the column layouts and the city type scale (2026-09-28).** Judged on
+`/kit-preview/city-page/`, the city kit inside `CityShell` with the body in the column beside the
+dial (656px at 1024, 832px at 1280), at 375 / 768 / 1280 in a painting browser (full-page shots,
+plus in-column element shots at 1024 / 1280 composed beside their canvas frames as
+`BSUK-refs/london/_plan2-shots/onpage-<component>-<w>.png`, 18 pairs). `impeccable:impeccable` ran
+first and `frontend-design:frontend-design` second, with type fit as the headline lens (the user's
+ruling: no big headers, even paragraphs, no chunky titles or tall sections). The `PRODUCT.md` gate
+is still unmet (the loader reports no PRODUCT.md or DESIGN.md; only `/impeccable teach` with the
+user may write one), so the brand context came from the `design-context-read-first` files.
+
+Before this task every in-body component showed its phone or tablet layout on a real city page
+(the canvas's 976/1024 thresholds are wider than the column can ever be), and headings were the
+site's fixed 30/36px steps in a 656–832px box: the two-chapters questions ran five lines deep.
+Heading sizes, before → after (min–max on the page):
+
+| Width | h1 (hero) | h2 | h3 / card titles | paragraphs max |
+|---|---|---|---|---|
+| 375 | 36 → 25.4 | 30–36 → 21.9–22 | 20–24 → 17 | 20 → 17 |
+| 768 | 36 → 30 | 30–36 → 24.8–25 | 20–24 → 18 | 20 → 18 |
+| 1024 (column 656) | 30 → 33.7 (full-width hero) | 30–36 → 23–28 | 20–24 → 18 | 20 → 18 |
+| 1280 (column 832) | 36 → 34 | 30–36 → 27.8–28 | 20–24 → 19.8–20 | 20 → 18 |
+
+| Component | impeccable found | frontend-design found | Changed | Widths |
+|---|---|---|---|---|
+| all fifteen | Headings sized for a full page in a 656px column; the chapters' questions five lines deep, the FAQ questions 20px on a phone. | One scale in one place, tiered by the section's own box, reads as one system from the hero to the form; the section rhythm (32/40/48px) no longer leaves loose bands. | The city type scale in `kit.css`; no component sets its own heading, lead or body size; tall 56–64px paddings replaced by `--city-pad-y`. | 375 768 1024 1280 |
+| contact form (CityContactLineup + ContactFormKit grid) | The message field stopped at 549px of a 768px form at 1280: the new 65ch paragraph measure caught its `p.field` row. | The form reads as three to a row with the message across all three, as on the canvas. | The measure and body size apply to reading paragraphs only (`p:not(form *)`); the layout probe gains a `fill` fact so a full-width row that shrinks fails. | 1024 1280 |
+| two chapters (CityChapters) | In the column the 5/7/9 split left the heading 150px wide. | Heading, photo and prose sit as three even columns in the column. | 6/7/8 in a 776–975px box; 5/7/9 (the canvas's proportions) full width. | 1280 |
+| puppy sheet (CityPuppySheet) | Full width at 1280 the six 360px prints make the section 1,603px, over 1.6 viewports. | The prints are the product; at 360px they are the size a buyer judges a puppy by, and no city page lays the sheet full width. | Named exemption in `cityTypeFit.ts`, for a box of 1000px or more only; the column copy (1,309 → under 1,280px after the rhythm pass) is held to the rule. | 1280 |
+
+Everything else was judged and left: the hero's filmstrip and plates, the price scale's line, the
+trust ledger's two columns, the letter's quote (exempt from the paragraph length by name: a review
+is data word for word), and the FAQ ledger's numbers and plus signs.

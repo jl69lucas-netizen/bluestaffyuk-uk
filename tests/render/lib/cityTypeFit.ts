@@ -15,6 +15,7 @@
  * src/styles/kit.css switches on). Only painted elements are judged.
  *
  * EXEMPTIONS, each named with its reason, never by pattern:
+ *   - a `form p`: a form's `p.field` rows are layout (label over control), not reading text;
  *   - a `blockquote p`: a review is data/reviews.json word for word (seo-rules, the letter),
  *     so its length is the reviewer's, not a layout choice;
  *   - `[data-city-jump-stepper]` and `[data-city-dial-photo-marker]`: sticky nav furniture, whose
@@ -75,7 +76,7 @@ export function cityTypeFit(viewport: number): TypeFitResult {
       if (n > 3) defects.push(`${where}: ${h.tagName} "${name(h)}" wraps to ${n} lines`);
     }
     for (const p of Array.from(root.querySelectorAll('p')).filter(painted)) {
-      if (p.closest('blockquote')) continue;
+      if (p.closest('blockquote, form')) continue;
       examined++;
       const ch = chOf(p);
       const pw = contentWidth(p);

@@ -287,7 +287,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-layout-follows-box': {
     present: '.city-kit',
     run: async (page) => page.evaluate(() => {
-      type Fact = ['beside', string, string] | ['row', string, number] | ['square', string];
+      type Fact = ['beside', string, string] | ['row', string, number] | ['square', string] | ['fill', string, string];
       const SPEC: Record<string, { tablet: Fact[]; desktop: Fact[] }> = {
         '.city-takeaways-ledger': { tablet: [['beside', '.row dt', '.row dd']], desktop: [['beside', '.pic', 'dl']] },
         '.city-sheet': { tablet: [['row', '.city-pup', 3]], desktop: [['row', '.city-pup', 3], ['square', '.city-pup img']] },
@@ -297,7 +297,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
         '.city-letter': { tablet: [], desktop: [['beside', '.pic', 'blockquote']] },
         '.city-faq.has-rail': { tablet: [], desktop: [['beside', '.rail', '.blk']] },
         '.city-newsletter-notice': { tablet: [['beside', 'figure', '.body']], desktop: [['beside', 'figure', '.body']] },
-        '.city-contact': { tablet: [['row', '.pups li', 6], ['row', '.field', 2]], desktop: [['row', '.pups li', 6], ['row', '.field', 3]] },
+        '.city-contact': { tablet: [['row', '.pups li', 6], ['row', '.field', 2], ['fill', '.field.wide', 'form']], desktop: [['row', '.pups li', 6], ['row', '.field', 3], ['fill', '.field.wide', 'form']] },
       };
       const out: string[] = [];
       for (const [sel, tiers] of Object.entries(SPEC)) {
@@ -319,6 +319,13 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
               const top = els.length ? els[0].getBoundingClientRect().top : 0;
               const n = els.filter((e) => Math.abs(e.getBoundingClientRect().top - top) < 2).length;
               if (n !== f[2]) out.push(`${at}: ${n} ${f[1]} to the first row, not ${f[2]}`);
+            } else if (f[0] === 'fill') {
+              // A full-width row really runs the width of its box (the 65ch paragraph measure once
+              // caught the message field, a <p>, at 549px: the Task 7b design pass).
+              const el = root.querySelector(f[1]); const box = root.querySelector(f[2]);
+              if (el && box && el.getBoundingClientRect().width < box.clientWidth - 2) {
+                out.push(`${at}: ${f[1]} is ${Math.round(el.getBoundingClientRect().width)}px of its ${box.clientWidth}px ${f[2]}`);
+              }
             } else {
               const r = root.querySelector(f[1])!.getBoundingClientRect();
               if (Math.abs(r.width - r.height) > 2) out.push(`${at}: ${f[1]} is ${Math.round(r.width)}×${Math.round(r.height)}, not square`);
