@@ -35,10 +35,11 @@ const REUSED = [
   'img-srcset-within-2x',
   'img-sizes-matches-box',
   'img-not-upscaled',
+  'img-face-visible',
   'nav-anchors-resolve',
 ];
 // Named, never derived from registry severity (the canvas smoke's lesson, 4214d23).
-const CITY_ADVISORY = new Set(['img-not-upscaled']);
+const CITY_ADVISORY = new Set(['img-not-upscaled', 'img-face-visible']);
 const CTX = { pageType: 'location', slug: 'city-kit', siblings: async () => [] };
 
 type Probe = (page: Page, viewport: number) => Promise<string[]>;

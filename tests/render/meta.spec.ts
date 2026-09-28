@@ -2061,3 +2061,39 @@ test.describe('layout-hero-image-first-mobile sees a paint-order defect on its o
     }
   });
 });
+
+/**
+ * img-face-visible has two halves (the crop, the overlay), and the generic fixture pair fires on
+ * the OVERLAY half (the Vennie plate). This fixture has nothing painted over the photograph and
+ * a crop that shows only the top of Roman's head, so it proves the crop half works on its own.
+ */
+test.describe('img-face-visible sees a cropped face on its own', () => {
+  test('fires at every width with a crop message', async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    const res = await page.goto(fixtureUrl('known_broken', 'img-face-visible-crop'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const check = registry.find((c) => c.id === 'img-face-visible')!;
+    const r = await runCheck(check, page, viewport, FIXTURE_CTX);
+    expect(r.examined, 'one recorded photograph').toBe(1);
+    expect(r.defects.length, 'the crop half must fire without an overlay').toBe(1);
+    expect(r.defects[0].message).toContain('% painted');
+  });
+});
+
+/**
+ * The crop half must read the RESOLVED object-position. Neither fixture above can tell: the
+ * Vennie pair is a square photo in a square tile (position moves nothing) and the Roman letterbox
+ * cuts his head wherever it is pinned. Here a centred crop would cut Vennie's muzzle, and the
+ * page's own position keeps her whole face — a check that assumed 50% 50% cries wolf.
+ */
+test.describe('img-face-visible reads object-position', () => {
+  test('is silent on a letterbox pinned to a low face', async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    const res = await page.goto(fixtureUrl('known_good', 'img-face-visible-position'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const check = registry.find((c) => c.id === 'img-face-visible')!;
+    const r = await runCheck(check, page, viewport, FIXTURE_CTX);
+    expect(r.examined, 'one recorded photograph').toBe(1);
+    expect(r.defects.map((d) => d.message), 'a positioned crop that shows the face').toEqual([]);
+  });
+});

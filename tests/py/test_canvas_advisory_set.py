@@ -23,8 +23,10 @@ def _list(name):
     return set(re.findall(r"'([^']+)'", m.group(1)))
 
 
-def test_the_canvas_advisory_set_is_exactly_img_not_upscaled():
-    assert _set("CANVAS_ADVISORY") == {"img-not-upscaled"}
+def test_the_canvas_advisory_set_is_exactly_the_two_new_img_checks():
+    """img-not-upscaled (learning loop #6) and img-face-visible (#2, the London pass's Plan 2):
+    both new, both advisory until a clean cluster."""
+    assert _set("CANVAS_ADVISORY") == {"img-not-upscaled", "img-face-visible"}
     assert _set("CANVAS_ADVISORY") <= _list("REUSED")
 
 

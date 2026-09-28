@@ -46,11 +46,12 @@ test: tests/render/checks/schema.ts::schema-sold-not-instock
 
 ---
 id: no-head-cropped-portraits
-enforced: untested
+enforced: test
 family: IMG
+test: tests/render/checks/img.ts::img-face-visible
 ---
 
-- **No head-cropped puppy portraits (ALWAYS — Foundation)** — A puppy portrait shows the **whole dog**, or at minimum the head and chest with the ears and muzzle complete inside the frame. The 16:9 in-body box and the card thumbnail both crop hard, and a centred crop on a tall portrait decapitates the pup — Foundation found this on migrated WordPress masters. Tune **`object-position` per image** so the head sits inside the box (the box size never changes, only the focal point); where no focal point saves the frame, re-cut the master with `PIL.ImageOps.fit(..., centering=...)` rather than shipping the crop. A buyer cannot judge a dog whose head is outside the picture. Reviewed by eye at build time; there is no check yet, which is exactly why this rule is a deletion candidate until one exists.
+- **No head-cropped puppy portraits (ALWAYS — Foundation)** — A puppy portrait shows the **whole dog**, or at minimum the head and chest with the ears and muzzle complete inside the frame. The 16:9 in-body box and the card thumbnail both crop hard, and a centred crop on a tall portrait decapitates the pup — Foundation found this on migrated WordPress masters. Tune **`object-position` per image** so the head sits inside the box (the box size never changes, only the focal point); where no focal point saves the frame, re-cut the master with `PIL.ImageOps.fit(..., centering=...)` rather than shipping the crop. A buyer cannot judge a dog whose head is outside the picture. Measured since the London component pass (Plan 2): `data/image-focus.json` records each photograph's face boxes, `src/lib/imageFocus.ts` derives the crop from them, and `tests/render/checks/img.ts::img-face-visible` (advisory) fails a face less than 90% painted or more than 10% covered by an overlay such as a name plate.
 
 ---
 id: puppy-cluster-component-order

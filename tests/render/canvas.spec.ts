@@ -13,7 +13,7 @@ import './checks/img.js';
  * Every variant frame scripts/build_component_canvas.py --emit-frames wrote is painted at 375,
  * 768 and 1280 and held to:
  *   - the registered checks in REUSED, run as they are (no second copy of their logic); those
- *     in CANVAS_ADVISORY (img-not-upscaled) print their hits as `[advisory]` lines and never fail;
+ *     in CANVAS_ADVISORY (img-not-upscaled, img-face-visible) print their hits as `[advisory]` lines and never fail;
  *   - the component's own probe in PROBES (the hero's photo-first rule, the jump links'
  *     sticky strip, the dial's desktop-only display, the six puppy cards, …), keyed on the
  *     data hooks scripts/check_city_canvas.py HOOKS requires.
@@ -33,11 +33,12 @@ const REUSED = [
   'a11y-no-duplicate-ids',
   'img-alt-present-and-unique',
   'img-not-upscaled',
+  'img-face-visible',
 ];
 // The REUSED checks whose hits the smoke PRINTS instead of failing on, named here and pinned by
 // tests/py/test_canvas_advisory_set.py. Never derived from registry severity: that demoted
 // a11y-text-contrast-aa and a11y-no-duplicate-ids (advisory on pages, blocking here) in 4214d23.
-const CANVAS_ADVISORY = new Set(['img-not-upscaled']);
+const CANVAS_ADVISORY = new Set(['img-not-upscaled', 'img-face-visible']);
 const CTX = { pageType: 'location', slug: 'canvas', siblings: async () => [] };
 const PUPPY_NAMES: string[] = JSON.parse(readFileSync(resolve(REPO, 'data/puppies.json'), 'utf8'))
   .map((p: { name: string }) => p.name);

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { register, type CheckResult } from '../lib/registry.js';
 import { settlePage } from '../lib/probes.js';
 import type { Page } from '@playwright/test';
@@ -446,6 +448,152 @@ register({
         message: `${r.unresolved.length} hero image(s) with a sizes the browser cannot resolve: ${r.unresolved.join(' | ')}`,
       });
     }
+    return { examined: r.examined, defects };
+  },
+});
+
+/**
+ * A FACE STAYS IN THE CROP AND CLEAR OF OVERLAYS (rules/puppies.md `no-head-cropped-portraits`;
+ * learning loop 2026-09-27, L4 / shortlist #2 — the commonest image defect of the London pass:
+ * ~12 crops cut a dog's head or slid a name plate over its face, every one caught by eye).
+ *
+ * Nothing knew where a face was, so nothing could measure it. data/image-focus.json now records
+ * the boxes that must stay whole, per file, in the master's own pixels. For every painted image
+ * whose file is recorded (matched by the file's STEM, so an astro:assets rename
+ * `Vennie.<hash>.webp` and a baked width sibling `maggie-…-760.webp` both map back to their
+ * master), this check computes where each face lands inside the painted crop — `object-fit` and
+ * `object-position` as the browser resolved them, on the CONTENT box, clipped by every
+ * overflow-clipping ancestor — and then samples the visible face for anything painted over it.
+ *   - CROP:    less than 90% of a face is painted.
+ *   - OVERLAY: more than 10% of the painted face is covered by another element that paints
+ *              something there (a background, an image or its own text). A transparent overlay —
+ *              a card's stretched link, say — covers nothing and is not counted; neither is
+ *              sticky or fixed chrome, which the image is scrolled clear of before sampling.
+ * An unrecorded file is not examined. Advisory: it enters as bsuk-learning-loop Step 4 says.
+ */
+const FOCUS_ROWS: Record<string, { w: number; h: number; faces: [number, number, number, number][] }> = (() => {
+  const file = fileURLToPath(new URL('../../../data/image-focus.json', import.meta.url));
+  const rows = JSON.parse(readFileSync(file, 'utf8')).images as Record<string, { w: number; h: number; faces: [number, number, number, number][] }>;
+  return Object.fromEntries(Object.entries(rows).map(([name, r]) => [name.replace(/\.[a-z0-9]+$/i, ''), r]));
+})();
+
+register({
+  id: 'img-face-visible',
+  family: 'IMG',
+  severity: 'advisory',
+  describe: 'every recorded face is at least 90% painted and less than 10% covered',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await settlePage(page);
+    const r = await page.evaluate((rows) => {
+      const stemOf = (src: string) => {
+        const name = decodeURIComponent(src.split('?')[0].split('/').pop() || '');
+        return name.split('.')[0].replace(/-\d{3,4}$/, '');
+      };
+      const pos = (token: string, room: number) =>
+        token.endsWith('%') ? (parseFloat(token) / 100) * room : parseFloat(token) || 0;
+      const chrome = (el: Element | null) => {
+        for (let e = el; e; e = e.parentElement) {
+          const p = getComputedStyle(e).position;
+          if (p === 'fixed' || p === 'sticky') return true;
+        }
+        return false;
+      };
+      // Does `el` paint anything at (x, y)? An image, a background — or its own TEXT, where
+      // the glyphs actually are: a stretched card link carries text elsewhere in the card and
+      // is transparent over the photograph, so it must not count as covering it.
+      const paints = (el: Element, x: number, y: number) => {
+        const cs = getComputedStyle(el);
+        if (el instanceof HTMLImageElement || el instanceof SVGElement || el instanceof HTMLVideoElement) return true;
+        if (cs.backgroundImage !== 'none') return true;
+        const bg = cs.backgroundColor.match(/[\d.]+/g);
+        if (bg && (bg.length < 4 || parseFloat(bg[3]) > 0)) return true;
+        return Array.from(el.childNodes).some((n) => {
+          if (n.nodeType !== 3 || !(n.textContent || '').trim()) return false;
+          const range = document.createRange();
+          range.selectNodeContents(n);
+          return Array.from(range.getClientRects()).some((q) => x >= q.left && x <= q.right && y >= q.top && y <= q.bottom);
+        });
+      };
+      let examined = 0;
+      const bad: string[] = [];
+      const y0 = window.scrollY;
+      for (const img of Array.from(document.images)) {
+        const row = rows[stemOf(img.currentSrc || img.src || '')];
+        if (!row) continue;
+        img.scrollIntoView({ block: 'center', inline: 'nearest' });
+        const box = img.getBoundingClientRect();
+        if (box.width < 2 || box.height < 2) continue;
+        const cs = getComputedStyle(img);
+        if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+        const px = (v: string) => parseFloat(v) || 0;
+        const cx = box.left + px(cs.borderLeftWidth) + px(cs.paddingLeft);
+        const cy = box.top + px(cs.borderTopWidth) + px(cs.paddingTop);
+        const cw = box.width - px(cs.paddingLeft) - px(cs.paddingRight) - px(cs.borderLeftWidth) - px(cs.borderRightWidth);
+        const ch = box.height - px(cs.paddingTop) - px(cs.paddingBottom) - px(cs.borderTopWidth) - px(cs.borderBottomWidth);
+        if (cw < 2 || ch < 2) continue;
+        const sw = cw / row.w;
+        const sh = ch / row.h;
+        const own = (img.naturalWidth || row.w) / row.w;
+        const fit = cs.objectFit;
+        const s = fit === 'cover' ? Math.max(sw, sh)
+          : fit === 'contain' ? Math.min(sw, sh)
+          : fit === 'none' ? own
+          : fit === 'scale-down' ? Math.min(own, Math.min(sw, sh)) : NaN;
+        const [ax, ay] = fit === 'fill' ? [sw, sh] : [s, s];
+        const pw = row.w * ax;
+        const ph = row.h * ay;
+        const [tx, ty = '50%'] = cs.objectPosition.split(/\s+/);
+        const ox = cx + pos(tx, cw - pw);
+        const oy = cy + pos(ty, ch - ph);
+        // The visible crop: the content box, clipped by every overflow-clipping ancestor.
+        let vis = { l: cx, t: cy, r: cx + cw, b: cy + ch };
+        for (let e = img.parentElement; e; e = e.parentElement) {
+          const o = getComputedStyle(e);
+          if (/(hidden|clip|scroll|auto)/.test(o.overflowX + o.overflowY)) {
+            const c = e.getBoundingClientRect();
+            vis = { l: Math.max(vis.l, c.left), t: Math.max(vis.t, c.top), r: Math.min(vis.r, c.right), b: Math.min(vis.b, c.bottom) };
+          }
+        }
+        examined++;
+        const name = stemOf(img.currentSrc || img.src);
+        row.faces.forEach(([fx, fy, fw, fh], k) => {
+          const f = { l: ox + fx * ax, t: oy + fy * ay, r: ox + (fx + fw) * ax, b: oy + (fy + fh) * ay };
+          const v = { l: Math.max(f.l, vis.l), t: Math.max(f.t, vis.t), r: Math.min(f.r, vis.r), b: Math.min(f.b, vis.b) };
+          const area = (x: typeof f) => Math.max(0, x.r - x.l) * Math.max(0, x.b - x.t);
+          const shown = area(f) ? area(v) / area(f) : 0;
+          if (shown < 0.9) {
+            bad.push(`${name} face ${k + 1}: ${Math.round(shown * 100)}% painted in a ${Math.round(cw)}x${Math.round(ch)} ${fit} crop`);
+            return;
+          }
+          // Sample the painted face on a 6x6 grid for anything painted over the image.
+          let covered = 0;
+          let samples = 0;
+          for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 6; j++) {
+              const x = v.l + ((i + 0.5) / 6) * (v.r - v.l);
+              const y = v.t + ((j + 0.5) / 6) * (v.b - v.t);
+              if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) continue;
+              samples++;
+              const top = document.elementsFromPoint(x, y).find((el) => !chrome(el) && paints(el, x, y));
+              if (top && top !== img && !top.contains(img)) covered++;
+            }
+          }
+          if (samples && covered / samples > 0.1) {
+            bad.push(`${name} face ${k + 1}: ${Math.round((100 * covered) / samples)}% covered by an overlay`);
+          }
+        });
+      }
+      window.scrollTo(0, y0);
+      return { examined, bad: bad.slice(0, 10), count: bad.length };
+    }, FOCUS_ROWS);
+    const defects = r.count ? [{
+      checkId: 'img-face-visible',
+      family: 'IMG' as const,
+      viewport,
+      count: r.count,
+      message: `${r.count} face(s) cropped or covered: ${r.bad.join(' | ')}`,
+    }] : [];
     return { examined: r.examined, defects };
   },
 });

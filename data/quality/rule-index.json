@@ -541,8 +541,11 @@
   {
    "id": "no-head-cropped-portraits",
    "family": "IMG",
-   "enforced": "untested",
-   "pack": "rules/puppies.md"
+   "enforced": "test",
+   "pack": "rules/puppies.md",
+   "test": "tests/render/checks/img.ts::img-face-visible",
+   "severity": "advisory",
+   "_note": "Learning loop 2026-09-27 (L4, shortlist #2), built in the London component pass Plan 2. The face boxes are data/image-focus.json; the check measures the painted crop and any overlay. Advisory until a clean cluster."
   },
   {
    "id": "puppy-cluster-component-order",
