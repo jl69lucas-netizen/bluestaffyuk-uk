@@ -111,7 +111,7 @@ const count = availablePuppies().length;
        heads the panel instead, as it does on a phone, and the line takes the panel's width. */
     @media (640px <= width < 840px) {
       .panel { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
-      .count { flex-direction: row; align-items: baseline; gap: var(--space-3); max-width: none; }
+      .count { flex-direction: row; align-items: baseline; gap: var(--space-3); max-width: none; justify-self: start; }
     }
   }
 </style>
