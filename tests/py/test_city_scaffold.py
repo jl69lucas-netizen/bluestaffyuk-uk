@@ -15,13 +15,13 @@ import html as H
 import json
 import pathlib
 import re
+import sys
 
 import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SLUG = "blue-staffy-puppies-london"
 PAGE = ROOT / "src/pages/uk-locations" / f"{SLUG}.astro"
-DYNAMIC = ROOT / "src/pages/uk-locations/[slug].astro"
 BUILT = ROOT / "dist/uk-locations" / SLUG / "index.html"
 PICKS = json.loads((ROOT / "data/design/city-picks" / f"{SLUG}.json").read_text())
 LOCATIONS = json.loads((ROOT / "data/locations.json").read_text())
@@ -56,17 +56,32 @@ def text(fragment):
     return re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", fragment))).strip()
 
 
-def test_the_scaffold_file_exists_and_the_dynamic_route_skips_a_city_with_its_own_file():
+def test_the_scaffold_file_exists():
     assert PAGE.is_file()
-    src = DYNAMIC.read_text(encoding="utf-8")
-    assert "import.meta.glob('./*.astro')" in src and ".filter((l) => !own.has(l.slug))" in src
+
+
+def test_the_template_builds_exactly_the_routes_the_date_map_gives_it():
+    """One route, one source, as BEHAVIOUR (the quality review, M4): the city pages built
+    without a scaffold are exactly the routes scripts/generate_page_dates.py assigns to
+    src/pages/uk-locations/[slug].astro, so the template and the dates agree on which cities it
+    builds, whichever form (<slug>.astro or <slug>/index.astro) a city's own page takes."""
+    built()
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import generate_page_dates as G
+    static = [p for p in sorted(G._rel("src/pages/**/*.astro")) if p not in G.DYNAMIC and "[" not in p]
+    template = {r for r, _ in G.expand("src/pages/uk-locations/[slug].astro",
+                                        frozenset(G.route_for(p) for p in static))}
+    plain = {f"/uk-locations/{d.name}/" for d in (ROOT / "dist/uk-locations").iterdir()
+             if (d / "index.html").is_file()
+             and "data-city-scaffold" not in (d / "index.html").read_text(encoding="utf-8")}
+    assert template and plain == template
 
 
 def test_london_is_built_from_the_scaffold_and_every_other_city_from_the_template():
     html = built()
     assert f'data-city-scaffold="{SLUG}"' in html
     others = [l["slug"] for l in LOCATIONS if l["slug"] != SLUG]
-    assert len(others) == 27
+    assert len(others) == len(LOCATIONS) - 1
     for slug in others:
         page = ROOT / "dist/uk-locations" / slug / "index.html"
         assert page.is_file(), slug
@@ -77,8 +92,42 @@ def test_london_is_built_from_the_scaffold_and_every_other_city_from_the_templat
 def test_the_scaffold_is_noindex_and_in_no_sitemap():
     html = built()
     assert re.search(r'<meta name="robots" content="noindex[^"]*"', html)
-    for shard in (ROOT / "dist").glob("*sitemap*.xml"):
+    shards = list((ROOT / "dist").glob("*sitemap*.xml"))
+    assert shards, "the build writes sitemap shards"
+    for shard in shards:
         assert f"/uk-locations/{SLUG}/" not in shard.read_text(encoding="utf-8"), shard.name
+
+
+def _scaffolds():
+    """{route: html} for every built page that carries `data-city-scaffold`."""
+    out = {}
+    for f in (ROOT / "dist").rglob("index.html"):
+        html = f.read_text(encoding="utf-8")
+        if "data-city-scaffold" in html:
+            rel = f.parent.relative_to(ROOT / "dist").as_posix()
+            out["/" if rel == "." else f"/{rel}/"] = html
+    return out
+
+
+def test_every_scaffold_is_noindex_and_in_no_sitemap():
+    """The invariant, for any city (the quality review, M6), not London alone."""
+    built()
+    pages = _scaffolds()
+    assert pages, "the London scaffold is built"
+    shards = [s.read_text(encoding="utf-8") for s in (ROOT / "dist").glob("*sitemap*.xml")]
+    assert shards
+    for route, html in pages.items():
+        assert re.search(r'<meta name="robots" content="noindex[^"]*"', html), route
+        assert not [s for s in shards if f"{route}<" in s or f"{route}\"" in s], route
+
+
+def test_no_rebuilt_page_carries_a_scaffold():
+    """A page in data/facts/rebuilt.json is a finished page; placeholder copy on it is a
+    scaffold that shipped (the quality review, M6)."""
+    built()
+    rebuilt = json.loads((ROOT / "data/facts/rebuilt.json").read_text())
+    routes = {"/" if s == "index" else f"/{s}/" for s in rebuilt}
+    assert not routes & set(_scaffolds())
 
 
 def test_every_pick_is_on_the_page_and_the_nav_set_is_the_citys():
@@ -116,6 +165,7 @@ def test_no_section_heading_repeats_an_faq_question():
     """Learning loop 2026-09-27, L11: a real heading that is also an FAQ question."""
     html = built()
     faq = {text(q).lower() for q in re.findall(r"<h3[^>]*data-faq-q[^>]*>(.*?)</h3>", html, re.S)}
+    assert faq, "the scaffold's FAQ questions are found"
     heads = [text(h) for h in re.findall(r"<h[1-3](?![^>]*data-faq-q)[^>]*>(.*?)</h[1-3]>", html, re.S)]
     assert not [h for h in heads if h.lower() in faq]
 

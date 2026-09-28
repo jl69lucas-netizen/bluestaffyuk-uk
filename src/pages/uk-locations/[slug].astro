@@ -9,8 +9,11 @@ import type { LocationRow } from '../../lib/site';
 // from the folder, so a city leaves this template the moment its file lands, with no second
 // list to keep in step. scripts/generate_page_dates.py dates such a city by its own file on the
 // same rule; tests/py/test_city_scaffold.py holds both.
+// Both forms a city page can take, as scripts/generate_page_dates.py's static-route rule reads
+// them: src/pages/uk-locations/<slug>.astro and src/pages/uk-locations/<slug>/index.astro.
 export function getStaticPaths() {
-  const own = new Set(Object.keys(import.meta.glob('./*.astro')).map((p) => p.replace(/^\.\/|\.astro$/g, '')));
+  const own = new Set(Object.keys(import.meta.glob(['./*.astro', './*/index.astro']))
+    .map((p) => p.replace(/^\.\/|(\/index)?\.astro$/g, '')));
   return (locations as LocationRow[])
     .filter((l) => !own.has(l.slug))
     .map((l) => ({ params: { slug: l.slug }, props: { loc: l } }));
