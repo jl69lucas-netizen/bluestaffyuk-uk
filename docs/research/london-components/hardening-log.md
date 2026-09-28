@@ -580,3 +580,22 @@ Judged and left, with the reason:
   headings stay two to three lines at every width and no paragraph runs past the type-fit caps
   (`city-type-fit` examined 121 / 106 / 106 / 121 nodes at 375 / 768 / 1024 / 1280 with no
   defect, and 121 / 106 at the 660 / 1160 edges).
+
+**Plan 2 Task 8 quality review (2026-09-29).** The design-pass fix to the price scale had moved
+the problem instead of removing it. With the range kept on one line and the count beside the
+number line, the fork's figures painted past the panel from 640px to about 665px ("£1,500 a boy"
+53px past the content edge at 640), and ran past the line's end up to about 700px. 640 and 667
+were not among the widths the spec painted. The harness was fixed first: the edge runs now
+include 640 and 667, and `priceScaleSpill` measures each figure's painted glyphs against the
+panel's content edge and the number line's end. It failed at 640 on all three city routes.
+
+- **Price scale:** below 840px the count sits above the line, as it does on a phone, so the four
+  stops get the panel's full width. The count keeps its own width, which the first attempt did
+  not: it measured 78ch at 768, and `city-type-fit` caught it. A 640–1100px sweep in 10px steps
+  (three routes) found the worst figure 16px inside its limit, at 1030px. Before and after pairs
+  are `BSUK-refs/london/_plan2-shots/scale-pair-{640,667,768,1024,1280}.png`. "Before" is the
+  86632ce build's `/kit-preview/city-page/`, because London had no scaffold then.
+- **Roster at a 640px box:** the new 640 run also caught this. The site's `.stack-table` stacks at
+  `max-width: 640px`, and that query includes 640, while the roster's own tier is a table from a
+  640px box. At exactly 640 the rows were blocks without the slip layout. The roster now restores
+  table display from a 640px box.
