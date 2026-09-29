@@ -89,6 +89,12 @@
     main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; }
   }
   main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *), h3:not([class*="kit-"] *, .city-kit *), h4:not([class*="kit-"] *, .city-kit *)):where(:first-child) { margin-block-start: 0; }
+  /* A heading inside a list item titles a card (the puppy cards on /available-puppies/, the post
+     card on /blog/), so it takes the H3 tier whatever its level: at the H2 tier a puppy's name was
+     22-28px bold in a 243px card (the Known Issue 97 review, item 10). Same (0,0,1) weight as the
+     rules above, later in the file, so it wins over them and loses to any class. */
+  main :where(li :is(h2, h3):not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 18px; font-weight: 600; line-height: 1.25; }
+  @media (width >= 800px) { main :where(li :is(h2, h3):not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 20px; } }
 
   /* THE SIDE GUTTER OF WHAT IS NOT A BOX (found with Known Issue 97, 2026-09-29). PageShell adds
      no gutter until the dial's column exists (>= 1024px), because every kit section and every
