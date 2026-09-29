@@ -439,8 +439,15 @@ if (showPhoto && !(layout === 'mosaic' && mosaic.length >= 2)) {
     /* `media: 'none'` — no photo, so no media column. One column at every width, and the
        copy is allowed the full measure rather than the 52ch a two-column hero holds it to,
        because there is no picture beside it for the line length to relate to. The rule 10
-       floor and ceiling are inherited untouched: a photoless hero is still a hero band. */
-    .kit-hero[data-hero-media="none"] .inner { grid-template-columns: 1fr; }
+       floor and ceiling are inherited untouched: a photoless hero is still a hero band.
+       The `:not([data-hero-ledge="aside"])` is there for SPECIFICITY as much as meaning: the
+       per-layout rules below (panel's `minmax(0, 14rem) minmax(0, 1fr)`) tie with a bare
+       `[data-hero-media="none"]` rule and come later, so a photoless PANEL hero (the blog
+       template's post with no featured image) put its H1 in the 14rem photo column, five lines
+       tall at 1280 beside an empty band (the Known Issue 97 re-review, B1). One more attribute
+       outranks every single-layout rule, whatever the order; an aside ledge keeps its own grid.
+       tests/render/checks/layout.ts::layout-hero-copy-fills-band. */
+    .kit-hero[data-hero-media="none"]:not([data-hero-ledge="aside"]) .inner { grid-template-columns: 1fr; }
     .kit-hero[data-hero-media="none"] .lede { max-width: 68ch; }
 
     /* ── working rule 16: the per-page arrangements ──────────────────────────────────────

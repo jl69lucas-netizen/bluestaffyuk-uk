@@ -85,6 +85,12 @@
       "cluster_cleared": "new 2026-09-29 (the Known Issue 97 review) together with .bl-stub h3 on option (a)'s H3 tier, which makes it pass: blocking on every page from its first run; clean on HEAD 3f169d1's build, and it fired on 34 H3s at 375 (16 for-sale, 13 home, 5 pup-sale) once .bl-box h2 moved to 22px under the 24px stub H3",
       "false_reports": 0
     },
+    "layout-hero-copy-fills-band": {
+      "scope": "all",
+      "since": "2026-09-29",
+      "cluster_cleared": "new 2026-09-29 (the Known Issue 97 re-review, B1) together with the Hero.astro media-none specificity fix that makes it pass: blocking on every page from its first run; it fired on the blog post at 1280 (no photo, the copy 224px of a 1152px band, the H1 on five lines) and now examines one hero per page clean; three migrated H1s that wrap to four lines at one width (home, the buy page, the buying guide) are pinned by name for the title reading only",
+      "false_reports": 0
+    },
     "layout-hero-counter-separation": {
       "scope": "new-pages",
       "since": "2026-09-26",

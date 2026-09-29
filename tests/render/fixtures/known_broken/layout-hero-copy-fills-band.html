@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a photoless hero squeezed into a narrow column</title>
+<!-- The Known Issue 97 re-review, B1: the blog post's hero is `panel` + `media: none`. The panel
+     rule (a 14rem photo column beside the copy) came after the media-none rule at the same
+     specificity, so with no photo the H1 sat in the 224px column with the rest of the band empty
+     beside it: five tall lines at 1280. The same shape here, with the photo column at 70% so the
+     empty column is the wide one at every width the meta gate paints. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .kit-hero { background: #F4F1EA; }
+  .kit-hero .inner { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 7fr); padding: 48px 24px; }
+  .kit-hero .title { font-size: 36px; line-height: 1.12; margin: 0; }
+</style>
+</head><body>
+<main>
+  <section class="kit-hero" data-hero-layout="panel" data-hero-media="none">
+    <div class="inner"><div class="copy"><p class="eyebrow">Blue Staffy guides</p>
+      <h1 class="title">How to Choose the Right Blue Staffy Puppy for Your Family</h1></div></div>
+  </section>
+</main>
+</body></html>

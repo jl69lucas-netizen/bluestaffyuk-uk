@@ -1184,3 +1184,88 @@ register({
     return { examined: r.examined, defects };
   },
 });
+
+/**
+ * A HERO'S COPY USES THE BAND IT HAS (the Known Issue 97 re-review, B1; the user's type-fit
+ * ruling, "no chunky title").
+ *
+ * The blog template renders a post with no featured image as `layout: 'panel'`, `media: 'none'`.
+ * In src/components/kit/Hero.astro the panel rule (a 14rem photo column beside the copy) came after
+ * the media-none rule (one column) at the same specificity, so with no photo the H1 sat in the
+ * 224px column, five tall lines at 1280, with 880px of empty band beside it.
+ *
+ * THE UNIT is one visible `.kit-hero`. Two readings:
+ *   - a hero with no painted photo (`.pic` absent or 0 wide) fails when its copy is narrower than
+ *     40% of the band's inner box: the other column is empty;
+ *   - at 768 and wider, a hero whose title wraps past three lines fails, photo or not.
+ * A page with no `<main>` is a defect.
+ */
+/**
+ * Hero titles allowed past three lines from 768px, pinned by page and exact text, for the
+ * title reading only (never the empty-column reading). Each is its page's migrated H1, which
+ * working rule 15 carries word for word, in a two-column mosaic or stacked hero; each wraps to
+ * four lines at one width (home and the buy page at 1280, the buying guide at 768) and did so
+ * before Known Issue 97, which does not touch kit type. Listed in Known Issue 97's Next.
+ */
+const HERO_TITLE_PINNED: Record<string, string[]> = {
+  index: ['Secure Your Blue Staffy Puppies for Sale UK: Safe Delivery & Verified Papers.'],
+  'buy-blue-staffy-puppies-uk': ['Your One-Stop Shop to Buy Blue Staffy Puppies UK, Safely & Ethically'],
+  'uk-blue-staffy-puppy-buying-guide': ['The Complete UK Blue Staffy Puppy Buying Guide: Find an Ethical Breeder, Avoid Scams & Prepare Your Home'],
+};
+
+register({
+  id: 'layout-hero-copy-fills-band',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'a photoless hero gives its copy the band, and a hero title stays within three lines from 768px',
+  minExamined: 1,
+  async run(page: Page, viewport: number, ctx: CheckContext): Promise<CheckResult> {
+    await page.evaluate(() => document.fonts.ready);
+    const pinned = HERO_TITLE_PINNED[ctx?.slug ?? ''] ?? [];
+    const r = await page.evaluate((pinned) => {
+      const main = document.querySelector('main');
+      if (!main) return { noMain: true, examined: 0, bad: [] as string[] };
+      const wide = document.documentElement.clientWidth >= 768;
+      const lines = (el: Element) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const bottoms = Array.from(range.getClientRects())
+          .filter((x) => x.width > 0 && x.height > 0).map((x) => Math.round(x.bottom)).sort((a, b) => a - b);
+        return bottoms.filter((t, i) => i === 0 || t - bottoms[i - 1] > 3).length;
+      };
+      let examined = 0;
+      const bad: string[] = [];
+      for (const hero of Array.from(main.querySelectorAll('.kit-hero'))) {
+        const hb = hero.getBoundingClientRect();
+        if (hb.width < 1 || hb.height < 1) continue;
+        const inner = hero.querySelector('.inner') || hero;
+        const copy = hero.querySelector('.copy');
+        const title = hero.querySelector('.title');
+        if (!copy || !title) continue;
+        examined++;
+        const layout = hero.getAttribute('data-hero-layout') || 'hero';
+        const pic = hero.querySelector('.pic');
+        const painted = !!pic && pic.getBoundingClientRect().width >= 1;
+        const cs = getComputedStyle(inner);
+        const box = inner.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        const cw = copy.getBoundingClientRect().width;
+        if (!painted && cw < 0.4 * box) {
+          bad.push(`${layout}: no photo, but the copy is ${Math.round(cw)}px of a ${Math.round(box)}px band`);
+        }
+        const n = lines(title);
+        const text = (title.textContent || '').trim().replace(/\s+/g, ' ');
+        if (wide && n > 3 && !pinned.includes(text)) bad.push(`${layout}: the title wraps to ${n} lines`);
+      }
+      return { noMain: false, examined, bad };
+    }, pinned);
+    if (r.noMain) {
+      return { examined: 0, defects: [{ checkId: 'layout-hero-copy-fills-band', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no hero could be judged' }] };
+    }
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{ checkId: 'layout-hero-copy-fills-band', family: 'LAYOUT' as const, viewport, count: r.bad.length, message: r.bad.join(' | ') }]
+        : [],
+    };
+  },
+});
