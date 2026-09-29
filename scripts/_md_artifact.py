@@ -12,6 +12,12 @@ sections, so neither of them writes HTML by hand.
     markdown(heading, sections) -> the whole document, the same text the download hands back
 """
 import html
+import re
+
+# Pinned, from cdnjs (the artifact rules allow cdnjs scripts). Loaded before the page script.
+MARKED = "https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"
+PURIFY = "https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"
+_CLOSE = re.compile(r"</(script)", re.I)
 
 CSS = """
 :root{--ground:#F4F1EA;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#5E6B7A;--line:#DAD6CC;--blue:#1F3A52;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#FAF8F3;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#EFE3B4}
@@ -56,12 +62,13 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 JS = r"""
 (function(){
   var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
-  var head=document.getElementById('md-head').textContent.trim(),name=document.getElementById('md-name').textContent.trim();
+  function un(t){return t.replace(/<\\\//g,'</');}
+  var head=un(document.getElementById('md-head').textContent.trim()),name=un(document.getElementById('md-name').textContent.trim());
   function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
   function labels(root){root.querySelectorAll('table').forEach(function(t){var hs=[].map.call(t.querySelectorAll('th'),function(h){return h.textContent;});
     t.querySelectorAll('tbody tr').forEach(function(r){[].forEach.call(r.children,function(c,i){c.setAttribute('data-label',hs[i]||'');});});});}
   document.querySelectorAll('script[type="text/markdown"][data-title]').forEach(function(b,i){
-    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    var title=b.getAttribute('data-title'),md=un(b.textContent.replace(/^\n+|\s+$/g,''));
     var full='## '+title+'\n\n'+md;all.push(full);
     var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
     var sh=document.createElement('div');sh.className='sh';
@@ -70,7 +77,9 @@ JS = r"""
     var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
     btn.addEventListener('click',function(){copy(full,st);});
     right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
-    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;labels(body);
+    var body=document.createElement('div');body.className='md';
+    if(window.marked&&window.DOMPurify){body.innerHTML=DOMPurify.sanitize(marked.parse(md));labels(body);}
+    else{body.style.whiteSpace='pre-wrap';body.textContent=md;}
     sec.appendChild(body);doc.appendChild(sec);
     var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
   });
@@ -84,8 +93,10 @@ JS = r"""
 
 
 def _esc(text):
-    """Safe inside <script type=text/markdown>: nothing can close the block early."""
-    return text.replace("</script", "<\\/script")
+    """Safe inside a <script type=text/...> block: nothing can close it early, in any case
+    (`</script`, `</SCRIPT`, `</Script`). The page script turns `<\\/` back into `</` before
+    it copies or renders, and what it renders goes through DOMPurify."""
+    return _CLOSE.sub(lambda m: "<\\/" + m.group(1), text)
 
 
 def cell(value):
@@ -126,10 +137,11 @@ def page(title, eyebrow, heading, status, date, rel, sections, md_name):
 <nav class="toc" id="toc" aria-label="Sections"></nav>
 <main id="doc"></main>
 </div>
-<script type="text/plain" id="md-head">{html.escape(heading)}</script>
-<script type="text/plain" id="md-name">{html.escape(md_name)}</script>
+<script type="text/plain" id="md-head">{_esc(heading)}</script>
+<script type="text/plain" id="md-name">{_esc(md_name)}</script>
 {blocks}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script src="{MARKED}"></script>
+<script src="{PURIFY}"></script>
 <script>{JS}</script>
 </body>
 </html>

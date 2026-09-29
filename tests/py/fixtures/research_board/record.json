@@ -13,14 +13,16 @@
         "type": "marketplace",
         "why_ranks": "Listing volume and domain authority; exact city in the title",
         "weakness": "No breeder voice, no health testing detail, one H2",
-        "evidence": "https://marketplace.example/fixture-city/"
+        "evidence": "https://web.archive.org/web/2026/https://marketplace.example/fixture-city/",
+        "fetched": "2026-09-29"
       },
       {
         "url": "https://breeder-one.example/blue-staffy/",
         "type": "breeder",
         "why_ranks": "Exact-match page with six real H2 sections",
         "weakness": "No delivery bands, no FAQ block",
-        "evidence": "https://breeder-one.example/blue-staffy/"
+        "evidence": "https://web.archive.org/web/2026/https://breeder-one.example/blue-staffy/",
+        "fetched": "2026-09-29"
       },
       {
         "url": "https://rescue.example/staffies/",
@@ -191,6 +193,43 @@
   "approval": {
     "approved_on": "2026-09-29",
     "answers": "tests/py/fixtures/research_board/answers.json",
-    "record_hash": "7c365a7ac589655d"
-  }
+    "record_hash": "f3fbbb3fd38edbaf"
+  },
+  "ai_overview": {
+    "present": true,
+    "says": "Blue Staffies are the same breed as other Staffordshire Bull Terriers; the colour is a dilute coat.",
+    "cites": [
+      "marketplace.example",
+      "breeder-one.example"
+    ],
+    "implication": "The overview cites a listing site for a breed fact; a breeder page that answers it in extractable prose competes with a low bar."
+  },
+  "heading_types": {
+    "rows": [
+      {
+        "source": "marketplace.example",
+        "style": "Listing furniture (filters, 'Puppies near you')"
+      },
+      {
+        "source": "breeder-one.example",
+        "style": "Generic attribute ('Our Dogs', 'Health')"
+      }
+    ],
+    "winning_shape": "None of the ranking pages uses question headings; the PAA demand is phrased as questions."
+  },
+  "serp_schema": [
+    {
+      "url": "https://marketplace.example/fixture-city/",
+      "schema": "ItemList"
+    },
+    {
+      "url": "https://breeder-one.example/blue-staffy/",
+      "schema": "LocalBusiness"
+    },
+    {
+      "url": "https://rescue.example/staffies/",
+      "schema": "NOT FETCHED — the page returned a bot wall to Firecrawl and to Playwright on 2026-09-29"
+    }
+  ],
+  "authority": "NOT FETCHED — no backlink tool call was made for this fixture (spend guard not consulted)"
 }

@@ -55,7 +55,7 @@ def test_a_missing_why_or_weakness_is_refused(field):
 def test_a_finding_without_evidence_is_refused():
     rec = _record()
     del rec["serp"]["results"][1]["evidence"]
-    assert any("no `evidence`" in p for p in RB.validate(rec, _queries()))
+    assert any("evidence — a finding cites" in p for p in RB.validate(rec, _queries()))
 
 
 def test_a_bare_not_fetched_is_refused():
@@ -116,7 +116,8 @@ def test_the_board_renders_every_section_with_copy_buttons_and_a_md_download(tmp
                  "## 7. How We Win", "## 8. Content Gap (build list)", "## 9. Entities",
                  "## 10. Angles", "## 11. Strategy Directions", "## 12. Frameworks per Section Group",
                  "## 13. Keyword Universe", "## 14. Keyword Distribution",
-                 "## 15. What Is NOT FETCHED and How to Fetch It"):
+                 "## 15. AI Overview", "## 16. Heading-Type Analysis", "## 17. SERP Schema Audit",
+                 "## 18. Authority and Links", "## 19. What Is NOT FETCHED and How to Fetch It"):
         assert head in md, head
     for col in ("Why it ranks", "Weakness (our wedge)", "Words", "Headings", "Tables", "FAQ",
                 "Byline", "Schema / notes", "Universal competitor gaps"):
@@ -125,7 +126,7 @@ def test_the_board_renders_every_section_with_copy_buttons_and_a_md_download(tmp
     assert "Status: **APPROVED" in md
     page = html_path.read_text(encoding="utf-8")
     assert "Copy section" in page and 'id="dl-md"' in page and "text/markdown" in page
-    assert page.count('type="text/markdown" data-title=') == 16
+    assert page.count('type="text/markdown" data-title=') == 20
 
 
 def test_the_fetch_plan_names_a_command_for_every_not_fetched():
@@ -142,10 +143,11 @@ def test_approval_needs_an_answers_file_and_goes_stale_on_an_edit(tmp_path):
     assert RB.approval_state(rec) == "unapproved"
     with pytest.raises(RB.RecordError):
         RB.approve(rec, "docs/reference/answer-board/answers/no-such-file.json")
-    rec = RB.approve(rec, "tests/py/fixtures/research_board/answers.json", today="2026-09-29")
-    assert RB.approval_state(rec) == "approved"
+    rec = RB.approve(rec, "tests/py/fixtures/research_board/answers.json", today="2026-09-29",
+                     queries=_queries())
+    assert RB.approval_state(rec, _queries()) == "approved"
     rec["how_we_win"].append("an edit after approval")
-    assert RB.approval_state(rec) == "stale"
+    assert RB.approval_state(rec, _queries()) == "stale"
 
 
 def test_the_cli_exits_1_on_an_incomplete_record_and_writes_nothing(tmp_path, capsys):

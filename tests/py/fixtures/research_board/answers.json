@@ -1,9 +1,19 @@
 {
-  "batchId": "fixture",
-  "answers": [
-    {
-      "q": "angle",
-      "pick": "A1"
-    }
-  ]
+  "id": "s-fixture",
+  "data": {
+    "batchId": "2026-09-29-research-board-fixture-city",
+    "at": "2026-09-29T00:00:00Z",
+    "answers": [
+      {
+        "key": "q01",
+        "n": 1,
+        "kind": "choice",
+        "choice": "a",
+        "choiceLabel": "A1",
+        "question": "Which angle for fixture-city?",
+        "status": "answered",
+        "text": ""
+      }
+    ]
+  }
 }
