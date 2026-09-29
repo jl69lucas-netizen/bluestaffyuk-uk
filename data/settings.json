@@ -24,6 +24,8 @@
   "guarantee_label": "Two-year health guarantee",
   "guarantee_note": "Ask us for the full terms before you pay a deposit.",
   "guarantee_source": "the breeder's answer, answer board q07, 2026-09-29",
+  "guarantee_cover": "covers health issues and birth defects for two years from the day your puppy comes home",
+  "guarantee_cover_source": "the breeder's answer, answer board q02, 2026-09-29: 'Against any heaalth issues and birth defects within two years of ownershipping', spelling corrected, and 'within two years of ownership' read as starting the day the owner takes the puppy. A clause, not a sentence: a page adds it only where a guarantee sentence already carries it, read through src/lib/site.ts guaranteeCover() or src/lib/cityKit.ts guaranteeRow().",
   "age_weeks": 10,
   "age_weeks_note": "The litter's age as the breeder gave it (answer board q08, 2026-09-29): a page states it as '10 weeks old' from age_weeks, and no date of birth is known, so none is stated. An age goes stale; confirm it before a page prints it.",
   "socials": {

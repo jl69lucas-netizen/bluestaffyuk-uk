@@ -153,8 +153,9 @@ row, so the cap is untouched. Every other rule moved to a pack.
    board, query and research files to it. The
    guarantee is two years (the breeder's answer, 2026-09-29, answer board q07): `data/settings.json`
    holds `guarantee_days: 730` and its wording `guarantee_label`, "Two-year health guarantee" —
-   a page states the length from those fields only, never typed, and names no cover the site has
-   not stated. An unconfirmed licence or statute
+   a page states the length from those fields only, never typed. What it covers is
+   `guarantee_cover` (answer board q02), a clause a page adds from that field only, where a
+   guarantee sentence already carries it. An unconfirmed licence or statute
    claim is written `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER`, never asserted.
 10. **Visual companion, always.** Every visual decision — palette, type, logo, component
     variation, layout — is shown in the browser (the brainstorming visual companion, or a
@@ -343,7 +344,9 @@ spec under `docs/superpowers/specs/`:
   `SITE_URL_PLACEHOLDER` on the same terms.
 - Health guarantee **two years** (`guarantee_days: 730`, worded by `guarantee_label`: "Two-year
   health guarantee"; the breeder's answer, 2026-09-29, answer board q07). Read it from
-  `data/settings.json`, never type it, and name no cover the site has not stated.
+  `data/settings.json`, never type it. It covers health issues and birth defects for two years
+  from the day the puppy goes home (`guarantee_cover`, answer board q02, 2026-09-29); a page
+  states that only as `guarantee_cover` words it.
 - Licence and statute claims are **not established**. They are written
   `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER` and guarded by
   `scripts/placeholder_check.py` until the breeder confirms them.

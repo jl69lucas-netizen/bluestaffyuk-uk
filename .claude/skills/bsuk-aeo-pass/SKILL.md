@@ -37,7 +37,7 @@ Three claims in circulation are wrong. Never write them, and correct them on sig
 |---|---|---|
 | any licence or statute worded from memory | **LICENCE_CLAIM_PLACEHOLDER** / **LEGAL_CLAIM_PLACEHOLDER** | Neither has been confirmed. Until it is, the placeholder IS the text — in prose only, never in a heading, route or code key. |
 | any price typed by hand | **£1,500** (Roman, Byrd, Ince) · **£1,700** (Vennie, Christa, Cheryl) — the litter spans **£1,500–£1,700** | Every figure comes from `data/price-matrix.json` through a helper. A hand-typed price is a defect even when it is currently right. |
-| a health-guarantee length typed by hand | `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it | The breeder gave this length on 2026-09-29. The setting is the one source; the page names no cover the site has not stated. |
+| a health-guarantee length typed by hand | `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it | The breeder gave this length on 2026-09-29. The setting is the one source; what it covers is `guarantee_cover`, read and never typed. |
 
 Verified safe to use: `Lisa Bright` · `Carlisle, Cumbria` ·
 `DEFRA-approved transport` · the 28 UK cities in `data/locations.json` ·

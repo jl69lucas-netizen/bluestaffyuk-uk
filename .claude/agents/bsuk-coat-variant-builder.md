@@ -14,7 +14,7 @@ effort: high
 
 ## BSUK Project Context
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
-> **Facts come from data, never from this file:** each puppy's `colour`, `sex`, `price_gbp` and `status` from `data/puppies.json`; the price by sex from `data/price-matrix.json` (`male_gbp`, `female_gbp`); deposit and delivery band from `data/settings.json`; the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and name no cover the site has not stated
+> **Facts come from data, never from this file:** each puppy's `colour`, `sex`, `price_gbp` and `status` from `data/puppies.json`; the price by sex from `data/price-matrix.json` (`male_gbp`, `female_gbp`); deposit and delivery band from `data/settings.json`; the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
 > **Legal standing:** the breeder's licence is LICENCE_CLAIM_PLACEHOLDER and any statute is LEGAL_CLAIM_PLACEHOLDER. Kennel Club paperwork is named only as `data/faq.json` `whyus-paperwork` names it.
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships; `dist/` is the built output every gate reads. **Sessions:** `docs/superpowers/sessions/`

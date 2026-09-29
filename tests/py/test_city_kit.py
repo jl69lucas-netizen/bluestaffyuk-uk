@@ -876,7 +876,8 @@ def test_the_litters_age_is_one_data_field_and_no_birth_date_is_stated():
     an age or a birth date (none states an age today)."""
     s = json.loads((ROOT / "data/settings.json").read_text())
     assert s["age_weeks"] == 10
-    assert "birth" not in json.dumps(s).lower().replace("no date of birth", "")
+    # "birth defects" is what the guarantee covers (answer board q02), not a date of birth.
+    assert "birth" not in json.dumps(s).lower().replace("no date of birth", "").replace("birth defects", "")
     sources = [*KIT.glob("City*.astro"), ROOT / "src/lib/cityKit.ts", KIT / "_registry.ts",
                ROOT / "src/pages/uk-locations/blue-staffy-puppies-london.astro",
                *(ROOT / "src/pages/kit-preview").glob("city*.astro")]

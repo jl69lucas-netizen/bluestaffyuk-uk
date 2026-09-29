@@ -279,13 +279,13 @@ certificates is a question for her on the answer board.
 **5b. Hard FAIL, not a score** — a page that carries any of these fails the gate:
 - a licence, registration number or statute asserted as held, instead of LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER;
 - a health result or score ("clear", a grade, a pass), or a health outcome stated as a certainty ("will not develop"), without its ledger proof (`scripts/evidence_audit.py`, check `claim-bound-to-proof`). A test result or score always needs its ledger `proof`; no ruling, blanket or specific, stands in for it;
-- a guarantee cover the site has not stated (the length is `guarantee_days`, the wording `guarantee_label`; neither names a cover);
+- a guarantee cover other than `guarantee_cover` in `data/settings.json` (the length is `guarantee_days`, the wording `guarantee_label`, what it covers `guarantee_cover`);
 - any phrasing that implies a puppy sold unweaned, sourced from a dealer or brought in from abroad;
 - a named house method (BSUK has none).
 
 **5c. Three fact predicates checked on sight:**
 - `PRICED_AT` — equals `data/price-matrix.json` (`male_gbp`, `female_gbp`) and the puppy's `price_gbp` in `data/puppies.json`;
-- `GUARANTEED_FOR` — equals `guarantee_label` in `data/settings.json` (its length is `guarantee_days`), and names no cover;
+- `GUARANTEED_FOR` — equals `guarantee_label` in `data/settings.json` (its length is `guarantee_days`), and any cover stated equals `guarantee_cover`;
 - `DELIVERED_TO` — the band from `data/settings.json` `delivery_min_gbp`–`delivery_max_gbp`, by DEFRA-approved transport, priced by distance; collection in Carlisle is the alternative.
 
 **Metrics:** Predicate Inventory · Frequency · Diversity (distinct ÷ taxonomy) · Density (per

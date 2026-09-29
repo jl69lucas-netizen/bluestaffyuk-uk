@@ -1,5 +1,5 @@
 import settings from '../../data/settings.json';
-import { guaranteeWords, type GuaranteeSettings } from './guarantee';
+import { guaranteeWords, guaranteeCoverWords, type GuaranteeSettings } from './guarantee';
 
 export const SITE = settings;
 
@@ -9,6 +9,14 @@ export const SITE = settings;
  *  that disagrees with `guarantee_days`, or names a cover, stops the build. */
 export function guaranteeLabel(form: 'label' | 'lower' = 'label'): string {
   return guaranteeWords(settings as GuaranteeSettings, form);
+}
+
+/** What the guarantee covers, from data/settings.json `guarantee_cover` (the breeder's answer,
+ *  answer board q02, 2026-09-29), as a clause: "covers health issues and birth defects for two
+ *  years from the day your puppy comes home". A page adds it only where a guarantee sentence
+ *  already carries it, and never types it; src/lib/guarantee.ts checks it against the length. */
+export function guaranteeCover(): string {
+  return guaranteeCoverWords(settings as GuaranteeSettings);
 }
 export const SITE_URL = (import.meta.env.SITE ?? 'https://SITE_URL_PLACEHOLDER').replace(/\/$/, '');
 

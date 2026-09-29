@@ -14,7 +14,7 @@ effort: medium
 
 ## BSUK Project Context
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
-> **Facts come from data, never from this file:** prices from `data/price-matrix.json` and `data/puppies.json`; deposit and delivery band from `data/settings.json`; the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and name no cover the site has not stated
+> **Facts come from data, never from this file:** prices from `data/price-matrix.json` and `data/puppies.json`; deposit and delivery band from `data/settings.json`; the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
 > **Legal standing:** the breeder's licence is LICENCE_CLAIM_PLACEHOLDER and any statute is LEGAL_CLAIM_PLACEHOLDER. A link to the government's licensing guidance explains the law to the reader; it never implies the breeder holds a licence.
 > **Content root:** `src/pages/<slug>/index.astro` ships; `dist/` is the built output every gate reads. **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.

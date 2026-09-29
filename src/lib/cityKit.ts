@@ -16,7 +16,7 @@ import settings from '../../data/settings.json';
 import prices from '../../data/price-matrix.json';
 import puppiesJson from '../../data/puppies.json';
 import { gbp, type PuppyRow } from './site';
-import { checkGuaranteeLabel, type GuaranteeSettings } from './guarantee';
+import { checkGuaranteeLabel, checkGuaranteeCover, type GuaranteeSettings } from './guarantee';
 
 export const money = (n: number) => `£${gbp(n)}`;
 
@@ -54,22 +54,23 @@ export const transportLine = (() => {
   return sentence(`by ${m[1]}`);
 })();
 
-/** THE GUARANTEE (the breeder's answer, answer board q07, 2026-09-29): data/settings.json
- *  `guarantee_days`, `guarantee_label` and `guarantee_note`, checked by src/lib/guarantee.ts. No
- *  component types it. */
+/** THE GUARANTEE (the breeder's answers, answer board q07 and q02, 2026-09-29): data/settings.json
+ *  `guarantee_days`, `guarantee_label`, `guarantee_cover` and `guarantee_note`, checked by
+ *  src/lib/guarantee.ts. No component types it. */
 const G = settings as unknown as GuaranteeSettings;
 export { checkGuaranteeLabel };
 
 /** The guarantee's length in days, or null while the breeder has not given one (rule 9). */
 export const guaranteeDays = (): number | null => G.guarantee_days;
 
-/** A guarantee row ({ t: its label, d: its note }), or null. It prints only when
- *  data/settings.json carries the length, the label and the note: no component writes what a
- *  guarantee is or covers (working rule 9). */
+/** A guarantee row ({ t: its label, d: what it covers, then its note }), or null. It prints only
+ *  when data/settings.json carries the length, the label, the cover and the note: no component
+ *  writes what a guarantee is or covers (working rule 9). */
 export const guaranteeRow = (): { t: string; d: string } | null => {
-  if (!G.guarantee_days || !G.guarantee_label || !G.guarantee_note) return null;
+  if (!G.guarantee_days || !G.guarantee_label || !G.guarantee_note || !G.guarantee_cover) return null;
   checkGuaranteeLabel(G.guarantee_days, G.guarantee_label);
-  return { t: G.guarantee_label, d: G.guarantee_note };
+  checkGuaranteeCover(G.guarantee_days, G.guarantee_cover);
+  return { t: G.guarantee_label, d: `It ${G.guarantee_cover}. ${G.guarantee_note}` };
 };
 
 /** The FAQPage node for a city page's questions: EXACTLY the rows its FAQ blocks render, in

@@ -638,7 +638,10 @@ def test_the_method_label_lint_actually_fires(tmp_path):
 UNSET_GUARANTEE = re.compile(
     r"(?i)guarantee_days`?:?\s*null|guarantee_days`?(?:\s+in\s+`?data/settings\.json`?)?\s*(?:is|,)\s*null"
     r"|null today|guarantee[^.;|]{0,40}(?:NOT FETCHED|not established)|(?:NOT FETCHED|not established)[^.;|]{0,20}guarantee"
-    r"|no guarantee (?:is )?(?:stated|claimed|offered|while)|none stated")
+    r"|no guarantee (?:is )?(?:stated|claimed|offered|while)|none stated"
+    # The cover is stated too now (answer board q02, 2026-09-29: data/settings.json
+    # `guarantee_cover`); an instruction may not still say no cover is named.
+    r"|names? no cover|never names? a cover|no cover the site|neither names a cover|has not said what it covers")
 
 
 def unset_guarantee_lines(path: pathlib.Path):
@@ -659,6 +662,13 @@ def test_the_guarantee_setting_holds_the_breeders_answer():
     settings = json.loads((ROOT / "data/settings.json").read_text(encoding="utf-8"))
     assert settings["guarantee_days"] == 730
     assert settings["guarantee_label"] == "Two-year health guarantee"
+    # and what it covers (answer board q02), in a field of its own
+    assert settings["guarantee_cover"].startswith("covers health issues and birth defects")
+
+
+def test_claude_md_points_at_the_cover_field():
+    text = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+    assert text.count("`guarantee_cover`") >= 2, "rule 9 and the Brand context both name the cover field"
 
 
 def test_no_instruction_still_calls_the_guarantee_unset():
@@ -673,8 +683,10 @@ def test_the_unset_guarantee_scan_fires(tmp_path):
     p.write_text("The guarantee length is NOT FETCHED (`guarantee_days: null`).\n"
                  "a guarantee only when `guarantee_days` is set (null today)\n"
                  "The guarantee is `guarantee_days` (730 days, two years).\n"
-                 "Their guarantee is not established.\n", encoding="utf-8")
-    assert [b.split("  ")[0] for b in unset_guarantee_lines(p)] == ["x.md:1", "x.md:2"]
+                 "Their guarantee is not established.\n"
+                 "The guarantee is `guarantee_label`; read it, and name no cover the site has not stated.\n"
+                 "The guarantee's cover is `guarantee_cover`; read it, never type it.\n", encoding="utf-8")
+    assert [b.split("  ")[0] for b in unset_guarantee_lines(p)] == ["x.md:1", "x.md:2", "x.md:5"]
 
 
 # The length lives in data/settings.json (and CLAUDE.md's Brand context line may state it):

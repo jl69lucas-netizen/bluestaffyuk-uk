@@ -15,7 +15,7 @@ effort: high
 ## BSUK Project Context
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **The videos:** the ids in `data/settings.json` `youtube_embeds`, reused at their ORIGINAL ids (working rules 11 and 14). An id that already ranks in video search is the asset; a new id starts at zero.
-> **Facts come from data, never from this file:** prices, deposit and delivery from `data/price-matrix.json`, `data/puppies.json` and `data/settings.json`; the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and name no cover the site has not stated
+> **Facts come from data, never from this file:** prices, deposit and delivery from `data/price-matrix.json`, `data/puppies.json` and `data/settings.json`; the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
 > **Content root:** `src/pages/<slug>/index.astro` ships; `dist/` is the built output every gate reads. **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 

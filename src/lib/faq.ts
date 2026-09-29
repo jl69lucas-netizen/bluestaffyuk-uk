@@ -9,7 +9,7 @@
 // together instead of leaving a stale number in prose nobody greps.
 import settings from '../../data/settings.json';
 import rows from '../../data/faq.json';
-import { guaranteeLabel } from './site';
+import { guaranteeLabel, guaranteeCover } from './site';
 
 export interface FaqRow {
   id: string;
@@ -32,6 +32,9 @@ const TOKENS: Record<string, string> = {
   deposit_terms: settings.deposit_refundable ? 'refundable' : 'non-refundable',
   // The guarantee's words mid-sentence ("two-year health guarantee"), from `guarantee_label`.
   guarantee_label_lc: guaranteeLabel('lower'),
+  // What it covers, as a clause ("covers health issues and birth defects …"), from
+  // `guarantee_cover` (answer board q02, 2026-09-29).
+  guarantee_cover: guaranteeCover(),
 };
 
 export function loadFaq(): FaqRow[] {
