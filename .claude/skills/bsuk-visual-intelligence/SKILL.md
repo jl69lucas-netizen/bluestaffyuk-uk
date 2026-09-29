@@ -123,8 +123,9 @@ are the rubric, so colour and type score **pass/fail against the tokens**, not a
 `--font-display` (Fraunces) for every H1–H6 and `--font-body` (Source Sans 3) for body, labels
 and buttons, applied globally — a page that hard-codes `font-family` is a defect. Check: the
 heading clamp band does not invert at any width (resolve `var()` before judging), body
-line-height 1.6–1.7, `<p>` capped near 70ch **measured as a real `ch`** (never approximated as
-`0.5em`), and Title Case on every H1–H6 (`rules/headings.md`; a FAQ `<summary>` stays
+line-height 1.6–1.7 and `<p>` set to a 65ch measure, a defect only above 75ch (the city
+type-fit gate, `tests/render/lib/cityTypeFit.ts`) — both scored in row 9 only, with `ch`
+measured as a real `ch` (never approximated as `0.5em`) — and Title Case on every H1–H6 (`rules/headings.md`; a FAQ `<summary>` stays
 conversational).
 
 ### 2c. Colour — /10
@@ -256,21 +257,27 @@ breeder by name.
 whose health or credential claim has a proof and a confirmation date in
 `data/quality/evidence-ledger.json`, is `ASSERTED`. Anything else is `PROPOSED` — a finding,
 not a fact. Today the ledger's `parents-dna-clear` claim is `NOT FETCHED`, so "the parents are
-tested clear" on any page is PROPOSED however many times it is repeated. An entity the ontology
+tested clear" on any page is PROPOSED however many times it is repeated, and — being a result —
+it is a §5b hit on every page that states it. An entity the ontology
 does not have at all is UNKNOWN: a finding for `@bsuk-entity-incorporation-agent`, which adds it
 through `python3 scripts/ontology_seed.py` or a sourced row, never an entity to score as ASSERTED.
 
-**Ruled by the breeder, not yet in the ledger.** When the breeder's own answer on the answer
-board (`docs/reference/answer-board/answers/`) confirms a claim the ledger or the ontology does
-not hold yet, the claim is not a page defect: route it to a ledger or ontology update (the
-`proof` and `confirmed` fields of `data/quality/evidence-ledger.json`, or a sourced ontology row)
-through `@bsuk-entity-incorporation-agent`. It is not a page finding and not a §5b FAIL: list it
-under "Ledger updates" in the report, and count it `PROPOSED` in the Authorization ratio until
-the update lands.
+**Ruled by the breeder, not yet in the ledger.** A claim counts as ruled only when a rulings
+file under `docs/reference/answer-board/answers/` states that specific claim in its own
+"What the pages do" column. A blanket answer ("it's all real", "check the health page") never counts, and
+nor does the breeder's answer in the answer column alone. A ruled claim that the ledger or the
+ontology does not hold yet is routed to a ledger or ontology update through
+`@bsuk-entity-incorporation-agent`, listed under "Ledger updates" in the report, and counted
+`PROPOSED` in the Authorization ratio until the update lands — and it is exempt from §5b only
+when it is not a result. A test result or score always needs its ledger `proof` (rule 9): the
+Q9 row of the rulings permits a page to NAME the tests and the screening, never to state a
+result. So the ten "tested clear" lines on `/blue-staffy-health-uk/` (`parents-dna-clear`,
+proof `NOT FETCHED`) are §5b hits, not ledger updates; whether the breeder holds the
+certificates is a question for her on the answer board.
 
 **5b. Hard FAIL, not a score** — a page that carries any of these fails the gate:
 - a licence, registration number or statute asserted as held, instead of LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER;
-- a health result, or a health outcome stated as a certainty ("will not develop"), without its ledger proof (`scripts/evidence_audit.py`, check `claim-bound-to-proof`) and without a breeder ruling behind it (a ruled claim is a ledger update, above);
+- a health result or score ("clear", a grade, a pass), or a health outcome stated as a certainty ("will not develop"), without its ledger proof (`scripts/evidence_audit.py`, check `claim-bound-to-proof`). A test result or score always needs its ledger `proof`; no ruling, blanket or specific, stands in for it;
 - a guarantee cover the site has not stated (the length is `guarantee_days`, the wording `guarantee_label`; neither names a cover);
 - any phrasing that implies a puppy sold unweaned, sourced from a dealer or brought in from abroad;
 - a named house method (BSUK has none).
@@ -307,24 +314,24 @@ all not examined is `NOT MEASURED`.
 
 | # | Score | Class | Rule |
 |---|---|---|---|
-| 1 | Visual Hierarchy | measured | 10 × §2a dimensions passed ÷ 7 (hero, dominant element, heading scale, reading order, section rhythm, grid, spacing), at 375, 768 and 1280; a dimension passes only at all three widths |
-| 2 | Visual Consistency | measured | 10 × token checks passed ÷ 7 (display font on headings, body font, line-height 1.6–1.7, `<p>` ≤ 75ch at 768, Title Case, no hex outside tokens, one CTA pill style) |
+| 1 | Visual Hierarchy | measured | 10 × §2a dimensions passed ÷ 7 (hero, dominant element, heading scale, reading order, section rhythm, grid, spacing); the hero is judged at 1280 only (its §2a condition is a desktop fold), every other dimension at 375, 768 and 1280 and passes only at all three |
+| 2 | Visual Consistency | measured | 10 × token checks passed ÷ 5 (display font on headings, body font, Title Case, no hex outside tokens, one CTA pill style); line length and line-height are row 9's, never counted here too |
 | 3 | Visual Trust | measured | 10 × present ÷ 3 above 50% scroll at 1280 (the paperwork list, a review from `data/reviews.json`, the breeder named) |
 | 4 | Visual Information Gain | judgment | share of non-decorative images whose §3 row teaches something the prose does not, × 10 |
 | 5 | Visual Communication | judgment | 2 × the mean of the §3 educational and search values (each /5) |
 | 6 | Visual Storytelling | judgment | does the section order run question → evidence → decision? |
 | 7 | Visual Conversion | measured | 10 × checks passed ÷ checks examined (a CTA visible without scrolling at 1280; a CTA within every 700 words of `<main>`; the delivery band on every puppy card; one form on the page) |
 | 8 | Visual Accessibility | measured | 10 × checks passed ÷ 4 (0 AA contrast failures on visible nodes; every tap target ≥ 24px; no skipped heading level; no missing and no duplicated non-empty alt) |
-| 9 | Visual Readability | measured | 10 × checks passed ÷ 3 (`<p>` ≤ 75ch at 768; body line-height 1.6–1.7; no clamp band inverted between widths) |
-| 10 | Visual AI Readiness | derived | 10 × checks passed ÷ checks examined (`npm run check:schema` clean for the page; every infographic claim also present as page text; `python3 scripts/aeo_audit.py <route>` no BLUF WARN) |
+| 9 | Visual Readability | measured | 10 × checks passed ÷ 3 (no `<p>` wider than 75ch at 768, against the 65ch measure; body line-height 1.6–1.7; no clamp band inverted between widths) |
+| 10 | Visual AI Readiness | derived | 10 × checks passed ÷ checks examined (`npm run check:schema` output filtered to the page's route shows nothing blocking; every infographic claim also present as page text; `python3 scripts/aeo_audit.py <route>` no BLUF WARN) |
 | 11 | Visual Verbalization | derived | 10 × §3 rows with all eight fields filled ÷ non-decorative images |
-| 12 | Visual Differentiation | measured | 10 × checks passed ÷ 4, against every sibling (0 prose crossover; 0 header crossover; ≥ 3 refresh deltas; 0 shared image files) |
+| 12 | Visual Differentiation | measured | for each sibling pair, 10 × checks passed ÷ 4 (0 prose crossover; 0 header crossover; ≥ 3 refresh deltas; no served image file in the same role — the hero, or the same section — on both pages; reuse in a different role is allowed by working rules 11 and 17); the row scores the worst pair, and names it |
 | 13 | Function Density | derived | 10 when functions present ÷ 1,000 words is 1.5–6; 5 when within half that band again (0.75–1.5 or 6–9); else 0 |
 | 14 | Function Diversity | report | distinct functions ÷ taxonomy size, reported with no threshold |
 | 15 | **Function Coverage** | gate | required set satisfied ÷ required set (§4a) = 100% |
 | 16 | Predicate Diversity | report | distinct predicates ÷ taxonomy size, reported with no threshold |
 | 17 | Predicate Density | report | predicates per 1,000 words, reported with no threshold |
-| 18 | **Predicate Authorization** | gate | no §5b hit (a ruled claim awaiting its ledger update is not a hit) |
+| 18 | **Predicate Authorization** | gate | no §5b hit (a ruled claim awaiting its ledger update is not a hit unless it states a test result or score, which always needs its `proof`) |
 
 **Verdict:** `PASS` — both gates pass and every `measured` and `derived` row scores 6 or more.
 `PASS-WITH-WARNINGS` — both gates pass, and a `measured` or `derived` row scores below 6 or is
@@ -335,11 +342,11 @@ alone. No overall average.
 ### Worked example
 
 An illustration of the arithmetic, not a measurement of any page. A city page: hierarchy passes
-6 of 7 dimensions at all three widths → 8.6; consistency 7 of 7 → 10; trust 3 of 3 → 10;
+6 of 7 dimensions (the hero at 1280, the rest at all three widths) → 8.6; consistency 5 of 5 → 10; trust 3 of 3 → 10;
 conversion 3 of 3 examined (it has no puppy card, so that check is not examined) → 10;
 accessibility 4 of 4 → 10; readability 2 of 3 → 6.7; AI readiness 2 of 2 examined (no
-infographic) → 10; verbalization 7 of 8 rows complete → 8.8; differentiation 4 of 4 → 10;
-function density 3.1 per 1,000 words → 10. Coverage 5 of 5 required functions → the gate passes;
+infographic) → 10; verbalization 7 of 8 rows complete → 8.8; differentiation: its worst pair (against the Leeds page, say) passes 4 of 4 → 10;
+function density 3.1 per 1,000 words → 10. Coverage 9 of 9 required functions (the location row's five and the every-page row's four) → the gate passes;
 no §5b hit → the gate passes. Every measured and derived row is 6 or more → **PASS**, with
 the judgment rows (information gain 7, communication 6, storytelling "question → decision, no
 evidence section") listed beside it. Had readability passed only 1 of 3 (3.3), the verdict

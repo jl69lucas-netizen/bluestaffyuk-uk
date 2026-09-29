@@ -64,6 +64,9 @@ The ledger is data, not a list in this file, so it cannot drift from the site:
 - **A health or credential claim** is assertable only where `data/quality/evidence-ledger.json`
   has its claim with a `proof` other than `NOT FETCHED` and a `confirmed` date. Today its one row,
   `parents-dna-clear`, is `NOT FETCHED`, so "tested clear" is not a sentence any page may write.
+  A test result or score always needs its ledger `proof`. A breeder ruling counts only for the
+  specific claim its rulings file's "What the pages do" column states, never a blanket "it's all
+  real", and even then it lets a page name a test or a screening, never state its result.
   `python3 scripts/evidence_audit.py <route> --type <profile> --fail-on-error` is the check.
 - **The paperwork** is exactly what `data/faq.json` `whyus-paperwork` lists; the licence is
   LICENCE_CLAIM_PLACEHOLDER.

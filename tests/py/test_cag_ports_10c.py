@@ -336,12 +336,107 @@ def test_every_score_row_has_a_class_and_a_rule():
     assert sum(r[2].strip("`* ") in ("measured", "derived") for r in rows) >= 8
 
 
+def _verdict(t):
+    v = t[t.index("**Verdict:**"):]
+    return v[:v.index("\n\n")]
+
+
+def pass_clause_classes(t):
+    """The classes the PASS clause of the verdict rule depends on."""
+    v = _verdict(t)
+    clause = v[v.index("`PASS`"):v.index("`PASS-WITH-WARNINGS`")]
+    return set(re.findall(r"`(%s)`" % "|".join(sorted(CLASSES)), clause))
+
+
 def test_a_page_can_pass_on_measured_and_derived_rows_alone():
+    """Structural (re-review minor 5): the PASS clause names only the scored classes, and the
+    table has scored rows for it to read — so PASS is reachable without a judgment call."""
     t = _text(SKILL)
-    verdict = t[t.index("**Verdict:**"):]
-    verdict = verdict[:verdict.index("\n\n")]
-    assert "never change the verdict" in verdict, verdict
+    rows = _score_rows()
+    classes = {r[2].strip("`* ") for r in rows}
+    assert {"measured", "derived"} <= classes
+    assert pass_clause_classes(t) == {"measured", "derived"}, pass_clause_classes(t)
+    assert "never change the verdict" in _verdict(t)
     assert "### Worked example" in t
+
+
+def test_the_pass_clause_check_fires():
+    bad = ("**Verdict:** `PASS` — both gates pass, every `measured`, `derived` and `judgment` row "
+           "scores 6. `PASS-WITH-WARNINGS` — else.\n\n")
+    assert pass_clause_classes(bad) == {"measured", "derived", "judgment"}
+
+
+# ── re-review 2 (2026-09-29): a ruling never stands in for a result's proof ─────────────────
+RESULT_RULE = "A test result or score always needs its ledger `proof`"
+
+
+def _section(t, start, end):
+    return t[t.index(start):t.index(end)]
+
+
+def ruling_exempts_a_result(t):
+    """True when the skill lets a breeder ruling excuse a health RESULT from the §5b FAIL, or
+    lets a ruling count without the rulings file's own "What the pages do" column saying it."""
+    five_b = _section(t, "**5b. Hard FAIL", "**5c.")
+    health = next(l for l in five_b.splitlines() if "health result" in l)
+    ruled = _section(t, "**Ruled by the breeder", "**5b. Hard FAIL")
+    return bool(re.search(r"(?i)ruling behind it|ruled claim is a ledger update", health)
+                or RESULT_RULE not in health
+                or "What the pages do" not in ruled
+                or not re.search(r"(?i)blanket", ruled))
+
+
+def test_a_ruling_never_exempts_a_health_result():
+    assert not ruling_exempts_a_result(_text(SKILL))
+    assert "What the pages do" in _text(RULING)
+
+
+def test_the_ruling_exemption_check_fires_on_the_old_wording():
+    """Mutation: put back the round-1 health bullet and the check must fire."""
+    t = _text(SKILL)
+    five_b = _section(t, "**5b. Hard FAIL", "**5c.")
+    health = next(l for l in five_b.splitlines() if "health result" in l)
+    old = ("- a health result, or a health outcome stated as a certainty (\"will not develop\"), "
+           "without its ledger proof (`scripts/evidence_audit.py`, check `claim-bound-to-proof`) and "
+           "without a breeder ruling behind it (a ruled claim is a ledger update, above);")
+    assert ruling_exempts_a_result(t.replace(health, old))
+    ruled = _section(t, "**Ruled by the breeder", "**5b. Hard FAIL")
+    assert ruling_exempts_a_result(t.replace(ruled, "**Ruled by the breeder.** Any answer counts.\n\n"))
+
+
+def test_the_agents_agree_a_result_needs_its_proof():
+    for rel in (SKILL, SCAM, ".claude/agents/bsuk-entity-incorporation-agent.md"):
+        assert RESULT_RULE in _text(rel), rel
+
+
+def _functions(cell):
+    return [f for f in cell.split(" · ") if f.strip()]
+
+
+def test_the_worked_example_counts_the_city_required_set():
+    t = _text(SKILL)
+    rows = {r[0]: r[1] for r in (
+        [c.strip() for c in l.strip().strip("|").split("|")]
+        for l in _section(t, "### 4a.", "### 4b.").splitlines() if l.startswith("| **"))}
+    need = len(_functions(rows["**location**"])) + len(_functions(rows["**every page**"]))
+    m = re.search(r"Coverage (\d+) of (\d+) required", _section(t, "### Worked example", "## 7."))
+    assert m and int(m.group(2)) == need, (m and m.group(0), need)
+
+
+def test_one_line_length_rule_counted_once():
+    t = _text(SKILL)
+    assert "70ch" not in t and "65ch" in t
+    rows = {r[0]: r[3] for r in _score_rows()}
+    assert "ch" not in re.sub(r"`ch`", "", rows["2"]).replace("check", ""), rows["2"]
+    assert "75ch" in rows["9"]
+
+
+def test_differentiation_and_hero_and_schema_rows_are_defined():
+    rows = {r[0]: r[3] for r in _score_rows()}
+    assert "worst pair" in rows["12"] and "same role" in rows["12"]
+    assert "0 shared image files" not in rows["12"]
+    assert re.search(r"(?i)hero[^|]*1280 only", rows["1"]), rows["1"]
+    assert re.search(r"(?i)filtered to (?:the|this) page", rows["10"]), rows["10"]
 
 
 # one owner per job (items 5–7)

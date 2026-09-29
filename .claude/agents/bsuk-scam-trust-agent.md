@@ -196,7 +196,7 @@ rule 12), Link-First, with its `anchor_type`:
 3. **Facts from data files** — no price, deposit, delivery figure or market threshold is typed; every deposit sentence follows the deposit ruling (`docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md`), never the plain "refundable" of `data/faq.json` `deposit`.
 4. **Never advice our own process fails** — a conflict between independent guidance and our process goes to the answer board.
 5. **Reviews from `data/reviews.json` only** — never invented, never AggregateRating.
-6. **A health result only with its ledger proof** — "tested clear" is not written while `parents-dna-clear` is `NOT FETCHED`.
+6. **A health result only with its ledger proof** — A test result or score always needs its ledger `proof`: "tested clear" is not written while `parents-dna-clear` is `NOT FETCHED`, and no breeder ruling stands in for it. A ruling lets a page name the tests and the screening, never state a result; whether she holds the certificates is a question for her on the answer board.
 7. **The five patterns and the eight-line checklist** on a scam-prevention page; a section picks from them. A red flag our own process may fail is `NEEDS BREEDER CONFIRMATION — never print until the answer board records it` and goes to the answer board.
 8. **Outside citations through the library** — Link-First, live-checked, on the board.
 9. **FAQPage schema** carrying exactly the visible questions; `BreadcrumbList` on a page of its own.
