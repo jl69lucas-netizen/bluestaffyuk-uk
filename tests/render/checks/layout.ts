@@ -993,3 +993,62 @@ register({
     };
   },
 });
+
+/**
+ * A HEADING NEVER PAINTS LARGER THAN THE ONE IT SITS UNDER (the Known Issue 97 review, item 2).
+ *
+ * `.bl-box h2` moved to the city scale (22 / 25 / 28px) while `.bl-stub h3` stayed at --text-xl,
+ * 24px, so at 375 sixteen H3s on /buy-staffy-puppies-for-sale-uk/ and five on
+ * /blue-staffy-pup-sale-uk/ painted larger than their box's H2. `sem-heading-order` reads levels,
+ * never sizes, so nothing saw it.
+ *
+ * THE UNIT is one visible H3 or H4 in `<main>`, outside a kit or city-kit component (those set
+ * their own type and are judged by their own checks), that has a parent heading: the nearest
+ * earlier H2 for an H3, and the nearest earlier H3 under the same H2 for an H4, from the same
+ * non-kit chain. It fails when it paints more than 0.5px larger than that parent. A page with
+ * no `<main>` is a defect, never examined-zero.
+ */
+register({
+  id: 'layout-heading-size-order',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'an H3 paints no larger than its H2, and an H4 no larger than its H3',
+  minExamined: 2,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    const r = await page.evaluate(() => {
+      const main = document.querySelector('main');
+      if (!main) return { noMain: true, examined: 0, bad: [] as string[] };
+      let examined = 0;
+      const bad: string[] = [];
+      let h2: { fs: number; t: string } | null = null;
+      let h3: { fs: number; t: string } | null = null;
+      for (const h of Array.from(main.querySelectorAll('h2, h3, h4'))) {
+        if (h.getClientRects().length === 0 || getComputedStyle(h).visibility === 'hidden') continue;
+        if (h.closest('[class^="kit-"], [class*=" kit-"], .city-kit')) continue;
+        const fs = parseFloat(getComputedStyle(h).fontSize);
+        const t = (h.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 40);
+        const parent = h.tagName === 'H3' ? h2 : h.tagName === 'H4' ? h3 : null;
+        if (parent) {
+          examined++;
+          if (fs > parent.fs + 0.5) bad.push(`${h.tagName.toLowerCase()} ${fs}px "${t}" over ${parent.fs}px "${parent.t}"`);
+        }
+        if (h.tagName === 'H2') { h2 = { fs, t }; h3 = null; }
+        else if (h.tagName === 'H3') h3 = { fs, t };
+      }
+      return { noMain: false, examined, bad };
+    });
+    const defects = [];
+    if (r.noMain) {
+      defects.push({ checkId: 'layout-heading-size-order', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no heading could be judged' });
+    } else if (r.bad.length) {
+      defects.push({
+        checkId: 'layout-heading-size-order',
+        family: 'LAYOUT' as const,
+        viewport,
+        count: r.bad.length,
+        message: `${r.bad.length} of ${r.examined} heading(s) paint larger than the heading they sit under: ${r.bad.slice(0, 6).join(' | ')}`,
+      });
+    }
+    return { examined: r.examined, defects };
+  },
+});

@@ -57,8 +57,8 @@
     text-wrap: balance;
     margin: 0 0 var(--space-2);
   }
-  @media (min-width: 640px) { .bl-box h2 { font-size: 25px; } }
-  @media (min-width: 800px) { .bl-box h2 { font-size: 28px; } }
+  @media (width >= 640px) { .bl-box h2 { font-size: 25px; } }
+  @media (width >= 800px) { .bl-box h2 { font-size: 28px; } }
 
   /* THE BODY HEADING SCALE (Known Issue 97; the user's pick, option (a), the city scale,
      2026-09-29; preview docs/artifacts/bsuk-heading-scale-preview.html). Every H2/H3 outside a
@@ -66,9 +66,11 @@
      size a body section had. The tiers are the city kit's own edges (src/styles/city.css:
      phone < 640px, tablet 640-799px, desktop >= 800px); the phone H3 is 18px, not the city's
      17, because body text here is 17px. Everything is inside `:where()`, so it is (0,0,1):
-     `.bl-stub h3`, `.bl-box h2` and every kit rule still win. Held by
+     `.bl-stub h3`, `.bl-box h2` and every kit rule still win (and the first two are set to the
+     same tiers). The edges use range syntax, as city.css does; the preview's block was
+     `min-width`, with the same edges. Held by
      tests/render/checks/layout.ts::layout-body-heading-above-body. */
-  /* Body headings in <main>. Not a .bl-box's own H2 (it keeps --text-2xl), not a kit or city-kit component. */
+  /* Body headings in <main>. Not a .bl-box's own H2 (its rule above puts it on the same H2 tiers), not a kit or city-kit component. */
   main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.18; text-wrap: balance; }
   main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-weight: 600; line-height: 1.25; text-wrap: balance; }
   main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.3; text-wrap: balance; margin-block: var(--space-5) var(--space-1); }
@@ -76,12 +78,12 @@
   main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 22px; margin-block: var(--space-6) var(--space-2); }
   main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
   main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 17px; }
-  @media (min-width: 640px) { /* tablet */
+  @media (width >= 640px) { /* tablet */
     main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 25px; margin-block: var(--space-7) var(--space-3); }
     main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
     main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 17px; }
   }
-  @media (min-width: 800px) { /* desktop */
+  @media (width >= 800px) { /* desktop */
     main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 28px; margin-block: var(--space-8) var(--space-3); }
     main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 20px; margin-block: var(--space-6) var(--space-2); }
     main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; }
@@ -148,11 +150,18 @@
   /* --- the body --------------------------------------------------------------------- */
   .bl-body { min-width: 0; }
   .bl-prose { display: grid; gap: var(--space-4); align-content: start; }
+  /* On option (a)'s H3 tier, like every other body H3 (the Known Issue 97 review, item 2): at
+     --text-xl (24px) a box's H3s painted larger than the box's own 22px H2 on a phone. Held by
+     tests/render/checks/layout.ts::layout-heading-size-order. */
   .bl-stub h3 {
     font-family: var(--font-display);
-    font-size: var(--text-xl);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
     margin: 0 0 var(--space-1);
   }
+  @media (width >= 800px) { .bl-stub h3 { font-size: 20px; } }
   .bl-stub p { margin: 0; max-width: 68ch; }
 
   /* --- media ------------------------------------------------------------------------ */

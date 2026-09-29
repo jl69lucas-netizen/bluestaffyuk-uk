@@ -79,6 +79,12 @@
       "cluster_cleared": "new 2026-09-29 (Known Issue 97) together with the option (a) heading scale in src/styles/board-styles.css that makes it pass: blocking on every page from its first run, because the defect it measures (49 H2s and 217 H3s at the 17px body size) was on the twelve frozen pages and the scale lifts every body heading in <main>; the kit-preview spy-stub labels are pinned by name in the check",
       "false_reports": 0
     },
+    "layout-heading-size-order": {
+      "scope": "all",
+      "since": "2026-09-29",
+      "cluster_cleared": "new 2026-09-29 (the Known Issue 97 review) together with .bl-stub h3 on option (a)'s H3 tier, which makes it pass: blocking on every page from its first run; clean on HEAD 3f169d1's build, and it fired on 34 H3s at 375 (16 for-sale, 13 home, 5 pup-sale) once .bl-box h2 moved to 22px under the 24px stub H3",
+      "false_reports": 0
+    },
     "layout-hero-counter-separation": {
       "scope": "new-pages",
       "since": "2026-09-26",
