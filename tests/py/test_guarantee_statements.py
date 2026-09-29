@@ -20,19 +20,25 @@ TITLED = "Two-Year Health Guarantee"           # the label as T() titles it in a
 
 GONE = {
     "index": ["The length of the cover is not published on this site until the figure is confirmed",
-              "No Guarantee Length Is Printed Here"],
+              "No Guarantee Length Is Printed Here", f"Ours is a {LOWER}, and it is written down like the rest"],
     "blue-staffy-health-uk": ["There is no guarantee length anywhere on this site",
-                              "The Guarantee Row Is Absent, Not Overlooked"],
-    "blue-staffy-pup-sale-uk": ["No Health Guarantee Is Stated"],
+                              "The Guarantee Row Is Absent, Not Overlooked",
+                              "answered just below the list", "This is where you would have looked for it"],
+    "blue-staffy-pup-sale-uk": ["No Health Guarantee Is Stated", f"A {TITLED} With Every Puppy"],
     "buy-staffy-puppies-for-sale-uk": ["No Term Is Stated, Because None Is Held"],
     "buy-blue-staffy-puppies-uk": ["No term is stated for a guarantee"],
 }
 NOW = {
-    "index": [f"Every puppy leaves with our written {LOWER}", f"Our {TITLED}", f"Ours is a {LOWER}"],
-    "blue-staffy-health-uk": [f"Ours is a {LOWER}, a promise we make", f"Ask Us About Our {TITLED}"],
-    "blue-staffy-pup-sale-uk": [f"A {TITLED} With Every Puppy", f"Our {LOWER} is set out below them"],
-    "buy-staffy-puppies-for-sale-uk": [f"Our {TITLED}, in Writing", f"Ours is a {LOWER}."],
-    "buy-blue-staffy-puppies-uk": [f"What we do promise is our {LOWER}"],
+    "index": [f"Every puppy leaves with our written {LOWER}", f"Our {TITLED}",
+              "Every puppy goes home with it on paper"],
+    "blue-staffy-health-uk": [f"Ours is a {LOWER}, a promise we make", f"Ask Us About Our {TITLED}",
+                              f"asked how long the health guarantee lasts: ours is a {LOWER}.",
+                              "The old tenth row would have sat here: ask us for the full wording before you pay a deposit."],
+    "blue-staffy-pup-sale-uk": [f"Not an Item, a Promise: Our {TITLED}", f"Our {LOWER} is set out below them",
+                                "it is a promise we make with every puppy"],
+    "buy-staffy-puppies-for-sale-uk": [f"Our {TITLED}, in Writing",
+                                       f"Ours is a {LOWER}, and it is written down; ask us for the full wording before you pay a deposit."],
+    "buy-blue-staffy-puppies-uk": [f"What we do promise is our {LOWER}; ask us for its full wording before you pay a deposit."],
 }
 
 
@@ -119,3 +125,14 @@ def test_the_unstated_patterns_fire_on_the_old_lines():
                 "The length of the cover is not published on this site"]:
         assert unstated_lines(old), old
     assert not unstated_lines("Ours is a two-year health guarantee; no laboratory named, no percentage anywhere.")
+
+
+def test_no_page_promises_to_send_the_wording():
+    """Re-review, item 3 (rule 9): data/settings.json `guarantee_note` says "Ask us for the full
+    terms before you pay a deposit." A page may not promise more (that we SEND the wording)."""
+    dist = ROOT / "dist"
+    if not dist.exists():
+        pytest.skip("run npm run -s build first")
+    send = re.compile(r"(?i)\bwe (?:will )?send (?:you )?(?:its|the) full wording")
+    bad = [str(p.relative_to(dist)) for p in dist.rglob("*.html") if send.search(p.read_text(errors="ignore"))]
+    assert bad == [], bad
