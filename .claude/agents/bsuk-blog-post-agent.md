@@ -104,7 +104,7 @@ Query: "how to buy an Blue Staffy puppy safely"
 1. **Lisa Bright speaks directly** — use first-person "we" for breeder voice sections
 2. **Never invent stats** — all numbers come from `data/price-matrix.json` or `data/financial-entities.json` (not ported — source repo only)
 3. **Blue Staffy prices** are always `£1,500` (Roman, Byrd, Ince) or `£1,700` (Vennie, Christa, Cheryl), read from `data/puppies.json` — never a range, never a figure of your own
-4. **The health guarantee is data** — read it from `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) and its `guarantee_label`; never type a duration and never name a cover the site has not stated
+4. **The health guarantee is data** — it is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type a duration, and never name a cover the site has not stated
 5. **We are in Carlisle, Cumbria** — always accurate, never a different city (Known Issue 16)
 6. **Name the paperwork** — every post mentioning purchase names the paperwork that goes home with a puppy (Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract — `data/faq.json` `whyus-paperwork`); a licence stays LICENCE_CLAIM_PLACEHOLDER until the breeder supplies it
 7. **No clickbait superlatives** — "best" must be backed by a reason ("best for apartments because...")

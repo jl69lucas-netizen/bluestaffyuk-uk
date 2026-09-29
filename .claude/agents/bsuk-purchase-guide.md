@@ -74,7 +74,7 @@ The purchase guide walks buyers through:
 8. **Arrival phase** — 72-hour vet visit, settling-in protocol
 9. **Post-purchase support** — Lisa Bright contact, ongoing questions welcome
 
-**Health guarantee:** read it from `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) and `guarantee_label`; never hardcode a duration, and name no cover the site has not stated.
+**Health guarantee:** `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never hardcode a duration, and name no cover the site has not stated.
 **Pricing:** All prices from `data/price-matrix.json`, all cost estimates from `data/financial-entities.json`. (not ported — source repo only)
 **Sacred elements:** H1, canonical, all JSON-LD schema blocks — never modify these.
 
@@ -92,7 +92,7 @@ Build one at a time. Confirm with user before moving to next.
 | 4 | **The Paperwork Promise** | `features` | the documents that go home with every puppy — Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract (`whyus-paperwork`) — one card per document |
 | 5 | **Key Takeaways** | `features` | TL;DR summary — 3-column grid of top reasons to buy |
 | 6 | **Why BSUK — 10 Reasons** | `features` | 10 differentiators vs competitors / unverified sellers |
-| 7 | **Health Checks and Paperwork** | `features` | What goes home with a puppy: the `data/faq.json` `puppy-package` items (first vaccinations, microchip, vet health check, worming and flea treatment, a puppy pack) and the `whyus-paperwork` documents (Kennel Club registration paperwork, vaccination records, microchipping details, a written purchase contract). The guarantee as `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) words it; a DNA-test result only where `data/quality/evidence-ledger.json` holds its proof (none today) |
+| 7 | **Health Checks and Paperwork** | `features` | What goes home with a puppy: the `data/faq.json` `puppy-package` items (first vaccinations, microchip, vet health check, worming and flea treatment, a puppy pack) and the `whyus-paperwork` documents (Kennel Club registration paperwork, vaccination records, microchipping details, a written purchase contract). The guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it; a DNA-test result only where `data/quality/evidence-ledger.json` holds its proof (none today) |
 | 8 | **9-Step Purchase Process** | custom | Numbered steps with icons — the full purchase journey |
 | 9 | **Puppy Info** | custom | What makes Blue Staffies exceptional companions |
 | 10 | **Pricing & Comparison** | `comparison-table` | BSUK vs market pricing, Blue Staffy vs blue and white Staffy |
@@ -162,7 +162,7 @@ Build [section type]:
 - Always read `data/price-matrix.json` for BSUK prices
 - Competitor column uses rounded market averages (not specific seller names)
 - Highlight BSUK column in design system primary color
-- The guarantee row reads `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) and `guarantee_label`, never a typed length
+- The guarantee row reads `guarantee_label` in `data/settings.json` (its length is `guarantee_days`), never a typed length
 - Include row: "Paperwork" — BSUK: the four `whyus-paperwork` documents vs Market: varies
 
 ### Section 11 — Delivery Coverage
@@ -221,7 +221,7 @@ urls = ["https://SITE_URL_PLACEHOLDER/buy-blue-staffy-puppies-uk/"]
 6. **Every section addresses a buyer fear** — refer to Reader Profile above
 7. **FAQ needs schema** — FAQPage JSON-LD required, no exceptions
 8. **LICENCE_CLAIM_PLACEHOLDER compliance** — every section that discusses purchase must reference home-raised documentation; never imply backyard-bred
-9. **No typed guarantee duration** — the guarantee's length comes only from `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it)
+9. **No typed guarantee duration** — the guarantee's length comes only from `guarantee_days` and its words from `guarantee_label` (`data/settings.json`); read them, never type them
 
 ---
 

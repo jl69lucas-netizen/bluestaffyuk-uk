@@ -102,7 +102,7 @@ After gap matrix, output:
 - [item with better approach]
 
 ### BSUK Unfair Advantages (only BSUK can claim)
-- The £500 refundable deposit, stated plainly (the guarantee only as `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) and `guarantee_label` word it)
+- The £500 refundable deposit, stated plainly (the guarantee only as `data/settings.json` `guarantee_label` words it; its length is `guarantee_days`)
 - The paperwork that goes home with each puppy, named document by document (`data/faq.json` `whyus-paperwork`) — most competitors do not surface this
 - Kennel Club registration paperwork, vaccination records and microchipping details with every puppy (`data/faq.json` `whyus-paperwork`)
 - vet health certificate

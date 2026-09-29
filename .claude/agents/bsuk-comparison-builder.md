@@ -67,7 +67,7 @@ No comparison page exists on this site, so every comparison is a BUILD. The page
 | 4 | **Head-to-Head Table** | 8–10 attributes: size, price, temperament, trainability, lifespan, trainability, noise level, LICENCE_CLAIM_PLACEHOLDER status |
 | 5 | **Deep Dive: [A]** | 2–3 paragraphs — who it's for, key traits, ideal lifestyle |
 | 6 | **Deep Dive: [B]** | 2–3 paragraphs — same structure |
-| 7 | **Documentation & Cost Comparison** | the paperwork included (`whyus-paperwork`: Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract), the veterinary health check, the guarantee as `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) and `guarantee_label` word it, pricing from `data/price-matrix.json` |
+| 7 | **Documentation & Cost Comparison** | the paperwork included (`whyus-paperwork`: Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract), the veterinary health check, the guarantee as `data/settings.json` `guarantee_label` words it (its length is `guarantee_days`), pricing from `data/price-matrix.json` |
 | 8 | **Mid-page CTA** | "Still deciding? Talk to our breeder team." → inquiry form |
 | 9 | **Who Should Choose [A]?** | Lifestyle matching: singles, families, seniors, apartments, first-time puppy owners |
 | 10 | **Who Should Choose [B]?** | Same structure |

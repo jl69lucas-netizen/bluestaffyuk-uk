@@ -680,13 +680,22 @@ def test_the_unset_guarantee_scan_fires(tmp_path):
 # The length lives in data/settings.json (and CLAUDE.md's Brand context line may state it):
 # an instruction that types it is a second copy that drifts the day the breeder changes it
 # (Task 10b review, item 6). Point at `guarantee_label` instead.
-TYPED_LENGTH = re.compile(r"(?i)\b730\b|\btwo[- ]years?\b")
+TYPED_LENGTH = re.compile(r"(?i)\b730\b|\b(?:two|2)[- ]years?\b|\b24[- ]months?\b|\b104 weeks\b")
 
 
 def typed_guarantee_lengths(path: pathlib.Path):
-    return ["%s:%d  %s" % (path.name, n, line.strip()[:120])
-            for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
-            if GUARANTEE.search(line) and TYPED_LENGTH.search(line) and not NOT_OURS.search(line)]
+    """A guarantee line that types the length on it, or on the line after it (a length wrapped
+    onto the next line is the same copy)."""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    out = []
+    for n, line in enumerate(lines, 1):
+        if not GUARANTEE.search(line) or NOT_OURS.search(line):
+            continue
+        nxt = lines[n] if n < len(lines) else ""
+        nxt = "" if GUARANTEE.search(nxt) else nxt  # a guarantee line is judged on its own
+        if TYPED_LENGTH.search(line) or TYPED_LENGTH.search(nxt):
+            out.append("%s:%d  %s" % (path.name, n, line.strip()[:120]))
+    return out
 
 
 def test_no_instruction_but_claude_md_types_the_guarantee_length():
@@ -701,5 +710,10 @@ def test_the_typed_length_scan_fires(tmp_path):
     p.write_text("The guarantee is `guarantee_days` (730 days).\n"
                  "A two-year guarantee, read from `guarantee_days`.\n"
                  "The guarantee is `guarantee_label` in data/settings.json; read it, never type it.\n"
-                 "Their two-year guarantee has no terms.\n", encoding="utf-8")
-    assert [b.split("  ")[0] for b in typed_guarantee_lengths(p)] == ["x.md:1", "x.md:2"]
+                 "Their two-year guarantee has no terms.\n"
+                 "A 2-year guarantee.\n"
+                 "The guarantee runs 24 months.\n"
+                 "The health guarantee lasts\n"
+                 "two years from collection.\n"
+                 "Nothing here.\n", encoding="utf-8")
+    assert [b.split("  ")[0] for b in typed_guarantee_lengths(p)] == ["x.md:1", "x.md:2", "x.md:5", "x.md:6", "x.md:7"]

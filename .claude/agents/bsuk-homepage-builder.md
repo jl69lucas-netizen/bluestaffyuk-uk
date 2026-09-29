@@ -222,7 +222,7 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 
 ### FAQ (id="faq" · FAQPage schema)
 - The kit's `Faq` over rows from `data/faq.json` (`loadFaq()`, `src/lib/faq.ts`); the FAQPage node is built from the SAME rows and passed through `BaseLayout`'s `schema` prop — never an inline `<script type="application/ld+json">` block (banned above) and never a hand-built `<details>` accordion
-- Minimum 8 questions covering: price and deposit, the paperwork that goes home with a puppy (`whyus-paperwork`), coat colour, collection vs delivery; a health guarantee only as `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) and `guarantee_label` word it
+- Minimum 8 questions covering: price and deposit, the paperwork that goes home with a puppy (`whyus-paperwork`), coat colour, collection vs delivery; a health guarantee only as `data/settings.json` `guarantee_label` words it (its length is `guarantee_days`)
 
 ### The close (id="talk-to-us") — no form
 - The homepage carries NO enquiry form. `ContactFormKit` is mounted once on the contact page (`/uk-blue-staffy-breeders-contact/`) and on each sales page; the close links to the contact page
