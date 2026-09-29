@@ -272,7 +272,8 @@ ontology does not hold yet is routed to a ledger or ontology update through
 when it is not a result. A test result or score always needs its ledger `proof` (rule 9): the
 Q9 row of the rulings permits a page to NAME the tests and the screening, never to state a
 result. So the ten "tested clear" lines on `/blue-staffy-health-uk/` (`parents-dna-clear`,
-proof `NOT FETCHED`) are §5b hits, not ledger updates; whether the breeder holds the
+proof `NOT FETCHED`; count every line that states a result — the ledger's regex is a lower bound,
+not the count) are §5b hits, not ledger updates; whether the breeder holds the
 certificates is a question for her on the answer board.
 
 **5b. Hard FAIL, not a score** — a page that carries any of these fails the gate:
@@ -315,7 +316,7 @@ all not examined is `NOT MEASURED`.
 | # | Score | Class | Rule |
 |---|---|---|---|
 | 1 | Visual Hierarchy | measured | 10 × §2a dimensions passed ÷ 7 (hero, dominant element, heading scale, reading order, section rhythm, grid, spacing); the hero is judged at 1280 only (its §2a condition is a desktop fold), every other dimension at 375, 768 and 1280 and passes only at all three |
-| 2 | Visual Consistency | measured | 10 × token checks passed ÷ 5 (display font on headings, body font, Title Case, no hex outside tokens, one CTA pill style); line length and line-height are row 9's, never counted here too |
+| 2 | Visual Consistency | measured | 10 × token checks passed ÷ checks examined, of 5 (display font on headings, body font, Title Case, no hex outside tokens, one CTA pill style — not examined on a page with no pill); line length and line-height are row 9's, never counted here too |
 | 3 | Visual Trust | measured | 10 × present ÷ 3 above 50% scroll at 1280 (the paperwork list, a review from `data/reviews.json`, the breeder named) |
 | 4 | Visual Information Gain | judgment | share of non-decorative images whose §3 row teaches something the prose does not, × 10 |
 | 5 | Visual Communication | judgment | 2 × the mean of the §3 educational and search values (each /5) |
@@ -323,9 +324,9 @@ all not examined is `NOT MEASURED`.
 | 7 | Visual Conversion | measured | 10 × checks passed ÷ checks examined (a CTA visible without scrolling at 1280; a CTA within every 700 words of `<main>`; the delivery band on every puppy card; one form on the page) |
 | 8 | Visual Accessibility | measured | 10 × checks passed ÷ 4 (0 AA contrast failures on visible nodes; every tap target ≥ 24px; no skipped heading level; no missing and no duplicated non-empty alt) |
 | 9 | Visual Readability | measured | 10 × checks passed ÷ 3 (no `<p>` wider than 75ch at 768, against the 65ch measure; body line-height 1.6–1.7; no clamp band inverted between widths) |
-| 10 | Visual AI Readiness | derived | 10 × checks passed ÷ checks examined (`npm run check:schema` output filtered to the page's route shows nothing blocking; every infographic claim also present as page text; `python3 scripts/aeo_audit.py <route>` no BLUF WARN) |
+| 10 | Visual AI Readiness | derived | 10 × checks passed ÷ checks examined (`npm run check:schema` output filtered to the page's route shows nothing blocking — it rewrites `docs/reports/schema.md`, so a read-only run reads that report when it is newer than the build, else scores the check `NOT MEASURED`; every infographic claim also present as page text; `python3 scripts/aeo_audit.py <route>` no BLUF WARN) |
 | 11 | Visual Verbalization | derived | 10 × §3 rows with all eight fields filled ÷ non-decorative images |
-| 12 | Visual Differentiation | measured | for each sibling pair, 10 × checks passed ÷ 4 (0 prose crossover; 0 header crossover; ≥ 3 refresh deltas; no served image file in the same role — the hero, or the same section — on both pages; reuse in a different role is allowed by working rules 11 and 17); the row scores the worst pair, and names it |
+| 12 | Visual Differentiation | measured | for each sibling pair, 10 × checks passed ÷ 4 (0 prose crossover; 0 header crossover, footer and header chrome excluded; ≥ 3 refresh deltas; no served image file in the same role — the hero, or the same section — on both pages; reuse in a different role is allowed by working rules 11 and 17); the row scores the worst pair, and names it |
 | 13 | Function Density | derived | 10 when functions present ÷ 1,000 words is 1.5–6; 5 when within half that band again (0.75–1.5 or 6–9); else 0 |
 | 14 | Function Diversity | report | distinct functions ÷ taxonomy size, reported with no threshold |
 | 15 | **Function Coverage** | gate | required set satisfied ÷ required set (§4a) = 100% |
