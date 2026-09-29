@@ -83,13 +83,14 @@ def test_the_locations_template_expands_to_every_slug_in_locations_json(repo):
     assert "/uk-locations/blue-staffies-leeds/" in routes
 
 
-def test_a_city_with_its_own_page_file_is_dated_by_that_file_alone(repo):
+def test_a_city_with_its_own_page_file_is_dated_by_that_file_and_its_row(repo):
     """src/pages/uk-locations/[slug].astro skips a city whose page has its own file (the London
-    component design pass, Plan 2); the map must agree, or the city carries the template's dates."""
+    component design pass, Plan 2), so the template's commits no longer date it: its own file
+    and its own row do (Task 8c). The URL was published when its row first built it."""
     _write(repo, "src/pages/uk-locations/blue-staffies-glasgow.astro", "<h1>own page</h1>")
     _commit(repo, "2026-03-09")
     routes = G.build()[0]
-    assert routes["/uk-locations/blue-staffies-glasgow/"]["datePublished"] == "2026-03-09"
+    assert routes["/uk-locations/blue-staffies-glasgow/"]["datePublished"] == "2026-01-05"
     assert routes["/uk-locations/blue-staffies-glasgow/"]["dateModified"] == "2026-03-09"
 
 
@@ -189,9 +190,9 @@ def test_an_ignored_short_sha_is_compared_as_the_full_commit(repo):
 def test_the_floor_with_no_committed_map_leaves_git_dates_alone(repo):
     """No committed data/page-dates.json yet: there is no floor, and a page is dated by git."""
     assert G.published_floor() == {}
-    _write(repo, "src/pages/uk-locations/blue-staffies-glasgow.astro", "<h1>own page</h1>")
+    _write(repo, "src/pages/new-page.astro", "<h1>a new page</h1>")
     _commit(repo, "2026-03-09")
-    assert G.build()[0]["/uk-locations/blue-staffies-glasgow/"]["datePublished"] == "2026-03-09"
+    assert G.build()[0]["/new-page/"]["datePublished"] == "2026-03-09"
 
 
 def test_the_floor_with_no_git_raises_nogit(repo, monkeypatch):
@@ -383,16 +384,72 @@ def test_an_unrendered_key_on_every_row_dates_nothing(repo):
     assert set(_city_dates(repo).values()) == {"2026-02-01"}
 
 
-def test_the_rendered_keys_are_the_keys_each_template_reads():
-    """The allowlist is pinned to the templates: every listed key is read by its template, and
-    every key of the real data file that the template reads is listed."""
+def _row_keys_read(src, var):
+    """Keys of a data row that one page source reads through the variable `var`: `var.key`
+    reads and `const { a, b } = var` destructures. Raises when the row is passed on whole
+    (`<X loc={loc} />`, `{...loc}`, `f(loc)`): the keys read past that point are unknowable."""
+    passes = re.findall(rf"=\{{\s*{var}\s*\}}|\{{\s*\.\.\.\s*{var}\s*\}}|[\w$]\(\s*{var}\s*[,)]", src)
+    if passes:
+        raise AssertionError(f"the row `{var}` is passed on whole ({passes[0]!r}); the keys it "
+                             "renders are unknowable here, so list them by hand or stop passing it")
+    keys = set(re.findall(rf"\b{var}\.([A-Za-z_0-9]+)", src))
+    for group in re.findall(rf"const\s*\{{([^}}]*)\}}\s*=\s*{var}\b", src):
+        keys |= {k.split(":")[0].split("=")[0].strip() for k in group.split(",") if k.strip()}
+    return keys
+
+
+def _row_vars(src, data_name):
+    """The variables a page binds to one row of its data file: a template's `const { loc } =
+    Astro.props`, or an own-file page's `const loc = (locations …).find(…)`."""
+    names = set(re.findall(rf"const\s+(\w+)\s*=\s*\(?\s*{data_name}\b[^;\n]*\.find\(", src))
+    for group in re.findall(r"const\s*\{([^}]*)\}\s*=\s*Astro\.props", src):
+        names |= {k.split(":")[0].strip() for k in group.split(",") if k.strip()}
+    return names
+
+
+def test_the_rendered_keys_are_the_keys_each_page_reads():
+    """The allowlist is pinned to every page that renders a row (Task 8c): the [slug].astro
+    template AND each own-file page (London's scaffold). The keys they read, together, are
+    exactly RENDERED's; a row passed on whole fails with the reason."""
     root = pathlib.Path(__file__).resolve().parents[2]
-    for data_file, (template, var) in {"data/locations.json": ("src/pages/uk-locations/[slug].astro", "loc"),
-                                       "data/puppies.json": ("src/pages/available-puppies/[slug].astro", "p")}.items():
-        src = (root / template).read_text(encoding="utf-8")
-        read = set(re.findall(rf"\b{var}\.([a-z_0-9]+)", src))
+    for data_file, (folder, data_name) in {"data/locations.json": ("src/pages/uk-locations", "locations"),
+                                           "data/puppies.json": ("src/pages/available-puppies", "puppies")}.items():
+        pages = [p for p in sorted((root / folder).glob("*.astro")) + sorted((root / folder).glob("*/index.astro"))
+                 if p.name != "index.astro" or p.parent != root / folder]
+        read, readers = set(), 0
+        for page in pages:
+            src = page.read_text(encoding="utf-8")
+            for var in _row_vars(src, data_name):
+                readers += 1
+                read |= _row_keys_read(src, var)
         keys = {k for r in json.loads((root / data_file).read_text()) for k in r}
+        assert readers, data_file
+        assert read & keys <= set(G.RENDERED[data_file]), (data_file, sorted(read & keys - set(G.RENDERED[data_file])))
         assert set(G.RENDERED[data_file]) == read & keys, data_file
+
+
+def test_the_key_reader_follows_destructures_and_refuses_a_pass_through():
+    assert _row_keys_read("const { title, h1: head } = loc; loc.city", "loc") == {"title", "h1", "city"}
+    for src in ("<Card loc={loc} />", "<Card {...loc} />", "render(loc)"):
+        with pytest.raises(AssertionError, match="unknowable"):
+            _row_keys_read(src, "loc")
+
+
+def test_an_own_file_city_is_dated_by_its_row_too(repo):
+    """Task 8c, I1: a city with its OWN page file still renders its row (London's scaffold reads
+    loc.title, loc.description, loc.body_html), so a rendered edit to that row re-dates it, and
+    an unrendered edit does not."""
+    _write(repo, "src/pages/uk-locations/blue-staffies-glasgow.astro", "<h1>{loc.title}</h1>")
+    _write(repo, "data/locations.json", json.dumps([{"slug": "blue-staffies-glasgow", "title": "a"}]))
+    _commit(repo, "2026-02-01")
+    route = "/uk-locations/blue-staffies-glasgow/"
+    assert G.build()[0][route]["dateModified"] == "2026-02-01"
+    _write(repo, "data/locations.json", json.dumps([{"slug": "blue-staffies-glasgow", "title": "a", "word_count": 9}]))
+    _commit(repo, "2026-02-10")
+    assert G.build()[0][route]["dateModified"] == "2026-02-01", "an unrendered key dates nothing"
+    _write(repo, "data/locations.json", json.dumps([{"slug": "blue-staffies-glasgow", "title": "b", "word_count": 9}]))
+    _commit(repo, "2026-03-09")
+    assert G.build()[0][route]["dateModified"] == "2026-03-09"
 
 
 ROWS8 = [f"x{i}" for i in range(1, 9)]

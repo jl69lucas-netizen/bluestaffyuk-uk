@@ -496,6 +496,17 @@ def build():
               if p not in DYNAMIC]
     pages = [(route_for(p), [p]) for p in static if "[" not in p]
     static_routes = frozenset(r for r, _ in pages)
+    own_row_routes = set()
+    # An OWN-FILE page for a data row (London's scaffold, /uk-locations/<slug>.astro) still
+    # renders that row (its title, description, migrated body), so the row is its second source,
+    # compared on the same rendered keys (Task 8c).
+    for kind in DYNAMIC.values():
+        if kind == "blog":
+            continue
+        data_file, base = kind
+        own = {f"{base}{slug}/": f"{data_file}{ROW}{slug}" for slug in rows_with_slugs(data_file)}
+        pages = [(r, srcs + [own[r]] if r in own else srcs) for r, srcs in pages]
+        own_row_routes.update(r for r in own if r in static_routes)
     for template in sorted(DYNAMIC):
         if (ROOT / template).exists():
             pages += expand(template, static_routes)
@@ -539,8 +550,11 @@ def build():
         # inline in the BODY rather than passing it via the schemaJson prop cannot be
         # detected from props, and would end up with TWO contradicting dates. Detect it at
         # the source and let the layout honour the flag.
+        # An own-file page's schema is its own file's; the row it reads for its words does not
+        # make it self-dated (the data file mentions dateModified in other rows' schema).
+        flag_sources = sources[:-1] if route in own_row_routes else sources
         self_dated = any("dateModified" in (ROOT / p.split(ROW, 1)[0]).read_text(encoding="utf-8", errors="ignore")
-                         for p in sources)
+                         for p in flag_sources)
         routes[route] = {
             "datePublished": first,
             "dateModified": last,
