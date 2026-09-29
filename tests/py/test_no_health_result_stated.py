@@ -37,6 +37,10 @@ RESULT = [
     TEST + r"[^.:]{0,60}:\s*clear\b",
     r"\bclear\s+both\s+parents\b",
     r"\bnon-?carriers?\b",
+    # review minor 1: "L-2-HGA: normal", "lists her as clear", "scored well on her eye screening"
+    TEST + r"\)?\s*:?\s*normal\b",
+    r"\blists?\s+(?:her|him|them|both|the\s+(?:dam|sire|parents?))\s+as\s+clear\b",
+    r"\bscored\s+well\s+on\b",
     r"\bcame\s+back\s+clear\b",
     r"[‘'\"]clear[’'\"]\s+results?",
     r"\bclear\s+certificates?\b",
@@ -64,7 +68,8 @@ HEALTH_CONTEXT = re.compile(
     r"|\beyes?\b|\belbows?\b|\bgenetic\w*|\bhereditary\b|\binherited\b")
 RESULT_WORD = re.compile(
     r"(?i)\bclear(?:ed)?\b(?!\s+(?:eyes|overview))|\bnegative\b|\bresults?\b|\bcertificates?\b|\bcertified\b"
-    r"|\bpass(?:ed|es)?\b(?!\s+(?:the\s+gene|it\s+on|either|that\s+condition|them\s+on|on\b|down\b))"
+    r"|(?<!one )\bpass(?:ed|es)?\b(?!\s+(?:the\s+gene|it\s+on|either|that\s+condition|them\s+on|on\b|down\b"
+    r"|facts-preserved|link\s+parity|the\s+form|every\s+gate|the\s+gate))"
     r"|\bunaffected\b|\bfree\s+(?:of|from)\b")
 # Denials and plain descriptions of what a test is are not results.
 DENIAL = re.compile(r"(?i)\b(?:no|never\s+a|not\s+a|not\s+any)\s+(?:(?:DNA|test|health)\s+)?(?:results?|certificates?)\b")
@@ -196,7 +201,10 @@ def test_the_patterns_fire_on_the_old_lines_and_spare_the_test_names():
                 "healthy results on both parents", "certificate on request",
                 "Jones has a clear L-2-HGA result", "came back clear", "ask to see a clear certificate",
                 "Ask to see the certificate for each test before you pay a deposit.",
-                "A good breeder offers the results before you ask, lets you meet the mother"]:
+                "A good breeder offers the results before you ask, lets you meet the mother",
+                # review minor 1 (2026-09-29)
+                "L-2-HGA: normal", "HC-HSF4 normal on both parents", "The registry lists her as clear",
+                "The Kennel Club database lists him as clear for HC-HSF4", "Maggie scored well on her eye screening"]:
         assert result_lines(old), old
     for named in ["Maggie and Jones are DNA tested for L-2-HGA and HC-HSF4, and both have their eyes and elbows screened.",
                   "it is not a test result and not a grade",
@@ -207,7 +215,10 @@ def test_the_patterns_fire_on_the_old_lines_and_spare_the_test_names():
                   "We hold no DNA certificates, so we name the tests and quote no result.",
                   "Keep both clear of the road", "Make the rules clear for both",
                   "Ask whether the dam is clear", "We will show you the vaccination certificates",
-                  "Bright, clear eyes, no discharge or redness."]:
+                  "Bright, clear eyes, no discharge or redness.",
+                  # review minor 1: "one pass" and a gate that "passes" are not results
+                  "so a family can see, in one pass, what was tested",
+                  "it passes facts-preserved and link parity", "a normal day with a Staffy"]:
         assert result_lines(named) == [], named
 
 
@@ -222,20 +233,6 @@ def test_the_ledger_row_records_that_no_certificate_is_held():
     assert "answer board q01" in row["barrier"] and "no DNA certificates" in row["barrier"], row
 
 
-def test_the_health_records_intents_state_no_result():
-    """Review M5 (2026-09-29): the health board record's intents still described clear parents,
-    DNA results and certificates to read. The record is the page's plan, so it follows the page."""
-    record = json.loads((ROOT / "data/boards/blue-staffy-health-uk.json").read_text(encoding="utf-8"))
-    bad = []
-    for i, s in enumerate(record["sections"]):
-        for where, t in [("intent", s.get("intent", ""))] + [
-                (f"tree/{j}/intent", n.get("intent", "")) for j, n in enumerate(s.get("tree", []))]:
-            # a pointer to DNA certificates to read (the registration certificate is real)
-            if result_lines(t or "") or re.search(r"(?i)\bthe certificates are there\b", t or ""):
-                bad.append(f"/sections/{i}/{where}: {t[:100]}")
-    assert bad == [], "\n".join(bad)
-
-
 def test_the_review_m6_lines_are_reworded():
     """Review M6: a verbatim claim that only follows from a result ("actively preventing …"), an
     unproven one ("free from any other underlying health issues"), a heading that implies the
@@ -247,3 +244,81 @@ def test_the_review_m6_lines_are_reworded():
     assert "free from any other underlying health issues" not in health
     assert "L-2-HGA Tested Staffies?" not in why_us and "From L-2-HGA Tested Parents?" in why_us
     assert "Write to us and ask for the health paperwork , and the registration papers" in health
+
+
+# ── the board records' plan text (review follow-up, 2026-09-29) ──────────────────────────────
+# A record is the plan a rebuild follows. Plan text that asks for "what the result was", a table
+# "a buyer can hold against a certificate" or "DNA tested clear" would steer the next rebuild back
+# to stating results. Every rebuilt record's plan fields are held to the page's rule; the
+# history (`verbatim`, `dropped`) and the competitor fetches (`meta.sources`) are not plan text.
+REBUILT = json.loads((ROOT / "data/facts/rebuilt.json").read_text(encoding="utf-8"))
+# One plan line is a list of things the page must NOT restate, and names a clearance only as one.
+PLAN_EXCUSED = {("blue-staffy-pup-sale-uk", "/brief/done"):
+                "lists 'the DM clearance' among what the page may not restate (out of scope)",
+                ("buy-blue-staffy-puppies-uk", "/sections/10/options/note"):
+                "names the FAQ row id `listing-health-clearances`, an identifier; its question and answer are reworded"}
+
+
+def _strings(o, p):
+    if isinstance(o, dict):
+        for k, v in o.items():
+            yield from _strings(v, f"{p}/{k}")
+    elif isinstance(o, list):
+        for i, v in enumerate(o):
+            yield from _strings(v, f"{p}/{i}")
+    elif isinstance(o, str):
+        yield p, o
+
+
+def plan_text(rec):
+    brief = rec.get("brief") or {}
+    for k in ("goal", "done", "angles"):
+        if k in brief:
+            yield from _strings(brief[k], f"/brief/{k}")
+    yield from _strings(((brief.get("cta") or {}).get("anchors")) or [], "/brief/cta/anchors")
+
+    def tree(nodes, p):
+        for j, n in enumerate(nodes or []):
+            if isinstance(n, dict):
+                if isinstance(n.get("intent"), str):
+                    yield f"{p}/{j}/intent", n["intent"]
+                yield from tree(n.get("children"), f"{p}/{j}/children")
+
+    for i, sec in enumerate(rec.get("sections", [])):
+        at = f"/sections/{i}"
+        for k in ("intent", "why"):
+            if isinstance(sec.get(k), str):
+                yield f"{at}/{k}", sec[k]
+        yield from tree(sec.get("tree"), at + "/tree")
+        for kind in ("internal", "external"):
+            for j, link in enumerate(((sec.get("links") or {}).get(kind)) or []):
+                for k in ("anchor", "why"):
+                    if isinstance(link, dict) and isinstance(link.get(k), str):
+                        yield f"{at}/links/{kind}/{j}/{k}", link[k]
+        note = (sec.get("options") or {}).get("note")
+        if isinstance(note, str):
+            yield f"{at}/options/note", note
+        for k in ("questions", "keywords"):
+            if k in sec:
+                yield from _strings(sec[k], f"{at}/{k}")
+
+
+def test_rebuilt_board_records_plan_no_result():
+    bad, examined = [], 0
+    for slug in REBUILT:
+        rec = json.loads((ROOT / f"data/boards/{slug}.json").read_text(encoding="utf-8"))
+        for where, text in plan_text(rec):
+            examined += 1
+            if (slug, where) in PLAN_EXCUSED:
+                continue
+            for hit in result_lines(text):
+                bad.append(f"{slug} {where}: …{hit[:120]}…")
+    assert examined > 500, f"examined only {examined} plan strings"
+    assert bad == [], "\n".join(bad)
+
+
+def test_the_plan_excusal_is_still_needed():
+    for (slug, where), why in PLAN_EXCUSED.items():
+        rec = json.loads((ROOT / f"data/boards/{slug}.json").read_text(encoding="utf-8"))
+        text = dict(plan_text(rec))[where]
+        assert result_lines(text), f"{slug} {where} is clean: drop it ({why})"

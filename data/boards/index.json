@@ -313,7 +313,7 @@
       "id": "top",
       "heading": "Blue Staffy Puppies, Raised At Home In Carlisle",
       "shape": "hero",
-      "intent": "The front door, in Lisa Bright's first person, and the whole site in one paragraph: we are a family in Carlisle raising blue Staffordshire Bull Terrier puppies in the house, both parents are DNA tested clear of L-2-HGA and HC-HSF4, and every puppy we have is listed with its price and its status. It says what a reader can do next — see the puppies, read what a puppy costs, or write to us — and it makes no ranking claim, because the migrated H1 made one and had nothing behind it. The kit Hero is given no trust chips and no CTA buttons (spec section 9 amendment 6a); the image is the migrated page's own primaryImageOfPage at its original path.",
+      "intent": "The front door, in Lisa Bright's first person, and the whole site in one paragraph: we are a family in Carlisle raising blue Staffordshire Bull Terrier puppies in the house, both parents are DNA tested for L-2-HGA and HC-HSF4, and every puppy we have is listed with its price and its status. It says what a reader can do next — see the puppies, read what a puppy costs, or write to us — and it makes no ranking claim, because the migrated H1 made one and had nothing behind it. The kit Hero is given no trust chips and no CTA buttons (spec section 9 amendment 6a); the image is the migrated page's own primaryImageOfPage at its original path.",
       "why": "The migrated H1 was 'Secure Your blue Staffy puppies for sale UK: Safe Delivery & Verified Papers.' and the title above it counted puppies and called us absolute ethical breeders — a count that goes stale and a superlative measured against nothing.",
       "why_source": "src/pages/index.astro — the migrated H1 and the primaryImageOfPage; data/page-map.json — the migrated title '4 Blue Staffy Puppies For Sale UK | Absolute Ethical Breeders'; data/settings.json — location_label Carlisle · Cumbria",
       "words": {
@@ -497,7 +497,7 @@
       "id": "trust",
       "heading": "Key Takeaways: The BluestaffyUK Promise",
       "shape": "trust",
-      "intent": "The kit TrustStrip: the four things about this kennel that are documents rather than adjectives — Kennel Club registration, the two DNA clearances for both parents, the first vaccination and the microchip, and a home rather than a kennel block. Each one is something a buyer can be shown, which is the test the rebuilt site applies to every claim it makes.",
+      "intent": "The kit TrustStrip: the four things about this kennel that are documents rather than adjectives — Kennel Club registration, the two DNA tests on both parents, the first vaccination and the microchip, and a home rather than a kennel block. Each one is something a buyer can be shown, which is the test the rebuilt site applies to every claim it makes.",
       "why": "Of the five scanned breeder homepages, four argue by adjective — premium, elite, best in the UK, the highest standard — and the one that prints a licence number prints it as a heading with no certificate attached. Naming only the things a reader can be handed is the gap.",
       "why_source": "https://ukstaffypups.uk/ and https://www.exodusbulls.co.uk/ (scan 2026-09-20) — adjectives and titles, no document; data/settings.json — Carlisle · Cumbria; data/facts/index.json — KC-registered, Kennel Club, DEFRA, L-2-HGA, HC-HSF4, microchip, vaccinat",
       "words": {
@@ -1106,7 +1106,7 @@
         "internal": [
           {
             "href": "/blue-staffy-health-uk/",
-            "anchor": "The full test results, vaccination dates and health records",
+            "anchor": "The DNA tests, vaccination dates and health records",
             "why": "carried from the migrated page (anchor 'Blue Staffy health and welfare page')",
             "sentence_start": true
           }
@@ -1130,7 +1130,7 @@
         {
           "level": 3,
           "heading": "The Two Tests On Maggie And Jones",
-          "intent": "What L-2-HGA and HC-HSF4 are, and what a clear result on both parents means.",
+          "intent": "What L-2-HGA and HC-HSF4 are, and what testing both parents for them means.",
           "children": []
         },
         {
@@ -1153,7 +1153,7 @@
         "lsi": [
           "L-2-HGA",
           "HC-HSF4",
-          "DNA tested clear",
+          "DNA tested parents",
           "microchipped",
           "first vaccination"
         ],
@@ -1178,8 +1178,8 @@
       "id": "health",
       "heading": "Our Commitment to the Health of Every Puppy We Raise",
       "shape": "standard",
-      "intent": "The condensed health case, and the one part of a homepage that should be specific: Maggie, the dam, and Jones, the sire, are DNA tested clear of L-2-HGA and HC-HSF4, and every puppy is microchipped and has had its first vaccination before it leaves. It names the two tests and nothing else, and links /blue-staffy-health-uk/ for the table, the second vaccination, the booster and the conditions the breed is watched for. No guarantee is offered: data/settings.json holds guarantee_days null.",
-      "why": "The migrated homepage said the parents were screened 'for common breed-specific conditions' and then, in the FAQ, glossed L-2-HGA as 'Hereditary Cataracts' and HC-HSF4 as 'Hereditary Cataracts – Hereditary Clear', which is wrong about the first test and meaningless about the second.",
+      "intent": "The condensed health case, and the one part of a homepage that should be specific: Maggie, the dam, and Jones, the sire, are DNA tested for L-2-HGA and HC-HSF4, and every puppy is microchipped and has had its first vaccination before it leaves. It names the two tests and nothing else, and links /blue-staffy-health-uk/ for the table, the second vaccination, the booster and the conditions the breed is watched for. The guarantee is stated from data/settings.json, never typed.",
+      "why": "The migrated homepage said the parents were screened 'for common breed-specific conditions' and then, in the FAQ, glossed both test names wrongly: it called L-2-HGA a cataract test and gave HC-HSF4 a meaningless gloss.",
       "why_source": "src/pages/index.astro — the migrated FAQ gloss of the two tests; data/boards/blue-staffy-health-uk.json — Maggie and Jones, L-2-HGA and HC-HSF4 DNA tested clear; data/settings.json — guarantee_days null",
       "words": {
         "min": 120,
@@ -2139,7 +2139,7 @@
         "What comes with a blue Staffy puppy from you?",
         "How much is the deposit, and can I get it back?",
         "Do you deliver a puppy, or do I collect it?",
-        "Which genetic tests have both parents been cleared for?",
+        "Which genetic tests have both parents had?",
         "What makes you an ethical blue Staffy breeder?",
         "Are blue Staffies good family pets with children?",
         "Where in the UK are the puppies raised?",
@@ -2516,7 +2516,7 @@
       "why-choose": "S2",
       "your-questions-about-blue-staffies-answered": "S3"
     },
-    "record_hash": "12ee520979a95b2b41d2441e07d519687802dcb554711a022748546a77a329ce",
+    "record_hash": "e9f445f66337a3b8b9395e43b294c458e412fd9e126a4d234ae61742a042da9b",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2536,7 +2536,7 @@
         "Kennel Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T16:38:55Z",
+    "reapproved_at": "2026-09-29T17:55:12Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:46:15Z",
@@ -2560,6 +2560,20 @@
         "reason": "Review of the answer-board q01 work (2026-09-29, C1-C4, I1-I4): the breeder holds no DNA certificates, so no line states or promises a result or sends a buyer to a certificate; wording reworded to name the tests, verbatim changes recorded as wrong facts.",
         "changed_paths": [
           "/sections/10/links/external/0/anchor"
+        ]
+      },
+      {
+        "at": "2026-09-29T17:55:12Z",
+        "reason": "Review follow-up (2026-09-29): plan text that would steer a rebuild back to stating DNA results (brief goal/done/angles, intents, whys, link anchors, questions, keywords) now names the tests or the vet records, never a result or a certificate we don't hold (answer board q01). Anchors now match what the built page already prints; no verbatim or dropped entry moves.",
+        "changed_paths": [
+          "/sections/0/intent",
+          "/sections/2/intent",
+          "/sections/10/intent",
+          "/sections/10/keywords/lsi/2",
+          "/sections/10/links/internal/0/anchor",
+          "/sections/10/tree/0/intent",
+          "/sections/10/why",
+          "/sections/19/questions/4"
         ]
       }
     ]
@@ -2668,9 +2682,9 @@
       }
     ],
     "section_hashes": {
-      "top": "d5dfd6bff9dab2b83158873cf1d03b6e2c79c52507754ba940a1c562a48a6e9c",
+      "top": "b42e32b68e99f6e57da63977d8960d9415769299c929e905df5f06482089d208",
       "at-a-glance": "e348745dcd9db979c084807762590cdc58b7d7ac55dcd8fa71e127e07bdeaaa1",
-      "trust": "a956905135bf4087c2e8cb167a1d2ef76ab626072efdc7bcf2ebc741a60232e7",
+      "trust": "a78b734511fa153f64a06779c176a6025dc86441882f286de0049fb7e9648ed7",
       "why-choose": "565d3b0548cefd06899a77ebb318dd84744adf8eb8f2a43cf903e920e03555d5",
       "owners-top": "b997a89160c1cbbbe1c8184f19d1dc46043b46dae45d8d330c89f81b40c91d13",
       "available-blue-staffy-puppies": "1c73acd428bd934a744e99c23e3cf5ed4a77952a8cd67effb2527c30fca75aea",
@@ -2678,7 +2692,7 @@
       "who-we-are": "c74cb5e289e587c1906740311d00bd8606d27c8dc211fd7e5f95fa96d9016d11",
       "video-our-home": "ba9b41dd8834759641785ea8233954dfe4eac2e06631b6ac3fcd12c4f4046866",
       "meet-the-parents": "6d13c65121185276bad824ba8bfcc9ff30d970f44be069b3dc12762e71ec0c3b",
-      "health": "83a42b90eee6d35ebc0e332942177a29221aec0ba95ad2f2d828f514daf49990",
+      "health": "af3db321e9a9e4d66445da3944c3d376b2dd4cb62cc52f3eb25b804c3e6a33a7",
       "the-breed": "92f3ddc3d8200101dfd967ed521f1b9eb5034eab083832fc3b5a6765402e1607",
       "video-breed": "960f94f5f13fa4d40bfcc3224d195c0c5297f83904c8bf6db965262cd763317c",
       "whats-included": "98936a3a1589c30ad0aee559b9076443456cb8376c2d9507b6f68277d6cf6bb3",
@@ -2687,7 +2701,7 @@
       "uk-locations": "b14593339ba94714405545a481661717e4da167ff21663775076de2d6c323421",
       "guides": "fb706a9f66414e0fa8fd025d0d9e91f03c2a78faf757ff35868cb5865c15eada",
       "our-happy-blue-staffy-owners-speak": "71d45812ba9e8027481b4110c5ae923a361227d1a55e08585c4ad712e9e0a9d8",
-      "your-questions-about-blue-staffies-answered": "bc6bd1810ea12f4cc590427a66ce28cc0e9ded8091bcd09d7af2f183a4f9cb1f",
+      "your-questions-about-blue-staffies-answered": "522104c1420cad1af08afeab3f85ddbbc22b8d077a28195734a79ba50c57a6cc",
       "talk-to-us": "3da8363274fdfe0558abf23c8ad02334d86e7612214629cc9c3eb59780a60857"
     }
   },

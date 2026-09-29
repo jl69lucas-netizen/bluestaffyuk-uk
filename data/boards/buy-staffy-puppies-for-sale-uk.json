@@ -101,7 +101,7 @@
     }
   },
   "brief": {
-    "goal": "Rebuild this page as the one page on the site that answers 'why you and not somebody else' — seven reasons, each with the test result, registration, record or contract behind it — so a reader can judge us as a breeder without first reading the price page or the litter page, and so nothing on it is a claim they would have to take on faith.",
+    "goal": "Rebuild this page as the one page on the site that answers 'why you and not somebody else' — seven reasons, each with the test named, or the registration, record or contract behind it — so a reader can judge us as a breeder without first reading the price page or the litter page, and so nothing on it is a claim they would have to take on faith.",
     "scope": "Fifteen sections: hero, the video, the trust strip, seven reasons as InfoCards, health testing, home raising, Kennel Club registration and the paperwork, after-care, the comparison, one review, the live puppy grid, how a puppy gets home, a thirteen-row FAQ, the enquiry form and the close. `compared` and `getting-home` are restored at Task 18b so the migrated page's comparison and delivery headings have a section to stand in rather than being dropped (working rule 15). All thirteen migrated images at their original paths, and the page's one YouTube embed (g88qOo9C94c) at its original id.",
     "gates": [
       "facts-preserved",
@@ -131,7 +131,7 @@
     "angles": [
       {
         "name": "the evidence page",
-        "hook": "seven reasons in a row, each one a sentence and the document, test result or record that backs it, with the price and the litter one link away",
+        "hook": "seven reasons in a row, each one a sentence and the document, named test or record that backs it, with the price and the litter one link away",
         "why_not": ""
       },
       {
@@ -157,7 +157,7 @@
       },
       "destination": "#enquiry",
       "anchors": [
-        "Ask us for the certificates",
+        "Ask us which tests the parents have had",
         "Arrange a visit to meet them",
         "Tell us what you would like to see"
       ],
@@ -399,7 +399,7 @@
       "id": "promises",
       "n": 3,
       "heading": "What Are the Key Takeaways When Choosing BlueStaffyUK for KC Registered Blue Staffy Puppies in the UK?",
-      "intent": "The kit trust strip, and the page's shortest answer: the four things we can actually hand a reader — both parents' DNA results, the Kennel Club paperwork, the veterinary health check and microchip record, and a written puppy purchase contract. Every item on the strip is a document or a test named in the migrated body or in data/, so nothing on it is a badge with nothing behind it.",
+      "intent": "The kit trust strip, and the page's shortest answer: the four things we can actually hand a reader — both parents' DNA tests, named, the Kennel Club paperwork, the veterinary health check and microchip record, and a written puppy purchase contract. Every item on the strip is a document or a test named in the migrated body or in data/, so nothing on it is a badge with nothing behind it.",
       "category": "A",
       "group": "COMPETITOR-BASED",
       "why": "Both scanned breeder pages use tick lists as the trust device and neither attaches evidence to a line: one prints 'KC Registered' as a badge, the other a seven-tick 'Why Choose Us?' list. A strip of things that can be produced on request is the same device with the evidence attached.",
@@ -539,7 +539,7 @@
       "id": "reasons",
       "n": 5,
       "heading": "Seven Reasons, And What Backs Each One",
-      "intent": "The page's spine: seven reasons as kit InfoCards, each one a sentence and the file or document behind it. The migrated meta title promised seven trusted reasons and the body listed five ticks, two of which cannot be carried — the price band is wrong (Known Issue 11) and 'lifelong family support' has no end date and no file behind it. The seven here are the ones the body substantiates: the two DNA clearances on both parents; Kennel Club registration and the pedigree it records; a puppy raised in our house; a written puppy purchase contract with the veterinary and registration records; microchipped, wormed and vaccinated before they leave; a visit to meet the litter and their mother by appointment; and collection from Carlisle or DEFRA-approved delivery priced by distance.",
+      "intent": "The page's spine: seven reasons as kit InfoCards, each one a sentence and the file or document behind it. The migrated meta title promised seven trusted reasons and the body listed five ticks, two of which cannot be carried — the price band is wrong (Known Issue 11) and 'lifelong family support' has no end date and no file behind it. The seven here are the ones the body substantiates: the two DNA tests on both parents; Kennel Club registration and the pedigree it records; a puppy raised in our house; a written puppy purchase contract with the veterinary and registration records; microchipped, wormed and vaccinated before they leave; a visit to meet the litter and their mother by appointment; and collection from Carlisle or DEFRA-approved delivery priced by distance.",
       "category": "A",
       "group": "MANDATORY",
       "why": "The migrated title sold seven reasons and the body listed five, of which two were a wrong price band and an open-ended support promise; the page has therefore never shown a reader the numbered list it was ranking for.",
@@ -601,7 +601,7 @@
         {
           "level": 3,
           "heading": "Health Comes First",
-          "intent": "Both parents DNA-tested clear of L-2-HGA and HC-HSF4 before any mating, and a veterinary health check on every puppy before it leaves.",
+          "intent": "Both parents DNA tested for L-2-HGA and HC-HSF4 before any mating, and a veterinary health check on every puppy before it leaves.",
           "children": []
         },
         {
@@ -625,7 +625,7 @@
         {
           "level": 3,
           "heading": "The Evidence, Not The Adjective",
-          "intent": "Each reason names the document or the test result it rests on.",
+          "intent": "Each reason names the document it rests on, or the test by name.",
           "children": []
         },
         {
@@ -665,10 +665,10 @@
       "id": "health-testing",
       "n": 6,
       "heading": "Why Does BlueStaffyUK Health Test Puppies and What Does It Mean to Have Staffies From L-2-HGA Tested Parents?",
-      "intent": "The first reason in full, and narrowly: both parents are DNA-tested and clear for L-2-HGA and HC-HSF4, the two inherited conditions the breed is screened for, and we will show you the genetic screening results and the veterinary records before you commit. It says what the tests are for in one line and links /blue-staffy-health-uk/ for the detail rather than repeating that page's table, which is the health page's own section. No third clearance is named.",
+      "intent": "The first reason in full, and narrowly: both parents are DNA tested for L-2-HGA and HC-HSF4, the two inherited conditions the breed is screened for, and the veterinary records are yours to read before you commit. No result is stated: the breeder holds no DNA certificates (answer board q01, 2026-09-29). It says what the tests are for in one line and links /blue-staffy-health-uk/ for the detail rather than repeating that page's table, which is the health page's own section. No third test is named.",
       "category": "A",
       "group": "MANDATORY",
-      "why": "One scanned breeder page names four screens in a tick list and explains none; the other says 'health testing' without naming a test. Naming two tests, saying what each looks for and offering the certificates is the version a reader can check.",
+      "why": "One scanned breeder page names four screens in a tick list and explains none; the other says 'health testing' without naming a test. Naming two tests and saying what each looks for is the honest version, and the veterinary records are the part a reader can read.",
       "why_source": "data/facts/buy-staffy-puppies-for-sale-uk.json — tests L-2-HGA, HC-HSF4, DNA; https://www.trojanstaffuk.com/ and https://ukstaffypups.uk/about-us (scan 2026-09-20)",
       "framework": "EEBP",
       "words": {
@@ -693,11 +693,11 @@
           "L-2-HGA",
           "HC-HSF4",
           "DNA test",
-          "clear parents",
+          "tested parents",
           "genetic screening"
         ],
         "longtail": [
-          "l-2-hga clear staffordshire bull terrier uk"
+          "l-2-hga tested staffordshire bull terrier uk"
         ],
         "brand": [
           "Blue Staffy UK"
@@ -726,13 +726,13 @@
         {
           "level": 3,
           "heading": "The Two Tests, And What Each Looks For",
-          "intent": "A clear parent cannot pass the condition on; the health page explains each result.",
+          "intent": "A puppy is affected only when it inherits the gene from both parents; the health page explains what each test looks for.",
           "children": []
         },
         {
           "level": 3,
           "heading": "Seeing The Paperwork",
-          "intent": "The screening results and the veterinary records are yours to read before you commit.",
+          "intent": "The veterinary records and the registration paperwork are yours to read before you commit.",
           "children": []
         }
       ],
@@ -1152,11 +1152,11 @@
           "L-2-HGA",
           "HC-HSF4",
           "DNA test",
-          "clear parents",
+          "tested parents",
           "genetic screening"
         ],
         "longtail": [
-          "l-2-hga clear staffordshire bull terrier uk"
+          "l-2-hga tested staffordshire bull terrier uk"
         ],
         "brand": [
           "Blue Staffy UK"
@@ -1413,11 +1413,11 @@
           "L-2-HGA",
           "HC-HSF4",
           "DNA test",
-          "clear parents",
+          "tested parents",
           "genetic screening"
         ],
         "longtail": [
-          "l-2-hga clear staffordshire bull terrier uk"
+          "l-2-hga tested staffordshire bull terrier uk"
         ],
         "brand": [
           "Blue Staffy UK"
@@ -1481,7 +1481,7 @@
       "id": "questions",
       "n": 14,
       "heading": "Questions About How We Raise Them",
-      "intent": "Thirteen rows from data/faq.json. Five are the outline's own — about-health-tests and about-home-raised, which the about page already sources and which are the two reasons this page leads on; puppy-package; and two sourced here, one on the paperwork and one on seeing the parents' results. The other eight are working rule 15's: the migrated page asked four questions as keyword H3s and four more in its accordion, and all eight are carried word for word. Four of the eight are breed-identity questions this page does not own, so each is SOURCED to the page that evidences it — the breed guide or the buying guide — and three of them carry the migrated answer as well, because that answer is a set opening. Accordion answers sit outside the section's word band (spec section 9 amendment 4a).",
+      "intent": "Thirteen rows from data/faq.json. Five are the outline's own — about-health-tests and about-home-raised, which the about page already sources and which are the two reasons this page leads on; puppy-package; and two sourced here, one on the paperwork and one on which health tests the parents have had. The other eight are working rule 15's: the migrated page asked four questions as keyword H3s and four more in its accordion, and all eight are carried word for word. Four of the eight are breed-identity questions this page does not own, so each is SOURCED to the page that evidences it — the breed guide or the buying guide — and three of them carry the migrated answer as well, because that answer is a set opening. Accordion answers sit outside the section's word band (spec section 9 amendment 4a).",
       "category": "A",
       "group": "COMPETITOR-BASED",
       "why": "Not one of the five scanned pages carries a single FAQ row about how a breeder works — the two breeder sites have none at all, and the classifieds' rows are about the site rather than about a litter.",
@@ -1521,7 +1521,7 @@
           "are the puppies raised in the home",
           "what comes with a puppy",
           "what paperwork do i get",
-          "can i see the test results",
+          "which health tests have the parents had",
           "where do i start with a staffy puppy",
           "american or english staffy",
           "are staffies banned in the uk",
@@ -1619,7 +1619,7 @@
         "How do I find an ethical Staffy breeder in the UK?",
         "What makes one Staffy breeder different from another?",
         "Are the parents of your Staffy puppies health tested?",
-        "Can I see the DNA test results for both parents?",
+        "Which DNA tests have both parents had?",
         "Are the puppies raised in the house or in kennels?",
         "What does KC registration actually cover?",
         "What paperwork comes with a Staffy puppy?",
@@ -1636,7 +1636,7 @@
         "candidates": [],
         "excluded": [],
         "pick": "S1",
-        "note": "Three rows are reused as they stand (about-health-tests and about-home-raised are sourced to src/pages/blue-staffy-uk-breeders/index.astro; puppy-package to src/pages/index.astro) and two are NEW, both sourced to src/pages/buy-staffy-puppies-for-sale-uk/index.astro: `whyus-paperwork`, 'What paperwork comes with a puppy?', whose tests/py/test_faq_data.py fact phrases are 'puppy purchase contract', 'vaccination records' and 'microchipping details'; and `whyus-evidence`, 'Can I see the health test results for both parents?', whose phrases are 'genetic screening results' and 'veterinary records'. All five phrases are in the migrated body today and all five are kept by this outline (`kennel-club` and `health-testing`). QUERY AUGMENTATION for 'buy staffy puppies for sale uk', ten questions, each mapped to a section or a row: q1 -> top; q2 -> reasons; q3 -> health-testing and the about-health-tests row; q4 -> health-testing and the whyus-evidence row; q5 -> home-raised and the about-home-raised row; q6 -> kennel-club; q7 -> kennel-club and the whyus-paperwork row; q8 -> after-care and the puppy-package row; q9 -> owners; q10 -> talk-to-us. No row is added for a question this page's body does not answer; price and delivery questions go to /blue-staffy-pup-sale-uk/. EIGHT ROWS ADDED AT TASK 18B under working rule 15. `whyus-start`, `whyus-american-english`, `whyus-not-banned` and `whyus-pit-bull` are the four questions the migrated page marked up as keyword H3s, and their migrated first paragraphs are openings of the same set: the first, second and fourth carry that paragraph as the answer word for word and the third carries it without its closing sentence about the Dangerous Dogs Act, which states the Act's test wrongly. `whyus-amstaff` and `whyus-prone-to` are two accordion questions carried verbatim with fresh answers, sourced to the breed guide and the health page. `whyus-stud-dogs` and `whyus-partner` are the last two accordion questions, carried without the '+' the old theme printed in front of them and sourced here: the parent dogs are `home-raised`'s own paragraph and the four documents are `promises`. No answer types a price, a percentage or a guarantee length."
+        "note": "Three rows are reused as they stand (about-health-tests and about-home-raised are sourced to src/pages/blue-staffy-uk-breeders/index.astro; puppy-package to src/pages/index.astro) and two are NEW, both sourced to src/pages/buy-staffy-puppies-for-sale-uk/index.astro: `whyus-paperwork`, 'What paperwork comes with a puppy?', whose tests/py/test_faq_data.py fact phrases are 'puppy purchase contract', 'vaccination records' and 'microchipping details'; and `whyus-evidence`, now 'Which health tests have both parents had?' (answer board q01, 2026-09-29), whose phrases are 'DNA tested' and 'veterinary records'. All five phrases are in the migrated body today and all five are kept by this outline (`kennel-club` and `health-testing`). QUERY AUGMENTATION for 'buy staffy puppies for sale uk', ten questions, each mapped to a section or a row: q1 -> top; q2 -> reasons; q3 -> health-testing and the about-health-tests row; q4 -> health-testing and the whyus-evidence row; q5 -> home-raised and the about-home-raised row; q6 -> kennel-club; q7 -> kennel-club and the whyus-paperwork row; q8 -> after-care and the puppy-package row; q9 -> owners; q10 -> talk-to-us. No row is added for a question this page's body does not answer; price and delivery questions go to /blue-staffy-pup-sale-uk/. EIGHT ROWS ADDED AT TASK 18B under working rule 15. `whyus-start`, `whyus-american-english`, `whyus-not-banned` and `whyus-pit-bull` are the four questions the migrated page marked up as keyword H3s, and their migrated first paragraphs are openings of the same set: the first, second and fourth carry that paragraph as the answer word for word and the third carries it without its closing sentence about the Dangerous Dogs Act, which states the Act's test wrongly. `whyus-amstaff` and `whyus-prone-to` are two accordion questions carried verbatim with fresh answers, sourced to the breed guide and the health page. `whyus-stud-dogs` and `whyus-partner` are the last two accordion questions, carried without the '+' the old theme printed in front of them and sourced here: the parent dogs are `home-raised`'s own paragraph and the four documents are `promises`. No answer types a price, a percentage or a guarantee length."
       }
     },
     {
@@ -2090,7 +2090,7 @@
       "top": "H-FS2",
       "video-why-us": "S3"
     },
-    "record_hash": "5ceaf9f33e149a076f726b118226f394cfd7665d18881467a0a6aee8547049c6",
+    "record_hash": "3ed6584859787ff89dd9477b9fa18ce1e9501b22c860c5325f22e263e407839d",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2110,7 +2110,7 @@
         "Reason Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T16:52:02Z",
+    "reapproved_at": "2026-09-29T17:55:19Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:12:30Z",
@@ -2175,6 +2175,33 @@
         "changed_paths": [
           "/sections/5/heading"
         ]
+      },
+      {
+        "at": "2026-09-29T17:55:19Z",
+        "reason": "Review follow-up (2026-09-29): plan text that would steer a rebuild back to stating DNA results (brief goal/done/angles, intents, whys, link anchors, questions, keywords) now names the tests or the vet records, never a result or a certificate we don't hold (answer board q01). Anchors now match what the built page already prints; no verbatim or dropped entry moves.",
+        "changed_paths": [
+          "/brief/angles/0/hook",
+          "/brief/cta/anchors/0",
+          "/brief/goal",
+          "/sections/2/intent",
+          "/sections/4/intent",
+          "/sections/4/tree/1/intent",
+          "/sections/4/tree/5/intent",
+          "/sections/5/intent",
+          "/sections/5/keywords/longtail/0",
+          "/sections/5/keywords/lsi/3",
+          "/sections/5/tree/1/intent",
+          "/sections/5/tree/2/intent",
+          "/sections/5/why",
+          "/sections/9/keywords/longtail/0",
+          "/sections/9/keywords/lsi/3",
+          "/sections/12/keywords/longtail/0",
+          "/sections/12/keywords/lsi/3",
+          "/sections/13/intent",
+          "/sections/13/keywords/conversational/4",
+          "/sections/13/options/note",
+          "/sections/13/questions/3"
+        ]
       }
     ]
   },
@@ -2222,17 +2249,17 @@
     "section_hashes": {
       "top": "d9e8ff9fe84ebd6924015a788d93fd4be30dc8e0fa37c8aeefcfed15b8e5c881",
       "video-why-us": "6e96a71b92cb2672dba3e47eb4a325075d35f3de3843c249c6f8cb492445b2b9",
-      "promises": "8024cfeaeb32dec3ce3b8e33084b50837102cd3d52af18203f1cf3abf3d11915",
-      "reasons": "3180cf3981e7322ff909cd7385adb26d9d51cd40dcb97499f186ad0a30b6a5bf",
-      "health-testing": "7dfa52d0b5a737216c594c02bf7097e50907e6cda23bc033d4c3508e5f8d3778",
+      "promises": "836cc750afab30ba8d6f32b6f2918d64e52cff0d0fb482fdedaab4c0f99cf8db",
+      "reasons": "dd0835f9edd6de9a8be8e99fa30ce06f0f9eaaae73829edcc45111e0ea775316",
+      "health-testing": "9af2017194e9d04b8772fb8808b5a04376f0e8cc869305dcaa66965a6ff5e592",
       "home-raised": "c4af2a9868db5ca415c13cc96e23dad323e65aa5573490fe467c451d8b284a27",
       "kennel-club": "c659126c6efa96d5369cf3adc06e670bee4364a56123406e8019e2020b4caaad",
       "after-care": "ef5305be66e18b25a10ba94705f48715d15893f04e75c02683e822371ddc14cb",
-      "compared": "72b8f3c2862d3f4916d93064c5976d8f67a2b0da189061b47a965f3394251410",
+      "compared": "efa3fff009c52543d029254a355f8f28888482acc0aaf3262998462dd80bd159",
       "owners": "44dfca8bd60be985e90d9ca69e3efe6f7c7b8a56fda80fb8ea8914e1d562bb82",
       "puppies": "87fbbf63a4ef625e50fa278f83147d78216804fe58739becb6a183ba196d3f0c",
-      "getting-home": "fc65d7239f68fc6d18d1f58280452719ac71c58b3ebe080ba4d2f2ab56509c2b",
-      "questions": "af230a540d5adf2fd73ed4eebdf70c0d5a9202fcd2e6c0b02a4d8d64aaccec2d",
+      "getting-home": "b5511a6b593772ad3f91a3248647859e082c0aed4311997809373e24c3415acb",
+      "questions": "77631e6dd3a081b6f81f5a794f30add54021170b2f36298eb1d4b0249bea0b08",
       "enquiry": "bc842984167b31222b6c940b317653c8f1bb60288656b23318dd677450845f7d",
       "talk-to-us": "abbfc74b1abdfbd30d43edee09e551605ee4c61af9683ce401695fc45c39954a"
     },

@@ -84,7 +84,7 @@
       "board-previews",
       "render"
     ],
-    "done": "The page names Lisa Bright as the breeder and Carlisle · Cumbria as the place, states L-2-HGA and HC-HSF4 clear for Maggie and Jones, states the £500 refundable deposit, the £200-£350 delivery band and the locked £1,500 / £1,700 prices, carries all seven migrated images and the one embed at their original paths, shows three reviews and four FAQ rows, names no former city and no byline other than Lisa Bright, and passes facts-preserved and link parity with nothing missing that `dropped` does not explain.",
+    "done": "The page names Lisa Bright as the breeder and Carlisle · Cumbria as the place, names the L-2-HGA and HC-HSF4 DNA tests Maggie and Jones have had, and no result, states the £500 refundable deposit, the £200-£350 delivery band and the locked £1,500 / £1,700 prices, carries all seven migrated images and the one embed at their original paths, shows three reviews and four FAQ rows, names no former city and no byline other than Lisa Bright, and passes facts-preserved and link parity with nothing missing that `dropped` does not explain.",
     "out_of_scope": [
       "the old £850 to £1,200 price band: it is below the locked prices in data/price-matrix.json and data/settings.json (Known Issue 11), and it is listed in `dropped.prices`",
       "the Sharine Amelia byline: the breeder is Lisa Bright (data/settings.json), and the migrated byline is listed in `dropped.text` (Known Issue 12)",
@@ -400,7 +400,7 @@
       "id": "health-testing",
       "n": 3,
       "heading": "The Two Health Tests Behind Every Litter",
-      "intent": "The evidence section. Maggie (dam) and Jones (sire) are KC-registered with full pedigrees, are fully vaccinated, and are certified clear of L-2-HGA and HC-HSF4. Says what each test is for in one line and says that the screening is what the litter's genetic health rests on. No guarantee length is stated — data/settings.json holds guarantee_days: null.",
+      "intent": "The evidence section. Maggie (dam) and Jones (sire) are KC-registered with full pedigrees, are fully vaccinated, and are DNA tested for L-2-HGA and HC-HSF4, with no result stated (answer board q01). Says what each test is for in one line and says that the screening is what the litter's genetic health rests on. The guarantee is not stated here; where a page states it, it reads data/settings.json.",
       "category": "A",
       "group": "MANDATORY",
       "why": "Named tests are the one hard credential an about page can carry, and the scan splits on it: Bullscaff names L2-HGA and HC and a KC-approved lab, UKStaffyPups says only 'DNA health testing', and Hamason names none.",
@@ -1162,7 +1162,7 @@
       "questions": [
         "Who are the blue Staffy UK breeders behind BlueStaffyUK?",
         "Are the parents of your blue Staffy puppies health-tested, and for what?",
-        "What do L-2-HGA and HC-HSF4 clear actually mean for a puppy?",
+        "What do the L-2-HGA and HC-HSF4 tests actually look for?",
         "Are your puppies raised in a family home or in outdoor kennels?",
         "What does Kennel Club registration cover, and what does it not?",
         "Where in the UK are you based, and can I collect the puppy myself?",
@@ -1497,7 +1497,7 @@
       "top": "H-AB1",
       "video-our-home": "S1"
     },
-    "record_hash": "f9484311315617ffdffd295fe5254da8508baa41514d39bf37bdda79f33d257d",
+    "record_hash": "9e240beb5407ba95ca9befc01bdcd59253ba7049761b020cb5dbd899682f5d25",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1515,7 +1515,7 @@
         "Breeder Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T16:44:39Z",
+    "reapproved_at": "2026-09-29T17:55:21Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:50:51Z",
@@ -1598,6 +1598,15 @@
           "/sections/3/stats/1/source",
           "/sections/3/stats/2"
         ]
+      },
+      {
+        "at": "2026-09-29T17:55:21Z",
+        "reason": "Review follow-up (2026-09-29): plan text that would steer a rebuild back to stating DNA results (brief goal/done/angles, intents, whys, link anchors, questions, keywords) now names the tests or the vet records, never a result or a certificate we don't hold (answer board q01). Anchors now match what the built page already prints; no verbatim or dropped entry moves.",
+        "changed_paths": [
+          "/brief/done",
+          "/sections/2/intent",
+          "/sections/10/questions/2"
+        ]
       }
     ]
   },
@@ -1635,14 +1644,14 @@
     "section_hashes": {
       "top": "34a0fedb3ca2e24b31ae568041c6a4b865c8ea35ad9dab4b864ec4f299760892",
       "our-story": "51729879ba54305c15dafaa8d4fe1dca2da0eee98b7a1ca5e3b7de41a7f78be3",
-      "health-testing": "6029f475f5b9367ca79e8ecd10a51f56b3969a6823df586ae45fccb91ac7e6e5",
+      "health-testing": "65815a0e4bf5c85aa343126cfa257a20869fef3cab54a93c1d06d39da1e578c1",
       "paperwork-proof": "729757a70dfea8a62529d3801fd35bbb1e022deaf8a97e69a1775242464118e4",
       "home-raising": "f132d22c30e179ce20ea63b568cc4031a98b73b9c0807f9aff74f86ecb95fd50",
       "kennel-club": "cf65303dfdd55b226a497f857f3a5d9f7a2610d69930294195e2a7e1a67b56bd",
       "delivery": "ea9debf3ccc55af9b7272263ef2bcf057c59fef2b5087d15c0cdb62a03bf3731",
       "families": "42a850018e9a366f9afa61592cc6c1aa638106674bf0151beccf5c9ea4a612b6",
       "puppies": "7943ae38f562c7f9ced8e861097c2c986eff0eead2dac19092b0f6cd09d62be2",
-      "questions": "25ce11401edffe22b3ed1b84f6a169f89a6eaa5139f6061ae2518141af50b764",
+      "questions": "659fabb21bd223c245bcb7685ee1192b1c3ab6651c26bef5fc9cc7e524edae5b",
       "welcome": "52f34333a8848a28304baf23f1600c545354646de6df9390d8761f9387f1d53e",
       "video-our-home": "661e8b595b21b369693feaad410780961d5bbc8375722eaa22e9c893f533861a"
     },

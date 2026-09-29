@@ -482,7 +482,7 @@
           {
             "href": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/",
             "anchor": "The registry's own page for the L-2-HGA DNA test",
-            "why": "the section states both parents are clear of L-2-HGA; the registry that runs the scheme is where a reader checks what the test is, rather than taking a breeder's word",
+            "why": "the section names the L-2-HGA DNA test both parents have had; the registry that runs the scheme is where a reader checks what the test is, rather than taking a breeder's word",
             "library_row": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/"
           }
         ]
@@ -1502,7 +1502,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "42860531686c2dfa83cb163dba27c98a171ea82b80b0ecb689b13ac8b442deac",
+    "record_hash": "9c4b685aa789dd8bacfe09d7b869cf9ec91fdf43e2ccf4813b886ef2d1d2da50",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1520,7 +1520,7 @@
         "Price Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T14:41:20Z",
+    "reapproved_at": "2026-09-29T17:55:14Z",
     "reapprovals": [
       {
         "at": "2026-09-21T01:55:06Z",
@@ -1555,6 +1555,13 @@
         "reason": "The breeder's answer, answer board q01 (2026-09-29): she holds no DNA certificates for Maggie and Jones, so the pages name the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a result. Every 'clear' / 'clearance' / result wording in this record is reworded to name the test only; a counter tile that stated a result is removed whole; verbatim changes are recorded in verbatim.changed (Known Issue 98).",
         "changed_paths": [
           "/sections/0/hero/ticks/0"
+        ]
+      },
+      {
+        "at": "2026-09-29T17:55:14Z",
+        "reason": "Review follow-up (2026-09-29): plan text that would steer a rebuild back to stating DNA results (brief goal/done/angles, intents, whys, link anchors, questions, keywords) now names the tests or the vet records, never a result or a certificate we don't hold (answer board q01). Anchors now match what the built page already prints; no verbatim or dropped entry moves.",
+        "changed_paths": [
+          "/sections/2/links/external/0/why"
         ]
       }
     ]
@@ -1598,7 +1605,7 @@
     "section_hashes": {
       "top": "58798aea87ab38d22e2298830e12c5c5f19a41010c5ec6f9e81ff56306927a5a",
       "at-a-glance": "5e22814f24b5bc5b9c49a1c426a3df734da2cb03d22f25807031fca02165cc9d",
-      "why-choose": "b0cc650268f76d10dd4d09277a67cc0071cf5c9ccf1b5bd39e7226ea1bbadb85",
+      "why-choose": "c08397710af46c0b73c9e99be8340a24cc00b76598f9f940ac4c6a809438b13f",
       "prices": "011b81997bfe93b8090d34ea45b8425639618e757b499aee8ac2a009b81c9c28",
       "whats-included": "5b54ed4c250139d7228cfc74e6930319dcb8c50a33890ecbd7c4a879c32d4845",
       "delivery": "77b64a08c27a73b54fd7064aa16e384625c659c0beb8e754f82afb65a8d08889",
