@@ -282,10 +282,26 @@ def test_the_refundable_scan_fires(tmp_path):
     assert unqualified_refundable(str(p)) == [f"{p}:1"]
 
 
+ANSWERS_0929 = "docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md"
+
+
 def test_red_flags_our_process_cannot_pass_are_held_for_the_breeder():
     bad = [f"{n}  {l.strip()[:90]}" for n, l in _lines(SCAM)
-           if re.search(r"(?i)video call|bank transfer|gift card", l) and CONFIRM not in l]
+           if re.search(r"(?i)bank transfer|gift card", l) and CONFIRM not in l]
     assert bad == [], "a red flag BSUK's own process may fail is marked:\n  " + "\n  ".join(bad)
+
+
+def test_the_video_call_is_a_sign_we_pass():
+    """Answer board q03 (2026-09-29): a live video call with the puppy and its mother is offered on
+    request, so the red flag is no longer held for the breeder: it is on the checklist, and our
+    answer names the source."""
+    lines = [l for _, l in _lines(SCAM) if re.search(r"(?i)video call", l)]
+    assert lines, "the scam agent names the video call"
+    assert [l for l in lines if CONFIRM in l] == [], "the video call is answered, not held"
+    assert any("on request" in l and "mother" in l for l in lines), lines
+    assert any(ANSWERS_0929 in l and "q03" in l for l in lines), "the answer's source is recorded"
+    checklist = _text(SCAM).split("## The Red-Flag Checklist", 1)[1].split("```")[1]
+    assert re.search(r"(?i)will not do a live video call with the puppy and its mother", checklist)
 
 
 def test_the_take_back_is_the_ruling_and_names_no_contract():

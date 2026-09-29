@@ -90,20 +90,21 @@ Our answer: our price, read from data/price-matrix.json, what it includes (data/
 
 Pattern 4: The puppy you never see at home
 Signal: a car-park or motorway-services handover; the mother is "at the vet"; the litter is "at a friend's".
-Our answer: as data/faq.json `buying-puppy-farm` and `contact-visit` say — visits by appointment in our family home, the puppy seen with its mother.
+Our answer: as data/faq.json `buying-puppy-farm` and `contact-visit` say — visits by appointment in our family home, the puppy seen with its mother — and, before that, a live video call with the puppy and its mother on request (answer board q03, `docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`).
 
 Pattern 5: The paperwork that is in the post
 Signal: registration, vaccination or microchip records promised "after payment".
 Our answer: the paperwork exactly as data/faq.json `whyus-paperwork` lists it, and the parents' results shown as data/faq.json `whyus-evidence` says.
 ```
 
-**Held for the breeder, not printed.** Two common red flags are left out of every pattern
-and checklist because nothing on disk says our own process passes them:
+**Held for the breeder, not printed.** One common red flag is left out of every pattern
+and checklist because nothing on disk says our own process passes it:
 
 - a payment by bank transfer, gift card or crypto before a call or visit — `NEEDS BREEDER CONFIRMATION — never print until the answer board records it` (the payment method is not recorded; see Safe Payment below);
-- a seller who will not do a live video call with the puppy and its mother — `NEEDS BREEDER CONFIRMATION — never print until the answer board records it` (nothing on disk says we offer video calls).
 
-Each goes to the breeder as a question on the answer board (`docs/reference/answer-board/README.md`); a flag enters the checklist only when her answer says our process passes it.
+**Answered, and now a sign we pass:** a seller who will not do a live video call with the puppy and its mother. We offer a video call with the puppy and its mother on request (the breeder's answer, answer board q03, `docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`), so it is item 9 of the checklist below.
+
+A held flag goes to the breeder as a question on the answer board (`docs/reference/answer-board/README.md`); a flag enters the checklist only when her answer says our process passes it.
 
 A price figure that "is too good" is described in words, never as a typed threshold: no
 market figure has been fetched (`NOT FETCHED — no UK price survey is in the repo`), and rule 9
@@ -111,9 +112,9 @@ forbids inventing one.
 
 ---
 
-## The Red-Flag Checklist (8 items — a checklist the buyer can use on any seller)
+## The Red-Flag Checklist (9 items — a checklist the buyer can use on any seller)
 
-Only red flags our own process passes are on it (the two held for the breeder are above).
+Only red flags our own process passes are on it (the one held for the breeder is above).
 
 ```
 Check every line with any seller before you pay the balance:
@@ -125,6 +126,7 @@ Check every line with any seller before you pay the balance:
 6. There is nothing in writing about what you are buying.
 7. The seller will only meet you away from their home.
 8. There is no way to reach the seller after the sale.
+9. The seller will not do a live video call with the puppy and its mother.
 If any line is true, stop.
 ```
 
@@ -147,6 +149,7 @@ disagree, write neither over the other: put the conflict to the breeder on the a
 | The parents' health tests | `data/faq.json` `whyus-evidence`; `data/quality/evidence-ledger.json` | results shown before they commit — a "clear" result is stated only when the ledger has its proof (today `parents-dna-clear` is `NOT FETCHED`) |
 | Our vet | the breeder's ruling (buyers may contact our vet) | on request; no vet's name is written until the breeder gives one |
 | Our home and the mother | `data/faq.json` `contact-visit` | a visit by appointment |
+| A live video call | the breeder's answer, answer board q03 (`docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`) | a video call with the puppy and its mother, on request, before they pay |
 | The take-back | the breeder's ruling (Q6) | we take a puppy back only if it is our fault, or if the new owner can no longer care for it; say only that, and name no document it sits in |
 | Reviews | `data/reviews.json` only | a review is shown as written and attributed as recorded; never invented, never AggregateRating markup |
 | The licence | none on the site | LICENCE_CLAIM_PLACEHOLDER where a sentence would need one |
@@ -197,7 +200,7 @@ rule 12), Link-First, with its `anchor_type`:
 4. **Never advice our own process fails** — a conflict between independent guidance and our process goes to the answer board.
 5. **Reviews from `data/reviews.json` only** — never invented, never AggregateRating.
 6. **A health result only with its ledger proof** — A test result or score always needs its ledger `proof`: "tested clear" is not written while `parents-dna-clear` is `NOT FETCHED`, and no breeder ruling stands in for it. A ruling lets a page name the tests and the screening, never state a result; whether she holds the certificates is a question for her on the answer board.
-7. **The five patterns and the eight-line checklist** on a scam-prevention page; a section picks from them. A red flag our own process may fail is `NEEDS BREEDER CONFIRMATION — never print until the answer board records it` and goes to the answer board.
+7. **The five patterns and the nine-line checklist** on a scam-prevention page; a section picks from them. A red flag our own process may fail is `NEEDS BREEDER CONFIRMATION — never print until the answer board records it` and goes to the answer board.
 8. **Outside citations through the library** — Link-First, live-checked, on the board.
 9. **FAQPage schema** carrying exactly the visible questions; `BreadcrumbList` on a page of its own.
 10. **Every fear answered** — each section addresses at least one of the ranked buyer fears.
