@@ -107,8 +107,14 @@ def expand(template, static_routes=frozenset()):
             out.append((f"/{slug}/" if slug else None, [template, md]))
         return out
     data_file, base = kind
-    return [(f"{base}{slug}/", [template, data_file]) for slug in rows_with_slugs(data_file)
+    # A data-driven page's data source is ITS OWN ROW, `data/x.json#slug` (Task 8b review, B2):
+    # a real edit to one city's row re-dates that city alone. The template stays a shared source.
+    return [(f"{base}{slug}/", [template, f"{data_file}{ROW}{slug}"]) for slug in rows_with_slugs(data_file)
             if f"{base}{slug}/" not in static_routes]
+
+
+#: Separates a data file from a row's slug in a row source, `data/locations.json#<slug>`.
+ROW = "#"
 
 
 def route_for(path):
@@ -291,11 +297,74 @@ def git_dates(path, ignore=()):
     return (log[-1][1], log[0][1]) if log else (None, None)
 
 
+def _row_logs(data_file):
+    """{slug: [(sha, YYYY-MM-DD)] newest first}: for every row of `data_file`, the commits in
+    which THAT ROW changed, its first appearance included. Every committed version of the file is
+    read through one `git cat-file --batch`; a row is compared by its canonical JSON (keys
+    sorted), so reordering the rows or reformatting the file changes no row."""
+    key = (str(ROOT), "rows", data_file)
+    if key in _DATES_CACHE:
+        return _DATES_CACHE[key]
+    try:
+        log = [l.split() for l in _git("log", "--format=%H %cs", "--", data_file).splitlines() if l]
+    except subprocess.CalledProcessError:
+        log = []
+    blobs = _cat_file([f"{sha}:{data_file}" for sha, _ in log])
+    rows_log, prev = {}, {}
+    for (sha, date), body in reversed(list(zip(log, blobs))):      # oldest first
+        try:
+            data = json.loads(body.decode("utf-8")) if body is not None else []
+        except ValueError:
+            data = []
+        now = {r["slug"]: json.dumps(r, sort_keys=True) for r in data
+               if isinstance(r, dict) and r.get("slug")}
+        for slug, canon in now.items():
+            if prev.get(slug) != canon:
+                rows_log.setdefault(slug, []).insert(0, (sha, date))
+        prev = now
+    _DATES_CACHE[key] = rows_log
+    return rows_log
+
+
+def _cat_file(revs):
+    """The blob behind each `rev:path` in `revs`, in order (None where missing), through one
+    `git cat-file --batch` process."""
+    if not revs:
+        return []
+    try:
+        raw = subprocess.run(["git", "cat-file", "--batch"], cwd=str(ROOT), capture_output=True,
+                             check=True, input="".join(f"{r}\n" for r in revs).encode()).stdout
+    except FileNotFoundError as exc:
+        raise NoGit(exc) from exc
+    except subprocess.CalledProcessError:
+        return [None] * len(revs)
+    out, i = [], 0
+    while i < len(raw) and len(out) < len(revs):
+        nl = raw.index(b"\n", i)
+        head = raw[i:nl].split()
+        i = nl + 1
+        if len(head) < 3 or head[1] != b"blob":
+            out.append(None)
+            continue
+        size = int(head[2])
+        out.append(raw[i:i + size])
+        i += size + 1
+    return out
+
+
 def _counted_log(path, ignore=()):
-    """[(sha, YYYY-MM-DD)] newest first, for the commits that date `path` (ignored ones out)."""
+    """[(sha, YYYY-MM-DD)] newest first, for the commits that date `path` (ignored ones out).
+    A row source (`data/x.json#slug`) is dated by the commits that changed that row; an ignore
+    entry for the data file applies to its rows."""
     key = (str(ROOT), path, tuple((s, tuple(sorted(p))) for s, p in ignore))
     if key in _DATES_CACHE:
         return _DATES_CACHE[key]
+    if ROW in path:
+        data_file, slug = path.split(ROW, 1)
+        log = [(sha, d) for sha, d in _row_logs(data_file).get(slug, [])
+               if not any(sha == full and data_file in paths for full, paths in ignore)]
+        _DATES_CACHE[key] = log
+        return log
     try:
         out = _git("log", "--follow", "--format=%H %cs", "--", path).split("\n")
     except subprocess.CalledProcessError:
@@ -333,16 +402,26 @@ def fanout_problems(routes):
         if not isinstance(old, dict) or old.get("dateModified") == row["dateModified"]:
             continue
         if route in LAST_COMMIT:
-            groups.setdefault(LAST_COMMIT[route], []).append(route)
+            sha, src = LAST_COMMIT[route]
+            # A route re-dated by its OWN data row changed its own content: that is per-route,
+            # not a shared source fanning out (Task 8b review, B2).
+            if ROW not in src:
+                groups.setdefault(sha, {}).setdefault(src, []).append(route)
     out = []
-    for (sha, path), moved in sorted(groups.items()):
+    # Grouped by COMMIT alone (B1): one commit that edits three pages' own files re-dates three
+    # routes as surely as one commit to a shared template does.
+    for sha, by_src in sorted(groups.items()):
+        moved = sorted(r for rs in by_src.values() for r in rs)
         if len(moved) < FANOUT or sha in accepted:
             continue
-        shown = ", ".join(sorted(moved)[:6]) + (f" and {len(moved) - 6} more" if len(moved) > 6 else "")
-        out.append(f"commit {sha[:10]} on {path} moves dateModified on {len(moved)} routes ({shown}); "
-                   "diff those built pages against the build before it, then list the commit in "
-                   f"{IGNORE} under `commits` for {path} if no page's content changed, or under "
-                   "`fanout_accepted` with a reason if every page's content really changed.")
+        srcs = ", ".join(sorted(by_src))
+        shown = ", ".join(moved[:6]) + (f" and {len(moved) - 6} more" if len(moved) > 6 else "")
+        out.append(f"commit {sha[:10]} moves dateModified on {len(moved)} routes ({shown}) through "
+                   f"{srcs}; diff those built pages against the build before it, then list the "
+                   f"commit in {IGNORE} under `commits` for those paths if no page's content "
+                   "changed, or under `fanout_accepted` with a reason if every page's content "
+                   "really changed. (A route re-dated only by its own row in a data file is never "
+                   "refused.)")
     return out
 
 
@@ -376,7 +455,10 @@ def build():
         first, last = span(sources, ignore)
         newest = [(log[0][1], log[0][0], p) for p in sources if (log := _counted_log(p, ignore))]
         if newest:
-            _, sha, src = max(newest, key=lambda t: t[0])
+            top = max(d for d, _, _ in newest)
+            # On a tie a SHARED source takes the blame, so a commit that touched the template
+            # and the rows is still judged as the template's fan-out.
+            _, sha, src = sorted((t for t in newest if t[0] == top), key=lambda t: ROW in t[2])[0]
             LAST_COMMIT[route] = (sha, src)
         if not last:
             skipped.append(sources[-1])     # never committed yet — no honest date exists
@@ -390,7 +472,7 @@ def build():
         # inline in the BODY rather than passing it via the schemaJson prop cannot be
         # detected from props, and would end up with TWO contradicting dates. Detect it at
         # the source and let the layout honour the flag.
-        self_dated = any("dateModified" in (ROOT / p).read_text(encoding="utf-8", errors="ignore")
+        self_dated = any("dateModified" in (ROOT / p.split(ROW, 1)[0]).read_text(encoding="utf-8", errors="ignore")
                          for p in sources)
         routes[route] = {
             "datePublished": first,

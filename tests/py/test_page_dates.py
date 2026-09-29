@@ -257,7 +257,10 @@ def test_a_fanout_commit_listed_as_no_content_keeps_the_old_dates(repo):
         "sha": sha, "paths": ["src/pages/uk-locations/[slug].astro"], "reason": "no output change"}]}))
     assert G.main([]) == 0
     routes = json.loads((repo / "data/page-dates.json").read_text())["routes"]
-    assert {routes[f"/uk-locations/{c}/"]["dateModified"] for c in CITIES} == {"2026-02-01"}
+    # Each city keeps the date of its own row: Glasgow's row has not changed since 2026-01-05
+    # (the fixture), Leeds and York arrived on 2026-02-01. The refactor moves none of them.
+    assert {c: routes[f"/uk-locations/{c}/"]["dateModified"] for c in CITIES} == {
+        "blue-staffies-glasgow": "2026-01-05", "blue-staffies-leeds": "2026-02-01", "blue-staffies-york": "2026-02-01"}
 
 
 def test_a_fanout_commit_accepted_as_real_content_moves_the_dates(repo):
@@ -297,6 +300,89 @@ def test_a_fanout_accepted_sha_not_in_history_is_exit_2(repo, capsys):
         {"sha": "deadbeefdeadbeef", "reason": "r"}]}))
     assert G.main([]) == 2
     assert "deadbeefdeadbeef" in capsys.readouterr().out
+
+
+def test_a_fanout_refusal_holds_under_dry_run_too(repo, capsys):
+    """--dry-run writes nothing anyway, but it must still say the run would be refused."""
+    _three_cities_mapped(repo)
+    sha = _template_refactor(repo)
+    assert G.main(["--dry-run"]) == 1
+    assert sha[:7] in capsys.readouterr().out
+
+
+def test_one_commit_across_three_static_pages_is_refused(repo, capsys):
+    """B1: the guard groups by COMMIT, not by (commit, source). A kit refactor that edits three
+    rich pages in one commit re-dates three routes from three different files; grouped per file
+    it was three groups of one and passed silently (the reviewer's probe, case a)."""
+    for f in ("a", "b", "c"):
+        _write(repo, f"src/pages/{f}.astro", f"<h1>{f}</h1>")
+    _commit(repo, "2026-01-05")
+    assert G.main([]) == 0
+    _commit(repo, "2026-01-06", msg="map")
+    for f in ("a", "b", "c"):
+        _write(repo, f"src/pages/{f}.astro", f"<h1>{f}</h1><!-- refactor -->")
+    _commit(repo, "2026-03-09")
+    sha = _head(repo)
+    assert G.main(["--check"]) == 1
+    out = capsys.readouterr().out
+    assert sha[:7] in out and all(f"src/pages/{f}.astro" in out for f in "abc")
+
+
+ROWS = ["x1", "x2", "x3", "x4"]
+
+
+def _rows_mapped(repo, rows=None):
+    _write(repo, "data/locations.json", json.dumps(rows or [{"slug": s} for s in ROWS]))
+    _commit(repo, "2026-02-01")
+    assert G.main([]) == 0
+    _commit(repo, "2026-02-02", msg="map")
+
+
+def _city_dates(repo):
+    routes = json.loads((repo / "data/page-dates.json").read_text())["routes"]
+    return {s: routes[f"/uk-locations/{s}/"]["dateModified"] for s in ROWS}
+
+
+def test_a_commit_that_changes_one_row_redates_that_city_alone(repo):
+    """B2: a data-driven route is dated by the history of ITS OWN ROW (matched by slug), so a
+    real edit to one city's row re-dates that city and no other, and nothing is refused."""
+    _rows_mapped(repo)
+    _write(repo, "data/locations.json", json.dumps(
+        [{"slug": "x1", "title": "new"}] + [{"slug": s} for s in ROWS[1:]]))
+    _commit(repo, "2026-03-09")
+    assert G.main([]) == 0
+    assert _city_dates(repo) == {"x1": "2026-03-09", "x2": "2026-02-01", "x3": "2026-02-01", "x4": "2026-02-01"}
+
+
+def test_a_commit_that_changes_three_rows_redates_exactly_those_three(repo):
+    """Each of the three routes' own row changed: that is real content, per route, not a
+    shared source fanning out, so the guard does not refuse it."""
+    _rows_mapped(repo)
+    _write(repo, "data/locations.json", json.dumps(
+        [{"slug": s, "title": "new"} for s in ROWS[:3]] + [{"slug": "x4"}]))
+    _commit(repo, "2026-03-09")
+    assert G.main([]) == 0
+    assert _city_dates(repo) == {"x1": "2026-03-09", "x2": "2026-03-09", "x3": "2026-03-09", "x4": "2026-02-01"}
+
+
+def test_reordering_or_reformatting_the_rows_moves_nothing(repo):
+    _rows_mapped(repo, [{"slug": s, "a": 1, "b": 2} for s in ROWS])
+    _write(repo, "data/locations.json", json.dumps(
+        [{"b": 2, "a": 1, "slug": s} for s in reversed(ROWS)], indent=4))
+    _commit(repo, "2026-03-09")
+    assert G.main([]) == 0
+    assert set(_city_dates(repo).values()) == {"2026-02-01"}
+
+
+def test_the_template_is_still_a_guarded_shared_source(repo, capsys):
+    """One commit to the template AND every row: the template re-dates every city, so the
+    commit is still judged as a shared-source fan-out (the reviewer's probe, case b)."""
+    _rows_mapped(repo)
+    _write(repo, "src/pages/uk-locations/[slug].astro", "getStaticPaths // refactor")
+    _write(repo, "data/locations.json", json.dumps([{"slug": s, "k": 1} for s in ROWS]))
+    _commit(repo, "2026-03-09")
+    assert G.main(["--check"]) == 1
+    assert "[slug].astro" in capsys.readouterr().out
 
 
 def test_the_puppies_template_expands_to_every_slug_in_puppies_json(repo):
