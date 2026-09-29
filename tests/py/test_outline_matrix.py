@@ -118,8 +118,14 @@ def test_the_matrix_renders_every_column_with_copy_buttons_and_a_md_download(tmp
 def test_approval_is_stamped_with_the_hash_and_goes_stale_on_an_edit():
     rec = copy.deepcopy(_load("good.json"))
     assert OM.approval_state(rec) == "unapproved"
-    rec = OM.approve(rec, "tests/py/fixtures/research_board/answers.json", today="2026-09-29")
+    rec = OM.approve(rec, "tests/py/fixtures/outline_matrix/answers.json", today="2026-09-29")
     assert OM.approval_state(rec) == "approved"
+    assert rec["approval"]["research_hash"] == OM.RB.current_hash(_research())
     assert "APPROVED 2026-09-29" in OM.status_line(rec)
     rec["sections"][2]["words"] += 1
     assert OM.approval_state(rec) == "stale"
+
+
+def test_the_outline_is_not_approved_with_the_research_boards_answers():
+    with pytest.raises(OM.OutlineError, match="same answers"):
+        OM.approve(_load("good.json"), "tests/py/fixtures/research_board/answers.json")

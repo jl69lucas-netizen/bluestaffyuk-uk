@@ -12,8 +12,12 @@ unless that board is approved as it stands. The deliverable carries:
 
   the approval status line   APPROVED <date> with the answers file, or AWAITING — STOP 2
   the word target            its min–max and its source, and what the matrix sums to
-  the heading census         H1–H6 counts over the whole outline; exactly one H1, and no
-                             skipped level anywhere (an H4 sits under an H3, never an H2)
+  the heading census         H1–H6 counts over the whole outline, held to BSUK's own rule
+                             (rules/headings.md `heading-hierarchy-outline-gate`): exactly one
+                             H1, all six levels, no skipped level anywhere; at least 5 H5 and
+                             5 H6, a FAIL on a comparison or blog page and advisory (a WARN,
+                             shown on the census line) on a location page — where the source
+                             system required 5 of each on every page
   the distribution matrix    one row per section: #, Section with its H2–H6 tree inline,
                              Framework, Words, Keywords (primary / secondary, from the research
                              board's keyword universe), Cat (A mandatory core · B competitor-match
@@ -21,16 +25,27 @@ unless that board is approved as it stands. The deliverable carries:
   one block per section      the same row laid out, so each has its own copy button
   schema and component notes
 
-A B or C row's Why is grounded: `why_source` points at the research-board finding it comes
-from (`serp.results[1]`, `universal_gaps[0]`, `content_gap[2]`, …) and must resolve there; a B
-row (competitor-match) cites the SERP or the reverse-engineering table. A section with a
-heading carries an image (CLAUDE.md working rule 17) unless it is the FAQ block (`faq: true`).
+The rows are held to the research board:
+  - framework is one of the board's framework picks or a named standard framework (a
+    `.claude/skills/framework-*` skill); `—` only on a row with no H2 or deeper heading
+  - a C row's `why_source` is a research finding: `how_we_win[i]`, `content_gap[i]`,
+    `universal_gaps[i]` or `serp.results[i].weakness`, fetched (never NOT FETCHED)
+  - a B row cites a competitor (`serp.results[i]`, or `reverse_engineering[i]`) whose
+    why-it-ranks was fetched
+  - `h1` equals the tree's H1
+  - every keyword the board's `keywords.distribution` placed in a section sits in that
+    section's row (matched by section name), and every row keyword is in the universe
+  - a section with a heading carries an image (CLAUDE.md working rule 17) unless it is the
+    FAQ block (`faq: true`)
 
-THE GATE. `--approve --answers <file>` stamps the record's `approval` with its hash;
-`approval_refusal(slug)` is what scripts/build_page_board.py (exit 2) and
-scripts/board_gate.py (FAIL `outline-unapproved`) call for every new page
-(scripts/family_rules.py `is_new_page`): no outline record, no approval, or an outline edited
-after its approval refuses the page board.
+THE GATE. `--approve --answers <file>` reads the answers file (an answer-board answers file
+naming this slug and `outline`, never the research board's own answers file) and stamps the
+record's `approval` with its hash and the research board's hash. `approval_refusal(slug)` is
+what scripts/build_page_board.py (exit 2), scripts/board_gate.py (FAIL `outline-unapproved`),
+scripts/board_approve.py and scripts/build_board_previews.py call for every new page
+(scripts/family_rules.py `is_new_page`). It refuses when the outline is missing, is another
+page's record, is unapproved or edited after its approval, or when its research board is not
+approved as it stands or has changed since the outline was approved.
 
 Usage:
   python3 scripts/outline_matrix.py <slug>                 validate, write the matrix
@@ -38,8 +53,8 @@ Usage:
   python3 scripts/outline_matrix.py <slug> --approve --answers <answers.json>
   options: --record PATH  --out DIR                        (a fixture, or a scratch run)
 Writes docs/artifacts/outlines/<slug>.html and .md; publish the .html as an Artifact.
-Exit 0 clean · 1 the outline breaks a rule (every problem printed) · 2 no record, no approved
-research board, bad call.
+Exit 0 clean · 1 the outline breaks a rule or is malformed (every problem printed) · 2 no
+record, no approved research board, a bad call or a refused approval.
 """
 import argparse
 import datetime
@@ -57,32 +72,50 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 RECORDS = "data/outlines"
 OUT = "docs/artifacts/outlines"
 CATS = {"A": "mandatory core", "B": "competitor-match", "C": "our moat"}
-# A B row matches a competitor, so it cites one.
-B_SOURCES = ("serp", "reverse_engineering")
 DASH = ("—", "-", "")
+C_SOURCES = re.compile(r"^(?:(?:how_we_win|content_gap|universal_gaps)\[\d+\]|serp\.results\[\d+\]\.weakness)$")
+B_SOURCES = re.compile(r"^(?:serp\.results\[(\d+)\](?:\.(?:why_ranks|weakness))?|reverse_engineering\[(\d+)\])$")
+# rules/headings.md heading-hierarchy-outline-gate: the 5-per-level minimum is advisory here.
+ADVISORY_MIN_H5H6 = ("home", "location")
+MIN_H5H6 = 5
 
 
 class OutlineError(Exception):
     pass
 
 
+def _norm_fw(name):
+    return re.sub(r"[^A-Z0-9]", "", str(name).upper())
+
+
+def standard_frameworks(root=None):
+    """The named frameworks: one per `.claude/skills/framework-*` skill that is a framework."""
+    base = pathlib.Path(ROOT if root is None else root) / ".claude/skills"
+    names = {d.name[len("framework-"):] for d in base.glob("framework-*") if d.is_dir()}
+    names -= {"heading-hierarchy", "library"}
+    if not names:                       # a scratch root with no skills: the repo's own list
+        names = {d.name[len("framework-"):] for d in (ROOT / ".claude/skills").glob("framework-*")
+                 if d.is_dir()} - {"heading-hierarchy", "library"}
+    return {_norm_fw(n) for n in names}
+
+
 def record_hash(record):
     body = {k: v for k, v in record.items() if k != "approval"}
-    return hashlib.sha256(json.dumps(body, sort_keys=True, ensure_ascii=False)
+    return hashlib.sha256(json.dumps(body, sort_keys=True, ensure_ascii=False, default=str)
                           .encode("utf-8")).hexdigest()[:16]
 
 
 def approval_state(record):
-    a = record.get("approval")
-    if not a:
+    a = record.get("approval") if isinstance(record, dict) else None
+    if not isinstance(a, dict) or not a:
         return "unapproved"
     return "approved" if a.get("record_hash") == record_hash(record) else "stale"
 
 
-def record_path(slug, root=ROOT):
-    if not RB.SLUG.match(slug or ""):
+def record_path(slug, root=None):
+    if not isinstance(slug, str) or not RB.SLUG.match(slug):
         raise OutlineError(f"not a slug: {slug!r}")
-    return pathlib.Path(root) / RECORDS / f"{slug}.json"
+    return pathlib.Path(ROOT if root is None else root) / RECORDS / f"{slug}.json"
 
 
 def load(path):
@@ -90,45 +123,87 @@ def load(path):
     if not path.is_file():
         raise OutlineError(f"no outline record at {path}")
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as e:
+        doc = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
         raise OutlineError(f"{path}: not JSON — {e}") from None
+    if not isinstance(doc, dict):
+        raise OutlineError(f"{path}: an outline record is a JSON object")
+    return doc
+
+
+def research_for(record, root=None, require_approved=True):
+    root = ROOT if root is None else root
+    rel = record.get("research_board") if isinstance(record, dict) else None
+    if not isinstance(rel, str) or not rel:
+        raise OutlineError("research_board: name the page's research-board record")
+    path = pathlib.Path(rel)
+    path = path if path.is_absolute() else pathlib.Path(root) / path
+    try:
+        research = RB.load(path)
+    except RB.RecordError as e:
+        raise OutlineError(f"{e} — the research board (STOP 1) comes before the outline") from None
+    state = RB.approval_state(research, root=root)
+    if require_approved and state != "approved":
+        raise OutlineError(f"the research board {rel} is {state} — its picks (STOP 1) are recorded "
+                           f"before the outline is written")
+    return research
 
 
 def approval_refusal(slug, root=None):
-    """None when the page's outline is approved as it stands; otherwise why the page board
-    must wait. STOP 2 of docs/reference/page-run.md."""
+    """None when the page's outline is approved as it stands, on the research board as it
+    stands; otherwise why the page board must wait. STOP 2 of docs/reference/page-run.md."""
     root = ROOT if root is None else root
     try:
         path = record_path(slug, root)
     except OutlineError as e:
         return str(e)
+    rel = f"{RECORDS}/{slug}.json"
     if not path.is_file():
-        return (f"no outline record at {RECORDS}/{slug}.json — the outline (STOP 2) is approved "
-                f"before the page board is built (python3 scripts/outline_matrix.py {slug})")
+        return (f"no outline record at {rel} — the outline (STOP 2) is approved before the page "
+                f"board is built (python3 scripts/outline_matrix.py {slug})")
     try:
         record = load(path)
     except OutlineError as e:
         return str(e)
+    if record.get("slug") != slug:                                   # B1
+        return (f"the outline at {rel} is for {record.get('slug')!r}, not {slug!r} — an approval "
+                f"clears only its own page")
     state = approval_state(record)
     if state == "unapproved":
-        return (f"the outline {RECORDS}/{slug}.json is not approved — STOP 2 comes before the page "
-                f"board (python3 scripts/outline_matrix.py {slug} --approve --answers <file>)")
+        return (f"the outline {rel} is not approved — STOP 2 comes before the page board "
+                f"(python3 scripts/outline_matrix.py {slug} --approve --answers <file>)")
     if state == "stale":
-        return (f"the outline {RECORDS}/{slug}.json changed after its approval of "
+        return (f"the outline {rel} changed after its approval of "
                 f"{record['approval'].get('approved_on')} — approve it again (STOP 2)")
+    try:                                                              # B2
+        research = research_for(record, root)
+    except OutlineError as e:
+        return f"the outline {rel} stands on a research board that is not approved: {e}"
+    if research.get("slug") != slug:
+        return f"the outline {rel} names the research board of {research.get('slug')!r}"
+    if record["approval"].get("research_hash") != RB.current_hash(research, root):
+        return (f"the research board {record.get('research_board')} changed after the outline was "
+                f"approved — review the outline against it and approve it again (STOP 2)")
     return None
 
 
 # --- the heading tree ------------------------------------------------------------------
 
-def walk(nodes, parent_level, where, problems, counts):
-    for node in nodes or []:
+def walk(nodes, parent_level, where, problems, counts, h1s=None):
+    if nodes is None:
+        return
+    if not isinstance(nodes, list):
+        problems.append(f"{where}: headings is a list of {{level, text, children}}")
+        return
+    for node in nodes:
+        if not isinstance(node, dict):
+            problems.append(f"{where}: a heading is an object {{level, text, children}}")
+            continue
         lvl = node.get("level")
-        if not isinstance(lvl, int) or not 1 <= lvl <= 6:
+        if not isinstance(lvl, int) or isinstance(lvl, bool) or not 1 <= lvl <= 6:
             problems.append(f"{where}: heading {node.get('text')!r} has no level 1–6")
             continue
-        if not node.get("text"):
+        if not isinstance(node.get("text"), str) or not node["text"].strip():
             problems.append(f"{where}: an H{lvl} with no text")
         if parent_level is not None and lvl != parent_level + 1:
             problems.append(f"{where}: H{lvl} {node.get('text')!r} sits under an H{parent_level} — "
@@ -137,14 +212,21 @@ def walk(nodes, parent_level, where, problems, counts):
             problems.append(f"{where}: a section opens with an H{lvl} {node.get('text')!r} — "
                             f"sections open with the H1 or an H2")
         counts[lvl] = counts.get(lvl, 0) + 1
-        walk(node.get("children"), lvl, where, problems, counts)
+        if lvl == 1 and h1s is not None:
+            h1s.append(node.get("text"))
+        walk(node.get("children"), lvl, where, problems, counts, h1s)
 
 
-def census(record):
-    """({level: count}, problems) over every section's tree."""
+def _sections(record):
+    secs = record.get("sections") if isinstance(record, dict) else None
+    return [s for s in secs if isinstance(s, dict)] if isinstance(secs, list) else []
+
+
+def census(record, h1s=None):
+    """({level: count}, problems) over every section's tree, held to rules/headings.md."""
     problems, counts = [], {}
-    for s in record.get("sections", []):
-        walk(s.get("headings"), None, f"section {s.get('n')}", problems, counts)
+    for s in _sections(record):
+        walk(s.get("headings"), None, f"section {s.get('n')}", problems, counts, h1s)
     if counts.get(1, 0) != 1:
         problems.append(f"heading census: exactly one H1, found {counts.get(1, 0)}")
     top = max(counts) if counts else 0
@@ -152,7 +234,26 @@ def census(record):
     if missing:
         problems.append("heading census: skips " + ", ".join(f"H{lv}" for lv in missing)
                         + f" — levels run H1 to H{top} with none missing")
+    absent = [lv for lv in range(1, 7) if not counts.get(lv)]
+    if absent:
+        problems.append("heading census: all six levels are required (rules/headings.md "
+                        "heading-hierarchy-outline-gate) — no " + ", ".join(f"H{lv}" for lv in absent))
     return counts, problems
+
+
+def _h5h6_short(record, counts):
+    return [f"H{lv}" for lv in (5, 6) if counts.get(lv, 0) < MIN_H5H6]
+
+
+def warnings(record):
+    """Advisory findings: the 5-per-level H5/H6 minimum on a location (or home) page."""
+    counts, _ = census(record)
+    short = _h5h6_short(record, counts)
+    if short and record.get("page_type") in ADVISORY_MIN_H5H6:
+        return [f"heading census: fewer than {MIN_H5H6} " + " and ".join(short)
+                + f" — advisory on a {record.get('page_type')} page (rules/headings.md, 2026-09-09); "
+                  "never add a heading to hit the count"]
+    return []
 
 
 def census_line(counts):
@@ -177,6 +278,12 @@ def tree_list(nodes, depth=0):
     return out
 
 
+def _deep(nodes):
+    """True when the tree holds an H2 or deeper heading."""
+    return any(isinstance(n, dict) and (n.get("level", 0) >= 2 or _deep(n.get("children")))
+               for n in (nodes if isinstance(nodes, list) else []))
+
+
 # --- grounding -------------------------------------------------------------------------
 
 def resolve(research, pointer):
@@ -195,52 +302,89 @@ def resolve(research, pointer):
     return cur
 
 
-def research_for(record, root=ROOT, require_approved=True):
-    rel = record.get("research_board")
-    if not rel:
-        raise OutlineError("research_board: name the page's research-board record")
-    path = pathlib.Path(rel)
-    path = path if path.is_absolute() else pathlib.Path(root) / path
-    try:
-        research = RB.load(path)
-    except RB.RecordError as e:
-        raise OutlineError(f"{e} — the research board (STOP 1) comes before the outline") from None
-    state = RB.approval_state(research)
-    if require_approved and state != "approved":
-        raise OutlineError(f"the research board {rel} is {state} — its picks (STOP 1) are recorded "
-                           f"before the outline is written")
-    return research
+def _serp_row_for(research, src):
+    m = B_SOURCES.match(src or "")
+    if not m:
+        return None
+    results = RB._l(RB._d(research.get("serp")).get("results"))
+    if m.group(1) is not None:
+        i = int(m.group(1))
+        return results[i] if i < len(results) and isinstance(results[i], dict) else None
+    rows = RB._l(research.get("reverse_engineering"))
+    i = int(m.group(2))
+    if i >= len(rows) or not isinstance(rows[i], dict):
+        return None
+    url = RB._norm_url(rows[i].get("url"))
+    return next((r for r in results if isinstance(r, dict) and RB._norm_url(r.get("url")) == url), None)
 
 
-def validate(record, research):
+def validate(record, research, root=None):
+    """Every problem with the outline, as strings. A malformed shape is a problem (B8)."""
+    if not isinstance(record, dict):
+        return ["the outline record is not a JSON object"]
     p = []
+    try:
+        _validate(record, research if isinstance(research, dict) else {}, root, p)
+    except (TypeError, AttributeError, KeyError, ValueError) as e:
+        p.append(f"malformed outline: {type(e).__name__}: {e}")
+    return p
+
+
+def _validate(record, research, root, p):
     if record.get("slug") != research.get("slug"):
         p.append(f"slug {record.get('slug')!r} does not match the research board's "
                  f"{research.get('slug')!r}")
-    wt = record.get("word_target") or {}
-    if not (isinstance(wt.get("min"), int) and isinstance(wt.get("max"), int)
-            and 0 < wt["min"] <= wt["max"]):
+    wt = record.get("word_target")
+    if not isinstance(wt, dict):
+        p.append("word_target: an object {min, max, source}")
+        wt = {}
+    wmin, wmax = wt.get("min"), wt.get("max")
+    target_ok = RB._int(wmin) and RB._int(wmax) and 0 < wmin <= wmax
+    if not target_ok:
         p.append("word_target: min and max, whole words, min ≤ max")
-    if not wt.get("source"):
+    if not RB._s(wt.get("source")):
         p.append("word_target.source: where the target comes from (the query file's median, "
                  "the breeder's answer, …)")
-    universe = {k["keyword"] for k in (research.get("keywords") or {}).get("universe", [])}
-    secs = record.get("sections") or []
-    if not secs:
-        p.append("sections: the distribution matrix has no rows")
-    total = 0
-    seen_n = set()
-    for s in secs:
+    kw = RB._d(research.get("keywords"))
+    universe = {k["keyword"] for k in RB._l(kw.get("universe"))
+                if isinstance(k, dict) and RB._s(k.get("keyword"))}
+    picks = {_norm_fw(g.get("recommended")) for g in RB._l(research.get("frameworks"))
+             if isinstance(g, dict) and RB._s(g.get("recommended"))}
+    allowed_fw = picks | standard_frameworks(root)
+    raw = record.get("sections")
+    if not isinstance(raw, list) or not raw:
+        p.append("sections: the distribution matrix has no rows (a list of section objects)")
+        raw = []
+    if any(not isinstance(s, dict) for s in raw):
+        p.append("sections: every row is an object")
+    total, seen_n, by_name = 0, set(), {}
+    for s in _sections(record):
         where = f"section {s.get('n', '?')}"
-        if s.get("n") in seen_n or s.get("n") in (None, ""):
+        n = s.get("n")
+        if not isinstance(n, (str, int)) or n in ("", None) or n in seen_n:
             p.append(f"{where}: every row has its own number")
-        seen_n.add(s.get("n"))
-        if not s.get("section"):
+        else:
+            seen_n.add(n)
+        name = s.get("section")
+        if not RB._s(name):
             p.append(f"{where}: no section name")
-        if not s.get("framework"):
-            p.append(f"{where}: no framework (write — for furniture with no prose)")
+        else:
+            by_name[name.strip().lower()] = s
+        heads = s.get("headings")
+        if heads is not None and not isinstance(heads, list):
+            p.append(f"{where}: headings is a list")
+            heads = []
+        fw = s.get("framework")
+        if not RB._s(fw):
+            p.append(f"{where}: no framework (write — for furniture with no H2)")
+        elif fw.strip() in DASH:
+            if _deep(heads):
+                p.append(f"{where}: a row with an H2 names its framework")
+        elif _norm_fw(fw) not in allowed_fw:
+            p.append(f"{where}: framework {fw!r} is neither a research-board pick nor a named "
+                     f"standard framework (.claude/skills/framework-*)")
         w = s.get("words")
-        if not isinstance(w, int) or isinstance(w, bool) or w < 0:
+        if not RB._int(w) or w < 0:
             p.append(f"{where}: words — a whole number")
         else:
             total += w
@@ -248,36 +392,74 @@ def validate(record, research):
         if cat not in CATS:
             p.append(f"{where}: no Cat — A (mandatory core), B (competitor-match) or C (our moat)")
         why = s.get("why")
-        if why is None or why == "":
+        if not isinstance(why, str) or why == "":
             p.append(f"{where}: no Why — a B or C row cites the research board; an A row writes —")
         elif cat in ("B", "C"):
-            if why in DASH:
+            if why.strip() in DASH:
                 p.append(f"{where}: a {cat} row's Why is grounded in the research board — not —")
             src = s.get("why_source")
-            if not src:
+            if not RB._s(src):
                 p.append(f"{where}: a {cat} row names its `why_source` on the research board")
-            elif resolve(research, src) in (None, "", []):
-                p.append(f"{where}: why_source {src!r} does not resolve on the research board")
-            elif cat == "B" and src.split(".")[0].split("[")[0] not in B_SOURCES:
-                p.append(f"{where}: a B row (competitor-match) cites the SERP or the "
-                         f"reverse-engineering table, not {src!r}")
-        has_heading = bool(s.get("headings"))
-        kw = s.get("keywords") or {}
-        if has_heading and not kw.get("primary"):
+            elif cat == "C":
+                value = resolve(research, src)
+                if not C_SOURCES.match(src):
+                    p.append(f"{where}: a C row (our moat) cites a research finding — how_we_win[i], "
+                             f"content_gap[i], universal_gaps[i] or serp.results[i].weakness — not {src!r}")
+                elif not RB._s(value) or RB.is_nf(value):
+                    p.append(f"{where}: a C row's why_source {src!r} does not resolve to a fetched finding")
+            else:
+                row = _serp_row_for(research, src)
+                if row is None:
+                    p.append(f"{where}: a B row (competitor-match) cites a competitor — "
+                             f"serp.results[i] or reverse_engineering[i] — and {src!r} is not one")
+                elif not RB._s(row.get("why_ranks")) or RB.is_nf(row.get("why_ranks")):
+                    p.append(f"{where}: a B row cites a competitor with a fetched why-it-ranks; "
+                             f"{src!r} is NOT FETCHED")
+        kws = s.get("keywords", {})
+        if kws is None:
+            kws = {}
+        if not isinstance(kws, dict):
+            p.append(f"{where}: keywords is an object {{primary, secondary}}")
+            kws = {}
+        pri, sec = kws.get("primary") or [], kws.get("secondary") or []
+        if not isinstance(pri, list) or not isinstance(sec, list):
+            p.append(f"{where}: keywords.primary and keywords.secondary are lists")
+            pri, sec = [], []
+        if heads and not pri:
             p.append(f"{where}: a section with a heading has a primary keyword")
-        for k in (kw.get("primary") or []) + (kw.get("secondary") or []):
+        for k in pri + sec:
             if k not in universe:
                 p.append(f"{where}: keyword {k!r} is not in the research board's keyword universe")
         img = s.get("image")
-        if has_heading and not s.get("faq") and (not img or img in DASH):
+        if heads and not s.get("faq") and (not RB._s(img) or img.strip() in DASH):
             p.append(f"{where}: a section with a heading carries an image (working rule 17)")
-    counts, cp = census(record)
+    h1s = []
+    counts, cp = census(record, h1s)
     p += cp
-    if isinstance(wt.get("min"), int) and isinstance(wt.get("max"), int) and secs:
-        if not wt["min"] <= total <= wt["max"]:
-            p.append(f"the matrix sums to {total} words, outside the target "
-                     f"{wt['min']}–{wt['max']}")
-    return p
+    short = _h5h6_short(record, counts)
+    if short and record.get("page_type") not in ADVISORY_MIN_H5H6:
+        p.append(f"heading census: at least {MIN_H5H6} H5 and {MIN_H5H6} H6 on a "
+                 f"{record.get('page_type')} page (rules/headings.md) — short: " + ", ".join(short))
+    if record.get("h1") is not None and h1s and record.get("h1") != h1s[0]:
+        p.append(f"h1 {record.get('h1')!r} is not the tree's H1 {h1s[0]!r}")
+    if target_ok and raw and not wmin <= total <= wmax:
+        p.append(f"the matrix sums to {total} words, outside the target {wmin}–{wmax}")
+    # the research board placed each keyword in a section; the outline keeps it there
+    for i, d in enumerate(RB._l(kw.get("distribution"))):
+        if not isinstance(d, dict) or not RB._s(d.get("section")):
+            continue
+        row = by_name.get(d["section"].strip().lower())
+        placed = [k for k in RB._l(d.get("primary")) + RB._l(d.get("secondary")) if RB._s(k)]
+        if row is None:
+            p.append(f"the research board places {placed} in section {d['section']!r}, and the "
+                     f"outline has no row of that name")
+            continue
+        have = RB._d(row.get("keywords"))
+        mine = set(RB._l(have.get("primary"))) | set(RB._l(have.get("secondary")))
+        for k in placed:
+            if k not in mine:
+                p.append(f"keyword {k!r} is placed in section {d['section']!r} on the research board "
+                         f"and missing from that row")
 
 
 # --- rendering -------------------------------------------------------------------------
@@ -307,11 +489,19 @@ def sections(record, research):
     wt = record["word_target"]
     total = sum(s["words"] for s in record["sections"])
     ra = research.get("approval") or {}
+    warn = warnings(record)
+    census_md = (f"**Heading census:** {census_line(counts)} — exactly one H1, all six levels, no "
+                 f"skipped level (BSUK: rules/headings.md `heading-hierarchy-outline-gate`). At least "
+                 f"{MIN_H5H6} H5 and {MIN_H5H6} H6 is a hard rule on comparison and blog pages and "
+                 f"advisory on location pages; the source system required {MIN_H5H6} of each on "
+                 f"every page.")
+    if warn:
+        census_md += "\n\n" + "\n".join(f"- WARN {w}" for w in warn)
     head = [
         status_line(record),
         f"**Target:** {wt['min']:,}–{wt['max']:,} words (source: {wt['source']}), "
         f"{len(record['sections'])} sections; the matrix sums to {total:,} words.",
-        f"**Heading census:** {census_line(counts)} — exactly one H1, no skipped levels.",
+        census_md,
         f"**Research board:** `{record['research_board']}` (approved {ra.get('approved_on', '—')}, "
         f"picks `{ra.get('answers', '—')}`).",
     ]
@@ -349,6 +539,7 @@ def build(record, research, out_dir):
     slug = record["slug"]
     secs = sections(record, research)
     heading = f"Section matrix and H1–H6 outline — {record.get('route', slug)}"
+    out_dir = pathlib.Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     html_path, md_path = out_dir / f"{slug}.html", out_dir / f"{slug}.md"
     html_path.write_text(MA.page(f"Outline {slug}", "BlueStaffyUK · project 5 · STOP 2",
@@ -359,14 +550,25 @@ def build(record, research, out_dir):
     return html_path, md_path
 
 
-def approve(record, answers, today=None, root=ROOT):
-    path = pathlib.Path(answers)
-    if not (path if path.is_absolute() else pathlib.Path(root) / path).is_file():
-        raise OutlineError(f"no answers file at {answers} — the approval comes back from the "
-                           f"answer board (docs/reference/answer-board/README.md)")
+def approve(record, answers, today=None, root=None):
+    """The record with its approval stamped, with the research board's hash. Refuses an
+    unapproved research board, the research board's own answers file, and a file that is not
+    this page's STOP 2 answers (B3)."""
+    root = ROOT if root is None else root
+    research = research_for(record, root)
+    ra = research.get("approval") or {}
+    if pathlib.PurePath(str(answers)).as_posix().lstrip("./") == \
+            pathlib.PurePath(str(ra.get("answers", ""))).as_posix().lstrip("./"):
+        raise OutlineError(f"{answers} is the same answers file as the research board's approval — "
+                           f"the outline (STOP 2) is approved on its own batch")
+    try:
+        RB.check_answers(answers, record.get("slug"), "outline", root)
+    except RB.RecordError as e:
+        raise OutlineError(str(e)) from None
     out = dict(record)
     out["approval"] = {"approved_on": today or datetime.date.today().isoformat(),
-                       "answers": str(answers), "record_hash": record_hash(record)}
+                       "answers": str(answers), "record_hash": record_hash(record),
+                       "research_hash": RB.current_hash(research, root)}
     return out
 
 
@@ -390,10 +592,12 @@ def main(argv=None):
         return 2
     problems = validate(record, research)
     counts, _ = census(record)
-    print(f"outline-matrix {a.slug}: examined {len(record.get('sections', []))} sections, "
+    print(f"outline-matrix {a.slug}: examined {len(_sections(record))} sections, "
           f"{sum(counts.values())} headings ({census_line(counts)}) — {len(problems)} problems")
     for x in problems:
         print(f"  FAIL {x}")
+    for w in warnings(record) if not problems else []:
+        print(f"  WARN {w}")
     if problems:
         return 1
     if a.approve:

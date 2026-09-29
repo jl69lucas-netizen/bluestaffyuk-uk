@@ -18,6 +18,8 @@ import pytest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+sys.path.insert(0, str(ROOT / "tests/py"))
+import _stop_kit as K  # noqa: E402
 import board_gate as BG  # noqa: E402
 import build_page_board as BPB  # noqa: E402
 import outline_matrix as OM  # noqa: E402
@@ -31,15 +33,14 @@ GOOD = ROOT / "tests/py/fixtures/outline_matrix/good.json"
 
 
 def _outline(tmp_path, slug, approved=True, edit_after=False):
-    rec = json.loads(GOOD.read_text(encoding="utf-8"))
-    rec["slug"] = slug
-    if approved:
-        rec = OM.approve(rec, "tests/py/fixtures/research_board/answers.json", today="2026-09-29")
+    """The page's STOP 1 and STOP 2 records under tmp_path (tests/py/_stop_kit.py), the outline
+    approved or not, and optionally edited after its approval."""
+    paths = K.lay_out(tmp_path, slug, outline_approved=approved)
     if edit_after:
+        rec = json.loads(paths["outline"].read_text())
         rec["sections"][2]["words"] += 10
-    d = tmp_path / "data" / "outlines"
-    d.mkdir(parents=True, exist_ok=True)
-    (d / f"{slug}.json").write_text(json.dumps(rec))
+        paths["outline"].write_text(json.dumps(rec))
+    return paths
 
 
 def test_the_slugs_are_what_the_test_says():
@@ -53,9 +54,7 @@ def test_the_slugs_are_what_the_test_says():
 ])
 def test_approval_refusal_names_why(tmp_path, state, want):
     if state != "missing":
-        _outline(tmp_path, NEW, approved=True, edit_after=(state == "stale"))
-        if state == "unapproved":
-            _outline(tmp_path, NEW, approved=False)
+        _outline(tmp_path, NEW, approved=(state != "unapproved"), edit_after=(state == "stale"))
     assert want in (OM.approval_refusal(NEW, tmp_path) or "")
 
 

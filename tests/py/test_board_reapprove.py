@@ -27,6 +27,16 @@ import pageboard as PB  # noqa: E402
 import board_approve as BA  # noqa: E402
 from test_page_board import MIN_BOARD  # noqa: E402
 
+
+@pytest.fixture(autouse=True)
+def _stop_2_recorded(monkeypatch):
+    """These tests are about other approval rules; STOP 2 (the outline approval, which
+    refuse_on_new_page_rules also checks) is taken as recorded. tests/py/test_outline_stop_review.py
+    pins that refusal."""
+    import outline_matrix as OM
+    monkeypatch.setattr(OM, "approval_refusal", lambda slug, root=None: None)
+
+
 NOW = "2026-09-21T09:00:00Z"
 ONT = {"entities": []}   # re-approval takes the ontology it is given
 REASON = "post-approval wording fix from build review; picks unchanged"
