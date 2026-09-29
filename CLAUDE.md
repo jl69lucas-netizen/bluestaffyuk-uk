@@ -272,7 +272,7 @@ npm run test:render:pages
 `check:all` chains `check:parity`, `check:facts`, `check:links`, `check:verbatim`,
 `check:outline`, `check:redirects`, `check:schema`, `check:queries`, `check:competitors`,
 `check:gaps`, `check:barriers`, `check:threads`, `check:sitemaps`, `check:placeholders`,
-`check:retired`, `check:boards`, `check:workflow`, `check:markers` and `agents`, in that order (`tests/py/test_package_scripts.py` pins the chain and
+`check:retired`, `check:boards`, `check:canvas`, `check:workflow`, `check:markers` and `agents`, in that order (`tests/py/test_package_scripts.py` pins the chain and
 `tests/py/test_doc_drift.py` pins this sentence to it). Run `npm run -s build` first: `check:boards` reads dist/ (an empty dist/ exits 2; a page older than its sources is a `dist-stale` WARN and its headings are read from the record tree instead). Every gate in the chain must be
 green. `test:render:meta` is the gate that checks the checkers — run it **before** trusting
 any page result. `test:render:pages` measures the target pages at 375/768/1280 in a real

@@ -119,11 +119,16 @@ def test_the_check_all_chain_is_the_documented_one():
     # check:boards follows check:retired: `board_gate.py --all` runs the build-stage board
     # gate (approval hash, Asset Gate image checks, header collisions) over every page in
     # data/facts/rebuilt.json, so no rebuilt page ships on a board that stopped matching.
+    # check:canvas follows check:boards (the London component design pass, Plan 2): the city
+    # component canvas is the other thing the user approves before a city page is built, and
+    # its frozen variants are what data/design/city-picks/ and the city pool name. It joined
+    # the chain once the London canvas was complete and frozen (Plan 1 kept it standalone
+    # while the variants landed three at a time).
     expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
                 "check:outline", "check:redirects", "check:schema", "check:queries",
                 "check:competitors", "check:gaps", "check:barriers", "check:threads",
                 "check:sitemaps", "check:placeholders", "check:retired", "check:boards",
-                "check:workflow", "check:markers", "agents"]
+                "check:canvas", "check:workflow", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected
 
 
