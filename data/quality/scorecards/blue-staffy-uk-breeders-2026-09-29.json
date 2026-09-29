@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 34
+    "checks": 37
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -23,6 +23,9 @@
     "layout-table-stacks-on-mobile": 0,
     "hero-aside-no-clip": 3,
     "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 87,
+    "layout-text-has-side-gutter": 772,
+    "layout-boxed-h2-fits": 21,
     "img-srcset-within-2x": 45,
     "img-not-upscaled": 45,
     "img-alt-present-and-unique": 45,
@@ -109,7 +112,7 @@
       "viewport": 768,
       "checkId": "img-not-upscaled",
       "count": 9,
-      "message": "9 upscaled image(s): breeder-sitting-blue-staffy-puppy-home.webp file=640x480 painted=768x576 visible=768x576 fill 1.20x | testimonial-david-southampton-staffy-pup.webp file=450x450 painted=720x720 visible=720x720 fill 1.60x | family-friendly-blue-staffy-glasgow.webp file=640x360 painted=768x432 visible=768x432 fill 1.20x | trusted-uk-breeders-blue-staffy-family.webp file=450x450 painted=720x720 visible=720x720 fill 1.60x | Roman2.C-A0j1ry_1uH9rQ.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x | Byrd1.Dc5KZxb2_Z12dGBv.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x | Ince1.CjowFAsd_Z8xVgY.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x | Vennie.ke5yj4Fb_qwe4J.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x | Christa.DCD6hF9z_24FDMC.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x"
+      "message": "9 upscaled image(s): breeder-sitting-blue-staffy-puppy-home.webp file=640x480 painted=720x540 visible=720x540 fill 1.13x | testimonial-david-southampton-staffy-pup.webp file=450x450 painted=720x720 visible=720x720 fill 1.60x | family-friendly-blue-staffy-glasgow.webp file=640x360 painted=720x405 visible=720x405 fill 1.13x | trusted-uk-breeders-blue-staffy-family.webp file=450x450 painted=720x720 visible=720x720 fill 1.60x | Roman2.C-A0j1ry_1uH9rQ.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x | Byrd1.Dc5KZxb2_Z12dGBv.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x | Ince1.CjowFAsd_Z8xVgY.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x | Vennie.ke5yj4Fb_qwe4J.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x | Christa.DCD6hF9z_24FDMC.webp file=400x400 painted=350x438 visible=350x438 cover 1.09x"
     },
     {
       "viewport": 768,

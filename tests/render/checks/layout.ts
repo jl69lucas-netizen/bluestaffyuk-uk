@@ -780,7 +780,7 @@ register({
  *
  * Below 1024px the kit shell adds no gutter of its own (PageShell: every kit section owns one),
  * and the migrated sections that are NOT a `.bl-box` — `.page-body > section` with no class —
- * owned none either, so on eleven of the twelve built pages their headings and paragraphs ran
+ * owned none either, so on ten of the twelve built pages their headings and paragraphs ran
  * from x = 0 to the viewport's edge at 375 AND at 768. No check covered it:
  * `layout-no-horizontal-overflow` asks whether the document scrolls sideways, and text sitting
  * on the edge does not.

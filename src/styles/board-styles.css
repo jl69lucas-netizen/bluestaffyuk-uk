@@ -92,7 +92,7 @@
      no gutter until the dial's column exists (>= 1024px), because every kit section and every
      `.bl-box` owns its own. The migrated sections that are not a box (`.page-body > section`
      with no class) owned none, so below 1024px their headings and paragraphs ran from x = 0 to
-     the edge on eleven of the twelve built pages. A contents list mounted by a page rather than
+     the edge on ten of the twelve built pages. A contents list mounted by a page rather than
      by the shell (the blog-post template's `.page-toc`) misses the shell's scoped gutter the
      same way. They take a box's own 24px. Where the shell's grid already pads the column, the
      sections keep the width they had. A kit or city-kit section root owns its own gutter (a city

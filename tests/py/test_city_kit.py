@@ -391,8 +391,11 @@ def test_the_built_pages_ship_none_of_the_city_nav_css():
         assert len(css) > 10_000, f"{slug}: collected no page CSS, so nothing was checked"
         for root in CITY_NAV_ROOTS:
             assert f".{root}" not in css, (slug, root)
-        # Nor the city type base and scale, nor the dial token (src/styles/city.css: I2).
-        assert ".city-kit" not in css, slug
+        # Nor the city type base and scale, nor the dial token (src/styles/city.css: I2). A
+        # `.city-kit` inside a `:not()` is an EXCLUSION, not a city rule: the body-heading scale
+        # (Known Issue 97, src/styles/board-styles.css) names it to leave city headings alone.
+        # Only the `:not()` groups are blanked, so a real `.city-kit …` rule still fails here.
+        assert ".city-kit" not in re.sub(r":not\([^(){}]*\)", ":not()", css), slug
         assert "--city-" not in css, slug
 
 

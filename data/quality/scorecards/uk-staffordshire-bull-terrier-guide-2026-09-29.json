@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 34
+    "checks": 37
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -23,6 +23,9 @@
     "layout-table-stacks-on-mobile": 3,
     "hero-aside-no-clip": 3,
     "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 162,
+    "layout-text-has-side-gutter": 1082,
+    "layout-boxed-h2-fits": 24,
     "img-srcset-within-2x": 51,
     "img-not-upscaled": 51,
     "img-alt-present-and-unique": 51,
@@ -129,7 +132,7 @@
       "viewport": 768,
       "checkId": "img-not-upscaled",
       "count": 11,
-      "message": "11 upscaled image(s): blue-staffy-puppy-for-sale-uk.webp file=612x612 painted=670x377 visible=670x377 cover 1.09x | hqdefault.jpg file=480x360 painted=720x405 visible=720x405 cover 1.50x | comprehensive-uk-staffordshire-bull-terrier-guide-book.webp file=512x464 painted=718x651 visible=718x651 fill 1.40x | sbt-history-heritage-from-pit-to-pet.webp file=500x500 painted=768x768 visible=768x768 fill 1.54x | dedicated-blue-staffy-pup-care-glasgow.webp file=640x360 painted=768x432 visible=768x432 fill 1.20x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=768x512 visible=768x512 fill 1.40x | sbt-uk-legal-status-public-perception.webp file=436x540 painted=768x951 visible=768x951 fill 1.76x | busting-common-staffy-myths-loving-family-dog.webp file=512x469 painted=768x704 visible=768x704 fill 1.50x | staffordshire-bull-terrier-vs-american-bully-comparison.webp file=500x333 painted=768x511 visible=768x511 fill 1.54x | kc-registered-staffy-puppies.webp file=500x750 painted=768x1152 visible=768x1152 fill 1.54x"
+      "message": "11 upscaled image(s): blue-staffy-puppy-for-sale-uk.webp file=612x612 painted=670x377 visible=670x377 cover 1.09x | hqdefault.jpg file=480x360 painted=720x405 visible=720x405 cover 1.50x | comprehensive-uk-staffordshire-bull-terrier-guide-book.webp file=512x464 painted=718x651 visible=718x651 fill 1.40x | sbt-history-heritage-from-pit-to-pet.webp file=500x500 painted=720x720 visible=720x720 fill 1.44x | dedicated-blue-staffy-pup-care-glasgow.webp file=640x360 painted=720x405 visible=720x405 fill 1.13x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=720x480 visible=720x480 fill 1.31x | sbt-uk-legal-status-public-perception.webp file=436x540 painted=720x892 visible=720x892 fill 1.65x | busting-common-staffy-myths-loving-family-dog.webp file=512x469 painted=720x660 visible=720x660 fill 1.41x | staffordshire-bull-terrier-vs-american-bully-comparison.webp file=500x333 painted=720x480 visible=720x480 fill 1.44x | kc-registered-staffy-puppies.webp file=500x750 painted=720x1080 visible=720x1080 fill 1.44x"
     },
     {
       "viewport": 768,

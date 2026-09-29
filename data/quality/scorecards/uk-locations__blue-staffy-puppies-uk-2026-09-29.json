@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 34
+    "checks": 37
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -23,6 +23,9 @@
     "layout-table-stacks-on-mobile": 0,
     "hero-aside-no-clip": 0,
     "layout-hero-image-first-mobile": 0,
+    "layout-body-heading-above-body": 84,
+    "layout-text-has-side-gutter": 768,
+    "layout-boxed-h2-fits": 0,
     "img-srcset-within-2x": 33,
     "img-not-upscaled": 33,
     "img-alt-present-and-unique": 33,
@@ -69,7 +72,7 @@
       "viewport": 1280,
       "checkId": "nav-jump-target-lands",
       "count": 1,
-      "message": "1 of 2 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #Staffy-adoption@3493px"
+      "message": "1 of 2 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #Staffy-adoption@3611px"
     },
     {
       "viewport": 1280,
@@ -99,7 +102,7 @@
       "viewport": 375,
       "checkId": "nav-jump-target-lands",
       "count": 1,
-      "message": "1 of 2 in-page links land outside 251-319px (measured chrome 259px = header:259) — no single page-level cause identified; first: #Staffy-adoption@2847px"
+      "message": "1 of 2 in-page links land outside 251-319px (measured chrome 259px = header:259) — no single page-level cause identified; first: #Staffy-adoption@2898px"
     },
     {
       "viewport": 375,
@@ -129,7 +132,7 @@
       "viewport": 768,
       "checkId": "nav-jump-target-lands",
       "count": 1,
-      "message": "1 of 2 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #Staffy-adoption@3495px"
+      "message": "1 of 2 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #Staffy-adoption@3591px"
     },
     {
       "viewport": 768,

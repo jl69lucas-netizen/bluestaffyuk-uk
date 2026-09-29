@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 34
+    "checks": 37
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -23,6 +23,9 @@
     "layout-table-stacks-on-mobile": 9,
     "hero-aside-no-clip": 0,
     "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 204,
+    "layout-text-has-side-gutter": 1252,
+    "layout-boxed-h2-fits": 30,
     "img-srcset-within-2x": 69,
     "img-not-upscaled": 69,
     "img-alt-present-and-unique": 69,
@@ -129,7 +132,7 @@
       "viewport": 768,
       "checkId": "img-not-upscaled",
       "count": 22,
-      "message": "22 upscaled image(s): how-to-buy-blue-staffy-puppy-uk-steps1.webp file=512x474 painted=670x377 visible=670x377 cover 1.31x | blue-staffy-research.webp file=615x573 painted=768x716 visible=768x716 fill 1.25x | defra-pet-transport-process.webp file=512x512 painted=768x768 visible=768x768 fill 1.50x | 1blue-staffy-family-breeder.webp file=512x478 painted=718x670 visible=718x670 fill 1.40x | pros-and-cons-of-owning-a-blue-staffy-uk.webp file=512x512 painted=768x768 visible=768x768 fill 1.50x | purebred-blue-male-staffy-available-for-rehoming.webp file=400x400 painted=768x768 visible=768x768 fill 1.92x | blue-staffy-health-prioritising-wellbeing.webp file=512x768 painted=768x1152 visible=768x1152 fill 1.50x | blue-staffy-vet-check.webp file=512x477 painted=768x716 visible=768x716 fill 1.50x | healthy-blue-staffy-pups-for-sale-certified.webp file=400x400 painted=768x768 visible=768x768 fill 1.92x | blue-staffy-puppy-preparation.webp file=512x475 painted=768x713 visible=768x713 fill 1.50x"
+      "message": "22 upscaled image(s): how-to-buy-blue-staffy-puppy-uk-steps1.webp file=512x474 painted=670x377 visible=670x377 cover 1.31x | blue-staffy-research.webp file=615x573 painted=720x671 visible=720x671 fill 1.17x | defra-pet-transport-process.webp file=512x512 painted=720x720 visible=720x720 fill 1.41x | 1blue-staffy-family-breeder.webp file=512x478 painted=718x670 visible=718x670 fill 1.40x | pros-and-cons-of-owning-a-blue-staffy-uk.webp file=512x512 painted=720x720 visible=720x720 fill 1.41x | purebred-blue-male-staffy-available-for-rehoming.webp file=400x400 painted=720x720 visible=720x720 fill 1.80x | blue-staffy-health-prioritising-wellbeing.webp file=512x768 painted=720x1080 visible=720x1080 fill 1.41x | blue-staffy-vet-check.webp file=512x477 painted=720x671 visible=720x671 fill 1.41x | healthy-blue-staffy-pups-for-sale-certified.webp file=400x400 painted=720x720 visible=720x720 fill 1.80x | blue-staffy-puppy-preparation.webp file=512x475 painted=720x668 visible=720x668 fill 1.41x"
     },
     {
       "viewport": 768,

@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 34
+    "checks": 37
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -23,6 +23,9 @@
     "layout-table-stacks-on-mobile": 0,
     "hero-aside-no-clip": 0,
     "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 126,
+    "layout-text-has-side-gutter": 961,
+    "layout-boxed-h2-fits": 42,
     "img-srcset-within-2x": 60,
     "img-not-upscaled": 51,
     "img-alt-present-and-unique": 60,
@@ -129,7 +132,7 @@
       "viewport": 768,
       "checkId": "img-not-upscaled",
       "count": 14,
-      "message": "14 upscaled image(s): buy-staffy-puppies-for-sale-uk-bluestaffyuk.webp file=500x375 painted=672x448 visible=672x448 cover 1.34x | hqdefault.jpg file=480x360 painted=720x405 visible=720x405 cover 1.50x | staffy-puppies-norwich-for-sale-uk.webp file=512x440 painted=718x617 visible=718x617 fill 1.40x | english-blue-staffy-for-sale-puppy.webp file=512x512 painted=720x720 visible=720x720 fill 1.41x | vet-checked-blue-staffy-puppy-near-me.webp file=512x473 painted=720x665 visible=720x665 fill 1.41x | avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp file=498x500 painted=720x723 visible=720x723 fill 1.45x | kennel-club-assured-breeder-vs-others-bluestaffyuk.webp file=500x375 painted=720x540 visible=720x540 fill 1.44x | blue-staffy-bully-puppies-for-sale-uk-kc-certified.webp file=500x500 painted=720x720 visible=720x720 fill 1.44x | healthy-staffy-puppy-for-sale-uk.webp file=506x348 painted=720x495 visible=720x495 fill 1.42x | affordable-vs-premium-blue-staffy-breeders-comparison.webp file=512x468 painted=768x702 visible=768x702 fill 1.50x"
+      "message": "14 upscaled image(s): buy-staffy-puppies-for-sale-uk-bluestaffyuk.webp file=500x375 painted=672x448 visible=672x448 cover 1.34x | hqdefault.jpg file=480x360 painted=720x405 visible=720x405 cover 1.50x | staffy-puppies-norwich-for-sale-uk.webp file=512x440 painted=718x617 visible=718x617 fill 1.40x | english-blue-staffy-for-sale-puppy.webp file=512x512 painted=720x720 visible=720x720 fill 1.41x | vet-checked-blue-staffy-puppy-near-me.webp file=512x473 painted=720x665 visible=720x665 fill 1.41x | avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp file=498x500 painted=720x723 visible=720x723 fill 1.45x | kennel-club-assured-breeder-vs-others-bluestaffyuk.webp file=500x375 painted=720x540 visible=720x540 fill 1.44x | blue-staffy-bully-puppies-for-sale-uk-kc-certified.webp file=500x500 painted=720x720 visible=720x720 fill 1.44x | healthy-staffy-puppy-for-sale-uk.webp file=506x348 painted=720x495 visible=720x495 fill 1.42x | affordable-vs-premium-blue-staffy-breeders-comparison.webp file=512x468 painted=720x658 visible=720x658 fill 1.41x"
     },
     {
       "viewport": 768,

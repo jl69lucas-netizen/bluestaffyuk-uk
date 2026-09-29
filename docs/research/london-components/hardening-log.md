@@ -648,3 +648,28 @@ the `design-context-read-first` files. No finding changed a component, so Step 1
 | 6 | impeccable (anti-patterns) | no gradient text, glass, side stripes, hero-metric template or nested cards; the trust strip's icon rows are a two-column ledger, not a card grid. The scaffold's closing line "The old page's words, kept until this page is written" is placeholder copy, expected until London's page run | London scaffold | Nothing. |
 | 7 | frontend-design | the fifteen components hold one direction (steel band, brass CTA, bone ground, Fraunces over Source Sans) and match the canvas frames the user confirmed ("All fifteen match", 2026-09-29, side-by-side https://claude.ai/artifact/EPtLABruWw8yjBwFj5skf6) | `/kit-preview/city/` | Nothing. |
 | 8 | frontend-design | at 768 the review card sets the owner's photo at a third of the card's width above the letter, leaving the right two thirds of that band empty | both routes, 768 | Nothing: composition is the London board's call per section (the outline decides the sections, `outline-before-components`); noted for it. |
+
+## Known Issue 97 applied (2026-09-29)
+
+The user's pick "a and all recommendations" (preview https://claude.ai/artifact/7WfxLwvXTxxBGN9HtZuMwZ):
+option (a)'s body-heading scale, the side gutter on unboxed prose, and the boxed H2 on the same
+scale, all in `src/styles/board-styles.css`. `impeccable:impeccable`, then
+`frontend-design:frontend-design`, were invoked with the Skill tool on the four preview pages
+(`/blue-staffy-health-uk/`, `/uk-blue-staffy-puppy-buying-guide/`,
+`/uk-staffordshire-bull-terrier-guide/`, `/privacy-policy-uk/`) at 375, 768 and 1280, from shots
+painted in Chromium through Playwright (device scale 1) of the same regions as the preview, the
+first boxed H2 and the gutter: `/Users/apple/Downloads/BSUK/BSUK-refs/london/_plan2-shots/ki97-after/`
+(outside git). impeccable's PRODUCT.md gate is unmet as before (its loader reports no PRODUCT.md
+and no DESIGN.md), so the pass is read-only, with the brand context from the
+`design-context-read-first` files; brand register.
+
+| # | Pass | Finding | Where, widths | Changed |
+|---|---|---|---|---|
+| 1 | impeccable (typography) | the hierarchy now reads: body H2 22 / 25 / 28px at 700 and H3 18 / 18 / 20px at 600 over 17px prose, a 1.29 / 1.47 / 1.65 step from body to H2; the privacy page's run of H2, H3, H3 no longer reads as one grey column | all four, all widths | Nothing further. |
+| 2 | impeccable (responsive) | every text block sits 24px in from both edges at 375 and 768 (was 0px on all four); at 1280 nothing moved | all four | Nothing further. |
+| 3 | impeccable (typography) | the boxed H2 is on the same size and line-height as the unboxed H2 but keeps the regular (400) weight, so a box's own heading reads lighter than a migrated section's H2 on the same page | all four, all widths | Nothing: the preview and the brief set size and line-height only; a weight change repaints all 104 boxed H2s and goes to the same preview as heading colour (Known Issue 97, next). |
+| 4 | impeccable (layout) | at 1280, unboxed text starts at x = 292 and boxed text at x = 316: the box's own 24px padding against the dial column's edge | all four, 1280 | Nothing: as built before this change, and aligning them moves every unboxed section at desktop, which the gutter fix deliberately does not. Listed in Known Issue 97. |
+| 5 | impeccable (typography) | `text-wrap: balance` puts the migrated " : " at the start of a line ("Blue Staffy Health UK / : Our Commitment to …", 375) | health page, boxed H2 | Nothing: the space before the colon is the migrated heading's own text (verbatim set), a content change. |
+| 6 | impeccable (anti-patterns) | no side stripes, gradient text, glass or new cards; the change adds no colour and no component | all four | Nothing. |
+| 7 | frontend-design | one editorial rhythm now runs through the pages: Fraunces headings at the city kit's own tiers, Source Sans prose at 17px, tokens unchanged; the long migrated H2/H3s wrap to 4 or 5 lines at 375 on the buying guide, as the preview measured | buying guide, 375 | Nothing: rewording them is content (working rule 15). |
+| 8 | frontend-design | the boxed H2 no longer dominates a phone screen: the health page's first is three lines and 78px at 375 (was four lines, 198px), the breed guide's first three lines (was five, 248px) | health, breed guide, 375 | Nothing further. |

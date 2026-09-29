@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 34
+    "checks": 37
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -23,6 +23,9 @@
     "layout-table-stacks-on-mobile": 3,
     "hero-aside-no-clip": 3,
     "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 147,
+    "layout-text-has-side-gutter": 909,
+    "layout-boxed-h2-fits": 18,
     "img-srcset-within-2x": 24,
     "img-not-upscaled": 24,
     "img-alt-present-and-unique": 24,
@@ -109,7 +112,7 @@
       "viewport": 768,
       "checkId": "img-not-upscaled",
       "count": 5,
-      "message": "5 upscaled image(s): what-health-tests-blue-staffies-need.webp file=500x495 painted=718x711 visible=718x711 fill 1.44x | puppy-vaccinations-uk.webp file=500x430 painted=768x660 visible=768x660 fill 1.54x | what-to-feed-new-blue-staffy-puppy.webp file=500x707 painted=768x1086 visible=768x1086 fill 1.54x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=768x512 visible=768x512 fill 1.40x | kc-registered-staffy-puppies.webp file=500x750 painted=768x1152 visible=768x1152 fill 1.54x"
+      "message": "5 upscaled image(s): what-health-tests-blue-staffies-need.webp file=500x495 painted=718x711 visible=718x711 fill 1.44x | puppy-vaccinations-uk.webp file=500x430 painted=720x619 visible=720x619 fill 1.44x | what-to-feed-new-blue-staffy-puppy.webp file=500x707 painted=720x1018 visible=720x1018 fill 1.44x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=720x480 visible=720x480 fill 1.31x | kc-registered-staffy-puppies.webp file=500x750 painted=720x1080 visible=720x1080 fill 1.44x"
     },
     {
       "viewport": 768,
