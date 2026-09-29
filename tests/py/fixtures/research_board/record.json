@@ -1,0 +1,196 @@
+{
+  "slug": "fixture-city",
+  "page_type": "location",
+  "route": "/uk-locations/fixture-city/",
+  "date": "2026-09-29",
+  "queries_file": "tests/py/fixtures/research_board/queries.json",
+  "method": "Fixture: a hand-made record that exercises every field of the research board.",
+  "serp": {
+    "query": "blue staffy puppies fixture city",
+    "results": [
+      {
+        "url": "https://marketplace.example/fixture-city/",
+        "type": "marketplace",
+        "why_ranks": "Listing volume and domain authority; exact city in the title",
+        "weakness": "No breeder voice, no health testing detail, one H2",
+        "evidence": "https://marketplace.example/fixture-city/"
+      },
+      {
+        "url": "https://breeder-one.example/blue-staffy/",
+        "type": "breeder",
+        "why_ranks": "Exact-match page with six real H2 sections",
+        "weakness": "No delivery bands, no FAQ block",
+        "evidence": "https://breeder-one.example/blue-staffy/"
+      },
+      {
+        "url": "https://rescue.example/staffies/",
+        "type": "rescue",
+        "why_ranks": "NOT FETCHED — the page returned a bot wall to Firecrawl and to Playwright on 2026-09-29",
+        "weakness": "NOT FETCHED — the page returned a bot wall to Firecrawl and to Playwright on 2026-09-29"
+      }
+    ],
+    "structural_read": "Two of the top three are not breeder pages; the breeder lane is thin."
+  },
+  "intent": {
+    "dominant": "transactional",
+    "secondary": "commercial investigation",
+    "emotional": "fear of an unhealthy or scam puppy",
+    "local": "collection or delivery to the city"
+  },
+  "reverse_engineering": [
+    {
+      "url": "https://marketplace.example/fixture-city/",
+      "headings": {
+        "h1": 1,
+        "h2": 1,
+        "h3": 12
+      },
+      "tables": 0,
+      "faq": false,
+      "byline": "none",
+      "schema": "ItemList"
+    },
+    {
+      "url": "https://breeder-one.example/blue-staffy/",
+      "tables": 1,
+      "faq": false,
+      "byline": "the breeder",
+      "schema": "LocalBusiness"
+    },
+    {
+      "url": "https://rescue.example/staffies/",
+      "words": "NOT FETCHED — the page returned a bot wall to Firecrawl and to Playwright on 2026-09-29",
+      "tables": "NOT FETCHED — the page returned a bot wall to Firecrawl and to Playwright on 2026-09-29",
+      "faq": "NOT FETCHED — the page returned a bot wall to Firecrawl and to Playwright on 2026-09-29",
+      "byline": "NOT FETCHED — the page returned a bot wall to Firecrawl and to Playwright on 2026-09-29",
+      "schema": "NOT FETCHED — the page returned a bot wall to Firecrawl and to Playwright on 2026-09-29"
+    }
+  ],
+  "universal_gaps": [
+    "No delivery price band",
+    "No FAQ schema",
+    "No first-person breeder voice"
+  ],
+  "owner_language": "NOT FETCHED — no thread for this city in the thread ledger; bsuk-reddit-threads not yet run",
+  "fanout": {
+    "paa": [
+      "Are blue Staffies good with children?",
+      "How much is a blue Staffy puppy?"
+    ],
+    "threads": "NOT FETCHED — no thread for this city in the thread ledger; bsuk-reddit-threads not yet run",
+    "llm_intel": "NOT FETCHED — bsuk-llm-keyword-intel not yet run for this fixture"
+  },
+  "why_competitors_rank": "Domain authority and listing volume, not content depth.",
+  "how_we_win": [
+    "A breeder-voiced page with the delivery band and the price from the data files"
+  ],
+  "content_gap": [
+    "Delivery band table",
+    "FAQ block with schema"
+  ],
+  "entities": [
+    {
+      "id": "staffordshire-bull-terrier",
+      "class": "Breed"
+    }
+  ],
+  "angles": [
+    {
+      "id": "A1",
+      "hook": "Meet the litter before you travel",
+      "recommended": true,
+      "why": "Two of the top three are listings with no breeder voice",
+      "trade_off": "Longer page"
+    },
+    {
+      "id": "A2",
+      "hook": "What a fixture-city buyer pays, all in"
+    },
+    {
+      "id": "A3",
+      "hook": "The scam checklist for the city"
+    }
+  ],
+  "strategies": [
+    {
+      "id": "S1",
+      "direction": "The cluster strategy's row for the city",
+      "source": "docs/superpowers/sessions/2026-09-25-location-pages-strategy.md",
+      "recommended": true,
+      "why": "Already approved for the cluster",
+      "trade_off": "Less city-specific"
+    },
+    {
+      "id": "S2",
+      "direction": "A delivery-first page"
+    }
+  ],
+  "frameworks": [
+    {
+      "group": "Body sections",
+      "options": [
+        "QAB",
+        "PAS"
+      ],
+      "recommended": "QAB",
+      "why": "The PAA questions are the section heads",
+      "trade_off": "Less narrative"
+    }
+  ],
+  "keywords": {
+    "universe": [
+      {
+        "keyword": "blue staffy puppies fixture city",
+        "intent": "transactional",
+        "type": "primary",
+        "volume": "NOT FETCHED — no keyword tool is inside the spend guard for this fixture"
+      },
+      {
+        "keyword": "staffy delivery fixture city",
+        "intent": "local",
+        "type": "secondary",
+        "volume": 40
+      },
+      {
+        "keyword": "are blue staffies good with children",
+        "intent": "informational",
+        "type": "question",
+        "volume": 30
+      },
+      {
+        "keyword": "blue staffy price",
+        "intent": "commercial",
+        "type": "secondary",
+        "volume": 90
+      }
+    ],
+    "distribution": [
+      {
+        "section": "Hero",
+        "primary": [
+          "blue staffy puppies fixture city"
+        ]
+      },
+      {
+        "section": "Delivery",
+        "primary": [
+          "staffy delivery fixture city"
+        ],
+        "secondary": [
+          "blue staffy price"
+        ]
+      },
+      {
+        "section": "Family life",
+        "primary": [
+          "are blue staffies good with children"
+        ]
+      }
+    ]
+  },
+  "approval": {
+    "approved_on": "2026-09-29",
+    "answers": "tests/py/fixtures/research_board/answers.json",
+    "record_hash": "7c365a7ac589655d"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "slug": "fixture-city",
+  "page_type": "location",
+  "primary_keyword": "blue staffy puppies fixture city",
+  "route": "/uk-locations/fixture-city/",
+  "fetched": "2026-09-29",
+  "competitors": [
+    {
+      "url": "https://marketplace.example/fixture-city/",
+      "google_pos": 1,
+      "bing_pos": 2,
+      "h2_raw": 3,
+      "h2_clean": 1,
+      "outlier": false,
+      "blocked": false,
+      "words": 640
+    },
+    {
+      "url": "https://breeder-one.example/blue-staffy/",
+      "google_pos": 2,
+      "bing_pos": null,
+      "h2_raw": 9,
+      "h2_clean": 6,
+      "outlier": false,
+      "blocked": false,
+      "words": 1480
+    },
+    {
+      "url": "https://rescue.example/staffies/",
+      "google_pos": null,
+      "bing_pos": 4,
+      "h2_raw": 5,
+      "h2_clean": 4,
+      "outlier": false,
+      "blocked": false
+    },
+    {
+      "url": "https://deep.example/page/",
+      "google_pos": 9,
+      "bing_pos": 8,
+      "h2_raw": 2,
+      "h2_clean": 2,
+      "outlier": false,
+      "blocked": false
+    }
+  ],
+  "questions": [
+    {
+      "id": "q-1",
+      "question": "Are blue Staffies good with children?",
+      "must_answer": true
+    },
+    {
+      "id": "q-2",
+      "question": "How much is a blue Staffy puppy?",
+      "must_answer": true
+    },
+    {
+      "id": "q-3",
+      "question": "Do you deliver to fixture city?",
+      "must_answer": false
+    }
+  ]
+}
