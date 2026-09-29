@@ -97,12 +97,22 @@ const first = sections[0];
       if (typeof ResizeObserver === 'function') new ResizeObserver(publish).observe(band);
       window.matchMedia('(min-width: 1024px)').addEventListener('change', publish);
     }
+    // --- the sheet (looked up once: the tuck and the sheet's handlers share it) ---------------
+    const dlg = band.querySelector<HTMLDialogElement>('[data-jump-sheet]')!;
     // --- tucked away on the way down, back on the way up (answer board q03) -----------------
     // `held` is checked on every decision, so an open sheet or a keyboard focus inside always wins.
     const TOP = 64;      // at or above this scroll, the band always shows
     const NUDGE = 8;     // ignore scroll jitter smaller than this
-    const sheetEl = band.querySelector<HTMLDialogElement>('[data-jump-sheet]');
-    const held = () => !!sheetEl?.open || !!band.querySelector(':focus-visible');
+    // A keyboard focus inside the band. `:focus-visible` is a SyntaxError before Safari 15.4, so it
+    // is read in a try: there, a focus inside never holds the band (Task 10b review, item 4).
+    const keyboardFocusInside = () => {
+      try {
+        return band.matches(':focus-within') && !!document.activeElement?.matches?.(':focus-visible');
+      } catch {
+        return false;
+      }
+    };
+    const held = () => dlg.open || keyboardFocusInside();
     const tuck = (on: boolean) => band.toggleAttribute('data-tucked', on && !held());
     let lastY = window.scrollY;
     let queued = false;
@@ -111,7 +121,10 @@ const first = sections[0];
       queued = true;
       requestAnimationFrame(() => {
         queued = false;
-        const y = window.scrollY;
+        // Read once per frame, clamped to the real range: an iOS fling past either end
+        // rubber-bands scrollY outside it, and the bounce back is not a scroll (item 3).
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const y = Math.min(Math.max(window.scrollY, 0), Math.max(max, 0));
         if (y <= TOP) tuck(false);
         else if (y > lastY + NUDGE) tuck(true);
         else if (y < lastY - NUDGE) tuck(false);
@@ -123,8 +136,7 @@ const first = sections[0];
       window.addEventListener('scroll', onScroll, { passive: true });
       band.addEventListener('focusin', () => { if (held()) tuck(false); });
     }
-    // --- the sheet --------------------------------------------------------------------------
-    const dlg = band.querySelector<HTMLDialogElement>('[data-jump-sheet]')!;
+    // --- the sheet's handlers ---------------------------------------------------------------
     const opener = band.querySelector<HTMLButtonElement>('[data-jump-open]')!;
     opener.addEventListener('click', () => {
       if (typeof dlg.showModal === 'function') dlg.showModal();

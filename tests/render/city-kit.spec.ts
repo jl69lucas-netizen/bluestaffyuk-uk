@@ -638,3 +638,48 @@ for (const route of ROUTES) {
     }
   });
 }
+
+// The Task 10b review, items 3 and 4, as behaviour on the London page at a phone width.
+// 3: an iOS fling past the bottom rubber-bands scrollY above its maximum and back; the band must
+//    not read the bounce back as a scroll up. 4: a browser without :focus-visible (Safari before
+//    15.4) throws on the selector; the band's frame must not throw, and the band still tucks.
+test('the jump band ignores overscroll and survives a browser without :focus-visible', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp375', 'run once, at a phone width');
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.addInitScript(() => {
+    for (const proto of [Element.prototype, Document.prototype] as const) {
+      for (const fn of ['matches', 'querySelector', 'querySelectorAll'] as const) {
+        const orig = (proto as any)[fn];
+        if (!orig) continue;
+        (proto as any)[fn] = function (sel: string, ...rest: unknown[]) {
+          if (typeof sel === 'string' && sel.includes(':focus-visible')) throw new SyntaxError(`'${sel}' is not a valid selector`);
+          return orig.call(this, sel, ...rest);
+        };
+      }
+    }
+  });
+  const res = await page.goto('/uk-locations/blue-staffy-puppies-london/');
+  expect(res?.status()).toBe(200);
+  const tucked = () => page.evaluate(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked'));
+  const frames = () => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
+  // Scroll to the very bottom: the band tucks (and nothing throws on the missing selector).
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForFunction(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked'), null, { timeout: 10_000, polling: 'raf' }).catch(() => {});
+  expect(await tucked(), 'scrolling to the bottom tucks the band').toBe(true);
+  // The rubber band: scrollY reads 120px past the maximum, then settles back on it.
+  await page.evaluate(() => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => max + 120 });
+    window.dispatchEvent(new Event('scroll'));
+  });
+  await frames();
+  await page.evaluate(() => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => max });
+    window.dispatchEvent(new Event('scroll'));
+  });
+  await frames();
+  expect(await tucked(), 'the overscroll bounce brought the band back').toBe(true);
+  expect(errors, 'the band threw on a browser without :focus-visible').toEqual([]);
+});
