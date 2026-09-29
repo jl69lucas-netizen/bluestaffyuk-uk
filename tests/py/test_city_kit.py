@@ -867,3 +867,18 @@ def test_the_guarantee_prints_from_the_data_on_the_london_page():
         f = ROOT / "dist/index.html" if built == "index" else ROOT / "dist" / built / "index.html"
         assert f.exists(), built
         assert g["guarantee_label"] not in f.read_text(encoding="utf-8"), built
+
+
+def test_the_litters_age_is_one_data_field_and_no_birth_date_is_stated():
+    """The breeder's answer (answer board q08, 2026-09-29): no date of birth, "just 10 weeks".
+    The age lives in ONE place, data/settings.json `age_weeks`, and a page that states it says
+    "10 weeks old" from that field. No city component, city specimen or the London scaffold types
+    an age or a birth date (none states an age today)."""
+    s = json.loads((ROOT / "data/settings.json").read_text())
+    assert s["age_weeks"] == 10
+    assert "birth" not in json.dumps(s).lower().replace("no date of birth", "")
+    sources = [*KIT.glob("City*.astro"), ROOT / "src/lib/cityKit.ts", KIT / "_registry.ts",
+               ROOT / "src/pages/uk-locations/blue-staffy-puppies-london.astro",
+               *(ROOT / "src/pages/kit-preview").glob("city*.astro")]
+    typed = re.compile(r"(?i)\b\d+\s*weeks?\s+old\b|\bborn on\b|date of birth|\bdob\b")
+    assert [str(p.relative_to(ROOT)) for p in sources if typed.search(p.read_text(encoding="utf-8"))] == []

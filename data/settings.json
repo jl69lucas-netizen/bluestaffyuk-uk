@@ -24,6 +24,8 @@
   "guarantee_label": "Two-year health guarantee",
   "guarantee_note": "Ask us for the full terms before you pay a deposit.",
   "guarantee_source": "the breeder's answer, answer board q07, 2026-09-29",
+  "age_weeks": 10,
+  "age_weeks_note": "The litter's age as the breeder gave it (answer board q08, 2026-09-29): a page states it as '10 weeks old' from age_weeks, and no date of birth is known, so none is stated. An age goes stale; confirm it before a page prints it.",
   "socials": {
     "x": "https://x.com/bluestaffyuk",
     "youtube": "https://www.youtube.com/@BlueStaffyUK-v2d",
