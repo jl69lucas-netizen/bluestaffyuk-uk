@@ -76,6 +76,7 @@ import CityFaqLedger, { type CityFaqRow } from './CityFaqLedger.astro';
 import CityNewsletterNotice from './CityNewsletterNotice.astro';
 import CityContactLineup from './CityContactLineup.astro';
 import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine, guaranteeRow } from '../../lib/cityKit';
+import { numberWord } from '../../lib/recordText';
 /** The guarantee, from data/settings.json (answer board q07, 2026-09-29); null if the data loses it. */
 const GUARANTEE = guaranteeRow();
 import type { SectionRef } from '../../lib/sections';
@@ -504,7 +505,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     demo: [{
       fit: 'full',
       heading: 'What Should a Buyer Take From This Page?',
-      lede: `Five plain answers, one sentence each, so you can decide whether a puppy from ${SITE.breeder_name}'s home in ${SITE.address.city} is right for you.`,
+      lede: `${cap(numberWord(5 + (GUARANTEE ? 1 : 0)))} plain answers, one sentence each, so you can decide whether a puppy from ${SITE.breeder_name}'s home in ${SITE.address.city} is right for you.`,
       photo: 'jones-strong-staffy-sire-temperament.webp',
       caption: `Jones, the sire, at home in ${SITE.address.city}`,
       rows: [

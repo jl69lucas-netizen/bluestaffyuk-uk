@@ -599,3 +599,30 @@ panel's content edge and the number line's end. It failed at 640 on all three ci
   `max-width: 640px`, and that query includes 640, while the roster's own tier is a table from a
   640px box. At exactly 640 the rows were blocks without the slip layout. The roster now restores
   table display from a 640px box.
+
+## Plan 2 Task 10b (2026-09-29): the answer-board rulings
+
+`impeccable:impeccable`, then `frontend-design:frontend-design`, on
+`/uk-locations/blue-staffy-puppies-london/` (dist/) at 375, 768 and 1280, focused on what the
+rulings changed. Shots: `BSUK-refs/london/_plan2-shots/10b/` (outside git). impeccable's
+PRODUCT.md gate had nothing to load (no PRODUCT.md in the repo); the brand context read was
+CLAUDE.md's Brand context and `rules/design.md`, as in the earlier passes.
+
+- **Jump band (q03).** At 375 and 768 a scroll down leaves only the site header; a scroll back
+  up brings the steel band back flush under it, with the current stop swollen. The slide is
+  `transform` only and goes behind the header (z 50 over 30), so no strip of the band shows
+  mid-slide. No change.
+- **Contents list (q05).** Shown at 375 and 768, gone at 1024 and 1280, where the dial is the
+  page's contents. The hero and the price scale now lead straight into the body at desktop,
+  with no duplicate list. No change.
+- **Takeaways (q06, q07).** At 1280 the question sits on two lines in the 7fr head column and the
+  lede on four in the 5fr; the head no longer lines up with the photo/list split below, which
+  reads as a deliberate masthead rather than a misalignment. **Fixed:** the lede and the nav
+  label still said "five" answers after the guarantee made six rows. The scaffold now builds the
+  rows once and says the count from them ("Six plain answers", "The page in six answers"); the
+  specimen's lede counts the same way.
+- **Trust strip (q07).** Six claims now fill the two-column ledger as three even rows at 768 and
+  1280 (five left a hole bottom right); the shield icon matches the line set. No change.
+- **FAQ rail (q07).** The guarantee is the third brief under the photo. At 1280 its title takes
+  two lines in the 4fr rail where the other two take one; it is the rail's own measure and the
+  words are the data's, so it stays.

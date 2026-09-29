@@ -77,6 +77,21 @@ const andList = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, 
 const names = (ps: PuppyRow[]) => andList(ps.map((p) => p.name));
 const withColour = (ps: PuppyRow[]) => andList(ps.map((p) => `${p.name} (${p.colour.toLowerCase()})`));
 
+// The guarantee, from data/settings.json (answer board q07): a claim in the trust strip and a row
+// in the takeaways. Null if the data ever loses it, and then neither prints.
+const guarantee = guaranteeRow();
+// The takeaways' rows, ONCE: their count is the word the lede and the nav label say ("six plain
+// answers"), so a row added or dropped moves both.
+const takeaways = [
+  { label: `The ${LITTER}`, text: `${names(boys)} are ${BOY_PRICE} each; ${names(girls)} are ${GIRL_PRICE} each. All ${LITTER} are available.` },
+  { label: 'The deposit', text: depositLine },
+  { label: 'The route', text: `DEFRA-approved transport to your London door for ${DELIVERY_BAND}, priced by distance, or collection in ${TOWN}.` },
+  { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
+  { label: 'The raising', text: 'Raised in the home with Puppy Culture and ENS, and you may speak to our vet.' },
+  ...(guarantee ? [{ label: 'The guarantee', text: `${guarantee.t}. ${guarantee.d}` }] : []),
+];
+const ANSWERS = numberWord(takeaways.length);
+
 // Each nav section's question, ONCE: it is the section's H2 and the jump sheet's row.
 const Q = {
   'checks': 'What Should You Check Before Buying a Blue Staffy in London?',
@@ -91,7 +106,7 @@ const Q = {
 // The eight sections the nav set lists, in page order; each `question` is its section's H2.
 const sections: SectionRef[] = [
   { id: 'checks', label: 'What to check before you buy', stop: 'Checks', icon: 'health', question: Q['checks'] },
-  { id: 'in-short', label: 'The page in five answers', stop: 'In short', icon: 'list', question: Q['in-short'] },
+  { id: 'in-short', label: `The page in ${ANSWERS} answers`, stop: 'In short', icon: 'list', question: Q['in-short'] },
   { id: 'puppies', label: `The ${LITTER} puppies ready now`, stop: 'Puppies', icon: 'puppies', question: Q['puppies'] },
   { id: 'prices', label: 'Prices for a boy or a girl', stop: 'Prices', icon: 'prices', question: Q['prices'] },
   { id: 'buying-questions', label: 'Questions London buyers ask', stop: 'Questions', icon: 'faq', question: Q['buying-questions'] },
@@ -125,9 +140,6 @@ const faqLife: CityFaqRow[] = [
   { q: 'Is a Staffy a good first dog?', a: 'Yes, for a household ready to socialise the puppy early and train it consistently. Staffies are eager to please, but they need company, so the commitment matters most.' },
 ];
 const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
-// The guarantee, from data/settings.json (answer board q07): a claim in the trust strip and a row
-// in the takeaways. Null if the data ever loses it, and then neither prints.
-const guarantee = guaranteeRow();
 ---
 <CityShell title={loc.title} description={loc.description} canonical={`/uk-locations/${SLUG}/`}
   robots="noindex, follow" ogType="article" schema={schema} crumbTitle="London" sections={sections}
@@ -173,16 +185,9 @@ const guarantee = guaranteeRow();
 
   <CityTakeawaysLedger id="in-short"
     heading={Q['in-short']}
-    lede={`Five plain answers, one sentence each, so you can decide from your London sofa whether a puppy from ${settings.breeder_name}'s home in ${TOWN} is right for you.`}
+    lede={`${cap(ANSWERS)} plain answers, one sentence each, so you can decide from your London sofa whether a puppy from ${settings.breeder_name}'s home in ${TOWN} is right for you.`}
     photo="jones-strong-staffy-sire-temperament.webp" caption={`Jones, the sire, at home in ${TOWN}`}
-    rows={[
-      { label: `The ${LITTER}`, text: `${names(boys)} are ${BOY_PRICE} each; ${names(girls)} are ${GIRL_PRICE} each. All ${LITTER} are available.` },
-      { label: 'The deposit', text: depositLine },
-      { label: 'The route', text: `DEFRA-approved transport to your London door for ${DELIVERY_BAND}, priced by distance, or collection in ${TOWN}.` },
-      { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
-      { label: 'The raising', text: 'Raised in the home with Puppy Culture and ENS, and you may speak to our vet.' },
-      ...(guarantee ? [{ label: 'The guarantee', text: `${guarantee.t}. ${guarantee.d}` }] : []),
-    ]} />
+    rows={takeaways} />
   <CityPuppySheet id="puppies"
     heading={Q['puppies']}
     lede={`Maggie and Jones's ${LITTER} are laid out here like family prints, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}, so you can pick a favourite from London before you ask.`}

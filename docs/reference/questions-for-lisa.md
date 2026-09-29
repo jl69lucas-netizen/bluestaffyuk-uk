@@ -72,9 +72,7 @@ and press Send to Claude Code; nothing needs copying.
     The site already says that every puppy leaves with a written health guarantee, but it
     cannot say how long the cover lasts or what it covers until you tell us. **Where it
     goes:** the `home-health-guarantee` row in `data/faq.json`, and `guarantee_days` in
-    `data/settings.json`. **Answered on the answer board (q07, 2026-09-29).** The length is two years, now
-    `guarantee_days: 730` and `guarantee_label` in `data/settings.json`; what it covers is still
-    unanswered, so no page names a cover.
+    `data/settings.json` (today it is empty, so no page states a number).
 15. **What socialisation has the puppy had by the time it goes home?** For example: people,
     children, other dogs, household noises, car journeys. **Where it goes:** a new row
     `puppy-socialisation` in `data/faq.json`.
