@@ -937,3 +937,59 @@ register({
     };
   },
 });
+
+/**
+ * A HERO BAND OUTSIDE A BOARD BOX SPANS ITS COLUMN (the Known Issue 97 review, 2026-09-29).
+ *
+ * PageShell adds no width of its own: "every kit section ... already owns its gutter", and the kit
+ * Hero is the kit's one section band. A wrapper between the column and the band must therefore
+ * never inset it. The side-gutter rule did: the blog-post template mounts its hero in a
+ * class-less `<section>` under `.page-body`, the rule padded that wrapper, and the band moved from
+ * x = 0 at the column's full width to x = 24, with white strips at every width.
+ *
+ * THE UNIT is one visible `.kit-hero` that is not inside a `.bl-box` (a boxed hero sits in the
+ * box's own padding by design) nor inside another kit section (the kit preview's specimen
+ * frames, `section.kit-section`). It fails when its left or right edge is more than 1px inside its
+ * column: the nearest `.page-body`, or `<main>` on a page without one.
+ */
+register({
+  id: 'layout-kit-hero-full-bleed',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'a kit hero band outside a board box spans its column edge to edge',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    const r = await page.evaluate(() => {
+      let examined = 0;
+      const bad: string[] = [];
+      for (const hero of Array.from(document.querySelectorAll('main .kit-hero'))) {
+        // Boxed (the box's padding is the design) or nested in another kit section (the kit
+        // preview's specimen frames): not a page band.
+        if (hero.parentElement?.closest('.bl-box, [class^="kit-"], [class*=" kit-"]')) continue;
+        const hb = hero.getBoundingClientRect();
+        if (hb.width < 1 || hb.height < 1) continue;
+        const column = hero.closest('.page-body') || hero.closest('main')!;
+        const cb = column.getBoundingClientRect();
+        examined++;
+        const left = hb.left - cb.left;
+        const right = cb.right - hb.right;
+        if (left > 1 || right > 1) {
+          bad.push(`${hero.getAttribute('data-hero-layout') || 'hero'} inset ${Math.round(left)}px left, ${Math.round(right)}px right of its ${Math.round(cb.width)}px column`);
+        }
+      }
+      return { examined, bad };
+    });
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{
+          checkId: 'layout-kit-hero-full-bleed',
+          family: 'LAYOUT' as const,
+          viewport,
+          count: r.bad.length,
+          message: r.bad.join(' | '),
+        }]
+        : [],
+    };
+  },
+});

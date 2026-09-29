@@ -91,6 +91,12 @@
       "cluster_cleared": "new 2026-09-27 (London component pass, Plan 1 Task 11) together with the Hero.astro fix that makes it pass: blocking on every page from its first run, because the defect it measures was on the frozen pages too and the fix is phone-width only",
       "false_reports": 0
     },
+    "layout-kit-hero-full-bleed": {
+      "scope": "all",
+      "since": "2026-09-29",
+      "cluster_cleared": "new 2026-09-29 (the Known Issue 97 review) together with the gutter rule's :has(.kit-hero) exclusion that makes it pass: blocking on every page from its first run; at HEAD 3f169d1 it examines the blog post's unboxed hero clean at every width, and it fired on the side-gutter rule that inset that band by 24px each side",
+      "false_reports": 0
+    },
     "layout-min-font-size": {
       "scope": "all",
       "since": "2026-09-26",

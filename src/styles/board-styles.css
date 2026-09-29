@@ -96,11 +96,13 @@
      by the shell (the blog-post template's `.page-toc`) misses the shell's scoped gutter the
      same way. They take a box's own 24px. Where the shell's grid already pads the column, the
      sections keep the width they had. A kit or city-kit section root owns its own gutter (a city
-     section's lives on its inner tray) and is left alone. Held by
-     tests/render/checks/layout.ts::layout-text-has-side-gutter. */
-  .page-body > :where(section:not(.bl-box, .city-kit, [class*="kit-"]), .page-toc) { padding-inline: var(--space-5); }
-  @media (min-width: 1024px) {
-    .page-shell:is(.has-dial, .has-own-dial) > .page-body > :where(section:not(.bl-box, .city-kit, [class*="kit-"])) { padding-inline: 0; }
+     section's lives on its inner tray) and is left alone, and so is a wrapper that holds a kit
+     hero band (the blog-post template's `<section slot="hero">`): the band spans its column, and
+     padding the wrapper inset it with a white strip each side (the Known Issue 97 review). Held by
+     tests/render/checks/layout.ts::layout-text-has-side-gutter and ::layout-kit-hero-full-bleed. */
+  .page-body > :where(section:not(.bl-box, .city-kit, [class^="kit-"], [class*=" kit-"], :has(.kit-hero)), .page-toc) { padding-inline: var(--space-5); }
+  @media (width >= 1024px) {
+    .page-shell:is(.has-dial, .has-own-dial) > .page-body > :where(section:not(.bl-box, .city-kit, [class^="kit-"], [class*=" kit-"], :has(.kit-hero))) { padding-inline: 0; }
   }
   .bl-lede { margin: 0; font-size: var(--text-lg); max-width: 60ch; }
   .bl-eyebrow {
