@@ -1,4 +1,4 @@
-import { register, type CheckResult } from '../lib/registry.js';
+import { register, type CheckResult, type CheckContext } from '../lib/registry.js';
 import { settlePage } from '../lib/probes.js';
 import type { Page } from '@playwright/test';
 
@@ -685,6 +685,90 @@ register({
           viewport,
           count: r.bad.length,
           message: r.bad.join(' | '),
+        }]
+        : [],
+    };
+  },
+});
+
+/**
+ * A BODY HEADING PAINTS ABOVE THE BODY TEXT (Known Issue 97; the user's pick of the city
+ * scale, option (a), 2026-09-29).
+ *
+ * On all twelve built pages 49 H2s and 217 H3s painted at 17px, the body size, at every width:
+ * the only heading size a body section had was `.bl-box h2`, and every other H2/H3 inherited
+ * the preflight's body size. No check was silent, because none covered it —
+ * `layout-min-font-size` is a floor for ALL text, `sem-heading-order` reads levels, and
+ * `city-type-fit` caps city headings from above and sets no floor.
+ *
+ * THE BODY SIZE is the computed font-size carrying the most paragraph text (visible `main p`,
+ * weighted by characters), so a 15px caption or a 20px lede cannot move it. A page with no
+ * visible paragraph falls back to `<main>`'s own size.
+ *
+ * THE UNIT is one visible H2 or H3 in `<main>` that is NOT inside a kit (`kit-*`) or city-kit
+ * component: those set their own type, on their own scale, and are judged by their own checks
+ * (the city type-fit gate among them). A heading fails when it paints at or below the body size
+ * (within 0.5px). The examined count is the headings judged; zero anywhere is Guard 2's FAIL
+ * in build_scorecard.mjs, and the fixture floor is 2.
+ */
+/**
+ * Headings that paint at or below the body size ON PURPOSE, pinned by page and exact text —
+ * never by selector, so a new heading in the same block still fails. Each entry says why.
+ */
+const BODY_HEADING_PINNED: Record<string, { texts: string[]; why: string }> = {
+  'kit-preview': {
+    texts: ['01 · Health', '02 · Delivery', '03 · Deposit', '04 · Puppies', '05 · FAQ', '06 · Contact'],
+    why: 'the specimen page\'s scroll-spy stub targets (.spy-targets h3, --text-sm, muted): demo anchors for the dial and the sheet, not reading copy',
+  },
+};
+
+register({
+  id: 'layout-body-heading-above-body',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'a body H2 or H3 in <main> paints larger than the body text',
+  minExamined: 2,
+  async run(page: Page, viewport: number, ctx: CheckContext): Promise<CheckResult> {
+    await page.evaluate(() => document.fonts.ready);
+    const pinned = BODY_HEADING_PINNED[ctx?.slug ?? '']?.texts ?? [];
+    const r = await page.evaluate((pinned) => {
+      const main = document.querySelector('main');
+      if (!main) return { examined: 0, body: 0, bad: [] as string[] };
+      const visible = (el: Element) =>
+        el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+      const chars = new Map<number, number>();
+      for (const p of Array.from(main.querySelectorAll('p'))) {
+        if (!visible(p)) continue;
+        const n = (p.textContent || '').trim().length;
+        if (!n) continue;
+        const fs = parseFloat(getComputedStyle(p).fontSize);
+        chars.set(fs, (chars.get(fs) || 0) + n);
+      }
+      let body = parseFloat(getComputedStyle(main).fontSize);
+      let most = -1;
+      for (const [fs, n] of chars) if (n > most) { most = n; body = fs; }
+      let examined = 0;
+      const bad: string[] = [];
+      for (const h of Array.from(main.querySelectorAll('h2, h3'))) {
+        if (!visible(h) || h.closest('[class*="kit-"], .city-kit')) continue;
+        examined++;
+        const fs = parseFloat(getComputedStyle(h).fontSize);
+        const text = (h.textContent || '').trim().replace(/\s+/g, ' ');
+        if (fs <= body + 0.5 && !pinned.includes(text)) {
+          bad.push(`${h.tagName.toLowerCase()} ${fs}px "${text.slice(0, 50)}"`);
+        }
+      }
+      return { examined, body, bad };
+    }, pinned);
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{
+          checkId: 'layout-body-heading-above-body',
+          family: 'LAYOUT' as const,
+          viewport,
+          count: r.bad.length,
+          message: `${r.bad.length} of ${r.examined} body H2/H3 paint at or below the ${r.body}px body size: ${r.bad.slice(0, 6).join(' | ')}`,
         }]
         : [],
     };

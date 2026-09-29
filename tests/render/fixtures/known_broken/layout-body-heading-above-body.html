@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>body headings painted at the body size</title>
+<!-- Known Issue 97, as the twelve built pages shipped it: an unboxed H2 and H3 inherit the
+     17px body size from the preflight, so only the face tells them from the prose under them.
+     The kit card's H3 is 17px too and must NOT be the defect: kit components set their own
+     type and are judged elsewhere. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  main { padding: 0 24px; }
+  h2, h3 { font-size: inherit; font-weight: 400; margin: 24px 0 8px; }
+  .kit-card h3 { font-size: 17px; }
+</style>
+</head><body>
+<main>
+  <section>
+    <h2>Our Rigorous Health Testing Process</h2>
+    <p>Every parent is screened before a litter is planned, and the tests are named on the page.</p>
+    <h3>BVA/KC Health Schemes</h3>
+    <p>The eye and elbow schemes are run by the British Veterinary Association with the Kennel Club.</p>
+    <p>A second paragraph at the body size, so the body size is the one most prose is set in.</p>
+  </section>
+  <div class="kit-card"><h3>Kit Card Heading</h3><p>A component heading, sized by the component.</p></div>
+</main>
+</body></html>

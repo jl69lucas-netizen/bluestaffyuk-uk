@@ -67,6 +67,12 @@
       "cluster_cleared": "retargeted 2026-09-26 to img.bl-img, the class src/components/BodyImage.astro renders; its reports on the twelve frozen pages are true reports (prose before the photo), which is why the scope is new pages only",
       "false_reports": 0
     },
+    "layout-body-heading-above-body": {
+      "scope": "all",
+      "since": "2026-09-29",
+      "cluster_cleared": "new 2026-09-29 (Known Issue 97) together with the option (a) heading scale in src/styles/board-styles.css that makes it pass: blocking on every page from its first run, because the defect it measures (49 H2s and 217 H3s at the 17px body size) was on the twelve frozen pages and the scale lifts every body heading in <main>; the kit-preview spy-stub labels are pinned by name in the check",
+      "false_reports": 0
+    },
     "layout-hero-counter-separation": {
       "scope": "new-pages",
       "since": "2026-09-26",
