@@ -177,7 +177,7 @@
       "id": "top",
       "n": 1,
       "heading": "Blue Staffy Health UK : Our Commitment to Happy, Healthy Puppies",
-      "intent": "The opening, in Lisa Bright's first person, with the litter photograph first: the two DNA tests the parents are clear of, the vet check and first vaccination every puppy leaves with, and the fact that the rest of this page is the working: what we screen, what we feed, what we watch for. No price and no guarantee length in the hero — data/settings.json holds guarantee_days: null.",
+      "intent": "The opening, in Lisa Bright's first person, with the litter photograph first: the two DNA tests the parents have had, the vet check and first vaccination every puppy leaves with, and the fact that the rest of this page is the working: what we screen, what we feed, what we watch for. No price and no guarantee length in the hero; the guarantee is stated lower down, from data/settings.json.",
       "category": "A",
       "group": "MANDATORY",
       "why": "A health page's first screen has to say what was actually tested before it says anything is healthy; the migrated page opened on four '100%' badges with no evidence attached to any of them.",
@@ -287,7 +287,7 @@
       "id": "takeaways",
       "n": 2,
       "heading": "What A Health-Tested Litter Actually Means",
-      "intent": "Four statement cards, each one a fact already on disk: both parents clear of L-2-HGA and HC-HSF4; every puppy microchipped before it leaves, as UK law requires; a first vaccination and a vet-signed health card; and a breed that lives 12-14 years when it is fed and exercised properly. Nothing here is new — each card is the one-line form of a section below it.",
+      "intent": "Four statement cards, each one a fact already on disk: both parents DNA tested for L-2-HGA and HC-HSF4; every puppy microchipped before it leaves, as UK law requires; a first vaccination and a vet-signed health card; and a breed that lives 12-14 years when it is fed and exercised properly. Nothing here is new — each card is the one-line form of a section below it.",
       "category": "A",
       "group": "MANDATORY",
       "why": "The scan's strongest page states the two tests and stops; a reader who wants the summary before the working should be able to take it in four lines and then choose which section to read.",
@@ -436,7 +436,7 @@
       "id": "dna-tests",
       "n": 4,
       "heading": "HC-HSF4 and L-2-HGA Tested Staffy Breeders",
-      "intent": "The evidence, as a table: each test, the one thing it screens for, and the status of Maggie and Jones. Three columns and two rows, every figure and every status taken from the migrated body — 'Both our beloved Maggie and Jones are DNA tested clear for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts)'. Nothing is added: no laboratory is named, because no file on disk names one.",
+      "intent": "The evidence, as a table: each test, the one thing it screens for, and that Maggie and Jones are DNA tested for it. Three columns and two rows, the tests taken from the migrated body; no result is stated, because the breeder holds no DNA certificates (answer board q01, 2026-09-29). Nothing is added: no laboratory is named, because no file on disk names one.",
       "category": "A",
       "group": "COMPETITOR-BASED",
       "why": "The two named tests are the one hard credential this page can carry, and a table is what a buyer can check against a certificate; https://willaby.net/puppies/a-health-tested-puppy/ gives its reader exactly such a list and is the only scanned page that does.",
@@ -510,7 +510,7 @@
         {
           "level": 3,
           "heading": "What A DNA Test Does And Does Not Cover",
-          "intent": "Both conditions are recessive, so two clear parents cannot pass either on; a clear result says nothing about anything else.",
+          "intent": "Both conditions are recessive, so a puppy needs a copy from each parent to be affected; a DNA test speaks to these two conditions and nothing else.",
           "children": []
         }
       ],
@@ -553,7 +553,7 @@
         "note": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the pick at P4."
       },
       "verbatim_heading": true,
-      "verbatim_opening": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts), and both have their eyes and elbows screened. “ What does L-2-HGA testing mean ?” It means we’re actively preventing serious neurological and eye conditions through responsible breeding."
+      "verbatim_opening": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts), and both have their eyes and elbows screened. “ What does L-2-HGA testing mean ?” It means we test both parents for the gene behind a serious neurological condition before we breed."
     },
     {
       "id": "screening",
@@ -616,12 +616,12 @@
           "intent": "The ordinary veterinary check every parent dog has before a mating, stated as the migrated page stated it and without the compliance claim that followed it.",
           "children": [],
           "verbatim_heading": true,
-          "verbatim_opening": "Beyond genetic tests, our parent dogs receive regular veterinary check-ups to ensure they are in peak physical condition. They are free from any other underlying health issues."
+          "verbatim_opening": "Beyond genetic tests, our parent dogs receive regular veterinary check-ups to ensure they are in peak physical condition."
         },
         {
           "level": 3,
           "heading": "Why Health Matters in Staffy Breeding",
-          "intent": "Why two clear parents matter to a buyer rather than to a breeder: a recessive condition needs two copies, so screening the parents is the only point at which a litter's risk can still be changed. No standards body is named, because no file on disk records an accreditation (Known Issue 7).",
+          "intent": "Why testing both parents matters to a buyer rather than to a breeder: a recessive condition needs two copies, so screening the parents is the only point at which a litter's risk can still be changed. No standards body is named, because no file on disk records an accreditation (Known Issue 7).",
           "children": []
         }
       ],
@@ -853,7 +853,7 @@
         {
           "level": 3,
           "heading": "What Registration Does Not Do",
-          "intent": "It is not a health test and it is not a quality mark. The DNA results are the evidence of health, and they are in `dna-tests`.",
+          "intent": "It is not a health test and it is not a quality mark. The DNA tests are about health, and they are in `dna-tests`.",
           "children": []
         }
       ],
@@ -1552,7 +1552,7 @@
       "id": "talk-to-us",
       "n": 15,
       "heading": "Ready to Welcome a Healthy Blue Staffy?",
-      "intent": "The close. What a puppy costs — £1,500 for Roman, Byrd and Ince and £1,700 for Vennie, Christa and Cheryl, from data/price-matrix.json — the £500 refundable deposit, and the invitation to ask for the test results before paying anything. The old £850 to £1,200 band is not restated anywhere on this page; see `dropped.prices`.",
+      "intent": "The close. What a puppy costs — £1,500 for Roman, Byrd and Ince and £1,700 for Vennie, Christa and Cheryl, from data/price-matrix.json — the £500 refundable deposit, and the invitation to ask for the health paperwork before paying anything. The old £850 to £1,200 band is not restated anywhere on this page; see `dropped.prices`.",
       "category": "C",
       "group": "SUGGESTED-RECOMMENDED",
       "why": "A health page that never says what a puppy costs sends a reader who is now convinced back to a search engine, and the locked prices are on disk.",
@@ -1602,7 +1602,7 @@
         {
           "level": 3,
           "heading": "Ask For The Paperwork First",
-          "intent": "The certificates are there to be read before anyone pays.",
+          "intent": "The paperwork is there to be read before anyone pays.",
           "children": []
         },
         {
@@ -1827,7 +1827,7 @@
       "takeaways": "S2",
       "top": "H-GD1"
     },
-    "record_hash": "31843c5c6e365b21123063ebc6012af20a770969c70ddc7778b4a710f79511a3",
+    "record_hash": "ae0222ad3020858dcd42331e9cdd856270740c3ab5f8098a12df8fc25309e5f3",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1847,7 +1847,7 @@
         "Health Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T14:41:18Z",
+    "reapproved_at": "2026-09-29T16:52:00Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:41:18Z",
@@ -1866,6 +1866,22 @@
           "/sections/3/tree/0/heading",
           "/sections/3/verbatim_opening",
           "/sections/14/tree/1/heading"
+        ]
+      },
+      {
+        "at": "2026-09-29T16:52:00Z",
+        "reason": "Review M5/M6 (2026-09-29): stale intents that described clear parents, DNA results and certificates now describe what the page says (the tests named, no result, answer board q01); two verbatim claims that followed only from a result or an unrecorded finding, and the why-us heading that implied the puppies were tested, are recorded in verbatim.changed as wrong facts.",
+        "changed_paths": [
+          "/sections/0/intent",
+          "/sections/1/intent",
+          "/sections/3/intent",
+          "/sections/3/tree/0/intent",
+          "/sections/3/verbatim_opening",
+          "/sections/4/tree/2/verbatim_opening",
+          "/sections/4/tree/3/intent",
+          "/sections/6/tree/2/intent",
+          "/sections/14/intent",
+          "/sections/14/tree/1/intent"
         ]
       }
     ]
@@ -1923,8 +1939,8 @@
       {
         "kind": "opening",
         "old": "Beyond genetic tests, our parent dogs receive regular veterinary check-ups to ensure they are in peak physical condition. They are free from any other underlying health issues. This forms part of our DEFRA-approved breeder health checks .",
-        "new": "Beyond genetic tests, our parent dogs receive regular veterinary check-ups to ensure they are in peak physical condition. They are free from any other underlying health issues.",
-        "reason": "'This forms part of our DEFRA-approved breeder health checks' states an approval that does not exist in this form: DEFRA approves pet transport, which is what data/settings.json's delivery_note records, and it does not approve a breeder's veterinary check-ups. The sentence is struck for the reason dropped.text strikes the KC/DEFRA compliance claim; the check-ups themselves are carried word for word."
+        "new": "Beyond genetic tests, our parent dogs receive regular veterinary check-ups to ensure they are in peak physical condition.",
+        "reason": "'This forms part of our DEFRA-approved breeder health checks' states an approval that does not exist in this form: DEFRA approves pet transport, which is what data/settings.json's delivery_note records, and it does not approve a breeder's veterinary check-ups. The sentence is struck for the reason dropped.text strikes the KC/DEFRA compliance claim; the check-ups themselves are carried word for word. Then, 2026-09-29: wrong fact per the breeder's answer 2026-09-29 (review M6: the claim only follows from a DNA result or a health finding no file holds; answer board q01)."
       },
       {
         "kind": "heading",
@@ -2001,8 +2017,8 @@
       {
         "kind": "opening",
         "old": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested clear for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts). This means your KC registered Staffy puppies will not be genetically affected by these debilitating diseases. “ What does L-2-HGA testing mean ?” It means we’re actively preventing serious neurological and eye conditions through responsible breeding.",
-        "new": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts), and both have their eyes and elbows screened. “ What does L-2-HGA testing mean ?” It means we’re actively preventing serious neurological and eye conditions through responsible breeding.",
-        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result)."
+        "new": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts), and both have their eyes and elbows screened. “ What does L-2-HGA testing mean ?” It means we test both parents for the gene behind a serious neurological condition before we breed.",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). Then, 2026-09-29: wrong fact per the breeder's answer 2026-09-29 (review M6: the claim only follows from a DNA result or a health finding no file holds; answer board q01)."
       }
     ]
   },
@@ -2081,13 +2097,13 @@
       }
     ],
     "section_hashes": {
-      "top": "3d160ce99b62705dddc08b4ec22e946a951848c6a8f688b04f7d01b523c1cdf4",
-      "takeaways": "2e63278c9447ccec7154fd9d9b29e180cf26fff924aff55740f1a4ec4266438b",
+      "top": "22e1ecc16c6778a6be32afa151bec0155d76d4e3919370c7177e3cfcf88546c5",
+      "takeaways": "18cbb4a15c9ca1779af38ba21c82ed2a88721de5aa7d854a92fff716c992c6e6",
       "stats": "09293392d73d9dea0f462b6336c71aec50dc74ab5cee2092a565004a95c61657",
-      "dna-tests": "6ae3304bafe4e98bcfeb6ffda037dfbb1784789c2ed89cbb34e840993a04eb5e",
-      "screening": "97dc31d2d4ce72434ed0b60ffb859a01ac1a429e3a487c9107b84d0835ef1ba9",
+      "dna-tests": "c42f4b6c2ca45ca56e039965837cef7bb558b748c43419b3fd8ecc587f1a41b4",
+      "screening": "eb05deeaf168bcc12b42bc9ccb9456f0e36564d404f636ea669c21499ee83c8c",
       "vaccinations": "60858d0e694b239851e6599317da634feb289fba3b4da988e07392a3d65b1f0b",
-      "registration": "6c2ef65fc63b20f2935dc8ebe32f6e7c61cecda96697aacd4997f45ec8a1268b",
+      "registration": "ffb356f66825636594ab83682223b3113d7e443b7e24b518dac77126d8a86765",
       "vet-checks": "8bdd2ea7816a35e226bc88a61be3fefb36f61563a2cb1b6929b7095a9893ddc5",
       "diet": "8619452589e692f0746bb9f8a304cda2e87fdde4dbb7573b391e5bee5b44310d",
       "exercise": "38a8877c099d6b4403f93fe22d1022417bb4008b408ae949d7a45c3f64b92dd4",
@@ -2095,7 +2111,7 @@
       "lifespan": "29821845da3a2c40ed5417c5509bafcd8109371948a9d6000445b99d9b00881b",
       "paperwork-review": "d11bd9e344b7a640669c085c20220ee7b2b81e8a62b215a2ab1b69065b8e6e34",
       "questions": "e58fabbd35c8a2941268646c36d9ee6c379597c7d2876d9d816030c03c4edaae",
-      "talk-to-us": "3b6e30bc5168d70bff65686e69e1195c9cd1be96541ca1cbeb0bc76c54cc3f3f"
+      "talk-to-us": "2f2127871d8c44528a3e6e378098af9fca06b68d57cf247851198b771a830147"
     }
   }
 }

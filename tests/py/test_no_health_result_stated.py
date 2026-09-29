@@ -220,3 +220,30 @@ def test_the_ledger_row_records_that_no_certificate_is_held():
     row = next(c for c in ledger["claims"] if c["id"] == "parents-dna-clear")
     assert row["proof"] == "NOT FETCHED" and row["confirmed"] is None, row
     assert "answer board q01" in row["barrier"] and "no DNA certificates" in row["barrier"], row
+
+
+def test_the_health_records_intents_state_no_result():
+    """Review M5 (2026-09-29): the health board record's intents still described clear parents,
+    DNA results and certificates to read. The record is the page's plan, so it follows the page."""
+    record = json.loads((ROOT / "data/boards/blue-staffy-health-uk.json").read_text(encoding="utf-8"))
+    bad = []
+    for i, s in enumerate(record["sections"]):
+        for where, t in [("intent", s.get("intent", ""))] + [
+                (f"tree/{j}/intent", n.get("intent", "")) for j, n in enumerate(s.get("tree", []))]:
+            # a pointer to DNA certificates to read (the registration certificate is real)
+            if result_lines(t or "") or re.search(r"(?i)\bthe certificates are there\b", t or ""):
+                bad.append(f"/sections/{i}/{where}: {t[:100]}")
+    assert bad == [], "\n".join(bad)
+
+
+def test_the_review_m6_lines_are_reworded():
+    """Review M6: a verbatim claim that only follows from a result ("actively preventing …"), an
+    unproven one ("free from any other underlying health issues"), a heading that implies the
+    puppies were tested ("…L-2-HGA Tested Staffies?"), and a missing comma."""
+    dist, _ = built_files()
+    health = visible((dist / "blue-staffy-health-uk/index.html").read_text(errors="ignore"))
+    why_us = visible((dist / "buy-staffy-puppies-for-sale-uk/index.html").read_text(errors="ignore"))
+    assert "actively preventing" not in health
+    assert "free from any other underlying health issues" not in health
+    assert "L-2-HGA Tested Staffies?" not in why_us and "From L-2-HGA Tested Parents?" in why_us
+    assert "Write to us and ask for the health paperwork , and the registration papers" in health
