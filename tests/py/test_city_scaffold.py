@@ -195,9 +195,12 @@ def test_a_repeat_with_a_new_alt_is_allowed_on_the_scaffold():
     ok = '<img src="/images/Christa.jpeg" alt="Christa"><img src="/images/Christa.jpeg" alt="Christa, sitting up">'
     assert scaffold_alt_defects(ok, served) == []
     copy = '<img src="/images/Christa.jpeg" alt="Christa"><img src="/images/Christa.jpeg" alt="Christa">'
-    assert scaffold_alt_defects(copy, served) != []
+    assert scaffold_alt_defects(copy, served) == ["Christa.jpeg: a repeat copies the alt 'Christa'"]
     decorative_first = '<img src="/images/Christa.jpeg" alt=""><img src="/images/Christa.jpeg" alt="Brand new">'
-    assert scaffold_alt_defects(decorative_first, served) != []
+    assert scaffold_alt_defects(decorative_first, served) == ["Christa.jpeg: its first use does not carry its served alt"]
+    # A decorative alt="" never claims the first-use slot: the served alt after it IS the first use.
+    decorative_then_served = '<img src="/images/Christa.jpeg" alt=""><img src="/images/Christa.jpeg" alt="Christa">'
+    assert scaffold_alt_defects(decorative_then_served, served) == []
 
 
 def test_each_served_photo_keeps_its_served_alt_first_and_a_new_alt_on_a_repeat():
