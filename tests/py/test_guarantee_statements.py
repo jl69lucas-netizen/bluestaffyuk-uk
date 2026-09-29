@@ -24,12 +24,14 @@ GONE = {
     "blue-staffy-health-uk": ["There is no guarantee length anywhere on this site",
                               "The Guarantee Row Is Absent, Not Overlooked"],
     "blue-staffy-pup-sale-uk": ["No Health Guarantee Is Stated"],
+    "buy-staffy-puppies-for-sale-uk": ["No Term Is Stated, Because None Is Held"],
     "buy-blue-staffy-puppies-uk": ["No term is stated for a guarantee"],
 }
 NOW = {
     "index": [f"Every puppy leaves with our written {LOWER}", f"Our {TITLED}", f"Ours is a {LOWER}"],
     "blue-staffy-health-uk": [f"Ours is a {LOWER}, a promise we make", f"Ask Us About Our {TITLED}"],
-    "blue-staffy-pup-sale-uk": [f"And Our {TITLED}"],
+    "blue-staffy-pup-sale-uk": [f"A {TITLED} With Every Puppy", f"Our {LOWER} is set out below them"],
+    "buy-staffy-puppies-for-sale-uk": [f"Our {TITLED}, in Writing", f"Ours is a {LOWER}."],
     "buy-blue-staffy-puppies-uk": [f"What we do promise is our {LOWER}"],
 }
 
@@ -62,8 +64,58 @@ def test_the_faq_answer_names_the_guarantee_from_the_label():
     assert rows["home-health-guarantee"]["source"] == "data/settings.json"
 
 
-@pytest.mark.parametrize("slug", ["index", "blue-staffy-health-uk", "blue-staffy-pup-sale-uk", "buy-blue-staffy-puppies-uk"])
+@pytest.mark.parametrize("slug", ["index", "blue-staffy-health-uk", "blue-staffy-pup-sale-uk", "buy-blue-staffy-puppies-uk",
+                                  "buy-staffy-puppies-for-sale-uk"])
 def test_each_page_reads_the_label_rather_than_typing_it(slug):
     src = (ROOT / "src/pages" / ("index.astro" if slug == "index" else f"{slug}/index.astro")).read_text(encoding="utf-8")
     assert "guaranteeLabel(" in src
     assert "Two-Year Health Guarantee" not in src and "two-year health guarantee" not in src.lower().replace("`", "")
+
+
+# The ruling covers EVERY line that contradicts the guarantee (coordinator, 2026-09-29): no built
+# page anywhere in dist/ may say the guarantee's length is unstated, unconfirmed or absent. The
+# board previews (/board-preview/) render the approved board records, which stay as history.
+UNSTATED = [
+    r"no (?:health )?guarantee length",
+    r"state no (?:health )?guarantee",
+    r"no guarantee is (?:stated|offered|claimed)",
+    r"not (?:yet )?confirmed (?:a|one|any) (?:term|length)",
+    r"confirmed no guarantee",
+    r"no term is stated",
+    r"records a length for one",
+    r"guarantee[^.]{0,80}deliberately absent|deliberately absent[^.]{0,80}guarantee",
+    r"guarantee length[^.]{0,40}(?:not established|prints nothing)",
+    r"not established[^.]{0,20}a guarantee length",
+    r"length of the cover is not published",
+    r"guarantee_days: null",
+]
+UNSTATED_RE = re.compile("(?i)" + "|".join(UNSTATED))
+
+
+def unstated_lines(text):
+    text = re.sub(r"<style[^>]*>.*?</style>", " ", text, flags=re.S)
+    text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", text)))
+    return [text[max(0, m.start() - 60):m.end() + 40] for m in UNSTATED_RE.finditer(text)]
+
+
+def test_no_built_page_says_the_guarantee_length_is_unstated():
+    dist = ROOT / "dist"
+    if not dist.exists():
+        pytest.skip("run npm run -s build first")
+    pages = [p for p in dist.rglob("*") if p.suffix in (".html", ".txt", ".xml", ".json")
+             and "board-preview" not in p.parts]
+    assert len(pages) > 50, "examined too few built files to be a pass"
+    bad = [f"{p.relative_to(dist)}: {l}" for p in pages for l in unstated_lines(p.read_text(errors="ignore"))]
+    assert bad == [], "\n".join(bad)
+
+
+def test_the_unstated_patterns_fire_on_the_old_lines():
+    for old in ["We state no guarantee, because we have not confirmed a term for one.",
+                "no guarantee length, no laboratory named, no percentage anywhere",
+                "and no file we keep records a length for one",
+                "No Term Is Stated, Because None Is Held",
+                "We have confirmed no guarantee length and no support period",
+                "Where a fact is not established — a guarantee length, a licence number",
+                "The length of the cover is not published on this site"]:
+        assert unstated_lines(old), old
+    assert not unstated_lines("Ours is a two-year health guarantee; no laboratory named, no percentage anywhere.")
