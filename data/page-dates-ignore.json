@@ -29,5 +29,7 @@
     }
   ],
   "floor_override": {},
-  "fanout_accepted": []
+  "fanout_accepted": [
+    {"sha": "de8853fd2822b4249e0b7bc84200c56e68aceea4", "reason": "The user's ruling of 2026-09-29 (\"Correct them now\"): /, /blue-staffy-health-uk/, /blue-staffy-pup-sale-uk/ and /buy-blue-staffy-puppies-uk/ each replace a statement that no guarantee length is stated with the two-year health guarantee (answer board q07). Diffed against the build before it: only those statements (and the home FAQPage answer text) changed on each page, so each page's dateModified moves for a real content change."}
+  ]
 }
