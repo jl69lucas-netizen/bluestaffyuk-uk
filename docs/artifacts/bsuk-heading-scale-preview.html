@@ -1,0 +1,432 @@
+<title>Heading Scale Preview</title>
+<style>
+:root{--bg:#F4F1EA;--card:#FAF8F3;--ink:#1B2430;--muted:#46566B;--rule:#DAD6CC;--accent:#1F3A52;--brass:#A8861C;--band:#1F3A52;--band-ink:#F4F1EA;--code:#EDE9DF;--rec:#A8861C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#14202B;--card:#1B2A38;--ink:#EEF1F4;--muted:#B6C2CC;--rule:#2C3A47;--accent:#8FA3B8;--brass:#C9A227;--band:#0E1720;--band-ink:#E4EAF1;--code:#101A23;--rec:#C9A227}}
+:root[data-theme="dark"]{--bg:#14202B;--card:#1B2A38;--ink:#EEF1F4;--muted:#B6C2CC;--rule:#2C3A47;--accent:#8FA3B8;--brass:#C9A227;--band:#0E1720;--band-ink:#E4EAF1;--code:#101A23;--rec:#C9A227}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+img{max-width:100%;height:auto;display:block}
+.top{background:var(--band);color:var(--band-ink);border-bottom:3px solid var(--brass)}
+.top .in,main{max-width:1320px;margin:0 auto;padding-left:16px;padding-right:16px}
+.top .in{padding-top:24px;padding-bottom:20px}
+.top h1{margin:0 0 8px;font:700 clamp(24px,5vw,32px)/1.2 Fraunces,Georgia,serif}
+.intro{margin:0;max-width:72ch;opacity:.92}
+main{padding-top:24px;padding-bottom:64px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 20px;font-size:14px}
+nav.toc a{color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px;margin:0 0 24px;min-width:0}
+.card h2{margin:0 0 8px;font:700 22px/1.25 Fraunces,Georgia,serif;color:var(--accent)}
+.sec h3,.card h3{margin:20px 0 6px;font:700 18px/1.3 Fraunces,Georgia,serif;color:var(--accent)}
+.sec p,.sec li{max-width:78ch}
+.slug{font:500 14px/1 "Source Sans 3",sans-serif;color:var(--muted);margin-left:6px;overflow-wrap:anywhere}
+.key{margin:0 0 8px;color:var(--muted);font-size:14px}
+code{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--code);padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow:auto;max-width:100%}
+pre code{background:none;padding:0;font-size:12px;white-space:pre}
+.tw{max-width:100%;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0 12px}
+th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--rule);padding:6px 8px}
+th{font-weight:700;color:var(--accent)}
+@media (max-width:639px){
+ .tw{overflow:visible}
+ table,thead,tbody,tr,th,td{display:block}
+ thead{position:absolute;left:-9999px}
+ tr{border:1px solid var(--rule);border-radius:8px;margin:0 0 8px;padding:4px 8px}
+ td{border:0;padding:3px 0;display:grid;grid-template-columns:40% 1fr;gap:8px}
+ td::before{content:attr(data-label);font-weight:700;color:var(--muted);font-size:12px}
+}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.copy,.copyall{font:600 13px/1 "Source Sans 3",sans-serif;background:transparent;color:var(--accent);border:1px solid var(--rule);border-radius:50px;padding:6px 12px;cursor:pointer}
+.copy:hover,.copyall:hover{border-color:var(--accent)}
+.wh{display:flex;gap:8px;align-items:baseline}
+.wh span{font:500 14px "Source Sans 3",sans-serif;color:var(--muted)}
+.row{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr));align-items:start}
+.row.r768,.row.r1280{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:1099px){.row{grid-template-columns:repeat(2,minmax(0,1fr))}.row.r1280{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:639px){.row{grid-template-columns:minmax(0,1fr)}}
+.shot{margin:0;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:#fff;min-width:0}
+.shot figcaption{display:flex;flex-direction:column;gap:2px;padding:8px 10px;background:var(--card);border-bottom:1px solid var(--rule);font-size:13px;color:var(--muted)}
+.shot figcaption b{color:var(--ink);font-size:14px}
+.shot.rec{border:2px solid var(--rec)}
+.shot.rec figcaption b{color:var(--rec)}
+.foot{color:var(--muted);font-size:13px}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<div class="top"><div class="in"><h1>Heading Scale Preview</h1><p class="intro">Known Issue 97: the H2 and H3 headings on the twelve built pages paint at the 17px body size. Below are three heading scales, each measured and screenshotted on four real pages at 375, 768 and 1280, beside the page as it is built today. Nothing on the site has changed yet. Pick one, or ask for a change.</p></div></div>
+<main><nav class="toc"><a href="#problem">What is wrong</a><a href="#options">Three options</a><a href="#measured">What the run measured</a><a href="#p-blue-staffy-health-uk">Blue Staffy health</a><a href="#p-uk-blue-staffy-puppy-buying-guide">Puppy buying guide</a><a href="#p-uk-staffordshire-bull-terrier-guide">Staffordshire Bull Terrier guide</a><a href="#p-privacy-policy-uk">Privacy policy</a><a href="#css">The CSS</a><a href="#apply">Applying it</a><button class="copyall" id="dl" type="button">Copy all as markdown</button></nav>
+<section class="card sec" id="problem"><div class="head"><h2>What is wrong</h2><button class="copy" data-src="md-problem">Copy markdown</button></div>
+<p>On all twelve built pages, <strong>49 H2s and 217 H3s paint at 17px, the same size as the body text</strong>, at 375, 768 and 1280 alike. Most are also at weight 400, so the only thing that marks them as headings is the Fraunces face. A reader scanning the health page cannot tell "Our Rigorous Health Testing Process : Ensuring Peace of Mind" from the paragraph under it.</p>
+<p>The cause is one missing rule. The only heading size set for body sections is <code>.bl-box h2 { font-size: var(--text-2xl) }</code> in <code>src/styles/board-styles.css</code>. Every other H2 and H3 (the migrated sections outside a <code>.bl-box</code>, and the H3s inside a box's body) inherits the body size from the Tailwind preflight.</p>
+<div class="tw"><table><thead><tr><th>Page</th><th>H2 at 17px, unboxed</th><th>H3 at 17px, unboxed</th><th>H3 at 17px, boxed</th><th>All H2 + H3</th></tr></thead><tbody><tr><td data-label="Page"><code>privacy-policy-uk</code></td><td data-label="H2 at 17px, unboxed">8</td><td data-label="H3 at 17px, unboxed">20</td><td data-label="H3 at 17px, boxed">0</td><td data-label="All H2 + H3">9 + 23</td></tr><tr><td data-label="Page"><code>thank-you-blue-staffy-puppies-journey</code></td><td data-label="H2 at 17px, unboxed">2</td><td data-label="H3 at 17px, unboxed">4</td><td data-label="H3 at 17px, boxed">1</td><td data-label="All H2 + H3">7 + 18</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-breeders-contact</code></td><td data-label="H2 at 17px, unboxed">2</td><td data-label="H3 at 17px, unboxed">8</td><td data-label="H3 at 17px, boxed">2</td><td data-label="All H2 + H3">8 + 15</td></tr><tr><td data-label="Page"><code>index</code> (home)</td><td data-label="H2 at 17px, unboxed">0</td><td data-label="H3 at 17px, unboxed">0</td><td data-label="H3 at 17px, boxed">9</td><td data-label="All H2 + H3">20 + 43</td></tr><tr><td data-label="Page"><code>blue-staffy-pup-sale-uk</code></td><td data-label="H2 at 17px, unboxed">1</td><td data-label="H3 at 17px, unboxed">2</td><td data-label="H3 at 17px, boxed">6</td><td data-label="All H2 + H3">12 + 24</td></tr><tr><td data-label="Page"><code>buy-blue-staffy-puppies-uk</code></td><td data-label="H2 at 17px, unboxed">0</td><td data-label="H3 at 17px, unboxed">0</td><td data-label="H3 at 17px, boxed">11</td><td data-label="All H2 + H3">13 + 33</td></tr><tr><td data-label="Page"><code>buy-staffy-puppies-for-sale-uk</code></td><td data-label="H2 at 17px, unboxed">2</td><td data-label="H3 at 17px, unboxed">6</td><td data-label="H3 at 17px, boxed">4</td><td data-label="All H2 + H3">17 + 53</td></tr><tr><td data-label="Page"><code>blue-staffy-uk-breeders</code></td><td data-label="H2 at 17px, unboxed">6</td><td data-label="H3 at 17px, unboxed">14</td><td data-label="H3 at 17px, boxed">2</td><td data-label="All H2 + H3">13 + 31</td></tr><tr><td data-label="Page"><code>blue-staffy-health-uk</code></td><td data-label="H2 at 17px, unboxed">9</td><td data-label="H3 at 17px, unboxed">33</td><td data-label="H3 at 17px, boxed">1</td><td data-label="All H2 + H3">15 + 49</td></tr><tr><td data-label="Page"><code>uk-staffordshire-bull-terrier-guide</code></td><td data-label="H2 at 17px, unboxed">8</td><td data-label="H3 at 17px, unboxed">37</td><td data-label="H3 at 17px, boxed">1</td><td data-label="All H2 + H3">16 + 57</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-puppy-buying-guide</code></td><td data-label="H2 at 17px, unboxed">10</td><td data-label="H3 at 17px, unboxed">41</td><td data-label="H3 at 17px, boxed">7</td><td data-label="All H2 + H3">20 + 62</td></tr><tr><td data-label="Page"><code>blue-staffy-blog-guides</code></td><td data-label="H2 at 17px, unboxed">1</td><td data-label="H3 at 17px, unboxed">2</td><td data-label="H3 at 17px, boxed">6</td><td data-label="All H2 + H3">7 + 16</td></tr><tr><td data-label="Page"><strong>Total</strong></td><td data-label="H2 at 17px, unboxed"><strong>49</strong></td><td data-label="H3 at 17px, unboxed"><strong>167</strong></td><td data-label="H3 at 17px, boxed"><strong>50</strong></td><td data-label="All H2 + H3"></td></tr></tbody></table></div>
+<h3>Why nothing caught it</h3>
+<p>No check was silent, because no check covers it. <code>layout-min-font-size</code> is a floor for all text, and 17px passes it. <code>sem-heading-order</code> reads heading levels, not sizes. <code>city-type-fit</code> caps heading sizes from above, only on city routes, and sets no floor. The missing invariant is simple: <strong>a body H2 or H3 must paint larger than the body text.</strong> Source: Known Issue 97, measured in Chromium on <code>dist/</code> (<code>BSUK-refs/london/_plan2-shots/close/heading-sizes.json</code>).</p>
+<script type="text/markdown" id="md-problem">## What is wrong
+
+On all twelve built pages, **49 H2s and 217 H3s paint at 17px, the same size as the body text**, at 375, 768 and 1280 alike. Most are also at weight 400, so the only thing that marks them as headings is the Fraunces face. A reader scanning the health page cannot tell "Our Rigorous Health Testing Process : Ensuring Peace of Mind" from the paragraph under it.
+
+The cause is one missing rule. The only heading size set for body sections is `.bl-box h2 { font-size: var(--text-2xl) }` in `src/styles/board-styles.css`. Every other H2 and H3 (the migrated sections outside a `.bl-box`, and the H3s inside a box's body) inherits the body size from the Tailwind preflight.
+
+| Page | H2 at 17px, unboxed | H3 at 17px, unboxed | H3 at 17px, boxed | All H2 + H3 |
+|---|---|---|---|---|
+| `privacy-policy-uk` | 8 | 20 | 0 | 9 + 23 |
+| `thank-you-blue-staffy-puppies-journey` | 2 | 4 | 1 | 7 + 18 |
+| `uk-blue-staffy-breeders-contact` | 2 | 8 | 2 | 8 + 15 |
+| `index` (home) | 0 | 0 | 9 | 20 + 43 |
+| `blue-staffy-pup-sale-uk` | 1 | 2 | 6 | 12 + 24 |
+| `buy-blue-staffy-puppies-uk` | 0 | 0 | 11 | 13 + 33 |
+| `buy-staffy-puppies-for-sale-uk` | 2 | 6 | 4 | 17 + 53 |
+| `blue-staffy-uk-breeders` | 6 | 14 | 2 | 13 + 31 |
+| `blue-staffy-health-uk` | 9 | 33 | 1 | 15 + 49 |
+| `uk-staffordshire-bull-terrier-guide` | 8 | 37 | 1 | 16 + 57 |
+| `uk-blue-staffy-puppy-buying-guide` | 10 | 41 | 7 | 20 + 62 |
+| `blue-staffy-blog-guides` | 1 | 2 | 6 | 7 + 16 |
+| **Total** | **49** | **167** | **50** | |
+
+### Why nothing caught it
+
+No check was silent, because no check covers it. `layout-min-font-size` is a floor for all text, and 17px passes it. `sem-heading-order` reads heading levels, not sizes. `city-type-fit` caps heading sizes from above, only on city routes, and sets no floor. The missing invariant is simple: **a body H2 or H3 must paint larger than the body text.** Source: Known Issue 97, measured in Chromium on `dist/` (`BSUK-refs/london/_plan2-shots/close/heading-sizes.json`).</script></section>
+<section class="card sec" id="options"><div class="head"><h2>Three options</h2><button class="copy" data-src="md-options">Copy markdown</button></div>
+<p>One scale for body H2, H3 and H4 inside <code>&lt;main&gt;</code>, taken from the London city scale in <code>src/styles/city.css</code> so city pages and the built pages share one rhythm. The tiers are the city kit's own edges: phone below 640px, tablet 640&#8211;799px, desktop 800px and up. Body text on these pages is 17px at every width.</p>
+<div class="tw"><table><thead><tr><th></th><th>H2 (phone / tablet / desktop)</th><th>H3</th><th>H4</th><th>Weight H2 / H3 / H4</th><th>Line-height H2 / H3 / H4</th></tr></thead><tbody><tr><td data-label=""><strong>(a) City scale &#8212; Recommended</strong></td><td data-label="H2 (phone / tablet / desktop)">22 / 25 / 28px</td><td data-label="H3">18 / 18 / 20px</td><td data-label="H4">17 / 17 / 18px</td><td data-label="Weight H2 / H3 / H4">700 / 600 / 700</td><td data-label="Line-height H2 / H3 / H4">1.18 / 1.25 / 1.3</td></tr><tr><td data-label="">(b) One step smaller</td><td data-label="H2 (phone / tablet / desktop)">20 / 23 / 26px</td><td data-label="H3">18 / 18 / 19px</td><td data-label="H4">17 / 17 / 17px</td><td data-label="Weight H2 / H3 / H4">700 / 600 / 700</td><td data-label="Line-height H2 / H3 / H4">1.18 / 1.25 / 1.3</td></tr><tr><td data-label="">(c) One step larger</td><td data-label="H2 (phone / tablet / desktop)">24 / 27 / 30px</td><td data-label="H3">19 / 20 / 22px</td><td data-label="H4">18 / 18 / 19px</td><td data-label="Weight H2 / H3 / H4">700 / 600 / 700</td><td data-label="Line-height H2 / H3 / H4">1.18 / 1.25 / 1.3</td></tr></tbody></table></div>
+<p>All three share the same spacing and wrapping, so only the sizes differ:</p>
+<ul><li><strong>H2 margin:</strong> 32px above and 8px below on phone, 40 / 12 on tablet, 48 / 12 on desktop (<code>--space-6</code> to <code>--space-8</code>).</li><li><strong>H3 margin:</strong> 24px above and 8px below on phone and tablet, 32 / 8 on desktop.</li><li><strong>H4 margin:</strong> 24 / 4.</li><li><strong>First child:</strong> a heading that opens its section takes no top margin.</li><li><strong>Wrapping:</strong> <code>text-wrap: balance</code> on all three levels, with no <code>ch</code> measure cap.</li><li><strong>Unchanged:</strong> Fraunces and Source Sans 3, the colours (headings keep <code>--color-ink</code>) and every token.</li></ul>
+<h3>Why (a) is the recommendation</h3>
+<p>The city type scale is already built, gated and approved (<code>city.css</code>, gated by <code>tests/render/lib/cityTypeFit.ts</code>, from your ruling of 2026-09-28), so applying it here means one rhythm across the site rather than a second scale.</p>
+<p>(a) makes one deliberate change to the city scale. The city H3 is 17px on phone because city body text there is 16px. These pages set body text at 17px, so a 17px H3 would still equal the body and fail the new check. The phone H3 is therefore 18px at weight 600.</p>
+<p>(a) also leaves out the city's H2 measure (22 / 28 / 34ch). The city needs it for its narrow 656px sections. On these full reading columns it pushed three more headings to four lines, which the run below measured.</p>
+<p><strong>Trade-off:</strong> at 375px, eight long migrated headings wrap to four or five lines. As built, four of them already do. (b) gives the same count, and (c) gives ten.</p>
+<script type="text/markdown" id="md-options">## Three options
+
+One scale for body H2, H3 and H4 inside `<main>`, taken from the London city scale in `src/styles/city.css` so city pages and the built pages share one rhythm. The tiers are the city kit's own edges: phone below 640px, tablet 640&#8211;799px, desktop 800px and up. Body text on these pages is 17px at every width.
+
+| | H2 (phone / tablet / desktop) | H3 | H4 | Weight H2 / H3 / H4 | Line-height H2 / H3 / H4 |
+|---|---|---|---|---|---|
+| **(a) City scale &#8212; Recommended** | 22 / 25 / 28px | 18 / 18 / 20px | 17 / 17 / 18px | 700 / 600 / 700 | 1.18 / 1.25 / 1.3 |
+| (b) One step smaller | 20 / 23 / 26px | 18 / 18 / 19px | 17 / 17 / 17px | 700 / 600 / 700 | 1.18 / 1.25 / 1.3 |
+| (c) One step larger | 24 / 27 / 30px | 19 / 20 / 22px | 18 / 18 / 19px | 700 / 600 / 700 | 1.18 / 1.25 / 1.3 |
+
+All three share the same spacing and wrapping, so only the sizes differ:
+
+- **H2 margin:** 32px above and 8px below on phone, 40 / 12 on tablet, 48 / 12 on desktop (`--space-6` to `--space-8`).
+- **H3 margin:** 24px above and 8px below on phone and tablet, 32 / 8 on desktop.
+- **H4 margin:** 24 / 4.
+- **First child:** a heading that opens its section takes no top margin.
+- **Wrapping:** `text-wrap: balance` on all three levels, with no `ch` measure cap.
+- **Unchanged:** Fraunces and Source Sans 3, the colours (headings keep `--color-ink`) and every token.
+
+### Why (a) is the recommendation
+
+The city type scale is already built, gated and approved (`city.css`, gated by `tests/render/lib/cityTypeFit.ts`, from your ruling of 2026-09-28), so applying it here means one rhythm across the site rather than a second scale.
+
+(a) makes one deliberate change to the city scale. The city H3 is 17px on phone because city body text there is 16px. These pages set body text at 17px, so a 17px H3 would still equal the body and fail the new check. The phone H3 is therefore 18px at weight 600.
+
+(a) also leaves out the city's H2 measure (22 / 28 / 34ch). The city needs it for its narrow 656px sections. On these full reading columns it pushed three more headings to four lines, which the run below measured.
+
+**Trade-off:** at 375px, eight long migrated headings wrap to four or five lines. As built, four of them already do. (b) gives the same count, and (c) gives ten.</script></section>
+<section class="card sec" id="measured"><div class="head"><h2>What the run measured</h2><button class="copy" data-src="md-measured">Copy markdown</button></div>
+<p>Every visible H2, H3 and H4 in <code>&lt;main&gt;</code> on the four pages was measured in Chromium through Playwright, as built and with each option's CSS injected. That is 211 body headings per width, with FAQ questions, kit cards and <code>.bl-box</code> H2s counted separately.</p>
+<div class="tw"><table><thead><tr><th>Option</th><th>Width</th><th>Body H2/H3 at or below body size</th><th>Headings over 3 lines</th><th>Overflow at any width</th><th>Kit and <code>.bl-box</code> H2 changed</th></tr></thead><tbody><tr><td data-label="Option">As built</td><td data-label="Width">375</td><td data-label="Body H2/H3 at or below body size">175</td><td data-label="Headings over 3 lines">4</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">As built</td><td data-label="Width">768</td><td data-label="Body H2/H3 at or below body size">175</td><td data-label="Headings over 3 lines">0</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">As built</td><td data-label="Width">1280</td><td data-label="Body H2/H3 at or below body size">175</td><td data-label="Headings over 3 lines">0</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">(a) City scale &#8212; Recommended</td><td data-label="Width">375</td><td data-label="Body H2/H3 at or below body size">0</td><td data-label="Headings over 3 lines">8</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">(a) City scale &#8212; Recommended</td><td data-label="Width">768</td><td data-label="Body H2/H3 at or below body size">0</td><td data-label="Headings over 3 lines">0</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">(a) City scale &#8212; Recommended</td><td data-label="Width">1280</td><td data-label="Body H2/H3 at or below body size">0</td><td data-label="Headings over 3 lines">0</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">(b) One step smaller</td><td data-label="Width">375</td><td data-label="Body H2/H3 at or below body size">0</td><td data-label="Headings over 3 lines">8</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">(b) One step smaller</td><td data-label="Width">768</td><td data-label="Body H2/H3 at or below body size">0</td><td data-label="Headings over 3 lines">0</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">(b) One step smaller</td><td data-label="Width">1280</td><td data-label="Body H2/H3 at or below body size">0</td><td data-label="Headings over 3 lines">0</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">(c) One step larger</td><td data-label="Width">375</td><td data-label="Body H2/H3 at or below body size">0</td><td data-label="Headings over 3 lines">10</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">(c) One step larger</td><td data-label="Width">768</td><td data-label="Body H2/H3 at or below body size">0</td><td data-label="Headings over 3 lines">0</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr><tr><td data-label="Option">(c) One step larger</td><td data-label="Width">1280</td><td data-label="Body H2/H3 at or below body size">0</td><td data-label="Headings over 3 lines">0</td><td data-label="Overflow at any width">0</td><td data-label="Kit and `.bl-box` H2 changed">0 of 76</td></tr></tbody></table></div>
+<ul><li><strong>No option overflows</strong> at 375, 768 or 1280, and none changes a kit component's heading or a <code>.bl-box</code> H2.</li><li><strong>Every option lifts all 175 body H2/H3s</strong> on these four pages above the 17px body.</li><li><strong>At 768 and 1280, no heading wraps past three lines</strong> under any option.</li><li><strong>At 375, the headings over three lines are all long migrated headings, 79&#8211;171 characters.</strong> Most sit in the verbatim set (working rule 15), so shortening them is a content change with its own record, and it is out of scope here:</li></ul>
+<div class="tw"><table><thead><tr><th>Page</th><th>Level</th><th>Characters</th><th>Heading</th><th>Lines at 375: built / (a) / (b) / (c)</th></tr></thead><tbody><tr><td data-label="Page"><code>blue-staffy-health-uk</code></td><td data-label="Level">H3</td><td data-label="Characters">121</td><td data-label="Heading">One of the Most Common Queries We Hear Is: &#8220;What Vaccines Does My Blue Staffy Need in the UK?&#8221; Here&#8217;s a Simple Breakdown:</td><td data-label="Lines at 375: built / (a) / (b) / (c)">&#8804;3 / 4 / 4 / 4</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-puppy-buying-guide</code></td><td data-label="Level">H3</td><td data-label="Characters">171</td><td data-label="Heading">What Is the Typical Cost for a Kennel Club Registered Blue Staffy Puppy in the UK, and What Factors Affect the Price? &amp; Questions to Ask Blue Staffy Breeders Before Buying</td><td data-label="Lines at 375: built / (a) / (b) / (c)">5 / 5 / 5 / 6</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-puppy-buying-guide</code></td><td data-label="Level">H2</td><td data-label="Characters">146</td><td data-label="Heading">Your Essential Blue Staffy Puppy Socialisation Checklist! &#8211; How Do I Safely Introduce My Blue Staffy Puppy to Other Dogs and New People in the UK?</td><td data-label="Lines at 375: built / (a) / (b) / (c)">4 / 5 / 5 / 6</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-puppy-buying-guide</code></td><td data-label="Level">H3</td><td data-label="Characters">131</td><td data-label="Heading">Step-By-Step Process for Using &#8220;Our Trusted DEFRA-Approved Pet Transport Partners &#8211; How to Get a Puppy Delivered Right to Your Door</td><td data-label="Lines at 375: built / (a) / (b) / (c)">4 / 4 / 4 / 4</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-puppy-buying-guide</code></td><td data-label="Level">H3</td><td data-label="Characters">126</td><td data-label="Heading">How to Find Excellent Blue Staffy Breeders UK?: What Is the Best Way to Find a Healthy Staffy Puppy From a Trusted UK Breeder?</td><td data-label="Lines at 375: built / (a) / (b) / (c)">4 / 4 / 4 / 4</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-puppy-buying-guide</code></td><td data-label="Level">H3</td><td data-label="Characters">117</td><td data-label="Heading">What Health Tests Should a Blue Staffy Puppy Breeder Provide? What Are the L-2-HGA and the HC-HSF4 Tests in Staffies?</td><td data-label="Lines at 375: built / (a) / (b) / (c)">&#8804;3 / &#8804;3 / &#8804;3 / 4</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-puppy-buying-guide</code></td><td data-label="Level">H3</td><td data-label="Characters">112</td><td data-label="Heading">Your Comprehensive Blue Staffy Puppy Buying Guide: Finding Your Perfect Bull Terrier Staffy With BlueStaffyUK.uk</td><td data-label="Lines at 375: built / (a) / (b) / (c)">&#8804;3 / 4 / 4 / 4</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-puppy-buying-guide</code></td><td data-label="Level">H2</td><td data-label="Characters">112</td><td data-label="Heading">What Is the Best Age to Bring Home a Blue Staffy Puppy, and Why Is Waiting Until They Are 8 Weeks Old Important?</td><td data-label="Lines at 375: built / (a) / (b) / (c)">&#8804;3 / 4 / 4 / 4</td></tr><tr><td data-label="Page"><code>uk-blue-staffy-puppy-buying-guide</code></td><td data-label="Level">H2</td><td data-label="Characters">107</td><td data-label="Heading">What Should I Do to Prepare My Home, and What Essential Items Do I Need to Buy for a New Blue Staffy Puppy?</td><td data-label="Lines at 375: built / (a) / (b) / (c)">&#8804;3 / 4 / 4 / 4</td></tr><tr><td data-label="Page"><code>uk-staffordshire-bull-terrier-guide</code></td><td data-label="Level">H2</td><td data-label="Characters">79</td><td data-label="Heading">Staffies and UK Law: Understanding the Breed&#8217;s Legal Status &amp; Public Perception</td><td data-label="Lines at 375: built / (a) / (b) / (c)">&#8804;3 / &#8804;3 / &#8804;3 / 4</td></tr></tbody></table></div>
+<script type="text/markdown" id="md-measured">## What the run measured
+
+Every visible H2, H3 and H4 in `<main>` on the four pages was measured in Chromium through Playwright, as built and with each option's CSS injected. That is 211 body headings per width, with FAQ questions, kit cards and `.bl-box` H2s counted separately.
+
+| Option | Width | Body H2/H3 at or below body size | Headings over 3 lines | Overflow at any width | Kit and `.bl-box` H2 changed |
+|---|---|---|---|---|---|
+| As built | 375 | 175 | 4 | 0 | 0 of 76 |
+| As built | 768 | 175 | 0 | 0 | 0 of 76 |
+| As built | 1280 | 175 | 0 | 0 | 0 of 76 |
+| (a) City scale &#8212; Recommended | 375 | 0 | 8 | 0 | 0 of 76 |
+| (a) City scale &#8212; Recommended | 768 | 0 | 0 | 0 | 0 of 76 |
+| (a) City scale &#8212; Recommended | 1280 | 0 | 0 | 0 | 0 of 76 |
+| (b) One step smaller | 375 | 0 | 8 | 0 | 0 of 76 |
+| (b) One step smaller | 768 | 0 | 0 | 0 | 0 of 76 |
+| (b) One step smaller | 1280 | 0 | 0 | 0 | 0 of 76 |
+| (c) One step larger | 375 | 0 | 10 | 0 | 0 of 76 |
+| (c) One step larger | 768 | 0 | 0 | 0 | 0 of 76 |
+| (c) One step larger | 1280 | 0 | 0 | 0 | 0 of 76 |
+
+- **No option overflows** at 375, 768 or 1280, and none changes a kit component's heading or a `.bl-box` H2.
+- **Every option lifts all 175 body H2/H3s** on these four pages above the 17px body.
+- **At 768 and 1280, no heading wraps past three lines** under any option.
+- **At 375, the headings over three lines are all long migrated headings, 79&#8211;171 characters.** Most sit in the verbatim set (working rule 15), so shortening them is a content change with its own record, and it is out of scope here:
+
+| Page | Level | Characters | Heading | Lines at 375: built / (a) / (b) / (c) |
+|---|---|---|---|---|
+| `blue-staffy-health-uk` | H3 | 121 | One of the Most Common Queries We Hear Is: &#8220;What Vaccines Does My Blue Staffy Need in the UK?&#8221; Here&#8217;s a Simple Breakdown: | &#8804;3 / 4 / 4 / 4 |
+| `uk-blue-staffy-puppy-buying-guide` | H3 | 171 | What Is the Typical Cost for a Kennel Club Registered Blue Staffy Puppy in the UK, and What Factors Affect the Price? & Questions to Ask Blue Staffy Breeders Before Buying | 5 / 5 / 5 / 6 |
+| `uk-blue-staffy-puppy-buying-guide` | H2 | 146 | Your Essential Blue Staffy Puppy Socialisation Checklist! &#8211; How Do I Safely Introduce My Blue Staffy Puppy to Other Dogs and New People in the UK? | 4 / 5 / 5 / 6 |
+| `uk-blue-staffy-puppy-buying-guide` | H3 | 131 | Step-By-Step Process for Using &#8220;Our Trusted DEFRA-Approved Pet Transport Partners &#8211; How to Get a Puppy Delivered Right to Your Door | 4 / 4 / 4 / 4 |
+| `uk-blue-staffy-puppy-buying-guide` | H3 | 126 | How to Find Excellent Blue Staffy Breeders UK?: What Is the Best Way to Find a Healthy Staffy Puppy From a Trusted UK Breeder? | 4 / 4 / 4 / 4 |
+| `uk-blue-staffy-puppy-buying-guide` | H3 | 117 | What Health Tests Should a Blue Staffy Puppy Breeder Provide? What Are the L-2-HGA and the HC-HSF4 Tests in Staffies? | &#8804;3 / &#8804;3 / &#8804;3 / 4 |
+| `uk-blue-staffy-puppy-buying-guide` | H3 | 112 | Your Comprehensive Blue Staffy Puppy Buying Guide: Finding Your Perfect Bull Terrier Staffy With BlueStaffyUK.uk | &#8804;3 / 4 / 4 / 4 |
+| `uk-blue-staffy-puppy-buying-guide` | H2 | 112 | What Is the Best Age to Bring Home a Blue Staffy Puppy, and Why Is Waiting Until They Are 8 Weeks Old Important? | &#8804;3 / 4 / 4 / 4 |
+| `uk-blue-staffy-puppy-buying-guide` | H2 | 107 | What Should I Do to Prepare My Home, and What Essential Items Do I Need to Buy for a New Blue Staffy Puppy? | &#8804;3 / 4 / 4 / 4 |
+| `uk-staffordshire-bull-terrier-guide` | H2 | 79 | Staffies and UK Law: Understanding the Breed&#8217;s Legal Status & Public Perception | &#8804;3 / &#8804;3 / &#8804;3 / 4 |</script></section>
+<section class="card" id="p-blue-staffy-health-uk"><h2>Blue Staffy health <span class="slug">/blue-staffy-health-uk/</span></h2>
+<p class="key">Tap any image to open it at full size. The first unboxed H2, "Our Rigorous Health Testing Process : Ensuring Peace of Mind", and the H3 after it, "BVA/KC Health Schemes", with their paragraphs.</p>
+<h3 class="wh">375px <span>phone</span></h3><div class="row r375">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 2 lines</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-375-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-375-before.jpg" alt="Blue Staffy health at 375px, As built" width="375" height="710" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 22px / 700 &#183; 2 lines</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-375-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-375-a.jpg" alt="Blue Staffy health at 375px, (a) City scale &#8212; Recommended" width="375" height="741" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 20px / 700 &#183; 2 lines</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-375-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-375-b.jpg" alt="Blue Staffy health at 375px, (b) One step smaller" width="375" height="736" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 24px / 700 &#183; 3 lines</span><span>H3 19px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-375-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-375-c.jpg" alt="Blue Staffy health at 375px, (c) One step larger" width="375" height="776" loading="lazy"></a></figure>
+</div>
+<h3 class="wh">768px <span>tablet</span></h3><div class="row r768">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 1 line</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-768-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-768-before.jpg" alt="Blue Staffy health at 768px, As built" width="768" height="865" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 25px / 700 &#183; 1 line</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-768-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-768-a.jpg" alt="Blue Staffy health at 768px, (a) City scale &#8212; Recommended" width="768" height="906" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 23px / 700 &#183; 1 line</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-768-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-768-b.jpg" alt="Blue Staffy health at 768px, (b) One step smaller" width="768" height="903" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 27px / 700 &#183; 2 lines</span><span>H3 20px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-768-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-768-c.jpg" alt="Blue Staffy health at 768px, (c) One step larger" width="768" height="942" loading="lazy"></a></figure>
+</div>
+<h3 class="wh">1280px <span>desktop</span></h3><div class="row r1280">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 1 line</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-1280-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-1280-before.jpg" alt="Blue Staffy health at 1280px, As built" width="956" height="983" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 28px / 700 &#183; 1 line</span><span>H3 20px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-1280-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-1280-a.jpg" alt="Blue Staffy health at 1280px, (a) City scale &#8212; Recommended" width="956" height="1036" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 26px / 700 &#183; 1 line</span><span>H3 19px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-1280-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-1280-b.jpg" alt="Blue Staffy health at 1280px, (b) One step smaller" width="956" height="1033" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 30px / 700 &#183; 1 line</span><span>H3 22px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/blue-staffy-health-uk-1280-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/blue-staffy-health-uk-1280-c.jpg" alt="Blue Staffy health at 1280px, (c) One step larger" width="956" height="1042" loading="lazy"></a></figure>
+</div>
+</section>
+<section class="card" id="p-uk-blue-staffy-puppy-buying-guide"><h2>Puppy buying guide <span class="slug">/uk-blue-staffy-puppy-buying-guide/</span></h2>
+<p class="key">Tap any image to open it at full size. The first unboxed H2, "The Buying Process: How to Find the Perfect Blue Staffy Puppy in the UK", and the H3 after it, "How to Buy Your Blue Staffy Puppy From Us", with their paragraphs.</p>
+<h3 class="wh">375px <span>phone</span></h3><div class="row r375">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 2 lines</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-375-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-375-before.jpg" alt="Puppy buying guide at 375px, As built" width="375" height="863" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 22px / 700 &#183; 3 lines</span><span>H3 18px / 600 &#183; 2 lines</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-375-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-375-a.jpg" alt="Puppy buying guide at 375px, (a) City scale &#8212; Recommended" width="375" height="942" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 20px / 700 &#183; 2 lines</span><span>H3 18px / 600 &#183; 2 lines</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-375-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-375-b.jpg" alt="Puppy buying guide at 375px, (b) One step smaller" width="375" height="912" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 24px / 700 &#183; 3 lines</span><span>H3 19px / 600 &#183; 2 lines</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-375-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-375-c.jpg" alt="Puppy buying guide at 375px, (c) One step larger" width="375" height="952" loading="lazy"></a></figure>
+</div>
+<h3 class="wh">768px <span>tablet</span></h3><div class="row r768">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 1 line</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-768-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-768-before.jpg" alt="Puppy buying guide at 768px, As built" width="768" height="1061" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 25px / 700 &#183; 2 lines</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-768-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-768-a.jpg" alt="Puppy buying guide at 768px, (a) City scale &#8212; Recommended" width="768" height="1131" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 23px / 700 &#183; 2 lines</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-768-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-768-b.jpg" alt="Puppy buying guide at 768px, (b) One step smaller" width="768" height="1126" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 27px / 700 &#183; 2 lines</span><span>H3 20px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-768-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-768-c.jpg" alt="Puppy buying guide at 768px, (c) One step larger" width="768" height="1138" loading="lazy"></a></figure>
+</div>
+<h3 class="wh">1280px <span>desktop</span></h3><div class="row r1280">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 1 line</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-1280-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-1280-before.jpg" alt="Puppy buying guide at 1280px, As built" width="956" height="1206" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 28px / 700 &#183; 2 lines</span><span>H3 20px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-1280-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-1280-a.jpg" alt="Puppy buying guide at 1280px, (a) City scale &#8212; Recommended" width="956" height="1293" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 26px / 700 &#183; 2 lines</span><span>H3 19px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-1280-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-1280-b.jpg" alt="Puppy buying guide at 1280px, (b) One step smaller" width="956" height="1288" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 30px / 700 &#183; 2 lines</span><span>H3 22px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-blue-staffy-puppy-buying-guide-1280-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-blue-staffy-puppy-buying-guide-1280-c.jpg" alt="Puppy buying guide at 1280px, (c) One step larger" width="956" height="1300" loading="lazy"></a></figure>
+</div>
+</section>
+<section class="card" id="p-uk-staffordshire-bull-terrier-guide"><h2>Staffordshire Bull Terrier guide <span class="slug">/uk-staffordshire-bull-terrier-guide/</span></h2>
+<p class="key">Tap any image to open it at full size. The first unboxed H2, "History &amp; Heritage of the Staffordshire Bull Terrier in the UK", and the H3 after it, "Bred in the Industrial Midlands", with their paragraphs.</p>
+<h3 class="wh">375px <span>phone</span></h3><div class="row r375">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 2 lines</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-375-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-375-before.jpg" alt="Staffordshire Bull Terrier guide at 375px, As built" width="375" height="917" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 22px / 700 &#183; 3 lines</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-375-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-375-a.jpg" alt="Staffordshire Bull Terrier guide at 375px, (a) City scale &#8212; Recommended" width="375" height="973" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 20px / 700 &#183; 2 lines</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-375-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-375-b.jpg" alt="Staffordshire Bull Terrier guide at 375px, (b) One step smaller" width="375" height="942" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 24px / 700 &#183; 3 lines</span><span>H3 19px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-375-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-375-c.jpg" alt="Staffordshire Bull Terrier guide at 375px, (c) One step larger" width="375" height="982" loading="lazy"></a></figure>
+</div>
+<h3 class="wh">768px <span>tablet</span></h3><div class="row r768">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 1 line</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-768-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-768-before.jpg" alt="Staffordshire Bull Terrier guide at 768px, As built" width="768" height="1141" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 25px / 700 &#183; 1 line</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-768-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-768-a.jpg" alt="Staffordshire Bull Terrier guide at 768px, (a) City scale &#8212; Recommended" width="768" height="1182" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 23px / 700 &#183; 1 line</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-768-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-768-b.jpg" alt="Staffordshire Bull Terrier guide at 768px, (b) One step smaller" width="768" height="1179" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 27px / 700 &#183; 2 lines</span><span>H3 20px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-768-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-768-c.jpg" alt="Staffordshire Bull Terrier guide at 768px, (c) One step larger" width="768" height="1218" loading="lazy"></a></figure>
+</div>
+<h3 class="wh">1280px <span>desktop</span></h3><div class="row r1280">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 1 line</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-1280-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-1280-before.jpg" alt="Staffordshire Bull Terrier guide at 1280px, As built" width="956" height="1298" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 28px / 700 &#183; 1 line</span><span>H3 20px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-1280-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-1280-a.jpg" alt="Staffordshire Bull Terrier guide at 1280px, (a) City scale &#8212; Recommended" width="956" height="1351" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 26px / 700 &#183; 1 line</span><span>H3 19px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-1280-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-1280-b.jpg" alt="Staffordshire Bull Terrier guide at 1280px, (b) One step smaller" width="956" height="1348" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 30px / 700 &#183; 1 line</span><span>H3 22px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/uk-staffordshire-bull-terrier-guide-1280-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/uk-staffordshire-bull-terrier-guide-1280-c.jpg" alt="Staffordshire Bull Terrier guide at 1280px, (c) One step larger" width="956" height="1357" loading="lazy"></a></figure>
+</div>
+</section>
+<section class="card" id="p-privacy-policy-uk"><h2>Privacy policy <span class="slug">/privacy-policy-uk/</span></h2>
+<p class="key">Tap any image to open it at full size. The first unboxed H2, "What Information We Collect", and the H3 after it, "What You Give Us When You Enquire", with their paragraphs.</p>
+<h3 class="wh">375px <span>phone</span></h3><div class="row r375">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 1 line</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-375-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-375-before.jpg" alt="Privacy policy at 375px, As built" width="375" height="374" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 22px / 700 &#183; 1 line</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-375-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-375-a.jpg" alt="Privacy policy at 375px, (a) City scale &#8212; Recommended" width="375" height="406" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 20px / 700 &#183; 1 line</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-375-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-375-b.jpg" alt="Privacy policy at 375px, (b) One step smaller" width="375" height="404" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 24px / 700 &#183; 1 line</span><span>H3 19px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-375-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-375-c.jpg" alt="Privacy policy at 375px, (c) One step larger" width="375" height="410" loading="lazy"></a></figure>
+</div>
+<h3 class="wh">768px <span>tablet</span></h3><div class="row r768">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 1 line</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-768-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-768-before.jpg" alt="Privacy policy at 768px, As built" width="768" height="289" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 25px / 700 &#183; 1 line</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-768-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-768-a.jpg" alt="Privacy policy at 768px, (a) City scale &#8212; Recommended" width="768" height="329" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 23px / 700 &#183; 1 line</span><span>H3 18px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-768-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-768-b.jpg" alt="Privacy policy at 768px, (b) One step smaller" width="768" height="327" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 27px / 700 &#183; 1 line</span><span>H3 20px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-768-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-768-c.jpg" alt="Privacy policy at 768px, (c) One step larger" width="768" height="334" loading="lazy"></a></figure>
+</div>
+<h3 class="wh">1280px <span>desktop</span></h3><div class="row r1280">
+<figure class="shot was"><figcaption><b>As built</b><span>H2 17px / 400 &#183; 1 line</span><span>H3 17px / 400 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-1280-before.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-1280-before.jpg" alt="Privacy policy at 1280px, As built" width="956" height="289" loading="lazy"></a></figure>
+<figure class="shot rec"><figcaption><b>(a) City scale &#8212; Recommended</b><span>H2 28px / 700 &#183; 1 line</span><span>H3 20px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-1280-a.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-1280-a.jpg" alt="Privacy policy at 1280px, (a) City scale &#8212; Recommended" width="956" height="343" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(b) One step smaller</b><span>H2 26px / 700 &#183; 1 line</span><span>H3 19px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-1280-b.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-1280-b.jpg" alt="Privacy policy at 1280px, (b) One step smaller" width="956" height="340" loading="lazy"></a></figure>
+<figure class="shot"><figcaption><b>(c) One step larger</b><span>H2 30px / 700 &#183; 1 line</span><span>H3 22px / 600 &#183; 1 line</span></figcaption><a href="heading-preview/privacy-policy-uk-1280-c.jpg" target="_blank" rel="noopener"><img src="heading-preview/privacy-policy-uk-1280-c.jpg" alt="Privacy policy at 1280px, (c) One step larger" width="956" height="348" loading="lazy"></a></figure>
+</div>
+</section>
+<section class="card sec" id="css"><div class="head"><h2>The CSS for each option</h2><button class="copy" data-src="md-css">Copy markdown</button></div>
+<p>Each block is scoped the way the real fix would be. It is in <code>@layer components</code>, so a caller's utility class still wins. It selects body headings in <code>&lt;main&gt;</code> only, so the site header and footer are untouched. A <code>.bl-box</code>'s own H2 keeps <code>--text-2xl</code>, and it skips anything inside a <code>kit-*</code> or <code>city-kit</code> component, whose scoped styles win anyway. Every selector sits inside <code>:where()</code>, so its specificity is (0,0,1) and <code>.bl-stub h3</code> and the kit rules still beat it.</p>
+<h3>(a) City scale &#8212; Recommended</h3>
+<pre><code>@layer components {
+  /* Body headings in &lt;main&gt;. Not a .bl-box&#x27;s own H2 (it keeps --text-2xl), not a kit or city-kit component. */
+  main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-weight: 700; line-height: 1.18; text-wrap: balance; }
+  main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-weight: 600; line-height: 1.25; text-wrap: balance; }
+  main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-weight: 700; line-height: 1.3; text-wrap: balance; margin-block: var(--space-5) var(--space-1); }
+  /* phone, below 640px */
+  main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 22px; margin-block: var(--space-6) var(--space-2); }
+  main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+  main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 17px; }
+  @media (min-width: 640px) { /* tablet */
+    main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 25px; margin-block: var(--space-7) var(--space-3); }
+    main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+    main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 17px; }
+  }
+  @media (min-width: 800px) { /* desktop */
+    main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 28px; margin-block: var(--space-8) var(--space-3); }
+    main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 20px; margin-block: var(--space-6) var(--space-2); }
+    main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 18px; }
+  }
+  main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *), h3:not([class*=&quot;kit-&quot;] *, .city-kit *), h4:not([class*=&quot;kit-&quot;] *, .city-kit *)):where(:first-child) { margin-block-start: 0; }
+}</code></pre>
+<h3>(b) One step smaller</h3>
+<pre><code>@layer components {
+  /* Body headings in &lt;main&gt;. Not a .bl-box&#x27;s own H2 (it keeps --text-2xl), not a kit or city-kit component. */
+  main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-weight: 700; line-height: 1.18; text-wrap: balance; }
+  main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-weight: 600; line-height: 1.25; text-wrap: balance; }
+  main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-weight: 700; line-height: 1.3; text-wrap: balance; margin-block: var(--space-5) var(--space-1); }
+  /* phone, below 640px */
+  main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 20px; margin-block: var(--space-6) var(--space-2); }
+  main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+  main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 17px; }
+  @media (min-width: 640px) { /* tablet */
+    main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 23px; margin-block: var(--space-7) var(--space-3); }
+    main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+    main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 17px; }
+  }
+  @media (min-width: 800px) { /* desktop */
+    main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 26px; margin-block: var(--space-8) var(--space-3); }
+    main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 19px; margin-block: var(--space-6) var(--space-2); }
+    main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 17px; }
+  }
+  main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *), h3:not([class*=&quot;kit-&quot;] *, .city-kit *), h4:not([class*=&quot;kit-&quot;] *, .city-kit *)):where(:first-child) { margin-block-start: 0; }
+}</code></pre>
+<h3>(c) One step larger</h3>
+<pre><code>@layer components {
+  /* Body headings in &lt;main&gt;. Not a .bl-box&#x27;s own H2 (it keeps --text-2xl), not a kit or city-kit component. */
+  main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-weight: 700; line-height: 1.18; text-wrap: balance; }
+  main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-weight: 600; line-height: 1.25; text-wrap: balance; }
+  main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-weight: 700; line-height: 1.3; text-wrap: balance; margin-block: var(--space-5) var(--space-1); }
+  /* phone, below 640px */
+  main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 24px; margin-block: var(--space-6) var(--space-2); }
+  main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 19px; margin-block: var(--space-5) var(--space-2); }
+  main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 18px; }
+  @media (min-width: 640px) { /* tablet */
+    main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 27px; margin-block: var(--space-7) var(--space-3); }
+    main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 20px; margin-block: var(--space-5) var(--space-2); }
+    main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 18px; }
+  }
+  @media (min-width: 800px) { /* desktop */
+    main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 30px; margin-block: var(--space-8) var(--space-3); }
+    main :where(h3:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 22px; margin-block: var(--space-6) var(--space-2); }
+    main :where(h4:not([class*=&quot;kit-&quot;] *, .city-kit *)) { font-size: 19px; }
+  }
+  main :where(h2:not(.bl-box h2, [class*=&quot;kit-&quot;] *, .city-kit *), h3:not([class*=&quot;kit-&quot;] *, .city-kit *), h4:not([class*=&quot;kit-&quot;] *, .city-kit *)):where(:first-child) { margin-block-start: 0; }
+}</code></pre>
+<script type="text/markdown" id="md-css">## The CSS for each option
+
+Each block is scoped the way the real fix would be. It is in `@layer components`, so a caller's utility class still wins. It selects body headings in `<main>` only, so the site header and footer are untouched. A `.bl-box`'s own H2 keeps `--text-2xl`, and it skips anything inside a `kit-*` or `city-kit` component, whose scoped styles win anyway. Every selector sits inside `:where()`, so its specificity is (0,0,1) and `.bl-stub h3` and the kit rules still beat it.
+
+### (a) City scale &#8212; Recommended
+
+```
+@layer components {
+  /* Body headings in <main>. Not a .bl-box's own H2 (it keeps --text-2xl), not a kit or city-kit component. */
+  main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.18; text-wrap: balance; }
+  main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-weight: 600; line-height: 1.25; text-wrap: balance; }
+  main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.3; text-wrap: balance; margin-block: var(--space-5) var(--space-1); }
+  /* phone, below 640px */
+  main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 22px; margin-block: var(--space-6) var(--space-2); }
+  main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+  main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 17px; }
+  @media (min-width: 640px) { /* tablet */
+    main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 25px; margin-block: var(--space-7) var(--space-3); }
+    main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+    main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 17px; }
+  }
+  @media (min-width: 800px) { /* desktop */
+    main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 28px; margin-block: var(--space-8) var(--space-3); }
+    main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 20px; margin-block: var(--space-6) var(--space-2); }
+    main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; }
+  }
+  main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *), h3:not([class*="kit-"] *, .city-kit *), h4:not([class*="kit-"] *, .city-kit *)):where(:first-child) { margin-block-start: 0; }
+}
+```
+
+### (b) One step smaller
+
+```
+@layer components {
+  /* Body headings in <main>. Not a .bl-box's own H2 (it keeps --text-2xl), not a kit or city-kit component. */
+  main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.18; text-wrap: balance; }
+  main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-weight: 600; line-height: 1.25; text-wrap: balance; }
+  main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.3; text-wrap: balance; margin-block: var(--space-5) var(--space-1); }
+  /* phone, below 640px */
+  main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 20px; margin-block: var(--space-6) var(--space-2); }
+  main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+  main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 17px; }
+  @media (min-width: 640px) { /* tablet */
+    main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 23px; margin-block: var(--space-7) var(--space-3); }
+    main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+    main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 17px; }
+  }
+  @media (min-width: 800px) { /* desktop */
+    main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 26px; margin-block: var(--space-8) var(--space-3); }
+    main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 19px; margin-block: var(--space-6) var(--space-2); }
+    main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 17px; }
+  }
+  main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *), h3:not([class*="kit-"] *, .city-kit *), h4:not([class*="kit-"] *, .city-kit *)):where(:first-child) { margin-block-start: 0; }
+}
+```
+
+### (c) One step larger
+
+```
+@layer components {
+  /* Body headings in <main>. Not a .bl-box's own H2 (it keeps --text-2xl), not a kit or city-kit component. */
+  main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.18; text-wrap: balance; }
+  main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-weight: 600; line-height: 1.25; text-wrap: balance; }
+  main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.3; text-wrap: balance; margin-block: var(--space-5) var(--space-1); }
+  /* phone, below 640px */
+  main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 24px; margin-block: var(--space-6) var(--space-2); }
+  main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 19px; margin-block: var(--space-5) var(--space-2); }
+  main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; }
+  @media (min-width: 640px) { /* tablet */
+    main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 27px; margin-block: var(--space-7) var(--space-3); }
+    main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 20px; margin-block: var(--space-5) var(--space-2); }
+    main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 18px; }
+  }
+  @media (min-width: 800px) { /* desktop */
+    main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *)) { font-size: 30px; margin-block: var(--space-8) var(--space-3); }
+    main :where(h3:not([class*="kit-"] *, .city-kit *)) { font-size: 22px; margin-block: var(--space-6) var(--space-2); }
+    main :where(h4:not([class*="kit-"] *, .city-kit *)) { font-size: 19px; }
+  }
+  main :where(h2:not(.bl-box h2, [class*="kit-"] *, .city-kit *), h3:not([class*="kit-"] *, .city-kit *), h4:not([class*="kit-"] *, .city-kit *)):where(:first-child) { margin-block-start: 0; }
+}
+```</script></section>
+<section class="card sec" id="apply"><div class="head"><h2>What applying it would change</h2><button class="copy" data-src="md-apply">Copy markdown</button></div>
+<p>If you pick an option, the fix follows the learning loop: <strong>the check first, then the style.</strong></p>
+<ul><li><strong>The check, first.</strong> Add <code>layout-body-heading-above-body</code> to <code>tests/render/checks/layout.ts</code>. At 375, 768 and 1280 it fails when a visible H2 or H3 in <code>&lt;main&gt;</code>, not inside a kit component, paints at or below the page's body size. The body size is the font-size carrying the most paragraph text. It records how many headings it examined, so zero examined is a failure.</li><li><strong>Its fixture.</strong> Add <code>tests/render/fixtures/known_broken/layout-body-heading-above-body.html</code>: an unboxed <code>&lt;h2&gt;</code> and <code>&lt;h3&gt;</code> at the inherited 17px over 17px prose. Watch <code>npm run test:render:meta</code> fail on it before the check exists, then pass once it does.</li><li><strong>The style.</strong> Add the chosen block to <code>src/styles/board-styles.css</code>, beside <code>.bl-box h2</code>, inside its existing <code>@layer components</code>. <code>global.css</code> imports that file, so it reaches all twelve built pages. It adds one block and edits no existing selector.</li><li><strong>Then:</strong> <code>npm run build</code>, <code>npm run test:render:pages</code> at 375 / 768 / 1280, and <code>npm run check:all</code>. Known Issue 97 closes with the before and after counts.</li><li><strong>Not in this change:</strong> rewording the eight long headings (content, and mostly the verbatim set) and heading colour. <code>rules/design.md</code> gives headings <code>--color-brand</code>, and the city kit already uses it, but the built pages paint them in <code>--color-ink</code>. That would be its own preview.</li></ul>
+<h3>Noticed while measuring, not fixed</h3>
+<ul><li><strong>No phone gutter on unboxed prose.</strong> At 375 the unboxed sections' paragraphs and headings run from x = 0 to 375 on the health page, the buying guide and the privacy policy. They have no side gutter, which shows in every 375 shot above. It is a separate defect for its own Known Issue.</li><li><strong>Boxed H2s are tall on phone.</strong> A <code>.bl-box</code> H2 is 30px (<code>--text-2xl</code>) at 375, with the inherited 1.65 line-height. The health page's first boxed H2 is four lines, 198px tall. This preview leaves <code>.bl-box</code> alone, as asked, but that rule sits outside the city caps too.</li></ul>
+<script type="text/markdown" id="md-apply">## What applying it would change
+
+If you pick an option, the fix follows the learning loop: **the check first, then the style.**
+
+- **The check, first.** Add `layout-body-heading-above-body` to `tests/render/checks/layout.ts`. At 375, 768 and 1280 it fails when a visible H2 or H3 in `<main>`, not inside a kit component, paints at or below the page's body size. The body size is the font-size carrying the most paragraph text. It records how many headings it examined, so zero examined is a failure.
+- **Its fixture.** Add `tests/render/fixtures/known_broken/layout-body-heading-above-body.html`: an unboxed `<h2>` and `<h3>` at the inherited 17px over 17px prose. Watch `npm run test:render:meta` fail on it before the check exists, then pass once it does.
+- **The style.** Add the chosen block to `src/styles/board-styles.css`, beside `.bl-box h2`, inside its existing `@layer components`. `global.css` imports that file, so it reaches all twelve built pages. It adds one block and edits no existing selector.
+- **Then:** `npm run build`, `npm run test:render:pages` at 375 / 768 / 1280, and `npm run check:all`. Known Issue 97 closes with the before and after counts.
+- **Not in this change:** rewording the eight long headings (content, and mostly the verbatim set) and heading colour. `rules/design.md` gives headings `--color-brand`, and the city kit already uses it, but the built pages paint them in `--color-ink`. That would be its own preview.
+
+### Noticed while measuring, not fixed
+
+- **No phone gutter on unboxed prose.** At 375 the unboxed sections' paragraphs and headings run from x = 0 to 375 on the health page, the buying guide and the privacy policy. They have no side gutter, which shows in every 375 shot above. It is a separate defect for its own Known Issue.
+- **Boxed H2s are tall on phone.** A `.bl-box` H2 is 30px (`--text-2xl`) at 375, with the inherited 1.65 line-height. The health page's first boxed H2 is four lines, 198px tall. This preview leaves `.bl-box` alone, as asked, but that rule sits outside the city caps too.</script></section>
+<p class="foot">Built from <code>dist/</code> of the <code>london-components</code> worktree (not rebuilt), served read-only and captured in Chromium through Playwright, device scale 1. Each option was injected with <code>page.addStyleTag</code>. The site header is hidden in the crops only. Images are JPEG at quality 78, cropped to the region. 2026-09-29.</p></main>
+<script>
+document.querySelectorAll('button.copy').forEach(b=>b.addEventListener('click',async()=>{
+  const t=document.createElement('textarea');t.innerHTML=document.getElementById(b.dataset.src).textContent;const src=t.value;
+  try{await navigator.clipboard.writeText(src);b.textContent='Copied';}catch(e){b.textContent='Copy failed';}
+  setTimeout(()=>b.textContent='Copy markdown',1500);}));
+document.getElementById('dl').addEventListener('click',()=>{
+  const dec=x=>{const t=document.createElement('textarea');t.innerHTML=x;return t.value;};
+  const all=[...document.querySelectorAll('script[type="text/markdown"]')].map(s=>dec(s.textContent.trim())).join('\n\n');
+  const b=document.getElementById('dl');
+  navigator.clipboard.writeText('# Heading Scale Preview\n\n'+all+'\n').then(()=>{b.textContent='Copied';},()=>{b.textContent='Copy failed';}).finally(()=>setTimeout(()=>b.textContent='Copy all as markdown',1500));});
+</script>
