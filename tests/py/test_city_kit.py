@@ -378,11 +378,68 @@ def test_the_nav_set_is_pluggable_and_pageshell_carries_no_city_pick():
         assert "CityShell" not in text and "slot=\"nav-dial\"" not in text, page
 
 
+def _norm_selector(text):
+    """Selector text as the minifier and the source can both be compared: no quotes, no spaces."""
+    return re.sub(r"[\s\"']", "", text)
+
+
+def _not_groups(css):
+    """Every `:not(...)` group in `css`, balanced over nested parentheses, in source order."""
+    out, i = [], 0
+    while (i := css.find(":not(", i)) != -1:
+        depth, j = 0, i + 4
+        while j < len(css):
+            depth += {"(": 1, ")": -1}.get(css[j], 0)
+            if depth == 0:
+                break
+            j += 1
+        out.append(css[i:j + 1])
+        i += 5
+    return out
+
+
+def _board_styles_city_exclusions():
+    """The exact `:not()` groups src/styles/board-styles.css writes to leave city headings alone
+    (the body-heading scale and the gutter rule, Known Issue 97): each names `.city-kit` and is
+    an exclusion, not a city rule."""
+    src = re.sub(r"/\*.*?\*/", "", (ROOT / "src/styles/board-styles.css").read_text(encoding="utf-8"), flags=re.S)
+    return {_norm_selector(g) for g in _not_groups(src) if ".city-kit" in g and ":not(:not(" not in g}
+
+
+def _city_rules_outside_exclusions(css, exclusions):
+    """`css` normalised, with ONLY the listed exclusion groups blanked, and only where a group is
+    not itself negated again (`:not(:not(.city-kit *))` selects city headings, so it is kept)."""
+    css = _norm_selector(css)
+    for g in sorted(exclusions, key=len, reverse=True):
+        parts = css.split(g)
+        kept = parts[0]
+        for part in parts[1:]:
+            kept += (g if kept.endswith(":not(") else ":not()") + part
+        css = kept
+    return css
+
+
+def test_the_city_exclusion_filter_blanks_only_the_exact_groups():
+    """Mutation proof for the guard below (the Known Issue 97 review, item 9)."""
+    groups = _board_styles_city_exclusions()
+    assert groups, "board-styles.css names no .city-kit exclusion, so this filter guards nothing"
+    real = "main :where(h2:not(.bl-box h2,[class*=kit-] *,.city-kit *)){font-size:22px}"
+    assert ".city-kit" not in _city_rules_outside_exclusions(real, groups)
+    for mutant in (
+        "main h2:not(:not(.city-kit *)){color:red}",
+        ".city-kit h2{color:red}",
+        "main :where(h2:not(:not(.bl-box h2,[class*=kit-] *,.city-kit *))){color:red}",
+        "main :where(h2:not(.city-kit *)){color:red}",
+    ):
+        assert ".city-kit" in _city_rules_outside_exclusions(mutant, groups), mutant
+
+
 def test_the_built_pages_ship_none_of_the_city_nav_css():
     """Task 7b review, item 5: with the picks out of PageShell, Astro bundles their CSS only
     where a page imports them. The twelve built pages carry no rule of the city nav set, and no
     rule or token of the city type scale either (the Task 7b quality review, I2)."""
     rebuilt = json.loads((ROOT / "data/facts/rebuilt.json").read_text())
+    exclusions = _board_styles_city_exclusions()
     for slug in rebuilt:
         path = ROOT / "dist" / ("index.html" if slug == "index" else f"{slug}/index.html")
         if not path.exists():
@@ -392,10 +449,9 @@ def test_the_built_pages_ship_none_of_the_city_nav_css():
         for root in CITY_NAV_ROOTS:
             assert f".{root}" not in css, (slug, root)
         # Nor the city type base and scale, nor the dial token (src/styles/city.css: I2). A
-        # `.city-kit` inside a `:not()` is an EXCLUSION, not a city rule: the body-heading scale
-        # (Known Issue 97, src/styles/board-styles.css) names it to leave city headings alone.
-        # Only the `:not()` groups are blanked, so a real `.city-kit …` rule still fails here.
-        assert ".city-kit" not in re.sub(r":not\([^(){}]*\)", ":not()", css), slug
+        # `.city-kit` inside one of board-styles.css's own exclusion groups is not a city rule
+        # (Known Issue 97); only those exact groups are blanked before the search.
+        assert ".city-kit" not in _city_rules_outside_exclusions(css, exclusions), slug
         assert "--city-" not in css, slug
 
 
