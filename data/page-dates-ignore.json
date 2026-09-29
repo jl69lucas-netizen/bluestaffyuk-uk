@@ -26,6 +26,20 @@
         "src/pages/uk-locations/blue-staffy-puppies-london.astro"
       ],
       "reason": "Task 8 quality review M5: header comment corrected and each section question defined once in a const; the built London page is identical apart from its own WebPage date node (diffed against a build of 8f87f1f)."
+    },
+    {
+      "sha": "b32c691d0f3b2bc4a5b154a91a35e0074d369ca0",
+      "paths": [
+        "src/pages/blue-staffy-health-uk/index.astro",
+        "src/pages/blue-staffy-pup-sale-uk/index.astro",
+        "src/pages/blue-staffy-uk-breeders/index.astro",
+        "src/pages/buy-blue-staffy-puppies-uk/index.astro",
+        "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
+        "src/pages/index.astro",
+        "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+        "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+      ],
+      "reason": "Task 10b re-review, item 4: comment-only edits in eight page files (stale notes that said the guarantee is unset). The built pages were diffed against the build before it (95b0013): no page's HTML changed, so no route is re-dated by it."
     }
   ],
   "floor_override": {},
