@@ -137,6 +137,13 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-contents-photo-index': {
     present: '.city-contents-photo-index',
     run: async (page, viewport) => {
+      // The user's ruling (answer board q05, 2026-09-29): the contents list is hidden from 1024px,
+      // where the dial takes over, as the other pages' SectionSheet is; shown at 375 and 768.
+      const painted = await page.locator('.city-contents-photo-index').isVisible();
+      if (viewport >= 1024) {
+        return painted ? [`the contents list is painted at ${viewport}px, where the dial navigates`] : [];
+      }
+      if (!painted) return [`the contents list is not painted at ${viewport}px`];
       const out = await allVisible(page, 'data-contents');
       const rest = page.locator('.city-contents-photo-index [data-rest]');
       if (!(await rest.count())) return out;
@@ -391,7 +398,11 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       for (const motion of ['reduce', 'no-preference'] as const) {
         await page.emulateMedia({ reducedMotion: motion });
         const want = await page.evaluate((s) => {
-          const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [data-spy]`));
+          // Only a section tall enough to fill the reading band can be asked to be current: on the
+          // specimen route the contents list's wrapper is a one-line caption from 1024px, where
+          // the list itself is hidden (answer board q05), so the band reads the section after it.
+          const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [data-spy]`))
+            .filter((a) => document.getElementById(a.dataset.spy!)!.getBoundingClientRect().height >= window.innerHeight * 0.2);
           const link = links[Math.min(3, links.length - 1)];
           const target = document.getElementById(link.dataset.spy!)!;
           // The target's top at 30% of the viewport: above the reading band (40–45%), so the

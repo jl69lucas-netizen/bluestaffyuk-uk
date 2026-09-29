@@ -13,7 +13,8 @@
 // can never disagree about what the sections are.
 //
 // Mounted by the city layout (src/layouts/CityShell.astro) in PageShell's `nav-contents` slot,
-// once, after the hero. Conventions 2, 4, 6.
+// once, after the hero. Shown below 1024px only: from 1024px the dial is the contents (the user's
+// ruling, answer board q05, 2026-09-29). Conventions 2, 4, 6.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
@@ -42,7 +43,7 @@ const NOSCRIPT_CSS = '.city-contents-photo-index [data-rest]{display:block!impor
   <div class="panel">
     <figure>
       <Image src={puppyImage(photo)} alt={photoAlt} widths={[400, 800, 1080]}
-        sizes="(min-width: 1024px) 480px, calc(100vw - 32px)" class={focusClass(photo)} loading="lazy" decoding="async" />
+        sizes="calc(100vw - 32px)" class={focusClass(photo)} loading="lazy" decoding="async" />
     </figure>
     <div class="body">
       <h2>{heading}</h2>
@@ -122,15 +123,10 @@ const NOSCRIPT_CSS = '.city-contents-photo-index [data-rest]{display:block!impor
       .more { display: none; }
     }
     @media (640px <= width < 1024px) { figure :global(img) { aspect-ratio: 21 / 9; } }
-    @media (width >= 1024px) {
-      .city-contents-photo-index { padding: var(--space-8) 0; }
-      .panel { max-width: min(1200px, calc(100% - 2 * var(--space-5))); }
-      .panel { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
-      figure { display: flex; flex-direction: column; }
-      figure :global(img) { flex: 1; aspect-ratio: auto; min-height: 100%; }
-      .body { padding: var(--space-8) var(--space-7); }
-    }
-    @media (width >= 1200px) { .body { padding: var(--space-8) var(--space-8); } }
+    /* From 1024px the dial (CityDialPhotoMarker) is the page's contents, so this list goes, as
+       SectionSheet goes where PageDial takes over (the user's ruling, answer board q05,
+       2026-09-29). tests/render/city-kit.spec.ts probes it hidden at 1024 and 1280. */
+    @media (width >= 1024px) { .city-contents-photo-index { display: none; } }
     @media (prefers-reduced-motion: reduce) { a svg, .more svg { transition: none; } }
   }
 </style>

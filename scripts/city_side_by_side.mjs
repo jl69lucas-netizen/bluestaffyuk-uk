@@ -71,6 +71,7 @@ const CANVAS_SELECTOR = {
 const HIDDEN_WHY = {
   'CityDialPhotoMarker.astro': 'The dial is desktop navigation: it shows from 1024px, and the jump band stands in for it on phones and tablets.',
   'CityJumpStepper.astro': 'The jump band is phone and tablet navigation: it shows below 1024px, and the dial beside the body takes its place from 1024px.',
+  'CityContentsPhotoIndex.astro': 'The contents list shows below 1024px only: from 1024px the dial beside the body is the page\'s contents, as on the other pages (your ruling, answer board q05, 2026-09-29).',
 };
 // The sticky furniture is shot as the element itself; every section is clipped from the page.
 const DIAL_FILE = 'CityDialPhotoMarker.astro';
