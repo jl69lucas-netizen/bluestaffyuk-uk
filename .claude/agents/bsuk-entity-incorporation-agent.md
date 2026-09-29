@@ -63,7 +63,8 @@ The ledger is data, not a list in this file, so it cannot drift from the site:
   that carries one (`entity-blocked`).
 - **A health or credential claim** is assertable only where `data/quality/evidence-ledger.json`
   has its claim with a `proof` other than `NOT FETCHED` and a `confirmed` date. Today its one row,
-  `parents-dna-clear`, is `NOT FETCHED`, so "tested clear" is not a sentence any page may write.
+  `parents-dna-clear`, is `NOT FETCHED` — the breeder holds no DNA certificates (answer board q01, 2026-09-29), which its
+  `barrier` records — so "tested clear" is not a sentence any page may write.
   A test result or score always needs its ledger `proof`. A breeder ruling counts only for the
   specific claim its rulings file's "What the pages do" column states, never a blanket "it's all
   real", and even then it lets a page name a test or a screening, never state its result.

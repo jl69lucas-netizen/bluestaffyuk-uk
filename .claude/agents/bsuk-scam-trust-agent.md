@@ -94,7 +94,7 @@ Our answer: as data/faq.json `buying-puppy-farm` and `contact-visit` say — vis
 
 Pattern 5: The paperwork that is in the post
 Signal: registration, vaccination or microchip records promised "after payment".
-Our answer: the paperwork exactly as data/faq.json `whyus-paperwork` lists it, and the parents' results shown as data/faq.json `whyus-evidence` says.
+Our answer: the paperwork exactly as data/faq.json `whyus-paperwork` lists it, and the parents' DNA tests named as data/faq.json `whyus-evidence` names them, as `data/quality/evidence-ledger.json` allows — never a result, because the breeder holds no DNA certificates (answer board q01, 2026-09-29).
 ```
 
 **Nothing is held for the breeder today.** Two common red flags were held until her answers
@@ -121,7 +121,7 @@ Check every line with any seller before you pay the balance:
 2. You are never shown the puppy with its mother in the home where the litter was raised.
 3. The price is far below other UK breeders' and comes with pressure to decide today.
 4. The registration, vaccination and microchip paperwork is "in the post".
-5. The parents' health test results cannot be shown.
+5. The seller cannot tell you which health tests the parents have had.
 6. There is nothing in writing about what you are buying.
 7. The seller will only meet you away from their home.
 8. There is no way to reach the seller after the sale.
@@ -146,7 +146,7 @@ disagree, write neither over the other: put the conflict to the breeder on the a
 | Proof | Source | How the buyer checks it |
 |---|---|---|
 | The paperwork that comes home | `data/faq.json` `whyus-paperwork` | they receive it; the parents' registration numbers let them check the pedigree |
-| The parents' health tests | `data/faq.json` `whyus-evidence`; `data/quality/evidence-ledger.json` | results shown before they commit — a "clear" result is stated only when the ledger has its proof (today `parents-dna-clear` is `NOT FETCHED`) |
+| The parents' health tests | `data/faq.json` `whyus-evidence`; `data/quality/evidence-ledger.json` | the tests named (L-2-HGA, HC-HSF4, eye and elbow screening), never a result: the breeder holds no DNA certificates (answer board q01, 2026-09-29), so `parents-dna-clear` stays `NOT FETCHED` |
 | Our vet | the breeder's ruling (buyers may contact our vet) | on request; no vet's name is written until the breeder gives one |
 | Our home and the mother | `data/faq.json` `contact-visit` | a visit by appointment |
 | A live video call | the breeder's answer, answer board q03 (`docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`) | a video call with the puppy and its mother, on request, before they pay |
@@ -203,7 +203,7 @@ rule 12), Link-First, with its `anchor_type`:
 3. **Facts from data files** — no price, deposit, delivery figure or market threshold is typed; every deposit sentence follows the deposit ruling (`docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md`), never the plain "refundable" of `data/faq.json` `deposit`.
 4. **Never advice our own process fails** — a conflict between independent guidance and our process goes to the answer board.
 5. **Reviews from `data/reviews.json` only** — never invented, never AggregateRating.
-6. **A health result only with its ledger proof** — A test result or score always needs its ledger `proof`: "tested clear" is not written while `parents-dna-clear` is `NOT FETCHED`, and no breeder ruling stands in for it. A ruling lets a page name the tests and the screening, never state a result; whether she holds the certificates is a question for her on the answer board.
+6. **A health result only with its ledger proof** — A test result or score always needs its ledger `proof`: "tested clear" is not written while `parents-dna-clear` is `NOT FETCHED`, and no breeder ruling stands in for it. A ruling lets a page name the tests and the screening, never state a result; she holds no certificates (answer board q01, 2026-09-29), so no result is written.
 7. **The five patterns and the ten-line checklist** on a scam-prevention page; a section picks from them. A red flag our own process may fail is marked `NEEDS BREEDER CONFIRMATION`, is never printed until the answer board records her answer, and goes to the answer board.
 8. **Outside citations through the library** — Link-First, live-checked, on the board.
 9. **FAQPage schema** carrying exactly the visible questions; `BreadcrumbList` on a page of its own.

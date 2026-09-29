@@ -273,8 +273,8 @@ when it is not a result. A test result or score always needs its ledger `proof` 
 Q9 row of the rulings permits a page to NAME the tests and the screening, never to state a
 result. So the ten "tested clear" lines on `/blue-staffy-health-uk/` (ten at the time of writing, 2026-09-29, so recount on the built page; `parents-dna-clear`,
 proof `NOT FETCHED`; count every line that states a result — the ledger's regex is a lower bound,
-not the count) are §5b hits, not ledger updates; whether the breeder holds the
-certificates is a question for her on the answer board.
+not the count) were §5b hits, not ledger updates. The breeder answered that she holds no
+certificates (answer board q01, 2026-09-29); those lines now name the tests only, and any line that states a result again is a §5b hit.
 
 **5b. Hard FAIL, not a score** — a page that carries any of these fails the gate:
 - a licence, registration number or statute asserted as held, instead of LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER;

@@ -56,7 +56,7 @@ EBP converts vague claims into verifiable proof. "All our puppies are documented
 | Home-raised | Socialisation log | "Socialisation log from birth — documented week by week" |
 | Identity verified | Microchip number | "Microchip #[NUMBER] — registered to the breeder, transferable to you" |
 | Lifespan claim | Kennel Club breed health data | "12–14 years per Staffordshire Bull Terrier longevity surveys" |
-| Hereditary health | HC and L-2-HGA DNA status | "Both parents DNA clear for HC and L-2-HGA — certificates on request" |
+| Hereditary health | HC and L-2-HGA DNA tests | "Both parents DNA tested for HC and L-2-HGA" — the tests named, never a result (answer board q01, 2026-09-29) |
 
 ---
 
