@@ -302,8 +302,8 @@
   {
     "id": "home-health-guarantee",
     "q": "Do you offer health guarantees for your blue staffy puppies?",
-    "a": "Yes. Every puppy leaves with a written health guarantee alongside its vaccination and microchip records. The length of the cover is not published on this site until the figure is confirmed, so please ask us for the wording before you pay a deposit.",
-    "source": "src/pages/index.astro"
+    "a": "Yes. Every puppy leaves with our written {guarantee_label_lc} alongside its vaccination and microchip records. Please ask us for the full wording before you pay a deposit.",
+    "source": "data/settings.json"
   },
   {
     "id": "home-find-breeders",

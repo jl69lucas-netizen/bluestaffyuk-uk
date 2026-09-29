@@ -102,7 +102,7 @@ import { recordText, countedFigures, ledgeText, sourceKey, breedFactsCell,
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
-import { SITE, abs } from '../../lib/site';
+import { SITE, abs, guaranteeLabel } from '../../lib/site';
 import reviewsJson from '../../../data/reviews.json';
 import settings from '../../../data/settings.json';
 import prices from '../../../data/price-matrix.json';
@@ -895,8 +895,8 @@ const pageSchema = [
 
     <h4>{T('A Range Is Not A Guarantee')}</h4>
     <p>
-      There is no guarantee length anywhere on this site. We have not confirmed one, so no page
-      states one, and a range read off a breed club is no substitute for it.
+      Ours is a {guaranteeLabel('lower')}, a promise we make about our own puppies; a range read
+      off a breed club describes the breed, and it is no substitute for that promise.
     </p>
     <h5>{T('The Parents Are The Part We Control')}</h5>
     <p>Screening decides what a litter starts with; the years after that belong to your house.</p>
@@ -955,8 +955,9 @@ const pageSchema = [
         Every answer restates something set out at length above, deliberately: a fact appearing
         only inside an accordion would be a fact we were keeping quiet about.
       </p>
-      <h5>{T('The Guarantee Row Is Absent, Not Overlooked')}</h5>
-      <p>We have not confirmed a length, so no page states one, and this is where you would have looked for it.</p>
+      {/* data/settings.json `guarantee_label` (answer board q07, 2026-09-29), never typed. */}
+      <h5>{T(`Ask Us About Our ${guaranteeLabel()}`)}</h5>
+      <p>This is where you would have looked for it: write to us and we will send the full wording before you pay a deposit.</p>
       <h6>{T('Health Note: Ask the one that is not here')}</h6>
       <p>No accordion describes a particular dog in a particular house; write and we will answer yours.</p>
     </div>

@@ -67,7 +67,7 @@ import { recordText, countedFigures, ledgeText, numberWord, type LedgeEntry } fr
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
-import { SITE, SITE_URL, abs, type PuppyRow } from '../../lib/site';
+import { SITE, SITE_URL, abs, guaranteeLabel, type PuppyRow } from '../../lib/site';
 import puppiesJson from '../../../data/puppies.json';
 import reviewsJson from '../../../data/reviews.json';
 import record from '../../../data/boards/buy-blue-staffy-puppies-uk.json';
@@ -551,7 +551,8 @@ const pageSchema = [
         have not padded the list to make a puppy sound better equipped.
       </p>
       <h5>{T('Nothing Here Is Promised That Is Not Written Down')}</h5>
-      <p>No term is stated for a guarantee, because we have not confirmed one.</p>
+      {/* data/settings.json `guarantee_label` (answer board q07, 2026-09-29), never typed. */}
+      <p>What we do promise is our {guaranteeLabel('lower')}, and we send its full wording before you pay a deposit.</p>
       <h6>{T('Step Note: Ask for the paperwork before you pay')}</h6>
       <p>We would rather you asked than assumed, and the answer is the same either way.</p>
     </div>

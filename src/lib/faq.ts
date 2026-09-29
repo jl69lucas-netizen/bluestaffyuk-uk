@@ -9,6 +9,7 @@
 // together instead of leaving a stale number in prose nobody greps.
 import settings from '../../data/settings.json';
 import rows from '../../data/faq.json';
+import { guaranteeLabel } from './site';
 
 export interface FaqRow {
   id: string;
@@ -29,6 +30,8 @@ const TOKENS: Record<string, string> = {
   // Derived, not raw: the deposit's terms are a boolean in settings and a word in prose,
   // and spelling the word in the JSON would let the two drift apart silently.
   deposit_terms: settings.deposit_refundable ? 'refundable' : 'non-refundable',
+  // The guarantee's words mid-sentence ("two-year health guarantee"), from `guarantee_label`.
+  guarantee_label_lc: guaranteeLabel('lower'),
 };
 
 export function loadFaq(): FaqRow[] {

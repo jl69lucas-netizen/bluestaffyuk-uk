@@ -25,6 +25,8 @@ TOKENS = {
     "delivery_max_gbp": str(SETTINGS["delivery_max_gbp"]),
     "delivery_note": SETTINGS["delivery_note"],
     "deposit_terms": "refundable" if SETTINGS["deposit_refundable"] else "non-refundable",
+    # src/lib/faq.ts: the guarantee's words mid-sentence, from `guarantee_label` (q07).
+    "guarantee_label_lc": SETTINGS["guarantee_label"][:1].lower() + SETTINGS["guarantee_label"][1:],
 }
 
 # The phrases an answer asserts that are NOT a settings value — the part a reader would
