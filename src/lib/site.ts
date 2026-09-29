@@ -1,15 +1,14 @@
 import settings from '../../data/settings.json';
+import { guaranteeWords, type GuaranteeSettings } from './guarantee';
 
 export const SITE = settings;
 
 /** The health guarantee's words, from data/settings.json `guarantee_label` (the breeder's answer,
- *  answer board q07, 2026-09-29): "Two-year health guarantee". A page reads it here and never
- *  types it; `lower` gives it mid-sentence ("our two-year health guarantee"). The label check
- *  (its length as whole words) is src/lib/cityKit.ts `checkGuaranteeLabel`. */
+ *  answer board q07, 2026-09-29). A page reads it here and never types it; `lower` gives it
+ *  mid-sentence ("our two-year health guarantee"). It runs src/lib/guarantee.ts's check, so a label
+ *  that disagrees with `guarantee_days`, or names a cover, stops the build. */
 export function guaranteeLabel(form: 'label' | 'lower' = 'label'): string {
-  const label = (settings as { guarantee_label?: string }).guarantee_label;
-  if (!label) throw new Error('site: data/settings.json has no guarantee_label');
-  return form === 'lower' ? label.charAt(0).toLowerCase() + label.slice(1) : label;
+  return guaranteeWords(settings as GuaranteeSettings, form);
 }
 export const SITE_URL = (import.meta.env.SITE ?? 'https://SITE_URL_PLACEHOLDER').replace(/\/$/, '');
 

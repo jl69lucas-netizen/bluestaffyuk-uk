@@ -907,3 +907,31 @@ def test_the_guarantee_label_must_open_with_its_length_as_whole_words(tmp_path):
     assert _json.loads(res.stdout) == ["ok", "refused", "refused", "refused", "refused", "refused", "ok", "ok", "refused"]
     kit = (ROOT / "src/lib/cityKit.ts").read_text(encoding="utf-8")
     assert "checkGuaranteeLabel(G.guarantee_days, G.guarantee_label)" in kit
+
+
+def test_the_built_pages_refuse_a_mismatched_or_cover_naming_guarantee_label(tmp_path):
+    """Re-review, item 7: src/lib/site.ts guaranteeLabel(), which the rebuilt pages read, runs the
+    same check as cityKit (src/lib/guarantee.ts `guaranteeWords`), so a label whose length does not
+    match `guarantee_days` stops the build of a built page too; and a label that names a cover
+    (anything after "guarantee", or covers/covering/for/hips/hereditary …) is refused, because the
+    breeder has not said what it covers (rule 9)."""
+    import json as _json, shutil, subprocess
+    esbuild, node = ROOT / "node_modules/.bin/esbuild", shutil.which("node")
+    if not esbuild.exists() or not node:
+        pytest.skip("needs node and node_modules/.bin/esbuild (npm install)")
+    out = tmp_path / "guarantee.mjs"
+    subprocess.run([str(esbuild), str(ROOT / "src/lib/guarantee.ts"), "--bundle", "--format=esm", "--platform=node",
+                    f"--outfile={out}", "--log-level=error"], check=True)
+    cases = [[730, "Two-year health guarantee"], [365, "Two-year health guarantee"],
+             [730, "Two-year health guarantee covering hips"], [730, "Two-year health guarantee for hips"],
+             [730, "Two-year hereditary health guarantee"], [730, "Two-year health guarantee against hereditary conditions"],
+             [730, "Two-year health guarantee (covers eyes)"], [730, "Two-year guarantee"]]
+    driver = (f"const m = await import({_json.dumps(out.as_uri())});"
+              "const r = [];"
+              f"for (const [d, l] of {_json.dumps(cases)}) {{ try {{ r.push(m.guaranteeWords({{guarantee_days: d, guarantee_label: l}}, 'lower')); }} catch (e) {{ r.push('refused'); }} }}"
+              "console.log(JSON.stringify(r));")
+    res = subprocess.run([node, "--input-type=module", "-e", driver], check=True, capture_output=True, text=True)
+    assert _json.loads(res.stdout) == ["two-year health guarantee", "refused", "refused", "refused", "refused",
+                                        "refused", "refused", "two-year guarantee"]
+    site = (ROOT / "src/lib/site.ts").read_text(encoding="utf-8")
+    assert "guaranteeWords(settings" in site

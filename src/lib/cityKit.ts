@@ -16,7 +16,7 @@ import settings from '../../data/settings.json';
 import prices from '../../data/price-matrix.json';
 import puppiesJson from '../../data/puppies.json';
 import { gbp, type PuppyRow } from './site';
-import { numberWord } from './recordText';
+import { checkGuaranteeLabel, type GuaranteeSettings } from './guarantee';
 
 export const money = (n: number) => `£${gbp(n)}`;
 
@@ -54,34 +54,14 @@ export const transportLine = (() => {
   return sentence(`by ${m[1]}`);
 })();
 
-/** THE GUARANTEE (the breeder's answer, answer board q07, 2026-09-29): two years. It is data —
- *  data/settings.json `guarantee_days` (the length), `guarantee_label` (its words: the site calls
- *  it a "health guarantee", data/faq.json home-health-guarantee, and never names what it covers,
- *  so the label names no cover) and `guarantee_note` (the line under it). No component types it. */
-type GuaranteeSettings = { guarantee_days: number | null; guarantee_label?: string; guarantee_note?: string };
+/** THE GUARANTEE (the breeder's answer, answer board q07, 2026-09-29): data/settings.json
+ *  `guarantee_days`, `guarantee_label` and `guarantee_note`, checked by src/lib/guarantee.ts. No
+ *  component types it. */
 const G = settings as unknown as GuaranteeSettings;
+export { checkGuaranteeLabel };
 
 /** The guarantee's length in days, or null while the breeder has not given one (rule 9). */
 export const guaranteeDays = (): number | null => G.guarantee_days;
-
-/** The length as its label must open: "Two-year" for 730 days, "<n>-day" for a length that is
- *  no whole number of years. A label that names another length stops the build (rule 9). */
-function lengthWords(days: number): string {
-  if (days % 365 !== 0) return `${days}-day`;
-  const w = numberWord(days / 365);
-  return `${w.charAt(0).toUpperCase()}${w.slice(1)}-year`;
-}
-
-/** The label check `guaranteeRow()` runs: a label opens with its length as whole words ("Two-year"
- *  then a space or the end, so "Two-years of cover" and "Two-year-old promise" are refused), in
- *  sentence case. Throws with the reason; tests/py/test_city_kit.py pins each refusal. */
-export function checkGuaranteeLabel(days: number, label: string): void {
-  const want = lengthWords(days);
-  // `want` is letters, digits and a hyphen ("Two-year", "30-day"): nothing to escape.
-  if (!new RegExp(`^${want}(?=\\s|$)`).test(label)) {
-    throw new Error(`cityKit: data/settings.json guarantee_label "${label}" does not open with its length, "${want}" (guarantee_days ${days})`);
-  }
-}
 
 /** A guarantee row ({ t: its label, d: its note }), or null. It prints only when
  *  data/settings.json carries the length, the label and the note: no component writes what a
