@@ -127,6 +127,31 @@ def test_removing_a_whole_stats_row_is_wording_and_is_not_read_as_editing_the_ot
         {"n": "1", "label": "first row", "source": "data/x.json#a"}]
 
 
+def test_a_figure_the_record_held_before_can_be_restored_with_a_new_label():
+    """Review I6 (2026-09-29): a stats row removed in an earlier re-approval is a figure the
+    breeder approved, with its `n` and `source`; putting it back with reworded label text is
+    wording. A row is RESTORED, not added, when a row with the same `n` and `source` stood in
+    the same section of an earlier committed version (`history`)."""
+    old = approved()
+    old["sections"][0]["stats"] = [{"n": "6", "label": "available", "source": "data/puppies.json#n"}]
+    old["approval"]["record_hash"] = PB.record_hash(old)
+    new = json.loads(json.dumps(old))
+    row = {"n": "2", "label": "DNA tests on both parents", "source": "data/x.json#len"}
+    new["sections"][0]["stats"].insert(0, row)
+    history = {old["sections"][0]["id"]: [{"n": "2", "label": "DNA clearances on both parents",
+                                           "source": "data/x.json#len"}]}
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT, history=history)
+    assert out["board"]["sections"][0]["stats"][0] == row
+    # without the history it is an added figure, and refused as before
+    with pytest.raises(PB.BoardError, match="added or edited"):
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
+    # a restored row must carry the old figure and source exactly
+    moved = json.loads(json.dumps(new))
+    moved["sections"][0]["stats"][0]["n"] = "3"
+    with pytest.raises(PB.BoardError, match="added or edited"):
+        BA.apply_reapproval(moved, REASON, old, NOW, ONT, history=history)
+
+
 # ── what it refuses ───────────────────────────────────────────────────────────────────────
 
 def test_a_changed_pick_is_refused_and_the_message_names_the_pointer():

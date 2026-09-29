@@ -473,15 +473,21 @@ def json_pointer_diff(old, new, at="", out=None):
     return out
 
 
-def stats_change(old_board, new_board):
+def stats_change(old_board, new_board, history=None):
     """(removed, other) for every section's `stats` list, compared by ROW rather than index.
 
     Removing the two figures a hero ledge no longer prints is an allowed wording-class fix;
     changing a figure or its source is not. Index-wise those look the same — drop row 0 of
     four and every remaining `n` "changes" — so the rows are matched as values and the
     verdict is taken from what is actually gone. `other` holds the sections where a row was
-    ADDED or EDITED, which is what the caller refuses on."""
+    ADDED or EDITED, which is what the caller refuses on.
+
+    `history` ({section id: [stats rows]}, from earlier committed versions of the record) lets
+    a row come BACK: an added row whose `n` and `source` both equal a row that section held
+    before is a restored figure the breeder approved, with its label reworded, and is not
+    counted as added (review I6, 2026-09-29). Its figure and its source must match exactly."""
     old_by, new_by = _sections_by_id(old_board), _sections_by_id(new_board)
+    history = history or {}
     removed, other = [], []
     for sid in sorted(set(old_by) & set(new_by)):
         o = old_by[sid].get("stats") or []
@@ -490,9 +496,13 @@ def stats_change(old_board, new_board):
         nkeys = [json.dumps(r, sort_keys=True) for r in n]
         rest = list(okeys)
         added = []
-        for k in nkeys:
+        seen = {(r.get("n"), json.dumps(r.get("source"), sort_keys=True))
+                for r in history.get(sid, []) if isinstance(r, dict)}
+        for k, row in zip(nkeys, n):
             if k in rest:
                 rest.remove(k)
+            elif (row.get("n"), json.dumps(row.get("source"), sort_keys=True)) in seen:
+                continue
             else:
                 added.append(k)
         if added:
@@ -555,7 +565,7 @@ def _source_is_purely_added(old_board, new_board, pointer):
     return _at(old_board, pointer) is _MISSING and _at(new_board, pointer) is not _MISSING
 
 
-def reapprove_refusals(old_board, new_board, paths):
+def reapprove_refusals(old_board, new_board, paths, history=None):
     """Why this diff may not be re-approved, as printable lines. Empty means it may."""
     bad = []
     old_ids = [s.get("id") for s in old_board.get("sections", [])]
@@ -566,7 +576,7 @@ def reapprove_refusals(old_board, new_board, paths):
         bad.append("the section list moved" + (f" — removed {', '.join(gone)}" if gone else "")
                    + (f", added {', '.join(fresh)}" if fresh else "")
                    + ": a section is a question on the board, not wording")
-    _, edited = stats_change(old_board, new_board)
+    _, edited = stats_change(old_board, new_board, history)
     for sid in edited:
         bad.append(f"section {sid}: a `stats` row was added or edited — a figure and its source "
                    "are what the breeder approved; only removing a whole row is wording")
@@ -584,7 +594,7 @@ def reapprove_refusals(old_board, new_board, paths):
     return bad
 
 
-def apply_reapproval(board, reason, old_board, now, ont, live=SKIP_LIVE, boards=None):
+def apply_reapproval(board, reason, old_board, now, ont, live=SKIP_LIVE, boards=None, history=None):
     """The record after a controller's re-approval. Pure, like apply_approval(): it writes
     nothing and raises before anything moves. `ont`, the ontology the new-page rules read, is
     passed in rather than loaded; reapprove_main() passes the committed one, which a
@@ -611,7 +621,7 @@ def apply_reapproval(board, reason, old_board, now, ont, live=SKIP_LIVE, boards=
     paths = json_pointer_diff(_hashed_body(old_board), _hashed_body(board))
     if not paths:
         raise PB.BoardError("nothing inside record_hash has changed — this record needs no re-approval")
-    refusals = reapprove_refusals(old_board, board, paths)
+    refusals = reapprove_refusals(old_board, board, paths, history)
     if refusals:
         raise PB.BoardError("this diff is not a wording fix:\n  - " + "\n  - ".join(refusals))
 
@@ -704,6 +714,30 @@ def baseline_board(slug, ref="HEAD"):
     return json.loads(raw)
 
 
+def stats_history(slug):
+    """{section id: [every stats row that section has held]}, over every committed version of
+    the record. The source for `stats_change(history=…)`: only a figure that really stood in
+    the record, as committed, can be restored."""
+    import subprocess
+    rel = f"data/boards/{PB.slug_file(slug)}.json"
+    try:
+        shas = subprocess.run(["git", "log", "--format=%H", "--", rel], cwd=PB.ROOT, check=True,
+                              capture_output=True, text=True).stdout.split()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return {}
+    out = {}
+    for sha in shas:
+        try:
+            doc = json.loads(subprocess.run(["git", "show", f"{sha}:{rel}"], cwd=PB.ROOT, check=True,
+                                            capture_output=True, text=True).stdout)
+        except (subprocess.CalledProcessError, ValueError):
+            continue
+        for sec in doc.get("sections", []):
+            if isinstance(sec, dict) and sec.get("stats"):
+                out.setdefault(sec.get("id"), []).extend(r for r in sec["stats"] if isinstance(r, dict))
+    return out
+
+
 def reapprove_main(slug):
     """`--reapprove`: stamp, log, write. One document — the ledger and the ontology cannot
     move, because the picks and the entities they are derived from cannot."""
@@ -712,7 +746,8 @@ def reapprove_main(slug):
     board = PB.load_board(slug)
     now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     out = apply_reapproval(board, a.reason, baseline_board(slug), now, PB.load_ontology(),
-                           live=PB.live_headings(), boards=PB.load_all_boards())
+                           live=PB.live_headings(), boards=PB.load_all_boards(),
+                           history=stats_history(slug))
     # The ledger records what the TUPLE and the H6 prefixes spend. Neither can move under a
     # wording fix — but a heading edit is how an H6 prefix WOULD move, so it is checked
     # rather than assumed: a re-approval that silently desynced the ledger would hand the

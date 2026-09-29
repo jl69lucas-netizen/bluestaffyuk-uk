@@ -386,15 +386,16 @@ const pageSchema = [
 
   {/* 03 stats — the counter strip, picked style C-GD1 (ruled columns beside the heading, each
       label under its figure): the interior-guide family's quietest counter, which is the right
-      one for a page whose figures are a count and a range rather than a price. All three are
+      one for a page whose figures are a count and a range rather than a price. Both are
       DERIVED at build from the files their `source` names and checked against the number the
-      breeder approved — the row count off this page's own table, the status off its status
-      column, and the range off the breed guide's cell. */}
+      breeder approved — the row count off this page's own table and the range off the breed
+      guide's cell. (A third tile, the parents' DNA status, came out on 2026-09-29: it stated a
+      result, answer board q01.) */}
   <section id="stats" data-section-label="The health figures" class={box('stats')}>
     <div class="bl-head">
       <h2>{T(heading('stats'))}</h2>
       <p class="bl-lede">
-        A count, a status and a range — all three read out of the records below.
+        A count and a range, both read out of the records below.
       </p>
     </div>
     <div class="bl-body">
