@@ -328,12 +328,31 @@ def test_the_video_call_is_a_sign_we_pass():
     assert re.search(r"(?i)will not do a live video call with the puppy and its mother", checklist)
 
 
-def test_the_take_back_is_the_ruling_and_names_no_contract():
+def test_the_take_back_is_the_ruling_and_sits_in_the_written_contract():
+    """Answer board q05 (2026-09-29): the take-back promise is in the written contract. The agent
+    states the ruling (our fault, or the owner can no longer care for the dog) and names the
+    contract, with the answer's source."""
     lines = [l for _, l in _lines(SCAM) if re.search(r"(?i)take-back|take back|taken back", l)]
     assert lines, "the scam agent states the take-back ruling"
-    for l in lines:
-        assert "contract" not in l.lower(), l
     assert any("our fault" in l and "no longer" in l for l in lines), lines
+    assert any("written contract" in l and "q05" in l for l in lines), lines
+    assert not any(re.search(r"(?i)name no document|not in (?:the|a) contract|contract is unconfirmed", l)
+                   for l in lines), lines
+
+
+def test_the_built_take_back_sentences_name_the_written_contract():
+    """Where a built page already carries a take-back sentence of ours (the city FAQ answer and
+    the city trust row), it says the promise is set out in our written contract (q05). No new
+    section is added anywhere."""
+    f = ROOT / "dist/uk-locations/blue-staffy-puppies-london/index.html"
+    if not f.exists():
+        pytest.skip("run npm run -s build first")
+    import html as _html
+    text = re.sub(r"\s+", " ", _html.unescape(re.sub(r"<[^>]+>", " ", f.read_text(encoding="utf-8"))))
+    hits = [m.start() for m in re.finditer(r"We take (?:the|a) puppy back", text)]
+    assert hits, "the London page carries its take-back sentences"
+    for i in hits:
+        assert "written contract" in text[i:i + 220], text[i:i + 220]
 
 
 def test_the_scam_agent_restores_safe_payment_and_the_cross_link_section():

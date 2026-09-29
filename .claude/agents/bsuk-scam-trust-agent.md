@@ -150,7 +150,7 @@ disagree, write neither over the other: put the conflict to the breeder on the a
 | Our vet | the breeder's ruling (buyers may contact our vet) | on request; no vet's name is written until the breeder gives one |
 | Our home and the mother | `data/faq.json` `contact-visit` | a visit by appointment |
 | A live video call | the breeder's answer, answer board q03 (`docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`) | a video call with the puppy and its mother, on request, before they pay |
-| The take-back | the breeder's ruling (Q6) | we take a puppy back only if it is our fault, or if the new owner can no longer care for it; say only that, and name no document it sits in |
+| The take-back | the breeder's ruling (Q6), and her answer that it is in the written contract (answer board q05, `docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`) | we take a puppy back only if it is our fault, or if the new owner can no longer care for it, and that promise is set out in our written contract; say only that |
 | Reviews | `data/reviews.json` only | a review is shown as written and attributed as recorded; never invented, never AggregateRating markup |
 | The licence | none on the site | LICENCE_CLAIM_PLACEHOLDER where a sentence would need one |
 

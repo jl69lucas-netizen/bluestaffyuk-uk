@@ -128,7 +128,7 @@ const faqTrust: CityFaqRow[] = [
   { q: 'Who are the parents of your puppies?', a: 'Maggie is our dam and Jones is our sire. Both are our own dogs, and both were health tested before the litter.' },
   { q: 'Which health tests do the parents have?', a: 'Maggie and Jones are both DNA-tested for L-2-HGA and HC-HSF4, and both have had their eyes and elbows screened. Our health page explains what each test covers.' },
   { q: 'Can I speak to your vet before I decide?', a: 'Yes. Buyers are welcome to contact our vet, so you can hear about the parents and the litter from someone other than us before you commit.' },
-  { q: 'What happens if I can no longer keep my puppy?', a: 'We take the puppy back, and we do the same if a fault is ours. Tell us as soon as you know, and we will talk it through with you.' },
+  { q: 'What happens if I can no longer keep my puppy?', a: 'We take the puppy back, and we do the same if a fault is ours; both are set out in our written contract. Tell us as soon as you know, and we will talk it through with you.' },
   { q: 'How are your puppies raised before they leave?', a: 'In our home, not in a kennel. Every litter is raised on Puppy Culture with Early Neurological Stimulation (ENS), among everyday household sights and sounds.' },
 ];
 const faqLife: CityFaqRow[] = [
@@ -177,7 +177,7 @@ const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
         { icon: 'dna', claim: 'DNA-tested parents', detail: 'Maggie and Jones, tested for L-2-HGA and HC-HSF4' },
         { icon: 'eye', claim: 'Eye and elbow screening', detail: 'Both parents screened before the litter' },
         { icon: 'heart', claim: 'Puppy Culture and ENS', detail: 'Early neurological stimulation, raised in the home' },
-        { icon: 'return', claim: 'We take a puppy back', detail: 'If the fault is ours, or you can no longer care for it' },
+        { icon: 'return', claim: 'We take a puppy back', detail: 'If the fault is ours, or you can no longer care for it, as our written contract sets out' },
         ...(guarantee ? [{ icon: 'shield' as const, claim: guarantee.t, detail: guarantee.d }] : []),
         { icon: 'delivery', claim: 'To your London door', detail: `DEFRA-approved transport, or collect in ${TOWN}` },
       ]} />
