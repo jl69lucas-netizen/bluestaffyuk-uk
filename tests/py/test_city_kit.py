@@ -423,12 +423,13 @@ def test_the_city_exclusion_filter_blanks_only_the_exact_groups():
     """Mutation proof for the guard below (the Known Issue 97 review, item 9)."""
     groups = _board_styles_city_exclusions()
     assert groups, "board-styles.css names no .city-kit exclusion, so this filter guards nothing"
-    real = "main :where(h2:not(.bl-box h2,[class*=kit-] *,.city-kit *)){font-size:22px}"
+    # As the minifier emits the body-heading scale's H2 rule (quotes dropped where it can).
+    real = 'main :where(h2:not(.bl-box h2,[class^=kit-] *,[class*=" kit-"] *,.city-kit *)){font-size:22px}'
     assert ".city-kit" not in _city_rules_outside_exclusions(real, groups)
     for mutant in (
         "main h2:not(:not(.city-kit *)){color:red}",
         ".city-kit h2{color:red}",
-        "main :where(h2:not(:not(.bl-box h2,[class*=kit-] *,.city-kit *))){color:red}",
+        'main :where(h2:not(:not(.bl-box h2,[class^=kit-] *,[class*=" kit-"] *,.city-kit *))){color:red}',
         "main :where(h2:not(.city-kit *)){color:red}",
     ):
         assert ".city-kit" in _city_rules_outside_exclusions(mutant, groups), mutant
