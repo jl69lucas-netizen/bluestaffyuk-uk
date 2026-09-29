@@ -6,7 +6,7 @@ description: "Learn how to find the perfect Blue Staffordshire Bull Terrier for 
 canonical: "/how-to-choose-the-right-blue-staffy-puppy-for-your-family/"
 schema_type: BlogPosting
 faqs: []
-refresh_flags: ["legacy-schema-nodes-dropped:3", "moved-off-the-hub-url", "needs-real-post-body", "archive-links-rewritten", "date-not-fetched", "no-featured-image"]
+refresh_flags: ["legacy-schema-nodes-dropped:3", "moved-off-the-hub-url", "needs-real-post-body", "archive-links-rewritten", "date-not-fetched", "no-featured-image", "entry-title-run-on-fixed"]
 ---
 
 ## [Buy Staffy Puppies for Sale UK](/buy-staffy-puppies-for-sale-uk/)
@@ -15,7 +15,7 @@ refresh_flags: ["legacy-schema-nodes-dropped:3", "moved-off-the-hub-url", "needs
 
 Dreaming of a beautiful blue Staffordshire Bull Terrier puppy in the UK? Whether you’re after a loyal family member or an energetic companion, this guide digs into everything you should know before you buy blue staffy puppies for sale UK. From choosing ethical breeders and understanding health screening to navigating delivery and temperament—this is your trusted roadmap to finding your perfect Staffy pup.
 
-## [UK Blue Staffy Puppy Buying Guideinformation UK](/uk-blue-staffy-puppy-buying-guide/)
+## [UK Blue Staffy Puppy Buying Guide](/uk-blue-staffy-puppy-buying-guide/)
 
  / [Puppy Buying Guide UK](/blog/) /
 
