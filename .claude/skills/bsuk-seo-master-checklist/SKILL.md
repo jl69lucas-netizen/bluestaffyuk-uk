@@ -418,7 +418,7 @@ table's length. Word ranges are planning guides, not quotas.
 |---|---|---|---|
 | 1 | Hero — H1 + subheadline + key takeaways + counter snippets | 150–200 | `#top` |
 | 2 | Available Puppies & Current Litter | 400–600 | `#available-puppies` |
-| 3 | Health Testing — the parents' tests as the evidence ledger records them, `NOT FETCHED` otherwise; the guarantee as `guarantee_days` in `data/settings.json` (the breeder's answer of 2026-09-29: 730 days, a two-year guarantee) and `guarantee_label` word it | 800–1,200 | `#health-testing` |
+| 3 | Health Testing — the parents' tests as the evidence ledger records them, `NOT FETCHED` otherwise; the guarantee as `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) and `guarantee_label` word it | 800–1,200 | `#health-testing` |
 | 4 | What is a [Variant] Blue Staffy? | 200–250 | `#what-is-blue-staffy` |
 | 5 | Blue Staffy Breed History & Research | 300–400 | `#breed-history` |
 | 6 | Blue Staffy Temperament & Personality | 400–500 | `#temperament` |

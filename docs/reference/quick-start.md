@@ -61,7 +61,7 @@ profile; `docs/research/keyword-gap-*.md`) → `@bsuk-strategy-synthesizer` →
 `data/puppies.json` under `src/pages/available-puppies/<slug>/`. Six puppies are locked:
 Roman, Byrd and Ince at £1,500; Vennie, Christa and Cheryl at £1,700. The deposit is £500
 and refundable. Never write a health screen or a licence: neither is established. The
-guarantee is two years; read it from `guarantee_days` and `guarantee_label` in `data/settings.json`.
+guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it.
 
 ### "Ask the user questions" / "read my answers"
 → the answer board: `docs/reference/answer-board/README.md`. A batch is made with

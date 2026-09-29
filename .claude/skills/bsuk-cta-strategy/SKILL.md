@@ -79,7 +79,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 ## Section 4: After You Take Your Puppy Home
 
-A health-guarantee CTA names its length from `guarantee_days` in `data/settings.json` (the breeder's answer of 2026-09-29: 730 days, a two-year guarantee) and its words from `guarantee_label`, never typed. Beside it sits the support the breeder gives (`data/faq.json` `home-after-support`).
+A health-guarantee CTA names its length from `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) and its words from `guarantee_label`, never typed. Beside it sits the support the breeder gives (`data/faq.json` `home-after-support`).
 
 🛡️ **Trust & Security:**
 > "Your puppy leaves with a puppy pack, its health records and its paperwork — and you can write to us before or after it comes home."
@@ -357,7 +357,7 @@ A family count and years in business are NOT FETCHED — never write one, not ev
 
 ## Section 21: Health Guarantee Detail (waits for `guarantee_days`)
 
-Each CTA names the length from `guarantee_days` in `data/settings.json` (the breeder's answer of 2026-09-29: 730 days, a two-year guarantee) and links the written terms — never "no fine print", "no exceptions" or a length typed by hand (`guarantee_days` is the only source).
+Each CTA names the length from `guarantee_days` in `data/settings.json` (worded by `guarantee_label`; read it, never type it) and links the written terms — never "no fine print", "no exceptions" or a length typed by hand (`guarantee_days` is the only source).
 
 ---
 

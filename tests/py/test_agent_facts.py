@@ -675,3 +675,31 @@ def test_the_unset_guarantee_scan_fires(tmp_path):
                  "The guarantee is `guarantee_days` (730 days, two years).\n"
                  "Their guarantee is not established.\n", encoding="utf-8")
     assert [b.split("  ")[0] for b in unset_guarantee_lines(p)] == ["x.md:1", "x.md:2"]
+
+
+# The length lives in data/settings.json (and CLAUDE.md's Brand context line may state it):
+# an instruction that types it is a second copy that drifts the day the breeder changes it
+# (Task 10b review, item 6). Point at `guarantee_label` instead.
+TYPED_LENGTH = re.compile(r"(?i)\b730\b|\btwo[- ]years?\b")
+
+
+def typed_guarantee_lengths(path: pathlib.Path):
+    return ["%s:%d  %s" % (path.name, n, line.strip()[:120])
+            for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+            if GUARANTEE.search(line) and TYPED_LENGTH.search(line) and not NOT_OURS.search(line)]
+
+
+def test_no_instruction_but_claude_md_types_the_guarantee_length():
+    bad = [b for f in instruction_files() if f.name != "CLAUDE.md" for b in typed_guarantee_lengths(f)]
+    assert bad == [], (
+        "the guarantee's length is typed; say \"the guarantee is `guarantee_label` in "
+        "data/settings.json; read it, never type it\" instead:\n  " + "\n  ".join(bad))
+
+
+def test_the_typed_length_scan_fires(tmp_path):
+    p = tmp_path / "x.md"
+    p.write_text("The guarantee is `guarantee_days` (730 days).\n"
+                 "A two-year guarantee, read from `guarantee_days`.\n"
+                 "The guarantee is `guarantee_label` in data/settings.json; read it, never type it.\n"
+                 "Their two-year guarantee has no terms.\n", encoding="utf-8")
+    assert [b.split("  ")[0] for b in typed_guarantee_lengths(p)] == ["x.md:1", "x.md:2"]

@@ -37,7 +37,7 @@ Three claims in circulation are wrong. Never write them, and correct them on sig
 |---|---|---|
 | any licence or statute worded from memory | **LICENCE_CLAIM_PLACEHOLDER** / **LEGAL_CLAIM_PLACEHOLDER** | Neither has been confirmed. Until it is, the placeholder IS the text — in prose only, never in a heading, route or code key. |
 | any price typed by hand | **£1,500** (Roman, Byrd, Ince) · **£1,700** (Vennie, Christa, Cheryl) — the litter spans **£1,500–£1,700** | Every figure comes from `data/price-matrix.json` through a helper. A hand-typed price is a defect even when it is currently right. |
-| a health-guarantee length typed by hand | the length and words from `data/settings.json` `guarantee_days` (730) and `guarantee_label` ("Two-year health guarantee") | The breeder gave this length on 2026-09-29. The setting is the one source; the page names no cover the site has not stated. |
+| a health-guarantee length typed by hand | `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it | The breeder gave this length on 2026-09-29. The setting is the one source; the page names no cover the site has not stated. |
 
 Verified safe to use: `Lisa Bright` · `Carlisle, Cumbria` ·
 `DEFRA-approved transport` · the 28 UK cities in `data/locations.json` ·
@@ -123,7 +123,7 @@ Answer engines prefer structure they can lift whole.
   "**£500** Refundable Deposit" · "**£1,500–£1,700** for a Puppy From Our Litter" ·
   "**£200–£350** UK Home Delivery" · "**12–14 Years**: The Breed's Lifespan". Every figure comes
   from `data/*.json`; a years-in-business figure is `NOT FETCHED` and never goes in a heading; the length of the
-  guarantee goes in one only as `guarantee_days` and `guarantee_label` word it (two years).
+  guarantee goes in one only as `guarantee_days` and `guarantee_label` word it.
 
 The audit counts tables, lists, and stat-bearing headers, and WARNs when a page has no
 header carrying a figure. Headers still obey **Title Case** and the **declared header

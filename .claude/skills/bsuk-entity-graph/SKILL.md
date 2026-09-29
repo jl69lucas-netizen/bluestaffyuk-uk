@@ -65,7 +65,7 @@ Promote the catalog in `.claude/skills/bsuk-entity-agent/SKILL.md` into a typed 
 | **Organism** | Species (*Canis lupus familiaris*) · Breed (Staffordshire Bull Terrier) · Coat colour (each pup's `colour` in `data/puppies.json`) · Individual Puppy (Roman, Byrd, Ince, Vennie, Christa, Cheryl) · Parents (Maggie, the dam; Jones, the sire) |
 | **Organization** | Brand (BlueStaffyUK) · Breeder Person (Lisa Bright) · Registry (The Royal Kennel Club) · Transport (DEFRA-approved transport) · Regulator (LICENCE_CLAIM_PLACEHOLDER) |
 | **Place** | Country (UK) · Region · City · Home (Carlisle, Cumbria) |
-| **Commerce** | Price · Offer · Guarantee (`guarantee_days`: 730 days, a two-year guarantee) · Delivery Option · Payment Term · Availability State |
+| **Commerce** | Price · Offer · Guarantee (`guarantee_days`, worded by `guarantee_label`) · Delivery Option · Payment Term · Availability State |
 | **Documentation** | LICENCE_CLAIM_PLACEHOLDER paperwork · DNA certificate (the parents' L-2-HGA and HC-HSF4 results, `NOT FETCHED`) · Health record · Whelp certificate · Vet record |
 | **Health** | Condition (L-2-HGA, HC-HSF4 hereditary cataract, skin allergies) · Screening (DNA test on both parents) · Vet health check · Vaccination · Diet |
 | **Behavior** | Temperament ability · Bonding · Bite inhibition · Socialization · Training method |
@@ -147,7 +147,7 @@ LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER or NOT FETCHED.
 |---|---|---|
 | `CERTIFIED_BY` | LICENCE_CLAIM_PLACEHOLDER — no licence or certification is on file until the breeder confirms it | a named licence, council permission or certificate written as fact |
 | `PRICED_AT` | **£1,500** a male · **£1,700** a female (`data/price-matrix.json`) | a flat "NOT FETCHED", or one price for the litter |
-| `GUARANTEED_FOR` | the length in `guarantee_days` (`data/settings.json`) — 730 days, written "two years" as `guarantee_label` has it | "72-hour", "3-day" or a 24-hour window (the source repo's) |
+| `GUARANTEED_FOR` | the length in `guarantee_days` (`data/settings.json`), written as `guarantee_label` has it; read it, never type it | "72-hour", "3-day" or a 24-hour window (the source repo's) |
 
 **3c. Blacklist — any hit is a hard FAIL on the page, not a low score:**
 `WILD_CAUGHT · IMPORTED_FROM · CAUGHT_IN · SMUGGLED · UNDOCUMENTED_SALE`, or any phrasing
