@@ -14,8 +14,9 @@
 // check (rule 9).
 //
 // THE STRATEGY IS "THE EVIDENCE TABLE" (`brief.strategy`). Of the four breeder pages scanned,
-// three explain the two DNA tests well and not one states a result for its own dogs. Ours are
-// on disk, so the table goes high and the ordinary care that keeps a Staffy well follows it.
+// three explain the two DNA tests well and not one states a result for its own dogs. Ours name
+// the tests and state no result either (answer board q01, 2026-09-29: the breeder holds no DNA
+// certificates), so the table goes high and the ordinary care that keeps a Staffy well follows it.
 //
 // WHAT THIS PAGE MAY NOT SAY, and none of it is an oversight (`brief.out_of_scope`):
 // no hand-typed guarantee length (it is data/settings.json `guarantee_label`, read through
@@ -47,7 +48,7 @@
 // the three guides were re-boarded onto three different heroes (Known Issues 30 and 35).
 //
 // THE ASIDE IS THE RECORD'S OWN `hero.aside`, AND EVERY ROW OF IT IS DERIVED (amendment 10.5,
-// 10.6). "L-2-HGA and HC-HSF4" is built from the table's own row labels, "Tested clear" from
+// 10.6). "L-2-HGA and HC-HSF4" is built from the table's own row labels, "DNA tested" from
 // its own status column, and the lifespan from the BREED GUIDE's cell — this page cites that
 // cell and does not retype it. Each derived value is asserted against the wording the breeder
 // approved, so a fact that moves throws at build with both readings in the message rather than
@@ -99,7 +100,7 @@ import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { bakedAssets, bakedSrcset, inPublic, BODY_SIZES } from '../../lib/assets';
 import { recordText, countedFigures, ledgeText, sourceKey, breedFactsCell,
-  sentenceAnchor, type LedgeEntry } from '../../lib/recordText';
+  type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -165,23 +166,22 @@ const faqs = faqSection.tree.map((n) => {
 // page prints can never be two different hand-written twos.
 const dnaTable = sec('dna-tests').table!;
 const DNA_ROWS = 'data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)';
-const DNA_CLEAR = 'data/boards/blue-staffy-health-uk.json#cell(sections[dna-tests].table.rows, L-2-HGA)';
 const testNames = dnaTable.rows.map((r) => String(r[0]));
 if (testNames.length !== 2) {
   throw new Error(`blue-staffy-health-uk: the DNA table holds ${testNames.length} tests and this `
     + 'page, the about page and the listing are all written on there being two');
 }
-// "Clear" on the counter and "Tested clear" in the hero aside are the SAME reading of the
-// table's own status column, so they are taken once: the last word of every status, which must
-// be the same word in every row and must be "clear". A status that stops saying it cannot be
-// summarised, and the build says so rather than printing a word off the record.
+// "DNA tested" in the hero aside is the table's own status column, taken once: every row must
+// carry the same status, and it names the test, never a result. The breeder holds no DNA
+// certificates for Maggie and Jones (answer board q01, 2026-09-29), so a status that states a
+// result ("clear", "negative", "carrier", "affected") stops the build rather than printing.
 const statuses = dnaTable.rows.map((r) => String(r[2]));
-const verdicts = new Set(statuses.map((s) => s.split(/\s+/).pop()!.toLowerCase()));
-if (verdicts.size !== 1 || !verdicts.has('clear')) {
-  throw new Error(`blue-staffy-health-uk: the DNA rows read ${statuses.join(' / ')} — the counter `
-    + 'tile and the hero aside both say the parents are clear, and neither may outlive the table');
+const statusSet = new Set(statuses);
+if (statusSet.size !== 1 || /\b(?:clear|results?|negative|carriers?|affected)\b/i.test(statuses[0])) {
+  throw new Error(`blue-staffy-health-uk: the DNA rows read ${statuses.join(' / ')} — the hero aside `
+    + 'prints one status for both parents, and it names the test only (answer board q01)');
 }
-const [verdict] = [...verdicts];
+const [parentsStatus] = [...statusSet];
 
 // THE LIFESPAN IS THE BREED GUIDE'S CELL, CITED AND NOT RETYPED. Both the hero aside and the
 // third counter tile stand on `sections[breed-facts].table.rows` → "Lifespan" in
@@ -199,7 +199,6 @@ const lifespanClause = lifespan.clause;
 
 const COUNTED: Record<string, string> = {
   [DNA_ROWS]: String(dnaTable.rows.length),
-  [DNA_CLEAR]: sentenceAnchor(verdict),
   [LIFESPAN_SOURCE]: lifespanRange,
 };
 const counted = countedFigures(COUNTED, 'blue-staffy-health-uk');
@@ -222,7 +221,7 @@ const DNA_STATUSES = testNames.map((t) =>
   `data/boards/blue-staffy-health-uk.json#cell(sections[dna-tests].table.rows, ${t})`);
 const ASIDE_VALUES: Record<string, string> = {
   [sourceKey(DNA_NAMES)]: testNames.join(' and '),
-  [sourceKey(DNA_STATUSES)]: `Tested ${verdict}`,
+  [sourceKey(DNA_STATUSES)]: parentsStatus,
   [sourceKey(LIFESPAN_SOURCE)]: lifespanClause,
 };
 const asideRows = heroAside.rows!.map((r) => {
@@ -349,7 +348,7 @@ const pageSchema = [
   {/* 02 takeaways — takeaways, picked style S2 (three cards across on the steel band, the
       heading as an eyebrow). FOUR cards, which is what the record's tree carries, so the
       auto-fit grid wraps to 3+1. Each card is the one-line form of a section below it and
-      nothing here is new: the two clearances, the microchip, the health card and the lifespan
+      nothing here is new: the two DNA tests, the microchip, the health card and the lifespan
       range are all stated at length further down, and all four come off a file. */}
   <section id="takeaways" data-section-label="What a health-tested litter means" class={box('takeaways')}>
     <div class="bl-head">
@@ -364,7 +363,7 @@ const pageSchema = [
         <InfoCard
           kind="fact"
           heading={T(node('takeaways', 0).heading)}
-          body={`Maggie and Jones are recorded clear of ${testNames.join(' and ')}, and a clear pair cannot hand either one down.`}
+          body={`Maggie and Jones are DNA tested for ${testNames.join(' and ')}, the two inherited conditions the breed is screened for.`}
         />
         <InfoCard
           kind="fact"
@@ -435,10 +434,10 @@ const pageSchema = [
       />
       <h3>{T(node('dna-tests', 0).heading)}</h3>
       <p>
-        Both conditions are recessive: a puppy needs two copies to be affected, so where the dam
-        and the sire are both recorded clear, neither has a copy to hand down. A clear result
-        speaks to these two conditions and to nothing else.
-        <a href="/uk-blue-staffy-breeders-contact/">Ask us to send the two certificates</a> before
+        Both conditions are recessive: a puppy needs two copies to be affected, one from each
+        parent, which is why both parents are tested. A DNA test speaks to these two conditions
+        and to nothing else.
+        <a href="/uk-blue-staffy-breeders-contact/">Ask us about the two tests</a> before
         you travel.
       </p>
       <p>
@@ -452,13 +451,13 @@ const pageSchema = [
         A further test, appearing on our own site and in none of our files, would be worth
         nothing to you and would cost you the ability to check the two that are real.
       </p>
-      <h5>{T('A Result Belongs To A Dog, Not To A Kennel')}</h5>
+      <h5>{T('A Test Belongs To A Dog, Not To A Kennel')}</h5>
       <p>
-        The table names Maggie and Jones because a clearance is theirs. A breeder who reports it
-        as a house policy is reporting something no certificate can be held against.
+        The table names Maggie and Jones because a DNA test is taken by one dog. A breeder who
+        reports testing as a house policy is reporting something no one can check against a dog.
       </p>
       <h6>{T('Health Note: Read the certificate, not the claim')}</h6>
-      <p>Each one names the dog, the test and the result, and all three should match this table.</p>
+      <p>A certificate names the dog, the test and the result; ask to see one wherever a result is quoted.</p>
     </div>
   </section>
 
@@ -506,9 +505,9 @@ const pageSchema = [
     <p>
       Because a recessive condition is decided before a puppy exists. Once a litter is born,
       screening only reports; before a mating it can still change the outcome, which is why the
-      results here are the parents'.
+      tests here are the parents'.
       <a href="/blue-staffy-uk-breeders/">Read about the two parents and the home they live in</a> if
-      you would rather meet the dogs behind the certificates first.
+      you would rather meet the dogs behind the tests first.
     </p>
 
     <h4>{T('No Scheme, No Accreditation, No Body Named')}</h4>
@@ -620,8 +619,8 @@ const pageSchema = [
 
     <h3>{T(node('registration', 2).heading)}</h3>
     <p>
-      It is not a health test and it is not a quality mark. The DNA results higher up this page
-      are the evidence of health; registration is a paper trail about parentage, and the two are
+      It is not a health test and it is not a quality mark. The DNA tests higher up this page
+      are about health; registration is a paper trail about parentage, and the two are
       separate documents on purpose.
     </p>
     <InfoCard
@@ -816,7 +815,7 @@ const pageSchema = [
 
     <h3>{T(node('conditions', 1).heading)}</h3>
     <p>{nodeOpening('conditions', 1)}</p>
-    <p>The first the table above records both parents clear of.</p>
+    <p>The first of the two DNA tests in the table above.</p>
 
     <h3>{T(node('conditions', 2).heading)}</h3>
     <p>{nodeOpening('conditions', 2)}</p>
@@ -987,7 +986,7 @@ const pageSchema = [
     <h3>{T(node('talk-to-us', 1).heading)}</h3>
     <p>
       <a href="/uk-blue-staffy-breeders-contact/">Write to us and ask for the health paperwork</a> and
-      both DNA certificates, the registration papers and the vaccination card can be in front of
+      the registration papers and the vaccination card can be in front of
       you before anybody pays anything. Write to {SITE.email}; the inbox is watched {hours} by
       {SITE.breeder_name}, who raises the litter, and no telephone number is published until
       there is one to publish.
@@ -998,12 +997,12 @@ const pageSchema = [
 
     <h4>{T('Ask Before You Travel')}</h4>
     <p>
-      Reading the results at home costs you an email and saves you a drive to {town}, and we
-      would far rather send them twice than have you take this page's word for them.
+      Reading the paperwork at home costs you an email and saves you a drive to {town}, and we
+      would far rather send it twice than have you take this page's word for it.
     </p>
     <h5>{T('Asking Costs Nothing And Reserves Nothing')}</h5>
     <p>Until a deposit is placed against a named dog, nothing at all has been held for anyone.</p>
-    <h6>{T('Health Note: The certificates are yours to keep')}</h6>
+    <h6>{T('Health Note: The papers are yours to keep')}</h6>
     <p>They travel with the puppy, and they belong to the dog rather than to us.</p>
   </section>
 </PageShell>

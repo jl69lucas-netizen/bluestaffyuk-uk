@@ -7,7 +7,7 @@
 //
 // THIS IS THE ABOUT PAGE. Its question is "who am I dealing with", so it leads on the person
 // — Lisa Bright, Carlisle · Cumbria — and then evidences each claim in turn: the two named
-// DNA clearances on the two named parents, what "raised in our home" actually consists of,
+// DNA tests on the two named parents, what "raised in our home" actually consists of,
 // what Kennel Club registration covers and what it does not, and how a puppy gets from here
 // to a doorstep. The record's strategy block calls that "the evidenced breeder".
 //
@@ -356,7 +356,7 @@ const pageSchema = [
     <p>{nodeOpening('top', 0)}</p>
     <p>
       Three things stand behind that welcome, and the rest of this page is the evidence for
-      each of them: both parents DNA tested clear of the two conditions the breed is screened
+      each of them: both parents DNA tested for the two conditions the breed is screened
       for, a litter that grows up indoors with us rather than in a run, and a puppy brought to
       you by DEFRA-approved transport or collected from us here in {town}. Where a fact is not
       established — a licence number, a count of the families we have sold to — this page
@@ -413,7 +413,7 @@ const pageSchema = [
     <h3>{T(node('our-story', 2).heading)}</h3>
     <p>{nodeOpening('our-story', 2)}</p>
     <p>
-      Both parents named and both results set out below. The house described rather than
+      Both parents named and both DNA tests set out below. The house described rather than
       asserted. What registration does and does not cover, said out loud. Every figure traced
       to a file, so anything unestablished is simply absent.
     </p>
@@ -457,7 +457,7 @@ const pageSchema = [
     <h3>{T(node('health-testing', 0).heading)}</h3>
     <p>
       Maggie is two, blue, and registered with the Kennel Club. She is fully vaccinated, she
-      has a full pedigree behind her, and she is certified clear of both of the conditions
+      has a full pedigree behind her, and she is DNA tested for both of the conditions
       named below. She is also the dog you meet first, because she is usually the one who gets
       to the door.
     </p>
@@ -465,19 +465,19 @@ const pageSchema = [
     <h3>{T(node('health-testing', 1).heading)}</h3>
     <p>
       Jones is three, blue, and registered with the Kennel Club with a full pedigree. He is
-      fully vaccinated and certified clear of the same two conditions. Two clear parents is
+      fully vaccinated and DNA tested for the same two conditions. Two tested parents is
       what the screening on this page amounts to, and it is the whole of what we claim from it.
     </p>
 
     <h3>{T(node('health-testing', 2).heading)}</h3>
     <p>
       L-2-HGA and HC-HSF4 are the two inherited conditions a Staffordshire Bull Terrier is DNA
-      screened for. Where a dam and a sire are both recorded clear, neither of them has the
-      gene to hand down — and that, precisely, is the extent of it. Nothing about a clear
-      certificate speaks to anything else, and the veterinary examination every puppy has
-      before it goes is a different document doing a different job.
+      screened for. Each is recessive: a litter is at risk only where the dam and the sire both
+      carry the gene — and that, precisely, is the extent of what the tests look at. Neither test
+      speaks to anything else, and the veterinary examination every puppy has before it goes
+      is a different check doing a different job.
       <a href="/blue-staffy-health-uk/">Read our health and care page</a> for what each screen
-      looks for and what a certificate actually says.
+      looks for and what each test covers.
     </p>
 
     <h4>{T('Screened Before The Mating, Not After It')}</h4>
@@ -492,8 +492,8 @@ const pageSchema = [
       further screen, appearing on our own website and nowhere in our files, would be worth
       nothing to you.
     </p>
-    <h6>{T('Breeder Note: The certificates are yours to read')}</h6>
-    <p>Ask before you travel and both results can be on the table when you arrive.</p>
+    <h6>{T('Breeder Note: Ask us about both tests')}</h6>
+    <p>Ask before you travel, and we will tell you which tests each parent has had and what each one looks for.</p>
   </section>
 
   {/* 04 stats — the counter strip, picked style C-AB1 (figure cards on a steel band, beside

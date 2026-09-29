@@ -103,8 +103,9 @@ WHITELIST_SNIPPETS = [
     # the KIT trust strip (component 7). Its three chips and their sub-lines are hard-coded
     # in src/components/kit/TrustStrip.astro, so every page that mounts it renders the same
     # 42 words — it is a component, not page prose. Measured on dist/ 2026-09-20: 5 pages
-    # (project 4 Task 18).
-    "kc registered kc registered breeder registration paperwork with every puppy dna tested parents dam and sire clear of l 2 hga and hc hsf4 results on request raised in the home reared in a family home not a kennel and socialised early",
+    # (project 4 Task 18). Re-worded 2026-09-29 with the component (answer board q01: the DNA
+    # line names the tests and states no result).
+    "kc registered kc registered breeder registration paperwork with every puppy dna tested parents dam and sire dna tested for l 2 hga and hc hsf4 with eyes and elbows screened raised in the home reared in a family home not a kennel and socialised early",
 
     # The kit Hero's chip row and CTA pair were whitelisted here on 2026-09-20 and REMOVED
     # the same day. They were shared chrome only because the component hard-coded them; the

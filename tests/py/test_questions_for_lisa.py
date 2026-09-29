@@ -73,10 +73,12 @@ def test_q8_names_every_faq_row_the_dna_clear_ledger_row_matches():
                    if c["id"] == "parents-dna-clear")
     rows = json.loads((ROOT / "data/faq.json").read_text(encoding="utf-8"))
     claiming = {r["id"] for r in rows if re.search(pattern, r["q"] + " " + r["a"], re.I)}
-    assert claiming, "the ledger pattern matches no faq row"
+    # Answered (answer board q01, 2026-09-29): the breeder holds no DNA certificates, so every
+    # row Q8 named was reworded to name the tests only, and no row may claim a clear result.
+    assert claiming == set(), f"a faq row states the parents' DNA result again: {sorted(claiming)}"
     q8 = next(body for n, _, body in questions() if n == 8)
     named = set(existing_rows(q8.split(GOES, 1)[1]))
-    assert sorted(claiming - named) == [], "Q8 misses a row that claims the parents are clear"
+    assert named, "Q8 no longer names the rows it sent to the ledger"
 
 
 def test_settings_keys_called_existing_exist_and_new_ones_do_not():

@@ -199,7 +199,7 @@ const FAQ_BUY: CityFaqRow[] = [
 ];
 const FAQ_TRUST: CityFaqRow[] = [
   { q: 'Who are the parents of your puppies?', a: 'Maggie is our dam and Jones is our sire. Both are our own dogs.' },
-  { q: 'Which DNA tests have Maggie and Jones had?', a: 'Both are DNA tested clear of L-2-HGA and HC-HSF4. Each condition is recessive, so two clear parents cannot pass either one to a puppy.' },
+  { q: 'Which DNA tests have Maggie and Jones had?', a: 'Both are DNA tested for L-2-HGA and HC-HSF4. Each condition is recessive, so it takes a copy of the gene from the dam and another from the sire for a puppy to be affected.' },
   { q: 'Are the parents screened for eye and elbow problems?', a: 'Yes. Both are screened for hereditary cataracts and other inherited eye diseases, and their elbows are screened as well. We quote no score or grade; our health page sets out what each check covers.' },
   { q: 'Can I speak to your vet before I decide?', a: 'Yes. You are welcome to contact our vet about the parents and the litter before you commit to anything.' },
   { q: 'What happens if I can no longer keep my puppy?', a: 'We take the puppy back, and we do the same if a fault is ours. Tell us as soon as you know and we will talk it through with you.' },

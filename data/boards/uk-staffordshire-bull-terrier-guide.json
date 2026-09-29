@@ -966,7 +966,7 @@
       "id": "health",
       "n": 9,
       "heading": "Common Health Concerns & Our Ethical Breeding Commitment",
-      "intent": "A short version of the health page, not a second copy of it. The two inherited conditions the breed is DNA tested for — L-2-HGA and HC-HSF4 — and the fact that both our parents are tested clear; skin allergies and demodicosis; the BVA/KC schemes the health page records for our own dogs, which are the eye examination for inherited eye disease the HC-HSF4 test does not cover and patella grading for knee health; and the vaccination course against distemper, parvovirus, leptospirosis and hepatitis. NO HIP OR ELBOW SCORE: the migrated body says only ‘relevant BVA/KC screening where applicable’ and names no body part, data/boards/blue-staffy-health-uk.json's `screening` section records eyes and patellas, and data/quality/evidence-ledger.json lists hip and elbow scores as a row that does not exist until a certificate is on file. No prevalence figure and no percentage: the migrated body gives none. The health page carries the detail.",
+      "intent": "A short version of the health page, not a second copy of it. The two inherited conditions the breed is DNA tested for — L-2-HGA and HC-HSF4 — and the fact that both our parents are DNA tested for them; skin allergies and demodicosis; the BVA/KC schemes the health page records for our own dogs, which are the eye examination for inherited eye disease the HC-HSF4 test does not cover and patella grading for knee health; and the vaccination course against distemper, parvovirus, leptospirosis and hepatitis. NO HIP OR ELBOW SCORE: the migrated body says only ‘relevant BVA/KC screening where applicable’ and names no body part, data/boards/blue-staffy-health-uk.json's `screening` section records eyes and patellas, and data/quality/evidence-ledger.json lists hip and elbow scores as a row that does not exist until a certificate is on file. No prevalence figure and no percentage: the migrated body gives none. The health page carries the detail.",
       "category": "A",
       "group": "MANDATORY",
       "why": "A breed guide that skips the inherited conditions is the guide a buyer regrets reading, and the two DNA tests are the one hard credential this business can put a result against.",
@@ -1016,8 +1016,8 @@
         },
         {
           "level": 3,
-          "heading": "Clear By Parentage",
-          "intent": "Two clear parents cannot pass on either condition, because both are recessive.",
+          "heading": "Two Tests On Both Parents",
+          "intent": "Both parents are DNA tested for the two conditions, both of them recessive.",
           "children": []
         },
         {
@@ -1372,8 +1372,8 @@
       "tree": [
         {
           "level": 3,
-          "heading": "They Show You The Test Results",
-          "intent": "Both parents, both tests, the certificates rather than a claim.",
+          "heading": "They Name Both Tests On Both Parents",
+          "intent": "Both parents, both tests, named against each dog rather than a claim.",
           "children": []
         },
         {
@@ -1434,7 +1434,7 @@
         "note": ""
       },
       "verbatim_heading": true,
-      "verbatim_opening": "When ready to buy a Staffordshire Bull Terrier puppy , the most crucial step is finding an ethical Staffy breeder UK . A responsible breeder prioritises health, temperament, and the welfare of their dogs above all else. Here’s how to find health-certified Staffy breeders like BlueStaffyUK:",
+      "verbatim_opening": "When ready to buy a Staffordshire Bull Terrier puppy , the most crucial step is finding an ethical Staffy breeder UK . A responsible breeder prioritises health, temperament, and the welfare of their dogs above all else. Here’s how to find Staffy breeders who health test, like BlueStaffyUK:",
       "refresh": {
         "axis": "accent",
         "note": "Finding Your Forever Staffy: Choosing an Ethical Breeder in the UK: brass as a hairline under the heading rather than as a fill, against the brass-filled callout the buy pages use"
@@ -2023,7 +2023,7 @@
       "top": "H-GD3",
       "video-breed-guide": "S3"
     },
-    "record_hash": "beac922a33d190f98ed97649128525bef71957a6d47e0d0f06ea79a24c13b2be",
+    "record_hash": "f3e10d781e918c46861182e234b31a0210474ab6f77b5589a408a66d33e6ae76",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2042,7 +2042,22 @@
       "h6_prefixes": [
         "Breed Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-29T14:41:27Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-29T14:41:27Z",
+        "reason": "The breeder's answer, answer board q01 (2026-09-29): she holds no DNA certificates for Maggie and Jones, so the pages name the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a result. Every 'clear' / 'clearance' / result wording in this record is reworded to name the test only; a counter tile that stated a result is removed whole; verbatim changes are recorded in verbatim.changed (Known Issue 98).",
+        "changed_paths": [
+          "/sections/8/intent",
+          "/sections/8/tree/1/heading",
+          "/sections/8/tree/1/intent",
+          "/sections/11/tree/0/heading",
+          "/sections/11/tree/0/intent",
+          "/sections/11/verbatim_opening"
+        ]
+      }
+    ]
   },
   "verbatim": {
     "changed": [
@@ -2100,6 +2115,12 @@
         "new": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\"",
         "src": "/images/sbt-uk-legal-status-public-perception.webp",
         "reason": "the migrated alt is not a sentence: it ends on 'a professional sign or infographic that clearly states:' and then stops, so a screen reader is read a colon where the sign's words should be. An alt is page copy and there is no wording here to carry word for word — the half that matters was never written. Task 17 finished the clause with what the sign in the photograph actually says, which is the legal position `legal-status` states in prose; nothing else about the alt changed."
+      },
+      {
+        "kind": "opening",
+        "old": "When ready to buy a Staffordshire Bull Terrier puppy , the most crucial step is finding an ethical Staffy breeder UK . A responsible breeder prioritises health, temperament, and the welfare of their dogs above all else. Here’s how to find health-certified Staffy breeders like BlueStaffyUK:",
+        "new": "When ready to buy a Staffordshire Bull Terrier puppy , the most crucial step is finding an ethical Staffy breeder UK . A responsible breeder prioritises health, temperament, and the welfare of their dogs above all else. Here’s how to find Staffy breeders who health test, like BlueStaffyUK:",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). 'health-certified' claimed a certificate; the breeder holds none."
       }
     ]
   },
@@ -2219,10 +2240,10 @@
       "history": "5151925ec22ed5d5c828fdb3959508afa26fe7ae4dcd26e0928b5387f2f849de",
       "temperament": "0faefe583ae30b7e4127d400b0ad42c8fcb2d79eb345b60014fe4729d5b4a3af",
       "daily-care": "e45d3d041a8b27900762703bc4ab2fdec5cc8096b278633e4152cf4f96987313",
-      "health": "eb8103f911c595135beca3e4615ae82a82c8e223718c9fd657e27122cf6e05e8",
+      "health": "c3b0755623dd51c4f8416a6d1720b0b6eb88375766d8f31bc05fb46fdebbb674",
       "legal-status": "959d6b7eb85b4ef7c074726917c72060cfe2d539f4887e4fb9bbe258d6ab389e",
       "bully-comparison": "9b12cffbde9dacfcfdbdc0ec945e3cd045aa9ad96cdaa04516ad2fcbf342ff47",
-      "choosing-breeder": "849659ba4eff37229cb50c671a14def7383591fb21038e4874d5da114fb8c759",
+      "choosing-breeder": "2b2d98520bfbe011bcb99d9bc54ddb45ecc51b16f13bf5458b0bcdfbeadc67c6",
       "owner-review": "9a07e0bb6513ba730d6f556635eb011bc97f17cfe210f672dbe52005cd237e05",
       "puppies": "42a5f718a35d9590dbff90a37c4e681215d56acc99dd6c8fe6fe584b684d03f6",
       "questions": "3e0096df1cdcd9372aeee604073da72fc0afb2c3dc1600a382a15ad1a956d929",

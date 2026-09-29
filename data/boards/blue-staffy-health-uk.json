@@ -76,7 +76,7 @@
       "Health Testing, Vaccinations And Care | Blue Staffy UK"
     ],
     "descriptions": [
-      "What stands behind a healthy blue Staffy puppy: parents DNA tested clear of L-2-HGA and HC-HSF4, a vet check, a first vaccination and a microchip.",
+      "What stands behind a healthy blue Staffy puppy: parents DNA tested for L-2-HGA and HC-HSF4, a vet check, a first vaccination and a microchip.",
       "Our health page in full: the two DNA tests and where the parents stand, the eye and knee screening, vaccinations, diet, exercise and warning signs.",
       "Blue Staffy health from the breeder: what we test the parents for, what a puppy has had before it leaves, and how to keep a Staffy well for 12 to 14 years."
     ],
@@ -216,7 +216,7 @@
             },
             {
               "label": "Both parents",
-              "value": "Tested clear",
+              "value": "DNA tested",
               "source": [
                 "data/boards/blue-staffy-health-uk.json#cell(sections[dna-tests].table.rows, L-2-HGA)",
                 "data/boards/blue-staffy-health-uk.json#cell(sections[dna-tests].table.rows, HC-HSF4)"
@@ -336,7 +336,7 @@
       "tree": [
         {
           "level": 3,
-          "heading": "Both Parents Are Clear Of Two Inherited Conditions",
+          "heading": "Both Parents Are DNA Tested For Two Inherited Conditions",
           "intent": "L-2-HGA and HC-HSF4, the two the breed is DNA tested for.",
           "children": []
         },
@@ -398,11 +398,6 @@
           "source": "data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)"
         },
         {
-          "n": "Clear",
-          "label": "both parents, L-2-HGA",
-          "source": "data/boards/blue-staffy-health-uk.json#cell(sections[dna-tests].table.rows, L-2-HGA)"
-        },
-        {
           "n": "12–14 years",
           "label": "typical lifespan with good care",
           "source": "data/boards/uk-staffordshire-bull-terrier-guide.json#cell(sections[breed-facts].table.rows, Lifespan)"
@@ -462,7 +457,7 @@
         "note": "the test table on a brand header band, the loudest table on any guide"
       },
       "table": {
-        "caption": "The two DNA tests and the parents' status",
+        "caption": "The two DNA tests both parents have had",
         "columns": [
           "Test",
           "What it screens for",
@@ -472,12 +467,12 @@
           [
             "L-2-HGA",
             "L-2-hydroxyglutaric aciduria, a neurological disorder affecting metabolism",
-            "DNA tested clear"
+            "DNA tested"
           ],
           [
             "HC-HSF4",
             "Hereditary cataracts, an inherited eye condition",
-            "DNA tested clear"
+            "DNA tested"
           ]
         ]
       },
@@ -514,7 +509,7 @@
       "tree": [
         {
           "level": 3,
-          "heading": "What A Clear Result Does And Does Not Cover",
+          "heading": "What A DNA Test Does And Does Not Cover",
           "intent": "Both conditions are recessive, so two clear parents cannot pass either on; a clear result says nothing about anything else.",
           "children": []
         }
@@ -558,7 +553,7 @@
         "note": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the pick at P4."
       },
       "verbatim_heading": true,
-      "verbatim_opening": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested clear for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts). This means your KC registered Staffy puppies will not be genetically affected by these debilitating diseases. “ What does L-2-HGA testing mean ?” It means we’re actively preventing serious neurological and eye conditions through responsible breeding."
+      "verbatim_opening": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts), and both have their eyes and elbows screened. “ What does L-2-HGA testing mean ?” It means we’re actively preventing serious neurological and eye conditions through responsible breeding."
     },
     {
       "id": "screening",
@@ -1606,7 +1601,7 @@
         },
         {
           "level": 3,
-          "heading": "Ask For The Results First",
+          "heading": "Ask For The Paperwork First",
           "intent": "The certificates are there to be read before anyone pays.",
           "children": []
         },
@@ -1832,7 +1827,7 @@
       "takeaways": "S2",
       "top": "H-GD1"
     },
-    "record_hash": "32ca2e7781560a0b954d96d43465e43bd023e6464aa53372944533d5884fb49b",
+    "record_hash": "31843c5c6e365b21123063ebc6012af20a770969c70ddc7778b4a710f79511a3",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1851,7 +1846,29 @@
       "h6_prefixes": [
         "Health Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-29T14:41:18Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-29T14:41:18Z",
+        "reason": "The breeder's answer, answer board q01 (2026-09-29): she holds no DNA certificates for Maggie and Jones, so the pages name the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a result. Every 'clear' / 'clearance' / result wording in this record is reworded to name the test only; a counter tile that stated a result is removed whole; verbatim changes are recorded in verbatim.changed (Known Issue 98).",
+        "changed_paths": [
+          "/meta_set/descriptions/0",
+          "/sections/0/hero/aside/rows/1/value",
+          "/sections/1/tree/0/heading",
+          "/sections/2/stats/1/label",
+          "/sections/2/stats/1/n",
+          "/sections/2/stats/1/source",
+          "/sections/2/stats/2",
+          "/sections/3/table/caption",
+          "/sections/3/table/rows/0/2",
+          "/sections/3/table/rows/1/2",
+          "/sections/3/tree/0/heading",
+          "/sections/3/verbatim_opening",
+          "/sections/14/tree/1/heading"
+        ]
+      }
+    ]
   },
   "verbatim": {
     "changed": [
@@ -1980,6 +1997,12 @@
         "old": "Ready to Welcome a Healthy Blue Staffy Puppy?",
         "new": "Ready to Welcome a Healthy Blue Staffy?",
         "reason": "collides with another page's heading: the run 'a healthy blue staffy puppy' is shared with the live /uk-blue-staffy-puppy-buying-guide/ heading 'What to Look for in a Healthy Blue Staffy Puppy?', and board_gate.py fails it. The invitation is carried whole and only the last noun goes; 'Ready to Welcome a Healthy Blue Staffy?' was checked against every live page and against the other four records being reconciled in this task, and collides with none."
+      },
+      {
+        "kind": "opening",
+        "old": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested clear for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts). This means your KC registered Staffy puppies will not be genetically affected by these debilitating diseases. “ What does L-2-HGA testing mean ?” It means we’re actively preventing serious neurological and eye conditions through responsible breeding.",
+        "new": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts), and both have their eyes and elbows screened. “ What does L-2-HGA testing mean ?” It means we’re actively preventing serious neurological and eye conditions through responsible breeding.",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result)."
       }
     ]
   },
@@ -2058,10 +2081,10 @@
       }
     ],
     "section_hashes": {
-      "top": "447370a036841817489fa9a82ee862bd8f2f9c407b5f373c5a4d29c11b6d9c78",
-      "takeaways": "719375371f556237fe0c095ef706d2c1f81397d31d40f70b49d19b1247f2f023",
-      "stats": "e6333335e8748fa1bd7a83b42221d34caaabe017513842d295d03fb1f17cf7c9",
-      "dna-tests": "d08fbd89f5651aa7e0b0859c64a60587a14d48e1c4b34162fb105fbf03364ce2",
+      "top": "3d160ce99b62705dddc08b4ec22e946a951848c6a8f688b04f7d01b523c1cdf4",
+      "takeaways": "2e63278c9447ccec7154fd9d9b29e180cf26fff924aff55740f1a4ec4266438b",
+      "stats": "09293392d73d9dea0f462b6336c71aec50dc74ab5cee2092a565004a95c61657",
+      "dna-tests": "6ae3304bafe4e98bcfeb6ffda037dfbb1784789c2ed89cbb34e840993a04eb5e",
       "screening": "97dc31d2d4ce72434ed0b60ffb859a01ac1a429e3a487c9107b84d0835ef1ba9",
       "vaccinations": "60858d0e694b239851e6599317da634feb289fba3b4da988e07392a3d65b1f0b",
       "registration": "6c2ef65fc63b20f2935dc8ebe32f6e7c61cecda96697aacd4997f45ec8a1268b",
@@ -2072,7 +2095,7 @@
       "lifespan": "29821845da3a2c40ed5417c5509bafcd8109371948a9d6000445b99d9b00881b",
       "paperwork-review": "d11bd9e344b7a640669c085c20220ee7b2b81e8a62b215a2ab1b69065b8e6e34",
       "questions": "e58fabbd35c8a2941268646c36d9ee6c379597c7d2876d9d816030c03c4edaae",
-      "talk-to-us": "f60af60ec244e4e55973292b9090af773eebcfd0db21e3f25faf36ceba58ad94"
+      "talk-to-us": "3b6e30bc5168d70bff65686e69e1195c9cd1be96541ca1cbeb0bc76c54cc3f3f"
     }
   }
 }

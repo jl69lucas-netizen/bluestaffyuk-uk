@@ -1183,8 +1183,8 @@
         },
         {
           "level": 3,
-          "heading": "The Results We Hand Over",
-          "intent": "Both our parents are tested clear; the health page has the detail.",
+          "heading": "What Our Own Two Are Tested For",
+          "intent": "Both our parents are DNA tested for the two conditions; the health page has the detail.",
           "children": []
         },
         {
@@ -2534,7 +2534,7 @@
       "top": "H-GD2",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "baf9873814c640858bde1caef9fc468079b2ff027e905934b2e11cf5c603cf03",
+    "record_hash": "5b64e830874dc93f6ade3bb45b22b433c9ef9691cb6be7e8fee38fae716e870a",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2553,7 +2553,18 @@
       "h6_prefixes": [
         "Buyer Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-29T14:41:26Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-29T14:41:26Z",
+        "reason": "The breeder's answer, answer board q01 (2026-09-29): she holds no DNA certificates for Maggie and Jones, so the pages name the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a result. Every 'clear' / 'clearance' / result wording in this record is reworded to name the test only; a counter tile that stated a result is removed whole; verbatim changes are recorded in verbatim.changed (Known Issue 98).",
+        "changed_paths": [
+          "/sections/8/tree/3/heading",
+          "/sections/8/tree/3/intent"
+        ]
+      }
+    ]
   },
   "verbatim": {
     "changed": [
@@ -2948,7 +2959,7 @@
       "red-flags": "1ede4d0eb204fc2694cdcccd1d726cc892ba623bfdc1333ba52f28f16fe2670b",
       "costs": "6717e4ab7574e6a3077cd48700191c3e944c83a75eaf3b752eabb794fadab809",
       "temperament-fit": "af58270b8d815b2b282f9e83f802fd41faf479d15d80edcf333bd12e36ad4071",
-      "health-checks": "69c96d9113fa20663d1123e0b0ff945413e3b29123459f90d8c6aee4e90501d4",
+      "health-checks": "4898b661e06043e601633bd113eb1f855beaf40703818986b8a756dabe9db8bf",
       "eight-weeks": "c18421ff07caa318d77ae9d6f48a318b934feaf881c6142890c930fd4dac3d95",
       "home-prep": "0e9f2f3995ac5519e026ae7ecebd0383f7956de9483d51f9814b2e5058c1aa1d",
       "socialisation": "bee4bbb0e6b1637973ad78fc7878d9ceeb3610fa58485a37f6d18d12f420263f",

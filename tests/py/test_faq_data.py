@@ -109,10 +109,11 @@ FACT_PHRASES = {
     # The two why-us rows are verified against the MIGRATED body today and against the
     # rebuilt page from Task 16's P5, so every phrase below is one the board record's own
     # outline keeps: the contract, the vaccination records and the microchipping details
-    # are the three documents `kennel-club` names, and the screening results and the
-    # veterinary records are what `health-testing` offers to show a buyer.
+    # are the three documents `kennel-club` names, and the veterinary records are what
+    # `health-testing` offers to show a buyer. The parents are named as DNA tested, never with
+    # a result: the breeder holds no DNA certificates (answer board q01, 2026-09-29).
     "whyus-paperwork": ["puppy purchase contract", "vaccination records", "microchipping details"],
-    "whyus-evidence": ["genetic screening results", "veterinary records"],
+    "whyus-evidence": ["DNA tested", "veterinary records"],
     # The listing row is verified against the MIGRATED body today and against the rebuilt
     # page from Task 17's P5: both phrases are the migrated note "Our available puppies are
     # updated regularly", and the record's `puppies` section keeps that sentence, which is

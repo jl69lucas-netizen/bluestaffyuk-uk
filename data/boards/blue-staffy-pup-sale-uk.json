@@ -226,7 +226,7 @@
           "Raised in the home"
         ],
         "ticks": [
-          "Both parents DNA tested clear",
+          "Both parents DNA tested",
           {
             "text": "£500 deposit, refundable",
             "source": "data/settings.json#deposit_gbp"
@@ -1502,7 +1502,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "75fc434c0f7e2317e5cc1214cebba2d5e93483a98225db179ff7d6a4d36a91e1",
+    "record_hash": "42860531686c2dfa83cb163dba27c98a171ea82b80b0ecb689b13ac8b442deac",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1520,7 +1520,7 @@
         "Price Note:"
       ]
     },
-    "reapproved_at": "2026-09-22T19:39:59Z",
+    "reapproved_at": "2026-09-29T14:41:20Z",
     "reapprovals": [
       {
         "at": "2026-09-21T01:55:06Z",
@@ -1548,6 +1548,13 @@
         "changed_paths": [
           "/sections/3/table/caption",
           "/sections/5/table/caption"
+        ]
+      },
+      {
+        "at": "2026-09-29T14:41:20Z",
+        "reason": "The breeder's answer, answer board q01 (2026-09-29): she holds no DNA certificates for Maggie and Jones, so the pages name the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a result. Every 'clear' / 'clearance' / result wording in this record is reworded to name the test only; a counter tile that stated a result is removed whole; verbatim changes are recorded in verbatim.changed (Known Issue 98).",
+        "changed_paths": [
+          "/sections/0/hero/ticks/0"
         ]
       }
     ]
@@ -1589,7 +1596,7 @@
       "why-choose": "S1"
     },
     "section_hashes": {
-      "top": "c31e2a44918758fc14ad53ea1442ab9e330f7de9bbefdf808ad7db2229b76440",
+      "top": "58798aea87ab38d22e2298830e12c5c5f19a41010c5ec6f9e81ff56306927a5a",
       "at-a-glance": "5e22814f24b5bc5b9c49a1c426a3df734da2cb03d22f25807031fca02165cc9d",
       "why-choose": "b0cc650268f76d10dd4d09277a67cc0071cf5c9ccf1b5bd39e7226ea1bbadb85",
       "prices": "011b81997bfe93b8090d34ea45b8425639618e757b499aee8ac2a009b81c9c28",
@@ -1662,8 +1669,8 @@
       {
         "kind": "opening",
         "old": "Absolutely! All our Staffy puppies come from exceptional KC-registered lineage. They receive comprehensive health checks, including clearances for common Staffy conditions (HC, L2HGA, DM), and are microchipped before entering their new homes. We pride ourselves on being ethical Blue Staffy breeders UK —100% Health Checked. Every puppy receives a full vet screening and vaccinations.",
-        "new": "Absolutely! All our Staffy puppies come from exceptional KC-registered lineage. They receive comprehensive health checks, including clearances for common Staffy conditions (HC, L2HGA), and are microchipped before entering their new homes. We pride ourselves on being ethical Blue Staffy breeders UK. Every puppy receives a full vet screening and vaccinations.",
-        "reason": "two claims no file on disk holds, both excised. 'DM' is a third clearance nothing backs — data/boards/blue-staffy-health-uk.json carries L-2-HGA and HC-HSF4 and no third (dropped.tests) — and '100% Health Checked' is one of the migrated hero's four unevidenced counters, which working rule 9 forbids writing (dropped.creds). The KC-registered lineage, the health checks and the microchip are carried word for word."
+        "new": "Absolutely! All our Staffy puppies come from exceptional KC-registered lineage. They receive comprehensive health checks, their parents are DNA tested for common Staffy conditions (HC, L2HGA), and they are microchipped before entering their new homes. We pride ourselves on being ethical Blue Staffy breeders UK. Every puppy receives a full vet screening and vaccinations.",
+        "reason": "two claims no file on disk holds, both excised. 'DM' is a third clearance nothing backs — data/boards/blue-staffy-health-uk.json carries L-2-HGA and HC-HSF4 and no third (dropped.tests) — and '100% Health Checked' is one of the migrated hero's four unevidenced counters, which working rule 9 forbids writing (dropped.creds). The KC-registered lineage, the health checks and the microchip are carried word for word. Then, 2026-09-29: wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). 'including clearances for common Staffy conditions' becomes 'their parents are DNA tested for common Staffy conditions'."
       },
       {
         "kind": "opening",

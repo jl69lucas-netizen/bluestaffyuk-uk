@@ -87,9 +87,9 @@
       "Buy Staffy Puppies UK | KC-Registered, Carlisle Breeder"
     ],
     "descriptions": [
-      "Why families buy a Staffy puppy from us: both parents DNA-tested clear for L-2-HGA and HC-HSF4, and KC-registered litters raised in our Carlisle home.",
-      "Seven reasons to buy a Staffy puppy from us, each with the document behind it: DNA results, Kennel Club paperwork, a vet check and a written contract.",
-      "Health-tested, home-raised Staffy puppies for sale in the UK. See the parents' DNA results and the paperwork, then meet the litter in Carlisle."
+      "Why families buy a Staffy puppy from us: both parents DNA-tested for L-2-HGA and HC-HSF4, and KC-registered litters raised in our Carlisle home.",
+      "Seven reasons to buy a Staffy puppy from us, each with what stands behind it: DNA tests, Kennel Club paperwork, a vet check and a written contract.",
+      "Health-tested, home-raised Staffy puppies for sale in the UK. Ask about the parents' DNA tests, see the paperwork, then meet the litter in Carlisle."
     ],
     "recommended": {
       "title": 0,
@@ -240,7 +240,7 @@
           "Vet checked"
         ],
         "ticks": [
-          "L-2-HGA and HC-HSF4 tested clear",
+          "L-2-HGA and HC-HSF4 DNA tested",
           "Raised in our own home",
           {
             "text": "UK home delivery, £200–£350 by distance",
@@ -253,7 +253,7 @@
         "aside": {
           "title": "Why families choose us",
           "items": [
-            "Both parents DNA tested clear",
+            "Both parents DNA tested",
             "Kennel Club registered",
             "Puppies raised in the house, not a kennel"
           ]
@@ -664,7 +664,7 @@
     {
       "id": "health-testing",
       "n": 6,
-      "heading": "Why Does BlueStaffyUK Health Test Puppies and What Does It Mean to Have L-2-HGA Clear Staffies?",
+      "heading": "Why Does BlueStaffyUK Health Test Puppies and What Does It Mean to Have L-2-HGA Tested Staffies?",
       "intent": "The first reason in full, and narrowly: both parents are DNA-tested and clear for L-2-HGA and HC-HSF4, the two inherited conditions the breed is screened for, and we will show you the genetic screening results and the veterinary records before you commit. It says what the tests are for in one line and links /blue-staffy-health-uk/ for the detail rather than repeating that page's table, which is the health page's own section. No third clearance is named.",
       "category": "A",
       "group": "MANDATORY",
@@ -725,13 +725,13 @@
         },
         {
           "level": 3,
-          "heading": "The Two Tests, And What Clear Means",
+          "heading": "The Two Tests, And What Each Looks For",
           "intent": "A clear parent cannot pass the condition on; the health page explains each result.",
           "children": []
         },
         {
           "level": 3,
-          "heading": "Seeing The Certificates",
+          "heading": "Seeing The Paperwork",
           "intent": "The screening results and the veterinary records are yours to read before you commit.",
           "children": []
         }
@@ -769,7 +769,7 @@
         "note": "Prose with one photograph and no table: the DNA-test table belongs to /blue-staffy-health-uk/ and a second copy of it here is the duplication the dup gate is for."
       },
       "verbatim_heading": true,
-      "verbatim_opening": "At BlueStaffyUK.uk , health testing matters because L-2-HGA clear Staffordshire Bull Terriers give families confidence that their puppy is strong, healthy, and free from inherited conditions. Puppy health testing is essential to prevent inherited conditions, which is why BlueStaffyUK guarantees L-2-HGA clear Staffies through mandatory DNA screening of all parent dogs before any breeding takes place."
+      "verbatim_opening": "At BlueStaffyUK.uk , health testing matters because L-2-HGA tested Staffordshire Bull Terriers give families confidence in how their puppy was bred. Puppy health testing is essential to prevent inherited conditions, which is why BlueStaffyUK DNA tests all parent dogs for L-2-HGA before any breeding takes place."
     },
     {
       "id": "home-raised",
@@ -1884,7 +1884,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
-      "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and How Do We Guarantee L-2-HGA Clear Staffies?"
+      "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?"
     },
     {
       "slot": "why-temperament",
@@ -2090,7 +2090,7 @@
       "top": "H-FS2",
       "video-why-us": "S3"
     },
-    "record_hash": "5e1d89fe2c4e0af8d2dabf6cc8317b6641828909ec1afa9d4328160bf7cf3294",
+    "record_hash": "4bc50bafd17f8b73afb57ec50b093a0a3d473f752e026d3040848dfaf752cd8c",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2110,7 +2110,7 @@
         "Reason Note:"
       ]
     },
-    "reapproved_at": "2026-09-22T20:01:45Z",
+    "reapproved_at": "2026-09-29T14:41:23Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:12:30Z",
@@ -2143,6 +2143,22 @@
           "/sections/1/heading",
           "/sections/1/refresh/note",
           "/sections/1/video/title"
+        ]
+      },
+      {
+        "at": "2026-09-29T14:41:23Z",
+        "reason": "The breeder's answer, answer board q01 (2026-09-29): she holds no DNA certificates for Maggie and Jones, so the pages name the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a result. Every 'clear' / 'clearance' / result wording in this record is reworded to name the test only; a counter tile that stated a result is removed whole; verbatim changes are recorded in verbatim.changed (Known Issue 98).",
+        "changed_paths": [
+          "/assets/4/alt",
+          "/meta_set/descriptions/0",
+          "/meta_set/descriptions/1",
+          "/meta_set/descriptions/2",
+          "/sections/0/hero/aside/items/0",
+          "/sections/0/hero/ticks/0",
+          "/sections/5/heading",
+          "/sections/5/tree/1/heading",
+          "/sections/5/tree/2/heading",
+          "/sections/5/verbatim_opening"
         ]
       }
     ]
@@ -2189,11 +2205,11 @@
       "video-why-us": "S3"
     },
     "section_hashes": {
-      "top": "8d0d1805a42b02e6a752e25a1be9b2dedaa8fbd0e804a97f3636ea79a49cd584",
+      "top": "d9e8ff9fe84ebd6924015a788d93fd4be30dc8e0fa37c8aeefcfed15b8e5c881",
       "video-why-us": "6e96a71b92cb2672dba3e47eb4a325075d35f3de3843c249c6f8cb492445b2b9",
       "promises": "8024cfeaeb32dec3ce3b8e33084b50837102cd3d52af18203f1cf3abf3d11915",
       "reasons": "3180cf3981e7322ff909cd7385adb26d9d51cd40dcb97499f186ad0a30b6a5bf",
-      "health-testing": "c61341606ed4c7b2823272b8e73e508cdcc992b0dc6e97048ed790a13a4cfc0d",
+      "health-testing": "b007dc3d8eec152041fb07f40f981538a65ef6307540f2ceff29a4ead0cacc37",
       "home-raised": "c4af2a9868db5ca415c13cc96e23dad323e65aa5573490fe467c451d8b284a27",
       "kennel-club": "c659126c6efa96d5369cf3adc06e670bee4364a56123406e8019e2020b4caaad",
       "after-care": "ef5305be66e18b25a10ba94705f48715d15893f04e75c02683e822371ddc14cb",
@@ -2509,6 +2525,25 @@
         "new": "Connect with ethical local blue staffy breeders near me through BlueStaffyUK",
         "reason": "the migrated alt ends on a credential no file on disk records — a “certified health program”, certified by nobody named, which is the same claim dropped.creds strikes as the BVA/RSPCA alignment and the Assured Breeder scheme. An alt is page copy, so working rule 9 reaches it like any other sentence, and the record's asset row already carried the repaired wording. IT ONLY BECAME VISIBLE AT 8472c06: verbatim_set_check's ATTR pattern stopped at the apostrophe in “BlueStaffyUK’s”, so the extracted set held the sentence truncated to exactly the repaired form and the deviation read as no deviation at all. The set was re-extracted against the fixed pattern and this row is what the rebuild owed it. Everything up to that clause is carried word for word.",
         "src": "/images/local-blue-staffy-breeders-near-me-uk.webp"
+      },
+      {
+        "kind": "heading",
+        "old": "Why Does BlueStaffyUK Health Test Puppies and What Does It Mean to Have L-2-HGA Clear Staffies?",
+        "new": "Why Does BlueStaffyUK Health Test Puppies and What Does It Mean to Have L-2-HGA Tested Staffies?",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). Only 'Clear' becomes 'Tested'; every other word of the heading is carried."
+      },
+      {
+        "kind": "opening",
+        "old": "At BlueStaffyUK.uk , health testing matters because L-2-HGA clear Staffordshire Bull Terriers give families confidence that their puppy is strong, healthy, and free from inherited conditions. Puppy health testing is essential to prevent inherited conditions, which is why BlueStaffyUK guarantees L-2-HGA clear Staffies through mandatory DNA screening of all parent dogs before any breeding takes place.",
+        "new": "At BlueStaffyUK.uk , health testing matters because L-2-HGA tested Staffordshire Bull Terriers give families confidence in how their puppy was bred. Puppy health testing is essential to prevent inherited conditions, which is why BlueStaffyUK DNA tests all parent dogs for L-2-HGA before any breeding takes place.",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). 'guarantees L-2-HGA clear Staffies' also promised a result the breeder holds no certificate for."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
+        "old": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and How Do We Guarantee L-2-HGA Clear Staffies?",
+        "new": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). The photograph stays at its served path; only the clause promising a clear result moves."
       }
     ]
   }

@@ -34,11 +34,12 @@ type Props = HTMLAttributes<'article'> & {
 const {
   kind = 'fact',
   label = LABELS[kind],
-  // Both sentences are claims the live homepage already makes: the L-2-HGA / HC-HSF4 clear
-  // parents, and the puppy package's first vaccination, microchip and veterinary health
+  // Both sentences are claims the live homepage already makes: the parents' L-2-HGA / HC-HSF4
+  // DNA tests (named, never a result: the breeder holds no certificates, answer board q01,
+  // 2026-09-29), and the puppy package's first vaccination, microchip and veterinary health
   // check. Rule 9: a card does not get to invent a fourth.
   heading = 'What a health-tested litter means',
-  body = 'Both parents are clear of L-2-HGA and HC-HSF4. Every puppy leaves with a full veterinary health check, its first vaccination and a microchip.',
+  body = 'Both parents are DNA tested for L-2-HGA and HC-HSF4. Every puppy leaves with a full veterinary health check, its first vaccination and a microchip.',
   class: cls,
   ...rest
 } = Astro.props;

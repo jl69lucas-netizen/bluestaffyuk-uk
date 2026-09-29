@@ -163,7 +163,7 @@
     ],
     "descriptions": [
       "Meet Lisa Bright, the blue Staffy breeder behind Blue Staffy UK in Carlisle. Health-tested parents, puppies raised in our home, and UK-wide delivery.",
-      "Who we are: a family home in Carlisle, Cumbria raising KC-registered blue Staffy puppies from parents clear of L-2-HGA and HC-HSF4. Read our story here.",
+      "Who we are: a family home in Carlisle, Cumbria raising KC-registered blue Staffy puppies from parents DNA tested for L-2-HGA and HC-HSF4. Read our story here.",
       "Our blue Staffy puppies are raised indoors with the family from parents that are health-tested and KC-registered. Meet the breeder, and see what we can prove."
     ],
     "recommended": {
@@ -207,7 +207,7 @@
           "KC registered"
         ],
         "ticks": [
-          "Both parents DNA tested clear",
+          "Both parents DNA tested",
           "Puppies raised in the house",
           {
             "text": "UK home delivery, £200–£350 by distance",
@@ -444,19 +444,19 @@
         {
           "level": 3,
           "heading": "Maggie, Our Dam",
-          "intent": "Two years old, blue, KC-registered, fully vaccinated, clear of both tests.",
+          "intent": "Two years old, blue, KC-registered, fully vaccinated, DNA tested for both conditions.",
           "children": []
         },
         {
           "level": 3,
           "heading": "Jones, Our Sire",
-          "intent": "Three years old, blue, KC-registered with a full pedigree, clear of both tests.",
+          "intent": "Three years old, blue, KC-registered with a full pedigree, DNA tested for both conditions.",
           "children": []
         },
         {
           "level": 3,
           "heading": "What the Two Tests Screen For",
-          "intent": "L-2-HGA and HC-HSF4 named as the two inherited conditions the breed is screened for, stated as what a clear result means for a litter and nothing more.",
+          "intent": "L-2-HGA and HC-HSF4 named as the two inherited conditions the breed is screened for, stated as what each test looks for and nothing more.",
           "children": []
         }
       ],
@@ -485,7 +485,7 @@
         "pick": null,
         "note": ""
       },
-      "verbatim_opening": "Absolutely. The health of our blue Staffies is paramount. Both Maggie and Jones are extensively health-tested and certified clear for L-2-HGA and HC-HSF4, ensuring the genetic well-being of our litters. You can find more details on our Staffy Health & Care Page .",
+      "verbatim_opening": "Absolutely. The health of our blue Staffies is paramount. Both Maggie and Jones are DNA tested for L-2-HGA and HC-HSF4, and both have their eyes and elbows screened. You can find more details on our Staffy Health & Care Page .",
       "refresh": {
         "axis": "layout",
         "note": "The Two Health Tests Behind Every Litter: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
@@ -512,11 +512,6 @@
         "C-AB3"
       ],
       "stats": [
-        {
-          "n": "2",
-          "label": "DNA clearances on both parents",
-          "source": "data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)"
-        },
         {
           "n": "6",
           "label": "puppies in the current litter",
@@ -1352,7 +1347,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/breeder-sitting-blue-staffy-puppy-home.webp",
-      "alt": "A breeder holding a blue Staffy puppy, smiling, in a home environment, Responsible breeders of blue Staffies L-2-HGA clear."
+      "alt": "A breeder holding a blue Staffy puppy, smiling, in a home environment, Responsible breeders of blue Staffies L-2-HGA tested."
     },
     {
       "slot": "about-playful-lawn",
@@ -1497,7 +1492,7 @@
       "top": "H-AB1",
       "video-our-home": "S1"
     },
-    "record_hash": "78e45199c26a83505af8ac96c610908ae1838b27c93971e8c33b46664dbf05cf",
+    "record_hash": "24c86da022219303b3bcc895814f049001be0fb4062d6036daa10735b2422ca1",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1515,7 +1510,7 @@
         "Breeder Note:"
       ]
     },
-    "reapproved_at": "2026-09-24T19:18:23Z",
+    "reapproved_at": "2026-09-29T14:41:21Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:50:51Z",
@@ -1558,6 +1553,26 @@
         "changed_paths": [
           "/sections/0/hero/aside/title"
         ]
+      },
+      {
+        "at": "2026-09-29T14:41:21Z",
+        "reason": "The breeder's answer, answer board q01 (2026-09-29): she holds no DNA certificates for Maggie and Jones, so the pages name the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a result. Every 'clear' / 'clearance' / result wording in this record is reworded to name the test only; a counter tile that stated a result is removed whole; verbatim changes are recorded in verbatim.changed (Known Issue 98).",
+        "changed_paths": [
+          "/assets/1/alt",
+          "/meta_set/descriptions/1",
+          "/sections/0/hero/ticks/0",
+          "/sections/2/tree/0/intent",
+          "/sections/2/tree/1/intent",
+          "/sections/2/tree/2/intent",
+          "/sections/2/verbatim_opening",
+          "/sections/3/stats/0/label",
+          "/sections/3/stats/0/n",
+          "/sections/3/stats/0/source",
+          "/sections/3/stats/1/label",
+          "/sections/3/stats/1/n",
+          "/sections/3/stats/1/source",
+          "/sections/3/stats/2"
+        ]
       }
     ]
   },
@@ -1593,9 +1608,9 @@
       "video-our-home": "S1"
     },
     "section_hashes": {
-      "top": "39bc1a4e0cffa7582a187422f7b257ad062bdd9251134a3afce30256f4345197",
+      "top": "34a0fedb3ca2e24b31ae568041c6a4b865c8ea35ad9dab4b864ec4f299760892",
       "our-story": "51729879ba54305c15dafaa8d4fe1dca2da0eee98b7a1ca5e3b7de41a7f78be3",
-      "health-testing": "ed95caa96691b9e80138dd672e167a34242d2c8db560f48b43d8ac734aa2fd36",
+      "health-testing": "25cdb832690e11e7abb13761abb8321ec85bb0a886d6147f0f9e71be57c1114a",
       "paperwork-proof": "729757a70dfea8a62529d3801fd35bbb1e022deaf8a97e69a1775242464118e4",
       "home-raising": "f132d22c30e179ce20ea63b568cc4031a98b73b9c0807f9aff74f86ecb95fd50",
       "kennel-club": "cf65303dfdd55b226a497f857f3a5d9f7a2610d69930294195e2a7e1a67b56bd",
@@ -1748,6 +1763,19 @@
         "new": "A cheerful family, possibly with children, enjoying time with their healthy blue Staffy, representing trusted UK breeders.",
         "reason": "the migrated alt begins with the literal string 'ALT Text:' — the editor's own field label pasted into the attribute, which a screen reader reads aloud. The label is removed and every word of the description after it is carried unchanged.",
         "src": "/images/trusted-uk-breeders-blue-staffy-family.webp"
+      },
+      {
+        "kind": "opening",
+        "old": "Absolutely. The health of our blue Staffies is paramount. Both Maggie and Jones are extensively health-tested and certified clear for L-2-HGA and HC-HSF4, ensuring the genetic well-being of our litters. You can find more details on our Staffy Health & Care Page .",
+        "new": "Absolutely. The health of our blue Staffies is paramount. Both Maggie and Jones are DNA tested for L-2-HGA and HC-HSF4, and both have their eyes and elbows screened. You can find more details on our Staffy Health & Care Page .",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result)."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/breeder-sitting-blue-staffy-puppy-home.webp",
+        "old": "A breeder holding a blue Staffy puppy, smiling, in a home environment, Responsible breeders of blue Staffies L-2-HGA clear.",
+        "new": "A breeder holding a blue Staffy puppy, smiling, in a home environment, Responsible breeders of blue Staffies L-2-HGA tested.",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). The photograph stays at its served path; only the clause stating a result moves (working rule 11 keeps the file, rule 15 lets a wrong fact in an alt change)."
       }
     ]
   }

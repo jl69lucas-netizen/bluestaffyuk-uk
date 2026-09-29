@@ -68,7 +68,7 @@
   {
     "id": "about-health-tests",
     "q": "Are the parents of your blue Staffy puppies health-tested?",
-    "a": "Yes. Maggie, our dam, and Jones, our sire, are both KC-registered with full pedigrees, are fully vaccinated, and are certified clear of L-2-HGA and HC-HSF4. That screening is what the genetic health of every litter rests on.",
+    "a": "Yes. Maggie, our dam, and Jones, our sire, are both KC-registered with full pedigrees, are fully vaccinated, and are DNA tested for L-2-HGA and HC-HSF4, with their eyes and elbows screened. That screening is what the genetic health of every litter rests on.",
     "source": "src/pages/blue-staffy-uk-breeders/index.astro"
   },
   {
@@ -79,8 +79,8 @@
   },
   {
     "id": "health-dna-tests",
-    "q": "Which genetic tests are the parents cleared for?",
-    "a": "Both parents are DNA tested clear for L-2-HGA, a neurological disorder affecting metabolism, and HC-HSF4, an inherited cataract. Both conditions are recessive, so two clear parents cannot pass either one to a puppy.",
+    "q": "Which genetic tests have the parents had?",
+    "a": "Both parents are DNA tested for L-2-HGA, a neurological disorder affecting metabolism, and HC-HSF4, an inherited cataract. Both conditions are recessive, so a puppy is affected only when it inherits the gene from both parents.",
     "source": "src/pages/blue-staffy-health-uk/index.astro"
   },
   {
@@ -146,7 +146,7 @@
   {
     "id": "sale-kc-health-checked",
     "q": "Are your Blue Staffy puppies Kennel Club registered and health-checked?",
-    "a": "Absolutely! All our Staffy puppies come from exceptional KC-registered lineage. They receive comprehensive health checks, including clearances for common Staffy conditions (HC, L2HGA), and are microchipped before entering their new homes. We pride ourselves on being ethical Blue Staffy breeders UK. Every puppy receives a full vet screening and vaccinations.",
+    "a": "Absolutely! All our Staffy puppies come from exceptional KC-registered lineage. They receive comprehensive health checks, their parents are DNA tested for common Staffy conditions (HC, L2HGA), and they are microchipped before entering their new homes. We pride ourselves on being ethical Blue Staffy breeders UK. Every puppy receives a full vet screening and vaccinations.",
     "source": "src/pages/blue-staffy-pup-sale-uk/index.astro"
   },
   {
@@ -170,7 +170,7 @@
   {
     "id": "whyus-evidence",
     "q": "Can I see the health test results for both parents?",
-    "a": "Yes. We will show you the genetic screening results and the veterinary records for both parents before you commit to a puppy, and again on the day you collect.",
+    "a": "You can see both parents, their registration papers and the veterinary records before you commit to a puppy, and again on the day you collect. Both parents are DNA tested for L-2-HGA and HC-HSF4, and we will tell you what each test looks for.",
     "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
   },
   {
@@ -181,8 +181,8 @@
   },
   {
     "id": "listing-health-clearances",
-    "q": "What health clearances do your blue Staffy puppies come with?",
-    "a": "Maggie and Jones both carry clear DNA results for L-2-HGA and HC-HSF4. Each puppy then has a veterinary health check, its worming and its first vaccinations, and every one of those is dated on the paperwork that travels with the dog.",
+    "q": "What health checks do your blue Staffy puppies come with?",
+    "a": "Maggie and Jones are both DNA tested for L-2-HGA and HC-HSF4. Each puppy then has a veterinary health check, its worming and its first vaccinations, and every one of those is dated on the paperwork that travels with the dog.",
     "source": "src/pages/buy-blue-staffy-puppies-uk/index.astro"
   },
   {
@@ -254,7 +254,7 @@
   {
     "id": "home-ethical-breeder",
     "q": "What makes BlueStaffyUK an ethical breeder?",
-    "a": "We are a small, family-run team dedicated to the health and well-being of every puppy. Both parents are DNA tested clear of L-2-HGA and HC-HSF4, every puppy is raised in our home and not a kennel, and we will show you the certificates before you pay anything.",
+    "a": "We are a small, family-run team dedicated to the health and well-being of every puppy. Both parents are DNA tested for L-2-HGA and HC-HSF4, every puppy is raised in our home and not a kennel, and we answer every question about them before you pay anything.",
     "source": "src/pages/index.astro"
   },
   {
@@ -266,7 +266,7 @@
   {
     "id": "home-parents-health-tested",
     "q": "Are your puppies’ parents health-tested?",
-    "a": "Yes. Both our dam and sire are screened and certified clear of L-2-HGA and HC-HSF4, the two inherited conditions this breed is tested for, and we send the certificates on request.",
+    "a": "Yes. Both our dam and sire are DNA tested for L-2-HGA and HC-HSF4, the two inherited conditions this breed is tested for, and both have their eyes and elbows screened.",
     "source": "src/pages/index.astro"
   },
   {
@@ -278,7 +278,7 @@
   {
     "id": "home-health-tests",
     "q": "What health tests do you perform on your Blue Staffy breeding dogs?",
-    "a": "Every breeding dog we use is screened for the conditions this breed is watched for, which is L-2-HGA and HC-HSF4 by DNA test on both parents. What each test covers, and what a clear result does not cover, is set out on our health page.",
+    "a": "Every breeding dog we use is screened for the conditions this breed is watched for, which is L-2-HGA and HC-HSF4 by DNA test on both parents. What each test covers, and what it does not cover, is set out on our health page.",
     "source": "src/pages/index.astro"
   },
   {
@@ -344,19 +344,19 @@
   {
     "id": "whyus-prone-to",
     "q": "What are Staffies prone to?",
-    "a": "Mainly two inherited conditions, L-2-HGA and HC-HSF4, which is why both parents are DNA tested clear before any mating, and the skin allergies the breed is known for. Our health page covers both.",
+    "a": "Mainly two inherited conditions, L-2-HGA and HC-HSF4, which is why both parents are DNA tested for them before any mating, and the skin allergies the breed is known for. Our health page covers both.",
     "source": "src/pages/blue-staffy-health-uk/index.astro"
   },
   {
     "id": "whyus-stud-dogs",
     "q": "Who Are the BlueStaffyUK Stud Dogs and How Do We Ensure Temperament in Our Breeding Program?",
-    "a": "Our own dogs. The parent dogs we breed from are chosen for a settled temperament as well as for their health results, and you are welcome to meet the mother with the litter before you decide.",
+    "a": "Our own dogs. The parent dogs we breed from are chosen for a settled temperament as well as for their health testing, and you are welcome to meet the mother with the litter before you decide.",
     "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
   },
   {
     "id": "whyus-partner",
     "q": "Why Should Families Choose BlueStaffyUK as Their Trusted Breeding Partner for Staffordshire Bull Terriers in the UK?",
-    "a": "Because everything this page claims can be handed to you: both parents’ DNA results, the Kennel Club paperwork, the veterinary health check and the written puppy purchase contract. Nothing on this page rests on a badge.",
+    "a": "Because everything this page claims rests on something you can check: both parents’ DNA tests, the Kennel Club paperwork, the veterinary health check and the written puppy purchase contract. Nothing on this page rests on a badge.",
     "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
   },
   {
@@ -368,7 +368,7 @@
   {
     "id": "about-health-tested",
     "q": "Are your Staffordshire Bull Terrier puppies health-tested?",
-    "a": "Yes. Both parents, Maggie and Jones, are DNA tested and certified clear for L-2-HGA and HC-HSF4 before any mating, and every puppy has a veterinary health check before it leaves us.",
+    "a": "Yes. Both parents, Maggie and Jones, are DNA tested for L-2-HGA and HC-HSF4 before any mating, and every puppy has a veterinary health check before it leaves us.",
     "source": "src/pages/blue-staffy-uk-breeders/index.astro"
   },
   {
@@ -398,13 +398,13 @@
   {
     "id": "health-genetic-tested",
     "q": "Are your puppies health tested for genetic diseases?",
-    "a": "Yes. Our parent Staffordshire Bull Terrier dogs are extensively DNA tested and certified clear for key hereditary conditions like L-2-HGA and HC-HSF4, which are the primary hereditary conditions in blue Staffies . This ensures our blue Staffy puppies are free from these specific genetic predispositions.",
+    "a": "Yes. Our parent Staffordshire Bull Terrier dogs are DNA tested for key hereditary conditions like L-2-HGA and HC-HSF4, which are the primary hereditary conditions in blue Staffies, and both have their eyes and elbows screened.",
     "source": "src/pages/blue-staffy-health-uk/index.astro"
   },
   {
     "id": "health-l2hga-meaning",
     "q": "What does L-2-HGA testing mean for my puppy’s health?",
-    "a": "L-2-HGA testing (L-2-Hydroxyglutaric Aciduria) is a crucial genetic screening for Staffies . A ‘clear’ result means your puppy will not develop this severe neurological disorder that affects the brain, spinal cord, and muscles. It’s a key indicator of responsible breeding for health .",
+    "a": "L-2-HGA testing (L-2-Hydroxyglutaric Aciduria) is a crucial genetic screening for Staffies . It looks for the gene behind a severe neurological disorder that affects the brain, spinal cord, and muscles. It’s a key indicator of responsible breeding for health .",
     "source": "src/pages/blue-staffy-health-uk/index.astro"
   },
   {
@@ -494,7 +494,7 @@
   {
     "id": "blog-what-we-cover",
     "q": "What do your blue Staffy guides cover?",
-    "a": "Four pages, and they do not overlap. The breed guide covers what a Staffordshire Bull Terrier is, what a day with one asks for and where it stands in UK law; the health page covers the DNA tests our parent dogs are recorded clear of, the vaccination course and life expectancy; the buying guide covers the process, the questions to put to a breeder and the red flags; and the why-us page covers what a purchase from us comes with in writing.",
+    "a": "Four pages, and they do not overlap. The breed guide covers what a Staffordshire Bull Terrier is, what a day with one asks for and where it stands in UK law; the health page covers the DNA tests our parent dogs have had, the vaccination course and life expectancy; the buying guide covers the process, the questions to put to a breeder and the red flags; and the why-us page covers what a purchase from us comes with in writing.",
     "source": "src/pages/blue-staffy-blog-guides/index.astro"
   },
   {

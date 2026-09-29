@@ -1166,7 +1166,7 @@ def test_the_why_us_page_passes_the_four_documents_its_record_names():
     count, titles = _trust_items(built)
     assert count == 4, titles
     assert tuple(titles) == (
-        "Kennel Club registered", "Two DNA clearances", "Vet checked and chipped",
+        "Kennel Club registered", "Two DNA tests", "Vet checked and chipped",
         "A written contract",
     ), titles
     # Not the kit default's wording: a shared sentence between this strip and the homepage's

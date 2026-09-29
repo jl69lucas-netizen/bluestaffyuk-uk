@@ -667,7 +667,7 @@
         },
         {
           "level": 3,
-          "heading": "The Two Clearances Maggie And Jones Carry",
+          "heading": "The Two DNA Tests Maggie And Jones Have Had",
           "intent": "The two DNA clearances, with the health page for the detail. Renamed 2026-09-21: the old wording, 'What Both Parents Are Clear Of', failed board_gate's five-token shingle against /blue-staffy-health-uk/'s own 'Both Parents Are Clear Of Two Inherited Conditions'. The health page owns the DNA table and this is a passing mention that links to it, so the listing is the side that moves. The heading was written fresh at Task 17 and is in no verbatim set, so nothing rule 15 carries is touched.",
           "children": []
         }
@@ -880,7 +880,7 @@
         "note": "Restored under rule 15 to carry the migrated H2 and its opening. No photograph: it sits between the step ladder and `why-choose`, and both of its neighbours on either side already carry one. Kept to a short list — the health page owns what a puppy has had done and the price page owns what it costs."
       },
       "verbatim_heading": true,
-      "verbatim_opening": "We ensure every blue Staffy puppy leaves us with everything they need for a comfortable start in their new home, highlighting our commitment as responsible breeders of blue Staffies L-2-HGA clear :"
+      "verbatim_opening": "We ensure every blue Staffy puppy leaves us with everything they need for a comfortable start in their new home, highlighting our commitment as responsible breeders of blue Staffies L-2-HGA tested :"
     },
     {
       "id": "why-choose",
@@ -1696,7 +1696,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "665616f05fedd6c40d29ca4c76a303065bf6409f64a9953c9e23a10472fc3870",
+    "record_hash": "7c56fcf196935f78a9065752fca54e17a84f7c85e2b3c9e0eec2a3e87ea0b36a",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1716,7 +1716,7 @@
         "Step Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T04:25:56Z",
+    "reapproved_at": "2026-09-29T14:41:22Z",
     "reapprovals": [
       {
         "at": "2026-09-21T01:47:41Z",
@@ -1732,6 +1732,14 @@
         "changed_paths": [
           "/sections/4/tree/1/heading",
           "/sections/4/tree/1/intent"
+        ]
+      },
+      {
+        "at": "2026-09-29T14:41:22Z",
+        "reason": "The breeder's answer, answer board q01 (2026-09-29): she holds no DNA certificates for Maggie and Jones, so the pages name the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a result. Every 'clear' / 'clearance' / result wording in this record is reworded to name the test only; a counter tile that stated a result is removed whole; verbatim changes are recorded in verbatim.changed (Known Issue 98).",
+        "changed_paths": [
+          "/sections/4/tree/1/heading",
+          "/sections/6/verbatim_opening"
         ]
       }
     ]
@@ -1780,9 +1788,9 @@
       "at-a-glance": "1cbb714de92df065253f80bf12cf117115c8befee2e68dc8463917f388e3d261",
       "puppies": "3bb07d98be0c290ba00d70a48fe7d386e2360e171cacd7e819549e7da11a820c",
       "gallery": "8fb4c8255993c3d0e5c423726289d0ecdbdbd6349313089d225c87a66523b289",
-      "parents": "593465f3a9f4c3e8dc7294b312c63a18d2485a9ec28bf7652922824dc12c669a",
+      "parents": "0e833b9395353d52f83bf084e0c81851c703ba18d85a6d12821bae2184f77afc",
       "steps": "499a671f70043f1ca084c036b41bec28f35e5f83cc279729c9e6b4eb280e1f57",
-      "whats-included": "fbe4d8d4a46e8b17ef7ca3b54a91c9112e1888b2a7aeafa9cb8cc2b97db01381",
+      "whats-included": "1ea87e1484de572d7865785067f1f2d59102602d1b11c3d83ac698163ffb9ff7",
       "why-choose": "f3f5ccfa45d48db4fe460fa98fb451b021d1294d2fa7b49efcf911040db4618f",
       "delivery": "26400d657f9184aed52297c128fd79ee5d767dd73174c44eb78118726ec94b28",
       "owners": "9e32c5075a3b3b871cfadcd3f931cfe487ff9ac9bd3cf56206ddaf8e257e0543",
@@ -1901,6 +1909,18 @@
         "old": "Is a blue Staffy a good family dog?",
         "new": "Do blue Staffies suit a family home?",
         "reason": "collides with another page's heading: /uk-blue-staffy-puppy-buying-guide/'s board carries \"Is a Blue Staffy a Good Family Dog for First-Time Owners UK?\", which is an element of THAT page's verbatim set, and board_gate.py fails the five-token run \"is a blue staffy a\" between the two. Working rule 15 exclusion 2 moves the wording that is not carrying a set; the guide's is and this one is not. The question asks the same thing in this page's own words, and its `listing-family-dog` id — which is what the record's tree stores and what data/faq.json is read by — does not move, so the approved outline is untouched. The answer and its source are unchanged."
+      },
+      {
+        "kind": "opening",
+        "old": "We ensure every blue Staffy puppy leaves us with everything they need for a comfortable start in their new home, highlighting our commitment as responsible breeders of blue Staffies L-2-HGA clear :",
+        "new": "We ensure every blue Staffy puppy leaves us with everything they need for a comfortable start in their new home, highlighting our commitment as responsible breeders of blue Staffies L-2-HGA tested :",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result)."
+      },
+      {
+        "kind": "faq",
+        "old": "What health clearances do your blue Staffy puppies come with?",
+        "new": "What health checks do your blue Staffy puppies come with?",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). A clearance is a clear result, so the question asks what health checks come with a puppy instead."
       }
     ]
   }
