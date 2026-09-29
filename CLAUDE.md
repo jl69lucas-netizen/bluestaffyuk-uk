@@ -144,8 +144,10 @@ row, so the cap is untouched. Every other rule moved to a pack.
    competitor metrics. Un-fetched data is written `NOT FETCHED — <barrier>` (what was tried
    and what stopped it), never inferred; `npm run check:barriers` holds new and changed
    board, query and research files to it. The
-   guarantee length is `NOT FETCHED` — `data/settings.json` has `guarantee_days: null` and
-   no page may state a number until the breeder gives one. An unconfirmed licence or statute
+   guarantee is two years (the breeder's answer, 2026-09-29, answer board q07): `data/settings.json`
+   holds `guarantee_days: 730` and its wording `guarantee_label`, "Two-year health guarantee" —
+   a page states the length from those fields only, never typed, and names no cover the site has
+   not stated. An unconfirmed licence or statute
    claim is written `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER`, never asserted.
 10. **Visual companion, always.** Every visual decision — palette, type, logo, component
     variation, layout — is shown in the browser (the brainstorming visual companion, or a
@@ -330,7 +332,9 @@ spec under `docs/superpowers/specs/`:
 - Phone is `PHONE_PLACEHOLDER` until project 6 provisions a number. It is the only allowed
   representation of the phone number anywhere in this repo, and the site URL is
   `SITE_URL_PLACEHOLDER` on the same terms.
-- Guarantee length is **not established** (`guarantee_days: null`). Do not write one.
+- Health guarantee **two years** (`guarantee_days: 730`, worded by `guarantee_label`: "Two-year
+  health guarantee"; the breeder's answer, 2026-09-29, answer board q07). Read it from
+  `data/settings.json`, never type it, and name no cover the site has not stated.
 - Licence and statute claims are **not established**. They are written
   `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER` and guarded by
   `scripts/placeholder_check.py` until the breeder confirms them.

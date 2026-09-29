@@ -20,7 +20,10 @@
   "query_budget_usd": 0.5,
   "query_total_budget_usd": 1.0,
   "query_typical_call_usd": 0.01,
-  "guarantee_days": null,
+  "guarantee_days": 730,
+  "guarantee_label": "Two-year health guarantee",
+  "guarantee_note": "Ask us for the full terms before you pay a deposit.",
+  "guarantee_source": "the breeder's answer, answer board q07, 2026-09-29",
   "socials": {
     "x": "https://x.com/bluestaffyuk",
     "youtube": "https://www.youtube.com/@BlueStaffyUK-v2d",

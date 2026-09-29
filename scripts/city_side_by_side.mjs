@@ -89,22 +89,22 @@ for (const r of rows) {
 // the 1280 shot finds narrower than the page (it sits in the column beside the dial).
 const TYPE_FIT = 'The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.';
 const BOLD = 'Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.';
-const NO_GUARANTEE = 'No guarantee line: the canvas named a two-year health guarantee, and the site states none while data/settings.json has guarantee_days: null (working rule 9).';
+const GUARANTEE = 'The two-year health guarantee is printed from data/settings.json (guarantee_days 730, guarantee_label), your answer of 2026-09-29 (answer board q07), never typed on the page.';
 const PHOTO = (who) => `A different served photo where the canvas repeated Maggie's (Code fact 4): one served photo appears once per page, so this one carries ${who}.`;
 const DELIBERATE = {
   hero: [BOLD, TYPE_FIT],
   'counter-strip': ['From 640 to 839px the price scale\'s count sits above the line, not on it, so the figures keep their own width.'],
-  'trust-strip': [PHOTO("Jones's portrait"), NO_GUARANTEE, BOLD, TYPE_FIT],
+  'trust-strip': [PHOTO("Jones's portrait"), GUARANTEE, BOLD, TYPE_FIT],
   'contents-list': [BOLD],
   'desktop-dial': [],
   'jump-links': [],
-  'key-takeaways': [PHOTO('Jones seated'), NO_GUARANTEE, BOLD, TYPE_FIT],
+  'key-takeaways': [PHOTO('Jones seated'), GUARANTEE, BOLD, TYPE_FIT],
   'puppy-cards': [BOLD, TYPE_FIT],
   tables: [BOLD, TYPE_FIT],
   video: [BOLD, TYPE_FIT],
   'image-text': [PHOTO('Byrd for chapter one'), BOLD, TYPE_FIT],
   reviews: ['The review is split into three paragraphs rather than one block.', BOLD, TYPE_FIT],
-  'faq-blocks': [PHOTO('the London owner photo in the rail'), 'The canvas frame stacks all three FAQ blocks; the page places them apart (buying, checking us, Staffy life), each under the section it answers, so the built shot is the first block, the one with the photo rail.', NO_GUARANTEE, BOLD, TYPE_FIT],
+  'faq-blocks': [PHOTO('the London owner photo in the rail'), 'The canvas frame stacks all three FAQ blocks; the page places them apart (buying, checking us, Staffy life), each under the section it answers, so the built shot is the first block, the one with the photo rail.', GUARANTEE, BOLD, TYPE_FIT],
   newsletter: [BOLD, TYPE_FIT],
   'contact-form': [BOLD, TYPE_FIT],
 };

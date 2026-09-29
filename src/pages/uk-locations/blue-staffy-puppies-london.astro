@@ -18,8 +18,10 @@
 // to our vet, Puppy Culture and ENS, and the email reply time. The first five are the breeder's
 // answers on the answer board (2026-09-27); the reply time is the one the built pages and
 // data/faq.json already state. Each is placeholder wording until London's page run writes it
-// from the outline and the evidence ledger. There is no guarantee length (data/settings.json
-// `guarantee_days` is null) and no licence claim.
+// from the outline and the evidence ledger. The guarantee is the breeder's answer (two years,
+// answer board q07, 2026-09-29), printed from data/settings.json through cityKit's
+// `guaranteeRow()` in the trust strip, the takeaways and the FAQ rail, never typed here. There is
+// no licence claim.
 //
 // KEPT OUT OF THE INDEX: `noindex, follow`, written HERE rather than read from
 // data/locations.json, so a data edit cannot publish a scaffold; scripts/generate_sitemaps.py
@@ -51,7 +53,7 @@ import CityChapters from '../../components/kit/CityChapters.astro';
 import CityLetter from '../../components/kit/CityLetter.astro';
 import CityNewsletterNotice from '../../components/kit/CityNewsletterNotice.astro';
 import CityContactLineup from '../../components/kit/CityContactLineup.astro';
-import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, deliveryLine, depositLine, faqPageNode } from '../../lib/cityKit';
+import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, deliveryLine, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
 import { numberWord } from '../../lib/recordText';
 import type { PuppyRow } from '../../lib/site';
 
@@ -121,6 +123,9 @@ const faqLife: CityFaqRow[] = [
   { q: 'Is a Staffy a good first dog?', a: 'Yes, for a household ready to socialise the puppy early and train it consistently. Staffies are eager to please, but they need company, so the commitment matters most.' },
 ];
 const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
+// The guarantee, from data/settings.json (answer board q07): a claim in the trust strip and a row
+// in the takeaways. Null if the data ever loses it, and then neither prints.
+const guarantee = guaranteeRow();
 ---
 <CityShell title={loc.title} description={loc.description} canonical={`/uk-locations/${SLUG}/`}
   robots="noindex, follow" ogType="article" schema={schema} crumbTitle="London" sections={sections}
@@ -159,6 +164,7 @@ const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
         { icon: 'eye', claim: 'Eye and elbow screening', detail: 'Both parents screened before the litter' },
         { icon: 'heart', claim: 'Puppy Culture and ENS', detail: 'Early neurological stimulation, raised in the home' },
         { icon: 'return', claim: 'We take a puppy back', detail: 'If the fault is ours, or you can no longer care for it' },
+        ...(guarantee ? [{ icon: 'shield' as const, claim: guarantee.t, detail: guarantee.d }] : []),
         { icon: 'delivery', claim: 'To your London door', detail: `DEFRA-approved transport, or collect in ${TOWN}` },
       ]} />
   </Fragment>
@@ -173,6 +179,7 @@ const schema = [faqPageNode([...faqBuy, ...faqTrust, ...faqLife])];
       { label: 'The route', text: `DEFRA-approved transport to your London door for ${DELIVERY_BAND}, priced by distance, or collection in ${TOWN}.` },
       { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
       { label: 'The raising', text: 'Raised in the home with Puppy Culture and ENS, and you may speak to our vet.' },
+      ...(guarantee ? [{ label: 'The guarantee', text: `${guarantee.t}. ${guarantee.d}` }] : []),
     ]} />
   <CityPuppySheet id="puppies"
     heading={Q['puppies']}

@@ -76,7 +76,7 @@
       "aliases": [],
       "class": "Health",
       "authorization": "PROPOSED",
-      "source": null,
+      "source": "data/settings.json",
       "owner_page": null
     },
     {

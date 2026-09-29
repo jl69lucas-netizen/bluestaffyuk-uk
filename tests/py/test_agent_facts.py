@@ -24,6 +24,7 @@ Everything else is `NOT FETCHED`, `LICENCE_CLAIM_PLACEHOLDER` or `LEGAL_CLAIM_PL
 Scope is `.claude/agents/*.md` AND `.claude/skills/**/SKILL.md`, so the system skills that
 arrive in Task 12 are born under the same lint rather than having it retrofitted.
 """
+import json
 import pathlib
 import re
 
@@ -626,3 +627,51 @@ def test_the_method_label_lint_actually_fires(tmp_path):
         "Lisa Bright, our breeder. Method: we weigh daily.\n", encoding="utf-8")
     assert [b.split("  ")[0] for b in method_labels(p)] == [
         "SKILL.md:%d" % n for n in range(1, 10)]
+
+
+# ── the guarantee is two years (answer board q07, 2026-09-29) ─────────────────────────
+# The breeder's answer replaced the NOT FETCHED length: data/settings.json holds
+# `guarantee_days: 730`. No instruction may still tell a builder the length is unset, null or
+# not established; each guarantee line still names `guarantee_days` (the gate above), because
+# the setting stays the only place the length is written. History (the session log, the
+# answer board's own files, plans and specs) records what was true then and is not scanned.
+UNSET_GUARANTEE = re.compile(
+    r"(?i)guarantee_days`?:?\s*null|guarantee_days`?(?:\s+in\s+`?data/settings\.json`?)?\s*(?:is|,)\s*null"
+    r"|null today|guarantee[^.;|]{0,40}(?:NOT FETCHED|not established)|(?:NOT FETCHED|not established)[^.;|]{0,20}guarantee"
+    r"|no guarantee (?:is )?(?:stated|claimed|offered|while)|none stated")
+
+
+def unset_guarantee_lines(path: pathlib.Path):
+    return ["%s:%d  %s" % (path.name, n, line.strip()[:120])
+            for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+            if GUARANTEE.search(line) and UNSET_GUARANTEE.search(line) and not NOT_OURS.search(line)]
+
+
+def instruction_files():
+    files = [ROOT / "CLAUDE.md", *sorted((ROOT / "rules").glob("*.md")),
+             *sorted((ROOT / ".claude/agents").glob("*.md")),
+             *sorted((ROOT / ".claude/skills").glob("*/SKILL.md")),
+             *sorted(p for p in (ROOT / "docs/reference").glob("*.md") if p.name != "session-log.md")]
+    return [f for f in files if f.exists()]
+
+
+def test_the_guarantee_setting_holds_the_breeders_answer():
+    settings = json.loads((ROOT / "data/settings.json").read_text(encoding="utf-8"))
+    assert settings["guarantee_days"] == 730
+    assert settings["guarantee_label"] == "Two-year health guarantee"
+
+
+def test_no_instruction_still_calls_the_guarantee_unset():
+    bad = [b for f in instruction_files() for b in unset_guarantee_lines(f)]
+    assert bad == [], (
+        "the guarantee is two years (data/settings.json guarantee_days: 730, answer board q07, "
+        "2026-09-29); these lines still call it unset:\n  " + "\n  ".join(bad))
+
+
+def test_the_unset_guarantee_scan_fires(tmp_path):
+    p = tmp_path / "x.md"
+    p.write_text("The guarantee length is NOT FETCHED (`guarantee_days: null`).\n"
+                 "a guarantee only when `guarantee_days` is set (null today)\n"
+                 "The guarantee is `guarantee_days` (730 days, two years).\n"
+                 "Their guarantee is not established.\n", encoding="utf-8")
+    assert [b.split("  ")[0] for b in unset_guarantee_lines(p)] == ["x.md:1", "x.md:2"]

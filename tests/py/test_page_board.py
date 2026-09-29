@@ -2372,13 +2372,15 @@ def test_perf_psi_record_older_than_local_record_is_pending_again(tmp_path):
 
 
 
-def test_ontology_file_validates_and_marks_the_unconfirmed_guarantee_proposed():
-    """data/settings.json has guarantee_days: null (Foundation, unconfirmed). An ontology
-    that ASSERTED a guarantee would let a page publish a number nobody has given."""
+def test_ontology_file_validates_and_sources_the_guarantee_to_the_settings():
+    """The guarantee is two years (the breeder's answer, answer board q07, 2026-09-29), held in
+    data/settings.json `guarantee_days`. The entity names that file as its source and stays
+    PROPOSED until a board uses it, when board_approve.py promotes it (the ontology's own path)."""
     ont = PB.load_ontology()
     by_id = {e["id"]: e for e in ont["entities"]}
-    assert by_id["ont:health-guarantee"]["authorization"] == "PROPOSED"
-    assert by_id["ont:health-guarantee"]["source"] is None
+    assert by_id["ont:health-guarantee"]["authorization"] in ("PROPOSED", "ASSERTED")
+    assert by_id["ont:health-guarantee"]["source"] == "data/settings.json"
+    assert json.loads((PB.ROOT / "data/settings.json").read_text())["guarantee_days"] == 730
 
 
 def test_every_asserted_entity_names_a_source_that_exists():

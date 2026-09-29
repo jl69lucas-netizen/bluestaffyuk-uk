@@ -5,8 +5,8 @@
 // then the claims as a two-column ledger — each a line icon, a bold claim and one plain line.
 //
 // THE CLAIMS ARE THE PAGE'S, AND EACH ONE NEEDS A SOURCE. They are props because they are copy;
-// a claim with no backing file (a guarantee length while data/settings.json `guarantee_days` is
-// null, a licence) is never written here (working rule 9). The photograph is a SERVED file
+// a claim with no backing file (a licence) is never written here, and the guarantee is passed in
+// from data/settings.json through cityKit's `guaranteeRow()`, never typed (working rule 9). The photograph is a SERVED file
 // named in data/image-focus.json: it keeps its path and its served alt word for word (working
 // rule 11), and its crop is its faces' (src/lib/imageFocus.ts), never an inline style. From
 // 1024px the photo STRETCHES to the ledger's height (object-fit: cover), so `sizes` asks for the

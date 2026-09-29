@@ -418,7 +418,7 @@ table's length. Word ranges are planning guides, not quotas.
 |---|---|---|---|
 | 1 | Hero — H1 + subheadline + key takeaways + counter snippets | 150–200 | `#top` |
 | 2 | Available Puppies & Current Litter | 400–600 | `#available-puppies` |
-| 3 | Health Testing — the parents' tests as the evidence ledger records them, `NOT FETCHED` otherwise; a guarantee only when `guarantee_days` in `data/settings.json` is set (null today) | 800–1,200 | `#health-testing` |
+| 3 | Health Testing — the parents' tests as the evidence ledger records them, `NOT FETCHED` otherwise; the guarantee as `guarantee_days` in `data/settings.json` (the breeder's answer of 2026-09-29: 730 days, a two-year guarantee) and `guarantee_label` word it | 800–1,200 | `#health-testing` |
 | 4 | What is a [Variant] Blue Staffy? | 200–250 | `#what-is-blue-staffy` |
 | 5 | Blue Staffy Breed History & Research | 300–400 | `#breed-history` |
 | 6 | Blue Staffy Temperament & Personality | 400–500 | `#temperament` |
@@ -779,7 +779,7 @@ Leave clearly labeled placeholders for all images/videos:
 ❌ Bad: "Blue Staffy pups are available for sale. They are smart puppies. Contact us."
 ✅ Good: "Looking for a family dog who wants to be wherever you are? Our Blue Staffy puppies are home-raised by Lisa Bright in Carlisle, Cumbria, and go home at £1,500 or £1,700."
 
-❌ Bad: "Our puppies have health guarantees." (a bare claim — and BSUK names a guarantee only when `guarantee_days` in `data/settings.json` is set; it is null today)
+❌ Bad: "Our puppies have health guarantees." (a bare claim — BSUK names its guarantee only with the length and words of `guarantee_days` and `guarantee_label` in `data/settings.json`)
 ✅ Good: "What if your puppy develops an underlying congenital health issue later in life? Start with the parents: we show you the health tests the evidence ledger records for them, and we claim nothing it does not."
 
 #### B. Humor Rules (Apply to ALL Pages — Rule 36)
@@ -885,7 +885,7 @@ planning labels only — never rendered into a title or description.
 - Must carry: primary keyword + a long-tail or LSI variation + a trust signal + a CTA
 - Emphasise what is locked: home-reared in Carlisle, UK delivery £200–£350 by distance via
   DEFRA-approved transport or collection in Carlisle, £500 refundable deposit
-- Never emphasise a licence, a statute, a guarantee length (`guarantee_days` in `data/settings.json` is null) or a review count
+- Never emphasise a licence, a statute or a review count; a guarantee length only as `guarantee_days` and `guarantee_label` in `data/settings.json` word it
 
 Example:
 > Home-reared Blue Staffy puppies from Carlisle, £1,500–£1,700 with a £500 refundable deposit and UK delivery by DEFRA-approved transport. Ask about a pup today.

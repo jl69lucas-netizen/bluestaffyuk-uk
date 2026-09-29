@@ -49,7 +49,7 @@ Everything here comes from a file, never from memory:
 
 Not established, and therefore never written as a fact: a licence, a registration or a
 council permission (`LICENCE_CLAIM_PLACEHOLDER`), a statute or by-law other than the
-banned-breed line in the table above (`LEGAL_CLAIM_PLACEHOLDER`), the guarantee length (`NOT FETCHED` — `guarantee_days: null`),
+banned-breed line in the table above (`LEGAL_CLAIM_PLACEHOLDER`), a guarantee length typed by hand (it is two years, read from `guarantee_days` and `guarantee_label`),
 a named vet or local business, a mileage, a journey time, a delivery date, a local price, a
 city-level statistic, a health-test result. The parents' L-2-HGA and HC-HSF4 "clear" results
 are `NOT FETCHED` until the certificate is on file (`rules/copy.md`, `entity-4-move-loop`):

@@ -39,7 +39,7 @@ B — Bridge:  BSUK as the path from Before to After.
 |----------------|----------------|
 | Scam-prevention sections | Before: bank-transfer seller risk → After: licensed, documented purchase |
 | Licensing safety sections | Before: unlicensed puppy-farm risk → After: full LEGAL_CLAIM_PLACEHOLDER-compliant paperwork |
-| Health section | Before: sick puppy fear → After: vet health check, first vaccinations, a vet-signed health card (a guarantee only once `guarantee_days` is set) |
+| Health section | Before: sick puppy fear → After: vet health check, first vaccinations, a vet-signed health card (the guarantee as `guarantee_days` and `guarantee_label` word it) |
 | First-time owner sections | Before: overwhelmed by complexity → After: guided and supported |
 | `/uk-blue-staffy-puppy-buying-guide/` | Before: online scam → After: verified breeder checklist |
 

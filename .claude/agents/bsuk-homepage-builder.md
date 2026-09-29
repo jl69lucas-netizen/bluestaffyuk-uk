@@ -15,7 +15,7 @@ effort: max
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is two years, as `data/settings.json` `guarantee_days` (730) and `guarantee_label` word it (the breeder's answer, 2026-09-29), with no cover the site has not stated
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -222,7 +222,7 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 
 ### FAQ (id="faq" · FAQPage schema)
 - The kit's `Faq` over rows from `data/faq.json` (`loadFaq()`, `src/lib/faq.ts`); the FAQPage node is built from the SAME rows and passed through `BaseLayout`'s `schema` prop — never an inline `<script type="application/ld+json">` block (banned above) and never a hand-built `<details>` accordion
-- Minimum 8 questions covering: price and deposit, the paperwork that goes home with a puppy (`whyus-paperwork`), coat colour, collection vs delivery; a health guarantee only when `guarantee_days` in `data/settings.json` is set (null today, so none)
+- Minimum 8 questions covering: price and deposit, the paperwork that goes home with a puppy (`whyus-paperwork`), coat colour, collection vs delivery; a health guarantee only as `guarantee_days` in `data/settings.json` (the breeder's answer of 2026-09-29: 730 days, a two-year guarantee) and `guarantee_label` word it
 
 ### The close (id="talk-to-us") — no form
 - The homepage carries NO enquiry form. `ContactFormKit` is mounted once on the contact page (`/uk-blue-staffy-breeders-contact/`) and on each sales page; the close links to the contact page

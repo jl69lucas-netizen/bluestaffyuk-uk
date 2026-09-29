@@ -75,7 +75,9 @@ import CityLetter from './CityLetter.astro';
 import CityFaqLedger, { type CityFaqRow } from './CityFaqLedger.astro';
 import CityNewsletterNotice from './CityNewsletterNotice.astro';
 import CityContactLineup from './CityContactLineup.astro';
-import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine } from '../../lib/cityKit';
+import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine, guaranteeRow } from '../../lib/cityKit';
+/** The guarantee, from data/settings.json (answer board q07, 2026-09-29); null if the data loses it. */
+const GUARANTEE = guaranteeRow();
 import type { SectionRef } from '../../lib/sections';
 
 /** The counter specimen's availability figure, counted the way every page counts it. */
@@ -180,7 +182,7 @@ export const CITY_DEMO_SECTIONS: SectionRef[] = [
  *  confirmed answers back (2026-09-27): the prices, the six by name, the deposit ruling, the
  *  delivery band and collection, Maggie and Jones, the two DNA tests, eye and elbow screening
  *  with no score, the vet, the take-back terms, Puppy Culture and ENS, and the breed facts
- *  data/faq.json already carries. No guarantee (`guarantee_days` is null), no licence, no
+ *  data/faq.json already carries. The guarantee is the rail's, from data/settings.json; no licence, no
  *  refund clause, no age. The figures and names are read from the data, never typed. */
 const pupsBySex = (sex: 'male' | 'female') => {
   const names = availablePuppies().filter((p) => p.sex === sex).map((p) => `${p.name} (${p.colour.toLowerCase()})`);
@@ -459,8 +461,8 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       },
     }],
   },
-  // Five claims the facts files and the breeder's answers back (the canvas's sixth, a
-  // guarantee length, is not stated while data/settings.json `guarantee_days` is null).
+  // Six claims the facts files and the breeder's answers back; the sixth, the canvas's guarantee,
+  // is data/settings.json's (two years, answer board q07, 2026-09-29) through `guaranteeRow()`.
   'city-trust-ledger': {
     C: CityTrustLedger,
     demo: [{
@@ -473,6 +475,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
         { icon: 'eye', claim: 'Eye and elbow screening', detail: 'Both parents screened before the litter' },
         { icon: 'heart', claim: 'Puppy Culture and ENS', detail: 'Early neurological stimulation, raised in the home' },
         { icon: 'return', claim: 'We take a puppy back', detail: 'If the fault is ours, or you can no longer care for it' },
+        ...(GUARANTEE ? [{ icon: 'shield' as const, claim: GUARANTEE.t, detail: GUARANTEE.d }] : []),
         { icon: 'delivery', claim: 'To your door', detail: 'DEFRA-approved transport, or collect in Carlisle' },
       ],
     }],
@@ -510,6 +513,7 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
         { label: 'The route', text: `DEFRA-approved transport for ${DELIVERY_BAND}, priced by distance, or collection in ${SITE.address.city}.` },
         { label: 'The parents', text: 'Maggie and Jones are DNA-tested for L-2-HGA and HC-HSF4, with eyes and elbows screened.' },
         { label: 'The raising', text: 'Raised in the home with Puppy Culture and ENS, and you may speak to our vet.' },
+        ...(GUARANTEE ? [{ label: 'The guarantee', text: `${GUARANTEE.t}. ${GUARANTEE.d}` }] : []),
       ],
     }],
   },

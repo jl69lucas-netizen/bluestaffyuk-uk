@@ -16,6 +16,7 @@ import settings from '../../data/settings.json';
 import prices from '../../data/price-matrix.json';
 import puppiesJson from '../../data/puppies.json';
 import { gbp, type PuppyRow } from './site';
+import { numberWord } from './recordText';
 
 export const money = (n: number) => `£${gbp(n)}`;
 
@@ -53,15 +54,34 @@ export const transportLine = (() => {
   return sentence(`by ${m[1]}`);
 })();
 
-/** The guarantee's length, or null while the breeder has not given one (rule 9). */
-export const guaranteeDays = (): number | null => (settings as { guarantee_days: number | null }).guarantee_days;
+/** THE GUARANTEE (the breeder's answer, answer board q07, 2026-09-29): two years. It is data —
+ *  data/settings.json `guarantee_days` (the length), `guarantee_label` (its words: the site calls
+ *  it a "health guarantee", data/faq.json home-health-guarantee, and never names what it covers,
+ *  so the label names no cover) and `guarantee_note` (the line under it). No component types it. */
+type GuaranteeSettings = { guarantee_days: number | null; guarantee_label?: string; guarantee_note?: string };
+const G = settings as unknown as GuaranteeSettings;
 
-/** A guarantee row ("<n>-day guarantee" over the breeder's own words), or null. It prints only
- *  when data/settings.json carries BOTH the length (`guarantee_days`) and the wording
- *  (`guarantee_note`): no component writes what a guarantee covers (working rule 9). */
+/** The guarantee's length in days, or null while the breeder has not given one (rule 9). */
+export const guaranteeDays = (): number | null => G.guarantee_days;
+
+/** The length as its label must open: "Two-year" for 730 days, "<n>-day" for a length that is
+ *  no whole number of years. A label that names another length stops the build (rule 9). */
+function lengthWords(days: number): string {
+  if (days % 365 !== 0) return `${days}-day`;
+  const w = numberWord(days / 365);
+  return `${w.charAt(0).toUpperCase()}${w.slice(1)}-year`;
+}
+
+/** A guarantee row ({ t: its label, d: its note }), or null. It prints only when
+ *  data/settings.json carries the length, the label and the note: no component writes what a
+ *  guarantee is or covers (working rule 9). */
 export const guaranteeRow = (): { t: string; d: string } | null => {
-  const s = settings as { guarantee_days: number | null; guarantee_note?: string };
-  return s.guarantee_days && s.guarantee_note ? { t: `${s.guarantee_days}-day guarantee`, d: s.guarantee_note } : null;
+  if (!G.guarantee_days || !G.guarantee_label || !G.guarantee_note) return null;
+  const want = lengthWords(G.guarantee_days);
+  if (!G.guarantee_label.startsWith(want)) {
+    throw new Error(`cityKit: data/settings.json guarantee_label "${G.guarantee_label}" does not open with its length, "${want}" (guarantee_days ${G.guarantee_days})`);
+  }
+  return { t: G.guarantee_label, d: G.guarantee_note };
 };
 
 /** The FAQPage node for a city page's questions: EXACTLY the rows its FAQ blocks render, in

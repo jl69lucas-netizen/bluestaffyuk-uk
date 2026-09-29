@@ -16,7 +16,7 @@ effort: max
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is two years, as `data/settings.json` `guarantee_days` (730) and `guarantee_label` word it (the breeder's answer, 2026-09-29), with no cover the site has not stated
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -74,7 +74,7 @@ The purchase guide walks buyers through:
 8. **Arrival phase** — 72-hour vet visit, settling-in protocol
 9. **Post-purchase support** — Lisa Bright contact, ongoing questions welcome
 
-**Health guarantee:** none stated — `guarantee_days` in `data/settings.json` is null; never hardcode a duration.
+**Health guarantee:** two years — read it from `guarantee_days` in `data/settings.json` (the breeder's answer of 2026-09-29: 730 days, a two-year guarantee) and `guarantee_label`; never hardcode a duration, and name no cover the site has not stated.
 **Pricing:** All prices from `data/price-matrix.json`, all cost estimates from `data/financial-entities.json`. (not ported — source repo only)
 **Sacred elements:** H1, canonical, all JSON-LD schema blocks — never modify these.
 
@@ -92,7 +92,7 @@ Build one at a time. Confirm with user before moving to next.
 | 4 | **The Paperwork Promise** | `features` | the documents that go home with every puppy — Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract (`whyus-paperwork`) — one card per document |
 | 5 | **Key Takeaways** | `features` | TL;DR summary — 3-column grid of top reasons to buy |
 | 6 | **Why BSUK — 10 Reasons** | `features` | 10 differentiators vs competitors / unverified sellers |
-| 7 | **Health Checks and Paperwork** | `features` | What goes home with a puppy: the `data/faq.json` `puppy-package` items (first vaccinations, microchip, vet health check, worming and flea treatment, a puppy pack) and the `whyus-paperwork` documents (Kennel Club registration paperwork, vaccination records, microchipping details, a written purchase contract). No guarantee while `data/settings.json` `guarantee_days` is null; a DNA-test result only where `data/quality/evidence-ledger.json` holds its proof (none today) |
+| 7 | **Health Checks and Paperwork** | `features` | What goes home with a puppy: the `data/faq.json` `puppy-package` items (first vaccinations, microchip, vet health check, worming and flea treatment, a puppy pack) and the `whyus-paperwork` documents (Kennel Club registration paperwork, vaccination records, microchipping details, a written purchase contract). The guarantee as `guarantee_days` in `data/settings.json` (the breeder's answer of 2026-09-29: 730 days, a two-year guarantee) words it; a DNA-test result only where `data/quality/evidence-ledger.json` holds its proof (none today) |
 | 8 | **9-Step Purchase Process** | custom | Numbered steps with icons — the full purchase journey |
 | 9 | **Puppy Info** | custom | What makes Blue Staffies exceptional companions |
 | 10 | **Pricing & Comparison** | `comparison-table` | BSUK vs market pricing, Blue Staffy vs blue and white Staffy |
@@ -162,7 +162,7 @@ Build [section type]:
 - Always read `data/price-matrix.json` for BSUK prices
 - Competitor column uses rounded market averages (not specific seller names)
 - Highlight BSUK column in design system primary color
-- No guarantee row: the guarantee length is NOT FETCHED (`data/settings.json` `guarantee_days: null`)
+- The guarantee row reads `guarantee_days` in `data/settings.json` (the breeder's answer of 2026-09-29: 730 days, a two-year guarantee) and `guarantee_label`, never a typed length
 - Include row: "Paperwork" — BSUK: the four `whyus-paperwork` documents vs Market: varies
 
 ### Section 11 — Delivery Coverage
@@ -221,7 +221,7 @@ urls = ["https://SITE_URL_PLACEHOLDER/buy-blue-staffy-puppies-uk/"]
 6. **Every section addresses a buyer fear** — refer to Reader Profile above
 7. **FAQ needs schema** — FAQPage JSON-LD required, no exceptions
 8. **LICENCE_CLAIM_PLACEHOLDER compliance** — every section that discusses purchase must reference home-raised documentation; never imply backyard-bred
-9. **No guarantee duration** — a guarantee appears only when `guarantee_days` in `data/settings.json` is set; it is null today
+9. **No typed guarantee duration** — the guarantee's length comes only from `guarantee_days` in `data/settings.json` (the breeder's answer of 2026-09-29: 730 days, a two-year guarantee)
 
 ---
 

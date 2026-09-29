@@ -176,8 +176,9 @@ rendered into a title or description tag.
 - Must carry: primary keyword + a long-tail or LSI variation + a trust signal + a CTA.
 - Emphasise what is locked: home-reared in Carlisle, UK delivery £200–£350 by distance via
   DEFRA-approved transport or collection in Carlisle, £500 refundable deposit.
-- Never emphasise a licence, a statute, a guarantee length or a review count — none of
-  those is established.
+- Never emphasise a licence, a statute or a review count — none of those is established.
+  The guarantee's length (two years) is emphasised only as `guarantee_days` and
+  `guarantee_label` in `data/settings.json` word it.
 
 **Rule 24 — Uniqueness**
 Unique title and description on every page. Duplicates are a cannibalisation signal.

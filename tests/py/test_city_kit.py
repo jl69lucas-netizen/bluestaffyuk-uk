@@ -201,7 +201,22 @@ def test_built_city_trust_ledger_keeps_its_served_photo_whole():
     assert "srcset=" in photo.group(0) and 'loading="lazy"' in photo.group(0)
     assert 3 <= s.count("data-trust-item") <= 8
     assert s.count("<svg") == s.count("data-trust-item")
-    assert "guarantee" not in s.lower(), "no guarantee length while guarantee_days is null"
+    # The guarantee is the breeder's answer (answer board q07, 2026-09-29): two years. It is
+    # printed from data/settings.json, once, as one of the ledger's claims.
+    g = guarantee()
+    assert _text(s).count(g["guarantee_label"]) == 1, "the trust ledger prints the guarantee from the data, once"
+    assert "-day guarantee" not in s
+
+
+def guarantee():
+    """data/settings.json's guarantee (answer board q07, 2026-09-29): 730 days, worded as the
+    site words a guarantee elsewhere (a "health guarantee", data/faq.json home-health-guarantee;
+    the site never names what it covers, so no "genetic")."""
+    s = json.loads((ROOT / "data/settings.json").read_text())
+    assert s["guarantee_days"] == 730
+    assert s["guarantee_label"] == "Two-year health guarantee"
+    assert s["guarantee_note"]
+    return s
 
 
 CITY_CSS = ROOT / "src/styles/city.css"
@@ -396,6 +411,8 @@ def test_built_city_takeaways_is_a_ruled_ledger_with_a_served_photo():
     assert alt in served_alts()[src.group(1)]
     # The photo is first in source: a phone meets it before the facts.
     assert s.find("<img") < s.find("<h2")
+    # One row is the guarantee, printed from data/settings.json (answer board q07).
+    assert _text(s).count(guarantee()["guarantee_label"]) == 1
 
 
 def test_built_city_puppy_sheet_prints_every_available_puppy_from_the_data():
@@ -570,9 +587,10 @@ def test_built_city_faq_ledger_blocks_number_on_and_carry_one_rail():
     assert len(qs) == len(nums)
     # Title Case at render, as Faq.astro does (rules/headings.md).
     assert all(q[0].isupper() for q in qs)
-    # No guarantee figure while data/settings.json guarantee_days is null.
-    assert json.loads((ROOT / "data/settings.json").read_text())["guarantee_days"] is None
-    assert "guarantee" not in s.lower()
+    # The guarantee is printed once, in the rail's brief, from data/settings.json (q07).
+    g = guarantee()
+    assert _text(s).count(g["guarantee_label"]) == 1
+    assert "-day guarantee" not in s and "genetic" not in s.lower()
     # No licence detail, no refund clause, and the rail's served photo keeps its served alt.
     assert "licen" not in s.lower() and "refund" not in s.lower()
     src = re.search(r'<img [^>]*src="/images/([^"]+)"[^>]*>', s)
@@ -582,8 +600,8 @@ def test_built_city_faq_ledger_blocks_number_on_and_carry_one_rail():
 def test_the_faq_rail_prints_its_facts_from_the_one_source():
     """Task 7b review, item 7: the rail's brief types no fact beside src/lib/cityKit.ts. The
     deposit phrase and the transport line are cityKit exports (the transport from
-    data/settings.json `delivery_note`), and the guarantee row is `guaranteeRow()`, which is null
-    while `guarantee_days` is null and never carries wording the data does not."""
+    data/settings.json `delivery_note`), and the guarantee row is `guaranteeRow()`, which prints
+    only what data/settings.json holds (`guarantee_label`, `guarantee_note`), never wording of its own."""
     src = (KIT / "CityFaqLedger.astro").read_text(encoding="utf-8")
     code = src.split("---", 2)[1]
     for literal in ("DEFRA", "Books your viewing", "genetic", "-day guarantee"):
@@ -597,6 +615,8 @@ def test_the_faq_rail_prints_its_facts_from_the_one_source():
     assert "By DEFRA-approved transport, priced by distance." in rail
     assert settings["delivery_note"].endswith("by DEFRA-approved transport, priced by distance")
     assert "Books your viewing and reserves your puppy, and it comes off the price." in rail
+    g = guarantee()
+    assert g["guarantee_label"] in rail and g["guarantee_note"] in rail
 
 
 def test_no_heading_on_the_city_preview_repeats_an_faq_question():
@@ -828,3 +848,22 @@ def test_no_in_body_city_component_reads_the_viewport_width():
         css = (KIT / f"{name}.astro").read_text(encoding="utf-8").split("<style>", 1)[1]
         width = re.findall(r"@media[^{]*\b(?:min|max)-width[^{]*\{", css)
         assert not width, (name, width)
+
+
+def test_the_guarantee_prints_from_the_data_on_the_london_page():
+    """Answer board q07 (2026-09-29): the guarantee is two years. On the London page the trust
+    strip, the takeaways and the FAQ rail print it from data/settings.json, and no built page
+    of the twelve prints it (their copy is theirs until each is rebuilt)."""
+    g = guarantee()
+    page = ROOT / "dist/uk-locations/blue-staffy-puppies-london/index.html"
+    if not page.exists():
+        pytest.skip("run npm run build first")
+    html = page.read_text(encoding="utf-8")
+    for root in ("city-trust", "city-takeaways-ledger", "city-faq"):
+        m = re.search(r'<section[^>]*class="city-kit %s[" ].*?</section>' % root, html, re.S)
+        assert m, root
+        assert g["guarantee_label"] in _text(m.group(0)), f"{root} does not print the guarantee"
+    for built in json.loads((ROOT / "data/facts/rebuilt.json").read_text()):
+        f = ROOT / "dist/index.html" if built == "index" else ROOT / "dist" / built / "index.html"
+        assert f.exists(), built
+        assert g["guarantee_label"] not in f.read_text(encoding="utf-8"), built
