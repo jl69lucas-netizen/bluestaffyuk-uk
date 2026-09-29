@@ -86,7 +86,7 @@ Rules:
 - "Here's what the last litter taught us that nobody talks about..." (insider revelation)
 
 **BSUK Interest content:**
-- The problem with Gumtree / Facebook Marketplace (no licence number, bank-transfer deposits, no recourse)
+- The problem with Gumtree / Facebook Marketplace (no licence number, sellers taking a deposit and disappearing, no recourse)
 - The problem with "cheap blue staffy" sites (no LICENCE_CLAIM_PLACEHOLDER, payment via no-recourse apps)
 - What "home-raised and licensed" actually means (LICENCE_CLAIM_PLACEHOLDER + LEGAL_CLAIM_PLACEHOLDER + vet health check)
 

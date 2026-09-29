@@ -56,7 +56,7 @@ Note: This page uses a dual-H1 pattern. The decorative "About Us" is a styled di
 ## BSUK About Page Story Elements
 
 ### Hook (the problem)
-The UK puppy-scam market — online adverts and social-media sellers claiming paperwork they cannot show, taking a deposit by bank transfer and disappearing. Frame the problem; quote no loss figure, because none is sourced.
+The UK puppy-scam market — online adverts and social-media sellers claiming paperwork they cannot show, taking a deposit and disappearing. Frame the problem; quote no loss figure, because none is sourced.
 
 ### Story (Lisa Bright's background)
 - Years breeding Blue Staffies: NOT FETCHED — never write a number the breeder has not given

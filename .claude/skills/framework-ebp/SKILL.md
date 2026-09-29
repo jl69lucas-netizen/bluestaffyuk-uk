@@ -37,7 +37,7 @@ The pattern: Claim → Evidence → What it means for the buyer.
 
 BSUK operates in a trust-scarce market. Blue Staffy buyers have been burned by:
 - Sellers who claim a licence and quote an invented licence number
-- Facebook Marketplace listings with stock photos and bank-transfer deposit requests
+- Facebook Marketplace listings with stock photos, taking a deposit and disappearing
 - Sites that say "home-raised" with no paperwork to show
 - "Cheap blue staffy" sites with no LICENCE_CLAIM_PLACEHOLDER, no vet check, no recourse
 

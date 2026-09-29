@@ -302,8 +302,25 @@ def test_the_payment_red_flag_never_condemns_a_bank_transfer():
     bad = [f"{n}  {l.strip()[:90]}" for n, l in _lines(SCAM) if CONDEMNS_TRANSFER.search(l)]
     assert bad == [], "a line condemns paying by bank transfer:\n  " + "\n  ".join(bad)
     checklist = t.split("## The Red-Flag Checklist", 1)[1].split("```")[1]
-    assert re.search(r"(?i)asks? for (?:any )?money before (?:a|any) (?:live )?video call or (?:a )?visit, "
-                     r"and (?:you )?cannot check who (?:they are|the seller is)", checklist), checklist
+    # Review I8: the flag is tied to the video call or visit only.
+    item = next(l for l in checklist.splitlines() if l.startswith("10."))
+    assert re.search(r"(?i)asks? for (?:any )?money before (?:a|any) (?:live )?video call or (?:a )?visit", item), item
+    assert "cannot check" not in item, item
+
+
+def instruction_bank_transfer_scams():
+    """Instruction lines (agents and skills) that frame a deposit BY BANK TRANSFER as the scam.
+    We take the deposit by bank transfer (answer board q04), so the scam is taking a deposit and
+    disappearing; a line may name a bank transfer only to say we take one or never to flag it."""
+    ok = re.compile(r"(?i)we take|never (?:flags?|condemns?)|never the payment method")
+    files = sorted((ROOT / ".claude/agents").glob("*.md")) + sorted((ROOT / ".claude/skills").glob("*/SKILL.md"))
+    return [f"{f.relative_to(ROOT)}:{n}" for f in files
+            for n, l in enumerate(f.read_text(encoding="utf-8").splitlines(), 1)
+            if re.search(r"(?i)bank[- ]transfer", l) and not ok.search(l)]
+
+
+def test_no_instruction_frames_a_bank_transfer_as_the_scam():
+    assert instruction_bank_transfer_scams() == []
 
 
 def test_the_transfer_scan_fires():

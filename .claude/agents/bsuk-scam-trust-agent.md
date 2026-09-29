@@ -101,7 +101,7 @@ Our answer: the paperwork exactly as data/faq.json `whyus-paperwork` lists it, a
 (answer board, 2026-09-29, `docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`), and both are now signs we pass:
 
 - a seller who will not do a live video call with the puppy and its mother — we offer a video call with the puppy and its mother on request (q03), so it is item 9 of the checklist below;
-- a seller who asks for money before a video call or a visit, and whom you cannot check — the red flag is paying ANY money, by any method, to a seller you cannot check; it is never the payment method. We take the deposit by bank transfer ourselves (q04), and a buyer can have the video call first, so it is item 10 of the checklist below.
+- a seller who asks for money before a video call or a visit — the red flag is paying ANY money, by any method, before a video call or a visit; it is never the payment method. We take the deposit by bank transfer ourselves (q04), and a buyer can have the video call first, so it is item 10 of the checklist below.
 
 A new red flag our own process may fail goes to the breeder as a question on the answer board (`docs/reference/answer-board/README.md`); a flag enters the checklist only when her answer says our process passes it.
 
@@ -126,7 +126,7 @@ Check every line with any seller before you pay the balance:
 7. The seller will only meet you away from their home.
 8. There is no way to reach the seller after the sale.
 9. The seller will not do a live video call with the puppy and its mother.
-10. The seller asks for money before a video call or a visit, and you cannot check who they are.
+10. The seller asks for money before a video call or a visit.
 If any line is true, stop.
 ```
 
@@ -164,13 +164,13 @@ fraud-reporting page is not a library row yet; it is added through that agent's 
 ## Safe Payment
 
 We take the deposit by bank transfer (the breeder's answer, answer board q04, `docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`). Its amount
-is `deposit_gbp` in `data/settings.json`, read and never typed, so a page writes "we take the
-£{deposit_gbp} deposit by bank transfer" with the figure filled from that key. What the deposit
+is `deposit_gbp` in `data/settings.json`, read and never typed, so a page writes
+"we take the £{deposit_gbp} deposit by bank transfer" with the figure filled from that key. What the deposit
 books, and its refund term, follow the deposit ruling above, never a plain "refundable".
 
 The scam advice never flags a bank transfer as such, because that would condemn our own
-deposit. The red flag is paying any money, by any method, to a seller you cannot check, before a
-video call or a visit (checklist item 10). A buyer can have the live video call with the puppy
+deposit. The red flag is paying any money, by any method, before a video call or a visit
+(checklist item 10). A buyer can have the live video call with the puppy
 and its mother first (q03), and the independent guidance on paying for a puppy is cited as it is.
 
 ---

@@ -37,7 +37,7 @@ B — Bridge:  BSUK as the path from Before to After.
 
 | Page / Section | BAB Application |
 |----------------|----------------|
-| Scam-prevention sections | Before: bank-transfer seller risk → After: licensed, documented purchase |
+| Scam-prevention sections | Before: a seller taking a deposit and disappearing → After: a documented purchase you can check |
 | Licensing safety sections | Before: unlicensed puppy-farm risk → After: full LEGAL_CLAIM_PLACEHOLDER-compliant paperwork |
 | Health section | Before: sick puppy fear → After: vet health check, first vaccinations, a vet-signed health card (the guarantee as `guarantee_days` and `guarantee_label` word it) |
 | First-time owner sections | Before: overwhelmed by complexity → After: guided and supported |
@@ -53,7 +53,7 @@ B — Bridge:  BSUK as the path from Before to After.
 ```
 BEFORE:
 You found a blue Staffy puppy for well under £1,500 on Facebook Marketplace. The photos looked real.
-The seller had a phone number. You sent a bank transfer as a deposit.
+The seller had a phone number. You paid a deposit before any call or visit.
 Then silence. The number disconnected. The profile disappeared.
 That's not a rare story — it happens every week in UK Staffy Facebook groups.
 
@@ -96,7 +96,7 @@ yours before sending any deposit. [Link: LICENCE_CLAIM_PLACEHOLDER verification 
 ## BAB Writing Rules
 
 ### Before — Make the Pain Real
-- **Specific, not generic:** "You sent a bank transfer online and never heard back" > "some people get scammed"
+- **Specific, not generic:** "You paid a deposit online and never heard back" > "some people get scammed"
 - **Empathetic, not condescending:** "that's not a horror story — that's a Tuesday for Staffy buyers in Facebook groups" validates without judging
 - **Name the emotion:** fear, frustration, heartbreak — not just the situation
 
