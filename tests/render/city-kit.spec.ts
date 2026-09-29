@@ -8,7 +8,7 @@ import './checks/nav.js';
 import { readFileSync } from 'node:fs';
 import { cityTypeFit } from './lib/cityTypeFit.js';
 import { cityLayoutFollowsBox } from './lib/cityLayoutFollowsBox.js';
-import { TIER } from './lib/cityTiers.js';
+import { TIER, HEADING_CAPS } from './lib/cityTiers.js';
 
 /**
  * The city-kit render spec (the London component design pass, Plan 2). Every built page that
@@ -432,7 +432,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
     present: '.city-kit',
     run: async (page, viewport) => {
       const fullWidthSpecimen = new URL(page.url()).pathname === '/kit-preview/city/';
-      const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER, fullWidthSpecimen });
+      const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER, caps: HEADING_CAPS, fullWidthSpecimen });
       console.log(`city-type-fit @ ${viewport}px: examined ${r.examined}`);
       return r.examined ? r.defects : ['city-type-fit examined nothing'];
     },
@@ -557,7 +557,7 @@ for (const kind of ['broken', 'good'] as const) {
   test(`city-type-fit on its known_${kind} fixture`, async ({ page }, testInfo) => {
     const viewport = testInfo.project.use.viewport!.width;
     await page.setContent(readFileSync(new URL(`./fixtures/city/type-fit-${kind}.html`, import.meta.url), 'utf8'));
-    const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER });
+    const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER, caps: HEADING_CAPS });
     expect(r.examined, 'the fixture must be examined').toBeGreaterThan(0);
     if (kind === 'broken') {
       // Each kind of defect fires on its own element, not merely "something fired".
@@ -586,7 +586,7 @@ for (const kind of ['broken', 'good'] as const) {
 test('city-type-fit reads the tier from the section box, at the TIER edges', async ({ page }, testInfo) => {
   const viewport = testInfo.project.use.viewport!.width;
   await page.setContent(readFileSync(new URL('./fixtures/city/type-fit-tier-broken.html', import.meta.url), 'utf8'));
-  const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER });
+  const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER, caps: HEADING_CAPS });
   for (const box of ['city-narrow', 'city-edge']) {
     expect(r.defects.some((d) => d.startsWith(box) && /over the tablet cap of 25px/.test(d)),
       `${box}: a 27px H2 was not judged against the tablet cap: ${r.defects.join(' | ')}`).toBe(true);
@@ -629,7 +629,7 @@ for (const route of ROUTES) {
       expect(res?.status()).toBe(200);
       await page.evaluate(() => document.fonts.ready);
       const fullWidthSpecimen = route === '/kit-preview/city/';
-      const t = await page.evaluate(cityTypeFit, { viewport: width, tier: TIER, fullWidthSpecimen });
+      const t = await page.evaluate(cityTypeFit, { viewport: width, tier: TIER, caps: HEADING_CAPS, fullWidthSpecimen });
       const l = await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER });
       console.log(`${route} @ ${width}px: city-type-fit examined ${t.examined}, city-layout-follows-box examined ${l.examined}`);
       expect(t.examined).toBeGreaterThan(0);

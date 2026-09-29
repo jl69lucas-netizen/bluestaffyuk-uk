@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>body text carried by list items</title>
+<!-- The Known Issue 97 review, item 8: the body size came from `p` alone. On a page whose reading
+     text is mostly list items at 17px, with a short 15.5px note as its only paragraph, the old
+     measure called the body 15.5px and passed a 16.5px heading that sits under the 17px text. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  main { padding: 0 24px; }
+  h2 { font-size: 16.5px; } h3 { font-size: 16.5px; }
+  .note { font-size: 15.5px; }
+</style>
+</head><body>
+<main>
+  <h2>What to Ask Every Breeder</h2>
+  <ul>
+    <li>Which health tests have both parents had, and can I see the vet records for each of them?</li>
+    <li>Can I meet the mother and see the litter with her, in the home where they were raised?</li>
+    <li>How is the deposit paid, is it refundable, and what does the sale contract say about take-back?</li>
+  </ul>
+  <h3>Before You Pay</h3>
+  <p class="note">A short note.</p>
+</main>
+</body></html>

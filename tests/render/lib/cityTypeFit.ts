@@ -38,9 +38,11 @@
  */
 export interface TypeFitResult { examined: number; defects: string[] }
 
-export function cityTypeFit({ viewport, tier: edges, fullWidthSpecimen = false }:
-  { viewport: number; tier: { tablet: number; desktop: number }; fullWidthSpecimen?: boolean }): TypeFitResult {
-  const CAP: Record<string, [number, number, number]> = { H1: [26, 30, 34], H2: [22, 25, 28], H3: [17, 18, 20] };
+export function cityTypeFit({ viewport, tier: edges, caps: CAP, fullWidthSpecimen = false }:
+  { viewport: number; tier: { tablet: number; desktop: number };
+    caps: Record<string, [number, number, number]>; fullWidthSpecimen?: boolean }): TypeFitResult {
+  // CAP is HEADING_CAPS from tests/render/lib/cityTiers.ts, passed in by the caller (this runs
+  // inside the page, so it cannot import it): one table for the city and the built pages.
   const TIER = ['phone', 'tablet', 'desktop'];
   // 1b: a desktop-tier section at least this wide has room for a section H2 on two lines.
   const NARROW_BOX = 700;

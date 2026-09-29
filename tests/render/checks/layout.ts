@@ -1,5 +1,6 @@
 import { register, type CheckResult, type CheckContext } from '../lib/registry.js';
 import { settlePage } from '../lib/probes.js';
+import { TIER, HEADING_CAPS } from '../lib/cityTiers.js';
 import type { Page } from '@playwright/test';
 
 register({
@@ -701,15 +702,17 @@ register({
  * `layout-min-font-size` is a floor for ALL text, `sem-heading-order` reads levels, and
  * `city-type-fit` caps city headings from above and sets no floor.
  *
- * THE BODY SIZE is the computed font-size carrying the most paragraph text (visible `main p`,
- * weighted by characters), so a 15px caption or a 20px lede cannot move it. A page with no
- * visible paragraph falls back to `<main>`'s own size.
+ * THE BODY SIZE is the computed font-size carrying the most reading text (visible `main p` and
+ * `main li`, weighted by characters), counting only text within 0.85x-1.25x of `<main>`'s own
+ * size, so a long 24px lede or a block of fine print cannot become the body (the Known Issue 97
+ * review, item 8). A page with no such text falls back to `<main>`'s own size.
  *
  * THE UNIT is one visible H2 or H3 in `<main>` that is NOT inside a kit (`kit-*`) or city-kit
- * component: those set their own type, on their own scale, and are judged by their own checks
- * (the city type-fit gate among them). A heading fails when it paints at or below the body size
- * (within 0.5px). The examined count is the headings judged; zero anywhere is Guard 2's FAIL
- * in build_scorecard.mjs, and the fixture floor is 2.
+ * component (a class that STARTS with `kit-`, never one that merely contains it): those set
+ * their own type, on their own scale, and are judged by their own checks (the city type-fit gate
+ * among them). A heading fails when it paints at or below the body size (within 0.5px). A page
+ * with no `<main>` is a defect. The examined count is the headings judged; zero across the run is
+ * Guard 2's FAIL in build_scorecard.mjs, and the fixture floor is 2.
  */
 /**
  * Headings that paint at or below the body size ON PURPOSE, pinned by page and exact text —
@@ -733,24 +736,29 @@ register({
     const pinned = BODY_HEADING_PINNED[ctx?.slug ?? '']?.texts ?? [];
     const r = await page.evaluate((pinned) => {
       const main = document.querySelector('main');
-      if (!main) return { examined: 0, body: 0, bad: [] as string[] };
+      if (!main) return { noMain: true, examined: 0, body: 0, bad: [] as string[] };
       const visible = (el: Element) =>
         el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+      // The body size: the font-size carrying the most `p` and `li` text, counting only text
+      // within 0.85x-1.25x of the page's base size (`<main>`'s own), so a long lede or
+      // pull-quote above it, or fine print below it, can never be taken for the body.
+      const base = parseFloat(getComputedStyle(main).fontSize);
       const chars = new Map<number, number>();
-      for (const p of Array.from(main.querySelectorAll('p'))) {
-        if (!visible(p)) continue;
-        const n = (p.textContent || '').trim().length;
+      for (const el of Array.from(main.querySelectorAll('p, li'))) {
+        if (!visible(el) || el.querySelector('p, li')) continue;
+        const n = (el.textContent || '').trim().length;
         if (!n) continue;
-        const fs = parseFloat(getComputedStyle(p).fontSize);
+        const fs = parseFloat(getComputedStyle(el).fontSize);
+        if (fs < base * 0.85 || fs > base * 1.25) continue;
         chars.set(fs, (chars.get(fs) || 0) + n);
       }
-      let body = parseFloat(getComputedStyle(main).fontSize);
+      let body = base;
       let most = -1;
       for (const [fs, n] of chars) if (n > most) { most = n; body = fs; }
       let examined = 0;
       const bad: string[] = [];
       for (const h of Array.from(main.querySelectorAll('h2, h3'))) {
-        if (!visible(h) || h.closest('[class*="kit-"], .city-kit')) continue;
+        if (!visible(h) || h.closest('[class^="kit-"], [class*=" kit-"], .city-kit')) continue;
         examined++;
         const fs = parseFloat(getComputedStyle(h).fontSize);
         const text = (h.textContent || '').trim().replace(/\s+/g, ' ');
@@ -758,8 +766,11 @@ register({
           bad.push(`${h.tagName.toLowerCase()} ${fs}px "${text.slice(0, 50)}"`);
         }
       }
-      return { examined, body, bad };
+      return { noMain: false, examined, body, bad };
     }, pinned);
+    if (r.noMain) {
+      return { examined: 0, defects: [{ checkId: 'layout-body-heading-above-body', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no heading could be judged' }] };
+    }
     return {
       examined: r.examined,
       defects: r.bad.length
@@ -805,7 +816,7 @@ register({
     const r = await page.evaluate(() => {
       const GUTTER = 16;
       const main = document.querySelector('main');
-      if (!main) return { examined: 0, bad: [] as string[], count: 0 };
+      if (!main) return { noMain: true, examined: 0, bad: [] as string[], count: 0 };
       const W = document.documentElement.clientWidth;
       const scrolls = (el: Element) => {
         const cs = getComputedStyle(el);
@@ -847,8 +858,11 @@ register({
           bad.push(`${block.tagName.toLowerCase()} ${Math.round(left)}px|${Math.round(right)}px "${text.slice(0, 40)}"`);
         }
       }
-      return { examined, bad: bad.slice(0, 8), count: bad.length };
+      return { noMain: false, examined, bad: bad.slice(0, 8), count: bad.length };
     });
+    if (r.noMain) {
+      return { examined: 0, defects: [{ checkId: 'layout-text-has-side-gutter', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no text could be judged' }] };
+    }
     return {
       examined: r.examined,
       defects: r.count
@@ -870,9 +884,9 @@ register({
  * `.bl-box h2` was --text-2xl (30px) at every width on the body's inherited 1.65 line-height:
  * the health page's first boxed H2 was four lines and 198px tall at 375, and the for-sale page
  * had two at six lines. Option (a) put the unboxed H2s on the city scale; a boxed H2 is held to
- * the same caps, from src/styles/city.css and tests/render/lib/cityTypeFit.ts: at most 22px on
- * a phone (< 640px), 25px on a tablet (640-799px) and 28px on a desktop (>= 800px), and at most
- * three lines. The tier is read off the viewport, as the stylesheet's media queries read it.
+ * the same caps as the city type-fit gate, one table for both (HEADING_CAPS.H2 and TIER in
+ * tests/render/lib/cityTiers.ts: 22px on a phone, 25px on a tablet, 28px on a desktop), and to at
+ * most three lines. The tier is read off the viewport, as the stylesheet's media queries read it.
  *
  * THE UNIT is one visible H2 inside a `.bl-box` and outside any kit or city-kit component
  * (those set their own type). Lines are the painted height over the computed line-height. The
@@ -901,14 +915,16 @@ register({
   async run(page: Page, viewport: number, ctx: CheckContext): Promise<CheckResult> {
     await page.evaluate(() => document.fonts.ready);
     const pinned = BOXED_H2_PINNED_LINES[ctx?.slug ?? ''] ?? [];
-    const r = await page.evaluate((pinned) => {
+    const r = await page.evaluate(({ pinned, tier, caps }) => {
+      const main = document.querySelector('main');
+      if (!main) return { noMain: true, examined: 0, cap: 0, bad: [] as string[] };
       const w = document.documentElement.clientWidth;
-      const cap = w < 640 ? 22 : w < 800 ? 25 : 28;
+      const cap = w < tier.tablet ? caps[0] : w < tier.desktop ? caps[1] : caps[2];
       let examined = 0;
       const bad: string[] = [];
-      for (const h of Array.from(document.querySelectorAll('main .bl-box h2'))) {
+      for (const h of Array.from(main.querySelectorAll('.bl-box h2'))) {
         if (h.getClientRects().length === 0 || getComputedStyle(h).visibility === 'hidden') continue;
-        if (h.closest('[class*="kit-"], .city-kit')) continue;
+        if (h.closest('[class^="kit-"], [class*=" kit-"], .city-kit')) continue;
         examined++;
         const cs = getComputedStyle(h);
         const fs = parseFloat(cs.fontSize);
@@ -921,8 +937,11 @@ register({
         if (lines > 3 && !pinned.includes(full)) why.push(`${lines} lines, ${Math.round(height)}px tall`);
         if (why.length) bad.push(`"${full.slice(0, 50)}" ${why.join(', ')}`);
       }
-      return { examined, cap, bad };
-    }, pinned);
+      return { noMain: false, examined, cap, bad };
+    }, { pinned, tier: TIER, caps: HEADING_CAPS.H2 });
+    if (r.noMain) {
+      return { examined: 0, defects: [{ checkId: 'layout-boxed-h2-fits', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no boxed H2 could be judged' }] };
+    }
     return {
       examined: r.examined,
       defects: r.bad.length

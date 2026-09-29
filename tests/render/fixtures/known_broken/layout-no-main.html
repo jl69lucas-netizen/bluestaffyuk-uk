@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a page with no main</title>
+<!-- The Known Issue 97 review, item 8: a page with no <main> gave the body-heading, gutter and
+     boxed-H2 checks nothing to walk, so each reported examined 0 and no defect, a pass by
+     absence. Each of the Known Issue 97 checks must report the missing landmark instead. -->
+<style>body { margin: 0; font: 17px/1.65 Georgia, serif; } .bl-box h2 { font-size: 30px; }</style>
+</head><body>
+<div class="bl-box"><h2>Blue Staffy Puppies</h2><h3>Health</h3><p>Prose with no landmark around it.</p></div>
+</body></html>

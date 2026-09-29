@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a class that only contains "kit-"</title>
+<!-- The Known Issue 97 review, item 8: `[class*="kit-"]` exempted any class CONTAINING "kit-", so
+     a heading inside `.toolkit-panel` or `.notkit-box` was never judged. The kit's classes START
+     with "kit-"; these do not, and their headings are body headings. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  main { padding: 0 24px; }
+  .toolkit-panel h2 { font-size: 17px; font-weight: 400; }
+  .bl-box h2 { font-size: 30px; }
+</style>
+</head><body>
+<main>
+  <div class="toolkit-panel"><h2>A Heading at the Body Size</h2><p>Prose at the body size, and more prose at the body size.</p></div>
+  <section class="bl-box"><div class="notkit-box"><h2>A Boxed Heading Over Its Cap</h2></div><p>Prose.</p></section>
+  <section class="bl-box"><div class="notkit-box"><h2>A Second Boxed Heading Over Its Cap</h2></div><p>Prose.</p></section>
+</main>
+</body></html>

@@ -2103,3 +2103,49 @@ test.describe('img-face-visible reads object-position', () => {
     expect(r.defects.map((d) => d.message), 'a positioned crop that shows the face').toEqual([]);
   });
 });
+
+/**
+ * The Known Issue 97 checks' definitions (the review, item 8), each proven on its own fixture:
+ * a page with no <main> is a defect for every one of them, never examined-zero; the kit exemption
+ * is a class that STARTS with "kit-", never one that merely contains it; and the body size is read
+ * from `p` and `li`, ignoring text beyond 0.85x-1.25x of the page's base size.
+ */
+test.describe('the Known Issue 97 checks: no <main>, the kit prefix, the body size', () => {
+  const KI97 = [
+    'layout-body-heading-above-body',
+    'layout-text-has-side-gutter',
+    'layout-boxed-h2-fits',
+    'layout-heading-size-order',
+    'layout-heading-lines',
+  ];
+  for (const id of KI97) {
+    test(`${id} reports a page with no <main>`, async ({ page }, testInfo) => {
+      expect((await page.goto(fixtureUrl('known_broken', 'layout-no-main')))?.status()).toBe(200);
+      const check = registry.find((c) => c.id === id)!;
+      const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+      expect(r.defects.map((d) => d.message).join(' '), `${id} passed a page with no <main>`).toContain('no <main>');
+    });
+  }
+  for (const id of ['layout-body-heading-above-body', 'layout-boxed-h2-fits']) {
+    test(`${id} judges a heading whose class only contains "kit-"`, async ({ page }, testInfo) => {
+      expect((await page.goto(fixtureUrl('known_broken', 'layout-kit-prefix')))?.status()).toBe(200);
+      const check = registry.find((c) => c.id === id)!;
+      const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+      expect(r.defects.length, `${id} exempted .toolkit-panel / .notkit-box as if they were kit`).toBeGreaterThan(0);
+    });
+  }
+  test('the body size comes from list items too', async ({ page }, testInfo) => {
+    expect((await page.goto(fixtureUrl('known_broken', 'layout-body-heading-above-body-li-body')))?.status()).toBe(200);
+    const check = registry.find((c) => c.id === 'layout-body-heading-above-body')!;
+    const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.defects.length, 'a 16.5px heading over 17px list-item text passed').toBe(1);
+    expect(r.defects[0].message).toContain('17px body size');
+  });
+  test('a lede far above the base size does not set the body size', async ({ page }, testInfo) => {
+    expect((await page.goto(fixtureUrl('known_good', 'layout-body-heading-above-body-lede-ignored')))?.status()).toBe(200);
+    const check = registry.find((c) => c.id === 'layout-body-heading-above-body')!;
+    const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(2);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+});
