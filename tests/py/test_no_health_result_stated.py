@@ -322,3 +322,26 @@ def test_the_plan_excusal_is_still_needed():
         rec = json.loads((ROOT / f"data/boards/{slug}.json").read_text(encoding="utf-8"))
         text = dict(plan_text(rec))[where]
         assert result_lines(text), f"{slug} {where} is clean: drop it ({why})"
+
+
+def test_the_follow_up_minor_lines():
+    """Review follow-up minors 3-5 (2026-09-29): only documents are "checkable"; no orphaned
+    reference to health certificates; the buying guide's H6 is about papers we do hand over; the
+    health guarantee line opens "Our guarantee covers"; a sentence that mentions the video call
+    says it is offered before the deposit."""
+    dist, _ = built_files()
+    page = lambda rel: visible((dist / rel).read_text(errors="ignore"))
+    why_us, guide, health = (page("buy-staffy-puppies-for-sale-uk/index.html"),
+                             page("uk-blue-staffy-puppy-buying-guide/index.html"),
+                             page("blue-staffy-health-uk/index.html"))
+    assert "names the document or the test it rests on, which is what you can check" not in why_us
+    assert "names the document you can check before you travel" in why_us
+    assert "Beyond health certificates" not in guide and "Beyond the health tests, what to look for" in guide
+    assert "A Certificate Belongs to a Dog" not in guide
+    assert "Our guarantee covers health issues and birth defects from the day your puppy comes home." in health
+    for rel in ("index.html", "blue-staffy-pup-sale-uk/index.html", "buy-blue-staffy-puppies-uk/index.html"):
+        text = page(rel)
+        calls = [m.start() for m in re.finditer(r"(?i)video call", text)]
+        assert calls, rel
+        for i in calls:
+            assert "before the deposit" in text[max(0, i - 80):i + 80], (rel, text[max(0, i - 80):i + 80])

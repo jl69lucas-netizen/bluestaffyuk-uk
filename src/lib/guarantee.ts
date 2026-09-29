@@ -104,10 +104,10 @@ export function guaranteePhraseOf(s: GuaranteeSettings): string {
 
 /** The sentence a section headed with the guarantee's label carries: "It covers … comes home."
  *  (the length is in the heading), or "" when there is no cover. */
-export function coverSentenceOf(s: GuaranteeSettings): string {
+export function coverSentenceOf(s: GuaranteeSettings, subject = 'It'): string {
   if (!s.guarantee_days || !s.guarantee_cover) return '';
   checkGuaranteeCover(s.guarantee_days, s.guarantee_cover);
-  return `It ${bareCover(s.guarantee_days, s.guarantee_cover)}.`;
+  return `${subject} ${bareCover(s.guarantee_days, s.guarantee_cover)}.`;
 }
 
 /** The city guarantee row: the label as its title; its line is the cover sentence (when there

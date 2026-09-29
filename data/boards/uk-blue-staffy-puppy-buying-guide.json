@@ -1179,7 +1179,7 @@
           "intent": "Eyes, ears, nose, body condition, demeanour, rear end and movement.",
           "children": [],
           "verbatim_heading": true,
-          "verbatim_opening": "Beyond health certificates, what to look for in a healthy blue Staffy puppy?"
+          "verbatim_opening": "Beyond the health tests, what to look for in a healthy blue Staffy puppy?"
         },
         {
           "level": 3,
@@ -2535,7 +2535,7 @@
       "top": "H-GD2",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "a0bdf5472a0934f31d951df611ee84ac921d586ebd04c22b20c431da8ed8e0f1",
+    "record_hash": "042b0d4f29349cd7d07fb2885a097f6d5775651be9b28e7dfc6a3e309877ddd7",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2555,7 +2555,7 @@
         "Buyer Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T17:55:25Z",
+    "reapproved_at": "2026-09-29T18:02:07Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:41:26Z",
@@ -2585,6 +2585,13 @@
           "/sections/5/intent",
           "/sections/8/links/internal/0/anchor",
           "/sections/8/tree/0/intent"
+        ]
+      },
+      {
+        "at": "2026-09-29T18:02:07Z",
+        "reason": "Review follow-up minor 3 (2026-09-29): the opening 'Beyond health certificates' pointed at certificates the breeder does not hold (answer board q01); it reads 'Beyond the health tests', recorded in verbatim.changed.",
+        "changed_paths": [
+          "/sections/8/tree/2/verbatim_opening"
         ]
       }
     ]
@@ -2851,6 +2858,12 @@
         "old": "What We Can Show You",
         "new": "The Results We Hand Over",
         "reason": "recorded after the fact, for the first of this record's three re-approvals (2026-09-21T03:23:15Z), which moved this H3 and wrote no row. The old wording was an exact match for the /blue-staffy-uk-breeders/ counter heading, which shipped first from its own approved board, and board_gate.py failed the shingle. THIS HEADING IS NOT AN ELEMENT OF THE VERBATIM SET — data/verbatim/uk-blue-staffy-puppy-buying-guide.json does not carry it, because the migrated body never had it and the outline wrote it — so working rule 15 protects neither spelling and no rule required a row. It is written here anyway so that every heading this record moved after approval can be read in one place beside the re-approval that moved it."
+      },
+      {
+        "kind": "opening",
+        "old": "Beyond health certificates, what to look for in a healthy blue Staffy puppy?",
+        "new": "Beyond the health tests, what to look for in a healthy blue Staffy puppy?",
+        "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates, so 'Beyond health certificates' pointed at documents we do not hand over; the opening now says 'Beyond the health tests'; review follow-up minor 3)."
       }
     ]
   },
@@ -2982,7 +2995,7 @@
       "red-flags": "7de432f6ecd8b93330dca91b6067d8b381a6f9bc9e42b5d4d2c4e13eb99a578e",
       "costs": "6717e4ab7574e6a3077cd48700191c3e944c83a75eaf3b752eabb794fadab809",
       "temperament-fit": "af58270b8d815b2b282f9e83f802fd41faf479d15d80edcf333bd12e36ad4071",
-      "health-checks": "4ff71860c3c0ce8c2e593f9d197da7950231feb6ce2fc47139b5939963ec42c6",
+      "health-checks": "cbdd427f1074f4a60d1d39508d4ab907086c6c67e11b7e1ad3a78287d0165aae",
       "eight-weeks": "c18421ff07caa318d77ae9d6f48a318b934feaf881c6142890c930fd4dac3d95",
       "home-prep": "0e9f2f3995ac5519e026ae7ecebd0383f7956de9483d51f9814b2e5058c1aa1d",
       "socialisation": "bee4bbb0e6b1637973ad78fc7878d9ceeb3610fa58485a37f6d18d12f420263f",

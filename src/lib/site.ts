@@ -20,8 +20,8 @@ export function guaranteePhrase(): string {
 
 /** The sentence a section headed with the guarantee's label carries, "It covers … comes home.",
  *  or "" when data/settings.json has no cover (review I7 and M2, 2026-09-29). */
-export function guaranteeCoverSentence(): string {
-  return coverSentenceOf(settings as GuaranteeSettings);
+export function guaranteeCoverSentence(subject = 'It'): string {
+  return coverSentenceOf(settings as GuaranteeSettings, subject);
 }
 export const SITE_URL = (import.meta.env.SITE ?? 'https://SITE_URL_PLACEHOLDER').replace(/\/$/, '');
 

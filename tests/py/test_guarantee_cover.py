@@ -113,7 +113,8 @@ def test_each_section_headed_with_the_guarantee_states_its_cover(rel):
     page = _built(rel)
     heading = HEADED[rel]
     i = page.index(heading)
-    assert f"It {BARE}." in page[i:i + 600], page[i:i + 600]
+    # the health page's line opens "Our guarantee covers" (review follow-up minor 4)
+    assert f"It {BARE}." in page[i:i + 600] or f"Our guarantee {BARE}." in page[i:i + 600], page[i:i + 600]
 
 
 def test_a_missing_cover_omits_the_clause_everywhere(tmp_path):

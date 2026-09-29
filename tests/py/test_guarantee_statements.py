@@ -36,7 +36,7 @@ NOW = {
               "Every puppy goes home with it on paper"],
     "blue-staffy-health-uk": [f"Ours is a {LOWER}, a promise we make", f"Ask Us About Our {TITLED}",
                               f"asked how long the health guarantee lasts: ours is a {LOWER}.",
-                              "The old tenth row would have sat here. It covers health issues and birth defects from the day your puppy comes home. Ask us for the full wording before you pay a deposit."],
+                              "The old tenth row would have sat here. Our guarantee covers health issues and birth defects from the day your puppy comes home. Ask us for the full wording before you pay a deposit."],
     "blue-staffy-pup-sale-uk": [f"Not an Item, a Promise: Our {TITLED}", f"Our {LOWER} is set out below them",
                                 "it is a promise we make with every puppy"],
     "buy-staffy-puppies-for-sale-uk": [f"Our {TITLED}, in Writing",
