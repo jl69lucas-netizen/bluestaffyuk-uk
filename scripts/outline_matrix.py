@@ -95,9 +95,10 @@ def load(path):
         raise OutlineError(f"{path}: not JSON — {e}") from None
 
 
-def approval_refusal(slug, root=ROOT):
+def approval_refusal(slug, root=None):
     """None when the page's outline is approved as it stands; otherwise why the page board
     must wait. STOP 2 of docs/reference/page-run.md."""
+    root = ROOT if root is None else root
     try:
         path = record_path(slug, root)
     except OutlineError as e:

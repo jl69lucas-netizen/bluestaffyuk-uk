@@ -65,6 +65,15 @@ deposit and delivery come from `data/puppies.json` and `data/price-matrix.json`,
 from memory) → `rules/puppies.md` →
 `.claude/skills/bsuk-duplicate-content-gate/SKILL.md` → `.claude/skills/bsuk-final-page-pass/SKILL.md`
 
+### "Build a project 5 page" (a city, a comparison or a blog post)
+→ `docs/reference/page-run.md`, top to bottom, with four approval stops: STOP 1 the research
+board (`python3 scripts/research_board.py <slug>`, from `data/research-boards/<slug>.json`:
+why each top-5 competitor ranks and its weakness, intent, reverse engineering, gaps, angles,
+strategy, frameworks, the keyword universe and its distribution) → STOP 2 the outline as the
+section matrix (`python3 scripts/outline_matrix.py <slug>`, from `data/outlines/<slug>.json`,
+approved on its own; `python3 scripts/build_page_board.py <slug>` refuses until then) → STOP 3
+the page board → STOP 4 the Asset Gate
+
 ### "I want to build all location pages"
 → `@bsuk-batch-rebuilder` → reads `data/locations.json` → forks `@bsuk-location-builder`
 per UK city (28 of them; the list in that file is the only list)
@@ -135,7 +144,7 @@ These eight are the whole set. The source repo's other reference docs were not p
 - `CLAUDE.md` — the session file: the locked facts, the rule-pack router, the seventeen
   working rules (1–9 are the nine judgment rules)
 - `rules/README.md` and the ten packs in `rules/` — the written rules
-- `data/quality/rule-index.json` — the machine-readable ledger: 84 rules, of which 9 are
+- `data/quality/rule-index.json` — the machine-readable ledger: 85 rules, of which 9 are
   `enforced: judgment` and capped there. This is a different count from seo-rules.md's 57
   and always will be: the ledger indexes the `rules/` packs, the render-harness checks and
   CLAUDE.md working rules 10–17; seo-rules.md numbers its own categories A–J.

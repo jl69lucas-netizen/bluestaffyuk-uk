@@ -598,6 +598,13 @@
    "enforced": "test",
    "test": "tests/py/test_outline_first_rule.py",
    "pack": "rules/gates.md"
+  },
+  {
+   "id": "outline-approved-before-page-board",
+   "family": "GATE",
+   "enforced": "test",
+   "test": "tests/py/test_outline_approval.py",
+   "pack": "rules/gates.md"
   }
  ]
 }

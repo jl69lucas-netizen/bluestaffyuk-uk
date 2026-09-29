@@ -24,6 +24,7 @@ import image_rules as IR          # block 7's image pickers (system-gaps build, 
 import keyword_metrics as KM       # block 4b, the ours-vs-top-5 table (parity build Task 18)
 import board_entities as BE
 import page_intake as PI          # block 0, the intake (the brief's target block)
+import outline_matrix as OM       # STOP 2: the outline is approved before the page board
 from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 
 OUT = PB.ROOT / "docs" / "artifacts" / "boards"
@@ -1115,6 +1116,14 @@ def main():
     if len(sys.argv) != 2:
         sys.exit("usage: build_page_board.py <slug>")
     slug = sys.argv[1]
+    # STOP 2 (docs/reference/page-run.md row 9, the user's ruling of 2026-09-29): a new page's
+    # outline is approved on its own before its page board is built. The twelve pages built
+    # before project 5 have no outline record and are left alone (family_rules.is_new_page).
+    if PB.FR.is_new_page(slug):
+        refusal = OM.approval_refusal(slug)
+        if refusal:
+            print(f"build-page-board REFUSED outline-unapproved: {refusal}")
+            sys.exit(2)
     board = PB.load_board(slug)
     ont, ledger = PB.load_ontology(), PB.load_ledger()
     # No own-page pop: PB.header_hits() excludes it with own_live_key(), which is "/" for

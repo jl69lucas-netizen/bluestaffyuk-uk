@@ -15,9 +15,20 @@ precondition error (exit 2), so build first."""
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
+import outline_matrix as OM
 
 USAGE = "usage: board_gate.py <slug> [--release]  |  board_gate.py --all"
 FLAGS = {"--release", "--all"}
+
+
+def outline_findings(slug):
+    """STOP 2 (docs/reference/page-run.md row 9): a new page's outline record,
+    data/outlines/<slug>.json, is approved as it stands before its page board counts. The
+    twelve pages built before project 5 have none and are not judged on it."""
+    if not PB.FR.is_new_page(slug):
+        return []
+    refusal = OM.approval_refusal(slug)
+    return [{"sev": "FAIL", "check": "outline-unapproved", "msg": refusal}] if refusal else []
 
 
 def judge(slug, stage, ont, ledger, live, boards):
@@ -30,6 +41,7 @@ def judge(slug, stage, ont, ledger, live, boards):
     # Working rule 16's uniqueness half needs every other record, which gate_findings()
     # (pure over one record) never reads.
     f += PB.rule16_findings(board, boards)
+    f += outline_findings(slug)
     judged = PB.rule16_judged(boards, board)
     n_head = len(PB.all_headings(board))
     # Every family says what it examined: an empty ledger or an empty asset list would
