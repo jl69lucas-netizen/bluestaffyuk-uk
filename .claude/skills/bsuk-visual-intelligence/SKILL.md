@@ -295,6 +295,16 @@ Each "n checks" formula scores 10 × checks passed ÷ checks examined; a check t
 apply to the page (no puppy card, no infographic) is not examined, and a row whose checks were
 all not examined is `NOT MEASURED`.
 
+**Definitions the rows use** (from the second re-test, 2026-09-29):
+- *Dominant element:* the largest painted area above the fold is at least 1.25× the next (a ratio above 0.8 is two elements competing).
+- *Body text:* `<p>` and `<li>` inside `<main>`; a FAQ `<summary>`, a pull-quote and chrome are not body.
+- *A CTA:* a `Button` (the `--color-cta` pill) or the contact form inside `<main>`; the sticky header's button is chrome and never counts.
+- *One form:* one enquiry form (`ContactFormKit`); the header's site search is not a form for this count.
+- *No hex:* scoped to the page's own source file and the kit components it mounts, not the whole repo.
+- *Refresh deltas:* board picks that differ between the two pages on a component shape both carry; the target is 3, or every shared shape when the pair shares fewer than 3.
+- *Taxonomy sizes:* every entry except `UNCLASSIFIED`; GUARANTEED_FOR (checked against `guarantee_days`) counts as a predicate.
+- *A filled §3 field:* a value, or `NOT FETCHED — <barrier>` with its barrier written.
+
 | # | Score | Class | Rule |
 |---|---|---|---|
 | 1 | Visual Hierarchy | measured | 10 × §2a dimensions passed ÷ 7 (hero, dominant element, heading scale, reading order, section rhythm, grid, spacing), at 375, 768 and 1280; a dimension passes only at all three widths |
@@ -360,6 +370,7 @@ recommendations with owners**.
 | snippet or citation shape | `bsuk-aeo-pass` |
 | duplicate prose or headers | `bsuk-duplicate-content-gate` |
 | copy and voice (third person, copy that talks about the page itself, AI tells) | `@bsuk-seo-content-writer`, the `anti-ai-writing` skill |
+| a missing internal cross-link (a money page, a sibling) | the `internal-link-agent` skill |
 
 A proposed visual change is previewed and approved before it is applied (working rule 6). With
 the breeder away it is written as a preview, recorded `deferred` and logged under Open Flags.
@@ -407,3 +418,10 @@ Authorization FAIL on ten unproven "clear" claims — named every owner from §7
 verdict. Its ten gaps (read-only runs, the upscale check's scope, a missing query file, the
 WARN-only evidence check, entities absent from the ontology, partial functions, the money pages,
 a copy owner, the middle verdict, which pages the box binds) are closed above.
+
+After the review of 2026-09-29 gave every row a class and a formula, a third fresh agent, read-only,
+reached a verdict (FAIL: coverage 7 of 8 — two money pages unlinked) with every number traced to
+a script, a probe or a §6 formula, and the judgment rows labelled and kept out of the verdict.
+The ambiguities it reported (the dominant-element threshold, what counts as body, a CTA and a
+form, the hex scope, refresh deltas against a sparse sibling, taxonomy sizes, a `NOT FETCHED`
+field, the owner of a missing cross-link) are the definitions above §6's table.
