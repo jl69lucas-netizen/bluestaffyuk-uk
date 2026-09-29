@@ -1114,7 +1114,7 @@
         "external": [
           {
             "href": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/understanding-canine-genetics/",
-            "anchor": "The registry on what a DNA test result actually tells you",
+            "anchor": "The registry on what a DNA test actually tells you",
             "why": "carried from the migrated page, which linked it at the thekennelclub.org.uk spelling that 301s to this one (anchor 'Animal Health Trust (now part of the Kennel Club Genetics Centre)')",
             "library_row": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/understanding-canine-genetics/"
           }
@@ -2516,7 +2516,7 @@
       "why-choose": "S2",
       "your-questions-about-blue-staffies-answered": "S3"
     },
-    "record_hash": "992f581720eef4916ab17bf5e0304bd43e70a5ec7813735098d77e69485d22a2",
+    "record_hash": "12ee520979a95b2b41d2441e07d519687802dcb554711a022748546a77a329ce",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2536,7 +2536,7 @@
         "Kennel Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T15:23:07Z",
+    "reapproved_at": "2026-09-29T16:38:55Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:46:15Z",
@@ -2553,6 +2553,13 @@
         "reason": "Answer board q01 follow-through (2026-09-29): the reworded DNA-test sentences shared 12+ word runs with sibling pages (dup gate, rule 8), so this record's wording is varied; it still names the tests and states no result.",
         "changed_paths": [
           "/sections/10/tree/0/heading"
+        ]
+      },
+      {
+        "at": "2026-09-29T16:38:55Z",
+        "reason": "Review of the answer-board q01 work (2026-09-29, C1-C4, I1-I4): the breeder holds no DNA certificates, so no line states or promises a result or sends a buyer to a certificate; wording reworded to name the tests, verbatim changes recorded as wrong facts.",
+        "changed_paths": [
+          "/sections/10/links/external/0/anchor"
         ]
       }
     ]
@@ -2671,7 +2678,7 @@
       "who-we-are": "c74cb5e289e587c1906740311d00bd8606d27c8dc211fd7e5f95fa96d9016d11",
       "video-our-home": "ba9b41dd8834759641785ea8233954dfe4eac2e06631b6ac3fcd12c4f4046866",
       "meet-the-parents": "6d13c65121185276bad824ba8bfcc9ff30d970f44be069b3dc12762e71ec0c3b",
-      "health": "e006e31b281290cea6c3600fa4c6088e7460af745a48920990328ab2500fc6b3",
+      "health": "83a42b90eee6d35ebc0e332942177a29221aec0ba95ad2f2d828f514daf49990",
       "the-breed": "92f3ddc3d8200101dfd967ed521f1b9eb5034eab083832fc3b5a6765402e1607",
       "video-breed": "960f94f5f13fa4d40bfcc3224d195c0c5297f83904c8bf6db965262cd763317c",
       "whats-included": "98936a3a1589c30ad0aee559b9076443456cb8376c2d9507b6f68277d6cf6bb3",

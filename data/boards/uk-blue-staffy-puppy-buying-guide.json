@@ -342,7 +342,7 @@
         },
         {
           "level": 3,
-          "heading": "Ask For Both Certificates",
+          "heading": "Ask Which Tests, By Name",
           "intent": "L-2-HGA and HC-HSF4, for both parents, as originals.",
           "children": []
         },
@@ -600,8 +600,8 @@
             "The original KC registration certificates, shown to you, not photocopies."
           ],
           [
-            "Can I see the L-2-HGA and HC-HSF4 DNA test results?",
-            "Both parents clear, or carrier to clear — never carrier to carrier."
+            "Which health tests have the parents had?",
+            "L-2-HGA and HC-HSF4 by DNA test, named for each parent, with the vet records shown."
           ],
           [
             "Can I see the mother with the puppies?",
@@ -778,7 +778,7 @@
           ],
           [
             "DNA health tests",
-            "L-2-HGA and HC-HSF4 certificates shown",
+            "L-2-HGA and HC-HSF4 named for each parent, vet records shown",
             "“They are naturally healthy, no tests needed”"
           ],
           [
@@ -2143,7 +2143,7 @@
           "intent": "The one-paragraph answer to 'why you': KC registration and the two DNA tests, both on disk, and the three reviews in data/reviews.json. No laboratory is named and no bloodline is claimed.",
           "children": [],
           "verbatim_heading": true,
-          "verbatim_opening": "As KC-registered blue Staffy breeders with clear health tests , we encourage you to read bluestaffyuk reviews."
+          "verbatim_opening": "As KC-registered blue Staffy breeders who DNA test both parents , we encourage you to read bluestaffyuk reviews."
         },
         {
           "level": 3,
@@ -2488,7 +2488,8 @@
       "Cost Item Typical Range Notes 🐶 Puppy price £850 – £1,200 KC-registered ethical breeders (avoid under £500) 🏥 Vet bills Year 1 £300 – £600 2nd vaccination, booster, neutering, check-ups 🛡️ Pet insurance £240 – £600 /yr Lifetime cover recommended; Staffies are generally healthy 🍖 Food £300 – £700 /yr High-quality kibble or raw diet; Staffies eat well 🛏️ Equipment (one-off) £150 – £400 Crate, bed, harness, collar, ID tag, bowls, toys, lead 🎓 Puppy training classes £80 – £250 6-8 week KC Good Citizen course highly recommended 💅 Grooming £50 – £120 /yr Short coats mostly DIY; occasional nail trims 📊 First-year total £1,970 – £3,870 Ongoing years £900 – £2,000 (food + insurance + vet) ⚠️ Always set aside a £500–£1,000 emergency vet fund regardless of insurance. — the migrated \"True Cost of a Blue Staffy in Year 1\" table in full, struck row by row in `dropped.prices`: nine figures and not one of them has a source on disk (working rule 9). `costs` carries the four amounts that are locked and an H3 that says in as many words why there is no first-year budget on this page.",
       "Week 1 — Settling In Keep the house calm, limit visitors for the first 3 days Set up crate in a quiet corner with a worn item of your clothing Feed the same food as the breeder for at least 7 days Establish a toilet routine, take outside every 2 hours and after meals Register with a local vet within 48 hours Book 2nd vaccination appointment (usually 10-12 weeks) Week 2 — First Routines Begin name recognition training (5-minute sessions, 3x daily) Introduce \"sit\" using reward-based methods only Start handling exercises for ears, paws, and mouth to prepare for vet visits Carry puppy outdoors to experience sounds and smells before second vaccination Contact insurance provider, cover should start Day 1 Week 3 — Socialisation Begins Puppy vaccination complete, begin controlled outdoor walks (5 mins per month of age) Introduce to vaccinated, friendly adult dogs Expose to traffic, children, cyclists positively and at a distance Book puppy training class (KC Good Citizen programme) Start \"leave it\" and \"come\" commands Week 4 — Building Confidence First puppy training class attended Introduce alone time, start with 5 minutes and build to 1 hour over the month Weigh puppy and adjust food portions accordingly Begin introducing car travel with short positive trips Review toilet training progress, accidents indoors should be reducing ✅ You Have Done Your Research — Now Meet Our Puppies BlueStaffyUK are KC-aware ethical breeders with full L-2-HGA &amp; HC-HSF4 DNA testing, written purchase contracts, and lifetime support. — the migrated four-week checklist as one block, and the puppy line printed under it. The PLAN is carried — `first-30-days` sets out all four weeks in the record's own H3s, and the vet registration inside forty-eight hours with it. What is not carried is the block's training and veterinary micro-timings: the session lengths, the walk length per month of age, the vaccination week and the visitor count are a training and veterinary timetable no file on disk holds, so they are left to the reader's own vet and class. The puppy line at the end names four dogs and four prices `dropped.prices` strikes.",
       "BETH (£1,100), KANE (£1,000), ALIS (£1,200) and KOBE (£850) are available now. — four dogs and four prices that are not on disk, struck by name in `dropped.prices`: data/puppies.json holds Roman, Byrd, Ince, Vennie, Christa and Cheryl at £1,500 and £1,700, and the `puppies` grid renders those rows.",
-      "Official KC-approved L-2-HGA and HC-HSF4 DNA testing via Laboklin . — the named testing laboratory and a second compliance claim on top of it. `dropped.names` strikes the laboratory — no file on disk records one — and `dropped.links` strikes its product page; \"KC-approved\" is a credential nobody can check. `verbatim.changed` records the clause leaving the opening it sat in."
+      "Official KC-approved L-2-HGA and HC-HSF4 DNA testing via Laboklin . — the named testing laboratory and a second compliance claim on top of it. `dropped.names` strikes the laboratory — no file on disk records one — and `dropped.links` strikes its product page; \"KC-approved\" is a credential nobody can check. `verbatim.changed` records the clause leaving the opening it sat in.",
+      "Can I see the L-2-HGA and HC-HSF4 DNA test results? — the question's good answer was \"Both parents clear\", a result the breeder holds no certificate for (answer board q01, 2026-09-29). The checklist row now asks which health tests the parents have had, and the good answer names the tests and shows the vet records, which our own process passes."
     ]
   },
   "approval": {
@@ -2534,7 +2535,7 @@
       "top": "H-GD2",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "5b64e830874dc93f6ade3bb45b22b433c9ef9691cb6be7e8fee38fae716e870a",
+    "record_hash": "376090e3eceec2084bf9fbf8294f23ef4c28bcddf128c4105a0766d8162d1c6f",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2554,7 +2555,7 @@
         "Buyer Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T14:41:26Z",
+    "reapproved_at": "2026-09-29T16:38:50Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:41:26Z",
@@ -2562,6 +2563,17 @@
         "changed_paths": [
           "/sections/8/tree/3/heading",
           "/sections/8/tree/3/intent"
+        ]
+      },
+      {
+        "at": "2026-09-29T16:38:50Z",
+        "reason": "Review of the answer-board q01 work (2026-09-29, C1-C4, I1-I4): the breeder holds no DNA certificates, so no line states or promises a result or sends a buyer to a certificate; wording reworded to name the tests, verbatim changes recorded as wrong facts.",
+        "changed_paths": [
+          "/sections/1/tree/1/heading",
+          "/sections/4/table/rows/1/0",
+          "/sections/4/table/rows/1/1",
+          "/sections/5/table/rows/3/1",
+          "/sections/18/tree/0/verbatim_opening"
         ]
       }
     ]
@@ -2721,8 +2733,8 @@
       {
         "kind": "opening",
         "old": "As KC-registered blue Staffy breeders with clear health tests , we stand by our commitment to excellence. Official KC-approved L-2-HGA and HC-HSF4 DNA testing via Laboklin . Our bluestaffyuk champion bloodline ensures not only stunning aesthetics but also sound temperament and health. We encourage you to read bluestaffyuk reviews and see why families trust us.",
-        "new": "As KC-registered blue Staffy breeders with clear health tests , we encourage you to read bluestaffyuk reviews.",
-        "reason": "two clauses come out. 'Official KC-approved L-2-HGA and HC-HSF4 DNA testing via Laboklin' names a testing laboratory dropped.names strikes by name — no file on disk records one, and 'KC-approved' is a second compliance claim on top of it — and dropped.links strikes the laboratory's product page the words linked to. 'Our bluestaffyuk champion bloodline ensures not only stunning aesthetics but also sound temperament and health' is struck by dropped.text: no file on disk records a champion line for Maggie or for Jones. The registration, the clear tests and the reviews are carried.  RULE 9 BEATS RULE 15 FOR A CLAIM NO FILE HOLDS (2026-09-21 review). Two more clauses come out. \"we stand by our commitment to excellence\" is a self-awarded standard with no document, inspection or scheme behind it on disk. \"and see why families trust us\" invites the reader to a body of testimony this site does not have: data/reviews.json holds THREE reviews, one of which is on this page, and there is no reviews page to send anybody to. The registration and the clear tests are on disk and both are carried; the sentences are joined at the comma the first one already had."
+        "new": "As KC-registered blue Staffy breeders who DNA test both parents , we encourage you to read bluestaffyuk reviews.",
+        "reason": "two clauses come out. 'Official KC-approved L-2-HGA and HC-HSF4 DNA testing via Laboklin' names a testing laboratory dropped.names strikes by name — no file on disk records one, and 'KC-approved' is a second compliance claim on top of it — and dropped.links strikes the laboratory's product page the words linked to. 'Our bluestaffyuk champion bloodline ensures not only stunning aesthetics but also sound temperament and health' is struck by dropped.text: no file on disk records a champion line for Maggie or for Jones. The registration, the clear tests and the reviews are carried.  RULE 9 BEATS RULE 15 FOR A CLAIM NO FILE HOLDS (2026-09-21 review). Two more clauses come out. \"we stand by our commitment to excellence\" is a self-awarded standard with no document, inspection or scheme behind it on disk. \"and see why families trust us\" invites the reader to a body of testimony this site does not have: data/reviews.json holds THREE reviews, one of which is on this page, and there is no reviews page to send anybody to. The registration and the clear tests are on disk and both are carried; the sentences are joined at the comma the first one already had. Then, 2026-09-29: wrong fact per the breeder's answer 2026-09-29 (answer board q01: no DNA certificates are held, so a page names the tests and never states or promises a result; review C1/C2/I1-I4)."
       },
       {
         "kind": "heading-dropped",
@@ -2952,11 +2964,11 @@
     ],
     "section_hashes": {
       "top": "05af33e46e36b02d9cedf7f549c89dde7915ef66209c9ed61db31feaa4939892",
-      "takeaways": "1c7b608a15fe5006d20daf5b9d87f6ffb6e03e240bbc09c222988ab898dcc941",
+      "takeaways": "1f65b0ef5e67be7540bbc03b6e96af4b49e34b401b4ea8f4383cefb0a3fc6e3e",
       "stats": "4769d106472540f5c92bc3dd14a2c17f48bb461b128360a401eea55eb96dcf65",
       "buying-steps": "665d6e35c958aa9e24c44fef2e56d546a0df8514bd5f99e62b1daa091d09ddfb",
-      "breeder-questions": "2cc0a9e6e0f7d6c0e8cb1027991c223b1a7fd343ef8052ae08651d93c0ca72e2",
-      "red-flags": "1ede4d0eb204fc2694cdcccd1d726cc892ba623bfdc1333ba52f28f16fe2670b",
+      "breeder-questions": "d54f9b0e33b9ba878950b12e0c127c1ec7354d3c1f66358a7605191c58f04159",
+      "red-flags": "6cdd902f56bd963999ce03c5924096799167a241cc259e98590456a4b94bc43f",
       "costs": "6717e4ab7574e6a3077cd48700191c3e944c83a75eaf3b752eabb794fadab809",
       "temperament-fit": "af58270b8d815b2b282f9e83f802fd41faf479d15d80edcf333bd12e36ad4071",
       "health-checks": "4898b661e06043e601633bd113eb1f855beaf40703818986b8a756dabe9db8bf",
@@ -2969,7 +2981,7 @@
       "owner-review": "7ea1e80851331fc05ce40de6da9f72508884107ded2a5dd10d81163e53107ca8",
       "puppies": "c6f94f16f3b2cd8cfd74ca8438ebf6dda6137b9cdeb754c9613390185cca33dd",
       "questions": "13c02d03387f74d35d47977e0b94e1c3b494ed192b74afda46f10350eaa8c83e",
-      "talk-to-us": "68f9d5f17b483452a04a9d5c4c4e275aa74fddd4490ef312da28868189a36684",
+      "talk-to-us": "a6a5603f248b13f2986a5bb458ec35e2b35029edff1bb7ff2f8d87f7e55f9fc2",
       "video-what-to-expect": "c18274a4bbd31c2d05997e9faa65d71b9911dda59d95194b22f94bf2f5077939"
     }
   }
