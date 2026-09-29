@@ -16,6 +16,7 @@ family: IMG
 ---
 
 - **Image keyword distribution (ALWAYS — seo-rules Rule 50b)** — The page's PRIMARY keyword goes in the PRIMARY image's alt text only (hero/first content image); every other image rotates a different keyword type (secondary/LSI/NLP variation/long-tail) so the image set covers a diverse spread. No two images on a page share an alt. Applies to photos, AI-generated images, and infographics.
+- **No repeated alt, same photo use new alt (user, 2026-09-29, answer board q02)** — a photo shown twice on one page keeps its served alt on its first use; each repeat carries a new alt, never a copy. Working rule 11 keeps the served alt; this is how a repeat meets Rule 50b. Held up by `tests/py/test_served_alt_preserved.py` (`judge_page`, first use then repeats) and, for the London scaffold, `tests/py/test_city_scaffold.py`.
 
 ---
 id: uniform-inbody-image-sizing

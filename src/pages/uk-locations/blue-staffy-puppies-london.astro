@@ -30,9 +30,11 @@
 // `article.prose-migrated` at the foot: London is not in data/facts/rebuilt.json until its page
 // run, so `check:parity` still measures its migrated body, and it finds it here.
 //
-// ONE SERVED PHOTOGRAPH, ONCE: a served file keeps its served alt (working rule 11) and
-// `img-alt-present-and-unique` refuses a repeated alt, so where the canvas gave Maggie's photo to
-// five components, each takes a different served file here (data/image-focus.json).
+// ONE SERVED PHOTOGRAPH, ONCE: where the canvas gave Maggie's photo to five components, each takes
+// a different served file here (data/image-focus.json), and the user kept those four swaps
+// (answer board q02, 2026-09-29). Should a photo ever be shown twice, its first use keeps its
+// served alt (working rule 11) and each repeat carries a new alt, never a copy (the same ruling;
+// `img-alt-present-and-unique` refuses a copy).
 import CityShell from '../../layouts/CityShell.astro';
 import locations from '../../../data/locations.json';
 import settings from '../../../data/settings.json';

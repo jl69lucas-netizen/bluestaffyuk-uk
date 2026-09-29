@@ -170,7 +170,33 @@ def test_no_section_heading_repeats_an_faq_question():
     assert not [h for h in heads if h.lower() in faq]
 
 
-def test_each_served_photo_appears_once_with_its_served_alt():
+def scaffold_alt_defects(main, served):
+    """The body's served photos: the first use of each keeps its served alt (working rule 11),
+    and each repeat carries a new alt, never a copy of one already used for it (the user's
+    ruling, answer board q02, 2026-09-29: "No repeated alt, same photo use new alt")."""
+    out, used = [], {}
+    for name, alt in re.findall(r'<img [^>]*src="/images/([^"?]+)"[^>]*alt="([^"]*)"', main):
+        alt = H.unescape(alt)
+        if name not in used:
+            if alt not in served[name]:
+                out.append(f"{name}: its first use does not carry its served alt")
+        elif alt in used[name]:
+            out.append(f"{name}: a repeat copies the alt {alt!r}")
+        used.setdefault(name, set()).add(alt)
+    return out
+
+
+def test_a_repeat_with_a_new_alt_is_allowed_on_the_scaffold():
+    """The user's ruling (answer board q02, 2026-09-29): a photo shown twice keeps its served
+    alt on its first use, and the repeat carries a new alt."""
+    served = {"Christa.jpeg": frozenset({"Christa"})}
+    ok = '<img src="/images/Christa.jpeg" alt="Christa"><img src="/images/Christa.jpeg" alt="Christa, sitting up">'
+    assert scaffold_alt_defects(ok, served) == []
+    copy = '<img src="/images/Christa.jpeg" alt="Christa"><img src="/images/Christa.jpeg" alt="Christa">'
+    assert scaffold_alt_defects(copy, served) != []
+
+
+def test_each_served_photo_keeps_its_served_alt_first_and_a_new_alt_on_a_repeat():
     import sys
     sys.path.insert(0, str(ROOT / "scripts"))
     from check_city_canvas import served_alts
@@ -178,12 +204,8 @@ def test_each_served_photo_appears_once_with_its_served_alt():
     html = built()
     found = re.findall(r'<img [^>]*src="/images/([^"?]+)"[^>]*>', html)
     main = html.split("<main", 1)[1].split("</main>", 1)[0]
-    body = re.findall(r'<img [^>]*src="/images/([^"?]+)"[^>]*alt="([^"]*)"', main)
-    assert body, "the scaffold reuses served photographs"
-    names = [n for n, _ in body]
-    assert len(names) == len(set(names)), "a served photo, and so its served alt, appears once"
-    for name, alt in body:
-        assert H.unescape(alt) in served[name], name
+    assert re.search(r'<img [^>]*src="/images/', main), "the scaffold reuses served photographs"
+    assert scaffold_alt_defects(main, served) == []
     assert found
 
 

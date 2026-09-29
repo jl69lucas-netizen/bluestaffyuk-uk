@@ -1,4 +1,6 @@
-"""Working rule 11: a served image keeps its served alt text word for word, wherever it is reused.
+"""Working rule 11: a served image keeps its served alt text word for word, wherever it is reused;
+on a page that shows it twice, its first use keeps the served alt and each repeat carries a new
+alt, never a copy (the user's ruling, answer board q02, 2026-09-29).
 
 Learning loop 2026-09-27 (docs/reports/learning-loop-2026-09-27.md, L2 / shortlist #1). Tasks 5–8
 of the London component pass rewrote the alts of four served files; a reviewer caught it twice and
@@ -50,10 +52,13 @@ IMG = re.compile(r"<img\b[^>]*>", re.I)
 
 
 def judge_page(html_text, served, changed):
-    """(served images examined, [(file, alt on the page)] that break the rule). An empty alt is
-    a decorative repeat and passes; a MISSING alt attribute (None) is a rewrite, never
-    decorative."""
+    """(served images examined, [(file, alt on the page)] that break the rule). The FIRST use of
+    a served file on the page keeps its served alt (or its recorded `verbatim.changed` alt);
+    each later use is a repeat and carries a NEW alt, never a copy of one already used for that
+    file on the page (the user's ruling, answer board q02, 2026-09-29). An empty alt is a
+    decorative repeat and passes; a MISSING alt attribute (None) is a rewrite, never decorative."""
     examined, hits = 0, []
+    used = {}  # file -> the alts already used for it on this page
     for tag in IMG.findall(html_text):
         src, alt = C._tag_attr(tag, "src"), C._tag_attr(tag, "alt")
         if not src or not src.startswith("/images/"):
@@ -62,11 +67,21 @@ def judge_page(html_text, served, changed):
         if name not in served:
             continue
         examined += 1
-        if alt is not None:
-            alt = " ".join(alt.split())
-            if alt == "" or alt in served[name] or alt in changed.get(name, ()):
-                continue
-        hits.append((name, alt))
+        first = name not in used
+        seen = used.setdefault(name, set())
+        if alt is None:
+            hits.append((name, alt))
+            continue
+        alt = " ".join(alt.split())
+        if alt == "":
+            continue
+        if first:
+            ok = alt in served[name] or alt in changed.get(name, ())
+        else:
+            ok = alt not in seen
+        seen.add(alt)
+        if not ok:
+            hits.append((name, alt))
     return examined, hits
 
 
@@ -142,8 +157,27 @@ def test_a_missing_alt_is_a_rewrite_not_a_decorative_image():
             "<img src='/images/maggie-blue-staffy-dam-with-pups.webp' alt='Someone else'>")
     examined, hits = judge_page(html, served, {})
     assert examined == 4
-    assert hits == [("maggie-blue-staffy-dam-with-pups.webp", None),
-                    ("maggie-blue-staffy-dam-with-pups.webp", "Someone else")]
+    # The first use has no alt (a rewrite); the empty alt is decorative; the two later uses are
+    # repeats, each with an alt not yet used for the file on the page (the user's ruling,
+    # 2026-09-29: a repeat carries a new alt, never a copy).
+    assert hits == [("maggie-blue-staffy-dam-with-pups.webp", None)]
+
+
+def test_a_repeated_photo_keeps_its_served_alt_first_and_a_new_alt_after():
+    """The user's ruling (answer board q02, 2026-09-29): "No repeated alt, same photo use new
+    alt". A photo shown twice on one page keeps its served alt on its FIRST use (working rule 11)
+    and each repeat carries a new alt, never a copy of one already used for it on the page."""
+    served = {"maggie-blue-staffy-dam-with-pups.webp": frozenset({"Maggie"})}
+    img = '<img src="/images/maggie-blue-staffy-dam-with-pups.webp" alt="%s">'
+    ok = img % "Maggie" + img % "Maggie with her litter in the garden" + img % "The dam, resting"
+    assert judge_page(ok, served, {}) == (3, [])
+    copy = img % "Maggie" + img % "Maggie"
+    assert judge_page(copy, served, {})[1] == [("maggie-blue-staffy-dam-with-pups.webp", "Maggie")]
+    first_new = img % "A new alt" + img % "Maggie"
+    assert judge_page(first_new, served, {})[1] == [("maggie-blue-staffy-dam-with-pups.webp", "A new alt")]
+    # A width variant is the same photo: its repeat is judged as a repeat.
+    variant = img % "Maggie" + '<img src="/images/maggie-blue-staffy-dam-with-pups-760.webp" alt="Maggie">'
+    assert judge_page(variant, served, {})[1] == [("maggie-blue-staffy-dam-with-pups.webp", "Maggie")]
 
 
 def test_the_attribute_reader_takes_both_quotes():

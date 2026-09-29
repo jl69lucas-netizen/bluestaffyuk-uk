@@ -160,7 +160,9 @@ row, so the cap is untouched. Every other rule moved to a pack.
     Images / video search. Pages built or rebuilt in projects 4–6 reuse them first, keep the
     original filename, path and alt text, and never rename, delete or re-encode a served
     file; a replacement image is added beside the old one, never in its place. (Breeder,
-    2026-09-19.)
+    2026-09-19.) No repeated alt, same photo use new alt (user, 2026-09-29): a photo shown twice
+    on one page keeps its served alt on its first use; each repeat carries a new alt, never a
+    copy. `tests/py/test_served_alt_preserved.py` holds it.
 
 12. **Every link on the board.** A page board lists every internal and external link the
     page will carry — per section (target URL, anchor text, purpose, and whether the target
