@@ -71,6 +71,17 @@ one of the other final-audit profiles (home, for-sale, puppy, interior). The ren
 writes `data/quality/scorecards/<slug>-<date>.json` with each check's examined count — read the
 count before you trust the result.
 
+**Read-only runs.** Inside a page run, the build and the harness are rows 12–13 and their
+outputs are that run's deliverables. Outside one (an audit someone asked for without changes),
+do not build and do not run the harness, which writes scorecards: reuse the page's scorecard
+only if it is newer than `dist/<route>/index.html`, otherwise measure with Playwright directly
+(§2e) and label the harness-only rows `NOT MEASURED — scorecard older than the build`. Save the
+report to the session scratchpad instead of §7's path, and say so in its first line.
+
+**What the scripts do not fail.** `check:all` does not run the final audit, the evidence audit
+or the dup audit, and `scripts/evidence_audit.py` reports a claim whose proof is `NOT FETCHED`
+as a WARN. Read the WARNs: §5b turns the unproven ones into a FAIL by hand.
+
 A seam-parity check is NOT AVAILABLE — BSUK pages carry no seam dividers (`docs/reference/page-run.md`, "Deliberate differences"), so there is nothing to count.
 
 Structural counts — headings, images, alts, schema, links, tables — come from a parser, never
@@ -130,9 +141,9 @@ information the prose does not?), **trust contribution**, **conversion support**
 understanding** (§3).
 
 Hard BSUK gates, pass/fail:
-- **The box** (`rules/images.md` `uniform-inbody-image-sizing`): on a project 5 page every in-body image renders through `src/components/BodyImage.astro` `box="uniform"` — `max-width: 760px; aspect-ratio: 1408 / 768; object-fit: cover` — or `box="tall"` for a portrait; focal point by `object-position`, never by changing the box. The twelve pages built before project 5 keep the natural `.bl-img` box until they are re-boarded.
+- **The box** (`rules/images.md` `uniform-inbody-image-sizing`): on a project 5 page (any page not in `BUILT_BEFORE_SYSTEM_GAPS` in `scripts/family_rules.py`) every in-body image renders through `src/components/BodyImage.astro` `box="uniform"` — `max-width: 760px; aspect-ratio: 1408 / 768; object-fit: cover` — or `box="tall"` for a portrait; focal point by `object-position`, never by changing the box. The twelve pages built before project 5 keep the natural `.bl-img` box until they are re-boarded.
 - **Bleed:** any area around an in-body image is a design colour (bone), never grey or black; a portrait is baked contain, never blurfill.
-- **Not upscaled:** a file painted wider than its natural width is a finding (the render harness's `img-not-upscaled` check); `sizes` must not under-declare the box — probe `wasteRatio` (§2e) and flag `> 1.5`.
+- **Not upscaled:** a file painted wider than its natural width is a finding. The harness's `img-not-upscaled` check runs only on the city kit and the component canvas, not on a page scorecard, so on a page measure `naturalWidth` against the painted width yourself (§2e). `sizes` must not under-declare the box — probe `wasteRatio` and flag `> 1.5`.
 - **Rule 50b** (`rules/images.md` `image-keyword-distribution`): the primary keyword in the primary image's alt only; every other alt rotates a different keyword type; no two non-empty alts on a page match. A served file keeps its served alt on first use (working rule 11).
 - **An image under every body heading** of a project 5 page (`image-every-body-heading`), FAQ blocks excepted.
 
@@ -161,7 +172,7 @@ one row:
 | Supporting entities | 2–4, from the ontology |
 | Relationships shown | the §5 predicates the image asserts visually |
 | Educational value /5 | does it teach something the prose does not? |
-| Search value /5 | could it rank in Images for a real query in `data/queries/<slug>.json`? |
+| Search value /5 | could it rank in Images for a real query in `data/queries/<slug>.json`? (No query file for the page: `NOT FETCHED — no query file`.) |
 | AI citation value /5 | is the claim it makes checkable and attributable to us? |
 | Accessibility value /5 | does the alt carry the information, or only the caption? |
 
@@ -195,10 +206,13 @@ For each: **present / partial / absent**, the evidence (section id and line), an
 | **blog** | Teach · Cross-link to the money pages · six external links on six domains from four source types (working rule 17) · Build Authority |
 | **for-sale / buy** | Present Puppies · Explain Pricing from `data/price-matrix.json` · the delivery band on every card (`rules/puppies.md`) · Qualify Buyers · Reduce Uncertainty (the paperwork in `data/faq.json` `whyus-paperwork`) · Provide CTA |
 | **puppy** | a single `Product` + `Offer` · `InStock` only on an available puppy · real photos · Present Paperwork |
-| **interior / care** | Teach · Answer Questions · Build Authority · Cross-link to the money pages |
+| **interior / care** | Teach · Answer Questions · Build Authority · Cross-link to the money pages (`/available-puppies/`, `/buy-blue-staffy-puppies-uk/`, `/buy-staffy-puppies-for-sale-uk/`, `/blue-staffy-pup-sale-uk/`) |
 | **every page** | Build Trust · Support Internal Navigation · Provide CTA · **no visible date anywhere** — freshness is schema-only (`rules/schema.md` `no-visible-date`) |
 
 ### 4b. Function metrics
+A `partial` function counts as present for Density and Diversity and as absent for Coverage.
+Words are the visible words inside `<main>`, from the §1 parser.
+
 - **Function Density** = functions present ÷ 1,000 words. Below about 1.5 the page is narrating, not working; above about 6 it is doing too many jobs.
 - **Function Diversity** = distinct functions ÷ taxonomy size.
 - **Function Coverage** = required set satisfied ÷ required set. **The headline number, and a gate:** coverage below 100% blocks a pass.
@@ -231,11 +245,13 @@ MEASURES · UNCLASSIFIED`, and GUARANTEED_FOR (checked against `guarantee_days`,
 whose health or credential claim has a proof and a confirmation date in
 `data/quality/evidence-ledger.json`, is `ASSERTED`. Anything else is `PROPOSED` — a finding,
 not a fact. Today the ledger's `parents-dna-clear` claim is `NOT FETCHED`, so "the parents are
-tested clear" on any page is PROPOSED however many times it is repeated.
+tested clear" on any page is PROPOSED however many times it is repeated. An entity the ontology
+does not have at all is UNKNOWN: a finding for `@bsuk-entity-incorporation-agent`, which adds it
+through `python3 scripts/ontology_seed.py` or a sourced row, never an entity to score as ASSERTED.
 
 **5b. Hard FAIL, not a score** — a page that carries any of these fails the gate:
 - a licence, registration number or statute asserted as held, instead of LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER;
-- a health result stated as fact without its ledger proof (`scripts/evidence_audit.py`, check `claim-bound-to-proof`);
+- a health result, or a health outcome stated as a certainty ("will not develop"), without its ledger proof (`scripts/evidence_audit.py`, check `claim-bound-to-proof`);
 - a guarantee cover the site has not stated (the length is `guarantee_days`, the wording `guarantee_label`; neither names a cover);
 - any phrasing that implies a puppy sold unweaned, sourced from a dealer or brought in from abroad;
 - a named house method (BSUK has none).
@@ -275,7 +291,8 @@ tested clear" on any page is PROPOSED however many times it is repeated.
 | 18 | **Predicate Authorization** | §5a–5b — **a gate: any 5b hit = FAIL** |
 
 Every row carries its source (§0d). **Verdict:** `PASS` (Coverage 100%, Authorization clean,
-no score below 6) · `PASS-WITH-WARNINGS` · `FAIL` (a gate breached). No overall average.
+no score below 6, nothing `NOT MEASURED`) · `PASS-WITH-WARNINGS` (both gates pass, and a score is
+below 6 or a row is `NOT MEASURED`) · `FAIL` (a gate breached). No overall average.
 
 ---
 
@@ -301,6 +318,7 @@ recommendations with owners**.
 | an unauthorized claim (§5b) | `@bsuk-entity-incorporation-agent` and the answer board for the breeder |
 | snippet or citation shape | `bsuk-aeo-pass` |
 | duplicate prose or headers | `bsuk-duplicate-content-gate` |
+| copy and voice (third person, copy that talks about the page itself, AI tells) | `@bsuk-seo-content-writer`, the `anti-ai-writing` skill |
 
 A proposed visual change is previewed and approved before it is applied (working rule 6). With
 the breeder away it is written as a preview, recorded `deferred` and logged under Open Flags.
@@ -331,7 +349,7 @@ the breeder away it is written as a preview, recorded `deferred` and logged unde
 - a contrast failure on text you cannot find on screen;
 - one Lighthouse run used to judge CLS — five runs (`python3 scripts/perf_audit.py <route>`) or no claim.
 
-## Baseline this skill was written against (2026-09-29)
+## Tests this skill was written against (2026-09-29)
 
 A fresh agent without this skill audited `/blue-staffy-health-uk/` against
 `/uk-staffordshire-bull-terrier-guide/`. It rendered both pages at the three widths, kept the
@@ -341,3 +359,10 @@ section jobs in free text with no required set, so nothing could be "missing"; r
 parents' clear DNA result three times as *redundancy* without checking the ledger, where it is
 `NOT FETCHED`; wrote no verbalization table; named owners as roles; and gave no verdict. Each
 line of "Common mistakes" above closes one of those.
+
+With the skill, a fresh agent on the same task ran the five page audits (and found three of them
+failing or warning), labelled all 18 scores, applied both gates — Coverage 63% and an
+Authorization FAIL on ten unproven "clear" claims — named every owner from §7 and gave a FAIL
+verdict. Its ten gaps (read-only runs, the upscale check's scope, a missing query file, the
+WARN-only evidence check, entities absent from the ontology, partial functions, the money pages,
+a copy owner, the middle verdict, which pages the box binds) are closed above.

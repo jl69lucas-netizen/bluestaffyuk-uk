@@ -429,6 +429,20 @@ Plan: `docs/superpowers/plans/2026-09-27-london-component-design-pass.md`.
   `data/quality/rework-ledger.json`. Item 2 (the face-in-crop check) goes to Plan 2.
 - **Next:** Plan 2, written from the user's picks.
 
+## CAG ports before the London page run (2026-09-29, Task 10c) — ON THE BRANCH
+
+The user's ruling: six pieces the port manifest had deferred cross over before the London page
+run. Each is re-based (method kept; routes, data files, scripts, rule packs and facts BSUK's own;
+no price, deposit, delivery figure or guarantee length typed) and recorded `rebase` in
+`data/port-manifest.json`. Commit `0a3c859`; tests `tests/py/test_cag_ports_10c.py`.
+
+- `.claude/skills/bsuk-visual-intelligence/SKILL.md` — the page-communication audit (Known Issue 44); page-run rows 16 and 20.
+- `.claude/agents/bsuk-external-link-agent.md` — the external link library, six links on six domains from four source types, Link-First, live-checked; page-run row 9.
+- `.claude/agents/bsuk-entity-incorporation-agent.md` — the 4-Move Loop on the ontology and the evidence ledger; page-run rows 7 and 9 (and `rules/copy.md` `entity-4-move-loop` names it again as the active engine).
+- `.claude/agents/bsuk-coat-variant-builder.md` — coat-colour comparison pages with the shared coat table and cross-link block, to the `bsuk-comparison-page-builder` blueprint; page-run row 12.
+- `.claude/agents/bsuk-scam-trust-agent.md` — UK puppy-scam fears answered with checkable proof only, no licence detail; page-run row 12.
+- `.claude/agents/bsuk-video-seo-agent.md` — the site side of video SEO for the `youtube_embeds` ids; the channel is never touched; page-run row 12.
+
 ## Known Issues
 
 Seeded from the Foundation gate report's "Open items" 1–8 and extended by projects 2 and 3.
@@ -1092,10 +1106,13 @@ numbers.
     `"<keyword> reddit"` searches (the source repo's playbook). Decide with search-volume data
     in project 5 or later; the thread half is `.claude/skills/bsuk-reddit-threads/SKILL.md`.
 
-44. **No page-communication audit.** The source repo's visual-intelligence skill (does the page
+44. **No page-communication audit. CLOSED in `0a3c859` (Task 10c, 2026-09-29).** The source repo's visual-intelligence skill (does the page
     communicate, what job is it doing, why do two pages feel the same) was deferred to project
     3 in project 2's manifest; project 3 shipped without porting it. The 28 city pages in
     project 5 are where it would pay.
+    **Closed:** ported as `.claude/skills/bsuk-visual-intelligence/SKILL.md`, written against a
+    baseline test, and run at `docs/reference/page-run.md` row 16 (after the static scan, before
+    or with the AEO pass of row 20). See "CAG ports before the London page run" above.
 
 45. **DataForSEO costs are unknown (2026-09-23).** The connector returns no cost field, so
     `data/queries/spend.json` holds conservative estimates ($0.20 for Manchester). The user is
