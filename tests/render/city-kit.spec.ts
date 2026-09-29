@@ -501,6 +501,7 @@ for (const kind of ['broken', 'good'] as const) {
         ['heading lines', /wraps to \d+ lines/],
         ['75ch measure', /ch wide \(75 max\)/],
         ['paragraph lines', /runs \d+ lines \(\d max/],
+        ['heading measure', /^city-narrow-measure .*heading measure too narrow for its box/],
       ];
       // Section height is judged at a phone width and from 1280 only (the ruling's two caps).
       if (viewport < 768 || viewport >= 1280) kinds.push(['section height', /the section is \d+px tall/]);

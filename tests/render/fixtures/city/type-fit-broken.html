@@ -10,8 +10,14 @@
 <body>
 <!-- One of each defect the check names, each on its own element so each fires by itself:
      a heading over its cap, a heading over three lines, a paragraph wider than 75ch, a
-     paragraph over the line cap, and a section taller than the viewport cap. The review
+     paragraph over the line cap, a section taller than the viewport cap, and (its own section)
+     a desktop H2 whose measure is too narrow for its box. The review
      paragraph is inside a blockquote: it is NOT exempt, and fires like any other. -->
+<!-- A section H2 held to the phone measure (22ch) in a 900px, desktop-tier box: a short question
+     stacked to three lines beside empty space (the side-by-side review, 2026-09-29). -->
+<section class="city-kit city-narrow-measure" style="width:900px;padding:0">
+  <h2 style="font-size:26px;line-height:1.18;max-width:22ch;text-wrap:balance">What Did a London Family Say After Their Puppy Came Home?</h2>
+</section>
 <section class="city-kit city-broken">
   <h2 class="chunky">Chunky</h2>
   <h3 class="tall-head">Which Puppy Will You Ask About First Today?</h3>

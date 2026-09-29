@@ -6,6 +6,12 @@
  * It runs INSIDE the page (pass `cityTypeFit` to `page.evaluate` with the viewport) and judges
  * every `.city-kit` section on it, so a gate — not an eye — holds the type:
  *   1. every h1/h2/h3 is at or below its tier's cap and wraps to three lines or fewer;
+ *   1b. at the desktop tier, no section H2 wraps to three lines while its section's content box is
+ *      700px or more: a flat phone measure (22ch) there stacks a short question into a tall,
+ *      chunky block beside empty space ("heading measure too narrow for its box"; the side-by-side
+ *      review, 2026-09-29). src/styles/city.css sets the H2 measure per tier (22 / 28 / 34ch).
+ *      It fires only where the measure binds (lifting it widens the H2), so a
+ *      title the picked layout sets in a narrow column is not charged to the measure;
  *   2. no paragraph is wider than 75ch of its own font;
  *   3. no paragraph runs more than 8 lines below a 1024px viewport, or 6 from 1024;
  *   4. no section is taller than 2.5 viewports at a phone width (below 768) or 1.6 viewports
@@ -35,6 +41,8 @@ export function cityTypeFit({ viewport, tier: edges, fullWidthSpecimen = false }
   { viewport: number; tier: { tablet: number; desktop: number }; fullWidthSpecimen?: boolean }): TypeFitResult {
   const CAP: Record<string, [number, number, number]> = { H1: [26, 30, 34], H2: [22, 25, 28], H3: [17, 18, 20] };
   const TIER = ['phone', 'tablet', 'desktop'];
+  // 1b: a desktop-tier section at least this wide has room for a section H2 on two lines.
+  const NARROW_BOX = 700;
   const defects: string[] = [];
   let examined = 0;
   const painted = (el: Element) => {
@@ -77,6 +85,22 @@ export function cityTypeFit({ viewport, tier: edges, fullWidthSpecimen = false }
       if (fs > cap + 0.5) defects.push(`${where}: ${h.tagName} "${name(h)}" is ${fs}px, over the ${TIER[tier]} cap of ${cap}px`);
       const n = lines(h);
       if (n > 3) defects.push(`${where}: ${h.tagName} "${name(h)}" wraps to ${n} lines`);
+      if (h.tagName === 'H2' && tier === 2 && w >= NARROW_BOX && n >= 3) {
+        // Only where the MEASURE is what wraps it: the heading is narrower than the room its own
+        // container gives it. A heading the picked layout puts in a narrow column (the takeaways'
+        // title over its photo) is that layout's, and a wider measure could not change it.
+        // Its room is read by lifting the measure for one layout (a grid item's room is its
+        // area, not its parent's box), then restoring the inline style exactly.
+        const el = h as HTMLElement;
+        const width = el.getBoundingClientRect().width;
+        const before = el.style.maxInlineSize;
+        el.style.maxInlineSize = 'none';
+        const room = el.getBoundingClientRect().width;
+        el.style.maxInlineSize = before;
+        if (room - width > 8) {
+          defects.push(`${where}: H2 "${name(h)}" wraps to ${n} lines at ${Math.round(width)}px with ${Math.round(room)}px of room in a ${Math.round(w)}px box: heading measure too narrow for its box`);
+        }
+      }
     }
     for (const p of Array.from(root.querySelectorAll('p')).filter(painted)) {
       if (p.closest('form')) continue;

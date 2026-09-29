@@ -72,6 +72,9 @@ const HIDDEN_WHY = {
   'CityDialPhotoMarker.astro': 'The dial is desktop navigation: it shows from 1024px, and the jump band stands in for it on phones and tablets.',
   'CityJumpStepper.astro': 'The jump band is phone and tablet navigation: it shows below 1024px, and the dial beside the body takes its place from 1024px.',
 };
+// The sticky furniture is shot as the element itself; every section is clipped from the page.
+const DIAL_FILE = 'CityDialPhotoMarker.astro';
+const STICKY = new Set(['CityJumpStepper.astro', DIAL_FILE]);
 // Chrome: shot as the element itself, with nothing hidden (the header sits outside its box).
 const CHROME = new Set(['CityJumpStepper.astro']);
 for (const r of rows) {
@@ -151,6 +154,7 @@ const browser = await chromium.launch();
 const shots = [];
 const broken = [];
 const columnNote = new Set();
+let dialRow = null;
 try {
   for (const [i, component] of order.entries()) {
     const key = picks[component];
@@ -159,7 +163,8 @@ try {
     const sel = ROOT_SELECTOR[row.file];
     for (const width of WIDTHS) {
       const shot = { component, key, row, width, canvasFile: null, builtFile: null, note: null };
-      const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+      const height = 900;
+      const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
 
       // The canvas frame.
       await page.goto(`http://127.0.0.1:${PORT + 1}/docs/artifacts/canvas/${CITY}-frames/${component}/${variant}.html`, { waitUntil: 'load' });
@@ -197,13 +202,67 @@ try {
         for (const src of await settleImages(page, sel)) broken.push(`${component} built @${width}: ${src}`);
         if (CHROME.has(row.file)) await page.evaluate(() => window.scrollTo(0, 0));
         else await el.scrollIntoViewIfNeeded();
+        if (row.file === DIAL_FILE) {
+          // The dial follows the reader. Scroll just far enough that the whole dial is on screen,
+          // let the scroll spy settle, and read the row it marks; the shot then checks that row's
+          // section is the one in the spy's reading band (40-45% down), so the marked row is
+          // always the section being read.
+          dialRow = await page.evaluate(async (s) => {
+            const dial = document.querySelector(s);
+            const r = dial.getBoundingClientRect();
+            window.scrollTo(0, Math.max(0, r.bottom + window.scrollY - window.innerHeight + 16));
+            let last = null;
+            let same = 0;
+            const t0 = Date.now();
+            while (same < 6 && Date.now() - t0 < 3000) {
+              await new Promise((res) => setTimeout(res, 50));
+              const cur = dial.querySelector('[aria-current]');
+              const id = cur ? cur.getAttribute('href') : null;
+              same = id && id === last ? same + 1 : 0;
+              last = id;
+            }
+            const cur = dial.querySelector('[aria-current]');
+            if (!cur) return null;
+            const t = document.getElementById(cur.getAttribute('href').slice(1)).getBoundingClientRect();
+            const band = window.innerHeight * 0.42;
+            cur.dataset.sbsRow = '1';
+            return t.top <= band && t.bottom >= band ? cur.textContent.trim() : `MISMATCH:${cur.textContent.trim()}`;
+          }, sel);
+          if (!dialRow || dialRow.startsWith('MISMATCH')) {
+            console.error(`${component} @${width}: the dial's marked row is not the section being read (${dialRow})`);
+            process.exitCode = 1;
+          }
+        }
         await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
         if (width === 1280) {
           const w = await el.evaluate((n) => n.getBoundingClientRect().width);
           if (w < width - 200) columnNote.add(component);
         }
         shot.builtFile = `${component}-${width}-built.jpg`;
-        await el.screenshot({ path: resolve(OUT, shot.builtFile), type: 'jpeg', quality: 78 });
+        if (row.file === DIAL_FILE) {
+          // Clipped from the viewport where it sticks: an element shot scrolls it into view, which
+          // moves the reader and so the dial's current row.
+          const b = await el.evaluate((n) => { const r = n.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
+          if (b.y < 0 || b.y + b.h > height) { console.error(`${component} @${width}: the dial does not fit the viewport`); process.exitCode = 1; }
+          const x = Math.ceil(b.x);
+          const y = Math.max(0, Math.ceil(b.y));
+          await page.screenshot({ path: resolve(OUT, shot.builtFile), type: 'jpeg', quality: 78, clip: { x, y, width: Math.floor(b.x + b.w) - x, height: Math.min(height, Math.floor(b.y + b.h)) - y } });
+          const still = await el.evaluate((n) => n.querySelector('[data-sbs-row]').hasAttribute('aria-current'));
+          if (!still) { console.error(`${component} @${width}: the dial's row "${dialRow}" was not current when shot`); process.exitCode = 1; }
+        } else if (STICKY.has(row.file)) {
+          await el.screenshot({ path: resolve(OUT, shot.builtFile), type: 'jpeg', quality: 78 });
+        } else {
+          // The section's own box, rounded INWARD: an element shot rounds a fractional edge out and
+          // picks up a 1px line of the next section.
+          const b = await el.evaluate((n) => {
+            const r = n.getBoundingClientRect();
+            return { x: r.left + window.scrollX, y: r.top + window.scrollY, w: r.width, h: r.height };
+          });
+          const x = Math.ceil(b.x);
+          const y = Math.ceil(b.y);
+          const clip = { x, y, width: Math.floor(b.x + b.w) - x, height: Math.floor(b.y + b.h) - y };
+          await page.screenshot({ path: resolve(OUT, shot.builtFile), type: 'jpeg', quality: 78, fullPage: true, clip });
+        }
       }
       await page.close();
       shots.push(shot);
@@ -221,6 +280,9 @@ const cards = order.map((component, i) => {
   const row = rows[i];
   const notes = [...DELIBERATE[component] ?? []];
   if (columnNote.has(component)) notes.push(COLUMN);
+  if (component === 'desktop-dial' && dialRow) {
+    notes.push(`The dial follows the reader: its marked row is the section being read. The canvas marked its first row; the built dial is shot where the whole dial is on screen, with the reader in "${dialRow}", so that row is marked.`);
+  }
   const mine = shots.filter((s) => s.component === component);
   const pairs = mine.map((s) => {
     const built = s.builtFile
