@@ -28,7 +28,7 @@ record missing any part below and writes `docs/artifacts/research/<slug>.html` a
 | 5 query fan-out | `fanout` | PAA, threads, the LLM-intel file | `bsuk-paa-agent`, `bsuk-reddit-threads`, `bsuk-llm-keyword-intel` |
 | 6–8 | `why_competitors_rank`, `how_we_win`, `content_gap` | the summary, our edge, the build list | sections 1–5 |
 | 9–12 | `entities`, `angles`, `strategies`, `frameworks` | the entities by class; 3 angles, 2–3 strategy directions, the framework options per section group, one (Recommended) each with its why and trade-off | `data/bsuk-ontology.json`, `bsuk-angle-agent`, the cluster strategy row and `bsuk-strategy-synthesizer`, `framework-*` |
-| 13–14 | `keywords.universe`, `keywords.distribution` | every keyword by intent with its volume, and where each is placed, section by section | row 6, `python3 scripts/keyword_variants.py <slug>` |
+| 13–14 | `keywords.universe`, `keywords.distribution` | every keyword by intent with its volume, and where each is placed, section by section | row 6, `python3 scripts/keyword_variants.py <board slug or query-cache folder>` |
 
 **Nothing is inferred (working rule 9).** A finding cites its `evidence` (the saved fetch or the
 URL read) or is written `NOT FETCHED — <barrier>`, naming what was tried and what stopped it; a

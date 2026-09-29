@@ -138,6 +138,9 @@ def test_board_gate_cli_prints_the_rule16_fail_and_exits_1(monkeypatch, capsys):
     monkeypatch.setattr(PB, "live_headings", lambda: {})
     monkeypatch.setattr(PB, "gate_findings", lambda *a, **k: [])
     monkeypatch.setattr(PB, "all_headings", lambda b: [])
+    # "b" is a new-page slug, so the STOP 2 gate would add outline-unapproved: these tests
+    # are about rule 16, so the outline is taken as approved (tests/py/test_outline_approval.py).
+    monkeypatch.setattr(BG, "outline_findings", lambda slug: [])
     monkeypatch.setattr(sys, "argv", ["board_gate.py", "b"])
     for s in board["sections"]:
         s.setdefault("entities", [])
@@ -164,6 +167,9 @@ def test_board_gate_cli_says_when_rule16_judged_nothing(monkeypatch, capsys):
     monkeypatch.setattr(PB, "live_headings", lambda: {})
     monkeypatch.setattr(PB, "gate_findings", lambda *a, **k: [])
     monkeypatch.setattr(PB, "all_headings", lambda b: [])
+    # "b" is a new-page slug, so the STOP 2 gate would add outline-unapproved: these tests
+    # are about rule 16, so the outline is taken as approved (tests/py/test_outline_approval.py).
+    monkeypatch.setattr(BG, "outline_findings", lambda slug: [])
     monkeypatch.setattr(sys, "argv", ["board_gate.py", "b"])
     for s in board["sections"]:
         s.setdefault("entities", [])
