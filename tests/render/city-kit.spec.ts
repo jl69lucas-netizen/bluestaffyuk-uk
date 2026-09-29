@@ -683,3 +683,39 @@ test('the jump band ignores overscroll and survives a browser without :focus-vis
   expect(await tucked(), 'the overscroll bounce brought the band back').toBe(true);
   expect(errors, 'the band threw on a browser without :focus-visible').toEqual([]);
 });
+
+// The Task 10b re-review, item 5: the :focus-visible guard itself. With a focus INSIDE the band
+// the hold reads `activeElement.matches(':focus-visible')`, which throws before Safari 15.4. The
+// try must swallow it: no page error, and (the hold unknowable there) the band still tucks.
+test('a keyboard focus inside the band on a browser without :focus-visible throws nothing', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp375', 'run once, at a phone width');
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.addInitScript(() => {
+    for (const proto of [Element.prototype, Document.prototype] as const) {
+      for (const fn of ['matches', 'querySelector', 'querySelectorAll'] as const) {
+        const orig = (proto as any)[fn];
+        if (!orig) continue;
+        (proto as any)[fn] = function (sel: string, ...rest: unknown[]) {
+          if (typeof sel === 'string' && sel.includes(':focus-visible')) throw new SyntaxError(`'${sel}' is not a valid selector`);
+          return orig.call(this, sel, ...rest);
+        };
+      }
+    }
+  });
+  const res = await page.goto('/uk-locations/blue-staffy-puppies-london/');
+  expect(res?.status()).toBe(200);
+  // A keyboard focus on the sheet key: a key press first, so the focus is a keyboard one.
+  await page.keyboard.press('Shift');
+  await page.locator('[data-city-jump-stepper] [data-jump-open]').focus();
+  expect(await page.evaluate(() => !!document.activeElement?.closest('[data-city-jump-stepper]'))).toBe(true);
+  for (const y of [900, 1800, 2700]) {
+    await page.evaluate((v) => window.scrollTo(0, v), y);
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
+  }
+  expect(errors, 'the hold threw on a browser without :focus-visible').toEqual([]);
+  await page.waitForFunction(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked'),
+    null, { timeout: 10_000, polling: 'raf' }).catch(() => {});
+  expect(await page.evaluate(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked')),
+    'with the hold unknowable, scrolling down still tucks the band').toBe(true);
+});
