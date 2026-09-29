@@ -602,6 +602,7 @@ def test_built_faq_is_native_details_with_backed_answers():
         "delivery_max_gbp": str(settings["delivery_max_gbp"]),
         "delivery_note": settings["delivery_note"],
         "deposit_terms": "refundable" if settings["deposit_refundable"] else "non-refundable",
+        "guarantee_label_lc": settings["guarantee_label"][:1].lower() + settings["guarantee_label"][1:],
     }
     resolved = [
         {"q": r["q"], "a": re.sub(r"\{([a-z_]+)\}", lambda m: tokens[m.group(1)], r["a"])}
