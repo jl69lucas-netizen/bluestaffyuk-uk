@@ -97,14 +97,13 @@ Signal: registration, vaccination or microchip records promised "after payment".
 Our answer: the paperwork exactly as data/faq.json `whyus-paperwork` lists it, and the parents' results shown as data/faq.json `whyus-evidence` says.
 ```
 
-**Held for the breeder, not printed.** One common red flag is left out of every pattern
-and checklist because nothing on disk says our own process passes it:
+**Nothing is held for the breeder today.** Two common red flags were held until her answers
+(answer board, 2026-09-29, `docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`), and both are now signs we pass:
 
-- a payment by bank transfer, gift card or crypto before a call or visit — `NEEDS BREEDER CONFIRMATION — never print until the answer board records it` (the payment method is not recorded; see Safe Payment below);
+- a seller who will not do a live video call with the puppy and its mother — we offer a video call with the puppy and its mother on request (q03), so it is item 9 of the checklist below;
+- a seller who asks for money before a video call or a visit, and whom you cannot check — the red flag is paying ANY money, by any method, to a seller you cannot check; it is never the payment method. We take the deposit by bank transfer ourselves (q04), and a buyer can have the video call first, so it is item 10 of the checklist below.
 
-**Answered, and now a sign we pass:** a seller who will not do a live video call with the puppy and its mother. We offer a video call with the puppy and its mother on request (the breeder's answer, answer board q03, `docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`), so it is item 9 of the checklist below.
-
-A held flag goes to the breeder as a question on the answer board (`docs/reference/answer-board/README.md`); a flag enters the checklist only when her answer says our process passes it.
+A new red flag our own process may fail goes to the breeder as a question on the answer board (`docs/reference/answer-board/README.md`); a flag enters the checklist only when her answer says our process passes it.
 
 A price figure that "is too good" is described in words, never as a typed threshold: no
 market figure has been fetched (`NOT FETCHED — no UK price survey is in the repo`), and rule 9
@@ -112,9 +111,9 @@ forbids inventing one.
 
 ---
 
-## The Red-Flag Checklist (9 items — a checklist the buyer can use on any seller)
+## The Red-Flag Checklist (10 items — a checklist the buyer can use on any seller)
 
-Only red flags our own process passes are on it (the one held for the breeder is above).
+Only red flags our own process passes are on it (see above: nothing is held today).
 
 ```
 Check every line with any seller before you pay the balance:
@@ -127,6 +126,7 @@ Check every line with any seller before you pay the balance:
 7. The seller will only meet you away from their home.
 8. There is no way to reach the seller after the sale.
 9. The seller will not do a live video call with the puppy and its mother.
+10. The seller asks for money before a video call or a visit, and you cannot check who they are.
 If any line is true, stop.
 ```
 
@@ -163,11 +163,15 @@ fraud-reporting page is not a library row yet; it is added through that agent's 
 
 ## Safe Payment
 
-`NOT FETCHED — payment method not confirmed by the breeder`. No page names the way a buyer pays
-us, or advises a buyer which payment methods are safe with any seller, until the answer board
-records her answer. The section on a scam-prevention page reads as a question the buyer should
-ask every seller ("how will I pay, and what protection does that give me?"), with the
-independent guidance cited, and no claim about us.
+We take the deposit by bank transfer (the breeder's answer, answer board q04, `docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md`). Its amount
+is `deposit_gbp` in `data/settings.json`, read and never typed, so a page writes "we take the
+£{deposit_gbp} deposit by bank transfer" with the figure filled from that key. What the deposit
+books, and its refund term, follow the deposit ruling above, never a plain "refundable".
+
+The scam advice never flags a bank transfer as such, because that would condemn our own
+deposit. The red flag is paying any money, by any method, to a seller you cannot check, before a
+video call or a visit (checklist item 10). A buyer can have the live video call with the puppy
+and its mother first (q03), and the independent guidance on paying for a puppy is cited as it is.
 
 ---
 
@@ -200,8 +204,8 @@ rule 12), Link-First, with its `anchor_type`:
 4. **Never advice our own process fails** — a conflict between independent guidance and our process goes to the answer board.
 5. **Reviews from `data/reviews.json` only** — never invented, never AggregateRating.
 6. **A health result only with its ledger proof** — A test result or score always needs its ledger `proof`: "tested clear" is not written while `parents-dna-clear` is `NOT FETCHED`, and no breeder ruling stands in for it. A ruling lets a page name the tests and the screening, never state a result; whether she holds the certificates is a question for her on the answer board.
-7. **The five patterns and the nine-line checklist** on a scam-prevention page; a section picks from them. A red flag our own process may fail is `NEEDS BREEDER CONFIRMATION — never print until the answer board records it` and goes to the answer board.
+7. **The five patterns and the ten-line checklist** on a scam-prevention page; a section picks from them. A red flag our own process may fail is marked `NEEDS BREEDER CONFIRMATION`, is never printed until the answer board records her answer, and goes to the answer board.
 8. **Outside citations through the library** — Link-First, live-checked, on the board.
 9. **FAQPage schema** carrying exactly the visible questions; `BreadcrumbList` on a page of its own.
 10. **Every fear answered** — each section addresses at least one of the ranked buyer fears.
-11. **The cross-link block and Safe Payment** — the block closes every scam section; Safe Payment stays `NOT FETCHED` until the breeder answers.
+11. **The cross-link block and Safe Payment** — the block closes every scam section; Safe Payment says we take the deposit by bank transfer (q04), its amount read from `deposit_gbp`, and never condemns a bank transfer as such.

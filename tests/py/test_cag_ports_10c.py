@@ -172,9 +172,11 @@ def test_the_port_types_no_price_or_guarantee(rel):
 
 def test_the_typed_fact_scan_fires():
     for hit in ("a £500 deposit", "priced at 1,700", "the 72-hour window", "a two-year cover",
+                "we take the £500 deposit by bank transfer",
                 "{ low: 1500 }", "730 days", "$185 airport"):
         assert TYPED.search(hit), hit
     for ok in ("`deposit_gbp` in data/settings.json", "`male_gbp`", "the 1280 viewport",
+               "we take the deposit (`deposit_gbp` in `data/settings.json`) by bank transfer",
                "`guarantee_label`", "ten years of data"):
         assert not TYPED.search(ok), ok
     for hit in ("a 500 deposit", "delivery costs 200–350 by distance", "the guarantee runs 730",
@@ -285,10 +287,32 @@ def test_the_refundable_scan_fires(tmp_path):
 ANSWERS_0929 = "docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md"
 
 
-def test_red_flags_our_process_cannot_pass_are_held_for_the_breeder():
-    bad = [f"{n}  {l.strip()[:90]}" for n, l in _lines(SCAM)
-           if re.search(r"(?i)bank transfer|gift card", l) and CONFIRM not in l]
-    assert bad == [], "a red flag BSUK's own process may fail is marked:\n  " + "\n  ".join(bad)
+# A line that condemns paying by bank transfer as such — which would condemn our own deposit.
+CONDEMNS_TRANSFER = re.compile(
+    r"(?i)(?:never|don't|do not|avoid|refuse to)\s+(?:send|pay|paying|sending)[^.]{0,30}\bbank transfer"
+    r"|bank transfer[^.]{0,40}\b(?:is|as)\s+(?:a\s+)?(?:red flag|scam|warning sign)"
+    r"|a payment by bank transfer, gift card or crypto")
+
+
+def test_the_payment_red_flag_never_condemns_a_bank_transfer():
+    """Answer board q04 (2026-09-29): we take the deposit by bank transfer. The red flag is paying
+    any money to a seller you cannot check, before a video call or a visit, never the transfer."""
+    t = _text(SCAM)
+    assert CONFIRM not in t, "nothing is held for the breeder any more (q03 and q04 answered)"
+    bad = [f"{n}  {l.strip()[:90]}" for n, l in _lines(SCAM) if CONDEMNS_TRANSFER.search(l)]
+    assert bad == [], "a line condemns paying by bank transfer:\n  " + "\n  ".join(bad)
+    checklist = t.split("## The Red-Flag Checklist", 1)[1].split("```")[1]
+    assert re.search(r"(?i)asks? for (?:any )?money before (?:a|any) (?:live )?video call or (?:a )?visit, "
+                     r"and (?:you )?cannot check who (?:they are|the seller is)", checklist), checklist
+
+
+def test_the_transfer_scan_fires():
+    for hit in ("Never pay a deposit by bank transfer.", "A bank transfer is a red flag.",
+                "- a payment by bank transfer, gift card or crypto before a call or visit"):
+        assert CONDEMNS_TRANSFER.search(hit), hit
+    for ok in ("We take the deposit by bank transfer.",
+               "Paying any money to a seller you cannot check, before a video call or visit."):
+        assert not CONDEMNS_TRANSFER.search(ok), ok
 
 
 def test_the_video_call_is_a_sign_we_pass():
@@ -314,7 +338,13 @@ def test_the_take_back_is_the_ruling_and_names_no_contract():
 
 def test_the_scam_agent_restores_safe_payment_and_the_cross_link_section():
     t = _text(SCAM)
-    assert "NOT FETCHED — payment method not confirmed by the breeder" in t
+    # Safe Payment is answered (q04): the deposit is taken by bank transfer, its amount read from
+    # data/settings.json `deposit_gbp`, never typed.
+    assert "NOT FETCHED — payment method not confirmed" not in t
+    safe = t.split("## Safe Payment", 1)[1].split("\n## ", 1)[0]
+    assert "we take the deposit" in safe.lower() and "by bank transfer" in safe, safe
+    assert "`deposit_gbp`" in safe and "q04" in safe and ANSWERS_0929 in safe, safe
+    assert typed_facts(SCAM) == [], typed_facts(SCAM)
     assert "Ready to Buy From a Breeder You Can Check?" in t
     for route in ("/available-puppies/", "/buy-blue-staffy-puppies-uk/", "/uk-blue-staffy-puppy-buying-guide/"):
         assert route in t, route
