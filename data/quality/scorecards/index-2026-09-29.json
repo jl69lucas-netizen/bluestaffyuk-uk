@@ -1,0 +1,159 @@
+{
+  "slug": "index",
+  "date": "2026-09-29",
+  "page_type": "home",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 34
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1468,
+    "layout-tap-target-size": 276,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 3,
+    "layout-image-box-reserved": 12,
+    "layout-table-stacks-on-mobile": 3,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 3,
+    "img-srcset-within-2x": 72,
+    "img-not-upscaled": 63,
+    "img-alt-present-and-unique": 72,
+    "img-sizes-matches-box": 12,
+    "img-face-visible": 27,
+    "nav-anchors-resolve": 255,
+    "nav-jump-target-lands": 66,
+    "nav-bottom-chrome-clear": 44,
+    "sem-heading-order": 318,
+    "sem-all-six-levels": 318,
+    "sem-title-case-headings": 318,
+    "sem-section-opening-paragraph": 318,
+    "sem-statement-label-visible": 15,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 21,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 2280,
+    "css-no-dead-component-rule": 996,
+    "css-component-color-not-overridden": 73,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 1444,
+    "a11y-no-duplicate-ids": 87,
+    "a11y-hero-ledge-contrast": 21,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "LAYOUT": 3,
+    "IMG": 3,
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "LAYOUT": 3,
+    "IMG": 17,
+    "CSS": 195,
+    "DUP": 27
+  },
+  "total": 15,
+  "total_instances": 242,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "layout-h3-image-first",
+      "count": 1,
+      "message": "1 H3 block(s) put prose before their image: What Each Card Shows"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "img-not-upscaled",
+      "count": 9,
+      "message": "9 upscaled image(s): buy-staffy-health-guarantee-uk-760.webp file=760x760 painted=874x874 visible=874x874 fill 1.15x | victoria-family-blue-staffy-manchester-440.webp file=440x440 painted=876x876 visible=876x876 fill 1.99x | playful-staffy-puppies-uk-sale.webp file=625x469 painted=876x657 visible=876x657 fill 1.40x | kc-staffy-puppies-for-rehoming-uk.webp file=640x427 painted=876x584 visible=876x584 fill 1.37x | playful-blue-staffy-lawn-uk-760.webp file=760x774 painted=876x892 visible=876x892 fill 1.15x | hqdefault.jpg file=480x360 painted=876x493 visible=876x493 cover 1.82x | blue-staffy-family-dog-uk.webp file=600x450 painted=876x657 visible=876x657 fill 1.46x | blue-staffy-puppy-delivery-uk-760.webp file=760x760 painted=876x876 visible=876x876 fill 1.15x | mark-blue-staffy-london.webp file=319x213 painted=876x585 visible=876x585 fill 2.75x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "img-face-visible",
+      "count": 1,
+      "message": "1 face(s) cropped or covered: maggie-blue-staffy-dam-with-pups face 1: 77% painted in a 182x189 cover crop"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x20, bl-list-stack x19, bl-cols-1 x18, bl-head-above x16, bl-media-none x11, bl-head-eyebrow x4, counter-wrap x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 57,
+      "message": "57 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 9,
+      "message": "9 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /buy-staffy-puppies-for-sale-uk/ \"both parents are dna tested clear of l 2 hga and hc hsf4\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "layout-h3-image-first",
+      "count": 1,
+      "message": "1 H3 block(s) put prose before their image: What Each Card Shows"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x20, bl-list-stack x19, bl-cols-1 x18, bl-head-above x16, bl-media-none x11, bl-head-eyebrow x4, counter-wrap x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 57,
+      "message": "57 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 9,
+      "message": "9 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /buy-staffy-puppies-for-sale-uk/ \"both parents are dna tested clear of l 2 hga and hc hsf4\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "layout-h3-image-first",
+      "count": 1,
+      "message": "1 H3 block(s) put prose before their image: What Each Card Shows"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 7,
+      "message": "7 upscaled image(s): playful-staffy-puppies-uk-sale.webp file=625x469 painted=720x540 visible=720x540 fill 1.15x | kc-staffy-puppies-for-rehoming-uk.webp file=640x427 painted=720x480 visible=720x480 fill 1.13x | kc-registered-blue-staffy-pups-london.webp file=640x480 painted=720x540 visible=720x540 fill 1.13x | hqdefault.jpg file=480x360 painted=720x405 visible=720x405 cover 1.50x | blue-staffy-family-dog-uk.webp file=600x450 painted=720x540 visible=720x540 fill 1.20x | healthy-staffy-breed-guide-1.webp file=512x768 painted=720x1080 visible=720x1080 fill 1.41x | mark-blue-staffy-london.webp file=319x213 painted=720x481 visible=720x481 fill 2.26x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x20, bl-list-stack x19, bl-cols-1 x18, bl-head-above x16, bl-media-none x11, bl-head-eyebrow x4, counter-wrap x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 57,
+      "message": "57 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 9,
+      "message": "9 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /buy-staffy-puppies-for-sale-uk/ \"both parents are dna tested clear of l 2 hga and hc hsf4\""
+    }
+  ]
+}
