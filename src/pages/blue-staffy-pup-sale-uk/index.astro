@@ -59,7 +59,7 @@ import { bakedAssets } from '../../lib/assets';
 import { recordText, ledgeText, type LedgeEntry } from '../../lib/recordText';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
-import { SITE, abs, guaranteeLabel, type PuppyRow } from '../../lib/site';
+import { SITE, abs, guaranteeLabel, guaranteeCoverSentence, type PuppyRow } from '../../lib/site';
 import puppiesJson from '../../../data/puppies.json';
 import reviewsJson from '../../../data/reviews.json';
 import prices from '../../../data/price-matrix.json';
@@ -409,7 +409,7 @@ const pageSchema = [
       </p>
       {/* data/settings.json `guarantee_label` (answer board q07, 2026-09-29), never typed. */}
       <h5>{T(`Not an Item, a Promise: Our ${guaranteeLabel()}`)}</h5>
-      <p>It is not a seventh item on the list; it is a promise we make with every puppy. Ask us for its full wording before you pay a deposit.</p>
+      <p>It is not a seventh item on the list; it is a promise we make with every puppy. {guaranteeCoverSentence()} Ask us for its full wording before you pay a deposit.</p>
       <h6>{T('Price Note: All six are inside the price')}</h6>
       <p>None of them is a line we bill for afterwards.</p>
     </div>

@@ -16,7 +16,7 @@ import settings from '../../data/settings.json';
 import prices from '../../data/price-matrix.json';
 import puppiesJson from '../../data/puppies.json';
 import { gbp, type PuppyRow } from './site';
-import { checkGuaranteeLabel, checkGuaranteeCover, type GuaranteeSettings } from './guarantee';
+import { checkGuaranteeLabel, guaranteeRowParts, type GuaranteeSettings } from './guarantee';
 
 export const money = (n: number) => `£${gbp(n)}`;
 
@@ -63,15 +63,11 @@ export { checkGuaranteeLabel };
 /** The guarantee's length in days, or null while the breeder has not given one (rule 9). */
 export const guaranteeDays = (): number | null => G.guarantee_days;
 
-/** A guarantee row ({ t: its label, d: what it covers, then its note }), or null. It prints only
- *  when data/settings.json carries the length, the label, the cover and the note: no component
- *  writes what a guarantee is or covers (working rule 9). */
-export const guaranteeRow = (): { t: string; d: string } | null => {
-  if (!G.guarantee_days || !G.guarantee_label || !G.guarantee_note || !G.guarantee_cover) return null;
-  checkGuaranteeLabel(G.guarantee_days, G.guarantee_label);
-  checkGuaranteeCover(G.guarantee_days, G.guarantee_cover);
-  return { t: G.guarantee_label, d: `It ${G.guarantee_cover}. ${G.guarantee_note}` };
-};
+/** A guarantee row ({ t: its label, d: what it covers, then its note }), or null when the
+ *  length, the label or the note is missing; a missing cover only leaves the cover sentence out
+ *  (src/lib/guarantee.ts guaranteeRowParts). No component writes what a guarantee is or covers
+ *  (working rule 9). */
+export const guaranteeRow = (): { t: string; d: string } | null => guaranteeRowParts(G);
 
 /** The FAQPage node for a city page's questions: EXACTLY the rows its FAQ blocks render, in
  *  their file wording (the blocks Title Case the visible heading at render, as Faq.astro does). */

@@ -83,3 +83,38 @@ export function guaranteeCoverWords(s: GuaranteeSettings): string {
   checkGuaranteeCover(s.guarantee_days, s.guarantee_cover);
   return s.guarantee_cover;
 }
+
+/** The cover with its length taken out ("covers … from the day your puppy comes home"), for a
+ *  sentence whose heading or label already states the length (review M1, 2026-09-29). */
+function bareCover(days: number, cover: string): string {
+  return cover.replace(` ${coverLength(days)}`, '');
+}
+
+/** What a guarantee sentence says after "our written": the noun and its cover clause when
+ *  data/settings.json has a cover ("health guarantee, which covers … comes home,"), so the length
+ *  is said once, inside the clause; the label alone when it has none ("two-year health
+ *  guarantee"). A missing cover omits the clause; it never stops the build (review M2). */
+export function guaranteePhraseOf(s: GuaranteeSettings): string {
+  const lower = guaranteeWords(s, 'lower');
+  if (!s.guarantee_days || !s.guarantee_cover) return lower;
+  checkGuaranteeCover(s.guarantee_days, s.guarantee_cover);
+  const noun = lower.replace(new RegExp(`^${lengthWords(s.guarantee_days)}\\s+`, 'i'), '');
+  return `${noun}, which ${s.guarantee_cover},`;
+}
+
+/** The sentence a section headed with the guarantee's label carries: "It covers … comes home."
+ *  (the length is in the heading), or "" when there is no cover. */
+export function coverSentenceOf(s: GuaranteeSettings): string {
+  if (!s.guarantee_days || !s.guarantee_cover) return '';
+  checkGuaranteeCover(s.guarantee_days, s.guarantee_cover);
+  return `It ${bareCover(s.guarantee_days, s.guarantee_cover)}.`;
+}
+
+/** The city guarantee row: the label as its title; its line is the cover sentence (when there
+ *  is a cover) and then the note. Null only when the length, label or note is missing. */
+export function guaranteeRowParts(s: GuaranteeSettings): { t: string; d: string } | null {
+  if (!s.guarantee_days || !s.guarantee_label || !s.guarantee_note) return null;
+  checkGuaranteeLabel(s.guarantee_days, s.guarantee_label);
+  const cover = coverSentenceOf(s);
+  return { t: s.guarantee_label, d: cover ? `${cover} ${s.guarantee_note}` : s.guarantee_note };
+}

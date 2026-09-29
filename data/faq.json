@@ -302,7 +302,7 @@
   {
     "id": "home-health-guarantee",
     "q": "Do you offer health guarantees for your blue staffy puppies?",
-    "a": "Yes. Every puppy leaves with our written {guarantee_label_lc}, which {guarantee_cover}, alongside its vaccination and microchip records. Please ask us for the full wording before you pay a deposit.",
+    "a": "Yes. Every puppy leaves with our written {guarantee_phrase} alongside its vaccination and microchip records. Please ask us for the full wording before you pay a deposit.",
     "source": "data/settings.json"
   },
   {

@@ -97,6 +97,10 @@ WHITELIST_SNIPPETS = [
 
     # deposit line — the one deposit figure the site is allowed to state
     "deposit 500 refundable",
+    # the guarantee cover (answer board q02, 2026-09-29): data/settings.json `guarantee_cover`,
+    # printed by src/lib/guarantee.ts coverSentenceOf() under every heading that names the
+    # guarantee and in the city guarantee row. One data field, not prose (review I7).
+    "it covers health issues and birth defects from the day your puppy comes home",
 
     # trust strip under the hero
     "family raised puppies lifetime support available blue staffy puppies delivery options",

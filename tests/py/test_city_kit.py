@@ -907,7 +907,9 @@ def test_the_guarantee_label_must_open_with_its_length_as_whole_words(tmp_path):
     res = subprocess.run([node, "--input-type=module", "-e", driver], check=True, capture_output=True, text=True)
     assert _json.loads(res.stdout) == ["ok", "refused", "refused", "refused", "refused", "refused", "ok", "ok", "refused"]
     kit = (ROOT / "src/lib/cityKit.ts").read_text(encoding="utf-8")
-    assert "checkGuaranteeLabel(G.guarantee_days, G.guarantee_label)" in kit
+    # guaranteeRow() is src/lib/guarantee.ts guaranteeRowParts(G), which runs the label check.
+    assert "guaranteeRowParts(G)" in kit
+    assert "checkGuaranteeLabel(s.guarantee_days, s.guarantee_label)" in (ROOT / "src/lib/guarantee.ts").read_text(encoding="utf-8")
 
 
 def test_the_built_pages_refuse_a_mismatched_or_cover_naming_guarantee_label(tmp_path):

@@ -81,7 +81,7 @@ import { boxClass } from '../../lib/boardStyles';
 import { recordText, countedFigures, sourceKey, ledgeText, numberWord, type LedgeEntry } from '../../lib/recordText';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
-import { SITE, abs, guaranteeLabel, type PuppyRow } from '../../lib/site';
+import { SITE, abs, guaranteeLabel, guaranteeCoverSentence, type PuppyRow } from '../../lib/site';
 import { videoObject } from '../../lib/video';
 import puppiesJson from '../../../data/puppies.json';
 import reviewsJson from '../../../data/reviews.json';
@@ -733,8 +733,8 @@ const pageSchema = [
       {/* data/settings.json `guarantee_label` (answer board q07, 2026-09-29), never typed. */}
       <h4>{T(`Our ${guaranteeLabel()}, In Writing`)}</h4>
       <p>
-        Ours is a {guaranteeLabel('lower')}, and it is written down; ask us for the full wording
-        before you pay a deposit. We have confirmed no support period, so this page prints none.
+        Ours is a {guaranteeLabel('lower')}, and it is written down. {guaranteeCoverSentence()} Ask us
+        for the full wording before you pay a deposit. We have confirmed no support period, so this page prints none.
         An inbox with hours on it is smaller than a lifetime promise, and it is the one that is
         true.
       </p>

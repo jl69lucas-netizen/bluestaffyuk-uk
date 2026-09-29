@@ -1,5 +1,5 @@
 import settings from '../../data/settings.json';
-import { guaranteeWords, guaranteeCoverWords, type GuaranteeSettings } from './guarantee';
+import { guaranteeWords, guaranteePhraseOf, coverSentenceOf, type GuaranteeSettings } from './guarantee';
 
 export const SITE = settings;
 
@@ -11,12 +11,17 @@ export function guaranteeLabel(form: 'label' | 'lower' = 'label'): string {
   return guaranteeWords(settings as GuaranteeSettings, form);
 }
 
-/** What the guarantee covers, from data/settings.json `guarantee_cover` (the breeder's answer,
- *  answer board q02, 2026-09-29), as a clause: "covers health issues and birth defects for two
- *  years from the day your puppy comes home". A page adds it only where a guarantee sentence
- *  already carries it, and never types it; src/lib/guarantee.ts checks it against the length. */
-export function guaranteeCover(): string {
-  return guaranteeCoverWords(settings as GuaranteeSettings);
+/** What a guarantee sentence says after "our written" (src/lib/guarantee.ts guaranteePhraseOf):
+ *  "health guarantee, which covers … comes home," from data/settings.json `guarantee_cover`
+ *  (answer board q02, 2026-09-29), or the label alone when there is no cover. */
+export function guaranteePhrase(): string {
+  return guaranteePhraseOf(settings as GuaranteeSettings);
+}
+
+/** The sentence a section headed with the guarantee's label carries, "It covers … comes home.",
+ *  or "" when data/settings.json has no cover (review I7 and M2, 2026-09-29). */
+export function guaranteeCoverSentence(): string {
+  return coverSentenceOf(settings as GuaranteeSettings);
 }
 export const SITE_URL = (import.meta.env.SITE ?? 'https://SITE_URL_PLACEHOLDER').replace(/\/$/, '');
 

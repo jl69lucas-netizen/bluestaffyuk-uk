@@ -24,6 +24,9 @@ import pytest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SETTINGS = json.loads((ROOT / "data/settings.json").read_text(encoding="utf-8"))
 WORDING = "covers health issues and birth defects for two years from the day your puppy comes home"
+# The cover without its length, for a sentence whose heading or label already states the length
+# (review M1: "two-year health guarantee, which covers … for two years" said it twice).
+BARE = "covers health issues and birth defects from the day your puppy comes home"
 
 
 def test_the_cover_is_its_own_field_worded_as_ruled():
@@ -65,15 +68,15 @@ def test_the_readers_run_the_check():
     site = (ROOT / "src/lib/site.ts").read_text(encoding="utf-8")
     kit = (ROOT / "src/lib/cityKit.ts").read_text(encoding="utf-8")
     faq = (ROOT / "src/lib/faq.ts").read_text(encoding="utf-8")
-    assert "export function guaranteeCover" in site and "guaranteeCoverWords(settings" in site
-    assert "checkGuaranteeCover(G.guarantee_days, G.guarantee_cover)" in kit
-    assert "guarantee_cover: guaranteeCover()" in faq
+    assert "export function guaranteeCoverSentence" in site and "export function guaranteePhrase" in site
+    assert "guaranteeRowParts(G)" in kit
+    assert "guarantee_phrase: guaranteePhrase()" in faq
 
 
 def test_the_home_faq_answer_carries_the_cover_from_the_token():
     row = next(r for r in json.loads((ROOT / "data/faq.json").read_text(encoding="utf-8"))
                if r["id"] == "home-health-guarantee")
-    assert "{guarantee_label_lc}" in row["a"] and "{guarantee_cover}" in row["a"]
+    assert "{guarantee_phrase}" in row["a"] and "{guarantee_cover}" not in row["a"]
     assert "birth defects" not in row["a"], "the cover is read from data, never typed into the row"
 
 
@@ -86,13 +89,50 @@ def _built(rel):
 
 def test_the_built_home_page_states_the_cover_in_the_faq_and_its_schema():
     page = _built("index.html")
-    sentence = f"our written two-year health guarantee, which {WORDING},"
+    sentence = f"our written health guarantee, which {WORDING}, alongside"
     assert page.count(sentence) == 2, "the visible FAQ answer and the FAQPage JSON-LD, once each"
+    assert "two-year health guarantee, which covers" not in page, "M1: the length is said once"
 
 
 def test_the_city_guarantee_row_states_the_cover():
     page = _built("uk-locations/blue-staffy-puppies-london/index.html")
-    assert f"It {WORDING}." in page
+    assert f"It {BARE}." in page and f"It {WORDING}." not in page
+
+
+# Review I7: every section headed with the guarantee states its cover, read from data.
+HEADED = {
+    "index.html": "Our Two-Year Health Guarantee",
+    "blue-staffy-pup-sale-uk/index.html": "Not an Item, a Promise: Our Two-Year Health Guarantee",
+    "buy-staffy-puppies-for-sale-uk/index.html": "Our Two-Year Health Guarantee, in Writing",
+    "blue-staffy-health-uk/index.html": "Ask Us About Our Two-Year Health Guarantee",
+}
+
+
+@pytest.mark.parametrize("rel", sorted(HEADED))
+def test_each_section_headed_with_the_guarantee_states_its_cover(rel):
+    page = _built(rel)
+    heading = HEADED[rel]
+    i = page.index(heading)
+    assert f"It {BARE}." in page[i:i + 600], page[i:i + 600]
+
+
+def test_a_missing_cover_omits_the_clause_everywhere(tmp_path):
+    """Review M2: without `guarantee_cover`, every reader leaves the clause out (none throws):
+    the FAQ phrase falls back to the label, the city row to its note, a section to nothing."""
+    node, out = _bundle(tmp_path, "src/lib/guarantee.ts")
+    base = {"guarantee_days": 730, "guarantee_label": "Two-year health guarantee",
+            "guarantee_note": "Ask us for the full terms before you pay a deposit."}
+    driver = (f"const m = await import({json.dumps(out.as_uri())});"
+              f"const a = {json.dumps(base)}; const b = {{...a, guarantee_cover: {json.dumps(WORDING)}}};"
+              "console.log(JSON.stringify([m.guaranteePhraseOf(a), m.guaranteePhraseOf(b),"
+              " m.guaranteeRowParts(a), m.guaranteeRowParts(b), m.coverSentenceOf(a), m.coverSentenceOf(b)]));")
+    res = subprocess.run([node, "--input-type=module", "-e", driver], check=True, capture_output=True, text=True)
+    pa, pb, ra, rb, sa, sb = json.loads(res.stdout)
+    assert pa == "two-year health guarantee"
+    assert pb == f"health guarantee, which {WORDING},"
+    assert ra == {"t": "Two-year health guarantee", "d": base["guarantee_note"]}
+    assert rb == {"t": "Two-year health guarantee", "d": f"It {BARE}. " + base["guarantee_note"]}
+    assert sa == "" and sb == f"It {BARE}."
 
 
 def test_no_other_built_page_types_a_cover_of_its_own():
@@ -104,5 +144,5 @@ def test_no_other_built_page_types_a_cover_of_its_own():
                       if "birth defects" in p.read_text(errors="ignore") and "board-preview" not in p.parts)
     assert set(carriers) <= {"index.html", "uk-locations/blue-staffy-puppies-london/index.html",
                              "kit-preview/city/index.html", "kit-preview/city-page/index.html",
-                             "kit-preview/index.html"}, carriers
+                             "kit-preview/index.html", *HEADED}, carriers
     assert "index.html" in carriers

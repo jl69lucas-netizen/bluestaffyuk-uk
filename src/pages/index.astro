@@ -51,7 +51,7 @@ import { countedFigures, type StatRow } from '../lib/recordText';
 import { boxClass } from '../lib/boardStyles';
 import { titleCase as T } from '../lib/headings';
 import { loadFaq } from '../lib/faq';
-import { SITE, abs, guaranteeLabel, type PuppyRow } from '../lib/site';
+import { SITE, abs, guaranteeLabel, guaranteeCoverSentence, type PuppyRow } from '../lib/site';
 import { videoObject } from '../lib/video';
 import puppiesJson from '../../data/puppies.json';
 import reviewsJson from '../../data/reviews.json';
@@ -338,10 +338,11 @@ const pageSchema = [
         questions about, a vaccination card and a microchip number. The papers are handed over on the day.
       </p>
       {/* The guarantee is data/settings.json `guarantee_label` (the breeder's answer, answer
-          board q07, 2026-09-29), read through guaranteeLabel(), never typed. It names no cover. */}
+          board q07, 2026-09-29), read through guaranteeLabel(), never typed; its cover is
+          `guarantee_cover` (q02), read through guaranteeCoverSentence(). */}
       <h5>{T(`Our ${guaranteeLabel()}`)}</h5>
       <p>
-        Every puppy goes home with it on paper, like the documents above. Ask us for the full
+        {guaranteeCoverSentence()} Every puppy goes home with it on paper, like the documents above. Ask us for the full
         wording before you pay anything.
       </p>
       <h6>{T('Kennel Note: Ask to see the papers early')}</h6>

@@ -27,7 +27,7 @@ TOKENS = {
     "deposit_terms": "refundable" if SETTINGS["deposit_refundable"] else "non-refundable",
     # src/lib/faq.ts: the guarantee's words mid-sentence, from `guarantee_label` (q07).
     "guarantee_label_lc": SETTINGS["guarantee_label"][:1].lower() + SETTINGS["guarantee_label"][1:],
-    "guarantee_cover": SETTINGS["guarantee_cover"],
+    "guarantee_phrase": (SETTINGS["guarantee_label"].split(" ", 1)[1] + ", which " + SETTINGS["guarantee_cover"] + ","),
 }
 
 # The phrases an answer asserts that are NOT a settings value — the part a reader would

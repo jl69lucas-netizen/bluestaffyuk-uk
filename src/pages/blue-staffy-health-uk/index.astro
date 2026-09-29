@@ -104,7 +104,7 @@ import { recordText, countedFigures, ledgeText, sourceKey, breedFactsCell,
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
-import { SITE, abs, guaranteeLabel } from '../../lib/site';
+import { SITE, abs, guaranteeLabel, guaranteeCoverSentence } from '../../lib/site';
 import reviewsJson from '../../../data/reviews.json';
 import settings from '../../../data/settings.json';
 import prices from '../../../data/price-matrix.json';
@@ -960,7 +960,7 @@ const pageSchema = [
       </p>
       {/* data/settings.json `guarantee_label` (answer board q07, 2026-09-29), never typed. */}
       <h5>{T(`Ask Us About Our ${guaranteeLabel()}`)}</h5>
-      <p>The old tenth row would have sat here: ask us for the full wording before you pay a deposit.</p>
+      <p>The old tenth row would have sat here. {guaranteeCoverSentence()} Ask us for the full wording before you pay a deposit.</p>
       <h6>{T('Health Note: Ask the one that is not here')}</h6>
       <p>No accordion describes a particular dog in a particular house; write and we will answer yours.</p>
     </div>

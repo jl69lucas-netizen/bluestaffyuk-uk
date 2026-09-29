@@ -30,15 +30,17 @@ GONE = {
     "buy-blue-staffy-puppies-uk": ["No term is stated for a guarantee"],
 }
 NOW = {
-    "index": [f"Every puppy leaves with our written {LOWER}", f"Our {TITLED}",
+    # The FAQ answer now says the length once, inside the cover clause (review M1, 2026-09-29):
+    # "our written health guarantee, which covers … for two years …".
+    "index": ["Every puppy leaves with our written health guarantee, which covers", f"Our {TITLED}",
               "Every puppy goes home with it on paper"],
     "blue-staffy-health-uk": [f"Ours is a {LOWER}, a promise we make", f"Ask Us About Our {TITLED}",
                               f"asked how long the health guarantee lasts: ours is a {LOWER}.",
-                              "The old tenth row would have sat here: ask us for the full wording before you pay a deposit."],
+                              "The old tenth row would have sat here. It covers health issues and birth defects from the day your puppy comes home. Ask us for the full wording before you pay a deposit."],
     "blue-staffy-pup-sale-uk": [f"Not an Item, a Promise: Our {TITLED}", f"Our {LOWER} is set out below them",
                                 "it is a promise we make with every puppy"],
     "buy-staffy-puppies-for-sale-uk": [f"Our {TITLED}, in Writing",
-                                       f"Ours is a {LOWER}, and it is written down; ask us for the full wording before you pay a deposit."],
+                                       f"Ours is a {LOWER}, and it is written down. It covers health issues and birth defects from the day your puppy comes home. Ask us for the full wording before you pay a deposit."],
     "buy-blue-staffy-puppies-uk": [f"What we do promise is our {LOWER}; ask us for its full wording before you pay a deposit."],
 }
 
@@ -67,7 +69,7 @@ def test_the_absence_statements_are_gone_and_the_guarantee_is_stated(slug):
 def test_the_faq_answer_names_the_guarantee_from_the_label():
     rows = {r["id"]: r for r in json.loads((ROOT / "data/faq.json").read_text(encoding="utf-8"))}
     a = rows["home-health-guarantee"]["a"]
-    assert "{guarantee_label_lc}" in a and "not published" not in a
+    assert "{guarantee_phrase}" in a and "not published" not in a
     assert rows["home-health-guarantee"]["source"] == "data/settings.json"
 
 
