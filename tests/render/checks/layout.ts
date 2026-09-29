@@ -863,3 +863,77 @@ register({
     };
   },
 });
+
+/**
+ * A BOXED H2 FITS THE CITY CAPS (found with Known Issue 97, 2026-09-29).
+ *
+ * `.bl-box h2` was --text-2xl (30px) at every width on the body's inherited 1.65 line-height:
+ * the health page's first boxed H2 was four lines and 198px tall at 375, and the for-sale page
+ * had two at six lines. Option (a) put the unboxed H2s on the city scale; a boxed H2 is held to
+ * the same caps, from src/styles/city.css and tests/render/lib/cityTypeFit.ts: at most 22px on
+ * a phone (< 640px), 25px on a tablet (640-799px) and 28px on a desktop (>= 800px), and at most
+ * three lines. The tier is read off the viewport, as the stylesheet's media queries read it.
+ *
+ * THE UNIT is one visible H2 inside a `.bl-box` and outside any kit or city-kit component
+ * (those set their own type). Lines are the painted height over the computed line-height. The
+ * examined count is the headings judged; the fixture floor is 2.
+ */
+/**
+ * Boxed H2s allowed past THREE LINES (never past the size cap), pinned by page and exact text.
+ * Both are long migrated headings in their page's verbatim set (working rule 15): at 375 on
+ * the 22px scale they take four lines (104px), down from six at 30px. Shortening them is a
+ * content change with its own board record, out of this style change's scope (the heading-scale
+ * preview, "What the run measured"). A new long heading still fails.
+ */
+const BOXED_H2_PINNED_LINES: Record<string, string[]> = {
+  'buy-staffy-puppies-for-sale-uk': [
+    'What Are the Key Takeaways When Choosing BlueStaffyUK for KC Registered Blue Staffy Puppies in the UK?',
+    'Why Does BlueStaffyUK Health Test Puppies and What Does It Mean to Have Staffies From L-2-HGA Tested Parents?',
+  ],
+};
+
+register({
+  id: 'layout-boxed-h2-fits',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'a boxed H2 is within its tier\'s size cap (22/25/28px) and three lines',
+  minExamined: 2,
+  async run(page: Page, viewport: number, ctx: CheckContext): Promise<CheckResult> {
+    await page.evaluate(() => document.fonts.ready);
+    const pinned = BOXED_H2_PINNED_LINES[ctx?.slug ?? ''] ?? [];
+    const r = await page.evaluate((pinned) => {
+      const w = document.documentElement.clientWidth;
+      const cap = w < 640 ? 22 : w < 800 ? 25 : 28;
+      let examined = 0;
+      const bad: string[] = [];
+      for (const h of Array.from(document.querySelectorAll('main .bl-box h2'))) {
+        if (h.getClientRects().length === 0 || getComputedStyle(h).visibility === 'hidden') continue;
+        if (h.closest('[class*="kit-"], .city-kit')) continue;
+        examined++;
+        const cs = getComputedStyle(h);
+        const fs = parseFloat(cs.fontSize);
+        const lh = parseFloat(cs.lineHeight) || fs * 1.2;
+        const height = h.getBoundingClientRect().height;
+        const lines = Math.round(height / lh);
+        const full = (h.textContent || '').trim().replace(/\s+/g, ' ');
+        const why: string[] = [];
+        if (fs > cap + 0.5) why.push(`${fs}px over the ${cap}px cap`);
+        if (lines > 3 && !pinned.includes(full)) why.push(`${lines} lines, ${Math.round(height)}px tall`);
+        if (why.length) bad.push(`"${full.slice(0, 50)}" ${why.join(', ')}`);
+      }
+      return { examined, cap, bad };
+    }, pinned);
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{
+          checkId: 'layout-boxed-h2-fits',
+          family: 'LAYOUT' as const,
+          viewport,
+          count: r.bad.length,
+          message: `${r.bad.length} of ${r.examined} boxed H2(s) break the ${r.cap}px / three-line cap: ${r.bad.slice(0, 6).join(' | ')}`,
+        }]
+        : [],
+    };
+  },
+});

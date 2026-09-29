@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a boxed H2 over the city caps</title>
+<!-- As the twelve built pages shipped it (found with Known Issue 97): `.bl-box h2` at
+     --text-2xl (30px) on the body's inherited 1.65 line-height at every width. 30px is over
+     every tier's cap (22 / 25 / 28px), and at 375 this heading wraps past three lines. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .bl-box { padding: 32px 24px; }
+  .bl-box h2 { font-size: 30px; margin: 0 0 8px; }
+</style>
+</head><body>
+<main>
+  <section class="bl-box">
+    <h2>Blue Staffy Health UK : Our Health Testing, Vaccinations and Vet Checks</h2>
+    <p>Every parent is screened before a litter is planned, and the tests are named on the page.</p>
+  </section>
+  <section class="bl-box">
+    <h2>What We Screen For</h2>
+    <p>A second box, so the check judges more than one heading.</p>
+  </section>
+</main>
+</body></html>

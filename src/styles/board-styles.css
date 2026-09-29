@@ -46,11 +46,19 @@
      surfaces already underline through global.css; the band did not. */
   .bl-frame-band a { color: var(--color-link-on-inverse); text-decoration: underline; text-underline-offset: 2px; }
 
+  /* A box's own H2 is on option (a)'s H2 scale below, so boxed and unboxed H2s share one scale
+     (found with Known Issue 97: at --text-2xl, 30px on the inherited 1.65 line-height, the
+     health page's first boxed H2 was four lines and 198px tall at 375). The tiers are the city
+     kit's edges. Held by tests/render/checks/layout.ts::layout-boxed-h2-fits. */
   .bl-box h2 {
     font-family: var(--font-display);
-    font-size: var(--text-2xl);
+    font-size: 22px;
+    line-height: 1.18;
+    text-wrap: balance;
     margin: 0 0 var(--space-2);
   }
+  @media (min-width: 640px) { .bl-box h2 { font-size: 25px; } }
+  @media (min-width: 800px) { .bl-box h2 { font-size: 28px; } }
 
   /* THE BODY HEADING SCALE (Known Issue 97; the user's pick, option (a), the city scale,
      2026-09-29; preview docs/artifacts/bsuk-heading-scale-preview.html). Every H2/H3 outside a

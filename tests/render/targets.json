@@ -67,6 +67,12 @@
       "cluster_cleared": "retargeted 2026-09-26 to img.bl-img, the class src/components/BodyImage.astro renders; its reports on the twelve frozen pages are true reports (prose before the photo), which is why the scope is new pages only",
       "false_reports": 0
     },
+    "layout-boxed-h2-fits": {
+      "scope": "all",
+      "since": "2026-09-29",
+      "cluster_cleared": "new 2026-09-29 (found with Known Issue 97) together with the .bl-box h2 rule in src/styles/board-styles.css that makes it pass: blocking on every page from its first run, because every boxed H2 on the twelve built pages was 30px (over every tier's cap), 14 wrapped past three lines at 375 and one at 1280; two long verbatim-set H2s on /buy-staffy-puppies-for-sale-uk/ are pinned by name for the line cap only",
+      "false_reports": 0
+    },
     "layout-body-heading-above-body": {
       "scope": "all",
       "since": "2026-09-29",
