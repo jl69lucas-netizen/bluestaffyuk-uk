@@ -72,15 +72,23 @@ function lengthWords(days: number): string {
   return `${w.charAt(0).toUpperCase()}${w.slice(1)}-year`;
 }
 
+/** The label check `guaranteeRow()` runs: a label opens with its length as whole words ("Two-year"
+ *  then a space or the end, so "Two-years of cover" and "Two-year-old promise" are refused), in
+ *  sentence case. Throws with the reason; tests/py/test_city_kit.py pins each refusal. */
+export function checkGuaranteeLabel(days: number, label: string): void {
+  const want = lengthWords(days);
+  // `want` is letters, digits and a hyphen ("Two-year", "30-day"): nothing to escape.
+  if (!new RegExp(`^${want}(?=\\s|$)`).test(label)) {
+    throw new Error(`cityKit: data/settings.json guarantee_label "${label}" does not open with its length, "${want}" (guarantee_days ${days})`);
+  }
+}
+
 /** A guarantee row ({ t: its label, d: its note }), or null. It prints only when
  *  data/settings.json carries the length, the label and the note: no component writes what a
  *  guarantee is or covers (working rule 9). */
 export const guaranteeRow = (): { t: string; d: string } | null => {
   if (!G.guarantee_days || !G.guarantee_label || !G.guarantee_note) return null;
-  const want = lengthWords(G.guarantee_days);
-  if (!G.guarantee_label.startsWith(want)) {
-    throw new Error(`cityKit: data/settings.json guarantee_label "${G.guarantee_label}" does not open with its length, "${want}" (guarantee_days ${G.guarantee_days})`);
-  }
+  checkGuaranteeLabel(G.guarantee_days, G.guarantee_label);
   return { t: G.guarantee_label, d: G.guarantee_note };
 };
 

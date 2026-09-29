@@ -882,3 +882,28 @@ def test_the_litters_age_is_one_data_field_and_no_birth_date_is_stated():
                *(ROOT / "src/pages/kit-preview").glob("city*.astro")]
     typed = re.compile(r"(?i)\b\d+\s*weeks?\s+old\b|\bborn on\b|date of birth|\bdob\b")
     assert [str(p.relative_to(ROOT)) for p in sources if typed.search(p.read_text(encoding="utf-8"))] == []
+
+
+def test_the_guarantee_label_must_open_with_its_length_as_whole_words(tmp_path):
+    """Task 10b review, item 2: cityKit refuses a guarantee label that does not open with the
+    length `guarantee_days` holds, as whole words (a word boundary after "Two-year"). Each case
+    runs through `checkGuaranteeLabel(days, label)`, the check `guaranteeRow()` calls."""
+    import json as _json, shutil, subprocess
+    esbuild, node = ROOT / "node_modules/.bin/esbuild", shutil.which("node")
+    if not esbuild.exists() or not node:
+        pytest.skip("needs node and node_modules/.bin/esbuild (npm install)")
+    out = tmp_path / "cityKit.mjs"
+    subprocess.run([str(esbuild), str(ROOT / "src/lib/cityKit.ts"), "--bundle", "--format=esm", "--platform=node",
+                    "--define:import.meta.env={}", f"--outfile={out}", "--log-level=error"], check=True)
+    cases = [[730, "Two-year health guarantee"], [365, "Two-year health guarantee"],
+             [730, "two-year health guarantee"], [730, "Health guarantee, two years"],
+             [730, "Two-years of cover"], [730, "Two-year-old promise"], [365, "One-year health guarantee"],
+             [30, "30-day health guarantee"], [30, "30-days health guarantee"]]
+    driver = (f"const m = await import({_json.dumps(out.as_uri())});"
+              "const r = [];"
+              f"for (const [d, l] of {_json.dumps(cases)}) {{ try {{ m.checkGuaranteeLabel(d, l); r.push('ok'); }} catch (e) {{ r.push('refused'); }} }}"
+              "console.log(JSON.stringify(r));")
+    res = subprocess.run([node, "--input-type=module", "-e", driver], check=True, capture_output=True, text=True)
+    assert _json.loads(res.stdout) == ["ok", "refused", "refused", "refused", "refused", "refused", "ok", "ok", "refused"]
+    kit = (ROOT / "src/lib/cityKit.ts").read_text(encoding="utf-8")
+    assert "checkGuaranteeLabel(G.guarantee_days, G.guarantee_label)" in kit
