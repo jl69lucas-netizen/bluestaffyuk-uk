@@ -1052,3 +1052,103 @@ register({
     return { examined: r.examined, defects };
   },
 });
+
+/**
+ * NO BODY HEADING OVER THREE LINES (the Known Issue 97 review, item 3; the user's type-fit
+ * ruling of 2026-09-28, "no big headers ... No chunky title").
+ *
+ * ADVISORY. The scale made the long migrated headings taller: at 375, thirteen more body H2/H3s
+ * wrap past three lines than the eight the preview disclosed. Every one standing today is a
+ * migrated heading, most in its page's verbatim set (working rule 15), so shortening it is
+ * content for that page's next board touch; each is pinned below by page and exact text and
+ * named in Known Issue 97. A heading that is not pinned is reported.
+ *
+ * THE UNIT is one visible H2 or H3 in `<main>` outside a kit or city-kit component (the city
+ * type-fit gate holds those). Lines are its painted line boxes (the Range's distinct bottoms,
+ * as tests/render/lib/cityTypeFit.ts counts them). A page with no `<main>` is a defect.
+ */
+/**
+ * The 21 body headings over three lines on 2026-09-29, all at 375 (none at 768 or 1280), each a
+ * long migrated heading: pinned by page and exact text, and listed in Known Issue 97's "Next" for
+ * that page's next board touch. The two for-sale boxed H2s are also in BOXED_H2_PINNED_LINES.
+ */
+const HEADING_LINES_PINNED: Record<string, string[]> = {
+  'blue-staffy-health-uk': [
+    "One of the Most Common Queries We Hear Is: “What Vaccines Does My Blue Staffy Need in the UK?” Here’s a Simple Breakdown:",
+  ],
+  'buy-staffy-puppies-for-sale-uk': [
+    "What Are the Key Takeaways When Choosing BlueStaffyUK for KC Registered Blue Staffy Puppies in the UK?",
+    "Why Does BlueStaffyUK Health Test Puppies and What Does It Mean to Have Staffies From L-2-HGA Tested Parents?",
+    "What Are Common Staffordshire Bull Terrier Temperament Problems and How Do Our Parent Dogs Overcome Them?",
+    "What Are the Best Dog Socialisation Tips, and How Can Puppy Crate Training Help With Staffy Separation Anxiety?",
+    "How Does BlueStaffyUK Compare to Generic Classified Puppy Ads in the UK?",
+    "What Makes BlueStaffyUK.uk Different From Backyard Breeders – and How Can You Tell a Good Breeder?",
+    "How Does BlueStaffyUK Ensure Safe, Legal, and Stress-Free Puppy Transport Across the UK?",
+  ],
+  'uk-blue-staffy-puppy-buying-guide': [
+    "Your Comprehensive Blue Staffy Puppy Buying Guide: Finding Your Perfect Bull Terrier Staffy With BlueStaffyUK.uk",
+    "How to Find Excellent Blue Staffy Breeders UK?: What Is the Best Way to Find a Healthy Staffy Puppy From a Trusted UK Breeder?",
+    "What Is the Typical Cost for a Kennel Club Registered Blue Staffy Puppy in the UK, and What Factors Affect the Price? & Questions to Ask Blue Staffy Breeders Before Buying",
+    "What Health Tests Should a Blue Staffy Puppy Breeder Provide? What Are the L-2-HGA and the HC-HSF4 Tests in Staffies?",
+    "What Is the Best Age to Bring Home a Blue Staffy Puppy, and Why Is Waiting Until They Are 8 Weeks Old Important?",
+    "What Should I Do to Prepare My Home, and What Essential Items Do I Need to Buy for a New Blue Staffy Puppy?",
+    "Your Essential Blue Staffy Puppy Socialisation Checklist! – How Do I Safely Introduce My Blue Staffy Puppy to Other Dogs and New People in the UK?",
+    "How This Blue Staffy Puppy Buying Guide Helps You Avoid Common Mistakes on Delivery",
+    "Step-By-Step Process for Using “Our Trusted DEFRA-Approved Pet Transport Partners – How to Get a Puppy Delivered Right to Your Door",
+  ],
+  'uk-locations/blue-staffy-puppies-uk': [
+    "Bringing Your Dream Staffordshire Bull Terrier Puppy Closer, Anywhere in the UK",
+    "Connecting Families Nationwide: Blue Staffy Puppies Delivered Across the UK",
+    "Ready to Welcome a KC Registered Blue Staffordshire Bull Terrier UK?",
+  ],
+  'uk-staffordshire-bull-terrier-guide': [
+    "Staffies and UK Law: Understanding the Breed’s Legal Status & Public Perception",
+  ],
+};
+
+register({
+  id: 'layout-heading-lines',
+  family: 'LAYOUT',
+  severity: 'advisory',
+  describe: 'a body H2 or H3 wraps to three lines or fewer',
+  minExamined: 2,
+  async run(page: Page, viewport: number, ctx: CheckContext): Promise<CheckResult> {
+    await page.evaluate(() => document.fonts.ready);
+    const pinned = HEADING_LINES_PINNED[ctx?.slug ?? ''] ?? [];
+    const r = await page.evaluate((pinned) => {
+      const main = document.querySelector('main');
+      if (!main) return { noMain: true, examined: 0, bad: [] as string[] };
+      const lines = (el: Element) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const bottoms = Array.from(range.getClientRects())
+          .filter((x) => x.width > 0 && x.height > 0).map((x) => Math.round(x.bottom)).sort((a, b) => a - b);
+        return bottoms.filter((t, i) => i === 0 || t - bottoms[i - 1] > 3).length;
+      };
+      let examined = 0;
+      const bad: string[] = [];
+      for (const h of Array.from(main.querySelectorAll('h2, h3'))) {
+        if (h.getClientRects().length === 0 || getComputedStyle(h).visibility === 'hidden') continue;
+        if (h.closest('[class^="kit-"], [class*=" kit-"], .city-kit')) continue;
+        examined++;
+        const text = (h.textContent || '').trim().replace(/\s+/g, ' ');
+        const n = lines(h);
+        if (n > 3 && !pinned.includes(text)) bad.push(`${h.tagName.toLowerCase()} ${n} lines "${text}"`);
+      }
+      return { noMain: false, examined, bad };
+    }, pinned);
+    const defects = [];
+    if (r.noMain) {
+      defects.push({ checkId: 'layout-heading-lines', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no heading could be judged' });
+    } else if (r.bad.length) {
+      defects.push({
+        checkId: 'layout-heading-lines',
+        family: 'LAYOUT' as const,
+        viewport,
+        count: r.bad.length,
+        message: `${r.bad.length} of ${r.examined} body heading(s) wrap past three lines: ${r.bad.join(' | ')}`,
+      });
+    }
+    return { examined: r.examined, defects };
+  },
+});
