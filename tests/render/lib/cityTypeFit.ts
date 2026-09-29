@@ -7,11 +7,12 @@
  * every `.city-kit` section on it, so a gate — not an eye — holds the type:
  *   1. every h1/h2/h3 is at or below its tier's cap and wraps to three lines or fewer;
  *   1b. at the desktop tier, no section H2 wraps to three lines while its section's content box is
- *      700px or more: a flat phone measure (22ch) there stacks a short question into a tall,
- *      chunky block beside empty space ("heading measure too narrow for its box"; the side-by-side
- *      review, 2026-09-29). src/styles/city.css sets the H2 measure per tier (22 / 28 / 34ch).
- *      It fires only where the measure binds (lifting it widens the H2), so a
- *      title the picked layout sets in a narrow column is not charged to the measure;
+ *      700px or more: a short question stacked into a tall, chunky block beside empty space is a
+ *      defect WHATEVER the cause (the user's ruling, answer board q06, 2026-09-29). The message
+ *      names the cause: "heading measure too narrow for its box" where the measure binds (lifting
+ *      it widens the H2; src/styles/city.css sets it per tier, 22 / 28 / 34ch), "heading column
+ *      too narrow for its box" where the layout's column is what wraps it (the takeaways' old 5fr
+ *      head column, which this check used to excuse);
  *   2. no paragraph is wider than 75ch of its own font;
  *   3. no paragraph runs more than 8 lines below a 1024px viewport, or 6 from 1024;
  *   4. no section is taller than 2.5 viewports at a phone width (below 768) or 1.6 viewports
@@ -86,20 +87,17 @@ export function cityTypeFit({ viewport, tier: edges, fullWidthSpecimen = false }
       const n = lines(h);
       if (n > 3) defects.push(`${where}: ${h.tagName} "${name(h)}" wraps to ${n} lines`);
       if (h.tagName === 'H2' && tier === 2 && w >= NARROW_BOX && n >= 3) {
-        // Only where the MEASURE is what wraps it: the heading is narrower than the room its own
-        // container gives it. A heading the picked layout puts in a narrow column (the takeaways'
-        // title over its photo) is that layout's, and a wider measure could not change it.
-        // Its room is read by lifting the measure for one layout (a grid item's room is its
-        // area, not its parent's box), then restoring the inline style exactly.
+        // Every such H2 is a defect (q06); the message names the cause. Its room is read by
+        // lifting the measure for one layout (a grid item's room is its area, not its parent's
+        // box), then restoring the inline style exactly.
         const el = h as HTMLElement;
         const width = el.getBoundingClientRect().width;
         const before = el.style.maxInlineSize;
         el.style.maxInlineSize = 'none';
         const room = el.getBoundingClientRect().width;
         el.style.maxInlineSize = before;
-        if (room - width > 8) {
-          defects.push(`${where}: H2 "${name(h)}" wraps to ${n} lines at ${Math.round(width)}px with ${Math.round(room)}px of room in a ${Math.round(w)}px box: heading measure too narrow for its box`);
-        }
+        const cause = room - width > 8 ? 'heading measure too narrow for its box' : 'heading column too narrow for its box';
+        defects.push(`${where}: H2 "${name(h)}" wraps to ${n} lines at ${Math.round(width)}px with ${Math.round(room)}px of room in a ${Math.round(w)}px box: ${cause}`);
       }
     }
     for (const p of Array.from(root.querySelectorAll('p')).filter(painted)) {

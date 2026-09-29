@@ -18,6 +18,15 @@
 <section class="city-kit city-narrow-measure" style="width:900px;padding:0">
   <h2 style="font-size:26px;line-height:1.18;max-width:22ch;text-wrap:balance">What Did a London Family Say After Their Puppy Came Home?</h2>
 </section>
+<!-- The same H2 at the desktop measure (34ch, which does not bind) in a 900px box whose LAYOUT
+     gives it a 5fr column (the takeaways' old head grid, 2026-09-29): three lines is a defect
+     whatever the cause (answer board q06). -->
+<section class="city-kit city-narrow-column" style="width:900px;padding:0">
+  <div style="display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:48px">
+    <h2 style="font-size:26px;line-height:1.18;max-width:34ch;text-wrap:balance">What Should a London Buyer Take From This Page?</h2>
+    <p>Five plain answers.</p>
+  </div>
+</section>
 <section class="city-kit city-broken">
   <h2 class="chunky">Chunky</h2>
   <h3 class="tall-head">Which Puppy Will You Ask About First Today?</h3>

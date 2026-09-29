@@ -513,6 +513,9 @@ for (const kind of ['broken', 'good'] as const) {
         ['75ch measure', /ch wide \(75 max\)/],
         ['paragraph lines', /runs \d+ lines \(\d max/],
         ['heading measure', /^city-narrow-measure .*heading measure too narrow for its box/],
+        // Answer board q06 (2026-09-29): a layout column that stacks the H2 to three lines is a
+        // defect too; the takeaways' 5fr head column is no longer excused.
+        ['heading column', /^city-narrow-column .*H2 .*wraps to 3 lines.*heading column too narrow for its box/],
       ];
       // Section height is judged at a phone width and from 1280 only (the ruling's two caps).
       if (viewport < 768 || viewport >= 1280) kinds.push(['section height', /the section is \d+px tall/]);

@@ -74,7 +74,10 @@ const sizes = citySizes(fit, {
         gap: var(--space-5) var(--space-8); padding: var(--city-pad-y) var(--space-5);
       }
       .body { display: contents; }
-      .head { grid-area: head; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--space-8); align-items: end; }
+      /* The head's split is its own, wider for the question than the pic/list split below: in a
+         5fr column (about 307px at 1280) the H2 stacked to three lines; 7fr (about 429px) holds it
+         to two (the user's ruling, answer board q06, 2026-09-29; cityTypeFit 1b gates it). */
+      .head { grid-area: head; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-8); align-items: end; }
       .head h2 { margin: 0; }
       .lede { margin: 0; font-size: var(--city-lead); }
       dl { grid-area: list; }
