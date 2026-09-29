@@ -623,8 +623,17 @@ def apply_reapproval(board, reason, old_board, now, ont, live=SKIP_LIVE, boards=
     # moved fingerprint says is that somebody fixed a heading. Left alone it would make the
     # next re-board ask a question the breeder has answered, for a reason nobody could see.
     # Refreshed where a hash already exists, never invented: a record that never carried
-    # fingerprints does not start now.
-    fresh = {sec["id"]: PB.section_fingerprint(sec) for sec in b["sections"]}
+    # fingerprints does not start now. And ONLY for a section this diff touched: a section the
+    # wording fix never reached keeps the fingerprint it had, because on a re-boarded record a
+    # hero whose fingerprint differs from `approval_previous` is the evidence that the re-board
+    # answered something, and a blanket refresh erased it (the homepage, 2026-09-29).
+    touched = set()
+    for p in paths:
+        parts = p.split("/")
+        if len(parts) > 2 and parts[1] == "sections" and parts[2].isdigit() \
+                and int(parts[2]) < len(b["sections"]):
+            touched.add(b["sections"][int(parts[2])]["id"])
+    fresh = {sec["id"]: PB.section_fingerprint(sec) for sec in b["sections"] if sec["id"] in touched}
     for holder in (b.get("approval"), b.get("approval_previous")):
         hashes = (holder or {}).get("section_hashes")
         if isinstance(hashes, dict):

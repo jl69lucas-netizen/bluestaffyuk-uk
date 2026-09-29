@@ -268,6 +268,28 @@ def test_a_reworded_sections_fingerprint_is_refreshed_so_the_next_reboard_does_n
     assert PB.approval_matches(out), "and the hash is taken AFTER the refresh, not before it"
 
 
+def test_a_section_the_reapproval_did_not_touch_keeps_its_fingerprint():
+    """Only a section the re-approval reworded is refreshed. A re-board's changed hero is on
+    record as a hero whose fingerprint differs from `approval_previous.section_hashes`, and
+    that difference is the evidence the re-board answered something (test_board_previews'
+    `..._only_its_hero_and_its_counter`). Refreshing every section erased it on the homepage
+    the first time a wording fix elsewhere on the record was re-approved (2026-09-29, q01)."""
+    old = approved()
+    old["sections"].append(json.loads(json.dumps(old["sections"][0])))
+    old["sections"][1]["id"] = "second"
+    old["sections"][1]["n"] = old["sections"][0]["n"] + 1
+    old["approval"]["section_hashes"] = {s["id"]: PB.section_fingerprint(s) for s in old["sections"]}
+    old["approval_previous"] = json.loads(json.dumps(old["approval"]))
+    old["approval_previous"]["section_hashes"]["second"] = "0" * 64
+    old["approval"]["record_hash"] = PB.record_hash(old)
+    new = json.loads(json.dumps(old))
+    new["sections"][0]["heading"] = "A Heading The Review Moved"
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)["board"]
+    assert out["approval_previous"]["section_hashes"]["second"] == "0" * 64
+    assert out["approval_previous"]["section_hashes"][out["sections"][0]["id"]] == \
+        PB.section_fingerprint(out["sections"][0])
+
+
 def test_a_record_that_never_carried_fingerprints_does_not_grow_them():
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "Reworded"))
     out = BA.apply_reapproval(new, REASON, old, NOW, ONT)["board"]
