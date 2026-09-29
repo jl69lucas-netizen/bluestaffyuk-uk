@@ -59,10 +59,10 @@
     "LAYOUT": 3,
     "IMG": 17,
     "CSS": 195,
-    "DUP": 27
+    "DUP": 24
   },
   "total": 15,
-  "total_instances": 242,
+  "total_instances": 239,
   "overrides": [],
   "details": [
     {
@@ -98,8 +98,8 @@
     {
       "viewport": 1280,
       "checkId": "dup-no-sibling-crossover",
-      "count": 9,
-      "message": "9 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /buy-staffy-puppies-for-sale-uk/ \"both parents are dna tested clear of l 2 hga and hc hsf4\""
+      "count": 8,
+      "message": "8 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\""
     },
     {
       "viewport": 375,
@@ -122,8 +122,8 @@
     {
       "viewport": 375,
       "checkId": "dup-no-sibling-crossover",
-      "count": 9,
-      "message": "9 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /buy-staffy-puppies-for-sale-uk/ \"both parents are dna tested clear of l 2 hga and hc hsf4\""
+      "count": 8,
+      "message": "8 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\""
     },
     {
       "viewport": 768,
@@ -152,8 +152,8 @@
     {
       "viewport": 768,
       "checkId": "dup-no-sibling-crossover",
-      "count": 9,
-      "message": "9 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /buy-staffy-puppies-for-sale-uk/ \"both parents are dna tested clear of l 2 hga and hc hsf4\""
+      "count": 8,
+      "message": "8 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\""
     }
   ]
 }

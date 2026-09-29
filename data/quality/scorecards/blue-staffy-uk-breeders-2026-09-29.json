@@ -15,7 +15,7 @@
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
-    "layout-min-font-size": 933,
+    "layout-min-font-size": 927,
     "layout-tap-target-size": 200,
     "layout-hero-counter-separation": 3,
     "layout-h3-image-first": 0,
@@ -40,11 +40,11 @@
     "schema-sold-not-instock": 0,
     "schema-date-modified-present": 21,
     "schema-no-visible-date": 3,
-    "css-class-resolves": 1401,
+    "css-class-resolves": 1398,
     "css-no-dead-component-rule": 921,
     "css-component-color-not-overridden": 61,
     "dup-no-sibling-crossover": 150,
-    "a11y-text-contrast-aa": 900,
+    "a11y-text-contrast-aa": 894,
     "a11y-no-duplicate-ids": 63,
     "a11y-hero-ledge-contrast": 3,
     "form-inquiry-contract": 0

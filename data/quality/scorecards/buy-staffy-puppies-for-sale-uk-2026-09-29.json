@@ -59,10 +59,10 @@
     "LAYOUT": 3,
     "IMG": 24,
     "CSS": 252,
-    "DUP": 12
+    "DUP": 9
   },
   "total": 14,
-  "total_instances": 291,
+  "total_instances": 288,
   "overrides": [],
   "details": [
     {
@@ -92,8 +92,8 @@
     {
       "viewport": 1280,
       "checkId": "dup-no-sibling-crossover",
-      "count": 4,
-      "message": "4 passage(s) shared with a sibling: 13w vs /index/ \"both parents are dna tested clear of l 2 hga and hc hsf4\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\""
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about christa cheryl\""
     },
     {
       "viewport": 375,
@@ -116,8 +116,8 @@
     {
       "viewport": 375,
       "checkId": "dup-no-sibling-crossover",
-      "count": 4,
-      "message": "4 passage(s) shared with a sibling: 13w vs /index/ \"both parents are dna tested clear of l 2 hga and hc hsf4\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\""
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about christa cheryl\""
     },
     {
       "viewport": 768,
@@ -146,8 +146,8 @@
     {
       "viewport": 768,
       "checkId": "dup-no-sibling-crossover",
-      "count": 4,
-      "message": "4 passage(s) shared with a sibling: 13w vs /index/ \"both parents are dna tested clear of l 2 hga and hc hsf4\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\""
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about christa cheryl\""
     }
   ]
 }

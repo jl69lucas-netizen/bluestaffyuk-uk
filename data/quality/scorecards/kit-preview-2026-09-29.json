@@ -59,10 +59,10 @@
     "IMG": 4,
     "SEM": 82,
     "CSS": 1197,
-    "DUP": 60
+    "DUP": 66
   },
   "total": 20,
-  "total_instances": 1343,
+  "total_instances": 1349,
   "overrides": [],
   "details": [
     {
@@ -104,8 +104,8 @@
     {
       "viewport": 1280,
       "checkId": "dup-no-sibling-crossover",
-      "count": 20,
-      "message": "20 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
+      "count": 22,
+      "message": "22 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
     },
     {
       "viewport": 375,
@@ -140,8 +140,8 @@
     {
       "viewport": 375,
       "checkId": "dup-no-sibling-crossover",
-      "count": 20,
-      "message": "20 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
+      "count": 22,
+      "message": "22 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
     },
     {
       "viewport": 768,
@@ -182,8 +182,8 @@
     {
       "viewport": 768,
       "checkId": "dup-no-sibling-crossover",
-      "count": 20,
-      "message": "20 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
+      "count": 22,
+      "message": "22 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
     }
   ]
 }
