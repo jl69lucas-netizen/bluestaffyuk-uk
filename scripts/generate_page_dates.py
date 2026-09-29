@@ -528,9 +528,14 @@ def build():
         if rows and last:
             # A data route was published when its ROW first appeared, not when the template
             # did (Task 8b re-review, M3); the floor from committed maps still applies below.
+            # An OWN-FILE page existed from its file's first commit, so it takes the EARLIER of
+            # that and its row's first appearance (Task 8c review, minor 2).
             row_log = _counted_log(rows[0], ignore)
             if row_log:
                 first = row_log[-1][1]
+                page_log = _counted_log(sources[0], ignore) if route in own_row_routes else None
+                if page_log and page_log[-1][1] < first:
+                    first = page_log[-1][1]
         newest = [(log[0][1], log[0][0], p) for p in sources if (log := _counted_log(p, ignore))]
         if newest:
             top = max(d for d, _, _ in newest)

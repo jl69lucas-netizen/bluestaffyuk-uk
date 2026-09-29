@@ -385,15 +385,35 @@ def test_an_unrendered_key_on_every_row_dates_nothing(repo):
 
 
 def _row_keys_read(src, var):
-    """Keys of a data row that one page source reads through the variable `var`: `var.key`
-    reads and `const { a, b } = var` destructures. Raises when the row is passed on whole
-    (`<X loc={loc} />`, `{...loc}`, `f(loc)`): the keys read past that point are unknowable."""
-    passes = re.findall(rf"=\{{\s*{var}\s*\}}|\{{\s*\.\.\.\s*{var}\s*\}}|[\w$]\(\s*{var}\s*[,)]", src)
-    if passes:
-        raise AssertionError(f"the row `{var}` is passed on whole ({passes[0]!r}); the keys it "
+    """Keys of a data row that one page source reads through the variable `var`, by one rule
+    (Task 8c review, minor 1). From the row's declaration on (`const loc = … .find(…)` or
+    `const { loc } = Astro.props`; earlier text is getStaticPaths' own bindings), every bare
+    `var` must be a key read (`var.key` or `var?.key`), the right-hand side of a
+    `const { a, b } = var` destructure, its own declaration, or the `!var` existence guard.
+    Anything else hands the row on (`f(SLUG, loc)`, `{...loc}`, `const row = loc`, `loc[k]`),
+    and the keys read past that point are unknowable, so it raises."""
+    # Not a longer name, an HTML tag (`<p>`, `</p>`) or another object's property (`x.loc`).
+    ident = rf"(?<![\w$<])(?<!</)(?<![^.]\.){re.escape(var)}(?![\w$])"
+    decl = re.search(rf"\b(?:const|let|var)\s+{re.escape(var)}\s*=[^;\n]*"
+                     rf"|\bconst\s*\{{[^}}]*{ident}[^}}]*\}}\s*=\s*Astro\.props[^;\n]*", src)
+    start, skip = (decl.start(), decl.span()) if decl else (0, (0, 0))
+    keys = set()
+    for m in re.finditer(ident, src[start:]):
+        at, end = start + m.start(), start + m.end()
+        if skip[0] <= at < skip[1]:
+            continue                                        # its own declaration
+        read = re.match(r"\s*\??\.\s*([A-Za-z_$][\w$]*)", src[end:])
+        if read:
+            keys.add(read.group(1))
+            continue
+        if re.search(r"\bconst\s*\{[^}]*\}\s*=\s*$", src[:at]):
+            continue                                        # const { a, b } = loc
+        if re.search(r"!\s*$", src[:at]) and re.match(r"\s*\)", src[end:]):
+            continue                                        # if (!loc) throw …
+        line = src[:end].rsplit("\n", 1)[-1] + src[end:].split("\n", 1)[0]
+        raise AssertionError(f"the row `{var}` is passed on whole ({line.strip()!r}); the keys it "
                              "renders are unknowable here, so list them by hand or stop passing it")
-    keys = set(re.findall(rf"\b{var}\.([A-Za-z_0-9]+)", src))
-    for group in re.findall(rf"const\s*\{{([^}}]*)\}}\s*=\s*{var}\b", src):
+    for group in re.findall(rf"const\s*\{{([^}}]*)\}}\s*=\s*{ident}", src[start:]):
         keys |= {k.split(":")[0].split("=")[0].strip() for k in group.split(",") if k.strip()}
     return keys
 
@@ -435,6 +455,28 @@ def test_the_key_reader_follows_destructures_and_refuses_a_pass_through():
             _row_keys_read(src, "loc")
 
 
+def test_the_key_reader_refuses_the_three_evasions():
+    """Task 8c review, minor 1: optional chaining read a key the old pattern did not see; the
+    row as a later argument and an alias hand the row on whole, so each is a pass-through."""
+    assert _row_keys_read("<p>{loc?.word_count}</p>", "loc") == {"word_count"}
+    for src in ("render(SLUG, loc)", "{loc?.title} {render(SLUG, loc)}",
+                "const row = loc; row.word_count", "let row = loc;", "{[loc]}"):
+        with pytest.raises(AssertionError, match="passed on whole"):
+            _row_keys_read(src, "loc")
+
+
+def test_the_key_reader_reads_optional_chains_and_allows_the_declaration():
+    assert _row_keys_read("<p>{loc?.word_count}</p>", "loc") == {"word_count"}
+    src = ("const loc = (locations as any[]).find((l) => l.slug === SLUG);\n"
+           "const { title, h1: head = '' } = loc;\n<p>{loc.city} {loc?.region}</p>")
+    assert _row_keys_read(src, "loc") == {"title", "h1", "city", "region"}
+    assert _row_keys_read("const { loc } = Astro.props;\n{loc.title}", "loc") == {"title"}
+    assert _row_keys_read("const { loc, other } = Astro.props;\n{loc.title}", "loc") == {"title"}
+    assert _row_keys_read("{location.x} {blocked} {loc_x} {other.loc}", "loc") == set()
+    assert _row_keys_read("const loc = rows.find(f);\nif (!loc) throw new Error('x');\n{loc.title}", "loc") == {"title"}
+    assert _row_keys_read("const { p } = Astro.props;\n<p>{p.name}</p>", "p") == {"name"}
+
+
 def test_an_own_file_city_is_dated_by_its_row_too(repo):
     """Task 8c, I1: a city with its OWN page file still renders its row (London's scaffold reads
     loc.title, loc.description, loc.body_html), so a rendered edit to that row re-dates it, and
@@ -450,6 +492,18 @@ def test_an_own_file_city_is_dated_by_its_row_too(repo):
     _write(repo, "data/locations.json", json.dumps([{"slug": "blue-staffies-glasgow", "title": "b", "word_count": 9}]))
     _commit(repo, "2026-03-09")
     assert G.build()[0][route]["dateModified"] == "2026-03-09"
+
+
+def test_an_own_file_page_older_than_its_row_is_published_on_the_page_file(repo):
+    """Task 8c review, minor 2: an own-file route's datePublished is the EARLIER of the page
+    file's first commit and its row's first appearance."""
+    _write(repo, "src/pages/uk-locations/blue-staffies-leeds.astro", "<h1>{loc.title}</h1>")
+    _commit(repo, "2026-02-01")
+    rows = json.loads((repo / "data/locations.json").read_text())
+    _write(repo, "data/locations.json", json.dumps(rows + [{"slug": "blue-staffies-leeds", "title": "a"}]))
+    _commit(repo, "2026-03-09")
+    row = G.build()[0]["/uk-locations/blue-staffies-leeds/"]
+    assert (row["datePublished"], row["dateModified"]) == ("2026-02-01", "2026-03-09")
 
 
 ROWS8 = [f"x{i}" for i in range(1, 9)]
