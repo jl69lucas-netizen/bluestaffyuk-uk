@@ -32,7 +32,7 @@ record missing any part below and writes `docs/artifacts/research/<slug>.html` a
 | 13–14 | `keywords.universe`, `keywords.distribution` | every keyword by intent with its volume, and where each is placed, section by section | row 6, `python3 scripts/keyword_variants.py <board slug or query-cache folder>` |
 
 **Nothing is inferred (working rule 9).** A finding cites its `evidence` — a saved fetch, a file
-under `data/queries/cache/`, `data/queries/` or `docs/research/`, or a URL other than the
+under `data/queries/cache/` or `docs/research/` (never the query file), or a URL other than the
 result's own with the date it was `fetched` — or is written `NOT FETCHED — <barrier>`, naming what was tried and what stopped it; a
 bare `NOT FETCHED` is refused. The board's last section lists every `NOT FETCHED` with the
 command that fetches it, and `docs/reference/page-run.md`'s row 8 steps say the same.
