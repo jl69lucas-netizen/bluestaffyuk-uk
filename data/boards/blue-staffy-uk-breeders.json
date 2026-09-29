@@ -485,7 +485,7 @@
         "pick": null,
         "note": ""
       },
-      "verbatim_opening": "Absolutely. The health of our blue Staffies is paramount. Both Maggie and Jones are DNA tested for L-2-HGA and HC-HSF4, and both have their eyes and elbows screened. You can find more details on our Staffy Health & Care Page .",
+      "verbatim_opening": "Absolutely. The health of our blue Staffies is paramount. Both Maggie and Jones have had DNA tests for L-2-HGA and HC-HSF4, along with eye and elbow screening. You can find more details on our Staffy Health & Care Page .",
       "refresh": {
         "axis": "layout",
         "note": "The Two Health Tests Behind Every Litter: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
@@ -1492,7 +1492,7 @@
       "top": "H-AB1",
       "video-our-home": "S1"
     },
-    "record_hash": "24c86da022219303b3bcc895814f049001be0fb4062d6036daa10735b2422ca1",
+    "record_hash": "4f4092ddf4378f435f5d552fb5a2ed9bd43448f47456449114be49e4df1e5841",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1510,7 +1510,7 @@
         "Breeder Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T14:41:21Z",
+    "reapproved_at": "2026-09-29T15:23:09Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:50:51Z",
@@ -1573,6 +1573,13 @@
           "/sections/3/stats/1/source",
           "/sections/3/stats/2"
         ]
+      },
+      {
+        "at": "2026-09-29T15:23:09Z",
+        "reason": "Answer board q01 follow-through (2026-09-29): the reworded DNA-test sentences shared 12+ word runs with sibling pages (dup gate, rule 8), so this record's wording is varied; it still names the tests and states no result.",
+        "changed_paths": [
+          "/sections/2/verbatim_opening"
+        ]
       }
     ]
   },
@@ -1610,7 +1617,7 @@
     "section_hashes": {
       "top": "34a0fedb3ca2e24b31ae568041c6a4b865c8ea35ad9dab4b864ec4f299760892",
       "our-story": "51729879ba54305c15dafaa8d4fe1dca2da0eee98b7a1ca5e3b7de41a7f78be3",
-      "health-testing": "25cdb832690e11e7abb13761abb8321ec85bb0a886d6147f0f9e71be57c1114a",
+      "health-testing": "6029f475f5b9367ca79e8ecd10a51f56b3969a6823df586ae45fccb91ac7e6e5",
       "paperwork-proof": "729757a70dfea8a62529d3801fd35bbb1e022deaf8a97e69a1775242464118e4",
       "home-raising": "f132d22c30e179ce20ea63b568cc4031a98b73b9c0807f9aff74f86ecb95fd50",
       "kennel-club": "cf65303dfdd55b226a497f857f3a5d9f7a2610d69930294195e2a7e1a67b56bd",
@@ -1767,7 +1774,7 @@
       {
         "kind": "opening",
         "old": "Absolutely. The health of our blue Staffies is paramount. Both Maggie and Jones are extensively health-tested and certified clear for L-2-HGA and HC-HSF4, ensuring the genetic well-being of our litters. You can find more details on our Staffy Health & Care Page .",
-        "new": "Absolutely. The health of our blue Staffies is paramount. Both Maggie and Jones are DNA tested for L-2-HGA and HC-HSF4, and both have their eyes and elbows screened. You can find more details on our Staffy Health & Care Page .",
+        "new": "Absolutely. The health of our blue Staffies is paramount. Both Maggie and Jones have had DNA tests for L-2-HGA and HC-HSF4, along with eye and elbow screening. You can find more details on our Staffy Health & Care Page .",
         "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result)."
       },
       {

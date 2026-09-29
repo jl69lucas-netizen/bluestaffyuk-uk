@@ -1129,7 +1129,7 @@
       "tree": [
         {
           "level": 3,
-          "heading": "What Maggie And Jones Are Tested For",
+          "heading": "The Two Tests On Maggie And Jones",
           "intent": "What L-2-HGA and HC-HSF4 are, and what a clear result on both parents means.",
           "children": []
         },
@@ -2516,7 +2516,7 @@
       "why-choose": "S2",
       "your-questions-about-blue-staffies-answered": "S3"
     },
-    "record_hash": "81c22516a782f499d1ffec9be1dcd7264db7f3a08c780d04edb49f65863c5f63",
+    "record_hash": "992f581720eef4916ab17bf5e0304bd43e70a5ec7813735098d77e69485d22a2",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2536,7 +2536,7 @@
         "Kennel Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T14:46:15Z",
+    "reapproved_at": "2026-09-29T15:23:07Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:46:15Z",
@@ -2546,6 +2546,13 @@
           "/meta_set/descriptions/2",
           "/sections/10/tree/0/heading",
           "/sections/16/links/internal/10/anchor"
+        ]
+      },
+      {
+        "at": "2026-09-29T15:23:07Z",
+        "reason": "Answer board q01 follow-through (2026-09-29): the reworded DNA-test sentences shared 12+ word runs with sibling pages (dup gate, rule 8), so this record's wording is varied; it still names the tests and states no result.",
+        "changed_paths": [
+          "/sections/10/tree/0/heading"
         ]
       }
     ]
@@ -2664,7 +2671,7 @@
       "who-we-are": "c74cb5e289e587c1906740311d00bd8606d27c8dc211fd7e5f95fa96d9016d11",
       "video-our-home": "ba9b41dd8834759641785ea8233954dfe4eac2e06631b6ac3fcd12c4f4046866",
       "meet-the-parents": "6d13c65121185276bad824ba8bfcc9ff30d970f44be069b3dc12762e71ec0c3b",
-      "health": "6aef08739f6428b14c51ddbd235a5dcbb0c94f645b827d08cb2f6dbe4eebb161",
+      "health": "e006e31b281290cea6c3600fa4c6088e7460af745a48920990328ab2500fc6b3",
       "the-breed": "92f3ddc3d8200101dfd967ed521f1b9eb5034eab083832fc3b5a6765402e1607",
       "video-breed": "960f94f5f13fa4d40bfcc3224d195c0c5297f83904c8bf6db965262cd763317c",
       "whats-included": "98936a3a1589c30ad0aee559b9076443456cb8376c2d9507b6f68277d6cf6bb3",
