@@ -42,6 +42,16 @@ from build_page_board import esc as BPB_esc      # the one None-safe escaper
 # line already uses, and the equality is asserted rather than assumed.
 from facts_preserved_check import MIN_DROP_PHRASE as FACTS_MIN_DROP_PHRASE
 
+
+@pytest.fixture(autouse=True)
+def _stop_2_recorded(monkeypatch):
+    """These tests are about other approval rules; STOP 2 (the outline approval, which
+    refuse_on_new_page_rules also checks) is taken as recorded. tests/py/test_outline_stop_review.py
+    pins that refusal."""
+    import outline_matrix as OM
+    monkeypatch.setattr(OM, "approval_refusal", lambda slug, root=None: None)
+
+
 FIXTURE_LIBRARY = ROOT / "tests" / "py" / "fixtures" / "external-link-library.md"
 
 
