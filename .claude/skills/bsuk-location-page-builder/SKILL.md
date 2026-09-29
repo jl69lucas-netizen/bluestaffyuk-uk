@@ -28,10 +28,12 @@ record missing any part below and writes `docs/artifacts/research/<slug>.html` a
 | 5 query fan-out | `fanout` | PAA, threads, the LLM-intel file | `bsuk-paa-agent`, `bsuk-reddit-threads`, `bsuk-llm-keyword-intel` |
 | 6–8 | `why_competitors_rank`, `how_we_win`, `content_gap` | the summary, our edge, the build list | sections 1–5 |
 | 9–12 | `entities`, `angles`, `strategies`, `frameworks` | the entities by class; 3 angles, 2–3 strategy directions, the framework options per section group, one (Recommended) each with its why and trade-off | `data/bsuk-ontology.json`, `bsuk-angle-agent`, the cluster strategy row and `bsuk-strategy-synthesizer`, `framework-*` |
+| 15–18 | `ai_overview`, `heading_types`, `serp_schema`, `authority` | the AI Overview (present or not, what it says, whom it cites); the heading shapes the ranking pages use and which wins; the schema types across the top results; referring domains and authority per competitor | `bsuk-paa-agent` on the live SERP, `bsuk-framework-agent` on the saved pages, the backlink tools through the spend guard |
 | 13–14 | `keywords.universe`, `keywords.distribution` | every keyword by intent with its volume, and where each is placed, section by section | row 6, `python3 scripts/keyword_variants.py <board slug or query-cache folder>` |
 
-**Nothing is inferred (working rule 9).** A finding cites its `evidence` (the saved fetch or the
-URL read) or is written `NOT FETCHED — <barrier>`, naming what was tried and what stopped it; a
+**Nothing is inferred (working rule 9).** A finding cites its `evidence` — a saved fetch, a file
+under `data/queries/cache/`, `data/queries/` or `docs/research/`, or a URL other than the
+result's own with the date it was `fetched` — or is written `NOT FETCHED — <barrier>`, naming what was tried and what stopped it; a
 bare `NOT FETCHED` is refused. The board's last section lists every `NOT FETCHED` with the
 command that fetches it, and `docs/reference/page-run.md`'s row 8 steps say the same.
 
@@ -43,8 +45,13 @@ and `.md`: the approval status, the word target and its `source`, the heading ce
 distribution matrix — #, the section with its H2–H6 tree, framework, words, keywords (primary and
 secondary, from the research board's keyword universe), Cat (A mandatory core · B competitor-match
 · C our moat), Why (a B or C row names its `why_source` on the research board; a B row cites the
-SERP or the reverse-engineering table), and image. The user approves it on its own
-(`--approve --answers <file>`); only then is the page board written from it.
+SERP or the reverse-engineering table), and image. The census follows `rules/headings.md`: one H1,
+all six levels, no skipped level; at least 5 H5 and 5 H6 is advisory on a location page. A
+framework is a research-board pick or a `framework-*` skill; a C row cites `how_we_win`,
+`content_gap`, `universal_gaps` or a competitor's weakness; a B row cites a competitor whose
+why-it-ranks was fetched; every keyword the research board placed in a section sits in that row.
+The user approves it on its own, from its own answer-board batch (`--approve --answers <file>`);
+only then is the page board written from it, and the component previews built.
 
 ## What wins when this file and something else disagree
 
