@@ -356,3 +356,25 @@ def test_grill_me_hands_a_project_5_page_to_the_plan_the_builder_and_the_record(
     builder = handoff.index("builder skill", plan)
     record = handoff.index("scripts/page_run_record.py <slug> session-open --builder", builder)
     assert plan < builder < record
+
+
+def test_the_ported_agents_and_skill_sit_at_their_rows():
+    """Task 10c (2026-09-29): the six ports run at fixed rows, so a page run cannot skip one.
+    Pinned here, in the page run's own tests, so deleting a line from a row fails this file."""
+    rows = _run_rows()
+    text = DOC.read_text(encoding="utf-8")
+
+    def block(n):
+        head = f"### Row {n} steps"
+        return re.split(r"\n#{2,3} ", text[text.index(head) + len(head):], maxsplit=1)[0]
+
+    want = {
+        7: (rows[6][2], ("bsuk-entity-incorporation-agent",)),
+        9: (block(9), ("bsuk-entity-incorporation-agent", "bsuk-external-link-agent")),
+        12: (block(12), ("bsuk-coat-variant-builder", "bsuk-scam-trust-agent", "bsuk-video-seo-agent")),
+        16: (rows[15][2], ("bsuk-visual-intelligence",)),
+        20: (rows[19][2], ("bsuk-visual-intelligence",)),
+    }
+    missing = [f"row {n}: {name}" for n, (cell, names) in want.items() for name in names
+               if name not in cell]
+    assert missing == [], "a ported agent or skill left its page-run row:\n  " + "\n  ".join(missing)

@@ -56,7 +56,7 @@ Run each section in order. "Run / dispatch" names the specialist that owns the w
 | 4 | Why BSUK wins / loses | self, from §3 | **Competitive-Advantage score /10** |
 | 5 | Technical SEO | `bsuk-keyword-verifier` + `rules/` (the nine packs) | per-element /10 |
 | 6 | Semantic SEO | `bsuk-content-audit-agent` + `.claude/skills/framework-aio-geo/SKILL.md` | missing-topics list |
-| 7 | Entity audit | `bsuk-seo-content-writer` working the `entity-4-move-loop` in `rules/copy.md` (+ `.claude/skills/bsuk-entity-agent/SKILL.md` vocab, the evidence ledger) | **Entity-coverage /10** |
+| 7 | Entity audit | `bsuk-entity-incorporation-agent` working the `entity-4-move-loop` in `rules/copy.md` (+ `.claude/skills/bsuk-entity-agent/SKILL.md` vocab, the evidence ledger) | **Entity-coverage /10** |
 | 8 | NLP / LSI | `.claude/skills/keyword-cluster/SKILL.md` + `bsuk-keyword-verifier` | must-add terms (no stuffing) |
 | 9 | AEO | `.claude/skills/framework-aio-geo/SKILL.md` | **AEO /10 rubric** |
 | 10 | Content architecture | `.claude/skills/framework-heading-hierarchy/SKILL.md` + `.claude/skills/section-auditor/SKILL.md` | improved H-tree |

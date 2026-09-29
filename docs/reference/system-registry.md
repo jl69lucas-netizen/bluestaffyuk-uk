@@ -47,7 +47,7 @@ and regenerate — never the other way round.
 |---|---|
 | `.claude/agents/bsuk-about-builder.md` | Rebuilds /blue-staffy-uk-breeders/ — Lisa Bright's breeder story page for BlueStaffyUK, Carlisle |
 | `.claude/agents/bsuk-coat-variant-builder.md` | Builds the coat-colour and variant pages of the BlueStaffyUK comparison cluster — blue against black, blue against blue and white, and any … |
-| `.claude/agents/bsuk-comparison-builder.md` | Builds Staffy comparison pages — blue vs blue-and-white coat, male vs female, Blue Staffy vs another breed — at the URLs the project-5 … |
+| `.claude/agents/bsuk-comparison-builder.md` | Builds Staffy comparison pages — male vs female, Blue Staffy vs another breed — at the URLs the project-5 strategy gives them |
 | `.claude/agents/bsuk-competitive-keyword-gap-agent.md` | Use after bsuk-competitor-intel has written competitor reports and the BSUK profile, to find the topics BlueStaffyUK's competitors have a … |
 | `.claude/agents/bsuk-faq-agent.md` | Builds and audits FAQ sections for any BlueStaffyUK page using the QAB framework — 6–12 questions per page from real buyer language … |
 | `.claude/agents/bsuk-gsc-analytics.md` | Search Console analysis — INACTIVE UNTIL PROJECT 6 |

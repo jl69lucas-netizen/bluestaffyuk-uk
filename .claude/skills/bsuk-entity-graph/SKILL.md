@@ -10,7 +10,7 @@ scored connectivity. Never keyword analysis — `keyword-cluster` and `@bsuk-key
 own that, and they answer a different question.
 
 **Where this sits.** `.claude/skills/bsuk-entity-agent/SKILL.md` is the passive **catalog** (vocabulary).
-`@bsuk-seo-content-writer` is the **writer** (injects entities into prose, `entity-4-move-loop`). This
+`@bsuk-entity-incorporation-agent` is the **engine** (runs the `entity-4-move-loop` and drafts the section; `@bsuk-seo-content-writer` writes body copy from its approved draft). This
 skill is the **analyzer** — it builds and scores the graph, finds what is missing, and
 hands both of the others a work list they can act on.
 
@@ -229,7 +229,7 @@ FAIL. Ontology fit < 90% = the extractor is broken, not the page.
 
 | Finding | Route to |
 |---|---|
-| Missing entities in copy | `@bsuk-seo-content-writer` (4-Move Loop) |
+| Missing entities in copy | `@bsuk-entity-incorporation-agent` (4-Move Loop) |
 | Vocabulary/catalog additions | `.claude/skills/bsuk-entity-agent/SKILL.md` |
 | Missing/incorrect schema | `bsuk-aeo-pass`, page builder for the type |
 | Missing internal links | `internal-link-agent` (Link-First + Anchor Diversity Ledger) |

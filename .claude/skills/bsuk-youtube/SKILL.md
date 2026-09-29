@@ -1,6 +1,6 @@
 ---
 name: bsuk-youtube
-description: Use when a BSUK page has a YouTube embed to add, fix or optimize — repairs data-src iframe bugs from the WordPress migration, adds VideoObject schema, and manages video-sitemap.xml. Triggers - "YouTube embed", "video not playing", "video sitemap", "VideoObject schema".
+description: Use when a BSUK page has a broken or migrated YouTube embed to repair — data-src iframe bugs from the WordPress migration, "video not playing", a player that never loads. VideoObject schema, a video's title and caption, and the video sitemap belong to the bsuk-video-seo-agent agent, not to this skill.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -150,9 +150,12 @@ Replace `VIDEO_ID` with the 11-character YouTube ID (from the URL after `watch?v
 
 ---
 
-## Step 4 — Update video-sitemap.xml
+## Step 4 — The video sitemap (owned by `@bsuk-video-seo-agent`)
 
-File location: `dist/video-sitemap.xml`
+File location: `dist/video-sitemap.xml`, written by `scripts/generate_sitemaps.py` on every build.
+`VideoObject` schema and the sitemap are the video SEO agent's work
+(`.claude/agents/bsuk-video-seo-agent.md`, Protocols B and C); the rules below are the reference
+it checks against. Never hand-edit the generated file.
 
 ### Rules for Google compliance:
 - `<video:uploader info="...">` — `info` must be an **absolute URL** (not relative path)
@@ -170,8 +173,6 @@ File location: `dist/video-sitemap.xml`
     <video:description><![CDATA[VIDEO DESCRIPTION]]></video:description>
     <video:player_loc>https://www.youtube.com/embed/VIDEO_ID</video:player_loc>
     <video:thumbnail_loc>https://i.ytimg.com/vi/VIDEO_ID/maxresdefault.jpg</video:thumbnail_loc>
-    <video:publication_date>2025-12-09T00:00:00+00:00</video:publication_date>
-    <video:duration>SECONDS</video:duration>
     <video:tag><![CDATA[blue staffies for sale]]></video:tag>
     <video:family_friendly>yes</video:family_friendly>
     <video:uploader info="https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/">BlueStaffyUK</video:uploader>

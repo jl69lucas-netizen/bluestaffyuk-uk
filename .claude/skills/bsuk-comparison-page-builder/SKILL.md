@@ -1,6 +1,6 @@
 ---
 name: bsuk-comparison-page-builder
-description: The comparison-page builder for BlueStaffyUK — a section list derived from the competitors (their count + 3, floor 9, via bsuk-query-augmentation), a per-page research protocol (SERP snapshot → keyword universe → entity map → visual asset blueprint), per-page hero and counter styles (working rule 16), interactive decision modules, and the full pass-gate list (SEO/AIO/GEO/AEO/entity/anti-AI/non-commodity/Lighthouse). Covers the comparison pages project 5 builds, starting with the blue-or-black Staffy comparison.
+description: The comparison-page builder for BlueStaffyUK — a section list derived from the competitors (their count + 3, floor 9, via bsuk-query-augmentation), a per-page research protocol (SERP snapshot → keyword universe → entity map → visual asset blueprint), per-page hero and counter styles (working rule 16), interactive decision modules, and the full pass-gate list (SEO/AIO/GEO/AEO/entity/anti-AI/non-commodity/Lighthouse). Covers the comparison pages project 5 builds; a coat-colour pairing (blue against black, blue against blue and white) is built to this blueprint by the bsuk-coat-variant-builder agent, which owns the coat-pair content.
 ---
 
 # SKILL: BSUK Comparison Page Builder (re-based for BlueStaffyUK, 2026-09-16)
@@ -20,10 +20,10 @@ This skill **supersedes the section template inside `.claude/agents/bsuk-compari
 
 ## 1. Page Inventory & Build Order
 
-No comparison page exists yet. Project 5's research names the first — **Blue or black Staffy
-comparison** (`blue or black staffordshire bull terrier`) — in
-`docs/superpowers/sessions/2026-09-23-location-pages-strategy.md`; the project-5 plan fixes its
-slug and any others. Each is a NEW page: its slug is chosen once, on its board, and never changed
+No comparison page exists yet. Project 5's research names the first in
+`docs/superpowers/sessions/2026-09-23-location-pages-strategy.md` — the blue-or-black Staffy comparison (`blue or black staffordshire bull terrier`), a coat pairing, so `@bsuk-coat-variant-builder` builds it to this blueprint and owns its coat-pair content (the shared coat table, the cross-link block, the coat reader profiles).
+This skill stays the page blueprint for every comparison. The project-5 plan fixes each page's
+slug. Each is a NEW page: its slug is chosen once, on its board, and never changed
 after it ships.
 
 - The breed guide `/uk-staffordshire-bull-terrier-guide/` and the blog hub are not comparison pages — link to them, never merge them in.

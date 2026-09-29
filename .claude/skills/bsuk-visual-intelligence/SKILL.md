@@ -39,9 +39,10 @@ rect is zero; check ancestors for `display:none` before calling a contrast failu
 element the rule names, not its padded wrapper. Print each probe's examined count and refuse to
 call a 0-element run a pass.
 
-**0d. Every score carries its source:** `measured` (Playwright or a script), `derived`
-(computed from measured values), or `NOT MEASURED`. "My judgement" is not a source. A score
-with no source is invalid output, and an average of unsourced scores is noise.
+**0d. Every score carries its class:** `measured` (Playwright or a script), `derived`
+(computed from measured values), `judgment` (a reader's call, labelled as one, never gating),
+or `NOT MEASURED`. §6 gives every row its class and its formula; a score with no class is
+invalid output, and an average of scores is noise.
 
 **0e. Every finding names an owner** — a real BSUK agent or skill from the §7 table, never a
 role ("the design-system owner"). A report with no routing column is not done.
@@ -156,7 +157,9 @@ const r = img.getBoundingClientRect();
    wasteRatio: +(img.naturalWidth / (r.width * devicePixelRatio)).toFixed(2) })
 ```
 Also probe horizontal overflow at 375, line length in real `ch` at 768, tap targets ≥ 24px, and
-every contents-rail anchor actually scrolling.
+every contents-rail anchor actually scrolling: `scroll-behavior: smooth` can cancel a `#anchor`
+jump on a long page, so click each anchor and read `scrollY` before and after (the fix is
+`auto`).
 
 ---
 
@@ -202,7 +205,7 @@ For each: **present / partial / absent**, the evidence (section id and line), an
 | Page type | Required functions (absence = FAIL) |
 |---|---|
 | **location** | Route Users (to `/available-puppies/` and the contact page) · Support Voice Search · the city, its region and its nearby cities from `data/locations.json` · the delivery band read from `data/settings.json`, with collection in Carlisle as the alternative · Answer Questions (the three FAQ blocks, `docs/reference/location-page-template.md`) |
-| **comparison** | Compare · Recommend ("choose A if… choose B if…") · Support Decision Making · Route Users to both sides and to `/available-puppies/` · a comparison table that stacks below 640px (working rule 13) |
+| **comparison** | Compare · Recommend ("choose A if… choose B if…") · Support Decision Making · Route Users to both sides and to `/available-puppies/` · a comparison table that stacks below 640px (working rule 13) · an interactive decision module (`.claude/skills/bsuk-comparison-page-builder/SKILL.md` §5, built by `@bsuk-interactive-component`) |
 | **blog** | Teach · Cross-link to the money pages · six external links on six domains from four source types (working rule 17) · Build Authority |
 | **for-sale / buy** | Present Puppies · Explain Pricing from `data/price-matrix.json` · the delivery band on every card (`rules/puppies.md`) · Qualify Buyers · Reduce Uncertainty (the paperwork in `data/faq.json` `whyus-paperwork`) · Provide CTA |
 | **puppy** | a single `Product` + `Offer` · `InStock` only on an available puppy · real photos · Present Paperwork |
@@ -219,8 +222,11 @@ Words are the visible words inside `<main>`, from the §1 parser.
 - **Functional Redundancy** = the same function served 3 or more times with no new information (the same three facts in the hero, the takeaways and the counter strip is the usual shape).
 
 ### 4c. Visual Differentiation — "it feels the same as the other page", made numeric
-Sibling pages that read as one template are a defect (working rules 8 and 16). Measure pairwise
-against **every** sibling in the cluster:
+Sibling pages that read as one template are a defect (working rules 8 and 16). **The cluster:**
+a city page's siblings are every other city in `data/locations.json` that is built; a comparison
+page's are the other pages that follow the comparison slug pattern of
+`docs/research/2026-09-26-url-family-decision.md` ("Comparison slugs"); any other page's are the
+pages of its own `<profile>`. Measure pairwise against **every** sibling in the cluster:
 - section-type sequence similarity (component order);
 - component-arrangement overlap (the board's hero, counter and section style picks — `data/boards/<slug>.json`);
 - image reuse (the same file on both pages);
@@ -238,8 +244,13 @@ layout, accent role or motif deltas only, **never a palette change**.
 Extract the predicates the page asserts, from the closed taxonomy:
 `IS_A · HAS · CAN · REQUIRES · PROVIDES · SUPPORTS · REDUCES · LOCATED_IN · DELIVERED_TO ·
 SOLD_BY · RAISED_BY · SCREENED_FOR · REGISTERED_WITH · LICENSED_BY · PRICED_AT · COMPARES_WITH ·
-INCLUDES · PART_OF · RELATED_TO · CAUSES · PREVENTS · RECOMMENDS · EXPLAINS · QUALIFIES ·
-MEASURES · UNCLASSIFIED`, and GUARANTEED_FOR (checked against `guarantee_days`, §5c).
+BETTER_THAN · INCLUDES · PART_OF · RELATED_TO · CAUSES · PREVENTS · RECOMMENDS · TRAINS ·
+LEARNS · EXPLAINS · QUALIFIES · MEASURES · UNCLASSIFIED`, and GUARANTEED_FOR (checked against `guarantee_days`, §5c).
+
+**`BETTER_THAN` is always flagged.** A page that says one coat, sex, breeder or breed is better
+than another states a ranking; it is `ASSERTED` only when a cited outside source in
+`docs/reference/external-link-library.md` makes the same comparison, and never about another
+breeder by name.
 
 **5a. Authorization.** A predicate whose entity is `ASSERTED` in `data/bsuk-ontology.json`, and
 whose health or credential claim has a proof and a confirmation date in
@@ -249,9 +260,17 @@ tested clear" on any page is PROPOSED however many times it is repeated. An enti
 does not have at all is UNKNOWN: a finding for `@bsuk-entity-incorporation-agent`, which adds it
 through `python3 scripts/ontology_seed.py` or a sourced row, never an entity to score as ASSERTED.
 
+**Ruled by the breeder, not yet in the ledger.** When the breeder's own answer on the answer
+board (`docs/reference/answer-board/answers/`) confirms a claim the ledger or the ontology does
+not hold yet, the claim is not a page defect: route it to a ledger or ontology update (the
+`proof` and `confirmed` fields of `data/quality/evidence-ledger.json`, or a sourced ontology row)
+through `@bsuk-entity-incorporation-agent`. It is not a page finding and not a §5b FAIL: list it
+under "Ledger updates" in the report, and count it `PROPOSED` in the Authorization ratio until
+the update lands.
+
 **5b. Hard FAIL, not a score** — a page that carries any of these fails the gate:
 - a licence, registration number or statute asserted as held, instead of LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER;
-- a health result, or a health outcome stated as a certainty ("will not develop"), without its ledger proof (`scripts/evidence_audit.py`, check `claim-bound-to-proof`);
+- a health result, or a health outcome stated as a certainty ("will not develop"), without its ledger proof (`scripts/evidence_audit.py`, check `claim-bound-to-proof`) and without a breeder ruling behind it (a ruled claim is a ledger update, above);
 - a guarantee cover the site has not stated (the length is `guarantee_days`, the wording `guarantee_label`; neither names a cover);
 - any phrasing that implies a puppy sold unweaned, sourced from a dealer or brought in from abroad;
 - a named house method (BSUK has none).
@@ -269,30 +288,52 @@ through `python3 scripts/ontology_seed.py` or a sourced row, never an entity to 
 
 ## 6. Scorecard
 
-| # | Score | Basis |
-|---|---|---|
-| 1 | Visual Hierarchy | §2a |
-| 2 | Visual Consistency | §2b–2c token pass rate |
-| 3 | Visual Trust | paperwork, review and breeder visibility above 50% scroll |
-| 4 | Visual Information Gain | share of images carrying non-redundant information |
-| 5 | Visual Communication | §3 educational and search value means |
-| 6 | Visual Storytelling | section progression: question → evidence → decision |
-| 7 | Visual Conversion | CTA visibility, the delivery band on every card, form friction |
-| 8 | Visual Accessibility | AA contrast, tap targets, heading order, alt correctness |
-| 9 | Visual Readability | line length in real `ch`, line-height, clamp band |
-| 10 | Visual AI Readiness | schema present, infographic claims duplicated as text |
-| 11 | Visual Verbalization | §3 row completeness |
-| 12 | Visual Differentiation | §4c pairwise vs siblings |
-| 13 | Function Density | §4b |
-| 14 | Function Diversity | §4b |
-| 15 | **Function Coverage** | §4a — **a gate, not a score** |
-| 16 | Predicate Diversity | §5 |
-| 17 | Predicate Density | §5 |
-| 18 | **Predicate Authorization** | §5a–5b — **a gate: any 5b hit = FAIL** |
+Every row has a **class** and a **rule**. A `measured` or `derived` row is scored by its formula
+from counts you took (§1, §2e, the §3–§5 tables) and nothing else. A `judgment` row is scored by
+a reader and says so; a `report` row is a count with no threshold. A `gate` row is pass/fail.
+Each "n checks" formula scores 10 × checks passed ÷ checks examined; a check that does not
+apply to the page (no puppy card, no infographic) is not examined, and a row whose checks were
+all not examined is `NOT MEASURED`.
 
-Every row carries its source (§0d). **Verdict:** `PASS` (Coverage 100%, Authorization clean,
-no score below 6, nothing `NOT MEASURED`) · `PASS-WITH-WARNINGS` (both gates pass, and a score is
-below 6 or a row is `NOT MEASURED`) · `FAIL` (a gate breached). No overall average.
+| # | Score | Class | Rule |
+|---|---|---|---|
+| 1 | Visual Hierarchy | measured | 10 × §2a dimensions passed ÷ 7 (hero, dominant element, heading scale, reading order, section rhythm, grid, spacing), at 375, 768 and 1280; a dimension passes only at all three widths |
+| 2 | Visual Consistency | measured | 10 × token checks passed ÷ 7 (display font on headings, body font, line-height 1.6–1.7, `<p>` ≤ 75ch at 768, Title Case, no hex outside tokens, one CTA pill style) |
+| 3 | Visual Trust | measured | 10 × present ÷ 3 above 50% scroll at 1280 (the paperwork list, a review from `data/reviews.json`, the breeder named) |
+| 4 | Visual Information Gain | judgment | share of non-decorative images whose §3 row teaches something the prose does not, × 10 |
+| 5 | Visual Communication | judgment | 2 × the mean of the §3 educational and search values (each /5) |
+| 6 | Visual Storytelling | judgment | does the section order run question → evidence → decision? |
+| 7 | Visual Conversion | measured | 10 × checks passed ÷ checks examined (a CTA visible without scrolling at 1280; a CTA within every 700 words of `<main>`; the delivery band on every puppy card; one form on the page) |
+| 8 | Visual Accessibility | measured | 10 × checks passed ÷ 4 (0 AA contrast failures on visible nodes; every tap target ≥ 24px; no skipped heading level; no missing and no duplicated non-empty alt) |
+| 9 | Visual Readability | measured | 10 × checks passed ÷ 3 (`<p>` ≤ 75ch at 768; body line-height 1.6–1.7; no clamp band inverted between widths) |
+| 10 | Visual AI Readiness | derived | 10 × checks passed ÷ checks examined (`npm run check:schema` clean for the page; every infographic claim also present as page text; `python3 scripts/aeo_audit.py <route>` no BLUF WARN) |
+| 11 | Visual Verbalization | derived | 10 × §3 rows with all eight fields filled ÷ non-decorative images |
+| 12 | Visual Differentiation | measured | 10 × checks passed ÷ 4, against every sibling (0 prose crossover; 0 header crossover; ≥ 3 refresh deltas; 0 shared image files) |
+| 13 | Function Density | derived | 10 when functions present ÷ 1,000 words is 1.5–6; 5 when within half that band again (0.75–1.5 or 6–9); else 0 |
+| 14 | Function Diversity | report | distinct functions ÷ taxonomy size, reported with no threshold |
+| 15 | **Function Coverage** | gate | required set satisfied ÷ required set (§4a) = 100% |
+| 16 | Predicate Diversity | report | distinct predicates ÷ taxonomy size, reported with no threshold |
+| 17 | Predicate Density | report | predicates per 1,000 words, reported with no threshold |
+| 18 | **Predicate Authorization** | gate | no §5b hit (a ruled claim awaiting its ledger update is not a hit) |
+
+**Verdict:** `PASS` — both gates pass and every `measured` and `derived` row scores 6 or more.
+`PASS-WITH-WARNINGS` — both gates pass, and a `measured` or `derived` row scores below 6 or is
+`NOT MEASURED`. `FAIL` — a gate is breached. `judgment` and `report` rows are reported beside
+the verdict and never change the verdict, so a page can PASS on its measured and derived rows
+alone. No overall average.
+
+### Worked example
+
+An illustration of the arithmetic, not a measurement of any page. A city page: hierarchy passes
+6 of 7 dimensions at all three widths → 8.6; consistency 7 of 7 → 10; trust 3 of 3 → 10;
+conversion 3 of 3 examined (it has no puppy card, so that check is not examined) → 10;
+accessibility 4 of 4 → 10; readability 2 of 3 → 6.7; AI readiness 2 of 2 examined (no
+infographic) → 10; verbalization 7 of 8 rows complete → 8.8; differentiation 4 of 4 → 10;
+function density 3.1 per 1,000 words → 10. Coverage 5 of 5 required functions → the gate passes;
+no §5b hit → the gate passes. Every measured and derived row is 6 or more → **PASS**, with
+the judgment rows (information gain 7, communication 6, storytelling "question → decision, no
+evidence section") listed beside it. Had readability passed only 1 of 3 (3.3), the verdict
+would be **PASS-WITH-WARNINGS**; had one required function been missing, **FAIL**.
 
 ---
 
@@ -329,7 +370,7 @@ the breeder away it is written as a preview, recorded `deferred` and logged unde
 
 | Mistake | Reality |
 |---|---|
-| "The scores are my judgement" | A score needs a source: measured, derived or `NOT MEASURED`. |
+| "The scores are my judgement" | Score by the §6 formula; a row that is a reader's call is labelled `judgment` and never gates. |
 | Skipping the machine half and measuring by hand | §1 first; hand-scoring what a script counts is how two reports on one page disagree. |
 | Listing each section's job in free text | Use the §4 taxonomy and the §4a matrix — only a closed list makes "missing" a defect. |
 | Calling a repeated claim "redundant" and moving on | Check it against the ledger first: repeated and unledgered is a §5b FAIL, not a style note. |

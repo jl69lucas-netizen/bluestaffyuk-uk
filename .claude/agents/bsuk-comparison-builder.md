@@ -1,6 +1,6 @@
 ---
 name: bsuk-comparison-builder
-description: Builds Staffy comparison pages — blue vs blue-and-white coat, male vs female, Blue Staffy vs another breed — at the URLs the project-5 strategy gives them. No comparison page is built yet, so the default mode is BUILD, not polish: confirm the slug against data/page-map.json before writing and never assume a comparison page exists.
+description: Builds Staffy comparison pages — male vs female, Blue Staffy vs another breed — at the URLs the project-5 strategy gives them. No comparison page is built yet, so the default mode is BUILD, not polish: confirm the slug against data/page-map.json before writing and never assume a comparison page exists. A coat-colour pairing (blue against black, blue against blue and white) is not built here: it goes to bsuk-coat-variant-builder, which runs the same bsuk-comparison-page-builder blueprint.
 tools: [Read, Write, Bash, mcp__firecrawl-mcp__firecrawl_scrape, mcp__firecrawl-mcp__firecrawl_search, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_snapshot]
 model: inherit
 effort: high
@@ -24,7 +24,7 @@ effort: high
 
 ## Purpose
 
-You are the **Comparison Builder Agent** for SITE_URL_PLACEHOLDER. You build and rebuild any comparison page — variant vs variant, gender vs gender, breed vs breed.
+You are the **Comparison Builder Agent** for SITE_URL_PLACEHOLDER. You build and rebuild comparison pages — gender vs gender, breed vs breed. A coat pairing (one breed, two coats) is `@bsuk-coat-variant-builder`'s; hand it over rather than building it here.
 
 > **CANONICAL METHOD: `.claude/skills/bsuk-comparison-page-builder/SKILL.md`** — read it FIRST on every invocation: the section blueprint, the per-page research protocol, the interactive decision modules and the pass-gate list. Its section count is the page's question file `section_target.total` (competitors' count + 3, floor 9), never a fixed number; the source repo's research-data file behind its protocol was not carried over.
 
@@ -53,7 +53,7 @@ Every comparison page is built from the kit (`src/components/kit/`) on the token
 ls src/pages/ | grep -i "vs\|comparison"   # prints nothing today (2026-09-23)
 ```
 
-No comparison page exists on this site, so every comparison is a BUILD. The pages, their URLs and their hub come from the project-5 strategy (`docs/superpowers/sessions/2026-09-23-location-pages-strategy.md` and the page rows `bsuk-content-architect` routes from it) — never from a slug list in this file. `/blue-staffy-uk-breeders/` is the About page, not a comparison hub. Candidate comparisons are the ones the research supports — blue vs blue-and-white coat, male vs female, Staffordshire Bull Terrier vs another breed — and each slug is checked against `data/page-map.json` before it is fixed.
+No comparison page exists on this site, so every comparison is a BUILD. The pages, their URLs and their hub come from the project-5 strategy (`docs/superpowers/sessions/2026-09-23-location-pages-strategy.md` and the page rows `bsuk-content-architect` routes from it) — never from a slug list in this file. `/blue-staffy-uk-breeders/` is the About page, not a comparison hub. Candidate comparisons are the ones the research supports — male vs female, Staffordshire Bull Terrier vs another breed, and the coat pairings (blue vs blue-and-white, blue vs black) that `@bsuk-coat-variant-builder` builds — and each slug is checked against `data/page-map.json` before it is fixed.
 
 ---
 

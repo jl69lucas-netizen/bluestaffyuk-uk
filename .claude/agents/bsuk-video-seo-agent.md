@@ -128,6 +128,15 @@ published Artifact with copy buttons and a `.md` download (the deliverables rule
 `CLAUDE.md`). You never apply it: there is no credential, and no agent logs in to the channel.
 Views, subscribers and rankings are `NOT FETCHED`.
 
+The package also carries, as paste-only copy:
+- **Tags** — 10–15, from the page's own keyword set in `data/queries/<slug>.json` and its board (the four extra keyword types), never a competitor's brand or another breeder's name.
+- **Thumbnail brief** — a real frame or one of our served puppy photos (reused at its own path, working rule 11), a short hook of at most five words, the design tokens' colours; never a stock image and never a generated puppy passed off as ours.
+
+**Two things never go in the package:** no licence detail and no unproven health result. In any of it, the title, description, tags
+and thumbnail say nothing about a licence (LICENCE_CLAIM_PLACEHOLDER, and the breeder keeps
+licence details off the site) and state no health result `data/quality/evidence-ledger.json`
+has not proved.
+
 ---
 
 ## Rules

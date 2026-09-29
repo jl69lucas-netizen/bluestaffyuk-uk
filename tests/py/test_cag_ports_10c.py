@@ -142,11 +142,24 @@ def test_the_reference_check_fires(tmp_path):
 # ── 3. it types no price, deposit, delivery band or guarantee length ─────────────────────
 TYPED = re.compile(r"£\s?\d|\$\s?\d|(?<![\w.,-])(?:1500|1700|1,500|1,700)(?![\w,])"
                    r"|\b730\b|\btwo[- ]years?\b|\b(?:72|24)-hour\b|\b3-day\b")
+# A bare figure with no currency sign is still a typed fact when it sits near the word it
+# prices: "a 500 deposit", "delivery 200–350", "the guarantee runs 730" (review, 2026-09-29).
+FACT_WORD = re.compile(r"(?i)\b(deposit|delivery|price[sd]?|pric(?:e|ing)|guarantee|cost)\b")
+BARE = re.compile(r"(?<![\w.,£$-])(?:500|1500|1700|1,500|1,700|200\s*[–—-]\s*350|200|350|730)(?![\w,%])")
+WINDOW = 40
+
+
+def _bare_near_word(line):
+    for m in BARE.finditer(line):
+        lo, hi = max(0, m.start() - WINDOW), m.end() + WINDOW
+        if FACT_WORD.search(line[lo:hi]):
+            return True
+    return False
 
 
 def typed_facts(rel):
     return [f"{rel}:{n}  {line.strip()[:100]}" for n, line in enumerate(_text(rel).splitlines(), 1)
-            if TYPED.search(line)]
+            if TYPED.search(line) or _bare_near_word(line)]
 
 
 @pytest.mark.parametrize("rel", FILES)
@@ -164,6 +177,12 @@ def test_the_typed_fact_scan_fires():
     for ok in ("`deposit_gbp` in data/settings.json", "`male_gbp`", "the 1280 viewport",
                "`guarantee_label`", "ten years of data"):
         assert not TYPED.search(ok), ok
+    for hit in ("a 500 deposit", "delivery costs 200–350 by distance", "the guarantee runs 730",
+                "price: 1500"):
+        assert _bare_near_word(hit), hit
+    for ok in ("a 500ms delay", "the 200 status from curl", "at most 350 words", "70% of the deposit",
+               "delivery_min_gbp and delivery_max_gbp"):
+        assert not _bare_near_word(ok), ok
 
 
 @pytest.mark.parametrize("rel", FILES)
@@ -225,3 +244,145 @@ def test_known_issue_44_is_closed():
     log = _text("docs/reference/session-log.md")
     ki = re.search(r"^44\. \*\*.*?(?=^\d+\. \*\*)", log, re.M | re.S).group(0)
     assert re.search(r"CLOSED in `[0-9a-f]{7,}`", ki), ki[:200]
+
+
+# ── review round 1 (2026-09-29) ─────────────────────────────────────────────────────────────
+SCAM = ".claude/agents/bsuk-scam-trust-agent.md"
+RULING = "docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md"
+CONFIRM = "NEEDS BREEDER CONFIRMATION — never print until the answer board records it"
+
+
+def _lines(rel):
+    return list(enumerate(_text(rel).splitlines(), 1))
+
+
+def unqualified_refundable(rel):
+    """Lines that would let a writer print the deposit as plainly "refundable". A line may name
+    the word only to forbid it, or to state the ruling's condition (up to 70%, a visitor who fails
+    to show)."""
+    ok = re.compile(r"(?i)never|not |no page|plainly|unqualified|up to 70%|fails? to show")
+    return [f"{rel}:{n}" for n, l in _lines(rel)
+            if re.search(r"(?i)(?<!non-)refundable", l) and not ok.search(l)]
+
+
+def test_the_scam_agent_never_tells_a_writer_to_print_refundable_unqualified():
+    assert unqualified_refundable(SCAM) == []
+    assert RULING in _text(SCAM), "the scam agent must point at the breeder's deposit ruling"
+    bad = [f"{n}" for n, l in _lines(SCAM) if "data/faq.json` `deposit`" in l
+           and not re.search(r"(?i)never|not |do not", l)]
+    assert bad == [], "data/faq.json `deposit` renders a plain 'refundable'; it is not the wording source"
+
+
+def test_the_refundable_scan_fires(tmp_path):
+    p = tmp_path / "x.md"
+    p.write_text("Our answer: the deposit, refundable, books the viewing.\n"
+                 "No page calls the deposit plainly refundable.\n"
+                 "Refundable up to 70% only when a visitor fails to show.\n"
+                 "A non-refundable fee is a red flag.\n", encoding="utf-8")
+    assert unqualified_refundable(str(p)) == [f"{p}:1"]
+
+
+def test_red_flags_our_process_cannot_pass_are_held_for_the_breeder():
+    bad = [f"{n}  {l.strip()[:90]}" for n, l in _lines(SCAM)
+           if re.search(r"(?i)video call|bank transfer|gift card", l) and CONFIRM not in l]
+    assert bad == [], "a red flag BSUK's own process may fail is marked:\n  " + "\n  ".join(bad)
+
+
+def test_the_take_back_is_the_ruling_and_names_no_contract():
+    lines = [l for _, l in _lines(SCAM) if re.search(r"(?i)take-back|take back|taken back", l)]
+    assert lines, "the scam agent states the take-back ruling"
+    for l in lines:
+        assert "contract" not in l.lower(), l
+    assert any("our fault" in l and "no longer" in l for l in lines), lines
+
+
+def test_the_scam_agent_restores_safe_payment_and_the_cross_link_section():
+    t = _text(SCAM)
+    assert "NOT FETCHED — payment method not confirmed by the breeder" in t
+    assert "Ready to Buy From a Breeder You Can Check?" in t
+    for route in ("/available-puppies/", "/buy-blue-staffy-puppies-uk/", "/uk-blue-staffy-puppy-buying-guide/"):
+        assert route in t, route
+        assert (ROOT / "src/pages" / route.strip("/")).is_dir(), route
+    assert "SectionDivider" not in t
+
+
+# the visual-intelligence scorecard can reach PASS
+SCORE_HEADER = ("#", "Score", "Class", "Rule")
+CLASSES = {"measured", "derived", "judgment", "report", "gate"}
+
+
+def _score_rows():
+    lines = _text(SKILL).splitlines()
+    head = "| " + " | ".join(SCORE_HEADER) + " |"
+    i = lines.index(head)
+    rows = []
+    for l in lines[i + 2:]:
+        if not l.startswith("|"):
+            break
+        rows.append([c.strip() for c in l.strip().strip("|").split("|")])
+    return rows
+
+
+def test_every_score_row_has_a_class_and_a_rule():
+    rows = _score_rows()
+    assert len(rows) >= 18
+    for r in rows:
+        cls = r[2].strip("`* ")
+        assert cls in CLASSES, r
+        if cls in ("measured", "derived"):
+            assert re.search(r"10 ×|÷|=", r[3]), f"a scored row needs its formula: {r}"
+    gates = [r[1] for r in rows if r[2].strip("`* ") == "gate"]
+    assert any("Coverage" in g for g in gates) and any("Authorization" in g for g in gates)
+    assert sum(r[2].strip("`* ") in ("measured", "derived") for r in rows) >= 8
+
+
+def test_a_page_can_pass_on_measured_and_derived_rows_alone():
+    t = _text(SKILL)
+    verdict = t[t.index("**Verdict:**"):]
+    verdict = verdict[:verdict.index("\n\n")]
+    assert "never change the verdict" in verdict, verdict
+    assert "### Worked example" in t
+
+
+# one owner per job (items 5–7)
+def test_coat_pairings_have_one_owner():
+    for rel in (".claude/skills/bsuk-comparison-page-builder/SKILL.md", ".claude/agents/bsuk-comparison-builder.md"):
+        fm = _frontmatter(rel)
+        assert "bsuk-coat-variant-builder" in fm["description"], rel
+        bad = [f"{rel}:{n}" for n, l in _lines(rel)
+               if re.search(r"(?i)blue[- ](?:vs|or|and|against)[- ](?:blue-and-white|black)", l)
+               and "bsuk-coat-variant-builder" not in l]
+        assert bad == [], "a coat pairing is claimed without handing it to the coat agent: " + str(bad)
+
+
+def test_the_4_move_loop_has_one_owner():
+    for rel in (".claude/skills/bsuk-entity-graph/SKILL.md",
+                ".claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md", "rules/copy.md"):
+        for n, l in _lines(rel):
+            if re.search(r"4-Move|entity-4-move-loop", l) and not l.startswith("id: "):
+                assert "bsuk-entity-incorporation-agent" in l, f"{rel}:{n}"
+    rule = _text("rules/copy.md").split("id: entity-4-move-loop", 1)[1].split("\n---", 2)[1]
+    assert "its vocabulary" not in rule, "name whose vocabulary it is"
+
+
+def test_outbound_citations_have_one_owner():
+    t = _text(".claude/skills/internal-link-agent/SKILL.md")
+    assert "§Authority Citations" not in t
+    assert "bsuk-external-link-agent" in t
+
+
+def test_claude_md_and_the_copy_pack_carry_the_wiring():
+    claude = _text("CLAUDE.md")
+    for tok in ("`@bsuk-coat-variant-builder`", "`@bsuk-scam-trust-agent`", "`bsuk-visual-intelligence`"):
+        assert tok in claude, tok
+    assert "`@bsuk-entity-incorporation-agent`" in _text("rules/copy.md")
+
+
+def test_the_youtube_skill_hands_schema_and_sitemap_to_the_video_agent():
+    t = _text(".claude/skills/bsuk-youtube/SKILL.md")
+    assert "bsuk-video-seo-agent" in _frontmatter(".claude/skills/bsuk-youtube/SKILL.md")["description"]
+    assert "<video:duration>" not in t
+    d = _text(".claude/agents/bsuk-video-seo-agent.md")
+    d = d[d.index("## Protocol D"):d.index("## Rules")]
+    for tok in ("Tags", "Thumbnail brief", "no licence detail", "no unproven health result"):
+        assert tok in d, tok
