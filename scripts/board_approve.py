@@ -505,10 +505,12 @@ def stats_change(old_board, new_board, history=None):
         added = []
         seen = {(r.get("n"), json.dumps(r.get("source"), sort_keys=True))
                 for r in history.get(sid, []) if isinstance(r, dict)}
-        for k, row in zip(nkeys, n):
+        figures = [(r.get("n"), json.dumps(r.get("source"), sort_keys=True)) for r in n]
+        for k, row, fig in zip(nkeys, n, figures):
             if k in rest:
                 rest.remove(k)
-            elif (row.get("n"), json.dumps(row.get("source"), sort_keys=True)) in seen:
+            elif fig in seen and figures.count(fig) == 1:
+                # restored, once: a figure standing twice is one fact printed as two tiles
                 continue
             else:
                 added.append(k)
@@ -736,12 +738,26 @@ def stats_history(slug):
                               capture_output=True, text=True).stdout.split()
     except (subprocess.CalledProcessError, FileNotFoundError):
         return {}
-    out = {}
+    docs = []
     for sha in shas:
         try:
-            doc = json.loads(subprocess.run(["git", "show", f"{sha}:{rel}"], cwd=PB.ROOT, check=True,
-                                            capture_output=True, text=True).stdout)
+            docs.append(json.loads(subprocess.run(["git", "show", f"{sha}:{rel}"], cwd=PB.ROOT,
+                                                  check=True, capture_output=True, text=True).stdout))
         except (subprocess.CalledProcessError, ValueError):
+            continue
+    return stats_history_from(docs)
+
+
+def stats_history_from(docs):
+    """{section id: [stats rows]} over the given versions of a record, counting ONLY versions
+    whose approval matched the record as it stood (`PB.approval_matches`): a draft or a
+    hand-edited version holds no figure the breeder approved (review minor 2, 2026-09-29)."""
+    out = {}
+    for doc in docs:
+        try:
+            if not PB.approval_matches(doc):
+                continue
+        except Exception:                                   # an unreadable old shape vouches for nothing
             continue
         for sec in doc.get("sections", []):
             if isinstance(sec, dict) and sec.get("stats"):

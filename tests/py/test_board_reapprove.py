@@ -162,6 +162,33 @@ def test_a_figure_the_record_held_before_can_be_restored_with_a_new_label():
         BA.apply_reapproval(moved, REASON, old, NOW, ONT, history=history)
 
 
+def test_a_restored_row_may_not_be_a_duplicate():
+    """Review minor 2: restoring a figure the record held is wording; restoring it twice, or
+    beside the row it duplicates, prints one fact as two tiles and is refused."""
+    old = approved()
+    row = {"n": "2", "label": "DNA tests on both parents", "source": "data/x.json#len"}
+    old["sections"][0]["stats"] = [dict(row)]
+    old["approval"]["record_hash"] = PB.record_hash(old)
+    new = json.loads(json.dumps(old))
+    new["sections"][0]["stats"].append({**row, "label": "the two DNA tests"})
+    history = {old["sections"][0]["id"]: [dict(row)]}
+    with pytest.raises(PB.BoardError, match="added or edited"):
+        BA.apply_reapproval(new, REASON, old, NOW, ONT, history=history)
+
+
+def test_history_is_taken_only_from_approved_versions():
+    """Review minor 2: a committed version whose approval did not match its record (a draft, or a
+    hand-edited record) is not a figure the breeder approved, so it cannot vouch for a restore."""
+    ok = approved()
+    ok["sections"][0]["stats"] = [{"n": "2", "label": "a", "source": "data/x.json#len"}]
+    ok["approval"]["record_hash"] = PB.record_hash(ok)
+    unapproved = json.loads(json.dumps(ok))
+    unapproved["sections"][0]["stats"] = [{"n": "9", "label": "b", "source": "data/x.json#other"}]
+    sid = ok["sections"][0]["id"]
+    rows = BA.stats_history_from([ok, unapproved])[sid]
+    assert {r["n"] for r in rows} == {"2"}
+
+
 # ── what it refuses ───────────────────────────────────────────────────────────────────────
 
 def test_a_changed_pick_is_refused_and_the_message_names_the_pointer():
