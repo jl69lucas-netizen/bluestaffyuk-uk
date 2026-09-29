@@ -626,3 +626,25 @@ CLAUDE.md's Brand context and `rules/design.md`, as in the earlier passes.
 - **FAQ rail (q07).** The guarantee is the third brief under the photo. At 1280 its title takes
   two lines in the 4fr rail where the other two take one; it is the rail's own measure and the
   words are the data's, so it stays.
+
+## Plan 2 — close
+
+`impeccable:impeccable` (its `audit` command), then `frontend-design:frontend-design`, on the final
+build: the fifteen built components on `/kit-preview/city/` and the London scaffold
+`/uk-locations/blue-staffy-puppies-london/`, at 375, 768 and 1280 (and 1024) in a painting browser,
+from the shots of `CITY_SHOTS=/Users/apple/Downloads/BSUK/BSUK-refs/london/_plan2-shots/close/city
+npm run test:render:city` (outside git). impeccable's PRODUCT.md gate is unmet as before (its
+loader reports no PRODUCT.md and no DESIGN.md; only `/impeccable teach` with the user may write
+one), so the pass is read-only: its mutation gate stays closed and the brand context came from
+the `design-context-read-first` files. No finding changed a component, so Step 1 was not re-run.
+
+| # | Pass | Finding | Where, widths | Changed |
+|---|---|---|---|---|
+| 1 | impeccable (detector) | `border-accent-on-rounded` at `CityTakeawaysLedger.astro:59` `border-top: 4px solid` | source | Nothing: the section has no radius; the same false positive as Task 7. |
+| 2 | impeccable (audit, responsive) | `img-not-upscaled` advisories: the owner photo `blue-staffy-testimonial-london-happy-owner.webp` (400×437) painted 704×302 in the FAQ rail at 768 (1.76×) and 592×254 at 1024 (1.48×); Christa (400×400) at 1.17× in the video side panel at 1280; Jones (663×660) at 1.11× in the takeaways crop at 768 | both routes | Nothing here: a larger master goes beside the served file (working rule 11) in London's page run, at its image step (page-run row 11). |
+| 3 | impeccable (audit, a11y) | `img-face-visible` advisory: the owner photo's two faces are 89–90% painted in the FAQ rail's wide crop at 768 and 1024 | both routes | Nothing: advisory, and the crop box is the London board's to choose. |
+| 4 | impeccable (audit, a11y) | contrast 0 AA failures (324–336 text nodes per width), tap targets clean, no horizontal overflow, headings in order, alts present; `city-type-fit` green on every width (104–123 examined) | both routes | Nothing. |
+| 5 | impeccable (audit, theming) | the site `Breadcrumb` puts its `›` flush against the next crumb ("UK Locations ›London"): the `gap` sits between the `li`s, not inside them | every page, all widths (site chrome, not a city component) | Nothing: a visual change to every built page is previewed first (working rule 6); listed for the next chrome touch. |
+| 6 | impeccable (anti-patterns) | no gradient text, glass, side stripes, hero-metric template or nested cards; the trust strip's icon rows are a two-column ledger, not a card grid. The scaffold's closing line "The old page's words, kept until this page is written" is placeholder copy, expected until London's page run | London scaffold | Nothing. |
+| 7 | frontend-design | the fifteen components hold one direction (steel band, brass CTA, bone ground, Fraunces over Source Sans) and match the canvas frames the user confirmed ("All fifteen match", 2026-09-29, side-by-side https://claude.ai/artifact/EPtLABruWw8yjBwFj5skf6) | `/kit-preview/city/` | Nothing. |
+| 8 | frontend-design | at 768 the review card sets the owner's photo at a third of the card's width above the letter, leaving the right two thirds of that band empty | both routes, 768 | Nothing: composition is the London board's call per section (the outline decides the sections, `outline-before-components`); noted for it. |
