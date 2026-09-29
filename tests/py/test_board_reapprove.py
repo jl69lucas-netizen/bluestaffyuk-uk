@@ -325,6 +325,28 @@ def test_a_section_the_reapproval_did_not_touch_keeps_its_fingerprint():
         PB.section_fingerprint(out["sections"][0])
 
 
+def test_a_reworded_hero_keeps_its_re_board_fingerprint():
+    """A hero or counter is never locked by `approval_previous.section_hashes` (locked_picks
+    skips per-page shapes), so refreshing it there serves nothing and erases the evidence that a
+    rule-16 re-board changed it. Found when the homepage hero's intent was reworded (2026-09-29):
+    test_board_previews' `..._only_its_hero_and_its_counter[index]` failed."""
+    old = approved()
+    old["sections"][0]["shape"] = "hero"
+    old["sections"][0]["styles"] = ["S1", "S2", "S3"]
+    old["sections"][0].setdefault("options", {})["pick"] = "S1"
+    old["approval"]["picks"][old["sections"][0]["id"]] = "S1"
+    old["approval"]["section_hashes"] = {s["id"]: PB.section_fingerprint(s) for s in old["sections"]}
+    old["approval_previous"] = json.loads(json.dumps(old["approval"]))
+    old["approval_previous"]["section_hashes"][old["sections"][0]["id"]] = "0" * 64
+    old["approval"]["record_hash"] = PB.record_hash(old)
+    new = json.loads(json.dumps(old))
+    new["sections"][0]["intent"] = "A reworded hero intent"
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)["board"]
+    sid = out["sections"][0]["id"]
+    assert out["approval_previous"]["section_hashes"][sid] == "0" * 64
+    assert out["approval"]["section_hashes"][sid] == PB.section_fingerprint(out["sections"][0])
+
+
 def test_a_record_that_never_carried_fingerprints_does_not_grow_them():
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "Reworded"))
     out = BA.apply_reapproval(new, REASON, old, NOW, ONT)["board"]

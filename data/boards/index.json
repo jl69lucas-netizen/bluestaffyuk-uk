@@ -2516,7 +2516,7 @@
       "why-choose": "S2",
       "your-questions-about-blue-staffies-answered": "S3"
     },
-    "record_hash": "e9f445f66337a3b8b9395e43b294c458e412fd9e126a4d234ae61742a042da9b",
+    "record_hash": "e9fe78e8d0d68a0f8f3eda06a314c7bd7fe30a1be710ea4dff7540fe3e85ca82",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2536,7 +2536,7 @@
         "Kennel Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T17:55:12Z",
+    "reapproved_at": "2026-09-29T17:58:44Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:46:15Z",
@@ -2563,7 +2563,7 @@
         ]
       },
       {
-        "at": "2026-09-29T17:55:12Z",
+        "at": "2026-09-29T17:58:44Z",
         "reason": "Review follow-up (2026-09-29): plan text that would steer a rebuild back to stating DNA results (brief goal/done/angles, intents, whys, link anchors, questions, keywords) now names the tests or the vet records, never a result or a certificate we don't hold (answer board q01). Anchors now match what the built page already prints; no verbatim or dropped entry moves.",
         "changed_paths": [
           "/sections/0/intent",
@@ -2682,7 +2682,7 @@
       }
     ],
     "section_hashes": {
-      "top": "b42e32b68e99f6e57da63977d8960d9415769299c929e905df5f06482089d208",
+      "top": "d5dfd6bff9dab2b83158873cf1d03b6e2c79c52507754ba940a1c562a48a6e9c",
       "at-a-glance": "e348745dcd9db979c084807762590cdc58b7d7ac55dcd8fa71e127e07bdeaaa1",
       "trust": "a78b734511fa153f64a06779c176a6025dc86441882f286de0049fb7e9648ed7",
       "why-choose": "565d3b0548cefd06899a77ebb318dd84744adf8eb8f2a43cf903e920e03555d5",

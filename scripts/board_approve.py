@@ -651,11 +651,15 @@ def apply_reapproval(board, reason, old_board, now, ont, live=SKIP_LIVE, boards=
                 and int(parts[2]) < len(b["sections"]):
             touched.add(b["sections"][int(parts[2])]["id"])
     fresh = {sec["id"]: PB.section_fingerprint(sec) for sec in b["sections"] if sec["id"] in touched}
-    for holder in (b.get("approval"), b.get("approval_previous")):
+    # A hero or a counter is never locked by `approval_previous` (locked_picks() skips the
+    # per-page shapes), so its fingerprint there is only the record of what the re-board changed;
+    # refreshing it erases that evidence and locks nothing. It is refreshed in `approval` only.
+    per_page = {sec["id"] for sec in b["sections"] if sec.get("shape") in PB.PER_PAGE_SHAPES}
+    for holder, skip in ((b.get("approval"), set()), (b.get("approval_previous"), per_page)):
         hashes = (holder or {}).get("section_hashes")
         if isinstance(hashes, dict):
             for sid in list(hashes):
-                if sid in fresh:
+                if sid in fresh and sid not in skip:
                     hashes[sid] = fresh[sid]
     a = b["approval"]
     a["reapproved_at"] = now
