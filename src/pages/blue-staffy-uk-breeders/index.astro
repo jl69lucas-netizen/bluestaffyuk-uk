@@ -13,8 +13,8 @@
 //
 // NO YEARS AND NO SCHEME. The migrated body carried no year, no affix and no line older than
 // Maggie and Jones, so this page states none: no "years breeding", no "since <year>", no
-// Assured Breeder scheme, no licence number, no guarantee length (data/settings.json holds
-// `guarantee_days: null`) and no customer count. The two claims the migrated page made that
+// Assured Breeder scheme, no licence number and no customer count (the guarantee, when a
+// page states it, is data/settings.json `guarantee_label`; this one does not). The two claims the migrated page made that
 // no file on disk holds — "hundreds of families" and "lifelong support" — are struck by name
 // in the record's `dropped.text` and in `verbatim.changed`, and neither is restated here.
 //
@@ -434,7 +434,8 @@ const pageSchema = [
       answer to "are your puppies health-tested", which this record moves out of the accordion
       and makes the section's opening. PROSE AND NO TABLE — the DNA-test table belongs to
       /blue-staffy-health-uk/ and a second copy here is the duplication the dup gate exists
-      for. No guarantee length is stated: data/settings.json holds `guarantee_days: null`. */}
+      for. The guarantee is not stated here; where a page states it, it reads data/settings.json
+      `guarantee_label`. */}
   <section id="health-testing" data-section-label="The two health tests">
     <h2>{T(heading('health-testing'))}</h2>
     <p>{opening('health-testing')}</p>

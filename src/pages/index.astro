@@ -300,8 +300,9 @@ const pageSchema = [
   {/* 03 trust — trust, picked style S2 (strip in a card). The H2 and its opening paragraph
       are the migrated page's own (rule 15), as are the "Ethically Bred" H3 and its opening.
       The health-guarantee PHOTOGRAPH is carried at its original path and alt (working rule
-      11); the guarantee itself is NOT claimed — data/settings.json holds guarantee_days null
-      and the claim is in the record's `dropped.creds`. */}
+      11); the guarantee itself is stated in the H5 below from data/settings.json
+      `guarantee_label` (answer board q07, 2026-09-29); the record's `dropped.creds` still lists
+      it from before, to be updated on the board's next touch. */}
   <section id="trust" data-section-label="Key takeaways" class={box('trust')}>
     <div class="bl-head">
       <p class="bl-eyebrow">What we can show you</p>
@@ -666,7 +667,8 @@ const pageSchema = [
   {/* 11 health — standard, picked style S1. The opening is the migrated page's own (rule 15)
       and the heading is its wording with the colliding tail replaced (verbatim.changed). The
       health page owns the DNA table; this section states the two names in prose rather than
-      printing the same two rows on a second page. No guarantee is offered. */}
+      printing the same two rows on a second page. The guarantee is stated in the trust
+      section, not here. */}
   <section id="health" data-section-label="Our commitment to the health of every puppy" class={box('health')}>
     <div class="bl-head">
       <h2>{T('Our Commitment to the Health of Every Puppy We Raise')}</h2>

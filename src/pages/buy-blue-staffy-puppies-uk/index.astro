@@ -523,8 +523,8 @@ const pageSchema = [
   {/* 07 whats-included — standard, picked style S1 (prose with the image right; no photograph
       on this record, so the prose runs alone). The migrated heading and its opening paragraph
       are carried word for word. It is the CONTENTS and not the price: the migrated block's
-      free-insurance line and its health guarantee are not restated (`dropped.prices`,
-      `dropped.creds` — data/settings.json holds guarantee_days null). */}
+      free-insurance line is not restated (`dropped.prices`); the health guarantee is, from
+      data/settings.json `guarantee_label` (answer board q07, 2026-09-29). */}
   <section id="whats-included" data-section-label="What your puppy comes with" class={box('whats-included')}>
     <div class="bl-head">
       <h2>{T(heading('whats-included'))}</h2>

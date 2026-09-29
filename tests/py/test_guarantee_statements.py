@@ -136,3 +136,20 @@ def test_no_page_promises_to_send_the_wording():
     send = re.compile(r"(?i)\bwe (?:will )?send (?:you )?(?:its|the) full wording")
     bad = [str(p.relative_to(dist)) for p in dist.rglob("*.html") if send.search(p.read_text(errors="ignore"))]
     assert bad == [], bad
+
+
+STALE_SOURCE = re.compile(r"(?i)guarantee_days`?:?\s*null|guarantee_days`? is null|holds guarantee_days|"
+                          r"no (?:health )?guarantee (?:of any length|length)|guarantee[^.]{0,40}\bNOT (?:claimed|restated)|"
+                          r"no guarantee (?:is )?(?:offered|stated)|no length may be written|guarantee length[^.]{0,30}NOT FETCHED")
+
+
+def test_no_page_source_comment_says_the_guarantee_is_unset():
+    """Re-review, item 4: a page file's comments that still say the guarantee is not stated sit
+    on top of corrected copy and send the next editor the wrong way."""
+    bad = []
+    for f in sorted((ROOT / "src/pages").rglob("*.astro")):
+        text = f.read_text(encoding="utf-8")
+        # Join a comment's wrapped lines so a clause split across two lines is still read whole.
+        flat = re.sub(r"\n\s*(?://|\*)?\s*", " ", text)
+        bad += [f"{f.relative_to(ROOT)}: …{flat[max(0, m.start() - 50):m.end() + 30]}…" for m in STALE_SOURCE.finditer(flat)]
+    assert bad == [], "\n".join(bad)

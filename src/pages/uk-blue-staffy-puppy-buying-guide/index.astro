@@ -27,8 +27,9 @@
 // food, equipment, training and grooming ranges, the £1,970 to £3,870 total, the ongoing
 // years and the emergency fund — because not one of those figures has a source on disk
 // (Known Issue 11, `dropped.prices`); no BETH, KANE, ALIS or KOBE and none of their four
-// prices, because data/puppies.json holds six different dogs; no health guarantee of any
-// length (`guarantee_days: null`); no named testing laboratory; no former city; no location
+// prices, because data/puppies.json holds six different dogs; no hand-typed guarantee length
+// (data/settings.json `guarantee_label` is the only source, and this page does not state
+// it); no named testing laboratory; no former city; no location
 // landing pages; no quiz, no calculator and no downloadable checklist (`brief.tool.pick` is
 // none); no newsletter or waiting-list block; and NO FORM — the contact page carries the one
 // form the form audit measures, and `talk-to-us` links it. The "five steps" headline figure
@@ -837,8 +838,9 @@ const pageSchema = [
       parents are stated as clear, and /blue-staffy-health-uk/ is where the results live — a
       second page reproducing that table would be two pages claiming one set of certificates.
       NO LABORATORY IS NAMED (`dropped.names`), no prevalence figure, no percentage and no
-      prognosis. THE OPENING IS `verbatim.changed`: "and our puppy health guarantees" promises a
-      document with a length data/settings.json does not hold. Two of the five H3s are changed as
+      prognosis. THE OPENING IS `verbatim.changed`: "and our puppy health guarantees" promised a
+      document with a length data/settings.json did not then hold (it now holds two years,
+      answer board q07; the change stands until this section is next touched). Two of the five H3s are changed as
       well, both for collisions with the health page. The recorded refresh delta is the LAYOUT. */}
   <section id="health-checks" data-section-label="Health evidence to ask for">
     <h2>{T(heading('health-checks'))}</h2>

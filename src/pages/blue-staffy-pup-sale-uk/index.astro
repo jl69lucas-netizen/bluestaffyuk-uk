@@ -10,8 +10,8 @@
 // is a value in data/price-matrix.json or data/settings.json, read here rather than typed —
 // the counter strip prints all four of the record's own `stats` rows, the hero's ledge prints
 // the two prices, and the two tables print the record's own cells. The migrated page's £850
-// to £1,200 band is nowhere on it (Known Issue 11, `dropped.prices`), and neither is the
-// health guarantee (`guarantee_days: null`), the four unevidenced counters, the four puppy
+// to £1,200 band is nowhere on it (Known Issue 11, `dropped.prices`), and neither are the
+// four unevidenced counters, the four puppy
 // names, the twelve-week age or the six delivery cities — the last of which came out of the
 // `sale-delivery-uk` FAQ answer too. Each is logged in the record's `dropped` with its reason.
 //
@@ -346,8 +346,9 @@ const pageSchema = [
   {/* 05 whats-included — standard, picked style S1 (prose with the image right), carrying the
       migrated photograph of Maggie with her pups at its original path and alt. Six items and
       no more: they are what the migrated puppy-package sentence and the `puppy-package` row
-      of data/faq.json name. The health guarantee is NOT restated — data/settings.json holds
-      guarantee_days null, so there is no term to state (`dropped.creds`). */}
+      of data/faq.json name. The health guarantee is not a seventh item: it is stated as a
+      promise in the H5 below, from data/settings.json `guarantee_label` (answer board q07,
+      2026-09-29). */}
   <section id="whats-included" data-section-label="What is included in the price" class={box('whats-included')}>
     <div class="bl-head">
       <h2>{T('What Is Included In The Price')}</h2>

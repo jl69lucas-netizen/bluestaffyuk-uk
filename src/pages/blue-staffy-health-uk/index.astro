@@ -18,7 +18,8 @@
 // on disk, so the table goes high and the ordinary care that keeps a Staffy well follows it.
 //
 // WHAT THIS PAGE MAY NOT SAY, and none of it is an oversight (`brief.out_of_scope`):
-// no health guarantee of any length (data/settings.json holds `guarantee_days: null`), no
+// no hand-typed guarantee length (it is data/settings.json `guarantee_label`, read through
+// guaranteeLabel(); answer board q07, 2026-09-29), no
 // £850 to £1,200 band (below the locked prices, Known Issue 11, `dropped.prices`), no former
 // city and no licence wording (Known Issue 16 / LICENCE_CLAIM_PLACEHOLDER), no named testing
 // laboratory, no prevalence figure, percentage or prognosis for any of the five conditions,
@@ -147,8 +148,9 @@ if (markJ.length !== 1) {
 
 // THE NINE FAQ ROWS THE RECORD NAMES, BY ID, in the record's order. Eight of the nine carry the
 // migrated accordion's own questions word for word (rule 15); `puppy-package` is the outline's.
-// The ninth migrated question — the guarantee's length — is a `verbatim.changed` drop, because
-// data/settings.json holds `guarantee_days: null`. The answers are data, not page copy.
+// The ninth migrated question — the guarantee's length — is a `verbatim.changed` drop, recorded
+// when no length was held; the section's intro and H5 now answer it from data/settings.json
+// `guarantee_label` (answer board q07, 2026-09-29). The answers are data, not page copy.
 const faqSection = record.sections.find((s) => s.id === 'questions')!;
 const faqRows = loadFaq();
 const faqs = faqSection.tree.map((n) => {
@@ -931,7 +933,8 @@ const pageSchema = [
       rows of data/faq.json in the record's order: eight carry the migrated accordion's own
       questions word for word and one, `puppy-package`, is the outline's. The ninth migrated
       question — what the guarantee covers and how long it lasts — is a `verbatim.changed` drop,
-      because data/settings.json holds `guarantee_days: null` and no length may be written. The
+      recorded before the breeder gave the length; the intro and the H5 below now state it from
+      data/settings.json `guarantee_label` (answer board q07, 2026-09-29). The
       accordion's answers sit outside this section's word band (amendment 4a). */}
   <section id="questions" data-section-label="Frequently asked questions" class={box('questions')}>
     <div class="bl-head">
