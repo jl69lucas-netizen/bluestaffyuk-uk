@@ -67,14 +67,16 @@ def judge_page(html_text, served, changed):
         if name not in served:
             continue
         examined += 1
-        first = name not in used
-        seen = used.setdefault(name, set())
         if alt is None:
             hits.append((name, alt))
             continue
         alt = " ".join(alt.split())
         if alt == "":
             continue
+        # Only a NON-EMPTY alt claims the first-use slot: a decorative alt="" before it must not
+        # let the served alt be dropped altogether.
+        first = name not in used
+        seen = used.setdefault(name, set())
         if first:
             ok = alt in served[name] or alt in changed.get(name, ())
         else:
@@ -175,6 +177,11 @@ def test_a_repeated_photo_keeps_its_served_alt_first_and_a_new_alt_after():
     assert judge_page(copy, served, {})[1] == [("maggie-blue-staffy-dam-with-pups.webp", "Maggie")]
     first_new = img % "A new alt" + img % "Maggie"
     assert judge_page(first_new, served, {})[1] == [("maggie-blue-staffy-dam-with-pups.webp", "A new alt")]
+    # A decorative first use (alt="") does not claim the first-use slot: the first NON-EMPTY
+    # alt still has to be the served one (review of Task 10b, item 1).
+    decorative_first = img % "" + img % "Brand new"
+    assert judge_page(decorative_first, served, {})[1] == [("maggie-blue-staffy-dam-with-pups.webp", "Brand new")]
+    assert judge_page(img % "" + img % "Maggie", served, {})[1] == []
     # A width variant is the same photo: its repeat is judged as a repeat.
     variant = img % "Maggie" + '<img src="/images/maggie-blue-staffy-dam-with-pups-760.webp" alt="Maggie">'
     assert judge_page(variant, served, {})[1] == [("maggie-blue-staffy-dam-with-pups.webp", "Maggie")]

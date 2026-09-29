@@ -177,6 +177,8 @@ def scaffold_alt_defects(main, served):
     out, used = [], {}
     for name, alt in re.findall(r'<img [^>]*src="/images/([^"?]+)"[^>]*alt="([^"]*)"', main):
         alt = H.unescape(alt)
+        if alt == "":
+            continue  # decorative: it never claims the first-use slot
         if name not in used:
             if alt not in served[name]:
                 out.append(f"{name}: its first use does not carry its served alt")
@@ -194,6 +196,8 @@ def test_a_repeat_with_a_new_alt_is_allowed_on_the_scaffold():
     assert scaffold_alt_defects(ok, served) == []
     copy = '<img src="/images/Christa.jpeg" alt="Christa"><img src="/images/Christa.jpeg" alt="Christa">'
     assert scaffold_alt_defects(copy, served) != []
+    decorative_first = '<img src="/images/Christa.jpeg" alt=""><img src="/images/Christa.jpeg" alt="Brand new">'
+    assert scaffold_alt_defects(decorative_first, served) != []
 
 
 def test_each_served_photo_keeps_its_served_alt_first_and_a_new_alt_on_a_repeat():
