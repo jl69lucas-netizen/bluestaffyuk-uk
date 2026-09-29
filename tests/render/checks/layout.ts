@@ -958,51 +958,64 @@ register({
 });
 
 /**
- * A HERO BAND OUTSIDE A BOARD BOX SPANS ITS COLUMN (the Known Issue 97 review, 2026-09-29).
+ * A KIT BAND SPANS ITS COLUMN (the Known Issue 97 review, item 1; generalised in the re-review,
+ * minor 1). Renamed from `layout-kit-hero-full-bleed`.
  *
- * PageShell adds no width of its own: "every kit section ... already owns its gutter", and the kit
- * Hero is the kit's one section band. A wrapper between the column and the band must therefore
- * never inset it. The side-gutter rule did: the blog-post template mounts its hero in a
- * class-less `<section>` under `.page-body`, the rule padded that wrapper, and the band moved from
- * x = 0 at the column's full width to x = 24, with white strips at every width.
+ * PageShell adds no width of its own: "every kit section ... already owns its gutter". A wrapper
+ * between the column and a kit band must therefore never inset it. The side-gutter rule did: the
+ * blog-post template mounts its hero in a class-less `<section>` under `.page-body`, the rule
+ * padded that wrapper, and the band moved from x = 0 at the column's full width to x = 24, with
+ * white strips at every width. Any kit section band (a CTA or steel band) in such a wrapper would
+ * lose its bleed the same way.
  *
- * THE UNIT is one visible `.kit-hero` that is not inside a `.bl-box` (a boxed hero sits in the
- * box's own padding by design) nor inside another kit section (the kit preview's specimen
- * frames, `section.kit-section`). It fails when its left or right edge is more than 1px inside its
- * column: the nearest `.page-body`, or `<main>` on a page without one.
+ * THE UNIT is one visible top-level kit section band: a `section` whose class starts with `kit-`,
+ * not inside a `.bl-box` or another kit component, and whose wrappers up to its column (the
+ * nearest `.page-body`, else `<main>`) are all class-less. A band placed in a classed wrapper
+ * (the kit preview's `.container` specimen frames, a city preview) is laid out there by design
+ * and is not judged. It fails when either edge sits more than 1px inside its column. A page with
+ * no `<main>` is a defect.
  */
 register({
-  id: 'layout-kit-hero-full-bleed',
+  id: 'layout-kit-band-full-bleed',
   family: 'LAYOUT',
   severity: 'blocking',
-  describe: 'a kit hero band outside a board box spans its column edge to edge',
+  describe: 'a top-level kit section band spans its column edge to edge',
   minExamined: 1,
   async run(page: Page, viewport: number): Promise<CheckResult> {
     const r = await page.evaluate(() => {
+      const main = document.querySelector('main');
+      if (!main) return { noMain: true, examined: 0, bad: [] as string[] };
       let examined = 0;
       const bad: string[] = [];
-      for (const hero of Array.from(document.querySelectorAll('main .kit-hero'))) {
-        // Boxed (the box's padding is the design) or nested in another kit section (the kit
-        // preview's specimen frames): not a page band.
-        if (hero.parentElement?.closest('.bl-box, [class^="kit-"], [class*=" kit-"]')) continue;
-        const hb = hero.getBoundingClientRect();
-        if (hb.width < 1 || hb.height < 1) continue;
-        const column = hero.closest('.page-body') || hero.closest('main')!;
+      for (const band of Array.from(main.querySelectorAll('section[class^="kit-"], section[class*=" kit-"]'))) {
+        if (band.parentElement?.closest('.bl-box, [class^="kit-"], [class*=" kit-"]')) continue;
+        const bb = band.getBoundingClientRect();
+        if (bb.width < 1 || bb.height < 1) continue;
+        const column = band.closest('.page-body') || main;
+        let designed = false;
+        for (let a = band.parentElement; a && a !== column; a = a.parentElement) {
+          if (a.classList.length) { designed = true; break; }
+        }
+        if (designed) continue;
         const cb = column.getBoundingClientRect();
         examined++;
-        const left = hb.left - cb.left;
-        const right = cb.right - hb.right;
+        const left = bb.left - cb.left;
+        const right = cb.right - bb.right;
         if (left > 1 || right > 1) {
-          bad.push(`${hero.getAttribute('data-hero-layout') || 'hero'} inset ${Math.round(left)}px left, ${Math.round(right)}px right of its ${Math.round(cb.width)}px column`);
+          const name = Array.from(band.classList).find((c) => c.startsWith('kit-')) || 'kit band';
+          bad.push(`${name}${band.getAttribute('data-hero-layout') ? ' (' + band.getAttribute('data-hero-layout') + ')' : ''} inset ${Math.round(left)}px left, ${Math.round(right)}px right of its ${Math.round(cb.width)}px column`);
         }
       }
-      return { examined, bad };
+      return { noMain: false, examined, bad };
     });
+    if (r.noMain) {
+      return { examined: 0, defects: [{ checkId: 'layout-kit-band-full-bleed', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no band could be judged' }] };
+    }
     return {
       examined: r.examined,
       defects: r.bad.length
         ? [{
-          checkId: 'layout-kit-hero-full-bleed',
+          checkId: 'layout-kit-band-full-bleed',
           family: 'LAYOUT' as const,
           viewport,
           count: r.bad.length,

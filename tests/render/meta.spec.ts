@@ -2112,6 +2112,7 @@ test.describe('img-face-visible reads object-position', () => {
  */
 test.describe('the Known Issue 97 checks: no <main>, the kit prefix, the body size', () => {
   const KI97 = [
+    'layout-kit-band-full-bleed',
     'layout-body-heading-above-body',
     'layout-text-has-side-gutter',
     'layout-boxed-h2-fits',
@@ -2147,5 +2148,21 @@ test.describe('the Known Issue 97 checks: no <main>, the kit prefix, the body si
     const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
     expect(r.examined).toBe(2);
     expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+});
+
+/**
+ * The band guard judges every top-level kit section, not only the hero (the Known Issue 97
+ * re-review, minor 1): a steel CTA band in a padded class-less wrapper is the blog hero's defect
+ * on a band that is not a hero.
+ */
+test.describe('layout-kit-band-full-bleed sees a band that is not a hero', () => {
+  test('a CTA band inset by its class-less wrapper fires', async ({ page }, testInfo) => {
+    expect((await page.goto(fixtureUrl('known_broken', 'layout-kit-band-cta-inset')))?.status()).toBe(200);
+    const check = registry.find((c) => c.id === 'layout-kit-band-full-bleed');
+    expect(check, 'layout-kit-band-full-bleed is not registered').toBeTruthy();
+    const r = await runCheck(check!, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(1);
+    expect(r.defects.length, 'the inset CTA band passed').toBe(1);
   });
 });

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a steel CTA band inset by its wrapper</title>
+<!-- The Known Issue 97 re-review, minor 1: the band guard looked at `.kit-hero` only. A kit CTA
+     band on steel, mounted in a class-less section that a gutter rule pads, loses its bleed the
+     same way the blog hero did: 24px of white each side. No hero on this page. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .page-body > section:not(.bl-box) { padding-inline: 24px; }
+  .kit-cta { background: #1F3A52; color: #F4F1EA; padding: 48px 24px; }
+</style>
+</head><body>
+<main>
+  <div class="page-shell"><div class="page-body">
+    <section><h2>Body</h2><p>Prose in its gutter.</p></section>
+    <section><section class="kit-cta" data-surface="inverse"><h2>Ready to Meet the Litter?</h2><p>Write to us.</p></section></section>
+  </div></div>
+</main>
+</body></html>
