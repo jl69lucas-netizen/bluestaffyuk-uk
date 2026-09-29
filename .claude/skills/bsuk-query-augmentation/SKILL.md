@@ -217,6 +217,15 @@ and find it at `dist/uk-locations/<slug>/` (`scripts/_slugs.py`), so one entry c
 gate. A slug listed there whose page is not built is a `check:queries` problem, not a skip;
 the run also prints the slugs still awaiting rebuild.
 
+## What the research board adds (page-run row 8)
+
+The question file records each competitor's URL, positions, H2 counts and words. The research
+board (`data/research-boards/<slug>.json`, `python3 scripts/research_board.py <slug>`) reads those
+and adds what this skill does not fetch: why each top-5 competitor ranks, its weakness, its type,
+headings beyond H2, tables, FAQ, byline and schema, owner language and the summary findings. Those
+come from `bsuk-framework-agent` and `bsuk-reddit-threads` on the saved pages; what they cannot
+read is written `NOT FETCHED — <barrier>`.
+
 ## Worked example
 
 `data/queries/raw/blue-staffy-puppies-manchester-uk/` and

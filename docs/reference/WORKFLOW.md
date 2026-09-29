@@ -22,8 +22,11 @@ or a traffic baseline is inert today. No number from those sources may be quoted
 ## Running this pipeline under an autonomous model (added 2026-09-07)
 
 Fable 5.1 sessions run with the breeder away: a mid-task question blocks the build. So the
-pipeline has exactly **three places where an agent may stop and ask** — the `[APPROVE]` gates at
-Sprint 0.5 (the brief: the research board), Sprint 1 (outline + distribution matrix + header style) and the ASSET GATE.
+pipeline has exactly **four places where an agent may stop and ask** — the `[APPROVE]` gates at
+Sprint 0.5 (STOP 1, the brief: the research board), Sprint 1 (STOP 2, the outline as the section
+matrix: distribution matrix + header style, approved on its own — the user's ruling, 2026-09-29;
+then STOP 3, the page board) and the ASSET GATE (STOP 4). `docs/reference/page-run.md` rows 8–11
+number them.
 Everywhere else the Clarification Checkpoint applies: write the finished part to disk, log the
 question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked.
 Agents no longer open with a "which mode?" interview; they read the mode from the invocation or the
@@ -197,10 +200,14 @@ Before proceeding to Sprint 0.5:
 
 **The research board closes Sprint 0.5 on every project 5 page (the user's ruling, 2026-09-27):**
 after the research, and before the outline, the page's research board — `docs/reference/page-run.md`
-row 8, STOP 1 — shows the competitor scan, the query fan-out, the keyword universe by intent, the
-entities, 3 angle options, 2–3 strategy directions and the framework options, one option per choice
-marked (Recommended). The user picks on it; Sprint 1's outline and board are written from those
-picks and cite them. Every city gets one: a page's row in the approved cluster strategy is one of
+row 8, STOP 1, built by `python3 scripts/research_board.py <slug>` — shows the competitor scan
+with why each top-5 competitor ranks and its weakness, the search intent, the reverse-engineering
+table and the universal gaps, owner language, why competitors rank, how we win, the content gap,
+the query fan-out, the keyword universe by intent and its distribution, the entities, 3 angle
+options, 2–3 strategy directions and the framework options, one option per choice marked
+(Recommended). The user picks on it; Sprint 1's outline (STOP 2, `python3 scripts/outline_matrix.py
+<slug>`, approved on its own) and then the page board (STOP 3) are written from those picks and cite
+them. Every city gets one: a page's row in the approved cluster strategy is one of
 the directions on the board, never a reason to go without it.
 
 ```

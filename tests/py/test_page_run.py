@@ -6,7 +6,8 @@ spread over a dozen files and no single run. Project 5 walks that run for 30-odd
 a run that lives across twelve files is the one that gets skipped on page 14.
 
 These tests pin the SHAPE of the run rather than its prose: every brief step it must cover,
-in order; a command and a failing gate on every row; exactly three approval stops; a builder,
+in order; a command and a failing gate on every row; exactly four approval stops (the research
+board, the outline, the page board, the Asset Gate — the user's ruling, 2026-09-29); a builder,
 route and profile per page type that the scripts actually accept; and the checker that
 keeps every name in it real.
 """
@@ -123,7 +124,7 @@ def test_a_gate_that_does_not_fire_at_its_own_row_says_so():
             assert int(m.group(2)) > int(r[0]), f"row {r[0]} is enforced at an earlier row: {r[4]!r}"
 
 
-def test_exactly_three_approval_stops_in_order():
+def test_exactly_four_approval_stops_in_order():
     stops = []
     for r in _run_rows():
         cell = r[5]
@@ -133,8 +134,8 @@ def test_exactly_three_approval_stops_in_order():
         else:
             assert cell.startswith(("none", "PREVIEW")), (
                 f"row {r[0]}: a stop is 'none', 'PREVIEW' or 'STOP n': {cell!r}")
-    assert stops == [1, 2, 3], (
-        f"the run stops for the breeder exactly three times, in order (WORKFLOW.md): {stops}")
+    assert stops == [1, 2, 3, 4], (
+        f"the run stops for the breeder exactly four times, in order (WORKFLOW.md): {stops}")
 
 
 def test_the_two_harden_passes_are_named_mandatory_rows_that_preview_only_a_visual_change():
@@ -157,10 +158,33 @@ def test_verification_before_completion_closes_the_gates_and_the_session():
     assert "verification_before_completion" in gate_row[3], gate_row[3]
 
 
-def test_the_three_stops_are_the_brief_the_board_and_the_asset_gate():
-    cells = {int(re.match(r"STOP (\d)", r[5]).group(1)): r[5] for r in _run_rows()
-             if r[5].startswith("STOP")}
-    assert "brief" in cells[1] and "board" in cells[2] and "Asset Gate" in cells[3], cells
+def test_the_four_stops_are_the_research_board_the_outline_the_board_and_the_asset_gate():
+    """The user's ruling (2026-09-29): "yes, separate approval, i must see all angles,
+    framework, keywords, why each competitors rank, full distribution section by section".
+    The outline is its own stop, between the research board and the page board."""
+    rows = {int(re.match(r"STOP (\d)", r[5]).group(1)): r for r in _run_rows()
+            if r[5].startswith("STOP")}
+    cells = {n: r[5] for n, r in rows.items()}
+    assert "research board" in cells[1] and "brief" in cells[1], cells[1]
+    assert "outline" in cells[2] and "section matrix" in cells[2], cells[2]
+    assert "board" in cells[3] and "outline" not in cells[3].split("—")[0], cells[3]
+    assert "Asset Gate" in cells[4], cells
+    assert [int(r[0]) for _, r in sorted(rows.items())] == [8, 9, 10, 11], rows.keys()
+
+
+def test_the_outline_stop_is_recorded_and_gated_before_the_page_board():
+    row9, row10 = _run_rows()[8], _run_rows()[9]
+    for tok in ("scripts/outline_matrix.py", "data/outlines/<slug>.json", "--approve"):
+        assert tok in row9[2] + row9[3] + " ".join(_steps(9)), (tok, row9)
+    assert "scripts/build_page_board.py" in row9[4] and "outline-unapproved" in row9[4], row9[4]
+    assert "after STOP 2" in row10[2], row10[2]
+
+
+def test_the_research_board_is_built_by_its_script_and_recorded():
+    row8 = _run_rows()[7]
+    body = row8[2] + row8[3] + " ".join(_steps(8))
+    for tok in ("scripts/research_board.py", "data/research-boards/<slug>.json", "--approve"):
+        assert tok in body, (tok, body)
 
 
 PAGE_TYPE_HEADER = ("Page type", "Builder skill", "`<route>`", "Final-audit and evidence profile",
@@ -285,7 +309,7 @@ def test_the_keyword_metrics_gate_names_every_fail():
         assert tok in row6[4], (tok, row6[4])
 
 
-MULTI_COMMAND_ROWS = (5, 9, 11, 12, 17, 18)
+MULTI_COMMAND_ROWS = (5, 8, 9, 11, 12, 17, 18)
 
 
 def test_multi_command_rows_point_to_a_numbered_sub_list():

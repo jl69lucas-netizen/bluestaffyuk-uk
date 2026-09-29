@@ -98,12 +98,14 @@ def test_the_research_board_carries_the_research_and_the_options():
     assert missing == [], f"the research board does not name: {missing}"
 
 
-def test_the_picks_are_recorded_before_row_9_and_the_tooling_waits_for_the_first_page():
+def test_the_picks_are_recorded_before_row_9_and_the_board_is_built_by_its_script():
     row = _row(8)
     steps = _norm(_section("### Row 8 steps"))
     assert "scripts/answer_board_batch.py" in steps, steps
     assert "docs/reference/answer-board/answers/" in row[3], row[3]
-    assert "tooling: built with the first page" in _norm(" ".join(row) + " " + steps)
+    # the tooling exists now (2026-09-29): the board is built from its record by a script
+    assert "python3 scripts/research_board.py <slug>" in steps, steps
+    assert "tooling: built with the first page" not in _norm(" ".join(row) + " " + steps)
     assert "comes after row 8's picks" in _norm(_row(9)[2]), _row(9)[2]
 
 

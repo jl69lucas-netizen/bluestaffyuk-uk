@@ -11,7 +11,40 @@ and nowhere else. This file says how the page is shaped; the packs say how it is
 
 **Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
 
-**Research board before the outline (STOP 1, every page — the user's ruling, 2026-09-27):** after the research (page-run rows 4–7) the page goes through its research board, `docs/reference/page-run.md` row 8: the competitor scan (top 5 on Google and Bing, section counts, word target or `NOT FETCHED`), the query fan-out (PAA, Reddit, LLM intel), the keyword universe by intent with the four extra keyword types, the entities, 3 angle options (`bsuk-angle-agent`), 2–3 strategy directions and the framework options per section group, one option per choice marked (Recommended). The user picks on it, the picks are saved under `docs/reference/answer-board/answers/`, and the outline and the board are written from them and cite them. Nothing is outlined before the picks are recorded. Every city gets its research board: the city's row in `docs/superpowers/sessions/2026-09-25-location-pages-strategy.md` is one of the strategy directions on it, never a reason to go without it.
+**Research board before the outline (STOP 1, every page — the user's ruling, 2026-09-27):** after the research (page-run rows 4–7) the page goes through its research board, `docs/reference/page-run.md` row 8: built by `python3 scripts/research_board.py <slug>` from `data/research-boards/<slug>.json`: the competitor scan (top 5 on Google and Bing, why each ranks and its weakness, section counts, word target or `NOT FETCHED`), the query fan-out (PAA, Reddit, LLM intel), the keyword universe by intent with the four extra keyword types, the entities, 3 angle options (`bsuk-angle-agent`), 2–3 strategy directions and the framework options per section group, one option per choice marked (Recommended). The user picks on it, the picks are saved under `docs/reference/answer-board/answers/`, and the outline and the board are written from them and cite them. Nothing is outlined before the picks are recorded. Every city gets its research board: the city's row in `docs/superpowers/sessions/2026-09-25-location-pages-strategy.md` is one of the strategy directions on it, never a reason to go without it. **The outline is then its own approval, STOP 2** (page-run row 9, the user's ruling of 2026-09-29: "yes, separate approval"): the section matrix, `data/outlines/<slug>.json` built by `python3 scripts/outline_matrix.py <slug>` — the approval status, the word target and its source, the heading census (one H1, no skipped level) and one row per section with its H2–H6 tree, framework, words, keywords, Cat A/B/C, a Why grounded in the research board and its image — approved with `python3 scripts/outline_matrix.py <slug> --approve --answers <file>`. No component is selected and no page board is built before it: `python3 scripts/build_page_board.py <slug>` exits 2 (`outline-unapproved`). The page board is STOP 3 and the Asset Gate STOP 4.
+
+## The research board — what it carries (STOP 1)
+
+The research board is the city's whole research deliverable, not a summary of it. Its record is
+`data/research-boards/<slug>.json`; `python3 scripts/research_board.py <slug>` refuses (exit 1) a
+record missing any part below and writes `docs/artifacts/research/<slug>.html` and `.md`.
+
+| Section | Record field | What it holds | Where it comes from |
+|---|---|---|---|
+| 1 SERP snapshot | `serp.results[]`, `serp.structural_read` | every competitor in the top 5 on Google or Bing: its type, **why it ranks** and its **weakness (our wedge)**, each with its `evidence`; then a structural read of the SERP | `data/queries/<slug>.json` (row 5), each page read by `bsuk-framework-agent` |
+| 2 search intent | `intent` | dominant, secondary, emotional and local layers | the SERP and the question file |
+| 3 reverse engineering | `reverse_engineering[]`, `universal_gaps` | words, heading counts, tables, FAQ, byline and schema per competitor; the gaps every fetched page misses | words and H2s from the query file (never retyped); the rest from the saved page |
+| 4 owner language | `owner_language` | real quotes, each with its source URL | `bsuk-reddit-threads` |
+| 5 query fan-out | `fanout` | PAA, threads, the LLM-intel file | `bsuk-paa-agent`, `bsuk-reddit-threads`, `bsuk-llm-keyword-intel` |
+| 6–8 | `why_competitors_rank`, `how_we_win`, `content_gap` | the summary, our edge, the build list | sections 1–5 |
+| 9–12 | `entities`, `angles`, `strategies`, `frameworks` | the entities by class; 3 angles, 2–3 strategy directions, the framework options per section group, one (Recommended) each with its why and trade-off | `data/bsuk-ontology.json`, `bsuk-angle-agent`, the cluster strategy row and `bsuk-strategy-synthesizer`, `framework-*` |
+| 13–14 | `keywords.universe`, `keywords.distribution` | every keyword by intent with its volume, and where each is placed, section by section | row 6, `python3 scripts/keyword_variants.py <slug>` |
+
+**Nothing is inferred (working rule 9).** A finding cites its `evidence` (the saved fetch or the
+URL read) or is written `NOT FETCHED — <barrier>`, naming what was tried and what stopped it; a
+bare `NOT FETCHED` is refused. The board's last section lists every `NOT FETCHED` with the
+command that fetches it, and `docs/reference/page-run.md`'s row 8 steps say the same.
+
+## The outline — the section matrix (STOP 2)
+
+After the research-board picks are recorded, the outline is written to `data/outlines/<slug>.json`
+and built by `python3 scripts/outline_matrix.py <slug>` into `docs/artifacts/outlines/<slug>.html`
+and `.md`: the approval status, the word target and its `source`, the heading census, and the
+distribution matrix — #, the section with its H2–H6 tree, framework, words, keywords (primary and
+secondary, from the research board's keyword universe), Cat (A mandatory core · B competitor-match
+· C our moat), Why (a B or C row names its `why_source` on the research board; a B row cites the
+SERP or the reverse-engineering table), and image. The user approves it on its own
+(`--approve --answers <file>`); only then is the page board written from it.
 
 ## What wins when this file and something else disagree
 
@@ -427,8 +460,10 @@ Manchester-specific price, or a review from a Manchester buyer that is not alrea
    target). The board cites that question file; it has no competitor block of its own
    (step 1, item 3).
 3. Produce the outline — H1→H6 tree, the derived section list with its derivation, keyword
-   distribution, review and newsletter positions, FAQ list, schema plan — and get it
-   approved (`rules/headings.md` outline gate, `CLAUDE.md` rule 5).
+   distribution, review and newsletter positions, FAQ list, schema plan — as the section matrix
+   (`data/outlines/<slug>.json`, `python3 scripts/outline_matrix.py <slug>`) and get it
+   approved on its own, STOP 2 (`rules/headings.md` outline gate, `CLAUDE.md` rule 5,
+   `rules/gates.md` `outline-approved-before-page-board`).
 4. Before rewriting a page that already exists, extract what the rebuild must keep:
    `python3 scripts/facts_preserved_check.py --extract <key>` (its facts into
    `data/facts/<key>.json`) and, where rule 15 applies (the page is in

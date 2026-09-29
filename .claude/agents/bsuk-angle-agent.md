@@ -169,6 +169,13 @@ Position BSUK against what most buyers accept as standard.
 
 ---
 
+## On a project 5 page — the research board's angles
+
+On a project 5 page the three angle options go into the research-board record,
+`data/research-boards/<slug>.json` → `angles` (`id`, `hook`, `angle`; exactly one `recommended`,
+with its `why` from the research and its `trade_off`), and are shown on the research board
+(`python3 scripts/research_board.py <slug>`, STOP 1, `docs/reference/page-run.md` row 8).
+
 ## Rules
 
 1. **Minimum 5 angles per request** — never deliver fewer

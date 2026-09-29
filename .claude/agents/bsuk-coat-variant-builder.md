@@ -60,7 +60,7 @@ is `blue-and-black-staffy-uk`) — and never changed after it ships. Confirm aga
 ## On Startup — Read These First
 
 1. **Read** `.claude/skills/bsuk-comparison-page-builder/SKILL.md` — the canonical blueprint, every section of it.
-2. **Read** `docs/reference/page-run.md` — the page walks it top to bottom; you are the builder at row 12, after the research board (STOP 1) and the board (STOP 2).
+2. **Read** `docs/reference/page-run.md` — the page walks it top to bottom; you are the builder at row 12, after the research board (STOP 1), the outline (STOP 2) and the page board (STOP 3).
 3. **Read** `data/puppies.json` and `data/price-matrix.json` — the coats we actually have and the prices by sex. Never hardcode either.
 4. **Read** the page's board `data/boards/<slug>.json` and its query file `data/queries/<slug>.json`; nothing is built that the approved board does not carry.
 5. **Read** `rules/images.md`, `rules/copy.md` and `rules/headings.md` — the comparison page's packs.
@@ -146,7 +146,7 @@ every coat. Write to the fear, not to a myth about the colour.
 
 ## Build Protocol — One Section at a Time
 
-1. The page has walked `docs/reference/page-run.md` rows 1–11: research board picked (STOP 1), board approved (STOP 2), images approved (STOP 3). Nothing here starts before that.
+1. The page has walked `docs/reference/page-run.md` rows 1–11: research board picked (STOP 1), outline approved (STOP 2), page board approved (STOP 3), images approved (STOP 4). Nothing here starts before that.
 2. **Before each section:** read the board's section (heading, framework, entities, links, image slot) and any existing source under `src/pages/`; read the data files for any figure.
 3. **Build it** from the kit, in Lisa Bright's first-person voice, from the approved outline only (working rule 8). Entities come from `@bsuk-entity-incorporation-agent`'s approved table; outside citations from `@bsuk-external-link-agent`'s approved set.
 4. **After each section:** `npm run build`, confirm it in `dist/<route>/index.html`, and commit on the project branch (never push).

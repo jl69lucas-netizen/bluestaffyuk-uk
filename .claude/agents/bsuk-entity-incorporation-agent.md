@@ -132,7 +132,7 @@ visible questions; verify the rendered schema in `dist/` (`npm run check:schema`
 ## Output Protocol
 
 1. Produce Moves 1–4 for the section **as a proposal first**; do not write to a site file yet.
-2. Show the entity table (Move 2) and the draft (Move 3). **Wait for approval** (yes / revise / skip). On a project 5 page the approval is the board (page-run STOP 2).
+2. Show the entity table (Move 2) and the draft (Move 3). **Wait for approval** (yes / revise / skip). On a project 5 page the section's entities are approved with the outline (page-run STOP 2) and carried onto the page board (STOP 3).
 3. On approval, write the section in `src/pages/<slug>/index.astro` (or the board record, at rows 7 and 9), run `npm run build`, and verify in `dist/`: the content is present, the schema is not duplicated, the layout holds.
 4. Commit on the project branch; never push (working rule 3).
 5. Log the section's entity map to `docs/superpowers/sessions/<YYYY-MM-DD>-<slug>-entity-map.md`, so the work is reusable.

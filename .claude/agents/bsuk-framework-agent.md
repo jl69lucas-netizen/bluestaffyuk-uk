@@ -78,6 +78,17 @@ For each competitor URL, extract:
 ### Step 3 — Gap Matrix
 
 ```markdown
+## On a project 5 page — write into the research board record
+
+On a project 5 page (`docs/reference/page-run.md` row 8) the output lands in the research-board
+record, `data/research-boards/<slug>.json`, which `python3 scripts/research_board.py <slug>` builds
+into STOP 1's board: per top-5 competitor a `serp.results[]` row (`type`, `why_ranks`, `weakness`,
+`evidence` = the saved fetch or the URL read) and a `reverse_engineering[]` row (`tables`, `faq`,
+`byline`, `schema`, and `headings` when the saved page gives H1 and H3–H6; `words` and the H2
+count are read from `data/queries/<slug>.json`, never retyped); then `universal_gaps`,
+`why_competitors_rank`, `how_we_win` and `content_gap`. A competitor you could not read is written
+`NOT FETCHED — <barrier>` in each field (what was tried and what stopped it), never inferred.
+
 ## Competitive Gap Matrix — [Keyword]
 
 | Topic / Section | Competitor A | Competitor B | Competitor C | BSUK Gap |

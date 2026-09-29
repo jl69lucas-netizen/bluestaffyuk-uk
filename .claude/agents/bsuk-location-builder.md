@@ -184,13 +184,13 @@ When the breeder requests a batch build, hand off to `bsuk-batch-rebuilder`, whi
 
 ## Pre-Build: the Research Board (STOP 1 — every city, MANDATORY)
 
-Before the outline, every city page goes through its research board, `docs/reference/page-run.md` row 8 (the user's ruling, 2026-09-27: "a research board first"). It shows the city's competitor scan (top 5 on Google and Bing, section counts, word target or `NOT FETCHED`), the query fan-out (PAA, Reddit, LLM intel), the keyword universe by intent with the four extra keyword types, the entities, 3 angle options (`bsuk-angle-agent`), 2–3 strategy directions and the framework options per section group, one option per choice marked (Recommended). The city's row in `docs/superpowers/sessions/2026-09-25-location-pages-strategy.md` is one of the strategy directions on the board, never a reason to go without it. The user's picks are saved under `docs/reference/answer-board/answers/`; the outline below is written from them and cites them. In batch mode each city has its own research board.
+Before the outline, every city page goes through its research board, `docs/reference/page-run.md` row 8 (the user's ruling, 2026-09-27: "a research board first"). It is built by `python3 scripts/research_board.py <slug>` from `data/research-boards/<slug>.json` and shows the city's competitor scan (top 5 on Google and Bing, each with why it ranks and its weakness — our wedge — grounded in a fetch or written `NOT FETCHED — <barrier>`, section counts, word target), the search intent, the reverse-engineering table (words, headings, tables, FAQ, byline, schema) with the universal gaps, owner language, why competitors rank, how we win, the content gap, the query fan-out (PAA, Reddit, LLM intel), the keyword universe by intent with the four extra keyword types, the entities, 3 angle options (`bsuk-angle-agent`), 2–3 strategy directions and the framework options per section group, one option per choice marked (Recommended). The city's row in `docs/superpowers/sessions/2026-09-25-location-pages-strategy.md` is one of the strategy directions on the board, never a reason to go without it. The user's picks are saved under `docs/reference/answer-board/answers/`; the outline below is written from them and cites them. In batch mode each city has its own research board.
 
 **⏸ STOP — Do not write the outline until the user's research-board picks are recorded.**
 
-## Pre-Build: Outline First (Rule 51 — MANDATORY)
+## Pre-Build: Outline First (STOP 2 — Rule 51, MANDATORY)
 
-Before building ANY city location page (single or batch mode), produce the Page Outline and obtain explicit user approval. Do NOT write section 1 until approval is received.
+Before building ANY city location page (single or batch mode), produce the Page Outline and obtain explicit user approval, on its own, before any component is chosen and before the page board is built (page-run row 9, the user's ruling of 2026-09-29: "yes, separate approval"). The outline is the section matrix: `data/outlines/<slug>.json`, built by `python3 scripts/outline_matrix.py <slug>` (the approval status, the word target and its source, the heading census, and one row per section with its H2–H6 tree, framework, words, keywords, Cat A/B/C, a Why grounded in the research board, and its image), and approved with `python3 scripts/outline_matrix.py <slug> --approve --answers <file>`; `python3 scripts/build_page_board.py <slug>` refuses the page board until then. Do NOT write section 1 until approval is received.
 
 **For single mode:** produce the outline for the one city page.
 **For batch mode:** produce a consolidated outline table for all cities showing the H2 structure, keyword distribution, and special elements for each city. User approves the batch outline before any city file is written.
@@ -207,7 +207,7 @@ The outline must include:
 
 **E. Fan-Out Keywords** — city-specific longtails, city name modifiers, NLP queries, PAA questions.
 
-**⏸ STOP — Do not write section 1 until the user explicitly approves the outline.**
+**⏸ STOP 2 — Do not select a component, build the page board or write section 1 until the user explicitly approves the outline.** The page board (STOP 3) and the Asset Gate (STOP 4) follow it.
 
 ---
 

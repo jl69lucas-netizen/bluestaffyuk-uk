@@ -160,13 +160,14 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 96
+## Scripts — 99
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
 
 - `scripts/_html.py`
 - `scripts/_kit_sections.py`
+- `scripts/_md_artifact.py`
 - `scripts/_slugs.py`
 - `scripts/aeo_audit.py`
 - `scripts/answer_board_batch.py`
@@ -234,6 +235,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/migration_parity.py`
 - `scripts/not_fetched_lint.py`
 - `scripts/ontology_seed.py`
+- `scripts/outline_matrix.py`
 - `scripts/outline_provenance_check.py`
 - `scripts/page_hardening_scan.py`
 - `scripts/page_intake.py`
@@ -254,6 +256,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/render_baseline.py`
 - `scripts/render_pages.mjs`
 - `scripts/rendered_changes.py`
+- `scripts/research_board.py`
 - `scripts/retired_facts_check.py`
 - `scripts/schema_check.py`
 - `scripts/sitemap_check.py`
@@ -328,6 +331,8 @@ and exits non-zero on a problem.
 | `scripts/marker_check.py` | no source-repo marker survives anywhere in the scanned roots |
 | `scripts/placeholder_check.py` | counts launch placeholders; fails only under `BSUK_RELEASE=1` |
 | `scripts/board_gate.py` | every rebuilt page's board is approved as it stands and its Asset Gate holds (`--all`) |
+| `scripts/research_board.py` | STOP 1: a project 5 page's research board carries why each top-5 competitor ranks and its weakness, and the whole research deliverable, grounded or `NOT FETCHED — <barrier>`; records the picks |
+| `scripts/outline_matrix.py` | STOP 2: a project 5 page's outline is a valid section matrix (census, Cat, grounded Why, keywords, images) approved on its own; refuses the page board until it is |
 | `scripts/city_must_differ.py` | the city must-differ inventory matches boardStyles.ts and the built pages' picks (`--check`) |
 | `scripts/check_city_canvas.py` | a city component canvas: fifteen components × three token-only, question-headed fragments that differ from every built page's arrangement (`npm run check:canvas`) |
 | `scripts/retired_facts_check.py` | no retired figure, retired wording or former-city claim on a built page, in rendered data or in src/ (Known Issue 65 allowlist only shrinks) |

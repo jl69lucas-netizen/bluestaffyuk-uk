@@ -9,8 +9,9 @@ maps each section to a component.
 
 These tests pin that order in `docs/reference/page-run.md` (rows 8, 9 and 10), give the rule its
 row in rules/gates.md and data/quality/rule-index.json, and keep CLAUDE.md's project-5 paragraph
-naming it. The three approval stops stay three (tests/py/test_page_run.py): showing the outline
-is a hold before row 10, approved with the board at STOP 2.
+naming it. Since the user's ruling of 2026-09-29 ("yes, separate approval") the outline is its own
+approval stop, STOP 2 (tests/py/test_page_run.py pins four stops; tests/py/test_outline_approval.py
+pins the record and the gate).
 """
 import json
 import pathlib
@@ -54,15 +55,15 @@ def test_the_user_sees_the_outline_before_any_component_is_selected():
     cells = " ".join(row)
     assert "shown to the user before row 10" in cells, cells
     assert "no component is selected or built" in cells, cells
-    # a hold, not a fourth approval stop: the stop column keeps its 'none' shape
-    assert row[5].startswith("none"), row[5]
-    assert "STOP 2" in row[5], row[5]
+    # its own approval stop (the user's ruling, 2026-09-29): "yes, separate approval"
+    assert row[5].startswith("STOP 2"), row[5]
+    assert "outline" in row[5], row[5]
 
 
 def test_the_component_row_comes_after_the_outline_and_only_for_its_sections():
     row = _row(10)
     cells = " ".join(row[2:4])
-    assert "after the user has seen the outline of row 9" in cells, cells
+    assert "after STOP 2 — once the user has approved the outline of row 9" in cells, cells
     assert "only for the sections the outline needs" in cells, cells
     assert "the kit is a menu" in cells, cells
     assert "the outline decides the sections" in cells, cells
