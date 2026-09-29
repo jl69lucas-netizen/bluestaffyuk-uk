@@ -1,6 +1,7 @@
-"""The user's ruling (2026-09-29, "Correct them now"): the six statements on four built pages
-that said no guarantee length is stated now state the two-year health guarantee, read from
-data/settings.json `guarantee_label` (answer board q07). The pages are hand-written rebuilt
+"""The user's ruling (2026-09-29, "Correct them now"): every line on the built pages that said
+no guarantee length is stated now states the two-year health guarantee, read from
+data/settings.json `guarantee_label` (answer board q07): fourteen lines on six pages (six on
+four pages in de8853f, eight more on five in e8dde15), with copy fixes in 9830276. The pages are hand-written rebuilt
 pages (data/facts/rebuilt.json; README "Generated vs hand-authored"), so each page file reads the
 label through src/lib/site.ts `guaranteeLabel()`; the FAQ answer is static JSON, pinned here to
 the label.

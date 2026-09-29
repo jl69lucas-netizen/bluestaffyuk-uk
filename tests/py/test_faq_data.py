@@ -215,8 +215,8 @@ FACT_PHRASES = {
     "home-find-breeders": ["Staffordshire Bull Terrier puppies", "United Kingdom"],
     # Eight more rows on the health page in project 4 Task 18b. Working rule 15 carries that
     # page's nine migrated FAQ questions word for word; the ninth asks how long the health
-    # guarantee is, data/settings.json holds guarantee_days: null, and a question this site
-    # cannot answer is a `verbatim.changed` drop rather than a row
+    # guarantee is; data/settings.json held no length when the record was approved, so it was a
+    # `verbatim.changed` drop rather than a row (the page now states it from `guarantee_label`)
     # (data/boards/blue-staffy-health-uk.json). Seven of the eight carry the migrated ANSWER
     # too. `health-avoid-puppy-farm` does not: the migrated answer rested on a comparison
     # with "generic classifieds" that no file on disk evidences, so the row is SOURCED to

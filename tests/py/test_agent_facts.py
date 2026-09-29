@@ -520,9 +520,9 @@ def test_the_residue_lint_actually_fires(tmp_path):
 
 
 # ── the guarantee is gated on its setting, in every skill (Task 12 final round) ─────
-# data/settings.json `guarantee_days` is null today, so no page may state a guarantee's
-# length, and a skill that tells a builder to write "guarantee" must name the setting that
-# gates it — the SEO checklist's rule (tests/py/test_builder_skills.py), in every skill and
+# data/settings.json `guarantee_days` holds the length (two years, answer board q07,
+# 2026-09-29) and `guarantee_label` its words, so a skill that tells a builder to write
+# "guarantee" must name the setting that gates it — the SEO checklist's rule (tests/py/test_builder_skills.py), in every skill and
 # command. A line about a competitor's guarantee ("their") or the source repo's is not ours.
 GUARANTEE = re.compile(r"(?i)guarantee")
 # "their" counts only when it owns the guarantee: within six words before it
