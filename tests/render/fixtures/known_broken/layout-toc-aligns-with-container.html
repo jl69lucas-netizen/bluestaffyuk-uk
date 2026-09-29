@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>contents chips off the page's container edge</title>
+<!-- The Known Issue 97 re-review, B2: on the blog post "Last updated" sits in a `.container`
+     (x = 64 at 1280) while the page-mounted contents list took only the 24px gutter (x = 24), so
+     two lines stacked under the hero started at different edges. Here the container is narrow so
+     the edges part at every width. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .container { max-width: 300px; margin-inline: auto; padding-inline: 24px; }
+  .page-body > .page-toc { padding-inline: 24px; }
+  .toc ul { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0; }
+</style>
+</head><body>
+<main>
+  <div class="page-shell"><div class="page-body">
+    <div class="container post-date"><p>Last updated: 21 September 2026</p></div>
+    <div class="kit-nav page-toc"><nav class="toc"><ul><li><a href="#a">Buy</a></li><li><a href="#b">Guide</a></li></ul></nav></div>
+  </div></div>
+</main>
+</body></html>

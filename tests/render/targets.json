@@ -127,6 +127,12 @@
       "cluster_cleared": "new 2026-09-29 (found with Known Issue 97) together with the gutter rule in src/styles/board-styles.css that makes it pass: blocking on every page from its first run, because the defect it measures (unboxed .page-body sections at x = 0 below 1024px on ten of the twelve built pages, the blog post's contents list at 14px) was on the frozen pages and the rule fixes it at every width",
       "false_reports": 0
     },
+    "layout-toc-aligns-with-container": {
+      "scope": "all",
+      "since": "2026-09-29",
+      "cluster_cleared": "new 2026-09-29 (the Known Issue 97 re-review, B2) together with the .page-body > .kit-nav.page-toc rule that makes it pass: blocking on every page from its first run; it fired on the blog post at 1280 (chips at x = 24 under the container's x = 64) and examines every visible contents list clean (the twelve built pages below 1024px, the blog post at every width)",
+      "false_reports": 0
+    },
     "layout-table-stacks-on-mobile": {
       "scope": "all",
       "since": "2026-09-26",

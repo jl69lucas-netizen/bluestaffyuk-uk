@@ -110,7 +110,13 @@
      side (the Known Issue 97 review). Only a kit SECTION child counts: the health page's unboxed
      sections hold kit cards as direct children and still need the gutter for their prose. Held
      by tests/render/checks/layout.ts::layout-text-has-side-gutter and ::layout-kit-band-full-bleed. */
-  .page-body > :where(section:not(.bl-box, .city-kit, [class^="kit-"], [class*=" kit-"], :has(> section[class^="kit-"], > section[class*=" kit-"])), .page-toc) { padding-inline: var(--space-5); }
+  .page-body > :where(section:not(.bl-box, .city-kit, [class^="kit-"], [class*=" kit-"], :has(> section[class^="kit-"], > section[class*=" kit-"]))) { padding-inline: var(--space-5); }
+  /* A page-mounted contents list takes the container's box, as PageShell's scoped rule gives the
+     shell's own: on the blog post its chips started at x = 24 under a "Last updated" line at the
+     container's x = 64 (1280). Same box at every width, so the 24px gutter holds at 375
+     (the Known Issue 97 re-review, B2; layout-toc-aligns-with-container). (0,3,0), so it
+     outranks PageNav's own `.kit-nav { max-width: 640px }`, as the shell's scoped rule does. */
+  .page-body > .kit-nav.page-toc { max-width: var(--container); margin-inline: auto; padding-inline: var(--space-5); }
   @media (width >= 1024px) {
     .page-shell:is(.has-dial, .has-own-dial) > .page-body > :where(section:not(.bl-box, .city-kit, [class^="kit-"], [class*=" kit-"], :has(> section[class^="kit-"], > section[class*=" kit-"]))) { padding-inline: 0; }
   }

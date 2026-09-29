@@ -1269,3 +1269,59 @@ register({
     };
   },
 });
+
+/**
+ * THE CONTENTS LIST STARTS ON THE PAGE'S CONTAINER EDGE (the Known Issue 97 re-review, B2).
+ *
+ * The blog post stacks "Last updated" (a `.container`, x = 64 at 1280) over its page-mounted
+ * contents list, which took only the 24px gutter (x = 24): two lines under the hero on two edges.
+ * PageShell's own `.page-toc` rule gives the list the container's box, but it is scoped to the
+ * shell and misses a list the page mounts itself.
+ *
+ * THE UNIT is one visible `.page-toc`. Its list's left edge (the first painted item) must sit
+ * within 1px of the content edge of the page's container, measured by placing an empty
+ * `.container` in the same parent. A page with no `<main>` is a defect.
+ */
+register({
+  id: 'layout-toc-aligns-with-container',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'a page contents list starts on the page container\'s content edge',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    const r = await page.evaluate(() => {
+      const main = document.querySelector('main');
+      if (!main) return { noMain: true, examined: 0, bad: [] as string[] };
+      let examined = 0;
+      const bad: string[] = [];
+      for (const toc of Array.from(main.querySelectorAll('.page-toc'))) {
+        const tb = toc.getBoundingClientRect();
+        if (tb.width < 1 || tb.height < 1 || getComputedStyle(toc).visibility === 'hidden') continue;
+        const first = Array.from(toc.querySelectorAll('li, a')).find((e) => e.getBoundingClientRect().width > 0);
+        if (!first || !toc.parentElement) continue;
+        const probe = document.createElement('div');
+        probe.className = 'container';
+        probe.style.height = '0';
+        toc.parentElement.insertBefore(probe, toc);
+        const ps = getComputedStyle(probe);
+        const edge = probe.getBoundingClientRect().left + parseFloat(ps.paddingLeft);
+        probe.remove();
+        examined++;
+        const left = first.getBoundingClientRect().left;
+        if (Math.abs(left - edge) > 1) {
+          bad.push(`the contents list starts at x = ${Math.round(left)}, the container's content edge is x = ${Math.round(edge)}`);
+        }
+      }
+      return { noMain: false, examined, bad };
+    });
+    if (r.noMain) {
+      return { examined: 0, defects: [{ checkId: 'layout-toc-aligns-with-container', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no contents list could be judged' }] };
+    }
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{ checkId: 'layout-toc-aligns-with-container', family: 'LAYOUT' as const, viewport, count: r.bad.length, message: r.bad.join(' | ') }]
+        : [],
+    };
+  },
+});
