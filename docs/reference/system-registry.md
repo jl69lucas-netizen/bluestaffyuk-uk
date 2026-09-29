@@ -15,14 +15,14 @@ hand-written and is preserved across regenerations.
 
 <!-- generated:start -->
 
-## Agents — 41
+## Agents — 46
 
 Every agent carries `model: inherit`; effort is the only per-agent cost lever, and
 `data/agent-registry.json` is GENERATED from the agents' own frontmatter by
 `scripts/build_agent_registry.py`. To change an agent's effort, edit its frontmatter
 and regenerate — never the other way round.
 
-### `tier_max` — 13
+### `tier_max` — 14
 
 | Agent | Does |
 |---|---|
@@ -31,6 +31,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-competitor-intel.md` | Use after the competitor registry (data/competitors.json) is approved, to analyse one competitor, one tier or all of them — or … |
 | `.claude/agents/bsuk-content-architect.md` | Orchestrates content creation for BlueStaffyUK |
 | `.claude/agents/bsuk-content-audit-agent.md` | Four-phase deep content audit of any BlueStaffyUK page — intent gaps, subtopics competitors cover and BSUK does not, meta … |
+| `.claude/agents/bsuk-entity-incorporation-agent.md` | The active entity-SEO engine for BlueStaffyUK |
 | `.claude/agents/bsuk-framework-agent.md` | Deep-dives competitor pages for any BlueStaffyUK keyword (UK Staffy puppy, blue Staffy breeder, city queries) and extracts what they do … |
 | `.claude/agents/bsuk-homepage-builder.md` | Rebuilds the BlueStaffyUK homepage (src/pages/index.astro) section-by-section |
 | `.claude/agents/bsuk-location-builder.md` | Builds or rebuilds one UK city location page under /uk-locations/<slug>/ |
@@ -40,11 +41,12 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-strategy-synthesizer.md` | Use after the competitor research has run (gap matrix, keyword-gap list, competitor reports, LLM intel) and BlueStaffyUK needs a content … |
 | `.claude/agents/bsuk-structure-architect.md` | The BSUK silo architect — maps content clusters into Silo (top-down authority) or Reverse Silo (bottom-up ranking) shapes across … |
 
-### `tier_high` — 12
+### `tier_high` — 15
 
 | Agent | Does |
 |---|---|
 | `.claude/agents/bsuk-about-builder.md` | Rebuilds /blue-staffy-uk-breeders/ — Lisa Bright's breeder story page for BlueStaffyUK, Carlisle |
+| `.claude/agents/bsuk-coat-variant-builder.md` | Builds the coat-colour and variant pages of the BlueStaffyUK comparison cluster — blue against black, blue against blue and white, and any … |
 | `.claude/agents/bsuk-comparison-builder.md` | Builds Staffy comparison pages — blue vs blue-and-white coat, male vs female, Blue Staffy vs another breed — at the URLs the project-5 … |
 | `.claude/agents/bsuk-competitive-keyword-gap-agent.md` | Use after bsuk-competitor-intel has written competitor reports and the BSUK profile, to find the topics BlueStaffyUK's competitors have a … |
 | `.claude/agents/bsuk-faq-agent.md` | Builds and audits FAQ sections for any BlueStaffyUK page using the QAB framework — 6–12 questions per page from real buyer language … |
@@ -54,10 +56,12 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-interactive-component.md` | Builds interactive HTML components for BlueStaffyUK pages — first-year cost calculators in £, coat/temperament fit quizzes, paperwork … |
 | `.claude/agents/bsuk-llm-keyword-intel.md` | Use when a BlueStaffyUK page needs to know what an AI engine answers to its buyer question — who the answer cites (BSUK or which registry … |
 | `.claude/agents/bsuk-rank-tracker.md` | Competitor and ranking monitoring — INACTIVE UNTIL PROJECT 6 |
+| `.claude/agents/bsuk-scam-trust-agent.md` | Answers UK puppy-scam fears — deposit scams, fake and stolen-photo adverts, puppy farming and third-party dealers — on BlueStaffyUK pages … |
 | `.claude/agents/bsuk-section-builder.md` | Builds one section of a BlueStaffyUK page by mounting the kit component for it (src/components/kit/) and returns the Astro markup |
 | `.claude/agents/bsuk-trust-signals-agent.md` | Audits BlueStaffyUK pages for missing social proof and trust elements and adds them — the counter strip, the trust strip and testimonial … |
+| `.claude/agents/bsuk-video-seo-agent.md` | The site side of video SEO for BlueStaffyUK — for every YouTube id in data/settings.json youtube_embeds (and any a page carries of its … |
 
-### `tier_medium` — 16
+### `tier_medium` — 17
 
 | Agent | Does |
 |---|---|
@@ -68,6 +72,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-competitor-registry.md` | Use to seed BlueStaffyUK's national competitor registry (data/competitors.json) for the first time, or when intel or a page build finds a … |
 | `.claude/agents/bsuk-contact-form-updater.md` | Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against the kit's … |
 | `.claude/agents/bsuk-deploy-verifier.md` | Post-deploy verification and IndexNow submission — INACTIVE UNTIL PROJECT 6 |
+| `.claude/agents/bsuk-external-link-agent.md` | Plans, places and audits every outbound link on a BlueStaffyUK page from the external link library … |
 | `.claude/agents/bsuk-footer-standardizer.md` | Verifies the BlueStaffyUK footer across the built site — every page carries exactly one footer, rendered by … |
 | `.claude/agents/bsuk-image-pipeline.md` | Moves generated or supplied photographs into public/images/ under the BSUK SEO filename convention, updates every <img> reference in … |
 | `.claude/agents/bsuk-keyword-verifier.md` | Verifies keyword placement, density and on-page SEO hygiene for any BlueStaffyUK page — title, H1, meta description, first 100 words, H2 … |
@@ -78,7 +83,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
 
-## Skills — 60
+## Skills — 61
 
 One SKILL.md per directory under `.claude/skills/`. The `bsuk-*` set is the ported
 system; the rest are the generic writing, research and framework skills.
@@ -114,6 +119,7 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/bsuk-reddit-threads/SKILL.md`
 - `.claude/skills/bsuk-seo-master-checklist/SKILL.md`
 - `.claude/skills/bsuk-site-patterns/SKILL.md`
+- `.claude/skills/bsuk-visual-intelligence/SKILL.md`
 - `.claude/skills/bsuk-website-health/SKILL.md`
 - `.claude/skills/bsuk-youtube/SKILL.md`
 - `.claude/skills/caption-writer/SKILL.md`
@@ -342,11 +348,11 @@ and exits non-zero on a problem.
 ## Deferred — recorded, not written
 
 `data/port-manifest.json` records every file that crossed and every file that
-deliberately did not. 41 rows are `deferred`.
+deliberately did not. 35 rows are `deferred`.
 
-- **project 3** — 5 rows (deferred to project 3, see data/port-manifest.json)
-- **project 6** — 22 rows (deferred to project 6, see data/port-manifest.json)
-- **no project** — 14 rows the spec rules out of the transfer entirely; they stay
+- **project 3** — 4 rows (deferred to project 3, see data/port-manifest.json)
+- **project 6** — 18 rows (deferred to project 6, see data/port-manifest.json)
+- **no project** — 13 rows the spec rules out of the transfer entirely; they stay
   in the source repo (not ported — source repo only)
 
 Deferred paths are not listed here by name: a name is a path, and a path this repo

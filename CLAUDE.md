@@ -86,6 +86,8 @@ capped at nine (`judgment_cap: 9`); a tenth exemption is a rule that has to earn
 | blog | `bsuk-blog-post` | headings, images |
 | about / contact | `bsuk-contact-form`, `bsuk-trust-signals` | copy, links |
 | comparison | `bsuk-comparison-page-builder` | images, headings, copy |
+| coat-colour comparison | `bsuk-comparison-page-builder`, built by `@bsuk-coat-variant-builder` | images, headings, copy |
+| scam or trust section | `@bsuk-scam-trust-agent` | copy, links |
 
 **Every project 5 page (location, comparison, blog) walks `docs/reference/page-run.md`.** The
 session opens with `grill-me`, then the `superpowers:writing-plans` skill, then the builder
@@ -96,7 +98,9 @@ invokes the `impeccable:impeccable` skill, then `frontend-design:frontend-design
 built page at 375 / 768 / 1280 in a painting browser, and
 `superpowers:verification-before-completion` runs before any "page done" claim and again
 before a gate report says PASS. Each is invoked with the Skill tool by that name, never
-paraphrased and never skipped (the user's rulings, 2026-09-26).
+paraphrased and never skipped (the user's rulings, 2026-09-26). After the static scan, the
+`bsuk-visual-intelligence` skill audits how the page communicates (page-run row 16), before or
+with the AEO pass.
 
 The generic skills already ported live at `.claude/skills/` — `grill-me`,
 `section-auditor`, `internal-link-agent`, `keyword-cluster`, `anti-ai-writing` and the

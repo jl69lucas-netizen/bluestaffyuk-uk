@@ -32,6 +32,33 @@ the fixes to the builder that owns the page type.
 `.claude/skills/bsuk-duplicate-content-gate/SKILL.md` BEFORE outline approval AND at the
 final pass (pairwise against every sibling) → `.claude/skills/bsuk-final-page-pass/SKILL.md`
 
+### "Build a coat-colour comparison" (blue against black, blue against blue and white)
+→ `@bsuk-coat-variant-builder` → it runs `.claude/skills/bsuk-comparison-page-builder/SKILL.md`
+for a same-breed coat pairing, adding the shared coat table and the cross-link block; coats
+from `data/puppies.json`, prices from `data/price-matrix.json`
+
+### "Answer scam fears" / "add a red-flag checklist"
+→ `@bsuk-scam-trust-agent` — deposit scams, borrowed-photo adverts and puppy farming, answered
+only with proof a buyer can check; no licence detail on the site
+
+### "Plan or audit a page's external links"
+→ `@bsuk-external-link-agent` → `docs/reference/external-link-library.md` (six links, six
+domains, four source types on a project 5 page; Link-First; live-checked before the board)
+
+### "Work entities into a section" / "make this section entity-rich"
+→ `@bsuk-entity-incorporation-agent` (the 4-Move Loop) → vocabulary from
+`.claude/skills/bsuk-entity-agent/SKILL.md`, entities from `data/bsuk-ontology.json`, claims
+bounded by `data/quality/evidence-ledger.json`
+
+### "A page carries a video" / "VideoObject" / "video sitemap"
+→ `@bsuk-video-seo-agent` (the site side only: board title and caption, `VideoObject` through
+`src/lib/video.ts`, `npm run check:sitemaps`) → `.claude/skills/bsuk-youtube/SKILL.md` for a
+broken migrated embed. The YouTube channel is never touched.
+
+### "Why does this page feel flat / the same as that one?"
+→ `.claude/skills/bsuk-visual-intelligence/SKILL.md` — the page-communication audit, at the
+Harden sprint after the static scan (`docs/reference/page-run.md` row 16), before or with AEO
+
 ### "Build / rebuild a puppy or buy page"
 → `.claude/skills/bsuk-puppy-page-builder/SKILL.md` (the puppy and buy cluster; prices,
 deposit and delivery come from `data/puppies.json` and `data/price-matrix.json`, never

@@ -242,8 +242,8 @@
   {
     "src": ".claude/skills/cag-visual-intelligence/SKILL.md",
     "dst": ".claude/skills/bsuk-visual-intelligence/SKILL.md",
-    "mode": "deferred",
-    "notes": "project 3 brings the design system"
+    "mode": "rebase",
+    "notes": "ported 2026-09-29, the user's ruling before the London page run: the page-communication audit (Known Issue 44): closed taxonomies, source-labelled scorecard and routing kept; re-based onto the BSUK tokens, the evidence ledger, the ontology and the BSUK gates"
   },
   {
     "src": ".claude/skills/cag-image-generation/SKILL.md",
@@ -332,14 +332,14 @@
   {
     "src": ".claude/agents/cag-entity-incorporation-agent.md",
     "dst": ".claude/agents/bsuk-entity-incorporation-agent.md",
-    "mode": "deferred",
-    "notes": "spec §10 out of scope; project 6 at the earliest"
+    "mode": "rebase",
+    "notes": "ported 2026-09-29, the user's ruling before the London page run: the 4-Move Loop kept; its claim list is data/quality/evidence-ledger.json and data/bsuk-ontology.json, its vocabulary the bsuk-entity-agent skill"
   },
   {
     "src": ".claude/agents/cag-external-link-agent.md",
     "dst": ".claude/agents/bsuk-external-link-agent.md",
-    "mode": "deferred",
-    "notes": "spec §10 out of scope; project 6 at the earliest"
+    "mode": "rebase",
+    "notes": "ported 2026-09-29, the user's ruling before the London page run: Link-First placement, live checks and the library kept; re-based onto docs/reference/external-link-library.md and the six-links, six-domains, four-types rule"
   },
   {
     "src": ".claude/agents/cag-financial-strategist.md",
@@ -385,9 +385,9 @@
   },
   {
     "src": ".claude/agents/cag-scam-specialist.md",
-    "dst": ".claude/agents/bsuk-scam-specialist.md",
-    "mode": "deferred",
-    "notes": "spec §10 out of scope; project 6 at the earliest"
+    "dst": ".claude/agents/bsuk-scam-trust-agent.md",
+    "mode": "rebase",
+    "notes": "ported 2026-09-29, the user's ruling before the London page run: re-based onto UK puppy-scam fears (deposit scams, fake adverts, puppy farming), answered only with BSUK's own verifiable proof; licence claims stay LICENCE_CLAIM_PLACEHOLDER"
   },
   {
     "src": ".claude/agents/cag-seasonal-content-agent.md",
@@ -410,8 +410,8 @@
   {
     "src": ".claude/agents/cag-video-seo-agent.md",
     "dst": ".claude/agents/bsuk-video-seo-agent.md",
-    "mode": "deferred",
-    "notes": "spec §10 out of scope; project 6 at the earliest"
+    "mode": "rebase",
+    "notes": "ported 2026-09-29, the user's ruling before the London page run: site side only (titles, descriptions, chapters, VideoObject, the video sitemap) for the youtube_embeds ids; the channel is never touched, as no credentials exist"
   },
   {
     "src": ".claude/agents/cag-google-map-agent.md",
@@ -1123,9 +1123,9 @@
   },
   {
     "src": ".claude/agents/cag-variant-specialist.md",
-    "dst": ".claude/agents/bsuk-variant-specialist.md",
-    "mode": "deferred",
-    "notes": "variant pages; a coat-colour version for Staffies is possible later — recorded 2026-09-23, not ported"
+    "dst": ".claude/agents/bsuk-coat-variant-builder.md",
+    "mode": "rebase",
+    "notes": "ported 2026-09-29, the user's ruling before the London page run: re-based as a coat-colour variant builder for the comparison cluster, working with the bsuk-comparison-page-builder skill; colours and prices read from data/puppies.json and data/price-matrix.json"
   },
   {
     "src": ".claude/agents/cag-competitor-pricing-alert-agent.md",
