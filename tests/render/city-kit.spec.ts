@@ -183,12 +183,66 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       }
       if (!shown) return ['the jump band is not painted below 1024px'];
       if (await band.getAttribute('data-strip') !== null) {
-        await page.evaluate(() => window.scrollTo(0, 900));
-        // Two animation frames: the sticky band's position is laid out on the frame after the
-        // scroll, and that is the condition, not a clock.
-        await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
-        const top = await band.evaluate((el) => el.getBoundingClientRect().top);
-        if (top < -1 || top > 160) out.push(`after a 900px scroll the band sits at ${Math.round(top)}px, not under the header`);
+        // THE BAND SLIDES AWAY ON THE WAY DOWN AND COMES BACK ON THE WAY UP (the user's ruling,
+        // answer board q03, 2026-09-29), under both motion preferences: with reduced motion it
+        // does not slide, but it still hides and shows. Every read waits on the state it judges
+        // (the 10s ceiling is only a ceiling), never on a clock.
+        const where = (): Promise<{ top: number; bottom: number; hdr: number }> => band.evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          const hdr = document.querySelector('.kit-hdr')?.getBoundingClientRect().bottom ?? 0;
+          return { top: r.top, bottom: r.bottom, hdr };
+        });
+        // Off screen: nothing of it below the site header's bottom edge (it slides up behind the
+        // header, z 50 over its 30, and on out of the viewport).
+        const offScreen = () => page.waitForFunction(() => {
+          const el = document.querySelector('[data-city-jump-stepper]')!;
+          return el.getBoundingClientRect().bottom <= 0.5;
+        }, null, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false);
+        // Back: its top edge sits on the header's bottom edge, as a sticky band does.
+        const back = () => page.waitForFunction(() => {
+          const el = document.querySelector('[data-city-jump-stepper]')!;
+          const hdr = document.querySelector('.kit-hdr')?.getBoundingClientRect().bottom ?? 0;
+          return Math.abs(el.getBoundingClientRect().top - hdr) <= 1.5;
+        }, null, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false);
+        for (const motion of ['reduce', 'no-preference'] as const) {
+          await page.emulateMedia({ reducedMotion: motion });
+          const m = `reducedMotion=${motion}:`;
+          const dur = await band.evaluate((el) => getComputedStyle(el).transitionDuration);
+          if (motion === 'reduce' && dur.split(',').some((d) => parseFloat(d) > 0)) out.push(`${m} the band still animates (${dur})`);
+          await page.evaluate(() => window.scrollTo(0, 900));
+          if (!(await offScreen())) out.push(`${m} after scrolling down 900px the band is still on screen (${JSON.stringify(await where())})`);
+          await page.evaluate(() => window.scrollTo(0, 600));
+          if (!(await back())) out.push(`${m} after scrolling back up the band is not back under the header (${JSON.stringify(await where())})`);
+          // Focus inside keeps it shown: hide it, then move a keyboard focus into the rail.
+          await page.evaluate(() => window.scrollTo(0, 1400));
+          if (!(await offScreen())) out.push(`${m} after scrolling down again the band is still on screen`);
+          await page.keyboard.press('Shift');
+          await band.locator('.rail a').first().focus();
+          if (!(await back())) out.push(`${m} a keyboard focus inside the band does not bring it back`);
+          await page.evaluate(() => window.scrollTo(0, 2200));
+          // One frame for the scroll handler, then it must still be where focus holds it.
+          await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
+          if (!(await back())) out.push(`${m} the band hides while focus is inside it`);
+          await band.locator('.rail a').first().evaluate((a) => (a as HTMLElement).blur());
+          // An open sheet holds it too: open it from the shown band with a tap on its key, as a
+          // reader does, and scroll down behind it. (A sheet opened by script has no opener, so
+          // its focus would have nowhere to return to when it shuts.)
+          await page.evaluate(() => window.scrollTo(0, 1000));
+          await back();
+          await band.locator('[data-jump-open]').click();
+          await page.evaluate(() => window.scrollTo(0, 2600));
+          await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
+          if (!(await back())) out.push(`${m} the band hides while its sheet is open`);
+          await band.locator('[data-jump-close]').click();
+          if (!(await page.waitForFunction(() => !document.querySelector<HTMLDialogElement>('[data-city-jump-stepper] [data-jump-sheet]')!.open,
+            null, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false))) out.push(`${m} the sheet's Close button does not shut it`);
+          // At the top of the page it shows, whatever the last direction was.
+          await page.evaluate(() => window.scrollTo(0, 3200));
+          if (!(await offScreen())) out.push(`${m} after the sheet shuts, scrolling down does not hide the band`);
+          await page.evaluate(() => window.scrollTo(0, 0));
+          if (!(await back())) out.push(`${m} at the top of the page the band is not shown`);
+        }
+        await page.emulateMedia({ reducedMotion: null });
         await page.evaluate(() => window.scrollTo(0, 0));
       }
       const opener = band.locator('[data-jump-open]');

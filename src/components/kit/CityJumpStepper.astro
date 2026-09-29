@@ -22,6 +22,18 @@
 // band is visible. `data-strip` marks a band that IS this document's chrome; `chrome={false}` (the
 // preview) renders a static picture that moves no anchors. `nav-jump-target-lands` measures it.
 //
+// IT SLIDES AWAY ON THE WAY DOWN AND COMES BACK ON THE WAY UP (the user's ruling, answer board
+// q03, 2026-09-29: the header and the band covered about 27% of a phone screen). One passive
+// scroll listener, throttled to a frame, reads only `scrollY` (no layout read, so no thrash) and
+// sets `data-tucked`; the CSS moves the band with `transform` (never `top`), up behind the site
+// header (z 50 over the band's 30) and out of the viewport. It stays shown while its sheet is open,
+// while a keyboard focus is inside it (`:focus-visible`: a tap on a rail link also focuses it, and
+// holding the band for a tap would stop it ever tucking on a phone), and at the top of the page.
+// With `prefers-reduced-motion: reduce` it does not slide, but it still hides and shows. The jump
+// offset (`--strip-h`) is unchanged: a band that comes back on the way up must not cover a target.
+// The shared site header is not changed. `city-jump-stepper` in tests/render/city-kit.spec.ts
+// probes all of it.
+//
 // Conventions 2 (the steel band sets `--kit-ring` through `.on-inverse`), 4, 6. Icons are the
 // line set in cityIcons.ts, in `currentColor`.
 import '../../styles/city.css';
@@ -85,6 +97,32 @@ const first = sections[0];
       if (typeof ResizeObserver === 'function') new ResizeObserver(publish).observe(band);
       window.matchMedia('(min-width: 1024px)').addEventListener('change', publish);
     }
+    // --- tucked away on the way down, back on the way up (answer board q03) -----------------
+    // `held` is checked on every decision, so an open sheet or a keyboard focus inside always wins.
+    const TOP = 64;      // at or above this scroll, the band always shows
+    const NUDGE = 8;     // ignore scroll jitter smaller than this
+    const sheetEl = band.querySelector<HTMLDialogElement>('[data-jump-sheet]');
+    const held = () => !!sheetEl?.open || !!band.querySelector(':focus-visible');
+    const tuck = (on: boolean) => band.toggleAttribute('data-tucked', on && !held());
+    let lastY = window.scrollY;
+    let queued = false;
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        const y = window.scrollY;
+        if (y <= TOP) tuck(false);
+        else if (y > lastY + NUDGE) tuck(true);
+        else if (y < lastY - NUDGE) tuck(false);
+        else return; // too small to call a direction: keep lastY where it was
+        lastY = y;
+      });
+    };
+    if (band.hasAttribute('data-strip')) {
+      window.addEventListener('scroll', onScroll, { passive: true });
+      band.addEventListener('focusin', () => { if (held()) tuck(false); });
+    }
     // --- the sheet --------------------------------------------------------------------------
     const dlg = band.querySelector<HTMLDialogElement>('[data-jump-sheet]')!;
     const opener = band.querySelector<HTMLButtonElement>('[data-jump-open]')!;
@@ -129,6 +167,10 @@ const first = sections[0];
       padding: 2px var(--space-2) 6px; background: var(--color-surface-inverse); color: var(--color-text-on-inverse);
     }
     .city-jump-stepper:not([data-strip]) { position: static; }
+    /* Tucked (answer board q03): up by its own height and the header's, behind the header and out
+       of the viewport. `transform` only, so the slide composites and never moves layout. */
+    .city-jump-stepper { transition: transform var(--dur-base) var(--ease-out); }
+    .city-jump-stepper[data-tucked] { transform: translateY(calc(-100% - var(--hdr-measured, var(--hdr)))); }
     .rail ol {
       list-style: none; margin: 0 auto; padding: 0; max-width: 720px;
       display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
@@ -202,7 +244,7 @@ const first = sections[0];
     .sheet li a[aria-current='location'] { font-weight: 700; }
     .sheet a:focus-visible, .close:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -3px; }
     @keyframes city-jump-up { from { transform: translateY(24px); opacity: 0.6; } to { transform: none; opacity: 1; } }
-    @media (prefers-reduced-motion: reduce) { .sheet[open] { animation: none; } .dot { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { .sheet[open] { animation: none; } .dot, .city-jump-stepper { transition: none; } }
     @media (width >= 1024px) { .city-jump-stepper { display: none; } }
     @media print { .city-jump-stepper { display: none; } }
   }
