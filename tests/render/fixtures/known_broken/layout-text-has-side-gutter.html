@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>unboxed prose with no side gutter</title>
+<!-- As the twelve built pages shipped below 1024px (found with Known Issue 97): an unboxed
+     `.page-body > section` has no padding of its own and the shell adds none until the dial
+     column appears, so its heading and paragraphs run from x = 0 to the viewport's edge. The
+     boxed section beside it owns a 24px gutter and must not be the defect. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .bl-box { padding: 32px 24px; }
+  h2 { font-size: 22px; margin: 0 0 8px; }
+</style>
+</head><body>
+<main>
+  <div class="page-body">
+    <section class="bl-box"><h2>A Boxed Section</h2><p>This paragraph sits inside the box's own 24px gutter.</p></section>
+    <section>
+      <h2>Our Rigorous Health Testing Process</h2>
+      <p>Every parent is screened before a litter is planned, and this paragraph runs edge to edge, with no side gutter, at every width the page is read at.</p>
+    </section>
+  </div>
+</main>
+</body></html>

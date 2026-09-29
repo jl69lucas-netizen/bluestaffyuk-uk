@@ -774,3 +774,92 @@ register({
     };
   },
 });
+
+/**
+ * EVERY TEXT BLOCK KEEPS A SIDE GUTTER (found with Known Issue 97, 2026-09-29).
+ *
+ * Below 1024px the kit shell adds no gutter of its own (PageShell: every kit section owns one),
+ * and the migrated sections that are NOT a `.bl-box` — `.page-body > section` with no class —
+ * owned none either, so on eleven of the twelve built pages their headings and paragraphs ran
+ * from x = 0 to the viewport's edge at 375 AND at 768. No check covered it:
+ * `layout-no-horizontal-overflow` asks whether the document scrolls sideways, and text sitting
+ * on the edge does not.
+ *
+ * THE UNIT is one visible text node in `<main>`, measured by the Range of its own glyphs (not
+ * its element's box, which a padded block would pass). It fails when its painted text starts
+ * less than 16px from the left edge or ends less than 16px from the right. Three things are not
+ * judged, each because the reader never sees the text at the edge: text inside a horizontal
+ * scroll container that actually scrolls (a rail's later cards), text whose every line box lies
+ * wholly outside the viewport (a thead moved to left: -9999px for screen readers), and text
+ * clipped to a box of 2px or less (a visually hidden label). Images are not text and are not
+ * judged. The examined count is the text nodes judged; the fixture floor is 2.
+ */
+register({
+  id: 'layout-text-has-side-gutter',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'every visible text block in <main> sits at least 16px from both viewport edges',
+  minExamined: 2,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await page.evaluate(() => document.fonts.ready);
+    const r = await page.evaluate(() => {
+      const GUTTER = 16;
+      const main = document.querySelector('main');
+      if (!main) return { examined: 0, bad: [] as string[], count: 0 };
+      const W = document.documentElement.clientWidth;
+      const scrolls = (el: Element) => {
+        const cs = getComputedStyle(el);
+        return /(auto|scroll)/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 1;
+      };
+      const inScroller = (el: Element | null) => {
+        for (let a = el; a && a !== main; a = a.parentElement) if (scrolls(a)) return true;
+        return false;
+      };
+      const clipped = (el: Element | null) => {
+        for (let a = el; a && a !== main; a = a.parentElement) {
+          const b = a.getBoundingClientRect();
+          const cs = getComputedStyle(a);
+          if ((b.width <= 2 || b.height <= 2) && (cs.overflow !== 'visible' || cs.clip !== 'auto')) return true;
+        }
+        return false;
+      };
+      let examined = 0;
+      const bad: string[] = [];
+      const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+      let node: Node | null;
+      while ((node = walker.nextNode())) {
+        const text = (node.textContent || '').trim();
+        if (!text) continue;
+        const el = node.parentElement;
+        if (!el || el.getClientRects().length === 0) continue;
+        if (getComputedStyle(el).visibility === 'hidden') continue;
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        const rects = Array.from(range.getClientRects()).filter((x) => x.width > 0 && x.height > 0);
+        if (!rects.length) continue;
+        if (rects.every((x) => x.right <= 0 || x.left >= W)) continue;
+        if (inScroller(el) || clipped(el)) continue;
+        examined++;
+        const left = Math.min(...rects.map((x) => x.left));
+        const right = W - Math.max(...rects.map((x) => x.right));
+        if (left < GUTTER - 0.5 || right < GUTTER - 0.5) {
+          const block = el.closest('p, li, h1, h2, h3, h4, h5, h6, dt, dd, th, td, figcaption, blockquote, summary') || el;
+          bad.push(`${block.tagName.toLowerCase()} ${Math.round(left)}px|${Math.round(right)}px "${text.slice(0, 40)}"`);
+        }
+      }
+      return { examined, bad: bad.slice(0, 8), count: bad.length };
+    });
+    return {
+      examined: r.examined,
+      defects: r.count
+        ? [{
+          checkId: 'layout-text-has-side-gutter',
+          family: 'LAYOUT' as const,
+          viewport,
+          count: r.count,
+          message: `${r.count} of ${r.examined} text node(s) paint within 16px of a viewport edge (left|right gutter): ${r.bad.join(' | ')}`,
+        }]
+        : [],
+    };
+  },
+});
