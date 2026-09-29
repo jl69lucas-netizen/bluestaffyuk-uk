@@ -55,6 +55,7 @@ import tempfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
+import outline_matrix as OM
 from pageboard import file_token       # one `#` → `_` spelling for the whole board system
 import image_rules as IR               # the `img:<slot>` picks (system-gaps build, Task 10)
 
@@ -235,6 +236,12 @@ def refuse_on_new_page_rules(b, ont):
     if PB.FR.applies(b):
         fails += [("entity-blocked", f"{e} is BLOCKED (CLAUDE.md rule 2)")
                   for e in PB.authorization_check(b, ont)["blocked"]]
+    # STOP 2 (docs/reference/page-run.md row 9): a new page's board is approved only on an
+    # outline approved on its own, as it stands, on its research board as it stands.
+    if PB.FR.is_new_page(b):
+        refusal = OM.approval_refusal(b["meta"]["slug"])
+        if refusal:
+            fails.append(("outline-unapproved", refusal))
     if fails:
         raise PB.BoardError(
             "this record breaks the rules for new pages — fix the record and board it again:\n"

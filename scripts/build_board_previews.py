@@ -36,6 +36,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
+import outline_matrix as OM
 from _kit_sections import page_css
 
 OUT = PB.ROOT / "data" / "boards" / "previews"
@@ -248,6 +249,13 @@ def main(argv=None):
         print("usage: build_board_previews.py <slug>")
         return 2
     slug = argv[0]
+    # STOP 2 (docs/reference/page-run.md rows 9–10): no component preview is built for a new
+    # page before its outline is approved.
+    if PB.FR.is_new_page(slug):
+        refusal = OM.approval_refusal(slug)
+        if refusal:
+            print(f"board-previews REFUSED outline-unapproved: {refusal}")
+            return 2
     try:
         record = PB.load_board(slug)
         validate_styles(record)

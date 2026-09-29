@@ -15,6 +15,7 @@ import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "tests/py"))
 
 import outline_matrix as OM  # noqa: E402
 
@@ -115,11 +116,21 @@ def test_the_matrix_renders_every_column_with_copy_buttons_and_a_md_download(tmp
     assert page.count('type="text/markdown" data-title=') == 1 + 1 + 5 + 1
 
 
-def test_approval_is_stamped_with_the_hash_and_goes_stale_on_an_edit():
-    rec = copy.deepcopy(_load("good.json"))
+def test_approval_is_stamped_with_the_hash_and_goes_stale_on_an_edit(tmp_path):
+    import _stop_kit as K
+    paths = K.lay_out(tmp_path, "fixture-city", outline_approved=False)
+    rec = json.loads(paths["outline"].read_text())
     assert OM.approval_state(rec) == "unapproved"
-    rec = OM.approve(rec, "tests/py/fixtures/research_board/answers.json", today="2026-09-29")
+    rec = OM.approve(rec, K.answers(tmp_path, "fixture-city", "outline"), today="2026-09-29",
+                     root=tmp_path)
     assert OM.approval_state(rec) == "approved"
+    research = OM.research_for(rec, tmp_path)
+    assert rec["approval"]["research_hash"] == OM.RB.current_hash(research, tmp_path)
     assert "APPROVED 2026-09-29" in OM.status_line(rec)
     rec["sections"][2]["words"] += 1
     assert OM.approval_state(rec) == "stale"
+
+
+def test_the_outline_is_not_approved_with_the_research_boards_answers():
+    with pytest.raises(OM.OutlineError, match="same answers"):
+        OM.approve(_load("good.json"), "tests/py/fixtures/research_board/answers.json")

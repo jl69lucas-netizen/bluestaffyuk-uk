@@ -1,7 +1,7 @@
 {
-  "id": "s-fixture",
+  "id": "s-fixture-2",
   "data": {
-    "batchId": "2026-09-29-research-board-fixture-city",
+    "batchId": "2026-09-29-outline-fixture-city",
     "at": "2026-09-29T00:00:00Z",
     "answers": [
       {
@@ -9,8 +9,8 @@
         "n": 1,
         "kind": "choice",
         "choice": "a",
-        "choiceLabel": "A1",
-        "question": "Which angle for fixture-city?",
+        "choiceLabel": "Approve",
+        "question": "Approve the outline for fixture-city?",
         "status": "answered",
         "text": ""
       }
