@@ -271,7 +271,7 @@ ontology does not hold yet is routed to a ledger or ontology update through
 `PROPOSED` in the Authorization ratio until the update lands — and it is exempt from §5b only
 when it is not a result. A test result or score always needs its ledger `proof` (rule 9): the
 Q9 row of the rulings permits a page to NAME the tests and the screening, never to state a
-result. So the ten "tested clear" lines on `/blue-staffy-health-uk/` (`parents-dna-clear`,
+result. So the ten "tested clear" lines on `/blue-staffy-health-uk/` (ten at the time of writing, 2026-09-29, so recount on the built page; `parents-dna-clear`,
 proof `NOT FETCHED`; count every line that states a result — the ledger's regex is a lower bound,
 not the count) are §5b hits, not ledger updates; whether the breeder holds the
 certificates is a question for her on the answer board.
@@ -326,7 +326,7 @@ all not examined is `NOT MEASURED`.
 | 9 | Visual Readability | measured | 10 × checks passed ÷ 3 (no `<p>` wider than 75ch at 768, against the 65ch measure; body line-height 1.6–1.7; no clamp band inverted between widths) |
 | 10 | Visual AI Readiness | derived | 10 × checks passed ÷ checks examined (`npm run check:schema` output filtered to the page's route shows nothing blocking — it rewrites `docs/reports/schema.md`, so a read-only run reads that report when it is newer than the build, else scores the check `NOT MEASURED`; every infographic claim also present as page text; `python3 scripts/aeo_audit.py <route>` no BLUF WARN) |
 | 11 | Visual Verbalization | derived | 10 × §3 rows with all eight fields filled ÷ non-decorative images |
-| 12 | Visual Differentiation | measured | for each sibling pair, 10 × checks passed ÷ 4 (0 prose crossover; 0 header crossover, footer and header chrome excluded; ≥ 3 refresh deltas; no served image file in the same role — the hero, or the same section — on both pages; reuse in a different role is allowed by working rules 11 and 17); the row scores the worst pair, and names it |
+| 12 | Visual Differentiation | measured | for each sibling pair, 10 × checks passed ÷ 4 (0 prose crossover; 0 header crossover, footer and header chrome excluded; ≥ 3 refresh deltas; no served image file in the same role on both pages — the role is the section's board `shape` (`sections[].shape` in `data/boards/<slug>.json`: `hero`, `stats`, `puppies` and so on), and for two `standard` sections the same section `id`; reuse in a different role is allowed by working rules 11 and 17); the row scores the worst pair, and names it |
 | 13 | Function Density | derived | 10 when functions present ÷ 1,000 words is 1.5–6; 5 when within half that band again (0.75–1.5 or 6–9); else 0 |
 | 14 | Function Diversity | report | distinct functions ÷ taxonomy size, reported with no threshold |
 | 15 | **Function Coverage** | gate | required set satisfied ÷ required set (§4a) = 100% |

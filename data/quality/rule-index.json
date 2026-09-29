@@ -591,6 +591,13 @@
    "enforced": "test",
    "test": "tests/py/test_research_board_rule.py",
    "pack": "rules/gates.md"
+  },
+  {
+   "id": "outline-before-components",
+   "family": "GATE",
+   "enforced": "test",
+   "test": "tests/py/test_outline_first_rule.py",
+   "pack": "rules/gates.md"
   }
  ]
 }
