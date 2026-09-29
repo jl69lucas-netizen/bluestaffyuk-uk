@@ -673,3 +673,19 @@ and no DESIGN.md), so the pass is read-only, with the brand context from the
 | 6 | impeccable (anti-patterns) | no side stripes, gradient text, glass or new cards; the change adds no colour and no component | all four | Nothing. |
 | 7 | frontend-design | one editorial rhythm now runs through the pages: Fraunces headings at the city kit's own tiers, Source Sans prose at 17px, tokens unchanged; the long migrated H2/H3s wrap to 4 or 5 lines at 375 on the buying guide, as the preview measured | buying guide, 375 | Nothing: rewording them is content (working rule 15). |
 | 8 | frontend-design | the boxed H2 no longer dominates a phone screen: the health page's first is three lines and 78px at 375 (was four lines, 198px), the breed guide's first three lines (was five, 248px) | health, breed guide, 375 | Nothing further. |
+
+### Known Issue 97: the review round (2026-09-29)
+
+The review (not approved) found the blog post's hero band inset by the gutter rule, `.bl-stub h3`
+(24px) over the 22px boxed H2, thirteen more headings over three lines at 375 than the preview
+disclosed, heavy card titles on `/available-puppies/`, and five check-definition gaps. Each is
+fixed harness first (Known Issue 97, "The review"). After shots re-taken into `ki97-after/`, with
+the blog post's hero at 375 / 768 / 1280 (`blog-post-<width>-hero.jpg`): the band is edge to edge
+again, x = 0, as at HEAD.
+
+| # | Finding | Changed |
+|---|---|---|
+| 9 | the blog hero band had a 24px white strip each side at every width | the gutter rule skips a wrapper holding a `.kit-hero`; `layout-kit-hero-full-bleed` |
+| 10 | a box's H3 (24px) painted larger than its H2 (22px) on a phone | `.bl-stub h3` on the H3 tier; `layout-heading-size-order` |
+| 11 | a puppy's name at 22–28px bold in a 273px card | card titles (a heading in a list item) on the H3 tier |
+| 12 | 21 long migrated headings over three lines at 375 | none reworded (content); all pinned in the advisory `layout-heading-lines` |

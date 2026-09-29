@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 37
+    "checks": 40
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -26,6 +26,9 @@
     "layout-body-heading-above-body": 6,
     "layout-text-has-side-gutter": 48,
     "layout-boxed-h2-fits": 0,
+    "layout-kit-hero-full-bleed": 3,
+    "layout-heading-size-order": 0,
+    "layout-heading-lines": 6,
     "img-srcset-within-2x": 0,
     "img-not-upscaled": 0,
     "img-alt-present-and-unique": 0,
