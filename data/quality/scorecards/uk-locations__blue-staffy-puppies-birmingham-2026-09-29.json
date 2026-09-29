@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 40
+    "checks": 42
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -26,9 +26,11 @@
     "layout-body-heading-above-body": 0,
     "layout-text-has-side-gutter": 3,
     "layout-boxed-h2-fits": 0,
-    "layout-kit-hero-full-bleed": 0,
+    "layout-kit-band-full-bleed": 0,
     "layout-heading-size-order": 0,
     "layout-heading-lines": 0,
+    "layout-hero-copy-fills-band": 0,
+    "layout-toc-aligns-with-container": 0,
     "img-srcset-within-2x": 0,
     "img-not-upscaled": 0,
     "img-alt-present-and-unique": 0,

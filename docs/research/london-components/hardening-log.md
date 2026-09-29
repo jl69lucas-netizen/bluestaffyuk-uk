@@ -689,3 +689,11 @@ again, x = 0, as at HEAD.
 | 10 | a box's H3 (24px) painted larger than its H2 (22px) on a phone | `.bl-stub h3` on the H3 tier; `layout-heading-size-order` |
 | 11 | a puppy's name at 22–28px bold in a 273px card | card titles (a heading in a list item) on the H3 tier |
 | 12 | 21 long migrated headings over three lines at 375 | none reworded (content); all pinned in the advisory `layout-heading-lines` |
+
+### Known Issue 97: the re-review follow-ups (2026-09-29)
+
+The blog post's hero, `/how-to-choose-the-right-blue-staffy-puppy-for-your-family/`, before and after:
+the H1 at 1280 was 224px wide on five lines beside 880px of empty band, and is one line across the
+band; the "Last updated" line and the contents chips both start on the container edge (x = 64 at
+1280); the second chip reads "UK Blue Staffy Puppy Buying Guide". Shots:
+`ki97-after/blog-post-<width>-hero-fixed.jpg` at 375 / 768 / 1280.

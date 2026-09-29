@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 40
+    "checks": 42
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -26,9 +26,11 @@
     "layout-body-heading-above-body": 51,
     "layout-text-has-side-gutter": 454,
     "layout-boxed-h2-fits": 15,
-    "layout-kit-hero-full-bleed": 0,
+    "layout-kit-band-full-bleed": 0,
     "layout-heading-size-order": 42,
     "layout-heading-lines": 51,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 2,
     "img-srcset-within-2x": 3,
     "img-not-upscaled": 3,
     "img-alt-present-and-unique": 3,
@@ -47,7 +49,7 @@
     "schema-date-modified-present": 18,
     "schema-no-visible-date": 3,
     "css-class-resolves": 801,
-    "css-no-dead-component-rule": 999,
+    "css-no-dead-component-rule": 996,
     "css-component-color-not-overridden": 66,
     "dup-no-sibling-crossover": 150,
     "a11y-text-contrast-aa": 568,
