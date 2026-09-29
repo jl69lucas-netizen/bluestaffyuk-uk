@@ -187,19 +187,28 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       const opener = band.locator('[data-jump-open]');
       const box = await opener.boundingBox();
       if (!box || box.height < 44) out.push('the sheet key is under 44px tall');
+      // WAIT ON THE CONDITION, NEVER A CLOCK (Task 8b, M-new-1). On four workers on a busy
+      // machine the sheet's open and its `close` task (which resets the key) landed after the
+      // fixed 1s this probe used to allow, about one full run in three; a sheet left open then
+      // made the page inert and failed the next probe too. Each read now waits for the state it
+      // judges (the ceiling is only a ceiling), and the probe always leaves the sheet shut.
+      const sheetState = (want: { open: boolean; expanded: string }) => page.waitForFunction((w) => {
+        const d = document.querySelector<HTMLDialogElement>('[data-city-jump-stepper] [data-jump-sheet]');
+        const k = document.querySelector('[data-city-jump-stepper] [data-jump-open]');
+        return !!d && !!k && d.open === w.open && k.getAttribute('aria-expanded') === w.expanded;
+      }, want, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false);
       await opener.click();
-      const open = await band.locator('[data-jump-sheet]').evaluate((d) => (d as HTMLDialogElement).open);
-      if (!open) out.push('pressing the key does not open the sheet');
-      if ((await opener.getAttribute('aria-expanded')) !== 'true') out.push('the key does not report aria-expanded="true"');
+      if (!(await sheetState({ open: true, expanded: 'true' }))) {
+        const open = await band.locator('[data-jump-sheet]').evaluate((d) => (d as HTMLDialogElement).open);
+        out.push(open ? 'the key does not report aria-expanded="true"' : 'pressing the key does not open the sheet');
+      }
       await page.keyboard.press('Escape');
-      // The dialog's `close` event, which resets the key, is dispatched as a task after Escape:
-      // read the key once it has run (up to 1s), not in the same tick — the probe raced it on
-      // the chrome band (/kit-preview/city-page/) about one run in three.
-      await page.waitForFunction(() => document.querySelector('[data-city-jump-stepper] [data-jump-open]')
-        ?.getAttribute('aria-expanded') === 'false', null, { timeout: 1000 }).catch(() => {});
-      const closed = await band.locator('[data-jump-sheet]').evaluate((d) => !(d as HTMLDialogElement).open);
-      if (!closed) out.push('Escape does not close the sheet');
-      if ((await opener.getAttribute('aria-expanded')) !== 'false') out.push('after Escape the key still reports aria-expanded="true"');
+      if (!(await sheetState({ open: false, expanded: 'false' }))) {
+        const closed = await band.locator('[data-jump-sheet]').evaluate((d) => !(d as HTMLDialogElement).open);
+        out.push(closed ? 'after Escape the key still reports aria-expanded="true"' : 'Escape does not close the sheet');
+        // Leave the page usable for the next probe whatever happened here.
+        await band.locator('[data-jump-sheet]').evaluate((d) => (d as HTMLDialogElement).close());
+      }
       return out;
     },
   },
@@ -375,6 +384,9 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
     run: async (page, viewport) => {
       const out: string[] = [];
       const scope = viewport >= 1024 ? '[data-city-dial-photo-marker]' : '[data-city-jump-stepper] .rail';
+      // A sheet an earlier probe left open would make the page inert: this probe judges the
+      // spy, not the sheet, so it starts from a shut sheet (Task 8b, M-new-1).
+      await page.evaluate(() => document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => d.close()));
       if (!(await page.locator(scope).isVisible())) return out;
       for (const motion of ['reduce', 'no-preference'] as const) {
         await page.emulateMedia({ reducedMotion: motion });
@@ -392,11 +404,11 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
         // ~230ms here (measured: the dial still named the previous section 0–2 frames after
         // the scroll, then settled), so a fixed 300ms read raced it about one run in three.
         // The component is right when the named section becomes current; if it never does
-        // within 3s the read below reports what it shows instead.
+        // within 10s (a ceiling; Task 8b) the read below reports what it shows instead.
         await page.waitForFunction(({ s, w }) => {
           const cur = Array.from(document.querySelectorAll(`${s} [aria-current="location"]`));
           return cur.length === 1 && (cur[0] as HTMLAnchorElement).dataset.spy === w;
-        }, { s: scope, w: want }, { timeout: 3000, polling: 'raf' }).catch(() => {});
+        }, { s: scope, w: want }, { timeout: 10_000, polling: 'raf' }).catch(() => {});
         const got = await page.evaluate((s) => Array.from(document.querySelectorAll(`${s} [aria-current="location"]`))
           .map((a) => (a as HTMLAnchorElement).dataset.spy), scope);
         if (got.length !== 1 || got[0] !== want) {
@@ -454,6 +466,13 @@ for (const route of ROUTES) {
           testInfo.annotations.push({ type: 'advisory', description: `${id}: ${d.message}` });
         } else failures.push(`${id}: ${d.message}`);
       }
+    }
+    // CITY_CPU_THROTTLE=<n> slows the page's CPU n times for the component probes (Chrome
+    // DevTools Protocol), to reproduce on demand the load under which a probe that waits on a
+    // clock races its condition (Task 8b, M-new-1: four workers on a busy machine).
+    if (process.env.CITY_CPU_THROTTLE) {
+      const cdp = await page.context().newCDPSession(page);
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: Number(process.env.CITY_CPU_THROTTLE) });
     }
     let probed = 0;
     for (const [id, probe] of Object.entries(PROBES)) {
