@@ -91,7 +91,12 @@ def rows_with_slugs(path):
         data = json.loads((ROOT / path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return []
-    return [r["slug"] for r in data if isinstance(r, dict) and r.get("slug")]
+    slugs = [r["slug"] for r in data if isinstance(r, dict) and r.get("slug")]
+    dup = sorted({x for x in slugs if slugs.count(x) > 1})
+    if dup:
+        raise DataFileError(f"{path} has more than one row with the slug {', '.join(dup)}; one page "
+                            "cannot be built or dated from two rows, so give each row its own slug.")
+    return slugs
 
 
 def expand(template, static_routes=frozenset()):
@@ -297,38 +302,95 @@ def git_dates(path, ignore=()):
     return (log[-1][1], log[0][1]) if log else (None, None)
 
 
+#: The row keys each data-driven template RENDERS (Task 8b re-review, N1). Only these date a
+#: page: `defects`, `word_count` and `canonical` sit in data/locations.json for the tooling and
+#: never reach a city page, so a commit that changes them on every row changes no page.
+#: tests/py/test_page_dates.py pins each list to the keys its template reads.
+RENDERED = {
+    "data/locations.json": ("body_html", "city", "description", "h1", "og_type", "robots",
+                            "schema", "slug", "title"),
+    "data/puppies.json": ("card_photo", "colour", "gallery", "name", "price_gbp", "sex", "slug",
+                          "status"),
+}
+
+
+class DataFileError(ValueError):
+    """A data file cannot date its pages (a duplicate slug). Exit 2, one sentence."""
+
+
+def _rows_of(data_file, body):
+    """{slug: canonical JSON of its rendered keys} for one version of `data_file`, or None when
+    the version does not parse (it is skipped: the rows before it stand, M1)."""
+    try:
+        data = json.loads(body.decode("utf-8"))
+    except (ValueError, AttributeError):
+        return None
+    if not isinstance(data, list):
+        return None
+    keys = RENDERED.get(data_file)
+    out = {}
+    for r in data:
+        if isinstance(r, dict) and r.get("slug"):
+            out[r["slug"]] = json.dumps({k: v for k, v in r.items() if keys is None or k in keys},
+                                        sort_keys=True)
+    return out
+
+
 def _row_logs(data_file):
     """{slug: [(sha, YYYY-MM-DD)] newest first}: for every row of `data_file`, the commits in
-    which THAT ROW changed, its first appearance included. Every committed version of the file is
-    read through one `git cat-file --batch`; a row is compared by its canonical JSON (keys
-    sorted), so reordering the rows or reformatting the file changes no row."""
+    which THAT ROW's rendered keys changed, its first appearance included.
+
+    Each commit is compared with its REAL PARENTS, not with the commit before it in log order
+    (N2): a merge counts a row as changed only when it differs from every parent, so merging a
+    branch that edited x1 into a main that edited x8 re-dates neither. Every version, the
+    commits' and their parents', is read through ONE `git cat-file --batch`; a version that does
+    not parse stands in for nothing (the rows of its own first parent carry through, M1). A row
+    is compared by the canonical JSON of the keys its template renders (RENDERED), so a reorder,
+    a reformat or an unrendered key changes no row."""
     key = (str(ROOT), "rows", data_file)
     if key in _DATES_CACHE:
         return _DATES_CACHE[key]
     try:
-        log = [l.split() for l in _git("log", "--format=%H %cs", "--", data_file).splitlines() if l]
+        log = [l.split() for l in _git("log", "--topo-order", "--reverse", "--format=%H %cs %P",
+                                       "--", data_file).splitlines() if l]
     except subprocess.CalledProcessError:
         log = []
-    blobs = _cat_file([f"{sha}:{data_file}" for sha, _ in log])
-    rows_log, prev = {}, {}
-    for (sha, date), body in reversed(list(zip(log, blobs))):      # oldest first
-        try:
-            data = json.loads(body.decode("utf-8")) if body is not None else []
-        except ValueError:
-            data = []
-        now = {r["slug"]: json.dumps(r, sort_keys=True) for r in data
-               if isinstance(r, dict) and r.get("slug")}
-        for slug, canon in now.items():
-            if prev.get(slug) != canon:
+    revs = []
+    for sha, _date, *parents in log:
+        revs.append(f"{sha}:{data_file}")
+        revs += [f"{p}:{data_file}" for p in parents]
+    blobs = iter(_cat_file(revs))
+    by_oid = {}                        # blob id -> the rows it stands for (parsed or carried)
+    rows_log = {}
+
+    def rows_for(oid, body):
+        if oid is None:
+            return {}                  # the file did not exist in that commit
+        if oid not in by_oid:
+            by_oid[oid] = _rows_of(data_file, body)
+        return by_oid[oid]
+
+    for sha, date, *parents in log:            # oldest first; every parent before its child
+        oid, body = next(blobs)
+        parent_rows = []
+        for _ in parents:
+            p_oid, p_body = next(blobs)
+            parent_rows.append(rows_for(p_oid, p_body))
+        parent_rows = [r for r in parent_rows if r is not None] or ([{}] if not parents else [])
+        mine = rows_for(oid, body)
+        if mine is None:                       # does not parse: carries its first parent's rows
+            by_oid[oid] = parent_rows[0] if parent_rows else {}
+            continue
+        for slug, canon in mine.items():
+            if all(pr.get(slug) != canon for pr in parent_rows):
                 rows_log.setdefault(slug, []).insert(0, (sha, date))
-        prev = now
     _DATES_CACHE[key] = rows_log
     return rows_log
 
 
 def _cat_file(revs):
-    """The blob behind each `rev:path` in `revs`, in order (None where missing), through one
-    `git cat-file --batch` process."""
+    """[(blob id, bytes)] for each `rev:path` in `revs`, in order ((None, None) where missing),
+    through one `git cat-file --batch` process."""
     if not revs:
         return []
     try:
@@ -337,19 +399,19 @@ def _cat_file(revs):
     except FileNotFoundError as exc:
         raise NoGit(exc) from exc
     except subprocess.CalledProcessError:
-        return [None] * len(revs)
+        return [(None, None)] * len(revs)
     out, i = [], 0
     while i < len(raw) and len(out) < len(revs):
         nl = raw.index(b"\n", i)
         head = raw[i:nl].split()
         i = nl + 1
         if len(head) < 3 or head[1] != b"blob":
-            out.append(None)
+            out.append((None, None))
             continue
         size = int(head[2])
-        out.append(raw[i:i + size])
+        out.append((head[0].decode(), raw[i:i + size]))
         i += size + 1
-    return out
+    return out + [(None, None)] * (len(revs) - len(out))
 
 
 def _counted_log(path, ignore=()):
@@ -403,10 +465,9 @@ def fanout_problems(routes):
             continue
         if route in LAST_COMMIT:
             sha, src = LAST_COMMIT[route]
-            # A route re-dated by its OWN data row changed its own content: that is per-route,
-            # not a shared source fanning out (Task 8b review, B2).
-            if ROW not in src:
-                groups.setdefault(sha, {}).setdefault(src, []).append(route)
+            # A row source is named by its data file: one commit that changes rendered keys on
+            # 3+ rows re-dates 3+ pages at once and meets the same bar (Task 8b re-review, N1).
+            groups.setdefault(sha, {}).setdefault(src.split(ROW, 1)[0], []).append(route)
     out = []
     # Grouped by COMMIT alone (B1): one commit that edits three pages' own files re-dates three
     # routes as surely as one commit to a shared template does.
@@ -420,8 +481,7 @@ def fanout_problems(routes):
                    f"{srcs}; diff those built pages against the build before it, then list the "
                    f"commit in {IGNORE} under `commits` for those paths if no page's content "
                    "changed, or under `fanout_accepted` with a reason if every page's content "
-                   "really changed. (A route re-dated only by its own row in a data file is never "
-                   "refused.)")
+                   "really changed. A data file counts only the rows whose rendered keys changed.")
     return out
 
 
@@ -453,6 +513,13 @@ def build():
         if "[" in route or "]" in route:
             raise AssertionError(f"unexpanded template route {route!r} from {sources}")
         first, last = span(sources, ignore)
+        rows = [p for p in sources if ROW in p]
+        if rows and last:
+            # A data route was published when its ROW first appeared, not when the template
+            # did (Task 8b re-review, M3); the floor from committed maps still applies below.
+            row_log = _counted_log(rows[0], ignore)
+            if row_log:
+                first = row_log[-1][1]
         newest = [(log[0][1], log[0][0], p) for p in sources if (log := _counted_log(p, ignore))]
         if newest:
             top = max(d for d, _, _ in newest)
@@ -517,7 +584,7 @@ def main(argv=None):
     try:
         routes, skipped, _ = build()
         fanout = fanout_problems(routes)
-    except IgnoreFileError as e:
+    except (IgnoreFileError, DataFileError) as e:
         print(f"cannot run: {e}")
         return 2
     except NoGit:

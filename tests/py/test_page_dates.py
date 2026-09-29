@@ -354,15 +354,103 @@ def test_a_commit_that_changes_one_row_redates_that_city_alone(repo):
     assert _city_dates(repo) == {"x1": "2026-03-09", "x2": "2026-02-01", "x3": "2026-02-01", "x4": "2026-02-01"}
 
 
-def test_a_commit_that_changes_three_rows_redates_exactly_those_three(repo):
-    """Each of the three routes' own row changed: that is real content, per route, not a
-    shared source fanning out, so the guard does not refuse it."""
+def test_a_commit_that_changes_three_rows_is_refused_unless_accepted(repo, capsys):
+    """N1: one commit that changes RENDERED keys on 3 or more rows re-dates 3 or more pages at
+    once, the same fan-out as a shared source, so it needs a `fanout_accepted` entry. Accepted,
+    it re-dates exactly those three."""
     _rows_mapped(repo)
     _write(repo, "data/locations.json", json.dumps(
         [{"slug": s, "title": "new"} for s in ROWS[:3]] + [{"slug": "x4"}]))
     _commit(repo, "2026-03-09")
+    sha = _head(repo)
+    assert G.main([]) == 1
+    out = capsys.readouterr().out
+    assert sha[:7] in out and "data/locations.json" in out
+    _write(repo, "data/page-dates-ignore.json", json.dumps({"commits": [], "fanout_accepted": [
+        {"sha": sha, "reason": "three cities' titles rewritten"}]}))
     assert G.main([]) == 0
     assert _city_dates(repo) == {"x1": "2026-03-09", "x2": "2026-03-09", "x3": "2026-03-09", "x4": "2026-02-01"}
+
+
+def test_an_unrendered_key_on_every_row_dates_nothing(repo):
+    """N1 (probe i): `defects`, `word_count`, `canonical` are in data/locations.json but the
+    template never renders them; a commit that adds or changes one on every row changes no page."""
+    _rows_mapped(repo)
+    _write(repo, "data/locations.json", json.dumps(
+        [{"slug": s, "defects": ["x"], "word_count": 9, "canonical": "c"} for s in ROWS]))
+    _commit(repo, "2026-03-09")
+    assert G.main([]) == 0
+    assert set(_city_dates(repo).values()) == {"2026-02-01"}
+
+
+def test_the_rendered_keys_are_the_keys_each_template_reads():
+    """The allowlist is pinned to the templates: every listed key is read by its template, and
+    every key of the real data file that the template reads is listed."""
+    root = pathlib.Path(__file__).resolve().parents[2]
+    for data_file, (template, var) in {"data/locations.json": ("src/pages/uk-locations/[slug].astro", "loc"),
+                                       "data/puppies.json": ("src/pages/available-puppies/[slug].astro", "p")}.items():
+        src = (root / template).read_text(encoding="utf-8")
+        read = set(re.findall(rf"\b{var}\.([a-z_0-9]+)", src))
+        keys = {k for r in json.loads((root / data_file).read_text()) for k in r}
+        assert set(G.RENDERED[data_file]) == read & keys, data_file
+
+
+ROWS8 = [f"x{i}" for i in range(1, 9)]
+
+
+def _rows8(repo, rows):
+    """One row per line, as the real file is, so a merge of edits to different rows is clean."""
+    _write(repo, "data/locations.json", "[\n" + ",\n".join("  " + json.dumps(r) for r in rows) + "\n]\n")
+
+
+def test_a_merge_does_not_redate_a_row_it_did_not_change(repo):
+    """N2 (probe j): a branch changes x1, main changes x8, then they merge. Each row keeps the
+    date of the commit that changed it; the merge changed neither relative to both parents."""
+    _rows8(repo, [{"slug": s} for s in ROWS8])
+    _commit(repo, "2026-01-05")
+    _git(repo, "checkout", "-q", "-b", "br")
+    _rows8(repo, [{"slug": "x1", "title": "br"}] + [{"slug": s} for s in ROWS8[1:]])
+    _commit(repo, "2026-03-02")
+    _git(repo, "checkout", "-q", "main")
+    _rows8(repo, [{"slug": s} for s in ROWS8[:7]] + [{"slug": "x8", "title": "main"}])
+    _commit(repo, "2026-03-01")
+    _git(repo, "merge", "-q", "--no-edit", "br", date="2026-03-20")
+    routes = G.build()[0]
+    got = {s: routes[f"/uk-locations/{s}/"]["dateModified"] for s in ROWS8}
+    assert got == {**{s: "2026-01-05" for s in ROWS8}, "x1": "2026-03-02", "x8": "2026-03-01"}
+
+
+def test_a_renamed_row_is_a_new_page_published_on_its_first_appearance(repo):
+    """Probe k, and M3: x8 -> x9. The new route's datePublished is its ROW's first appearance,
+    not the (older) template's first commit; the other rows keep their dates."""
+    _rows8(repo, [{"slug": s} for s in ROWS8])
+    _commit(repo, "2026-01-05")
+    _rows8(repo, [{"slug": s} for s in ROWS8[:7]] + [{"slug": "x9"}])
+    _commit(repo, "2026-03-09")
+    routes = G.build()[0]
+    assert "/uk-locations/x8/" not in routes
+    x9 = routes["/uk-locations/x9/"]
+    assert (x9["datePublished"], x9["dateModified"]) == ("2026-03-09", "2026-03-09")
+    assert routes["/uk-locations/x7/"]["dateModified"] == "2026-01-05"
+
+
+def test_a_duplicate_slug_is_exit_2_with_one_sentence(repo, capsys):
+    """M2 (probe m): two rows with one slug would build one page from two rows."""
+    _rows8(repo, [{"slug": "x1", "t": "a"}, {"slug": "x1", "t": "b"}, {"slug": "x2"}])
+    _commit(repo, "2026-02-01")
+    assert G.main([]) == 2
+    out = capsys.readouterr().out
+    assert "x1" in out and "data/locations.json" in out and "Traceback" not in out
+
+
+def test_a_version_that_does_not_parse_is_skipped(repo, capsys):
+    """M1 (probe n): a broken commit, then the same rows restored: no row changed."""
+    _rows_mapped(repo)
+    _write(repo, "data/locations.json", "[ broken")
+    _commit(repo, "2026-02-10")
+    _write(repo, "data/locations.json", json.dumps([{"slug": s} for s in ROWS]))
+    _commit(repo, "2026-03-01")
+    assert G.main(["--check"]) == 0, capsys.readouterr().out
 
 
 def test_reordering_or_reformatting_the_rows_moves_nothing(repo):
