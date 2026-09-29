@@ -16,6 +16,7 @@ import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "tests/py"))
 
 import research_board as RB  # noqa: E402
 
@@ -143,8 +144,9 @@ def test_approval_needs_an_answers_file_and_goes_stale_on_an_edit(tmp_path):
     assert RB.approval_state(rec) == "unapproved"
     with pytest.raises(RB.RecordError):
         RB.approve(rec, "docs/reference/answer-board/answers/no-such-file.json")
-    rec = RB.approve(rec, "tests/py/fixtures/research_board/answers.json", today="2026-09-29",
-                     queries=_queries())
+    import _stop_kit as K
+    rec = RB.approve(rec, K.answers(tmp_path, "fixture-city", "research-board"), today="2026-09-29",
+                     root=tmp_path, queries=_queries())
     assert RB.approval_state(rec, _queries()) == "approved"
     rec["how_we_win"].append("an edit after approval")
     assert RB.approval_state(rec, _queries()) == "stale"

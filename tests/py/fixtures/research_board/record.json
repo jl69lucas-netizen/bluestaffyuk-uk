@@ -193,7 +193,7 @@
   "approval": {
     "approved_on": "2026-09-29",
     "answers": "tests/py/fixtures/research_board/answers.json",
-    "record_hash": "f3fbbb3fd38edbaf"
+    "record_hash": "7956a7862524c5cb"
   },
   "ai_overview": {
     "present": true,
@@ -202,7 +202,9 @@
       "marketplace.example",
       "breeder-one.example"
     ],
-    "implication": "The overview cites a listing site for a breed fact; a breeder page that answers it in extractable prose competes with a low bar."
+    "implication": "The overview cites a listing site for a breed fact; a breeder page that answers it in extractable prose competes with a low bar.",
+    "fetched": "2026-09-29",
+    "evidence": "https://web.archive.org/web/2026/https://www.google.co.uk/search?q=blue+staffy+puppies+fixture+city"
   },
   "heading_types": {
     "rows": [

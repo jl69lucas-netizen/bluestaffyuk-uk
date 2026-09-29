@@ -171,6 +171,9 @@ def test_b5_evidence_rules(tmp_path):
     for bad in (".", "data/queries/cache", "docs/research", "/etc/hosts",
                 "../outside.html", "src/x.html", "data/queries/cache/missing.html"):
         assert _evidence_problems(bad, tmp_path), bad
+    # R1: the query file itself is not a saved fetch — an invented why_ranks cannot cite it
+    (tmp_path / "data/queries/fixture-city.json").write_text("{}")
+    assert _evidence_problems("data/queries/fixture-city.json", tmp_path), "the query file is not evidence"
     own = _rec()["serp"]["results"][0]["url"]
     assert _evidence_problems(own, tmp_path, fetched="2026-09-29"), "its own URL is not evidence"
     other = "https://web.archive.org/web/2026/https://marketplace.example/fixture-city/"
@@ -360,3 +363,93 @@ def test_parity_placed_keywords_sit_in_the_section_they_were_placed_in():
     rec["sections"][2]["keywords"]["secondary"] = []                       # 'blue staffy price'
     assert any("'blue staffy price'" in p and "Delivery" in p
                for p in OM.validate(rec, _research()))
+
+
+# --- R2: the answers file is a real answer-board answers file for a posted batch ----------
+
+def _answers_problem(tmp_path, mutate):
+    rel = K.answers(tmp_path, "fixture-city", "research-board")
+    rel = mutate(tmp_path, rel) or rel
+    with pytest.raises(RB.RecordError) as e:
+        RB.check_answers(rel, "fixture-city", "research-board", tmp_path)
+    return str(e.value)
+
+
+def test_r2_the_kit_answers_pass(tmp_path):
+    rel = K.answers(tmp_path, "fixture-city", "research-board")
+    assert RB.check_answers(rel, "fixture-city", "research-board", tmp_path)
+
+
+def test_r2_an_answers_file_outside_the_answers_folder_is_refused(tmp_path):
+    def move(root, rel):
+        dst = "docs/research/answers.json"
+        (root / "docs/research").mkdir(parents=True, exist_ok=True)
+        (root / dst).write_text((root / rel).read_text())
+        return dst
+    assert "docs/reference/answer-board/answers/" in _answers_problem(tmp_path, move)
+
+
+def test_r2_an_answers_id_that_is_not_a_submission_timestamp_is_refused(tmp_path):
+    def bad_id(root, rel):
+        doc = _load(root / rel)
+        doc["id"] = doc["data"]["id"] = "s-fixture"
+        _save(root / rel, doc)
+    assert "s-<ISO timestamp>" in _answers_problem(tmp_path, bad_id)
+
+
+def test_r2_an_answers_file_with_no_posted_batch_is_refused(tmp_path):
+    def unpost(root, rel):
+        doc = _load(root / rel)
+        (root / "docs/reference/answer-board/batches" / f"{doc['data']['batchId']}.json").unlink()
+    assert "posted batch" in _answers_problem(tmp_path, unpost)
+
+
+def test_r2_a_batch_id_naming_both_stops_is_refused(tmp_path):
+    rel = K.answers(tmp_path, "fixture-city", "research-board-and-outline")
+    with pytest.raises(RB.RecordError, match="both"):
+        RB.check_answers(rel, "fixture-city", "research-board", tmp_path)
+
+
+# --- R3: the AI Overview and authority figures cite their fetch ---------------------------
+
+def test_r3_a_present_ai_overview_carries_its_fetched_date_and_evidence(tmp_path):
+    rec = _rec()
+    assert not [p for p in RB.validate(rec, _q()) if p.startswith("ai_overview")]
+    for drop in ("fetched", "evidence"):
+        bad = _rec()
+        del bad["ai_overview"][drop]
+        assert any(p.startswith("ai_overview") for p in RB.validate(bad, _q())), drop
+    bad = _rec()
+    bad["ai_overview"]["evidence"] = "src/x.html"
+    assert any(p.startswith("ai_overview") and "evidence" in p for p in RB.validate(bad, _q(), tmp_path))
+    absent = _rec()
+    absent["ai_overview"] = {"present": False, "fetched": "2026-09-29",
+                             "evidence": "https://web.archive.org/web/2026/serp"}
+    assert not [p for p in RB.validate(absent, _q()) if p.startswith("ai_overview")]
+
+
+def test_r3_a_fetched_authority_rows_source_passes_the_evidence_rule(tmp_path):
+    (tmp_path / "data/queries/cache").mkdir(parents=True)
+    (tmp_path / "data/queries/cache/backlinks.json").write_text("{}")
+    rec = _rec()
+    rec["authority"] = [{"url": "https://marketplace.example/", "referring_domains": 120,
+                         "authority": 40, "source": "data/queries/cache/backlinks.json"}]
+    assert not [p for p in RB.validate(rec, _q(), tmp_path) if p.startswith("authority")]
+    for src, fetched in (("the backlink tool", None), ("src/x.html", None),
+                         ("https://backlinks.example/report", None)):
+        rec["authority"][0]["source"] = src
+        rec["authority"][0].pop("fetched", None)
+        assert any(p.startswith("authority") for p in RB.validate(rec, _q(), tmp_path)), src
+    rec["authority"][0]["source"] = "https://backlinks.example/report"
+    rec["authority"][0]["fetched"] = "2026-09-29"
+    assert not [p for p in RB.validate(rec, _q(), tmp_path) if p.startswith("authority")]
+
+
+# --- minor: an outline record names its page type -----------------------------------------
+
+def test_an_outline_without_a_page_type_is_refused():
+    rec = _outline()
+    del rec["page_type"]
+    assert any("page_type" in p for p in OM.validate(rec, _research()))
+    rec["page_type"] = "hub"
+    assert any("page_type" in p for p in OM.validate(rec, _research()))

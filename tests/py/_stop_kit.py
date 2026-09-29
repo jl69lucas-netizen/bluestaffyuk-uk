@@ -19,14 +19,24 @@ FIX = ROOT / "tests/py/fixtures"
 
 
 def answers(root, slug, stop, name=None):
-    """An answer-board answers file for `stop` ('research-board' or 'outline')."""
+    """A posted answer-board batch for `stop` ('research-board' or 'outline') and the answers
+    file received for it, shaped as the real ones are: the batch at
+    docs/reference/answer-board/batches/<batchId>.json, the answers under
+    docs/reference/answer-board/answers/ with a submission id `s-<ISO timestamp>`."""
+    root = pathlib.Path(root)
     batch = f"2026-09-29-{stop}-{slug}"
+    question = f"Approve the {stop} for {slug}?"
+    posted = root / "docs/reference/answer-board/batches" / f"{batch}.json"
+    posted.parent.mkdir(parents=True, exist_ok=True)
+    posted.write_text(json.dumps({"id": batch, "title": question, "project": "project-5",
+                                  "askedAt": "2026-09-29T00:00:00Z", "status": "received",
+                                  "questions": [{"key": "q01", "kind": "choice", "question": question}]}))
+    sid = "s-2026-09-29T00-00-00-000Z"
     rel = f"docs/reference/answer-board/answers/{name or batch}-2026-09-29.json"
-    doc = {"id": "s-fixture", "data": {"batchId": batch, "at": "2026-09-29T00:00:00Z",
+    doc = {"id": sid, "data": {"id": sid, "batchId": batch, "at": "2026-09-29T00:00:00Z",
            "answers": [{"key": "q01", "n": 1, "kind": "choice", "choice": "a",
-                        "question": f"Approve the {stop} for {slug}?", "status": "answered",
-                        "text": ""}]}}
-    p = pathlib.Path(root) / rel
+                        "question": question, "status": "answered", "text": ""}]}}
+    p = root / rel
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(doc))
     return rel

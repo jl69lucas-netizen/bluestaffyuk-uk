@@ -331,6 +331,9 @@ def validate(record, research, root=None):
 
 
 def _validate(record, research, root, p):
+    if record.get("page_type") not in RB.PAGE_TYPES:
+        p.append(f"page_type: one of {', '.join(RB.PAGE_TYPES)} — the census's H5/H6 rule "
+                 f"depends on it")
     if record.get("slug") != research.get("slug"):
         p.append(f"slug {record.get('slug')!r} does not match the research board's "
                  f"{research.get('slug')!r}")

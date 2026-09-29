@@ -28,16 +28,20 @@ research deliverable:
 NOTHING IS INFERRED (working rule 9). A value is either grounded or it is written
 `NOT FETCHED — <barrier>`, naming what was tried and what stopped it; a bare `NOT FETCHED`
 is refused anywhere in the record. A competitor's why and weakness are grounded by its
-`evidence`: a saved fetch — a file inside the repo under data/queries/cache/, data/queries/
-or docs/research/ (never a directory, an absolute path or a path out of the repo) — or a URL
-other than the result's own, with the date it was `fetched`. The fields the query file does
+`evidence`: a saved fetch — a file inside the repo under data/queries/cache/ or
+docs/research/ (never the query file, a directory, an absolute path or a path out of the repo) —
+or a URL other than the result's own, with the date it was `fetched`. A present AI Overview
+carries its `fetched` date and `evidence` on the same rule, and a fetched authority figure's
+`source` passes it too. The fields the query file does
 record are read from it, never retyped: a competitor's `words`, and its H2 count
 (`h2_clean`) when the record gives no heading census.
 
 THE APPROVAL. The user's picks come back from the answer board as
 `docs/reference/answer-board/answers/<batchId>-<date>.json`; `--approve --answers <file>`
-reads that file — an answer-board answers file with at least one answered question, whose
-batch id (or a question) names this slug and `research-board` — and records it in the
+reads that file — an answer-board answers file saved under docs/reference/answer-board/answers/,
+with a submission id `s-<ISO timestamp>`, answering a batch posted under
+docs/reference/answer-board/batches/, with at least one answered question, whose batch id names
+this slug and `research-board` and not the other stop — and records it in the
 record's `approval` with the record's hash. The hash covers the query-file values the board
 renders, so a changed query file, like an edited record, reads as stale. scripts/outline_matrix.py
 refuses an outline whose research board is not approved as it stands.
@@ -74,7 +78,11 @@ PAGE_TYPES = ("location", "comparison", "blog")
 INTENTS = ("transactional", "commercial", "informational", "navigational", "local")
 HEADING_KEYS = ("h1", "h2", "h3", "h4", "h5", "h6")
 # Where a saved fetch may live (B5): a file in the repo, under one of these.
-EVIDENCE_DIRS = ("data/queries/cache/", "data/queries/", "docs/research/")
+EVIDENCE_DIRS = ("data/queries/cache/", "docs/research/")
+# Where an answers file lives, where its posted batch lives, and a submission id (R2).
+ANSWERS_DIR = "docs/reference/answer-board/answers/"
+BATCHES_DIR = "docs/reference/answer-board/batches/"
+SUBMISSION_ID = re.compile(r"^s-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}(?:-\d{3})?Z$")
 # What an answers file must name for each stop (B3), besides the slug.
 STOP_TOKENS = {"research-board": ("research-board", "research board"),
                "outline": ("outline",)}
@@ -254,30 +262,54 @@ def _inside(root, rel):
 
 def check_answers(rel, slug, stop, root=None):
     """The parsed answers of an answer-board answers file that approves `stop` for `slug`;
-    raises RecordError when it is not one."""
+    raises RecordError when it is not one. It must sit under
+    docs/reference/answer-board/answers/, carry a submission id `s-<ISO timestamp>`, answer a
+    batch that was posted (docs/reference/answer-board/batches/<batchId>.json), and that batch
+    must name this slug and exactly one stop."""
     root = ROOT if root is None else root
     full = _inside(root, rel)
     if full is None or not full.is_file():
         raise RecordError(f"no answers file at {rel!r} inside the repo — the picks come back from "
                           f"the answer board (docs/reference/answer-board/README.md)")
+    rel_posix = full.relative_to(pathlib.Path(root).resolve()).as_posix()
+    if not rel_posix.startswith(ANSWERS_DIR):
+        raise RecordError(f"{rel}: an answers file is saved under {ANSWERS_DIR} "
+                          f"(docs/reference/answer-board/README.md)")
     try:
         doc = json.loads(full.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, UnicodeDecodeError):
         raise RecordError(f"{rel} is not an answer-board answers file (not JSON)") from None
     data = doc.get("data") if isinstance(doc, dict) and isinstance(doc.get("data"), dict) else doc
+    sid = _d(doc).get("id") or _d(data).get("id")
+    if not isinstance(sid, str) or not SUBMISSION_ID.match(sid):
+        raise RecordError(f"{rel}: its id {sid!r} is not a submission id s-<ISO timestamp> "
+                          f"(s-YYYY-MM-DDTHH-MM-SS-mmmZ)")
     answers = _l(_d(data).get("answers"))
     batch = _d(data).get("batchId")
     if not _s(batch) or not answers or not all(isinstance(a, dict) for a in answers):
         raise RecordError(f"{rel} is not an answer-board answers file (it needs a batchId and "
                           f"its answers)")
+    posted = _inside(root, f"{BATCHES_DIR}{batch}.json") if SLUG.match(batch) else None
+    try:
+        posted_doc = json.loads(posted.read_text(encoding="utf-8")) if posted and posted.is_file() else None
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        posted_doc = None
+    if not isinstance(posted_doc, dict) or posted_doc.get("id") != batch:
+        raise RecordError(f"{rel}: batch {batch!r} has no posted batch at {BATCHES_DIR}{batch}.json "
+                          f"— answers are received for a batch that was posted "
+                          f"(python3 scripts/answer_board_batch.py)")
     if not any(a.get("status") == "answered" for a in answers):
         raise RecordError(f"{rel}: no question in the batch is answered")
+    named = [st for st, toks in STOP_TOKENS.items() if any(t in batch.lower() for t in toks)]
+    if len(named) > 1:
+        raise RecordError(f"{rel}: batch {batch!r} names both stops ({', '.join(named)}) — each stop "
+                          f"is approved from its own batch")
     tokens = STOP_TOKENS[stop]
 
     def names(text):
         t = (text or "").lower() if isinstance(text, str) else ""
         return slug in t and any(tok in t for tok in tokens)
-    if not (names(batch) or any(names(a.get("question")) for a in answers)):
+    if not (names(batch) or (not named and any(names(a.get("question")) for a in answers))):
         raise RecordError(f"{rel}: the batch {batch!r} does not name this page ({slug}) and this "
                           f"stop ({stop}) — post the stop's own batch")
     return answers
@@ -313,14 +345,18 @@ def _bare_nf(record, p):
     walk({k: v for k, v in record.items() if k != "approval"}, "")
 
 
-def _evidence(where, row, root, p):
-    ev = row.get("evidence")
+def _evidence(where, row, root, p, key="evidence", own_url=None):
+    """B5/R3: `row[key]` is a saved fetch in the repo (a file under EVIDENCE_DIRS) or a URL
+    other than `own_url` with the row's `fetched` date."""
+    ev = row.get(key)
+    if own_url is None:
+        own_url = row.get("url")
     if not _s(ev):
         p.append(f"{where}: evidence — a finding cites the saved fetch or the URL it was read "
                  f"from, or is `NOT FETCHED — <barrier>` (rule 9)")
         return
     if ev.startswith(("http://", "https://")):
-        if _norm_url(ev) == _norm_url(row.get("url")):
+        if own_url and _norm_url(ev) == _norm_url(own_url):
             p.append(f"{where}: evidence is the result's own URL — cite the saved fetch, or "
                      f"another URL the finding was read from")
         elif not (isinstance(row.get("fetched"), str) and DATE.match(row["fetched"])):
@@ -382,18 +418,22 @@ def _choice(where, options, key, n_min, n_max, p):
                 p.append(f"{where}: the (Recommended) option has no {f} (working rule 4)")
 
 
-def _nf_or(where, value, check, p):
+def _nf_or(where, value, check, p, root=None):
     """A field that is `NOT FETCHED — <barrier>` or passes `check`."""
     if is_nf(value):
         return
-    check(where, value, p)
+    check(where, value, p, root)
 
 
-def _check_aio(where, v, p):
+def _check_aio(where, v, p, root=None):
     if not isinstance(v, dict) or not isinstance(v.get("present"), bool):
-        p.append(f"{where}: {{present: true|false, says, cites}} or `NOT FETCHED — <barrier>`")
+        p.append(f"{where}: {{present: true|false, says, cites, fetched, evidence}} or "
+                 f"`NOT FETCHED — <barrier>`")
         return
     if v["present"]:
+        if not (isinstance(v.get("fetched"), str) and DATE.match(v["fetched"])):
+            p.append(f"{where}.fetched: the date the SERP was read (YYYY-MM-DD)")
+        _evidence(where, v, ROOT if root is None else root, p, own_url="")
         if not _s(v.get("says")):
             p.append(f"{where}.says: what the AI Overview says, or `NOT FETCHED — <barrier>`")
         c = v.get("cites")
@@ -401,7 +441,7 @@ def _check_aio(where, v, p):
             p.append(f"{where}.cites: whom it cites, or `NOT FETCHED — <barrier>`")
 
 
-def _check_heading_types(where, v, p):
+def _check_heading_types(where, v, p, root=None):
     rows = _d(v).get("rows")
     if not (isinstance(rows, list) and rows
             and all(isinstance(r, dict) and _s(r.get("source")) and _s(r.get("style")) for r in rows)):
@@ -410,13 +450,13 @@ def _check_heading_types(where, v, p):
         p.append(f"{where}.winning_shape: the shape that wins")
 
 
-def _check_schema(where, v, p):
+def _check_schema(where, v, p, root=None):
     if not (isinstance(v, list) and v
             and all(isinstance(r, dict) and _s(r.get("url")) and _s(r.get("schema")) for r in v)):
         p.append(f"{where}: one {{url, schema}} per ranking page (the schema types found)")
 
 
-def _check_authority(where, v, p):
+def _check_authority(where, v, p, root=None):
     if not (isinstance(v, list) and v and all(isinstance(r, dict) and _s(r.get("url")) for r in v)):
         p.append(f"{where}: one {{url, referring_domains, authority, source}} per competitor")
         return
@@ -425,8 +465,9 @@ def _check_authority(where, v, p):
         _metric(f"{where}[{i}].authority", r.get("authority"), (int, str), p)
         fetched = [k for k in ("referring_domains", "authority")
                    if r.get(k) is not None and not is_nf(r.get(k))]
-        if fetched and not _s(r.get("source")):
-            p.append(f"{where}[{i}]: a fetched figure names its `source` (the tool and date)")
+        if fetched:
+            _evidence(f"{where}[{i}]: source", r, ROOT if root is None else root, p,
+                      key="source", own_url=r.get("url"))
 
 
 def validate(record, queries, root=None):
@@ -580,7 +621,7 @@ def _validate(record, queries, root, p):
         if f not in record:
             p.append(f"{f}: missing — the finding, or `NOT FETCHED — <barrier>`")
         else:
-            _nf_or(f, record[f], check, p)
+            _nf_or(f, record[f], check, p, root)
 
 
 def _keywords(kw, p):
