@@ -83,15 +83,21 @@ def test_each_page_reads_the_label_rather_than_typing_it(slug):
 # board previews (/board-preview/) render the approved board records, which stay as history.
 UNSTATED = [
     r"no (?:health )?guarantee length",
-    r"state no (?:health )?guarantee",
-    r"no guarantee is (?:stated|offered|claimed)",
+    r"no health guarantee is",
+    # "we / this site state(s) no guarantee" — but not "we state no guarantee about temperament"
+    r"\b(?:we|this (?:site|page))\s+states? no (?:health )?guarantee(?!\s+(?:about|on|that|for)\b)",
+    # "no guarantee is offered" only when it is ours ("A classified ad: no guarantee is offered" is not)
+    r"\b(?:we|our|us|this (?:site|page))\b[^.]{0,40}\bno guarantee is (?:stated|offered|claimed)",
     r"not (?:yet )?confirmed (?:a|one|any) (?:term|length)",
     r"confirmed no guarantee",
     r"no term is stated",
     r"records a length for one",
+    r"guarantee (?:row|length|term)[^.]{0,20}(?:absent|not fetched|unconfirmed)",
+    r"guarantee[^.]{0,60}\bnot fetched|\bnot fetched[^.]{0,60}guarantee",
+    r"guarantee[^.]{0,60}\bnot (?:yet )?(?:confirmed|established)|\bnot (?:yet )?(?:confirmed|established)[^.]{0,60}guarantee",
+    r"guarantee[^.]{0,60}\bunconfirmed|\bunconfirmed[^.]{0,60}guarantee",
     r"guarantee[^.]{0,80}deliberately absent|deliberately absent[^.]{0,80}guarantee",
     r"guarantee length[^.]{0,40}(?:not established|prints nothing)",
-    r"not established[^.]{0,20}a guarantee length",
     r"length of the cover is not published",
     r"guarantee_days: null",
 ]
@@ -125,6 +131,7 @@ def test_the_unstated_patterns_fire_on_the_old_lines():
                 "The length of the cover is not published on this site"]:
         assert unstated_lines(old), old
     assert not unstated_lines("Ours is a two-year health guarantee; no laboratory named, no percentage anywhere.")
+    assert unstated_lines("We state no guarantee, because we have not confirmed a term for one.")
 
 
 def test_no_page_promises_to_send_the_wording():
@@ -153,3 +160,23 @@ def test_no_page_source_comment_says_the_guarantee_is_unset():
         flat = re.sub(r"\n\s*(?://|\*)?\s*", " ", text)
         bad += [f"{f.relative_to(ROOT)}: …{flat[max(0, m.start() - 50):m.end() + 30]}…" for m in STALE_SOURCE.finditer(flat)]
     assert bad == [], "\n".join(bad)
+
+
+def test_the_unstated_patterns_cover_both_directions():
+    """Re-review, item 6. Two old headings injected into a page that never carried them (the
+    breed guide) must fail; sentences that only resemble the claim must pass."""
+    f = ROOT / "dist/uk-staffordshire-bull-terrier-guide/index.html"
+    if not f.exists():
+        pytest.skip("run npm run -s build first")
+    clean = f.read_text(encoding="utf-8")
+    assert unstated_lines(clean) == []
+    for heading in ["No Health Guarantee Is Stated", "The Guarantee Row Is Absent, Not Overlooked"]:
+        assert unstated_lines(clean.replace("</main>", f"<h5>{heading}</h5></main>", 1)), heading
+    for fires in ["Our guarantee length is NOT FETCHED.", "The guarantee term is unconfirmed.",
+                  "The health guarantee is not yet confirmed.", "We have not established a guarantee length.",
+                  "This site offers no guarantee: no guarantee is offered by us."]:
+        assert unstated_lines(fires), fires
+    for legit in ["We state no guarantee about temperament, because every dog is its own.",
+                  "A classified ad: no guarantee is offered, and no paperwork either.",
+                  "Ours is a two-year health guarantee; no laboratory named, no percentage anywhere."]:
+        assert unstated_lines(legit) == [], legit
