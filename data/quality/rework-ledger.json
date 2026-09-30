@@ -1,0 +1,4 @@
+{
+  "definition": "`page_rate` (rework touching src/public) is the headline; `harness_rate` is checker self-repair, tracked separately so improving the harness cannot worsen the headline. `rate` is the union. Empty at the system transfer: BSUK starts with no measured windows. Windows are appended by hand (.claude/skills/bsuk-learning-loop/SKILL.md Step 5); the source repo's writer script was not ported, and scripts/quality_report.py reads this file.",
+  "windows": []
+}

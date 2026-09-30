@@ -1,0 +1,128 @@
+{
+ "_saved_note": "DataForSEO serp_organic_live_advanced via the claude.ai connector, 2026-09-23 (registry discovery). Request: keyword 'kc registered staffy puppies', search_engine google, location United Kingdom, language en, depth 10. The connector's response carries no cost field (recorded as a 0.05 estimate). Saved condensed: every item's type, rank, domain, url, title, website_name and description kept, PAA questions and related searches kept; images, price objects, breadcrumbs, highlighted terms, link elements and PAA expanded_element stubs dropped. Third-party contact details: none present in the response; nothing dropped.",
+ "id": "09231937-2496-0139-0000-f47a5561b046",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "organic",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "domain": "www.royalkennelclub.com",
+   "title": "Staffordshire Bull Terrier | Breeds A to Z",
+   "url": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/",
+   "website_name": "The Royal Kennel Club",
+   "description": "Looking for a Staffordshire Bull Terrier? Explore our list of puppies and rescue dogs for sale near you. Find a Puppy. decoration. More information. Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 2,
+   "rank_absolute": 2,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Kennel Club Registered Staffordshire Bull Terrier Puppies ...",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-sale?kc_registered=yes",
+   "website_name": "Staffie Owners",
+   "description": "Find 19 KC registered Staffie puppies for sale across the UK, with prices currently ranging from £200 to £3,000. Compare listings from trusted breeders and ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 3,
+   "rank_absolute": 3,
+   "domain": "www.royalkennelclub.com",
+   "title": "Find a puppy",
+   "url": "https://www.royalkennelclub.com/search/find-a-puppy/",
+   "website_name": "The Royal Kennel Club",
+   "description": "Want to buy a puppy? Search for pedigree puppies or rescue dogs for sale near you. Browse ads from reputable breeders."
+  },
+  {
+   "type": "organic",
+   "rank_group": 4,
+   "rank_absolute": 4,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Kennel club Staffordshire Bull Terrier Puppies for sale",
+   "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=kennel+club",
+   "website_name": "Pets4Homes",
+   "description": "KC Registered Staffordshire Bull Terrier Pups. Staffordshire Bull Terrier. 14 weeksAge. 11Sex. £1,750Price. KC Registered Pedigree Staffordshire Bull Terrier ... Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 5,
+   "rank_absolute": 5,
+   "domain": "www.foreverpuppy.co.uk",
+   "title": "Staffordshire Bull Terrier Dogs and Puppies",
+   "url": "https://www.foreverpuppy.co.uk/find-your-dog/staffordshire-bull-terrier",
+   "website_name": "Forever Puppy",
+   "description": "Stunning Quality Staffordshire Bull Terrier Puppies. East Sussex. Staffordshire Bull Terrier. Microchipped; Vaccinations up to date; Boys. Age: 11 weeks. Read more"
+  },
+  {
+   "type": "ai_overview",
+   "rank_group": 1,
+   "rank_absolute": 6,
+   "asynchronous_ai_overview": true
+  },
+  {
+   "type": "organic",
+   "rank_group": 6,
+   "rank_absolute": 7,
+   "domain": "www.gumtree.com",
+   "title": "Staffordshire-bull-terrier-for-sale-in | Dogs & Puppies for Sale",
+   "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/uk/srpsearch+staffordshire-bull-terrier-for-sale-in",
+   "website_name": "Gumtree",
+   "description": "Beautiful blue staffie puppies!! kc registered !! Long Sutton, Lincolnshire £2,200 Adorable puppy Staffy. Staffy Nelson, Lancashire £1,500 Staffordshire bull ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 7,
+   "rank_absolute": 8,
+   "domain": "ukstaffypups.uk",
+   "title": "Staffordshire Bull Terrier Puppies for Sale In UK",
+   "url": "https://ukstaffypups.uk/",
+   "website_name": "ukstaffypups.uk",
+   "description": "We are dedicated UK breeders offering healthy, KC-registered Staffordshire Bull Terrier puppies for sale to loving homes. Discover your new loyal family ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 8,
+   "rank_absolute": 9,
+   "domain": "www.pdsa.org.uk",
+   "title": "Staffordshire Bull Terrier",
+   "url": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier",
+   "website_name": "PDSA",
+   "description": "If you'd like to buy a pedigree puppy, we recommend looking for a Kennel Club Assured breeder. These breeders must do extra health tests and meet high standards ... Read more"
+  },
+  {
+   "type": "people_also_ask",
+   "rank_group": 1,
+   "rank_absolute": 10,
+   "items": [
+    "What is the average price of a Staffy puppy?",
+    "Is it better to have a male or female Staffy?",
+    "What is the rarest Staffy color?",
+    "What two dogs make a Staffy?"
+   ]
+  },
+  {
+   "type": "organic",
+   "rank_group": 9,
+   "rank_absolute": 11,
+   "domain": "www.puppies.co.uk",
+   "title": "Staffordshire Bull Terrier puppies for Sale in the UK",
+   "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier",
+   "website_name": "Puppies.co.uk",
+   "description": "Find Staffordshire Bull Terrier Puppies & Dogs for sale in the UK near you. The UK's number 1 marketplace for the nation's favourite pet."
+  },
+  {
+   "type": "related_searches",
+   "rank_group": 1,
+   "rank_absolute": 12,
+   "items": [
+    "Kc registered staffy puppies near me",
+    "Kc registered staffy puppies for sale uk",
+    "Kc registered staffy puppies for sale",
+    "Kc registered staffy puppies for sale near me",
+    "Kc registered staffy puppies for sale scotland",
+    "Staffy puppies for sale"
+   ]
+  }
+ ]
+}

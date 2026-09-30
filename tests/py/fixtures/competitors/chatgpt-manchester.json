@@ -1,0 +1,40 @@
+{
+  "_fixture_note": "Invented and trimmed, in the DataForSEO ai_optimization_chat_gpt_scraper response shape (tasks → result → markdown, items, sources). Not a real answer; for the bsuk-llm-keyword-intel RED/GREEN runs only.",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "tasks": [
+    {
+      "status_code": 20000,
+      "status_message": "Ok.",
+      "data": {
+        "keyword": "Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?",
+        "location_name": "United Kingdom",
+        "language_code": "en"
+      },
+      "result": [
+        {
+          "keyword": "Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?",
+          "model": "chatgpt",
+          "markdown": "1. Use reputable listings such as Pets4Homes or the Kennel Club's Find a Puppy service.\n2. Ask to meet the mother and see where the puppies are raised.\n3. Ask which health tests the parents have had, and check the puppy is microchipped before it leaves.",
+          "items": [
+            {
+              "type": "chat_gpt_text",
+              "markdown": "1. Use reputable listings such as Pets4Homes or the Kennel Club's Find a Puppy service.\n2. Ask to meet the mother and see where the puppies are raised.\n3. Ask which health tests the parents have had, and check the puppy is microchipped before it leaves.",
+              "sources": [
+                {"type": "chat_gpt_source", "title": "Pets4Homes", "domain": "www.pets4homes.co.uk", "url": "https://www.pets4homes.co.uk/"},
+                {"type": "chat_gpt_source", "title": "Find a Puppy", "domain": "www.thekennelclub.org.uk", "url": "https://www.thekennelclub.org.uk/search/find-a-puppy/"}
+              ]
+            }
+          ],
+          "sources": [
+            {"type": "chat_gpt_source", "title": "Pets4Homes", "domain": "www.pets4homes.co.uk", "url": "https://www.pets4homes.co.uk/"},
+            {"type": "chat_gpt_source", "title": "Find a Puppy", "domain": "www.thekennelclub.org.uk", "url": "https://www.thekennelclub.org.uk/search/find-a-puppy/"}
+          ],
+          "search_results": [
+            {"type": "chat_gpt_search_result", "domain": "www.gumtree.com", "url": "https://www.gumtree.com/pets/", "title": "Gumtree pets"}
+          ]
+        }
+      ]
+    }
+  ]
+}

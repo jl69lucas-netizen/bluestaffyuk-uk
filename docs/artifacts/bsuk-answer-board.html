@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Questions for You</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--brass:#A8851A;--field:#FCFBF8;--on-blue:#FFFFFF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--brass:#D9B84A;--field:#161D26;--on-blue:#141A21}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--brass:#D9B84A;--field:#161D26;--on-blue:#141A21}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+a{color:var(--blue)}
+.app{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
+.rail{position:sticky;top:0;height:100vh;overflow:auto;background:var(--paper);border-right:1px solid var(--line);padding:24px 18px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+.count{font:700 30px/1.1 Fraunces,Georgia,serif;margin:4px 0 8px}.count span{font-size:15px;color:var(--ink-3);font-weight:600}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .2s}
+.muted{font-size:12px;color:var(--ink-3);margin:6px 0}
+.navbatch{display:flex;justify-content:space-between;gap:8px;margin:16px 0 4px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none}
+.navbatch small{color:var(--ink-3);font-weight:600}
+.new{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--brass);color:var(--ink);border-radius:4px;padding:1px 5px;margin-left:6px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .new{color:var(--on-blue)}}
+:root[data-theme="dark"] .new{color:var(--on-blue)}
+.navq{display:flex;gap:8px;align-items:center;padding:3px 4px;border-radius:4px;font-size:13px;color:var(--ink-2);text-decoration:none}
+.navq:hover{background:var(--blue-soft)}.navq b{min-width:18px;color:var(--blue)}
+.dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink-3);flex:none}
+[data-state="answered"] .dot{background:var(--ok);border-color:var(--ok)}
+[data-state="skip"] .dot{background:var(--brass);border-color:var(--brass)}
+[data-state="not_yet"] .dot{border-style:dashed;border-color:var(--steel);background:var(--blue-soft)}
+.main{padding:32px clamp(16px,4vw,56px) 96px;min-width:0;overflow-wrap:anywhere}.main>*{max-width:1120px}
+header.mast{padding-bottom:16px;border-bottom:3px solid var(--blue);margin-bottom:16px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0}
+.note{background:var(--blue-soft);border:1px solid var(--line);border-radius:6px;padding:10px 14px;font-size:15px;margin:0 0 16px}
+.btn{font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:var(--on-blue);cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn.ghost{background:transparent;color:var(--blue)}.btn:disabled{opacity:.45;cursor:not-allowed}.btn[aria-disabled="true"]{opacity:.45;cursor:progress}.btn.big{font-size:16px;padding:12px 22px}
+button:focus-visible,a:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+.batch{margin:0 0 34px;scroll-margin-top:16px}
+.bhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 10px}
+.bhead h2{font:700 26px/1.2 Fraunces,Georgia,serif;margin:0}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper);color:var(--ink-2)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:20px 26px 22px;margin:0 0 14px}
+section.sec h3.st{font:600 21px/1.25 Fraunces,Georgia,serif;margin:0 0 10px}
+.intro p,.lead p,.ctx p{max-width:78ch}
+.q{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:8px;padding:16px 18px;margin:0 0 14px;background:var(--paper);scroll-margin-top:16px}
+.q[data-state="answered"]{border-left-color:var(--ok)}.q[data-state="skip"]{border-left-color:var(--brass)}.q[data-state="not_yet"]{border-left-color:var(--steel)}
+.q h4{font:600 18px/1.3 Fraunces,Georgia,serif;margin:0 0 4px}.qn{color:var(--blue);margin-right:6px}
+.ctx{color:var(--ink-2);font-size:15px}.ctx p{margin:4px 0}
+.where{font-size:12px;color:var(--ink-3);margin:6px 0}
+code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+label.lab{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin:12px 0 4px}
+textarea{width:100%;min-height:72px;resize:vertical;font:15px/1.5 "Source Sans 3",system-ui,sans-serif;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:6px;padding:10px 12px}
+textarea.notefield{min-height:48px}
+textarea:focus{border-color:var(--blue);background:var(--paper)}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px}
+.opt{font:inherit;font-size:14px;text-align:left;border:1.5px solid var(--line);border-radius:8px;padding:8px 14px;background:var(--field);color:var(--ink);cursor:pointer}
+.opt b{color:var(--blue);margin-right:6px}
+.opt[aria-pressed="true"]{border-color:var(--ok);background:var(--blue-soft);font-weight:600}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--ink-3)}
+.chip{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:50px;padding:3px 11px;background:var(--paper);color:var(--ink-2);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--blue-soft);border-color:var(--blue);color:var(--blue);font-weight:600}
+.tick{margin-left:auto;color:var(--ok);font-weight:600;font-size:12px}
+section.send{border:2px solid var(--blue)}
+.sendrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.sendrow>div{flex:1;min-width:240px}
+.sendstatus{font-size:14px;color:var(--ink-2);margin:10px 0 0}
+section.additional{margin-top:8px}section.additional h2.st{font:600 21px/1.25 Fraunces,Georgia,serif;margin:0 0 10px}
+.btn:disabled[aria-disabled="true"]{cursor:not-allowed}.addhelp{margin:0 0 4px;color:var(--ink-2);font-size:15px}
+#additional-text{min-height:140px;overflow:hidden}
+details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px Fraunces,Georgia,serif}
+.donerow{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
+.donerow ol{margin:8px 0 0;padding-left:22px;font-size:14px}
+@media (max-width:900px){.app{display:block}.rail{position:sticky;top:0;height:auto;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 16px;border-right:0;border-bottom:1px solid var(--line)}
+.rail .eyebrow,#rail-batches,#total-detail{display:none}.rail .count{font-size:20px;margin:0}.rail .bar{flex:1;min-width:80px}#saved{flex-basis:100%;margin:0}
+.main{padding:20px 16px 72px}section.sec{padding:16px}.q{padding:14px}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style></head><body>
+<div class="app">
+<aside class="rail" aria-label="Progress">
+<p class="eyebrow">BlueStaffyUK · answer board</p>
+<p class="count"><b id="total-done">0</b> / <b id="total-all">0</b><span> answered</span></p>
+<div class="bar" aria-hidden="true"><i id="bar"></i></div>
+<p id="total-detail" class="muted"></p>
+<nav id="rail-batches" aria-label="Open batches"></nav>
+<p id="saved" class="muted" aria-live="polite"></p>
+</aside>
+<main class="main">
+<header class="mast"><p class="eyebrow">BlueStaffyUK · for you</p><h1 class="title">Questions for You</h1></header>
+<p id="status-line" class="note" role="status">Connecting to the board…</p>
+<div id="batches"></div>
+<section class="sec additional" id="additional" aria-labelledby="additional-h" hidden>
+<h2 class="st" id="additional-h">Any additional questions</h2>
+<p class="addhelp" id="additional-help">Extra questions or sub-tasks for Claude Code — type or paste them here, then send.</p>
+<label class="lab" for="additional-text">Your questions</label>
+<textarea id="additional-text" rows="5" autocomplete="off" aria-describedby="additional-help"></textarea>
+<div class="sendrow"><button type="button" class="btn big" id="additional-send" aria-describedby="additional-hint" disabled>Send to Claude Code →</button>
+<p class="muted" id="additional-hint"></p></div>
+<p class="sendstatus" role="status" id="additional-status"></p>
+<div class="row"><span>No Claude session watching?</span>
+<button type="button" class="chip" id="additional-copy">Copy text</button>
+<span id="additional-fallback" aria-live="polite"></span></div>
+</section>
+<details id="done" hidden><summary>Done</summary><div id="done-list"></div></details>
+</main></div>
+<script type="application/json" id="demo-batch">{"askedAt": "2026-09-26T12:00:00Z", "id": "demo", "intro": "This is a demo batch, shown only on the local preview (`#demo`). On claude.ai the board shows\nthe real batches Claude has posted.", "project": "tools", "questions": [{"context": "Any answer will do.", "key": "q01", "kind": "text", "n": 1, "options": [], "question": "What colour is the front door?", "section": 0, "where": "nowhere; this is a demo."}, {"context": "Pick one; add a note if you like.", "key": "q02", "kind": "choice", "n": 2, "options": [{"id": "a", "label": "Workspace rail"}, {"id": "b", "label": "Side by side"}], "question": "Which layout do you prefer?", "section": 0, "where": ""}, {"context": "Leave it empty, mark it Not yet, or Skip it.", "key": "q03", "kind": "text", "n": 3, "options": [], "question": "Anything else?", "section": 1, "where": ""}], "receivedAt": "", "receivedCommit": "", "sections": [{"lead": "", "title": "A text question and a choice"}, {"lead": "", "title": "One more"}], "status": "open", "title": "Demo batch"}</script>
+<script>/* Answer board client (spec docs/superpowers/specs/2026-09-26-answer-board-design.md §5–§6).
+   Inlined by scripts/build_answer_board.py. Batches (the questions) come from the board's db;
+   answers save one document per question with a browser draft as backup. Every capability is
+   optional: claude.use() may resolve null. `#demo` renders the embedded demo batch locally.
+   The static "Any additional questions" section (spec §6, revision 3) saves to drafts/additional
+   and sends a snapshot additional/<s-time>. */
+(function () {
+  "use strict";
+  var DEMO = JSON.parse(document.getElementById("demo-batch").textContent);
+  var DRAFT_KEY = "answer-board:v1";
+  var CHIPS = ["not_yet", "skip"];
+  var STATUSES = ["answered", "not_yet", "skip", "empty"];
+  var batches = {};     // id -> batch document
+  var answers = {};     // id -> { qNN -> {n, text, choice, status, updatedAt} }
+  var subs = {};        // id -> unsubscribe for that batch's answers
+  var rendered = {};    // id -> signature of the rendered batch
+  var isNew = {};       // id -> true until the batch is scrolled into view
+  var written = {}, timers = {}, inflight = {}, again = {};
+  var later = {};       // id::key -> newest board record held back while that question is being edited
+  var drafted = {};     // id -> true once the browser draft was written up (first answers snapshot)
+  var observers = {};   // id -> IntersectionObserver clearing the New badge
+  var sending = {};     // id -> status text while a Send is in progress
+  var db = null, comments = null, downloads = null, demo = false, firstBatches = true, batchesLoaded = false;
+  var canSend = "off";  // cached comments.canSendToClaude(): only for the hint shown before a click
+  var DOWNLOAD_OFF = ["unavailable", "not_granted", "capability_disabled", "capability_removed"];
+  var ADD_T = "drafts::additional";  // timers/inflight/again/written key for drafts/additional
+  var addSending = false, addLater = null, addSynced = false;
+
+  function $(id) { return document.getElementById(id); }
+  function setText(el, s) { if (typeof el === "string") el = $(el); if (el) el.textContent = s; }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function inline(s) { s = esc(s);
+    return s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  }
+  function paras(md) {
+    return String(md || "").split(/\n\s*\n/).filter(function (b) { return b.trim(); })
+      .map(function (b) { return "<p>" + inline(b.split(/\s+/).join(" ").trim()) + "</p>"; }).join("");
+  }
+  function k(id, key) { return id + "::" + key; }
+  function sig(a) { return JSON.stringify([a.text, a.choice, a.status]); }
+  function skipLabel(b) { return b.project === "site-content" ? "Leave it off the site" : "Skip"; }
+  function questionOf(id, key) {
+    var qs = batches[id].questions;
+    for (var i = 0; i < qs.length; i++) if (qs[i].key === key) return qs[i];
+    return null;
+  }
+  function derive(q, a, chip) {
+    if (chip) return chip;
+    if (q.kind === "choice") return a.choice ? "answered" : "empty";
+    return a.text.trim() ? "answered" : "empty";
+  }
+  function blank(q) { return { n: q.n, text: "", choice: "", status: "empty", updatedAt: 0 }; }
+
+  // Browser draft: a per-viewer convenience that can be unavailable.
+  function readDraft() {
+    try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}") || {}; } catch (e) { return {}; }
+  }
+  function writeDraft() {
+    // Keep only open batches once the board's batches have loaded; demo mode rewrites only
+    // "demo" and keeps every other stored draft.
+    var keep = demo ? Object.assign({}, readDraft()) : batchesLoaded ? {} : Object.assign({}, draft);
+    Object.keys(answers).forEach(function (id) {
+      if (demo ? id === "demo" : !batchesLoaded || (batches[id] && batches[id].status !== "received")) keep[id] = answers[id];
+    });
+    // The additional text lives under a reserved key (batch ids are slugs, never "_…"); demo
+    // mode keeps its own so a demo never touches the real text.
+    if (add.updatedAt) keep[addKey()] = { text: add.text, updatedAt: add.updatedAt };
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(keep)); } catch (e) { /* storage blocked */ }
+  }
+  var draft = readDraft();
+  function addKey() { return demo ? "_additional_demo" : "_additional"; }
+  var add = { text: "", updatedAt: 0 };  // the additional questions text, set from the draft on start
+  function adoptAdd(rec) {
+    if (!rec || typeof rec.updatedAt !== "number" || rec.updatedAt <= add.updatedAt) return false;
+    add.text = typeof rec.text === "string" ? rec.text : "";
+    add.updatedAt = rec.updatedAt;
+    return true;
+  }
+  function adopt(id, key, rec) {
+    var a = answers[id][key];
+    if (!a || !rec || typeof rec.updatedAt !== "number" || rec.updatedAt <= a.updatedAt) return false;
+    a.text = typeof rec.text === "string" ? rec.text : "";
+    a.choice = typeof rec.choice === "string" ? rec.choice : "";
+    a.status = STATUSES.indexOf(rec.status) >= 0 ? rec.status : derive(questionOf(id, key), a, null);
+    a.updatedAt = rec.updatedAt;
+    return true;
+  }
+  // A batch from db is checked before it is used; a bad one is skipped, never the whole snapshot.
+  function str(v) { return typeof v === "string" ? v : ""; }
+  function cleanBatch(raw, id) {
+    if (!raw || !Array.isArray(raw.questions) || !Array.isArray(raw.sections)) return null;
+    var b = JSON.parse(JSON.stringify(raw)), keys = {};
+    b.id = id;
+    ["title", "askedAt", "intro", "project", "status", "receivedAt", "receivedCommit"].forEach(function (f) { b[f] = str(b[f]); });
+    for (var i = 0; i < b.sections.length; i++) {
+      var s = b.sections[i];
+      if (!s || typeof s !== "object") return null;
+      b.sections[i] = { title: str(s.title), lead: str(s.lead) };
+    }
+    for (var j = 0; j < b.questions.length; j++) {
+      var q = b.questions[j];
+      if (!q || typeof q !== "object" || typeof q.key !== "string" || !/^q\d{2,}$/.test(q.key) || keys[q.key]) return null;
+      if (typeof q.question !== "string" || (q.kind !== "text" && q.kind !== "choice")) return null;
+      if (!Number.isInteger(q.section) || q.section < 0 || q.section >= b.sections.length) return null;
+      if (q.kind === "choice" && !(Array.isArray(q.options) && q.options.length && q.options.every(function (o) {
+        return o && typeof o.id === "string" && typeof o.label === "string";
+      }))) return null;
+      keys[q.key] = true;
+      q.options = q.kind === "choice" ? q.options.map(function (o) { return { id: o.id, label: o.label }; }) : [];
+      q.context = str(q.context); q.where = str(q.where);
+      q.n = Number.isInteger(q.n) ? q.n : parseInt(q.key.slice(1), 10);
+    }
+    return b;
+  }
+  function ensureAnswers(id) {
+    // Also run when a batch is re-posted: a question new to this view gets a blank record.
+    if (!answers[id]) answers[id] = {};
+    var d = draft[id] || {};
+    batches[id].questions.forEach(function (q) {
+      if (answers[id][q.key]) return;
+      answers[id][q.key] = blank(q);
+      adopt(id, q.key, d[q.key]);
+    });
+  }
+
+  // ---------- rendering ----------
+  function cardHtml(b, q) {
+    var id = b.id, dom = id + "--" + q.key;
+    var h = '<article class="q" id="' + esc(dom) + '" data-batch="' + esc(id) + '" data-key="' + esc(q.key) + '" data-state="empty">' +
+      '<h4 id="h-' + esc(dom) + '"><span class="qn">' + esc(q.n) + "</span>" + inline(q.question) + "</h4>" +
+      '<div class="ctx">' + paras(q.context) + "</div>" +
+      (q.where ? '<p class="where"><strong>Where it goes:</strong> ' + inline(q.where) + "</p>" : "");
+    if (q.kind === "choice") {
+      h += '<div class="opts" role="group" aria-labelledby="h-' + esc(dom) + '">' + q.options.map(function (o) {
+        return '<button type="button" class="opt" data-choice="' + esc(o.id) + '" aria-pressed="false"><b>' +
+          esc(o.id.toUpperCase()) + "</b>" + inline(o.label) + "</button>";
+      }).join("") + "</div>" +
+        '<label class="lab" for="a-' + esc(dom) + '">Note (optional)</label>' +
+        '<textarea class="notefield" id="a-' + esc(dom) + '" rows="2" autocomplete="off" placeholder="Add a note…"></textarea>';
+    } else {
+      h += '<label class="lab" for="a-' + esc(dom) + '">Your answer</label>' +
+        '<textarea id="a-' + esc(dom) + '" rows="3" autocomplete="off" placeholder="Type your answer…"></textarea>';
+    }
+    return h + '<div class="row" role="group" aria-labelledby="h-' + esc(dom) + '">' +
+      '<button type="button" class="chip" data-status="not_yet" aria-pressed="false">Not yet</button>' +
+      '<button type="button" class="chip" data-status="skip" aria-pressed="false">' + esc(skipLabel(b)) + "</button>" +
+      '<span class="tick"></span></div></article>';
+  }
+  function batchHtml(b) {
+    var h = '<section class="batch" id="b-' + esc(b.id) + '" data-batch="' + esc(b.id) + '">' +
+      '<div class="bhead"><h2>' + esc(b.title) + '</h2><span><span class="pill">' + esc(b.project) +
+      '</span> <span class="pill">asked ' + esc(String(b.askedAt).slice(0, 10)) + "</span></span></div>" +
+      (b.intro ? '<section class="sec intro">' + paras(b.intro) + "</section>" : "");
+    b.sections.forEach(function (s, i) {
+      var qs = b.questions.filter(function (q) { return q.section === i; });
+      h += '<section class="sec"><h3 class="st">' + esc(s.title) + "</h3>" +
+        '<div class="lead">' + paras(s.lead) + "</div>" + qs.map(function (q) { return cardHtml(b, q); }).join("") + "</section>";
+    });
+    return h + '<section class="sec send" data-send-card="' + esc(b.id) + '"><div class="sendrow"><div>' +
+      "<h3 class=\"st\">Ready to send?</h3><p class=\"muted\" data-counts></p></div>" +
+      '<button type="button" class="btn big" data-send>Send to Claude Code →</button></div>' +
+      '<p class="muted" data-send-hint></p>' +
+      '<p class="sendstatus" role="status" data-send-status></p>' +
+      '<div class="row"><span>No Claude session watching?</span>' +
+      '<button type="button" class="chip" data-copy>Copy answers</button>' +
+      '<button type="button" class="chip" data-download hidden>Download .md</button>' +
+      "<span data-fallback aria-live=\"polite\"></span></div></section></section>";
+  }
+  function openIds() {
+    return Object.keys(batches).filter(function (id) { return batches[id].status !== "received"; })
+      .sort(function (x, y) {
+        var a = batches[x].askedAt || "", b = batches[y].askedAt || "";
+        return a < b ? 1 : a > b ? -1 : (x < y ? -1 : 1);
+      });
+  }
+  function hasFocusIn(el) { return el && document.activeElement && el.contains(document.activeElement); }
+  function batchSig(b) { return JSON.stringify([b.title, b.project, b.askedAt, b.intro, b.sections, b.questions]); }
+  function renderBatches() {
+    var host = $("batches"), ids = openIds();
+    Object.keys(rendered).forEach(function (id) {
+      if (ids.indexOf(id) < 0) { var gone = $("b-" + id); if (gone) gone.remove(); delete rendered[id]; }
+    });
+    ids.forEach(function (id, i) {
+      var b = batches[id], s = batchSig(b);
+      var el = $("b-" + id);
+      if (!el || (rendered[id] !== s && !hasFocusIn(el))) {
+        var wrap = document.createElement("div");
+        wrap.innerHTML = batchHtml(b);
+        var fresh = wrap.firstChild;
+        if (el) el.replaceWith(fresh); else host.appendChild(fresh);
+        rendered[id] = s;
+        wire(fresh, id);
+        el = fresh;
+      }
+      if (host.children[i] !== el) host.insertBefore(el, host.children[i] || null);
+      Object.keys(answers[id]).forEach(function (key) { paintCard(id, key); });
+    });
+    renderRail();
+    renderDone();
+    paintTotals();
+    refreshCanSend();
+    if (!ids.length) setText("status-line", demo ? "Demo batch" : "No open questions right now. New batches appear here as soon as Claude posts them.");
+    else setText("status-line", demo ? "Demo mode: answers are saved in this browser only." : "");
+    $("status-line").hidden = !$("status-line").textContent;
+  }
+  function paintCard(id, key, force) {
+    var a = answers[id][key], card = $(id + "--" + key);
+    if (!card) return;
+    var ta = card.querySelector("textarea");
+    if (ta && (force || document.activeElement !== ta) && ta.value !== a.text) { ta.value = a.text; grow(ta); }
+    card.querySelectorAll("[data-status]").forEach(function (btn) {
+      btn.setAttribute("aria-pressed", String(btn.getAttribute("data-status") === a.status));
+    });
+    card.querySelectorAll("[data-choice]").forEach(function (btn) {
+      btn.setAttribute("aria-pressed", String(btn.getAttribute("data-choice") === a.choice));
+    });
+    card.setAttribute("data-state", a.status);
+    var nav = document.querySelector('.navq[href="#' + cssId(id + "--" + key) + '"]');
+    if (nav) nav.setAttribute("data-state", a.status);
+  }
+  function cssId(s) { return window.CSS && CSS.escape ? CSS.escape(s) : s; }
+  function counts(id) {
+    var c = { answered: 0, skip: 0, not_yet: 0, empty: 0 };
+    (batches[id] ? batches[id].questions : []).forEach(function (q) { c[answers[id][q.key].status] += 1; });
+    return c;
+  }
+  function renderRail() {
+    var nav = $("rail-batches");
+    nav.innerHTML = openIds().map(function (id) {
+      var b = batches[id], c = counts(id), total = b.questions.length;
+      return '<a class="navbatch" href="#b-' + esc(id) + '"><span>' + esc(b.title) +
+        (isNew[id] ? '<span class="new">New</span>' : "") + "</span><small>" + (total - c.empty) + " / " + total + "</small></a>" +
+        b.questions.map(function (q) {
+          return '<a class="navq" href="#' + esc(id + "--" + q.key) + '" data-state="' + esc(answers[id][q.key].status) +
+            '"><span class="dot"></span><b>' + esc(q.n) + "</b><span>" + esc(q.question.length > 42 ? q.question.slice(0, 41) + "…" : q.question) + "</span></a>";
+        }).join("");
+    }).join("");
+  }
+  function paintTotals() {
+    var done = 0, all = 0, open = openIds();
+    open.forEach(function (id) {
+      var c = counts(id), n = batches[id].questions.length;
+      all += n; done += n - c.empty;
+      var card = document.querySelector('[data-send-card="' + cssId(id) + '"]');
+      if (card) setText(card.querySelector("[data-counts]"), c.answered + " answered · " + c.not_yet + " not yet · " + c.skip + " skipped · " + c.empty + " empty");
+    });
+    setText("total-done", String(done));
+    setText("total-all", String(all));
+    $("bar").style.width = (all ? Math.round(done * 100 / all) : 0) + "%";
+    setText("total-detail", open.length + (open.length === 1 ? " open batch" : " open batches"));
+  }
+  function renderDone() {
+    var ids = Object.keys(batches).filter(function (id) { return batches[id].status === "received"; })
+      .sort(function (x, y) { return (batches[y].receivedAt || "") < (batches[x].receivedAt || "") ? -1 : 1; });
+    $("done").hidden = !ids.length;
+    $("done-list").innerHTML = ids.map(function (id) {
+      var b = batches[id];
+      return '<div class="donerow" data-done="' + esc(id) + '"><strong>' + esc(b.title) + "</strong> " +
+        '<span class="muted">received ' + esc(String(b.receivedAt).slice(0, 10)) +
+        (b.receivedCommit ? " · commit " + esc(b.receivedCommit) : "") + "</span> " +
+        '<button type="button" class="chip" data-show>Show answers</button><div data-answers></div></div>';
+    }).join("");
+    $("done-list").querySelectorAll("[data-show]").forEach(function (btn) {
+      btn.addEventListener("click", function () { showDone(btn.closest("[data-done]")); });
+    });
+  }
+  function showDone(row) {
+    var id = row.getAttribute("data-done"), out = row.querySelector("[data-answers]");
+    if (!db) return;
+    db.collection("batches/" + id + "/answers").get().then(function (snap) {
+      var got = {};
+      snap.docs.forEach(function (d) { got[d.id] = d.data() || {}; });
+      out.innerHTML = "<ol>" + batches[id].questions.map(function (q) {
+        var a = got[q.key] || {}, opt = (q.options || []).filter(function (o) { return o.id === a.choice; })[0];
+        return "<li><strong>" + inline(q.question) + "</strong> — " + esc(a.status || "empty") +
+          (opt ? ": " + inline(opt.label) : "") + (a.text ? "<br>" + esc(a.text) : "") + "</li>";
+      }).join("") + "</ol>";
+    }, function (e) { setText(out, "Could not load (" + ((e && e.code) || "error") + ")"); });
+  }
+  function grow(ta) { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + 2 + "px"; }
+
+  // ---------- saving ----------
+  function touch(id, key) {
+    answers[id][key].updatedAt = Date.now();
+    writeDraft(); paintCard(id, key); renderRail(); paintTotals();
+    var tick = document.getElementById(id + "--" + key).querySelector(".tick");
+    if (!db) { setText("saved", "Saved in this browser"); setText(tick, "✓ saved here"); return; }
+    setText("saved", "Saving…"); setText(tick, "");
+    debounce(k(id, key), function () { flush(id, key); });
+  }
+  function debounce(t, fn) { clearTimeout(timers[t]); timers[t] = setTimeout(fn, 800); }
+  // One write in flight per document: a change made meanwhile is written once it settles.
+  function writeDoc(t, ref, body, ok, retry, settled) {
+    if (inflight[t]) { again[t] = true; return inflight[t]; }
+    var p = ref.set(body).then(function () {
+      ok();
+      setText("saved", "Saved to the board " + new Date().toLocaleTimeString());
+    }, function (e) {
+      setText("saved", "Not saved to the board (" + ((e && e.code) || "error") + "). Kept in this browser.");
+    }).then(function () {
+      delete inflight[t];
+      if (again[t]) { delete again[t]; return retry(); }
+      if (settled) settled();
+    });
+    inflight[t] = p;
+    return p;
+  }
+  function busy(id, key) {
+    var card = $(id + "--" + key), ta = card && card.querySelector("textarea");
+    return !!timers[k(id, key)] || !!(ta && document.activeElement === ta);
+  }
+  // A board record that arrived while the viewer was editing this question is applied when
+  // they leave it (focusout) or once the pending save settles, if it is still the newer one.
+  function applyLater(id, key, leaving) {
+    var t = k(id, key), rec = later[t];
+    if (!rec || (!leaving && busy(id, key))) return;
+    delete later[t];
+    if (adopt(id, key, rec)) { paintCard(id, key, true); writeDraft(); renderRail(); paintTotals(); }
+    if (!timers[t]) flush(id, key);
+  }
+  function flush(id, key) {
+    var t = k(id, key);
+    clearTimeout(timers[t]); delete timers[t];
+    var a = answers[id] && answers[id][key];
+    // A newer board record held during the edit wins over the older local text.
+    if (a && later[t] && later[t].updatedAt > a.updatedAt) {
+      var rec = later[t];
+      delete later[t];
+      if (adopt(id, key, rec)) { paintCard(id, key, true); writeDraft(); renderRail(); paintTotals(); }
+    }
+    if (!db || !a || a.updatedAt === 0 || written[t] === sig(a)) return inflight[t] || Promise.resolve();
+    var body = { n: a.n, text: a.text, choice: a.choice, status: a.status, updatedAt: a.updatedAt };
+    return writeDoc(t, db.collection("batches/" + id + "/answers").doc(key), body, function () {
+      written[t] = sig(body);
+      var card = document.getElementById(id + "--" + key);
+      if (card) setText(card.querySelector(".tick"), "✓ saved");
+    }, function () { return flush(id, key); }, function () {
+      if (later[t] && !busy(id, key)) applyLater(id, key, false);
+    });
+  }
+  function flushBatch(id) { return Promise.all(Object.keys(answers[id]).map(function (key) { return flush(id, key); })); }
+
+  // ---------- send, copy, download ----------
+  function answersMarkdown(id) {
+    var b = batches[id], out = ["# " + b.title + ": answers", "", "Batch " + id, ""];
+    b.questions.forEach(function (q) {
+      var a = answers[id][q.key], opt = (q.options || []).filter(function (o) { return o.id === a.choice; })[0];
+      out.push("## " + q.n + ". " + q.question, "", "Status: " + a.status + (opt ? " — picked (" + opt.id + ") " + opt.label : ""), "");
+      if (a.text.trim()) out.push(a.text.trim(), "");
+    });
+    return out.join("\n");
+  }
+  function flash(el, msg) { setText(el, msg); setTimeout(function () { setText(el, ""); }, 2500); }
+  var HINTS = {
+    no_session: "No Claude Code session is watching this board right now; Send still saves your answers.",
+    writers_only: "Only an editor of this board can send to Claude; Send still saves your answers."
+  };
+  function paintHints() {
+    document.querySelectorAll("[data-send-hint]").forEach(function (el) { setText(el, db ? HINTS[canSend] || "" : ""); });
+  }
+  function refreshCanSend() {
+    if (!comments) { canSend = "off"; paintHints(); return; }
+    comments.canSendToClaude().then(function (v) { canSend = v; paintHints(); }, function () { canSend = "off"; paintHints(); });
+  }
+  function sendCard(id) { return document.querySelector('[data-send-card="' + cssId(id) + '"]'); }
+  function showSending(id) {
+    var card = sendCard(id);
+    if (!card) return;
+    card.querySelector("[data-send]").setAttribute("aria-disabled", String(!!sending[id]));
+    if (sending[id]) setText(card.querySelector("[data-send-status]"), sending[id]);
+  }
+  function sendResult(id, msg) {
+    delete sending[id];
+    showSending(id);
+    var card = sendCard(id);  // the card may have been re-rendered while sending
+    if (card) setText(card.querySelector("[data-send-status]"), msg);
+  }
+  // The send must start inside the click (it needs the viewer's recent gesture), so it runs
+  // beside the saves and always tries: a cached canSendToClaude() may be stale, and a
+  // claude_unavailable rejection is decided before anything is posted. Resolves to how it went.
+  function startSend(el, note) {
+    return (!comments ? Promise.resolve("off") : comments.anchorFor(el).then(function (anchor) {
+      return comments.sendToClaude({ anchor: anchor, text: note });
+    }).then(function () { return "sent"; })).catch(function (e) { return (e && e.code) || "error"; })
+      .then(function (how) { refreshCanSend(); return how; });
+  }
+  // `copy` names the fallback chip, `read` what to tell Claude Code.
+  function sendMessage(how, sid, copy, read) {
+    var tell = "Tell Claude Code \"" + read + "\", or use " + copy + ".";
+    if (how === "sent") return "Sent to Claude Code (copy " + sid + "). Claude's reply will appear in the comment thread.";
+    if (how === "rate_limited") return "Saved as copy " + sid + ". Sending is limited for a moment; wait, then press Send again.";
+    if (how === "consent_required") return "Saved as copy " + sid + ". You didn't allow comments from this page. Press Send again to allow it.";
+    if (how === "forbidden" || how === "writers_only") return "Saved as copy " + sid + ". Only an editor of this board can send to Claude.";
+    if (how === "claude_unavailable") return "Saved on the board as copy " + sid + ", but Claude Code couldn't receive it right now. " + tell;
+    if (how === "no_session") return "Saved on the board as copy " + sid + ", but no Claude Code session is watching this board right now. " + tell;
+    return "Saved on the board as copy " + sid + ", but sending to Claude isn't available here. " + tell;
+  }
+  function snapshotId() { return "s-" + new Date().toISOString().replace(/[:.]/g, "-"); }
+  function onSend(id, card) {
+    if (sending[id]) return;
+    if (!db) { setText(card.querySelector("[data-send-status]"), "This view cannot send. Use Copy answers."); return; }
+    sending[id] = "Sending…";
+    showSending(id);
+    var sid = snapshotId(), c = counts(id), b = batches[id];
+    var note = "Answers submitted — " + b.title.slice(0, 120) + " (" + id + "). Snapshot " + sid + ": " + c.answered + " answered, " +
+      c.skip + " skip, " + c.not_yet + " not yet, " + c.empty + " empty. Read db batches/" + id + "/submissions/" + sid + ".";
+    var sendingP = startSend(card, note);  // Claude reads the snapshot seconds later
+    var saving = flushBatch(id).then(function () {
+      return db.collection("batches/" + id + "/submissions").doc(sid).set({
+        at: new Date().toISOString(), id: sid, batchId: id, counts: c,
+        answers: b.questions.map(function (q) {
+          var a = answers[id][q.key], opt = (q.options || []).filter(function (o) { return o.id === a.choice; })[0];
+          return { n: q.n, key: q.key, question: q.question, kind: q.kind, choice: a.choice,
+            choiceLabel: opt ? opt.label : "", status: a.status, text: a.text };
+        })
+      });
+    });
+    Promise.all([saving, sendingP]).then(function (r) {
+      sendResult(id, sendMessage(r[1], sid, "Copy answers", "read my answers"));
+    }, function (e) {
+      sendResult(id, "The copy could not be saved (" + ((e && e.code) || "error") + "). Your answers are still here. Press Send again.");
+    });
+  }
+  function copyText(text, el) {
+    if (!navigator.clipboard) { flash(el, "Copy is blocked in this view"); return; }
+    navigator.clipboard.writeText(text).then(function () { flash(el, "Copied"); }, function () { flash(el, "Copy is blocked in this view"); });
+  }
+
+  // ---------- any additional questions ----------
+  function addEls() {
+    return { sec: $("additional"), ta: $("additional-text"), send: $("additional-send"),
+      hint: $("additional-hint"), status: $("additional-status") };
+  }
+  function addBusy() { return !!timers[ADD_T] || document.activeElement === $("additional-text"); }
+  function paintAdditional(force) {
+    var e = addEls();
+    if ((force || document.activeElement !== e.ta) && e.ta.value !== add.text) { e.ta.value = add.text; grow(e.ta); }
+    var empty = !add.text.trim();
+    e.send.disabled = !db || empty;  // off in demo and with nothing to send
+    e.send.setAttribute("aria-disabled", String(addSending || e.send.disabled));  // off, or busy while a Send runs
+    setText(e.hint, db && empty ? "Type something first" : "");
+  }
+  function showAdditional() {
+    var e = addEls();
+    e.sec.hidden = false;
+    if (!db) setText(e.status, demo ? "Demo: sending is off. Copy text works." : "");
+    paintAdditional();
+  }
+  function flushAdditional() {
+    clearTimeout(timers[ADD_T]); delete timers[ADD_T];
+    // A newer board text held during the edit wins over the older local text.
+    if (addLater && adoptAdd(addLater)) { paintAdditional(true); writeDraft(); }
+    addLater = null;
+    if (!db || add.updatedAt === 0 || written[ADD_T] === add.text) return inflight[ADD_T] || Promise.resolve();
+    var body = { text: add.text, updatedAt: add.updatedAt };
+    return writeDoc(ADD_T, db.collection("drafts").doc("additional"), body,
+      function () { written[ADD_T] = body.text; }, flushAdditional, null);
+  }
+  function touchAdditional() {
+    add.updatedAt = Date.now();
+    writeDraft(); paintAdditional();
+    if (!db) { setText("saved", "Saved in this browser"); return; }
+    setText("saved", "Saving…");
+    debounce(ADD_T, flushAdditional);
+  }
+  function subscribeAdditional() {
+    db.collection("drafts").onSnapshot(function (snap) {
+      snap.docs.forEach(function (d) {
+        if (d.id !== "additional") return;
+        var rec = d.data();
+        if (!rec) return;
+        written[ADD_T] = typeof rec.text === "string" ? rec.text : "";
+        if (addBusy()) {
+          // Never change the field under the viewer's hands; keep the newest record for later.
+          if (typeof rec.updatedAt === "number" && rec.updatedAt > add.updatedAt &&
+              (!addLater || rec.updatedAt > addLater.updatedAt)) addLater = rec;
+          return;
+        }
+        if (adoptAdd(rec)) { paintAdditional(); writeDraft(); }
+      });
+      // A browser draft newer than the board is written up once, on the first snapshot.
+      if (!addSynced) {
+        addSynced = true;
+        if (add.updatedAt && !timers[ADD_T] && !inflight[ADD_T] && written[ADD_T] !== add.text) flushAdditional();
+      }
+    }, function (e) {
+      setText("saved", "Additional questions stopped syncing (" + ((e && e.code) || "error") + "). Reload the page.");
+    });
+  }
+  function onSendAdditional() {
+    var e = addEls(), text = add.text;
+    if (addSending || !db || !text.trim()) return;
+    addSending = true;
+    paintAdditional();
+    setText(e.status, "Sending…");
+    var sid = snapshotId();
+    var note = "Additional questions submitted. Snapshot " + sid + " (" + text.length + " characters). Read db additional/" + sid + ".";
+    var sendingP = startSend(e.sec, note);
+    var saving = db.collection("additional").doc(sid).set({ at: new Date().toISOString(), id: sid, text: text });
+    Promise.all([saving, sendingP]).then(function (r) {
+      addSending = false;
+      // Clear only what was sent; text typed while sending stays.
+      if (add.text === text) {
+        add.text = ""; add.updatedAt = Date.now(); addLater = null;
+        paintAdditional(true); writeDraft(); flushAdditional();
+      }
+      paintAdditional();
+      setText(e.status, sendMessage(r[1], sid, "Copy text", "read my additional questions"));
+    }, function (err) {
+      addSending = false;
+      paintAdditional();
+      setText(e.status, "The copy could not be saved (" + ((err && err.code) || "error") + "). Your text is still here. Press Send again.");
+    });
+  }
+  function wireAdditional() {
+    var e = addEls();
+    adoptAdd(draft[addKey()]);
+    e.ta.addEventListener("input", function () { add.text = e.ta.value; grow(e.ta); touchAdditional(); });
+    e.sec.addEventListener("focusout", function () {
+      if (addLater && !timers[ADD_T]) flushAdditional();
+    });
+    e.send.addEventListener("click", onSendAdditional);
+    $("additional-copy").addEventListener("click", function () { copyText(add.text, $("additional-fallback")); });
+  }
+
+  // ---------- wiring ----------
+  function wire(section, id) {
+    section.querySelectorAll("article.q").forEach(function (card) {
+      var key = card.getAttribute("data-key"), q = questionOf(id, key), ta = card.querySelector("textarea");
+      ta.addEventListener("input", function () {
+        var a = answers[id][key], was = a.text;
+        a.text = ta.value;
+        // Typing an answer into an empty "Not yet" question answers it; Skip stays until un-chipped.
+        if (q.kind === "text" && a.status === "not_yet" && !was.trim() && a.text.trim()) a.status = "answered";
+        else a.status = derive(q, a, CHIPS.indexOf(a.status) >= 0 ? a.status : null);
+        grow(ta); touch(id, key);
+      });
+      card.addEventListener("focusout", function () { applyLater(id, key, true); });
+      card.querySelectorAll("[data-choice]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var a = answers[id][key], c = btn.getAttribute("data-choice");
+          a.choice = a.choice === c ? "" : c;
+          a.status = derive(q, a, null);
+          touch(id, key);
+        });
+      });
+      card.querySelectorAll("[data-status]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var a = answers[id][key], chip = btn.getAttribute("data-status");
+          a.status = a.status === chip ? derive(q, a, null) : chip;
+          touch(id, key);
+        });
+      });
+    });
+    var card = section.querySelector("[data-send-card]");
+    var sendBtn = card.querySelector("[data-send]");
+    sendBtn.disabled = !db;  // disabled only when this view cannot send at all
+    if (!db) setText(card.querySelector("[data-send-status]"), demo ? "Demo: sending is off. Copy answers works." : "");
+    showSending(id);
+    card.addEventListener("pointerenter", refreshCanSend);
+    card.addEventListener("focusin", refreshCanSend);
+    sendBtn.addEventListener("click", function () { onSend(id, card); });
+    card.querySelector("[data-copy]").addEventListener("click", function () {
+      copyText(answersMarkdown(id), card.querySelector("[data-fallback]"));
+    });
+    var dl = card.querySelector("[data-download]");
+    dl.hidden = !downloads;
+    dl.addEventListener("click", function () {
+      if (!downloads) return;
+      downloads.save({ filename: id + "-answers.md", data: answersMarkdown(id) }).then(function (r) {
+        flash(card.querySelector("[data-fallback]"), r && r.status === "saved" ? "Downloaded" : "");
+      }, function (e) {
+        if (e && DOWNLOAD_OFF.indexOf(e.code) >= 0) {
+          downloads = null;
+          document.querySelectorAll("[data-download]").forEach(function (x) { x.hidden = true; });
+        }
+        flash(card.querySelector("[data-fallback]"), "Download didn't happen (" + ((e && e.code) || "error") + ")");
+      });
+    });
+    if (observers[id]) { observers[id].disconnect(); delete observers[id]; }
+    if (isNew[id] && "IntersectionObserver" in window) {
+      var io = observers[id] = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { delete isNew[id]; io.disconnect(); delete observers[id]; renderRail(); }
+      });
+      io.observe(section);
+    }
+  }
+
+  // ---------- db ----------
+  function subscribeAnswers(id) {
+    if (subs[id]) return;
+    subs[id] = db.collection("batches/" + id + "/answers").onSnapshot(function (snap) {
+      if (!answers[id]) return;
+      snap.docs.forEach(function (d) {
+        var rec = d.data(), a = answers[id][d.id], t = k(id, d.id);
+        if (!rec || !a) return;
+        written[t] = sig({ text: rec.text || "", choice: rec.choice || "", status: rec.status });
+        if (busy(id, d.id)) {
+          // Never change a question under the viewer's hands; keep the newest record for later.
+          if (typeof rec.updatedAt === "number" && rec.updatedAt > a.updatedAt &&
+              (!later[t] || rec.updatedAt > later[t].updatedAt)) later[t] = rec;
+          return;
+        }
+        if (adopt(id, d.id, rec)) paintCard(id, d.id);
+      });
+      // A browser draft newer than the board is written up once, on the batch's first snapshot.
+      if (!drafted[id]) {
+        drafted[id] = true;
+        Object.keys(answers[id]).forEach(function (key) {
+          var a = answers[id][key], t = k(id, key);
+          if (a.updatedAt && !timers[t] && !inflight[t] && written[t] !== sig(a)) flush(id, key);
+        });
+      }
+      writeDraft(); renderRail(); paintTotals();
+    }, function (e) {
+      setText("saved", "Answers for one batch stopped syncing (" + ((e && e.code) || "error") + "). Reload the page.");
+    });
+  }
+  function onBatches(snap) {
+    var seen = {};
+    snap.docs.forEach(function (d) {
+      var b = cleanBatch(d.data(), d.id);
+      if (!b) {
+        console.warn("answer board: skipped malformed batch " + d.id);
+        if (batches[d.id]) seen[d.id] = true;  // keep the last good version on screen
+        return;
+      }
+      seen[d.id] = true;
+      if (!batches[d.id] && !firstBatches) isNew[d.id] = true;
+      batches[d.id] = b;
+      ensureAnswers(d.id);
+      if (b.status === "received") { if (subs[d.id]) { subs[d.id](); delete subs[d.id]; } }
+      else subscribeAnswers(d.id);
+    });
+    Object.keys(batches).forEach(function (id) {
+      if (!seen[id]) { if (subs[id]) { subs[id](); delete subs[id]; } delete batches[id]; }
+    });
+    if (!(snap.metadata && snap.metadata.fromCache)) { firstBatches = false; batchesLoaded = true; }
+    renderBatches();
+  }
+  function noBoard() {
+    $("additional").hidden = true;
+    setText("status-line", "");
+    $("status-line").innerHTML = 'Open this board on claude.ai to see your questions. <a href="#demo" id="demo-link">Preview a demo batch</a>';
+    $("status-line").hidden = false;
+    $("demo-link").addEventListener("click", function () { setTimeout(function () { location.reload(); }, 0); });
+  }
+  function startDemo() {
+    demo = true;
+    batches.demo = cleanBatch(DEMO, "demo");
+    ensureAnswers("demo");
+    wireAdditional();
+    showAdditional();
+    renderBatches();
+  }
+  function connect() {
+    var use = window.claude && window.claude.use;
+    if (typeof use !== "function") { noBoard(); return; }
+    use.call(window.claude, "comments").then(function (ns) { if (!ns) return; comments = ns; refreshCanSend(); }, function () {});
+    use.call(window.claude, "downloads").then(function (ns) {
+      if (!ns) return;
+      downloads = ns;
+      document.querySelectorAll("[data-download]").forEach(function (b) { b.hidden = false; });
+    }, function () {});
+    use.call(window.claude, "db").then(function (ns) {
+      if (!ns) { noBoard(); return; }
+      db = ns;
+      wireAdditional();
+      showAdditional();
+      subscribeAdditional();
+      db.collection("batches").onSnapshot(onBatches, function (e) {
+        setText("status-line", "The board's storage stopped (" + ((e && e.code) || "error") + "). Reload the page.");
+        $("status-line").hidden = false;
+      });
+    }, function () { noBoard(); });
+  }
+
+  // A re-render deferred because focus was inside a batch happens once focus leaves it.
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") refreshCanSend(); });
+  window.addEventListener("focus", refreshCanSend);
+  $("batches").addEventListener("focusout", function () {
+    setTimeout(function () {
+      if (openIds().some(function (id) { return rendered[id] !== batchSig(batches[id]); })) renderBatches();
+    }, 0);
+  });
+  if (location.hash === "#demo") startDemo(); else connect();
+})();
+</script>
+</body></html>

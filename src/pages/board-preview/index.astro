@@ -1,0 +1,64 @@
+---
+// src/pages/board-preview/index.astro — the list of board previews currently built.
+//
+// It exists for one structural reason as much as for the eye: `/board-preview/<slug>/` is a
+// NESTED route, so every preview page's breadcrumb names `/board-preview/` as its parent.
+// Without a page there that crumb is a dead internal link, which `scripts/redirect_check.py`
+// reports as a FAIL — correctly: a link that 404s is a link that 404s whether the page
+// carrying it is indexable or not.
+//
+// noindex, like the pages it lists, and covered by the same `board-preview` entry in
+// form_contract_audit.py's NON_CONTENT_ROUTES.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+interface Record_ { meta: { slug: string; status: string; preview?: boolean; research_as_of: string } }
+const files = import.meta.glob<Record_>('../../../data/boards/*.json', { eager: true, import: 'default' });
+const drafts = Object.values(files)
+  .filter((r) => r.meta.status !== 'approved' || r.meta.preview === true)
+  .sort((a, b) => a.meta.slug.localeCompare(b.meta.slug));
+const stamp = drafts.map((r) => r.meta.research_as_of).sort().at(-1) ?? '2026-09-19';
+const title = 'Board previews';
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': '/board-preview/#webpage',
+  url: '/board-preview/',
+  name: title,
+  datePublished: stamp,
+  dateModified: stamp,
+  inLanguage: 'en-GB',
+}];
+---
+
+<BaseLayout
+  title={title}
+  description="Hidden index of the board style previews currently built, one per draft board record."
+  noindex={true}
+  schema={schema}
+>
+  <div class="bpi">
+    <h1>Board previews</h1>
+    <p>
+      One page per draft board record, each rendering its sections three ways from the kit.
+      They are cut into the page boards by <code>scripts/build_board_previews.py</code>.
+    </p>
+    {drafts.length ? (
+      <ul>
+        {drafts.map((r) => (
+          <li><a href={`/board-preview/${r.meta.slug}/`}>/{r.meta.slug}/</a> — {r.meta.status}</li>
+        ))}
+      </ul>
+    ) : (
+      <p>No draft board records — every record is approved.</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  @layer components {
+    .bpi { max-width: 60ch; margin-inline: auto; padding: var(--space-8) var(--space-5) var(--space-12); }
+    .bpi h1 { font-family: var(--font-display); font-size: var(--text-3xl); }
+    .bpi ul { padding-left: var(--space-5); }
+    .bpi li { margin-block: var(--space-2); }
+  }
+</style>

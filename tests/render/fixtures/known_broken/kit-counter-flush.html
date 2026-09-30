@@ -1,0 +1,30 @@
+<!doctype html><meta charset=utf-8><title>known-broken: kit CounterStrip flush against the kit Hero</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  Identical to known_good/kit-counter-separated.html except that the strip keeps the hero's
+  own steel band and drops the rule: same tone, no border, no seam bar. This is what a
+  CounterStrip variant would look like if someone "tidied" the bed and the border out of
+  src/components/kit/CounterStrip.astro, and it is what the check must catch.
+-->
+<style>
+  body { margin:0; background:#F4F1EA; font:16px/1.5 system-ui; }
+  .kit-hero { background:#1F3A52; color:#F4F1EA; padding:80px 24px; }
+  .kit-hero h1 { margin:0 0 8px; font-size:44px; line-height:1.08; }
+  .counter-wrap { background:#1F3A52; color:#F4F1EA; padding:32px 24px; border:0; }
+  .counter-row { list-style:none; margin:0; padding:0; display:flex; gap:24px; text-align:center; }
+  .counter-row li { flex:1; }
+  .counter-row strong { display:block; font-size:36px; line-height:1.1; }
+  .counter-row span { font-size:15px; }
+</style>
+<section class="kit-hero">
+  <h1>Blue Staffy puppies raised in a family home</h1>
+  <p>Health-tested parents, Kennel Club registration paperwork, and UK delivery from £200.</p>
+</section>
+<section class="counter-wrap" data-counters aria-label="At a glance">
+  <ul class="counter-row">
+    <li><strong>6</strong><span>puppies available now</span></li>
+    <li><strong>£500</strong><span>refundable deposit</span></li>
+    <li><strong>£200–£350</strong><span>UK delivery by distance</span></li>
+  </ul>
+</section>
+<main><p>Body copy follows.</p></main>

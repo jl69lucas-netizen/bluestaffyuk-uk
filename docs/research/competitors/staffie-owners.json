@@ -1,0 +1,341 @@
+{
+ "id": "staffie-owners",
+ "root_domain": "staffie-owners.co.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": [
+   "staffie puppies",
+   "staffies for sale",
+   "staffie puppies for sale",
+   "kc registered staffie puppies for sale",
+   "kc registered staffie",
+   "staffie breeders",
+   "staffies puppies for sale",
+   "staffordshire bull terrier puppies for sale",
+   "staffordshire bull terrier puppies",
+   "blue staffordshire bull terrier puppies",
+   "blue staffordshire bull terrier",
+   "staffordshire bull terrier dogs and puppies",
+   "blue staffy",
+   "blue staffie puppies",
+   "blue staffie puppy",
+   "staffordshire bull terrier puppy",
+   "staffy puppy",
+   "staffie puppy",
+   "staffies puppies from trusted breeders",
+   "kc registered staffie puppies",
+   "staffie crossbreed puppies",
+   "blue staffie puppies for sale",
+   "blue staffy puppies",
+   "blue merla staffie",
+   "staffy puppy's for sale",
+   "staffie puppies in london",
+   "staffie puppy for sale",
+   "staffie puppy price",
+   "staffie price",
+   "staffordshire bull terrier for sale",
+   "staffies in london",
+   "staffies in manchester",
+   "staffies in birmingham",
+   "staffies in edinburgh",
+   "staffie with the average price",
+   "blue staffies",
+   "staffordshire bull terrier breeder",
+   "staffordshire bull terrier staffie breeder",
+   "staffie puppies for sale across essex",
+   "staffordshire bull terrier x collie puppies",
+   "blue staffy puppy",
+   "staffie cross boxer puppies",
+   "puppies staff staffy",
+   "staffie puppies for sale near essex",
+   "staffie puppies in essex",
+   "blue staffie puppies in essex",
+   "kc registered staffie puppies in essex",
+   "staffie puppies ready now in essex",
+   "staffie puppy for sale in essex"
+  ]
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "breed-guide": 1,
+   "city": 41,
+   "listing": 119,
+   "price": 1
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "Birmingham",
+   "Bristol",
+   "Cardiff",
+   "Coventry",
+   "Dundee",
+   "Edinburgh",
+   "Essex",
+   "Glasgow",
+   "Leeds",
+   "Leicester",
+   "Liverpool",
+   "London",
+   "Manchester",
+   "Middlesbrough",
+   "Nottingham",
+   "Oxford",
+   "South Yorkshire",
+   "Sunderland",
+   "Wolverhampton",
+   "York"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "Organization"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.staffie-owners.co.uk/",
+    "title": "Buy and sell Staffie puppies and dogs online | Staffie Owners",
+    "h1": "Staffies For Sale",
+    "h2": [
+     "Most recent Staffie puppies for sale",
+     "Male 6month Staffie",
+     "Upcoming Premium Black Staffy Litter | Champion Bloodlines | Ready Dec 18th",
+     "Pup for sale",
+     "Beautiful blue staffie puppies!! kc registered!!",
+     "Kc red chunky staffy males",
+     "Staffy x pocket bully",
+     "Staffordshire bull terrier pups",
+     "Staffordshire Bull Terrier puppy",
+     "Staffy cross ridgeback £600",
+     "Valglo Top Gun Pups",
+     "8 STUNNING PUPPIES FOR SALE",
+     "Male staff cross",
+     "🎨 Browse by Coat Colour",
+     "Helping You Find the Perfect Staffie Puppy",
+     "Find Staffie Puppies for Sale Near You",
+     "Advertise your Staffordshire Bull Terrier dogs and puppies for sale, for FREE"
+    ]
+   },
+   {
+    "url": "https://www.staffie-owners.co.uk/staffies-for-sale",
+    "title": "Staffordshire Bull Terrier Puppies For Sale | Staffie Owners",
+    "h1": "",
+    "h2": [
+     "Male 6month Staffie",
+     "Upcoming Premium Black Staffy Litter | Champion Bloodlines | Ready Dec 18th",
+     "Pup for sale",
+     "Beautiful blue staffie puppies!! kc registered!!",
+     "Kc red chunky staffy males",
+     "Staffy x pocket bully",
+     "Staffordshire bull terrier pups",
+     "Staffordshire Bull Terrier puppy",
+     "Staffy cross ridgeback £600",
+     "Valglo Top Gun Pups",
+     "8 STUNNING PUPPIES FOR SALE",
+     "Male staff cross",
+     "💙 BLUE STAFFORDSHIRE BULL TERRIER PUPPIES 💙",
+     "5 year old staffy needs rehomed",
+     "Pocket Bully Puppies",
+     "Staffordshire bull terrier puppies",
+     "Show Quality Blue Staffy puppies",
+     "Blue merla staffie",
+     "LOOKING FOR A DOG",
+     "Staffys for sale",
+     "Frequently Asked Questions"
+    ]
+   },
+   {
+    "url": "https://www.staffie-owners.co.uk/staffie-price",
+    "title": "How much does a Staffordshire Bull Terrier cost",
+    "h1": "",
+    "h2": [
+     "Average Staffie Puppy Price",
+     "Average Adult Staffie Price",
+     "Staffie Price by Location",
+     "Staffie Price by Colour"
+    ]
+   },
+   {
+    "url": "https://www.staffie-owners.co.uk/info-guides/staffordshire-bull-terrier-breed-information",
+    "title": "Staffordshire Bull Terrier Breed Information | Staffie Owners",
+    "h1": "",
+    "h2": [
+     "Breed History",
+     "Physical Characteristics",
+     "Temperament and Personality",
+     "Training and Socialization",
+     "Exercise and Activity Levels",
+     "Health and Lifespan",
+     "Grooming Needs",
+     "Living Conditions",
+     "Conclusion"
+    ]
+   },
+   {
+    "url": "https://www.staffie-owners.co.uk/staffies-for-sale/essex",
+    "title": "Staffordshire Bull Terrier Puppies For Sale In Essex | Staffie Owners",
+    "h1": "",
+    "h2": [
+     "Beautiful blue staffie puppies!! kc registered!!",
+     "Staffy cross ridgeback £600",
+     "5 year old staffy needs rehomed",
+     "Staffordshire Bull Terrier x collie Puppies",
+     "Staffy x French bulldog",
+     "Ready to leave now!!!",
+     "Blue Staffy puppies",
+     "Top quality staff pups ready now",
+     "Staffie cross boxer puppies",
+     "Male 6month Staffie",
+     "Staffy x pocket bully",
+     "Valglo Top Gun Pups",
+     "Male staff cross",
+     "💙 BLUE STAFFORDSHIRE BULL TERRIER PUPPIES 💙",
+     "Show Quality Blue Staffy puppies",
+     "Blue merla staffie",
+     "Staffy £450",
+     "Irish staffordshire bull terrier",
+     "Puppies for sale. Birmingham area.",
+     "Puppies staff staffy x pocket bully, merle, adorable, adorable",
+     "Frequently Asked Questions"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [
+    "hip score",
+    "eye score",
+    "elbow test",
+    "heart test"
+   ],
+   "vet_checks_mentioned": true,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 0
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 1670,
+   "url_count": 46,
+   "h2_per_page": {
+    "https://www.staffie-owners.co.uk/": 17,
+    "https://www.staffie-owners.co.uk/staffies-for-sale": 21,
+    "https://www.staffie-owners.co.uk/staffie-price": 4,
+    "https://www.staffie-owners.co.uk/info-guides/staffordshire-bull-terrier-breed-information": 9,
+    "https://www.staffie-owners.co.uk/staffies-for-sale/essex": 21
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 0,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the classifier counts no post, and none of its key pages is a post"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "no dated post URL in the map list and no post fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the classifier counts no post, and none of its key pages is a post"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 15,
+   "alt_text": "descriptive",
+   "alt_missing": 0,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "form"
+   ],
+   "prices_shown": true,
+   "price_amounts_as_printed": [
+    "£50",
+    "£100",
+    "£200",
+    "£350",
+    "£450",
+    "£480",
+    "£500",
+    "£550",
+    "£600",
+    "£700",
+    "£708",
+    "£750",
+    "£776",
+    "£900",
+    "£1,000",
+    "£1000",
+    "£1,033",
+    "£1,094",
+    "£1100",
+    "£1,129",
+    "£1,200",
+    "£1,220",
+    "£1,250",
+    "£1,298",
+    "£1,393",
+    "£1,500",
+    "£1,617",
+    "£1,695",
+    "£1,720",
+    "£1,850",
+    "£2,000",
+    "£2,200",
+    "£2,400",
+    "£2,450",
+    "£2,500",
+    "£2,750",
+    "£2,800",
+    "£3,000"
+   ],
+   "deposit_terms": "set by each seller in their own advert; the site states none, and one advert snippet on the Essex page says its deposit is part of the asking price",
+   "steps_to_enquire": null,
+   "urgency_signals": [
+    "ready-date",
+    "few-left"
+   ]
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "Staffie Owners wins breed-plus-town searches with a breed-only marketplace: a hub per town, county and region, filter pages by colour, price and KC registration, and live average-price data by town and colour, each hub closing on the same four-question FAQ. It cannot vouch for any seller, and its listings mix crosses, rehomes and even a wanted ad beside KC litters, so BSUK can beat it with one breeder's verified blue Staffy litters, named health tests and a transparent price page, on city pages that answer the same questions with first-hand detail."
+}

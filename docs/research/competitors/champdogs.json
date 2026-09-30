@@ -1,0 +1,144 @@
+{
+  "id": "champdogs",
+  "root_domain": "champdogs.co.uk",
+  "analysed_on": "2026-09-25",
+  "keywords": {
+    "status": "ok",
+    "values": [
+      "staffordshire bull terrier puppies",
+      "staffordshire bull terrier puppies for sale"
+    ]
+  },
+  "page_types": {
+    "status": "ok",
+    "values": {
+      "breed-guide": 5,
+      "health": 1,
+      "listing": 45
+    }
+  },
+  "cities": {
+    "status": "ok",
+    "values": []
+  },
+  "schema_types": {
+    "status": "ok",
+    "values": []
+  },
+  "pages": {
+    "status": "ok",
+    "fetched_on": "2026-09-25",
+    "values": [
+      {
+        "url": "https://www.champdogs.co.uk/",
+        "title": "Champdogs ® Promoting Responsible Dog Breeding",
+        "h1": "Promoting Responsible Dog Breeding",
+        "h2": [
+          "Create Your Own Website",
+          "List a Litter for Sale",
+          "Looking for a Puppy",
+          "Champdogs Litter Waiting List",
+          "Search for Dogs by Breed",
+          "Dogs Discussion",
+          "Which Champdogs site do you want to visit ?",
+          "Champdogs Mobile Site",
+          "Original Champdogs Site"
+        ]
+      },
+      {
+        "url": "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/puppies",
+        "title": "Staffordshire Bull Terrier Puppies for Sale",
+        "h1": "Staffordshire Bull Terrier Puppies",
+        "h2": [
+          "Which Champdogs site do you want to visit ?",
+          "Champdogs Mobile Site",
+          "Original Champdogs Site"
+        ]
+      }
+    ]
+  },
+  "trust": {
+    "status": "ok",
+    "values": {
+      "council_licence_shown": false,
+      "council": null,
+      "kc_registration_mentioned": false,
+      "health_tests_named": [
+        "L-2-HGA",
+        "HC",
+        "HSF4"
+      ],
+      "vet_checks_mentioned": false,
+      "breeding_since_as_worded": null,
+      "town": null,
+      "phone_shown": false,
+      "email_shown": false,
+      "contact_source": "raw-html",
+      "reviews_shown": 0
+    }
+  },
+  "content": {
+    "status": "ok",
+    "values": {
+      "homepage_words": 622,
+      "url_count": 94,
+      "h2_per_page": {
+        "https://www.champdogs.co.uk/": 9,
+        "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/puppies": 3
+      }
+    }
+  },
+  "blog": {
+    "status": "ok",
+    "values": {
+      "post_count": 0,
+      "post_folder": null,
+      "topics": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: the classifier counts no post, and none of its key pages is a post"
+      },
+      "posting_frequency": {
+        "status": "NOT FETCHED",
+        "reason": "no dated post URL in the map list and no post fetched"
+      },
+      "sampled_word_counts": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: the classifier counts no post, and none of its key pages is a post"
+      }
+    }
+  },
+  "visual": {
+    "status": "ok",
+    "values": {
+      "homepage_images": 3,
+      "alt_text": "descriptive",
+      "alt_missing": 0,
+      "video_present": false
+    }
+  },
+  "conversion": {
+    "status": "ok",
+    "values": {
+      "cta_types": [],
+      "prices_shown": false,
+      "price_amounts_as_printed": [],
+      "deposit_terms": null,
+      "steps_to_enquire": null,
+      "urgency_signals": [
+        "waiting-list",
+        "few-left"
+      ]
+    }
+  },
+  "technical": {
+    "status": "ok",
+    "values": {
+      "mobile_layout_ok": true,
+      "lighthouse_performance": {
+        "status": "NOT FETCHED",
+        "reason": "no Lighthouse run"
+      }
+    }
+  },
+  "key_insight": "Champdogs wins Staffy searches on pedigree-directory authority, not content: its one Staffy puppies page tags each litter by how fully the parents are health tested and lets buyers filter by named DNA tests, but it is thin, shows no prices and on the day listed six Staffy litters, none in a BSUK city. BSUK can beat it with real city pages, a stated price and deposit, and the same named L-2-HGA and HC results shown on every blue litter."
+}

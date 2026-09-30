@@ -1,0 +1,165 @@
+{
+  "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper via the claude.ai connector, 2026-09-25 (a re-buy on the user's '; refresh', ruling R4; replaces the condensed 2026-09-23 save). Request: keyword 'Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?', language en, location United Kingdom. The connector's response carries no cost field and no keyword field. Saved whole: the answer text and sources as returned, never condensed. Dropped as third-party contact details: from the local-business list's markdown, every street address and postcode (business names kept); from each local-business element, its address, phone, rating, reviews_count and url (profile, WhatsApp or site link; title, description and domain kept); from the answer text and the IDCBULLZ MANCHESTER brand entity, its Instagram profile link (a personal handle) — the name is kept as plain text and the brand entity keeps only its domain.",
+  "id": "09250837-2496-0629-0000-780d63b72584",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "items": [
+    {
+      "type": "chat_gpt_local_businesses",
+      "rank_group": 1,
+      "rank_absolute": 1,
+      "markdown": "- **IDCBULLZ MANCHESTER**\n- **Bonosue**\n- **Ravenscroft Staffordshire Bull Terries Puppies**\n- **Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs**\n- **Westie World**\n- **Starcinco Bull Terriers**\n- **Future Frenchies**\n- **Best Blue Staffy Puppies For Adoption**\n- **Earlsgrave Bull Terriers**\n- **Staffy Puppies for Sale UK**\n- **Staffy Society UK**\n- **Staffordshire Bull Terrier Puppy Breeder**\n",
+      "items": [
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "IDCBULLZ MANCHESTER",
+          "description": "Dog breeder",
+          "domain": "www.instagram.com"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Bonosue",
+          "description": "Dog breeder",
+          "domain": "www.bonosue.co.uk"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Ravenscroft Staffordshire Bull Terries Puppies",
+          "description": "Dog breeder",
+          "domain": "ukstaffypups.uk"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs",
+          "description": "Dog breeder",
+          "domain": "www.trojanstaffuk.com"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Westie World",
+          "description": "Dog breeder",
+          "domain": "wa.me"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Starcinco Bull Terriers",
+          "description": "Dog breeder"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Future Frenchies",
+          "description": "Dog breeder",
+          "domain": "futurefrenchies.uk"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Best Blue Staffy Puppies For Adoption",
+          "description": "Pet store"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Earlsgrave Bull Terriers",
+          "description": "Dog breeder",
+          "domain": "www.earlsgravebullterriers.com"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Staffy Puppies for Sale UK",
+          "description": "Dog breeder",
+          "domain": "wa.me"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Staffy Society UK",
+          "description": "Dog breeder"
+        },
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "Staffordshire Bull Terrier Puppy Breeder",
+          "description": "Dog breeder"
+        }
+      ]
+    },
+    {
+      "type": "chat_gpt_text",
+      "rank_group": 1,
+      "rank_absolute": 2,
+      "markdown": "If you’re looking around Manchester, I’d start with **The Royal Kennel Club’s puppy-finder** rather than buying from a general classified advert. Its current Staffordshire Bull Terrier search shows blue litters, including one in Smethwick, although availability changes quickly. [Royal Kennel Club](https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com)\n\nA local search also turns up businesses such as IDCBULLZ MANCHESTER and [Bonosue](http://www.bonosue.co.uk/) in Bolton, but I would **not treat a business listing or reviews as proof that a breeder is responsible**. Verify the breeder and litter independently.\n\n### What to ask the breeder\n\nFor a Staffy, these are the questions I'd put at the top of your list:\n\n- **Can I see the puppy with its mother, at the place where it was raised?** Don't agree to meet in a car park or have the puppy delivered to you.\n- **Can I see the mother's and father's health-test certificates/results?** For Staffordshire Bull Terriers, the Royal Kennel Club recommends testing for **HC-HSF4 hereditary cataracts and L-2-HGA**, plus **elbow testing and eye testing/litter eye screening**. [Royal Kennel Club](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com) [Royal Kennel Club](https://www.royalkennelclub.com/BreedSpecificRequirements?utm_source=chatgpt.com)\n- **What are the parents' actual results, rather than simply \"health tested\"?** Ask to see the certificates and check the registered dogs yourself.\n- **What is the parents' inbreeding coefficient, and can I see their KC records?**\n- **Has the puppy had a veterinary examination, vaccinations, microchip and worming?**\n- **How have the puppies been socialised?** Ask specifically about children, household noises, handling, other dogs and being left alone. PDSA also recommends asking breeders about early socialisation. [PDSA](https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier?utm_source=chatgpt.com)\n- **Can I see the puppy's paperwork before paying a deposit?**\n- **Will you take the dog back or help rehome it if I can't keep it later?**\n- **How many litters does the mother have, and how old is she?**\n- **Why did you choose these two dogs to breed?** A good breeder should be able to explain the health and temperament reasoning, not just talk about colour or appearance.\n\n### Be particularly careful about \"blue\"\n\nBlue is actually a **breed-standard colour** for Staffordshire Bull Terriers, so there's nothing inherently wrong with wanting a blue Staffy. [Royal Kennel Club](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com)\n\nBut I'd be wary of a breeder heavily marketing *\"rare blue,\" \"exclusive blue,\"* or unusually high prices. The Royal Kennel Club explicitly says **health and temperament should take priority over colour**. [Royal Kennel Club](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com)\n\nAlso, don't accept \"KC registered\" as equivalent to \"health tested.\" Those are separate things.\n\nIf you tell me **how far you're willing to travel from Manchester (e.g. 30, 60 or 100 miles) and whether you want a boy or girl**, I can search the current listings and narrow it down to breeders/litters worth contacting.\n\n",
+      "sources": [
+        {
+          "type": "chat_gpt_source",
+          "title": "Find a puppy | The Royal Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "The Royal Kennel Club Health Standard | The Royal Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/BreedSpecificRequirements?utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/BreedSpecificRequirements?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier - PDSA",
+          "domain": "www.pdsa.org.uk",
+          "url": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier?utm_source=chatgpt.com",
+          "source_name": "PDSA",
+          "markdown": "[PDSA](https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com)"
+        }
+      ],
+      "brand_entities": [
+        {
+          "type": "chat_gpt_brand_entity",
+          "title": "IDCBULLZ MANCHESTER",
+          "category": "local_business",
+          "markdown": "IDCBULLZ MANCHESTER",
+          "urls": [
+            {
+              "domain": "www.instagram.com"
+            }
+          ]
+        },
+        {
+          "type": "chat_gpt_brand_entity",
+          "title": "Bonosue",
+          "category": "local_business",
+          "markdown": "[Bonosue](http://www.bonosue.co.uk/)",
+          "urls": [
+            {
+              "url": "http://www.bonosue.co.uk/",
+              "domain": "www.bonosue.co.uk"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

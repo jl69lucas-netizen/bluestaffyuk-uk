@@ -1,0 +1,264 @@
+<title>BSUK Location Strategy</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Project 5 readiness</p><h1 class="title">Location pages strategy</h1></div>
+<div class="meta"><span class="pill">status: re-synthesised on the full research</span> <span class="pill">2026-09-25</span><br>docs/superpowers/sessions/2026-09-25-location-pages-strategy.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+STALE: docs/research/competitors/petsforlove.json (fetched_on NOT FETCHED — homepage gated, the site gave no response; the keyword-gap header lists it as its only stale report)
+fresh: docs/research/gap-matrix-2026-09-25.md, docs/research/keyword-gap-2026-09-25.md, docs/research/llm-intel/*-2026-09-25.json (every location page but Leeds; Manchester re-bought today), docs/research/llm-intel/blue-staffy-puppies-for-sale-leeds-2026-09-23.json, data/competitors.json, docs/research/competitors/*.json|md (every report 2026-09-25), docs/research/competitors/bsuk.json|md, data/page-map.json, data/locations.json — carrying on with what exists
+
+# Location pages strategy — 2026-09-25
+
+Scope: the 28 pages in `data/locations.json` (project 5), plus the comparison and guide pages the research supports as their link targets. This replaces the 2026-09-23 pilot strategy, which rested on three competitor reports; this one rests on all 21 registry entries.
+
+How the research was read:
+
+- **Breadth.** The matrix now has a report for every registry entry. Two limits remain. petsforlove is homepage-gated (site down), so it counts as "not fetched" in every row and gives no gaps. The tier-5 entry (staffordshirebullterrierkennel) has a homepage-only report: its keywords and page types are NOT FETCHED, but its cities (none) and schema were read. So the matrix's keyword and page-type counts (`/19`) leave the tier-5 report out, while its city and schema counts (`/20`) include it. The tier-5 report lists no city, so it adds to no city's N; its schema does list Person, so the Person 5/20 row counts it. The tier-5 entry appears below only as a risk, never as a model or a link.
+- **The keyword-gap file is not provisional.** Its BSUK source is the BSUK profile (`bsuk.json`), not the page-map fallback. It no longer carries the pilot's "how much will a pet cost" row, so that row is not carried over. Its location-bound high rows are London, Manchester, Liverpool (two rows), Essex and Dundee. The file matched a stub for Essex only: the London, Liverpool, Manchester and Dundee headings carry extra words ("dogs", "near me", "0 ads", the run-together "salein"), so the script scored them as word topics. They are quoted as printed and not re-scored. For London, Liverpool and Manchester, the profile lists no page and the page map holds a stub at that city, so each row is a **project 5 rebuild of that stub**, never a new URL. Dundee's page is indexable (the profile lists it), so its row is a refresh of the existing page.
+- **Stubs versus indexable pages.** The profile's indexable location pages are Aberdeen, Dundee, Edinburgh, Hull, Inverness, Middlesbrough, Oxford, Sunderland and York, plus the UK page and the Glasgow breeding-dogs page. Every other page in `data/locations.json` is a `noindex, follow` stub (`defects: stub`), and each stub is a project 5 rebuild of its existing URL. The matrix marks every city "BSUK has it: yes" because the pages *name* all 25 cities (the "Cities We Serve" block). Those rows are quoted as printed and not re-marked. For a stub city, the gap is the page, not the name.
+- **LLM intel.** There are three `page_source.kind`s, and bands are compared only within one kind. **dist** covers the indexable pages (not provisional). **page-map** covers the stubs that have no question file (provisional, checked against the page map's headings). **question-file** covers Manchester and Leeds (provisional). The UK page (dist) and the licensed-breeder stub (page-map) share one question, and so do the two Glasgow pages (dist and page-map). Each pair is one answer read against two different page sources, so its bands are never compared. `bsuk_cited` is `false` in every file. The `local_businesses` lists hold breed clubs, rescues, adoption listings and other breeds' kennels; only registry competitors are counted as competitors here.
+- **Scales.** The matrix's "high / medium / low" is a share of competitors. The keyword-gap's "high / medium" is a points score. Each use below says which one, and the two are never merged.
+- **No traffic figures.** GSC and GA4 are not fetched until project 6, so no traffic, ranking or volume figure appears here.
+- **Flag for the architect, outside the build order.** `bsuk.md` (Conversion) records that the older indexable location pages still print terms the rebuilt pages have retired. All nine city pages print a flat delivery fee. Aberdeen, Edinburgh, the UK hub and the Glasgow breeding-dogs page print a price band for puppies that are no longer listed. Hull calls the deposit non-refundable. `bsuk.md` (Trust) adds that the older UK hub still calls the business council-licensed, which is an unconfirmed licence claim. These are live, indexable defects under the facts rules, whichever strategy runs. Correcting them is a fix, not a page build, so it is not ranked in the order below.
+</script>
+<script type="text/markdown" data-title="Strategy A — Contest order: city pages ranked by the research">
+**Thesis.** The most contested cities are the stubs. London (12/20), Manchester (11/20) and Birmingham (9/20) top the matrix city gaps, and every city at 8/20 is a noindex stub too. The location-bound high keyword-gap rows (London, Manchester, Liverpool, Essex) all land on stubs, each scored 10 (3+2+3+2). The competitor pages that hold those rows are marketplace town pages. The Preloved report finds its Manchester Staffy page "shows the same seven UK-wide adverts" as its national page. UKPets's town pages are "one national Staffy feed" under a swapped town name. Forever Puppy's Bristol page "returned exactly the same national list" as its hub. Gumtree's Liverpool hub has no adverts of its own and is marked noindex. Every one of those reports names the same counter: a real local page from one breeder. So A builds or refreshes all 28 pages in the order the research ranks them. Keyword-gap high rows come first, then matrix city share. Within one share, a stub goes before an indexable page, and ties follow the matrix's printed order. Each page is built deep from its own outline. The guides follow.
+
+**Target clusters.**
+- Full-breed-name buying phrases on city pages (keyword-gap, high band, points): "staffordshire bull terrier puppies and dogs for sale in london", "staffordshire bull terrier puppies for salein manchester greater manchester" (the row's own spelling), "staffordshire bull terrier puppies for sale near me in liverpool merseyside", "staffordshire bull terrier puppies for sale in essex" and "staffordshire bull terrier dogs and puppies for sale in dundee".
+- Breed-plus-town phrases from the matrix keyword gaps (1/19 each, low priority, matrix scale): "staffordshire bull terrier in bristol / coventry / essex / glasgow / leeds / nottingham", "staffies in birmingham / edinburgh / london / manchester", "staffordshire bull terriers in dundee", "staffie puppies in london" and "staffie puppies in essex".
+- The buyer checks each page's own AI answer names. The dist results (indexable pages, not provisional) show "meet the mother" in the high band on every one: the answer names it and the page does not carry it. "kc registration" and "contract" are high on most dist results. The page-map results (stubs, provisional) show every safety entity their answer names in the high band, because a stub carries none. The question-file results (provisional) are microchip and vaccinations for Manchester, and L-2-HGA, HC-HSF4 and meet the mother for Leeds.
+
+**Cluster → page map.** Each city → its own existing URL: a stub is a rebuild, and an indexable page is a refresh that keeps its verbatim set under the faithful-rewrite rule. Never a second URL for a city. The Glasgow for-sale stub takes "staffordshire bull terrier in glasgow". The Glasgow breeding-dogs page keeps its stud-dog topic, so the two do not compete. The three national high rows in the keyword-gap file ("staffordshire bull terrier puppies", "staffordshire bull terrier dogs puppies" and "staffy puppies quality blue", each 10 (3+2+3+2)) are not location topics. They go to the architect for the listing and home pages, not onto a city page. The "questions to ask the breeder" row, the cost rows and the care rows go to the guides after the cities.
+
+**Internal-link plan.** Every city page links:
+- up to the UK hub (`/uk-locations/blue-staffy-puppies-uk/`) and the index (`/uk-locations/`);
+- down to the listing (`/available-puppies/`);
+- across to the existing indexable proof pages the profile lists: the buying guide (`/uk-blue-staffy-puppy-buying-guide/`, whose breeder-questions section answers the checks above), the health page (`/blue-staffy-health-uk/`) and the price page (`/blue-staffy-pup-sale-uk/`).
+
+Neighbours link to each other: Yorkshire (Leeds, York, Hull, South Yorkshire), Scotland (Glasgow, Edinburgh, Aberdeen, Dundee, Inverness), the West Midlands and Staffordshire (Birmingham, Coventry, Wolverhampton, Newcastle-under-Lyme), the East Midlands (Nottingham, Leicester) and the North East (Sunderland, Middlesbrough). Once built, the licensed-breeder page and the guides get a link from every city page.
+
+Outbound authority links sit beside a buying check. They go to the Royal Kennel Club (tier 2, `link_allowed: true`, cited in most of the AI answers) and to the RSPCA or the PDSA (tier 3, `link_allowed: true`, each cited in some answers). No link goes to a tier-1 breeder, even though Trojanstaff and UKStaffyPups appear in many answers' `local_businesses`. No link goes to a classifieds competitor, and never to the tier-5 entry.
+
+**Schema plan.** Keep what the profile shows BSUK already emits on location pages (LocalBusiness, FAQPage, BreadcrumbList, Place and the rest). Add Person on the licensed-breeder page. That fills the matrix schema gap Person 5/20 (medium priority, matrix scale; the 5/20 includes the tier-5 report). SearchAction 5/20 is a site-wide item, not a location page, and goes to the architect. No schema claims a licence number: that claim stays behind `LICENCE_CLAIM_PLACEHOLDER`.
+
+**Build order and effort.** The Concrete Artifact order. Stubs are written from nothing, each from its own outline through `grill-me`. The indexable pages are lighter refreshes: they keep their verbatim set, gain answers for their dist high-band checks, and add links to the proof pages. The licensed-breeder page and the UK hub come after the cities, so the hub can link to every rebuilt city. The guides come last.
+
+**Expected outcome (no traffic figure).** The contested cities stop being noindex placeholders in the order competitors contest them. Each city page carries the local detail and the buyer checks that the marketplace town pages lack. Each also answers the checks its own AI answer names, which makes it a candidate citation where today no answer cites BSUK.
+
+**Risks.**
+- City priority measures how many competitors publish a town page, not local demand. Several of those pages are national feeds.
+- The tier-5 entry holds a London map-pack slot (registry notes), and London is built first. The London page must answer with breeder proof, never by naming or linking that entry.
+- The licensed-breeder page's central claim stays a placeholder until the breeder confirms the licence. The "licence" entity is also high on several dist answers (Dundee, Edinburgh, Hull, Inverness, Oxford). Those pages must answer it without asserting a licence.
+- Building the pages one after another invites templated prose, which the write-from-the-outline rule forbids.
+- The refreshes sit mid-order. The retired terms flagged above stay live unless they are fixed separately.
+- petsforlove is not in any count.
+</script>
+<script type="text/markdown" data-title="Strategy B — Answer pages first, cities as spokes">
+**Thesis.** No AI answer cites BSUK, and every answer is a buyer checklist. Health tests, meeting the mother and vaccinations are named in every llm-intel file. So B bets on the answer layer first. It builds the pages that answer those checks once, in depth:
+- a questions-to-ask-the-breeder page ("questions to ask the breeder", 7 (0+2+3+2), high band on the points scale; matrix page type faq 4/19, medium);
+- a Staffy cost page ("how much does a staffordshire bull terrier cost" and "the cost of owning a dog", 5 (0+2+3+0) each, medium; matrix price 4/19);
+- a care guide ("crate training your dog" and "dog training", 5 (0+2+3+0) each, medium; matrix care-guide 4/19);
+- the licensed-breeder page with Person schema.
+
+Then it refreshes the indexable location pages to link in, because those pages are live today. Last, it rebuilds every stub in one pass as a lighter spoke that sends buyers to the answer pages. The bet is that one strong answer page earns citations for all 28 cities better than 28 separate city answers.
+
+**Target clusters.**
+- Buyer questions: the keyword-gap high row above. It comes from the Royal Kennel Club's breeder-questions guide (tier 2), whose report says it gives two question lists (phone call and visit). Add the entities every AI answer names.
+- Cost: the two medium cost rows. The PDSA report (tier 3) shows a vet charity setting out set-up, monthly and lifetime costs. BSUK's own price page is typed a listing, so the matrix counts price as a gap.
+- Care: the two medium training rows and the care-guide page type.
+- Trust: the licensed-breeder stub, and Person 5/20 (matrix schema, medium; includes the tier-5 report).
+- Then the city stubs, in one batch with no research-ranked order.
+
+**Cluster → page map.**
+- Buyer-questions page → new faq page. The buying guide's existing questions section links to it and keeps its verbatim heading.
+- Cost page → new page, linked to and from the existing price page.
+- Care guide → new page under the guides hub (`/blue-staffy-blog-guides/`).
+- Licensed breeder → its existing stub, rebuilt.
+- Each city → its existing URL (stub rebuild or indexable refresh).
+
+**Internal-link plan.** The answer pages form a hub under the guides index. Each answer page links to the licensed-breeder page, the health page and the listing. City pages carry a short local section, then link to all the answer pages. Outbound links are as in A: the Royal Kennel Club, the RSPCA and the PDSA. Never a tier-1 breeder, a classifieds competitor or the tier-5 entry.
+
+**Schema plan.** FAQPage on the questions page, Article on the cost and care pages, Person on the licensed-breeder page. City pages as in A.
+
+**Build order and effort.** The answer pages and the licensed-breeder page come first: fewer pages, heavier research each. Then the indexable location refreshes. Then all stubs in one batch. Most of the writing effort goes early; the stubs get less each.
+
+**Expected outcome (no traffic figure).** The faq, price and care-guide page-type gaps close first. When city pages ship, each one links to real depth, and the buyer checklist exists once, on a page an engine can cite.
+
+**Risks.**
+- Every stub stays noindex through the whole answer phase. That includes London (12/20), Manchester (11/20) and the high keyword-gap rows at 10 (3+2+3+2).
+- The answer pages compete with the Royal Kennel Club, RSPCA and PDSA pages. Those reports say those pages rank on registry or charity authority.
+- Thin spokes are what the marketplace town pages already are, which is the weakness every marketplace report names.
+- A single-batch city pass invites the templated prose the write-from-the-outline rule forbids.
+- The questions page must not compete with the buying guide's own questions section.
+</script>
+<script type="text/markdown" data-title="Recommendation">
+**Pick: Strategy A — Contest order: city pages ranked by the research.** It is not provisional. The WHY rests on keyword-gap rows scored from the BSUK profile (not the page-map fallback) and on the matrix. The page-map and question-file llm-intel results are provisional and are used as support only, marked as such. No tie-break was needed: A leads with the higher score in the same band and the larger matrix share. Had one been needed, rule one (highest keyword-gap band first) would not separate them, because both lead with a high-band row. Rule two (highest matrix share first) would pick A: its first page, London, is 12/20 on the city scale, against B's faq 4/19.
+
+**WHY.**
+- **The high rows are on stubs.** The keyword-gap file's location-bound high rows land on London, Manchester, Liverpool and Essex at 10 (3+2+3+2) each (points scale), and all four are noindex stubs. The file itself names the Essex rebuild ("project 5 rebuild: /uk-locations/staffy-puppies-for-sale-essex/"). B's lead row, "questions to ask the breeder", scores 7 (0+2+3+2). A closes the rows scored 10 first.
+- **The most contested cities are stubs.** On the matrix city scale, London is 12/20, Manchester 11/20 and Birmingham 9/20, and every city at 8/20 is a stub too. Every one of them is a `noindex, follow` stub in `data/locations.json` (the /20 includes the tier-5 report, which lists no city). B keeps every one of them noindex through its whole answer phase.
+- **The rival pages are not local.** The marketplace town pages behind these rows are national feeds with a town name: Preloved's Manchester page, UKPets's Dundee page and Forever Puppy's Bristol page. Gumtree's Liverpool hub is empty and noindex. Each of those reports says the counter is a real local page from one breeder. That is A's page type, not B's thin spoke.
+- **Stubs answer nothing.** No llm-intel file has `bsuk_cited` true. The page-map results for the stubs (provisional) put every buyer check their answer names in the high band, because a stub answers none of them.
+
+**The pick's downside.**
+- It delays the faq, price and care-guide page types (each 4/19, medium on the matrix scale) and the "questions to ask the breeder" row (7 (0+2+3+2), high on the points scale) until every location page is done. Until then, city pages send buyers to a guides hub whose blog holds one post of 162 words. B would close those gaps first.
+- It puts the indexable refreshes mid-order. Oxford and Sunderland (7/20) wait behind the 8/20 stubs, so the retired terms flagged above stay live for longer unless they are fixed separately.
+- Its city ranking measures how many competitors publish a town page. It does not measure local demand, and GSC is not fetched until project 6 to check it.
+
+**First three build steps.**
+1. Rebuild the London stub (`/uk-locations/blue-staffy-puppies-london/`) on "staffordshire bull terrier puppies and dogs for sale in london". Answer the page-map high-band checks (provisional): health tests, L-2-HGA, HC-HSF4, meet the mother, microchip, vaccinations, KC registration, licence and contract. The licence answer stays a placeholder. Carry breeder proof against the tier-5 map-pack listing, never naming or linking it. Build through `grill-me`.
+2. Rebuild the Manchester stub (`/uk-locations/blue-staffy-puppies-manchester-uk/`) on the Manchester high row. Answer the question-file high-band checks (provisional): microchip and vaccinations. Link out to the Royal Kennel Club and the PDSA, both cited in its answer.
+3. Rebuild the Liverpool stub (`/uk-locations/staffy-puppies-for-sale-liverpool/`) on "staffordshire bull terrier puppies for sale near me in liverpool merseyside". Answer its page-map high-band checks (provisional). The Gumtree report shows the rival Liverpool hub has no local adverts, so this page carries real local detail.
+</script>
+<script type="text/markdown" data-title="Concrete Artifact">
+This is the build order for the 28 location pages, then the guides they link to. Row order is the build order. **Gap score:** a keyword-gap score is quoted with its parts and band (points scale). A matrix count is labelled with its table and priority (share scale). Every matrix city count is out of 20, and that 20 includes the tier-5 homepage-only report, which lists no city. The topic cell names each page's llm-intel `page_source.kind`.
+
+| topic or page | target keyword | gap score | intent | link role | new or rebuild |
+|---|---|---|---|---|---|
+| London — `/uk-locations/blue-staffy-puppies-london/` (llm-intel: page-map, provisional) | staffordshire bull terrier puppies and dogs for sale in london | 10 (3+2+3+2) high (keyword-gap); matrix city 12/20; matrix keyword "staffies in london" 1/19 low | transactional, local | city spoke → UK hub, listing, buying guide; tier-5 map-pack listing is a risk, never a link | rebuild (stub, project 5) |
+| Manchester — `/uk-locations/blue-staffy-puppies-manchester-uk/` (question-file, provisional) | staffordshire bull terrier puppies for salein manchester greater manchester (the row's own spelling) | 10 (3+2+3+2) high (keyword-gap); matrix city 11/20; matrix keyword "staffies in manchester" 1/19 low | transactional, local | city spoke → UK hub, listing, buying guide | rebuild (stub, project 5) |
+| Liverpool — `/uk-locations/staffy-puppies-for-sale-liverpool/` (page-map, provisional) | staffordshire bull terrier puppies for sale near me in liverpool merseyside | 10 (3+2+3+2) high on both Liverpool rows (keyword-gap); matrix city 8/20 | transactional, local | city spoke → UK hub, listing, buying guide | rebuild (stub, project 5) |
+| Essex — `/uk-locations/staffy-puppies-for-sale-essex/` (page-map, provisional) | staffordshire bull terrier puppies for sale in essex | 10 (3+2+3+2) high (keyword-gap; the file names this rebuild); matrix city 8/20; matrix keyword "staffordshire bull terrier in essex" 1/19 low | transactional, local | city spoke → UK hub, listing, buying guide | rebuild (stub, project 5) |
+| Dundee — `/uk-locations/blue-staffy-puppies-dundee/` (dist) | staffordshire bull terrier dogs and puppies for sale in dundee | 10 (3+2+3+2) high (keyword-gap); matrix city 7/20; matrix keyword "staffordshire bull terriers in dundee" 1/19 low | transactional, local | city spoke; Scotland group | refresh (indexable; keeps its verbatim set) |
+| Birmingham — `/uk-locations/blue-staffy-puppies-birmingham/` (page-map, provisional) | staffies in birmingham | matrix city 9/20; matrix keyword 1/19 low | transactional, local | city spoke; West Midlands group | rebuild (stub, project 5) |
+| Bristol — `/uk-locations/blue-staffy-puppies-bristol-uk/` (page-map, provisional) | staffordshire bull terrier in bristol | matrix city 8/20; matrix keyword 1/19 low | transactional, local | city spoke | rebuild (stub, project 5) |
+| Cardiff — `/uk-locations/staffy-puppies-cardiff-wales/` (page-map, provisional) | staffy puppies cardiff | matrix city 8/20 | transactional, local | city spoke | rebuild (stub, project 5) |
+| Coventry — `/uk-locations/buy-blue-staffy-puppy-coventry-area/` (page-map, provisional) | staffordshire bull terrier in coventry | matrix city 8/20; matrix keyword 1/19 low | transactional, local | city spoke; West Midlands group | rebuild (stub, project 5) |
+| Glasgow — `/uk-locations/staffy-puppies-for-sale-glasgow/` (page-map, provisional; shares its question with the breeding-dogs page) | staffordshire bull terrier in glasgow | matrix city 8/20; matrix keyword 1/19 low | transactional, local | city spoke; Scotland group; links to the breeding-dogs page | rebuild (stub, project 5) |
+| Leeds — `/uk-locations/blue-staffy-puppies-for-sale-leeds/` (question-file, provisional) | staffordshire bull terrier in leeds | matrix city 8/20; matrix keyword 1/19 low | transactional, local | city spoke; Yorkshire group | rebuild (stub, project 5) |
+| Wolverhampton — `/uk-locations/staffy-puppies-wolverhampton/` (page-map, provisional) | staffy puppies wolverhampton | matrix city 8/20 | transactional, local | city spoke; West Midlands group | rebuild (stub, project 5) |
+| Nottingham — `/uk-locations/staffy-puppies-for-sale-nottingham/` (page-map, provisional) | staffordshire bull terrier in nottingham | matrix city 7/20; matrix keyword 1/19 low | transactional, local | city spoke; East Midlands group | rebuild (stub, project 5) |
+| Oxford — `/uk-locations/blue-staffy-puppies-oxford/` (dist) | blue staffy puppies oxford | matrix city 7/20 | transactional, local | city spoke | refresh (indexable) |
+| Sunderland — `/uk-locations/blue-staffy-puppies-sunderland/` (dist) | blue staffy puppies sunderland | matrix city 7/20 | transactional, local | city spoke; North East group | refresh (indexable) |
+| Leicester — `/uk-locations/blue-staffy-puppies-for-sale-in-leicester/` (page-map, provisional) | blue staffy puppies for sale in leicester | matrix city 6/20 | transactional, local | city spoke; East Midlands group | rebuild (stub, project 5) |
+| Edinburgh — `/uk-locations/blue-staffy-puppies-edinburgh/` (dist) | staffies in edinburgh | matrix city 6/20; matrix keyword 1/19 low | transactional, local | city spoke; Scotland group | refresh (indexable) |
+| Hull — `/uk-locations/blue-staffy-puppies-hull/` (dist) | blue staffy puppies hull | matrix city 6/20 | transactional, local | city spoke; Yorkshire group | refresh (indexable) |
+| York — `/uk-locations/blue-staffy-puppies-york/` (dist) | blue staffy puppies york | matrix city 6/20 | transactional, local | city spoke; Yorkshire group | refresh (indexable) |
+| South Yorkshire — `/uk-locations/blue-staffy-puppies-south-yorkshire/` (page-map, provisional) | blue staffy puppies south yorkshire | matrix city 5/20 | transactional, local | city spoke; Yorkshire group | rebuild (stub, project 5) |
+| Aberdeen — `/uk-locations/blue-staffy-puppies-aberdeen/` (dist) | blue staffy puppies aberdeen | matrix city 5/20 | transactional, local | city spoke; Scotland group | refresh (indexable) |
+| Cornwall — `/uk-locations/staffy-puppies-for-sale-cornwall/` (page-map, provisional) | staffy puppies for sale cornwall | matrix city 4/20 | transactional, local | city spoke | rebuild (stub, project 5) |
+| Middlesbrough — `/uk-locations/blue-staffy-puppies-middlesbrough/` (dist) | blue staffy puppies middlesbrough | matrix city 4/20 | transactional, local | city spoke; North East group | refresh (indexable) |
+| Inverness — `/uk-locations/blue-staffy-puppies-inverness/` (dist) | blue staffy puppies inverness | matrix city 3/20 | transactional, local | city spoke; Scotland group | refresh (indexable) |
+| Newcastle-under-Lyme — `/uk-locations/blue-staffies-newcastle-under-lyme/` (page-map, provisional) | blue staffies newcastle under lyme | matrix city 2/20 | transactional, local | city spoke; West Midlands group | rebuild (stub, project 5) |
+| Licensed breeder — `/uk-locations/uk-staffordshire-bull-terrier-breeder/` (page-map, provisional; shares its question with the UK page) | uk staffordshire bull terrier breeder | no keyword-gap or city row; matrix schema Person 5/20 medium (includes the tier-5 report) | commercial, trust | trust page linked from every city page; Person schema; licence claim stays a placeholder | rebuild (stub, project 5) |
+| UK — `/uk-locations/blue-staffy-puppies-uk/` (dist) | blue staffy puppies uk | no location row (the national high rows go to the listing and home pages) | transactional, national | hub: links to every city page, refreshed after them | refresh (indexable) |
+| Glasgow breeding dogs — `/uk-locations/staffy-breeding-dogs-glasgow/` (dist) | staffy breeding dogs glasgow | no row in this research | informational, trust | parent-dog proof page linked from the Glasgow city page | refresh (indexable; keeps its stud-dog topic) |
+| Questions to ask a Staffy breeder | questions to ask the breeder | 7 (0+2+3+2) high (keyword-gap); matrix page type faq 4/19 medium | informational, buyer checklist | guide linked from every city page; the buying guide's questions section links to it | new (faq page) |
+| Cost of owning a Staffy | how much does a staffordshire bull terrier cost | 5 (0+2+3+0) medium (keyword-gap); "the cost of owning a dog" 5 (0+2+3+0) medium; matrix page type price 4/19 medium | informational, commercial | guide linked from every city page and to and from the existing price page | new |
+| Staffy care guide | crate training your dog | 5 (0+2+3+0) medium (keyword-gap); "dog training" 5 (0+2+3+0) medium; matrix page type care-guide 4/19 medium | informational | guide linked from every city page | new |
+| Blue or black Staffy comparison | blue and black staffy | matrix keyword 2/19 low; "blue or black staffordshire bull terrier" 1/19 low | comparison | guide linked from every city page and the listing | new (comparison page) |
+</script>
+<script type="text/markdown" data-title="Sources">
+- `docs/research/gap-matrix-2026-09-25.md`
+- `docs/research/keyword-gap-2026-09-25.md`
+- `docs/research/llm-intel/blue-staffy-puppies-london-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-manchester-uk-2026-09-25.json`
+- `docs/research/llm-intel/staffy-puppies-for-sale-liverpool-2026-09-25.json`
+- `docs/research/llm-intel/staffy-puppies-for-sale-essex-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-dundee-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-birmingham-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-bristol-uk-2026-09-25.json`
+- `docs/research/llm-intel/staffy-puppies-cardiff-wales-2026-09-25.json`
+- `docs/research/llm-intel/buy-blue-staffy-puppy-coventry-area-2026-09-25.json`
+- `docs/research/llm-intel/staffy-puppies-for-sale-glasgow-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-for-sale-leeds-2026-09-23.json`
+- `docs/research/llm-intel/staffy-puppies-wolverhampton-2026-09-25.json`
+- `docs/research/llm-intel/staffy-puppies-for-sale-nottingham-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-oxford-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-sunderland-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-for-sale-in-leicester-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-edinburgh-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-hull-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-york-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-south-yorkshire-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-aberdeen-2026-09-25.json`
+- `docs/research/llm-intel/staffy-puppies-for-sale-cornwall-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-middlesbrough-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-inverness-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffies-newcastle-under-lyme-2026-09-25.json`
+- `docs/research/llm-intel/uk-staffordshire-bull-terrier-breeder-2026-09-25.json`
+- `docs/research/llm-intel/blue-staffy-puppies-uk-2026-09-25.json`
+- `docs/research/llm-intel/staffy-breeding-dogs-glasgow-2026-09-25.json`
+- `data/competitors.json`
+- `docs/research/competitors/bsuk.json`
+- `docs/research/competitors/bsuk.md`
+- `docs/research/competitors/preloved.md`
+- `docs/research/competitors/ukpets.md`
+- `docs/research/competitors/foreverpuppy.md`
+- `docs/research/competitors/gumtree.md`
+- `docs/research/competitors/puppies.md`
+- `docs/research/competitors/pets4homes.md`
+- `docs/research/competitors/staffie-owners.md`
+- `docs/research/competitors/royalkennelclub.md`
+- `docs/research/competitors/rspca.md`
+- `docs/research/competitors/pdsa.md`
+- `docs/research/competitors/trojanstaffuk.md`
+- `docs/research/competitors/ukstaffypups.md`
+- `docs/research/competitors/staffordshirebullterrierkennel.md`
+- `data/locations.json`
+- `data/page-map.json`
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# Location pages strategy — 2026-09-25\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

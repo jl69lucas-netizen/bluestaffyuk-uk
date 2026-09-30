@@ -1,0 +1,221 @@
+<title>BSUK Foundation Spec</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Project 1 of 6</p><h1 class="title">Foundation design spec</h1></div>
+<div class="meta"><span class="pill">status: approved</span> <span class="pill">2026-09-15</span><br>docs/superpowers/specs/2026-09-15-foundation-design.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+Date: 2026-09-15. Status: **approved** 2026-09-15 (written review complete).
+</script>
+<script type="text/markdown" data-title="0. Context">
+BlueStaffyUK is a Glasgow-based Staffordshire Bull Terrier puppy breeder. The WordPress site at
+bluestaffyuk.uk is dead (domain expired). Its static export lives in two places:
+
+- GitHub `jl69lucas-netizen/bluestaffyuk-uk` (April 14 2026), local clone `~/bluestaffyuk-site` — **source of truth**
+- `~/Downloads/bluestaffyuk-cms/Assets/Images/simply-static-1-1775167745.zip` (April 2 2026) — fallback check only
+
+The content ranked on Google and Bing and is migrated **verbatim**. Content refresh, redesign,
+new pages and launch are later projects. This spec covers only the Foundation.
+
+The six-project sequence (each with its own spec → plan → build):
+
+1. **Foundation** (this spec)
+2. System transfer — port CAG skills/agents/board/gates from `~/Downloads/CAG`, re-map parrot facts to dog facts, delete the old `bluestaffyuk` MCP
+3. Design system and component variations — tokens, four logos, 5× variations per component, Claude Design prompt pack
+4. Page rebuilds — the ten rich pages through the board system with content refresh
+5. New pages — 28 location pages, comparison cluster, two new blog posts (transactional, commercial)
+6. Launch — new domain, phone number, GSC, GA4, Bing, IndexNow
+
+Decisions locked so far: Astro 6.3.1 + Tailwind 4.3 (matches CAG, zero-rework port);
+new repo at `~/Downloads/BSUK`; hybrid content model (Option C); all three sale URLs kept;
+individual pup pages; blog posts keep root slugs with a new `/blog/` index; Formspree form.
+</script>
+<script type="text/markdown" data-title="1. Repository and architecture">
+- Astro 6.3.1, `@tailwindcss/vite` 4.3, `@astrojs/mdx`, `@astrojs/react` (only for the ported `FadeIn` island), Playwright, Lighthouse, pagefind as dev deps. `build.inlineStylesheets: 'always'` as in CAG.
+- Static output. Deploy later via the same GitHub Action (`cloudflare/wrangler-action`, `pages deploy dist`). **No git remote is added until the user supplies the new domain. Nothing is pushed.**
+- `SITE_URL` env var drives every absolute URL (canonicals, sitemaps, schema, llms.txt). Placeholder value `https://SITE_URL_PLACEHOLDER` until launch.
+
+```
+BSUK/
+  astro.config.mjs, package.json, tsconfig.json, .gitignore
+  src/pages/<slug>/index.astro           11 rich pages (incl. thank-you), CAG shape
+  src/pages/uk-locations/index.astro     new hub page listing all 28 cities
+  src/pages/uk-locations/[slug].astro    28 locations from data/locations.json
+  src/pages/available-puppies/[slug].astro   6 pups from data/puppies.json
+  src/pages/blog/index.astro             new blog index
+  src/pages/[...post].astro              blog posts at root slugs from src/content/blog
+  src/content/blog/*.md                  4 posts (2 migrated now, 2 new in project 5)
+  src/content.config.ts
+  src/layouts/BaseLayout.astro           header, footer, breadcrumb, schema, seams
+  src/components/                        ported CAG kit, renamed bsuk-* (project 2 fills this; Foundation ships a minimal header/footer)
+  src/styles/global.css                  Tailwind @theme, fluid clamp scale (tokens finalised in project 3)
+  data/puppies.json, locations.json, settings.json, redirects.json, page-map.json, price-matrix.json
+  public/                                baked WebP images, _redirects, _headers, robots.txt, llms.txt, 404.html
+  scripts/                               extract_wp.py, bake_images.py, generate_sitemaps.py, migration_parity.py, redirect_check.py, schema_check.py, sitemap_check.py (CAG ports where they exist)
+  tests/render/                          Playwright meta.spec.ts, pages.spec.ts, targets.json (ported from CAG)
+  functions/                             (none in Foundation; Formspree handles the form)
+  assets/brand/<PUPPY>/                  original masters, never served
+  docs/superpowers/specs/                the six design docs
+  docs/reports/                          migration report, gate report
+```
+
+The eleven rich pages:
+
+| Slug | Old words | Notes |
+|---|---|---|
+| `/` | 3,909 | homepage |
+| `/buy-blue-staffy-puppies-uk/` | 3,050 | main sale page |
+| `/blue-staffy-pup-sale-uk/` | 1,305 | second sale page |
+| `/buy-staffy-puppies-for-sale-uk/` | 5,211 | third sale page (was a WP post; also the duplicate of the buying guide — kept, flagged for rewrite in project 4) |
+| `/uk-blue-staffy-puppy-buying-guide/` | 5,786 | guide (old canonical pointed at the sale post; now self-referencing) |
+| `/uk-staffordshire-bull-terrier-guide/` | 5,515 | breed guide |
+| `/blue-staffy-health-uk/` | 4,107 | health |
+| `/blue-staffy-uk-breeders/` | 2,772 | about / breeders |
+| `/uk-blue-staffy-breeders-contact/` | 835 | contact |
+| `/privacy-policy-uk/` | 1,337 | privacy |
+| `/thank-you-blue-staffy-puppies-journey/` | 769 | thank-you, noindex |
+
+
+Blog posts migrated: `/blue-staffy-blog-guides/` (508 words). `/buy-staffy-puppies-for-sale-uk/` is treated as a rich page above, not a post, because it is a sale URL. `/category/puppy-buying-guide-uk/` (557 words, category archive) is not migrated; it 301s to `/blog/`.
+
+Locations (28): the 19 from the zip plus aberdeen, dundee, edinburgh, hull, inverness, middlesbrough, oxford, sunderland, york. `staffy-breeding-dogs-glasgow` (2,269 words) and `blue-staffy-puppies-uk` (2,643 words) are rich location pages and are stored in locations.json with full body HTML like the others.
+</script>
+<script type="text/markdown" data-title="2. Content migration (verbatim)">
+`scripts/extract_wp.py` reads each `index.html` in `~/bluestaffyuk-site`, strips WordPress chrome (header, footer, nav, wp-json/feed links, plugin markup, inline scripts/styles) and writes:
+
+- **Rich pages** → `src/pages/<slug>/index.astro`: frontmatter props `title`, `description`, `canonical`, `robots`, `ogType`, `schema` (existing JSON-LD blocks, parsed), body HTML via `set:html` inside `BaseLayout`. Headings, paragraphs, lists, tables, images (src + alt + width/height), YouTube iframes, FAQ accordions (converted to `<details>`), all kept. Old-site titles containing counts such as "4 Blue Staffy Puppies" are kept and listed in page-map.json under `refresh_flags`.
+- **Locations** → `data/locations.json`: `{slug, city, title, h1, description, canonical, body_html, word_count, defects[]}`. Eight pages with an empty H1 (birmingham, london, south-yorkshire, coventry, essex, liverpool, nottingham, wolverhampton, uk-staffordshire-bull-terrier-breeder) are recorded with `defects: ["empty-h1"]`, not filled.
+- **Blog** → `src/content/blog/<slug>.md`: frontmatter `title, date, author, description, canonical, featured_image, featured_image_alt, faqs[], schema_type`, body converted to markdown. `/buy-staffy-puppies-for-sale-uk/` and the buying guide are flagged `duplicate_pair` in page-map.json.
+- **Puppies** → `data/puppies.json`:
+
+| slug | name | sex | price | status | card photo | notes |
+|---|---|---|---|---|---|---|
+| roman | Roman | male | 1500 | Available | Roman2.jpg (portrait), Roman1.jpg (full body) | |
+| byrd | Byrd | male | 1500 | Available | Byrd1.jpg | Byrd2 not used |
+| ince | Ince | male | 1500 | Available | Ince1.jpg | |
+| vennie | Vennie | female | 1700 | Available | Vennie.jpeg | curled pose, needs better photo later |
+| christa | Christa | female | 1700 | Available | Christa.jpeg | strongest image |
+| cheryl | Cheryl | female | 1700 | Available | Cheryl1.jpeg | 4:5 ratio |
+
+  Old pups Kane, Kobe, Beth, Alis are removed: their cards are stripped from the three sale pages and the homepage, and the five image files (`blue-staffy-pup-near-me-available.jpg`, `blue-staffy-pup-near-me-available-1.jpg`, `blue-staffy-puppy-uk-sale.jpg`, `tan-white-staffy-puppy-uk.jpg`, `white-grey-staffy-puppy-uk.jpg`) are not copied. The prose that referred to them by name is kept but listed in `refresh_flags` for rewrite in project 4.
+
+- **Site facts** → `data/settings.json`: name, tagline, breeder name (Lisa Bright), address (40 Coltmuir Street, Glasgow G22 6LU), `phone: "PHONE_PLACEHOLDER"`, email staffies@bluestaffyuk.uk, hours Mon–Sun 09:00–23:00, price range £1,500–£1,700, deposit £500 refundable, delivery £200–£350 by distance, socials (X `bluestaffyuk`, YouTube `@BlueStaffyUK-v2d`, Instagram `bluestaffyukingdom`, Facebook `bluestaffyuk`), YouTube embed IDs `g9iV9RVr_Sk`, `g88qOo9C94c`, `fXhu9jDS6CA`.
+- **Phone number**: the old number is removed from every page body, meta description, title, footer and schema and replaced with `PHONE_PLACEHOLDER`. The migration report lists every occurrence replaced. The user supplies the new number at launch.
+- **Price mentions**: old prices (£850, £1,000, £1,100, £1,200, £300) are kept verbatim in body copy for Foundation but every occurrence is listed in `refresh_flags` with file and line. `data/price-matrix.json` holds the new truth (£1,500 male, £1,700 female, £500 refundable deposit) and drives puppies.json, schema and the contact form.
+
+**Migration report** (`docs/reports/foundation-migration.md`): one row per old URL — old word count, new word count, headings matched, images matched, embeds matched, elements the extractor could not map, phone occurrences replaced, refresh flags.
+</script>
+<script type="text/markdown" data-title="3. Redirects, dead links and technical SEO">
+`public/_redirects` (Cloudflare Pages format), generated from `data/redirects.json`:
+
+| From | To | Reason |
+|---|---|---|
+| `/uk-locations/staffordshire-bull-terrier-puppies-for-sale-essex/` | `/uk-locations/staffy-puppies-for-sale-essex/` | typo slug linked from 32 pages |
+| `/legal/privacy-policy/`, `/privacy-policy/` | `/privacy-policy-uk/` | dead legal links |
+| `/form/*` | `/uk-blue-staffy-breeders-contact/` | dead WP form pages |
+| `/category/training/`, `/category/puppy-buying-guide-uk/` | `/blog/` | WP category archives |
+| `/healthy-habits-exercises-for-your-pets/` | `/uk-staffordshire-bull-terrier-guide/` | redirect stub, care intent |
+| `/bluestaffyuk-uk/iiashymongmail-com/` | `/blue-staffy-uk-breeders/` | WP author page, noindexed |
+| `/buy-blue-staffy-puppies-for-sale-uk/` | `/buy-blue-staffy-puppies-uk/` | kept from old map |
+| `/feed/`, `/comments/feed/`, `/*/feed/`, `/wp-json/*`, `/xmlrpc.php`, `/wp-admin/*`, `/wp-login.php` | `/` | WP endpoints |
+| `/admin`, `/admin/*` | `/` | Decap CMS is not carried over |
+
+Rules: no chain longer than one hop (checked by `scripts/redirect_check.py`); every target exists in `dist/`. In-body `wp-json`, feed and `xmlrpc` links are removed at extraction, not redirected.
+
+New page `/uk-locations/` — a hub listing all 28 cities from locations.json, since 19 pages link to it and it 404ed.
+
+Sitemaps (`scripts/generate_sitemaps.py`, ported from CAG): `sitemap_index.xml` → `page-sitemap.xml` (rich pages + hub + blog index), `post-sitemap.xml`, `location-sitemap.xml`, `puppy-sitemap.xml`, `video-sitemap.xml` (the five pages carrying the three YouTube embeds, with thumbnail, title, description). Noindexed pages (thank-you) excluded. `locations.kml` and the Rank Math `main-sitemap.xsl` are dropped.
+
+`robots.txt`: allow all, sitemap line only. `llms.txt`: regenerated from page-map.json, one line per indexable page; the external ChatGPT share link in the old file is dropped.
+
+Canonicals self-referencing on every page. `_headers`: the old security headers minus the `/admin/*` block.
+</script>
+<script type="text/markdown" data-title="4. Contact form, images and base layout">
+**Form**: HTML form posting to `https://formspree.io/f/${FORMSPREE_ID}` (env var, set at launch; locally posts to a console-logging stub). Spam protection: Formspree's built-in filtering plus a honeypot field; Cloudflare Turnstile was dropped because Formspree does not verify its token. Fields: name, email, phone, city/postcode, puppy select, message, honeypot. The puppy select is built from puppies.json — one option per Available pup as `Name · Sex · £price` — plus `Collection in Glasgow after a refundable £500 deposit`. Redirect on success to `/thank-you-blue-staffy-puppies-journey/` via Formspree's `_next` field.
+
+**Images**: `scripts/bake_images.py` ported from CAG's pipeline: `PIL.ImageOps.fit` to 1408×768 for in-body images, WebP method 6, quality walk from 82 until under 95 KB, `-760.webp` sibling, srcset with measured `sizes`. Pup photos: 800×800 card crop with per-image `object-position`, and a 4:5 blur-fill portrait from the master, never head-cropped. Logos copied as-is (four new logos come in project 3). The 512px nationwide infographic is served at ≤ 250px display width pending an SVG redraw in project 3. Alt text carried verbatim; duplicate alts per page reported. LCP image per page gets `fetchpriority="high"`, everything below the fold `loading="lazy"` with explicit width/height.
+
+**BaseLayout**: skip link, header (logo + nav from page-map.json), breadcrumb (BreadcrumbList schema), main slot, footer (NAP with placeholder phone, socials, quick pages, cities, legal), JSON-LD `Organization` + `LocalBusiness` (`priceRange "£1500 - £1700"`, `telephone` omitted while placeholder) + `WebSite`. `html { scroll-behavior: auto }`, `--hdr` custom property with matching `scroll-margin-top` on every `id`, `overflow-x: clip` on the root. Every `<td>` in migrated tables gets a `data-label` from its column header so mobile stacking is a CSS-only change in project 3. Foundation styling is deliberately plain: readable type, 1200px container, no brand tokens yet.
+</script>
+<script type="text/markdown" data-title="5. Testing, gates and definition of done">
+- `tests/render/meta.spec.ts` and `pages.spec.ts` ported from CAG; `targets.json` lists all eleven rich pages, `/uk-locations/`, two locations, one pup page, one post, `/blog/`. The meta gate runs first and must report a non-zero examined count for every registered check family; a family wired to no page type fails.
+- `scripts/migration_parity.py`: for each old URL compares visible word count, ordered heading list, image count and embed count between old HTML and `dist/`. Any drop over 2% fails (phone-number removals and removed pup cards are whitelisted by page).
+- `scripts/redirect_check.py`: every row in redirects.json resolves in one hop against `astro preview`; every internal `href` on every built page returns 200; zero `wp-json`, `feed`, `xmlrpc` strings in `dist/`.
+- `scripts/schema_check.py`: every page's JSON-LD parses; no duplicate `@type` per page; no `Product`/`Offer` is `InStock` unless puppies.json says Available; no `telephone` field while the placeholder is set.
+- `scripts/sitemap_check.py`: every built page is in exactly one sitemap; nothing noindexed is listed; every `loc` returns 200.
+- Lighthouse warm median of 3 per page type recorded in the gate report as a baseline. Not a gate in Foundation.
+- Every check runs twice; both runs must be clean.
+
+**Done means**: `astro build` clean; all checks above pass twice; `docs/reports/foundation-migration.md` and `docs/reports/foundation-gate-report.md` written and published as an Artifact; the old MCP untouched; no remote, nothing pushed; git history on `main` in `~/Downloads/BSUK`.
+
+**Out of scope for Foundation**: any content rewrite, the design system and components, the four logos, the location-page rebuild, comparison pages, the two new blog posts, deleting the old MCP, GSC/GA4/Bing, the new domain and phone number.
+</script>
+<script type="text/markdown" data-title="6. Open flags (resolved 2026-09-15)">
+- **GSC and Bing baselines: NOT FETCHED — barrier: GSC property returns 403 (verification lapsed with the expired domain) and the user confirms no old GSC or Bing exports exist.** Closed. Every page's baseline is recorded as NOT FETCHED in page-map.json; re-baselined after launch in project 6.
+- **Leaked token**: the git remote in `~/bluestaffyuk-site` embeds a GitHub personal access token. Being revoked on GitHub via the browser during this session; the new BSUK repo will later get its own remote on the same GitHub account (repo `jl69lucas-netizen/bluestaffyuk-uk`, project 6) with credentials from the credential helper, never in the URL.
+- **Breeder name: Lisa Bright.** The homepage currently says "Hi, I Am Sharine Amelia"; it is carried verbatim in Foundation and listed in `refresh_flags` for replacement with Lisa Bright in project 4. settings.json gets `breeder_name: "Lisa Bright"`.
+- **Delivery**: home delivery anywhere in the UK by DEFRA-approved transport, priced by distance, **£200 to £350**, no fixed fee; collection in Glasgow after a refundable £500 deposit. settings.json: `delivery_min: 200, delivery_max: 350`. The puppy-card delivery line (project 3/4) reads `UK home delivery £200–£350 by distance · Collect in Glasgow`.
+- **Guarantee phrasing (recommended, pending the breeder's confirmation before it becomes an assertable claim)**: "14-day health guarantee" as the primary phrasing and "two-week health guarantee" as the second, both correct, both banked so no agent rewrites one into the other. Why: the old site names no period; UK breeder contracts commonly give the buyer a short window to have their own vet examine the puppy, and 14 days is the common floor in Kennel Club Assured Breeder contract templates. Trade-off: shorter than a 12-month hereditary-defect clause; that can be a separate line if the breeder offers it. Recorded in settings.json as `guarantee_days: 14` once confirmed.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK Rebuild — Project 1 of 6: Foundation\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

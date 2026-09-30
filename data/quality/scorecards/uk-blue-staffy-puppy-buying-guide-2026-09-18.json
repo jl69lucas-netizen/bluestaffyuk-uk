@@ -1,0 +1,182 @@
+{
+  "slug": "uk-blue-staffy-puppy-buying-guide",
+  "date": "2026-09-18",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 2055,
+    "layout-tap-target-size": 252,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 0,
+    "img-srcset-within-2x": 51,
+    "img-alt-present-and-unique": 51,
+    "nav-anchors-resolve": 12,
+    "nav-jump-target-lands": 9,
+    "sem-heading-order": 201,
+    "sem-all-six-levels": 201,
+    "sem-title-case-headings": 198,
+    "sem-section-opening-paragraph": 198,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 4089,
+    "css-no-dead-component-rule": 45,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 1716,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "LAYOUT": 2,
+    "SEM": 9,
+    "CSS": 3,
+    "DUP": 3,
+    "A11Y": 3
+  },
+  "instances": {
+    "LAYOUT": 24,
+    "SEM": 72,
+    "CSS": 765,
+    "DUP": 6,
+    "A11Y": 6
+  },
+  "total": 20,
+  "total_instances": 873,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "layout-tap-target-size",
+      "count": 12,
+      "message": "12 control(s) under 24x24: input 478x20 \"\" | input 323x20 \"\" | input 393x20 \"\" | input 267x20 \"\" | input 560x20 \"\" | input 518x20 \"\" | input 463x20 \"\" | input 530x20 \"\" | input 243x20 \"\" | input 600x20 \"\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-heading-order",
+      "count": 1,
+      "message": "1 skipped heading level(s): H2→H4 at \"Preparing Your Home Checklist\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:17 H3:27 H4:22 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 21,
+      "message": "21 heading(s) not in Title Case: H2 \"do\" in \"How do I buy a Blue Staffy puppy in the UK?\" | H2 \"with\" in \"Your Comprehensive UK Blue Staffy Puppy Buying\" | H3 \"is\" in \"What is the Temperament of a Blue Staffordshir\" | H3 \"with\" in \"Do Blue Staffies Get Along with Children and O\" | H3 \"are\" in \"What are the pros and cons of owning a Blue St\" | H3 \"is\" in \"What is the average lifespan of a Blue Staffor\" | H3 \"are\" in \"What are the Common Blue Staffy Health Issues?\" | H3 \"are\" in \"What Health Tests Should a Blue Staffy Puppy B\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 255,
+      "message": "255 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x68, uagb-infobox__content-wrap x68, uagb-infobox-image-valign-top x68, uagb-ifb-content x68, uagb-ifb-title-wrap x68, uagb-ifb-desc x61, uagb-ifb-title x60, uagb-ifb-separator x51, wp-block-uagb-container x45, uagb-infobox-icon-above-title x44, wp-block-uagb-icon-list-child x29, uagb-icon-list__source-wrap x29"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 35w vs /blue-staffy-blog-guides/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\" | 13w vs /index/ \"our trusted defra approved pet transport partners how to get a puppy delivered\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "a11y-text-contrast-aa",
+      "count": 2,
+      "message": "2 text node(s) below AA: th \"✅ Ethical Breeder\" 3.3:1 (needs 4.5) | a \"📋 Make an Enquiry\" 1:1 (needs 4.5)"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-heading-order",
+      "count": 1,
+      "message": "1 skipped heading level(s): H2→H4 at \"Preparing Your Home Checklist\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:17 H3:27 H4:22 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 21,
+      "message": "21 heading(s) not in Title Case: H2 \"do\" in \"How do I buy a Blue Staffy puppy in the UK?\" | H2 \"with\" in \"Your Comprehensive UK Blue Staffy Puppy Buying\" | H3 \"is\" in \"What is the Temperament of a Blue Staffordshir\" | H3 \"with\" in \"Do Blue Staffies Get Along with Children and O\" | H3 \"are\" in \"What are the pros and cons of owning a Blue St\" | H3 \"is\" in \"What is the average lifespan of a Blue Staffor\" | H3 \"are\" in \"What are the Common Blue Staffy Health Issues?\" | H3 \"are\" in \"What Health Tests Should a Blue Staffy Puppy B\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 255,
+      "message": "255 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x68, uagb-infobox__content-wrap x68, uagb-infobox-image-valign-top x68, uagb-ifb-content x68, uagb-ifb-title-wrap x68, uagb-ifb-desc x61, uagb-ifb-title x60, uagb-ifb-separator x51, wp-block-uagb-container x45, uagb-infobox-icon-above-title x44, wp-block-uagb-icon-list-child x29, uagb-icon-list__source-wrap x29"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 35w vs /blue-staffy-blog-guides/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\" | 13w vs /index/ \"our trusted defra approved pet transport partners how to get a puppy delivered\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "a11y-text-contrast-aa",
+      "count": 2,
+      "message": "2 text node(s) below AA: th \"✅ Ethical Breeder\" 3.3:1 (needs 4.5) | a \"📋 Make an Enquiry\" 1:1 (needs 4.5)"
+    },
+    {
+      "viewport": 768,
+      "checkId": "layout-tap-target-size",
+      "count": 12,
+      "message": "12 control(s) under 24x24: input 478x20 \"\" | input 323x20 \"\" | input 393x20 \"\" | input 267x20 \"\" | input 560x20 \"\" | input 518x20 \"\" | input 463x20 \"\" | input 530x20 \"\" | input 243x20 \"\" | input 600x20 \"\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-heading-order",
+      "count": 1,
+      "message": "1 skipped heading level(s): H2→H4 at \"Preparing Your Home Checklist\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:17 H3:27 H4:22 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 21,
+      "message": "21 heading(s) not in Title Case: H2 \"do\" in \"How do I buy a Blue Staffy puppy in the UK?\" | H2 \"with\" in \"Your Comprehensive UK Blue Staffy Puppy Buying\" | H3 \"is\" in \"What is the Temperament of a Blue Staffordshir\" | H3 \"with\" in \"Do Blue Staffies Get Along with Children and O\" | H3 \"are\" in \"What are the pros and cons of owning a Blue St\" | H3 \"is\" in \"What is the average lifespan of a Blue Staffor\" | H3 \"are\" in \"What are the Common Blue Staffy Health Issues?\" | H3 \"are\" in \"What Health Tests Should a Blue Staffy Puppy B\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 255,
+      "message": "255 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x68, uagb-infobox__content-wrap x68, uagb-infobox-image-valign-top x68, uagb-ifb-content x68, uagb-ifb-title-wrap x68, uagb-ifb-desc x61, uagb-ifb-title x60, uagb-ifb-separator x51, wp-block-uagb-container x45, uagb-infobox-icon-above-title x44, wp-block-uagb-icon-list-child x29, uagb-icon-list__source-wrap x29"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 35w vs /blue-staffy-blog-guides/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\" | 13w vs /index/ \"our trusted defra approved pet transport partners how to get a puppy delivered\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "a11y-text-contrast-aa",
+      "count": 2,
+      "message": "2 text node(s) below AA: th \"✅ Ethical Breeder\" 3.3:1 (needs 4.5) | a \"📋 Make an Enquiry\" 1:1 (needs 4.5)"
+    }
+  ]
+}

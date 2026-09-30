@@ -1,0 +1,194 @@
+{
+ "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper via the claude.ai connector, 2026-09-25. Request: keyword 'Where can I buy a blue Staffy puppy near Nottingham, and what should I ask the breeder?', language en, location United Kingdom. The connector's response carries no cost field and no keyword field. Saved as returned (answer text and sources whole), minus third-party contact details: all 13 local businesses' street addresses and postcodes (in the local-business markdown, which keeps only each title and town, and in each element's address; one address also carried a club officer's name, dropped with it), 10 phone numbers, every element's url, rating and review count, and one WhatsApp link (url and its WhatsApp domain) from a local-business element. Business titles and website domains kept; the answer text and brand entities held no contact details and are unchanged.",
+ "id": "09250740-2496-0629-0000-b78f6ca03b04",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "chat_gpt_local_businesses",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "markdown": "- **Earlsgrave Bull Terriers** - Kidderminster, United Kingdom\n- **The Staffordshire Bull Terrier Club** - Cannock, United Kingdom\n- **RSPCA Radcliffe Animal Centre** - Radcliffe on Trent, Nottingham, United Kingdom\n- **Babbington Hall Kennels & Cattery** - Awsworth, United Kingdom\n- **Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs** - Basingstoke, United Kingdom\n- **IronPaw Staffies** - Patchway, Bristol, United Kingdom\n- **Staffy Society UK** - Quinton, Birmingham, United Kingdom\n- **Staffy Puppies for Sale UK** - The Royal Town of Sutton Coldfield, Birmingham, Sutton Coldfield, United Kingdom\n- **Staffordshire Bull Terrier Puppies for sale** - Cardiff, United Kingdom\n- **Jerry Green Dog Rescue Nottinghamshire Centre** - Mansfield, United Kingdom\n- **The Bull Terrier Club** - Ripley, United Kingdom\n- **BullyBillows** - Nottingham, United Kingdom\n- **Staffordshire Bull Terrier Puppy Breeder** - London, United Kingdom\n",
+   "items": [
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Earlsgrave Bull Terriers",
+     "description": "Dog breeder",
+     "domain": "www.earlsgravebullterriers.com"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "The Staffordshire Bull Terrier Club",
+     "description": "Club"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "RSPCA Radcliffe Animal Centre",
+     "description": "Pet adoption service",
+     "domain": "www.rspca-radcliffe.org.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Babbington Hall Kennels & Cattery",
+     "description": "Kennel",
+     "domain": "www.babbington-hall.co.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs",
+     "description": "Dog breeder",
+     "domain": "www.trojanstaffuk.com"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "IronPaw Staffies",
+     "description": "Dog breeder",
+     "domain": "ukstaffypups.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffy Society UK",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffy Puppies for Sale UK",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffordshire Bull Terrier Puppies for sale",
+     "description": "Pet store",
+     "domain": "ukstaffypups.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Jerry Green Dog Rescue Nottinghamshire Centre",
+     "description": "Animal rescue service",
+     "domain": "www.jerrygreendogs.org.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "The Bull Terrier Club",
+     "description": "Club",
+     "domain": "www.thebullterrierclub.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "BullyBillows",
+     "description": "Pet store",
+     "domain": "www.bullybillows.com"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffordshire Bull Terrier Puppy Breeder",
+     "description": "Dog breeder"
+    }
+   ]
+  },
+  {
+   "type": "chat_gpt_text",
+   "rank_group": 1,
+   "rank_absolute": 2,
+   "markdown": "If you’re looking around Nottingham, I’d start with **The Kennel Club’s Find a Puppy** rather than buying from a generic classified advert. You can filter for Staffordshire Bull Terriers, location, and puppies whose parents have been health tested. [thekennelclub.org.uk](https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com) [The Kennel Club](https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com) \n\nA couple of nearby leads came up in the local search, but I **wouldn’t treat a listing or review rating as proof that a breeder is reputable**:\n\n- [Earlsgrave Bull Terriers](https://www.earlsgravebullterriers.com/) — Kidderminster, roughly within reach of Nottingham.\n- The Staffordshire Bull Terrier Club — Cannock; a breed club can be useful for finding established breeders and getting breed-specific advice.\n- [RSPCA Radcliffe Animal Centre](http://www.rspca-radcliffe.org.uk/) — near Nottingham, worth considering if you're open to a Staffy needing a home rather than specifically a puppy.\n\n### What I'd ask a breeder\n\nFor a **blue Staffy**, don't let colour be the main thing you evaluate. Ask:\n\n1. **“Can I see the mum with the puppies?”**\n You should see the puppy interacting with its mother and view where the litter has been raised. The Kennel Club specifically advises meeting the breeder, seeing the dam and seeing the puppy before committing. [The Kennel Club](https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com)\n2. **“Can I see the health-test certificates for both parents?”**\n For Staffordshire Bull Terriers, The Kennel Club recommends testing including **HC-HSF4 hereditary cataracts, L-2-HGA, elbow dysplasia and eye screening**. [The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com) [The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)\n3. **“What are the parents' registered names and Kennel Club registration numbers?”**\n You can then independently check recorded health-test results rather than relying on a screenshot or the breeder's word. [The Kennel Club](https://www.thekennelclub.org.uk/dog-breeding/first-time-breeders/health-screening-a-step-by-step-guide/?utm_source=chatgpt.com)\n4. **“What are the parents' L-2-HGA and HC results?”**\n Ask specifically whether each parent is **clear, carrier or affected**, and ask to see the actual results. Both parents contribute genetic material to the puppies, so testing both matters. [The Kennel Club](https://www.thekennelclub.org.uk/dog-breeding/first-time-breeders/health-screening-a-step-by-step-guide/?utm_source=chatgpt.com)\n5. **“Have there been skin problems, allergies, breathing problems, joint problems or other significant illnesses in the parents or close relatives?”**\n Skin conditions are one of the breed's current health priorities identified by The Kennel Club. [The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com)\n6. **“What is the parents' coefficient of inbreeding (COI)?”**\n Ask them to explain how they considered genetic diversity when choosing the mating.\n7. **“What socialisation have the puppies had?”**\n Ask about household noises, visitors, handling, children, other dogs, car journeys, grooming and being left briefly alone.\n8. **“What will the puppy leave with?”**\n Ask about microchipping, vaccinations, worming, vet examination, registration/pedigree paperwork, food, insurance and the contract/health guarantee.\n9. **“What happens if I can't keep the dog later?”**\n A conscientious breeder should care about the dog's lifetime welfare and have a clear return/rehome policy.\n\n### One important point about “blue”\n\nI'd be particularly cautious of a breeder charging a **large premium because the puppy is blue** or marketing blue Staffies primarily as a rare/designer colour. Ask about the breeder's health and breeding programme first, not just colour.\n\nIf you give me your **maximum driving distance from Nottingham (e.g. 30, 50 or 100 miles)** and whether you want **KC-registered only**, I can search for current Staffordshire Bull Terrier litters and narrow it down to breeders you can investigate.\n\n",
+   "sources": [
+    {
+     "type": "chat_gpt_source",
+     "title": "The Kennel Club — Find a Puppy",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com",
+     "source_name": "thekennelclub.org.uk",
+     "markdown": "[thekennelclub.org.uk](https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "Find a puppy | The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "Find a puppy | The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "Health screening for dog breeders | The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/dog-breeding/first-time-breeders/health-screening-a-step-by-step-guide/?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/dog-breeding/first-time-breeders/health-screening-a-step-by-step-guide/?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "Health screening for dog breeders | The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/dog-breeding/first-time-breeders/health-screening-a-step-by-step-guide/?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/dog-breeding/first-time-breeders/health-screening-a-step-by-step-guide/?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com)"
+    }
+   ],
+   "brand_entities": [
+    {
+     "type": "chat_gpt_brand_entity",
+     "title": "Earlsgrave Bull Terriers",
+     "category": "local_business",
+     "markdown": "[Earlsgrave Bull Terriers](https://www.earlsgravebullterriers.com/)",
+     "urls": [
+      {
+       "url": "https://www.earlsgravebullterriers.com/",
+       "domain": "www.earlsgravebullterriers.com"
+      }
+     ]
+    },
+    {
+     "type": "chat_gpt_brand_entity",
+     "title": "The Staffordshire Bull Terrier Club",
+     "category": "local_business",
+     "markdown": "The Staffordshire Bull Terrier Club"
+    },
+    {
+     "type": "chat_gpt_brand_entity",
+     "title": "RSPCA Radcliffe Animal Centre",
+     "category": "local_business",
+     "markdown": "[RSPCA Radcliffe Animal Centre](http://www.rspca-radcliffe.org.uk/)",
+     "urls": [
+      {
+       "url": "http://www.rspca-radcliffe.org.uk/",
+       "domain": "www.rspca-radcliffe.org.uk"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

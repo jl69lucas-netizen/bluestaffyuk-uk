@@ -1,0 +1,129 @@
+<title>BSUK System Gaps Gate Report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · before project 5</p><h1 class="title">System gaps gate report</h1></div>
+<div class="meta"><span class="pill">status: PASS</span> <span class="pill">2026-09-24</span><br>docs/reports/system-gaps-gate-report.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+**Build:** the system-gaps bridge between projects 4 and 5, 2026-09-24. **Branch:** `system-gaps` (worktree `/Users/apple/Downloads/BSUK-gaps`), cut from `foundation` at `9927710`. **Plan:** `docs/superpowers/plans/2026-09-24-system-gaps.md` (Artifact https://claude.ai/artifact/FS2ekGxx7jAM5T8poem95R). **Execution:** subagent-driven. Every task had an Opus implementer, a spec-compliance review and a code-quality review, re-reviewed until both passed. Each task was also checked against a full rehearsal of the plan (`wt-int`, run in plan order before execution).
+</script>
+<script type="text/markdown" data-title="Verdict">
+**PASS, with one item waiting on the user.** All five gaps are closed on location, comparison and blog pages built from now on, and the twelve built pages are untouched: approvals match, and the pages and boards are unchanged apart from the intended board blocks. Tasks 0–12a are all done, each with a spec review and a quality review. The final whole-branch re-review said **ready to merge: YES**. The one open step is Task 11b's real smoke image, which needs the user's `GEMINI_API_KEY` (KI 70). The package is installed and the full generate → approve → publish flow is tested.
+</script>
+<script type="text/markdown" data-title="The user&#x27;s five gaps">
+| # | Gap (the user's words, shortened) | Closed by | Evidence | Result |
+|---|---|---|---|---|
+| G-1 | Board entity section: "hard to read or zoom on individual entities … shows titles/headers not each entity; clean, fluid scrolling" | Task 3 | `scripts/board_entities.py`. One card per entity, grouped by class, with a sticky filter and search, section chips that jump to the outline, and a per-class matrix that stacks on phones. The graph is removed. Headless browser test for the filter and search; 375px scrollWidth = 375 | PASS |
+| G-2 | "All keyword variations, related, concurrent, similar, and all entity types grouped by people, place, health, etc." | Tasks 1, 2, 3 | Four optional keyword types plus `keyword-variants-missing`. `scripts/keyword_variants.py` proposes terms from cached data only (Manchester 8/6/12/8). The ontology grows from 7 to 56 sourced entities in 8 classes (People 1, Place 27, Health 6 PROPOSED, Organization 12, Regulation 6, Organism 2, Commerce 1, Logistics 1). Board block 4 shows the chips by type | PASS |
+| G-3 | "Build from outline; never from crossovers, siblings, or duplicates; 6 diversity external links per page; anchor type/variations" | Tasks 4, 5, 6, 6b | `external-links-six-diverse` (≥6 links / 6 domains / 4 source types; 10 new verified library rows). `anchor-type-variation` and `anchor-reuse-sitewide` (the first owner keeps its anchor). `scripts/outline_provenance_check.py` in `check:all` covers extra, missing and reordered headings, duplicates, and crossovers including city swaps. `outline-heading-repeat` catches repeats at board time | PASS |
+| G-4 | "Use images where needed, like heroes and other components … analyse the existing page structure for images or the image folder under assets" | Tasks 9, 10, 10b, 10c | `scripts/image_candidates.py` ranks the page's own images first, then served images, then `Assets/Images`. `image-every-body-heading`: the hero plus every body H2/H3 (FAQ excepted) has a slot. Board block 7 "Images & styles" shows the slot's current file first and pre-checked, with named OG/IG style radios. The build gate refuses unapproved or uningested images | PASS |
+| G-5 | "IMAGE.MD — OG image styles and infographic styles, approval, etc. before the builds … only on the location, compare, blogs, not on the built pages" | Tasks 0, 7, 8, 10d, 11b | `IMAGE-DESIGNS.md` (scope: new pages only; breed lines sourced). OG styles A/B/C/D/E/H and IG-1..IG-5. Two-pass sha12 approval. `reframe_og.py`, `ingest_image.py` and three ported image skills. Block 7b plus `board_approve.py` refuse approval, and re-approval, while any rule fails. Built pages are frozen out by name (`BUILT_BEFORE_SYSTEM_GAPS`) | PASS (smoke image waits for the key, KI 70) |
+</script>
+<script type="text/markdown" data-title="Tasks">
+| Task | What | Commits | Spec · Quality |
+|---|---|---|---|
+| 0 | family_rules hook | `99c81e0` | controller |
+| 1 | Keyword types + keyword_variants.py | `fa9bd8a 4044dda ad8da9b` | ✅ ✅ |
+| 2 | Ontology classes + seeder (56 entities) | `7fa4f75 4653ed6` | ✅ ✅ |
+| 3 | Board entity + keyword view | `a20296d 26498d8` | ✅ ✅ |
+| 4 | External link diversity | `55387d2 b94a4fd b1a6186` | ✅ ✅ |
+| 5 | Anchor types + site-wide reuse | `286e57c 9804d63 6a28192` | ✅ ✅ |
+| 6 | Outline provenance gate | `34e7724 ce002fa 5b34eef` | ✅ ✅ |
+| 6b | Outline heading-repeat check | `8389b59 58fcd7f` | ✅ ✅ |
+| 7 | IMAGE-DESIGNS.md + label map | `0296f9f 7e1e999 747422c` | ✅ ✅ |
+| 8 | reframe_og, ingest_image, 3 image skills | `33d6fb5 fd233c1 f2e2149` | ✅ ✅ |
+| 9 | image_candidates | `27e5e2e 1b0b4b0 e5daff7` | ✅ ✅ |
+| 10 | Per-heading image rule + build gate | `21e3496 10f8387 5000a2b` | ✅ ✅ |
+| 10b | Board block 7 Images & styles | `07d29b0 0d08da2` | ✅ ✅ |
+| 10c | Current file first, style names | `5ebd997 919e37f da9bfd1 ff9c2e5 733caa9 ee5243b 4735dff` | ✅ ✅ |
+| 10d | Rules on the board (7b) + approval refusal (added in execution) | `3748ab4 22701b8 a276d27` | ✅ ✅ |
+| 11 | Wiring: CLAUDE.md 17, WORKFLOW 13, skills | `93e885b a72595e` | ✅ ✅ |
+| 11b | google-genai pinned; smoke image awaits the user's key | `c78ba09` | partial (KI 70) |
+| 12a | Whole-branch review fixes (added in execution) | `1a64165 f32e4b7 cd3cc32 376503a fd2746b dc4432e c78593b c391b48 7e44e4d` | ✅ (branch re-review YES) |
+
+The review-driven changes beyond the plan text are listed in the plan's "Execution record". Two tasks were added during execution: 10d (the rules shown on the board and refused at approval) and 12a (fixes from the whole-branch review).
+</script>
+<script type="text/markdown" data-title="Rulings (the user, 2026-09-24)">
+G1: images on every body H2 and body H3, FAQ blocks excepted, the hero included, new pages only. G2: when no image fits, one is generated per `IMAGE-DESIGNS.md` and approved on the board first. G3: ≥6 external links, on 6 domains, from ≥4 source types. G4: the rules bind location/comparison/blog pages built from now on, never the 12 built pages. Image key: the user adds `GEMINI_API_KEY`; the controller installed `google-genai` (1.47.0, prebuilt wheels, pinned).
+</script>
+<script type="text/markdown" data-title="Runs">
+| Check | Run 1 | Run 2 |
+|---|---|---|
+| `npm run build` | exit 0 | exit 0 |
+| `python3 -m pytest tests/py -q` | 2982 passed, 25 skipped, 1 xfailed | 2982 passed, 25 skipped, 1 xfailed |
+| `npm run -s check:all` | exit 0 | exit 0 |
+| `npm run -s registry` | 0 problems | 0 problems |
+| `npm run -s agents` | 0 problems (41 agents) | 0 problems (41 agents) |
+
+Baseline at `9927710`: 2377 passed, 25 skipped, 1 xfailed, so this build adds 605 tests. The skips depend on the environment (no WordPress clone, no picks.json, and so on). Approval drift on the 12 built boards: none. `src/pages`: unchanged. The whole-branch review traced a new location page end to end on a scratch copy: keyword variants → ontology check → image candidates → board (blocks 4/5/7/7b) → approval → draft → second-pass approval → publish, ending with clean findings.
+</script>
+<script type="text/markdown" data-title="Open items">
+- **KI 70:** the real smoke image, once the user sets `GEMINI_API_KEY`. Also consider a newer Python than 3.9.
+- **KI 71:** organisation and regulation entities have no owner page yet.
+- **KI 72:** only one research row in the link library (RVC VetCompass blocks curl).
+- **KI 73:** the committed board HTML for the 12 built pages lags the renderer; republish when next touched.
+- **KI 74:** small helper duplicates (`slug_file`, `route_of`), and the unread `--write` output.
+- **Merge with `p5-readiness`:** this build merged first. The conflict guide is in `docs/reference/session-log.md` under "System gaps bridge build".
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK Rebuild — System Gaps Gate Report\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

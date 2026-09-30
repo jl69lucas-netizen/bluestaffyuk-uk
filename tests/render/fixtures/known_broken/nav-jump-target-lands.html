@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>broken jump</title>
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;font:16px/1.5 system-ui}
+header{position:sticky;top:0;height:96px;background:#2D6A4F;color:#fff;display:flex;align-items:center}
+nav a{color:#fff;margin-right:12px;display:inline-block;min-width:44px;min-height:44px}
+section{min-height:1600px;padding:0}
+/* The same strip as the known_good fixture, and the SAME 48px of pinned band it adds. */
+.kit-strip{position:sticky;top:96px;height:48px;background:#F4F1EA;border-bottom:1px solid #ccc;
+  display:flex;align-items:center;gap:8px;overflow-x:auto;white-space:nowrap}
+.kit-strip a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;color:#1F3A52}
+/* THE DEFECT, twice over. `#care` has no scroll-margin-top at all and lands under the
+   header; `#shipping` is offset for the header ALONE (96 + 16) and lands under the STRIP —
+   the top-chrome twin of what nav-bottom-chrome-clear catches at the other end, and the
+   defect the `--strip-h` term in the live expression exists to prevent. */
+h2{margin:0}
+#shipping{scroll-margin-top:112px}
+</style></head><body>
+<header><nav><a href="#care">Care</a> <a href="#shipping">Shipping</a></nav></header>
+<nav class="kit-strip" aria-label="Sections"><a href="#care">01 Care</a><a href="#shipping">02 Shipping</a></nav>
+<section><h2 id="care">Care</h2><p>Copy.</p></section>
+<section><h2 id="shipping">Shipping</h2><p>Copy.</p></section>
+</body></html>

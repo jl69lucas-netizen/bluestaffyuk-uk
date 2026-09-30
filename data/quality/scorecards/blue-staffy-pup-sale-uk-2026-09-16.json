@@ -1,0 +1,144 @@
+{
+  "slug": "blue-staffy-pup-sale-uk",
+  "date": "2026-09-16",
+  "page_type": "for-sale",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 468,
+    "layout-tap-target-size": 135,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "img-srcset-within-2x": 18,
+    "img-alt-present-and-unique": 18,
+    "nav-anchors-resolve": 9,
+    "nav-jump-target-lands": 9,
+    "sem-heading-order": 54,
+    "sem-all-six-levels": 54,
+    "sem-title-case-headings": 54,
+    "sem-section-opening-paragraph": 54,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 15,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1365,
+    "css-no-dead-component-rule": 0,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 144,
+    "a11y-text-contrast-aa": 420,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "IMG": 2,
+    "SEM": 6,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "IMG": 2,
+    "SEM": 24,
+    "CSS": 435,
+    "DUP": 12
+  },
+  "total": 14,
+  "total_instances": 473,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "img-srcset-within-2x",
+      "count": 1,
+      "message": "1 oversized image(s): mark-blue-staffy-london.webp natural=760 painted=319 2.38x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:9 H3:8 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 5,
+      "message": "5 heading(s) not in Title Case: H2 \"from\" in \"Why Choose a Blue Staffy from BlueStaffyUK.uk?\" | H3 \"do\" in \"How do I reserve one of your Blue Staffy puppi\" | H3 \"your\" in \"Are your Blue Staffy puppies Kennel Club regis\" | H3 \"you\" in \"Can you deliver a Blue Staffy puppy to my loca\" | H3 \"included\" in \"What’s included when I buy a Blue Staffy puppy\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 145,
+      "message": "145 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x21, uagb-infobox__content-wrap x21, uagb-ifb-content x21, uagb-ifb-title-wrap x21, wp-block-uagb-container x20, uagb-infobox-icon-above-title x17, uagb-infobox-image-valign-top x17, uagb-ifb-title x17, uagb-ifb-desc x15, alignfull x10, uagb-is-root-container x10, uag-star x10"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 98w vs /blue-staffy-health-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/blue-staffy-puppies-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/staffy-breeding-dogs-glasgow/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:9 H3:8 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 5,
+      "message": "5 heading(s) not in Title Case: H2 \"from\" in \"Why Choose a Blue Staffy from BlueStaffyUK.uk?\" | H3 \"do\" in \"How do I reserve one of your Blue Staffy puppi\" | H3 \"your\" in \"Are your Blue Staffy puppies Kennel Club regis\" | H3 \"you\" in \"Can you deliver a Blue Staffy puppy to my loca\" | H3 \"included\" in \"What’s included when I buy a Blue Staffy puppy\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 145,
+      "message": "145 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x21, uagb-infobox__content-wrap x21, uagb-ifb-content x21, uagb-ifb-title-wrap x21, wp-block-uagb-container x20, uagb-infobox-icon-above-title x17, uagb-infobox-image-valign-top x17, uagb-ifb-title x17, uagb-ifb-desc x15, alignfull x10, uagb-is-root-container x10, uag-star x10"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 98w vs /blue-staffy-health-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/blue-staffy-puppies-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/staffy-breeding-dogs-glasgow/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-srcset-within-2x",
+      "count": 1,
+      "message": "1 oversized image(s): mark-blue-staffy-london.webp natural=767 painted=319 2.40x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:9 H3:8 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 5,
+      "message": "5 heading(s) not in Title Case: H2 \"from\" in \"Why Choose a Blue Staffy from BlueStaffyUK.uk?\" | H3 \"do\" in \"How do I reserve one of your Blue Staffy puppi\" | H3 \"your\" in \"Are your Blue Staffy puppies Kennel Club regis\" | H3 \"you\" in \"Can you deliver a Blue Staffy puppy to my loca\" | H3 \"included\" in \"What’s included when I buy a Blue Staffy puppy\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 145,
+      "message": "145 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x21, uagb-infobox__content-wrap x21, uagb-ifb-content x21, uagb-ifb-title-wrap x21, wp-block-uagb-container x20, uagb-infobox-icon-above-title x17, uagb-infobox-image-valign-top x17, uagb-ifb-title x17, uagb-ifb-desc x15, alignfull x10, uagb-is-root-container x10, uag-star x10"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 98w vs /blue-staffy-health-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/blue-staffy-puppies-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/staffy-breeding-dogs-glasgow/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\""
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+<!doctype html><meta charset=utf-8><title>known-broken: the section ids are rendered twice</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  The known_good page with its six sections rendered a SECOND time — exactly the defect
+  kit-preview shipped when the scroll-spy's stub targets were emitted once per demo box
+  instead of once per page. Every anchor above still resolves, so nav-anchors-resolve stays
+  green; only this check can see it. The label/for pair is duplicated too, because that is
+  the other half of the failure: `for="enquiry-name"` now names two inputs and points at
+  the first, which is not the one a reader scrolled to.
+  Fixtures are test data, so hex is spelled here; the no-hex rule scans src/.
+-->
+<style>body{margin:0;font:16px/1.5 system-ui;color:#1B2430;background:#F4F1EA;padding:16px}section{min-height:60px}</style>
+<nav aria-labelledby="nav-title">
+  <p id="nav-title">On this page</p>
+  <a href="#s1">Health</a><a href="#s2">Delivery</a><a href="#s3">Deposit</a>
+  <a href="#s4">Puppies</a><a href="#s5">FAQ</a><a href="#s6">Contact</a>
+</nav>
+<main>
+  <section id="s1"><h2>Health</h2></section>
+  <section id="s2"><h2>Delivery</h2></section>
+  <section id="s3"><h2>Deposit</h2></section>
+  <section id="s4"><h2>Puppies</h2></section>
+  <section id="s5"><h2>FAQ</h2></section>
+  <section id="s6"><h2>Contact</h2>
+    <label for="enquiry-name">Your name</label><input id="enquiry-name" name="name">
+  </section>
+</main>
+<main>
+  <section id="s1"><h2>Health</h2></section>
+  <section id="s2"><h2>Delivery</h2></section>
+  <section id="s3"><h2>Deposit</h2></section>
+  <section id="s4"><h2>Puppies</h2></section>
+  <section id="s5"><h2>FAQ</h2></section>
+  <section id="s6"><h2>Contact</h2>
+    <label for="enquiry-name">Your name</label><input id="enquiry-name" name="name">
+  </section>
+</main>

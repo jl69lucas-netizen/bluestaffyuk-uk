@@ -1,0 +1,182 @@
+{
+ "id": "pdsa",
+ "root_domain": "pdsa.org.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": [
+   "staffordshire bull terrier puppy",
+   "staffie to go to puppy",
+   "staffordshire bull terrier puppies"
+  ]
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "about": 1,
+   "blog": 3,
+   "breed-guide": 5,
+   "care-guide": 18,
+   "contact": 2,
+   "faq": 4,
+   "health": 150,
+   "listing": 182,
+   "price": 3
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": []
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": []
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.pdsa.org.uk/",
+    "title": "The vet charity for pets in need - PDSA",
+    "h1": "Give a lifetime of love with a gift in your Will",
+    "h2": [
+     "Help us keep people and pets together with a monthly donation today",
+     "Help us keep people and pets together with a one-off donation today",
+     "Help when you both need it most",
+     "Keeping your pets calm during fireworks season"
+    ]
+   },
+   {
+    "url": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier",
+    "title": "Staffordshire Bull Terrier - PDSA",
+    "h1": "Staffordshire Bull Terrier",
+    "h2": [
+     "Staffordshire Bull Terrier breed information",
+     "Contents",
+     "Key facts and characteristics",
+     "Common health problems in Staffordshire Bull Terriers",
+     "Caring for your Staffordshire Bull Terrier",
+     "Will you give now to help people and pets in need?",
+     "The cost of owning a Staffordshire Bull Terrier",
+     "Fun facts",
+     "Getting a Staffordshire Bull Terrier",
+     "Not sure if a Staffordshire Bull Terrier is the right pet for you?"
+    ]
+   },
+   {
+    "url": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/the-cost-of-owning-a-dog",
+    "title": "The cost of owning a dog - PDSA",
+    "h1": "The cost of owning a dog",
+    "h2": [
+     "How much does a dog cost over their lifetime?",
+     "Getting started: the initial cost of getting a dog",
+     "Ongoing care: how much a dog costs per month",
+     "How we worked out the costs"
+    ]
+   },
+   {
+    "url": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/crate-training",
+    "title": "Crate training your dog - PDSA",
+    "h1": "Crate training your dog",
+    "h2": [
+     "Overview",
+     "Benefits of crate training your puppy or adult dog",
+     "What do you need to start crate training?",
+     "How to crate train a puppy or adult dog",
+     "Top tips",
+     "FAQs",
+     "Reward-based training",
+     "Certified dog behaviourist",
+     "Tasty treats"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": false,
+   "health_tests_named": [
+    "BVA/Kennel Club hip dysplasia scheme",
+    "BVA eye scheme"
+   ],
+   "vet_checks_mentioned": true,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 0,
+   "registered_charity_number_shown": true,
+   "kc_assured_breeder_recommended": true
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 487,
+   "url_count": 473,
+   "h2_per_page": {
+    "https://www.pdsa.org.uk/": 4,
+    "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier": 10,
+    "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/the-cost-of-owning-a-dog": 4,
+    "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/crate-training": 9
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 2,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "the map holds no post URL with a date and no post was fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 8,
+   "alt_text": "missing",
+   "alt_missing": 6,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "form"
+   ],
+   "prices_shown": false,
+   "price_amounts_as_printed": [],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": []
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "PDSA ranks with a vet-written Staffordshire Bull Terrier breed page that covers health risks, care, a monthly and lifetime cost of ownership and where to get one, but it sells no puppy, prices no puppy, carries no schema and names no city. BSUK can match its vet-style health and cost-of-ownership coverage on a Staffy page and win the buying intent PDSA leaves open: a named breeder's own health-tested litters, a stated price and a direct way to enquire."
+}

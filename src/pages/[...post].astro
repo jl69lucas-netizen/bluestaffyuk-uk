@@ -1,0 +1,207 @@
+---
+// src/pages/[...post].astro — every entry of the `blog` content collection, on the kit.
+//
+// ONE TEMPLATE, EVERY POST. This route is not a page: it is the shape project 5's posts will
+// be written into, so nothing here names a slug, a heading or a sentence. Everything it
+// renders comes off the entry — its frontmatter, its markdown and its own heading list — or
+// off data/page-dates.json. A post that carries an image gets a photograph in its hero; a
+// post that does not gets a hero with no media column, because a borrowed puppy photo on a
+// post that has none is working rules 9 and 11 at once. `Hero`'s `media: 'none'` exists for
+// this caller.
+//
+// WHY IT MOVED OFF BaseLayout (project 4 Task 14 review). The migrated route was
+// `<BaseLayout><article class="container container-text">` — the WordPress body in a text
+// column, with no hero, no date, no in-page nav and an `<h1>` the template supplied. The hub
+// that indexes these posts is on `PageShell` with the kit, so a reader who followed a card
+// off it landed on a page from the previous site. The board scopes Task 14 to the hub AND the
+// post's LAYOUT, and this is the second half.
+//
+// THE COPY IS NOT TOUCHED BY THIS FILE. `<Content />` renders the entry's markdown as
+// written; the H4-H6 ladder, the word band and the FAQ rows are the POST's, which is build
+// 5's work. What the template adds is chrome: the hero, the date, the trail, the contents
+// list and the schema.
+//
+// THE DATE IS NEVER INVENTED. A post's own `date` wins; where the frontmatter has none — the
+// migrated post carries `date-not-fetched`, because the old markup held no published date —
+// the route falls back to data/page-dates.json, which scripts/generate_page_dates.py derives
+// from committed git history and which BaseLayout reads for its own WebPage node. So the
+// stamp a reader sees, the stamp `PageDate` renders and the stamp in `BlogPosting` are one
+// number. A route with no row in either place renders no date and mints none: `new Date()`
+// here would tell every reader the post changed the moment they loaded it.
+import { getCollection, render } from 'astro:content';
+import PageShell from '../layouts/PageShell.astro';
+import Hero from '../components/kit/Hero.astro';
+import PageNav from '../components/kit/PageNav.astro';
+import PageDate from '../components/kit/PageDate.astro';
+import Faq from '../components/kit/Faq.astro';
+import { titleCase as T } from '../lib/headings';
+import { SITE, abs, LOGO_RASTER, SITE_URL } from '../lib/site';
+import pageDates from '../../data/page-dates.json';
+
+export async function getStaticPaths() {
+  // Slugs owned by a real page route. A blog post claiming one of these would be shadowed
+  // by the file route and silently vanish, so the build fails loudly instead.
+  const reserved = new Set([
+    ...Object.keys(import.meta.glob('./**/index.astro'))
+      .map((k) => k.replace(/^\.\//, '').replace(/(^|\/)index\.astro$/, ''))
+      .filter(Boolean),
+    'blog', 'uk-locations', 'available-puppies',
+  ]);
+  const posts = await getCollection('blog');
+  for (const post of posts) {
+    if (reserved.has(post.data.slug)) {
+      throw new Error(`Blog post slug "${post.data.slug}" collides with a page route; rename the post slug.`);
+    }
+  }
+  return posts.map((post) => ({ params: { post: post.data.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+// `headings` is Astro's own list off the rendered markdown, carrying the slugger's ids — the
+// same ids the rendered `<h2>`s have. Deriving the contents list any other way (parsing the
+// body, re-slugging the text) would be a second slugger, and `nav-anchors-resolve` is what
+// would find the day the two disagreed.
+const { Content, headings } = await render(post);
+const d = post.data;
+const path = `/${d.slug}/`;
+const isCollection = d.schema_type === 'CollectionPage';
+// The migrated archive body has no h1, so the template supplies one; a real post whose
+// markdown already opens with an h1 keeps its own and the hero heading steps down, so the
+// page has exactly one H1 either way.
+const bodyHasH1 = /^\s*#\s/.test(post.body ?? '');
+const pageTitle = d.title.split(' | ')[0];
+
+// The contents list, from the post's own H2s. PageShell mounts the dial, the sheet and the
+// strip at six sections or more and warns below that; a post is normally shorter, so the list
+// goes straight to `PageNav` — the same component the rich pages carry under their hero, and
+// the right furniture for a page with two or three sections. A post with no H2 renders
+// nothing at all, which is a post with no contents rather than an empty box.
+const sections = headings
+  .filter((h) => h.depth === 2 && h.slug && h.text.trim())
+  .map((h) => ({ id: h.slug, label: h.text.replace(/:.*$/, '').trim() }));
+
+// The date, frontmatter first and the git map second (see the header note).
+const row = (pageDates.routes as Record<string, { datePublished: string; dateModified: string }>)[path];
+const datePublished = d.date ?? row?.datePublished;
+const dateModified = row?.dateModified ?? d.date;
+
+// `BlogPosting`, or whatever `schema_type` the entry declares, with an `@id` of its own.
+// NO `isPartOf`/`mainEntityOfPage` POINTER AT `#webpage`: BaseLayout drops its own WebPage
+// node the moment a page's schema mentions `dateModified`, and this node states one, so a
+// reference to `#webpage` would be the dangling `@id` scripts/schema_check.py blocks on.
+// `mainEntityOfPage` is the page's absolute url instead, which needs nobody to emit it.
+const main: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': d.schema_type,
+  '@id': `${abs(path)}#post`,
+  headline: pageTitle,
+  name: pageTitle,
+  description: d.description,
+  inLanguage: 'en-GB',
+  author: { '@type': 'Organization', name: d.author },
+  publisher: { '@id': `${SITE_URL}/#business` },
+  image: d.featured_image ? abs(d.featured_image) : abs(LOGO_RASTER),
+  mainEntityOfPage: abs(path),
+  url: abs(path),
+};
+if (datePublished) main.datePublished = datePublished;
+if (dateModified) main.dateModified = dateModified;
+if (isCollection) { delete main.headline; delete main.author; }
+const schema = [
+  main,
+  ...(d.faqs.length ? [{
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    '@id': `${abs(path)}#faq`,
+    mainEntity: d.faqs.map((f) => ({
+      '@type': 'Question', name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  }] : []),
+];
+---
+<PageShell
+  title={d.title}
+  description={d.description}
+  canonical={path}
+  crumbTitle={pageTitle}
+  ogType="article"
+  ogImage={d.featured_image || LOGO_RASTER}
+  schema={schema}
+>
+  {/* The hero. `media: 'none'` when the entry carries no `featured_image`, which drops the
+      media column rather than borrowing a photograph — the migrated post records
+      `no-featured-image` and there is nothing on disk to put there.
+
+      NO LEDE, AND THAT IS NOT AN OVERSIGHT. The obvious candidate is the entry's meta
+      description, and it was here until the gates read it: the guides hub's card for a post
+      prints that same description (its record asks for title, description and date on every
+      card), so the hero and the card shared a 41-word run and `dup_content_audit.py` reported
+      the post against the hub. A meta description is METADATA — it is already in `<meta>` and
+      in the card that sends a reader here — and reprinting it as the first body copy they
+      read is the page repeating what they just clicked. A post that wants a standfirst gets a
+      real one, written for the post, in build 5. */}
+  <section slot="hero" id="top" data-section-label={pageTitle}>
+    <Hero
+      as={bodyHasH1 ? 'h2' : 'h1'}
+      eyebrow={`Blue Staffy guides · ${SITE.location_label}`}
+      title={T(pageTitle)}
+      image={d.featured_image ?? undefined}
+      imageAlt={d.featured_image_alt}
+      layout={d.featured_image ? 'bleed' : 'panel'}
+      media={d.featured_image ? 'right' : 'none'}
+      ledge="none"
+      align="left"
+    />
+    <div class="container post-date"><PageDate path={path} /></div>
+  </section>
+
+  {sections.length > 0 && (
+    <PageNav path={path} title={pageTitle} sections={sections} crumbs={false} class="page-toc" />
+  )}
+
+  <article class="post-body">
+    <Content />
+    {d.faqs.length > 0 && (
+      <section id="questions" data-section-label="Frequently asked questions">
+        <h2>{T('Frequently Asked Questions')}</h2>
+        <Faq items={d.faqs.map((f, i) => ({
+          id: `${d.slug}-q${i + 1}`, q: f.question, a: f.answer,
+          source: `src/content/blog/${d.slug}.md`,
+        }))} />
+      </section>
+    )}
+  </article>
+</PageShell>
+<style>
+  @layer components {
+    .post-date { padding-block: var(--space-3) 0; }
+    /* The body is rendered markdown, so its elements carry no class of their own and the
+       rules have to reach them with `:global()`. Only what a MARKDOWN body needs is here —
+       the measure, the heading rhythm, the image box — and every value is a kit token, so a
+       post reads like the rest of the site without a second type scale beside it. */
+    .post-body { max-width: var(--text-max); margin-inline: auto;
+                 padding-inline: var(--space-4); padding-block: var(--space-8); }
+    /* NO `scroll-margin-top` HERE. global.css gives every `[id]`
+       `calc(var(--hdr-measured, var(--hdr)) + 16px)`, measured off the real sticky header at
+       runtime; a fixed value in this block out-specified it and landed every H2 jump 64px up
+       behind the header, which `nav-jump-target-lands` reported at all three viewports. The
+       rhythm is this file's, the jump offset is the shell's. */
+    .post-body :global(h2) { margin: var(--space-8) 0 var(--space-3); }
+    .post-body :global(h3) { margin: var(--space-6) 0 var(--space-2); }
+    .post-body :global(h4),
+    .post-body :global(h5),
+    .post-body :global(h6) { margin: var(--space-5) 0 var(--space-2); }
+    .post-body :global(p), .post-body :global(ul), .post-body :global(ol) { margin: 0 0 var(--space-4); }
+    /* Working rule 11: a post's images are served at their original paths, so the BOX is what
+       this changes and never the file. Same sizing rule as `.bl-img` on the rich pages. */
+    .post-body :global(img) {
+      display: block; max-width: 100%; height: auto; margin: var(--space-5) 0;
+      border-radius: var(--card-radius); box-shadow: var(--shadow-lift);
+    }
+    .post-body :global(blockquote) {
+      margin: var(--space-5) 0; padding-inline-start: var(--space-4);
+      border-inline-start: 4px solid var(--color-cta); color: var(--color-text-muted);
+    }
+  }
+</style>

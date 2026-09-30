@@ -1,0 +1,322 @@
+---
+// src/components/kit/SectionSheet.astro — mobile/tablet in-page nav (spec §3): a fixed
+// bottom bar of three site links (Home · Puppies · Contact) with a full-width Sections pill
+// above it, opening a native <dialog> bottom sheet of the page's sections with scroll-spy.
+//
+// Hidden at >=1024px, where PageDial takes over: the set is one component split by width
+// and a page mounts all three, so none may be visible at a width another owns.
+//
+// THE PILL, NOT A FOURTH TAB. The breeder picked S2 on the contact board (2026-09-19):
+// Sections is the control this component exists for, and as a fourth icon tab it read as
+// one site destination among four. Lifted onto its own full-width row it is unmistakable,
+// and the three site links keep a third of the bar each. This file used to carry all three
+// arrangements behind a `style` prop; the two that lost are deleted, along with the prop.
+//
+// The <dialog> is NATIVE on purpose. `showModal()` gives the focus trap, the inert
+// background and the Escape key for free; a div-with-role="dialog" would need all three
+// hand-written, and the two that get forgotten are always Escape and the trap.
+//
+// The bar is 64px tall and the pill adds 52px above it; the pair RESERVES all 116px with
+// body padding, so no in-page jump target can land underneath either. That is not a cosmetic detail: it is the whole of what
+// `nav-bottom-chrome-clear` (blocking, tests/render/checks/nav.ts) measures.
+//
+// THAT RESERVATION DEPENDS ON `:has()`. `body:has(.kit-sheet)` scopes the padding to pages
+// that actually mount the bar, so a page without one gets no mystery gap — but a browser
+// without `:has()` support drops the whole rule and every such page loses the reservation
+// silently. The global block therefore carries an `@supports not selector(:has(*))`
+// fallback that pads the body unconditionally: a 116px gap on a page with no bar is a
+// cosmetic cost, and a jump target under the bar is a blocking one.
+//
+// `aria-current="location"`, never a bare `aria-current`: `toggleAttribute` emits
+// `aria-current=""`, which is the token `false`. See the same note in PageDial.astro.
+//
+// Conventions 2 (`--kit-ring`), 4 (`HTMLAttributes` + `...rest` + `class:list`),
+// 6 (`@layer components`). Icons are inline stroke SVG — never an emoji, never an <img>.
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+import Button from './Button.astro';
+type Props = HTMLAttributes<'div'> & {
+  sections: SectionRef[];
+  ctaLabel?: string;
+  ctaHref?: string;
+};
+const {
+  sections,
+  ctaLabel = 'Available puppies',
+  ctaHref = '/available-puppies/',
+  class: cls,
+  ...rest
+} = Astro.props;
+// One path each, on the same 24 grid with the same stroke weight, so they read as one set
+// rather than as icons that happen to sit in a row.
+const I = {
+  home: 'M3 11l9-8 9 8v10H3z M9 21v-6h6v6',
+  pup: 'M4 8c0-3 2-5 5-5h6c3 0 5 2 5 5v8a5 5 0 0 1-10 0V8 M9 20h6',
+  mail: 'M4 5h16v14H4z M4 7l8 6 8-6',
+  list: 'M4 7h16M4 12h16M4 17h10',
+};
+const tabs: [string, string, string][] = [
+  ['Home', '/', I.home],
+  ['Puppies', '/available-puppies/', I.pup],
+  ['Contact', '/uk-blue-staffy-breeders-contact/', I.mail],
+];
+---
+<div class:list={['kit-sheet', cls]} data-sheet {...rest}>
+  <nav class="kit-tabbar" aria-label="Site">
+    {tabs.map(([label, href, d]) => (
+      <a href={href}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={d} /></svg>
+        <span>{label}</span>
+      </a>
+    ))}
+  </nav>
+  {/* ONE `[data-open]` on the page — the script binds a single opener, and a second copy
+      would be a control that silently does nothing. */}
+  <div class="kit-pillbar">
+    <button type="button" class="pill" data-open aria-haspopup="dialog" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg>
+      <span>Sections</span>
+    </button>
+  </div>
+  <dialog class="sheet" aria-label="Sections" data-dialog>
+    <div class="grab" aria-hidden="true"></div>
+    <ol>
+      {sections.map((s, i) => (
+        <li>
+          <a href={`#${s.id}`} data-spy={s.id}>
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="lab">{s.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    <div class="cta">
+      <Button kind="primary" href={ctaHref} label={ctaLabel} />
+      <button type="button" class="close" data-close>Close</button>
+    </div>
+  </dialog>
+</div>
+<script>
+  // Singleton by design: a page mounts ONE sheet, the way it mounts one site header.
+  const root = document.querySelector<HTMLElement>('[data-sheet]');
+  const dlg = root?.querySelector<HTMLDialogElement>('[data-dialog]');
+  if (root && dlg) {
+    const opener = root.querySelector<HTMLButtonElement>('[data-open]');
+    // showModal(), not show(): the modal form is what supplies the focus trap, the inert
+    // background and Escape. Guarded, because a browser without the dialog API leaves
+    // showModal undefined and an unguarded call throws — the bar's other three tabs are
+    // ordinary links and must keep working. The fallback opens the sheet as a plain
+    // non-modal panel: no trap, no Escape, but the section list is reachable.
+    const open = () => {
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open', '');
+      opener?.setAttribute('aria-expanded', 'true');
+    };
+    opener?.addEventListener('click', open);
+    root.querySelector('[data-close]')?.addEventListener('click', () => dlg.close());
+    // A click that lands on the dialog element itself is a click on the backdrop: the
+    // sheet's own content sits in children, so `e.target === dlg` cannot be a mis-hit.
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg) dlg.close();
+    });
+    // Following a section link must dismiss the sheet, or the reader jumps to a section
+    // they cannot see behind the modal.
+    dlg.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => dlg.close()));
+    // `aria-expanded` is driven by the dialog's own `close` event, not by each call site.
+    // Escape and the backdrop close the sheet without going through any handler of ours,
+    // so a flag flipped beside `dlg.close()` would be wrong the first time a reader
+    // pressed Escape — which is the way most of them will close it.
+    dlg.addEventListener('close', () => opener?.setAttribute('aria-expanded', 'false'));
+
+    // Paired links and targets, the same reading band and the same bottom-of-document
+    // fallback as PageDial — see the fuller note there. The two must agree about the
+    // current section at every width a reader could rotate between.
+    const rows = [...dlg.querySelectorAll<HTMLAnchorElement>('[data-spy]')]
+      .map((link) => ({ link, target: document.getElementById(link.dataset.spy!) }))
+      .filter((r): r is { link: HTMLAnchorElement; target: HTMLElement } => r.target !== null);
+    const N = rows.length;
+    const set = (i: number) => {
+      if (i < 0 || i >= N) return;
+      rows.forEach((r, j) => {
+        if (j === i) r.link.setAttribute('aria-current', 'location');
+        else r.link.removeAttribute('aria-current');
+      });
+    };
+    const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    let fromObserver = 0;
+    const apply = () => set(atBottom() ? N - 1 : fromObserver);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (!visible[0]) return;
+        const i = rows.findIndex((r) => r.target === visible[0].target);
+        if (i >= 0) fromObserver = i;
+        apply();
+      },
+      { rootMargin: '-40% 0px -55% 0px' },
+    );
+    rows.forEach((r) => io.observe(r.target));
+    window.addEventListener('scroll', apply, { passive: true });
+    const fromHash = rows.findIndex((r) => r.target.id === decodeURIComponent(location.hash.slice(1)));
+    if (fromHash >= 0) fromObserver = fromHash;
+    apply();
+  }
+</script>
+<style is:global>
+  /* `is:global` deliberately, and it reaches <body> — a scoped rule cannot. The bar is
+     `position: fixed`, so it is out of flow and would otherwise sit ON TOP of the last
+     64px of every page: the end of the final section, and any jump target near it.
+     `:has()` keeps the reservation tied to the bar actually being mounted, so a page
+     without the sheet gets no mystery gap. The number is the bar plus the pill above it —
+     64 + 52 — and `nav-bottom-chrome-clear` measures the pair. Hex-free by construction.
+
+     `@layer components` here as well as in the scoped block (convention 6): a global rule
+     outside every layer beats any Tailwind utility a page might use to override the
+     padding, which is the opposite of what a kit component should do.
+
+     THE FALLBACK IS NOT DECORATION. A browser without `:has()` drops the first rule
+     entirely and the page loses its reservation with no symptom until someone jumps to the
+     last section. `@supports not selector(:has(*))` pads the body unconditionally there:
+     64px of empty space on a page that mounts no bar is a cosmetic cost, and a jump target
+     hidden under the bar is a blocking one. */
+  @layer components {
+    @media (max-width: 1023px) {
+      /* 116px: the 64px bar plus the 52px pill row above it. One number said twice — here
+         and in the two heights below — and `nav-bottom-chrome-clear` measures the pair. */
+      body:has(.kit-sheet) { padding-bottom: 116px; }
+      @supports not selector(:has(*)) {
+        body { padding-bottom: 116px; }
+      }
+    }
+  }
+</style>
+<style>
+  @layer components {
+    /* `display: contents` — the wrapper exists to scope the script and the `:has()` hook,
+       and must not introduce a box of its own between the bar and the body. */
+    .kit-sheet { display: contents; }
+    .kit-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      height: 64px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--color-surface-raised);
+      border-top: 1px solid var(--color-border);
+      box-shadow: var(--shadow-card);
+    }
+    /* 44px minimum on every tab: WCAG 2.5.8, and `layout-tap-target-size` is blocking. */
+    .kit-tabbar a,
+    .kit-tabbar button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-height: 44px;
+      font: 600 var(--text-xs) / 1 var(--font-body);
+      color: var(--color-brand);
+      text-decoration: none;
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+    .kit-tabbar svg { width: 22px; height: 22px; }
+    /* `outline-offset: -3px` — the bar is flush to the viewport edge, so an outward ring
+       would be clipped on the bottom tab row. */
+    .kit-tabbar :focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -3px; }
+    .sheet {
+      border: 0;
+      padding: var(--space-4) var(--space-5) var(--space-6);
+      width: min(100%, 560px);
+      max-height: 80vh;
+      /* `margin: auto auto 0` is what makes a centred modal a BOTTOM sheet. */
+      margin: auto auto 0;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      background: var(--color-surface-raised);
+      color: var(--color-text);
+    }
+    /* The scrim is the deep surface at half alpha. `color-mix` keeps it a token rather
+       than a hand-spelled colour — rule 1 bans the hex, not just the `#`. */
+    .sheet::backdrop { background: color-mix(in srgb, var(--color-surface-deep) 50%, transparent); }
+    .grab {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--color-border);
+      margin: 0 auto var(--space-3);
+    }
+    .sheet ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+    .sheet li a {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+      min-height: 44px;
+      padding: 0 var(--space-2);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      text-decoration: none;
+    }
+    .sheet li a[aria-current='location'] { background: var(--color-brand-soft); color: var(--color-brand); font-weight: 600; }
+    .sheet li a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 1px; }
+    .num { font-feature-settings: 'tnum'; color: var(--color-text-muted); font-size: var(--text-xs); }
+    .lab { min-width: 0; overflow-wrap: anywhere; }
+    .cta { display: flex; gap: var(--space-3); margin-top: var(--space-4); align-items: center; }
+    .close {
+      min-height: 44px;
+      padding: 0 var(--space-4);
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: var(--btn-radius);
+      font: 600 var(--text-sm) var(--font-body);
+      color: var(--color-text);
+      cursor: pointer;
+    }
+    /* At >=1024px PageDial is the in-page nav. The bar, the pill and the sheet all go, so
+       the bar's links are not a second copy of the header nav in the desktop tab order. */
+
+    /* Sections, lifted out of the bar onto its own full-width row. 52px, which with the
+       64px bar is the 116px the body reserves above. */
+    .kit-pillbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 64px;
+      z-index: 40;
+      padding: 4px var(--space-4);
+      background: var(--color-surface-raised);
+      border-top: 1px solid var(--color-border);
+    }
+    .kit-pillbar .pill {
+      display: flex;
+      width: 100%;
+      min-height: 44px;
+      gap: var(--space-2);
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      background: var(--color-brand-soft);
+      font: 600 var(--text-sm) / 1 var(--font-body);
+      color: var(--color-brand);
+      cursor: pointer;
+    }
+    .kit-pillbar .pill svg { width: 20px; height: 20px; }
+    .kit-pillbar .pill:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+
+    @media (min-width: 1024px) {
+      .kit-tabbar,
+      .kit-pillbar,
+      .sheet { display: none; }
+    }
+    @media print {
+      .kit-tabbar,
+      .kit-pillbar { display: none; }
+    }
+  }
+</style>

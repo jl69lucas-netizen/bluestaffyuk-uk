@@ -1,0 +1,196 @@
+{
+  "id": "preloved",
+  "root_domain": "preloved.co.uk",
+  "analysed_on": "2026-09-25",
+  "keywords": {
+    "status": "ok",
+    "values": [
+      "staffy boxer f1 cockapoo puppies",
+      "staffy dogs puppies",
+      "staffy dogs puppies for sale",
+      "staffy lurcher x beagle puppies"
+    ]
+  },
+  "page_types": {
+    "status": "ok",
+    "values": {
+      "blog": 1,
+      "breed-guide": 2,
+      "city": 6,
+      "listing": 34
+    }
+  },
+  "cities": {
+    "status": "ok",
+    "values": [
+      "Essex",
+      "Hull",
+      "Inverness",
+      "Liverpool",
+      "London",
+      "Manchester",
+      "Sunderland",
+      "Wolverhampton"
+    ]
+  },
+  "schema_types": {
+    "status": "ok",
+    "values": [
+      "WebSite",
+      "SearchAction",
+      "Organization"
+    ]
+  },
+  "pages": {
+    "status": "ok",
+    "fetched_on": "2026-09-25",
+    "values": [
+      {
+        "url": "https://www.preloved.co.uk/",
+        "title": "Preloved | Free Classified Ads | Buy and Sell Second Hand",
+        "h1": "Enjoy HelloFresh's Biggest Menu Yet!",
+        "h2": [
+          "Main Menu",
+          "New Item Listings",
+          "Popular Categories",
+          "New Animal Listings",
+          "Pet News & Guidance",
+          "Information",
+          "Account",
+          "Explore"
+        ]
+      },
+      {
+        "url": "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/uk/pitbull+or+staffy",
+        "title": "pitbull or staffy -  Dogs & Puppies, For Sale | Preloved",
+        "h1": "",
+        "h2": []
+      },
+      {
+        "url": "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/manchester/staffy",
+        "title": "staffy -  Dogs & Puppies, For Sale in Manchester | Preloved",
+        "h1": "",
+        "h2": []
+      }
+    ]
+  },
+  "trust": {
+    "status": "ok",
+    "values": {
+      "council_licence_shown": false,
+      "council": null,
+      "kc_registration_mentioned": false,
+      "health_tests_named": [],
+      "vet_checks_mentioned": false,
+      "breeding_since_as_worded": null,
+      "town": null,
+      "phone_shown": false,
+      "email_shown": false,
+      "contact_source": "raw-html",
+      "reviews_shown": 0
+    }
+  },
+  "content": {
+    "status": "ok",
+    "values": {
+      "homepage_words": 826,
+      "url_count": 496,
+      "h2_per_page": {
+        "https://www.preloved.co.uk/": 8,
+        "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/uk/pitbull+or+staffy": 0,
+        "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/manchester/staffy": 0
+      }
+    }
+  },
+  "blog": {
+    "status": "ok",
+    "values": {
+      "post_count": 0,
+      "post_folder": null,
+      "topics": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: the classifier counts no post, and none of its key pages is a post"
+      },
+      "posting_frequency": {
+        "status": "NOT FETCHED",
+        "reason": "no dated post URL in the map list and no post fetched"
+      },
+      "sampled_word_counts": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: the classifier counts no post, and none of its key pages is a post"
+      }
+    }
+  },
+  "visual": {
+    "status": "ok",
+    "values": {
+      "homepage_images": 51,
+      "alt_text": "descriptive",
+      "alt_missing": 0,
+      "video_present": false
+    }
+  },
+  "conversion": {
+    "status": "ok",
+    "values": {
+      "cta_types": [
+        "visit"
+      ],
+      "prices_shown": true,
+      "price_amounts_as_printed": [
+        "£5",
+        "£10",
+        "£20",
+        "£25",
+        "£30",
+        "£35",
+        "£40",
+        "£50",
+        "£75",
+        "£80",
+        "£95",
+        "£100",
+        "£110",
+        "£125",
+        "£150",
+        "£160",
+        "£170",
+        "£179",
+        "£180",
+        "£190",
+        "£200",
+        "£250",
+        "£349",
+        "£375",
+        "£400",
+        "£450",
+        "£500",
+        "£750",
+        "£800",
+        "£850",
+        "£2,850",
+        "£2,950",
+        "£3,250",
+        "£3,995",
+        "£4,750",
+        "£4,950"
+      ],
+      "deposit_terms": "no platform deposit terms on the pages fetched; one Staffy-cross litter's advert card says a £100 deposit is taken",
+      "steps_to_enquire": null,
+      "urgency_signals": [
+        "ready-date"
+      ]
+    }
+  },
+  "technical": {
+    "status": "ok",
+    "values": {
+      "mobile_layout_ok": true,
+      "lighthouse_performance": {
+        "status": "NOT FETCHED",
+        "reason": "no Lighthouse run"
+      }
+    }
+  },
+  "key_insight": "Preloved ranks for Staffy city searches with auto-generated search-result pages: its Manchester Staffy page shows the same seven UK-wide adverts as its pitbull-or-Staffy page, none of them in Manchester and most of them rehomes or crosses, with no guide text, no checks and no trust signals. BSUK can beat those pages with real city pages that name the town, the breeder's health results, the price and a direct enquiry."
+}

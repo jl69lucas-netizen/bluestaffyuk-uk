@@ -1,0 +1,1030 @@
+{
+  "meta": {
+    "slug": "privacy-policy-uk",
+    "page_type": "interior",
+    "layout_type": "interior-utility",
+    "status": "approved",
+    "preview": true,
+    "research_as_of": "2026-09-19",
+    "sources": [
+      {
+        "path": "src/pages/privacy-policy-uk/index.astro",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "dist/privacy-policy-uk/index.html",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/facts/privacy-policy-uk.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/page-map.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/settings.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "https://www.luminastaffs.co.uk/privacy-policy",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "https://www.sbtclub.co.uk/gdpr",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "https://www.bullscaff.co.uk/privacy-policy",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "https://www.dogbreedinginformation.com/privacy-policy/",
+        "fetched": "2026-09-19"
+      }
+    ]
+  },
+  "brief": {
+    "goal": "Rebuild the privacy policy on the kit as a calm, honest page in Lisa Bright's first person, keeping every piece of legal substance the migrated body carries and losing the wrong postal address the legacy schema carried and the duplicated sentences.",
+    "scope": "Ten sections: a text-led hero, eight prose sections cut from the migrated body's headings, and a three-row FAQ. One image. No reviews, no puppies, no price.",
+    "gates": [
+      "facts-preserved",
+      "marker",
+      "schema",
+      "sitemap",
+      "form-contract",
+      "board-previews"
+    ],
+    "done": "The page states the controller, what is collected, why, with whom it is shared, how it is secured, the seven rights, cookies and how to reach us, in about a thousand words, and the facts-preserved gate reports nothing missing that `dropped` does not explain.",
+    "out_of_scope": [
+      "the postal address the migrated schema graph carried for a former city (Known Issue 16)",
+      "prices and puppy availability",
+      "reviews and puppy cards",
+      "a cookie consent banner (a build change, not a copy change)"
+    ],
+    "primary_keyword": "privacy policy uk",
+    "angles": [
+      {
+        "name": "plain policy in Lisa's voice",
+        "hook": "the legal clauses kept exactly, the connecting prose written the way Lisa would say it to someone on the phone",
+        "why_not": ""
+      },
+      {
+        "name": "boilerplate legal notice",
+        "hook": "a generic UK GDPR template with the company name substituted in",
+        "why_not": "it would drop the DEFRA transport case and the Kennel Club naming, which are the only parts of this policy specific to buying a puppy"
+      },
+      {
+        "name": "policy in a nutshell",
+        "hook": "a short bullet summary of promises in the style of one of the scanned competitors",
+        "why_not": "a summary that replaces the clauses loses the lawful bases and the seven rights, and the page would no longer be a policy"
+      }
+    ],
+    "strategy": {
+      "name": "plain policy in Lisa's voice",
+      "why": "The migrated body already mixes legal clauses with warm prose; keeping the clauses and rewriting only the prose is the change that raises the page without touching its substance.",
+      "trade_off": "It reads longer than the shortest competitor policies, which is the price of keeping the lawful bases and the seven named rights."
+    },
+    "cta": {
+      "cadence": {
+        "min": 400,
+        "max": 900
+      },
+      "destination": "#contact",
+      "anchors": [
+        "Ask about your data",
+        "Contact us about your privacy"
+      ],
+      "global_cta": "hidden"
+    },
+    "tool": {
+      "pick": "none",
+      "evidence": "A privacy policy asks the reader to calculate nothing; every question it raises is answered by writing to us.",
+      "trade_off": ""
+    },
+    "schema": {
+      "types": [
+        "WebPage"
+      ],
+      "offer_model": "none"
+    }
+  },
+  "h1": {
+    "variants": [
+      "Privacy Policy",
+      "Privacy Policy for BlueStaffyUK",
+      "Your Data, Our Care",
+      "How We Handle Your Information",
+      "Privacy and Your Data"
+    ],
+    "recommended": 0,
+    "pick": 0
+  },
+  "meta_set": {
+    "titles": [
+      "Privacy Policy | BlueStaffyUK Blue Staffy Breeders",
+      "Privacy Policy — Your Data at BlueStaffyUK | UK GDPR",
+      "BlueStaffyUK Privacy Policy | How We Use Your Data"
+    ],
+    "descriptions": [
+      "How BlueStaffyUK collects, uses and protects the details you send when you enquire about a puppy, the cookies we set, and the seven data rights you hold.",
+      "Our UK privacy policy in plain words: what the enquiry form collects, why we hold it, who it is shared with, and how to have it corrected or deleted.",
+      "How we handle your data under UK GDPR and the Data Protection Act 2018, from the enquiry form to cookies, sharing, security and your right to erasure."
+    ],
+    "recommended": {
+      "title": 0,
+      "description": 0
+    },
+    "pick": {
+      "title": 0,
+      "description": 0
+    }
+  },
+  "sections": [
+    {
+      "id": "opening",
+      "n": 1,
+      "heading": "How we look after your information",
+      "intent": "The opener says who the data controller is, what this policy covers and that it is written to UK GDPR and the Data Protection Act 2018. Calm, first person, no legal throat-clearing.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The migrated body opens with the data controller statement and the GDPR/Data Protection Act 2018 scope, and that is the first thing a reader of a privacy page needs.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — 'Your Privacy Policy Matters to BlueStaffyUK' and 'Data Controller: BlueStaffyUK is the data controller responsible for your data.'",
+      "framework": "EEBP",
+      "words": {
+        "min": 90,
+        "max": 120
+      },
+      "shape": "hero",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [
+          "data controller",
+          "UK GDPR",
+          "Data Protection Act 2018"
+        ],
+        "longtail": [],
+        "brand": [
+          "BlueStaffyUK"
+        ],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [
+        {
+          "slot": "privacy-mark",
+          "kind": "photo",
+          "required": false,
+          "prompt": "the migrated page's lead silhouette mark, reused at its original path"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": [
+          {
+            "href": "https://www.gov.uk/data-protection",
+            "anchor": "the government's guide to data protection",
+            "library_row": "GOV.UK — plain-English summary of UK data protection law",
+            "why": "carried from the migrated page"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "H-UT1",
+        "note": ""
+      },
+      "styles": [
+        "H-UT1",
+        "H-UT2",
+        "H-UT3"
+      ],
+      "cta": 1,
+      "refresh": {
+        "axis": "layout",
+        "note": "the interior-utility hero H-UT1, a small photo mosaic right of the copy in a card, shared with /thank-you-blue-staffy-puppies-journey/ and /uk-blue-staffy-breeders-contact/ by the user's exemption (working rule 16, 2026-09-23); unlike the homepage's mosaic it carries no figure tiles."
+      }
+    },
+    {
+      "id": "what-we-collect",
+      "n": 2,
+      "heading": "What information we collect",
+      "intent": "The two kinds of data, split as the migrated page splits them: what you give us when you enquire, and what the site records automatically.",
+      "category": "B",
+      "group": "COMPETITOR-BASED",
+      "why": "A reader's first question on a breeder privacy page is what the enquiry form takes; all four scanned competitors lead with the same split.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — 'What Information Do We Collect?'; https://www.luminastaffs.co.uk/privacy-policy leads with the same enquiry-form split",
+      "framework": "EEBP",
+      "words": {
+        "min": 120,
+        "max": 150
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [
+          "enquiry form",
+          "IP address",
+          "cookies"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [
+          "what data does a breeder collect"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "What you give us when you enquire",
+          "intent": "Name, email address, phone number, postal address and anything you choose to tell us about your home and family.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What the website records automatically",
+          "intent": "IP address, browser type, the pages visited and time spent, collected through cookies.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "refresh": {
+        "axis": "container",
+        "note": "each clause in a plain ruled block rather than a card, so a policy reads as a document and not as marketing."
+      }
+    },
+    {
+      "id": "how-we-use",
+      "n": 3,
+      "heading": "How we use your information",
+      "intent": "Each purpose with the lawful basis beside it, kept exactly as the migrated page states them so the legal substance is unchanged.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The lawful basis list is the legal core of the page and the one part that may not be paraphrased away.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — 'How We Use Your Information' and its five lawful-basis lines",
+      "framework": "EEBP",
+      "words": {
+        "min": 110,
+        "max": 145
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [
+          "lawful basis",
+          "legitimate interest",
+          "legal obligation"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Answering your enquiry",
+          "intent": "Performance of a contract / legitimate interest.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Telling you about our dogs and services",
+          "intent": "Performance of a contract / legitimate interest.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Improving the website",
+          "intent": "Legitimate interest.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Record keeping and administration",
+          "intent": "Legitimate interest.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Meeting legal obligations",
+          "intent": "Legal obligation.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "refresh": {
+        "axis": "density",
+        "note": "tighter leading than any other page's body, because this one is read in full or not at all."
+      }
+    },
+    {
+      "id": "sharing",
+      "n": 4,
+      "heading": "When we share your information",
+      "intent": "The three limited circumstances the migrated page names, including the DEFRA-approved transport case, and the plain statement that nothing is sold or traded for marketing.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Sharing is the fear behind the question; the page already answers it with a closed list and that list is worth keeping as a list.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — 'Sharing Your Information' items 01, 02, 03",
+      "framework": "EEBP",
+      "words": {
+        "min": 100,
+        "max": 130
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [
+          "DEFRA",
+          "third party",
+          "court order"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Service providers who help us run the site",
+          "intent": "Only where they agree to keep the information confidential.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "DEFRA-approved pet transport",
+          "intent": "When delivery is arranged, the details the transport service needs are passed to it.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "When the law requires it",
+          "intent": "For example in response to a court order.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": [
+          {
+            "href": "https://www.thekennelclub.org.uk/",
+            "anchor": "The Kennel Club",
+            "library_row": "The Kennel Club — the UK pedigree registry our litters are registered with",
+            "why": "carried from the migrated page"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "refresh": {
+        "axis": "accent",
+        "note": "no brass anywhere in this section; the rule is the only divider."
+      }
+    },
+    {
+      "id": "third-parties",
+      "n": 5,
+      "heading": "The third-party services we use",
+      "intent": "The named organisations and tools: The Kennel Club, DEFRA-approved pet transport, and Google Analytics for site analytics.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Naming the third parties is what turns a generic policy into a checkable one, and the migrated page already names three.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — 'Third-Party Services'",
+      "framework": "EEBP",
+      "words": {
+        "min": 70,
+        "max": 95
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [
+          "DEFRA-approved transport",
+          "Google Analytics"
+        ],
+        "longtail": [],
+        "brand": [
+          "The Kennel Club"
+        ],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": [
+          {
+            "href": "https://policies.google.com/privacy",
+            "anchor": "Google's own privacy policy",
+            "library_row": "Google — what Google Analytics does with what it records",
+            "why": "carried from the migrated page"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "refresh": {
+        "axis": "layout",
+        "note": "the named services as a definition list, against the prose paragraphs the sections around it use."
+      }
+    },
+    {
+      "id": "security",
+      "n": 6,
+      "heading": "How your data is kept safe",
+      "intent": "The technical and organisational measures the migrated page lists: secure servers, SSL encryption, restricted access, staff training.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Security is the promise the rest of the policy rests on, and the measures are concrete enough to state.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — 'Our Commitment to Data Security'",
+      "framework": "EEBP",
+      "words": {
+        "min": 80,
+        "max": 105
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [
+          "SSL",
+          "encryption",
+          "restricted access"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "refresh": {
+        "axis": "motif",
+        "note": "no photograph and no icon, unlike every other section on the site, which all carry an image of some kind."
+      }
+    },
+    {
+      "id": "your-rights",
+      "n": 7,
+      "heading": "Your rights over your data",
+      "intent": "The seven UK GDPR rights as an H3 list, plus the one-month response commitment and the right to complain to the ICO.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "This is the longest legal block on the page and the one a reader arrives for; it is also what makes the section dial worth mounting.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — 'Your Rights Regarding Your Data (GDPR & Data Protection Act 2018)' and its seven H3s",
+      "framework": "EEBP",
+      "words": {
+        "min": 150,
+        "max": 190
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [
+          "subject access request",
+          "ICO",
+          "one month"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [
+          "how do I ask a breeder to delete my data"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Right to access",
+          "intent": "You can ask for a copy of the personal data we hold about you.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Right to erasure",
+          "intent": "In certain circumstances you can ask us to delete your data.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Right to data portability",
+          "intent": "You can ask to receive your data in a structured, machine-readable format.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Right to rectification",
+          "intent": "You can ask us to correct inaccurate or incomplete data.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Right to restrict processing",
+          "intent": "You can ask us to limit how we use your data.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Right to object",
+          "intent": "You can object to processing based on legitimate interests.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Right to withdraw consent",
+          "intent": "Where we rely on consent, you can withdraw it at any time.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/uk-blue-staffy-breeders-contact/",
+            "anchor": "contact us",
+            "sentence_start": true,
+            "why": "carried from the migrated page"
+          }
+        ],
+        "external": [
+          {
+            "href": "https://ico.org.uk/",
+            "anchor": "Information Commissioner's Office",
+            "library_row": "ICO — the UK supervisory authority for data protection",
+            "why": "carried from the migrated page"
+          },
+          {
+            "href": "https://www.citizensadvice.org.uk/about-us/information/citizens-advice-privacy-policy/",
+            "anchor": "Citizens Advice",
+            "library_row": "Citizens Advice — independent help with a data-protection question",
+            "why": "carried from the migrated page"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "refresh": {
+        "axis": "density",
+        "note": "each right on its own short line, roomier than the clauses above it, because this is the part a reader scans for."
+      }
+    },
+    {
+      "id": "cookies",
+      "n": 8,
+      "heading": "Cookies, and changes to this policy",
+      "intent": "What the cookies do — essential ones for the site to work, analytics ones to see how it is used — and the note that any change to this policy is posted here with a new date.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Cookies and the change note are short and belong together; splitting them would make two sections neither of which earns a dial row.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — 'BlueStaffyUK's Cookies', 'Cookies Policy', 'Changes to This Privacy Policy'",
+      "framework": "EEBP",
+      "words": {
+        "min": 80,
+        "max": 105
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [
+          "essential cookies",
+          "analytics cookies"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Essential cookies",
+          "intent": "Needed for the site to work.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Analytics cookies",
+          "intent": "Used to understand how the site is used.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Changes to this policy",
+          "intent": "Any change is posted on this page with an updated date.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "refresh": {
+        "axis": "container",
+        "note": "the two subjects folded into one boxed note rather than two sections, unlike every other clause here."
+      }
+    },
+    {
+      "id": "contact",
+      "n": 9,
+      "heading": "Asking us about your privacy",
+      "intent": "How to reach us about anything on this page: the email address, the contact page, and the date the policy was last reviewed.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Every right on this page is exercised by writing to someone, so the page ends with the address to write to.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — 'Contact Us About Your Privacy', 'Email: staffies@bluestaffyuk.uk', 'Last Updated: June 20, 2025'",
+      "framework": "EEBP",
+      "words": {
+        "min": 50,
+        "max": 70
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "contact blue staffy breeder"
+        ]
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/uk-blue-staffy-breeders-contact/",
+            "anchor": "the contact page",
+            "sentence_start": true,
+            "why": "carried from the migrated page"
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "cta": 1,
+      "refresh": {
+        "axis": "accent",
+        "note": "the email address is the only brass on the page."
+      }
+    },
+    {
+      "id": "questions",
+      "n": 10,
+      "heading": "Questions we are asked about privacy",
+      "intent": "Three rows, each answering a question the migrated body already answers: what the enquiry form collects, what the cookies do, and how to have data deleted.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "An FAQ closes the page with the three things people actually write in to ask, and each answer is already carried by the body above it.",
+      "why_source": "src/pages/privacy-policy-uk/index.astro — the collection, cookies and erasure passages",
+      "framework": "QAB",
+      "words": {
+        "min": 40,
+        "max": 55
+      },
+      "shape": "faq",
+      "keywords": {
+        "primary": [
+          "privacy policy uk"
+        ],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [
+          "does a breeder sell my details"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "privacy-data-collected",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "privacy-cookies",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "privacy-delete-data",
+          "intent": "",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S1",
+        "note": ""
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "questions": [
+        "What personal information does BlueStaffyUK collect?",
+        "Who is the data controller for this website?",
+        "What is the lawful basis for using my enquiry details?",
+        "Does this website use cookies?",
+        "Is my information ever sold or shared for marketing?",
+        "Who sees my details when a puppy is delivered?",
+        "How do I ask for my data to be deleted?",
+        "How long does a data request take to answer?",
+        "How do I complain about how my data was handled?"
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "the FAQ rows closed by default and unnumbered, against the numbered open row /thank-you-blue-staffy-puppies-journey/ leads with."
+      }
+    }
+  ],
+  "tuple": {
+    "hero": "hero-h-ut1",
+    "dial": "",
+    "rail": "",
+    "toc": "pagenav-c",
+    "takeaway": [],
+    "table": "",
+    "faq": "faq-s1",
+    "stepper": "",
+    "newsletter": {
+      "after": "",
+      "variant": ""
+    },
+    "h6_prefixes": [
+      "Privacy Note:"
+    ]
+  },
+  "assets": [
+    {
+      "slot": "privacy-mark",
+      "kind": "photo",
+      "w": 400,
+      "h": 400,
+      "required": false,
+      "status": "baked",
+      "file": "/images/privacy-policy-staffy-silhouette-bluestaffyuk.webp",
+      "alt": "Privacy Policy | Minimalist silhouette of a calm Staffordshire Bull Terrier representing trust and privacy"
+    }
+  ],
+  "dropped": {
+    "images": [
+      "/images/blue-staffy-privacy-policy-info-discussion.webp — the migrated page used it to illustrate 'How We Use Your Information'; the rebuilt page is text-led legal prose and carries one image only (plan Task 7), so this one is not placed.",
+      "/images/breeder-sitting-blue-staffy-puppy-home.webp — a breeder-and-puppy photo that illustrates no clause on this page; it is already carried by the pages about the dogs."
+    ],
+    "links": [
+      "/buy-blue-staffy-puppies-uk/ (\"View All Staffies\") — a sales CTA the old legal page carried inline; the brief hides the global CTA on this page and routes its one ask to #contact, so a puppy-listing button does not belong in a privacy clause.",
+      "/blue-staffy-health-uk/ (\"health guarantee\", and again as \"health and care of Blue Staffies\") — no clause on this page is about health; the link is cross-sell, not privacy substance.",
+      "/uk-staffordshire-bull-terrier-guide/ (\"first-time blue staffy owner guide\") — same: related reading for a buyer, and nothing a data-protection clause needs.",
+      "/blue-staffy-blog-guides/ (\"c\") — the anchor in the migrated body is the single character \"c\", a defect in the old markup rather than a link anyone wrote.",
+      "/thank-you-blue-staffy-puppies-journey/ (\"our friendly team\") — the post-enquiry confirmation page; a reader with a privacy question is sent to the contact page, which this page already links twice.",
+      "mailto:privacy@bluestaffyuk.uk (anchor \"staffies@bluestaffyuk.uk\") — the href and the visible address disagree in the migrated body, so neither can be carried as written. The page reaches us through the contact page until the correct address is confirmed."
+    ],
+    "text": [
+      "regular staff training — the migrated body listed it among the security measures. No file on disk records a training programme, a schedule or who has taken it, and a policy that claims one the business cannot evidence is the kind of statutory-adjacent claim rule 9 holds back (see LEGAL_CLAIM_PLACEHOLDER). The three measures that ARE evidenced — secure servers, SSL in transit, access restricted to the people who need it — are all carried.",
+      "We encourage you to review this policy periodically — the rebuilt page renders its own last-updated date from data/page-dates.json instead, so a reader can SEE whether the wording has moved since they last read it rather than being asked to keep checking.",
+      "Last Updated: June 20, 2025 — a hard-typed stamp from the old site, two dates and one rebuild out of date. The page now renders the real date through the PageDate component, off the same data/page-dates.json row BaseLayout puts in the WebPage node, so the visible date and the machine-readable one cannot disagree. The contact block the same sentence carried (the email address and an invitation to write) is kept, in 'Asking us about your privacy'."
+    ]
+  },
+  "approval": {
+    "approved_at": "2026-09-22T17:59:52.663Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "contact": "",
+      "cookies": "",
+      "how-we-use": "",
+      "navigation": "",
+      "opening": "",
+      "questions": "",
+      "security": "",
+      "sharing": "",
+      "third-parties": "",
+      "what-we-collect": "",
+      "your-rights": ""
+    },
+    "picks": {
+      "opening": "H-UT1",
+      "questions": "S1"
+    },
+    "record_hash": "69b0be1a449e8c5f494d0ff4dc038b59705c602eb36c5956c174b22901e73429",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "faq-s1",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Privacy Note:"
+      ]
+    },
+    "reapproved_at": "2026-09-25T00:54:49Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-25T00:54:49Z",
+        "reason": "Known Issue 33 (project 5 readiness, R12): the hero and counter refresh notes described the arrangements the rule-16 re-board offered and the breeder did not pick; they now name the picked H-UT1 / C-UT1 and the user's exemption of the three utility pages from rule 16 (2026-09-23). Wording only: no pick, figure, source, menu or section moved.",
+        "changed_paths": [
+          "/sections/0/refresh/note"
+        ]
+      }
+    ]
+  },
+  "approval_previous": {
+    "approved_at": "2026-09-19T21:26:01.751Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "contact": "",
+      "cookies": "",
+      "how-we-use": "",
+      "opening": "",
+      "questions": "",
+      "security": "",
+      "sharing": "",
+      "third-parties": "",
+      "what-we-collect": "",
+      "your-rights": ""
+    },
+    "picks": {
+      "opening": "S3",
+      "questions": "S1"
+    },
+    "section_hashes": {
+      "opening": "05711b35e15f6e949052614777633053f3541caa736df7eb963b791ca815e121",
+      "what-we-collect": "6fd932c1765f0db094ffb85cbc831cc506a8dfc6f1501eddf21ae9609a6c0b57",
+      "how-we-use": "f4b21ab06f343b6ac08224695c2d3ae61ce3a3dfcd3a8e5ac82f0dd23b24e033",
+      "sharing": "12e1d2d914924fa208620ebe9fdfc7d0db97a614113a39420cc179356a55cb9d",
+      "third-parties": "3d0fec068ea1e2152cee94291ec006796dcaefcb3eebe2fe4b5a8eeee6f9ebcb",
+      "security": "cc17d7b765135e9c3a3d68b0c0ad7da9ee48bc686bd59b72f94ea9d5ab0c98d4",
+      "your-rights": "dd1fcc11dc2a03f2e47cfe95542ca1fd9cc8958393a9463a245aee909b9a0d49",
+      "cookies": "e0c4cd215d4ff546356e9c28ef409be60fed8014ae4dad2a711cbe98f480070c",
+      "contact": "a56c7e5c34021c4d4994c8706ea537dfc83c7e5d936325f08768c8c5225ecb4d",
+      "questions": "78d5d5d57483a5fbb629cb1095248e72eac76446362e367cb748a020d9aae927"
+    },
+    "record_hash": "4e18202c50ebe3b2f5827c18d5bdd335f85f085ddd0ab7dd72d9f02f979945c3",
+    "tuple_before": {
+      "hero": "hero-s3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "faq-s1",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Privacy Note:"
+      ]
+    }
+  }
+}

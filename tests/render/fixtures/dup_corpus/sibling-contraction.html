@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>sibling page — contraction tokenising</title></head><body>
+<!--
+  The sibling known_broken/dup-contraction-boundary.html and dup-contraction-entity.html
+  collide with. The second paragraph's apostrophe is written &#39; on purpose: that is how
+  Astro emits many apostrophes into dist/, and Python's HTMLParser decodes it before
+  tokenising. Keep it as an entity, or the entity case proves nothing.
+-->
+<main>
+  <h1>Blue Staffy Puppy Questions</h1>
+  <p>Your puppy questions get answered the same honest way we'd answer them on the phone.</p>
+  <p>A £500 deposit holds your chosen puppy for thirty days while the paperwork is prepared.</p>
+  <p>From day one, every vet record we&#39;ve kept for a puppy goes home with it.</p>
+  <p>Travel crates are lined with a fresh blanket the night before.</p>
+</main>
+</body></html>

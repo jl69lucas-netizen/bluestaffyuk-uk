@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>nav overshoot fixture</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; font-size: 16px; }
+  header { position: sticky; top: 0; height: 96px; background: #2D6A4F; color: #fff;
+           display: flex; align-items: center; padding: 0 16px; z-index: 50; }
+  nav a { color: #fff; margin-right: 12px; display: inline-block; padding: 8px; }
+  /* THE DEFECT: 200px clears the 96px header more than twice over. */
+  section { scroll-margin-top: 200px; min-height: 1400px; padding: 24px 16px; }
+</style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#alpha">Alpha</a>
+      <a href="#bravo">Bravo</a>
+      <a href="#charlie">Charlie</a>
+    </nav>
+  </header>
+  <section id="alpha"><h2>Alpha</h2><p>Alpha body.</p></section>
+  <section id="bravo"><h2>Bravo</h2><p>Bravo body.</p></section>
+  <section id="charlie"><h2>Charlie</h2><p>Charlie body.</p></section>
+</body>
+</html>

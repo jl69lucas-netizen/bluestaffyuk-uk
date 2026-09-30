@@ -1,0 +1,200 @@
+{
+  "slug": "kit-preview",
+  "date": "2026-09-19",
+  "page_type": "preview",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 614,
+    "layout-tap-target-size": 277,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 3,
+    "layout-image-box-reserved": 0,
+    "img-srcset-within-2x": 12,
+    "img-alt-present-and-unique": 12,
+    "nav-anchors-resolve": 15,
+    "nav-jump-target-lands": 15,
+    "sem-heading-order": 84,
+    "sem-all-six-levels": 84,
+    "sem-title-case-headings": 84,
+    "sem-section-opening-paragraph": 84,
+    "sem-statement-label-visible": 6,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1062,
+    "css-no-dead-component-rule": 474,
+    "css-component-color-not-overridden": 61,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 605,
+    "form-inquiry-contract": 3
+  },
+  "defects": {
+    "SEM": 9,
+    "CSS": 6,
+    "DUP": 3,
+    "A11Y": 2,
+    "FORM": 3
+  },
+  "instances": {
+    "SEM": 75,
+    "CSS": 18,
+    "DUP": 9,
+    "A11Y": 4,
+    "FORM": 3
+  },
+  "total": 23,
+  "total_instances": 109,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:6 H3:21 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 18,
+      "message": "18 heading(s) not in Title Case: H1 \"preview\" in \"Kit preview\" | H2 \"mark\" in \"0 · The mark\" | H3 \"header\" in \"1 · Site header + nav\" | H2 \"puppies\" in \"Blue Staffy puppies raised in a family home\" | H3 \"card\" in \"4 · Puppy card\" | H3 \"strip\" in \"5 · Trust strip\" | H3 \"counter\" in \"6 · Stat / counter strip\" | H3 \"info\" in \"7 · Content / info card\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 4,
+      "message": "4 heading(s) with no opening paragraph: H1→H2 \"Kit preview\" | H3→H3 \"4 · Puppy card\" | H3→H2 \"10 · Contact form\" | H3→H3 \"13 · Section divider\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: kit-mark x5, counter-wrap x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 4,
+      "message": "4 page-scoped rule(s) match nothing on the page: .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .kit-quote-empty — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 74w vs /index/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 68w vs /index/ \"we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first \" | 26w vs /buy-blue-staffy-puppies-uk/ \"the health checks the communication and the home raised environment everything was top not\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "a11y-text-contrast-aa",
+      "count": 2,
+      "message": "2 text node(s) below AA: .dot \"·\" 4.49:1 (needs 4.5) | .dot \"·\" 4.49:1 (needs 4.5)"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "form-inquiry-contract",
+      "count": 1,
+      "message": "screening fields: form#2(New Blue Staffy enquiry): 1 missing/optional (puppy select missing the collection-glasgow option (spec §5))"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:6 H3:21 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 18,
+      "message": "18 heading(s) not in Title Case: H1 \"preview\" in \"Kit preview\" | H2 \"mark\" in \"0 · The mark\" | H3 \"header\" in \"1 · Site header + nav\" | H2 \"puppies\" in \"Blue Staffy puppies raised in a family home\" | H3 \"card\" in \"4 · Puppy card\" | H3 \"strip\" in \"5 · Trust strip\" | H3 \"counter\" in \"6 · Stat / counter strip\" | H3 \"info\" in \"7 · Content / info card\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 4,
+      "message": "4 heading(s) with no opening paragraph: H1→H2 \"Kit preview\" | H3→H3 \"4 · Puppy card\" | H3→H2 \"10 · Contact form\" | H3→H3 \"13 · Section divider\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: kit-mark x5, counter-wrap x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 4,
+      "message": "4 page-scoped rule(s) match nothing on the page: .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .kit-quote-empty — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 74w vs /index/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 68w vs /index/ \"we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first \" | 26w vs /buy-blue-staffy-puppies-uk/ \"the health checks the communication and the home raised environment everything was top not\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "form-inquiry-contract",
+      "count": 1,
+      "message": "screening fields: form#2(New Blue Staffy enquiry): 1 missing/optional (puppy select missing the collection-glasgow option (spec §5))"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:6 H3:21 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 18,
+      "message": "18 heading(s) not in Title Case: H1 \"preview\" in \"Kit preview\" | H2 \"mark\" in \"0 · The mark\" | H3 \"header\" in \"1 · Site header + nav\" | H2 \"puppies\" in \"Blue Staffy puppies raised in a family home\" | H3 \"card\" in \"4 · Puppy card\" | H3 \"strip\" in \"5 · Trust strip\" | H3 \"counter\" in \"6 · Stat / counter strip\" | H3 \"info\" in \"7 · Content / info card\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 4,
+      "message": "4 heading(s) with no opening paragraph: H1→H2 \"Kit preview\" | H3→H3 \"4 · Puppy card\" | H3→H2 \"10 · Contact form\" | H3→H3 \"13 · Section divider\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: kit-mark x5, counter-wrap x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 4,
+      "message": "4 page-scoped rule(s) match nothing on the page: .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .kit-quote-empty — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 74w vs /index/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 68w vs /index/ \"we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first \" | 26w vs /buy-blue-staffy-puppies-uk/ \"the health checks the communication and the home raised environment everything was top not\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "a11y-text-contrast-aa",
+      "count": 2,
+      "message": "2 text node(s) below AA: .dot \"·\" 4.49:1 (needs 4.5) | .dot \"·\" 4.49:1 (needs 4.5)"
+    },
+    {
+      "viewport": 768,
+      "checkId": "form-inquiry-contract",
+      "count": 1,
+      "message": "screening fields: form#2(New Blue Staffy enquiry): 1 missing/optional (puppy select missing the collection-glasgow option (spec §5))"
+    }
+  ]
+}

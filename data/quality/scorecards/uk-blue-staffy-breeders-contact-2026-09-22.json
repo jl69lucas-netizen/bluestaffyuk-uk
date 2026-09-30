@@ -1,0 +1,130 @@
+{
+  "slug": "uk-blue-staffy-breeders-contact",
+  "date": "2026-09-22",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 31
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 601,
+    "layout-tap-target-size": 148,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "img-srcset-within-2x": 3,
+    "img-alt-present-and-unique": 3,
+    "img-sizes-matches-box": 0,
+    "nav-anchors-resolve": 99,
+    "nav-jump-target-lands": 27,
+    "nav-bottom-chrome-clear": 18,
+    "sem-heading-order": 117,
+    "sem-all-six-levels": 117,
+    "sem-title-case-headings": 117,
+    "sem-section-opening-paragraph": 117,
+    "sem-statement-label-visible": 3,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 18,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 855,
+    "css-no-dead-component-rule": 918,
+    "css-component-color-not-overridden": 66,
+    "dup-no-sibling-crossover": 171,
+    "a11y-text-contrast-aa": 574,
+    "a11y-no-duplicate-ids": 69,
+    "a11y-hero-ledge-contrast": 0,
+    "form-inquiry-contract": 3
+  },
+  "defects": {
+    "CSS": 6,
+    "DUP": 3,
+    "A11Y": 2
+  },
+  "instances": {
+    "CSS": 222,
+    "DUP": 6,
+    "A11Y": 2
+  },
+  "total": 11,
+  "total_instances": 230,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-list-stack x6, bl-head-above x6, bl-chrome-ruled x6, bl-media-none x5, bl-cols-1 x3, counter-wrap x1, bl-aside-infocard x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 66,
+      "message": "66 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 17w vs /board-preview/uk-blue-staffy-breeders-contact/ \"the hours we answer every day 09 00 23 00 business hours to a reply 24 48\" | 16w vs /board-preview/uk-blue-staffy-breeders-contact/ \"price delivery by distance from carlisle before you ask which puppy or the waiting list th\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "a11y-text-contrast-aa",
+      "count": 1,
+      "message": "1 text node(s) below AA: .dot \"·\" 4.49:1 (needs 4.5)"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-list-stack x6, bl-head-above x6, bl-chrome-ruled x6, bl-media-none x5, bl-cols-1 x3, counter-wrap x1, bl-aside-infocard x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 66,
+      "message": "66 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 17w vs /board-preview/uk-blue-staffy-breeders-contact/ \"the hours we answer every day 09 00 23 00 business hours to a reply 24 48\" | 16w vs /board-preview/uk-blue-staffy-breeders-contact/ \"price delivery by distance from carlisle before you ask which puppy or the waiting list th\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-list-stack x6, bl-head-above x6, bl-chrome-ruled x6, bl-media-none x5, bl-cols-1 x3, counter-wrap x1, bl-aside-infocard x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 66,
+      "message": "66 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 17w vs /board-preview/uk-blue-staffy-breeders-contact/ \"the hours we answer every day 09 00 23 00 business hours to a reply 24 48\" | 16w vs /board-preview/uk-blue-staffy-breeders-contact/ \"price delivery by distance from carlisle before you ask which puppy or the waiting list th\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "a11y-text-contrast-aa",
+      "count": 1,
+      "message": "1 text node(s) below AA: .dot \"·\" 4.49:1 (needs 4.5)"
+    }
+  ]
+}

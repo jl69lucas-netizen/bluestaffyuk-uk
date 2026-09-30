@@ -1,0 +1,20 @@
+[
+  {
+    "quote": "We couldn’t be happier with our beautiful blue Staffy from BlueStaffyUK.uk! From the first enquiry to bringing her home, the process was seamless and incredibly professional. She’s got the most wonderful temperament – playful, loving, and fantastic with our kids. It’s clear she was raised with so much care and early socialisation. She truly is the heart of our family!",
+    "name": "The Victoria Family",
+    "place": "Manchester, UK",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "quote": "After extensive research, we chose BlueStaffyUK.uk, and we’re so glad we did. Our blue Staffy puppy arrived happy and healthy, with all his papers and medical records meticulously organized. Their commitment to ethical breeding and health testing truly shines through. He’s exactly what we wanted: loyal, intelligent, and incredibly affectionate. We highly recommend them if you’re looking to buy a Staffordshire Bull Terrier in the UK.",
+    "name": "Mark J",
+    "place": "London, UK",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "quote": "The health checks, the communication, and the home-raised environment — everything was top-notch. I wouldn’t go anywhere else for a Staffy.",
+    "name": "Rachel L.",
+    "place": "London",
+    "source": "src/pages/buy-blue-staffy-puppies-uk/index.astro"
+  }
+]

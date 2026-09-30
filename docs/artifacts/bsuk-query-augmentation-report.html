@@ -1,0 +1,292 @@
+<title>BSUK Query Augmentation Report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Bridge build before project 5</p><h1 class="title">Query augmentation gate report</h1></div>
+<div class="meta"><span class="pill">status: complete</span> <span class="pill">2026-09-23</span><br>docs/reports/query-augmentation-gate-report.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+BlueStaffyUK rebuild, the bridge build between project 4 and project 5. Written by hand from
+the two full runs taken at close-out, the question files and raw sources under
+`data/queries/`, the spend log, and the branch history. Date 2026-09-23. Branch
+`query-augmentation`, cut from `foundation` at `db37ca1`; no remote, nothing pushed, **not yet
+merged** — the merge waits for the user.
+
+Spec: `docs/superpowers/specs/2026-09-23-query-augmentation-design.md`. Sections §1–§13 are the
+definition of done **as amended by §14 (amendments 1–21)**; the checklist at the end answers
+each section in its amended form. Where a section's literal text and an amendment disagree, the
+amendment wins, and every deviation in the checklist names the amendment that records it.
+
+This build ships tooling, not pages. No city page was built and no page entered
+`data/facts/rebuilt.json`, so the new gate examines the two question files and holds both as
+awaiting their project 5 rebuild. Every figure below comes from the two close-out runs or from a
+command re-run at close-out; none is typed from memory.
+
+---
+</script>
+<script type="text/markdown" data-title="Summary">
+**What shipped.** A question step every page builder runs first. Two skills fetch the
+questions buyers ask; a script merges, scores, caps spend and writes one question file per page;
+a gate in `npm run check:all` holds the built page to that file.
+
+| Part | File |
+|---|---|
+| Orchestrating skill | `.claude/skills/bsuk-query-augmentation/SKILL.md` |
+| Thread sourcing | `.claude/skills/bsuk-reddit-threads/SKILL.md` |
+| Merge, score, spend guard, heading extractor | `scripts/query_augment.py` |
+| The gate | `scripts/query_coverage_check.py` (`npm run check:queries`, inside `check:all`) |
+| Question-file contract | `schemas/queries.schema.json` |
+| Converted city-page template | `docs/reference/location-page-template.md` |
+| Pilot outputs | `data/queries/blue-staffy-puppies-manchester-uk.json`, `data/queries/blue-staffy-puppies-for-sale-leeds.json`, their `data/queries/raw/<slug>/` sources, `data/queries/spend.json` |
+| Tests (test functions) | `tests/py/test_query_augment.py` (159), `tests/py/test_query_coverage_check.py` (39), `tests/py/test_no_third_party_contacts.py` (3) |
+| Builders pointed at the skill | location (Steps 1 and 5 rewritten), comparison, blog, puppy |
+| Budgets | `data/settings.json`: `query_budget_usd` 0.5, `query_total_budget_usd` 1.0, `query_typical_call_usd` 0.1 |
+
+**Commit range.** `db37ca1..24d9dc4` — **61** commits from the spec (`1f655fd`) to the
+regenerated plan artifact (`24d9dc4`), plus this report's commit. 54 files changed. All 61 carry
+`Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`.
+
+**Counts, identical on both runs** (`npm run build && npm run test:py && npm run check:all`):
+
+| Step | Summary line |
+|---|---|
+| `npm run build` | `58 page(s) built` |
+| `npm run test:py` | `2071 passed, 14 skipped, 1 xfailed` |
+| `check:parity` | `examined 28 pages, 0 failing, skipped 12 rebuilt` |
+| `check:facts` | `examined 12 rebuilt pages; 0 problems` |
+| `check:links` | `examined 12 rebuilt page(s), 196 distinct body link(s); 0 problems` |
+| `check:verbatim` | nine pages, `0 missing` each; `examined 9 applicable pages; 0 problems` |
+| `check:redirects` | `examined 18 redirects, 2140 internal refs (distinct per page); 0 redirected refs; 0 problems` |
+| `check:schema` | `examined 58 pages; 0 blocking, 0 advisory` |
+| **`check:queries`** (new) | **`examined 0 pages (0 not built, 2 awaiting rebuild); 0 problems`** |
+| `check:sitemaps` | `examined 58 built pages, 5 shards, 36 sitemap urls; 0 problems` |
+| `check:placeholders` | `placeholders: 1730` (advisory until project 6) |
+| `check:markers` | `examined 260 files; 0 problems` |
+| `agents` | `examined 36 agents; 0 problems` |
+
+**Spend.** $0.20 logged of the $1 account, all on Manchester, all conservative estimates
+(Known Issue 45). Leeds cost $0.
+
+**Verdict.** 1 PASS · 12 PASS-WITH-DEVIATION · 0 FAIL against spec §1–§13 as amended by §14.
+</script>
+<script type="text/markdown" data-title="Two clean runs">
+Both runs of `npm run build && npm run test:py && npm run check:all` exited **0**, and every
+summary line in the table above was the same on run 1 and run 2 (compared line by line after
+the run; only elapsed times differ). Pytest moved **1703 → 2071 passed** against project 4's
+close: the three new test files (159, 39 and 3 test functions), plus the parrot-residue and package-script
+additions (`tests/py/test_agent_facts.py`, `tests/py/test_package_scripts.py`). The placeholder
+total fell 1748 → 1730.
+
+**Why the new gate examines 0 pages.** A question file is gated only once its page is built
+and its bare slug is in `data/facts/rebuilt.json` (amendment 15). Neither Manchester nor Leeds
+has been rebuilt — that is project 5, after Known Issue 39 — so the gate reports both as
+awaiting rebuild and passes. Its five rules are proved by `tests/py/test_query_coverage_check.py`,
+a passing and a failing fixture each.
+</script>
+<script type="text/markdown" data-title="The pilot — Manchester">
+`blue-staffy-puppies-manchester-uk`, primary keyword "blue staffy puppies manchester", route
+`/uk-locations/blue-staffy-puppies-manchester-uk/`. Commits `5666007` (pilot), `99b7d5c` and
+`4dcbc35` (real headings), `312ff0a` (threads, the `bsuk-reddit-threads` GREEN run).
+
+**Three paid DataForSEO calls**, each preflighted, each logged in `data/queries/spend.json`:
+
+| Source | Endpoint | Logged cost | Outcome |
+|---|---|---:|---|
+| `serp_google` | `serp_organic_live_advanced`, Google, depth 10, PAA | $0.05 | **ok** — 6 People Also Ask and 6 related searches, top-10 URLs |
+| `serp_bing` | `serp_organic_live_advanced`, Bing, depth 10 | $0.05 | **off-topic** — results were for "blue" alone; logged, not used |
+| `ai_engines` | `ai_optimization_chat_gpt_scraper`, UK | $0.10 | **ok** — 16 questions from the ChatGPT answer |
+| **Total** | | **$0.20** | |
+
+**The Bing source that was used.** The paid Bing response was unusable, so Bing was read
+**free in the built-in browser** at `bing.com` with `cc=GB`
+(`data/queries/raw/blue-staffy-puppies-manchester-uk/serp_bing.json`, `status: ok`, ten results,
+no People Also Ask box shown). That became the rule: the skill never buys or preflights
+`serp_bing`, and `query_augment.py --record --source serp_bing` exits 2 (amendment 5,
+`c22a3e2`).
+
+**The cost is an estimate.** The connector's responses carry no cost field. Each call was
+logged at a conservative figure and the endpoint text says so; `query_typical_call_usd` was
+raised to the largest estimate, 0.10 (amendment 6). The real figure is on the DataForSEO
+dashboard — Known Issue 45.
+
+**Competitors.** Every Google and Bing top-5 result for the keyword is a marketplace or
+directory: Pets4Homes, Staffie Owners, Freeads, Gumtree and puppies.co.uk, eight distinct URLs
+once merged. By user ruling they count (amendment 1). Each page's HTML was saved to the
+gitignored cache and read by `query_augment.py --extract-h2`; advert-card titles and navigation
+headings are dropped, so the raw counts (up to 22 H2s) clean to **0 real sections on every
+page**, and one Freeads page was a challenge page, recorded as `blocked` and never counted.
+Matched 0 + 3 extras = 3, below the floor, so `section_target.total` is **9** via the floor
+(amendment 4). Extra topics: temperament, paperwork, health.
+
+**Questions.** 105 entries after merge and collapse; 29 `must_answer`; 31 blocked as
+"unverified fact". Evidence types: bank 85, threads 21, ChatGPT 16, Google PAA 6, Google related
+6. **All 20 FAQ picks are fact-backed** (top 6, middle 7, bottom 7).
+
+**Threads.** Eight Reddit threads kept with permalink, posted month, reply count and score
+(r/StaffordBullTerriers, r/UK_Pets, r/puppy101), all within 24 months, 21 questions, each
+paraphrased and linked to a bank row only where that row answers it.
+</script>
+<script type="text/markdown" data-title="The Leeds run — free sources only">
+`blue-staffy-puppies-for-sale-leeds`, commit `fe956fe` — the `bsuk-query-augmentation` GREEN
+run. The user declined paid calls for it, so it exercises every fallback: **$0 spent**.
+
+| Source | Status | How |
+|---|---|---|
+| `serp_google` | `fallback` | Google UK read in a headless browser (`bsuk-paa-agent` protocol); no robot check; no PAA box shown, so 6 related searches only |
+| `serp_bing` | `ok` | Bing read free with `cc=GB`; 4 People Also Ask questions, ten results |
+| `ai_engines` | `NOT FETCHED` | paid; not called |
+| `threads` | `ok` | 12 threads, 19 questions; Firecrawl search to find them, every thread opened on its permalink |
+| `competitors` | `fallback` | positions from the free Google read; HTML saved and read by `--extract-h2` |
+
+Eight competitor URLs, again marketplaces and directories plus one breeder page that sets the
+number with 3 clean H2s: matched 3 + 3 = 6, floor → **9**. 94 questions, 29 `must_answer`, 20
+blocked, **20 FAQ picks, all fact-backed** (6 / 7 / 7). Extra topics: temperament, paperwork,
+breed. Firecrawl search spends Firecrawl credits, not DataForSEO dollars, and the skill now says
+so (`10cd568`).
+</script>
+<script type="text/markdown" data-title="RED baselines and how each skill closes them">
+Both skills were written with `superpowers:writing-skills`: a subagent ran the task without the
+skill (RED), its failures became rules, and a fresh subagent re-ran it with the skill (GREEN)
+until it complied.
+
+**`bsuk-reddit-threads`** (`c72033b`, then `1c40862` and `b105956` from the GREEN runs):
+
+| Baseline failure | Where the skill closes it |
+|---|---|
+| Old threads used while recent ones existed | Step C and Common mistakes: nothing older than 24 months while 5 recent threads exist; an old one carries `"stale": true` |
+| No audit trail of the threads searched | Step E: a `threads` audit list, each with `posted`, `replies` and `score`; Common mistakes forbids `questions` without it |
+| Stopping at the first blocked fetch | Step B's ladder table (which rung works per site); `NOT FETCHED` only after the ladder |
+| `fact_source` linked by topic, not by answer | "Linking `fact_source`": `bank:<id>` only when the row answers the question |
+| The poster's premise carried into the question | Common mistakes: ask the neutral question, never reshape it to fit a bank answer (`b105956`) |
+| Questions kept from threads with no UK signal | Common mistakes: a question whose every thread scores 0 for UK signal is dropped (`1c40862`) |
+
+**`bsuk-query-augmentation`** (`4ee6a25`, then `10cd568` and `3aa5e4f`; the RED run was Leeds):
+
+| Baseline failure | Where the skill closes it |
+|---|---|
+| PAA taken without loading the page, and a Google robot check treated as an obstacle | Step 2: PAA only from a page actually loaded; a robot check is `NOT FETCHED`, never got past |
+| FAQ picks swapped by hand (age at collection, lifespan) | Common mistakes: never hand-swap a pick — change the data and rebuild |
+| City wording added so an answer reached past its fact | Common mistakes: never invent or localise a city-named question beyond its fact |
+| An answer stating a figure the fact does not give (a guarantee length) | Common mistakes: no figure the fact source does not give |
+| A topic judged "covered" because a competitor's FAQ mentioned it | Step 3 and Common mistakes: only counted body H2s cover a topic |
+| Browser snapshots and logs written into the repo | Working rules and Common mistakes: browser files stay out of the repo |
+| The script run in a scratch copy of the repo ("dry run") | Common mistakes: never copy the repo to run the script |
+</script>
+<script type="text/markdown" data-title="User rulings made during the build">
+| Ruling | Effect | Where |
+|---|---|---|
+| Marketplaces and directories count in the competitor pool | Only off-topic results are dropped | amendment 1; `5666007`, `f810e28`, `99b7d5c` |
+| Section floor 9 | `total = max(matched + 3, 9)` | amendment 4; `99b7d5c` |
+| One AI engine per page | ChatGPT, asked once per page | amendment 7; `a25f139` |
+| Task 10 scope: fix what this build broke | Other builder quality items deferred to project 5 as Known Issue 40 | amendment 19; `870799a`, `c73f540` |
+| Competitor intelligence is its own build | Not ported here; Known Issue 42 | `870799a` |
+| No paid calls for Leeds | Leeds ran free sources only | `fe956fe` |
+</script>
+<script type="text/markdown" data-title="Open items">
+Known Issue 17 (no query-augmentation skill) is **closed by this build**. New, in
+`docs/reference/session-log.md`:
+
+39. **Project 5 prerequisite — nested routes.** Four tools cannot resolve
+    `uk-locations/<slug>`; no city page enters `data/facts/rebuilt.json` until they can.
+40. **Project 5 builder checklist.** The deferred quality items on the builders.
+41. **Questions for Lisa Bright.** Fifteen buyer questions the merge blocked as "unverified
+    fact". Each answer becomes a `data/faq.json` row or a `data/settings.json` key, then both
+    question files rebuild from cache with no calls.
+42. **Competitor intelligence build.** A separate build, by user ruling.
+43. **Reddit-modifier pages** — a recorded option, not built.
+44. **No page-communication audit** — the visual-intelligence skill is still unported.
+45. **DataForSEO costs are unknown.** $0.20 logged as estimates; the user checks the
+    dashboard, then sets `query_typical_call_usd` from the real figure.
+46. **The banned-breed line needs a user ruling.** The breed guide states it with the gov.uk
+    row; the city template uses `LEGAL_CLAIM_PLACEHOLDER`. City pages follow the guide, or the
+    guide moves to the placeholder.
+
+Owed by people rather than code: **Lisa's answers** (41), **the dashboard figure** (45) and **the
+banned-breed ruling** (46).
+</script>
+<script type="text/markdown" data-title="Definition of done — spec §1–§13, as amended by §14">
+| § | Section (amended) | Verdict | Evidence |
+|---|---|---|---|
+| 1 | Decisions | **PASS-WITH-DEVIATION** | All nine decisions built: thread half only (`bsuk-reddit-threads`); DataForSEO first, free fallback, bank always; every builder calls the skill (`805030b`); question file plus gate in `check:all`; the skill calls the connector, the scripts never do; RED/GREEN skills and TDD scripts. **Deviations:** decision 7's "15–20" is effectively 17–20 (§14.13); decision 8's count has a floor of 9 (§14.4) |
+| 2 | Components | **PASS-WITH-DEVIATION** | Every new file exists (Summary table); `data/port-manifest.json` 190 rows, `reddit-strategy` re-filed and the ten unrecorded source files named with reasons (`870799a`); `docs/reference/system-registry.md` regenerated, 57 skills; Known Issue 17 closed. **Deviations:** no recorded fixtures under `tests/py/fixtures/queries/` — tests build synthetic data (§14.20); raw files split into `.response.json` and normalised `.json` and competitor HTML cached, gitignored (§14.3, §14.8); two more budget keys (§14.9) |
+| 3 | Data flow | **PASS-WITH-DEVIATION** | Preflight → call → record → save → normalise, one preflight per call, shown by the Manchester spend log's three rows; free ladder and `NOT FETCHED` shown by Leeds; merge writes both question files; the gate runs in `check:all`. **Deviations:** Bing is a free browser read, never bought (§14.5); one AI engine (§14.7); response and normalised files (§14.8); exits 0–6, not 0/3/4 (§14.14); the gate waits for the rebuild (§14.15) |
+| 4 | The question file | **PASS-WITH-DEVIATION** | `schemas/queries.schema.json`; both files validate; deterministic scoring, dedupe and the fact rule in `scripts/query_augment.py` with 159 tests; every `must_answer` has a real `fact_source`; blocked questions carry `"unverified fact"`. **Deviations:** buyer wording, collapse and scoring as built (§14.12); `fact_source` form (§14.11); schema additions to the example (§14.18) |
+| 5 | FAQ rules | **PASS-WITH-DEVIATION** | Both files: 20 picks, top 6 · middle 7 · bottom 7, all 20 fact-backed; at most two per topic per block; the run stops with exit 5 when short. **Deviation:** effective floor 17 (§14.13) |
+| 6 | Location section rule | **PASS-WITH-DEVIATION** | Both files record every competitor's URL, Google and Bing position, raw and cleaned count, `blocked` and `outlier`, and `section_target` with `set_by`; Manchester 0 + 3 → 9, Leeds 3 + 3 → 9. **Deviations:** marketplaces count (§14.1); one query per engine (§14.2); headings from saved pages by `--extract-h2` (§14.3); floor 9 (§14.4); frame ids (§14.16); a usable page has 3+ clean H2s (§14.21) |
+| 7 | The converted template | **PASS-WITH-DEVIATION** | `docs/reference/location-page-template.md` (`c730a36` and follow-ups) passes the fact lint and the path guard. **Deviation:** the law row is `LEGAL_CLAIM_PLACEHOLDER`, not "not banned" (§14.17) — Known Issue 46 |
+| 8 | Spend cap | **PASS-WITH-DEVIATION** | `data/queries/spend.json` three rows, $0.20 of $1; preflight refuses over-budget, bad costs, damaged logs and a half-finished call (`cc2087f`, `cfcb1f0`); cached responses never re-bought. **Deviations:** no cost field, estimates logged (§14.6); per-page-per-day and total budgets (§14.9); only real responses count as cached (§14.10) |
+| 9 | Failure handling | **PASS-WITH-DEVIATION** | Leeds exercised the fallback row (`serp_google: fallback`, `ai_engines: NOT FETCHED`, `competitors: fallback`); Manchester's blocked competitor recorded, not counted; short runs exit 5; budget exit 4, tested. **Deviations:** Bing never via DataForSEO (§14.5); fallback files don't block a bought call (§14.10); the short-FAQ floor (§14.13) |
+| 10 | The gate | **PASS-WITH-DEVIATION** | `scripts/query_coverage_check.py` in `check:all`; 39 tests, a passing and failing fixture per rule; prints `examined 0 pages (0 not built, 2 awaiting rebuild); 0 problems` on both runs. **Deviations:** gated only once rebuilt; three-block rules on location pages only; extra headings are H2s in `<main>` (§14.15); body sections defined by the frame (§14.16); target includes the floor (§14.4) |
+| 11 | Build order | **PASS-WITH-DEVIATION** | Steps 1–8 done in order, commits `c730a36` to `870799a`, with Tasks 7a and 7b inserted after the pilot; step 9's review is approved and this report is written. **Deviations:** the pilot showed Bing cannot come from DataForSEO (§14.5) and set the typical cost from estimates (§14.6). **Outstanding, by instruction:** the merge into `foundation` and the session closer wait for the user |
+| 12 | Testing | **PASS-WITH-DEVIATION** | Pytest covers merge, dedupe, scoring, blocks, fact rule, preflight exits, outlier guard and the five gate rules; no live calls; both RED baselines recorded and closed (section above); the fact lint, frontmatter, table lint, path guard, registries and marker gate all green twice. **Deviation:** synthetic data, not recorded fixtures (§14.20) |
+| 13 | Out of scope | **PASS** | No city page built and none in `data/facts/rebuilt.json`; the twelve project 4 pages untouched by the gate; no per-city bands; no scheduled refresh. Reddit-modifier pages and the visual-intelligence audit are Known Issues 43 and 44; the project 5 prerequisite is recorded (§14.19, Known Issue 39) |
+
+**Verdict count: 1 PASS · 12 PASS-WITH-DEVIATION · 0 FAIL.**
+
+Every deviation is an amendment in §14 made during execution — a user ruling, a review finding
+or a plan refinement — and none weakens a gate. The count reads heavy because this was a spec
+written before the pilot: the pilot is what showed that Bing had to be read free, that the
+connector reports no cost, and that the ranking pages are all marketplaces with no real
+sections, and the amendments are those findings written down.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK Rebuild — Bridge build: Query augmentation gate report\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

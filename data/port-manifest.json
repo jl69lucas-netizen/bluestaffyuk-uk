@@ -1,0 +1,1154 @@
+[
+  {
+    "src": "schemas/board.schema.json",
+    "dst": "schemas/board.schema.json",
+    "mode": "rebase",
+    "notes": "page_type enum and offer_model need BSUK values; hand-edited after the first port"
+  },
+  {
+    "src": "schemas/component-ledger.schema.json",
+    "dst": "schemas/component-ledger.schema.json",
+    "mode": "rebase",
+    "notes": "structure only; title re-based to BSUK; ledger stays empty until project 3"
+  },
+  {
+    "src": "schemas/ontology.schema.json",
+    "dst": "schemas/ontology.schema.json",
+    "mode": "rebase",
+    "notes": "structure only; title re-based to BSUK"
+  },
+  {
+    "src": ".claude/commands/opsx/propose.md",
+    "dst": ".claude/commands/opsx/propose.md",
+    "mode": "copy",
+    "notes": "openspec command, site-agnostic"
+  },
+  {
+    "src": ".claude/commands/opsx/explore.md",
+    "dst": ".claude/commands/opsx/explore.md",
+    "mode": "copy",
+    "notes": "openspec command, site-agnostic"
+  },
+  {
+    "src": ".claude/commands/opsx/apply.md",
+    "dst": ".claude/commands/opsx/apply.md",
+    "mode": "copy",
+    "notes": "openspec command, site-agnostic"
+  },
+  {
+    "src": ".claude/commands/opsx/archive.md",
+    "dst": ".claude/commands/opsx/archive.md",
+    "mode": "copy",
+    "notes": "openspec command, site-agnostic"
+  },
+  {
+    "src": ".claude/skills/anti-ai-writing/SKILL.md",
+    "dst": ".claude/skills/anti-ai-writing/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/keyword-cluster/SKILL.md",
+    "dst": ".claude/skills/keyword-cluster/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/internal-link-agent/SKILL.md",
+    "dst": ".claude/skills/internal-link-agent/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/sitemap-agent/SKILL.md",
+    "dst": ".claude/skills/sitemap-agent/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/section-auditor/SKILL.md",
+    "dst": ".claude/skills/section-auditor/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/manual-auditor-check/SKILL.md",
+    "dst": ".claude/skills/manual-auditor-check/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/research-recency/SKILL.md",
+    "dst": ".claude/skills/research-recency/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/image-metadata/SKILL.md",
+    "dst": ".claude/skills/image-metadata/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-aida/SKILL.md",
+    "dst": ".claude/skills/framework-aida/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-aio-geo/SKILL.md",
+    "dst": ".claude/skills/framework-aio-geo/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-bab/SKILL.md",
+    "dst": ".claude/skills/framework-bab/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-ebp/SKILL.md",
+    "dst": ".claude/skills/framework-ebp/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-eeat/SKILL.md",
+    "dst": ".claude/skills/framework-eeat/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-eebp/SKILL.md",
+    "dst": ".claude/skills/framework-eebp/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-fab/SKILL.md",
+    "dst": ".claude/skills/framework-fab/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-heading-hierarchy/SKILL.md",
+    "dst": ".claude/skills/framework-heading-hierarchy/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-library/SKILL.md",
+    "dst": ".claude/skills/framework-library/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-pas/SKILL.md",
+    "dst": ".claude/skills/framework-pas/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-pdb/SKILL.md",
+    "dst": ".claude/skills/framework-pdb/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/framework-qab/SKILL.md",
+    "dst": ".claude/skills/framework-qab/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/image-prompt-generator/SKILL.md",
+    "dst": ".claude/skills/image-prompt-generator/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/caption-writer/SKILL.md",
+    "dst": ".claude/skills/caption-writer/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/grill-me/SKILL.md",
+    "dst": ".claude/skills/grill-me/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/session-closer/SKILL.md",
+    "dst": ".claude/skills/session-closer/SKILL.md",
+    "mode": "rebase",
+    "notes": "generic skill structure; CAG worked examples re-based to BSUK puppy vocabulary"
+  },
+  {
+    "src": ".claude/skills/openspec-propose/SKILL.md",
+    "dst": ".claude/skills/openspec-propose/SKILL.md",
+    "mode": "copy",
+    "notes": "generic"
+  },
+  {
+    "src": ".claude/skills/openspec-explore/SKILL.md",
+    "dst": ".claude/skills/openspec-explore/SKILL.md",
+    "mode": "copy",
+    "notes": "generic"
+  },
+  {
+    "src": ".claude/skills/openspec-apply-change/SKILL.md",
+    "dst": ".claude/skills/openspec-apply-change/SKILL.md",
+    "mode": "copy",
+    "notes": "generic"
+  },
+  {
+    "src": ".claude/skills/openspec-archive-change/SKILL.md",
+    "dst": ".claude/skills/openspec-archive-change/SKILL.md",
+    "mode": "copy",
+    "notes": "generic"
+  },
+  {
+    "src": ".claude/skills/cag-component-refresh/SKILL.md",
+    "dst": ".claude/skills/bsuk-component-refresh/SKILL.md",
+    "mode": "rebase",
+    "notes": "re-based onto the board system in Task 18c: boardStyles.ts + /board-preview/, not a design canvas"
+  },
+  {
+    "src": ".claude/skills/cag-component-variations/SKILL.md",
+    "dst": ".claude/skills/bsuk-component-variations/SKILL.md",
+    "mode": "rebase",
+    "notes": "re-based onto the board system in Task 18c: boardStyles.ts + /board-preview/, not a design canvas"
+  },
+  {
+    "src": ".claude/skills/cag-multi-agent-design/SKILL.md",
+    "dst": ".claude/skills/bsuk-multi-agent-design/SKILL.md",
+    "mode": "deferred",
+    "notes": "project 3 brings the design system"
+  },
+  {
+    "src": ".claude/skills/cag-design-rebuild/SKILL.md",
+    "dst": ".claude/skills/bsuk-design-rebuild/SKILL.md",
+    "mode": "deferred",
+    "notes": "project 3 brings the design system"
+  },
+  {
+    "src": ".claude/skills/cag-direction-d-theme/SKILL.md",
+    "dst": ".claude/skills/bsuk-direction-d-theme/SKILL.md",
+    "mode": "deferred",
+    "notes": "project 3 brings the design system"
+  },
+  {
+    "src": ".claude/skills/cag-visual-intelligence/SKILL.md",
+    "dst": ".claude/skills/bsuk-visual-intelligence/SKILL.md",
+    "mode": "deferred",
+    "notes": "project 3 brings the design system"
+  },
+  {
+    "src": ".claude/skills/cag-image-generation/SKILL.md",
+    "dst": ".claude/skills/bsuk-image-generation/SKILL.md",
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): re-based onto IMAGE-DESIGNS.md, the BSUK palette and scripts/ingest_image.py"
+  },
+  {
+    "src": ".claude/skills/cag-photo-ingest/SKILL.md",
+    "dst": ".claude/skills/bsuk-photo-ingest/SKILL.md",
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): re-based onto IMAGE-DESIGNS.md, the BSUK palette and scripts/ingest_image.py"
+  },
+  {
+    "src": ".claude/skills/cag-infographic/SKILL.md",
+    "dst": ".claude/skills/bsuk-infographic/SKILL.md",
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): re-based onto IMAGE-DESIGNS.md, the BSUK palette and scripts/ingest_image.py"
+  },
+  {
+    "src": ".claude/skills/cag-logo-generator/SKILL.md",
+    "dst": ".claude/skills/bsuk-logo-generator/SKILL.md",
+    "mode": "deferred",
+    "notes": "project 3 brings the design system"
+  },
+  {
+    "src": ".claude/agents/cag-ab-test-agent.md",
+    "dst": ".claude/agents/bsuk-ab-test-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-backlink-outreach-agent.md",
+    "dst": ".claude/agents/bsuk-backlink-outreach-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-branded-search-monitor-agent.md",
+    "dst": ".claude/agents/bsuk-branded-search-monitor-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-case-study-agent.md",
+    "dst": ".claude/agents/bsuk-case-study-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-competitive-keyword-gap-agent.md",
+    "dst": ".claude/agents/bsuk-competitive-keyword-gap-agent.md",
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): reuses intel's page lists; every gap proved by a URL; noindex stubs route to project 5 rebuilds"
+  },
+  {
+    "src": ".claude/agents/cag-competitor-intel.md",
+    "dst": ".claude/agents/bsuk-competitor-intel.md",
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): ten categories re-based to UK Staffies and the 28 cities; countable JSON reports + BSUK profile (--bsuk); matrix built by scripts/gap_matrix.py"
+  },
+  {
+    "src": ".claude/agents/cag-conversion-tracker.md",
+    "dst": ".claude/agents/bsuk-conversion-tracker.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-directory-submission-agent.md",
+    "dst": ".claude/agents/bsuk-directory-submission-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-email-lead-nurture-agent.md",
+    "dst": ".claude/agents/bsuk-email-lead-nurture-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-email-newsletter-agent.md",
+    "dst": ".claude/agents/bsuk-email-newsletter-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-entity-incorporation-agent.md",
+    "dst": ".claude/agents/bsuk-entity-incorporation-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-external-link-agent.md",
+    "dst": ".claude/agents/bsuk-external-link-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-financial-strategist.md",
+    "dst": ".claude/agents/bsuk-financial-strategist.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-funnel-analysis-agent.md",
+    "dst": ".claude/agents/bsuk-funnel-analysis-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-heatmap-analyst-agent.md",
+    "dst": ".claude/agents/bsuk-heatmap-analyst-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-llm-keyword-intel.md",
+    "dst": ".claude/agents/bsuk-llm-keyword-intel.md",
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): DataForSEO ChatGPT scraper through the spend guard, one engine per page, reuses the saved answer; no vendor API keys"
+  },
+  {
+    "src": ".claude/agents/cag-nap-citation-agent.md",
+    "dst": ".claude/agents/bsuk-nap-citation-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-performance-monitor-agent.md",
+    "dst": ".claude/agents/bsuk-performance-monitor-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-review-collection-agent.md",
+    "dst": ".claude/agents/bsuk-review-collection-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-scam-specialist.md",
+    "dst": ".claude/agents/bsuk-scam-specialist.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-seasonal-content-agent.md",
+    "dst": ".claude/agents/bsuk-seasonal-content-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-social-strategist.md",
+    "dst": ".claude/agents/bsuk-social-strategist.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-strategy-synthesizer.md",
+    "dst": ".claude/agents/bsuk-strategy-synthesizer.md",
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): two strategies, one pick; figures checked by scripts/strategy_cite_check.py"
+  },
+  {
+    "src": ".claude/agents/cag-video-seo-agent.md",
+    "dst": ".claude/agents/bsuk-video-seo-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/agents/cag-google-map-agent.md",
+    "dst": ".claude/agents/bsuk-google-map-agent.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope; project 6 at the earliest"
+  },
+  {
+    "src": ".claude/skills/cag-branded-hybrid-keywords/SKILL.md",
+    "dst": ".claude/skills/cag-branded-hybrid-keywords/SKILL.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope"
+  },
+  {
+    "src": ".claude/skills/cag-branded-search-skill/SKILL.md",
+    "dst": ".claude/skills/cag-branded-search-skill/SKILL.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope"
+  },
+  {
+    "src": ".claude/skills/cag-header-search/SKILL.md",
+    "dst": ".claude/skills/cag-header-search/SKILL.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope"
+  },
+  {
+    "src": ".claude/skills/reddit-strategy/SKILL.md",
+    "dst": ".claude/skills/reddit-strategy/SKILL.md",
+    "mode": "deferred",
+    "notes": "thread-sourcing half rebuilt for BSUK as .claude/skills/bsuk-reddit-threads/SKILL.md (2026-09-23, not a port — written against a baseline test); the reddit-modifier page playbook stays deferred — open item in docs/reference/session-log.md"
+  },
+  {
+    "src": ".claude/skills/social-content/SKILL.md",
+    "dst": ".claude/skills/social-content/SKILL.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope"
+  },
+  {
+    "src": ".claude/skills/youtube-script/SKILL.md",
+    "dst": ".claude/skills/youtube-script/SKILL.md",
+    "mode": "deferred",
+    "notes": "spec §10 out of scope"
+  },
+  {
+    "src": "scripts/pageboard.py",
+    "dst": "scripts/pageboard.py",
+    "mode": "rebase",
+    "notes": "SPECIES regex -> coat colours; ONTOLOGY/LEDGER paths; board_path -> data/boards/<slug>.json; inline file_token/unfile_token (board_canvas is not ported)"
+  },
+  {
+    "src": "scripts/board_gate.py",
+    "dst": "scripts/board_gate.py",
+    "mode": "rebase",
+    "notes": "no CAG literals; re-based only for the board_path change"
+  },
+  {
+    "src": "scripts/board_approve.py",
+    "dst": "scripts/board_approve.py",
+    "mode": "rebase",
+    "notes": "drop the board_canvas import (file_token now from pageboard); --canvas-dir write-back kept, inert unless the dir exists"
+  },
+  {
+    "src": "scripts/build_page_board.py",
+    "dst": "scripts/build_page_board.py",
+    "mode": "rebase",
+    "notes": "masthead literal; drop the thumbs block (board_thumbs.mjs is not ported)"
+  },
+  {
+    "src": "tests/test_page_board.py",
+    "dst": "tests/py/test_page_board.py",
+    "mode": "rebase",
+    "notes": "183 tests; port the schema/hash/ledger/gate/render core, drop the tests bound to CAG's real data files"
+  },
+  {
+    "src": "scripts/final_page_audit.py",
+    "dst": "scripts/final_page_audit.py",
+    "mode": "rebase",
+    "notes": "SLUGS/BIRDS/COMPARISONS/FORSALE lists; $185/$350 shipping; PBFD; method labels; emoji; word bands; airport codes; add a non-zero exit"
+  },
+  {
+    "src": "scripts/page_hardening_scan.py",
+    "dst": "scripts/page_hardening_scan.py",
+    "mode": "rebase",
+    "notes": "SPECIES_GENERA; skills/ citations -> .claude/skills/; cag-library component paths; GA4 gateway id"
+  },
+  {
+    "src": "tests/test_final_page_audit.py",
+    "dst": "tests/py/test_final_page_audit.py",
+    "mode": "rebase",
+    "notes": "22 tests; bird->puppy fixtures, GBP shipping, no PBFD"
+  },
+  {
+    "src": "tests/test_page_hardening_new_checks.py",
+    "dst": "tests/py/test_page_hardening.py",
+    "mode": "rebase",
+    "notes": "45 tests; only the fixture HTML changes, every check is domain-neutral"
+  },
+  {
+    "src": "scripts/aeo_audit.py",
+    "dst": "scripts/aeo_audit.py",
+    "mode": "rebase",
+    "notes": "LABELED_METHODS, BINOMIAL, BREEDER, PLACE, CREDENTIAL regexes; skills/ citations"
+  },
+  {
+    "src": "scripts/evidence_audit.py",
+    "dst": "scripts/evidence_audit.py",
+    "mode": "rebase",
+    "notes": "FACT_SIGNAL regex; page-type heuristics; evidence-budgets"
+  },
+  {
+    "src": "scripts/form_contract_audit.py",
+    "dst": "scripts/form_contract_audit.py",
+    "mode": "rebase",
+    "notes": "ENDPOINT from the environment; LOCATION regex; the seven-field contract becomes BSUK's"
+  },
+  {
+    "src": "tests/test_aeo_audit.py",
+    "dst": "tests/py/test_aeo_audit.py",
+    "mode": "rebase",
+    "notes": "10 tests; Canis familiaris fixtures; the labeled-method check is inert"
+  },
+  {
+    "src": "tests/test_evidence_audit.py",
+    "dst": "tests/py/test_evidence_audit.py",
+    "mode": "rebase",
+    "notes": "19 tests; fixture prose only, every assertion stands"
+  },
+  {
+    "src": "tests/test_evidence_per_slug_overrides.py",
+    "dst": "tests/py/test_evidence_per_slug_overrides.py",
+    "mode": "rebase",
+    "notes": "7 tests; inline budgets fixture until Task 9 writes evidence-budgets.json"
+  },
+  {
+    "src": "tests/test_form_contract_audit.py",
+    "dst": "tests/py/test_form_contract_audit.py",
+    "mode": "rebase",
+    "notes": "17 tests; BSUK's six-field form, PUBLIC_FORMSPREE_ID via monkeypatch"
+  },
+  {
+    "src": "scripts/perf_audit.py",
+    "dst": "scripts/perf_audit.py",
+    "mode": "rebase",
+    "notes": "LIVE_ORIGIN from SITE_URL env; --live/--psi refuse the placeholder; edge check kept"
+  },
+  {
+    "src": "scripts/quality_report.py",
+    "dst": "scripts/quality_report.py",
+    "mode": "rebase",
+    "notes": "two literals: BSUK QUALITY REPORT; rework_ledger.py arrives with project 4"
+  },
+  {
+    "src": "scripts/generate_page_dates.py",
+    "dst": "scripts/generate_page_dates.py",
+    "mode": "rebase",
+    "notes": "deploy-workflow comment re-based; also walks src/content/blog/*.md"
+  },
+  {
+    "src": "scripts/health-sweep.sh",
+    "dst": "scripts/health-sweep.sh",
+    "mode": "rebase",
+    "notes": "SITE_URL-gated live block; marker_check + agent-registry --check replace the retired blocks"
+  },
+  {
+    "src": "scripts/indexnow_submit.py",
+    "dst": "scripts/indexnow_submit.py",
+    "mode": "rebase",
+    "notes": "release-guarded: refuses unless BSUK_RELEASE=1, then refuses a placeholder SITE_URL; key and host read from env, never hardcoded"
+  },
+  {
+    "src": "tests/test_perf_audit.py",
+    "dst": "tests/py/test_perf_audit.py",
+    "mode": "rebase",
+    "notes": "11 tests; PSI URL assertions read LIVE_ORIGIN from env"
+  },
+  {
+    "src": "tests/test_quality_report.py",
+    "dst": "tests/py/test_quality_report.py",
+    "mode": "rebase",
+    "notes": "17 tests; unchanged apart from the two report literals"
+  },
+  {
+    "src": "scripts/lighthouse/agentic-mobile.mjs",
+    "dst": "scripts/lighthouse/agentic-mobile.mjs",
+    "mode": "copy",
+    "notes": "Lighthouse config perf_audit.py requires; site-agnostic"
+  },
+  {
+    "src": "scripts/lighthouse/agentic-desktop.mjs",
+    "dst": "scripts/lighthouse/agentic-desktop.mjs",
+    "mode": "copy",
+    "notes": "as above"
+  },
+  {
+    "src": "rules/README.md",
+    "dst": "rules/README.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec §7)"
+  },
+  {
+    "src": "rules/headings.md",
+    "dst": "rules/headings.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec §7)"
+  },
+  {
+    "src": "rules/images.md",
+    "dst": "rules/images.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec §7)"
+  },
+  {
+    "src": "rules/schema.md",
+    "dst": "rules/schema.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec §7)"
+  },
+  {
+    "src": "rules/links.md",
+    "dst": "rules/links.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec §7)"
+  },
+  {
+    "src": "rules/copy.md",
+    "dst": "rules/copy.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec §7)"
+  },
+  {
+    "src": "rules/design.md",
+    "dst": "rules/design.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec §7)"
+  },
+  {
+    "src": "rules/gates.md",
+    "dst": "rules/gates.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec §7)"
+  },
+  {
+    "src": "rules/deploy.md",
+    "dst": "rules/deploy.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec §7)"
+  },
+  {
+    "src": "rules/for-sale.md",
+    "dst": "rules/puppies.md",
+    "mode": "rebase",
+    "notes": "for-sale cluster pack renamed to the puppy cluster (task 9, spec §7)"
+  },
+  {
+    "src": "data/quality/rule-index.json",
+    "dst": "data/quality/rule-index.json",
+    "mode": "rebase",
+    "notes": "rule ledger; ids renamed with their files, judgment_cap 12->9 (task 9, spec §11)"
+  },
+  {
+    "src": "data/quality/evidence-budgets.json",
+    "dst": "data/quality/evidence-budgets.json",
+    "mode": "rebase",
+    "notes": "per-term repetition caps re-based to BSUK head terms (task 9, step 4)"
+  },
+  {
+    "src": "CLAUDE.md",
+    "dst": "CLAUDE.md",
+    "mode": "rebase",
+    "notes": "rewritten from CAG's 169-line skeleton; same structure, BSUK facts, deploy inactive, rules 2/11/12 dropped"
+  },
+  {
+    "src": ".claude/agents/cag-homepage-builder.md",
+    "dst": ".claude/agents/bsuk-homepage-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; CAG homepage section map replaced by BSUK's own index.astro; GSC figures deleted (NOT FETCHED until project 6)"
+  },
+  {
+    "src": ".claude/agents/cag-hub-builder.md",
+    "dst": ".claude/agents/bsuk-hub-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; hub routes re-based to /uk-locations/ and /available-puppies/"
+  },
+  {
+    "src": ".claude/agents/cag-location-builder.md",
+    "dst": ".claude/agents/bsuk-location-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; US state pages -> /uk-locations/<slug>/ from data/locations.json (28 UK cities)"
+  },
+  {
+    "src": ".claude/agents/cag-comparison-builder.md",
+    "dst": ".claude/agents/bsuk-comparison-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; parrot-vs-parrot comparisons -> Staffy comparisons; cag- CSS classes -> bsuk-"
+  },
+  {
+    "src": ".claude/agents/cag-purchase-guide.md",
+    "dst": ".claude/agents/bsuk-purchase-guide.md",
+    "mode": "rebase",
+    "notes": "page builder; /buy-african-grey-parrot-near-me/ -> /buy-blue-staffy-puppies-uk/; CITES/IATA -> deposit, delivery, LICENCE_CLAIM_PLACEHOLDER"
+  },
+  {
+    "src": ".claude/agents/cag-section-builder.md",
+    "dst": ".claude/agents/bsuk-section-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; section catalogue re-based; cites-trust-bar -> trust-bar"
+  },
+  {
+    "src": ".claude/agents/cag-structure-architect.md",
+    "dst": ".claude/agents/bsuk-structure-architect.md",
+    "mode": "rebase",
+    "notes": "page builder; silo map re-based to BSUK clusters; data/structure.json not ported"
+  },
+  {
+    "src": ".claude/agents/cag-content-architect.md",
+    "dst": ".claude/agents/bsuk-content-architect.md",
+    "mode": "rebase",
+    "notes": "page builder; orchestrator; framework routing kept, page types re-based"
+  },
+  {
+    "src": ".claude/agents/cag-batch-rebuilder.md",
+    "dst": ".claude/agents/bsuk-batch-rebuilder.md",
+    "mode": "rebase",
+    "notes": "page builder; batch dispatch kept; deploy + IndexNow step marked inactive until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-framework-agent.md",
+    "dst": ".claude/agents/bsuk-framework-agent.md",
+    "mode": "rebase",
+    "notes": "page builder; competitor deep-dive re-based to UK Staffy keywords; reads data/competitors.json (competitor intelligence build, 2026-09-23)"
+  },
+  {
+    "src": ".claude/agents/cag-interactive-component.md",
+    "dst": ".claude/agents/bsuk-interactive-component.md",
+    "mode": "rebase",
+    "notes": "page builder; calculators re-based to £ and data/puppies.json; financial-entities not ported"
+  },
+  {
+    "src": ".claude/agents/cag-infographic-builder.md",
+    "dst": ".claude/agents/bsuk-infographic-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; infographic types kept, examples re-based"
+  },
+  {
+    "src": ".claude/agents/cag-about-builder.md",
+    "dst": ".claude/agents/bsuk-about-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; breeder story = Lisa Bright, Carlisle, Cumbria (Known Issue 16); USDA/CITES -> LICENCE_CLAIM_PLACEHOLDER"
+  },
+  {
+    "src": ".claude/agents/cag-seo-content-writer.md",
+    "dst": ".claude/agents/bsuk-seo-content-writer.md",
+    "mode": "rebase",
+    "notes": "content; frameworks kept, facts re-based to locked BSUK prices and delivery"
+  },
+  {
+    "src": ".claude/agents/cag-blog-post-agent.md",
+    "dst": ".claude/agents/bsuk-blog-post-agent.md",
+    "mode": "rebase",
+    "notes": "content; blog posts land in src/content/blog/; GSC figures NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-angle-agent.md",
+    "dst": ".claude/agents/bsuk-angle-agent.md",
+    "mode": "rebase",
+    "notes": "content; angle bank re-based from parrot buyer fears to Staffy buyer fears"
+  },
+  {
+    "src": ".claude/agents/cag-non-commodity-content-agent.md",
+    "dst": ".claude/agents/bsuk-non-commodity-content-agent.md",
+    "mode": "rebase",
+    "notes": "content; Triad model kept, breeder voice re-based to Lisa Bright"
+  },
+  {
+    "src": ".claude/agents/cag-content-audit-agent.md",
+    "dst": ".claude/agents/bsuk-content-audit-agent.md",
+    "mode": "rebase",
+    "notes": "content; audit phases kept; competitor list from data/competitors.json and the intel reports (competitor intelligence build, 2026-09-23)"
+  },
+  {
+    "src": ".claude/agents/cag-image-pipeline.md",
+    "dst": ".claude/agents/bsuk-image-pipeline.md",
+    "mode": "rebase",
+    "notes": "content; image paths re-based to public/images/ and data/image-manifest.json"
+  },
+  {
+    "src": ".claude/agents/cag-faq-agent.md",
+    "dst": ".claude/agents/bsuk-faq-agent.md",
+    "mode": "rebase",
+    "notes": "content; QAB kept; question bank re-based; GSC Queries.csv NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-paa-agent.md",
+    "dst": ".claude/agents/bsuk-paa-agent.md",
+    "mode": "rebase",
+    "notes": "content; PAA extraction kept; target keywords re-based to UK Staffy queries"
+  },
+  {
+    "src": ".claude/agents/cag-meta-description-agent.md",
+    "dst": ".claude/agents/bsuk-meta-description-agent.md",
+    "mode": "rebase",
+    "notes": "content; CTR patterns kept; prices from data/price-matrix.json, £ not $"
+  },
+  {
+    "src": ".claude/agents/cag-agent-system-qa.md",
+    "dst": ".claude/agents/bsuk-agent-system-qa.md",
+    "mode": "rebase",
+    "notes": "ops/QA; audits .claude/agents and .claude/skills; registry check now scripts/build_agent_registry.py --check"
+  },
+  {
+    "src": ".claude/agents/cag-self-update.md",
+    "dst": ".claude/agents/bsuk-self-update.md",
+    "mode": "rebase",
+    "notes": "ops/QA; self-update loop re-based; sessions/ marked as arriving in Task 12"
+  },
+  {
+    "src": ".claude/agents/cag-deploy-verifier.md",
+    "dst": ".claude/agents/bsuk-deploy-verifier.md",
+    "mode": "rebase",
+    "notes": "ops/QA; release-guarded — inactive until project 6, no host and no domain"
+  },
+  {
+    "src": ".claude/agents/cag-accessibility-fixer.md",
+    "dst": ".claude/agents/bsuk-accessibility-fixer.md",
+    "mode": "rebase",
+    "notes": "ops/QA; scans dist/ instead of site/content/; WCAG rules unchanged"
+  },
+  {
+    "src": ".claude/agents/cag-performance-fixer.md",
+    "dst": ".claude/agents/bsuk-performance-fixer.md",
+    "mode": "rebase",
+    "notes": "ops/QA; the one agent with zero bird vocabulary — name: field only"
+  },
+  {
+    "src": ".claude/agents/cag-site-hygiene-agent.md",
+    "dst": ".claude/agents/bsuk-site-hygiene-agent.md",
+    "mode": "rebase",
+    "notes": "ops/QA; footer/breadcrumb/GA4 tasks re-based to BSUK components; GA4 id NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-canonical-fixer.md",
+    "dst": ".claude/agents/bsuk-canonical-fixer.md",
+    "mode": "rebase",
+    "notes": "ops/QA; canonical host -> https://SITE_URL_PLACEHOLDER; WordPress export context kept (BSUK has the same origin)"
+  },
+  {
+    "src": ".claude/agents/cag-redirect-manager.md",
+    "dst": ".claude/agents/bsuk-redirect-manager.md",
+    "mode": "rebase",
+    "notes": "ops/QA; _redirects path -> public/_redirects, generated from data/redirects.json"
+  },
+  {
+    "src": ".claude/agents/cag-contact-form-updater.md",
+    "dst": ".claude/agents/bsuk-contact-form-updater.md",
+    "mode": "rebase",
+    "notes": "ops/QA; Formspree id -> PUBLIC_FORMSPREE_ID env; seven-field contract in bsuk-contact-form (arrives in Task 12)"
+  },
+  {
+    "src": ".claude/agents/cag-trust-signals-agent.md",
+    "dst": ".claude/agents/bsuk-trust-signals-agent.md",
+    "mode": "rebase",
+    "notes": "ops/QA; review widgets kept but every credential claim is LICENCE_CLAIM_PLACEHOLDER; the site's reviews live in data/reviews.json (project 3 kit), which this agent does not read yet"
+  },
+  {
+    "src": ".claude/agents/cag-footer-standardizer.md",
+    "dst": ".claude/agents/bsuk-footer-standardizer.md",
+    "mode": "rebase",
+    "notes": "ops/QA; footer component -> src/components/SiteFooter.astro; scans dist/"
+  },
+  {
+    "src": ".claude/agents/cag-gsc-analytics.md",
+    "dst": ".claude/agents/bsuk-gsc-analytics.md",
+    "mode": "rebase",
+    "notes": "analytics; data-guarded — no GSC data pulled, every figure NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-keyword-verifier.md",
+    "dst": ".claude/agents/bsuk-keyword-verifier.md",
+    "mode": "rebase",
+    "notes": "analytics; data-guarded; keyword checks re-based to BSUK head terms"
+  },
+  {
+    "src": ".claude/agents/cag-rank-tracker.md",
+    "dst": ".claude/agents/bsuk-rank-tracker.md",
+    "mode": "rebase",
+    "notes": "analytics; data-guarded; reads data/competitors.json (competitor intelligence build, 2026-09-23); inactive until project 6"
+  },
+  {
+    "src": ".claude/skills/cag-gate-integrity/SKILL.md",
+    "dst": ".claude/skills/bsuk-gate-integrity/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; gate-integrity re-based to BSUK's scripts/ gates and npm run check:all"
+  },
+  {
+    "src": ".claude/skills/cag-learning-loop/SKILL.md",
+    "dst": ".claude/skills/bsuk-learning-loop/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; rework ledger re-based to rules/ and the BSUK page board"
+  },
+  {
+    "src": ".claude/skills/cag-final-page-pass/SKILL.md",
+    "dst": ".claude/skills/bsuk-final-page-pass/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; final page pass over dist/ pages; scripts/final_page_audit.py"
+  },
+  {
+    "src": ".claude/skills/cag-page-hardening/SKILL.md",
+    "dst": ".claude/skills/bsuk-page-hardening/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; hardening scan re-based to BSUK routes and scripts/page_hardening_scan.py"
+  },
+  {
+    "src": ".claude/skills/cag-perf-gate/SKILL.md",
+    "dst": ".claude/skills/bsuk-perf-gate/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; perf gate; live PageSpeed release-guarded to project 6"
+  },
+  {
+    "src": ".claude/skills/cag-duplicate-content-gate/SKILL.md",
+    "dst": ".claude/skills/bsuk-duplicate-content-gate/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; DUP gate over dist/; whitelist re-measured in Task 15"
+  },
+  {
+    "src": ".claude/skills/cag-evidence-pass/SKILL.md",
+    "dst": ".claude/skills/bsuk-evidence-pass/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; evidence pass — every claim traced or NOT FETCHED"
+  },
+  {
+    "src": ".claude/skills/cag-aeo-pass/SKILL.md",
+    "dst": ".claude/skills/bsuk-aeo-pass/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; answer-engine pass re-based to BSUK questions and routes"
+  },
+  {
+    "src": ".claude/skills/cag-seo-master-checklist/SKILL.md",
+    "dst": ".claude/skills/bsuk-seo-master-checklist/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the master checklist re-based to BSUK routes, prices and locations"
+  },
+  {
+    "src": ".claude/skills/cag-website-health/SKILL.md",
+    "dst": ".claude/skills/bsuk-website-health/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; health sweep re-based to scripts/health-sweep.sh"
+  },
+  {
+    "src": ".claude/skills/cag-broken-links/SKILL.md",
+    "dst": ".claude/skills/bsuk-broken-links/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; link checker re-based to dist/ and https://SITE_URL_PLACEHOLDER"
+  },
+  {
+    "src": ".claude/skills/cag-indexing/SKILL.md",
+    "dst": ".claude/skills/bsuk-indexing/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; indexing; IndexNow and live submission release-guarded to project 6"
+  },
+  {
+    "src": ".claude/skills/cag-contact-form/SKILL.md",
+    "dst": ".claude/skills/bsuk-contact-form/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; contact form contract re-based to BSUK's enquiry form"
+  },
+  {
+    "src": ".claude/skills/cag-footer-agent/SKILL.md",
+    "dst": ".claude/skills/bsuk-footer-agent/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; footer re-based; scripts/rebuild_footer.py not ported"
+  },
+  {
+    "src": ".claude/skills/cag-site-patterns/SKILL.md",
+    "dst": ".claude/skills/bsuk-site-patterns/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the shared page patterns re-based to BSUK components"
+  },
+  {
+    "src": ".claude/skills/cag-cta-strategy/SKILL.md",
+    "dst": ".claude/skills/bsuk-cta-strategy/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; CTA strategy re-based to deposit/enquiry CTAs"
+  },
+  {
+    "src": ".claude/skills/cag-entity-agent/SKILL.md",
+    "dst": ".claude/skills/bsuk-entity-agent/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; entity agent re-based to BlueStaffyUK, [BREEDER_NAME] and Carlisle (Known Issue 16)"
+  },
+  {
+    "src": ".claude/skills/cag-entity-graph/SKILL.md",
+    "dst": ".claude/skills/bsuk-entity-graph/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; entity graph re-based to BSUK's Organization/Person/Product graph"
+  },
+  {
+    "src": ".claude/skills/cag-youtube/SKILL.md",
+    "dst": ".claude/skills/bsuk-youtube/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; YouTube skill re-based; channel data NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/skills/cag-google-map/SKILL.md",
+    "dst": ".claude/skills/bsuk-google-map/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; map embed re-based to Carlisle, Cumbria, town-level only (Known Issue 16)"
+  },
+  {
+    "src": ".claude/skills/cag-blog-post/SKILL.md",
+    "dst": ".claude/skills/bsuk-blog-post/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the blog builder re-based to BSUK topics, packs and gates"
+  },
+  {
+    "src": ".claude/skills/cag-location-page-builder/SKILL.md",
+    "dst": ".claude/skills/bsuk-location-page-builder/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; location pages re-based to the 28 UK cities in data/locations.json"
+  },
+  {
+    "src": ".claude/skills/cag-comparison-page-builder/SKILL.md",
+    "dst": ".claude/skills/bsuk-comparison-page-builder/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; comparison pages re-based to Staffy comparisons"
+  },
+  {
+    "src": ".claude/skills/cags-comprehensive-page-audit-system/SKILL.md",
+    "dst": ".claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the audit system re-based to BSUK routes and the ported gate scripts"
+  },
+  {
+    "src": ".claude/skills/cag-for-sale-page-builder/SKILL.md",
+    "dst": ".claude/skills/bsuk-puppy-page-builder/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the largest rewrite — bird listing becomes the puppy listing on rules/puppies.md"
+  },
+  {
+    "src": "docs/reference/system-registry.md",
+    "dst": "docs/reference/system-registry.md",
+    "mode": "rebase",
+    "notes": "system; the registry regenerated from this repo's own agents, skills, scripts and data files"
+  },
+  {
+    "src": "docs/reference/quick-start.md",
+    "dst": "docs/reference/quick-start.md",
+    "mode": "rebase",
+    "notes": "system; task→entry-point map re-based onto BSUK page types and the six reference docs that exist here"
+  },
+  {
+    "src": "docs/reference/WORKFLOW.md",
+    "dst": "docs/reference/WORKFLOW.md",
+    "mode": "rebase",
+    "notes": "system; the 7-sprint model re-based; Sprint 5 Ship inactive until project 6"
+  },
+  {
+    "src": "docs/reference/seo-rules.md",
+    "dst": "docs/reference/seo-rules.md",
+    "mode": "rebase",
+    "notes": "system; the numbered SEO rules re-based; the African Grey–specific section and CAG's dated GSC table deleted"
+  },
+  {
+    "src": "docs/reference/session-log.md",
+    "dst": "docs/reference/session-log.md",
+    "mode": "rebase",
+    "notes": "system; body replaced with BSUK's two project entries and Known Issues seeded from the foundation gate report"
+  },
+  {
+    "src": ".claude/skills/cag-bird-listing-page/SKILL.md",
+    "dst": ".claude/skills/bsuk-bird-listing-page/SKILL.md",
+    "mode": "deferred",
+    "notes": "parrot-only (species listing page); no BSUK analogue — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/skills/cag-bird-page-build/SKILL.md",
+    "dst": ".claude/skills/bsuk-bird-page-build/SKILL.md",
+    "mode": "deferred",
+    "notes": "parrot-only page build; bsuk-puppy-page-builder covers the puppy pages — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/skills/cag-bird-page-excellence/SKILL.md",
+    "dst": ".claude/skills/bsuk-bird-page-excellence/SKILL.md",
+    "mode": "deferred",
+    "notes": "parrot-only page polish; bsuk-final-page-pass covers the gate — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-bird-personality.md",
+    "dst": ".claude/agents/bsuk-bird-personality.md",
+    "mode": "deferred",
+    "notes": "parrot-only temperament writer — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-clutch-manager.md",
+    "dst": ".claude/agents/bsuk-clutch-manager.md",
+    "mode": "deferred",
+    "notes": "parrot clutch records; BSUK litters live in data/puppies.json — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-timneh-specialist.md",
+    "dst": ".claude/agents/bsuk-timneh-specialist.md",
+    "mode": "deferred",
+    "notes": "parrot subspecies specialist; no BSUK analogue — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-species-guide-builder.md",
+    "dst": ".claude/agents/bsuk-species-guide-builder.md",
+    "mode": "deferred",
+    "notes": "parrot species guide; the BSUK breed guide is built — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-variant-specialist.md",
+    "dst": ".claude/agents/bsuk-variant-specialist.md",
+    "mode": "deferred",
+    "notes": "variant pages; a coat-colour version for Staffies is possible later — recorded 2026-09-23, not ported"
+  },
+  {
+    "src": ".claude/agents/cag-competitor-pricing-alert-agent.md",
+    "dst": ".claude/agents/bsuk-competitor-pricing-alert-agent.md",
+    "mode": "deferred",
+    "notes": "needs a live site and a competitor list; project 6 at the earliest — recorded 2026-09-23"
+  },
+  {
+    "src": ".claude/agents/cag-competitor-registry.md",
+    "dst": ".claude/agents/bsuk-competitor-registry.md",
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): national registry, 5 tiers, proposal in docs/research/ and user approval before writing data/competitors.json (checked by scripts/competitor_registry_check.py); per-page pools in data/queries/<slug>.json unchanged"
+  },
+  {
+    "src": "IMAGE-DESIGNS.md",
+    "dst": "IMAGE-DESIGNS.md",
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): the picture's art direction rewritten for a blue Staffordshire Bull Terrier on the locked palette; adds named infographic styles, the board approval rule and the image-slot fields; scripts/image_designs.py reads its ids"
+  },
+  {
+    "src": "scripts/reframe_og.py",
+    "dst": "scripts/reframe_og.py",
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): the three baked OG framing styles (contain, blurfill, topcover) on the bone palette; tints and the unapproved extra styles dropped"
+  }
+]

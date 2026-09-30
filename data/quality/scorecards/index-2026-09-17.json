@@ -1,0 +1,188 @@
+{
+  "slug": "index",
+  "date": "2026-09-17",
+  "page_type": "home",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1053,
+    "layout-tap-target-size": 171,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "img-srcset-within-2x": 63,
+    "img-alt-present-and-unique": 63,
+    "nav-anchors-resolve": 15,
+    "nav-jump-target-lands": 9,
+    "sem-heading-order": 198,
+    "sem-all-six-levels": 198,
+    "sem-title-case-headings": 198,
+    "sem-section-opening-paragraph": 198,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 3387,
+    "css-no-dead-component-rule": 0,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 144,
+    "a11y-text-contrast-aa": 897,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "IMG": 3,
+    "NAV": 3,
+    "SEM": 9,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "IMG": 20,
+    "NAV": 3,
+    "SEM": 51,
+    "CSS": 804,
+    "DUP": 30
+  },
+  "total": 21,
+  "total_instances": 908,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "img-srcset-within-2x",
+      "count": 7,
+      "message": "7 oversized image(s): mark-blue-staffy-london.webp natural=760 painted=319 2.38x | roman-card-800.webp natural=800 painted=271 2.95x | byrd-card-800.webp natural=800 painted=271 2.95x | ince-card-800.webp natural=800 painted=271 2.95x | vennie-card-800.webp natural=800 painted=271 2.95x | christa-card-800.webp natural=800 painted=271 2.95x | cheryl-card-800.webp natural=800 painted=271 2.95x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 3 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #Our-Blue-Staffies@4097px"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:15 H3:35 H4:15 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 5,
+      "message": "5 heading(s) not in Title Case: H1 \"blue\" in \"Secure Your blue Staffy puppies for sale UK: S\" | H3 \"position\" in \"My position at BlueStaffyUK is to ensure we re\" | H2 \"from\" in \"Why Choose a Pure-bred Staffy Pup for Sale fro\" | H3 \"adding\" in \"Considering adding a blue staffy to your famil\" | H4 \"we\" in \"While we manage the booking and coordination, \""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 10,
+      "message": "10 heading(s) with no opening paragraph: H2→H3 \"Hi, I Am Sharine Amelia\" | H4→H3 \"01\" | H4→H3 \"02\" | H4→H3 \"03\" | H4→H3 \"04\" | H2→H3 \"Meet Our Affordable Blue Staffy Puppies \" | H3→H4 \"Our UK Blue Staffy Litter Details\" | H2→H3 \"Understanding the Wonderful Blue Staffor\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 268,
+      "message": "268 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x50, wp-block-uagb-info-box x49, uagb-infobox__content-wrap x49, uagb-ifb-content x49, uagb-ifb-title-wrap x49, uagb-ifb-title x48, uagb-ifb-desc x43, uagb-infobox-image-valign-top x39, uagb-infobox-left x25, uagb-infobox-icon-above-title x24, alignfull x22, uagb-is-root-container x22"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 10,
+      "message": "10 passage(s) shared with a sibling: 21w vs /buy-blue-staffy-puppies-uk/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 16w vs /blue-staffy-uk-breeders/ \"ensuring our blue staffy puppies utmost safety and well being during transit is our highes\" | 14w vs /buy-blue-staffy-puppies-uk/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "img-srcset-within-2x",
+      "count": 6,
+      "message": "6 oversized image(s): roman-card-800.webp natural=800 painted=325 2.46x | byrd-card-800.webp natural=800 painted=325 2.46x | ince-card-800.webp natural=800 painted=325 2.46x | vennie-card-800.webp natural=800 painted=325 2.46x | christa-card-800.webp natural=800 painted=325 2.46x | cheryl-card-800.webp natural=800 painted=325 2.46x"
+    },
+    {
+      "viewport": 375,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 3 in-page links land outside 113-181px (measured chrome 121px = header:121) — no single page-level cause identified; first: #Our-Blue-Staffies@3941px"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:15 H3:35 H4:15 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 5,
+      "message": "5 heading(s) not in Title Case: H1 \"blue\" in \"Secure Your blue Staffy puppies for sale UK: S\" | H3 \"position\" in \"My position at BlueStaffyUK is to ensure we re\" | H2 \"from\" in \"Why Choose a Pure-bred Staffy Pup for Sale fro\" | H3 \"adding\" in \"Considering adding a blue staffy to your famil\" | H4 \"we\" in \"While we manage the booking and coordination, \""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 10,
+      "message": "10 heading(s) with no opening paragraph: H2→H3 \"Hi, I Am Sharine Amelia\" | H4→H3 \"01\" | H4→H3 \"02\" | H4→H3 \"03\" | H4→H3 \"04\" | H2→H3 \"Meet Our Affordable Blue Staffy Puppies \" | H3→H4 \"Our UK Blue Staffy Litter Details\" | H2→H3 \"Understanding the Wonderful Blue Staffor\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 268,
+      "message": "268 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x50, wp-block-uagb-info-box x49, uagb-infobox__content-wrap x49, uagb-ifb-content x49, uagb-ifb-title-wrap x49, uagb-ifb-title x48, uagb-ifb-desc x43, uagb-infobox-image-valign-top x39, uagb-infobox-left x25, uagb-infobox-icon-above-title x24, alignfull x22, uagb-is-root-container x22"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 10,
+      "message": "10 passage(s) shared with a sibling: 21w vs /buy-blue-staffy-puppies-uk/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 16w vs /blue-staffy-uk-breeders/ \"ensuring our blue staffy puppies utmost safety and well being during transit is our highes\" | 14w vs /buy-blue-staffy-puppies-uk/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-srcset-within-2x",
+      "count": 7,
+      "message": "7 oversized image(s): mark-blue-staffy-london.webp natural=767 painted=319 2.40x | roman-card-800.webp natural=800 painted=348 2.30x | byrd-card-800.webp natural=800 painted=348 2.30x | ince-card-800.webp natural=800 painted=348 2.30x | vennie-card-800.webp natural=800 painted=348 2.30x | christa-card-800.webp natural=800 painted=348 2.30x | cheryl-card-800.webp natural=800 painted=348 2.30x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 3 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #Our-Blue-Staffies@4100px"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:15 H3:35 H4:15 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 5,
+      "message": "5 heading(s) not in Title Case: H1 \"blue\" in \"Secure Your blue Staffy puppies for sale UK: S\" | H3 \"position\" in \"My position at BlueStaffyUK is to ensure we re\" | H2 \"from\" in \"Why Choose a Pure-bred Staffy Pup for Sale fro\" | H3 \"adding\" in \"Considering adding a blue staffy to your famil\" | H4 \"we\" in \"While we manage the booking and coordination, \""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 10,
+      "message": "10 heading(s) with no opening paragraph: H2→H3 \"Hi, I Am Sharine Amelia\" | H4→H3 \"01\" | H4→H3 \"02\" | H4→H3 \"03\" | H4→H3 \"04\" | H2→H3 \"Meet Our Affordable Blue Staffy Puppies \" | H3→H4 \"Our UK Blue Staffy Litter Details\" | H2→H3 \"Understanding the Wonderful Blue Staffor\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 268,
+      "message": "268 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x50, wp-block-uagb-info-box x49, uagb-infobox__content-wrap x49, uagb-ifb-content x49, uagb-ifb-title-wrap x49, uagb-ifb-title x48, uagb-ifb-desc x43, uagb-infobox-image-valign-top x39, uagb-infobox-left x25, uagb-infobox-icon-above-title x24, alignfull x22, uagb-is-root-container x22"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 10,
+      "message": "10 passage(s) shared with a sibling: 21w vs /buy-blue-staffy-puppies-uk/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 16w vs /blue-staffy-uk-breeders/ \"ensuring our blue staffy puppies utmost safety and well being during transit is our highes\" | 14w vs /buy-blue-staffy-puppies-uk/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\""
+    }
+  ]
+}

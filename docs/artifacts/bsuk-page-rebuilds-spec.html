@@ -1,0 +1,756 @@
+<title>BSUK Page Rebuilds Spec</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Project 4 of 6</p><h1 class="title">Page rebuilds — design spec</h1></div>
+<div class="meta"><span class="pill">status: approved · amended 1–11</span> <span class="pill">2026-09-22</span><br>docs/superpowers/specs/2026-09-19-page-rebuilds-design.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+BlueStaffyUK rebuild, project 4 of 6. Date 2026-09-19. Branch `page-rebuilds`, cut from
+`foundation` at `63a7b12` (the project 3 merge). No remote; nothing is pushed.
+
+Approved in the brainstorm on 2026-09-19. Decisions taken there are locked facts of this spec:
+full rewrite per page through the board system (not a re-skin); three rendered styles per
+section on every board; all eleven rich pages rebuilt and every URL kept; the three real reviews
+rotated with `REVIEW_PLACEHOLDER` slots for the rest.
+</script>
+<script type="text/markdown" data-title="1. Goal and scope">
+Project 4 rebuilds every rich page on the project 3 kit, each written fresh from an approved
+outline through its own page board, and fixes the facts the migration carried wrong. It adds the
+two navigation components the original site had and the kit lacks: the desktop dial and the
+mobile section jump links.
+
+**In scope.** The eleven rich pages (`/`, `/blue-staffy-uk-breeders/`,
+`/buy-blue-staffy-puppies-uk/`, `/blue-staffy-pup-sale-uk/`, `/buy-staffy-puppies-for-sale-uk/`,
+`/blue-staffy-health-uk/`, `/uk-staffordshire-bull-terrier-guide/`,
+`/uk-blue-staffy-puppy-buying-guide/`, `/uk-blue-staffy-breeders-contact/`,
+`/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/`), the blog index
+`/blue-staffy-blog-guides/` and its one post; the kit shell (header, footer, dial, jump links)
+on the three hubs and the puppy pages without rewriting their content; the Glasgow → Carlisle
+change in content, `data/settings.json` and schema (closes Known Issue 16); the locked prices,
+the byline, the three duplicate headers (Known Issues 9, 11, 12); `generate_page_dates.py`
+wired so `dateModified` is real (Known Issue 8, 20); the form-contract option value.
+
+**Out of scope.** The 28 location pages, the comparison cluster and the two new blog posts
+(project 5); domain, phone, GSC, GA4, Bing, IndexNow (project 6); any new photography (rule 11:
+existing images and videos are reused, never replaced).
+</script>
+<script type="text/markdown" data-title="2. Locked decisions">
+| Decision | Pick | Alternatives considered |
+|---|---|---|
+| Depth | **Full rewrite per page through the board** | re-skin + fact fixes; rewrite money pages only |
+| Board shape | **Three rendered styles per section, pick per section** | three whole-page styles |
+| Page set | **All eleven rich pages + blog, every URL kept** | six named pages; consolidate the three sale pages with 301s |
+| Reviews | **Rotate the three real reviews; empty slots are `REVIEW_PLACEHOLDER`** | reviews only where they were; wait for more |
+| Navigation | **Desktop dial (sticky sidebar, progress ring, numbered list, scroll-spy) + mobile section sheet and bottom tab bar** | none |
+
+Distinct intent per overlapping sale URL: `/buy-blue-staffy-puppies-uk/` = the listing and how
+to buy; `/blue-staffy-pup-sale-uk/` = price, deposit, delivery and what is included;
+`/buy-staffy-puppies-for-sale-uk/` = why this breeder (health testing, home raising, KC,
+after-care). The outline step records each page's intent and the dup gate holds them apart.
+</script>
+<script type="text/markdown" data-title="3. Components 14 and 15">
+**`PageDial.astro`** (desktop, ≥1024px). A sticky sidebar card in a `196px minmax(0,1fr)` grid
+with `gap: 28px`: a 64px progress ring (50px inner) showing `n of N` in Fraunces, then a
+numbered section list (rows ≥24px, dashed top rule) with the active row set by an
+IntersectionObserver scroll-spy. `position: sticky; top: calc(var(--hdr-measured, var(--hdr))
++ 16px); max-height: calc(100vh - var(--hdr) - 32px); overflow-y: auto`. Tokens only; card
+shell from `kit.css`; numerals ≥4.5:1. Props: `sections: {id,label}[]`, `title?`.
+
+**`SectionSheet.astro`** (mobile and tablet, <1024px). A fixed bottom tab bar (`Home`,
+`Puppies`, `Contact`, `Sections`; 44px targets; inline stroke icons; hidden on print) whose
+`Sections` tab opens a bottom sheet (`<dialog>`, native, `inert` background) listing the same
+sections with the same scroll-spy state and a CTA button. Props: `sections`, `ctaLabel`,
+`ctaHref`. The page's `scroll-margin-top` accounts for the header only; the tab bar sits below
+content so no jump target lands under it, and the harness's `nav-jump-target-lands` check gains
+a bottom-chrome measurement (the source repo's `bottom-bar-under-tabbar` idea, Known Issue 10)
+so the tab bar can never cover a target.
+
+Both components take three styles on the first page board (contact) and are then fixed for
+every page. `tests/py/test_design_components.py` gains dist assertions for both on
+`/kit-preview/`; `components.json` grows to fifteen rows; the Design System artifact gains two
+previews (regenerated by `scripts/build_design_system.py`).
+</script>
+<script type="text/markdown" data-title="4. The page board">
+One board per page, built by `scripts/build_page_board.py` (extended, re-palette'd to the
+tokens) from the board record `data/boards/<slug>.json`, published as an Artifact with the
+database capability, picks pulled by `scripts/board_approve.py`. A board holds:
+
+1. **Outline.** H1; the ordered section list with H2–H6 per section, each section's purpose,
+   word target and the facts it must carry (from the migrated page's body, `data/settings.json`,
+   `data/puppies.json`, `data/faq.json`, `data/reviews.json`); key takeaways; review slots
+   (top / middle / bottom, each `single` or `grid`); FAQ rows; internal links (target + intent);
+   the images the page reuses (from `data/image-manifest.json`, by original path) and the
+   YouTube embed(s); the meta title (three options) and description (three options); the
+   competitor scan summary (3–5 UK Staffy breeder pages for the same intent: sections, word
+   counts, FAQs, schema — recorded as data, `NOT FETCHED` where unavailable).
+2. **Three styles per section.** S1/S2/S3, each rendered at 1280 / 768 / 375 from the kit with
+   the section's real outline copy on a hidden noindex route `/board-preview/<slug>/` (one
+   `[data-section][data-style]` block per combination; the `NON_CONTENT_ROUTES` exclusion and
+   its self-expiry test cover it). `scripts/build_board_previews.py` reuses
+   `scripts/_kit_sections.py` to cut the built route into per-style HTML snippets embedded in
+   the board (inline, no artifact assets needed), styled by the same inlined CSS as the canvas.
+   Styles differ in structure, not tokens (the project 3 distinctness rule applies).
+3. **Picks.** Per section: style S1/S2/S3; per review slot: mode; the dial style (contact board
+   only); the meta title and description; a note per section. Saved to `boards/<slug>` in the
+   board's database in the shape `board_approve.py` already reads (`picks`, `notes`,
+   `approved_at`, `record_hash`).
+4. **Approval.** `board_approve.py <slug>` verifies the record hash, writes the picks and
+   `status: approved` into the record, and `board_gate.py <slug>` refuses a build whose board
+   is not approved or whose picks are incomplete.
+</script>
+<script type="text/markdown" data-title="5. Writing and content rules">
+- **Fresh prose from the outline** (working rule 8), first person as Lisa Bright (rule 1),
+  facts only from: the migrated page body, `data/*.json`, `rules/`, the competitor scan
+  (structure and topics only, never their claims). No claim without a source; unknowns are
+  `NOT FETCHED`; statutory and licence claims stay `LICENCE_CLAIM_PLACEHOLDER` /
+  `LEGAL_CLAIM_PLACEHOLDER` until Lisa confirms them.
+- **Facts preserved.** `scripts/facts_preserved_check.py` (new) extracts from the migrated
+  page: every price, puppy name, health test, credential phrase, image path and embed id, and
+  asserts each appears on the rebuilt page or in the board record's `dropped` list with a
+  reason. Replaces `migration_parity.py` for rebuilt pages (the parity gate keeps running for
+  pages not yet rebuilt; a rebuilt page is removed from its target list).
+- **Titles and descriptions.** Honest, descriptive, keyword-leading; the "No.1 BEST", "THE BEST
+  3", counts-in-title and year-stamped patterns are removed. Title 50–60 chars, description
+  140–160, three options each on the board.
+- **Location.** `Carlisle · Cumbria` everywhere; `data/settings.json` `address` becomes
+  `{"city": "Carlisle", "region": "Cumbria", "country": "GB"}` with no street, postcode or
+  coordinates until Lisa gives them (Known Issue 16); the Glasgow location page keeps its URL as
+  an outreach page (project 5 rewrites it); `scripts/form_contract_audit.py`'s `PUPPY_OPTION` and
+  `ContactForm.astro` are re-based to the kit form's option set.
+- **Reviews.** `data/reviews.json` rows only; each page's board chooses which of the three
+  real reviews fill which slot and in which mode; every unfilled slot renders
+  `REVIEW_PLACEHOLDER` visibly and the gate report counts them, so the number of reviews the
+  site still needs is a measured figure. Review quotes are whitelisted for the dup gate as
+  sitewide lines.
+- **Images and video.** Every image the old page carried is reused with its original path and
+  alt text (working rule 11); new placement only. YouTube embeds keep their ids. No new
+  photography. Puppy photos through `astro:assets` as in project 3.
+- **Headings.** H1 unique; H2–H6 present where the outline needs them (the `all_six_levels`
+  audit stays advisory); Title Case per `rules/headings.md`; no header collides with another
+  page's (`board_gate.py` header-collision at 0 for rebuilt pages).
+- **Links.** Link-first anchors (`rules/links.md`), anchor text varied, every internal target
+  resolves (`redirect_check.py` at 0), external links only to sources the copy cites.
+- **FAQ.** Page FAQs live in `data/faq.json` with `source` = the page; `FAQPage` schema from
+  the same rows; answers backed by page copy.
+- **Dates.** `scripts/generate_page_dates.py` wired into the build (`data/page-dates.json`
+  regenerated from git), `dateModified` on every page from it; `schema-date-modified-present`
+  rows go to 0 on rebuilt pages.
+- **Query augmentation.** For each page, the outline step expands the primary keyword into
+  the questions and entities AI search asks and maps each to a section or FAQ; recorded in the
+  board record. No dedicated skill yet (Known Issue 17); the step is written into the page
+  builder skills.
+</script>
+<script type="text/markdown" data-title="6. Order and gates">
+Easiest first, each page a task with the same shape: outline → board published → **user picks
+(the one pause per page)** → build → gates → commit.
+
+1. `/privacy-policy-uk/` 2. `/thank-you-blue-staffy-puppies-journey/` 3. `/uk-blue-staffy-breeders-contact/`
+(carries the dial and sheet style pick) 4. `/blue-staffy-uk-breeders/` 5. `/blue-staffy-health-uk/`
+6. `/uk-staffordshire-bull-terrier-guide/` 7. `/uk-blue-staffy-puppy-buying-guide/`
+8. `/blue-staffy-blog-guides/` + the post 9. `/blue-staffy-pup-sale-uk/` 10. `/buy-staffy-puppies-for-sale-uk/`
+11. `/buy-blue-staffy-puppies-uk/` 12. `/` (last; it draws on everything).
+
+Per-page gates: `npm run check:all` (parity for un-rebuilt pages, facts-preserved for rebuilt
+ones, redirects, schema, sitemaps, placeholders, marker, registries); `board_gate.py <slug>`
+green; `final_page_audit.py`, `dup_content_audit.py`, `aeo_audit.py`, `evidence_audit.py` with
+the page at 0 real errors; render harness with the page's own rows at 0 blocking and no new
+blocking row site-wide; Lighthouse not below the project 3 table for that page type.
+</script>
+<script type="text/markdown" data-title="7. Definition of done">
+1. Twelve pages (eleven rich + blog) rebuilt from approved boards; `data/boards/<slug>.json`
+   for each with `status: approved` and the picks; every board Artifact URL recorded in
+   `data/design/artifacts.json` under `boards`.
+2. Components 14 and 15 in the kit, on every rebuilt page and the hubs, with dist assertions
+   and the bottom-chrome harness measurement.
+3. `grep -rn Glasgow src data` = 0 outside `docs/` history and the Glasgow location page's own
+   slug; `settings.address` town-level; the form contract re-based (Known Issue 16 closed).
+4. Known Issues 8, 9, 11, 12, 20 closed; every `REVIEW_PLACEHOLDER` counted in the report.
+5. Render pages run: every rebuilt page at 0 blocking rows; blocking total below project 3's 58;
+   `schema-date-modified-present` at 0 on rebuilt pages.
+6. `npm run check:all`, pytest, render meta green twice; gate report
+   `docs/reports/page-rebuilds-gate-report.md` published with the spec and plan as Artifacts;
+   session-closer names project 5 and appends new open flags.
+7. Every commit carries `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`.
+</script>
+<script type="text/markdown" data-title="8. Risks">
+- *Twelve pauses for picks.* Boards are published as each outline is ready, so several can be
+  picked in one sitting; the build order never blocks on a later page's picks.
+- *Only three real reviews.* Placeholders are visible and counted; nothing is invented.
+- *Competitor scan needs the network.* Firecrawl / web search is available in-session; where a
+  fetch fails the scan records `NOT FETCHED` and the outline proceeds from the migrated page.
+- *Bottom tab bar covering jump targets.* Measured by the new harness check before the first
+  page ships.
+</script>
+<script type="text/markdown" data-title="9. Amendments">
+Recorded here as they happen.
+
+**Amendment 1 (2026-09-19, Tasks 1–2).** Two corrections to §3.
+
+1. **`nav-bottom-chrome-clear` is a SEPARATE check, not an extension of
+   `nav-jump-target-lands`.** They are siblings at opposite ends of the viewport and they
+   cannot be one check. `nav-jump-target-lands` measures a target against the chrome pinned
+   to the TOP, which `scroll-margin-top` answers, and it has to defeat smooth-scroll timing
+   to do it — `forceInstantRootScroll`, a settle probe, a budget and three defect buckets.
+   The bottom has no CSS answer at all: a `position: fixed` bar is out of flow, so the only
+   fix is for the bar to reserve its own height in the body, and the measurement is pure
+   geometry against an element that never moves. Folding the two together would put a
+   timing-sensitive scroll harness in front of a question that does not need one, and would
+   merge two failure modes with two different remedies into one defect row. They are
+   registered separately in `tests/render/checks/nav.ts`, both blocking, both NAV.
+
+2. **The 196px dial column lives in `PageShell.astro` (Task 3), not in `PageDial`.**
+   `PageDial` owns the card and sets its own `width: 196px`, but the page GRID that gives
+   the column its place beside the prose — and collapses it below 1024px — belongs to the
+   shell every rebuilt page mounts. A component that declared the grid would be deciding
+   the page's layout from inside a sidebar, and the two hubs would each need their own copy.
+
+**Amendment 2 (2026-09-19, Task 7 and the board pipeline).** Two gate rulings, both taken
+after the first three approvals (privacy, thank-you, contact) were applied and the gate was
+run against them.
+
+1. **`min-h5-h6` reads the BUILT page for a rebuilt slug, and the record tree otherwise.**
+   The check counted H-levels off `all_headings(board)` — the board record's own tree — so
+   the only way a rebuilt page could meet the floor of five H5 and five H6 was for an
+   approved outline to be reopened and padded with ten sub-headings the breeder never saw,
+   purely to satisfy an arithmetic check. That inverts the board: the outline is a plan for
+   sections, agreed at H2 and H3, not a transcript of every sub-point. From now on, when a
+   slug is listed in `data/facts/rebuilt.json` and `dist/<slug>/index.html` exists, the
+   floor is counted off the built page, which is how the migrated pages met it too — H4 and
+   H5 sub-points and the `tuple.h6_prefixes` "Note:" lines are written inside the sections
+   at build time. A record that is not yet rebuilt, or one whose page has not been built,
+   keeps the tree reading: a missing build is not a pass, and reading zero headings out of
+   nothing would clear the floor for free. The finding names its source either way.
+
+2. **`ledger-triple-owned` becomes `ledger-tuple-owned`, on hero+faq+takeaway.** The old
+   signature was hero+dial+rail, on the reading that those three are the page's chrome and
+   two pages wearing all three the same way are the same page. Task 9 retired that premise:
+   the breeder picks ONE dial style and ONE sheet style on the contact board and both are
+   baked into the kit, so every rebuilt page carries the same two and the signature
+   degenerates to "no two pages may share a hero style". It failed privacy-policy-uk
+   against thank-you-blue-staffy-puppies-journey on a shared hero S3 alone, although the
+   two pages differ in their FAQ shell and their takeaway set. The signature is now the
+   tuple minus the two baked axes — what a page is made of that the breeder can still
+   choose differently — and the two records separate on `faq-s1` against `faq-s3`.
+
+3. **2026-09-19, user request during the first boards.** (a) Working rule 12: every page board lists every internal and external link the page will carry, per section and as one page table, before approval; the three boards already approved are rebuilt with the old pages' body links carried in and re-approved. (b) **Component 16, `SectionStrip`**: a sticky horizontally-scrolling rail of numbered section chips (`01 Label · 02 Label …`) under the header on mobile and tablet (<1024px), scroll-spy active chip, thumb-scrollable, matching the source site's home section strip; it complements the bottom sheet (the strip for quick jumps, the sheet for the full list). Three styles on the contact board; then fixed site-wide like the dial and sheet. `nav-bottom-chrome-clear`'s top-chrome counterpart: the strip's height is added to `scroll-margin-top` via `--hdr-measured` so no jump target lands under it.
+
+4. **2026-09-20, after the first rebuilt page.** (a) Word bands: a record's section band counts the section's own prose; the H4–H6 ladder the built page adds to meet `min-h5-h6` (≈25–30 words per section) and FAQ accordion answers (from `data/faq.json`) sit outside the band. `board_gate` measures the band on the built page's prose excluding those two, and the page-level target is the sum of section bands plus the ladder allowance. (b) Headings: the breeder approves heading WORDING; case is presentation. Rebuilt pages render H1–H6 in Title Case per `rules/headings.md`, so `sem-title-case-headings` stays a rule, not a per-page choice. **(b2, 2026-09-21.) Title Case is a PRESENTATION TRANSFORM APPLIED AFTER THE VERBATIM CHECK, and the two are reconciled by case-folding rather than by exemption.** `src/lib/headings.ts::titleCase()` runs at render, so a migrated H1 reaching the page as "Our Health Blueprint: The KC-Standard for Blue Staffy Well-Being" is the record's "…Well-being" with the site's casing applied to it — a hyphen's second part is a word and AP-style Title Case capitalises it. `scripts/verbatim_set_check.py` reads the BUILT page (`dist_html()`), not the record, and compares the H1, the keyword headings and the FAQ questions CASE-INSENSITIVELY (`h.lower() == t.lower()`), so the transform passes and a reworded heading still fails. That is the intended reading of rule 15 and the script has said so since it was written: rule 15 asks for the WORDING and the casing belongs to `rules/headings.md`. Openings and alts are compared case-SENSITIVELY and by containment, because no transform touches them. Recording it here because a reader who finds "Well-being" in the record and "Well-Being" on the page has found a real difference between two files and is owed the sentence that says which one is the wording and which one is the render. (c) `final_page_audit.py` rules that assume a sales or guide page (`lifespan_12_14`, `newsletter_present`, `cites_credentials_early`) apply by page type: `interior` legal/utility pages (`privacy-policy-uk`, `thank-you-…`) are exempt and the audit says so per page; `phone_in_footer` stays a project-6 baseline row on every page.
+
+5. **2026-09-20, user request.** Working rule 13: every table on a rebuilt page is a `table`-shaped board section with three rendered styles (kit `DataTable` component 17: S1 ruled rows with a brand header band, S2 zebra card, S3 borderless with brass column rules — all three stack into `data-label` rows below 640px, tested by the harness's stacked-table check), and `tuple.table` records the pick. Pages that carry tables: pup-sale (price and delivery bands), the two guides (breed facts, health tests), buy-staffy (reasons/comparison), homepage (at a glance).
+
+
+6. **2026-09-20, build review of the first three rebuilt pages.** Seven rulings, taken after
+   `/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/` and
+   `/uk-blue-staffy-breeders-contact/` were read side by side. Referred to elsewhere as
+   amendment 6a-6g, in this order.
+
+   (a) **A kit component may not assert a page's credentials or invent its links.**
+   `Hero.astro` hard-coded three trust chips ("KC registered", "DNA-tested parents", "Raised
+   in the home") and two CTA buttons. On the homepage those are true and approved; on a
+   privacy policy they are a sales line, and the two buttons were two hrefs no board record
+   listed. Both are props now, both default to NONE, and the specimen on `/kit-preview/`
+   passes the homepage's set through the registry. The three rebuilt pages pass neither:
+   their records give the hero no `cta` and no links.
+
+   (b) **Link parity is a gate.** `scripts/link_parity_check.py --check` walks `<main>` on every
+   slug in `data/facts/rebuilt.json` minus the in-page nav chrome, and diffs the hrefs both
+   ways against the record's `sections[].links`: an extra fails, a missing fails, and an
+   href in `dropped.links` fails as its own kind. It runs in `check:all` directly after
+   `check:facts`, which is the other half of the same question — facts-preserved asks what a
+   rebuild LOST, link parity asks what it ADDED. Two exemptions, both narrow and both
+   written into the script: same-page `#fragments` (owned by `nav-anchors-resolve`), and the
+   puppy grid's own card links, which are rows of `data/puppies.json` rendered by
+   `PuppyCard` on a section of shape `puppies` and would go stale in a record the day a
+   litter changed. `mailto:` is NOT exempt; the three pages state the address as text.
+
+   (c) **`dropped.text`: a claim can leave a page without a token going missing.** The fact set's
+   six kinds are tokens — a price, a name, a test, an image. A migrated body also makes
+   CLAIMS, and a rebuild that simply does not rewrite one drops it silently.
+   `facts_preserved_check.py` now extracts the migrated body's claim sentences (those
+   carrying a number, a named organisation or a named process) and asserts each is either
+   restated on the rebuilt page or listed under `dropped.text` with a reason. Presence is
+   two tests: every HARD trigger (numbers, organisations) must appear, and at least six of
+   the claim's content words. A process word qualifies a sentence as a claim and then counts
+   as an ordinary word — "review and respond" is honestly rewritten "read and answered", and
+   demanding the verb back would be demanding the old sentence back. All twelve fact sets
+   carry the kind; the nine unrebuilt ones captured theirs while their bodies still exist.
+
+   (d) **`dropped` leaves `record_hash`.** It is the accounting of what the rebuild did not
+   carry and cannot be complete before the rebuild exists, which is after approval by
+   construction — the same argument that already excludes `assets[].status` and `.file`,
+   which the bake fills in. Hashing it made ruling 3 unusable on every approved record: the
+   only ways to log a dropped claim would have been to re-board a page the breeder had
+   signed off or to re-stamp a hash by hand. The three approved records were re-stamped
+   once, each with the proof recorded in the commit that the OLD formula minus the new
+   `dropped.text` key reproduces the stored hash exactly, so nothing outside `dropped` moved.
+   `approval_matches` also accepts the old formula, for records whose `dropped` is untouched.
+
+   (e) **A privacy policy renders its real last-updated date.** Four sentences of that page lean
+   on a date the page did not show. `src/components/kit/PageDate.astro` renders it from the
+   same `data/page-dates.json` row `BaseLayout` puts in the WebPage node, so the visible date
+   and the machine-readable one cannot disagree, and a route with no row renders nothing
+   rather than today. The `no_visible_date` rule stays what it was: freshness belongs in the
+   schema on a sales page, and this is the exception that rule was never about.
+
+   (f) **Every H4–H6 ladder sentence traces to the migrated body or to `data/`.** The ladder is
+   written at P5 rather than approved on the board, which is exactly why it is where an
+   invented claim lands. Nine were reworded across the three pages — "there is no list",
+   "no fee, and no effect", "no archive of old wordings", "most often ends up", "usually
+   saves two more" and the like. The test is the same as for body prose (rule 9): a sentence
+   states what a file on disk says, or it states nothing.
+
+   (g) **FAQ question headings take Title Case.** `rules/headings.md` exempted them on the
+   ground that they "live in `<summary>`, not a heading tag". `Faq.astro` puts an `<h3>`
+   inside the summary — which is what makes the answers navigable as a heading list — and
+   both title-case checkers select every `h1`–`h6` under `<main>`, so the exemption was one
+   no checker implemented. The question is cased at RENDER through the same `titleCase()`
+   the pages use; `data/faq.json` keeps the sentence-case wording, which is what the FAQPage
+   schema's `name` and the dup gate read.
+
+**Amendment 7 (2026-09-20, breeder — working rule 14, the video component).** Recorded here
+after the fact: the boards and `src/lib/boardStyles.ts` have cited "spec §9 amendment 7" since
+the day the rule was given, and this section did not carry it.
+
+Every YouTube video the old site had is carried by the rebuild **at the same id** — the ids in
+`data/settings.json` `youtube_embeds` plus any a page carries of its own. An id that already
+ranks in video search is the asset; a fresh one starts at zero, so no id is minted and no
+footage is re-uploaded. A page that had a video keeps it in the same place, and the homepage
+carries the site's videos.
+
+On a board a video is a **`video` shape** with its own `video` block (`id`, `title`,
+`caption`) and three rendered styles at 1280 / 768 / 375 — never an `embed` line in a note.
+The component is **`VideoEmbed`, component 18**, and its three styles are its bed and its play
+axis: **S1** the player in a card with the caption beneath it, **S2** the player full width on
+a steel band, **S3** a click-to-play facade that fetches the player on the first press. All
+three reserve the same 16:9 box. **S3 is what a rebuilt page ships unless the breeder picks
+otherwise**, because it is the only one that does not load a player before anybody asks for
+one. `play` is a PROP and not a class: S1 and S2 are the same markup on different beds, S3 is
+different markup, and no stylesheet turns one into the other.
+
+`scripts/facts_preserved_check.py` reports by name any id a rebuilt page drops, and the record
+lists a genuinely dropped embed under `dropped.embeds` with its reason. `video` is deliberately
+NOT a tuple axis: the ledger asks how a page's chrome is combined, and a video is section
+content.
+
+**Amendment 8 (2026-09-20, breeder — working rule 15, the faithful rewrite).** Also recorded
+after the fact, for the same reason: `data/verbatim/`, `scripts/verbatim_set_check.py` and
+every board record's `verbatim` block are built on it.
+
+A rebuilt page carries its migrated page's **VERBATIM SET** word for word. The set is five
+kinds and not the whole page: the old **H1**; every **H2/H3 containing a target keyword**; the
+**first paragraph under each of those headings**; the **FAQ questions**; and **every image
+alt**, against its own `src`. Everything else is written fresh from the outline. Target
+keywords are derived, never hand-written — the page-map row's title words minus stopwords,
+plus the site-wide terms and the breeder's city — so no page can quietly narrow its own set.
+
+**The three exclusions**, each of which is a case where the old wording may not stand:
+
+1. **A wrong fact.** The former city, an old price, a byline belonging to nobody on this site,
+   a reply window the site does not hold itself to. The wording is repaired, not re-pointed —
+   a clause naming the old city comes out rather than being swapped for the new one.
+2. **A collision with another page's heading.** `board_gate.py` fails an exact match and a
+   five-word shingle against every live page, and a heading that identifies no page is not
+   worth keeping. The change keeps the words that name what the section is and moves only the
+   colliding tail.
+3. **An element the outline removes outright**, and the opening paragraph that went with it —
+   a form widget's label, a newsletter block with an unsourced subscriber count. Its
+   `verbatim.changed` row carries an EMPTY `new`, which excuses the element and requires
+   nothing on the page.
+
+Every deviation is a row in the board record's `verbatim.changed`: `{kind, old, new, reason}`,
+where `kind` is one of `h1` / `heading` / `opening` / `faq` / `alt`, or the two deviation kinds
+`heading-dropped` and `faq-merged`, which fold back to `heading` and `faq`. `verbatim` sits
+OUTSIDE `record_hash` for the reason `dropped` does: it is the accounting of what the rewrite
+did, and the rewrite happens after approval. Headings, the H1 and FAQ questions are compared
+case-insensitively (case belongs to `rules/headings.md` and is applied at render); openings and
+alts are compared case-sensitively and by containment, so a section may open with the old
+paragraph and carry on in the writer's own words.
+
+`scripts/verbatim_set_check.py --extract <slug>` takes the set from the migrated source at the
+frozen migration commit and `--check` proves it on `dist/`, judging every slug in BOTH
+`data/facts/rebuilt.json` and `data/verbatim/applies.json`. The rule applies **from the
+homepage onward**; the three pages built before it (privacy, thank-you, contact) stay as
+rewritten and are excluded by name in `applies.json`.
+
+**Amendment 9 (2026-09-20, Task 18 — three harness fixes the homepage exposed, ratified by the
+breeder).** Each is a case of the gate being wrong about the page rather than the reverse,
+which is what CLAUDE.md means by charging a defect to the harness.
+
+1. **`table` is a tuple axis.** `board_approve.py`'s `SHAPE_TUPLE_AXIS` skipped the `table`
+   shape on a comment reading "no board offers a table section yet, and the axis is kept so
+   one can be added without a schema change". Amendment 5 ended that condition — working rule
+   13 says in as many words that `tuple.table` records the pick — so the shape now feeds its
+   axis like every other picked shell, `data/component-ledger.json`'s `table` pool carries
+   `table-s1..s3`, and the homepage is the first record to fill it. **And the
+   `ledger-tuple-owned` signature grows to hero + faq + table + takeaway.** Amendment 2.2
+   defined that signature as "the tuple minus the two baked axes"; `table` was outside it only
+   because it was dead. Two pages that differ by carrying a table are not the same page, and
+   without this the homepage read as identical to `/thank-you-blue-staffy-puppies-journey/`.
+2. **`ledger-takeaway-set-owned` fires on a set of TWO OR MORE.** The rule is about a page
+   copying another page's COMBINATION of takeaway shells. With project 4's three styles and one
+   `takeaways` section on most pages, a singleton set is a pick from a pool of three, and under
+   a set rule the fourth page to want a takeaway block could not have one whatever it said —
+   the same degeneration amendment 2.2 fixed for hero+dial+rail. The combination is still
+   policed: `takeaway` is one of the four axes of the signature above.
+3. **The root slug's built file is `dist/index.html`.** Four places spelled it
+   `dist/index/index.html`, which exists on no build: `pageboard.py`'s `min-h5-h6` (so the one
+   page that is the site's front door would have kept the record-tree reading for ever),
+   `tests/py/test_faq_data.py`'s `_built_text`, `tests/py/test_shell_chrome.py`'s
+   `_expected_kit` (where `"/".strip("/")` is the empty string and matches no rebuilt slug, so
+   the homepage was expected on the legacy chrome for ever), and
+   `tests/py/test_design_components.py`'s review-source reader, which additionally now falls
+   back to the migration commit for a rebuilt page's `const body`.
+
+**Amendment 10 (2026-09-20, breeder — working rule 16, the per-page hero and counter, and
+the refresh delta).** Task 18c. The rule is one sentence — *no two pages share the same hero
+layout or the same counter strip, and every other section carries a small deliberate refresh
+delta* — and almost everything below is what it took to make that sentence mean something a
+gate can check rather than something a reviewer can hope for.
+
+**The two skills it names.** `.claude/skills/bsuk-component-refresh/SKILL.md` (the method:
+invariants, budget, dimension, matrix, record, log) and
+`.claude/skills/bsuk-component-variations/SKILL.md` (three rendered options per section) are
+ported from the source repo and re-based onto the BOARD system rather than onto a design
+canvas. That is the substantive change: a variation here is a `StyleDef` the real kit renders
+on `/board-preview/<slug>/`, so what the breeder approves is what `boxClass()` builds, and an
+artboard can never assert a claim the page will not carry.
+
+**1. A layout FAMILY, not a page type.** `meta.page_type` cannot carry this: eight of the
+thirteen records are `interior`, and a privacy policy, a breed guide and an about page do not
+want one hero between them. `meta.layout_type` names one of six families — `home`,
+`for-sale`, `interior-guide`, `interior-about`, `interior-utility`, `blog` — and
+`layoutTypeFor()` derives it from `page_type` when a record does not state one. Naming a
+`layout_type` is also what says a record has been brought under this rule: the four pages
+built before it have none, still name `S1`/`S2`/`S3` on their hero, and are therefore not yet
+asked for the things below. The later task that refreshes them adds one, and the checks start
+asking. A slug list would have been an allowlist nobody would remember to edit.
+
+**2. Six sets of three, with ids of their own.** `HERO_STYLES_BY_PAGE_TYPE` and
+`COUNTER_STYLES_BY_PAGE_TYPE` in `src/lib/boardStyles.ts` carry `H-HM1…H-BL3` and
+`C-HM1…C-BL3`. One id names one arrangement across the whole repo, so a pick can never be
+read against the wrong set, and `S1`/`S2`/`S3` still resolve against the shape's own trio —
+which is what keeps the four already-built pages working. Three pages of one family take one
+arrangement each and share nothing. The layouts are drawn from the breeder's idea sheets
+(`Assets/Components-Ideas/`), and the commit that added them names the sheet each one came
+from so the choice is traceable to a reference rather than to taste.
+
+**3. `STRUCTURAL_AXES`, and the distance is TWO.** The first cut of the sets kept the promise
+with the id rather than with the layout: `H-GD1` and `H-AB1` were the same hero with the photo
+on the other side, and `C-FS1` and `C-BL1` the same counter with a different column count. A
+pair one axis apart is one arrangement offered twice. So `STRUCTURAL_AXES` is the ONE place
+"different" is defined — `hero`, `ledge`, `stack`, `frame` for the hero; `tiles`, `label`,
+`frame`, `columns` for the counter — and every pair of the eighteen, **within a family and
+across families**, differs on at least two of them. `stack` is `media === 'top'`, not an axis
+of `Layout`: top-against-side is two arrangements, left-against-right is a mirror of one.
+`heading` is deliberately absent — it moves a label, not a layout.
+
+The counter needed a FOURTH structural axis to be able to satisfy that at all. With three axes
+of five, three and two values the ceiling on a two-apart set is six, and eighteen were needed;
+the arithmetic, not taste, is why `CounterStrip` gained `label` (`under` / `beside` / `above`,
+and `above` reverses the DOM order so a screen reader reads the label first too). The fit is
+exact: all eighteen `frame`/`columns`/`label` combinations are used once, so a nineteenth
+counter arrangement is impossible without a fifth axis. That is recorded in the map.
+
+Both per-page axis sets are PROPS rather than classes, for the `play` axis's reason: a mosaic
+of four tiles, a panel with no photo column and a drawn ring are different markup, and no
+stylesheet turns one into the other.
+
+**4. Rule 10 holds for all eighteen, measured.** Every hero renders 390–450px at 1280 with
+nothing clipped — no copy overflow, no scroll overflow, no horizontal page overflow at 1280 or
+375 — and the measurement is what found the defects: a stacked hero inherited the split hero's
+`order` and painted its copy above its photo, the blog family's stacked-with-aside hero put the
+aside on a third row and ran 13px over, a stats ledge on a stacked hero ran 8px over, and the
+panel layout's wider copy column ran a long H1 23px over. Layouts that stack budget their own
+height inside the ceiling rather than releasing it; `board-styles.css` releases it only for the
+legacy `split` hero, which is the arrangement that rule was written for.
+
+**4a. SUB-NOTE (2026-09-21, breeder — Known Issue 28): the ceiling is a DESKTOP measure, and
+a verbatim H1 wins below it.** Everything in §4 is measured at 1280, and the eighteen
+arrangements are budgeted for the copy column 1280 gives them. Between 1024 and 1279 that
+column is narrower and the same words take more lines, so a ceiling written for 1280 stops
+being a budget and becomes a blade. Measured on `dist/` at 1024: the legacy `split` hero's
+two-line `.lede` clamp hid **198px of the homepage's and the privacy policy's own opening
+sentence, 165px of the contact page's and 99px of the thank-you page's**, and the hero's
+`.container.inner` ran past its box by **41px on the homepage, 45px on the listing and 12px
+on why-us** — far enough on two of the three to end 17px and 21px INSIDE the section below.
+
+The copy is not the thing that gives way, because it cannot: working rule 15 puts the
+migrated H1 on the page word for word, so it can be repaired for a wrong fact or a collision
+and for nothing else — certainly not for a band. **So the band gives way.** `max-height:
+450px` on the section and the `.lede` line-clamp are scoped to `min-width: 1280px`; between
+1024 and 1279 the band grows to whatever the H1 and the lede need, and nothing is hidden.
+What stays on from 1024 is the 390 FLOOR (`.inner`'s `min-height`, so a short hero still
+reads as a hero), the type step-down, the tightened block margins, and the photo column's own
+absolute cap — the photograph must never SET the height at any width, which is what makes the
+copy the only thing the band is sized by. Below 1024 neither ever applied.
+
+A bleed hero's photo takes 450 as a MINIMUM below 1280 rather than a fixed height, so it
+still reaches the edge of a band that has grown; `media: top` is excluded, because a bleed
+hero stacked is a 150px strip and `min-height` beats `max-height` in the cascade — unscoped,
+the release made why-us's strip 450px tall and ran its band 312px past its own box.
+
+**And the harness asks the right question at the right width.** `measure_canvas_heights.mjs`
+recorded three overflow figures, all of them taken INSIDE the hero, so content spilling out
+of a released box registered as zero on every one of them — which is why Known Issue 28 was
+found by hand rather than by the gate. It now also records `content_below` and
+`next_overlap`, the deepest painted descendant against the hero's own bottom edge and against
+the next board's top. `test_measured_hero_fits_its_clamp_without_clipping_anything` asserts
+the 390 floor, zero clipping and **zero overlap with the section below at every width**, and
+the 450 ceiling **only at 1280**. Asserting 450 below it was asserting the defect.
+
+**5. The figures are the page's own, and they are SOURCED.** A counter's numbers live in the
+record, as `sections[].stats` rows of `{n, label, source}`, never in the component. A row's
+`source` is a path into a data file, or a LIST of them when the figure is made of more than one
+fact — `£200–£350` is two, and citing only the minimum leaves the maximum unsourced while
+reading as sourced. Selectors: a dotted path with `[index]` or `[id]` steps, `count(f=v)`,
+`len`, `len(<path>)`, `cell(<path to rows>, <row label>)` and `files(<glob>)`. A bracket step is
+an ID LOOKUP when it is not a number, so `sections[costs]` survives a section being inserted
+above it — an index that silently shifted would resolve to a different fact and report green.
+
+Three rules the gate enforces (`stat-source-unresolved`, blocking):
+
+  (a) **The path resolves.**
+  (b) **The terminal is a SCALAR.** `facts/<slug>.json#tests` is a five-item array on one page
+      and a three-item array on another, and both stood behind a tile printing "2". A value a
+      figure cannot be compared against is not a source.
+  (c) **The figure is IN what its sources resolved to.** Every standalone number the tile
+      prints must appear, in the order it prints them. Weaker than equality on purpose —
+      `cell()` returns prose, and "12–14 years" is the honest rendering of "12 to 14 years with
+      good care and good genetics" — and much stronger than "it resolved": "12–17 kg" fails
+      against that sentence, and so does "17–11 kg". STANDALONE, because the digits in
+      `L-2-HGA` and `HC-HSF4` are parts of a test's name.
+
+**Where nothing on disk backs a figure the page ships fewer tiles.** The buying guide has no
+honest source for "five steps" (its tree carries six nodes, five of them steps) and counts its
+tables instead; the listing page dropped the weeks nobody recorded; the about page dropped the
+years the breeder has not given.
+
+**6. The hero's LEDGE is sourced on the same terms** (`ledge-source-unresolved`, blocking).
+"£500 deposit, refundable" under a lede and "£500 / refundable deposit" in a counter tile are
+one claim, and only one of them was carrying its path. A ledge entry — a chip, a tick, an aside
+row, an aside item — is a plain string when it states no figure and `{text, source}` when it
+does. Three of them were numbers written as WORDS ("Six puppies in this litter", "Three males
+and three females", "Fifteen questions to ask the breeder"), which slipped past a digit rule
+and past the reader's sense that a figure needs a source; all three are digits now.
+
+**7. Nothing in the hero asserts content.** `eyebrow`, `title` and `lede` defaulted to real
+copy — "KC registered · Carlisle", "Blue Staffy puppies raised in a family home" — which is a
+component asserting a page's credentials for it, true on the homepage and a sales line on a
+privacy policy. All three default to empty and render nothing when empty; the kit specimen
+states its own. The `ledge` data props behave the same way: a ledge whose data the page did not
+supply renders nothing.
+
+**The one default that STAYS is `image`.** The hero still falls back to
+`src/assets/puppies/Cheryl1.jpeg`, and that is a deliberate carry, not an oversight: a hero
+with no photo is not a quieter hero, it is a broken one, and the four pages built before this
+rule mount the component expecting it. It comes out with their refresh pass, when each of them
+passes its own. The same reasoning keeps `CounterStrip`'s three site-wide fallback figures,
+which are marked DEPRECATED in the component: the preview route always passes `stats`, and a
+test holds every rule-16 record's stats section to carrying its own rows, so no BOARD can reach
+them by omission.
+
+*Retired 2026-09-22.* Both carries came out with the four pages' rule-16 rebuild, as this
+paragraph said they would: every caller of `Hero` passes its own photograph (or `media="none"`)
+and every caller of `CounterStrip` its own derived `stats`. `Hero` now stops the build on a photo
+column with no image or no alt, `CounterStrip` on an empty `stats`, and the kit specimen names
+its own master and its own three figures in `_registry.ts`, so `/kit-preview/` renders exactly
+what it did.
+
+**8. `aside` is a named SLOT, not a prop.** A guide's aside is a fact table, an about page's is
+somebody's sentence and a blog index's is a contents list; a prop shaped to hold all three had
+stopped describing anything. The hero owns the box, its bed and its place in the grid, and the
+typography of what goes in it (`:global()` under `.hero-aside`, because slotted content belongs
+to the caller's scope).
+
+**9. A refresh delta on EVERY section** — `refresh: {axis, note}`, where `axis` is one of the
+five the refresh skill allows (`layout`, `accent`, `motif`, `container`, `density`, never the
+palette) and `note` says what the delta is and which page it is a delta FROM. Not the three to
+five a page felt like writing: `refresh-missing` is blocking from `boarded` onward, scoped to
+records that name a `layout_type`. `scripts/build_page_board.py` prints each delta as a muted
+line under that section's options, including under a LOCKED fieldset — a delta the breeder
+cannot see is a decision taken on their behalf, and it matters most exactly there.
+
+**10. `locked_picks`, and a lock that can prove itself.** Four approved records went back to
+the board for one question — their hero and their counter — and throwing eleven agreed answers
+away to ask two would be asking the breeder to redo work they had done. The old approval moves
+to `approval_previous`; `scripts/build_page_board.py` pre-fills and DISABLES every pick it
+holds for a section that is not being re-asked (a disabled checked radio still matches the
+approve button's `:checked` selector, so the answer is submitted and cannot be changed by
+accident), and the previews still render under it, because the breeder is entitled to see what
+they agreed to.
+
+A carried pick is dropped, and the question asked again, when the section is gone, when it is
+one of `PER_PAGE_SHAPES`, when the pick is no longer on the section's menu, or when the section
+CHANGED: `approval_previous.section_hashes` records each section's fingerprint as it was when
+approved, and a fingerprint that has moved is a different proposal. An approval with no
+recorded hashes locks nothing — an approval that kept no record of what it approved cannot
+prove anything stayed still. A record whose own `options.pick` disagrees with the carried one
+raises rather than silently preferring either: two answers to one question is a board telling
+the breeder they decided something they did not.
+
+**The fingerprint skips `options`, `n` and `refresh`.** `options` is the ANSWER rather than the
+question and `n` is a position, but `refresh` is a judgement call and is recorded as one: a
+delta is a NOTE about which sibling a section departs from, and the arrangement it departs INTO
+is the pick, unchanged. Counting it would have unlocked all forty-three carried picks on the
+day §9 above gave every section a delta — a board asking the breeder to re-answer forty-three
+questions in order to record forty-three notes. This is NOT the guard against a record changing
+under its approval: `approval_matches()` hashes the whole record and fails on any edit at all.
+It decides, once that has already failed and the record is being re-boarded, which questions
+are worth asking again.
+
+**11. `dist-stale`, and the gate that read a build in progress.** `min-h5-h6` reads the BUILT
+page when one exists, and once read a half-written `dist/` gave a real number about a page
+nobody shipped — the check flipped PASS to FAIL and back on the same record. A file existing is
+not a build having finished, so a built page is believed only when it is newer than everything
+under `src/` and `data/boards/`; otherwise the record tree is read, as it was before the page
+existed, and `dist-stale` WARNs. A WARN and a fallback rather than a FAIL: the gate cannot see
+a defect there, and saying "not measurable yet" is what is true. The build's own
+`data/boards/previews/` output is excluded from the comparison, or every build would be
+instantly stale against itself.
+
+**12. The ledger.** The four re-boarded pages come OUT of `data/component-ledger.json`, because
+an unapproved record's combo is not spent. That is what clears `privacy-policy-uk`'s
+`ledger-tuple-identical` against `blue-staffy-uk-breeders`: the about record's `tuple.hero` is
+empty until its new hero is picked, and its stale ledger row is no longer there to match
+privacy's.
+
+**The fixture.** `data/boards/_demo.json` carries the INTERIOR-UTILITY sets, and it is the only
+record that can: the three utility pages were built before this rule and still name
+`S1`/`S2`/`S3`, so without the fixture six of the eighteen hero arrangements and six of the
+eighteen counters would be styles nothing ever builds, renders or measures.
+
+
+**Amendment 11 (2026-09-21, controller — re-approval of a post-approval wording fix).** Plan
+step P4b. A build review finds wording inside `record_hash` that has to move, and the
+sanctioned route cannot reach it: `data/boards/inbox/<slug>.json` carries the PRE-approval
+hash, and once `approval`, `approval_previous` and `tuple.hero` have moved, none of the four
+readings in `pre_approval_hashes()` reproduces it — verified against two records at three
+commits each. That left hand-stamping a hash, which is forging an approval, or shipping the
+defect. Neither is acceptable, so there is now a third thing: the CONTROLLER re-approves,
+with a reason, and the record says so.
+
+`scripts/board_approve.py --reapprove <slug> --reason "<text>"` keeps every pick, the H1
+index, the meta indices and the notes exactly as the breeder left them, recomputes
+`record_hash` over the record as it stands, stamps `approval.reapproved_at` and appends
+`{at, reason, changed_paths}` to `approval.reapprovals`. `changed_paths` is the JSON-pointer
+diff between `git show HEAD:data/boards/<slug>.json` and the record now, taken over the
+HASHED projection, so it names what moved inside the hash and nothing that was always
+outside it. It refuses a baseline that does not match its own approval, an empty diff, a
+missing reason, and any edit that moves the page's ledger row.
+
+**Picks are never touched this way, and that is the whole of the safety argument.** A
+`options.pick`, a `styles` menu, a figure's `n` or its `source`, a ledge source, a section id
+and the section list are answers the breeder GAVE; changing one with a stamp is what this
+mode must never become, so the diff is refused and the page goes back to the board. What it
+may move is wording — headings, intents, notes, titles — additions to a links block, and the
+removal of a whole row from a hero ledge: none of those changes what was chosen, only what
+it says. A removed `stats` row is judged by row identity rather than by index, because
+dropping row 0 of four otherwise reads as editing the other three.
+
+**11a. THE RE-BOARD RULE (2026-09-21, breeder — the other half of the same problem).**
+Amendment 11 is about a record that stays approved while its wording is fixed. This is the
+opposite case: a record whose approval is WITHDRAWN while the page it built stays live.
+
+Working rule 16 sent the last four records back to the board — the homepage and the three
+utility pages — and they were the first re-board in the project's history of a page that had
+already been BUILT. Every earlier one (amendment 10.10's four) was of a record whose page had
+not been written, so nothing read the approval while it moved. These four broke on the first
+build after it: `approval` is null under a re-board, and `record.approval!.meta!.title`,
+`.description`, `.h1` and `pickedStyle()` all read it. Four pages that had shipped for days
+stopped having a title, a description, an H1 or a hero.
+
+**A re-board withdraws the answer to the question it is asking, and nothing else.** The
+questions are the hero and the counter (`PER_PAGE_SHAPES`); the meta variant, the description
+variant, the H1 and every other section's pick are answers the breeder gave and still stand —
+`board_approve.py` already copies the three indices forward untouched for exactly that reason,
+and `locked_picks()` already pre-fills and disables the rest on the board. So the page reads
+the approval IN FORCE:
+
+- `approvalInForce(record)` (`src/lib/pickedStyle.ts`) returns the live approval, else the
+  carried one, and throws only when a record has never been approved at all.
+- `pickedStyle()` reads `approval.picks`, then the section's own `options.pick`, then
+  `approval_previous.picks`.
+- **A CARRIED pick is judged against the menu it was picked FROM.** `pickedStyle()`'s
+  membership test refuses an id that is not on the section's menu, which is what catches a
+  `stats` section picking `H-FS3`. But a re-board is usually what CHANGES a menu — each of
+  these four heroes went from `S1`/`S2`/`S3` to its family's three arrangements — so holding
+  last week's answer to this week's question would fail every carried pick on sight, which is
+  the opposite of what carrying it is for. The test therefore runs on every pick the record
+  itself makes and is skipped for one that is only carried.
+- A section that is BOARDED and not yet BUILT is filtered out of the page's own dial list
+  until its markup exists. The dial is derived from the record, and a link to an id the page
+  does not carry is the dead anchor `nav-anchors-resolve` blocks. The filter is removed in the
+  same commit that adds the section.
+
+**The guarantee, and the test that holds it.** The built page does not move. That was verified
+once by diffing `dist/` against a build of the parent commit — which proves it for one commit
+and for no other — so the durable form is
+`test_a_re_boarded_record_still_renders_its_carried_approval`: for each of the four, the
+page's `<title>`, meta description and H1 are the record's own `meta_set` and `h1.variants`
+entries **at the carried indices**, compared on normalised text because Title Case is applied
+at render, and every carried pick that is not per-page is still locked.
+`test_a_re_boarded_record_asks_only_for_its_hero_and_its_counter` is the other side: a record
+that re-asked anything else would be asking the breeder to redo work they have done.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK Rebuild — Project 4 of 6: Page rebuilds\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

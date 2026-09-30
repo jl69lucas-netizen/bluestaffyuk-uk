@@ -1,0 +1,29 @@
+{
+  "slug": "blue-staffy-puppies-oxford",
+  "session_open": {
+    "ran_on": "2026-09-27",
+    "skills": ["superpowers:writing-plans", "grill-me", "bsuk-location-page-builder"]
+  },
+  "impeccable": {
+    "ran_on": "2026-09-27",
+    "widths": [375, 768],
+    "findings": -1,
+    "fixed": 0,
+    "deferred": [],
+    "commit": "not-a-sha"
+  },
+  "frontend_design": {
+    "ran_on": "27/09/2026",
+    "widths": [375, 768, 1280],
+    "findings": 2,
+    "fixed": 2,
+    "deferred": [""],
+    "commit": "0123456789abcdef0123456789abcdef01234567"
+  },
+  "verification_before_completion": {
+    "ran_on": "2026-09-27",
+    "commit": "0123456789abcdef0123456789abcdef01234567",
+    "commands": [{"cmd": "npm run -s check:all", "exit": "0"}],
+    "claims_verified": []
+  }
+}

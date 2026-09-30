@@ -1,0 +1,170 @@
+{
+ "id": "rspca",
+ "root_domain": "rspca.org.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": []
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "about": 4,
+   "blog": 3,
+   "breed-guide": 2,
+   "care-guide": 19,
+   "city": 3,
+   "contact": 10,
+   "faq": 2,
+   "health": 13,
+   "listing": 6
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "Cornwall",
+   "Coventry",
+   "Wolverhampton"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": []
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.rspca.org.uk/",
+    "title": "The Largest Animal Welfare Charity in the UK | RSPCA - RSPCA - rspca.org.uk",
+    "h1": "Animal welfare is everyone's welfare",
+    "h2": [
+     "Advice",
+     "Extreme conformations",
+     "Fashion victims: End the trend",
+     "appeal",
+     "Help transform animals' lives",
+     "Help transform animals' lives",
+     "Together for animals",
+     "Where your money goes",
+     "Make a donation",
+     "Useful Links",
+     "Help and Support",
+     "RSPCA Sites",
+     "Useful Links",
+     "Help and Support",
+     "RSPCA Sites"
+    ]
+   },
+   {
+    "url": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy",
+    "title": "What to Consider When Buying a Puppy - RSPCA - rspca.org.uk",
+    "h1": "Buying a puppy",
+    "h2": [
+     "Pet cost calculator",
+     "Buying from a breeder",
+     "Which dog is right for your family?",
+     "Buying a puppy from a breeder",
+     "RSPCA Pet Insurance",
+     "Taking your new puppy home",
+     "Find out more"
+    ]
+   },
+   {
+    "url": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/training",
+    "title": "How to Train Your Dog & Top Training Tips - RSPCA - rspca.org.uk",
+    "h1": "Dog training",
+    "h2": [
+     "What are the benefits of training my dog?",
+     "How do dogs learn?",
+     "Top training tips",
+     "Get to grips with the basics",
+     "Find out more"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": false,
+   "health_tests_named": [],
+   "vet_checks_mentioned": false,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 0,
+   "registered_charity_number_shown": true
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 1396,
+   "url_count": 471,
+   "h2_per_page": {
+    "https://www.rspca.org.uk/": 15,
+    "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy": 7,
+    "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/training": 5
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 0,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "the map holds no post URL with a date and no post was fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 19,
+   "alt_text": "missing",
+   "alt_missing": 13,
+   "video_present": true
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "form"
+   ],
+   "prices_shown": false,
+   "price_amounts_as_printed": [],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": []
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "RSPCA still shows no Staffy page to pick: neither its 471-URL map nor a search map for the breed's name returned one, though the search map did return other breeds' buying guides in the same puppy folder. Its fetched pages speak to any dog, carry no schema and price no animal, so its Staffy buying and price rankings rest on the charity's authority; BSUK can meet those searches with a Staffy-specific buying and price guide that walks through the welfare checks RSPCA tells every buyer to make."
+}

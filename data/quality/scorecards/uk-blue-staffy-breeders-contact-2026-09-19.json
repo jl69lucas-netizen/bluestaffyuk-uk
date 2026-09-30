@@ -1,0 +1,112 @@
+{
+  "slug": "uk-blue-staffy-breeders-contact",
+  "date": "2026-09-19",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 360,
+    "layout-tap-target-size": 162,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "img-srcset-within-2x": 3,
+    "img-alt-present-and-unique": 3,
+    "nav-anchors-resolve": 3,
+    "nav-jump-target-lands": 3,
+    "sem-heading-order": 21,
+    "sem-all-six-levels": 21,
+    "sem-title-case-headings": 21,
+    "sem-section-opening-paragraph": 21,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 489,
+    "css-no-dead-component-rule": 54,
+    "css-component-color-not-overridden": 3,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 309,
+    "form-inquiry-contract": 3
+  },
+  "defects": {
+    "SEM": 3,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "SEM": 9,
+    "CSS": 153,
+    "DUP": 3
+  },
+  "total": 9,
+  "total_instances": 165,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:4 H3:2 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 51,
+      "message": "51 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x10, uagb-infobox__content-wrap x10, uagb-ifb-content x10, uagb-ifb-title-wrap x10, wp-block-uagb-container x9, uagb-ifb-desc x8, uagb-infobox-icon-above-title x7, uagb-infobox-image-valign-top x6, uagb-ifb-title x6, alignfull x5, uagb-is-root-container x5, uagb-ifb-separator x5"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 18w vs /thank-you-blue-staffy-puppies-journey/ \"dive deeper into staffy ownership tips and advice with our helpful blue staffy blog guides\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:4 H3:2 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 51,
+      "message": "51 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x10, uagb-infobox__content-wrap x10, uagb-ifb-content x10, uagb-ifb-title-wrap x10, wp-block-uagb-container x9, uagb-ifb-desc x8, uagb-infobox-icon-above-title x7, uagb-infobox-image-valign-top x6, uagb-ifb-title x6, alignfull x5, uagb-is-root-container x5, uagb-ifb-separator x5"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 18w vs /thank-you-blue-staffy-puppies-journey/ \"dive deeper into staffy ownership tips and advice with our helpful blue staffy blog guides\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:4 H3:2 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 51,
+      "message": "51 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x10, uagb-infobox__content-wrap x10, uagb-ifb-content x10, uagb-ifb-title-wrap x10, wp-block-uagb-container x9, uagb-ifb-desc x8, uagb-infobox-icon-above-title x7, uagb-infobox-image-valign-top x6, uagb-ifb-title x6, alignfull x5, uagb-is-root-container x5, uagb-ifb-separator x5"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 18w vs /thank-you-blue-staffy-puppies-journey/ \"dive deeper into staffy ownership tips and advice with our helpful blue staffy blog guides\""
+    }
+  ]
+}

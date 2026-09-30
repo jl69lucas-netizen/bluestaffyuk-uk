@@ -1,0 +1,152 @@
+---
+// src/components/kit/ContactFormKit.astro — the enquiry form (spec §5 #10). Picked
+// 2026-09-18: the stepped layout — three numbered fieldsets, about you / which puppy /
+// your message. It replaces src/components/ContactForm.astro in project 4 over the SAME
+// field contract: the same six named controls, the same honeypot, the same two hidden
+// fields and the same endpoint.
+//
+// THE CONTRACT IS NOT A LAYOUT CHOICE. scripts/form_contract_audit.py and
+// tests/render/checks/form.ts both read the built page for name/email/phone/location/puppy/
+// message, the _gotcha honeypot, hidden _next and _subject, method POST and the one
+// Formspree endpoint. A layout that dropped a field to look tidier would ship a form that
+// loses an enquiry.
+//
+// THE ENDPOINT IS NEVER A LITERAL. It is built here exactly the way ContactForm.astro
+// builds it — from PUBLIC_FORMSPREE_ID, with a local '#contact' stub when the id is unset —
+// so a dev build has no live endpoint and no id is ever committed. `data-live` carries the
+// same fact to the client script project 4 wires up. There is no `action` override prop any
+// more: it existed so the design canvas's five specimens posted nowhere, and it went with
+// the canvas.
+//
+// THE PUPPY OPTIONS ARE DATA (rule 9): data/puppies.json, the available rows, plus the
+// waiting-list choice. A hard-coded pup would go stale the day one is reserved.
+//
+// Conventions: 4 (HTMLAttributes + ...rest + class:list), 6 (@layer components), 2 (the
+// focus ring reads --kit-ring).
+import type { HTMLAttributes } from 'astro/types';
+import puppiesJson from '../../../data/puppies.json';
+import { abs, type PuppyRow } from '../../lib/site';
+import Button from './Button.astro';
+
+// THE ID PREFIX IS A PROP because the board preview renders this form three times on one
+// document, once per style, and a `for`/`id` pair that repeats points every label at the
+// first form's field. A page mounts ONE form and never passes it.
+type Props = HTMLAttributes<'form'> & { idPrefix?: string };
+const { idPrefix = 'kit-contact-form', class: cls, ...rest } = Astro.props;
+
+const fid = import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID_PLACEHOLDER';
+const live = fid !== 'FORMSPREE_ID_PLACEHOLDER';
+const action = live ? `https://formspree.io/f/${fid}` : '#contact';
+
+const puppies = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
+// The placeholder option is `disabled selected`, both words: HTML's default selectedness is
+// the first option that is NOT disabled, so `disabled` on its own would silently pre-select
+// the first puppy and the required check would pass on a choice nobody made.
+const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
+
+const f = idPrefix;
+const fields = [
+  { key: 'name', label: 'Your name', type: 'text', autocomplete: 'name', required: true },
+  { key: 'email', label: 'Email', type: 'email', autocomplete: 'email', required: true },
+  { key: 'phone', label: 'Phone', type: 'tel', autocomplete: 'tel', required: false },
+  { key: 'location', label: 'Town or postcode', type: 'text', autocomplete: 'address-level2', required: false },
+] as const;
+---
+<form
+  {...rest}
+  class:list={['kit-card', 'kit-contact', cls]}
+  method="POST"
+  action={action}
+  data-form="contact"
+  data-live={String(live)}
+  aria-labelledby={`${f}-h`}
+>
+  {/* Title Case, like every other heading on the site (rules/headings.md). It is a
+      literal rather than a `titleCase()` call because it is the component's own string and
+      not a page's approved wording — there is nothing here for a caser to normalise. */}
+  <h2 id={`${f}-h`}>Enquire About a Puppy</h2>
+
+  <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+  <input type="hidden" name="_subject" value="New Blue Staffy enquiry" />
+  <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <fieldset>
+    <legend>1 · About you</legend>
+    {fields.map((x) => (
+      <p class="field">
+        <label for={`${f}-${x.key}`}>{x.label}{x.required && <Fragment> <span class="req">(required)</span></Fragment>}</label>
+        <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} />
+      </p>
+    ))}
+  </fieldset>
+  <fieldset>
+    <legend>2 · Which puppy</legend>
+    <p class="field">
+      <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
+      <select id={`${f}-puppy`} name="puppy" required>
+        <option value="" disabled selected>Choose…</option>
+        {puppies.map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
+        <option value="waiting-list">Join the waiting list for the next litter</option>
+      </select>
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend>3 · Your message</legend>
+    <p class="field">
+      <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
+      <textarea id={`${f}-message`} name="message" rows="5" required></textarea>
+    </p>
+  </fieldset>
+
+  <Button kind="submit" type="submit" label="Send enquiry" />
+  <p class="note">We reply by email. Your details are used only to answer your enquiry. See our <a href="/privacy-policy-uk/">privacy policy</a>.</p>
+</form>
+
+<style>
+  @layer components {
+    /* The shell is .kit-card from src/styles/kit.css (convention 9): background, border,
+       radius and shadow come from there, and only the form's own box is spelled here. */
+    .kit-contact {
+      display: grid;
+      gap: var(--space-4);
+      max-width: 560px;
+      box-sizing: border-box;
+      padding: var(--space-6);
+      color: var(--color-text);
+    }
+
+    h2 { margin: 0; font-family: var(--font-display); font-size: var(--text-2xl); color: var(--color-brand); }
+
+    .field { margin: 0; display: grid; gap: 4px; min-width: 0; }
+    label { font-weight: 600; font-size: var(--text-sm); }
+    .req { font-weight: 400; font-size: var(--text-xs); color: var(--color-text-muted); }
+
+    /* width: 100% + box-sizing, as on the shipped contact page: an <input> without an
+       explicit width uses its `size` default and the document scrolls sideways at 375px. */
+    input, select, textarea {
+      width: 100%; max-width: 100%; box-sizing: border-box;
+      font: inherit; min-height: 44px; padding: 10px 12px;
+      border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+      background: var(--color-surface-raised); color: var(--color-text);
+    }
+    textarea { min-height: 96px; }
+    input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid var(--kit-ring); outline-offset: 2px;
+    }
+
+    fieldset {
+      margin: 0; padding: var(--space-4); display: grid; gap: var(--space-3);
+      border: var(--card-border); border-radius: var(--radius-md);
+    }
+    legend {
+      padding-inline: var(--space-2); font-family: var(--font-display);
+      font-weight: 600; color: var(--color-brand);
+    }
+
+    /* Off-screen rather than display:none: a honeypot a bot cannot see is a honeypot a bot
+       does not fill in. Never focusable — tabindex="-1" above. */
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
+
+    .note { margin: 0; font-size: var(--text-xs); color: var(--color-text-muted); }
+  }
+</style>

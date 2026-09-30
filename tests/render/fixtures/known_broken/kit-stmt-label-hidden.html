@@ -1,0 +1,37 @@
+<!doctype html><meta charset=utf-8><title>known-broken: a kit InfoCard statement label is hidden and another has no kind</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  The known_good half with the two edits that matter, one per half of the predicate: the
+  first card's label is display:none (painted), and the second card's label has lost its
+  data-kind (kinded). Everything else is identical, so three labels are still examined and
+  exactly two are reported.
+-->
+<style>
+  body { margin:0; background:#F4F1EA; font:16px/1.5 system-ui; padding:16px; }
+  .kit-info { max-width:420px; background:#FAF8F3; border:1px solid #DAD6CC; border-radius:12px; overflow:hidden; color:#22303C; margin-bottom:16px; }
+  .band { background:#1F3A52; color:#F4F1EA; padding:8px 20px; }
+  .body { padding:20px; }
+  .eyebrow { margin:0 0 8px; color:#5E6B7A; }
+  .sec-h3 { margin:0; padding:20px 20px 12px; display:flex; flex-direction:column; gap:4px; font-size:22px; }
+  .stmt-label { font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; }
+  h3 { margin:0 0 8px; font-size:22px; color:#1F3A52; }
+  p { margin:0; font-size:15px; }
+</style>
+<main>
+  <article class="kit-info" data-variant="a">
+    <div class="band"><span class="stmt-label" data-kind="fact" style="display:none">Fact</span></div>
+    <div class="body"><h3>What a health-tested litter means</h3><p>Both parents are clear of L-2-HGA and HC-HSF4.</p></div>
+  </article>
+
+  <article class="kit-info" data-variant="b">
+    <div class="body">
+      <p class="eyebrow"><span class="stmt-label">Observed here</span></p>
+      <h3>How the litter is reared</h3><p>Reared in a family home, not a kennel.</p>
+    </div>
+  </article>
+
+  <article class="kit-info" data-variant="d">
+    <h3 class="sec-h3"><span class="stmt-label" data-kind="recommendation">Our recommendation</span>Ask to see the paperwork</h3>
+    <div class="body"><p>Every puppy leaves with its health check, first vaccination and microchip.</p></div>
+  </article>
+</main>

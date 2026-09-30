@@ -1,0 +1,163 @@
+{
+ "_saved_note": "DataForSEO serp_organic_live_advanced via the claude.ai connector, 2026-09-23 (registry discovery). Request: keyword 'blue staffy breeder', search_engine google, location United Kingdom, language en, depth 10. The connector's response carries no cost field (recorded as a 0.05 estimate). Saved condensed: every item's type, rank, domain, url, title, website_name and description kept, PAA questions and related searches kept; images, price objects, breadcrumbs, highlighted terms, link elements and PAA expanded_element stubs dropped. Third-party contact details: three local_pack phone numbers (Trojanbulls, 'Blue staffy', Staffy Society UK) and their cid ids; a partial phone number cut from the VaderBluStaf description; a phone number and an email cut from the Facebook (Allbluestaff) description; the AI overview's Google business references (street addresses and postcodes) dropped, the overview kept as text plus its cited site URLs.",
+ "id": "09231934-2496-0139-0000-c0191b762251",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "organic",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "domain": "www.bullscaff.co.uk",
+   "title": "Bullscaff | Home Of Blue Champions",
+   "url": "https://www.bullscaff.co.uk/",
+   "website_name": "Bullscaff",
+   "description": "Bullscaff is the home of Blue Champion Staffordshire bull terriers. Our blue Staffy stud dogs are descended from the best show breeding lines in Europe."
+  },
+  {
+   "type": "organic",
+   "rank_group": 2,
+   "rank_absolute": 2,
+   "domain": "wildbluestaffords.com",
+   "title": "Wild Blue Staffords: Home",
+   "url": "https://wildbluestaffords.com/",
+   "website_name": "Wild Blue Staffords",
+   "description": "I am the only breeder in the USA that focuses on improving the quality of blue Staffords specifically by bringing in top quality dogs with impressive pedigrees"
+  },
+  {
+   "type": "ai_overview",
+   "rank_group": 1,
+   "rank_absolute": 3,
+   "text": "Licensed breeders and champion bloodlines through UK kennels like Trojanstaff UK, Exodusbulls and VaderBluStaf, or verified listings on Champdogs. Trojanstaff UK (Basingstoke, Hampshire): licensed breeder specialising in blue and black Staffords. Exodusbulls: blue stud dog kennel. VaderBluStaf: family-run, licensed, vet-inspected. Bullscaff: European show-line blue champion studs. Look for L2-HGA and HC health tests, KC registration and a council licence.",
+   "cited_urls": [
+    "https://www.trojanstaffuk.com/",
+    "https://www.trojanstaffuk.com/staffy-puppies",
+    "https://www.exodusbulls.co.uk/",
+    "https://www.vaderblustaf.com/",
+    "https://www.bullscaff.co.uk/",
+    "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/breeders",
+    "https://www.pets4homes.co.uk/breeders/dogs/staffordshire-bull-terrier/",
+    "https://www.staffie-owners.co.uk/staffie-breeders/london"
+   ]
+  },
+  {
+   "type": "organic",
+   "rank_group": 3,
+   "rank_absolute": 4,
+   "domain": "www.trojanstaffuk.com",
+   "title": "Trojanstaff UK | Staffordshire bull terrier Champion stud dogs",
+   "url": "https://www.trojanstaffuk.com/Staffordshire%20bull%20terrier%20breeder%20Staffy%20stud%20dogs%20and%20puppies.",
+   "website_name": "Trojanstaff UK",
+   "description": "If you're searching for blue or black Staffordshire Bull Terrier puppies for sale in the UK, or need expert support with breeding, get in touch with us today. Read more"
+  },
+  {
+   "type": "people_also_ask",
+   "rank_group": 1,
+   "rank_absolute": 5,
+   "items": [
+    "How much does a blue Staffy puppy cost?",
+    "Who is the best blue Staffy breeder in the UK?",
+    "What is the rarest Staffy color?",
+    "Are blue Staffy good dogs?"
+   ]
+  },
+  {
+   "type": "organic",
+   "rank_group": 4,
+   "rank_absolute": 6,
+   "domain": "www.royalkennelclub.com",
+   "title": "Staffordshire Bull Terrier | Breeds A to Z",
+   "url": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/",
+   "website_name": "The Royal Kennel Club",
+   "description": "Staffordshire Bull Terrier, Breed standard colours in this breed include: Blue Blue & White Blue Brindle Blue Brindle … tests valued at £175 for just £150,"
+  },
+  {
+   "type": "local_pack",
+   "rank_group": 1,
+   "rank_absolute": 7,
+   "domain": "www.trojanstaffuk.com",
+   "title": "Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs",
+   "url": "https://www.trojanstaffuk.com/",
+   "description": "20+ years in business · Basingstoke"
+  },
+  {
+   "type": "local_pack",
+   "rank_group": 2,
+   "rank_absolute": 8,
+   "title": "Blue staffy",
+   "description": "5+ years in business"
+  },
+  {
+   "type": "local_pack",
+   "rank_group": 3,
+   "rank_absolute": 9,
+   "title": "Staffy Society UK",
+   "description": "No reviews · Dog breeder · Birmingham"
+  },
+  {
+   "type": "organic",
+   "rank_group": 5,
+   "rank_absolute": 10,
+   "domain": "www.vaderblustaf.com",
+   "title": "VaderBluStaf",
+   "url": "https://www.vaderblustaf.com/",
+   "website_name": "VaderBluStaf",
+   "description": "A family run fully licensed breeders, we are both Veterinary & local authority inspected & approved breeders. Staffordshire Bull Terrier breed. [phone dropped]"
+  },
+  {
+   "type": "organic",
+   "rank_group": 6,
+   "rank_absolute": 11,
+   "domain": "www.facebook.com",
+   "title": "Allbluestaff - Staffordshire Bull Terrier Breeder",
+   "url": "https://www.facebook.com/AllBlueStaff/?locale=en_GB",
+   "website_name": "Facebook · Allbluestaff - Staffordshire Bull Terrier Breeder",
+   "description": "We are Melbourne's premier English Staffy breeder. We lovingly hand-raise healthy, happy and well-socialised pups … [phone and email dropped]"
+  },
+  {
+   "type": "organic",
+   "rank_group": 7,
+   "rank_absolute": 12,
+   "domain": "www.exodusbulls.co.uk",
+   "title": "EXODUSBULLS the UK's Leading Blue Stud dog Kennel.",
+   "url": "https://www.exodusbulls.co.uk/",
+   "website_name": "exodusbulls.co.uk",
+   "description": "At Exodusbulls, we are proud to be recognised as the leading blue Staffordshire Bull Terrier breeders and champion stud dog kennel in the UK, with over 20 years ... Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 8,
+   "rank_absolute": 13,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Staffordshire Bull Terrier breeders",
+   "url": "https://www.pets4homes.co.uk/breeders/dogs/staffordshire-bull-terrier/",
+   "website_name": "Pets4Homes",
+   "description": "Blue Staffs Licensed Breeder. We have gained lots of experience breeding KC registered blue Staffordshire bull terrier puppies. pups can be viewed and non ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 9,
+   "rank_absolute": 14,
+   "domain": "www.champdogs.co.uk",
+   "title": "Staffordshire Bull Terrier Breeders",
+   "url": "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/breeders",
+   "website_name": "Champdogs",
+   "description": "Only the very best Staffordshire Bull Terrier Breeders are on Champdogs - The UK's leading pedigree dog breeder website for over 25 years."
+  },
+  {
+   "type": "related_searches",
+   "rank_group": 1,
+   "rank_absolute": 15,
+   "items": [
+    "Blue staffy breeders near me",
+    "Blue Staffy breeders UK",
+    "Blue staffy breeder london",
+    "Blue Staffy puppy for sale",
+    "KC registered Staffordshire Bull Terrier puppies for sale",
+    "Blue Staffy adoption",
+    "Blue staffy breeders for sale",
+    "Staffordshire Bull Terrier breeders near me"
+   ]
+  }
+ ]
+}

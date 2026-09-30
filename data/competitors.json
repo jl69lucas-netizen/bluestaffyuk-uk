@@ -1,0 +1,653 @@
+{
+  "_meta": {
+    "last_discovery_run": "2026-09-23",
+    "seed_keywords": [
+      "blue staffy puppies for sale",
+      "staffordshire bull terrier puppies for sale uk",
+      "blue staffy breeder",
+      "staffy puppies for sale london",
+      "staffy puppies for sale birmingham",
+      "staffy puppies for sale manchester",
+      "staffy puppies for sale leeds",
+      "staffy puppies for sale liverpool",
+      "kc registered staffy puppies",
+      "staffy puppy price uk"
+    ],
+    "total": 21
+  },
+  "competitors": [
+    {
+      "id": "staffordshirebullterrierkennel",
+      "name": "staffordshirebullterrierkennel.com",
+      "root_domain": "staffordshirebullterrierkennel.com",
+      "tier": 5,
+      "seed_hits": [
+        {
+          "keyword": "staffy puppies for sale london",
+          "position": 7
+        }
+      ],
+      "cities": [],
+      "priority": "low",
+      "link_allowed": false,
+      "last_analyzed": "2026-09-25",
+      "notes": "Map-pack listing only, no organic rank: position 7 is its place on the results page (rank_absolute), not an organic position. Signals in what was fetched: listed as 'Staffordshire Bull Terrier Puppies For Sale' in a London search with no address or town shown, open 24 hours, and a US (+1) phone number (dropped). Judged from the listing only."
+    },
+    {
+      "id": "trojanstaffuk",
+      "name": "Trojanstaff UK",
+      "root_domain": "trojanstaffuk.com",
+      "tier": 1,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy puppies for sale",
+          "position": 10
+        },
+        {
+          "keyword": "staffordshire bull terrier puppies for sale uk",
+          "position": 9
+        },
+        {
+          "keyword": "blue staffy breeder",
+          "position": 3
+        }
+      ],
+      "cities": [],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Licensed breeder with champion stud dogs, blue and black (snippets); also first in the 'blue staffy breeder' map pack."
+    },
+    {
+      "id": "bullscaff",
+      "name": "Bullscaff",
+      "root_domain": "bullscaff.co.uk",
+      "tier": 1,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy breeder",
+          "position": 1
+        }
+      ],
+      "cities": [],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Blue champion stud-dog kennel (snippet); judged from title and snippet."
+    },
+    {
+      "id": "ukstaffypups",
+      "name": "UKStaffyPups",
+      "root_domain": "ukstaffypups.uk",
+      "tier": 1,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy puppies for sale",
+          "position": 9
+        },
+        {
+          "keyword": "staffordshire bull terrier puppies for sale uk",
+          "position": 5
+        },
+        {
+          "keyword": "kc registered staffy puppies",
+          "position": 7
+        }
+      ],
+      "cities": [],
+      "priority": "medium",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Says it is a UK breeder of KC-registered puppies (snippet). Also shown in the London map pack as 'Elite Staffy Puppies' (no reviews, open 24 hours). Worth a close look at the intel stage."
+    },
+    {
+      "id": "vaderblustaf",
+      "name": "VaderBluStaf",
+      "root_domain": "vaderblustaf.com",
+      "tier": 1,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy breeder",
+          "position": 5
+        }
+      ],
+      "cities": [],
+      "priority": "low",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Family-run licensed breeder (snippet)."
+    },
+    {
+      "id": "exodusbulls",
+      "name": "Exodusbulls",
+      "root_domain": "exodusbulls.co.uk",
+      "tier": 1,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy breeder",
+          "position": 7
+        }
+      ],
+      "cities": [],
+      "priority": "low",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Blue stud-dog kennel that also breeds (snippet)."
+    },
+    {
+      "id": "pets4homes",
+      "name": "Pets4Homes",
+      "root_domain": "pets4homes.co.uk",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy puppies for sale",
+          "position": 1
+        },
+        {
+          "keyword": "staffordshire bull terrier puppies for sale uk",
+          "position": 1
+        },
+        {
+          "keyword": "blue staffy breeder",
+          "position": 8
+        },
+        {
+          "keyword": "staffy puppies for sale london",
+          "position": 1
+        },
+        {
+          "keyword": "staffy puppies for sale birmingham",
+          "position": 1
+        },
+        {
+          "keyword": "staffy puppies for sale manchester",
+          "position": 1
+        },
+        {
+          "keyword": "staffy puppies for sale leeds",
+          "position": 1
+        },
+        {
+          "keyword": "staffy puppies for sale liverpool",
+          "position": 1
+        },
+        {
+          "keyword": "kc registered staffy puppies",
+          "position": 4
+        },
+        {
+          "keyword": "staffy puppy price uk",
+          "position": 1
+        }
+      ],
+      "cities": [
+        "Birmingham",
+        "Leeds",
+        "Liverpool",
+        "London",
+        "Manchester"
+      ],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": ""
+    },
+    {
+      "id": "staffie-owners",
+      "name": "Staffie Owners",
+      "root_domain": "staffie-owners.co.uk",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy puppies for sale",
+          "position": 2
+        },
+        {
+          "keyword": "staffordshire bull terrier puppies for sale uk",
+          "position": 3
+        },
+        {
+          "keyword": "staffy puppies for sale london",
+          "position": 2
+        },
+        {
+          "keyword": "staffy puppies for sale birmingham",
+          "position": 2
+        },
+        {
+          "keyword": "staffy puppies for sale manchester",
+          "position": 2
+        },
+        {
+          "keyword": "staffy puppies for sale leeds",
+          "position": 3
+        },
+        {
+          "keyword": "staffy puppies for sale liverpool",
+          "position": 2
+        },
+        {
+          "keyword": "kc registered staffy puppies",
+          "position": 2
+        },
+        {
+          "keyword": "staffy puppy price uk",
+          "position": 4
+        }
+      ],
+      "cities": [
+        "Birmingham",
+        "Leeds",
+        "Liverpool",
+        "London",
+        "Manchester"
+      ],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Breed-only classifieds: sale, adoption and breeder listings with a page per town."
+    },
+    {
+      "id": "puppies",
+      "name": "Puppies.co.uk",
+      "root_domain": "puppies.co.uk",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy puppies for sale",
+          "position": 5
+        },
+        {
+          "keyword": "staffordshire bull terrier puppies for sale uk",
+          "position": 8
+        },
+        {
+          "keyword": "staffy puppies for sale london",
+          "position": 5
+        },
+        {
+          "keyword": "staffy puppies for sale birmingham",
+          "position": 6
+        },
+        {
+          "keyword": "staffy puppies for sale manchester",
+          "position": 5
+        },
+        {
+          "keyword": "staffy puppies for sale leeds",
+          "position": 4
+        },
+        {
+          "keyword": "staffy puppies for sale liverpool",
+          "position": 4
+        },
+        {
+          "keyword": "kc registered staffy puppies",
+          "position": 9
+        },
+        {
+          "keyword": "staffy puppy price uk",
+          "position": 5
+        }
+      ],
+      "cities": [
+        "Birmingham",
+        "Leeds",
+        "Liverpool",
+        "London",
+        "Manchester"
+      ],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": ""
+    },
+    {
+      "id": "gumtree",
+      "name": "Gumtree",
+      "root_domain": "gumtree.com",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy puppies for sale",
+          "position": 3
+        },
+        {
+          "keyword": "staffy puppies for sale london",
+          "position": 3
+        },
+        {
+          "keyword": "staffy puppies for sale birmingham",
+          "position": 4
+        },
+        {
+          "keyword": "staffy puppies for sale manchester",
+          "position": 4
+        },
+        {
+          "keyword": "staffy puppies for sale leeds",
+          "position": 7
+        },
+        {
+          "keyword": "staffy puppies for sale liverpool",
+          "position": 5
+        },
+        {
+          "keyword": "kc registered staffy puppies",
+          "position": 6
+        },
+        {
+          "keyword": "staffy puppy price uk",
+          "position": 8
+        }
+      ],
+      "cities": [
+        "Liverpool",
+        "London",
+        "Manchester"
+      ],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "General classifieds; individual sellers on it are not registered separately."
+    },
+    {
+      "id": "champdogs",
+      "name": "Champdogs",
+      "root_domain": "champdogs.co.uk",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "staffordshire bull terrier puppies for sale uk",
+          "position": 6
+        },
+        {
+          "keyword": "blue staffy breeder",
+          "position": 9
+        },
+        {
+          "keyword": "staffy puppies for sale london",
+          "position": 9
+        },
+        {
+          "keyword": "staffy puppies for sale birmingham",
+          "position": 5
+        },
+        {
+          "keyword": "staffy puppies for sale manchester",
+          "position": 7
+        },
+        {
+          "keyword": "staffy puppies for sale leeds",
+          "position": 5
+        },
+        {
+          "keyword": "staffy puppies for sale liverpool",
+          "position": 6
+        }
+      ],
+      "cities": [
+        "Birmingham",
+        "Leeds",
+        "Liverpool",
+        "London",
+        "Manchester"
+      ],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Pedigree breeder directory, ranking with a near-town breeder search per city."
+    },
+    {
+      "id": "freeads",
+      "name": "Freeads",
+      "root_domain": "freeads.co.uk",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "staffy puppies for sale london",
+          "position": 4
+        },
+        {
+          "keyword": "staffy puppies for sale birmingham",
+          "position": 3
+        },
+        {
+          "keyword": "staffy puppies for sale manchester",
+          "position": 3
+        },
+        {
+          "keyword": "staffy puppies for sale leeds",
+          "position": 2
+        },
+        {
+          "keyword": "staffy puppies for sale liverpool",
+          "position": 3
+        },
+        {
+          "keyword": "staffy puppy price uk",
+          "position": 3
+        }
+      ],
+      "cities": [
+        "Birmingham",
+        "Leeds",
+        "Liverpool",
+        "London",
+        "Manchester"
+      ],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": ""
+    },
+    {
+      "id": "preloved",
+      "name": "Preloved",
+      "root_domain": "preloved.co.uk",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "staffy puppies for sale london",
+          "position": 7
+        },
+        {
+          "keyword": "staffy puppies for sale birmingham",
+          "position": 8
+        },
+        {
+          "keyword": "staffy puppies for sale manchester",
+          "position": 8
+        },
+        {
+          "keyword": "staffy puppies for sale leeds",
+          "position": 6
+        },
+        {
+          "keyword": "staffy puppies for sale liverpool",
+          "position": 9
+        }
+      ],
+      "cities": [
+        "Birmingham",
+        "Leeds",
+        "Liverpool",
+        "London",
+        "Manchester"
+      ],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": ""
+    },
+    {
+      "id": "royalkennelclub",
+      "name": "The Royal Kennel Club",
+      "root_domain": "royalkennelclub.com",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "staffordshire bull terrier puppies for sale uk",
+          "position": 2
+        },
+        {
+          "keyword": "blue staffy breeder",
+          "position": 4
+        },
+        {
+          "keyword": "kc registered staffy puppies",
+          "position": 1
+        }
+      ],
+      "cities": [],
+      "priority": "medium",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Authority, but it ranked with its Find a puppy search (other breeders' litters), so tier 2; also ranks with its breed page."
+    },
+    {
+      "id": "foreverpuppy",
+      "name": "Forever Puppy",
+      "root_domain": "foreverpuppy.co.uk",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy puppies for sale",
+          "position": 4
+        },
+        {
+          "keyword": "kc registered staffy puppies",
+          "position": 5
+        },
+        {
+          "keyword": "staffy puppy price uk",
+          "position": 6
+        }
+      ],
+      "cities": [],
+      "priority": "medium",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": ""
+    },
+    {
+      "id": "petsforlove",
+      "name": "petsforlove.co.uk",
+      "root_domain": "petsforlove.co.uk",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy puppies for sale",
+          "position": 6
+        }
+      ],
+      "cities": [],
+      "priority": "low",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Judged from the URL only (a petslist/dog/… listing page); the result carried no title or snippet."
+    },
+    {
+      "id": "petify",
+      "name": "Petify",
+      "root_domain": "petify.uk",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "staffy puppies for sale liverpool",
+          "position": 8
+        }
+      ],
+      "cities": [
+        "Liverpool"
+      ],
+      "priority": "low",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": ""
+    },
+    {
+      "id": "ukpets",
+      "name": "UKPets",
+      "root_domain": "ukpets.com",
+      "tier": 2,
+      "seed_hits": [
+        {
+          "keyword": "staffy puppies for sale leeds",
+          "position": 9
+        }
+      ],
+      "cities": [
+        "Leeds"
+      ],
+      "priority": "low",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": ""
+    },
+    {
+      "id": "pdsa",
+      "name": "PDSA",
+      "root_domain": "pdsa.org.uk",
+      "tier": 3,
+      "seed_hits": [
+        {
+          "keyword": "kc registered staffy puppies",
+          "position": 8
+        }
+      ],
+      "cities": [],
+      "priority": "low",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Vet charity; ranked with a breed-care guide, no puppies for sale."
+    },
+    {
+      "id": "dogstrust",
+      "name": "Dogs Trust",
+      "root_domain": "dogstrust.org.uk",
+      "tier": 4,
+      "seed_hits": [
+        {
+          "keyword": "blue staffy puppies for sale",
+          "position": 8
+        },
+        {
+          "keyword": "staffordshire bull terrier puppies for sale uk",
+          "position": 7
+        },
+        {
+          "keyword": "staffy puppy price uk",
+          "position": 7
+        }
+      ],
+      "cities": [],
+      "priority": "medium",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Rehoming charity; ranked with its Staffy breed and rehoming page."
+    },
+    {
+      "id": "rspca",
+      "name": "RSPCA",
+      "root_domain": "rspca.org.uk",
+      "tier": 3,
+      "seed_hits": [
+        {
+          "keyword": "staffordshire bull terrier puppies for sale uk",
+          "position": 4
+        },
+        {
+          "keyword": "staffy puppy price uk",
+          "position": 2
+        }
+      ],
+      "cities": [],
+      "priority": "medium",
+      "link_allowed": true,
+      "last_analyzed": "2026-09-25",
+      "notes": "Animal-welfare charity; ranked with a buying-a-Staffy advice page."
+    }
+  ]
+}

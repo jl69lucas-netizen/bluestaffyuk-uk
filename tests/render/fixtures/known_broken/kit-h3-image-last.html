@@ -1,0 +1,28 @@
+<!doctype html><meta charset=utf-8><title>known-broken: the kit InfoCard puts its prose before its sectional image</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  The known_good half with ONE edit: the <p> now precedes the img.sec-img inside each H3
+  block. Nothing else changes — same classes, same styling, same two units examined — so
+  what the check reports here is the ordering and nothing else.
+-->
+<style>
+  body { margin:0; background:#F4F1EA; font:16px/1.5 system-ui; padding:16px; }
+  .kit-info { max-width:420px; background:#FAF8F3; border:1px solid #DAD6CC; border-radius:12px; overflow:hidden; color:#22303C; }
+  .sec-h3 { margin:0; padding:20px 20px 12px; display:flex; flex-direction:column; gap:4px; font-size:22px; }
+  .stmt-label { font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#5E6B7A; }
+  .sec-img { display:block; width:100%; height:auto; }
+  .prose { margin:0; padding:20px; font-size:15px; }
+</style>
+<main>
+  <article class="kit-info" data-variant="d">
+    <h3 class="sec-h3"><span class="stmt-label" data-kind="fact">Fact</span>What a health-tested litter means</h3>
+    <p class="prose">Both parents are clear of L-2-HGA and HC-HSF4. Every puppy leaves with a full veterinary health check, its first vaccination and a microchip.</p>
+    <img class="sec-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="" width="1" height="1">
+  </article>
+
+  <article class="kit-info" data-variant="d">
+    <h3 class="sec-h3"><span class="stmt-label" data-kind="observed">Observed here</span>How the litter is reared</h3>
+    <p class="prose">The puppies are reared in a family home rather than a kennel and are socialised with household noise from the first weeks.</p>
+    <img class="sec-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="" width="1" height="1">
+  </article>
+</main>

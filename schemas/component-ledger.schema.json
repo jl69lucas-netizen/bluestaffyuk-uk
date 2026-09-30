@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BSUK component ledger",
+  "type": "object", "required": ["pools", "pages"], "additionalProperties": false,
+  "properties": {
+    "refresh_pools": {"type": "array", "items": {"type": "string"}},
+    "pools": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9-]+(#[a-z0-9-]+)?$"}}},
+    "pages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object", "required": ["hero", "dial", "rail", "toc", "takeaway", "table", "faq", "h6_prefixes"], "additionalProperties": false,
+        "properties": {
+          "hero": {"type": "string", "pattern": "^$|^[a-z0-9-]+(#[a-z0-9-]+)?$"}, "dial": {"type": "string", "pattern": "^$|^[a-z0-9-]+(#[a-z0-9-]+)?$"}, "rail": {"type": "string", "pattern": "^$|^[a-z0-9-]+(#[a-z0-9-]+)?$"}, "toc": {"type": "string", "pattern": "^$|^[a-z0-9-]+(#[a-z0-9-]+)?$"},
+          "takeaway": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9-]+(#[a-z0-9-]+)?$"}}, "table": {"type": "string", "pattern": "^$|^[a-z0-9-]+(#[a-z0-9-]+)?$"}, "faq": {"type": "string", "pattern": "^$|^[a-z0-9-]+(#[a-z0-9-]+)?$"},
+          "h6_prefixes": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "slug": "buy-blue-staffy-puppies-uk",
+  "date": "2026-09-18",
+  "page_type": "for-sale",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1047,
+    "layout-tap-target-size": 216,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 0,
+    "img-srcset-within-2x": 39,
+    "img-alt-present-and-unique": 39,
+    "nav-anchors-resolve": 12,
+    "nav-jump-target-lands": 9,
+    "sem-heading-order": 102,
+    "sem-all-six-levels": 102,
+    "sem-title-case-headings": 102,
+    "sem-section-opening-paragraph": 102,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 15,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 2166,
+    "css-no-dead-component-rule": 45,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 843,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "NAV": 3,
+    "SEM": 9,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "NAV": 6,
+    "SEM": 24,
+    "CSS": 561,
+    "DUP": 12
+  },
+  "total": 18,
+  "total_instances": 603,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "nav-jump-target-lands",
+      "count": 2,
+      "message": "2 of 3 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #get-staffy@1465px, #contact-now@47406px"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:14 H3:19 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 3,
+      "message": "3 heading(s) not in Title Case: H2 \"from\" in \"Why Buy a Blue Staffy from BlueStaffyUK? Our C\" | H2 \"from\" in \"Why Choose a Blue Staffy from BlueStaffyUK?\" | H2 \"puppy\" in \"Need Staffy puppy delivery to London, Manchest\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 2,
+      "message": "2 heading(s) with no opening paragraph: H2→H3 \"Blue Staffy News: Join 500+ Readers!\" | H2→H3 \"Need Staffy puppy delivery to London, Ma\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 187,
+      "message": "187 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x37, wp-block-uagb-info-box x24, uagb-infobox__content-wrap x24, uagb-infobox-image-valign-top x24, uagb-ifb-content x24, uagb-ifb-title-wrap x24, uagb-faq-icon-wrap x24, uagb-ifb-title x22, uagb-ifb-desc x22, uagb-infobox-icon-above-title x21, alignfull x15, uagb-is-root-container x15"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 26w vs /kit-preview/ \"the health checks the communication and the home raised environment everything was top not\" | 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 14w vs /index/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "nav-jump-target-lands",
+      "count": 2,
+      "message": "2 of 3 in-page links land outside 251-319px (measured chrome 259px = header:259) — no single page-level cause identified; first: #get-staffy@1854px, #contact-now@30905px"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:14 H3:19 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 3,
+      "message": "3 heading(s) not in Title Case: H2 \"from\" in \"Why Buy a Blue Staffy from BlueStaffyUK? Our C\" | H2 \"from\" in \"Why Choose a Blue Staffy from BlueStaffyUK?\" | H2 \"puppy\" in \"Need Staffy puppy delivery to London, Manchest\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 2,
+      "message": "2 heading(s) with no opening paragraph: H2→H3 \"Blue Staffy News: Join 500+ Readers!\" | H2→H3 \"Need Staffy puppy delivery to London, Ma\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 187,
+      "message": "187 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x37, wp-block-uagb-info-box x24, uagb-infobox__content-wrap x24, uagb-infobox-image-valign-top x24, uagb-ifb-content x24, uagb-ifb-title-wrap x24, uagb-faq-icon-wrap x24, uagb-ifb-title x22, uagb-ifb-desc x22, uagb-infobox-icon-above-title x21, alignfull x15, uagb-is-root-container x15"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 26w vs /kit-preview/ \"the health checks the communication and the home raised environment everything was top not\" | 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 14w vs /index/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "nav-jump-target-lands",
+      "count": 2,
+      "message": "2 of 3 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #get-staffy@1467px, #contact-now@47409px"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:14 H3:19 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 3,
+      "message": "3 heading(s) not in Title Case: H2 \"from\" in \"Why Buy a Blue Staffy from BlueStaffyUK? Our C\" | H2 \"from\" in \"Why Choose a Blue Staffy from BlueStaffyUK?\" | H2 \"puppy\" in \"Need Staffy puppy delivery to London, Manchest\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 2,
+      "message": "2 heading(s) with no opening paragraph: H2→H3 \"Blue Staffy News: Join 500+ Readers!\" | H2→H3 \"Need Staffy puppy delivery to London, Ma\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 187,
+      "message": "187 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x37, wp-block-uagb-info-box x24, uagb-infobox__content-wrap x24, uagb-infobox-image-valign-top x24, uagb-ifb-content x24, uagb-ifb-title-wrap x24, uagb-faq-icon-wrap x24, uagb-ifb-title x22, uagb-ifb-desc x22, uagb-infobox-icon-above-title x21, alignfull x15, uagb-is-root-container x15"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 26w vs /kit-preview/ \"the health checks the communication and the home raised environment everything was top not\" | 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 14w vs /index/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\""
+    }
+  ]
+}

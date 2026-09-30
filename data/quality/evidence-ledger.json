@@ -1,0 +1,23 @@
+{
+  "_comment": "Claim → proof object. `pattern` is the regex evidence_audit.py uses to find the claim in <main>. `proof` is a site-relative path to a redacted document image/PDF the page must link to (href or <img src>) wherever the claim is made more than once, or the literal string NOT FETCHED. `anchor` is the section id that owns the claim. `confirmed` is the breeder confirmation date. Empty at the system transfer (spec §1). The first row, `parents-dna-clear`, entered on 2026-09-23 (Known Issue 40) at proof NOT FETCHED: data/faq.json and the migrated pages say the parents are DNA tested clear of L-2-HGA and HC-HSF4, rules/copy.md keeps every health entity NOT FETCHED until the certificate is on file, and none is — so the claim is recorded as unproven, never as proven. evidence_audit.py warns wherever a page repeats it and query_augment.py will not answer a new page's question from a bank row that makes it. When the certificate is on file, the site path of its redacted copy replaces NOT FETCHED and `confirmed` takes the breeder's date. The BVA hip/elbow scores and the PHPV test enter the same way.",
+  "claims": [
+    {
+      "id": "parents-dna-clear",
+      "pattern": "(?:certified|tested)\\s+clear|[‘'\"]?clear[’'\"]?\\s+(?:DNA\\s+)?results?|clearances?\\s+for|cleared\\s+for|two\\s+clear\\s+parents|recorded\\s+clear",
+      "proof": "NOT FETCHED",
+      "anchor": "dna-tests",
+      "confirmed": null,
+      "covers": ["dna-clear", "dna-test"]
+    }
+  ],
+  "_vocabulary_comment": "Health and credential vocabulary (parity build Task 20). evidence_audit.py `claim-unledgered` reads every sentence of <main> that matches one of these patterns and requires a `claims` row whose pattern matches the same sentence, or a LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER. A hit is cleared only by a `claims` row whose `covers` lists that vocabulary id, and a placeholder excuses only its own id (LICENCE_CLAIM_PLACEHOLDER: licensed-breeder; LEGAL_CLAIM_PLACEHOLDER: none of these ids). Not claims, each judged inside the hit's own clause (clauses end at a dash, ; : ? and a comma that opens a question): a question, a denial (not/never/no within three words before it, not across a comma; \"not only\" is no denial), advice (a clause starting \"Ask to see\" / \"Ask for\") and a reference (\"page on/for/about the\", \"results for\", \"more about the\" just before it). Preview pages (board-preview/, kit-preview) are not checked. ERROR on a new location, comparison or blog page; WARN elsewhere. To state a new claim, add its `claims` row first (proof NOT FETCHED until the document is on file) — never widen or delete a vocabulary pattern to clear a finding.",
+  "vocabulary": {
+    "hip-elbow-score": "\\bBVA\\b[^.]{0,20}?\\b(?:hip|elbow|scor)|\\b(?:hip|elbow)\\b[^.]{0,20}?\\bBVA\\b|\\bhip[\\s-]+(?:and[\\s-]+elbow[\\s-]+)?(?:scores?|scored|graded?)\\b|\\belbow[\\s-]+(?:scores?|scored|graded?)\\b",
+    "dna-test": "\\bDNA[- ]?(?:tested|tests?|profiled|screened)\\b",
+    "dna-clear": "\\b(?:tested|certified|recorded)\\s+clear\\b|\\bclear\\s+(?:DNA\\s+)?results?\\b|\\bclear\\s+of\\s+(?:L-?2-?HGA|HC(?:-HSF4)?|PHPV)\\b",
+    "kc-registered": "\\bKC[- ]registered\\b|\\bKennel\\s+Club[- ]registered\\b|\\bregistered\\s+with\\s+the\\s+(?:Kennel\\s+Club|KC)\\b",
+    "licensed-breeder": "\\blicen[cs]ed\\s+(?:dog\\s+)?breeders?\\b|\\bcouncil[- ]licen[cs]ed\\b|\\bbreeding\\s+licen[cs]e\\b|\\blicen[cs]ed\\s+by\\s+(?:the\\s+)?(?:local\\s+)?council\\b",
+    "vet-checked": "\\bvet(?:erinary)?[- ](?:checked|checks?|health[- ]checked|examined|certified)\\b|\\bchecked\\s+by\\s+(?:a|our|the)\\s+vet(?:erinary\\s+surgeon)?\\b",
+    "health-tested": "\\bhealth[- ]tested\\b|\\bhealth\\s+certificates?\\b"
+  }
+}

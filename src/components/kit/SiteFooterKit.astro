@@ -1,0 +1,199 @@
+---
+// src/components/kit/SiteFooterKit.astro — the footer (spec §5 #12). Picked 2026-09-18:
+// the four-column arrangement — brand, Explore, Contact, Follow — over the legal row,
+// with the call-to-action band above it (spec §11 amendment 5: the band belonged to one of
+// the options the prune dropped, and the user kept it). It replaces SiteFooter.astro in
+// project 4.
+//
+// THE SOCIAL ROW IS ICONS (amendment 5). Each profile is an inline SVG on a 24 grid with
+// the platform name beside it — the icon alone would make the reader guess, and the name
+// alone is what every other link in the footer looks like. The icon is `aria-hidden` and
+// the anchor carries the full `aria-label` ("BlueStaffyUK on YouTube"), so the accessible
+// name says where the link goes rather than repeating one word. Rule 7 forbids EMOJI, not
+// brand glyphs: these are paths, not characters, and they take `currentColor` — no brand
+// hex is spelled anywhere (rule 1).
+//
+// EVERY LINK AND EVERY CONTACT ROW IS DATA (rule 9): the explore list is NAV from
+// src/lib/site.ts — the same list the header renders, so a renamed page cannot leave a
+// dead footer link — and the address line, the email, the hours and the social profiles
+// are data/settings.json. Nothing here is typed out a second time, and the footer owns no
+// copy of its own.
+//
+// The footer carries its own dark fill, so it declares data-surface="inverse": that flips
+// --kit-ring to the on-inverse focus colour for everything inside it (convention 2) and
+// switches any .kit-chip dropped in here. No colour is spelled — the hairline above the
+// legal row is a color-mix of currentColor, so it follows the text on whatever surface
+// the footer is retuned to.
+//
+// Tap targets: a footer link list is a column of close neighbours, so SC 2.5.8's spacing
+// exception never applies and every link is a 44px line box (layout-tap-target-size).
+import type { HTMLAttributes } from 'astro/types';
+import { SITE, NAV } from '../../lib/site';
+import Mark from './Mark.astro';
+import Button from './Button.astro';
+
+// `cta` is the page's approved `brief.cta.global_cta` (src/lib/globalCta.ts, via PageShell):
+// false when the board said "hidden". It defaults to true, so the kit preview and any page
+// without an approved board keep the band.
+type Props = HTMLAttributes<'footer'> & { cta?: boolean };
+const { class: cls, cta = true, ...rest } = Astro.props;
+
+const year = new Date().getFullYear();
+// The platforms spell their own names; `youtube`.toUpperCase-the-first-letter gives
+// "Youtube", which is nobody's brand. The keys are data/settings.json's, so an unknown one
+// still gets a readable label rather than nothing.
+const SOCIAL_NAMES: Record<string, string> = {
+  x: 'X', youtube: 'YouTube', instagram: 'Instagram', facebook: 'Facebook',
+};
+const socialLabel = (key: string) => SOCIAL_NAMES[key] ?? key[0].toUpperCase() + key.slice(1);
+// Simple 24-grid marks, drawn here rather than pulled from an icon font (rule 7's reason:
+// a font ships a whole alphabet to paint four glyphs, and a missing font paints tofu).
+// `fill` icons use currentColor; X is two strokes, so it is stroked instead.
+const ICONS: Record<string, string> = {
+  youtube: '<path d="M2.5 8.2a3 3 0 0 1 2.6-2.9C7.4 5 12 5 12 5s4.6 0 6.9.3a3 3 0 0 1 2.6 2.9c.2 1.3.2 2.5.2 3.8s0 2.5-.2 3.8a3 3 0 0 1-2.6 2.9c-2.3.3-6.9.3-6.9.3s-4.6 0-6.9-.3a3 3 0 0 1-2.6-2.9C2.3 14.5 2.3 13.3 2.3 12s0-2.5.2-3.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10.2 9.3v5.4L15 12z" fill="currentColor"/>',
+  instagram: '<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.1" cy="6.9" r="1.2" fill="currentColor"/>',
+  x: '<path d="M4 4l16 16M20 4L4 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  facebook: '<path d="M14.6 21v-7.6h2.6l.4-3h-3V8.5c0-.9.2-1.5 1.5-1.5H17.7V4.3A20 20 0 0 0 15.4 4c-2.3 0-3.9 1.4-3.9 4.1v2.3H8.9v3h2.6V21z" fill="currentColor"/>',
+};
+// A key with no icon is SKIPPED, and says so at build time. `ICONS[key] ?? ''` rendered an
+// empty 20x20 <svg> beside the label instead: a hole in the row that no test looks at and
+// nobody reading data/settings.json would connect to the new platform they had just added.
+// A build-time warning names the key while the person who typed it is still looking at the
+// build, and the row stays whole until an icon exists for it.
+const socials = (Object.entries(SITE.socials) as [string, string][]).filter(([key]) => {
+  if (key in ICONS) return true;
+  console.warn(
+    `SiteFooterKit: data/settings.json has a social profile "${key}" with no icon in ICONS ` +
+      `— the entry is skipped. Add a 24-grid path for it, or remove the profile.`,
+  );
+  return false;
+});
+const legal = [{ href: '/privacy-policy-uk/', label: 'Privacy policy' }];
+---
+<footer
+  {...rest}
+  class:list={['kit-ftr', cls]}
+  data-surface="inverse"
+>
+  {cta && (
+    <div class="cta-band">
+      <div class="container row">
+        <p>Ready to meet the litter?</p>
+        <Button kind="primary" href="/buy-blue-staffy-puppies-uk/" label="See available puppies" />
+      </div>
+    </div>
+  )}
+
+  <div class="container grid">
+    <div class="brand">
+      <Mark inverse size={40} title={`${SITE.site_name} mark`} />
+      <p class="word">{SITE.site_name}<small>{SITE.location_label}</small></p>
+      <p class="tag">{SITE.tagline}</p>
+    </div>
+
+    <nav aria-label="Footer">
+      <h2>Explore</h2>
+      <ul>{NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}</ul>
+    </nav>
+
+    <div>
+      <h2>Contact</h2>
+      <ul>
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li class="plain">{SITE.hours}</li>
+        <li class="plain">{SITE.location_label}</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2>Follow</h2>
+      {/* The profiles are off-site, so they open in a new tab; rel is
+          noopener noreferrer, never a target without it. The accessible name is the
+          anchor's aria-label, so it reads as a destination rather than as one word. */}
+      <ul>
+        {socials.map(([key, url]) => (
+          <li>
+            <a href={url} target="_blank" rel="noopener noreferrer" class="social"
+              aria-label={`${SITE.site_name} on ${socialLabel(key)}`}>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><Fragment set:html={ICONS[key]} /></svg>
+              <span>{socialLabel(key)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="container legal">
+    <span>© {year} {SITE.site_name}</span>
+    <span class="legal-links">{legal.map((l) => <a href={l.href}>{l.label}</a>)}</span>
+  </div>
+</footer>
+
+<style>
+  @layer components {
+    .kit-ftr {
+      background: var(--color-surface-inverse);
+      color: var(--color-text-on-inverse);
+      padding-block: var(--space-8) var(--space-5);
+    }
+
+    .grid { display: grid; gap: var(--space-6); grid-template-columns: 1.4fr repeat(3, 1fr); }
+
+    .brand { display: flex; flex-direction: column; gap: var(--space-2); }
+    .word {
+      margin: 0; display: flex; flex-direction: column;
+      font-family: var(--font-display); font-weight: 700; font-size: var(--text-xl);
+    }
+    .word small {
+      font-family: var(--font-body); font-weight: 600; font-size: var(--text-xs);
+      letter-spacing: .12em; text-transform: uppercase; color: var(--color-link-on-inverse);
+    }
+    .tag { margin: 0; max-width: 32ch; font-size: var(--text-sm); opacity: .85; }
+
+    h2 {
+      margin: 0 0 var(--space-2);
+      font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--color-cta);
+    }
+    ul { list-style: none; margin: 0; padding: 0; }
+
+    /* 44px line boxes, not padding on an inline link: these lists are columns of close
+       neighbours, so an undersized target here has no spacing exception to fall back on. */
+    a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
+    a:hover { color: var(--color-link-on-inverse); text-decoration: underline; }
+    a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+    /* A row that is information, not a link: it still gets the line box so the column
+       rhythm does not break where a link and a fact sit next to each other. */
+    .plain { display: flex; align-items: center; min-height: 44px; font-size: var(--text-sm); opacity: .85; }
+
+    .legal {
+      display: flex; flex-wrap: wrap; gap: var(--space-5); justify-content: space-between;
+      margin-top: var(--space-6); padding-top: var(--space-4);
+      font-size: var(--text-xs); opacity: .85;
+      /* No hex outside tokens.css: the hairline is the footer's own text colour, thinned. */
+      border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    }
+    .legal-links { display: flex; gap: var(--space-4); }
+
+    /* The icon takes the link's own colour, hover included, so no brand hex is spelled
+       and the row still reads on whatever surface the footer is retuned to. */
+    .social { gap: var(--space-2); }
+    .social svg { flex: 0 0 auto; color: inherit; }
+    .social:hover svg { color: var(--color-link-on-inverse); }
+
+    .cta-band {
+      background: var(--color-surface-deep);
+      margin: calc(-1 * var(--space-8)) 0 var(--space-8);
+      padding-block: var(--space-6);
+    }
+    .cta-band .row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: var(--space-4);
+    }
+    .cta-band p { margin: 0; font-family: var(--font-display); font-size: var(--text-xl); }
+
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+  }
+</style>

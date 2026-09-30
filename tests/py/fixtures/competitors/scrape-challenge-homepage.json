@@ -1,0 +1,10 @@
+{
+  "_note": "Invented fixture: a homepage scrape of example-kennels.co.uk that returned a bot-check challenge instead of the site, in the shape firecrawl_scrape returns.",
+  "markdown": "# Just a moment...\n\nChecking if the site connection is secure\n\nexample-kennels.co.uk needs to review the security of your connection before proceeding.\n\nVerifying you are human. This may take a few seconds.\n\nRay ID: 8c1f2a3b4d5e6f70",
+  "metadata": {
+    "title": "Just a moment...",
+    "sourceURL": "https://example-kennels.co.uk/",
+    "url": "https://example-kennels.co.uk/",
+    "statusCode": 403
+  }
+}

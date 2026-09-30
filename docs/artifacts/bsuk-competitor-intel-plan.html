@@ -1,0 +1,2012 @@
+<title>BSUK Competitor Intel Plan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Bridge build before project 5</p><h1 class="title">Competitor intelligence implementation plan</h1></div>
+<div class="meta"><span class="pill">status: executed</span> <span class="pill">2026-09-23</span><br>docs/superpowers/plans/2026-09-23-competitor-intel.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+> **Executed 2026-09-23** on `competitor-intel`: `a116055..638a6d4`, 49 commits from the spec to the pilot's strategy, then the close-out's fix commit `7ece4ff` and its docs commit. Every task ran with an implementer, a spec review and a quality review. Deviations from the task text below, per task — the detail is in the spec's §16 "Amendments during execution", and the evidence in `docs/reports/competitor-intel-gate-report.md`:
+>
+> - **Task 1** (`ad59e0a`, `ecca5b8`): registrable-domain rule instead of "any subdomain"; link guard hardened (every URL form, malformed JSON reported, files-scanned count).
+> - **Task 2** (`8811479`, `ac0cb50`): hardening beyond the plan's code — escaped cells, cities vs `data/locations.json` (exit 6), dated matrix names only, reports validated first and loaded once, schema `\S` and case-exact types, `--help` 0, diff lines on `--check`.
+> - **Task 3** (`0f7849e`, `5d6cfc9`, `8743ed5`): whole-token figure matching and wider extraction; years need a cue; sources allowlisted; top-N checked; pick-section guard.
+> - **Task 4** (`4f897a2`, `ef8839b`): as planned, plus per-source typical cost, the cap boundary, today's page cap and the Bing refusal pinned.
+> - **Task 5** (`a04a8a7`…`4a6e861`): two stop tokens (spend with balance, then approval of the proposal); the proposal lives in `docs/research/`, not `data/`; refresh replaces hits; platform sellers noted on the platform entry.
+> - **Task 6** (`0e7d6cc`…`503432c`): homepage gate, keyword and page-type rules by script, map-and-scrape only, sitemap-first `--bsuk` with indexable URLs only; the contacts test scans `docs/research/`.
+> - **Task 7** (`c95f9e0`…`7baa84c`): BSUK profile as the source (page map fallback); noindex is not coverage; stub rows route as "rebuild the stub"; the rubric rulings (spec §16.10); new `tests/py/test_keyword_gap_script.py`.
+> - **Task 8** (`2684811`…`330e3a0`): page-map + gap-matrix query fallback; high = a missing safety entity (one engine, one answer); the `ai_*` filter drops a question only when all its sources are AI; refresh token; exit 5 for connector errors.
+> - **Task 9** (`23b4ff0`…`0e43583`): figure-writing rules for the cite check; provisional picks not handed off; tie-break by keyword-gap band then matrix share.
+> - **Task 10** (`c98778b`, `6b9714e`): WORKFLOW order by dependency with the stop tokens.
+> - **Task 11** (`efdac63`…`638a6d4`): Step 0 set `query_typical_call_usd` to 0.05 (user ruling A); the registry ran in two rounds; LLM intel ran for Leeds (paid) as well as Manchester (cached); 21 sites approved; strategy pick A.
+> - **Task 12**: the fix commit folded close-out fixes in (licenced always-high, `brand_entities` local businesses, one session-brief path, WORKFLOW gates); publishing the Artifacts and the merge are done by the controller after review.
+
+**Goal:** Give BSUK the competitor research chain the source repo had — a national competitor registry, per-competitor intel, a gap matrix, a keyword-gap list, LLM citation intel and a two-strategy synthesis — with every count built by a script and every paid call behind the existing spend guard.
+
+**Architecture:** Five agents fetch and judge (`bsuk-competitor-registry`, `bsuk-competitor-intel`, `bsuk-competitive-keyword-gap-agent`, `bsuk-llm-keyword-intel`, `bsuk-strategy-synthesizer`). Three scripts guard and count: `competitor_registry_check.py` (registry schema, rules, suspect-seller link guard), `gap_matrix.py` (builds and re-checks the matrix from the intel reports) and `strategy_cite_check.py` (every figure a strategy quotes is in a listed source). Paid DataForSEO calls reuse `scripts/query_augment.py --preflight/--record` with the existing `serp_google` and `ai_engines` source names.
+
+**Tech Stack:** Python 3 (stdlib + `jsonschema` 4.23), pytest, npm scripts, Claude Code agents (markdown), the DataForSEO and Firecrawl connectors, Playwright MCP as fetch fallback.
+
+**Spec:** `docs/superpowers/specs/2026-09-23-competitor-intel-design.md` (Artifact https://claude.ai/artifact/SDsNiyzzVwzB5EuS9SFw37).
+
+**Verified before publishing (2026-09-23):** every script, schema, test and fixture in Tasks 1–4 and 7 was extracted into a full scratch copy of `foundation` at `c9c981c`: 62 new tests pass, the rest of the suite is unchanged (the only 4 failures are git-dependent tests that cannot run in a copy without `.git`, identical before and after), and `npm run check:all` exits 0 with both new checks reporting "nothing to check". The five agent texts in Tasks 5–9 pass the fact lint, frontmatter, agent-registry, system-registry and path tests, and contain no marker.
+
+**Branch:** `competitor-intel` in the worktree `/Users/apple/Downloads/BSUK-ci` (cut from `foundation` at `db37ca1`, rebased onto `c9c981c`). Never push; there is no remote. When the build closes it merges `--no-ff` into `foundation` from `/Users/apple/Downloads/BSUK`.
+
+**Every commit ends with:**
+```
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+```
+Subagents: use exactly this line and never substitute your own model name.
+
+**Execution:** subagent-driven. Each task gets an Opus implementer, a spec reviewer and a quality reviewer, with re-review until both pass. Only one writer works in the worktree at a time. Run every command from `/Users/apple/Downloads/BSUK-ci`.
+
+---
+</script>
+<script type="text/markdown" data-title="Execution notes (read before Task 1)">
+- **Plan refinements of the spec.**
+  1. §4 "root domains only (no subdomain but `www` stripped)": without a public-suffix list the check uses a registrable-domain rule — exactly 2 labels, or 3 when the last is a two-letter country code under `co`, `org`, `me`, `ltd`, `plc`, `ac`, `gov`, `net`, `sch` or `com` — plus an overlap check between entries. *(Amended in execution, Task 1 review, `ecca5b8`: the first version accepted any subdomain. The same round made the link guard catch `?`/`#`/userinfo/trailing-dot and `//host` after `href=`/`src=`, report malformed JSON instead of crashing, and print how many files it scanned, failing when a scan path is missing.)* A seller on a hosted platform (`x.blogspot.com`, a Facebook page) cannot be registered by its own domain; Task 5's agent text must say to record it in `notes` on the platform's entry or leave it out, never to ban a whole platform.
+  2. §4 priority is **re-derived** by `competitor_registry_check.py` from `seed_hits` and `tier`; a typed priority that disagrees fails the check.
+  3. §6 "reads `data/page-map.json`": BSUK's side of the matrix comes from a BSUK profile, `docs/research/competitors/bsuk.json`, written by the intel agent against the local build in the same shape as a competitor report. The page map describes migrated pages, not page types, so it cannot say what BSUK covers. The keyword-gap agent (§7) still reads the page map.
+  4. §10 as merged: no new spend-guard source names; Task 4 only pins the conventions with tests.
+  5. §12 link guard: `competitor_registry_check.py` scans `src/`, `data/boards/` and `docs/reference/external-link-library.md` for any URL whose host is a `link_allowed: false` domain. It runs before a build, so it does not read `dist/`.
+- **The checks pass on an empty repo.** Until the pilot writes `data/competitors.json` and reports, `check:competitors` and `check:gaps` print "nothing to check" and exit 0.
+- **Fact lint applies to every new agent line** (`tests/py/test_agent_facts.py`). Only locked £ amounts (£500, £1,500, £1,700, £200, £350, £200–£350, £1,500–£1,700); no number next to "years" except 12–14; "DEFRA" only beside "transport"; none of the banned tokens (US regulators, US states, the old city, parrot vocabulary). The marker gate (`npm run check:markers`) bans `parrot`, `african grey`, `congo`, `clutch`, `cag-` and the rest. It scans `CLAUDE.md`, `rules/`, `docs/reference/`, `tests/render/` and every `dst` in `data/port-manifest.json` — so the five new agents enter its scope only in Task 10, when their manifest rows point at them. Until then each agent task also runs `grep -ciE 'parrot|african grey|congo|clutch|timneh|(^|[^a-z0-9])cag-' <agent file>` and expects 0. Refer to "the source repo", never to its file names.
+- **Registries.** Any task that adds a script, a schema, a `data/` file or an agent runs `python3 scripts/build_system_registry.py` (and, for agents, `python3 scripts/build_agent_registry.py`) before committing, or `npm run registry` / `npm run agents` fails.
+- **Agents are written with `superpowers:writing-skills`.** RED: dispatch a subagent with the task and the fixture inputs named in the task but WITHOUT the agent file; record where it goes wrong. GREEN: the same scenario with the agent file; it must pass every check listed. No paid call and no Firecrawl call is made in RED/GREEN — the fixtures stand in for fetches.
+- **Paid calls happen only in Task 11**, and only after the user gives the dashboard balance and says yes.
+</script>
+<script type="text/markdown" data-title="File map">
+| File | Responsibility | Task |
+|---|---|---|
+| `schemas/competitors.schema.json` | Registry contract | 1 |
+| `scripts/competitor_registry_check.py` | Registry rules, derived priority, suspect-seller link guard | 1 |
+| `tests/py/test_competitors_registry.py` | Its tests | 1 |
+| `schemas/competitor-report.schema.json` | Intel report contract | 2 |
+| `scripts/gap_matrix.py` | Build and `--check` the gap matrix | 2 |
+| `tests/py/test_gap_matrix.py` | Its tests | 2 |
+| `scripts/strategy_cite_check.py` | Every quoted figure is in a listed source | 3 |
+| `tests/py/test_strategy_cite_check.py` | Its tests | 3 |
+| `tests/py/test_competitor_spend.py` | Spend-guard conventions for this build | 4 |
+| `package.json`, `tests/py/test_package_scripts.py` | `check:competitors`, `check:gaps` in `check:all` | 1, 2 |
+| `tests/py/fixtures/competitors/…` | Offline inputs for RED/GREEN | 5–9 |
+| `.claude/agents/bsuk-competitor-registry.md` | Discovery → board → approved registry | 5 |
+| `.claude/agents/bsuk-competitor-intel.md` | Ten-category reports + BSUK profile | 6 |
+| `.claude/agents/bsuk-competitive-keyword-gap-agent.md` | Scored gap list | 7 |
+| `.claude/agents/bsuk-llm-keyword-intel.md` | AI-answer citations, entities, format | 8 |
+| `.claude/agents/bsuk-strategy-synthesizer.md` | Two strategies, one pick | 9 |
+| `data/port-manifest.json`, `docs/reference/WORKFLOW.md`, `docs/reference/session-log.md`, registries | Housekeeping | 10 |
+| `data/competitors.json`, `docs/research/…` | Pilot output | 11 |
+| `docs/reports/competitor-intel-gate-report.md` | Close-out | 12 |
+
+---
+</script>
+<script type="text/markdown" data-title="Task 1: Registry schema, rules and the suspect-seller link guard">
+**Files:**
+- Create: `schemas/competitors.schema.json`
+- Create: `scripts/competitor_registry_check.py`
+- Create: `tests/py/test_competitors_registry.py`
+- Modify: `package.json` (add `check:competitors`, chain it in `check:all` after `check:queries`)
+- Modify: `tests/py/test_package_scripts.py:104-106` (expected chain)
+
+- [ ] **Step 1: Write the schema**
+
+`schemas/competitors.schema.json`:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BSUK competitor registry",
+  "description": "data/competitors.json — the national competitor list the gap matrix counts against. Spec 2026-09-23-competitor-intel §4. Rules a schema cannot state (derived priority, cities, duplicates, link guard) live in scripts/competitor_registry_check.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["_meta", "competitors"],
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["last_discovery_run", "seed_keywords", "total"],
+      "properties": {
+        "last_discovery_run": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+        "seed_keywords": {"type": "array", "minItems": 1, "uniqueItems": true,
+                          "items": {"type": "string", "minLength": 1}},
+        "total": {"type": "integer", "minimum": 0}
+      }
+    },
+    "competitors": {"type": "array", "items": {"$ref": "#/$defs/competitor"}}
+  },
+  "$defs": {
+    "competitor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "root_domain", "tier", "seed_hits", "cities", "priority",
+                   "link_allowed", "last_analyzed", "notes"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9-]+$", "not": {"const": "bsuk"}},
+        "name": {"type": "string", "minLength": 1},
+        "root_domain": {"type": "string", "minLength": 3},
+        "tier": {"enum": [1, 2, 3, 4, 5]},
+        "seed_hits": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["keyword", "position"],
+            "properties": {
+              "keyword": {"type": "string", "minLength": 1},
+              "position": {"type": "integer", "minimum": 1, "maximum": 100}
+            }
+          }
+        },
+        "cities": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "priority": {"enum": ["high", "medium", "low"]},
+        "link_allowed": {"type": "boolean"},
+        "last_analyzed": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}
+```
+
+- [ ] **Step 2: Write the failing tests**
+
+`tests/py/test_competitors_registry.py`:
+
+```python
+# tests/py/test_competitors_registry.py — scripts/competitor_registry_check.py
+# (spec 2026-09-23-competitor-intel §4, §12). Every test builds its own root under tmp_path.
+import copy
+import json
+import pathlib
+import subprocess
+import sys
+
+import pytest
+
+REPO = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "scripts"))
+import competitor_registry_check as C  # noqa: E402
+
+SCRIPT = REPO / "scripts" / "competitor_registry_check.py"
+CITIES = ["Manchester", "Leeds", "Carlisle"]
+
+
+def entry(**over):
+    e = {"id": "pets4homes", "name": "Pets4Homes", "root_domain": "pets4homes.co.uk",
+         "tier": 2,
+         "seed_hits": [{"keyword": f"k{i}", "position": 1} for i in range(5)],
+         "cities": ["Manchester"], "priority": "high", "link_allowed": True,
+         "last_analyzed": None, "notes": ""}
+    e.update(over)
+    return e
+
+
+def registry(*entries):
+    entries = list(entries) or [entry()]
+    return {"_meta": {"last_discovery_run": "2026-09-24", "seed_keywords": ["k0"],
+                      "total": len(entries)},
+            "competitors": entries}
+
+
+def make_root(tmp_path, reg=None):
+    (tmp_path / "data").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "data/locations.json").write_text(
+        json.dumps([{"slug": c.lower(), "city": c} for c in CITIES]))
+    if reg is not None:
+        (tmp_path / "data/competitors.json").write_text(json.dumps(reg))
+    return tmp_path
+
+
+def test_a_valid_registry_has_no_problems(tmp_path):
+    assert C.problems(registry(), make_root(tmp_path)) == []
+
+
+def test_a_schema_error_is_reported_with_its_path(tmp_path):
+    e = entry()
+    del e["link_allowed"]
+    out = C.problems(registry(e), make_root(tmp_path))
+    assert out and all(p.startswith("schema:") for p in out)
+    assert any("link_allowed" in p for p in out)
+
+
+def test_the_id_bsuk_is_reserved_for_the_profile(tmp_path):
+    out = C.problems(registry(entry(id="bsuk")), make_root(tmp_path))
+    assert any(p.startswith("schema:") for p in out)
+
+
+def test_more_than_thirty_is_refused(tmp_path):
+    many = [entry(id=f"c{i}", root_domain=f"c{i}.co.uk") for i in range(31)]
+    out = C.problems(registry(*many), make_root(tmp_path))
+    assert any("30 at most" in p for p in out)
+
+
+def test_total_must_equal_the_entry_count(tmp_path):
+    reg = registry()
+    reg["_meta"]["total"] = 7
+    assert any("total" in p for p in C.problems(reg, make_root(tmp_path)))
+
+
+@pytest.mark.parametrize("domain", ["https://a.co.uk", "a.co.uk/puppies", "www.a.co.uk",
+                                    "A.co.uk", "a.co.uk:443", "localhost"])
+def test_root_domain_is_bare(tmp_path, domain):
+    out = C.problems(registry(entry(root_domain=domain)), make_root(tmp_path))
+    assert any("bare root domain" in p for p in out), out
+
+
+def test_the_sites_own_domain_is_refused(tmp_path):
+    out = C.problems(registry(entry(root_domain="bluestaffyuk.co.uk")), make_root(tmp_path))
+    assert any("own domain" in p for p in out)
+
+
+def test_duplicate_domains_and_ids_are_refused(tmp_path):
+    a = entry()
+    b = entry(id="other")
+    c = entry(root_domain="other.co.uk")
+    out = C.problems(registry(a, b, c), make_root(tmp_path))
+    assert any("duplicate root_domain" in p for p in out)
+    assert any("duplicate id" in p for p in out)
+
+
+def test_a_suspect_seller_may_not_be_linkable(tmp_path):
+    out = C.problems(registry(entry(tier=5, link_allowed=True, priority="high")),
+                     make_root(tmp_path))
+    assert any("tier 5" in p for p in out)
+
+
+def test_a_city_outside_locations_json_is_refused(tmp_path):
+    out = C.problems(registry(entry(cities=["Springfield"])), make_root(tmp_path))
+    assert any("Springfield" in p for p in out)
+
+
+@pytest.mark.parametrize("hits,tier,expected", [
+    ([("a", 9), ("b", 9), ("c", 9), ("d", 9), ("e", 9)], 2, "high"),   # 5+ keywords
+    ([("a", 2)], 1, "high"),                                          # breeder in the top 3
+    ([("a", 2)], 2, "low"),                                           # top 3, not a breeder
+    ([("a", 9), ("b", 9)], 3, "medium"),
+    ([("a", 9), ("a", 4)], 3, "low"),                                 # one distinct keyword
+])
+def test_priority_is_derived_from_seed_hits(hits, tier, expected):
+    e = entry(tier=tier, seed_hits=[{"keyword": k, "position": p} for k, p in hits])
+    assert C.derived_priority(e) == expected
+
+
+def test_a_typed_priority_that_disagrees_fails(tmp_path):
+    e = entry(priority="low")   # five distinct keywords → high
+    out = C.problems(registry(e), make_root(tmp_path))
+    assert any("priority" in p and "high" in p for p in out)
+
+
+def test_a_link_to_a_suspect_seller_is_found(tmp_path):
+    root = make_root(tmp_path)
+    reg = registry(entry(), entry(id="bad", root_domain="bad.co.uk", tier=5,
+                                  link_allowed=False, priority="high"))
+    page = root / "src/pages/x/index.astro"
+    page.parent.mkdir(parents=True)
+    page.write_text('<p>see <a href="https://www.bad.co.uk/pups">this</a></p>\n')
+    out = C.suspect_links(reg, root)
+    assert len(out) == 1 and "src/pages/x/index.astro:1" in out[0] and "bad.co.uk" in out[0]
+
+
+def test_a_link_to_an_allowed_competitor_or_a_lookalike_is_fine(tmp_path):
+    root = make_root(tmp_path)
+    reg = registry(entry(), entry(id="bad", root_domain="bad.co.uk", tier=5,
+                                  link_allowed=False, priority="high"))
+    (root / "docs/reference").mkdir(parents=True)
+    (root / "docs/reference/external-link-library.md").write_text(
+        "https://pets4homes.co.uk/a\nhttps://notbad.co.uk/b\n")
+    assert C.suspect_links(reg, root) == []
+
+
+def test_cli_passes_with_no_registry(tmp_path):
+    r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(make_root(tmp_path))],
+                       capture_output=True, text=True)
+    assert r.returncode == 0 and "nothing to check" in r.stdout
+
+
+def test_cli_fails_on_a_bad_registry(tmp_path):
+    root = make_root(tmp_path, registry(entry(cities=["Springfield"])))
+    r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(root)],
+                       capture_output=True, text=True)
+    assert r.returncode == 1 and "Springfield" in r.stdout
+
+
+def test_cli_fails_on_unreadable_json(tmp_path):
+    root = make_root(tmp_path)
+    (root / "data/competitors.json").write_text("{not json")
+    r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(root)],
+                       capture_output=True, text=True)
+    assert r.returncode == 1 and "not valid JSON" in r.stdout
+
+
+def test_the_real_repo_passes():
+    r = subprocess.run([sys.executable, str(SCRIPT)], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+```
+
+- [ ] **Step 3: Run the tests and watch them fail**
+
+Run: `python3 -m pytest tests/py/test_competitors_registry.py -q`
+Expected: collection error, `ModuleNotFoundError: No module named 'competitor_registry_check'`.
+
+- [ ] **Step 4: Write the script**
+
+`scripts/competitor_registry_check.py`:
+
+```python
+#!/usr/bin/env python3
+"""competitor_registry_check.py — data/competitors.json is well formed, and nothing links a
+competitor the registry marks `link_allowed: false`.
+
+  python3 scripts/competitor_registry_check.py [--root DIR]
+      exit 0 ok, or no registry yet (says "nothing to check") · 1 problems (listed)
+
+What a schema cannot say is checked here: at most 30 entries, `_meta.total` equals the count,
+bare root domains, never the site's own domain, no duplicate id or domain, tier 5 never
+linkable, cities only from data/locations.json, and a priority that matches the one derived
+from `seed_hits` — the registry agent types it, this script re-derives it.
+
+Spec: docs/superpowers/specs/2026-09-23-competitor-intel-design.md §4, §12.
+"""
+import argparse
+import json
+import pathlib
+import re
+import sys
+
+import jsonschema
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+SCHEMA = ROOT / "schemas/competitors.schema.json"
+MAX_ENTRIES = 30
+OWN_DOMAIN = "bluestaffyuk"
+# lowercase labels separated by dots, at least two labels, nothing else: no scheme, path,
+# port or upper case. A leading `www.` is refused separately so the message can say why.
+BARE = re.compile(r"[a-z0-9-]+(?:\.[a-z0-9-]+)+")
+LINK_SCAN = ("src", "data/boards", "docs/reference/external-link-library.md")
+LINK_SUFFIXES = {".astro", ".md", ".mdx", ".json", ".ts", ".js", ".html"}
+URL = re.compile(r"https?://([^/\s\"'<>)\]]+)", re.I)
+
+
+def derived_priority(c):
+    """high: 5+ distinct seed keywords, or a tier-1 breeder in the top 3 · medium: 2–4 · low: 1."""
+    keywords = {h["keyword"] for h in c["seed_hits"]}
+    if len(keywords) >= 5 or (c["tier"] == 1 and min(h["position"] for h in c["seed_hits"]) <= 3):
+        return "high"
+    return "medium" if len(keywords) >= 2 else "low"
+
+
+def _cities(root):
+    return {row["city"] for row in json.loads((root / "data/locations.json").read_text(encoding="utf-8"))}
+
+
+def problems(reg, root=ROOT):
+    schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+    errors = sorted(jsonschema.Draft202012Validator(schema).iter_errors(reg), key=lambda e: list(e.path))
+    if errors:
+        return [f"schema: {'/'.join(map(str, e.path)) or '(root)'}: {e.message}" for e in errors]
+    out, comps = [], reg["competitors"]
+    if len(comps) > MAX_ENTRIES:
+        out.append(f"{len(comps)} competitors; the registry holds 30 at most")
+    if reg["_meta"]["total"] != len(comps):
+        out.append(f"_meta.total is {reg['_meta']['total']} but there are {len(comps)} entries")
+    known, ids, domains = _cities(root), set(), set()
+    for c in comps:
+        cid, d = c["id"], c["root_domain"]
+        if d.startswith("www.") or not BARE.fullmatch(d):
+            out.append(f"{cid}: root_domain {d!r} is not a bare root domain "
+                       "(lowercase, no scheme, path, port or www.)")
+        if OWN_DOMAIN in d:
+            out.append(f"{cid}: {d} is the site's own domain")
+        if d in domains:
+            out.append(f"{cid}: duplicate root_domain {d}")
+        if cid in ids:
+            out.append(f"duplicate id {cid}")
+        ids.add(cid)
+        domains.add(d)
+        if c["tier"] == 5 and c["link_allowed"]:
+            out.append(f"{cid}: tier 5 (suspect seller) must have link_allowed false")
+        for city in c["cities"]:
+            if city not in known:
+                out.append(f"{cid}: city {city!r} is not in data/locations.json")
+        want = derived_priority(c)
+        if c["priority"] != want:
+            out.append(f"{cid}: priority {c['priority']} but seed_hits give {want}")
+    return out
+
+
+def _host_is(host, domain):
+    host = host.lower().split(":")[0]
+    return host == domain or host.endswith("." + domain)
+
+
+def suspect_links(reg, root=ROOT):
+    banned = {c["root_domain"] for c in reg["competitors"] if not c["link_allowed"]}
+    if not banned:
+        return []
+    out = []
+    for rel in LINK_SCAN:
+        base = root / rel
+        if base.is_file():
+            files = [base]
+        elif base.is_dir():
+            files = sorted(p for p in base.rglob("*") if p.is_file() and p.suffix in LINK_SUFFIXES)
+        else:
+            files = []
+        for f in files:
+            text = f.read_text(encoding="utf-8", errors="replace")
+            for n, line in enumerate(text.splitlines(), 1):
+                for host in URL.findall(line):
+                    for d in sorted(banned):
+                        if _host_is(host, d):
+                            out.append(f"{f.relative_to(root).as_posix()}:{n}: links {host} "
+                                       f"({d} is link_allowed false)")
+    return out
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--root", type=pathlib.Path, default=ROOT)
+    root = ap.parse_args(argv).root
+    path = root / "data/competitors.json"
+    if not path.is_file():
+        print("competitors: no data/competitors.json yet — nothing to check")
+        return 0
+    try:
+        reg = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, UnicodeDecodeError) as exc:
+        print(f"competitors: data/competitors.json is not valid JSON: {exc}")
+        return 1
+    out = problems(reg, root)
+    if not out:
+        out = suspect_links(reg, root)
+    for p in out:
+        print(f"competitors: {p}")
+    print(f"competitors: {len(reg.get('competitors', []))} entries; {len(out)} problems")
+    return 1 if out else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+- [ ] **Step 5: Run the tests and watch them pass**
+
+Run: `python3 -m pytest tests/py/test_competitors_registry.py -q`
+Expected: all pass.
+
+- [ ] **Step 6: Wire it into `check:all`**
+
+In `package.json` add after `"check:queries"`:
+
+```json
+    "check:competitors": "python3 scripts/competitor_registry_check.py",
+```
+
+and change `check:all` so `npm run check:competitors` follows `npm run check:queries`. In `tests/py/test_package_scripts.py` the expected list becomes:
+
+```python
+    expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
+                "check:redirects", "check:schema", "check:queries", "check:competitors",
+                "check:sitemaps", "check:placeholders", "check:markers", "agents"]
+```
+
+Add a one-line comment above it: `# check:competitors sits after check:queries: both guard research the page builders read.`
+
+- [ ] **Step 7: Run the package-script test, the registry and the whole suite**
+
+Run: `python3 scripts/build_system_registry.py && python3 -m pytest tests/py/test_package_scripts.py tests/py/test_competitors_registry.py tests/py/test_system_registry.py -q && npm run -s check:competitors`
+Expected: tests pass; last line `competitors: no data/competitors.json yet — nothing to check`.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add schemas/competitors.schema.json scripts/competitor_registry_check.py tests/py/test_competitors_registry.py package.json tests/py/test_package_scripts.py docs/reference/system-registry.md
+git commit -m "competitors: the registry contract, derived priority and the suspect-seller link guard
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 2: Intel report contract and the gap matrix">
+**Files:**
+- Create: `schemas/competitor-report.schema.json`
+- Create: `scripts/gap_matrix.py`
+- Create: `tests/py/test_gap_matrix.py`
+- Modify: `package.json` (`check:gaps` after `check:competitors`), `tests/py/test_package_scripts.py`
+
+- [ ] **Step 1: Write the report schema**
+
+`schemas/competitor-report.schema.json`:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BSUK competitor intel report",
+  "description": "docs/research/competitors/<id>.json, written by bsuk-competitor-intel; bsuk.json is BSUK's own profile in the same shape. Every field is either {status: ok, ...} or {status: NOT FETCHED, reason}. Spec 2026-09-23-competitor-intel §5–§6.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "root_domain", "analysed_on", "keywords", "page_types", "cities",
+               "schema_types", "pages", "trust", "content", "blog", "visual", "conversion",
+               "technical", "key_insight"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "root_domain": {"type": "string", "minLength": 3},
+    "analysed_on": {"$ref": "#/$defs/date"},
+    "keywords": {"$ref": "#/$defs/list"},
+    "page_types": {"$ref": "#/$defs/page_types"},
+    "cities": {"$ref": "#/$defs/list"},
+    "schema_types": {"$ref": "#/$defs/list"},
+    "pages": {"$ref": "#/$defs/pages"},
+    "trust": {"$ref": "#/$defs/facts"},
+    "content": {"$ref": "#/$defs/facts"},
+    "blog": {"$ref": "#/$defs/facts"},
+    "visual": {"$ref": "#/$defs/facts"},
+    "conversion": {"$ref": "#/$defs/facts"},
+    "technical": {"$ref": "#/$defs/facts"},
+    "key_insight": {"type": "string"}
+  },
+  "$defs": {
+    "date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "not_fetched": {
+      "type": "object", "additionalProperties": false, "required": ["status", "reason"],
+      "properties": {"status": {"const": "NOT FETCHED"}, "reason": {"type": "string", "minLength": 1}}
+    },
+    "list": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "values"],
+       "properties": {"status": {"const": "ok"},
+                      "values": {"type": "array", "uniqueItems": true,
+                                 "items": {"type": "string", "minLength": 1}}}}
+    ]},
+    "page_types": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "values"],
+       "properties": {"status": {"const": "ok"},
+                      "values": {"type": "object",
+                                 "propertyNames": {"enum": ["breed-guide", "care-guide", "health",
+                                   "price", "comparison", "city", "blog", "faq", "about",
+                                   "listing", "reviews", "contact"]},
+                                 "additionalProperties": {"type": "integer", "minimum": 0}}}}
+    ]},
+    "pages": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "fetched_on", "values"],
+       "properties": {"status": {"const": "ok"}, "fetched_on": {"$ref": "#/$defs/date"},
+                      "values": {"type": "array", "items": {
+                        "type": "object", "additionalProperties": false,
+                        "required": ["url", "title", "h1", "h2"],
+                        "properties": {"url": {"type": "string", "pattern": "^https?://"},
+                                       "title": {"type": "string"}, "h1": {"type": "string"},
+                                       "h2": {"type": "array", "items": {"type": "string"}}}}}}}
+    ]},
+    "facts": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "values"],
+       "properties": {"status": {"const": "ok"}, "values": {"type": "object"}}}
+    ]}
+  }
+}
+```
+
+- [ ] **Step 2: Write the failing tests**
+
+`tests/py/test_gap_matrix.py`:
+
+```python
+# tests/py/test_gap_matrix.py — scripts/gap_matrix.py (spec 2026-09-23-competitor-intel §6).
+import json
+import pathlib
+import subprocess
+import sys
+
+import pytest
+
+REPO = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "scripts"))
+import gap_matrix as G  # noqa: E402
+
+SCRIPT = REPO / "scripts" / "gap_matrix.py"
+NF = {"status": "NOT FETCHED", "reason": "fetch blocked"}
+
+
+def ok(values):
+    return {"status": "ok", "values": values}
+
+
+def report(rid, keywords=(), page_types=None, cities=(), schema_types=(), **over):
+    r = {"id": rid, "root_domain": f"{rid}.co.uk", "analysed_on": "2026-09-24",
+         "keywords": ok(list(keywords)), "page_types": ok(page_types or {}),
+         "cities": ok(list(cities)), "schema_types": ok(list(schema_types)),
+         "pages": {"status": "ok", "fetched_on": "2026-09-24", "values": []},
+         "trust": ok({}), "content": ok({}), "blog": ok({}), "visual": ok({}),
+         "conversion": ok({}), "technical": ok({}), "key_insight": ""}
+    r.update(over)
+    return r
+
+
+def make_root(tmp_path, *reports):
+    d = tmp_path / "docs/research/competitors"
+    d.mkdir(parents=True, exist_ok=True)
+    for r in reports:
+        (d / f"{r['id']}.json").write_text(json.dumps(r))
+    return tmp_path
+
+
+def row(rows, value):
+    return next(r for r in rows if r.value == value)
+
+
+def test_only_fetched_competitors_count_toward_m(tmp_path):
+    blocked = report("c")
+    blocked["keywords"] = NF
+    root = make_root(tmp_path, report("a", ["blue staffy"]), report("b", ["blue staffy"]), blocked)
+    bsuk, comps = G.load_reports(root)
+    r = row(G.rows(bsuk, comps, "keywords"), "blue staffy")
+    assert (r.n, r.m, r.not_fetched) == (2, 2, 1)
+
+
+@pytest.mark.parametrize("n,m,band", [(2, 5, "high"), (1, 5, "medium"), (1, 6, "low"),
+                                      (4, 10, "high"), (3, 10, "medium")])
+def test_priority_bands(n, m, band):
+    assert G.priority(n, m) == band
+
+
+def test_what_bsuk_already_has_gets_no_priority(tmp_path):
+    root = make_root(tmp_path, report("bsuk", ["blue staffy"]), report("a", ["blue staffy", "kc registered"]))
+    bsuk, comps = G.load_reports(root)
+    rows = G.rows(bsuk, comps, "keywords")
+    assert row(rows, "blue staffy").bsuk_has == "yes" and row(rows, "blue staffy").band == "—"
+    assert row(rows, "kc registered").bsuk_has == "no" and row(rows, "kc registered").band == "high"
+
+
+def test_a_missing_bsuk_profile_is_said_not_guessed(tmp_path):
+    root = make_root(tmp_path, report("a", ["blue staffy"]))
+    bsuk, comps = G.load_reports(root)
+    assert bsuk is None
+    assert row(G.rows(bsuk, comps, "keywords"), "blue staffy").bsuk_has == "not fetched"
+
+
+def test_keywords_are_compared_case_and_space_blind(tmp_path):
+    root = make_root(tmp_path, report("a", ["Blue  Staffy"]), report("b", ["blue staffy"]))
+    bsuk, comps = G.load_reports(root)
+    assert row(G.rows(bsuk, comps, "keywords"), "blue staffy").n == 2
+
+
+def test_a_page_type_with_count_zero_is_absent(tmp_path):
+    root = make_root(tmp_path, report("a", page_types={"city": 0, "faq": 2}))
+    bsuk, comps = G.load_reports(root)
+    assert [r.value for r in G.rows(bsuk, comps, "page_types")] == ["faq"]
+
+
+def test_a_report_that_breaks_the_schema_is_bad_input(tmp_path):
+    bad = report("a")
+    del bad["trust"]
+    with pytest.raises(G.BadReport):
+        G.load_reports(make_root(tmp_path, bad))
+
+
+def test_the_file_name_must_be_the_id(tmp_path):
+    root = make_root(tmp_path)
+    (root / "docs/research/competitors/other.json").write_text(json.dumps(report("a")))
+    with pytest.raises(G.BadReport):
+        G.load_reports(root)
+
+
+def test_the_queue_is_the_ten_biggest_gaps(tmp_path):
+    reps = [report(f"c{i}", [f"kw{j}" for j in range(i + 1)]) for i in range(12)]
+    bsuk, comps = G.load_reports(make_root(tmp_path, *reps))
+    queue = G.queue(bsuk, comps)
+    assert len(queue) == 10
+    assert [q.value for q in queue[:2]] == ["kw0", "kw1"]      # 12/12, then 11/12
+
+
+def test_render_names_the_registry_entries_with_no_report(tmp_path):
+    root = make_root(tmp_path, report("a", ["x"]))
+    (root / "data").mkdir()
+    (root / "data/competitors.json").write_text(json.dumps(
+        {"_meta": {}, "competitors": [{"id": "a"}, {"id": "b"}]}))
+    text = G.render(root, "2026-09-24")
+    assert "No report yet: b" in text and "| x | 1/1 | 0 | not fetched | high |" in text
+
+
+def run(*args):
+    return subprocess.run([sys.executable, str(SCRIPT), *args], capture_output=True, text=True)
+
+
+def test_check_passes_after_write_and_fails_after_a_hand_edit(tmp_path):
+    root = make_root(tmp_path, report("a", ["x"]))
+    assert run("--write", "--date", "2026-09-24", "--root", str(root)).returncode == 0
+    out = root / "docs/research/gap-matrix-2026-09-24.md"
+    assert run("--check", "--root", str(root)).returncode == 0
+    out.write_text(out.read_text().replace("1/1", "5/1"))
+    r = run("--check", "--root", str(root))
+    assert r.returncode == 1 and "gap-matrix-2026-09-24.md" in r.stdout
+
+
+def test_check_with_nothing_written_passes(tmp_path):
+    r = run("--check", "--root", str(tmp_path))
+    assert r.returncode == 0 and "nothing to check" in r.stdout
+
+
+def test_check_with_reports_but_no_matrix_fails(tmp_path):
+    r = run("--check", "--root", str(make_root(tmp_path, report("a"))))
+    assert r.returncode == 1 and "--write" in r.stdout
+
+
+def test_a_bad_report_exits_6(tmp_path):
+    bad = report("a")
+    bad["keywords"] = {"status": "maybe"}
+    r = run("--write", "--root", str(make_root(tmp_path, bad)))
+    assert r.returncode == 6
+
+
+def test_the_real_repo_passes():
+    r = run("--check")
+    assert r.returncode == 0, r.stdout + r.stderr
+```
+
+- [ ] **Step 3: Run the tests and watch them fail**
+
+Run: `python3 -m pytest tests/py/test_gap_matrix.py -q`
+Expected: collection error, `No module named 'gap_matrix'`.
+
+- [ ] **Step 4: Write the script**
+
+`scripts/gap_matrix.py`:
+
+```python
+#!/usr/bin/env python3
+"""gap_matrix.py — the competitive gap matrix, built from the intel reports, never typed.
+
+  python3 scripts/gap_matrix.py --write [--date YYYY-MM-DD] [--root DIR]
+      writes docs/research/gap-matrix-<date>.md (date: today, UTC) · exit 0
+  python3 scripts/gap_matrix.py --check [--root DIR]
+      rebuilds the newest gap-matrix-<date>.md and compares · exit 0 same, or nothing written
+      and no reports · 1 differs, or reports exist with no matrix
+  Every mode: 2 bad usage · 6 a report is unreadable or breaks schemas/competitor-report.schema.json
+
+Reads docs/research/competitors/*.json (bsuk.json is BSUK's own profile) and, when present,
+data/competitors.json to name registry entries with no report. A row's N/M counts only the
+competitors whose field was fetched; the ones that were not are their own column.
+
+Spec: docs/superpowers/specs/2026-09-23-competitor-intel-design.md §6.
+"""
+import argparse
+import datetime
+import json
+import pathlib
+import re
+import sys
+from collections import Counter
+from dataclasses import dataclass
+
+import jsonschema
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+SCHEMA = ROOT / "schemas/competitor-report.schema.json"
+REPORTS = "docs/research/competitors"
+OUT_DIR = "docs/research"
+DIMENSIONS = (("keywords", "Keyword gaps"), ("page_types", "Page-type gaps"),
+              ("cities", "City gaps"), ("schema_types", "Schema gaps"))
+QUEUE_LEN = 10
+EXIT_OK, EXIT_FAIL, EXIT_USAGE, EXIT_BAD_INPUT = 0, 1, 2, 6
+
+
+class BadReport(Exception):
+    pass
+
+
+@dataclass(frozen=True)
+class Row:
+    dimension: str
+    value: str
+    n: int
+    m: int
+    not_fetched: int
+    bsuk_has: str      # "yes" · "no" · "not fetched"
+    band: str          # "high" · "medium" · "low" · "—" (BSUK has it)
+
+
+def _norm(v):
+    return re.sub(r"\s+", " ", v.strip().lower())
+
+
+def values(report, dim):
+    """The set a report holds for one dimension, or None when that field was not fetched."""
+    field = report[dim]
+    if field["status"] != "ok":
+        return None
+    if dim == "page_types":
+        return {k for k, count in field["values"].items() if count > 0}
+    if dim == "cities":
+        return set(field["values"])
+    return {_norm(v) for v in field["values"]}
+
+
+def load_reports(root=ROOT):
+    schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+    validator = jsonschema.Draft202012Validator(schema)
+    bsuk, comps = None, {}
+    for path in sorted((pathlib.Path(root) / REPORTS).glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError, UnicodeDecodeError) as exc:
+            raise BadReport(f"{path.name}: not valid JSON: {exc}")
+        errors = list(validator.iter_errors(data))
+        if errors:
+            raise BadReport(f"{path.name}: {errors[0].message}")
+        if data["id"] != path.stem:
+            raise BadReport(f"{path.name}: id {data['id']!r} does not match the file name")
+        if data["id"] == "bsuk":
+            bsuk = data
+        else:
+            comps[data["id"]] = data
+    return bsuk, comps
+
+
+def priority(n, m):
+    share = n / m
+    return "high" if share >= 0.4 else "medium" if share >= 0.2 else "low"
+
+
+def rows(bsuk, comps, dim):
+    fetched = [values(c, dim) for c in comps.values()]
+    held = [v for v in fetched if v is not None]
+    m, not_fetched = len(held), len(fetched) - len(held)
+    counts = Counter(v for vs in held for v in vs)
+    ours = values(bsuk, dim) if bsuk else None
+    out = []
+    for value, n in counts.items():
+        has = "not fetched" if ours is None else ("yes" if value in ours else "no")
+        out.append(Row(dim, value, n, m, not_fetched, has,
+                       "—" if has == "yes" else priority(n, m)))
+    return sorted(out, key=lambda r: (-r.n, r.value))
+
+
+def queue(bsuk, comps):
+    order = {d: i for i, (d, _) in enumerate(DIMENSIONS)}
+    gaps = [r for d, _ in DIMENSIONS for r in rows(bsuk, comps, d) if r.bsuk_has != "yes"]
+    return sorted(gaps, key=lambda r: (-r.n / r.m, -r.n, order[r.dimension], r.value))[:QUEUE_LEN]
+
+
+def _registry_ids(root):
+    path = pathlib.Path(root) / "data/competitors.json"
+    if not path.is_file():
+        return None
+    return [c["id"] for c in json.loads(path.read_text(encoding="utf-8")).get("competitors", [])]
+
+
+def render(root, date):
+    bsuk, comps = load_reports(root)
+    lines = [f"# Competitive gap matrix — {date}", "",
+             "Built by `scripts/gap_matrix.py` from `docs/research/competitors/*.json`. Do not edit "
+             "by hand: `npm run check:gaps` rebuilds it and fails on any difference.", "",
+             f"Competitor reports: {len(comps)} · BSUK profile: "
+             f"{'present' if bsuk else 'missing — every BSUK column reads not fetched'}"]
+    ids = _registry_ids(root)
+    if ids is not None:
+        missing = [i for i in ids if i not in comps]
+        extra = sorted(i for i in comps if i not in ids)
+        lines.append(f"Registry entries: {len(ids)}")
+        if missing:
+            lines.append(f"No report yet: {', '.join(missing)}")
+        if extra:
+            lines.append(f"Report with no registry entry: {', '.join(extra)}")
+    for dim, title in DIMENSIONS:
+        lines += ["", f"## {title}", ""]
+        found = rows(bsuk, comps, dim)
+        if not found:
+            lines.append("_No rows._")
+            continue
+        lines += ["| Value | Competitors | Not fetched | BSUK has it | Priority |",
+                  "|---|---|---|---|---|"]
+        lines += [f"| {r.value} | {r.n}/{r.m} | {r.not_fetched} | {r.bsuk_has} | {r.band} |"
+                  for r in found]
+    lines += ["", "## Priority queue", ""]
+    q = queue(bsuk, comps)
+    lines += [f"{i}. {r.dimension} `{r.value}` — {r.n}/{r.m} competitors; BSUK: {r.bsuk_has}"
+              for i, r in enumerate(q, 1)] or ["_No gaps._"]
+    return "\n".join(lines) + "\n"
+
+
+def _latest(root):
+    found = sorted((pathlib.Path(root) / OUT_DIR).glob("gap-matrix-*.md"))
+    return found[-1] if found else None
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    mode = ap.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--write", action="store_true")
+    mode.add_argument("--check", action="store_true")
+    ap.add_argument("--date")
+    ap.add_argument("--root", type=pathlib.Path, default=ROOT)
+    try:
+        a = ap.parse_args(argv)
+    except SystemExit:
+        return EXIT_USAGE
+    root = a.root
+    try:
+        if a.write:
+            date = a.date or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
+                print(f"gaps: --date must be YYYY-MM-DD, got {date!r}")
+                return EXIT_USAGE
+            out = root / OUT_DIR / f"gap-matrix-{date}.md"
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(render(root, date), encoding="utf-8")
+            print(f"gaps: wrote {out.relative_to(root).as_posix()}")
+            return EXIT_OK
+        latest = _latest(root)
+        has_reports = any((root / REPORTS).glob("*.json"))
+        if latest is None:
+            if has_reports:
+                print("gaps: intel reports exist but no gap matrix — run gap_matrix.py --write")
+                return EXIT_FAIL
+            print("gaps: no reports and no gap matrix yet — nothing to check")
+            return EXIT_OK
+        date = latest.stem.removeprefix("gap-matrix-")
+        if latest.read_text(encoding="utf-8") != render(root, date):
+            print(f"gaps: {latest.name} differs from the reports — rerun gap_matrix.py --write "
+                  f"--date {date}, never edit it by hand")
+            return EXIT_FAIL
+        print(f"gaps: {latest.name} matches the reports")
+        return EXIT_OK
+    except BadReport as exc:
+        print(f"gaps: bad report: {exc}")
+        return EXIT_BAD_INPUT
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+- [ ] **Step 5: Run the tests and watch them pass**
+
+Run: `python3 -m pytest tests/py/test_gap_matrix.py -q`
+Expected: all pass. If `test_render_names_the_registry_entries_with_no_report` fails on the row text, compare against `render()`'s row format — the test pins it on purpose.
+
+- [ ] **Step 6: Wire `check:gaps`**
+
+`package.json`: add `"check:gaps": "python3 scripts/gap_matrix.py --check",` after `check:competitors`, and put `npm run check:gaps` right after `npm run check:competitors` in `check:all`. Update the expected list in `tests/py/test_package_scripts.py` to `... "check:queries", "check:competitors", "check:gaps", "check:sitemaps", ...`.
+
+- [ ] **Step 7: Run and regenerate**
+
+Run: `python3 scripts/build_system_registry.py && python3 -m pytest tests/py/test_gap_matrix.py tests/py/test_package_scripts.py tests/py/test_system_registry.py -q && npm run -s check:gaps`
+Expected: tests pass; `gaps: no reports and no gap matrix yet — nothing to check`.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add schemas/competitor-report.schema.json scripts/gap_matrix.py tests/py/test_gap_matrix.py package.json tests/py/test_package_scripts.py docs/reference/system-registry.md
+git commit -m "gaps: the intel report contract and a gap matrix counted by script, checked on every run
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 3: The strategy citation check">
+**Files:**
+- Create: `scripts/strategy_cite_check.py`
+- Create: `tests/py/test_strategy_cite_check.py`
+
+- [ ] **Step 1: Write the failing tests**
+
+`tests/py/test_strategy_cite_check.py`:
+
+```python
+# tests/py/test_strategy_cite_check.py — scripts/strategy_cite_check.py (spec §9).
+import pathlib
+import subprocess
+import sys
+
+REPO = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "scripts"))
+import strategy_cite_check as S  # noqa: E402
+
+SCRIPT = REPO / "scripts" / "strategy_cite_check.py"
+SOURCE = "docs/research/gap-matrix-2026-09-24.md"
+
+
+def make(tmp_path, recommendation, source_text="| city | 7/12 | 0 | no | high |\n1,200 words\n",
+         sources=(SOURCE,), artifact=""):
+    (tmp_path / "docs/research").mkdir(parents=True, exist_ok=True)
+    (tmp_path / SOURCE).write_text(source_text)
+    src = "\n".join(f"- `{s}`" for s in sources)
+    doc = (f"# Strategy\n\n## Strategy A — Cities\n\nAbout 99 pages.\n\n"
+           f"## Recommendation\n\n{recommendation}\n\n{artifact}"
+           f"## Sources\n\n{src}\n")
+    p = tmp_path / "strategy.md"
+    p.write_text(doc)
+    return p
+
+
+def test_figures_found_in_a_source_pass(tmp_path):
+    p = make(tmp_path, "Pick A: 7/12 competitors have city pages; theirs run 1,200 words.")
+    assert S.check(p, tmp_path) == []
+
+
+def test_a_figure_in_no_source_fails_with_its_line(tmp_path):
+    p = make(tmp_path, "Pick A: 9/12 competitors have city pages.")
+    out = S.check(p, tmp_path)
+    assert len(out) == 1 and "9/12" in out[0] and "line" in out[0]
+
+
+def test_percentages_and_decimals_are_checked(tmp_path):
+    out = S.check(make(tmp_path, "58% of them, a 0.75 share."), tmp_path)
+    assert any("58%" in o for o in out) and any("0.75" in o for o in out)
+
+
+def test_figures_outside_the_checked_sections_are_not_checked(tmp_path):
+    # "99" sits under "## Strategy A" — the options may speculate; the pick may not.
+    assert S.check(make(tmp_path, "Pick A: 7/12."), tmp_path) == []
+
+
+def test_dates_code_single_digits_and_the_city_count_are_not_figures(tmp_path):
+    p = make(tmp_path, "Pick A (`gap-matrix-2026-09-24.md`, 2026-09-24): 3 steps, all 28 cities.")
+    assert S.check(p, tmp_path) == []
+
+
+def test_the_artefact_table_is_checked_too(tmp_path):
+    art = "## Concrete Artifact\n\n| topic | score |\n|---|---|\n| cities | 11 |\n\n"
+    out = S.check(make(tmp_path, "Pick A: 7/12.", artifact=art), tmp_path)
+    assert any("11" in o and "Concrete Artifact" in o for o in out)
+
+
+def test_a_listed_source_that_does_not_exist_fails(tmp_path):
+    p = make(tmp_path, "Pick A: 7/12.", sources=(SOURCE, "docs/research/nope.md"))
+    assert any("nope.md" in o and "does not exist" in o for o in S.check(p, tmp_path))
+
+
+def test_no_sources_section_fails(tmp_path):
+    p = tmp_path / "s.md"
+    p.write_text("# S\n\n## Recommendation\n\nPick A.\n")
+    assert any("## Sources" in o for o in S.check(p, tmp_path))
+
+
+def test_no_recommendation_fails(tmp_path):
+    p = tmp_path / "s.md"
+    (tmp_path / "docs/research").mkdir(parents=True)
+    (tmp_path / SOURCE).write_text("x")
+    p.write_text(f"# S\n\n## Sources\n\n- `{SOURCE}`\n")
+    assert any("## Recommendation" in o for o in S.check(p, tmp_path))
+
+
+def test_cli_exit_codes(tmp_path):
+    good = make(tmp_path, "Pick A: 7/12.")
+    r = subprocess.run([sys.executable, str(SCRIPT), str(good), "--root", str(tmp_path)],
+                       capture_output=True, text=True)
+    assert r.returncode == 0
+    bad = make(tmp_path, "Pick A: 8/12.")
+    r = subprocess.run([sys.executable, str(SCRIPT), str(bad), "--root", str(tmp_path)],
+                       capture_output=True, text=True)
+    assert r.returncode == 1 and "8/12" in r.stdout
+    r = subprocess.run([sys.executable, str(SCRIPT), str(tmp_path / "missing.md")],
+                       capture_output=True, text=True)
+    assert r.returncode == 2
+```
+
+- [ ] **Step 2: Run the tests and watch them fail**
+
+Run: `python3 -m pytest tests/py/test_strategy_cite_check.py -q`
+Expected: collection error, `No module named 'strategy_cite_check'`.
+
+- [ ] **Step 3: Write the script**
+
+`scripts/strategy_cite_check.py`:
+
+```python
+#!/usr/bin/env python3
+"""strategy_cite_check.py — a strategy may quote only figures its listed sources contain.
+
+  python3 scripts/strategy_cite_check.py STRATEGY.md [--root DIR]
+      exit 0 every figure found · 1 problems (listed) · 2 the file is missing or bad usage
+
+A figure is an N/M count, a percentage, a decimal, or a whole number of two digits or more,
+in a `## Recommendation…` or `## Concrete Artifact…` section. Dates, anything in backticks,
+single digits (step numbers, "3+ data points") and 28 (the locked city count) are not
+figures. Each figure must appear literally in at least one file listed as a backticked path
+under `## Sources`, and every listed file must exist. The strategy agent quotes a source's
+figure exactly as the source writes it.
+
+Spec: docs/superpowers/specs/2026-09-23-competitor-intel-design.md §9.
+"""
+import argparse
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+CHECKED = ("Recommendation", "Concrete Artifact")
+ALWAYS_TRUE = {"28"}
+CODE = re.compile(r"`[^`]*`")
+DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
+FIGURE = re.compile(r"(?<![\w.,/-])(\d+/\d+|\d+(?:\.\d+)?%|\d+\.\d+|\d{1,3}(?:,\d{3})+|\d{2,})(?![\w/-]|[.,]\d)")
+SOURCE_LINE = re.compile(r"^\s*[-*]\s+`([^`]+)`")
+
+
+def check(path, root=ROOT):
+    lines = pathlib.Path(path).read_text(encoding="utf-8").splitlines()
+    section, sources, found = None, [], []
+    has_sources = has_recommendation = False
+    for i, line in enumerate(lines, 1):
+        if line.startswith("## "):
+            section = line[3:].strip()
+            has_sources |= section == "Sources"
+            has_recommendation |= section.startswith("Recommendation")
+            continue
+        if section == "Sources":
+            m = SOURCE_LINE.match(line)
+            if m:
+                sources.append(m.group(1))
+        elif section and section.startswith(CHECKED):
+            text = DATE.sub(" ", CODE.sub(" ", line))
+            found += [(i, section, f) for f in FIGURE.findall(text) if f not in ALWAYS_TRUE]
+    out = []
+    if not has_sources or not sources:
+        out.append("no ## Sources section listing backticked files")
+    if not has_recommendation:
+        out.append("no ## Recommendation section")
+    corpus = []
+    for s in sources:
+        p = pathlib.Path(root) / s
+        if p.is_file():
+            corpus.append(p.read_text(encoding="utf-8", errors="replace"))
+        else:
+            out.append(f"source {s} does not exist")
+    for i, section, fig in found:
+        if not any(fig in text for text in corpus):
+            out.append(f"line {i} ({section}): figure {fig} is in no listed source")
+    return out
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("strategy", type=pathlib.Path)
+    ap.add_argument("--root", type=pathlib.Path, default=ROOT)
+    try:
+        a = ap.parse_args(argv)
+    except SystemExit:
+        return 2
+    if not a.strategy.is_file():
+        print(f"cite-check: {a.strategy} does not exist")
+        return 2
+    out = check(a.strategy, a.root)
+    for p in out:
+        print(f"cite-check: {p}")
+    print(f"cite-check: {a.strategy.name}: {len(out)} problems")
+    return 1 if out else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+- [ ] **Step 4: Run the tests and watch them pass**
+
+Run: `python3 -m pytest tests/py/test_strategy_cite_check.py -q`
+Expected: all pass.
+
+- [ ] **Step 5: Regenerate the registry and commit**
+
+```bash
+python3 scripts/build_system_registry.py && python3 -m pytest tests/py/test_system_registry.py -q
+git add scripts/strategy_cite_check.py tests/py/test_strategy_cite_check.py docs/reference/system-registry.md
+git commit -m "strategy: a pick may quote only figures its listed sources contain
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 4: Spend-guard conventions for this build">
+**Files:**
+- Create: `tests/py/test_competitor_spend.py`
+
+No script change: this task pins, with tests, that the merged guard already supports how the registry and LLM-intel agents will call it (spec §10).
+
+- [ ] **Step 1: Write the tests**
+
+`tests/py/test_competitor_spend.py`:
+
+```python
+# tests/py/test_competitor_spend.py — the spend conventions the competitor-intel agents rely on
+# (spec 2026-09-23-competitor-intel §10). No script change: these pin the merged guard.
+import json
+import pathlib
+import sys
+
+REPO = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "scripts"))
+import query_augment as Q  # noqa: E402
+
+SETTINGS = {"query_budget_usd": 0.5, "query_total_budget_usd": 1.0, "query_typical_call_usd": 0.05}
+SEEDS = ["blue-staffy-puppies-for-sale", "staffordshire-bull-terrier-puppies-for-sale-uk",
+         "blue-staffy-breeder", "staffy-puppies-for-sale-manchester",
+         "staffy-puppies-for-sale-leeds", "staffy-puppies-for-sale-carlisle",
+         "staffy-puppies-for-sale-newcastle", "staffy-puppies-for-sale-liverpool",
+         "kc-registered-staffy-puppies", "staffy-puppy-price-uk"]
+TODAY = "2026-09-24"
+
+
+def make_root(tmp_path, spent=0.2):
+    (tmp_path / "data/queries").mkdir(parents=True)
+    (tmp_path / "data/settings.json").write_text(json.dumps(SETTINGS))
+    log = [{"ts": "2026-09-23T01:00:00Z", "slug": "blue-staffy-puppies-manchester-uk",
+            "source": "ai_engines", "endpoint": "pilot", "cost_usd": spent}]
+    (tmp_path / "data/queries/spend.json").write_text(json.dumps(log))
+    return tmp_path
+
+
+def test_registry_pseudo_slugs_are_valid_slugs():
+    for s in SEEDS:
+        assert Q.SLUG_RE.fullmatch(f"registry-{s}")
+
+
+def test_each_seed_is_cached_on_its_own(tmp_path):
+    root = make_root(tmp_path)
+    d = root / "data/queries/raw/registry-blue-staffy-breeder"
+    d.mkdir(parents=True)
+    (d / "serp_google.response.json").write_text("{}")
+    assert Q.preflight("registry-blue-staffy-breeder", "serp_google", root=root, today=TODAY) == Q.EXIT_CACHED
+    assert Q.preflight("registry-staffy-puppy-price-uk", "serp_google", root=root, today=TODAY) == Q.EXIT_OK
+
+
+def test_ten_seeds_then_one_llm_call_fit_the_total_cap(tmp_path):
+    root = make_root(tmp_path, spent=0.2)
+    for s in SEEDS:
+        slug = f"registry-{s}"
+        assert Q.preflight(slug, "serp_google", root=root, today=TODAY) == Q.EXIT_OK
+        Q.record(slug, "serp_google", "serp_organic_live_advanced", 0.05, root=root,
+                 now=f"{TODAY}T00:00:00Z")
+    # typical ai_engines cost is the 0.2 already logged: 0.2 + 0.5 + 0.2 = 0.9 <= 1.0
+    assert Q.preflight("blue-staffy-puppies-leeds", "ai_engines", root=root, today=TODAY) == Q.EXIT_OK
+
+
+def test_the_total_cap_stops_an_eleventh_expensive_run(tmp_path):
+    root = make_root(tmp_path, spent=0.96)
+    assert Q.preflight("registry-blue-staffy-breeder", "serp_google", root=root, today=TODAY) == Q.EXIT_BUDGET
+
+
+def test_bing_is_still_never_bought(tmp_path):
+    root = make_root(tmp_path)
+    assert "serp_bing" not in Q.PAID_SOURCES
+```
+
+- [ ] **Step 2: Run them**
+
+Run: `python3 -m pytest tests/py/test_competitor_spend.py -q`
+Expected: all pass. If `test_ten_seeds_then_one_llm_call_fit_the_total_cap` fails, read `_budget_check` (`scripts/query_augment.py` around line 792): `typical` is the largest cost logged for that source. Fix the test's arithmetic comment and numbers to the real rule — never change the guard in this task.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tests/py/test_competitor_spend.py
+git commit -m "competitors: pin the spend conventions — a pseudo-slug per seed, the total cap, Bing never bought
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 5: `bsuk-competitor-registry` agent">
+**Files:**
+- Create: `tests/py/fixtures/competitors/serp-blue-staffy-puppies-for-sale.json`
+- Create: `.claude/agents/bsuk-competitor-registry.md`
+- Modify: `data/agent-registry.json` (regenerated), `docs/reference/system-registry.md` (regenerated)
+
+- [ ] **Step 1: Write the fixture**
+
+A trimmed, invented SERP (no real sellers' contact details; domains are the well-known UK marketplaces plus clearly invented breeder domains):
+
+```json
+{
+  "keyword": "blue staffy puppies for sale",
+  "items": [
+    {"position": 1, "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/", "title": "Staffordshire Bull Terrier puppies for sale"},
+    {"position": 2, "url": "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/puppies", "title": "Staffordshire Bull Terrier puppies"},
+    {"position": 3, "url": "https://blue-staffy-example-breeder.co.uk/puppies/", "title": "Blue Staffy puppies"},
+    {"position": 4, "url": "https://shop.pets4homes.co.uk/x", "title": "Pets4Homes shop"},
+    {"position": 5, "url": "https://www.thekennelclub.org.uk/search/find-a-puppy/", "title": "Find a puppy"},
+    {"position": 6, "url": "https://cheap-blue-pups-example.com/", "title": "Blue staffy pups £300 no questions asked"},
+    {"position": 7, "url": "https://www.staffordshirebullterrierrescue-example.org.uk/", "title": "Staffy rescue"}
+  ]
+}
+```
+
+- [ ] **Step 2: RED — run the scenario without the agent**
+
+Dispatch a general-purpose subagent: "You are building BlueStaffyUK's competitor registry. Here is one saved SERP: `tests/py/fixtures/competitors/serp-blue-staffy-puppies-for-sale.json`. Produce the registry." Record what it does. Expected failures to look for: writes `data/competitors.json` without approval; keeps `www.` or `shop.` hosts; lists `pets4homes` twice; no tier 5 for the "no questions asked" seller, or `link_allowed: true` for it; typed priorities that `competitor_registry_check.py` rejects; invented cities. Paste the observations into the task report.
+
+- [ ] **Step 3: Write the agent**
+
+`.claude/agents/bsuk-competitor-registry.md`:
+
+````markdown
+---
+name: bsuk-competitor-registry
+description: Discovers the national list of BlueStaffyUK competitors — UK Staffy breeders, marketplaces and directories, breed-information sites, rescues, and suspect sellers — from about ten seed keywords, proposes it on a board for the user's approval, and only then writes data/competitors.json. Run once to seed the registry, then when intel or a page build finds a new site ranking. Every other competitor agent reads its output.
+model: inherit
+effort: medium
+---
+</script>
+<script type="text/markdown" data-title="Golden Rule">
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. No invented facts: a competitor is registered only from a search result you actually fetched, and every field is either fetched or left out.
+> **Paid calls go through the spend guard.** Before every DataForSEO call run `python3 scripts/query_augment.py --preflight <pseudo-slug> --source serp_google`; exit 3 means cached (reuse it), exit 4 means stop and ask the user. Straight after a paid call, `--record` it with the configured typical cost and say that it is an estimate.
+</script>
+<script type="text/markdown" data-title="Purpose">
+You find who ranks for Staffordshire Bull Terrier puppy searches in the UK and write the national registry, `data/competitors.json` (contract `schemas/competitors.schema.json`). The per-page pools in `data/queries/<slug>.json` stay as they are; this is the list the gap matrix counts against.
+</script>
+<script type="text/markdown" data-title="On Startup">
+1. Read `data/competitors.json` if it exists. Empty or absent → full discovery. Otherwise do what the invocation says (add, refresh, or full re-discovery); if it says nothing, add new sites only and say so in your first line.
+2. Read `data/locations.json` — the 28 cities. It is the only city list.
+3. Ask the controller for the DataForSEO balance if nobody has stated it today. Estimated cost of a full discovery: ten searches.
+</script>
+<script type="text/markdown" data-title="Seed keywords">
+1. `blue staffy puppies for sale`
+2. `staffordshire bull terrier puppies for sale uk`
+3. `blue staffy breeder`
+4. `staffy puppies for sale <city>` for the five largest cities in `data/locations.json` (five searches)
+5. `kc registered staffy puppies`
+6. `staffy puppy price uk`
+
+Record the final list in `_meta.seed_keywords`.
+</script>
+<script type="text/markdown" data-title="Discovery">
+For each seed keyword:
+
+1. Pseudo-slug `registry-<keyword as a slug>` (lowercase, spaces to hyphens, only `a-z0-9-`).
+2. Preflight as in the Golden Rule. Exit 0 → DataForSEO `serp_organic_live_advanced`, Google, location United Kingdom, English, depth 10. Save the untouched response to `data/queries/raw/<pseudo-slug>/serp_google.response.json`, then `--record`.
+3. If the connector is missing, out of credit, or the user declines: `firecrawl_search` with the same keyword (limit 10). Note `fallback` for that keyword.
+4. Never use Bing: it is not bought (the query-augmentation pilot returned results for "blue" alone).
+</script>
+<script type="text/markdown" data-title="Group and classify">
+1. Reduce every URL to its registrable root domain: drop scheme, path, port and any subdomain (`www.pets4homes.co.uk` and `shop.pets4homes.co.uk` are both `pets4homes.co.uk`). Never register the site's own domain.
+2. Merge by root domain. `seed_hits` lists each keyword it appeared on with its best position.
+3. Tier:
+
+| Tier | Meaning | Examples of signals |
+|---|---|---|
+| 1 | Breeder | Own domain, sells its own litters |
+| 2 | Marketplace or directory | Many sellers' listings: Pets4Homes, Champdogs, the Kennel Club's puppy search |
+| 3 | Breed information | Guides, breed clubs, no puppies for sale |
+| 4 | Rescue or non-commercial | Rehoming, charities |
+| 5 | Suspect seller | Signs of a puppy farm or scam on the page you fetched: prices far below the market with "no questions asked", no location, pressure to pay before viewing, stolen or stock photos. Tracked for contrast, `link_allowed: false`, never linked from any page |
+
+4. Priority — the check re-derives it, so compute it the same way: **high** when found on 5+ distinct seed keywords, or a tier-1 breeder in the top 3 on any keyword; **medium** on 2–4 keywords; **low** on 1.
+5. Keep about 25, at most 30: highest priority first, then most keywords, then best position. Aim for a spread: roughly 10 breeders, 6 marketplaces and directories, 4 information sites, 2 rescues, and every suspect seller you found (up to 3).
+6. `cities`: only cities from `data/locations.json` that the site's result or page title names. Leave it empty rather than guess.
+</script>
+<script type="text/markdown" data-title="Approval">
+Present the proposed list as a board (the repo's board system, one row per competitor with domain, tier, keywords found on, best position, priority and why it got its tier). Wait for "approved". Only then write `data/competitors.json` with `_meta.total` equal to the entry count and `last_analyzed: null`.
+</script>
+<script type="text/markdown" data-title="Check before you hand off">
+Run `python3 scripts/competitor_registry_check.py`. It must print 0 problems. Fix and re-run — never hand off a registry the check rejects.
+</script>
+<script type="text/markdown" data-title="Handoff">
+`bsuk-competitor-intel --all` (or `--tier`) reads the registry next.
+</script>
+<script type="text/markdown" data-title="Rules">
+1. No entry without a fetched search result behind it.
+2. Approval before writing, every time.
+3. Root domains only; one entry per domain.
+4. Tier 5 is never linkable.
+5. Every paid call preflighted and recorded; Bing never bought.
+````
+
+- [ ] **Step 4: GREEN — run the same scenario with the agent**
+
+Dispatch a subagent with the agent file as its instructions and the fixture as the only search result ("the connector is unavailable in this test; treat the fixture as the fetched SERP; do not call any tool that costs money; stop at the approval step and print the board rows and the JSON you would write"). Pass criteria, all required:
+- stops for approval, writes nothing;
+- `pets4homes.co.uk` once, `champdogs.co.uk`, `thekennelclub.org.uk` as tier 2;
+- `cheap-blue-pups-example.com` tier 5 with `link_allowed: false`;
+- the rescue as tier 4;
+- the JSON it would write, saved by the controller to a scratch root with `data/locations.json` copied in, passes `python3 scripts/competitor_registry_check.py --root <scratch>`.
+
+If any fails, change the agent text (REFACTOR) and re-run until all pass.
+
+- [ ] **Step 5: Lints, registries, commit**
+
+```bash
+python3 scripts/build_agent_registry.py && python3 scripts/build_system_registry.py
+python3 -m pytest tests/py/test_agent_facts.py tests/py/test_skills_frontmatter.py tests/py/test_agent_registry.py tests/py/test_system_registry.py tests/py/test_claude_md.py -q && npm run -s check:markers && npm run -s agents
+git add .claude/agents/bsuk-competitor-registry.md tests/py/fixtures/competitors/serp-blue-staffy-puppies-for-sale.json data/agent-registry.json docs/reference/system-registry.md
+git commit -m "agent: bsuk-competitor-registry — seeds, root domains, five tiers, approval before writing
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 6: `bsuk-competitor-intel` agent">
+**Files:**
+- Create: `tests/py/fixtures/competitors/page-example-breeder.md` (a short invented breeder page in markdown, as `firecrawl_scrape` returns it)
+- Create: `.claude/agents/bsuk-competitor-intel.md`
+- Modify: registries (regenerated)
+
+- [ ] **Step 1: Write the fixture**
+
+`tests/py/fixtures/competitors/page-example-breeder.md`:
+
+```markdown
+# Blue Staffy Puppies from Example Breeder
+
+Our KC registered blue Staffordshire Bull Terrier puppies are raised in our home near Leeds.
+</script>
+<script type="text/markdown" data-title="Available Puppies">
+Two boys and one girl, ready in October.
+</script>
+<script type="text/markdown" data-title="Health Testing">
+Both parents are L-2-HGA and HC clear.
+</script>
+<script type="text/markdown" data-title="Visiting Us">
+We welcome visits by appointment. We deliver to Manchester and Leeds.
+</script>
+<script type="text/markdown" data-title="FAQ">
+
+</script>
+<script type="text/markdown" data-title="How much is the deposit?">
+Please call us.
+```
+
+- [ ] **Step 2: RED**
+
+Dispatch a subagent without the agent file: "Analyse this competitor (`example-breeder`, root domain `example-breeder.co.uk`) from this fetched homepage `tests/py/fixtures/competitors/page-example-breeder.md`; no other page could be fetched. Write the report." Record failures to look for: invents a word count for pages it did not see; fills `schema_types` without the raw HTML; claims prices; writes prose only (no JSON a script can count); gives no `NOT FETCHED`; copies the page's sentences verbatim.
+
+- [ ] **Step 3: Write the agent**
+
+`.claude/agents/bsuk-competitor-intel.md`:
+
+````markdown
+---
+name: bsuk-competitor-intel
+description: Deep competitive intelligence for BlueStaffyUK. Analyses one, one tier, or all competitors in data/competitors.json across ten categories — trust signals, content depth, keyword use, page types, blog, visual assets, schema, geography over the 28 cities, conversion, technical — and writes one machine-countable JSON report plus a readable report per competitor, and a BSUK profile in the same shape. The gap matrix is then built by script from these reports. Run @bsuk-competitor-intel <id>, --tier <1-5>, --all, or --bsuk.
+tools: [Read, Write, Bash, mcp__firecrawl-mcp__firecrawl_scrape, mcp__firecrawl-mcp__firecrawl_map, mcp__firecrawl-mcp__firecrawl_search, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_evaluate]
+model: inherit
+effort: max
+---
+</script>
+<script type="text/markdown" data-title="Golden Rule">
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. Every value in a report comes from a page you fetched in this run. A field you could not fetch is `{"status": "NOT FETCHED", "reason": "..."}` — never an estimate, never a value from memory. Summarise competitor wording; never copy it.
+> **Primary:** Firecrawl (`firecrawl_map`, `firecrawl_scrape`). **Fallback:** Playwright (`browser_navigate` + `browser_snapshot`, `browser_evaluate` for JSON-LD) when Firecrawl returns empty content. Firecrawl spends credits: report how many pages you fetched at the end of the run.
+</script>
+<script type="text/markdown" data-title="On Startup">
+1. Read `data/competitors.json` (stop and hand to `bsuk-competitor-registry` if it is missing).
+2. Read `schemas/competitor-report.schema.json` — the contract your JSON must pass.
+3. Read `data/locations.json` — the 28 cities.
+4. Mode from the invocation: `<id>`, `--tier <n>`, `--all`, or `--bsuk` (BSUK's own profile). No mode named → the highest-priority competitor with `last_analyzed: null`, and say so in your first line.
+</script>
+<script type="text/markdown" data-title="What to fetch per competitor">
+1. `firecrawl_map` on the root domain → the URL list.
+2. `firecrawl_scrape` (markdown, main content) on the homepage and up to five key pages chosen from the URL list: a listing or puppies page, a price or FAQ page, a care or breed guide, a city page, the about page.
+3. `firecrawl_scrape` with `rawHtml` on the homepage for JSON-LD, or `browser_evaluate` of `[...document.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent)`.
+4. Tier-5 sites: the homepage only; never follow their links further.
+</script>
+<script type="text/markdown" data-title="The ten categories">
+| # | Report field | What to record |
+|---|---|---|
+| 1 | `trust` | Council breeding licence shown (yes/no, and the council if printed), Kennel Club registration mentioned, health tests named (e.g. L-2-HGA, HC), vet checks, how long they say they have been breeding (as they word it), town given, phone shown, number of reviews shown |
+| 2 | `content` | Homepage word count, URL count from the map, H2 count on each key page |
+| 3 | `keywords` | Exact buyer phrases the pages use — transactional, informational, city modifiers, comparisons — lowercase, one phrase per value |
+| 4 | `page_types` | Count of each type in the URL list: `breed-guide`, `care-guide`, `health`, `price`, `comparison`, `city`, `blog`, `faq`, `about`, `listing`, `reviews`, `contact` |
+| 5 | `blog` | Post count, topics, rough posting frequency, three sampled word counts |
+| 6 | `visual` | Images on the homepage, video present, alt-text quality (descriptive, generic, missing) |
+| 7 | `schema_types` | JSON-LD `@type` values found |
+| 8 | `cities` | Which of the 28 cities they have a page for or name — exact city names from `data/locations.json` only |
+| 9 | `conversion` | CTA types, whether prices are shown (and the amounts exactly as printed, in the page's own currency), deposit terms as worded, steps to enquire, urgency signals |
+| 10 | `technical` | Mobile layout OK, Lighthouse performance score if a run was possible, otherwise `NOT FETCHED` |
+
+`pages` records every page you fetched: `url`, `title`, `h1`, `h2` list, with `fetched_on`. The keyword-gap agent reuses this list rather than fetching again.
+</script>
+<script type="text/markdown" data-title="Output">
+1. `docs/research/competitors/<id>.json` — passes `schemas/competitor-report.schema.json`; `id` equals the file name.
+2. `docs/research/competitors/<id>.md` — the readable report: one section per category, then **Key insight** (one or two sentences: the single thing BSUK can learn from or beat this competitor on).
+3. Set `last_analyzed` in `data/competitors.json` to today, and nothing else in that file.
+4. `--bsuk`: run the same ten categories against the local build (`npm run build`, then read `dist/`), id `bsuk`, root domain `SITE_URL_PLACEHOLDER` until project 6 sets the domain. The gap matrix reads BSUK's side from this file.
+</script>
+<script type="text/markdown" data-title="After a run">
+```bash
+python3 scripts/gap_matrix.py --write
+npm run -s check:gaps && npm run -s check:competitors
+```
+
+Both must pass before you hand off. A `--write` that exits 6 names the report that breaks the contract — fix the report, not the schema.
+</script>
+<script type="text/markdown" data-title="Handoff">
+`bsuk-competitive-keyword-gap-agent` (reads the `pages` lists), then `bsuk-strategy-synthesizer`.
+</script>
+<script type="text/markdown" data-title="Rules">
+1. Fetched or `NOT FETCHED`; nothing in between.
+2. Never modify a site file — research only.
+3. Never link, quote at length, or send traffic to a tier-5 site.
+4. Cities only from `data/locations.json`.
+5. Prices only exactly as printed on the competitor's page, inside the report; never carried into BSUK copy.
+````
+
+- [ ] **Step 4: GREEN**
+
+Same scenario with the agent file ("only this page could be fetched; no tool calls"). Pass criteria:
+- JSON saved by the controller to a scratch root passes `python3 scripts/gap_matrix.py --write --root <scratch>` (exit 0);
+- `content`, `schema_types`, `technical`, `blog` are `NOT FETCHED` with reasons (one page, no HTML);
+- `cities` is exactly `["Leeds", "Manchester"]` in any order, if both are in `data/locations.json` (check first; otherwise only the one that is);
+- `trust` records KC registration and L-2-HGA/HC; `conversion` records no price;
+- no sentence of the fixture copied whole into the `.md`.
+
+REFACTOR until all pass.
+
+- [ ] **Step 5: Lints, registries, commit**
+
+```bash
+python3 scripts/build_agent_registry.py && python3 scripts/build_system_registry.py
+python3 -m pytest tests/py/test_agent_facts.py tests/py/test_skills_frontmatter.py tests/py/test_agent_registry.py tests/py/test_system_registry.py tests/py/test_claude_md.py -q && npm run -s check:markers && npm run -s agents
+git add .claude/agents/bsuk-competitor-intel.md tests/py/fixtures/competitors/page-example-breeder.md data/agent-registry.json docs/reference/system-registry.md
+git commit -m "agent: bsuk-competitor-intel — ten categories, countable reports, NOT FETCHED over guesses
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 7: `bsuk-competitive-keyword-gap-agent`">
+**Files:**
+- Create: `tests/py/fixtures/competitors/report-example-breeder.json` (a schema-valid report with a `pages` list of three URLs: a Manchester city page, a "blue staffy vs american bully" comparison, a puppy price page)
+- Create: `.claude/agents/bsuk-competitive-keyword-gap-agent.md`
+- Modify: registries
+
+- [ ] **Step 1: Write the fixture**
+
+`tests/py/fixtures/competitors/report-example-breeder.json`:
+
+```json
+{
+  "id": "example-breeder", "root_domain": "example-breeder.co.uk", "analysed_on": "2026-09-24",
+  "keywords": {"status": "ok", "values": ["blue staffy puppies manchester", "blue staffy vs american bully", "staffy puppy price"]},
+  "page_types": {"status": "ok", "values": {"city": 1, "comparison": 1, "price": 1}},
+  "cities": {"status": "ok", "values": ["Manchester"]},
+  "schema_types": {"status": "NOT FETCHED", "reason": "fixture"},
+  "pages": {"status": "ok", "fetched_on": "2026-09-24", "values": [
+    {"url": "https://example-breeder.co.uk/blue-staffy-puppies-manchester/", "title": "Blue Staffy Puppies Manchester", "h1": "Blue Staffy Puppies in Manchester", "h2": ["Available Puppies", "Delivery to Manchester"]},
+    {"url": "https://example-breeder.co.uk/blue-staffy-vs-american-bully/", "title": "Blue Staffy vs American Bully", "h1": "Blue Staffy vs American Bully", "h2": ["Size", "Temperament", "Law"]},
+    {"url": "https://example-breeder.co.uk/staffy-puppy-price/", "title": "How Much Is a Staffy Puppy?", "h1": "Staffy Puppy Prices", "h2": ["What Affects the Price", "Deposits"]}
+  ]},
+  "trust": {"status": "NOT FETCHED", "reason": "fixture"},
+  "content": {"status": "NOT FETCHED", "reason": "fixture"},
+  "blog": {"status": "NOT FETCHED", "reason": "fixture"},
+  "visual": {"status": "NOT FETCHED", "reason": "fixture"},
+  "conversion": {"status": "NOT FETCHED", "reason": "fixture"},
+  "technical": {"status": "NOT FETCHED", "reason": "fixture"},
+  "key_insight": ""
+}
+```
+
+Add a test that keeps the fixture honest, appended to `tests/py/test_gap_matrix.py`:
+
+```python
+def test_the_agent_fixture_report_is_schema_valid(tmp_path):
+    fixture = REPO / "tests/py/fixtures/competitors/report-example-breeder.json"
+    d = tmp_path / "docs/research/competitors"
+    d.mkdir(parents=True)
+    (d / "example-breeder.json").write_text(fixture.read_text())
+    bsuk, comps = G.load_reports(tmp_path)
+    assert list(comps) == ["example-breeder"]
+```
+
+- [ ] **Step 2: RED**
+
+Subagent without the agent file: "Using `tests/py/fixtures/competitors/report-example-breeder.json` and `data/page-map.json`, find the keyword gaps for BlueStaffyUK." Failures to look for: re-fetches pages it already has; scores without the stated rubric; gaps with no competitor URL; invents search volumes; claims BSUK lacks a page the page map has.
+
+- [ ] **Step 3: Write the agent**
+
+`.claude/agents/bsuk-competitive-keyword-gap-agent.md`:
+
+````markdown
+---
+name: bsuk-competitive-keyword-gap-agent
+description: Finds the topics and keywords BlueStaffyUK's competitors have dedicated pages for that BSUK does not target, scores each gap on observable signals only, and names the competitor URL that proves it. Reads the page lists competitor-intel already fetched (fetching again only when a list is older than 30 days) and compares them with data/page-map.json. Writes docs/research/keyword-gap-<date>.md and routes high gaps to bsuk-content-architect.
+tools: [Read, Write, Bash, mcp__firecrawl-mcp__firecrawl_scrape, mcp__firecrawl-mcp__firecrawl_map, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_snapshot]
+model: inherit
+effort: high
+---
+</script>
+<script type="text/markdown" data-title="Golden Rule">
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. Every gap points to a competitor URL that exists in a report's `pages` list or that you fetched in this run. Scores use the rubric below and nothing else — never a search volume you did not fetch.
+</script>
+<script type="text/markdown" data-title="Purpose">
+One question: what do BSUK's competitors have a dedicated page for that BSUK does not?
+</script>
+<script type="text/markdown" data-title="On Startup">
+1. Read every `docs/research/competitors/*.json` (skip `bsuk.json` as a competitor; it is BSUK's profile).
+2. Read `data/page-map.json` — BSUK's pages (`url`, `title`, `h1`, `headings`).
+3. Read the newest `docs/research/gap-matrix-*.md` — the page-type and city counts are already there; do not recount them.
+4. Mode from the invocation: all competitors (default), one `<id>`, or one category (city, comparison, care, price). Say which in your first line.
+</script>
+<script type="text/markdown" data-title="Freshness">
+A report whose `pages.fetched_on` is older than 30 days, or whose `pages` is `NOT FETCHED`: fetch that competitor's key pages again (`firecrawl_map`, then `firecrawl_scrape` for title, H1 and H2s) and say so. Otherwise use the list as it is.
+</script>
+<script type="text/markdown" data-title="Find the gaps">
+For each competitor page, name its topic in a few words (e.g. "blue staffy vs american bully", "staffy puppy price", "blue staffy puppies manchester"). A topic is covered by BSUK when a page-map entry's title or H1 targets the same topic. A passing mention inside another page is not coverage.
+</script>
+<script type="text/markdown" data-title="Score">
+| Signal | Points |
+|---|---|
+| The competitor has a dedicated page for the topic | +3 |
+| The page is among the competitor's key pages (listing, price, FAQ, guide, city, about) | +2 |
+| BSUK has no page targeting the topic | +3 |
+| The topic has buyer intent (for sale, price, near a city, deposit, breeder) | +2 |
+
+7 or more = **high** (route to `bsuk-content-architect` now) · 4–6 = medium (content calendar) · below 4 = low (watch). Licence and health-testing gaps are always high — they are trust content.
+</script>
+<script type="text/markdown" data-title="Output">
+`docs/research/keyword-gap-<YYYY-MM-DD>.md`:
+
+| Topic | Score | Band | Competitors with a page (URLs) | BSUK page (or none) | Suggested page type |
+|---|---|---|---|---|---|
+
+Then a short list of the high gaps with one line each on why. Summarise competitor angles; never copy their text.
+</script>
+<script type="text/markdown" data-title="Handoff">
+High gaps → `bsuk-content-architect`. The whole file → `bsuk-strategy-synthesizer`.
+</script>
+<script type="text/markdown" data-title="Rules">
+1. No gap without a URL.
+2. Observable signals only.
+3. Reuse fetched page lists; re-fetch only when stale or missing.
+4. Tier-5 competitors can show a gap but are never suggested as a link.
+````
+
+- [ ] **Step 4: GREEN**
+
+Same scenario with the agent. Pass criteria: no fetch attempted (fixture is fresh relative to a stated "today" of 2026-09-25); each gap row names one of the three fixture URLs; the rubric arithmetic is right on every row (controller recomputes); a topic BSUK already has in `data/page-map.json` is not reported as missing; no volumes. REFACTOR until all pass.
+
+- [ ] **Step 5: Lints, registries, commit**
+
+```bash
+python3 -m pytest tests/py/test_gap_matrix.py -q
+python3 scripts/build_agent_registry.py && python3 scripts/build_system_registry.py
+python3 -m pytest tests/py/test_agent_facts.py tests/py/test_skills_frontmatter.py tests/py/test_agent_registry.py tests/py/test_system_registry.py tests/py/test_claude_md.py -q && npm run -s check:markers && npm run -s agents
+git add .claude/agents/bsuk-competitive-keyword-gap-agent.md tests/py/fixtures/competitors/report-example-breeder.json tests/py/test_gap_matrix.py data/agent-registry.json docs/reference/system-registry.md
+git commit -m "agent: bsuk-competitive-keyword-gap-agent — reuses intel's page lists, every gap proved by a URL
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 8: `bsuk-llm-keyword-intel` agent">
+**Files:**
+- Create: `tests/py/fixtures/competitors/chatgpt-manchester.json` (an invented, trimmed ChatGPT-scraper answer: three paragraphs naming Pets4Homes and the Kennel Club, citing `pets4homes.co.uk` and `thekennelclub.org.uk`, mentioning "health tests", "meet the mother", "microchip", in a numbered list)
+- Create: `.claude/agents/bsuk-llm-keyword-intel.md`
+- Modify: registries
+
+- [ ] **Step 1: Write the fixture**
+
+`tests/py/fixtures/competitors/chatgpt-manchester.json`:
+
+```json
+{
+  "query": "Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?",
+  "engine": "chatgpt",
+  "answer": "1. Use reputable listings such as Pets4Homes or the Kennel Club's Find a Puppy service.\n2. Ask to meet the mother and see where the puppies are raised.\n3. Ask which health tests the parents have had, and check the puppy is microchipped before it leaves.",
+  "citations": ["https://www.pets4homes.co.uk/", "https://www.thekennelclub.org.uk/search/find-a-puppy/"]
+}
+```
+
+- [ ] **Step 2: RED**
+
+Subagent without the agent file: "Using this saved AI answer `tests/py/fixtures/competitors/chatgpt-manchester.json` and the Manchester question file `data/queries/blue-staffy-puppies-manchester-uk.json`, produce LLM intel for the Manchester page." Failures to look for: calls a paid engine; reports BSUK as cited; no link to registry ids; entities not checked against the page; no answer-format record.
+
+- [ ] **Step 3: Write the agent**
+
+`.claude/agents/bsuk-llm-keyword-intel.md`:
+
+````markdown
+---
+name: bsuk-llm-keyword-intel
+description: Asks an AI engine the questions a buyer would ask about a BlueStaffyUK page, through the DataForSEO connector and the spend guard, then records who the answer cites (BSUK or which registry competitors), which entities it uses that the page lacks, and the answer's format as a mirror template. One engine per page. Writes docs/research/llm-intel/<slug>-<date>.json for the strategy synthesizer and the page builders.
+model: inherit
+effort: high
+---
+</script>
+<script type="text/markdown" data-title="Golden Rule">
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. Record only what the fetched answer says. BSUK is cited only when a BSUK URL is in the answer's citations or text.
+> **Paid calls go through the spend guard.** `python3 scripts/query_augment.py --preflight <slug> --source ai_engines` first: exit 3 means this page already has a bought answer — reuse `data/queries/raw/<slug>/ai_engines.response.json` and do not pay again; exit 4 means stop and ask the user. After a paid call, `--record` it at once with the configured typical cost, marked as an estimate.
+</script>
+<script type="text/markdown" data-title="On Startup">
+1. Input: a page slug. Its queries: the page's `data/queries/<slug>.json` (primary keyword and the top FAQ block); if there is none, the page's primary keyword plus the matching rows of the newest `docs/research/gap-matrix-*.md`.
+2. Read `data/competitors.json` — to map cited domains to registry ids.
+3. Read the page as built (`dist/` after `npm run build`) or, if it is not rebuilt yet, `data/page-map.json`'s entry for it.
+4. Ask the controller for the DataForSEO balance if nobody has stated it today.
+</script>
+<script type="text/markdown" data-title="Query">
+One engine per page: DataForSEO `ai_optimization_chat_gpt_scraper`, location United Kingdom, the page's buyer question (for a city page: "Where can I buy a blue Staffy puppy near <city>, and what should I ask the breeder?"). Optionally, when the user asks for citation counts across many queries, `ai_optimization_llm_mentions_search` for the BSUK domain once the domain exists (project 6) — until then say `NOT FETCHED`.
+
+If the connector is unavailable or declined: record `ai_engines` as `NOT FETCHED` with the reason and stop — there is no free substitute for an AI engine's answer.
+</script>
+<script type="text/markdown" data-title="Three layers">
+1. **Entities** — the noun phrases the answer uses (tests, paperwork, places, organisations, practices). Mark each `on_page: true/false` against the page text. With one engine, "high" means a buying-safety entity (health tests, meeting the mother, microchip, licence, contract) missing from the page; everything else is medium.
+2. **Citations** — every URL in `citations` and in the text, reduced to root domain, mapped to a registry id where one exists. `bsuk_cited: true/false`. A citation gap is a registry competitor cited while BSUK is not.
+3. **Format** — list type (numbered, bulleted, paragraphs, table), length band (short under 100 words, medium to 300, long above), opening move (recommendation, definition, question, statistic). This is the mirror template for the page's answer blocks.
+</script>
+<script type="text/markdown" data-title="Output">
+`docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json`:
+
+```json
+{
+  "slug": "blue-staffy-puppies-manchester-uk",
+  "engine": "chatgpt",
+  "query": "...",
+  "fetched": "ok",
+  "bsuk_cited": false,
+  "citations": [{"domain": "pets4homes.co.uk", "registry_id": "pets4homes"}],
+  "citation_gap": ["pets4homes"],
+  "entities": [{"entity": "health tests", "on_page": false, "band": "high"}],
+  "format": {"list": "numbered", "length": "short", "opening": "recommendation"},
+  "raw": "data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json"
+}
+```
+</script>
+<script type="text/markdown" data-title="Handoff">
+`bsuk-strategy-synthesizer` reads these files; the page builders read `entities` and `format` when writing the page's FAQ answers.
+</script>
+<script type="text/markdown" data-title="Rules">
+1. One engine per page; never pay twice for the same page.
+2. Nothing recorded that the answer does not contain.
+3. Registry ids only from `data/competitors.json`.
+4. Tier-5 domains cited by an engine are recorded as a risk, never as a model to copy.
+````
+
+- [ ] **Step 4: GREEN**
+
+Same scenario with the agent ("treat the fixture as the saved `ai_engines.response.json`; preflight would return 3"). Pass criteria: no paid call attempted; `bsuk_cited: false`; citations mapped to `pets4homes` and the Kennel Club's id only if those ids exist in a registry (with no registry yet, `registry_id: null`); "health tests", "meet the mother" and "microchip" each marked against the Manchester question file / page text, and high only when missing; format `numbered`, `short`, `recommendation`. REFACTOR until all pass.
+
+- [ ] **Step 5: Lints, registries, commit**
+
+```bash
+python3 scripts/build_agent_registry.py && python3 scripts/build_system_registry.py
+python3 -m pytest tests/py/test_agent_facts.py tests/py/test_skills_frontmatter.py tests/py/test_agent_registry.py tests/py/test_system_registry.py tests/py/test_claude_md.py -q && npm run -s check:markers && npm run -s agents
+git add .claude/agents/bsuk-llm-keyword-intel.md tests/py/fixtures/competitors/chatgpt-manchester.json data/agent-registry.json docs/reference/system-registry.md
+git commit -m "agent: bsuk-llm-keyword-intel — one engine per page through the spend guard, citations mapped to the registry
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 9: `bsuk-strategy-synthesizer` agent">
+**Files:**
+- Create: `tests/py/fixtures/competitors/gap-matrix-fixture.md` (produced, not typed: see Step 1)
+- Create: `.claude/agents/bsuk-strategy-synthesizer.md`
+- Modify: registries
+
+- [ ] **Step 1: Build the fixture matrix with the script**
+
+In a scratch root, write three schema-valid reports (copy `report-example-breeder.json` three times with ids `a`, `b`, `c` and varied `cities`/`keywords`), run `python3 scripts/gap_matrix.py --write --date 2026-09-24 --root <scratch>`, and copy the output to `tests/py/fixtures/competitors/gap-matrix-fixture.md`. Record the scratch commands in the task report.
+
+- [ ] **Step 2: RED**
+
+Subagent without the agent file: "From `tests/py/fixtures/competitors/gap-matrix-fixture.md` and `tests/py/fixtures/competitors/chatgpt-manchester.json`, write BlueStaffyUK's content strategy for the location pages." Save its output to scratch and run `python3 scripts/strategy_cite_check.py <file>`. Failures to look for: one strategy (or three); figures not in any source; no `## Sources`; no named downside.
+
+- [ ] **Step 3: Write the agent**
+
+`.claude/agents/bsuk-strategy-synthesizer.md`:
+
+````markdown
+---
+name: bsuk-strategy-synthesizer
+description: Turns BlueStaffyUK's existing research — the gap matrix, keyword-gap list, competitor reports and LLM intel — into exactly two complete, materially different content strategies, recommends one with a WHY of three or more real data points and the pick's named downside, and derives the concrete artefact asked for (e.g. the city-page build order or the blog topics + hub). Reads research only; never re-runs it. Every figure in the pick is checked by scripts/strategy_cite_check.py before handoff to bsuk-content-architect.
+tools: [Read, Write, Bash]
+model: inherit
+effort: max
+---
+</script>
+<script type="text/markdown" data-title="Golden Rule">
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` (Recommend + Why; no invented facts) and the packs in `rules/`. You do not build pages and you do not fetch. A figure you quote is copied exactly as a listed source writes it — `7/12`, not "about 60%" — or it is not quoted.
+</script>
+<script type="text/markdown" data-title="The rule that makes this agent">
+1. Exactly TWO strategies — never one, never three. Two forces a real choice.
+2. Each is built from the research: competitors' coverage, gaps, AI-answer citations. Not invented.
+3. Recommend exactly ONE. The WHY cites 3+ specific figures from the sources AND names the pick's downside.
+4. Missing or stale research (older than 30 days): say so in the first lines and carry on with what exists. Never a stand-in number.
+</script>
+<script type="text/markdown" data-title="On Startup — read, in this order">
+1. The newest `docs/research/gap-matrix-*.md`.
+2. The newest `docs/research/keyword-gap-*.md`.
+3. `docs/research/llm-intel/*.json` for the pages in scope.
+4. `data/competitors.json` and the `docs/research/competitors/*.md` reports you need.
+5. `data/page-map.json` and `data/locations.json` — what BSUK has and the 28 cities.
+6. GSC and GA4 figures are NOT FETCHED until project 6: never cite traffic.
+</script>
+<script type="text/markdown" data-title="Output — `docs/superpowers/sessions/&lt;YYYY-MM-DD&gt;-&lt;topic&gt;-strategy.md`">
+```
+# <Topic> strategy — <date>
+</script>
+<script type="text/markdown" data-title="Strategy A — &lt;name&gt;">
+thesis · target clusters · cluster → page map · internal-link plan · schema plan ·
+build order and effort · expected outcome · risks
+</script>
+<script type="text/markdown" data-title="Strategy B — &lt;name&gt;">
+(same parts; a materially different bet, not a variant of A)
+</script>
+<script type="text/markdown" data-title="Recommendation">
+the pick · WHY (3+ figures, each exactly as its source writes it) · the pick's downside ·
+the first three build steps
+</script>
+<script type="text/markdown" data-title="Concrete Artifact">
+(when asked) | topic or page | target keyword | gap score | intent | link role |
+</script>
+<script type="text/markdown" data-title="Sources">
+- `docs/research/gap-matrix-<date>.md`
+- `docs/research/keyword-gap-<date>.md`
+- (every file a figure in the Recommendation or the Concrete Artifact comes from)
+```
+</script>
+<script type="text/markdown" data-title="Before handoff">
+```bash
+python3 scripts/strategy_cite_check.py docs/superpowers/sessions/<file>.md
+```
+
+Exit 0 or no handoff. Exit 1 lists each figure that is in no source: replace it with the source's own figure or remove it. Do not add a source you did not read.
+</script>
+<script type="text/markdown" data-title="Handoff">
+The chosen strategy → `bsuk-content-architect` (framework and builder routing). Each page row → `grill-me` when that page is built.
+````
+
+- [ ] **Step 4: GREEN**
+
+Same scenario with the agent. Pass criteria: exactly two `## Strategy` sections; one `## Recommendation` naming a downside; `python3 scripts/strategy_cite_check.py <output> --root <scratch with the fixtures at their listed paths>` exits 0 (the controller places the fixtures at the paths the output lists, or the output lists the fixture paths); no traffic figures. REFACTOR until all pass.
+
+- [ ] **Step 5: Lints, registries, commit**
+
+```bash
+python3 scripts/build_agent_registry.py && python3 scripts/build_system_registry.py
+python3 -m pytest tests/py/test_agent_facts.py tests/py/test_skills_frontmatter.py tests/py/test_agent_registry.py tests/py/test_system_registry.py tests/py/test_claude_md.py -q && npm run -s check:markers && npm run -s agents
+git add .claude/agents/bsuk-strategy-synthesizer.md tests/py/fixtures/competitors/gap-matrix-fixture.md data/agent-registry.json docs/reference/system-registry.md
+git commit -m "agent: bsuk-strategy-synthesizer — two strategies, one pick, every quoted figure checked
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 10: Housekeeping — manifest, WORKFLOW, session log, registries">
+**Files:**
+- Modify: `data/port-manifest.json`
+- Modify: `docs/reference/WORKFLOW.md`
+- Modify: `docs/reference/session-log.md`
+- Modify: registries (regenerated)
+
+- [ ] **Step 1: Port manifest**
+
+For the rows whose `src` is `.claude/agents/cag-competitor-registry.md`, `cag-competitor-intel.md`, `cag-competitive-keyword-gap-agent.md`, `cag-llm-keyword-intel.md`, `cag-strategy-synthesizer.md`: set `"mode": "rebase"`, make `dst` the `bsuk-` file created in Tasks 5–9, and set `notes` to:
+
+| Agent | Notes |
+|---|---|
+| registry | `competitor intelligence build (2026-09-23): national registry, 5 tiers, approval before writing; per-page pools in data/queries/<slug>.json unchanged` |
+| intel | `competitor intelligence build: ten categories re-based to UK Staffies and the 28 cities; countable JSON reports + BSUK profile` |
+| keyword gap | `competitor intelligence build: reuses intel's page lists; every gap proved by a URL` |
+| llm intel | `competitor intelligence build: DataForSEO ChatGPT scraper through the spend guard, one engine per page; no vendor API keys` |
+| synthesizer | `competitor intelligence build: two strategies, one pick; figures checked by scripts/strategy_cite_check.py` |
+
+Leave `cag-competitor-pricing-alert-agent.md` `deferred`. Then run `python3 -m pytest tests/py/test_port_manifest.py -q && npm run -s check:markers` — `rebase` rows must never be overwritten by the port script and must exist, and the marker gate now scans the five agents (expect `0 problems`).
+
+- [ ] **Step 2: WORKFLOW.md**
+
+Replace the paragraph at `docs/reference/WORKFLOW.md:100-104` ("A competitor registry, a traffic baseline and a gap matrix were prerequisites…") with:
+
+```markdown
+The competitor registry, the intel reports and the gap matrix exist (competitor intelligence
+build, 2026-09-23): `@bsuk-competitor-registry` writes `data/competitors.json` after the user
+approves the list, `@bsuk-competitor-intel` writes `docs/research/competitors/<id>.json` and
+`.md`, and `python3 scripts/gap_matrix.py --write` builds `docs/research/gap-matrix-<date>.md`
+from them (`npm run check:gaps` keeps it honest). The traffic baseline is still deferred to
+project 6 (`@bsuk-gsc-analytics`; GSC is NOT FETCHED until the domain is live).
+```
+
+In Sprint 0 Track A (around line 118–126), change `Discover 30 competitors from 10 seed keywords` to `Discover about 25 competitors (30 at most) from about ten seed keywords`, the output line to `→ Output: data/competitors.json (checked by npm run check:competitors)`, `Analyze all 30 competitors` to `Analyse every registry competitor`, and the output to `→ Output: docs/research/competitors/<id>.json + <id>.md, then scripts/gap_matrix.py --write`. In the checklist line at about 166 replace "the registry, gap matrix and traffic baseline agents are all deferred to project 6" with "the registry and gap matrix exist; the traffic baseline is deferred to project 6". At the Step 0 / Step 2 lines (about 201–217) add after the synthesizer line: `  → Runs scripts/strategy_cite_check.py before handoff`. Grep afterwards: `grep -n "deferred to project 6" docs/reference/WORKFLOW.md` must list only lines about GSC, rank tracking, pricing alerts or branded search.
+
+- [ ] **Step 3: Session log**
+
+Under `## Known Issues`, rewrite item 42 to say it is **closed by the competitor intelligence build** (branch `competitor-intel`), naming the five agents and three scripts, and add a new section header above `## Known Issues` in the same style as the query-augmentation one: `## Competitor intelligence bridge build (2026-09-23) — IN PROGRESS` with a three-line summary. Task 12 changes it to COMPLETE.
+
+- [ ] **Step 4: Registries, full suite, commit**
+
+```bash
+python3 scripts/build_system_registry.py && python3 scripts/build_agent_registry.py
+python3 -m pytest tests/py -q && npm run -s check:all
+git add data/port-manifest.json docs/reference/WORKFLOW.md docs/reference/session-log.md docs/reference/system-registry.md data/agent-registry.json
+git commit -m "record: five competitor agents ported, WORKFLOW points at them, Known Issue 42 closed
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+Expected: every test passes; `check:all` exits 0.
+
+---
+</script>
+<script type="text/markdown" data-title="Task 11: Live pilot (controller-run, paid, user-approved)">
+No subagent writes here without the controller. Every paid step is announced first.
+
+- [ ] **Step 0: Ask the user** for today's DataForSEO dashboard balance and a yes to: ten registry searches (estimate $0.50 logged, likely less) and one ChatGPT-scraper call for Leeds (Manchester already has a bought answer, which is reused free). Record the answer in the task report. If the user says no to paid calls, run the registry on Firecrawl search only and say so everywhere.
+- [ ] **Step 1: Registry.** Dispatch `bsuk-competitor-registry` (full discovery). Publish its board; wait for the user's "approved"; the agent writes `data/competitors.json`. Run `npm run -s check:competitors` → 0 problems. Commit `data/competitors.json`, the spend log and `_meta`.
+- [ ] **Step 2: Intel on three.** Dispatch `bsuk-competitor-intel` on the three highest-priority competitors with different tiers (one breeder, one marketplace, one other), then `--bsuk`. Run `python3 scripts/gap_matrix.py --write` and `npm run -s check:gaps`. Report Firecrawl pages used. Commit the reports and the matrix.
+- [ ] **Step 3: Keyword gap.** Dispatch `bsuk-competitive-keyword-gap-agent` (all). Commit its file.
+- [ ] **Step 4: LLM intel.** Dispatch `bsuk-llm-keyword-intel` for `blue-staffy-puppies-manchester-uk` (reuses the bought answer, exit 3) and, if approved, `blue-staffy-puppies-for-sale-leeds` (one paid call). Commit.
+- [ ] **Step 5: Strategy.** Dispatch `bsuk-strategy-synthesizer` for "the 28 location pages". It must pass `strategy_cite_check.py`. Commit the strategy.
+- [ ] **Step 6: Show the user** the board, the matrix, the gap list and the strategy as Artifacts; ask whether to run intel on the rest of the registry (not part of this build unless they say yes).
+
+Commit messages start `pilot:` and end with the trailer.
+
+---
+</script>
+<script type="text/markdown" data-title="Task 12: Close-out">
+- [ ] **Step 1:** `python3 -m pytest tests/py -q`, `npm run -s check:all` — both green; record counts.
+- [ ] **Step 2:** Write `docs/reports/competitor-intel-gate-report.md` in the shape of `docs/reports/query-augmentation-gate-report.md`: summary table of files, spec section by section PASS / PASS-WITH-DEVIATION / FAIL with evidence and commit hashes, execution-note refinements as deviations, spend (logged vs dashboard), open items (pricing alert, rank tracker and branded search at project 6; intel on the remaining registry entries; any user rulings pending).
+- [ ] **Step 3:** Publish it as an Artifact with `scripts/build_report_artifact.py` (same argument order as the query-augmentation report), republish the spec and plan Artifacts (`scripts/build_spec_artifact.py`, `scripts/build_plan_artifact.py`) with status "executed".
+- [ ] **Step 4:** Session log: the build's section to COMPLETE with the merge hash; memory notes updated.
+- [ ] **Step 5:** Commit, then from `/Users/apple/Downloads/BSUK` (on `foundation`): `git merge --no-ff competitor-intel -m "merge: competitor intelligence — registry, intel, gap matrix, keyword gap, LLM intel, strategy"` with the trailer; `git worktree remove ../BSUK-ci`. Never push.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# '+'BlueStaffyUK — Competitor intelligence plan'+'\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

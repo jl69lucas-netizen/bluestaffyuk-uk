@@ -1,0 +1,19 @@
+# Generated from data/redirects.json by scripts/build_redirects.py — do not edit by hand
+/uk-locations/staffordshire-bull-terrier-puppies-for-sale-essex/ /uk-locations/staffy-puppies-for-sale-essex/ 301
+/legal/privacy-policy/ /privacy-policy-uk/ 301
+/privacy-policy/ /privacy-policy-uk/ 301
+/form/* /uk-blue-staffy-breeders-contact/ 301
+/category/* /blog/ 301
+/healthy-habits-exercises-for-your-pets/ /uk-staffordshire-bull-terrier-guide/ 301
+/bluestaffyuk-uk/* /blue-staffy-uk-breeders/ 301
+/buy-blue-staffy-puppies-for-sale-uk/ /buy-blue-staffy-puppies-uk/ 301
+/feed/ / 301
+/comments/feed/ / 301
+/:slug/feed/ / 301
+/:a/:b/feed/ / 301
+/wp-json/* / 301
+/xmlrpc.php / 301
+/wp-admin/* / 301
+/wp-login.php / 301
+/admin / 301
+/admin/* / 301

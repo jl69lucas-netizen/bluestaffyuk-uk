@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>broken tap targets</title>
+<style>body{margin:0;font:16px/1.5 system-ui}
+a,button{display:inline-block}
+.small{width:18px;height:18px;padding:0;font-size:10px}
+.ok{min-width:44px;min-height:44px}
+/* The 18x18 button sits flush against a full-size control, so the 24px circle
+   centred on it intersects that control's box. That is what SC 2.5.8's spacing
+   exception does NOT forgive, and it is the case this fixture must keep firing:
+   without the gap:2px the two controls would drift far enough apart that the
+   standard would exempt the small one and this fixture would stop proving anything. */
+.row{display:flex;gap:2px;align-items:center}
+</style></head><body>
+<h1>Controls</h1>
+<div class="row">
+  <a href="#x" class="ok">Reserve this puppy</a>
+  <button class="small">x</button>
+</div>
+<p id="x">target</p>
+</body></html>

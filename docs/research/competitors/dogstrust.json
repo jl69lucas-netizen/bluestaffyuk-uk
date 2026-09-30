@@ -1,0 +1,217 @@
+{
+ "id": "dogstrust",
+ "root_domain": "dogstrust.org.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": []
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "about": 3,
+   "breed-guide": 8,
+   "care-guide": 10,
+   "city": 3,
+   "contact": 2,
+   "health": 4,
+   "listing": 3
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "Cardiff",
+   "Dundee",
+   "Essex",
+   "Glasgow",
+   "Leeds",
+   "London",
+   "Manchester"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "NGO"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.dogstrust.org.uk/",
+    "title": "Dogs Rehoming & Dog Rescue Charity | Dogs Trust",
+    "h1": "Help frightened dogs like Holly find hope.",
+    "h2": [
+     "Find dogs to adopt",
+     "We're the biggest dog charity.",
+     "Will you help dogs?",
+     "How much would you like to donate?",
+     "Popular topics",
+     "Barking: causes, triggers and how to help",
+     "Dog peeing or pooing in the house: how to help",
+     "Separation anxiety in dogs: signs, causes and how to help",
+     "How to stop your dog jumping up at people",
+     "Finding behaviour and training support",
+     "Our global work",
+     "Be part of our community",
+     "Foster a dog and change a life",
+     "Volunteering",
+     "Speak up on behalf of dogs!",
+     "Fundraising",
+     "Sponsor a dog",
+     "Subscribe to our newsletter"
+    ]
+   },
+   {
+    "url": "https://www.dogstrust.org.uk/dog-advice/puppy/new-home",
+    "title": "How to settle your puppy into your home | Dogs Trust",
+    "h1": "",
+    "h2": [
+     "Day one with a new puppy",
+     "First nights with a new puppy",
+     "What to do before your puppy arrives",
+     "10 tips to settle your puppy into your home",
+     "Signs your puppy is settling in",
+     "First nights with a new puppy",
+     "Day one with a new puppy",
+     "Introducing your puppy to the world around them"
+    ]
+   },
+   {
+    "url": "https://www.dogstrust.org.uk/dog-advice/getting-dog/breeds/staffordshire-bull-terrier",
+    "title": "Staffordshire Bull Terrier | Rehoming Rescue Dog | Dogs Trust",
+    "h1": "",
+    "h2": [
+     "On this page...",
+     "Why dog insurance is important",
+     "Puppy checklist: preparing for your new dog",
+     "How to have a happy vet visit",
+     "How to perform a health check on your dog",
+     "Enrichment activities to keep your dog entertained",
+     "How to find a good dog walker",
+     "Playpen and crate training a puppy",
+     "How to understand your dog's body language",
+     "Introducing your puppy to the world around them",
+     "Introducing your new dog or puppy to your current dog",
+     "Top 10 dog training tips",
+     "Positive reinforcement – training with rewards",
+     "Getting a dog when you have children",
+     "Dogs and children: living happily together",
+     "Beagle",
+     "Boxer",
+     "Jack Russell Terrier",
+     "Bull Terrier",
+     "Labrador",
+     "Border Terrier",
+     "Buying a dog or puppy safely",
+     "Should I get a dog? 10 questions to ask yourself",
+     "Top 10 benefits of adopting from us"
+    ]
+   },
+   {
+    "url": "https://www.dogstrust.org.uk/about-us",
+    "title": "About Dogs Trust: Who We Are and What We Do | Dogs Trust",
+    "h1": "",
+    "h2": [
+     "A better life for every dog",
+     "What we stand for",
+     "Our plan for the future",
+     "What we do",
+     "Who we are",
+     "Our research and expertise",
+     "Funding and governance",
+     "Explore more about our work",
+     "Work for us",
+     "Annual reports"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": false,
+   "health_tests_named": [],
+   "vet_checks_mentioned": false,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 1,
+   "registered_charity_number_shown": true
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 846,
+   "url_count": 107,
+   "h2_per_page": {
+    "https://www.dogstrust.org.uk/": 18,
+    "https://www.dogstrust.org.uk/dog-advice/puppy/new-home": 8,
+    "https://www.dogstrust.org.uk/dog-advice/getting-dog/breeds/staffordshire-bull-terrier": 24,
+    "https://www.dogstrust.org.uk/about-us": 10
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 0,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "the map holds no post URL with a date and no post was fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 39,
+   "alt_text": "descriptive",
+   "alt_missing": 3,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "form"
+   ],
+   "prices_shown": false,
+   "price_amounts_as_printed": [],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": [
+    "sold-badges"
+   ]
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "Dogs Trust ranks for Staffy buying and price searches on charity authority and a Staffy breed guide that sells adoption, not puppies: the guide answers care questions (health, food, exercise, grooming, crate, temperament, training, children) in short expandable blocks under a carousel of Staffies to rehome, but names no health test, prices no dog and leaves the costs to the buyer's vet. BSUK can meet the same searches with a Staffy guide that answers those same questions and adds what Dogs Trust leaves out: the breed's named health tests, real litter prices and what owning one costs."
+}

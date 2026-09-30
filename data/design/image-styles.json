@@ -1,0 +1,50 @@
+{
+  "og": {
+    "A": {
+      "name": "Contain on Bone",
+      "use": "the default for any in-body photo on a new page, portraits included: wide shots, scenes, single dogs"
+    },
+    "B": {
+      "name": "Blur-Fill",
+      "use": "social OG images only; the twelve built pages' existing in-body images"
+    },
+    "C": {
+      "name": "Editorial Split",
+      "use": "a \"meet the puppy\" moment: photo beside a steel caption panel"
+    },
+    "D": {
+      "name": "Portrait Frame",
+      "use": "a matted 3:4 portrait inside the 16:9 box"
+    },
+    "E": {
+      "name": "Top-Anchored Cover",
+      "use": "a photo that should fill the box; the head is never cut, paws may crop"
+    },
+    "H": {
+      "name": "Duo Strip",
+      "use": "two puppies or a pair, two portraits side by side"
+    }
+  },
+  "infographic": {
+    "IG-1": {
+      "name": "Stat Panel",
+      "use": "cost, price, how much, how many (location, comparison, blog)"
+    },
+    "IG-2": {
+      "name": "Process Steps",
+      "use": "how to, steps, what happens, timeline (location, blog)"
+    },
+    "IG-3": {
+      "name": "Comparison Split",
+      "use": "versus, difference, which is better (comparison, blog)"
+    },
+    "IG-4": {
+      "name": "Checklist Grid",
+      "use": "checklist, what to check, what to bring, signs of (blog, comparison, location)"
+    },
+    "IG-5": {
+      "name": "Route Map",
+      "use": "delivery, collection, travel, where (location)"
+    }
+  }
+}

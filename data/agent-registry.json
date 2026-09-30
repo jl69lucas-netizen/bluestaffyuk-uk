@@ -1,0 +1,149 @@
+{
+  "_meta": {
+    "description": "BSUK agent tier registry, GENERATED from .claude/agents/bsuk-*.md by scripts/build_agent_registry.py. Never hand-edit: edit the agent's frontmatter and regenerate. All agents use model: inherit; effort is the only per-agent cost lever.",
+    "generated_by": "scripts/build_agent_registry.py",
+    "tiers": {
+      "tier_max": {
+        "model": "inherit",
+        "effort": "max"
+      },
+      "tier_high": {
+        "model": "inherit",
+        "effort": "high"
+      },
+      "tier_medium": {
+        "model": "inherit",
+        "effort": "medium"
+      },
+      "tier_low": {
+        "model": "inherit",
+        "effort": "low"
+      }
+    }
+  },
+  "agents": {
+    "bsuk-about-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-accessibility-fixer": {
+      "tier": "tier_medium"
+    },
+    "bsuk-agent-system-qa": {
+      "tier": "tier_medium"
+    },
+    "bsuk-angle-agent": {
+      "tier": "tier_max"
+    },
+    "bsuk-batch-rebuilder": {
+      "tier": "tier_medium"
+    },
+    "bsuk-blog-post-agent": {
+      "tier": "tier_max"
+    },
+    "bsuk-canonical-fixer": {
+      "tier": "tier_medium"
+    },
+    "bsuk-comparison-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-competitive-keyword-gap-agent": {
+      "tier": "tier_high"
+    },
+    "bsuk-competitor-intel": {
+      "tier": "tier_max"
+    },
+    "bsuk-competitor-registry": {
+      "tier": "tier_medium"
+    },
+    "bsuk-contact-form-updater": {
+      "tier": "tier_medium"
+    },
+    "bsuk-content-architect": {
+      "tier": "tier_max"
+    },
+    "bsuk-content-audit-agent": {
+      "tier": "tier_max"
+    },
+    "bsuk-deploy-verifier": {
+      "tier": "tier_medium"
+    },
+    "bsuk-faq-agent": {
+      "tier": "tier_high"
+    },
+    "bsuk-footer-standardizer": {
+      "tier": "tier_medium"
+    },
+    "bsuk-framework-agent": {
+      "tier": "tier_max"
+    },
+    "bsuk-gsc-analytics": {
+      "tier": "tier_high"
+    },
+    "bsuk-homepage-builder": {
+      "tier": "tier_max"
+    },
+    "bsuk-hub-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-image-pipeline": {
+      "tier": "tier_medium"
+    },
+    "bsuk-infographic-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-interactive-component": {
+      "tier": "tier_high"
+    },
+    "bsuk-keyword-verifier": {
+      "tier": "tier_medium"
+    },
+    "bsuk-llm-keyword-intel": {
+      "tier": "tier_high"
+    },
+    "bsuk-location-builder": {
+      "tier": "tier_max"
+    },
+    "bsuk-meta-description-agent": {
+      "tier": "tier_medium"
+    },
+    "bsuk-non-commodity-content-agent": {
+      "tier": "tier_max"
+    },
+    "bsuk-paa-agent": {
+      "tier": "tier_medium"
+    },
+    "bsuk-performance-fixer": {
+      "tier": "tier_medium"
+    },
+    "bsuk-purchase-guide": {
+      "tier": "tier_max"
+    },
+    "bsuk-rank-tracker": {
+      "tier": "tier_high"
+    },
+    "bsuk-redirect-manager": {
+      "tier": "tier_medium"
+    },
+    "bsuk-section-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-self-update": {
+      "tier": "tier_medium"
+    },
+    "bsuk-seo-content-writer": {
+      "tier": "tier_max"
+    },
+    "bsuk-site-hygiene-agent": {
+      "tier": "tier_medium"
+    },
+    "bsuk-strategy-synthesizer": {
+      "tier": "tier_max"
+    },
+    "bsuk-structure-architect": {
+      "tier": "tier_max"
+    },
+    "bsuk-trust-signals-agent": {
+      "tier": "tier_high"
+    }
+  }
+}

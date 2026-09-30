@@ -1,0 +1,187 @@
+{
+  "id": "ukpets",
+  "root_domain": "ukpets.com",
+  "analysed_on": "2026-09-25",
+  "keywords": {
+    "status": "ok",
+    "values": [
+      "blue staffies",
+      "blue staffordshire bull terrier",
+      "blue staffordshire bull terrier puppies",
+      "staffie for sale",
+      "staffordshire bull terrier dogs and puppies",
+      "staffordshire bull terrier for sale",
+      "staffordshire bull terrier pups for sale",
+      "staffordshire bull terriers in dundee",
+      "staffy pups for sale",
+      "staffy x pups for sale"
+    ]
+  },
+  "page_types": {
+    "status": "ok",
+    "values": {
+      "blog": 26,
+      "breed-guide": 8,
+      "city": 150,
+      "listing": 378
+    }
+  },
+  "cities": {
+    "status": "ok",
+    "values": [
+      "Birmingham",
+      "Bristol",
+      "Cardiff",
+      "Coventry",
+      "Dundee",
+      "Edinburgh",
+      "Glasgow",
+      "Hull",
+      "Leeds",
+      "Leicester",
+      "Liverpool",
+      "London",
+      "Manchester",
+      "Middlesbrough",
+      "Nottingham",
+      "Oxford",
+      "Sunderland",
+      "Wolverhampton",
+      "York"
+    ]
+  },
+  "schema_types": {
+    "status": "ok",
+    "values": [
+      "Organization",
+      "Article",
+      "WebPage",
+      "ImageObject",
+      "Person"
+    ]
+  },
+  "pages": {
+    "status": "ok",
+    "fetched_on": "2026-09-25",
+    "values": [
+      {
+        "url": "https://www.ukpets.com/",
+        "title": "Buy Puppies & Kittens from Trusted UK Breeders | UKPets",
+        "h1": "It's a Pet's life!",
+        "h2": []
+      },
+      {
+        "url": "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/bath",
+        "title": "Staffordshire Bull Terrier Dogs and Puppies For Sale in Bath",
+        "h1": "Staffordshire Bull Terrier Dogs and Puppies For Sale in Bath",
+        "h2": []
+      },
+      {
+        "url": "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/dundee",
+        "title": "Staffordshire Bull Terrier Dogs and Puppies For Sale in Dundee",
+        "h1": "Staffordshire Bull Terrier Dogs and Puppies For Sale in Dundee",
+        "h2": []
+      }
+    ]
+  },
+  "trust": {
+    "status": "ok",
+    "values": {
+      "council_licence_shown": false,
+      "council": null,
+      "kc_registration_mentioned": true,
+      "health_tests_named": [],
+      "vet_checks_mentioned": true,
+      "breeding_since_as_worded": null,
+      "town": null,
+      "phone_shown": false,
+      "email_shown": false,
+      "contact_source": "raw-html",
+      "reviews_shown": 0
+    }
+  },
+  "content": {
+    "status": "ok",
+    "values": {
+      "homepage_words": 431,
+      "url_count": {
+        "status": "NOT FETCHED",
+        "reason": "map truncated at 500"
+      },
+      "h2_per_page": {
+        "https://www.ukpets.com/": 0,
+        "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/bath": 0,
+        "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/dundee": 0
+      }
+    }
+  },
+  "blog": {
+    "status": "ok",
+    "values": {
+      "post_count": 25,
+      "post_folder": null,
+      "topics": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: none of the classifier's key pages is a post"
+      },
+      "posting_frequency": {
+        "status": "NOT FETCHED",
+        "reason": "no dated post URL in the Map list and no post fetched"
+      },
+      "sampled_word_counts": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: none of the classifier's key pages is a post"
+      }
+    }
+  },
+  "visual": {
+    "status": "ok",
+    "values": {
+      "homepage_images": 14,
+      "alt_text": "descriptive",
+      "alt_missing": 0,
+      "video_present": false
+    }
+  },
+  "conversion": {
+    "status": "ok",
+    "values": {
+      "cta_types": [
+        "visit"
+      ],
+      "prices_shown": true,
+      "price_amounts_as_printed": [
+        "£50",
+        "£150",
+        "£200",
+        "£250",
+        "£500",
+        "£600",
+        "£650",
+        "£700",
+        "£750",
+        "£800",
+        "£900",
+        "£1,200",
+        "£1,800"
+      ],
+      "deposit_terms": "the site states no deposit terms on the pages fetched; several sellers' cards ask a deposit of £100 to £200 to secure a puppy, and one offers a payment plan",
+      "steps_to_enquire": null,
+      "urgency_signals": [
+        "ready-date",
+        "few-left"
+      ]
+    }
+  },
+  "technical": {
+    "status": "ok",
+    "values": {
+      "mobile_layout_ok": true,
+      "lighthouse_performance": {
+        "status": "NOT FETCHED",
+        "reason": "no Lighthouse run"
+      }
+    }
+  },
+  "key_insight": "UKPets's town pages are one national Staffy feed with the town name swapped into the title and H1: the Bath and Dundee pages list the same twelve adverts, none of them in either town. BSUK can beat it with location pages that carry real local detail, a breeder's own current litters, named health results and a clear price."
+}

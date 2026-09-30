@@ -1,0 +1,70 @@
+{
+  "source": "serp_bing",
+  "status": "ok",
+  "fetched": "2026-09-23",
+  "questions": [
+    {
+      "text": "How many KC Blue Staffordshire Bull Terrier puppies are there?",
+      "detail": "serp_bing",
+      "fact_source": null
+    },
+    {
+      "text": "Is blue Staffy a good dog?",
+      "detail": "serp_bing",
+      "fact_source": null
+    },
+    {
+      "text": "How much does a Staffordshire Bull Terrier cost?",
+      "detail": "serp_bing",
+      "fact_source": null
+    },
+    {
+      "text": "Are Staffordshire Bull Terriers good family pets?",
+      "detail": "serp_bing",
+      "fact_source": "bank:home-family-children"
+    }
+  ],
+  "note": "Bing read free in the headless Playwright browser: https://www.bing.com/search?q=Blue+Staffy+Puppies+For+Sale+Leeds&cc=GB&setlang=en-GB. No challenge. Questions are Bing's 'People also ask' box as shown (not expanded). DataForSEO Bing not bought, per the skill.",
+  "results": [
+    {
+      "bing_pos": 1,
+      "url": "https://www.freeads.co.uk/leeds/buy-sell/pets/dogs/staffordshire-bull-terrier/colour/blue"
+    },
+    {
+      "bing_pos": 2,
+      "url": "https://www.freeads.co.uk/leeds/buy-sell/pets/dogs/staffordshire-bull-terrier/"
+    },
+    {
+      "bing_pos": 3,
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/west-yorkshire/leeds/"
+    },
+    {
+      "bing_pos": 4,
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=blue+staf"
+    },
+    {
+      "bing_pos": 5,
+      "url": "https://englishbluestaffypuppies.com/available-blue-staffy"
+    },
+    {
+      "bing_pos": 6,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/leeds-west-yorkshire"
+    },
+    {
+      "bing_pos": 7,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale?colour=blue"
+    },
+    {
+      "bing_pos": 8,
+      "url": "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/leeds-west-yorkshire/blue+staffy"
+    },
+    {
+      "bing_pos": 9,
+      "url": "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/leeds"
+    },
+    {
+      "bing_pos": 10,
+      "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/leeds-west-yorkshire/gorgeous-blue-kc-staffies"
+    }
+  ]
+}

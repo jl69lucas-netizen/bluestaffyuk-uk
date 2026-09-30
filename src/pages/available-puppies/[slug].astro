@@ -1,0 +1,42 @@
+---
+import PageShell from '../../layouts/PageShell.astro';
+import { Image } from 'astro:assets';
+import puppies from '../../../data/puppies.json';
+import { puppyImage } from '../../lib/puppyImages';
+import { SITE, SITE_URL, abs, type PuppyRow } from '../../lib/site';
+export function getStaticPaths() {
+  return (puppies as PuppyRow[]).map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props as { p: PuppyRow };
+/** Project 3 Task 7: the photos come from src/assets/puppies through astro:assets, so the
+ *  srcset is bounded (Known Issue 4) and a filename with no file behind it throws in
+ *  puppyImage() rather than shipping a broken <img>. The og:image and the Product schema
+ *  below still point at the baked /images/puppies/<slug>-card-800.webp: those are absolute
+ *  URLs in markup, which a content-hashed build asset cannot be. */
+const sexLabel = p.sex === 'male' ? 'Male' : 'Female';
+const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
+const title = `${p.name} – ${sexLabel} Blue Staffy Puppy for Sale | Blue Staffy UK`;
+const h1 = `${p.name}: ${p.colour} ${sexLabel} Blue Staffy Puppy`;
+const description = `${p.name} is a ${p.colour.toLowerCase()} ${p.sex} Staffordshire Bull Terrier puppy, ${gbp(p.price_gbp)}, available now from Blue Staffy UK in ${SITE.address.city} with UK-wide delivery.`;
+const card = `/images/puppies/${p.slug}-card-800.webp`;
+// card_photo is already the full-size image above, so it is filtered out of the thumbs
+// rather than shipped twice: a thumbnail that reopens the picture beside it is noise.
+const gallery = p.gallery.filter((g) => g !== p.card_photo);
+const thumbs = gallery.map((g, i) => ({
+  img: puppyImage(g),
+  alt: `${p.name}, photo ${i + 1} of ${gallery.length}`,
+}));
+const schema = [{ '@context': 'https://schema.org', '@type': 'Product', name: `${p.name} – Blue Staffy puppy`, image: abs(card), description,
+  brand: { '@type': 'Brand', name: SITE.site_name },
+  offers: { '@type': 'Offer', price: p.price_gbp, priceCurrency: 'GBP', availability: p.status === 'Available' ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut', url: abs(`/available-puppies/${p.slug}/`), seller: { '@id': `${SITE_URL}/#business` } } }];
+---
+<PageShell title={title} description={description} canonical={`/available-puppies/${p.slug}/`} crumbTitle={p.name} ogType="product" ogImage={card} schema={schema}>
+  <article class="container" style="display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    <div><Image src={puppyImage(p.card_photo)} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy`} widths={[400, 800, 1200]} sizes="(max-width: 640px) 100vw, 560px" fetchpriority="high" loading="eager" style="display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover" />
+      {thumbs.length > 0 && <ul style="display:flex;gap:8px;list-style:none;padding:0;margin-top:8px">{thumbs.map((t) => <li><Image src={t.img} alt={t.alt} widths={[120, 240, 360]} sizes="120px" loading="lazy" decoding="async" style="width:120px;height:120px;object-fit:cover" /></li>)}</ul>}</div>
+    <div><h1>{h1}</h1>
+      <p><strong>{gbp(p.price_gbp)}</strong> · {p.status}</p>
+      <dl><dt>Sex</dt><dd>{sexLabel}</dd><dt>Colour</dt><dd>{p.colour}</dd><dt>Deposit</dt><dd>{gbp(SITE.deposit_gbp)}, refundable</dd><dt>Delivery</dt><dd>{SITE.delivery_note}, {gbp(SITE.delivery_min_gbp)} to {gbp(SITE.delivery_max_gbp)}; or collect in {SITE.address.city}</dd></dl>
+      <p><a href={`/uk-blue-staffy-breeders-contact/?puppy=${p.slug}#contact`} style="display:inline-block;padding:10px 20px;background:var(--color-ink);color:#fff;border-radius:50px;text-decoration:none">Enquire about {p.name}</a></p></div>
+  </article>
+</PageShell>

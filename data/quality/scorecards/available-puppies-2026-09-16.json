@@ -1,0 +1,170 @@
+{
+  "slug": "available-puppies",
+  "date": "2026-09-16",
+  "page_type": "hub",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 237,
+    "layout-tap-target-size": 144,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 15,
+    "img-srcset-within-2x": 21,
+    "img-alt-present-and-unique": 21,
+    "nav-anchors-resolve": 3,
+    "nav-jump-target-lands": 3,
+    "sem-heading-order": 21,
+    "sem-all-six-levels": 21,
+    "sem-title-case-headings": 21,
+    "sem-section-opening-paragraph": 21,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 9,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 30,
+    "css-no-dead-component-rule": 0,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 144,
+    "a11y-text-contrast-aa": 231,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "IMG": 3,
+    "SEM": 6,
+    "SCHEMA": 3,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "IMG": 18,
+    "SEM": 15,
+    "SCHEMA": 3,
+    "CSS": 6,
+    "DUP": 6
+  },
+  "total": 18,
+  "total_instances": 48,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "img-srcset-within-2x",
+      "count": 6,
+      "message": "6 oversized image(s): roman-card-800.webp natural=800 painted=271 2.95x | byrd-card-800.webp natural=800 painted=271 2.95x | ince-card-800.webp natural=800 painted=271 2.95x | vennie-card-800.webp natural=800 painted=271 2.95x | christa-card-800.webp natural=800 painted=271 2.95x | cheryl-card-800.webp natural=800 painted=271 2.95x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-heading-order",
+      "count": 1,
+      "message": "1 skipped heading level(s): H1→H3 at \"Roman\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H2, H4, H5, H6 — inventory H1:1 H2:0 H3:6 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: site-header x1, site-footer x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 37w vs /buy-blue-staffy-puppies-uk/ \"roman male blue and white 1 500 byrd male white 1 500 ince male blue 1 500 vennie female b\" | 37w vs /index/ \"roman male blue and white 1 500 byrd male white 1 500 ince male blue 1 500 vennie female b\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "img-srcset-within-2x",
+      "count": 6,
+      "message": "6 oversized image(s): roman-card-800.webp natural=800 painted=325 2.46x | byrd-card-800.webp natural=800 painted=325 2.46x | ince-card-800.webp natural=800 painted=325 2.46x | vennie-card-800.webp natural=800 painted=325 2.46x | christa-card-800.webp natural=800 painted=325 2.46x | cheryl-card-800.webp natural=800 painted=325 2.46x"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-heading-order",
+      "count": 1,
+      "message": "1 skipped heading level(s): H1→H3 at \"Roman\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H2, H4, H5, H6 — inventory H1:1 H2:0 H3:6 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: site-header x1, site-footer x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 37w vs /buy-blue-staffy-puppies-uk/ \"roman male blue and white 1 500 byrd male white 1 500 ince male blue 1 500 vennie female b\" | 37w vs /index/ \"roman male blue and white 1 500 byrd male white 1 500 ince male blue 1 500 vennie female b\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-srcset-within-2x",
+      "count": 6,
+      "message": "6 oversized image(s): roman-card-800.webp natural=800 painted=348 2.30x | byrd-card-800.webp natural=800 painted=348 2.30x | ince-card-800.webp natural=800 painted=348 2.30x | vennie-card-800.webp natural=800 painted=348 2.30x | christa-card-800.webp natural=800 painted=348 2.30x | cheryl-card-800.webp natural=800 painted=348 2.30x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-heading-order",
+      "count": 1,
+      "message": "1 skipped heading level(s): H1→H3 at \"Roman\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H2, H4, H5, H6 — inventory H1:1 H2:0 H3:6 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: site-header x1, site-footer x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 37w vs /buy-blue-staffy-puppies-uk/ \"roman male blue and white 1 500 byrd male white 1 500 ince male blue 1 500 vennie female b\" | 37w vs /index/ \"roman male blue and white 1 500 byrd male white 1 500 ince male blue 1 500 vennie female b\""
+    }
+  ]
+}

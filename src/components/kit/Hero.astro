@@ -1,0 +1,841 @@
+---
+// src/components/kit/Hero.astro — the hero (spec §5 #2). Picked 2026-09-18: the split
+// layout — copy left, photo right, trust chips under the lede, on the bone surface.
+//
+// THE PHOTO IS THE PAGE'S. The hero used to fall back to one of the kit's own puppy masters
+// (src/assets/puppies/Cheryl1.jpeg) when a caller passed none — carried deliberately while the
+// four pages built before working rule 16 mounted it that way (spec §9 amendment 10.7). All
+// four now pass their own photograph at its original path (working rule 11), the board
+// preview passes each record's, and the kit specimen names its own master, so the default is
+// gone: a hero with no photo either says `media="none"` or stops the build, because a
+// borrowed puppy on a page that never chose it is a claim, not a placeholder.
+//
+// SIZES. What `.pic` paints depends on the ARRANGEMENT and on the viewport band, and the list
+// it declares is built per arrangement from measurements at twelve widths — see `PIC_SIZES`
+// below, and `img-sizes-matches-box`, which measures the promise against the box on every
+// built page. This header used to say "~560px on desktop", which was the split hero's column
+// stated as the whole component's behaviour. `.pic` is the LCP element, so it is eager with
+// fetchpriority="high" rather than lazy. The crop is CSS (aspect-ratio + object-fit), never
+// a baked one, so one master serves every width.
+//
+// HEIGHT AND DOM ORDER (rules/design.md rule 10, spec §11 amendment 3c). The source site's
+// hero puts the image first in the DOM and keeps the band short. Both hold here: the photo
+// element PRECEDES the copy in source order and `order` puts it back on the right visually,
+// and at >=1024px the band is held between 390 and 450px. Nothing is clipped to get there —
+// the copy is SIZED to fit (3xl heading, two-line lede, tight block margins) and the PHOTO
+// is what the ceiling crops. Below 1024px the height is auto, because a phone hero that
+// clipped its own CTA would be worse than a tall one.
+// scripts/measure_canvas_heights.mjs measures the overflow, the LEDE's own overflow and the
+// CTA row's bottom edge at 1024, 1100 and 1280, and
+// test_measured_hero_fits_its_clamp_without_clipping_anything fails on any of the three.
+// The lede is measured separately because it is the one clamped element here: a clamp hides
+// its overflow, so a third line disappears instead of pushing anything past the ceiling.
+//
+// HEADING LEVEL. `as` exists because a preview page can mount a hero under a page that
+// already owns the only <h1>. On a real page the default 'h1' is correct and is what
+// project 4 will use.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { SITE } from '../../lib/site';
+import Button from './Button.astro';
+type Props = HTMLAttributes<'section'> & {
+  as?: 'h1' | 'h2';
+  /** The three copy props. ALL DEFAULT TO EMPTY, and an empty one renders no element at all.
+   *  They used to default to a real eyebrow, a real headline and a real lede — "KC registered ·
+   *  Carlisle", "Blue Staffy puppies raised in a family home", "Health-tested parents, Kennel
+   *  Club paperwork" — which is the 2026-09-20 review's defect in its last hiding place: a
+   *  component asserting a page's credentials for it. True on the homepage, a sales line on a
+   *  privacy policy, and on neither of them a claim the page's own board record approved. */
+  eyebrow?: string;
+  title?: string;
+  lede?: string;
+  /** The photo. An `ImageMetadata` (a src/assets import) goes through astro:assets and is
+   *  re-encoded and hashed; a STRING is a public path taken verbatim, which is how the
+   *  legacy `/images/…` files are reused (working rule 11: every existing image keeps its
+   *  original path). REQUIRED unless `media` is 'none' — there is no default photo. */
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  /** Intrinsic size of a STRING `image`. astro:assets supplies both for an `ImageMetadata`
+   *  import, but a public path is copied verbatim and nothing knows its dimensions — so an
+   *  `<img>` with no `width`/`height` ships, the browser reserves no box for it, and the
+   *  page reflows when it loads. `img_dims` (scripts/final_page_audit.py) is blocking on
+   *  exactly that. Required in practice whenever `image` is a string; the board record
+   *  carries the numbers in its `assets` row. */
+  imageWidth?: number;
+  imageHeight?: number;
+  /** Candidate list for a STRING `image`, e.g. "/images/x-440.webp 440w, /images/x.webp 612w".
+   *  astro:assets builds one for an `ImageMetadata` import; a public path has whatever
+   *  siblings were baked beside it and nothing here can know them, so the page states them.
+   *  Without it the `sizes` below has no candidates to choose between and the one file is
+   *  decoded at whatever the slot happens to be — which is `img-srcset-within-2x` (blocking)
+   *  the moment the hero card paints narrower than half the file's intrinsic width, as it
+   *  does at 375px. Omitted renders no `srcset`, exactly as before. */
+  imageSrcset?: string;
+  /** The box the photo paints, for a page whose geometry is not `PageShell`'s.
+   *
+   *  `PIC_SIZES` below is measured on pages inside the shell, which reserves the dial its own
+   *  196px column at 1024 and above — so the same split hero paints 408px on a real page and
+   *  503px on `/kit-preview/`, which mounts the specimen outside the shell deliberately. A
+   *  23% difference cannot be split between them by one list, and neither reading is wrong;
+   *  they are different boxes. So a page outside the shell states its own, and every page
+   *  inside it says nothing and gets the measured default. `img-sizes-matches-box` reads both
+   *  against what they actually paint. */
+  imageSizes?: string;
+  /** The trust chips under the lede. DEFAULTS TO NONE (project 4, 2026-09-20 review). They
+   *  used to be three hard-coded claims — "KC registered", "DNA-tested parents", "Raised in
+   *  the home" — which is a component asserting a page's credentials for it: true on the
+   *  homepage, a sales line on a privacy policy, and a claim the page's own board record
+   *  never approved on any of them. A page that wants them passes them. */
+  chips?: string[];
+  /** The CTA row. DEFAULTS TO NONE, for the same reason and one more: the two buttons were
+   *  hard-coded LINKS, so every page mounting a hero carried two hrefs its board record did
+   *  not list and `scripts/link_parity_check.py` could not reconcile. A page passes the
+   *  buttons its record's `links` and `cta` allow. */
+  ctas?: { label: string; href: string; kind?: 'primary' | 'outline' | 'inverse' | 'text' }[];
+
+  // ── working rule 16: the per-page arrangement ───────────────────────────────────────────
+  // Five props, ALL OPTIONAL and none of them with a default that asserts content. `layout`,
+  // `align` and `ledge` come from the picked StyleDef (src/lib/boardStyles.ts); `aside`,
+  // `mosaic`, `stats` and `ticks` are the DATA a ledge or a layout needs, and a ledge whose
+  // data the page did not supply renders nothing at all. That is the 2026-09-20 review's rule
+  // restated: a hero states only what the page that mounted it handed it, so an about page's
+  // quote band is not silently available to a privacy policy.
+  /** The arrangement of copy against media. `split` is the shipped two-column hero. */
+  layout?: 'split' | 'stacked' | 'mosaic' | 'panel' | 'bleed';
+  /** Where the copy column's text sits. */
+  align?: 'left' | 'center';
+  /** Which side the photo is on, mirrored from the box's `bl-media-*` class so the component
+   *  can key its own rules on it. Keying on `.bl-media-*` instead would put component rules
+   *  in board-styles.css and lose the Astro scope hash that keeps them from tying with it. */
+  media?: 'none' | 'left' | 'right' | 'top';
+  /** Which block sits under the lede (or, for `aside`, beside the copy). */
+  ledge?: 'none' | 'chips' | 'stats' | 'aside' | 'ticks';
+  /** `ledge: 'ticks'` — a checked list of things the page can actually back. */
+  ticks?: string[];
+  /** `ledge: 'stats'` — figures the PAGE resolved from data/*.json. The hero never derives
+   *  one: it prints what it is given, and a page with nothing to print passes none. */
+  stats?: { n: string; label: string }[];
+  // `ledge: 'aside'` is a SLOT, not a prop. A guide's aside is a fact table, an about page's
+  // is somebody's sentence and a blog index's is a contents list, and a prop shaped to hold
+  // all three is a prop that has stopped describing anything. The page passes the markup:
+  //
+  //     <Hero ledge="aside"><div slot="aside">…</div></Hero>
+  //
+  // The hero owns the BOX (`.hero-aside`, its bed, its column and its place in the grid) and
+  // the typography of what goes in it, which is why the inner rules below are `:global()`
+  // under `.hero-aside`: slotted content belongs to the caller's scope, not to this one.
+  /** `layout: 'mosaic'` — the tiles the photo column becomes. Fewer than two falls back to
+   *  the single photo, because a one-tile mosaic is a photo with extra markup.
+   *
+   *  `srcset`/`sizes` are per TILE and exist for `imageSrcset`'s reason, one size down: a
+   *  tile is a cell of a two-column grid inside the media column, so it paints at roughly
+   *  180px at 1280 and 140px at 375 — a public-path master decodes there at five to eight
+   *  times the width it paints, which is `img-srcset-within-2x` (blocking) every time. The
+   *  single-photo branch has been able to say what candidates a `/images/…` file has since
+   *  the kit shipped; the mosaic could not, and this is the first page to mount one. Both
+   *  are optional: a tile with no candidates renders exactly as it did before. */
+  mosaic?: { src: string; alt: string; w?: number; h?: number; caption?: string;
+             srcset?: string; sizes?: string }[];
+};
+// NOTHING IS ASSERTED HERE. The eyebrow, the title and the lede are the page's, and a hero
+// mounted with none of them renders a photo and a CTA row — which is a hero with nothing to
+// say, visibly, rather than a hero saying something nobody approved.
+//
+// The lede is held to two lines at the desktop clamp, which is what rule 10 leaves it: a
+// third line pushes the CTA row past the 450px ceiling, so a page writing one keeps it short.
+const {
+  as: Heading = 'h1',
+  eyebrow = '',
+  title = '',
+  lede = '',
+  image,
+  imageAlt,
+  imageWidth,
+  imageHeight,
+  imageSrcset,
+  imageSizes,
+  chips = [],
+  ctas = [],
+  layout = 'split',
+  align = 'left',
+  media = 'right',
+  ledge = 'none',
+  ticks = [],
+  stats = [],
+  mosaic = [],
+  class: cls,
+  ...rest
+} = Astro.props;
+// A mosaic needs tiles. With fewer than two the layout renders as a split hero rather than
+// as a grid with a hole in it — the arrangement degrades, it never invents a tile.
+const tiles = layout === 'mosaic' && mosaic.length >= 2 ? mosaic.slice(0, 4) : [];
+const asIsMosaic = tiles.length > 0;
+// A ledge renders ONLY when the page handed it something. `none` is not a special case: an
+// empty chip list and a `ledge: 'chips'` with no chips are the same hero.
+// `chips` predates the ledge axis and three pages already pass it with no style behind them,
+// so an UNSET ledge still shows them. A ledge that names a different block does not: a style
+// whose ledge is `stats` is a style that put figures under the lede, and a hero showing both
+// would be neither arrangement.
+const showChips = chips.length > 0 && (ledge === 'chips' || ledge === 'none');
+const showTicks = ledge === 'ticks' && ticks.length > 0;
+const showStats = ledge === 'stats' && stats.length > 0;
+const showAside = ledge === 'aside' && Astro.slots.has('aside');
+// NOTHING IS ASSERTED HERE ANY MORE. The chip list and the CTA row were literals in this
+// file; both are props now and both default to empty, so a hero states only what the page
+// that mounted it handed it.
+
+// ── WHAT THE HERO'S PHOTOGRAPHY ACTUALLY PAINTS ─────────────────────────────────────────────
+//
+// `sizes` is a PROMISE about the box, and every value below was read off a real built page at
+// twelve widths rather than reasoned about. The promise had been wrong on every arrangement at
+// once: `(max-width: 900px) 100vw, 560px` is the SPLIT hero's desktop column, written before
+// working rule 16 gave the hero five layouts, and measured at 1280 the split paints 408px
+// (declared 560, over), stacked and bleed paint 828px (declared 560, UNDER — the browser was
+// choosing a candidate too small for the box), and the panel with an aside paints 224px above
+// 1200 and 144px between 1024 and 1199. Even the mobile branch was wrong by a third: `100vw`
+// is the viewport and the photo is inside a padded container, so it paints 277px at 375.
+//
+// THE THREE BREAKPOINTS ARE THE CSS'S OWN, not round numbers: 900px is where every arrangement
+// becomes one column (the `@media (max-width: 900px)` block at the foot of this file), 1024px
+// is where `PageShell` gives the dial its column and the content band loses ~196px, and 1200px
+// is where the container stops growing. A `sizes` list that ignored them would be right in one
+// band and wrong in the next, which is how the single 560px reading survived this long.
+//
+// `img-sizes-matches-box` (tests/render/checks/img.ts) measures each of these against the box
+// it paints at 375/768/1024/1280 on every built page and fails outside 0.9-1.25x, so a layout
+// change that moves a column cannot leave a stale promise behind it again.
+//
+// A mosaic TILE is two columns inside the media column, so it is that column's width less the
+// gap, halved. The aside arrangements narrow the media column and get their own list from the
+// page (`mosaic[].sizes`); this is the default for a mosaic with no aside, measured on
+// /buy-blue-staffy-puppies-uk/: 136px at 375, 332px at 768, 140px at 1024 and 182px at 1280.
+const MOSAIC_SIZES = '(max-width: 900px) calc(50vw - 52px), '
+  + '(max-width: 1023px) calc(23.8vw - 38px), (max-width: 1199px) calc(23.4vw - 100px), 182px';
+// The single photo, per arrangement.
+//   TOP    — stacked, bleed-on-top and panel-on-top are one column: the whole content band,
+//            which is `100vw` less the container padding below 1024 and less the dial column
+//            as well above it. Measured on /blue-staffy-pup-sale-uk/ and
+//            /buy-staffy-puppies-for-sale-uk/: 279 / 672 / 652 / 828 at 375 / 768 / 1024 / 1280.
+//   PANEL  — a `minmax(0, 14rem)` column, 224px, which the aside arrangement narrows to 9rem
+//            between 1024 and 1199 (see the panel+aside block in the stylesheet). Measured on
+//            /blue-staffy-health-uk/: 277 / 670 / 144 / 224.
+//   SPLIT  — the two-column hero's media column, fluid between 900 and 1200 and capped at
+//            408px. Measured on /: 277 / 670 / 315 / 408. This is also where a BLEED hero with
+//            side media would land, and it is the one combination no approved record renders
+//            today: its photo runs from its column to the viewport edge, so it declares `50vw`
+//            from the CSS's own `margin-inline: calc(-50vw + 50%)` rather than from a
+//            measurement, and `img-sizes-matches-box` is what will read it the day H-HM3 ships.
+//   A MOSAIC WITH ONE PHOTO is the split hero, whatever its `media` says. `media: top` is
+//            what STACKS a stacked, panel or bleed hero — each has its own one-column rule —
+//            but no rule stacks a mosaic, so a mosaic that degraded to its single photo paints
+//            the split hero's column. Reading `top` there promised 828px for a 408px box on
+//            `/` while H-HM2's record named one photograph, which is the `sizes` defect this
+//            block exists to prevent, one arrangement over. (Since Known Issue 33 / user ruling
+//            R11 the homepage's record names four photographs and two figures, so `/` paints
+//            the full mosaic; the rule still holds for any mosaic that degrades.)
+const BELOW_900 = (px: number) => `(max-width: 900px) calc(100vw - ${px}px)`;
+const stacksOnTop = media === 'top' && layout !== 'mosaic';
+const MEASURED_PIC_SIZES = stacksOnTop
+  ? `(max-width: 1023px) calc(100vw - 96px), (max-width: 1199px) calc(100vw - 372px), 828px`
+  : layout === 'panel'
+    ? (ledge === 'aside'
+      ? `${BELOW_900(98)}, (max-width: 1023px) 224px, (max-width: 1199px) 144px, 224px`
+      : `${BELOW_900(98)}, 224px`)
+    : layout === 'bleed'
+      ? `${BELOW_900(98)}, 50vw`
+      : `${BELOW_900(98)}, (max-width: 1023px) calc(52.5vw - 78px), `
+        + `(max-width: 1199px) calc(52.5vw - 224px), 408px`;
+const PIC_SIZES = imageSizes ?? MEASURED_PIC_SIZES;
+// NO DEFAULT ALT EITHER. The sentence that used to stand in here described the kit's own
+// master, and it went with it: an alt is the page's description of the page's photograph.
+const alt = imageAlt ?? '';
+// A public path cannot go through <Image>: astro:assets only handles files it can read at
+// build time out of src/. So a string src renders a plain <img> with the same class, sizes
+// and loading behaviour, and the CSS below does not care which branch produced it.
+const legacy = typeof image === 'string';
+// A HERO WITH NO PHOTOGRAPH. `media: 'none'` is on the `Layout` axis and, until now, the
+// component ignored it: every branch below painted a picture, so a page with nothing to show
+// had to hand over somebody else's. That is the one thing working rules 9 and 11 both forbid
+// — a blog post with no featured image on disk does not get a borrowed puppy to look
+// illustrated — and `src/pages/[...post].astro` is the first caller that has no image to
+// give. So the media column is DROPPED rather than filled: the copy takes the whole band,
+// the rule 10 floor and ceiling still apply (`.inner` keeps its `min-height`, the section
+// its `max-height`), and nothing else about the arrangement changes. No page passed
+// `media="none"` before this, so no shipped hero moves.
+const showPhoto = media !== 'none';
+// A photo column with nothing to put in it, or a photo with nothing to say about it, stops the
+// build with the caller's own heading in the message. A mosaic of two or more tiles carries its
+// own per-tile alts and needs neither.
+if (showPhoto && !(layout === 'mosaic' && mosaic.length >= 2)) {
+  if (!image) {
+    throw new Error(`Hero "${title}": no \`image\` and media is "${media}" — pass the page's own `
+      + 'photograph, or media="none" for a hero that has none. There is no default photo.');
+  }
+  if (!alt) {
+    throw new Error(`Hero "${title}": the photograph has no \`imageAlt\` — a page states what its `
+      + 'own picture shows.');
+  }
+}
+---
+<section
+  {...rest}
+  class:list={['kit-hero', cls]}
+  data-hero-layout={layout}
+  data-hero-align={align}
+  data-hero-media={media}
+  data-hero-ledge={ledge}
+>
+  <div class="container inner">
+    {!showPhoto ? null : asIsMosaic ? (
+      /* Rule 10's DOM order holds for a mosaic too: the tiles PRECEDE the copy in source and
+         `order` puts them back on the media side. The first tile is the LCP element and is
+         the one that gets `eager`/`high`; the rest are lazy, because a hero that fetches four
+         photos at high priority has no priority. */
+      <ul class="mosaic pic">
+        {tiles.map((t, i) => (
+          <li>
+            <img
+              src={t.src}
+              alt={t.alt}
+              width={t.w}
+              height={t.h}
+              srcset={t.srcset}
+              sizes={t.srcset ? (t.sizes ?? MOSAIC_SIZES) : undefined}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+              decoding="async"
+            />
+            {t.caption && <span class="cap">{t.caption}</span>}
+          </li>
+        ))}
+      </ul>
+    ) : legacy ? (
+      <img
+        src={image as string}
+        alt={alt}
+        width={imageWidth}
+        height={imageHeight}
+        srcset={imageSrcset}
+        sizes={PIC_SIZES}
+        class="pic"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    ) : (
+      <Image
+        src={image as ImageMetadata}
+        alt={alt}
+        widths={[480, 800, 1200]}
+        sizes={PIC_SIZES}
+        class="pic"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    )}
+    <div class="copy">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      {title && <Heading class="title">{title}</Heading>}
+      {lede && <p class="lede">{lede}</p>}
+      {showChips && (
+        <ul class="chips">{chips.map((c) => <li class="kit-chip">{c}</li>)}</ul>
+      )}
+      {showTicks && (
+        <ul class="ticks">
+          {ticks.map((t) => (
+            <li>
+              <svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                   stroke-linejoin="round" aria-hidden="true" focusable="false"
+              ><path d="M20 6 9 17l-5-5" /></svg>
+              <span>{t}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {showStats && (
+        <ul class="hstats">
+          {stats.map((s) => <li><strong>{s.n}</strong><span>{s.label}</span></li>)}
+        </ul>
+      )}
+      {ctas.length > 0 && (
+        <div class="ctas">
+          {ctas.map((c) => <Button kind={c.kind ?? 'primary'} href={c.href} label={c.label} />)}
+        </div>
+      )}
+    </div>
+    {showAside && (
+      <aside class="hero-aside"><slot name="aside" /></aside>
+    )}
+  </div>
+</section>
+<style>
+  @layer components {
+    /* No `overflow: hidden` on the section. The clamp below crops the PHOTO; it is not a
+       guillotine across the copy. Hiding the overflow here would let a hero whose CTA row
+       no longer fits simply lose it, and still measure as a pass. */
+    .kit-hero { background: var(--color-surface); color: var(--color-text); position: relative; }
+    .inner { display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--space-8); align-items: center; padding-block: var(--space-10); position: relative; }
+    /* Rule 10's DOM order: the photo is first in source and second on screen. */
+    .pic { order: 2; }
+    .copy { order: 1; }
+    /* Brass is 3.1:1 on bone, so the eyebrow here is steel, not brass. */
+    .eyebrow { margin: 0 0 var(--space-3); font-size: var(--text-xs); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--color-brand); }
+    .title { margin: 0 0 var(--space-4); font-family: var(--font-display); font-weight: 700; font-size: var(--text-4xl); line-height: var(--text-4xl--line-height); text-wrap: balance; color: var(--color-brand); }
+    .lede { margin: 0 0 var(--space-5); font-size: var(--text-lg); max-width: 52ch; }
+    .ctas { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+    .chips { list-style: none; margin: 0 0 var(--space-5); padding: 0; display: flex; gap: var(--space-2); flex-wrap: wrap; }
+    /* .kit-chip (src/styles/kit.css) is the shape; the hero's chips sit on the bone
+       surface rather than inside a card, so they take the raised fill and a hairline. */
+    .chips li { padding: 6px 12px; background: var(--color-surface-raised); border: var(--card-border); }
+    .pic { display: block; width: 100%; height: auto; aspect-ratio: 4/5; object-fit: cover; border-radius: var(--card-radius); box-shadow: var(--shadow-lift); }
+    /* RULE 10. A 390px floor so a short hero still reads as a hero, a 450px ceiling so it
+       never eats the fold — and the COPY has to fit inside that ceiling on its own, because
+       only the photo is allowed to be cropped by it. So: the ceiling sits on the SECTION
+       (`max-height`), the floor on `.inner` (`min-height`, border-box, so the padding is
+       inside the 390), the heading steps down to --text-3xl, the lede is held to two lines
+       and the block margins tighten. The only `overflow: clip` is on the photo column: the
+       picture drops its 4:5 crop, stretches to the row and is cropped by `object-fit`, so
+       it can never set the height. */
+    @media (min-width: 1024px) {
+      .inner { min-height: 390px; padding-block: var(--space-6); }
+      .eyebrow { margin-bottom: var(--space-2); }
+      .title { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); margin-bottom: var(--space-3); }
+      .lede { margin-bottom: var(--space-4); }
+      .chips { margin-bottom: var(--space-4); }
+      /* `height: 100%` alone is not enough: the grid row is sized BY its items, so the
+         percentage has nothing definite to resolve against and the portrait master falls
+         back to its intrinsic height — a 690px row that the ceiling then slices, taking the
+         centred copy's CTA row with it. The cap is therefore absolute, and it is exactly
+         the content box the 450px ceiling leaves once the padding is taken out. It stays on
+         from 1024 even though the ceiling above it does not: the photo is what must never
+         SET the height, at any width, and capping it is what makes the copy the only thing
+         the band is sized by. */
+      .pic { align-self: stretch; height: 100%; max-height: calc(450px - 2 * var(--space-6)); aspect-ratio: auto; object-fit: cover; overflow: clip; }
+    }
+    /* THE CEILING IS A DESKTOP MEASURE (spec §9 amendment 10.4 sub-note, breeder 2026-09-21).
+       Rule 10's 390-450 band is measured at 1280 and the arrangements are budgeted for the
+       copy column 1280 gives them. Between 1024 and 1279 that column is narrower and the same
+       words take more lines, so a ceiling written for 1280 stops being a budget and becomes a
+       blade: it hid three to six lines of four pages' own opening sentences behind the lede's
+       two-line clamp, and let the homepage's and the listing's hero content run 17px and 21px
+       into the section below (Known Issue 28, measured). A VERBATIM H1 WINS BELOW 1280 —
+       working rule 15 puts the old H1 on the page word for word, so it cannot be shortened to
+       fit a band, and the band is what gives way. The clamp and the lede's line-clamp are
+       therefore scoped to 1280 and up; the 390 floor, the type step-down and the photo's own
+       cap stay on from 1024, so the band still reads as a hero and still cannot be set by its
+       photograph. Below 1024 neither has ever applied. */
+    @media (min-width: 1280px) {
+      .kit-hero { max-height: 450px; }
+      .lede { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+    }
+    @media (max-width: 900px) {
+      .inner { grid-template-columns: 1fr; }
+      .title { font-size: var(--text-3xl); }
+      .pic { aspect-ratio: 3/2; }
+    }
+
+    /* `media: 'none'` — no photo, so no media column. One column at every width, and the
+       copy is allowed the full measure rather than the 52ch a two-column hero holds it to,
+       because there is no picture beside it for the line length to relate to. The rule 10
+       floor and ceiling are inherited untouched: a photoless hero is still a hero band. */
+    .kit-hero[data-hero-media="none"] .inner { grid-template-columns: 1fr; }
+    .kit-hero[data-hero-media="none"] .lede { max-width: 68ch; }
+
+    /* ── working rule 16: the per-page arrangements ──────────────────────────────────────
+       Everything above is the SPLIT hero, which is what `data-hero-layout="split"` still
+       gets and what the four pages built before this rule still render. The blocks below are
+       the other four arrangements and the four ledges, and every one of them is held to the
+       same rule 10 ceiling: the band is 390-450px at 1024px and up, the copy is SIZED to fit
+       and only the photo is cropped. A layout that cannot make its copy fit does not get to
+       hide the overflow — it gets a shorter photo. */
+
+    /* The ledges. All four sit in the copy column, under the lede, above the CTA row. */
+    .ticks { list-style: none; margin: 0 0 var(--space-4); padding: 0;
+             display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+    .ticks li { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); }
+    .tick { color: var(--color-cta); flex: none; }
+    .hstats { list-style: none; margin: 0 0 var(--space-4); padding: 0;
+              display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: baseline; }
+    .hstats li { display: flex; flex-direction: column; gap: 2px; }
+    .hstats strong { font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.1;
+                     font-feature-settings: "tnum"; color: var(--color-brand); }
+    .hstats span { font-size: var(--text-xs); color: var(--color-text); }
+    /* The aside is a THIRD column, not a card floated into the copy: the copy has to keep
+       its measure or the lede's two-line clamp starts hiding words.
+       IT PAINTS ITS OWN LIGHT BED, SO IT OWNS ITS OWN INK. `--color-surface-raised` is a
+       light fill, and on a hero inside `.bl-frame-band` the inherited colour is
+       `--color-text-on-inverse` — bone text on a near-white card, measured at 1.05:1, which
+       is a quote nobody can read and a defect no gate could see because every OTHER element
+       in the box (`.aside-title`, `.aside-rows dt`) happened to name a colour of its own.
+       Anything that paints a surface states the ink for it (global.css conventions 2-3), so
+       the box does it once here for everything slotted into it.
+       `tests/render/meta.spec.ts` measures the contrast of `.aside-quote` against its own
+       painted background, and the fixture pair `kit-hero-aside-*.html` pins both readings. */
+    .hero-aside { order: 3; align-self: center; background: var(--color-surface-raised);
+                  color: var(--color-text);
+                  border: var(--card-border); border-radius: var(--card-radius);
+                  padding: var(--space-4); font-size: var(--text-sm); }
+    .hero-aside :global(.aside-title) { margin: 0 0 var(--space-2); font-size: var(--text-xs); font-weight: 700;
+                   letter-spacing: .12em; text-transform: uppercase; color: var(--color-brand); }
+    .hero-aside :global(.aside-quote) { margin: 0; font-family: var(--font-display); font-size: var(--text-lg);
+                   line-height: 1.3; border-inline-start: 3px solid var(--color-cta);
+                   padding-inline-start: var(--space-3); }
+    /* A credential line under the quote — the same content a `chips` ledge would put under the
+       lede, folded onto one line because an aside is a column and a wrapped chip row costs a
+       band it cannot spare. The hero owns the typography of what is slotted into it, which is
+       why this lives here with the rest of the `.aside-*` set. */
+    .hero-aside :global(.aside-chips) { margin: var(--space-3) 0 0; font-size: var(--text-xs);
+                   font-weight: 600; color: var(--color-text-muted); }
+    .hero-aside :global(.aside-rows) { margin: 0; display: grid; grid-template-columns: auto 1fr;
+                  gap: var(--space-1) var(--space-3); }
+    .hero-aside :global(.aside-rows dt) { color: var(--color-text-muted); }
+    .hero-aside :global(.aside-rows dd) { margin: 0; font-weight: 600; }
+    .hero-aside :global(.aside-items) { margin: 0; padding-inline-start: var(--space-4); display: grid; gap: var(--space-1); }
+    /* THE SEAM BETWEEN THE FACTS AND THE CREDENTIAL LINE. An aside that carries a list of facts
+       AND the credential line under it needs the two told apart, and both pages that mount this
+       arrangement had written the same rule in their own scope — /blue-staffy-health-uk/ for its
+       `dl` and /uk-staffordshire-bull-terrier-guide/ for its `ul`. A rule copied into two pages
+       is a rule that can be fixed in one, so it lives here with the rest of the aside's
+       typography, which the hero already owns. */
+    .hero-aside :global(:is(.aside-rows, .aside-items) + .aside-chips) {
+      border-top: 1px solid var(--color-border); padding-top: var(--space-2);
+    }
+    /* A CONTENTS LIST IN A PANEL'S ASIDE IS SIZED FOR THE CEILING, and that is a measurement:
+       at the kit's default size three contents lines plus a title plus a credential row made
+       the breed guide's aside 180px and pushed the band 19px past 450 at 1024 and 30px past it
+       at 1280 — clipped, which is a defect a screenshot does not show. `--text-xs` with the gap
+       closed is 34px and is the whole of the difference. Scoped to `panel` + `aside`, which is
+       the arrangement with the narrowest aside column and the tightest budget, and to
+       `.aside-items` only: a `dl` of key facts is three short rows and is left alone. */
+    .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] :global(.aside-items) {
+      font-size: var(--text-xs); line-height: 1.35; gap: 0;
+    }
+    .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1.1fr 1fr; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1fr minmax(0, 1fr) 15rem; }
+      .kit-hero[data-hero-ledge="aside"][data-hero-layout="panel"] .inner {
+        grid-template-columns: minmax(0, 14rem) minmax(0, 1fr) 15rem;
+      }
+    }
+
+    /* Centre alignment. The lede loses its 52ch cap or a centred column reads as ragged. */
+    .kit-hero[data-hero-align="center"] .copy { text-align: center; }
+    .kit-hero[data-hero-align="center"] .lede { max-width: 60ch; margin-inline: auto; }
+    .kit-hero[data-hero-align="center"] .ctas,
+    .kit-hero[data-hero-align="center"] .chips,
+    .kit-hero[data-hero-align="center"] .ticks,
+    .kit-hero[data-hero-align="center"] .hstats { justify-content: center; }
+
+    /* MOSAIC — the photo column becomes up to four tiles. The column geometry is the split
+       hero's, so the clamp behaves identically; only what fills the column changes. */
+    .mosaic { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2);
+              grid-template-columns: 1fr 1fr; box-shadow: none; }
+    .mosaic li { position: relative; margin: 0; }
+    .mosaic img { display: block; width: 100%; height: 100%; aspect-ratio: 1;
+                  object-fit: cover; border-radius: var(--card-radius); }
+    /* The caption sits ON the tile, as the idea sheets draw it, so it reads as a label for
+       that photo rather than as a sentence of the page. Steel scrim, bone text. */
+    .mosaic .cap { position: absolute; inset-inline: var(--space-2); bottom: var(--space-2);
+                   background: var(--color-surface-inverse); color: var(--color-text-on-inverse);
+                   font-size: var(--text-xs); padding: 2px 8px; border-radius: var(--card-radius); }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="mosaic"] .mosaic {
+        max-height: calc(450px - 2 * var(--space-6)); overflow: clip;
+      }
+    }
+
+    /* MOSAIC WITH AN ASIDE is the only arrangement in the eighteen that puts THREE columns
+       beside each other — tiles, copy, aside — so the `1fr minmax(0, 1fr) 15rem` the aside
+       ledge sets leaves it the narrowest copy column on the site: 246px at 1280 and 158px at
+       1024, measured on /blue-staffy-uk-breeders/, where the approved H1 took seven lines in
+       it and ran 41px of copy past the 450px ceiling while the two-line lede clamp quietly
+       hid a third and a fourth line. H-AB1 is the one style in the eighteen with this pair.
+       THREE COLUMNS DO NOT FIT AT ANY DESKTOP WIDTH: the band is ~800px of content at 1280
+       and ~620px at 1024, and three tracks plus two gaps leave the copy under 250px of it
+       however they are split — every split measured ran either the H1 or the clamped lede
+       over. So the aside becomes a SECOND ROW beneath the copy, beside the tiles, and the
+       arrangement stays the one the breeder picked: tiles left, copy right, the quote in its
+       own box. The other two changes are `panel`'s answer to the same problem (see below) —
+       the TILES give up their equal share, which costs them nothing because they are
+       height-capped above and crop either way, and the TYPE STEPS DOWN. Measured on that
+       page with the aside carrying a quote and a credential line: 433px at 1024, 390px at
+       1100, 448px at 1280, hero overflow and lede overflow 0 at all three. */
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+        grid-template-areas: "pic copy" "pic aside";
+        align-items: start;
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start;
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .title {
+        font-size: var(--text-2xl); line-height: var(--text-2xl--line-height);
+        margin-bottom: var(--space-2);
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .lede {
+        margin-bottom: var(--space-3);
+      }
+    }
+    /* Between 1024 and 1199 the band is ~620px of content rather than ~800 and the copy has
+       180px less to spend, so everything in the column takes its share of the difference: the
+       tiles narrow again, the aside's box and its gaps tighten, and the QUOTE steps out of
+       display type — at 1280 it is the aside's one piece of display type and it fits, at 1024
+       the same sentence was the difference between 448px and 502px. Measured one rule at a
+       time: 161px over the ceiling with the aside first filled, then 99, 52, 15, 7 and 0.
+       1280 is outside the query and is unaffected by any of it. */
+    @media (min-width: 1024px) and (max-width: 1199px) {
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .hero-aside {
+        padding: var(--space-3);
+      }
+      /* The quote steps down with everything else here. At 1280 it is the aside's one piece of
+         display type and it fits; at 1024 the band has 180px less to spend and the same
+         sentence is the difference between 448px and 502px, measured. */
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] :global(.aside-quote) {
+        font-size: var(--text-base);
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .lede {
+        margin-bottom: var(--space-2);
+      }
+      /* 1024 exactly is the narrowest desktop and the last 15px: the aside's own gaps, which
+         are display-type spacing it no longer has display type to space. */
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] :global(.aside-chips) {
+        margin-top: var(--space-2);
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] :global(.aside-title) {
+        margin-bottom: var(--space-1);
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .inner {
+        gap: var(--space-5);
+      }
+    }
+
+    /* PANEL — text-led. The photo keeps rule 10's DOM position but takes a narrow column, so
+       the page reads as prose with a picture beside it rather than as a sales band. The copy
+       column is WIDER than a split hero's, which is exactly why its type steps down: measured,
+       the blog family's H-BL3 ran 23px of copy past the ceiling on a long H1 before it did. */
+    .kit-hero[data-hero-layout="panel"] .inner { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); }
+    .kit-hero[data-hero-layout="panel"] .pic { aspect-ratio: 3/4; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="panel"] .title {
+        font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); margin-bottom: var(--space-2);
+      }
+      .kit-hero[data-hero-layout="panel"] .lede { margin-bottom: var(--space-3); }
+      .kit-hero[data-hero-layout="panel"] .chips,
+      .kit-hero[data-hero-layout="panel"] .ticks,
+      .kit-hero[data-hero-layout="panel"] .hstats { margin-bottom: var(--space-3); }
+    }
+    /* A STATS ledge is the tallest of the four — two lines per figure — and a stacked hero has
+       already spent 150px of its budget on the photo. Measured: the why-us page's H-FS3 ran
+       8px over before the figures were put on one line here. */
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="stacked"] .hstats li { flex-direction: row; align-items: baseline; gap: var(--space-2); }
+      .kit-hero[data-hero-layout="stacked"] .hstats strong { font-size: var(--text-lg); }
+    }
+
+    /* BLEED — the photo spills to the edge of the band on its own side and drops its radius
+       and lift; it is the surface there, not an object on it. */
+    .kit-hero[data-hero-layout="bleed"] .pic { border-radius: 0; box-shadow: none; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="bleed"] .inner { padding-block: 0; }
+      .kit-hero[data-hero-layout="bleed"] .copy { padding-block: var(--space-6); }
+      /* 450 is a FLOOR here and a ceiling only where the ceiling still applies. Below 1280
+         the band grows to the copy (the sub-note above), and a bleed photo pinned to 450 in a
+         480px band would leave a strip of bare bed at the edge it is supposed to BE — so it
+         stretches to the row and 450 becomes the minimum rather than the height. */
+      .kit-hero[data-hero-layout="bleed"]:not([data-hero-media="top"]) .pic {
+        align-self: stretch; height: auto; min-height: 450px; margin-inline-end: calc(-50vw + 50%);
+      }
+      /* `media: top` is a bleed hero STACKED — a slim photo band over the copy, on the same
+         150px budget as `panel`+top and `stacked`. `min-height` beats `max-height` in the
+         cascade, so the stretch rule above must not reach it: unscoped it made the why-us
+         hero's 150px strip 450px tall and ran the band 312px past its own box. */
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .pic {
+        margin-inline-end: calc(-50vw + 50%);
+      }
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="left"] .pic {
+        margin-inline: calc(-50vw + 50%) 0;
+      }
+    }
+
+    /* STACKED — photo ABOVE the copy. The ceiling stays on (a stacked hero that released it
+       would be the one page on the site with a 700px band), so the photo is a short landscape
+       strip and the copy is what the remaining space is budgeted for. Measured, not asserted:
+       npm run test:render:pages reads the band height at 1280 and the CTA row's bottom edge. */
+    /* The photo is already FIRST in source order (rule 10); a stacked hero is the one
+       arrangement that wants it first on screen too, so the `order` the split hero uses to
+       send it right has to be undone rather than inherited. */
+    .kit-hero[data-hero-layout="stacked"] .inner { grid-template-columns: minmax(0, 1fr); }
+    .kit-hero[data-hero-layout="stacked"] .pic { order: 1; aspect-ratio: 24/5; }
+    .kit-hero[data-hero-layout="stacked"] .copy { order: 2; }
+    .kit-hero[data-hero-layout="stacked"] .hero-aside { order: 3; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="stacked"] .inner { gap: var(--space-4); padding-block: var(--space-5); }
+      .kit-hero[data-hero-layout="stacked"] .pic { height: 150px; max-height: 150px; aspect-ratio: auto; }
+      .kit-hero[data-hero-layout="stacked"] .title { font-size: var(--text-2xl); margin-bottom: var(--space-2); }
+      .kit-hero[data-hero-layout="stacked"] .lede { margin-bottom: var(--space-3); }
+      .kit-hero[data-hero-layout="stacked"] .chips,
+      .kit-hero[data-hero-layout="stacked"] .ticks,
+      .kit-hero[data-hero-layout="stacked"] .hstats { margin-bottom: var(--space-3); }
+    }
+    /* A STACKED hero with an aside puts the aside BESIDE the copy, not under it. Measured:
+       as a third row at 1280 it took the blog's H-BL2 13px past the ceiling, which is a hero
+       that fits only because something is scrolled out of sight. */
+    @media (min-width: 1024px) {
+      /* Explicit areas rather than `order`: a stacked hero with an aside is a photo across
+         the top and two columns under it, and auto-placement plus three `order` values put
+         the aside on a third row instead — 13px past the ceiling, measured on the blog
+         family's H-BL2 before this block existed. */
+      .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 1fr) 15rem;
+        grid-template-areas: "pic pic" "copy aside";
+      }
+      .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start;
+      }
+    }
+
+    /* A SPLIT HERO WITH AN ASIDE is the same problem a third time. H-GD1, the interior-guide
+       family's editorial split, is the one style with this pair, and no page had rendered it
+       until the three guides were re-boarded (Known Issues 30 and 35, project 5 readiness).
+       `ledge: 'aside'` sets three tracks above 1024, which left the copy 276px at 1280:
+       measured, the breed guide's verbatim H1 took eight lines in it and the buying guide's
+       ten. So the aside becomes a SECOND ROW beneath the copy and the photo keeps its side at
+       the full height of both rows — the arrangement the style names, with the key facts in
+       their own box. Even so it holds only a short H1: with the faces loaded it fits the health
+       guide at 1280 (it grows to 528 at 1024 and 470 at 1100, which amendment 4a allows), whose
+       page leaves its credential line out of this arrangement, and runs the breed guide's hero
+       131px past 450. */
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        grid-template-areas: "copy pic" "aside pic";
+        align-items: start; row-gap: var(--space-3);
+      }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"][data-hero-media="left"] .inner {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+        grid-template-areas: "pic copy" "pic aside";
+      }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start; padding: var(--space-3);
+      }
+      /* Two rows in one column is the mosaic's budget, so it takes the mosaic's type step:
+         the title one notch down and the lede's margin tightened (measured on
+         /blue-staffy-health-uk/). */
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .title {
+        font-size: var(--text-2xl); line-height: var(--text-2xl--line-height);
+        margin-bottom: var(--space-2);
+      }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .lede { margin-bottom: var(--space-3); }
+    }
+
+    /* A PANEL WITH AN ASIDE IS THE MOSAIC'S PROBLEM AGAIN, and it takes the mosaic's answer.
+       `ledge: 'aside'` sets `1fr minmax(0, 1fr) 15rem` above 1024 and the panel narrows the
+       first track to 14rem, which still leaves THREE tracks and two gaps in ~620px of content
+       at 1024: measured on /blue-staffy-health-uk/ (H-GD3), the copy column was under 150px,
+       the H1 ran 211px of section overflow past the ceiling and the clamped two-line lede hid
+       297px of itself — invisible on the page, because a clamp does not push, it cuts. So the
+       aside becomes a SECOND ROW beneath the copy, beside the photo, exactly as it does on
+       H-AB1, and the arrangement stays the one the breeder picked: photo left, copy right, the
+       key facts in their own box. Measured after, with the aside carrying three rows and a
+       credential line: no section overflow and no lede overflow at 1024, 1100 or 1280. */
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+        grid-template-areas: "pic copy" "pic aside";
+        align-items: start;
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start; padding: var(--space-3);
+      }
+      /* The ROW gap is the one the two-row grid spends twice and needs once: at 1280 the
+         column gap is 48px and the same value between the copy and the aside was 29 of the
+         30px the band ran over, measured. The column gap is untouched. */
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .inner { row-gap: var(--space-3); }
+    }
+    /* Between 1024 and 1199 the band is ~620px of content rather than ~800, so the photo column
+       narrows and the aside's own spacing tightens — the same order the mosaic's fix was
+       measured in, and for the same reason: the copy column is what the difference comes out
+       of otherwise. 1280 is outside the query and is unaffected. */
+    @media (min-width: 1024px) and (max-width: 1199px) {
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 9rem) minmax(0, 1fr); gap: var(--space-5);
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .lede { margin-bottom: var(--space-2); }
+      /* The copy column is ~180px narrower here, so a long H1 takes a third line: 108px of
+         title against 72px at 1280, which is the last 21px of the ceiling. The type steps down
+         one notch rather than the aside losing a row of facts. */
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .title {
+        font-size: var(--text-xl); line-height: var(--text-xl--line-height);
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] :global(.aside-title) {
+        margin-bottom: var(--space-1);
+      }
+    }
+
+    /* A PANEL that puts its photo on top is one column, not a narrow photo column beside the
+       copy — a title panel with a slim photo band over it. Same height budget as `stacked`,
+       for the same reason: the ceiling stays on, so the photo is short and the copy is what
+       the rest is spent on. */
+    .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .inner { grid-template-columns: minmax(0, 1fr); }
+    .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .pic { order: 1; aspect-ratio: 24/5; }
+    .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .copy { order: 2; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .inner {
+        gap: var(--space-4); padding-block: var(--space-5);
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .pic {
+        height: 150px; max-height: 150px; aspect-ratio: auto;
+      }
+      /* With an aside it is the stacked hero's two-row grid: photo across, copy and aside under. */
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 1fr) 15rem;
+        grid-template-areas: "pic pic" "copy aside";
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start;
+      }
+    }
+
+    /* A bleed hero that puts its photo on TOP is stacked too, and wants the same budget. */
+    .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .inner { grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .pic {
+        height: 150px; max-height: 150px; margin-inline: calc(-50vw + 50%);
+      }
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .inner {
+        gap: var(--space-4); padding-block: 0 var(--space-5);
+      }
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .copy { padding-block: 0; }
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .title {
+        font-size: var(--text-2xl); margin-bottom: var(--space-2);
+      }
+    }
+    /* Below the split breakpoint every arrangement is one column, because a phone has one
+       column. The height is auto there for rule 10's own reason: a phone hero that clipped
+       its own CTA would be worse than a tall one. */
+    @media (max-width: 900px) {
+      .kit-hero[data-hero-layout="panel"] .inner,
+      .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1fr; }
+      .kit-hero[data-hero-layout="panel"] .pic,
+      .kit-hero[data-hero-layout="stacked"] .pic { aspect-ratio: 16/9; }
+      .mosaic img { aspect-ratio: 4/3; }
+      .hero-aside { order: 3; }
+    }
+  }
+</style>

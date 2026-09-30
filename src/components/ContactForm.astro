@@ -1,0 +1,56 @@
+---
+import puppiesJson from '../../data/puppies.json';
+import { abs, type PuppyRow } from '../lib/site';
+const puppies = puppiesJson as PuppyRow[];
+const fid = import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID_PLACEHOLDER';
+const live = fid !== 'FORMSPREE_ID_PLACEHOLDER';
+const action = live ? `https://formspree.io/f/${fid}` : '#contact';
+const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
+---
+<section id="contact" class="container container-text">
+  <style>
+    .req { font-weight: 400; font-size: 13px; color: var(--color-ink-muted, #5a5a5a); }
+    /* An <input> without an explicit width uses its `size` default (~20 characters, 454px
+       here), and a grid item's min-width is auto, so the intrinsic width wins and the
+       document scrolls sideways. Measured at 375px: "document overflows by 79px —
+       offenders: label | span.req | input". box-sizing keeps the padding inside the 100%. */
+    form[data-form="contact"] label { min-width: 0; }
+    form[data-form="contact"] input,
+    form[data-form="contact"] select,
+    form[data-form="contact"] textarea {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  </style>
+  <h2>Enquire About a Puppy</h2>
+  <form method="POST" action={action} data-form="contact" data-live={String(live)} style="display:grid;gap:14px;max-width:560px">
+    <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+    <input type="hidden" name="_subject" value="New Blue Staffy enquiry" />
+    <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <label style="display:grid;gap:4px">Your name <span class="req">(required)</span> <input name="name" required autocomplete="name" /></label>
+    <label style="display:grid;gap:4px">Email <span class="req">(required)</span> <input type="email" name="email" required autocomplete="email" /></label>
+    <label style="display:grid;gap:4px">Phone <input type="tel" name="phone" autocomplete="tel" /></label>
+    <label style="display:grid;gap:4px">Town or postcode <input name="location" autocomplete="postal-code" /></label>
+    <label style="display:grid;gap:4px">Which puppy? <span class="req">(required)</span> <select name="puppy" required>
+      <option value="">Choose…</option>
+      {puppies.filter((p) => p.status === 'Available').map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
+      {/* The option set is the kit form's, from the same data: the Available rows above
+          plus this one. The collection option that used to sit here named a collection
+          point the breeder has left (Known Issue 16), and it was the only difference
+          between this form and src/components/kit/ContactFormKit.astro. */}
+      <option value="waiting-list">Join the waiting list for the next litter</option>
+    </select></label>
+    <label style="display:grid;gap:4px">Message <span class="req">(required)</span> <textarea name="message" rows="5" required></textarea></label>
+    <button type="submit" style="padding:12px 22px;border-radius:12px;border:0;background:var(--color-ink);color:#fff;font-weight:600">Send enquiry</button>
+    <p style="font-size:13px">We reply by email. Your details are used only to answer your enquiry. See our <a href="/privacy-policy-uk/">privacy policy</a>.</p>
+  </form>
+  <script is:inline>
+    (function () {
+      var f = document.querySelector('form[data-form="contact"]'); if (!f) return;
+      var want = new URLSearchParams(location.search).get('puppy');
+      if (want && f.puppy) { for (var i = 0; i < f.puppy.options.length; i++) if (f.puppy.options[i].value === want) f.puppy.selectedIndex = i; }
+      if (f.dataset.live !== 'true') f.addEventListener('submit', function (e) { e.preventDefault(); console.log('contact form (stub):', Object.fromEntries(new FormData(f))); alert('Form stub: set PUBLIC_FORMSPREE_ID to post for real.'); });
+    })();
+  </script>
+</section>

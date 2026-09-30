@@ -1,0 +1,115 @@
+{
+ "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper via the claude.ai connector, 2026-09-25. Request: keyword 'Where can I buy a blue Staffy puppy near London, and what should I ask the breeder?', language en, location United Kingdom. The connector's response carries no cost field and no keyword field. Saved as returned (answer text and sources whole), minus third-party contact details: every local business's street address and postcode (in the local-business markdown and each element's address), four phone numbers, two ratings and review counts, each element's url (a site, a Facebook group link and a WhatsApp link), the Facebook and WhatsApp domains of those two elements, and in the answer text one postcode district after 'Canary Wharf/London' (replaced by '[postcode removed]'). Business titles and website domains kept.",
+ "id": "09250729-2496-0629-0000-2512b301a0f9",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "chat_gpt_local_businesses",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "markdown": "- **Staffordshire Bull Terrier Puppy Breeder**\n- **Elite Staffy Puppies**\n- **Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs**\n- **Staffy puppies available for adoption Uk**\n- **Earlsgrave Bull Terriers**\n- **Staffy Society UK**\n- **Staffy Puppies For Sale UK**\n",
+   "items": [
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffordshire Bull Terrier Puppy Breeder",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Elite Staffy Puppies",
+     "description": "Dog breeder",
+     "domain": "ukstaffypups.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs",
+     "description": "Dog breeder",
+     "domain": "www.trojanstaffuk.com"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffy puppies available for adoption Uk",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Earlsgrave Bull Terriers",
+     "description": "Dog breeder",
+     "domain": "www.earlsgravebullterriers.com"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffy Society UK",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffy Puppies For Sale UK",
+     "description": "Pet store"
+    }
+   ]
+  },
+  {
+   "type": "chat_gpt_text",
+   "rank_group": 1,
+   "rank_absolute": 2,
+   "markdown": "If you’re looking for a **blue Staffordshire Bull Terrier (“Staffy”) puppy around London**, I’d prioritise a responsible, health-tested breeder rather than buying based on colour or an online advert.\n\nA few London-area listings came up in the search, including:\n\n- Staffordshire Bull Terrier Puppy Breeder — Plumstead, southeast London.\n- [Elite Staffy Puppies](https://ukstaffypups.uk/staffy-puppies-for-sale) — Canary Wharf/London [postcode removed].\n- Blue Staffordshire BullTerrier puppies — listed specifically for blue Staffies.\n\n**I wouldn't treat those listings as endorsements**, though. Before paying a deposit, independently check the breeder, licence status where applicable, health certificates and the puppy's parents.\n\n### What to ask the breeder\n\nFor a Staffy, specifically ask:\n\n- **Can I see the puppy with its mother, at the place where it was raised?** Don't accept excuses about meeting somewhere else.\n- **Are both parents registered, and can I see their KC registration details?**\n- **Have both parents been DNA tested for L-2-HGA and hereditary cataracts (HC-HSF4-2)?** These are specifically identified by the Kennel Club's current Staffordshire Bull Terrier health guidance. [The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)\n- **Can I see the original test certificates/results?** Don't rely on a breeder simply saying \"DNA clear.\"\n- **Have the parents had eye testing and elbow testing?** The Kennel Club's current best-practice guidance includes eye and elbow testing in addition to the DNA tests. [The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)\n- **Why did you choose these two dogs to breed together?** A good breeder should be able to explain temperament, health and pedigree considerations.\n- **How old is the puppy, and when can it leave its mother?**\n- **What vaccinations, microchip and worming has it had?**\n- **What food is it currently eating, and what socialisation has it received?**\n- **Can I have a written contract and a receipt?**\n- **Will you take the dog back or help rehome it if I can no longer keep it?**\n\n### One thing about \"blue\" Staffies\n\nBlue is a recognised Staffordshire Bull Terrier colour under the current Kennel Club standard, so **blue itself isn't evidence that the puppy is unhealthy or a crossbreed**. [The Kennel Club](https://www.thekennelclub.org.uk/media/o4fhe5lf/nov-25-kcj-final-online-1.pdf?utm_source=chatgpt.com) \n\nHowever, I'd be wary of breeders marketing puppies primarily as **\"rare blue,\" \"blue & tan,\" \"XL Staffy,\"** etc., or charging a large premium purely for colour. Health, temperament and responsible breeding are much more important.\n\nIf you want, I can also **search specifically for reputable/registered Staffy breeders within, say, 30–50 miles of London and give you a shortlist with their websites, licences/health testing and current puppy availability**.\n\n",
+   "sources": [
+    {
+     "type": "chat_gpt_source",
+     "title": "The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "publication_date": "2025-10-18 13:51:32 +00:00",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "publication_date": "2025-10-18 13:51:32 +00:00",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/media/o4fhe5lf/nov-25-kcj-final-online-1.pdf?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "publication_date": "2025-11-08 03:49:15 +00:00",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/o4fhe5lf/nov-25-kcj-final-online-1.pdf?utm_source=chatgpt.com)"
+    }
+   ],
+   "brand_entities": [
+    {
+     "type": "chat_gpt_brand_entity",
+     "title": "Staffordshire Bull Terrier Puppy Breeder",
+     "category": "local_business",
+     "markdown": "Staffordshire Bull Terrier Puppy Breeder"
+    },
+    {
+     "type": "chat_gpt_brand_entity",
+     "title": "Elite Staffy Puppies",
+     "category": "local_business",
+     "markdown": "[Elite Staffy Puppies](https://ukstaffypups.uk/staffy-puppies-for-sale)",
+     "urls": [
+      {
+       "url": "https://ukstaffypups.uk/staffy-puppies-for-sale",
+       "domain": "ukstaffypups.uk"
+      }
+     ]
+    },
+    {
+     "type": "chat_gpt_brand_entity",
+     "title": "Blue Staffordshire BullTerrier puppies",
+     "category": "local_business",
+     "markdown": "Blue Staffordshire BullTerrier puppies"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>component colour loses</title>
+<style>
+  body { margin:0; font:16px/1.5 system-ui }
+  .ship-c { background:#2d6a4f; padding:16px }
+  /* (0,1,0) — loses to the (0,1,1) descendant rule below, so white text intended on
+     forest green shipped as dark grey at 1.19:1. Three instances on one page, 2026-07-28. */
+  .ship-tier { color:#ffffff }
+  .ship-c p { color:#5b524a }
+</style></head><body>
+<div class="ship-c">
+  <p class="ship-tier">Airport pickup — $185</p>
+</div>
+</body></html>

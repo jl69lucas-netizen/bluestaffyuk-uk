@@ -1,0 +1,67 @@
+@import "./tokens.css";
+/* The two self-hosted faces (Known Issue 24). Every @import precedes every other rule. */
+@import "./fonts.css";
+@import "tailwindcss" source(none);
+/* After the Tailwind import so Tailwind establishes the layer order first; kit.css adds
+   to @layer components, which a caller's utility class still beats. */
+@import "./kit.css";
+/* The seven layout axes src/lib/boardStyles.ts describes. Global rather than scoped to the
+   board-preview route, because a page rebuilt from an approved record calls the same
+   `boxClass()` and has to resolve to the same rules. */
+@import "./board-styles.css";
+@source "../../src/**/*.{astro,mdx,md,ts,tsx,js,jsx}";
+:root { --hdr: 72px; --container: 1200px; --text-max: 760px; }
+/* --hdr is the sticky header's height, and every in-page jump target is offset by it
+   (`[id] { scroll-margin-top: calc(var(--hdr) + 16px) }` in @layer base below).
+   At 375px the header wraps to two rows and actually measures 121px, so a 72px --hdr
+   landed every anchor 25px UNDER the pinned chrome — the header covered the heading the
+   reader had just jumped to. Measured by the render harness (nav-jump-target-lands:
+   "1 of 1 in-page links land outside 113-181px, measured chrome 121px"), on 17 of 17
+   pages at vp375 and on none at vp768/vp1280, where the header is 73-75px and 72 is right.
+   The header already renders at 121px here, so raising min-height to 120 changes nothing
+   visually; it only stops --hdr lying to the scroll offset.
+
+   This override lives BESIDE the :root above and deliberately NOT inside @layer base:
+   the base :root declaration is unlayered, and an unlayered declaration beats a layered
+   one regardless of media query or source order. The first attempt put it in @layer base
+   and the harness reported the identical 29 rows on the next run — the rule parsed, applied
+   to nothing, and looked like a fix. */
+@media (max-width: 640px) { :root { --hdr: 120px; } }
+
+@utility container { max-width: var(--container); margin-inline: auto; padding-inline: 24px; }
+@utility container-text { max-width: var(--text-max); margin-inline: auto; }
+
+@layer base {
+  html { scroll-behavior: auto; overflow-x: clip; }
+
+  /* Surface context for the kit. A focus ring has to reach 3:1 against what it sits on
+     (WCAG 1.4.11), and --color-focus IS steel-700 — the same token as --color-surface-inverse.
+     A steel ring inside a steel band is 1:1 and invisible, so the ring colour is read from
+     --kit-ring, which the SURFACE sets, rather than from a token each component picks once.
+     Anything painting a dark band marks itself `.on-inverse` or `data-surface="inverse"`, and
+     every kit component inside it flips ring and text colour without knowing where it is. */
+  :root { --kit-ring: var(--color-focus); }
+  .on-inverse, [data-surface="inverse"] { --kit-ring: var(--color-focus-on-inverse); color: var(--color-text-on-inverse); }
+  body { margin: 0; font: var(--text-base)/var(--text-base--line-height) var(--font-body); color: var(--color-ink); background: var(--color-white); }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
+  main p, main li { max-width: 70ch; }
+  /* `--hdr-measured` is written by the inline script in BaseLayout from the header's
+     real height; `--hdr` below is the no-JS fallback the media query tunes. Deliberately a
+     SECOND variable: `.site-header` sets `min-height: var(--hdr)`, so measuring into --hdr
+     made the header resize itself and no in-page jump ever settled. */
+  [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
+
+  img { max-width: 100%; height: auto; }
+  .skip-link { position: absolute; left: -9999px; top: 8px; background: var(--color-white); padding: 8px 12px; z-index: 100; }
+  .skip-link:focus { left: 8px; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { padding: 6px 10px; border-bottom: 1px solid var(--color-rule); text-align: left; vertical-align: top; }
+  .table-wrap { overflow-x: auto; }
+  @media (max-width: 640px) {
+    .stack-table, .stack-table thead, .stack-table tbody, .stack-table tr, .stack-table td, .stack-table th, .stack-table caption { display: block; }
+    .stack-table thead { position: absolute; left: -9999px; }
+    .stack-table td, .stack-table th { border: 0; padding: 4px 0; }
+    .stack-table td[data-label]::before { content: attr(data-label) ": "; font-weight: 600; }
+    .stack-table tr { border-bottom: 1px solid var(--color-rule); padding: 8px 0; }
+  }
+}

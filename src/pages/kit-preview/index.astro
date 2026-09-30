@@ -1,0 +1,198 @@
+---
+// src/pages/kit-preview/index.astro — the kit, once each, on one hidden page.
+//
+// It replaces src/pages/design-canvas/ (Task 19). The canvas existed so five options per
+// component could be compared; the picks are made and pruned, so what is left is ONE
+// rendering of each of the thirteen, and the page is worth keeping for three jobs:
+//  · it is what scripts/build_design_canvas.py reads to cut the artboards, so the canvas
+//    stays regenerable from the shipped components rather than from a snapshot;
+//  · it is where the per-component dist assertions in tests/py/test_design_components.py
+//    point, until project 4 mounts the kit on real pages;
+//  · it is the preview a human opens to see the whole kit at once.
+//
+// noindex, and named in form_contract_audit.py's NON_CONTENT_ROUTES: the contact form here
+// is a specimen, not a reachable enquiry form. That exclusion expires — the audit's test
+// requires this directory to exist for as long as the name is in that tuple.
+//
+// There are no per-component branches: the page walks components.json, looks each id up in
+// REGISTRY and renders one copy per demo fixture. BaseLayout already renders the page's
+// <main>, so this is a <div>.
+//
+// IT IS ALSO A TARGET PAGE (Task 21). The render harness runs all nine invariant families
+// over it under the page type `preview`, because it is the only built page carrying the
+// kit: the three checks that used to be deferred — the counter strip's separation, an H3
+// that owns its image, the statement label — have real nodes to judge here and nowhere
+// else until project 4 mounts the kit on the real pages. A blocking row on this page is a
+// defect in the kit, not a number to baseline.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import componentsJson from '../../../data/design/components.json';
+import { Image } from 'astro:assets';
+import { REGISTRY, DEMO_SECTIONS, type ComponentRow } from '../../components/kit/_registry';
+import Mark from '../../components/kit/Mark.astro';
+import specimen from '../../assets/puppies/Ince1.jpg';
+import pageDates from '../../../data/page-dates.json';
+const components = componentsJson as ComponentRow[];
+const title = 'Kit preview — BlueStaffyUK (project 3)';
+// FRESHNESS LIVES IN SCHEMA AND ONLY THERE (`schema-date-modified-present`, blocking). Every
+// other page carries a WebPage node with its dates inside its ported meta; this page is
+// authored in src/, so it names its own — from data/page-dates.json, which
+// scripts/generate_page_dates.py derives from real git history (`npm run dates`). Never
+// `new Date()`: a build-time stamp tells a crawler every page changed today, every day,
+// which is the visible-date dishonesty moved into JSON-LD. A missing route throws rather
+// than shipping a page with no date, because the alternative is a silent blocking defect.
+const ROUTE = '/kit-preview/';
+const dates = (pageDates.routes as Record<string, { datePublished: string; dateModified: string }>)[ROUTE];
+if (!dates) throw new Error(`data/page-dates.json has no entry for ${ROUTE} — run: npm run dates`);
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${ROUTE}#webpage`,
+  url: ROUTE,
+  name: title,
+  datePublished: dates.datePublished,
+  dateModified: dates.dateModified,
+  inLanguage: 'en-GB',
+}];
+const h3 = 'font-size:var(--text-sm);color:var(--color-text-muted)';
+// The demo box. `wrap` is the only thing that varies it, and it varies by ENTRY, not by id,
+// so this stays a lookup rather than becoming a per-component branch: 'sticky' gives a
+// position: sticky component a positioned box with room in it, and 'after-band' puts a
+// steel band ABOVE the demo so a component whose whole point is the seam against what
+// precedes it has something to be judged against by eye. There is no 'inverse' wrap: no
+// entry asked for one, and a branch nothing can reach reads as a feature of the preview
+// rather than as dead code.
+const demoStyle = (wrap?: 'sticky' | 'after-band' | 'with-targets') =>
+  wrap === 'sticky'
+    ? 'position:relative;min-height:220px;overflow:visible'
+    : wrap === 'after-band'
+      ? 'display:block'
+      : wrap === 'with-targets'
+        ? 'display:flex;gap:var(--space-6);align-items:flex-start'
+        : 'display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center';
+// `'with-targets'` no longer renders anything inside the demo box — the stub sections it
+// names are a SINGLE block above the component sections, because both nav components ask
+// for the same six ids and two copies would be two of every id. The member survives as the
+// box's own layout (the dial is a 196px column beside its stubs, not a centred row) and as
+// the declaration that an entry depends on those ids existing.
+---
+<BaseLayout title={title} description="Internal kit preview; not indexed." noindex={true} schema={schema}>
+  <div class="container" style="padding-block: var(--space-8);">
+    <h1 style="font-family: var(--font-display);">Kit preview</h1>
+    <!-- The mark is not a components.json row and has no artboard: it is shown here on both
+         surfaces it has to work on, and the builder skips it. -->
+    <section data-component="mark" class="kit-section">
+      <h2>0 · The mark</h2>
+      <div style="display:flex;gap:var(--space-6);align-items:flex-start">
+        <figure style="margin:0;text-align:center;padding:var(--space-5);background:var(--color-surface);border-radius:var(--card-radius)">
+          <Mark size={96} />
+          <figcaption>on bone</figcaption>
+        </figure>
+        <figure data-surface="inverse" style="margin:0;text-align:center;padding:var(--space-5);background:var(--color-surface-inverse);color:var(--color-text-on-inverse);border-radius:var(--card-radius)">
+          <Mark size={96} inverse />
+          <figcaption>inverse, on steel</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    {/* THE SCROLL-SPY'S TARGETS, ONCE PER PAGE — not once per demo box.
+        A dial or a sheet whose six links point at nothing is six dead anchors on a page
+        `nav-anchors-resolve` judges as a target, and an IntersectionObserver with nothing to
+        observe. But BOTH in-page nav components take the same DEMO_SECTIONS, so rendering
+        the stubs inside each `with-targets` box put `d-a`…`d-f` on the page twice: duplicate
+        ids, which make `getElementById` a coin flip between two elements and give every
+        `href="#d-a"` two possible destinations. `a11y-no-duplicate-ids` now catches that.
+        One block, rendered before the component sections, serves every component that
+        asks for a `with-targets` wrap. The stub heading is an H3, not an H4: the block sits
+        directly after the mark section's H2, and `sem-heading-order` is blocking. */}
+    <div class="spy-targets">
+      {DEMO_SECTIONS.map((s, i) => (
+        <section id={s.id}>
+          <h3>{String(i + 1).padStart(2, '0')} · {s.label}</h3>
+          <p>Stub target, so the dial and the sheet have somewhere to scroll to.</p>
+        </section>
+      ))}
+    </div>
+
+    {components.map((c) => {
+      // REGISTRY is a full Record<ComponentId, KitEntry>, so every row resolves — a missing
+      // id is a type error in _registry.ts rather than a section quietly not rendered.
+      const { C, demo = [{}], wrap } = REGISTRY[c.id];
+      // `id` so the page has anchors to be linked TO: the PageNav demo names four of them,
+      // and `nav-anchors-resolve` is blocking. Prefixed, because a component is free to use
+      // its own bare id inside itself.
+      return (
+        <section id={`kit-${c.id}`} data-component={c.id} data-width={c.board_width} class="kit-section">
+          <h3 style={h3}>{c.title}</h3>
+          <div style={demoStyle(wrap)}>
+            {wrap === 'after-band' && <div data-surface="inverse" style="height:80px"></div>}
+            {demo.map((props) => <C {...props} />)}
+          </div>
+        </section>
+      );
+    })}
+
+    {/* THE CONVENTION SPECIMEN (Task 21). Not a components.json row, not an artboard: it
+        carries no `data-component`, so the measurer and scripts/build_design_canvas.py both
+        skip it. It is here because `layout-h3-image-first` needs an H3 that OWNS a
+        `.sec-img`, and the picked InfoCard does not have one — the image-top treatment was
+        among the five the prune dropped. This is the only built instance of the convention
+        until project 4 re-authors the page bodies, and without it the check examines zero
+        nodes everywhere and has to stay deferred instead of being promoted. */}
+    <section class="kit-section specimen">
+      <h3 style={h3}>Convention Specimen — an H3 That Owns Its Image</h3>
+      <Image
+        src={specimen}
+        alt="A blue Staffordshire Bull Terrier puppy standing on a lawn"
+        widths={[480, 800]}
+        sizes="(max-width: 900px) 100vw, 640px"
+        class="sec-img"
+        loading="lazy"
+        decoding="async"
+      />
+      <p class="prose">The sectional image sits between the heading and this paragraph, so
+      the reader meets the subject before the argument. That is the whole of the rule, and
+      it is the shape project 4 gives every H3 block it re-authors.</p>
+    </section>
+  </div>
+</BaseLayout>
+<style>
+  /* The two convention classes, so the specimen is a rendered instance rather than two bare
+     class names: `css-class-resolves` counts a class no rule matches as a defect, and it is
+     right to — a convention nothing paints is a convention nobody is following. */
+  .specimen .sec-img { display: block; width: 100%; max-width: 640px; height: auto; margin-block: var(--space-4); border-radius: var(--card-radius); }
+  .specimen .prose { max-width: 66ch; }
+  .kit-section { margin-block: var(--space-8); }
+  /* The `with-targets` stubs, one block for the whole page. Tall enough that the spy's
+     -40%/-55% reading band can hold one at a time, and scrollable inside its own box so six
+     stub sections do not make the preview page six screens longer. */
+  .spy-targets { min-width: 0; max-height: 320px; overflow-y: auto; border: 1px dashed var(--color-border); border-radius: var(--card-radius); padding: var(--space-4); }
+  .spy-targets section { min-height: 120px; }
+  .spy-targets h3 { margin: 0 0 var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
+</style>
+<style is:global>
+  /* `is:global` deliberately: these rules reach INTO the mounted components, and a scoped
+     rule would be rewritten to match only elements this file authors — the demo box's
+     children are other components' root elements.
+
+     A flex item's automatic minimum size is its MAX-CONTENT width. So the three-up
+     Testimonial dropped into the demo row refused to shrink, held its 816px of grid tracks
+     at a 375px viewport, and pushed the whole document 465px sideways —
+     `layout-no-horizontal-overflow`, which is blocking, and rightly so. The defect is the
+     PREVIEW'S BOX, not the component: on a real page that same section is a block in
+     normal flow and its `auto-fit` grid wraps on its own. `min-width: 0` gives the demo
+     the width it is actually given. */
+  .kit-section > div > * { min-width: 0; max-width: 100%; }
+
+  /* THE SPECIMEN HEADER DOES NOT STICK. A page has one set of top chrome; this one was
+     mounting a second `position: sticky` site header as a board, and the harness's chrome
+     probe — which grows a band downwards from the viewport top through whatever full-width
+     sticky elements are pinned there — absorbed it. The band then measured 75px at 375,
+     116px at 1280 and 259px at 768 (where the specimen bar wraps to three rows), so no
+     single `scroll-margin-top` could land an anchor inside it and `nav-jump-target-lands`
+     failed as blocking. Nothing about that is the header component's fault, and nothing
+     about it is visible to a reader: the board box is `position: relative` and 220px tall,
+     so the bar has nowhere to stick to anyway. Making it static on THIS page leaves one
+     piece of chrome, which is what `--hdr-measured` and the global scroll-margin assume.
+     The board keeps its own height, so the artboard still captures the whole bar. */
+  .kit-section .kit-hdr { position: static; }
+</style>
