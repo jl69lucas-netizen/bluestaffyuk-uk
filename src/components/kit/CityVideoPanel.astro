@@ -1,0 +1,122 @@
+---
+// src/components/kit/CityVideoPanel.astro — city component 10, the video (London pick: video C,
+// "Side panel"). A sunk steel-100 tray (no shadow): the question and its answer across the top,
+// then a wide 16:9 click-to-play screen beside a narrow panel holding one of the puppies over
+// three ruled facts a viewer is likely to want next. Below 1024px the panel drops under the
+// screen (its photo beside the facts from 640px).
+//
+// THE SCREEN IS VideoEmbed (working rule 14; plan2-notes, Task 8): the facade injects the
+// youtube-nocookie player on click and carries the `<noscript>` iframe. The id must be one the
+// site already carries (data/settings.json `youtube_embeds`) — this component refuses any
+// other, so a new id cannot be minted here. The poster is a puppy photograph through
+// VideoEmbed's `poster` prop (the box stays reserved), and the brass chip says "Play the film"
+// through `playLabel`, which also starts the button's accessible name.
+// The facts are the page's words (props); each must be backed by the data files.
+// Conventions 4 and 6.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import settings from '../../../data/settings.json';
+import VideoEmbed from './VideoEmbed.astro';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
+
+export interface VideoFact { label: string; text: string }
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  videoId: string;
+  videoTitle: string;
+  caption?: string;
+  /** Puppy photo files (src/assets/puppies) for the poster and the side panel, and the side
+   *  photo's alt (the poster's is empty: the play button carries the name). */
+  poster: string;
+  side: { photo: string; alt: string; name: string; text: string };
+  facts: VideoFact[];
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, videoId, videoTitle, caption, poster, side, facts, fit = 'column', class: cls, ...rest } = Astro.props;
+// The tray is the box less 12px gutters, at most 1160px, less its padding (16px; 32px from tablet);
+// on desktop the screen and the side panel split it 1.9fr / 1fr with a 24px gap.
+const posterSizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1184px) - 56px)`,
+  tablet: (B) => `calc(min(${B}, 1184px) - 88px)`,
+  desktop: (B) => `calc((min(${B}, 1184px) - 112px) * 19 / 29)`,
+});
+const sideSizes = citySizes(fit, {
+  phone: () => '120px',
+  tablet: () => '200px',
+  desktop: (B) => `calc((min(${B}, 1184px) - 112px) * 10 / 29)`,
+});
+if (!(settings.youtube_embeds as string[]).includes(videoId)) {
+  throw new Error(`CityVideoPanel: ${videoId} is not in data/settings.json youtube_embeds (working rule 14)`);
+}
+// A test or code name with hyphens ("L-2-HGA", "HC-HSF4") must not break at its own hyphen on
+// a phone (the canvas held them in nowrap spans); the fact stays one plain string prop.
+const CODE = /\b([A-Z0-9]+(?:-[A-Z0-9]+)+)\b/;
+const pieces = (text: string) => text.split(CODE);
+---
+<section {...rest} class:list={['city-kit', 'city-video', cls]}>
+  <div class="tray">
+    <h2>{heading}</h2>
+    <p class="lede">{lede}</p>
+    <div class="grid">
+      <VideoEmbed id={videoId} title={videoTitle} caption={caption} poster={poster} playLabel="Play the film"
+        posterSizes={posterSizes} />
+      <div class="side">
+        <Image src={puppyImage(side.photo)} alt={side.alt} widths={[240, 400, 600]}
+          sizes={sideSizes} class={focusClass(side.photo)} loading="lazy" decoding="async" />
+        <p class="who"><b>{side.name}</b>{side.text}</p>
+        <ul class="facts">{facts.map((f) => <li><b>{f.label}:</b> {pieces(f.text).map((s, i) => (i % 2 ? <span class="nb">{s}</span> : s))}</li>)}</ul>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-video { background: var(--color-surface); padding: var(--space-6) 0; }
+    .tray { max-width: min(1160px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    h2 { margin: 0 0 var(--space-2); }
+    .lede { margin: 0 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); }
+    .grid { display: grid; gap: var(--space-4); }
+    /* VideoEmbed's caption reads --kit-caption (convention 3). Its muted default measures 4.49:1
+       on the steel-100 tray, a hundredth under AA, so the tray re-points it at --color-ink-2. */
+    .grid > :global(.kit-video) { --kit-caption: var(--color-ink-2); }
+    /* The play chip: VideoEmbed's badge, labelled (`playLabel`), as a brass pill in the lower-left
+       corner with the icon in its own ink disc. Styled here, not in VideoEmbed, so the built
+       pages' video stylesheet is unchanged (no rule of this reaches an unlabelled facade). */
+    .grid :global(.facade[data-play-label]) { place-items: end start; padding: var(--space-3); }
+    .grid :global(.facade[data-play-label] .badge) {
+      grid-auto-flow: column; gap: var(--space-2); width: auto; height: 48px;
+      padding: 0 var(--space-4) 0 7px; border-radius: var(--btn-radius); font-weight: 700; font-size: var(--text-sm);
+    }
+    .grid :global(.facade[data-play-label] .badge svg) {
+      width: 34px; height: 34px; padding: 9px 8px 9px 10px; border-radius: 50%;
+      background: var(--color-cta-ink); color: var(--color-cta);
+    }
+    .grid :global(.facade[data-play-label]:hover .badge) { transform: none; background: var(--color-cta-hover); }
+    .side { margin: 0; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--space-3); align-content: start; }
+    .side > :global(img) { display: block; width: 120px; height: 120px; object-fit: cover; border-radius: var(--radius-md); background: var(--color-bone-50); }
+    .who { margin: 0; align-self: center; font-size: var(--text-sm); color: var(--color-ink-2); }
+    .who b { display: block; font-family: var(--font-display); font-size: var(--city-h3); color: var(--color-brand); }
+    .facts { grid-column: 1 / -1; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-steel-300); }
+    .facts li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-steel-300); font-size: var(--text-sm); line-height: 1.45; }
+    .facts b { color: var(--color-brand); }
+    .nb { white-space: nowrap; }
+    @container (640px <= width < 800px) {
+      .side { grid-template-columns: 200px minmax(0, 1fr); column-gap: var(--space-5); align-items: start; }
+      .side > :global(img) { grid-row: 1 / span 2; width: 200px; height: 200px; }
+      .who { align-self: end; }
+      .facts { grid-column: 2; }
+    }
+    @container (width >= 640px) { .tray { padding: var(--space-6) var(--space-6); } }
+    @container (width >= 800px) {
+      .grid { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+      .side { grid-template-columns: 1fr; }
+      .side > :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 3; }
+    }
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+// src/layouts/CityShell.astro — the city page layout (the London component design pass, Plan 2;
+// the Task 7b review).
+//
+// It is PageShell with the page's OWN nav set in PageShell's three nav slots: the bar under the
+// site header below 1024px (`nav-bar`), the contents panel once after the hero (`nav-contents`)
+// and the dial beside the body from 1024px (`nav-dial`). It names no pick. Working rule 16 lets
+// no two cities mount the same pick, so each city page imports its own three nav components and
+// passes them here as `nav` (src/lib/sections.ts `CityNavSet`); this layout hands each the SAME
+// `sections` list, so the three can never disagree about what the page's sections are. A page
+// that imports no city nav component ships none of its CSS — which is what keeps the city set's
+// rules off the twelve built pages.
+//
+// A city page puts its hero AND the strips that open it (counter, trust) in `slot="hero"`, which
+// PageShell renders full width above the dial's grid, with the contents panel under it.
+//
+// THE THRESHOLD IS PAGESHELL'S: below six sections the set is the wrong furniture. The layout
+// then renders the page without it, and says so at build time, once.
+import PageShell from './PageShell.astro';
+// The city kit's shared CSS (the dial token, the tiers, the type scale): shipped only where a
+// city layout or a city component is mounted, never on the twelve built pages.
+import '../styles/city.css';
+import type { BaseProps } from './BaseLayout.astro';
+import type { CityNavSet, SectionRef } from '../lib/sections';
+
+interface Props extends BaseProps { sections: SectionRef[]; nav: CityNavSet }
+const { sections, nav, ...head } = Astro.props;
+const on = sections.length >= 6;
+if (!on) {
+  console.warn(`CityShell: ${head.canonical ?? head.title} passed ${sections.length} section(s); `
+    + 'the city nav set needs six. Rendering the page without it.');
+}
+const Bar = nav.bar.component;
+const Dial = nav.dial.component;
+const Contents = nav.contents.component;
+---
+{on ? (
+  <PageShell {...head}>
+    <Bar slot="nav-bar" sections={sections} {...nav.bar.props} />
+    <slot name="hero" slot="hero" />
+    <Contents slot="nav-contents" sections={sections} {...nav.contents.props} />
+    <Dial slot="nav-dial" sections={sections} {...nav.dial.props} />
+    <slot />
+  </PageShell>
+) : (
+  <PageShell {...head}>
+    <slot name="hero" slot="hero" />
+    <slot />
+  </PageShell>
+)}

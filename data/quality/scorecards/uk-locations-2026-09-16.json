@@ -1,0 +1,132 @@
+{
+  "slug": "uk-locations",
+  "date": "2026-09-16",
+  "page_type": "hub",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 267,
+    "layout-tap-target-size": 210,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "img-srcset-within-2x": 3,
+    "img-alt-present-and-unique": 3,
+    "nav-anchors-resolve": 3,
+    "nav-jump-target-lands": 3,
+    "sem-heading-order": 3,
+    "sem-all-six-levels": 3,
+    "sem-title-case-headings": 3,
+    "sem-section-opening-paragraph": 3,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 9,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 27,
+    "css-no-dead-component-rule": 0,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 144,
+    "a11y-text-contrast-aa": 261,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "SEM": 3,
+    "SCHEMA": 3,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "SEM": 15,
+    "SCHEMA": 3,
+    "CSS": 6,
+    "DUP": 24
+  },
+  "total": 12,
+  "total_instances": 48,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 5,
+      "message": "heading level(s) absent: H2, H3, H4, H5, H6 — inventory H1:1 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: site-header x1, site-footer x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 8,
+      "message": "8 passage(s) shared with a sibling: 15w vs /available-puppies/byrd/ \"uk home delivery by defra approved transport priced by distance 200 to 350 or collect\" | 15w vs /available-puppies/cheryl/ \"uk home delivery by defra approved transport priced by distance 200 to 350 or collect\" | 15w vs /available-puppies/christa/ \"uk home delivery by defra approved transport priced by distance 200 to 350 or collect\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 5,
+      "message": "heading level(s) absent: H2, H3, H4, H5, H6 — inventory H1:1 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: site-header x1, site-footer x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 8,
+      "message": "8 passage(s) shared with a sibling: 15w vs /available-puppies/byrd/ \"uk home delivery by defra approved transport priced by distance 200 to 350 or collect\" | 15w vs /available-puppies/cheryl/ \"uk home delivery by defra approved transport priced by distance 200 to 350 or collect\" | 15w vs /available-puppies/christa/ \"uk home delivery by defra approved transport priced by distance 200 to 350 or collect\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 5,
+      "message": "heading level(s) absent: H2, H3, H4, H5, H6 — inventory H1:1 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: site-header x1, site-footer x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 8,
+      "message": "8 passage(s) shared with a sibling: 15w vs /available-puppies/byrd/ \"uk home delivery by defra approved transport priced by distance 200 to 350 or collect\" | 15w vs /available-puppies/cheryl/ \"uk home delivery by defra approved transport priced by distance 200 to 350 or collect\" | 15w vs /available-puppies/christa/ \"uk home delivery by defra approved transport priced by distance 200 to 350 or collect\""
+    }
+  ]
+}

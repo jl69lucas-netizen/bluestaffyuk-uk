@@ -1,0 +1,206 @@
+---
+name: bsuk-aeo-pass
+description: Use when finishing any BSUK page build, rebuild or polish and the page must be citable by AI answer engines — ChatGPT, Perplexity, Claude, Google AI Overviews. Also use when a page ranks but is never cited, when AI answers about Blue Staffies quote competitors instead of us, when copy reads as anonymous "we/our" rather than named entities, or when checking freshness signals, BLUF openers, atomic sections, declarative sentences, or stat-bearing headers. Triggers - "run the AEO pass", "make this citable", "AI search optimization", "answer engine optimization", "GEO check".
+---
+
+# SKILL: BSUK AEO Pass — Make the Page Citable
+
+**Run this AFTER `bsuk-page-hardening` and BEFORE `bsuk-final-page-pass`.** Hardening
+asks *does the page render*; this asks *can an answer engine lift a correct sentence
+out of it and attribute it to us*.
+
+```bash
+npm run -s build
+python3 scripts/aeo_audit.py <slug> [<slug> ...]     # pass slugs LITERALLY
+```
+
+`ERROR` = fix before deploy. `WARN` = read the section, then decide.
+
+> **Read `.claude/skills/bsuk-gate-integrity/SKILL.md` first.** The BLUF check here is a **proxy** on
+> sentence length and opening phrases — it cannot tell a wind-up from a legitimately
+> long declarative sentence. Confirm any flagged section by reading it. And read the
+> audit's own examined count: `0 pages matched` is not a pass.
+
+**This skill does not restate what already exists.** Entity-first patterns, the
+Inverse Pyramid, the four Featured-Snippet strategies and per-engine GEO targeting
+live in **`.claude/skills/framework-aio-geo/SKILL.md`** — read it for the *how*. This skill is the
+six-part **gate**, plus the three parts that had no home anywhere in the system before
+2026-07-30.
+
+---
+
+## Non-negotiable facts (verified against the data files 2026-07-30)
+
+Three claims in circulation are wrong. Never write them, and correct them on sight.
+
+| ✗ Never write | ✓ Correct | Why |
+|---|---|---|
+| any licence or statute worded from memory | **LICENCE_CLAIM_PLACEHOLDER** / **LEGAL_CLAIM_PLACEHOLDER** | Neither has been confirmed. Until it is, the placeholder IS the text — in prose only, never in a heading, route or code key. |
+| any price typed by hand | **£1,500** (Roman, Byrd, Ince) · **£1,700** (Vennie, Christa, Cheryl) — the litter spans **£1,500–£1,700** | Every figure comes from `data/price-matrix.json` through a helper. A hand-typed price is a defect even when it is currently right. |
+| a health-guarantee length typed by hand | `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it | The breeder gave this length on 2026-09-29. The setting is the one source; what it covers is `guarantee_cover`, read and never typed. |
+
+Verified safe to use: `Lisa Bright` · `Carlisle, Cumbria` ·
+`DEFRA-approved transport` · the 28 UK cities in `data/locations.json` ·
+`Staffordshire Bull Terrier` · the coat descriptions in `data/puppies.json`
+(blue, blue and white, white). The phone is `PHONE_PLACEHOLDER` and the host is
+`SITE_URL_PLACEHOLDER` until project 6.
+
+Every figure still comes from `data/price-matrix.json` and `data/settings.json` through
+a helper, never a typed literal, and every health/credential claim stays inside the
+**evidence ledger** (`data/quality/evidence-ledger.json`). AEO is not a licence to overclaim: a confidently-worded
+false sentence is the worst possible outcome, because answer engines repeat it.
+
+---
+
+## Part 1 — BLUF (Bottom Line Up Front)
+
+AI models weigh the start of a passage most heavily. **Every section opens with the
+answer**, in one sentence, before any context.
+
+| ✗ | ✓ |
+|---|---|
+| "Before we get into numbers, it's worth stepping back to consider the history of puppy keeping…" | "Blue Staffies from Lisa Bright cost **£1,500–£1,700**, set by age and training." |
+| "There are many things to think about when buying a puppy." | "Lisa Bright delivers to the 28 UK cities in `data/locations.json` by DEFRA-approved transport — **£200–£350, priced by distance** — or you collect in Carlisle." |
+
+**Gate:** the audit flags any H2/H3 whose first sentence exceeds 32 words or opens
+with a wind-up phrase. It is a proxy — read the flagged section. This stacks with the
+EEBP openings the for-sale builder already mandates; BLUF is the *first sentence*
+rule, EEBP is the *paragraph shape* rule.
+
+## Part 2 — Atomic Content
+
+Every section must survive being **chunked out of the page**. A section that only
+makes sense after reading the one above it cannot be cited.
+
+The test: **cover everything above the heading. Does the section still name its
+subject, its actor, and its qualifier?**
+
+| ✗ Not atomic | ✓ Atomic |
+|---|---|
+| "It also includes full documentation." | "Lisa Bright's kennel is LICENCE_CLAIM_PLACEHOLDER licenced and supplies **LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER** home-bred documentation with every puppy." |
+| "They go home when they're ready." | "A Staffy puppy comes home at **eight weeks** at the earliest, never sooner." |
+
+Not machine-checkable — this is the skill's **human** item. Read three random sections
+in isolation. If one needs its neighbour, rewrite its first sentence.
+
+## Part 3 — Entity-Rich Writing
+
+Replace generic nouns and pronouns with named entities, so an engine can bind our
+brand to the topic.
+
+- `our puppies` → **`Canis lupus familiaris`** / **`Blue Staffy`**
+- `we` → **`Lisa Bright's home kennel`** / **`BlueStaffyUK — Carlisle`**
+- `licensed` → **`LICENCE_CLAIM_PLACEHOLDER licenced`**, **`LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred`**
+- `tested` → **`vet health-checked`** (`data/faq.json` `puppy-package`), **`parents DNA-tested for L-2-HGA and HC-HSF4`** (results `NOT FETCHED` — `data/quality/evidence-ledger.json` `parents-dna-clear`)
+
+**The gate exists because of a measurement in the source repo** (its 8 for-sale pages,
+2026-07-30): 3 of 8 pages named no species at all, and 4 of 8 never named the breeder. Those
+are the source repo's pages, not BSUK's; BSUK's own counts come from
+`python3 scripts/aeo_audit.py <slug>`. The audit WARNs on both, and on pronoun-heavy copy
+where `we/our/us` outnumber named entities.
+
+## Part 4 — Simple, Declarative Sentences
+
+One idea per sentence. Subject–verb–object. Extraction-ready.
+
+> Every puppy leaves us vet-checked, microchipped, vaccinated and wormed, with a vet-signed
+> health card. The puppies are socialised with the family from the day they are born.
+
+The audit reports average sentence length and the count over 30 words. It does **not**
+judge truth — that is the evidence ledger's job. Anti-AI rhythm rules from
+`.claude/skills/anti-ai-writing/SKILL.md` still apply: declarative does not mean robotic, and a page
+of identical short sentences fails the humour/voice gate.
+
+## Part 5 — Strategic Formatting for Citations
+
+Answer engines prefer structure they can lift whole.
+
+- **Comparisons** — a comparison table (male vs female in our litter, or a breed-vs-breed
+  page from `.claude/skills/bsuk-comparison-page-builder/SKILL.md`) answers "X vs Y" queries
+  directly; once a comparison page is built, make sure the *money* pages link it.
+- **Lists** — enumerate documents, stages, tiers.
+- **Stat-bearing headers** — put the number *in the heading*:
+  "**£500** Refundable Deposit" · "**£1,500–£1,700** for a Puppy From Our Litter" ·
+  "**£200–£350** UK Home Delivery" · "**12–14 Years**: The Breed's Lifespan". Every figure comes
+  from `data/*.json`; a years-in-business figure is `NOT FETCHED` and never goes in a heading; the length of the
+  guarantee goes in one only as `guarantee_days` and `guarantee_label` word it.
+
+The audit counts tables, lists, and stat-bearing headers, and WARNs when a page has no
+header carrying a figure. Headers still obey **Title Case** and the **declared header
+style** (`framework-heading-hierarchy` §Header Style Selection).
+
+## Part 6 — Brand Ownership and Freshness
+
+### 6a. No named house method — describe the process, never label it
+
+BSUK has **no named house method**. Lisa Bright has never given one, and `CLAUDE.md`
+rule 9 forbids inventing a credential, so no page may carry a capitalised method name
+for the raising or the socialisation process. `scripts/aeo_audit.py` keeps
+`LABELED_METHODS` empty for that reason, and `tests/py/test_agent_facts.py` fails any
+instruction file that names or requires one.
+
+Make the expertise ours the honest way: say what Lisa does, in the first person, with
+the facts on file — the weeks with the mother and the litter, the eight-week earliest
+go-home age (`data/faq.json` `buying-best-age`), family handling at home. If the breeder
+ever names a method, it is added to `LABELED_METHODS` first, and only then written.
+
+### 6b. Freshness is a schema signal, never a visible one
+
+AI citations favour recently-updated pages. CLAUDE.md **bans visible dates**, so
+freshness lives only in JSON-LD.
+
+- `data/page-dates.json` (deferred — the map is generated on first run) holds real per-page git dates; `BaseLayout` injects a
+  `WebPage` node with `datePublished` / `dateModified` for every route that does not
+  already set its own. Coverage is measured per run; `--check` fails when the map is stale.
+- After any content change: `python3 scripts/generate_page_dates.py` and **commit the
+  map**. `--check` fails when it is stale.
+- **Never compute the date at build time.** A shallow CI clone makes a build-time
+  `git log` report the deploy date for every file and stamp a fake "today" on every
+  page. That is the visible-date dishonesty moved into JSON-LD, where it is worse.
+  (BSUK has no CI and no remote until project 6; the rule holds from the first run.)
+- The audit **ERRORs** on a missing `dateModified` and **ERRORs** on any visible
+  "Updated <month> <year>" / "Last updated" / "Posted on" stamp.
+
+### 6c. Puppy listings are the freshness engine
+
+The `/available-puppies/` pages carry genuinely changing facts. Update age, weight and
+training progress as they change — that is real freshness, not date-churn.
+
+**Standing check:** `data/puppies.json` holds the litter — Roman, Byrd and Ince at
+£1,500, Vennie, Christa and Cheryl at £1,700. Every pup in that file needs an
+`/available-puppies/<slug>/` page before listings can be the freshness engine; a pup
+with no page has nothing to keep fresh.
+
+### 6d. Refresh sleeper pages
+
+A page with backlinks and declining traffic is the cheapest AI-visibility win.
+Identify it, refresh with current figures and an original statistic, regenerate the
+date map, redeploy. Needs GSC data to target properly — blocked until the GSC MCP
+lands.
+
+---
+
+## Quick Reference
+
+| Part | Gate | Machine-checked? |
+|---|---|---|
+| 1 BLUF | first sentence ≤32 words, no wind-up opener | proxy |
+| 2 Atomic | section survives being chunked out | **human** |
+| 3 Entity-rich | binomial + breeder name present; not pronoun-heavy | yes |
+| 4 Declarative | avg sentence length, count over 30 words | yes (advisory) |
+| 5 Formatting | ≥1 table/list, ≥1 stat-bearing header | yes |
+| 6a No label | no invented method name on the page | **human** (no page check; instruction files are linted by tests/py/test_agent_facts.py) |
+| 6b Freshness | `dateModified` in JSON-LD, **zero** visible dates | yes (ERROR) |
+
+## Common Mistakes
+
+- **Writing "LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDERI."** It is LEGAL_CLAIM_PLACEHOLDER. This has been corrected once
+  already; do not reintroduce it.
+- **Adding a visible "Updated July 2026".** Banned. The signal is schema-only.
+- **Treating a build-time git date as freshness.** Depth-1 CI makes it a lie.
+- **Overclaiming to sound citable.** An engine repeats what it lifts. Stay inside the
+  evidence ledger (`data/quality/evidence-ledger.json`).
+- **Turning declarative into robotic.** `anti-ai-writing` still applies.
+- **Trusting the BLUF proxy.** It flags long first sentences; some are fine. Read them.
+- **Inventing a method name.** There is none on file. A name the breeder never gave is a
+  made-up credential that an answer engine repeats as fact.

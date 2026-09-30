@@ -1,0 +1,168 @@
+{
+  "slug": "blue-staffy-health-uk",
+  "date": "2026-09-17",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1512,
+    "layout-tap-target-size": 168,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "img-srcset-within-2x": 27,
+    "img-alt-present-and-unique": 27,
+    "nav-anchors-resolve": 6,
+    "nav-jump-target-lands": 6,
+    "sem-heading-order": 186,
+    "sem-all-six-levels": 186,
+    "sem-title-case-headings": 186,
+    "sem-section-opening-paragraph": 186,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 15,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 3588,
+    "css-no-dead-component-rule": 0,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 144,
+    "a11y-text-contrast-aa": 1137,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "NAV": 3,
+    "SEM": 9,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "NAV": 3,
+    "SEM": 30,
+    "CSS": 669,
+    "DUP": 15
+  },
+  "total": 18,
+  "total_instances": 717,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 2 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #Staffy-sale@3411px"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:22 H3:35 H4:4 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 5,
+      "message": "5 heading(s) not in Title Case: H3 \"include:\" in \"Some Common Health Concerns in Blue Staffies i\" | H2 \"is\" in \"What is included with a KC registered blue sta\" | H3 \"most\" in \"One of the most common queries we hear is: “Wh\" | H3 \"your\" in \"Puppy Proofing your House\" | H2 \"is\" in \"Our Unwavering Health Promise: Why BlueStaffyU\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 3,
+      "message": "3 heading(s) with no opening paragraph: H2→H3 \"Staffy Health & Wellness: Join 500+ Pet \" | H2→H3 \"UK Vaccination Schedule for Staffy Puppi\" | H2→H3 \"Optimal Staffy Health: Join 500+ for Exc\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 223,
+      "message": "223 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x71, uagb-infobox__content-wrap x71, uagb-ifb-content x71, uagb-ifb-title-wrap x71, uagb-ifb-title x62, uagb-ifb-desc x58, wp-block-uagb-container x56, uagb-infobox-image-valign-top x43, uagb-infobox-icon-above-title x38, uagb-infobox-icon-left-title x33, uagb-infobox-left x33, uagb-ifb-left-title-image x33"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 98w vs /blue-staffy-pup-sale-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/blue-staffy-puppies-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/staffy-breeding-dogs-glasgow/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 2 in-page links land outside 113-181px (measured chrome 121px = header:121) — no single page-level cause identified; first: #Staffy-sale@4426px"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:22 H3:35 H4:4 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 5,
+      "message": "5 heading(s) not in Title Case: H3 \"include:\" in \"Some Common Health Concerns in Blue Staffies i\" | H2 \"is\" in \"What is included with a KC registered blue sta\" | H3 \"most\" in \"One of the most common queries we hear is: “Wh\" | H3 \"your\" in \"Puppy Proofing your House\" | H2 \"is\" in \"Our Unwavering Health Promise: Why BlueStaffyU\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 3,
+      "message": "3 heading(s) with no opening paragraph: H2→H3 \"Staffy Health & Wellness: Join 500+ Pet \" | H2→H3 \"UK Vaccination Schedule for Staffy Puppi\" | H2→H3 \"Optimal Staffy Health: Join 500+ for Exc\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 223,
+      "message": "223 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x71, uagb-infobox__content-wrap x71, uagb-ifb-content x71, uagb-ifb-title-wrap x71, uagb-ifb-title x62, uagb-ifb-desc x58, wp-block-uagb-container x56, uagb-infobox-image-valign-top x43, uagb-infobox-icon-above-title x38, uagb-infobox-icon-left-title x33, uagb-infobox-left x33, uagb-ifb-left-title-image x33"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 98w vs /blue-staffy-pup-sale-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/blue-staffy-puppies-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/staffy-breeding-dogs-glasgow/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 2 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #Staffy-sale@3413px"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:22 H3:35 H4:4 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 5,
+      "message": "5 heading(s) not in Title Case: H3 \"include:\" in \"Some Common Health Concerns in Blue Staffies i\" | H2 \"is\" in \"What is included with a KC registered blue sta\" | H3 \"most\" in \"One of the most common queries we hear is: “Wh\" | H3 \"your\" in \"Puppy Proofing your House\" | H2 \"is\" in \"Our Unwavering Health Promise: Why BlueStaffyU\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 3,
+      "message": "3 heading(s) with no opening paragraph: H2→H3 \"Staffy Health & Wellness: Join 500+ Pet \" | H2→H3 \"UK Vaccination Schedule for Staffy Puppi\" | H2→H3 \"Optimal Staffy Health: Join 500+ for Exc\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 223,
+      "message": "223 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x71, uagb-infobox__content-wrap x71, uagb-ifb-content x71, uagb-ifb-title-wrap x71, uagb-ifb-title x62, uagb-ifb-desc x58, wp-block-uagb-container x56, uagb-infobox-image-valign-top x43, uagb-infobox-icon-above-title x38, uagb-infobox-icon-left-title x33, uagb-infobox-left x33, uagb-ifb-left-title-image x33"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 98w vs /blue-staffy-pup-sale-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/blue-staffy-puppies-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/staffy-breeding-dogs-glasgow/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\""
+    }
+  ]
+}

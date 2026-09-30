@@ -1,0 +1,74 @@
+<style>
+/* Contact C — Doorstep tray. A sunk steel-100 tray pressed into the bone page (hairline
+   edge, no shadow). At 1024+ the site's own photo of a puppy with its new family in London
+   stands on the left, grown to the form's height, with a caption and the ways to reach us
+   at its foot; the question, its answer and
+   the form fill the right, two fields to a row. On a phone the photo comes first as a short
+   strip. Regular density; fields on the raised surface inside the tray. */
+.cfC{background:var(--color-surface)}
+.cfC .in{max-width:1160px;margin:0 auto;padding:var(--space-7) var(--space-4)}
+.cfC .tray{display:grid;gap:var(--space-6);padding:var(--space-4);background:var(--color-brand-soft);border:1px solid var(--color-steel-300);border-radius:var(--radius-lg)}
+.cfC .ph{margin:0;display:flex;flex-direction:column}
+.cfC .ph img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:40% 25%;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.cfC .ph figcaption{margin-top:var(--space-2);font-size:var(--text-sm);line-height:1.45;color:var(--color-text)}
+.cfC .reach{margin:var(--space-4) 0 0;padding:var(--space-3) 0 0;border-top:1px solid var(--color-steel-300);font-size:var(--text-sm);color:var(--color-text)}
+.cfC .reach b{color:var(--color-brand)}
+.cfC h2{margin:0;font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:22ch}
+.cfC .lede{margin:var(--space-3) 0 var(--space-5);max-width:56ch;color:var(--color-text)}
+.cfC form{display:grid;gap:var(--space-4)}
+.cfC .f{display:grid;gap:4px;margin:0;min-width:0}
+.cfC label{font-size:var(--text-sm);font-weight:600;color:var(--color-text)}
+.cfC label i{font-style:normal;font-weight:400;color:var(--color-ink-2)}
+.cfC input,.cfC select,.cfC textarea{width:100%;min-height:48px;padding:10px 12px;font:inherit;color:var(--color-text);background:var(--color-surface-raised);border:1px solid var(--color-steel-300);border-radius:var(--radius-sm)}
+.cfC textarea{min-height:128px;resize:vertical}
+.cfC input:focus-visible,.cfC select:focus-visible,.cfC textarea:focus-visible,.cfC button:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.cfC :user-invalid{border:2px solid var(--color-warn)}
+.cfC .err{display:none;font-size:var(--text-xs);color:var(--color-warn)}
+.cfC .f:has(:user-invalid) .err{display:block}
+.cfC .go{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-4)}
+.cfC button{min-height:48px;padding:10px 26px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out)}
+.cfC button:hover{background:var(--color-cta-hover)}
+.cfC .after{margin:0;font-size:var(--text-sm);color:var(--color-ink-2)}
+@media (min-width:640px){
+  .cfC form{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--space-4)}
+  .cfC .wide,.cfC .go{grid-column:1/-1}
+}
+@media (min-width:768px){
+  .cfC .in{padding:var(--space-9) var(--space-6)}
+  .cfC .tray{padding:var(--space-6)}
+  .cfC .ph img{aspect-ratio:16/9}
+}
+@media (min-width:1024px){
+  .cfC .tray{grid-template-columns:320px minmax(0,1fr);gap:var(--space-8);padding:var(--space-7);align-items:start}
+  .cfC .ph img{flex:1 1 0;min-height:393px;aspect-ratio:auto;object-fit:cover;object-position:45% 50%}
+  .cfC .tray{align-items:stretch}
+  .cfC .reach{margin-top:auto}
+}
+</style>
+<section data-component="contact-form" data-variant="c" class="cfC">
+  <div class="in">
+    <div class="tray">
+      <figure class="ph">
+        <img src="/images/ethical-staffy-puppy-london-delivery.webp" alt="An ethical blue Staffy puppy, delivered professionally by BlueStaffyUK, happily with its new owners Mark and Emma P. in London." width="540" height="664" loading="lazy">
+        <figcaption>One of our puppies, at home with its new family in London.</figcaption>
+        <p class="reach">Rather talk it through? Call <b>PHONE_PLACEHOLDER</b>, or write using the form.</p>
+      </figure>
+      <div class="main">
+        <h2>Ready to Ask About a Puppy for Your London Home?</h2>
+        <p class="lede">Tell us a little about you and which puppy you have in mind. We reply by email within 24 to 48 business hours, and we can talk through delivery by DEFRA-approved transport for £200–£350, priced by distance, or collection in Carlisle.</p>
+        <form data-contact-form method="post" aria-label="Enquire about a puppy for a London home">
+          <p class="f"><label for="cfC-name">Your name <i>(required)</i></label><input id="cfC-name" name="name" type="text" autocomplete="name" required><span class="err">Please tell us your name.</span></p>
+          <p class="f"><label for="cfC-email">Email <i>(required)</i></label><input id="cfC-email" name="email" type="email" autocomplete="email" required><span class="err">That email address looks incomplete.</span></p>
+          <p class="f"><label for="cfC-phone">Phone <i>(optional)</i></label><input id="cfC-phone" name="phone" type="tel" autocomplete="tel"></p>
+          <p class="f"><label for="cfC-location">Town or postcode <i>(optional)</i></label><input id="cfC-location" name="location" type="text" autocomplete="address-level2"></p>
+          <p class="f wide"><label for="cfC-puppy">Which puppy? <i>(required)</i></label><select id="cfC-puppy" name="puppy" required><option value="" disabled selected>Choose a puppy…</option><option value="roman">Roman · Boy · £1,500</option><option value="byrd">Byrd · Boy · £1,500</option><option value="ince">Ince · Boy · £1,500</option><option value="vennie">Vennie · Girl · £1,700</option><option value="christa">Christa · Girl · £1,700</option><option value="cheryl">Cheryl · Girl · £1,700</option><option value="waiting-list">The next litter, please</option></select><span class="err">Please choose a puppy, or the next litter.</span></p>
+          <p class="f wide"><label for="cfC-message">Message <i>(required)</i></label><textarea id="cfC-message" name="message" rows="5" required></textarea><span class="err">Please tell us what you would like to know.</span></p>
+          <div class="go">
+            <button type="submit">Send my enquiry</button>
+            <p class="after">Your details are used only to answer your enquiry.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

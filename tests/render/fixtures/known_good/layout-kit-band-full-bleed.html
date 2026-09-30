@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a band hero spanning its column</title>
+<!-- The same page with the wrapper left unpadded, so the band spans the column. A hero inside a
+     `.bl-box` sits in the box's own padding by design and is not judged. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .page-body > section:not(.bl-box):not(:has(.kit-hero)) { padding-inline: 24px; }
+  .bl-box { padding: 32px 24px; }
+  .kit-hero { background: #1F3A52; color: #F4F1EA; min-height: 240px; }
+  .kit-hero .inner { max-width: 1200px; margin: 0 auto; padding: 24px; }
+</style>
+</head><body>
+<main>
+  <div class="page-shell"><div class="page-body">
+    <section id="top"><section class="kit-hero" data-hero-layout="bleed"><div class="inner"><h1>How to Choose</h1></div></section></section>
+    <section class="bl-box"><section class="kit-hero" data-hero-layout="split"><div class="inner"><h2>A Boxed Hero</h2></div></section></section>
+    <section><h2>Body</h2><p>Prose in its gutter.</p></section>
+  </div></div>
+</main>
+</body></html>

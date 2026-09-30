@@ -1,0 +1,110 @@
+---
+// src/components/kit/PageNav.astro — the breadcrumb trail plus the in-page "on this page"
+// navigation (spec §5 #11). Picked 2026-09-18: the chip row — the jump links as a wrapping
+// row of pills under the crumbs, with no heading over them, because a row of section names
+// is self-evidently a row of jumps.
+//
+// THE TRAIL IS NOT HAND-WRITTEN. It comes from crumbs() in src/lib/site.ts, the same
+// function the pages use, so the intermediate labels stay in step with NAV and a renamed
+// section cannot leave a stale crumb behind here.
+//
+// `sections` DEFAULTS TO EMPTY, and an empty list renders the breadcrumb alone. The
+// component has no opinion about what a page's sections are.
+//
+// `crumbs` DEFAULTS TO TRUE, and `PageShell` is the one caller that passes false. BaseLayout
+// already renders `<Breadcrumb>` above `<main>`, so a shell-mounted copy of this component
+// would put a SECOND trail on every rebuilt page — two `nav[aria-label="Breadcrumb"]`
+// landmarks with the same links, which is a duplicate landmark to a screen reader and a
+// duplicated BreadcrumbList to a crawler. The trail is not dropped from the component,
+// because the kit preview and any page that mounts it directly still want it.
+//
+// The jump links rely on the global `[id]` scroll-margin rule (nav-jump-target-lands) for
+// the landing offset, and nothing here re-states it. Nothing here pins itself above the
+// target either: the sticky treatment was one of the five and the prune did not keep it, so
+// the global offset — which clears the measured header and nothing else — remains correct
+// and project 4 has no extra chrome to account for.
+//
+// Tap targets (layout-tap-target-size / WCAG SC 2.5.8): crumbs and jump links sit in rows
+// of close neighbours, so neither gets the isolated-target spacing exception and both are
+// measured against the 24px floor. Crumbs are 32px line boxes and jump links 44px.
+import type { HTMLAttributes } from 'astro/types';
+import { crumbs } from '../../lib/site';
+
+export interface NavSection { id: string; label: string }
+type Props = HTMLAttributes<'div'> & {
+  path?: string;
+  title?: string;
+  sections?: NavSection[];
+  /** Render the breadcrumb trail. False where the page already has one above `<main>`. */
+  crumbs?: boolean;
+};
+const {
+  path = '/uk-staffordshire-bull-terrier-guide/',
+  title = 'Staffordshire Bull Terrier guide',
+  sections = [],
+  crumbs: showCrumbs = true,
+  class: cls,
+  ...rest
+} = Astro.props;
+
+const trail = crumbs(path, title);
+---
+<div {...rest} class:list={['kit-nav', cls]}>
+  {showCrumbs && (
+    <nav aria-label="Breadcrumb" class="crumbs">
+      <ol>
+        {trail.map((c, i) => (
+          <li>
+            {i < trail.length - 1
+              ? <a href={c.href}>{c.label}</a>
+              : <span aria-current="page">{c.label}</span>}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )}
+
+  {sections.length > 0 && (
+    <nav aria-label="On this page" class="toc">
+      <ul>
+        {sections.map((s) => <li><a href={`#${s.id}`}>{s.label}</a></li>)}
+      </ul>
+    </nav>
+  )}
+</div>
+
+<style>
+  @layer components {
+    .kit-nav { display: grid; gap: var(--space-3); max-width: 640px; color: var(--color-text); }
+
+    .crumbs ol {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0 var(--space-2); font-size: var(--text-sm);
+    }
+    .crumbs li { display: flex; align-items: center; gap: var(--space-2); }
+    .crumbs li + li::before { content: "/"; color: var(--color-text-muted); }
+    .crumbs a, .crumbs [aria-current] {
+      display: inline-flex; align-items: center; min-height: 32px;
+    }
+    .crumbs a { color: var(--color-link); }
+    .crumbs [aria-current] { color: var(--color-text-muted); }
+
+    .toc ul {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; flex-wrap: wrap; gap: var(--space-2);
+    }
+    .toc a {
+      display: inline-flex; align-items: center; gap: 6px;
+      min-height: 44px; padding: 0 14px;
+      border-radius: var(--radius-pill);
+      background: var(--color-brand-soft); color: var(--color-brand);
+      font-weight: 600; font-size: var(--text-sm); text-decoration: none;
+    }
+    .toc a:hover { text-decoration: underline; }
+    /* --kit-ring, not --color-focus: this block is dropped on steel bands too (convention 2). */
+    .kit-nav a:focus-visible {
+      outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: var(--radius-sm);
+    }
+  }
+</style>

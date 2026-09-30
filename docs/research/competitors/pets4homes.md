@@ -1,0 +1,40 @@
+# Pets4Homes — competitor intel
+
+- Root domain: pets4homes.co.uk · tier 2 (classifieds marketplace) · analysed 2026-09-25. This re-run replaces the earlier 2026-09-25 report, whose key pages were cat pages. The classifier was fixed in commit 4e2fe7f: the breed's own pages come first, and another species is never a key page.
+- **Re-typed in the G1 consistency pass (0 credits).** The saved map was run again through the final Map list and classifier (commit 9d7e7b9). A Manchester Terrier listing is no longer read as a Manchester city page, so city drops from 26 to 25 and listing rises from 331 to 332. The key pages are the same two Staffy listings. The classifier prints `marketplace: true`. The licence field was re-read under the controller's ruling that it is true only when a licence number or a named council is shown.
+- Homepage gate: passed (status 200; the final URL stays on pets4homes.co.uk).
+- Fetched: the map was **reused, not re-fetched**. It is the 491-URL map saved from the earlier run today, with the same limit of 500, so 0 map credits. Then 3 scrapes: the homepage (markdown and raw HTML) and the two key pages the fixed classifier picked. Those are the Staffordshire Bull Terrier listing for the whole UK (the listing slot) and the Staffordshire Bull Terrier listing for Manchester (the city slot). The price-or-FAQ, guide and about slots had no page in the map, so they were not scraped. All three scrapes were served from Firecrawl's cache: the homepage was cached earlier today, and the two Staffy listings on 2026-09-23. The phone check used an emulated phone in Chrome DevTools. 3 Firecrawl credits in all.
+- Map list (the final script, re-run on the saved map and homepage raw HTML in the consistency pass): `map_calls` 1 · `url_count` 491 · `breed_urls` 3 · `search_map` false, so no search map ran (`search_term` null, `search_added` 0, `search_breed_urls` 0, and `search_adverts` does not apply) · `home_added` 0 · `map_list` 491.
+
+## Trust
+The platform shows its own trust first. The homepage's first section covers ID checks for breeders and buyers, its own pet-payment service and a trust-and-safety team. On the two Staffy listings, nearly every advert card carries an ID-verified tag. One card also carries a "Licensed Breeder" badge beside its ID-verified tag. That is a bare claim: no licence number is printed and no council is named anywhere, so `council_licence_shown` is false and `council` is null. The Kennel Club comes up throughout the sellers' own advert text (KC registered, KC reg). Two adverts name the breed's DNA tests, L-2-HGA and HC-HSF4; others only say the parents are health tested or DNA clear. Vet checks appear in sellers' lists of what comes with a puppy. There is no breeding-since claim and no home town for the platform. Phone and email: the homepage measures script found neither in the raw HTML, and it found none in the listings' markdown either. Reviews: 0. Several advert cards show a seller star score with no review words, and the homepage shows no testimonials (the review list file is empty, `grep -c .` gives 0).
+
+## Content
+Homepage: 1,276 words by script, under 12 H2s. Nearly all of them are link hubs (article teasers, popular breeds, pets by type, popular cities, article categories) rather than prose. Each Staffy listing has 1 H2, a live count of adverts found: 137 across the UK and 28 for Manchester. Each listing also has one fixed paragraph about the breed, a link to the site's buying-advice page for the breed, and five FAQ questions. Only the first FAQ question shows its answer in the fetched content. The UK listing ends with a long block of suggested searches: coat colours, sex, price bands and towns. The map returned 491 URLs, short of the 500 cap. It is still only a sample of a far larger site: most of it is individual adverts and for-sale listing URLs.
+
+## Keywords
+35 phrases by the run rule, taken from the homepage's popular-breed links and the two Staffy listings. The listings contribute the H1 phrase, sellers' advert titles and the suggested-search links. Those cover colours (blue, blue and black, blue fawn, red brindle, blue pied), KC-registered variants, a price question, the breed with a town (Bristol, Coventry, Essex, Nottingham, Glasgow, Leeds), and for-sale variants. One run was dropped at the name cut: its middle word is a bloodline or kennel name, and cutting it leaves nothing that qualifies.
+
+## Page types
+By script over the 491-URL Map list, with `--home` set and `--post-folder=pet-advice`, under the final classifier: listing 332, blog 47, city 25, health 9. The classifier prints `marketplace: true`. The Manchester Terrier listing for Fife, which the earlier table counted as a Manchester city page, is now a listing: a city word followed by `-terrier` is a breed, not a place. The 47 blog URLs are mostly help-centre articles (the word "articles" is in their path) plus the 5 pet-advice posts. The map has no price, FAQ, guide or about URL. Under the current table, a "pure-breed" advert slug is an advert and not a breed guide, so the adverts the earlier run counted as breed guides are now listings.
+
+## Blog
+5 posts by the classifier. The site keeps its articles in a `/pet-advice/` folder the table cannot see, so it was named with `--post-folder=pet-advice` (`post_folder`). Help-centre articles are left out of the count. No post was among the key pages, so topics, sampled word counts and posting frequency are NOT FETCHED. The post URLs carry no dates.
+
+## Visual
+23 distinct images on the homepage (homepage measures script, raw HTML, sources resolved against the homepage URL). None is missing alt text, and the most common alt class is descriptive. The homepage has no video tag and no YouTube or Vimeo embed. Both Staffy listings show a photo on every advert card, but the visual measures are read from the homepage's raw HTML only.
+
+## Schema
+Organization only: the one JSON-LD block in the homepage raw HTML.
+
+## Cities
+19 cities from `data/locations.json` are named on the fetched pages or have a URL in the map: Aberdeen, Birmingham, Bristol, Cardiff, Coventry, Dundee, Edinburgh, Essex, Glasgow, Hull, Leeds, Liverpool, London, Manchester, Nottingham, Oxford, South Yorkshire, Sunderland and York. The homepage's popular-city links give most of them. The Staffy listings add the rest, through advert locations and the breed-plus-town search links. Cardiff, Dundee and Liverpool come only from advert URLs in the map.
+
+## Conversion
+The two Staffy listings are feeds of advert cards. Each card shows a price, the puppies' age, the seller's town and badges, and links through to the advert itself; no advert was among the key pages. A buyer is asked to act in two ways on the pages fetched. Sellers invite viewings in their advert text (`visit`), and the homepage offers paying for a pet through the platform's own payment service (`online-deposit`). No form or message box was in the fetched content, so steps to enquire is null. No deposit amount or terms are stated. Prices are printed on every advert card: 22 distinct amounts as printed across the two listings, including the FAQ's national-average answer. Urgency comes from the sellers. Some cards state ready dates or say the litter is ready now; others say only one or two remain or call it the last one.
+
+## Technical
+Emulated phone in Chrome DevTools (375 × 812 viewport, mobile user agent, touch), homepage loaded, then the mobile-check evaluate. It returned innerWidth 375, clientWidth 375, scrollWidth 375, screenWidth 375, maxTouchPoints 1 and mobileUA true, so `mobile_layout_ok` is true. Lighthouse: NOT FETCHED (no Lighthouse run).
+
+## Key insight
+Pets4Homes answers every Staffy search with one templated listing page per breed and place, and each page is a feed of other sellers' adverts. Health tests, KC papers and ready dates appear only when a seller happens to type them, and the page's own answer on price is a national average. BSUK can beat it on the same searches by putting one breeder's facts in one place (named tests, a licence, litter dates and a printed price) on a page a buyer can act on.

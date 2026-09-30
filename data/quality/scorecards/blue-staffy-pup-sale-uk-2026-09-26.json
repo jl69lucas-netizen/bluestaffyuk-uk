@@ -1,0 +1,116 @@
+{
+  "slug": "blue-staffy-pup-sale-uk",
+  "date": "2026-09-26",
+  "page_type": "for-sale",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 31
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 937,
+    "layout-tap-target-size": 219,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 6,
+    "hero-aside-no-clip": 0,
+    "img-srcset-within-2x": 33,
+    "img-alt-present-and-unique": 33,
+    "img-sizes-matches-box": 3,
+    "nav-anchors-resolve": 153,
+    "nav-jump-target-lands": 39,
+    "nav-bottom-chrome-clear": 26,
+    "sem-heading-order": 165,
+    "sem-all-six-levels": 165,
+    "sem-title-case-headings": 165,
+    "sem-section-opening-paragraph": 165,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 3,
+    "schema-sold-not-instock": 3,
+    "schema-date-modified-present": 18,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1581,
+    "css-no-dead-component-rule": 954,
+    "css-component-color-not-overridden": 70,
+    "dup-no-sibling-crossover": 180,
+    "a11y-text-contrast-aa": 907,
+    "a11y-no-duplicate-ids": 81,
+    "a11y-hero-ledge-contrast": 12,
+    "form-inquiry-contract": 3
+  },
+  "defects": {
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "CSS": 219,
+    "DUP": 15
+  },
+  "total": 9,
+  "total_instances": 234,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-head-above x11, bl-list-stack x10, bl-cols-1 x9, bl-chrome-ruled x9, bl-media-none x7, counter-wrap x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 66,
+      "message": "66 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 13w vs /kit-preview/ \"can you deliver a blue staffy puppy to my location in the uk\" | 12w vs /buy-blue-staffy-puppies-uk/ \"no answer here sets a price of its own the one that\" | 12w vs /kit-preview/ \"what s included when i buy a blue staffy puppy from bluestaffyuk\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-head-above x11, bl-list-stack x10, bl-cols-1 x9, bl-chrome-ruled x9, bl-media-none x7, counter-wrap x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 66,
+      "message": "66 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 13w vs /kit-preview/ \"can you deliver a blue staffy puppy to my location in the uk\" | 12w vs /buy-blue-staffy-puppies-uk/ \"no answer here sets a price of its own the one that\" | 12w vs /kit-preview/ \"what s included when i buy a blue staffy puppy from bluestaffyuk\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-head-above x11, bl-list-stack x10, bl-cols-1 x9, bl-chrome-ruled x9, bl-media-none x7, counter-wrap x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 66,
+      "message": "66 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 13w vs /kit-preview/ \"can you deliver a blue staffy puppy to my location in the uk\" | 12w vs /buy-blue-staffy-puppies-uk/ \"no answer here sets a price of its own the one that\" | 12w vs /kit-preview/ \"what s included when i buy a blue staffy puppy from bluestaffyuk\""
+    }
+  ]
+}

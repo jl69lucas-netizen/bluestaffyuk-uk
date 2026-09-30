@@ -1,0 +1,90 @@
+---
+// src/components/kit/Testimonial.astro — the testimonial block (spec §5 #8). Picked
+// 2026-09-18: the inverse band with an initials avatar above the quote.
+//
+// MODES, NOT VARIANTS (spec §11 amendment 3e). How many reviews a block shows, and whether
+// they stack or sit in a grid, is the `mode` prop — `single` (the default) or `grid` — and
+// it survived the prune when the five styles did not, because it is the API project 4
+// places review slots with.
+//
+// `reviews` is the other half of that API: pass an explicit array and it is rendered in
+// full, laid out by `mode`. That is how a page shows THE REMAINDER — a grid of the first
+// three and then the rest as singles further down, with none dropped
+// (rules/copy.md, review placement). Pass nothing and the component takes its own slice of
+// data/reviews.json, which is what a single-block page wants.
+//
+// THE QUOTES ARE NOT WRITTEN HERE. data/reviews.json holds three reviews copied verbatim
+// off the migrated pages — two from the homepage's "Our Happy Blue Staffy Owners Speak"
+// carousel and one from the "Why UK Families Trust BlueStaffyUK" block on
+// /buy-blue-staffy-puppies-uk/ — each with the attribution exactly as that page prints it
+// and the page path in `source`. Rule 9: a testimonial with nobody behind it is the one
+// invented claim a component must never make, so a slot with no real review takes the
+// REVIEW_PLACEHOLDER row that scripts/placeholder_check.py counts. There are none today.
+//
+// The block paints its own steel band, so it carries data-surface="inverse" and takes its
+// text colour and --kit-ring from the global rule (conventions 2 and 3).
+import type { HTMLAttributes } from 'astro/types';
+import reviewsJson from '../../../data/reviews.json';
+
+export interface Review { quote: string; name: string; place: string; source: string }
+export type TestimonialMode = 'single' | 'grid';
+type Props = HTMLAttributes<'section'> & { mode?: TestimonialMode; reviews?: Review[] };
+const { mode = 'single', reviews, class: cls, ...rest } = Astro.props;
+
+const all = reviewsJson as Review[];
+// An explicit list is rendered in full; the default is the component's own slice — `single`
+// is one review given room, `grid` is the multi-review strip.
+const list = reviews ?? (mode === 'grid' ? all.slice(0, 3) : all.slice(0, 1));
+/** The placeholder a slot with no real review carries; scripts/placeholder_check.py counts it. */
+const PLACEHOLDER = 'REVIEW_PLACEHOLDER';
+// "The Victoria Family" is TV, not TF: a leading article is not part of anybody's name.
+const initials = (n: string) =>
+  n.split(/\s+/).filter((w) => w && w.toLowerCase() !== 'the')
+    .map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+---
+<section
+  {...rest}
+  class:list={['kit-quote', cls]}
+  data-surface="inverse"
+  data-mode={mode}
+  aria-label="What families say"
+>
+  <div class:list={['container', mode === 'grid' ? 'grid' : 'stack']}>
+    {list.map((r) => (
+      r.quote === PLACEHOLDER ? (
+        /* An empty slot is SHOWN, not skipped. Dropping the row would hide the hole from
+           the reader AND from scripts/placeholder_check.py, which counts the token in
+           dist/ — a review slot silently omitted and a review slot invented are the same
+           class of defect (rule 9). */
+        <p class="kit-quote-empty">{PLACEHOLDER}</p>
+      ) : (
+        <figure>
+          <span class="avatar" aria-hidden="true">{initials(r.name)}</span>
+          <blockquote><p>{r.quote}</p></blockquote>
+          <figcaption>{r.name}{r.place && <span> · {r.place}</span>}</figcaption>
+        </figure>
+      )
+    ))}
+  </div>
+</section>
+<style>
+  @layer components {
+    .kit-quote { padding-block: var(--space-8); background: var(--color-surface-inverse); }
+    .stack { display: grid; gap: var(--space-5); }
+    /* auto-fit rather than a 720px breakpoint: the grid reflows on its own container, so a
+       three-up strip dropped into a narrow column wraps without the page having to be
+       narrow too. */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-5); }
+    figure { margin: 0; padding: var(--space-6); text-align: center; }
+    /* The 720px measure is `single`'s alone: one quote given the whole container would run
+       to an unreadable line, while a `grid` column is already narrow and capping it again
+       would only strand the third card. */
+    .stack figure { max-width: 720px; margin-inline: auto; }
+    blockquote { margin: 0 0 var(--space-3); }
+    blockquote p { margin: 0; font-family: var(--font-display); font-size: var(--text-lg); line-height: 1.5; }
+    figcaption { font-size: var(--text-sm); font-weight: 600; color: inherit; opacity: .85; }
+    /* Brass as a FILL carrying --color-cta-ink, never brass text. */
+    .avatar { display: inline-grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--color-cta); color: var(--color-cta-ink); font-weight: 700; margin-bottom: var(--space-3); }
+    .kit-quote-empty { margin: 0; padding: var(--space-6); border: 1px dashed var(--color-border); border-radius: var(--card-radius); color: inherit; font-size: var(--text-sm); }
+  }
+</style>

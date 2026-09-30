@@ -1,0 +1,53 @@
+{
+ "component": "video",
+ "variants": {
+  "a": {
+   "name": "Double bill",
+   "description": "A deep-steel band: the click-to-play screen on two thirds of the row beside a tall print of Jones, the sire, on the other third.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/video/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Video-YouTube-desing-component.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/puppy-card-shop-idea.png"
+   ],
+   "differs_from": "A facade and a full-height section photo of the sire side by side on a deep band; S2 is an iframe with no photo, S3 a plain facade with none.",
+   "axes": {
+    "layout": "double-bill",
+    "media": "right",
+    "density": "airy",
+    "framing": "band"
+   }
+  },
+  "b": {
+   "name": "Portrait reel",
+   "description": "Ruled section: copy with an inline print of a puppy and its owner, beside a tall 4:5 poster of Cheryl with a brass play disc.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/video/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/video/mfs-home-375-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Video-YouTube-desing-component.png"
+   ],
+   "differs_from": "A portrait facade beside copy that carries its own inline photo, framed by rules; the built rows are iframes in a card or on a band, or a plain facade with no photo.",
+   "axes": {
+    "layout": "reel",
+    "media": "inline",
+    "density": "regular",
+    "framing": "rule"
+   }
+  },
+  "c": {
+   "name": "Side panel",
+   "description": "Sunk steel-100 tray: a wide poster of Christa with a Play the film pill beside a panel with Ince's photo and three ruled facts.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/puppy-card-shop-idea.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/video/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Video-YouTube-desing-component.png"
+   ],
+   "differs_from": "A facade with a photo panel on its right inside a sunk tray (no shadow); S1 is a raised card round an iframe, S3 a plain facade with no photo.",
+   "axes": {
+    "layout": "side-panel",
+    "media": "right",
+    "density": "compact",
+    "framing": "inset"
+   }
+  }
+ }
+}

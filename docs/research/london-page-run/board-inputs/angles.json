@@ -1,0 +1,46 @@
+[
+ {
+  "id": "A1",
+  "hook": "Ask for a live video call with your puppy and Maggie, its mother, before any deposit; then £500 books your viewing, reserves your puppy and comes off the price.",
+  "h1": "Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?",
+  "recommended": true,
+  "why": "It answers the user's named fear (session brief Q8) where page one is silent: none of the nine saved page-one pages states deposit terms in its own voice (deposits appear only inside sellers' advert text), and none offers a live video call with the puppy and its mother before a deposit; the one mention is a single seller's line in a Freeads advert (serp-findings.md, Universal gaps). Buyers ask it in these words: \"Should I see the puppy with its mother before any money changes hands?\" is the question file's only score-5 thread question and a must-answer (r/UK_Pets, the most-replied thread, 96 replies), and \"Is it safe to pay a deposit to a seller I found through an online advert?\" scores 4 in the question file's top block. The ChatGPT answer names \"deposit\", which the page's must-answer set does not carry yet (llm-intel, on_page false). Every fact the angle needs is already a breeder answer or a data key (q03, q04, depositLine).",
+  "trade_off": "Leading with the deposit puts the one question the data cannot answer yet in plain sight: until the deposit-wording branch lands (plan Ruling 2), the page can say what the £500 does but not whether any of it comes back, so a cautious buyer's next question waits on that merge. And only the video call comes before the deposit; the visit to Carlisle comes after it, so the opening has to say so in its first lines, or the H1 reads as a promise of a visit before any deposit.",
+  "rests_on": [
+   "docs/research/london-page-run/serp-findings.md",
+   "data/queries/raw/blue-staffy-puppies-london/threads.json",
+   "data/queries/blue-staffy-puppies-london.json",
+   "docs/research/llm-intel/blue-staffy-puppies-london-2026-09-30.json",
+   "docs/research/london-page-run/entities.md",
+   "docs/superpowers/sessions/2026-09-30-session-brief.md"
+  ]
+ },
+ {
+  "id": "A2",
+  "hook": "We're in Carlisle, not London, and we lead with it: your puppy reaches your door by DEFRA-approved transport for £200–£350, priced by distance, or you collect here.",
+  "h1": "How Will My Blue Staffy Puppy Get From Carlisle to London?",
+  "recommended": false,
+  "why": null,
+  "trade_off": null,
+  "rests_on": [
+   "docs/research/london-page-run/serp-findings.md",
+   "data/queries/blue-staffy-puppies-london.json",
+   "docs/research/london-page-run/entities.md",
+   "docs/research/london-page-run/keyword-universe.json"
+  ]
+ },
+ {
+  "id": "A3",
+  "hook": "Every figure in print before you ask: £1,500 for a boy, £1,700 for a girl, £200–£350 UK home delivery by distance, and a £500 deposit that comes off the price.",
+  "h1": "How Much Does a Blue Staffy Puppy Cost, Delivered to London?",
+  "recommended": false,
+  "why": null,
+  "trade_off": null,
+  "rests_on": [
+   "data/queries/raw/blue-staffy-puppies-london/serp_google.json",
+   "data/queries/blue-staffy-puppies-london.json",
+   "docs/research/london-page-run/serp-findings.md",
+   "docs/research/london-page-run/keyword-universe.json"
+  ]
+ }
+]

@@ -1,0 +1,117 @@
+{
+  "slug": "blue-staffy-uk-breeders",
+  "date": "2026-09-27",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 32
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 933,
+    "layout-tap-target-size": 200,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 9,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 3,
+    "layout-hero-image-first-mobile": 3,
+    "img-srcset-within-2x": 45,
+    "img-alt-present-and-unique": 45,
+    "img-sizes-matches-box": 9,
+    "nav-anchors-resolve": 165,
+    "nav-jump-target-lands": 42,
+    "nav-bottom-chrome-clear": 28,
+    "sem-heading-order": 198,
+    "sem-all-six-levels": 198,
+    "sem-title-case-headings": 198,
+    "sem-section-opening-paragraph": 198,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 21,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1401,
+    "css-no-dead-component-rule": 918,
+    "css-component-color-not-overridden": 61,
+    "dup-no-sibling-crossover": 180,
+    "a11y-text-contrast-aa": 900,
+    "a11y-no-duplicate-ids": 63,
+    "a11y-hero-ledge-contrast": 3,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "CSS": 186,
+    "DUP": 6
+  },
+  "total": 9,
+  "total_instances": 192,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x7, bl-list-stack x6, bl-media-none x6, bl-cols-1 x5, bl-head-above x4, bl-head-eyebrow x2, counter-wrap x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 55,
+      "message": "55 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 13w vs /index/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /kit-preview/ \"what should a first time dog owner know before getting a blue staffy\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x7, bl-list-stack x6, bl-media-none x6, bl-cols-1 x5, bl-head-above x4, bl-head-eyebrow x2, counter-wrap x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 55,
+      "message": "55 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 13w vs /index/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /kit-preview/ \"what should a first time dog owner know before getting a blue staffy\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x7, bl-list-stack x6, bl-media-none x6, bl-cols-1 x5, bl-head-above x4, bl-head-eyebrow x2, counter-wrap x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 55,
+      "message": "55 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 2,
+      "message": "2 passage(s) shared with a sibling: 13w vs /index/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 13w vs /kit-preview/ \"what should a first time dog owner know before getting a blue staffy\""
+    }
+  ]
+}

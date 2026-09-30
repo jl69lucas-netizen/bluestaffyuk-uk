@@ -1,0 +1,74 @@
+---
+// src/components/kit/TrustStrip.astro — the trust strip (spec §5 #5). Picked 2026-09-18:
+// the inverse band — three claims with a line icon, a headline and a sentence, on steel.
+// Line icons, never emoji (rule 7).
+//
+// THE DEFAULT THREE CLAIMS ARE BACKED, not written here. Each one is on the live homepage
+// today: KC registration and DEFRA approval in the "are you a licensed breeder" answer, the
+// L-2-HGA / HC-HSF4 clear dam and sire in the "are your puppies' parents health-tested"
+// answer, and the home rearing in both. A claim with nothing behind it would be a statutory
+// statement invented by a component, which rule 9 forbids.
+//
+// A PAGE MAY PASS ITS OWN `items`, and the same rule follows them: whatever a page hands
+// over is a claim ITS board record and ITS data files carry, not one this component invented
+// on its behalf. That is the split working rule 16 already made for the hero's chips and the
+// counter's figures — WHAT the strip says belongs to the page, HOW it is drawn belongs here.
+// `/buy-staffy-puppies-for-sale-uk/` is the first caller: its record's `promises` section
+// names FOUR documents and the strip printed three, so the page's own paragraph and the strip
+// beside it disagreed about how many things it can hand a reader (2026-09-21 review).
+// Omitted, the three below render exactly as they always have, which is what the other three
+// callers get.
+//
+// The strip paints its own steel band, so it carries `data-surface="inverse"` and the
+// global rule supplies the on-inverse text colour and --kit-ring (convention 3): nothing
+// here names a colour that has to work on both surfaces, and the section deliberately sets
+// no `color` of its own so the global one is what applies.
+import type { HTMLAttributes } from 'astro/types';
+
+/** One claim: a title, a sentence, and the `d` of a 24x24 line icon (never emoji, rule 7). */
+export interface TrustItem { t: string; d: string; i: string }
+
+type Props = HTMLAttributes<'section'> & { items?: TrustItem[] };
+const DEFAULT_ITEMS: TrustItem[] = [
+  { t: 'KC registered', d: 'KC-registered breeder; registration paperwork with every puppy.', i: 'M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z' },
+  { t: 'DNA-tested parents', d: 'Dam and sire DNA tested for L-2-HGA and HC-HSF4; eyes and elbows screened too.', i: 'M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6' },
+  { t: 'Raised in the home', d: 'Reared in a family home, not a kennel, and socialised early.', i: 'M3 11l9-8 9 8v10H3z M9 21v-6h6v6' },
+];
+const { items: passed, class: cls, ...rest } = Astro.props;
+// An EMPTY array falls back, deliberately: a page that computed its claims and got none
+// should not be able to ship an empty credentials band by accident.
+const items = passed && passed.length ? passed : DEFAULT_ITEMS;
+---
+<section
+  {...rest}
+  class:list={['kit-trust', cls]}
+  data-surface="inverse"
+  aria-label="Breeder credentials"
+>
+  <ul class="container list">
+    {items.map((x) => (
+      <li>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d={x.i} /></svg>
+        <div><strong>{x.t}</strong><p>{x.d}</p></div>
+      </li>
+    ))}
+  </ul>
+</section>
+<style>
+  @layer components {
+    .kit-trust { background: var(--color-surface-inverse); padding-block: var(--space-6); }
+    /* `auto-fit`, not `repeat(3, …)`: the count is the page's now, and a fourth claim against
+       a three-track grid wrapped into a second row with two empty columns beside it. With
+       `auto-fit` an empty track collapses, so three items still lay out in exactly the three
+       equal columns they always did and four lay out in four. */
+    .list { list-style: none; margin: 0; padding-block: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-6); }
+    li { display: flex; gap: var(--space-3); align-items: flex-start; color: inherit; }
+    /* Brass as an accent on the dark band: it is 4.9:1 there and 3.1:1 on bone. */
+    svg { color: var(--color-cta); }
+    strong { display: block; font-family: var(--font-display); font-size: var(--text-lg); color: inherit; }
+    p { margin: 4px 0 0; font-size: var(--text-sm); color: inherit; }
+    @media (max-width: 720px) {
+      .list { grid-template-columns: 1fr; }
+    }
+  }
+</style>

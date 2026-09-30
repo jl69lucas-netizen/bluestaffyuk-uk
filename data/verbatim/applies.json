@@ -1,0 +1,20 @@
+{
+ "comment": "The pages working rule 15 (faithful rewrite) reaches. scripts/verbatim_set_check.py --check judges a slug only when it is in BOTH this list and data/facts/rebuilt.json: this file says the rule covers the page, rebuilt.json says the page has actually been rewritten and so has something to check. Adding a slug here without taking its set with --extract first is what the extraction step exists to prevent.",
+ "excluded": {
+  "comment": "The three pages rebuilt BEFORE rule 15 was written. Rule 15 says in as many words that they stay as rewritten: their migrated wording was not carried, no verbatim set was ever taken for them, and taking one now would demand headings and opening paragraphs from three pages the breeder has already approved and signed off. Re-boarding three finished pages to satisfy a rule written after them would be rewriting history, not keeping it.",
+  "privacy-policy-uk": "rebuilt at project 4 Task 7, before rule 15 (2026-09-20)",
+  "thank-you-blue-staffy-puppies-journey": "rebuilt at project 4 Task 8, before rule 15 (2026-09-20)",
+  "uk-blue-staffy-breeders-contact": "rebuilt at project 4 Task 9, before rule 15 (2026-09-20)"
+ },
+ "slugs": [
+  "index",
+  "blue-staffy-uk-breeders",
+  "blue-staffy-health-uk",
+  "uk-staffordshire-bull-terrier-guide",
+  "uk-blue-staffy-puppy-buying-guide",
+  "blue-staffy-blog-guides",
+  "blue-staffy-pup-sale-uk",
+  "buy-staffy-puppies-for-sale-uk",
+  "buy-blue-staffy-puppies-uk"
+ ]
+}

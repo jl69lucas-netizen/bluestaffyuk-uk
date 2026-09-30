@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>an H3 larger than its box's H2</title>
+<!-- The Known Issue 97 review: `.bl-box h2` moved to 22 / 25 / 28px while `.bl-stub h3` stayed at
+     --text-xl (24px), so on a phone a box's H3s painted larger than the H2 above them. The H4
+     under the unboxed H3 is larger than it too. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  main { padding: 0 24px; }
+  .bl-box h2 { font-size: 22px; }
+  .bl-stub h3 { font-size: 24px; }
+  section > h3 { font-size: 18px; }
+  h4 { font-size: 21px; }
+</style>
+</head><body>
+<main>
+  <section class="bl-box"><h2>Blue Staffy Puppies for Sale</h2>
+    <div class="bl-stub"><h3>What Each Card Tells You</h3><p>Prose.</p></div></section>
+  <section><h2>Health</h2><h3>Screening</h3><h4>Eyes and Elbows</h4><p>Prose.</p></section>
+</main>
+</body></html>

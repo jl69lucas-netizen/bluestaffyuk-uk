@@ -1,0 +1,192 @@
+{
+ "id": "trojanstaffuk",
+ "root_domain": "trojanstaffuk.com",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": [
+   "staffy puppies",
+   "staffordshire bull terrier breeders",
+   "breeders in the uk premium staffy",
+   "uk premium staffy",
+   "staffordshire bull terrier puppies",
+   "staffy breeders specialising in exceptional blue",
+   "breeders focus solely on blue staffies",
+   "staffy puppy",
+   "blue or black staffordshire bull terrier",
+   "staffordshire bull terrier puppies for sale",
+   "staffy puppies for sale",
+   "staffy puppies in the uk",
+   "blue staffy puppies",
+   "staffy puppies and traditional black staffy",
+   "puppies and traditional black staffy",
+   "puppies and traditional black staffy puppies",
+   "staffy breeders"
+  ]
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "about": 3,
+   "blog": 19,
+   "contact": 1,
+   "listing": 1
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "Manchester"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "WebSite",
+   "LocalBusiness",
+   "PostalAddress",
+   "Article",
+   "WebPage",
+   "ImageObject",
+   "Person",
+   "Organization"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.trojanstaffuk.com/",
+    "title": "Trojanstaff UK | Staffordshire bull terrier Champion stud dogs",
+    "h1": "STAFFORDSHIRE BULL TERRIER STUD DOGS AND STAFFY PUPPIES. QUALITY BLUE AND BLACK CHAMPIONS",
+    "h2": [
+     "WITH SOME OF THE BEST STAFFORD LINES FROM AROUND THE WORLD",
+     "Breeder licence number 23/00598/AWAAL",
+     "Trusted Staffordshire Bull Terrier Breeders in the UK – Premium Staffy Champion Stud Dogs",
+     "Contact Us – Reserve Your Staffy Puppy Today",
+     "See what our clients have to say about us our reviews at the bottom of this page",
+     "Discover Premium Black and Blue Trojan Puppies for Sale",
+     "Meet the Newest Additions to Our Elite Line-Up",
+     "Unrivalled Studs Producing Elite Puppies",
+     "Meet Our Studs – Champions of Temperament and Quality",
+     "Comprehensive Stud Services – Tailored to Your Needs",
+     "Our Promise: Ethics, Care, and Quality",
+     "Hear from Our Puppy Owners!",
+     "DNA tests by clicking on the Image. Kennel Club approved DNA testing results.",
+     "Contact Us",
+     "Let's Chat!"
+    ]
+   },
+   {
+    "url": "https://www.trojanstaffuk.com/staffy-puppies",
+    "title": "Trojanstaff UK exceptional  high quality Staffy puppies",
+    "h1": "Staffy puppies for sale",
+    "h2": [
+     "Staffordshire Bull Terrier Puppies – Champion Bloodlines & Kennel Club Registered",
+     "Subscribe to our Trojanbulls newsletter • Don’t miss out on the latest Litters!",
+     "Let's Chat!"
+    ]
+   },
+   {
+    "url": "https://www.trojanstaffuk.com/about-1",
+    "title": "Ch Gun MM Power at Trojanbulls | Trojanstaff UK",
+    "h1": "",
+    "h2": [
+     "BIH CH GUN MM POWER AT TROJANBULLS.ie (IMP BIH) -AKA - GUN First ever black Blue Gene International Grand champion in Manchester",
+     "Let's Chat!"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": true,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [
+    "L-2-HGA",
+    "HC-HSF4",
+    "PHPV/PPSC",
+    "Hip Dysplasia",
+    "BVA eye screening"
+   ],
+   "vet_checks_mentioned": true,
+   "breeding_since_as_worded": "over a decade",
+   "town": "Basingstoke",
+   "phone_shown": true,
+   "email_shown": true,
+   "contact_source": "raw-html",
+   "reviews_shown": 0
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 1120,
+   "url_count": 39,
+   "h2_per_page": {
+    "https://www.trojanstaffuk.com/": 15,
+    "https://www.trojanstaffuk.com/staffy-puppies": 3,
+    "https://www.trojanstaffuk.com/about-1": 2
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 18,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "post URLs carry no dates and no post was fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 29,
+   "alt_text": "descriptive",
+   "alt_missing": 0,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "phone",
+    "email",
+    "whatsapp"
+   ],
+   "prices_shown": true,
+   "price_amounts_as_printed": [
+    "£600"
+   ],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": []
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "Trojanstaff wins on proof rather than pages: a printed licence number, named DNA tests, Kennel Club registration and champion bloodlines lead its homepage, but it has no city pages, no puppy prices, no review text and no dates on its 18 posts, so BSUK can match its proof and beat it on local pages, visible reviews and fresh dated guides."
+}

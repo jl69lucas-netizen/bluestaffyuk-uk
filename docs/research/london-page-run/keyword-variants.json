@@ -1,0 +1,248 @@
+{
+  "slug": "blue-staffy-puppies-london",
+  "primary": "blue staffy puppies london",
+  "buckets": {
+    "variation": [
+      {
+        "term": "blue staffy",
+        "sources": [
+          "serp_google_paa"
+        ],
+        "df": 27
+      },
+      {
+        "term": "blue staffie",
+        "sources": [
+          "organic_snippet"
+        ],
+        "df": 13
+      },
+      {
+        "term": "blue staffie puppies",
+        "sources": [
+          "organic_snippet"
+        ],
+        "df": 13
+      },
+      {
+        "term": "blue staffy puppies",
+        "sources": [
+          "serp_google_paa"
+        ],
+        "df": 13
+      },
+      {
+        "term": "blue staffordshire bull terrier",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 10
+      },
+      {
+        "term": "blue staffies",
+        "sources": [
+          "serp_google_paa"
+        ],
+        "df": 9
+      },
+      {
+        "term": "blue staffy puppy",
+        "sources": [
+          "question_file"
+        ],
+        "df": 5
+      },
+      {
+        "term": "blue staffordshire bull terrier puppies",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 3
+      }
+    ],
+    "related": [
+      {
+        "term": "blue staffy puppies london price",
+        "sources": [
+          "serp_google_related"
+        ],
+        "df": 2
+      },
+      {
+        "term": "blue staffy puppies london kennel club",
+        "sources": [
+          "serp_google_related"
+        ],
+        "df": 2
+      }
+    ],
+    "cooccurring": [
+      {
+        "term": "blue staffordshire",
+        "sources": [
+          "serp_google_paa",
+          "paa",
+          "organic_title",
+          "organic_snippet",
+          "ai_answer",
+          "question_file"
+        ],
+        "df": 6
+      },
+      {
+        "term": "frequently asked questions",
+        "sources": [
+          "competitor_h2"
+        ],
+        "df": 5
+      },
+      {
+        "term": "london with prices",
+        "sources": [
+          "organic_snippet"
+        ],
+        "df": 5
+      },
+      {
+        "term": "prices currently ranging",
+        "sources": [
+          "organic_snippet"
+        ],
+        "df": 5
+      },
+      {
+        "term": "kennel club",
+        "sources": [
+          "ai_answer",
+          "thread_question",
+          "question_file"
+        ],
+        "df": 5
+      },
+      {
+        "term": "staffordshire puppy",
+        "sources": [
+          "serp_google_paa",
+          "paa",
+          "organic_title",
+          "organic_snippet",
+          "question_file"
+        ],
+        "df": 5
+      },
+      {
+        "term": "staffy breeder",
+        "sources": [
+          "thread_question",
+          "question_file"
+        ],
+        "df": 5
+      },
+      {
+        "term": "health-tested",
+        "sources": [
+          "ai_answer",
+          "thread_question",
+          "question_file"
+        ],
+        "df": 5
+      },
+      {
+        "term": "health-tested staffy breeder",
+        "sources": [
+          "thread_question",
+          "question_file"
+        ],
+        "df": 4
+      },
+      {
+        "term": "reputable health-tested staffy",
+        "sources": [
+          "thread_question",
+          "question_file"
+        ],
+        "df": 4
+      },
+      {
+        "term": "puppy advert",
+        "sources": [
+          "thread_question",
+          "question_file"
+        ],
+        "df": 4
+      },
+      {
+        "term": "staffy breeders",
+        "sources": [
+          "ai_answer",
+          "thread_title",
+          "question_file"
+        ],
+        "df": 4
+      }
+    ],
+    "similar": [
+      {
+        "term": "male (dog) blue staffordshire bull terrier puppies",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 1
+      },
+      {
+        "term": "chunky working blue staffordshire bull terrier",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 1
+      },
+      {
+        "term": "vaccinations blue staffordshire bull terrier",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 1
+      },
+      {
+        "term": "puppy therapy with our gorgeous blue staffy",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 1
+      },
+      {
+        "term": "staffie puppies for sale in barnet, london",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 1
+      },
+      {
+        "term": "to 6 week old blue staffordshire bull terrier",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 1
+      },
+      {
+        "term": "male (dog) blue staffie puppies for sale in southall, london",
+        "sources": [
+          "competitor_h2"
+        ],
+        "df": 1
+      },
+      {
+        "term": "chunky working blue staffie puppies for sale in paddington, london",
+        "sources": [
+          "competitor_h2"
+        ],
+        "df": 1
+      }
+    ]
+  },
+  "examined": {
+    "documents": 157,
+    "titles": 28,
+    "related": 4
+  }
+}

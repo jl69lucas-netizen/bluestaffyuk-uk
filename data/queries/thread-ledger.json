@@ -1,0 +1,349 @@
+{
+  "_comment": "Derived by scripts/thread_ledger.py --write from every data/queries/raw/<slug>/threads.json; never hand-edited. `npm run check:threads` fails when it is stale. bsuk-reddit-threads reads it before opening a thread.",
+  "files": 3,
+  "threads": {
+    "https://www.reddit.com/comments/1gliy8v/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1gliy8v/blue_staffy/",
+      "title": "Blue staffy",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2024-11",
+      "replies": 9,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds",
+        "blue-staffy-puppies-manchester-uk"
+      ]
+    },
+    "https://www.reddit.com/comments/1hq5cz3/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1hq5cz3/is_my_puppy_an_american_or_english_staffy/",
+      "title": "Is my puppy an American or English staffy",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2024-12",
+      "replies": 92,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds"
+      ]
+    },
+    "https://www.reddit.com/comments/1keeqmx/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1keeqmx/to_blue_or_not_to_blue/",
+      "title": "To blue or not to blue?",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2025-05",
+      "replies": 50,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds",
+        "blue-staffy-puppies-manchester-uk"
+      ]
+    },
+    "https://www.reddit.com/comments/1kwpx24/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1kwpx24/vibrant_staffordshire_is_it_a_real_breeder_or_a/",
+      "title": "\"Vibrant Staffordshire\" is it a real breeder or a scam?",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2025-05",
+      "replies": 9,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds"
+      ]
+    },
+    "https://www.reddit.com/comments/1o4hazd/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/",
+      "title": "A question for owners of blues",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2025-10",
+      "replies": 44,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [
+        {
+          "text": "Are both parents DNA tested clear for L-2-HGA and HC-HSF4?",
+          "fact_source": "bank:health-dna-tests"
+        },
+        {
+          "text": "What is the difference between a vet-checked puppy and one from health-tested parents?",
+          "fact_source": null
+        },
+        {
+          "text": "Does it matter for a puppy's health if both parents are blue?",
+          "fact_source": null
+        },
+        {
+          "text": "Are the parents eye screened as well as DNA tested?",
+          "fact_source": null
+        },
+        {
+          "text": "How do I tell a responsible blue Staffy breeder from a backyard breeder?",
+          "fact_source": null
+        },
+        {
+          "text": "Are blue Staffies more common than other colours in the UK?",
+          "fact_source": null
+        },
+        {
+          "text": "Can a blue Staffy puppy come from parents that are not both blue?",
+          "fact_source": null
+        },
+        {
+          "text": "Can I see the genetic test results for both parents before I commit?",
+          "fact_source": "bank:whyus-evidence"
+        },
+        {
+          "text": "Are blue Staffies more prone to skin problems than other colours?",
+          "fact_source": null
+        },
+        {
+          "text": "Should I choose a Staffy puppy for its colour or for health and temperament?",
+          "fact_source": null
+        }
+      ],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds",
+        "blue-staffy-puppies-manchester-uk"
+      ]
+    },
+    "https://www.reddit.com/comments/1okt0wb/": {
+      "permalink": "https://www.reddit.com/r/AskUK/comments/1okt0wb/buying_puppy_in_uk_are_we_getting_scamed/",
+      "title": "Buying puppy in uk, are we getting scamed?",
+      "subreddit": "r/AskUK",
+      "posted": "2025-10",
+      "replies": 49,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [
+        {
+          "text": "How can I be sure a puppy's Kennel Club registration will be issued if the papers are delayed?",
+          "fact_source": null
+        }
+      ],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds",
+        "blue-staffy-puppies-london"
+      ]
+    },
+    "https://www.reddit.com/comments/1pcj7ph/": {
+      "permalink": "https://www.reddit.com/r/puppy101/comments/1pcj7ph/getting_a_staffy_puppy_soon_but_i_live_on_a_2nd/",
+      "title": "Getting a Staffy puppy soon but I live on a 2nd floor flat advice on potty training?",
+      "subreddit": "r/puppy101",
+      "posted": "2025-12",
+      "replies": 17,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-london",
+        "blue-staffy-puppies-manchester-uk"
+      ]
+    },
+    "https://www.reddit.com/comments/1r9a4ad/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/",
+      "title": "Help before buying",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2026-02",
+      "replies": 321,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [
+        {
+          "text": "Has the puppy had its first vaccination before I collect it?",
+          "fact_source": "bank:health-vaccinations"
+        },
+        {
+          "text": "Is the puppy microchipped before it comes home?",
+          "fact_source": "bank:health-vaccinations"
+        },
+        {
+          "text": "How can I check that a puppy has really been seen by a vet?",
+          "fact_source": null
+        },
+        {
+          "text": "Can I contact the breeder's vet to confirm what treatment a puppy has had?",
+          "fact_source": null
+        },
+        {
+          "text": "Does the puppy come with a written purchase contract?",
+          "fact_source": "bank:whyus-paperwork"
+        },
+        {
+          "text": "Is there a health guarantee if a vet finds a problem soon after I buy?",
+          "fact_source": "bank:home-health-guarantee"
+        },
+        {
+          "text": "Should I walk away if a puppy's vet checks or vaccinations do not match the advert?",
+          "fact_source": null
+        },
+        {
+          "text": "What should I do if a puppy I have viewed has mites?",
+          "fact_source": null
+        },
+        {
+          "text": "Should a Staffy puppy have had its first vaccination before I collect it?",
+          "fact_source": null
+        },
+        {
+          "text": "How can I confirm that a puppy has been examined by a vet?",
+          "fact_source": null
+        },
+        {
+          "text": "Should the purchase contract give me time to have my own vet check the puppy?",
+          "fact_source": null
+        },
+        {
+          "text": "What paperwork should a puppy advertised as KC registered come with?",
+          "fact_source": "bank:whyus-paperwork"
+        }
+      ],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds",
+        "blue-staffy-puppies-manchester-uk"
+      ]
+    },
+    "https://www.reddit.com/comments/1ryr5gg/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1ryr5gg/first_dog/",
+      "title": "First Dog",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2026-03",
+      "replies": 29,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds"
+      ]
+    },
+    "https://www.reddit.com/comments/1sdvsvv/": {
+      "permalink": "https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "title": "Reputable Staffordshire Bull Terrier breeders (UK)",
+      "subreddit": "r/UK_Pets",
+      "posted": "2026-04",
+      "replies": 32,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [
+        {
+          "text": "Where can I find a reputable, health-tested Staffy breeder in the UK?",
+          "fact_source": null
+        },
+        {
+          "text": "Are the puppy's parents health tested?",
+          "fact_source": "bank:about-health-tests"
+        },
+        {
+          "text": "Is there a waiting list for a well-bred Staffy puppy?",
+          "fact_source": null
+        },
+        {
+          "text": "Will the breeder still support me after I collect the puppy?",
+          "fact_source": "bank:home-after-support"
+        },
+        {
+          "text": "How do I find a reputable, health-tested Staffy breeder in the UK?",
+          "fact_source": null
+        },
+        {
+          "text": "Can a Staffordshire Bull Terrier breed club point me to breeders with planned litters?",
+          "fact_source": null
+        },
+        {
+          "text": "Can I go to a dog show to meet breeders if I have never owned a dog?",
+          "fact_source": null
+        },
+        {
+          "text": "As a first-time owner, should I get a Staffy puppy or an adult rescue?",
+          "fact_source": null
+        }
+      ],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds",
+        "blue-staffy-puppies-london",
+        "blue-staffy-puppies-manchester-uk"
+      ]
+    },
+    "https://www.reddit.com/comments/1u2gjst/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1u2gjst/anyone_here_with_a_staffy_a_first_time_dog_owner/",
+      "title": "Anyone here with a Staffy a first time dog owner? Would you recommend it?",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2026-06",
+      "replies": 71,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds"
+      ]
+    },
+    "https://www.reddit.com/comments/1uil782/": {
+      "permalink": "https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/",
+      "title": "Pets4homesuk",
+      "subreddit": "r/UK_Pets",
+      "posted": "2026-06",
+      "replies": 96,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [
+        {
+          "text": "How do I tell a genuine online puppy advert from a scam?",
+          "fact_source": null
+        },
+        {
+          "text": "How can I tell whether a puppy advert on a UK classifieds site is genuine?",
+          "fact_source": null
+        },
+        {
+          "text": "Should I see the puppy with its mother before any money changes hands?",
+          "fact_source": "bank:health-avoid-puppy-farm"
+        },
+        {
+          "text": "Is it safe to pay a deposit to a seller I found through an online advert?",
+          "fact_source": null
+        }
+      ],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds",
+        "blue-staffy-puppies-london",
+        "blue-staffy-puppies-manchester-uk"
+      ]
+    },
+    "https://www.reddit.com/comments/1v3ixmh/": {
+      "permalink": "https://www.reddit.com/r/UK_Pets/comments/1v3ixmh/adoptingbuying_a_dog/",
+      "title": "Adopting/Buying a dog",
+      "subreddit": "r/UK_Pets",
+      "posted": "2026-07",
+      "replies": 44,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [
+        {
+          "text": "Should I adopt a rescue dog or buy from a breeder?",
+          "fact_source": null
+        }
+      ],
+      "used_by": [
+        "blue-staffy-puppies-for-sale-leeds",
+        "blue-staffy-puppies-london"
+      ]
+    },
+    "https://www.reddit.com/comments/1wayqzb/": {
+      "permalink": "https://www.reddit.com/r/StaffordBullTerriers/comments/1wayqzb/hi_everyone_id_love_some_advice_please/",
+      "title": "Hi everyone, I’d love some advice please!",
+      "subreddit": "r/StaffordBullTerriers",
+      "posted": "2026-09",
+      "replies": 31,
+      "first_fetched": "2026-09-23",
+      "last_fetched": "2026-09-23",
+      "questions": [],
+      "used_by": [
+        "blue-staffy-puppies-manchester-uk"
+      ]
+    }
+  }
+}

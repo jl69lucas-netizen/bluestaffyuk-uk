@@ -1,0 +1,132 @@
+{
+ "_saved_note": "DataForSEO serp_organic_live_advanced via the claude.ai connector, 2026-09-23 (registry discovery). Request: keyword 'staffy puppies for sale birmingham', search_engine google, location United Kingdom, language en, depth 10. The connector's response carries no cost field (recorded as a 0.05 estimate). Saved condensed: every item's type, rank, domain, url, title, website_name and description kept, PAA questions and related searches kept; images, price objects, breadcrumbs, highlighted terms, link elements and PAA expanded_element stubs dropped. Third-party contact details: none present in the response; nothing dropped.",
+ "id": "09231935-2496-0139-0000-3cb4fdba7fa1",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "organic",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies for sale in Birmingham, ...",
+   "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/west-midlands/birmingham/",
+   "website_name": "Pets4Homes",
+   "description": "31 Puppies found · 10 gorgeous blue staffy puppies · 7 Beautiful KC blue and black puppies 4 girl 3 boy. Staffordshire Bull Terrier. 1 weekAge. 34Sex. £2,200 ... Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 2,
+   "rank_absolute": 2,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies For Sale In Birmingham, ...",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-sale/birmingham-west-midlands",
+   "website_name": "Staffie Owners",
+   "description": "Find 11 Staffie puppies for sale in Birmingham, West Midlands, with prices currently ranging from £350 to £2,750. s 3 days ago KC Registered Ready in 5 weeks"
+  },
+  {
+   "type": "organic",
+   "rank_group": 3,
+   "rank_absolute": 3,
+   "domain": "www.freeads.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies and Dogs for sale in ...",
+   "url": "https://www.freeads.co.uk/birmingham/buy-sell/pets/dogs/staffordshire-bull-terrier/",
+   "website_name": "Freeads",
+   "description": "Find 239 Staffordshire Bull Terrier for sale on Freeads Pets in Birmingham. Give a puppy a forever home or rehome a rescue. Create new dog alerts."
+  },
+  {
+   "type": "organic",
+   "rank_group": 4,
+   "rank_absolute": 4,
+   "domain": "www.gumtree.com",
+   "title": "Staffordshire Bull Terrier Dogs & Puppies for Sale in West ...",
+   "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/west-midlands",
+   "website_name": "Gumtree",
+   "description": "3 ads for Staffordshire Bull Terrier Dogs & Puppies for Sale in West Midlands ; 1 Male Left Blue Staffordshire bull terrier · 10 · 6 weeks · in 2 weeks · 2,250. Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 5,
+   "rank_absolute": 5,
+   "domain": "www.champdogs.co.uk",
+   "title": "Staffordshire Bull Terrier Breeders near Birmingham, West ...",
+   "url": "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/breeders?start=all&pc=B1",
+   "website_name": "Champdogs",
+   "description": "Only the very best Staffordshire Bull Terrier Breeders near Birmingham, West Midlands are on Champdogs - The UK's leading pedigree dog breeder website for ..."
+  },
+  {
+   "type": "people_also_ask",
+   "rank_group": 1,
+   "rank_absolute": 6,
+   "items": [
+    "How much would a Staffy puppy cost?",
+    "Is it better to get a male or female Staffy?",
+    "What are the downsides of Staffies?",
+    "Are there Staffordshire Bull Terrier puppies available for sale in Manchester?"
+   ]
+  },
+  {
+   "type": "organic",
+   "rank_group": 6,
+   "rank_absolute": 7,
+   "domain": "www.puppies.co.uk",
+   "title": "Staffordshire Bull Terrier puppies for Sale near me in ...",
+   "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/birmingham",
+   "website_name": "Puppies.co.uk",
+   "description": "Find Staffordshire Bull Terrier Dogs and Puppies for sale in Birmingham, West Midlands near you. 5 weeks FREE insurance"
+  },
+  {
+   "type": "organic",
+   "rank_group": 7,
+   "rank_absolute": 8,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Kennel Club Registered Staffordshire Bull Terrier Puppies ...",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-sale/birmingham-west-midlands?kc_registered=yes",
+   "website_name": "Staffie Owners",
+   "description": "Find 5 KC registered Staffie puppies for sale in Birmingham, West Midlands, with prices currently ranging from £1,850 to £2,750."
+  },
+  {
+   "type": "organic",
+   "rank_group": 8,
+   "rank_absolute": 9,
+   "domain": "www.preloved.co.uk",
+   "title": "staffy - Dogs & Puppies, For Sale in Birmingham",
+   "url": "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/birmingham/staffy",
+   "website_name": "Preloved",
+   "description": "Find local staffy in dogs and puppies for sale and rehoming in Birmingham. Rehome and Buy with ZERO fees, and give an animal a forever home"
+  },
+  {
+   "type": "organic",
+   "rank_group": 9,
+   "rank_absolute": 10,
+   "domain": "www.facebook.com",
+   "title": "Staffy puppies for sale in Midlands UK?",
+   "url": "https://www.facebook.com/groups/213285116241133/posts/1957926795110281/",
+   "website_name": "Facebook · Staffordshire Bull Terrier Group",
+   "description": "Any serious posts of people that have Staffy puppies am in Birmingham and looking for a staffy female up to 10 weeks old ... Staffie pup for sale ... Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 10,
+   "rank_absolute": 11,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Staffordshire Bull Terrier Dogs And Puppies For Adoption, ...",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-adoption/birmingham-west-midlands",
+   "website_name": "Staffie Owners",
+   "description": "2 days ago — Find 53 Staffie dogs for adoption in Birmingham, including rescue and rehoming listings from shelters, breeders and private owners. Read more"
+  },
+  {
+   "type": "related_searches",
+   "rank_group": 1,
+   "rank_absolute": 12,
+   "items": [
+    "Staffy puppies for sale birmingham under 500",
+    "Staffy puppies for sale West Midlands",
+    "Staffy puppies for sale birmingham cheap",
+    "Blue staffy puppies for sale birmingham",
+    "Staffy puppies for sale birmingham kennel club",
+    "Staffy puppies for sale birmingham gumtree"
+   ]
+  }
+ ]
+}

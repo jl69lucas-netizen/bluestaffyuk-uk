@@ -1,0 +1,349 @@
+import { register, type CheckResult } from '../lib/registry.js';
+import type { Page } from '@playwright/test';
+
+/**
+ * A11Y family. Contrast is computed from RENDERED colours, never from source.
+ *
+ * The bug class this exists for is "component re-themed, child not": `.bpair` flipped the
+ * dial to a white bed and `.ti` kept its dark-theme sage `#7ba98d` — 2.66:1, ten Lighthouse
+ * failures on 2026-08-07. A source grep cannot see that, because neither declaration is
+ * wrong on its own; only the composed result is. See reference_markup_css_drift.
+ *
+ * What it deliberately does NOT judge, because it cannot do so honestly:
+ *  - text over a background-image or gradient (no single backdrop colour exists)
+ *  - text over a semi-transparent layer (the composite depends on paint order)
+ *  - zero-area, hidden, or fully-transparent elements
+ * Skipping is not the same as passing: skipped elements are excluded from `examined`, so
+ * the count reports what the predicate actually ran against.
+ */
+register({
+  id: 'a11y-text-contrast-aa',
+  family: 'A11Y',
+  // ADVISORY, not blocking — 2026-08-08, breeder decision, per the promotion rule in
+  // targets.json: a check is promoted once it has passed its fixtures AND produced zero
+  // false reports across one full cluster. This one shipped 2026-08-07 declared blocking
+  // on day one, which skipped that bar; its two same-day siblings
+  // (layout-hero-counter-separation, layout-h3-image-first) correctly entered advisory.
+  //
+  // Wiring it in (it had been running on ZERO pages — see targets.json) produced 1,783
+  // reports across 45 of 45 page-viewports, 0 clean. Two false-positive classes are
+  // confirmed and MUST be fixed before promotion:
+  //  1. Out-of-flow labels over photos (.rbadge, .absolute.top-3) report ~1:1. They are
+  //     position:absolute with background:none and a dark text-shadow, sitting over an
+  //     image; backdrop() walks DOM ancestors, never meets the photo, and compares white
+  //     against the white section behind it. The check already declines to judge text
+  //     over a background-image — it just cannot detect that case out of flow.
+  //  2. Translucent FOREGROUNDS (e.g. Tailwind text-cream/80) — now handled: rgb() returns
+  //     null (not judged) for any foreground with alpha < 1, the same "not judgeable"
+  //     treatment the translucent BACKDROP already gets.
+  // A third, likely-real family also surfaced: clay/gold on light at 3.17–3.38:1.
+  // Triage is its own sprint. reference_registered_is_not_wired.
+  severity: 'advisory',
+  describe: 'rendered text must meet WCAG AA contrast against its own backdrop',
+  // The known_broken fixture carries 6 judgeable spans (2 × .ti sage-on-white, 2 × .tt
+  // dark-on-white, 2 × .nav-green .dim opaque-oklab-on-green — 4 failing, 2 passing); the
+  // floor is set to that so the check cannot pass the meta gate by judging one element and
+  // skipping the rest. reference_promote_check_needs_examined_count.
+  minExamined: 6,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    const r = await page.evaluate(() => {
+      // getComputedStyle (and canvas fillStyle read back as a string) both preserve oklab()/
+      // oklch()/color() verbatim instead of normalising to rgb() — regex-mining digits out
+      // of "oklab(0.97 0 0 / .85)" read it as rgb(0.97,0,0), a false near-black (44 rows on
+      // /). A canvas PIXEL READBACK is the only honest normaliser: fillRect + getImageData
+      // always resolves any <color> notation to real sRGB bytes (and unpremultiplied alpha),
+      // regardless of the source syntax.
+      const px = document.createElement('canvas');
+      px.width = 1;
+      px.height = 1;
+      const cvs = px.getContext('2d', { willReadFrequently: true })!;
+      // ~2,700 nodes × ancestor walks per viewport; a page uses tens of distinct colour
+      // strings, not thousands.
+      const colourCache = new Map<string, number[] | null>();
+      /** Normalised [r, g, b, a] where a is 0–255, or null when unparsable. */
+      const rgba = (s: string): number[] | null => {
+        if (!s || s === 'transparent') return null;
+        const cached = colourCache.get(s);
+        if (cached !== undefined) return cached ? cached.slice() : cached;
+        cvs.clearRect(0, 0, 1, 1);
+        try {
+          cvs.fillStyle = s;
+        } catch {
+          // canvas ignores an unparsable colour silently rather than throwing in practice —
+          // this catch is defensive, not load-bearing.
+          colourCache.set(s, null);
+          return null;
+        }
+        cvs.fillRect(0, 0, 1, 1);
+        const result = Array.from(cvs.getImageData(0, 0, 1, 1).data);
+        colourCache.set(s, result);
+        return result.slice();
+      };
+      const rgb = (s: string): number[] | null => {
+        const c = rgba(s);
+        if (!c) return null;
+        if (c[3] === 0) return null; // fully transparent
+        if (c[3] < 255) return null; // translucent foreground: not judgeable (see header note 2)
+        return c.slice(0, 3);
+      };
+      const lum = (c: number[]) => {
+        const [r, g, b] = c.map((v) => {
+          const x = v / 255;
+          return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+
+      /** The nearest OPAQUE backdrop, or null when no honest answer exists. */
+      const backdrop = (el: Element): number[] | null => {
+        let n: Element | null = el;
+        while (n && n !== document.documentElement) {
+          const cs = getComputedStyle(n);
+          if (cs.backgroundImage && cs.backgroundImage !== 'none') return null;
+          const parts = rgba(cs.backgroundColor);
+          if (parts) {
+            if (parts[3] === 255) return parts.slice(0, 3);
+            if (parts[3] > 0) return null; // translucent layer — composite is paint-order dependent
+          }
+          n = n.parentElement;
+        }
+        const root = rgba(getComputedStyle(document.documentElement).backgroundColor);
+        return root && root[3] === 255 ? root.slice(0, 3) : [255, 255, 255];
+      };
+
+      const fails: { sel: string; text: string; ratio: number; need: number }[] = [];
+      let examined = 0;
+
+      for (const el of Array.from(document.body.querySelectorAll('*'))) {
+        // Only elements with their OWN text. Judging containers would count the same
+        // string once per ancestor and inflate the count with units never evaluated.
+        const own = Array.from(el.childNodes)
+          .filter((n) => n.nodeType === 3 && (n.textContent ?? '').trim().length > 0)
+          .map((n) => (n.textContent ?? '').trim())
+          .join(' ');
+        if (!own) continue;
+
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || cs.display === 'none' || Number(cs.opacity) === 0) continue;
+        const box = (el as HTMLElement).getBoundingClientRect();
+        if (box.width === 0 || box.height === 0) continue;
+
+        const fg = rgb(cs.color);
+        if (!fg) continue;
+        const bg = backdrop(el);
+        if (!bg) continue; // image/gradient/translucent backdrop — not judgeable
+
+        const size = parseFloat(cs.fontSize);
+        const weight = Number(cs.fontWeight) || 400;
+        const large = size >= 24 || (size >= 18.66 && weight >= 700);
+        const need = large ? 3 : 4.5;
+
+        const lf = lum(fg);
+        const lb = lum(bg);
+        const ratio = (Math.max(lf, lb) + 0.05) / (Math.min(lf, lb) + 0.05);
+        examined++;
+
+        if (ratio < need - 0.005) {
+          const cls =
+            typeof el.className === 'string' && el.className.trim()
+              ? '.' + el.className.trim().split(/\s+/).slice(0, 2).join('.')
+              : el.tagName.toLowerCase();
+          fails.push({ sel: cls, text: own.slice(0, 24), ratio: Math.round(ratio * 100) / 100, need });
+        }
+      }
+      return { examined, fails: fails.slice(0, 6), total: fails.length };
+    });
+
+    return {
+      examined: r.examined,
+      defects: r.total
+        ? [
+            {
+              checkId: 'a11y-text-contrast-aa',
+              family: 'A11Y' as const,
+              viewport,
+              count: r.total,
+              message: `${r.total} text node(s) below AA: ${r.fails
+                .map((f) => `${f.sel} "${f.text}" ${f.ratio}:1 (needs ${f.need})`)
+                .join(' | ')}`,
+            },
+          ]
+        : [],
+    };
+  },
+});
+
+/**
+ * Every `id` on the page must be unique.
+ *
+ * A duplicate id is not a style nit: `document.getElementById` returns the FIRST match, so
+ * a second element with the same id is unreachable by script and by fragment, and
+ * `href="#x"` has two possible destinations with only one of them ever chosen. Label
+ * association (`for=`), `aria-labelledby` and `aria-describedby` resolve the same way, so a
+ * duplicated id silently points assistive technology at the wrong element.
+ *
+ * It is the defect a component-per-fixture preview page produces almost by construction:
+ * kit-preview rendered the scroll-spy's six stub sections inside EVERY `with-targets` demo
+ * box, so `d-a`…`d-f` each shipped twice and both nav components' spies were resolving ids
+ * against whichever copy came first. Nothing else in the harness could see it — the anchors
+ * all resolved, so `nav-anchors-resolve` was green.
+ *
+ * Judged unit: one id VALUE present on the page (not one element), so a value on three
+ * elements is one failing unit and not two. ADVISORY on arrival, per the promotion rule in
+ * targets.json: it is promoted once it has passed its fixtures and produced zero false
+ * reports across one full cluster.
+ */
+register({
+  id: 'a11y-no-duplicate-ids',
+  family: 'A11Y',
+  severity: 'advisory',
+  describe: 'every id on the page must be unique',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    const r = await page.evaluate(() => {
+      const counts = new Map<string, number>();
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>('[id]'))) {
+        const id = el.id;
+        if (!id) continue; // `id=""` is not an identifier; it is an empty attribute
+        counts.set(id, (counts.get(id) ?? 0) + 1);
+      }
+      const dupes = Array.from(counts.entries())
+        .filter(([, n]) => n > 1)
+        .map(([id, n]) => `#${id} ×${n}`);
+      return { examined: counts.size, dupes: dupes.slice(0, 10), total: dupes.length };
+    });
+
+    return {
+      examined: r.examined,
+      defects: r.total
+        ? [
+            {
+              checkId: 'a11y-no-duplicate-ids',
+              family: 'A11Y' as const,
+              viewport,
+              count: r.total,
+              message: `duplicate id(s): ${r.dupes.join(', ')} — getElementById and every #fragment resolve to the first only`,
+            },
+          ]
+        : [],
+    };
+  },
+});
+
+/**
+ * The hero's LEDGE text — the figures, chips and ticks under the lede — must read at 4.5:1
+ * against the bed it actually paints on.
+ *
+ * WHY A CHECK OF ITS OWN when `a11y-text-contrast-aa` already measures every text node: that
+ * check is ADVISORY and page-wide (see its header), so a ledge painted invisible reports as
+ * one row among hundreds and gates nothing. That is how /blue-staffy-pup-sale-uk/ shipped its
+ * two prices at 1:1. H-FS3 puts the hero on a steel band (`frame: band`), the band sets
+ * `--color-text-on-inverse` on everything beneath it, and `.hstats strong` / `.hstats span`
+ * in Hero.astro named `--color-brand` and `--color-text` — steel on steel for "£1,500" and
+ * "£1,700", ink on steel (1.33:1) for their labels. Neither declaration is wrong alone; only
+ * the composed result is, which is exactly the bug class this family exists for.
+ *
+ * VIDEO CAPTIONS (2026-09-22). `.kit-video figcaption` is judged here too, for the same
+ * reason and by the same bug class: VideoEmbed's caption reads `--kit-caption`, the component
+ * defaults it to the muted ink, and on a steel band that is 2.16:1 — the breed guide shipped
+ * it, and the page-wide advisory check reported it as one row among hundreds. A caption is
+ * one short line with no photo behind it (it sits UNDER the frame, not over it), so it has
+ * none of the page-wide check's false-positive classes either.
+ *
+ * Scoped to `.kit-hero :is(.hstats, .chips, .ticks)` and `.kit-video figcaption`, so the false-positive classes the
+ * page-wide check still carries (labels over photos, translucent layers) cannot reach it,
+ * and that is what earns it BLOCKING on arrival. The floor is 4.5:1 for every ledge node,
+ * large type included: a ledge figure is the claim the hero is making, and "large text may
+ * be 3:1" is a floor for headings, not for the number a reader came to read.
+ *
+ * Judged unit: one ledge element with its own text. A page whose hero has no ledge examines
+ * zero, and that is true rather than vacuous — there is nothing under the lede to read.
+ * The colour and backdrop readers are the page-wide check's, repeated because a
+ * `page.evaluate` body cannot close over a module helper.
+ */
+register({
+  id: 'a11y-hero-ledge-contrast',
+  family: 'A11Y',
+  severity: 'blocking',
+  describe: 'hero ledge text (figures, chips, ticks) and video captions must read at 4.5:1 on the bed they paint on',
+  // The fixture pair carries two figures and two labels on a band, a chip row on its own
+  // light bed, and one video caption on a band: seven nodes. The floor is that, so the pair
+  // cannot pass by judging one.
+  minExamined: 7,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    const r = await page.evaluate(() => {
+      const px = document.createElement('canvas');
+      px.width = 1;
+      px.height = 1;
+      const cvs = px.getContext('2d', { willReadFrequently: true })!;
+      const rgba = (s: string): number[] | null => {
+        if (!s || s === 'transparent') return null;
+        cvs.clearRect(0, 0, 1, 1);
+        cvs.fillStyle = s;
+        cvs.fillRect(0, 0, 1, 1);
+        return Array.from(cvs.getImageData(0, 0, 1, 1).data);
+      };
+      const lum = (c: number[]) => {
+        const [r, g, b] = c.slice(0, 3).map((v) => {
+          const x = v / 255;
+          return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const backdrop = (el: Element): number[] | null => {
+        let n: Element | null = el;
+        while (n && n !== document.documentElement) {
+          const cs = getComputedStyle(n);
+          if (cs.backgroundImage && cs.backgroundImage !== 'none') return null;
+          const p = rgba(cs.backgroundColor);
+          if (p && p[3] === 255) return p;
+          if (p && p[3] > 0) return null;
+          n = n.parentElement;
+        }
+        return [255, 255, 255, 255];
+      };
+      const fails: string[] = [];
+      let examined = 0;
+      const nodes = document.querySelectorAll(
+        '.kit-hero :is(.hstats, .chips, .ticks), .kit-hero :is(.hstats, .chips, .ticks) *, .kit-video figcaption',
+      );
+      for (const el of Array.from(nodes)) {
+        const own = Array.from(el.childNodes)
+          .filter((n) => n.nodeType === 3 && (n.textContent ?? '').trim())
+          .map((n) => (n.textContent ?? '').trim())
+          .join(' ');
+        if (!own) continue;
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || cs.display === 'none' || Number(cs.opacity) === 0) continue;
+        const box = (el as HTMLElement).getBoundingClientRect();
+        if (!box.width || !box.height) continue;
+        const fg = rgba(cs.color);
+        if (!fg || fg[3] < 255) continue;
+        const bg = backdrop(el);
+        if (!bg) continue;
+        examined++;
+        const a = lum(fg);
+        const b = lum(bg);
+        const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+        if (ratio < 4.5 - 0.005) {
+          const cls = typeof el.className === 'string' && el.className.trim()
+            ? '.' + el.className.trim().split(/\s+/)[0] : el.tagName.toLowerCase();
+          fails.push(`${cls} "${own.slice(0, 24)}" ${Math.round(ratio * 100) / 100}:1`);
+        }
+      }
+      return { examined, fails };
+    });
+    return {
+      examined: r.examined,
+      defects: r.fails.length
+        ? [{
+          checkId: 'a11y-hero-ledge-contrast',
+          family: 'A11Y' as const,
+          viewport,
+          count: r.fails.length,
+          message: `${r.fails.length} hero ledge / video caption node(s) below 4.5:1: ${r.fails.slice(0, 6).join(' | ')}`,
+        }]
+        : [],
+    };
+  },
+});

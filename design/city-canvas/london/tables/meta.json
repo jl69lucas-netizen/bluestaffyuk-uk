@@ -1,0 +1,53 @@
+{
+ "component": "tables",
+ "variants": {
+  "a": {
+   "name": "Litter roster",
+   "description": "The six in one table sunk in a steel-100 tray, each row led by a round photo and name; rows become mini sheets on phones.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/tables/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/tables/sister-comparison-375-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/tables/sister-near-me-375-01.png"
+   ],
+   "differs_from": "Photo-led rows in a sunk tray with no header band, zebra or brass rules; the built tables are imageless, plain or in a card.",
+   "axes": {
+    "layout": "roster",
+    "media": "inline",
+    "density": "compact",
+    "framing": "inset"
+   }
+  },
+  "b": {
+   "name": "Payment schedule",
+   "description": "On a steel band, three payment steps on a brass numbered rail beside a photo of a young owner with a blue puppy.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/tables/sister-for-sale-1280-02.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/tables/sister-for-sale-375-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Table-Desing-Components.png"
+   ],
+   "differs_from": "A stepped rail table on a full-width steel band with a photo beside it; the built tables are imageless and plain or in a card.",
+   "axes": {
+    "layout": "schedule",
+    "media": "right",
+    "density": "regular",
+    "framing": "band"
+   }
+  },
+  "c": {
+   "name": "Boy or girl",
+   "description": "Two columns, boys and girls, each headed by a puppy photo; rows of price, names, colours, deposit and delivery between rules.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/tables/sister-for-sale-1280-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/DESKTOP-TABLE.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Table-Module-Design2.png"
+   ],
+   "differs_from": "A two-subject comparison with photo column heads, framed by rules; the built tables carry no images and use a band, zebra or brass rules.",
+   "axes": {
+    "layout": "compare",
+    "media": "top",
+    "density": "airy",
+    "framing": "rule"
+   }
+  }
+ }
+}

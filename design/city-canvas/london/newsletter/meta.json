@@ -1,0 +1,53 @@
+{
+ "component": "newsletter",
+ "variants": {
+  "a": {
+   "name": "Litter notice",
+   "description": "A raised white card: Christa's photo on the left, the question, its answer and a stacked email field over a brass submit.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/newsletter/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/newsletter/sister-near-me-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-idea55.png"
+   ],
+   "differs_from": "The only sibling with a photo and a raised card; B is a centred band with no photo, C an open ruled row.",
+   "axes": {
+    "layout": "split",
+    "media": "left",
+    "density": "regular",
+    "framing": "card"
+   }
+  },
+  "b": {
+   "name": "Steel band",
+   "description": "A compact centred steel-700 band: brass envelope icon, the question in bone, and one joined row of email field and brass submit.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/newsletter/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/newsletter/mfs-home-375-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Newsletter-Form-Design-component.png"
+   ],
+   "differs_from": "A centred, compact full-width band with no photo; A is a raised photo card, C a left-set ruled row on the page.",
+   "axes": {
+    "layout": "centred",
+    "media": "none",
+    "density": "compact",
+    "framing": "band"
+   }
+  },
+  "c": {
+   "name": "Ruled row",
+   "description": "Open bone page between a steel rule and a hairline: the question left, the field and submit on one line right, two ticks under it.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/newsletter-idea1.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/newsletter/mfs-home-1280-02.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Newsletter-module-design2.png"
+   ],
+   "differs_from": "A left-set two-column row framed only by rules, airy; A is a raised photo card, B a centred steel band.",
+   "axes": {
+    "layout": "inline-row",
+    "media": "none",
+    "density": "airy",
+    "framing": "rule"
+   }
+  }
+ }
+}

@@ -1,0 +1,53 @@
+<style>
+/* Key takeaways A — Answer ledger. An editorial answer sheet: a 4px steel rule over the
+   section, Maggie and her puppies in the left column, and on the right the question, its
+   answer (set across the top from 1024px), then five ruled rows, each a short caps label and one plain sentence. Framed by
+   rules only (no box, no band, no shadow). The photo is first in source, so a phone meets
+   the dam before the facts. */
+.ktA{background:var(--color-surface);border-top:4px solid var(--color-brand);border-bottom:1px solid var(--color-border)}
+.ktA .in{max-width:1100px;margin:0 auto;padding:var(--space-6) var(--space-4) var(--space-7);display:grid;gap:var(--space-5)}
+.ktA .pic{margin:0}
+.ktA .pic img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:70% 40%;border-radius:var(--radius-sm);background:var(--color-bone-50)}
+.ktA .pic figcaption{margin-top:var(--space-2);font-size:var(--text-xs);color:var(--color-text-muted)}
+.ktA h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);text-wrap:balance}
+.ktA .lede{margin:0 0 var(--space-4);color:var(--color-ink-2);max-width:60ch}
+.ktA dl{margin:0;border-top:1px solid var(--color-brand)}
+.ktA .row{display:grid;gap:var(--space-1);padding:var(--space-3) 0;border-bottom:1px solid var(--color-border)}
+.ktA dt{font-size:var(--text-xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-brand)}
+.ktA dd{margin:0;color:var(--color-text)}
+.ktA .nb{white-space:nowrap}
+@media (min-width:640px){.ktA .row{grid-template-columns:132px minmax(0,1fr);gap:var(--space-4);align-items:baseline}}
+@media (min-width:640px) and (max-width:1023px){.ktA .pic img{aspect-ratio:21/9;object-position:70% 35%}}
+@media (min-width:1024px){
+  .ktA .in{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"head head" "pic list";gap:var(--space-5) var(--space-8);padding:var(--space-9) var(--space-5)}
+  .ktA .body{display:contents}
+  .ktA .head{grid-area:head;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:var(--space-8);align-items:end}
+  .ktA .head h2{margin:0}
+  .ktA .lede{margin:0}
+  .ktA dl{grid-area:list}
+  .ktA .pic{grid-area:pic;align-self:start}
+  .ktA .pic img{aspect-ratio:1/1;object-position:72% 50%}
+  .ktA h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+}
+</style>
+<section data-component="key-takeaways" data-variant="a" class="ktA">
+  <div class="in">
+    <figure class="pic">
+      <img src="/images/maggie-blue-staffy-dam-with-pups.webp" alt="A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups." width="780" height="585" loading="lazy">
+      <figcaption>Maggie, the dam, with her puppies in Carlisle</figcaption>
+    </figure>
+    <div class="body">
+      <div class="head">
+      <h2>What Should a London Buyer Take From This Page?</h2>
+      <p class="lede">Five plain answers, one sentence each, so you can decide from your London sofa whether a puppy from Lisa Bright's home in Carlisle is right for you.</p>
+      </div>
+      <dl>
+        <div class="row" data-takeaway><dt>The six</dt><dd>Roman, Byrd and Ince are £1,500 each; Vennie, Christa and Cheryl are £1,700 each. All six are available.</dd></div>
+        <div class="row" data-takeaway><dt>The deposit</dt><dd>£500 books your viewing and reserves your puppy, and it comes off the price.</dd></div>
+        <div class="row" data-takeaway><dt>The route</dt><dd>DEFRA-approved transport to your London door for £200 to £350, priced by distance, or collection in Carlisle.</dd></div>
+        <div class="row" data-takeaway><dt>The parents</dt><dd>Maggie and Jones are DNA-tested clear of <span class="nb">L-2-HGA</span> and <span class="nb">HC-HSF4</span>, with eyes and elbows screened.</dd></div>
+        <div class="row" data-takeaway><dt>The promise</dt><dd>Raised with Puppy Culture and ENS, with a two-year genetic health guarantee, and you may speak to our vet.</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>

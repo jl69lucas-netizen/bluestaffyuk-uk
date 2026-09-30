@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>body headings in brand, band headings in bone</title>
+<!-- The design-polish pick 1(a): a body H2, H3 or H4 on a light bed (unboxed, a plain box, a
+     card box) paints --color-brand; the heading in a steel band box keeps the band's bone. A kit
+     component's heading sets its own colour and is not judged, whatever it paints, and neither
+     is a heading the reader cannot see. -->
+<style>
+  :root { --color-brand: #1F3A52; --color-ink: #1B2430; --color-bone: #F4F1EA; --color-on-inverse: #F4F1EA; }
+  body { margin: 0; font: 17px/1.65 Georgia, serif; color: var(--color-ink); }
+  main :where(h2, h3, h4):not(:where([class^="kit-"] *, [class*=" kit-"] *, .city-kit *, .bl-frame-band *, .on-inverse *, [data-surface="inverse"] *)) { color: var(--color-brand); }
+  .bl-box { padding: 32px 24px; }
+  .bl-frame-plain { background: var(--color-bone); }
+  .bl-frame-card { background: #fff; }
+  .bl-frame-band { background: var(--color-brand); color: var(--color-on-inverse); }
+  .kit-card h3 { color: var(--color-ink); }
+</style>
+</head><body>
+<main>
+  <section>
+    <h2>Our Health Testing Process</h2>
+    <p>An unboxed section on the white page.</p>
+    <h3>BVA/KC Health Schemes</h3>
+    <p>The schemes we use, named on the page.</p>
+    <h4>What the Certificate Shows</h4>
+    <p>A fourth-level heading follows the same rule.</p>
+  </section>
+  <section class="bl-box bl-frame-plain">
+    <h2>What We Screen For</h2>
+    <div class="kit-card"><h3>A Kit Card Title</h3></div>
+  </section>
+  <section class="bl-box bl-frame-band">
+    <h2>Where Our Puppies Go</h2>
+    <p>A band box: its heading keeps the band's bone.</p>
+  </section>
+  <details><summary>Closed</summary><h3 style="color: red">Not Painted</h3></details>
+</main>
+</body></html>

@@ -1,0 +1,51 @@
+---
+// src/components/kit/Mark.astro — the BlueStaffyUK mark: the L1 badge picked in the second
+// logo round (spec §11 amendment 3a). A flat-shaded Staffordshire Bull Terrier head —
+// broad skull, rose ears, white blaze, the breed grin with a brass tongue — inside a steel
+// roundel with a brass ring. One mark, not five: the second logo round replaced the five
+// stroke options with this badge, and Task 19 (2026-09-18) removed the prop that named
+// them, here and in the three components that used to pass one down.
+//
+// THE GEOMETRY IS NOT HERE. It is src/components/kit/markShapes.ts, drawn once into the
+// document's two `<symbol>`s by MarkSprite.astro (BaseLayout mounts it), and this component
+// is a `<use>` pointing at one of them. A page carries the mark in the header, in every
+// divider and in the footer; four copies of twelve paths is four times the bytes and four
+// chances for one of them to drift.
+//
+// `standalone` renders the full paths inline instead, for a document that has no sprite to
+// point at — the Task 20 lockup files are exactly that, self-contained SVG documents.
+//
+// COLOUR. Every fill and stroke is a token, never a hex (rule 1) — see markShapes.ts.
+// `inverse` is for dark bands: the roundel becomes the bone surface and the outline strokes
+// that separate skull from badge become brand steel, which is what the reference lockup's
+// light badge does. The blaze, eyes, nose and tongue do not change — they sit inside the
+// skull fill, not against the badge.
+//
+// Naming: the accessible name is the SVG `<title>` child with `role="img"`, not
+// `aria-labelledby`. A page can carry the mark several times over, so any id would be
+// duplicated; a `<title>` child needs no id. A caller that wants the mark purely as
+// decoration passes `title=""`, which drops the `<title>` and hides the whole SVG from the
+// accessibility tree instead of naming it "".
+import type { HTMLAttributes } from 'astro/types';
+import { markBody, MARK_VIEWBOX, spriteHref } from './markShapes';
+type Props = HTMLAttributes<'svg'> & {
+  size?: number;
+  title?: string;
+  inverse?: boolean;
+  /** Inline the paths instead of referencing the sprite, for a standalone SVG document. */
+  standalone?: boolean;
+};
+const { size = 48, title = 'BlueStaffyUK mark', inverse = false, standalone = false,
+        class: cls, ...rest } = Astro.props;
+const decorative = title === '';
+const inline = standalone
+  ? markBody(inverse ? 'var(--color-surface)' : 'var(--color-brand)',
+             inverse ? 'var(--color-brand)' : 'var(--color-surface)')
+  : null;
+---
+<svg {...rest} class:list={['kit-mark', cls]} width={size} height={size} viewBox={MARK_VIEWBOX}
+  role={decorative ? undefined : 'img'} aria-hidden={decorative ? 'true' : undefined}
+  focusable="false" data-inverse={inverse ? 'true' : undefined}>
+  {!decorative && <title>{title}</title>}
+  {inline ? <Fragment set:html={inline} /> : <use href={spriteHref(inverse)} />}
+</svg>

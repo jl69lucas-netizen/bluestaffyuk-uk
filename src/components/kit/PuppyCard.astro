@@ -1,0 +1,81 @@
+---
+// src/components/kit/PuppyCard.astro — the puppy card (spec §5 #4). Picked 2026-09-18:
+// the 4:5 photo with the chip row underneath — sex, colour, price and status all as chips,
+// and no badge or ribbon over the photograph.
+//
+// The photo comes from src/assets/puppies through astro:assets, so the srcset is the three
+// widths below and nothing else — the card paints at ~400px and used to decode a single
+// 800px webp at 3.3x (Known Issue 4). The aspect ratio is held by CSS rather than by a
+// baked crop.
+//
+// Brass is a FILL here (the price chip carries --color-cta-ink), never a text colour on
+// the bone card: it is 2.1:1 there.
+//
+// THE DELIVERY LINE (rules/puppies.md `delivery-band-on-every-card`; CAG parity audit D4).
+// A card never ships without what it costs to get the puppy home, in the pack's canonical
+// words: "UK home delivery £200–£350 by distance · or collect in Carlisle". The band and the
+// town are data/settings.json's, so the card cannot disagree with the price table or the
+// FAQ. The line is a whitelisted stem in scripts/dup_content_audit.py (it repeats on every
+// page that mounts a card, by design). tests/py/test_puppy_card_delivery.py.
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { puppyImage } from '../../lib/puppyImages';
+import Button from './Button.astro';
+import pups from '../../../data/puppies.json';
+import { SITE, gbp, type PuppyRow } from '../../lib/site';
+type Props = HTMLAttributes<'article'> & { slug?: string };
+const { slug = 'roman', class: cls, ...rest } = Astro.props;
+const list = pups as PuppyRow[];
+const p = list.find((x) => x.slug === slug) ?? list[0];
+const img = puppyImage(p.card_photo);
+const price = `£${p.price_gbp.toLocaleString('en-GB')}`;
+const avail = p.status === 'Available';
+const href = `/available-puppies/${p.slug}/`;
+const delivery = `UK home delivery £${gbp(SITE.delivery_min_gbp)}–£${gbp(SITE.delivery_max_gbp)} `
+  + `by distance · or collect in ${SITE.address.city}`;
+---
+<article {...rest} class:list={['kit-card', 'kit-card--lift', 'kit-pup', cls]}>
+  <a href={href} class="photo" tabindex="-1">
+    <Image
+      src={img}
+      alt={`${p.name} the ${p.colour.toLowerCase()} Staffordshire Bull Terrier puppy`}
+      widths={[400, 800, 1200]}
+      sizes="(max-width: 640px) 100vw, 400px"
+      loading="lazy"
+      decoding="async"
+    />
+  </a>
+  <div class="body">
+    <h3><a href={href}>{p.name}</a></h3>
+    <p class="meta">
+      <span class="kit-chip">{p.sex === 'male' ? 'Male' : 'Female'}</span>
+      <span class="kit-chip">{p.colour}</span>
+      <span class="kit-chip strong">{price}</span>
+      <span class:list={['kit-chip', avail && 'ok']}>{p.status}</span>
+    </p>
+    <p class="deliv">{delivery}</p>
+    <Button kind="primary" href={href} label={`Ask about ${p.name}`} />
+  </div>
+</article>
+<style>
+  @layer components {
+    /* Shell and hover lift come from .kit-card / .kit-card--lift in src/styles/kit.css
+       (convention 9); what is left here is what only this card needs. */
+    .kit-pup { overflow: hidden; max-width: 400px; }
+    /* The photo link is tabindex="-1": the heading link below it goes to the same page, so
+       two TAB STOPS with one destination would be a duplicate; the link itself stays in the
+       accessibility tree, carrying the photo's alt text. The ratio is CSS, not a baked crop. */
+    .photo { display: block; position: relative; aspect-ratio: 4/5; }
+    .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .body { padding: var(--space-5); display: grid; gap: var(--space-3); }
+    h3 { margin: 0; font-family: var(--font-display); font-size: var(--text-xl); }
+    h3 a { color: var(--color-brand); text-decoration: none; }
+    h3 a:hover { text-decoration: underline; }
+    h3 a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .meta { margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+    .kit-chip.strong { background: var(--color-cta-soft); color: var(--color-cta-ink); }
+    .kit-chip.ok { color: var(--color-ok); }
+    /* --color-text-muted on the raised card is a measured pair in data/design/contrast.json. */
+    .deliv { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+  }
+</style>

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a photoless hero with one column</title>
+<!-- With no photo the band is one column and the H1 takes its measure. A hero WITH a photo may
+     give the copy a narrower column: the photo fills the other one. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .kit-hero { background: #F4F1EA; }
+  .kit-hero .inner { display: grid; grid-template-columns: minmax(0, 1fr); padding: 48px 24px; }
+  .kit-hero.with-pic .inner { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); }
+  .kit-hero .pic { display: block; width: 100%; aspect-ratio: 3 / 4; background: #8FA3B8; }
+  .kit-hero .title { font-size: 36px; line-height: 1.12; margin: 0; }
+</style>
+</head><body>
+<main>
+  <section class="kit-hero" data-hero-layout="panel" data-hero-media="none">
+    <div class="inner"><div class="copy"><h1 class="title">How to Choose the Right Blue Staffy Puppy</h1></div></div>
+  </section>
+  <section class="kit-hero with-pic" data-hero-layout="panel" data-hero-media="left">
+    <div class="inner"><div class="pic" role="img" aria-label="A puppy"></div><div class="copy"><h2 class="title">A Short Title</h2></div></div>
+  </section>
+</main>
+</body></html>

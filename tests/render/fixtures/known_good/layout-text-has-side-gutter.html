@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>every text block keeps a side gutter</title>
+<!-- The same page with the unboxed section padded. Three things that are NOT a defect, and
+     must not be counted as one: a table header moved off-screen for screen readers (the
+     stacked table's thead below 640px), a visually hidden label clipped to 1px, and a
+     horizontal rail whose later cards sit past the edge until the reader scrolls it. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .bl-box { padding: 32px 24px; }
+  .page-body > section:not(.bl-box) { padding-inline: 24px; }
+  h2 { font-size: 22px; margin: 0 0 8px; }
+  .offscreen { position: absolute; left: -9999px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .rail { display: grid; grid-auto-flow: column; grid-auto-columns: 240px; gap: 16px; overflow-x: auto; }
+  .rail p { margin: 0; }
+</style>
+</head><body>
+<main>
+  <div class="page-body">
+    <section class="bl-box"><h2>A Boxed Section</h2><p>This paragraph sits inside the box's own 24px gutter.</p></section>
+    <section>
+      <h2>Our Rigorous Health Testing Process</h2>
+      <p>Every parent is screened before a litter is planned, and this paragraph keeps a 24px gutter on both sides at every width.</p>
+      <table><thead class="offscreen"><tr><th>Test</th><th>What it screens for</th></tr></thead>
+        <tbody><tr><td>L-2-HGA</td><td>A metabolic condition</td></tr></tbody></table>
+      <p><span class="sr-only">Hidden label</span>A line with a hidden label in it.</p>
+      <div class="rail"><p>Card one</p><p>Card two</p><p>Card three</p><p>Card four</p><p>Card five</p><p>Card six</p></div>
+    </section>
+  </div>
+</main>
+</body></html>

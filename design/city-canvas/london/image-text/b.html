@@ -1,0 +1,52 @@
+<style>
+/* Image + text B — Offset block. A steel-100 block runs off the left edge of the page and the
+   photo sits offset on it, half on the block and half on the bone page; to the right the
+   question, its answer and a spec sheet of label and value lines divided by hairlines, then
+   one brass pill. The block is the frame: it bleeds to the page edge, with no card, border or
+   shadow. The photo is shown no larger than its own 400px width. On a phone the block runs
+   the full width behind the photo and the copy follows. */
+.itB{background:var(--color-surface);overflow:hidden}
+.itB .in{max-width:1160px;margin:0 auto;padding:var(--space-7) var(--space-4);display:grid;gap:var(--space-6)}
+.itB .media{position:relative;margin:0;padding:var(--space-5) 0}
+.itB .media::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right:-100vw;background:var(--color-brand-soft)}
+.itB .media img{position:relative;display:block;width:100%;max-width:400px;height:auto;aspect-ratio:400/437;object-fit:cover;margin:0 auto;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.itB h2{margin:0 0 var(--space-3);font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:22ch}
+.itB .lede{margin:0 0 var(--space-5);max-width:58ch;color:var(--color-text)}
+.itB dl{margin:0 0 var(--space-5);border-top:2px solid var(--color-brand)}
+.itB .row{display:grid;gap:2px;padding:var(--space-3) 0;border-bottom:1px solid var(--color-border)}
+.itB dt{font-size:var(--text-xs);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--color-brand)}
+.itB dd{margin:0;font-size:var(--text-base);line-height:1.5;color:var(--color-text)}
+.itB .nb{white-space:nowrap}
+.itB .cta{display:inline-flex;align-items:center;gap:var(--space-2);min-height:48px;padding:0 var(--space-6);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
+.itB .cta:hover{background:var(--color-cta-hover)}
+.itB .cta svg{width:1em;height:1em}
+@media (min-width:640px){
+  .itB .row{grid-template-columns:150px minmax(0,1fr);gap:var(--space-4);align-items:baseline}
+}
+@media (min-width:1024px){
+  .itB .in{grid-template-columns:420px minmax(0,1fr);gap:var(--space-9);align-items:center;padding:var(--space-10) var(--space-5)}
+  .itB .media{padding:var(--space-8) 0}
+  .itB .media::before{left:-100vw;right:45%}
+  .itB .media img{margin:0 0 0 var(--space-5)}
+  .itB h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+}
+</style>
+<section data-component="image-text" data-variant="b" class="itB">
+  <div class="in">
+    <figure class="media" data-media>
+      <img src="/images/blue-staffy-testimonial-london-happy-owner.webp" alt="Happy Blue Staffy puppy owner from London sharing a testimonial" width="400" height="437" loading="lazy">
+    </figure>
+    <div class="copy">
+      <h2>What Is Settled Before Your Puppy Leaves for London?</h2>
+      <p class="lede">Here is what you pay and what comes with your puppy, set out before you commit to anything, so the day your puppy travels to London holds no surprises.</p>
+      <dl>
+        <div class="row"><dt>Deposit</dt><dd>£500 books your viewing and reserves your puppy, and it comes off the price</dd></div>
+        <div class="row"><dt>Price</dt><dd>£1,500 for a boy, £1,700 for a girl</dd></div>
+        <div class="row"><dt>Getting home</dt><dd>UK home delivery for <span class="nb">£200–£350</span> by DEFRA-approved transport, priced by distance, or collect in Carlisle</dd></div>
+        <div class="row"><dt>Parents</dt><dd>Maggie and Jones, DNA-tested clear of <span class="nb">L-2-HGA and HC-HSF4</span></dd></div>
+        <div class="row"><dt>Guarantee</dt><dd>A two-year genetic health guarantee</dd></div>
+      </dl>
+      <a class="cta" href="#contact">Ask About a Puppy <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>

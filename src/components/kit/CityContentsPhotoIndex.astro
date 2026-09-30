@@ -1,0 +1,132 @@
+---
+// src/components/kit/CityContentsPhotoIndex.astro — city component 4, the contents list (London pick:
+// contents-list C, "Photo index"). The page's sections pressed into a sunk steel-100 panel
+// (no shadow) with a puppy photograph at its left (on top on a phone): a buyer question, its
+// answer, then every section as a generous arrow row, two columns from 640px.
+//
+// ONE LIST (plan2-notes, from the Task 6 re-review). The canvas carried rows 6-10 twice — a
+// desktop copy and a phone `<details>` copy — which is two of every link in the tab order and to
+// a screen reader. Here the list is rendered once; below 640px the rows after the fifth are
+// hidden behind one "N more sections" button (`aria-expanded`, `aria-controls`), and a reader
+// with no scripting gets every row (the `<noscript>` rule). The rows are the page's own
+// `sections` (src/lib/sections.ts), the same list the dial and the jump band read, so the three
+// can never disagree about what the sections are.
+//
+// Mounted by the city layout (src/layouts/CityShell.astro) in PageShell's `nav-contents` slot,
+// once, after the hero. Shown below 1024px only: from 1024px the dial is the contents (the user's
+// ruling, answer board q05, 2026-09-29). Conventions 2, 4, 6.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import type { SectionRef } from '../../lib/sections';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+
+type Props = HTMLAttributes<'section'> & {
+  sections: SectionRef[];
+  heading: string;
+  lede: string;
+  /** A puppy photo file in src/assets/puppies (named in data/image-focus.json) and its alt. */
+  photo: string;
+  photoAlt: string;
+  /** Rows shown on a phone before the disclosure. */
+  phoneRows?: number;
+};
+const { sections, heading, lede, photo, photoAlt, phoneRows = 5, class: cls, ...rest } = Astro.props;
+const more = Math.max(0, sections.length - phoneRows);
+const listId = 'city-contents-list';
+// The <noscript> rule, as a string: Astro would otherwise hoist it into the page stylesheet,
+// where it would show the hidden rows to everybody (the same trap VideoEmbed documents).
+const NOSCRIPT_CSS = '.city-contents-photo-index [data-rest]{display:block!important}.city-contents-photo-index .more{display:none!important}';
+---
+<section {...rest} class:list={['city-kit', 'city-contents-photo-index', cls]}>
+  <div class="panel">
+    <figure>
+      <Image src={puppyImage(photo)} alt={photoAlt} widths={[400, 800, 1080]}
+        sizes="calc(100vw - 32px)" class={focusClass(photo)} loading="lazy" decoding="async" />
+    </figure>
+    <div class="body">
+      <h2>{heading}</h2>
+      <p class="lede">{lede}</p>
+      <nav aria-label="On this page" data-contents>
+        <ul id={listId}>
+          {sections.map((s, i) => (
+            <li data-rest={i >= phoneRows ? '' : undefined}>
+              <a href={`#${s.id}`}><span>{s.label}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+        {more > 0 && (
+          <button type="button" class="more" aria-expanded="false" aria-controls={listId} data-more>
+            <span data-more-label>{more} more {more === 1 ? 'section' : 'sections'}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+        )}
+        <noscript><style is:inline set:html={NOSCRIPT_CSS}></style></noscript>
+      </nav>
+    </div>
+  </div>
+</section>
+<script>
+  // Singleton: a page mounts one contents list. The button only exists below 640px's worth of
+  // rows; above 640px every row is shown by CSS and the button is display:none.
+  const root = document.querySelector<HTMLElement>('.city-contents-photo-index');
+  const btn = root?.querySelector<HTMLButtonElement>('[data-more]');
+  if (root && btn) {
+    const label = btn.querySelector<HTMLElement>('[data-more-label]')!;
+    const closed = label.textContent ?? '';
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open));
+      root.toggleAttribute('data-open', open);
+      label.textContent = open ? 'Fewer sections' : closed;
+    });
+  }
+</script>
+<style>
+  @layer components {
+    /* A full-width strip, the viewport wide, so its @media edges read its own box (src/styles/city.css).
+       Its gutters are the panel's own width, never root padding, so its content box is its box. */
+    .city-contents-photo-index { background: var(--color-surface); padding: var(--space-6) 0; }
+    .panel { max-width: min(1200px, calc(100% - 2 * var(--space-4))); margin: 0 auto; display: grid; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    figure { margin: 0; background: var(--color-surface); }
+    figure :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; }
+    .body { padding: var(--space-6) var(--space-5) var(--space-7); }
+    h2 { margin: 0 0 var(--space-3); }
+    .lede { margin: 0 0 var(--space-6); font-size: var(--city-lead); color: var(--color-ink-2); }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0 var(--space-6); }
+    li { border-top: 1px solid var(--color-steel-300); }
+    a, .more {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+      min-height: 56px; padding: var(--space-3) var(--space-1); color: var(--color-brand); font-weight: 600; text-decoration: none;
+    }
+    a svg, .more svg { flex: none; width: 20px; height: 20px; transition: transform var(--dur-fast) var(--ease-out); }
+    a:hover span { text-decoration: underline; text-underline-offset: 3px; }
+    a:hover svg { transform: translateX(4px); }
+    a:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+    .more {
+      width: 100%; font: inherit; font-weight: 700; background: none; border: 0;
+      border-top: 1px solid var(--color-steel-300); cursor: pointer;
+    }
+    .more[aria-expanded='true'] svg { transform: rotate(180deg); }
+    @media (width < 640px) {
+      [data-rest] { display: none; }
+      .city-contents-photo-index[data-open] [data-rest] { display: block; }
+      figure :global(img) { aspect-ratio: 2 / 1; }
+      .body { padding: var(--space-5) var(--space-4); }
+      .lede { margin-bottom: var(--space-4); }
+    }
+    @media (width >= 640px) {
+      ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .more { display: none; }
+    }
+    @media (640px <= width < 1024px) { figure :global(img) { aspect-ratio: 21 / 9; } }
+    /* From 1024px the dial (CityDialPhotoMarker) is the page's contents, so this list goes, as
+       SectionSheet goes where PageDial takes over (the user's ruling, answer board q05,
+       2026-09-29). tests/render/city-kit.spec.ts probes it hidden at 1024 and 1280. */
+    @media (width >= 1024px) { .city-contents-photo-index { display: none; } }
+    @media (prefers-reduced-motion: reduce) { a svg, .more svg { transition: none; } }
+  }
+</style>

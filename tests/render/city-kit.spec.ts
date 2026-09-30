@@ -1,0 +1,721 @@
+import { test, expect, type Page } from '@playwright/test';
+import { registry } from './lib/registry.js';
+import { runCheck } from './lib/runCheck.js';
+import './checks/layout.js';
+import './checks/a11y.js';
+import './checks/img.js';
+import './checks/nav.js';
+import { readFileSync } from 'node:fs';
+import { cityTypeFit } from './lib/cityTypeFit.js';
+import { cityLayoutFollowsBox } from './lib/cityLayoutFollowsBox.js';
+import { TIER, HEADING_CAPS } from './lib/cityTiers.js';
+
+/**
+ * The city-kit render spec (the London component design pass, Plan 2). Every built page that
+ * carries city components — the specimen page /kit-preview/city/ and, from Plan 2 Task 8, the
+ * London scaffold — is painted at 375, 768, 1024 and 1280 (tests/render/city-kit.config.ts) and
+ * held to:
+ *   - the registered checks in REUSED, run as they are; those in CITY_ADVISORY print their hits
+ *     as `[advisory]` lines and never fail (a new check earns blocking after a clean cluster);
+ *   - each city component's probe in PROBES, keyed on the data hooks the component renders (the
+ *     same hooks scripts/check_city_canvas.py HOOKS required of the canvas variants), run only
+ *     where that component is on the page.
+ * The kit's page harness (pages.spec.ts) paints 375/768/1280 only; this spec is where 1024 — the
+ * dial's and rule 10's boundary — is measured for the city set. A component that fails here is
+ * fixed in the component, never excused here.
+ */
+const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/', '/uk-locations/blue-staffy-puppies-london/'];
+const REUSED = [
+  'layout-no-horizontal-overflow',
+  'layout-min-font-size',
+  'layout-tap-target-size',
+  'layout-table-stacks-on-mobile',
+  'layout-image-box-reserved',
+  'layout-hero-image-first-mobile',
+  'layout-h3-image-first',
+  'a11y-text-contrast-aa',
+  'a11y-no-duplicate-ids',
+  'img-alt-present-and-unique',
+  'img-srcset-within-2x',
+  'img-sizes-matches-box',
+  'img-not-upscaled',
+  'img-face-visible',
+  'nav-anchors-resolve',
+];
+// Named, never derived from registry severity (the canvas smoke's lesson, 4214d23).
+const CITY_ADVISORY = new Set(['img-not-upscaled', 'img-face-visible']);
+const CTX = { pageType: 'location', slug: 'city-kit', siblings: async () => [] };
+
+type Probe = (page: Page, viewport: number) => Promise<string[]>;
+
+/** Every element carrying `attr` is painted (a box of at least 1×1 and not visibility:hidden). */
+async function allVisible(page: Page, attr: string): Promise<string[]> {
+  const hidden = await page.evaluate((a) => Array.from(document.querySelectorAll(`[${a}]`))
+    .filter((el) => {
+      const b = el.getBoundingClientRect();
+      return b.width < 1 || b.height < 1 || getComputedStyle(el).visibility === 'hidden';
+    }).length, attr);
+  return hidden ? [`${hidden} [${attr}] element(s) are not painted`] : [];
+}
+
+/** The email error line says one thing for an empty field and another for a malformed address
+ *  (M8, as behaviour): submit empty, then type "a", then clear it, and read which line paints. */
+async function emailMessages(page: Page, form: string, email: string): Promise<string[]> {
+  const out: string[] = [];
+  const shown = async (sel: string) => page.locator(`${form} ${sel}`).first().isVisible();
+  const expectLine = async (state: string, want: 'e-empty' | 'e-bad') => {
+    const other = want === 'e-empty' ? 'e-bad' : 'e-empty';
+    if (!(await shown(`.${want}`)) || (await shown(`.${other}`))) out.push(`${form}: a ${state} email does not paint its own line (.${want})`);
+  };
+  await page.locator(`${form} [type="submit"]`).click();
+  await expectLine('empty', 'e-empty');
+  await page.fill(email, 'a');
+  await page.locator(`${form} [type="submit"]`).click();
+  await expectLine('malformed', 'e-bad');
+  await page.fill(email, '');
+  await page.locator(`${form} [type="submit"]`).click();
+  await expectLine('cleared', 'e-empty');
+  return out;
+}
+
+/** The price scale's figures stay on the panel and on the number line (the Task 8 quality
+ *  review, I1): every figure's PAINTED text (a Range over its glyphs, so a no-wrap figure that
+ *  overflows its own box is caught) ends inside the panel's content edge and, where the stops are
+ *  laid on a horizontal line (from 640px), inside the line's right end. Returns the defects. */
+async function priceScaleSpill(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const out: string[] = [];
+    const root = document.querySelector('.city-scale');
+    // Nothing to measure is a defect, never a pass (Task 8b, M-new-2).
+    if (!root) return ['the page has no price scale (.city-scale) to measure'];
+    const panel = root.querySelector('.panel')!;
+    const ps = getComputedStyle(panel);
+    const pr = panel.getBoundingClientRect();
+    const panelRight = pr.right - parseFloat(ps.paddingRight);
+    const panelLeft = pr.left + parseFloat(ps.paddingLeft);
+    const ol = root.querySelector('ol')!;
+    const horizontal = getComputedStyle(ol).display === 'flex';
+    const lineRight = ol.getBoundingClientRect().right;
+    const figs = Array.from(root.querySelectorAll('[data-figure]'))
+      .flatMap((f) => (f.classList.contains('n') ? [f] : Array.from(f.querySelectorAll('.n'))));
+    if (!figs.length) return ['the price scale has no figure to measure'];
+    for (const f of figs) {
+      const r = document.createRange(); r.selectNodeContents(f);
+      const b = r.getBoundingClientRect();
+      const name = (f.textContent || '').replace(/\s+/g, ' ').trim();
+      if (b.right > panelRight + 1 || b.left < panelLeft - 1) out.push(`"${name}" paints ${Math.round(Math.max(b.right - panelRight, panelLeft - b.left))}px outside the panel`);
+      else if (horizontal && b.right > lineRight + 1) out.push(`"${name}" runs ${Math.round(b.right - lineRight)}px past the number line`);
+    }
+    return out;
+  });
+}
+
+/** Each probe: the selector that says its component is on the page, and what it measures. */
+const PROBES: Record<string, { present: string; run: Probe }> = {
+  'city-hero-filmstrip': {
+    present: '.city-hero-filmstrip',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const band = await page.evaluate(() =>
+        Math.round(document.querySelector('.city-hero-filmstrip')!.getBoundingClientRect().height));
+      // rules/design.md rule 10: 390px floor from 1024, 450px ceiling at 1280 and up.
+      if (viewport >= 1024 && band < 390) out.push(`hero band is ${band}px at ${viewport}px; the floor is 390`);
+      if (viewport >= 1280 && band > 450) out.push(`hero band is ${band}px at ${viewport}px; the ceiling is 450`);
+      const thumbs = await page.evaluate(() => document.querySelectorAll('.city-hero-filmstrip .pic img').length);
+      if (thumbs < 1) out.push('the filmstrip paints no puppy');
+      return out;
+    },
+  },
+  'city-price-scale': {
+    present: '.city-scale',
+    run: async (page) => [...(await allVisible(page, 'data-figure')), ...(await priceScaleSpill(page))],
+  },
+  'city-trust-ledger': {
+    present: '.city-trust',
+    run: (page) => allVisible(page, 'data-trust-item'),
+  },
+  'city-contents-photo-index': {
+    present: '.city-contents-photo-index',
+    run: async (page, viewport) => {
+      // The user's ruling (answer board q05, 2026-09-29): the contents list is hidden from 1024px,
+      // where the dial takes over, as the other pages' SectionSheet is; shown at 375 and 768.
+      const painted = await page.locator('.city-contents-photo-index').isVisible();
+      if (viewport >= 1024) {
+        return painted ? [`the contents list is painted at ${viewport}px, where the dial navigates`] : [];
+      }
+      if (!painted) return [`the contents list is not painted at ${viewport}px`];
+      const out = await allVisible(page, 'data-contents');
+      const rest = page.locator('.city-contents-photo-index [data-rest]');
+      if (!(await rest.count())) return out;
+      const shown = async () => rest.first().isVisible();
+      if (viewport < 640) {
+        if (await shown()) out.push('rows after the phone cut are painted before the disclosure is opened');
+        const more = page.locator('.city-contents-photo-index [data-more]');
+        await more.click();
+        if (!(await shown())) out.push('opening the disclosure does not paint the rest of the rows');
+        if ((await more.getAttribute('aria-expanded')) !== 'true') out.push('the disclosure does not report aria-expanded="true"');
+        await more.click();
+      } else if (!(await shown())) out.push(`rows after the fifth are hidden at ${viewport}px`);
+      return out;
+    },
+  },
+  'city-dial-photo-marker': {
+    present: '[data-city-dial-photo-marker]',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const shown = await page.locator('[data-city-dial-photo-marker]').isVisible();
+      if (viewport >= 1024 && !shown) out.push('the dial is not painted at a desktop width');
+      if (viewport < 1024 && shown) out.push('the dial is painted below 1024px, where the jump band navigates');
+      const current = await page.locator('[data-city-dial-photo-marker] [aria-current="location"]').count();
+      if (current !== 1) out.push(`${current} dial rows are marked current; exactly one must be`);
+      return out;
+    },
+  },
+  'city-jump-stepper': {
+    present: '[data-city-jump-stepper]',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const band = page.locator('[data-city-jump-stepper]');
+      const shown = await band.isVisible();
+      if (viewport >= 1024) {
+        if (shown) out.push('the jump band is painted at a desktop width, where the dial navigates');
+        return out;
+      }
+      if (!shown) return ['the jump band is not painted below 1024px'];
+      if (await band.getAttribute('data-strip') !== null) {
+        // THE BAND SLIDES AWAY ON THE WAY DOWN AND COMES BACK ON THE WAY UP (the user's ruling,
+        // answer board q03, 2026-09-29), under both motion preferences: with reduced motion it
+        // does not slide, but it still hides and shows. Every read waits on the state it judges
+        // (the 10s ceiling is only a ceiling), never on a clock.
+        const where = (): Promise<{ top: number; bottom: number; hdr: number }> => band.evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          const hdr = document.querySelector('.kit-hdr')?.getBoundingClientRect().bottom ?? 0;
+          return { top: r.top, bottom: r.bottom, hdr };
+        });
+        // Off screen: nothing of it below the site header's bottom edge (it slides up behind the
+        // header, z 50 over its 30, and on out of the viewport).
+        const offScreen = () => page.waitForFunction(() => {
+          const el = document.querySelector('[data-city-jump-stepper]')!;
+          return el.getBoundingClientRect().bottom <= 0.5;
+        }, null, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false);
+        // Back: its top edge sits on the header's bottom edge, as a sticky band does.
+        const back = () => page.waitForFunction(() => {
+          const el = document.querySelector('[data-city-jump-stepper]')!;
+          const hdr = document.querySelector('.kit-hdr')?.getBoundingClientRect().bottom ?? 0;
+          return Math.abs(el.getBoundingClientRect().top - hdr) <= 1.5;
+        }, null, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false);
+        for (const motion of ['reduce', 'no-preference'] as const) {
+          await page.emulateMedia({ reducedMotion: motion });
+          const m = `reducedMotion=${motion}:`;
+          const dur = await band.evaluate((el) => getComputedStyle(el).transitionDuration);
+          if (motion === 'reduce' && dur.split(',').some((d) => parseFloat(d) > 0)) out.push(`${m} the band still animates (${dur})`);
+          await page.evaluate(() => window.scrollTo(0, 900));
+          if (!(await offScreen())) out.push(`${m} after scrolling down 900px the band is still on screen (${JSON.stringify(await where())})`);
+          await page.evaluate(() => window.scrollTo(0, 600));
+          if (!(await back())) out.push(`${m} after scrolling back up the band is not back under the header (${JSON.stringify(await where())})`);
+          // Focus inside keeps it shown: hide it, then move a keyboard focus into the rail.
+          await page.evaluate(() => window.scrollTo(0, 1400));
+          if (!(await offScreen())) out.push(`${m} after scrolling down again the band is still on screen`);
+          await page.keyboard.press('Shift');
+          await band.locator('.rail a').first().focus();
+          if (!(await back())) out.push(`${m} a keyboard focus inside the band does not bring it back`);
+          await page.evaluate(() => window.scrollTo(0, 2200));
+          // One frame for the scroll handler, then it must still be where focus holds it.
+          await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
+          if (!(await back())) out.push(`${m} the band hides while focus is inside it`);
+          await band.locator('.rail a').first().evaluate((a) => (a as HTMLElement).blur());
+          // An open sheet holds it too: open it from the shown band with a tap on its key, as a
+          // reader does, and scroll down behind it. (A sheet opened by script has no opener, so
+          // its focus would have nowhere to return to when it shuts.)
+          await page.evaluate(() => window.scrollTo(0, 1000));
+          await back();
+          await band.locator('[data-jump-open]').click();
+          await page.evaluate(() => window.scrollTo(0, 2600));
+          await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
+          if (!(await back())) out.push(`${m} the band hides while its sheet is open`);
+          await band.locator('[data-jump-close]').click();
+          if (!(await page.waitForFunction(() => !document.querySelector<HTMLDialogElement>('[data-city-jump-stepper] [data-jump-sheet]')!.open,
+            null, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false))) out.push(`${m} the sheet's Close button does not shut it`);
+          // At the top of the page it shows, whatever the last direction was.
+          await page.evaluate(() => window.scrollTo(0, 3200));
+          if (!(await offScreen())) out.push(`${m} after the sheet shuts, scrolling down does not hide the band`);
+          await page.evaluate(() => window.scrollTo(0, 0));
+          if (!(await back())) out.push(`${m} at the top of the page the band is not shown`);
+        }
+        await page.emulateMedia({ reducedMotion: null });
+        await page.evaluate(() => window.scrollTo(0, 0));
+      }
+      const opener = band.locator('[data-jump-open]');
+      const box = await opener.boundingBox();
+      if (!box || box.height < 44) out.push('the sheet key is under 44px tall');
+      // WAIT ON THE CONDITION, NEVER A CLOCK (Task 8b, M-new-1). On four workers on a busy
+      // machine the sheet's open and its `close` task (which resets the key) landed after the
+      // fixed 1s this probe used to allow, about one full run in three; a sheet left open then
+      // made the page inert and failed the next probe too. Each read now waits for the state it
+      // judges (the ceiling is only a ceiling), and the probe always leaves the sheet shut.
+      const sheetState = (want: { open: boolean; expanded: string }) => page.waitForFunction((w) => {
+        const d = document.querySelector<HTMLDialogElement>('[data-city-jump-stepper] [data-jump-sheet]');
+        const k = document.querySelector('[data-city-jump-stepper] [data-jump-open]');
+        return !!d && !!k && d.open === w.open && k.getAttribute('aria-expanded') === w.expanded;
+      }, want, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false);
+      await opener.click();
+      if (!(await sheetState({ open: true, expanded: 'true' }))) {
+        const open = await band.locator('[data-jump-sheet]').evaluate((d) => (d as HTMLDialogElement).open);
+        out.push(open ? 'the key does not report aria-expanded="true"' : 'pressing the key does not open the sheet');
+      }
+      await page.keyboard.press('Escape');
+      if (!(await sheetState({ open: false, expanded: 'false' }))) {
+        const closed = await band.locator('[data-jump-sheet]').evaluate((d) => !(d as HTMLDialogElement).open);
+        out.push(closed ? 'after Escape the key still reports aria-expanded="true"' : 'Escape does not close the sheet');
+        // Leave the page usable for the next probe whatever happened here.
+        await band.locator('[data-jump-sheet]').evaluate((d) => (d as HTMLDialogElement).close());
+      }
+      return out;
+    },
+  },
+  'city-takeaways-ledger': {
+    present: '.city-takeaways-ledger',
+    run: (page) => allVisible(page, 'data-takeaway'),
+  },
+  'city-puppy-sheet': {
+    present: '.city-sheet',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-puppy');
+      // One tap target per print: the Ask link's box is the whole print.
+      // Each print is scrolled to the middle of the viewport first, clear of the sticky chrome,
+      // and the point tested is on its photograph.
+      const small = await page.evaluate(() => Array.from(document.querySelectorAll('.city-pup')).filter((card) => {
+        card.scrollIntoView({ block: 'center' });
+        const a = card.querySelector('.ask')!;
+        const img = card.querySelector('img')!.getBoundingClientRect();
+        const hit = document.elementFromPoint(img.left + img.width / 2, img.top + img.height / 2);
+        return !(hit === a || a.contains(hit!));
+      }).length);
+      if (small) out.push(`${small} print(s) whose photo does not hand the tap to its Ask link`);
+      // M6: a keyboard focus on an Ask link rings its whole print, through the link's own ::after.
+      await page.evaluate(() => window.scrollTo(0, 0));
+      const ask = page.locator('.city-pup .ask').first();
+      await ask.focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+      const ring = await ask.evaluate((a) => ({ fv: a.matches(':focus-visible'), style: getComputedStyle(a, '::after').outlineStyle,
+        width: getComputedStyle(a, '::after').outlineWidth }));
+      if (!ring.fv || ring.style !== 'solid' || ring.width !== '3px') out.push(`a keyboard-focused Ask link draws no 3px ring on its print (${JSON.stringify(ring)})`);
+      return out;
+    },
+  },
+  'city-roster': {
+    present: '.city-roster',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      if (viewport <= 640) {
+        const overlap = await page.evaluate(() => Array.from(document.querySelectorAll('.city-roster tbody tr')).filter((tr) => {
+          const price = tr.querySelector('td.num')!.getBoundingClientRect();
+          // The name's TEXT, not its block box (which runs the row's width by design).
+          const range = document.createRange();
+          range.selectNodeContents(tr.querySelector('.nm')!);
+          const name = range.getBoundingClientRect();
+          return price.left < name.right - 1 && price.top < name.bottom - 1 && price.bottom > name.top + 1;
+        }).length);
+        if (overlap) out.push(`${overlap} stacked row(s) paint the price over the name`);
+      }
+      return out;
+    },
+  },
+  'city-video-panel': {
+    present: '.city-video',
+    run: async (page) => {
+      const out: string[] = [];
+      const play = page.locator('.city-video [data-video-play]');
+      const box = await play.boundingBox();
+      if (!box || box.width < 44 || box.height < 44) out.push('the play control is under 44×44px');
+      const name = (await play.getAttribute('aria-label')) ?? '';
+      const label = ((await play.locator('.badge-label').textContent()) ?? '').trim();
+      if (!name.startsWith(label)) out.push(`the play button's name "${name}" does not contain its visible label "${label}" (WCAG 2.5.3)`);
+      await play.click();
+      const src = await page.locator('.city-video iframe').first().getAttribute('src');
+      if (!src || !/youtube-nocookie\.com\/embed\//.test(src)) out.push('pressing play does not load the youtube-nocookie player');
+      return out;
+    },
+  },
+  'city-chapters': {
+    present: '.city-chapters',
+    run: async (page) => {
+      const out: string[] = [];
+      const bad = await page.evaluate(() => Array.from(document.querySelectorAll('.city-chapters h3')).filter((h) => {
+        const next = h.nextElementSibling;
+        return !next || !next.matches('img.bl-img');
+      }).length);
+      if (bad) out.push(`${bad} chapter heading(s) not followed straight by their .bl-img photo (layout-h3-image-first)`);
+      return out;
+    },
+  },
+  'city-letter': {
+    present: '.city-letter',
+    run: (page) => allVisible(page, 'data-review-slot'),
+  },
+  'city-faq-ledger': {
+    present: '.city-faq',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-faq-block');
+      const q = page.locator('.city-faq [data-faq-q]').first();
+      const before = await q.evaluate((h) => (h.closest('details') as HTMLDetailsElement).open);
+      await q.click();
+      const after = await q.evaluate((h) => (h.closest('details') as HTMLDetailsElement).open);
+      if (after === before) out.push('pressing the first question does not toggle its answer');
+      // The numbering runs on across the blocks: 01, 02, … with no gap and no repeat.
+      const nums = await page.evaluate(() => Array.from(document.querySelectorAll('.city-faq .n')).map((n) => Number(n.textContent)));
+      if (nums.some((n, i) => n !== i + 1)) out.push(`the ledger numbers run ${nums.join(',')}, not 1..${nums.length}`);
+      return out;
+    },
+  },
+  'city-newsletter-notice': {
+    present: '[data-newsletter]',
+    run: async (page) => {
+      const out: string[] = [];
+      const email = page.locator('[data-newsletter] input[type="email"]');
+      const h = (await email.boundingBox())?.height ?? 0;
+      if (h < 44) out.push(`the email field is ${h}px tall`);
+      await page.locator('[data-newsletter] button[type="submit"]').click();
+      if ((await email.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the field aria-invalid');
+      const desc = await email.getAttribute('aria-describedby');
+      if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid field is not described by a painted error line');
+      out.push(...(await emailMessages(page, '[data-newsletter]', '[data-newsletter] input[type="email"]')));
+      return out;
+    },
+  },
+  'city-contact-lineup': {
+    present: '.city-contact',
+    run: async (page) => {
+      const out: string[] = [];
+      const short = await page.evaluate(() => Array.from(document.querySelectorAll(
+        '[data-contact-form] input:not([type="hidden"]):not([name="_gotcha"]), [data-contact-form] select, [data-contact-form] textarea, [data-contact-form] button'))
+        .filter((el) => el.getBoundingClientRect().height < 44).map((el) => el.getAttribute('name') || el.tagName));
+      if (short.length) out.push(`under 44px tall: ${short.join(', ')}`);
+      // The line-up is a picture: nothing in it takes a tap.
+      const tappable = await page.locator('.city-contact .pups a, .city-contact .pups button').count();
+      if (tappable) out.push(`${tappable} control(s) inside the line-up, which selects nothing`);
+      await page.locator('[data-contact-form] [type="submit"]').click();
+      const name = page.locator('[data-contact-form] [name="name"]');
+      if ((await name.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the name aria-invalid');
+      const desc = await name.getAttribute('aria-describedby');
+      if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid name is not described by a painted error line');
+      out.push(...(await emailMessages(page, '[data-contact-form]', '[data-contact-form] [name="email"]')));
+      // M7: the invalid border reads at 3:1 or more against the band it sits on (WCAG 1.4.11).
+      const ratio = await page.evaluate(() => {
+        const lum = (rgb: string) => {
+          const c = (rgb.match(/[\d.]+/g) ?? []).slice(0, 3).map((v) => Number(v) / 255)
+            .map((x) => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4));
+          return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+        };
+        const field = document.querySelector('[data-contact-form] [name="name"]')!;
+        const band = getComputedStyle(document.querySelector('.city-contact')!).backgroundColor;
+        const [a, b] = [lum(getComputedStyle(field).borderTopColor), lum(band)].sort((x, y) => y - x);
+        return (a + 0.05) / (b + 0.05);
+      });
+      if (ratio < 3) out.push(`the invalid border is ${ratio.toFixed(2)}:1 against the band (3:1 needed)`);
+      return out;
+    },
+  },
+  // The Task 7b review, item 1 (I3 in the quality review): tests/render/lib/cityLayoutFollowsBox.ts.
+  'city-layout-follows-box': {
+    present: '.city-kit',
+    run: async (page, viewport) => {
+      const r = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER });
+      console.log(`city-layout-follows-box @ ${viewport}px: examined ${r.examined}`);
+      return r.defects;
+    },
+  },
+  // Task 7b item 10 (the user's type-fit ruling): heading caps and lines, paragraph measure
+  // and length, section height, per tier (tests/render/lib/cityTypeFit.ts).
+  'city-type-fit': {
+    present: '.city-kit',
+    run: async (page, viewport) => {
+      const fullWidthSpecimen = new URL(page.url()).pathname === '/kit-preview/city/';
+      const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER, caps: HEADING_CAPS, fullWidthSpecimen });
+      console.log(`city-type-fit @ ${viewport}px: examined ${r.examined}`);
+      return r.examined ? r.defects : ['city-type-fit examined nothing'];
+    },
+  },
+  // Learning loop 2026-09-27, L8: the current-section marker, under BOTH motion preferences.
+  // Scroll the fourth section to the reading band and read which row is current, on the dial at
+  // a desktop width and on the band's rail below it.
+  'city-nav-current-section': {
+    present: '[data-city-dial-photo-marker], [data-city-jump-stepper]',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const scope = viewport >= 1024 ? '[data-city-dial-photo-marker]' : '[data-city-jump-stepper] .rail';
+      // A sheet an earlier probe left open would make the page inert: this probe judges the
+      // spy, not the sheet, so it starts from a shut sheet (Task 8b, M-new-1).
+      await page.evaluate(() => document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => d.close()));
+      if (!(await page.locator(scope).isVisible())) return out;
+      for (const motion of ['reduce', 'no-preference'] as const) {
+        await page.emulateMedia({ reducedMotion: motion });
+        const want = await page.evaluate((s) => {
+          // Only a section tall enough to fill the reading band can be asked to be current: on the
+          // specimen route the contents list's wrapper is a one-line caption from 1024px, where
+          // the list itself is hidden (answer board q05), so the band reads the section after it.
+          const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [data-spy]`))
+            .filter((a) => document.getElementById(a.dataset.spy!)!.getBoundingClientRect().height >= window.innerHeight * 0.2);
+          const link = links[Math.min(3, links.length - 1)];
+          const target = document.getElementById(link.dataset.spy!)!;
+          // The target's top at 30% of the viewport: above the reading band (40–45%), so the
+          // section before it has left the band and this one fills it.
+          window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.3);
+          return link.dataset.spy!;
+        }, scope);
+        // Wait on the SPY, not on a clock: an IntersectionObserver reports on a rendering
+        // opportunity after the scroll, and with four workers painting at once that took up to
+        // ~230ms here (measured: the dial still named the previous section 0–2 frames after
+        // the scroll, then settled), so a fixed 300ms read raced it about one run in three.
+        // The component is right when the named section becomes current; if it never does
+        // within 10s (a ceiling; Task 8b) the read below reports what it shows instead.
+        await page.waitForFunction(({ s, w }) => {
+          const cur = Array.from(document.querySelectorAll(`${s} [aria-current="location"]`));
+          return cur.length === 1 && (cur[0] as HTMLAnchorElement).dataset.spy === w;
+        }, { s: scope, w: want }, { timeout: 10_000, polling: 'raf' }).catch(() => {});
+        const got = await page.evaluate((s) => Array.from(document.querySelectorAll(`${s} [aria-current="location"]`))
+          .map((a) => (a as HTMLAnchorElement).dataset.spy), scope);
+        if (got.length !== 1 || got[0] !== want) {
+          out.push(`reducedMotion=${motion}: section ${want} in the reading band, current is [${got.join(', ')}]`);
+        }
+      }
+      await page.emulateMedia({ reducedMotion: null });
+      return out;
+    },
+  },
+};
+
+for (const route of ROUTES) {
+  test(`city components on ${route}`, async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    const res = await page.goto(route);
+    expect(res?.status(), `${route} must be built`).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+    // CITY_SHOTS=<dir> keeps a full-page PNG per width for the impeccable and frontend-design
+    // passes to read. Outside the repo, never committed.
+    if (process.env.CITY_SHOTS) {
+      // Lazy images paint only once scrolled near: walk the page and wait for every image to
+      // decode, so the design passes judge photographs, not empty boxes (Plan 2 Task 8).
+      const unloaded = await page.evaluate(async () => {
+        for (let y = 0; y < document.body.scrollHeight; y += window.innerHeight / 2) {
+          window.scrollTo(0, y);
+          await new Promise((r) => requestAnimationFrame(() => r(null)));
+        }
+        // A lazy image that is never painted (display:none below a tier) never loads, so each
+        // wait is capped: the shot is for eyes, not a gate.
+        const settle = (i: HTMLImageElement) => Promise.race([i.decode().catch(() => null),
+          new Promise((r) => setTimeout(r, 3000))]);
+        await Promise.all(Array.from(document.images).map((i) => (i.complete ? null : settle(i))));
+        window.scrollTo(0, 0);
+        // A painted image that never decoded is an empty box in the shot: say so (M8).
+        return Array.from(document.images).filter((i) => (!i.complete || i.naturalWidth === 0)
+          && i.getBoundingClientRect().width > 0).map((i) => i.currentSrc || i.src);
+      });
+      if (unloaded.length) {
+        console.warn(`[shots] ${route} @ ${viewport}px: ${unloaded.length} painted image(s) never loaded: ${unloaded.slice(0, 3).join(', ')}`);
+        testInfo.annotations.push({ type: 'shots', description: `${unloaded.length} image(s) never loaded` });
+      }
+      await page.screenshot({ fullPage: true,
+        path: `${process.env.CITY_SHOTS}/${route.replace(/\//g, '_')}-${viewport}.png` });
+    }
+    const failures: string[] = [];
+    for (const id of REUSED) {
+      const check = registry.find((c) => c.id === id);
+      expect(check, `${id} is registered`).toBeTruthy();
+      const r = await runCheck(check!, page, viewport, CTX);
+      console.log(`${route} @ ${viewport}px ${id}: examined ${r.examined}`);
+      for (const d of r.defects) {
+        if (CITY_ADVISORY.has(id)) {
+          console.log(`[advisory] ${route} @ ${viewport}px ${id}: ${d.message}`);
+          testInfo.annotations.push({ type: 'advisory', description: `${id}: ${d.message}` });
+        } else failures.push(`${id}: ${d.message}`);
+      }
+    }
+    // CITY_CPU_THROTTLE=<n> slows the page's CPU n times for the component probes (Chrome
+    // DevTools Protocol), to reproduce on demand the load under which a probe that waits on a
+    // clock races its condition (Task 8b, M-new-1: four workers on a busy machine).
+    if (process.env.CITY_CPU_THROTTLE) {
+      const cdp = await page.context().newCDPSession(page);
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: Number(process.env.CITY_CPU_THROTTLE) });
+    }
+    let probed = 0;
+    for (const [id, probe] of Object.entries(PROBES)) {
+      await page.evaluate(() => window.scrollTo(0, 0));
+      if (!(await page.locator(probe.present).count())) continue;
+      probed++;
+      failures.push(...(await probe.run(page, viewport)).map((m) => `${id}: ${m}`));
+    }
+    expect(probed, `${route} carries no city component a probe knows`).toBeGreaterThan(0);
+    expect(failures, `${route} at ${viewport}px`).toEqual([]);
+  });
+}
+
+// The type-fit check against its own fixtures (the meta gate's discipline, for a check that lives
+// in this suite): it must fire on the page built to break it and stay silent on the clean one.
+for (const kind of ['broken', 'good'] as const) {
+  test(`city-type-fit on its known_${kind} fixture`, async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    await page.setContent(readFileSync(new URL(`./fixtures/city/type-fit-${kind}.html`, import.meta.url), 'utf8'));
+    const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER, caps: HEADING_CAPS });
+    expect(r.examined, 'the fixture must be examined').toBeGreaterThan(0);
+    if (kind === 'broken') {
+      // Each kind of defect fires on its own element, not merely "something fired".
+      const kinds: [string, RegExp][] = [
+        ['heading cap', /is [\d.]+px, over the \w+ cap/],
+        ['heading lines', /wraps to \d+ lines/],
+        ['75ch measure', /ch wide \(75 max\)/],
+        ['paragraph lines', /runs \d+ lines \(\d max/],
+        ['heading measure', /^city-narrow-measure .*heading measure too narrow for its box/],
+        // Answer board q06 (2026-09-29): a layout column that stacks the H2 to three lines is a
+        // defect too; the takeaways' 5fr head column is no longer excused.
+        ['heading column', /^city-narrow-column .*H2 .*wraps to 3 lines.*heading column too narrow for its box/],
+      ];
+      // Section height is judged at a phone width and from 1280 only (the ruling's two caps).
+      if (viewport < 768 || viewport >= 1280) kinds.push(['section height', /the section is \d+px tall/]);
+      for (const [what, re] of kinds) {
+        expect(r.defects.some((d) => re.test(d)), `city-type-fit did not report the ${what} defect: ${r.defects.join(' | ')}`).toBe(true);
+      }
+    }
+    else expect(r.defects, 'city-type-fit cried wolf on its known_good fixture').toEqual([]);
+  });
+}
+
+// The type check reads the tier from the section's own box at cityKit's edges (I4, M9): a 27px H2
+// in a 650px and in a 790px box is over the TABLET cap, at every viewport.
+test('city-type-fit reads the tier from the section box, at the TIER edges', async ({ page }, testInfo) => {
+  const viewport = testInfo.project.use.viewport!.width;
+  await page.setContent(readFileSync(new URL('./fixtures/city/type-fit-tier-broken.html', import.meta.url), 'utf8'));
+  const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER, caps: HEADING_CAPS });
+  for (const box of ['city-narrow', 'city-edge']) {
+    expect(r.defects.some((d) => d.startsWith(box) && /over the tablet cap of 25px/.test(d)),
+      `${box}: a 27px H2 was not judged against the tablet cap: ${r.defects.join(' | ')}`).toBe(true);
+  }
+});
+
+// The price-scale check cannot pass a page with no price scale (Task 8b, M-new-2): the edge-width
+// runs call it on every route, and an empty result there must mean "measured and clean".
+test('priceScaleSpill fails a page with no price scale', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp1280', 'run once');
+  await page.setContent('<main><p>No city section here.</p></main>');
+  const r = await priceScaleSpill(page);
+  expect(r.some((d) => /no price scale/.test(d)), r.join(' | ')).toBe(true);
+});
+
+// city-layout-follows-box cannot pass having examined nothing (I3).
+test('city-layout-follows-box fails a page it cannot examine', async ({ page }, testInfo) => {
+  const viewport = testInfo.project.use.viewport!.width;
+  await page.setContent('<main><p>No city section here.</p></main>');
+  const r = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER });
+  expect(r.defects.some((d) => /matches no section on the page/.test(d)), 'a SPEC key with no root must be reported').toBe(true);
+  if (viewport >= 768) expect(r.defects.some((d) => /examined no layout fact/.test(d)), 'zero facts at 768+ must fail').toBe(true);
+  // A desktop sheet whose print has no photo: the square fact reports the missing node, never throws.
+  await page.setContent('<section class="city-sheet" style="width:900px"><div class="city-pup">a</div><div class="city-pup">b</div><div class="city-pup">c</div></section>');
+  const r2 = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER });
+  expect(r2.defects.some((d) => /\.city-sheet .*\.city-pup img missing/.test(d)), r2.defects.join(' | ')).toBe(true);
+});
+
+// The type and layout checks at the widths between the four (I4): 660 (just past the phone/tablet
+// edge; the 656px column at 1024 sits just past it too) and 1160 (the column just under the desktop
+// edge, a full-width box well past it). Run once, in the 1280 project, on both routes.
+for (const route of ROUTES) {
+  test(`city type and layout at the tier edges on ${route}`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'vp1280', 'run once, at the edge widths it sets itself');
+    // 640 is the tablet edge itself and 667 a phone held landscape (iPhone SE), where the price
+    // scale first lays its stops on one line (the Task 8 quality review, I1).
+    for (const width of [640, 660, 667, 1160]) {
+      await page.setViewportSize({ width, height: 900 });
+      const res = await page.goto(route);
+      expect(res?.status()).toBe(200);
+      await page.evaluate(() => document.fonts.ready);
+      const fullWidthSpecimen = route === '/kit-preview/city/';
+      const t = await page.evaluate(cityTypeFit, { viewport: width, tier: TIER, caps: HEADING_CAPS, fullWidthSpecimen });
+      const l = await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER });
+      console.log(`${route} @ ${width}px: city-type-fit examined ${t.examined}, city-layout-follows-box examined ${l.examined}`);
+      expect(t.examined).toBeGreaterThan(0);
+      const scale = await priceScaleSpill(page);
+      expect([...t.defects, ...l.defects, ...scale], `${route} at ${width}px`).toEqual([]);
+    }
+  });
+}
+
+// The Task 10b review, items 3 and 4, as behaviour on the London page at a phone width.
+// 3: an iOS fling past the bottom rubber-bands scrollY above its maximum and back; the band must
+//    not read the bounce back as a scroll up. 4: a browser without :focus-visible (Safari before
+//    15.4) throws on the selector; the band's frame must not throw, and the band still tucks.
+test('the jump band ignores overscroll and survives a browser without :focus-visible', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp375', 'run once, at a phone width');
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.addInitScript(() => {
+    for (const proto of [Element.prototype, Document.prototype] as const) {
+      for (const fn of ['matches', 'querySelector', 'querySelectorAll'] as const) {
+        const orig = (proto as any)[fn];
+        if (!orig) continue;
+        (proto as any)[fn] = function (sel: string, ...rest: unknown[]) {
+          if (typeof sel === 'string' && sel.includes(':focus-visible')) throw new SyntaxError(`'${sel}' is not a valid selector`);
+          return orig.call(this, sel, ...rest);
+        };
+      }
+    }
+  });
+  const res = await page.goto('/uk-locations/blue-staffy-puppies-london/');
+  expect(res?.status()).toBe(200);
+  const tucked = () => page.evaluate(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked'));
+  const frames = () => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
+  // Scroll to the very bottom: the band tucks (and nothing throws on the missing selector).
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForFunction(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked'), null, { timeout: 10_000, polling: 'raf' }).catch(() => {});
+  expect(await tucked(), 'scrolling to the bottom tucks the band').toBe(true);
+  // The rubber band: scrollY reads 120px past the maximum, then settles back on it.
+  await page.evaluate(() => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => max + 120 });
+    window.dispatchEvent(new Event('scroll'));
+  });
+  await frames();
+  await page.evaluate(() => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => max });
+    window.dispatchEvent(new Event('scroll'));
+  });
+  await frames();
+  expect(await tucked(), 'the overscroll bounce brought the band back').toBe(true);
+  expect(errors, 'the band threw on a browser without :focus-visible').toEqual([]);
+});
+
+// The Task 10b re-review, item 5: the :focus-visible guard itself. With a focus INSIDE the band
+// the hold reads `activeElement.matches(':focus-visible')`, which throws before Safari 15.4. The
+// try must swallow it: no page error, and (the hold unknowable there) the band still tucks.
+test('a keyboard focus inside the band on a browser without :focus-visible throws nothing', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp375', 'run once, at a phone width');
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.addInitScript(() => {
+    for (const proto of [Element.prototype, Document.prototype] as const) {
+      for (const fn of ['matches', 'querySelector', 'querySelectorAll'] as const) {
+        const orig = (proto as any)[fn];
+        if (!orig) continue;
+        (proto as any)[fn] = function (sel: string, ...rest: unknown[]) {
+          if (typeof sel === 'string' && sel.includes(':focus-visible')) throw new SyntaxError(`'${sel}' is not a valid selector`);
+          return orig.call(this, sel, ...rest);
+        };
+      }
+    }
+  });
+  const res = await page.goto('/uk-locations/blue-staffy-puppies-london/');
+  expect(res?.status()).toBe(200);
+  // A keyboard focus on the sheet key: a key press first, so the focus is a keyboard one.
+  await page.keyboard.press('Shift');
+  await page.locator('[data-city-jump-stepper] [data-jump-open]').focus();
+  expect(await page.evaluate(() => !!document.activeElement?.closest('[data-city-jump-stepper]'))).toBe(true);
+  for (const y of [900, 1800, 2700]) {
+    await page.evaluate((v) => window.scrollTo(0, v), y);
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
+  }
+  expect(errors, 'the hold threw on a browser without :focus-visible').toEqual([]);
+  await page.waitForFunction(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked'),
+    null, { timeout: 10_000, polling: 'raf' }).catch(() => {});
+  expect(await page.evaluate(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked')),
+    'with the hold unknowable, scrolling down still tucks the band').toBe(true);
+});

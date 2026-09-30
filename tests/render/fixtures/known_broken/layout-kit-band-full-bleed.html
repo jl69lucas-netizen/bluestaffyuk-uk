@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a band hero inset by its wrapper</title>
+<!-- The Known Issue 97 review's escape: the blog-post template puts its hero in a class-less
+     `<section>` directly under `.page-body`, the side-gutter rule padded that wrapper, and the
+     kit hero band moved from x = 0, full width, to x = 24 with a white strip on each side. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .page-body > section:not(.bl-box) { padding-inline: 24px; }
+  .kit-hero { background: #1F3A52; color: #F4F1EA; min-height: 240px; }
+  .kit-hero .inner { max-width: 1200px; margin: 0 auto; padding: 24px; }
+</style>
+</head><body>
+<main>
+  <div class="page-shell"><div class="page-body">
+    <section id="top"><section class="kit-hero" data-hero-layout="bleed"><div class="inner"><h1>How to Choose</h1></div></section></section>
+    <section><h2>Body</h2><p>Prose in its gutter.</p></section>
+  </div></div>
+</main>
+</body></html>

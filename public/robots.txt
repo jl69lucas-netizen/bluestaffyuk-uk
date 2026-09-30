@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://SITE_URL_PLACEHOLDER/sitemap_index.xml

@@ -1,0 +1,239 @@
+{
+ "slug": "blue-staffy-puppies-manchester-uk",
+ "date": "2026-09-23",
+ "engine": "chatgpt",
+ "endpoint": "ai_optimization_chat_gpt_scraper",
+ "location": "United Kingdom",
+ "query": "Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?",
+ "query_source": {
+  "from": "city",
+  "gap_matrix": null,
+  "gap_topics": []
+ },
+ "stale": [],
+ "fetched": {
+  "status": "ok",
+  "fetched_on": "2026-09-23"
+ },
+ "raw": "data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json",
+ "answer_text": "summary",
+ "paid_this_run": false,
+ "bsuk_cited": false,
+ "citations": [
+  {
+   "domain": "thekennelclub.org.uk",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  }
+ ],
+ "local_businesses": [
+  {
+   "domain": "bonosue.co.uk",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "domain": "ukstaffypups.uk",
+   "registry_id": "ukstaffypups",
+   "tier": 1,
+   "platform": false
+  },
+  {
+   "domain": "trojanstaffuk.com",
+   "registry_id": "trojanstaffuk",
+   "tier": 1,
+   "platform": false
+  },
+  {
+   "domain": "futurefrenchies.uk",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "domain": "earlsgravebullterriers.com",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Best Blue Staffy Puppies For Adoption",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "The Staffordshire Bull Terrier Club",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Starcinco Bull Terriers",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy Society UK",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffordshire Bull Terrier Puppy Breeder",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  }
+ ],
+ "citation_gap": [
+  "trojanstaffuk",
+  "ukstaffypups"
+ ],
+ "risks": [],
+ "page_source": {
+  "kind": "question-file",
+  "path": "data/queries/blue-staffy-puppies-manchester-uk.json",
+  "provisional": true,
+  "note": "dist/uk-locations/blue-staffy-puppies-manchester-uk/index.html is a noindex stub; checked against the questions the page must carry (faq picks and must_answer), minus those an AI engine suggested (found_in ai_*), so the answer is not checked against itself"
+ },
+ "entities": [
+  {
+   "entity": "health tests",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "l-2-hga",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "hc-hsf4",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "meet the mother",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "microchip",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "vaccinations",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "vet check",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "kc registration",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "contract",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "the kennel club",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "kennel club health standard",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "elbow dysplasia",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "elbow screening",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "eye conditions",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "genetic diversity",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "worming",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "flea treatment",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "socialisation",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "return to breeder policy",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "deposit",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  }
+ ],
+ "format": {
+  "status": "NOT FETCHED",
+  "reason": "the saved response holds a summary of the answer, not its text"
+ },
+ "llm_mentions": {
+  "status": "NOT FETCHED",
+  "reason": "llm_mentions only once BSUK's domain is live (project 6)"
+ },
+ "extra": "the kennel club|kennel club;kennel club health standard;elbow dysplasia;elbow screening;eye conditions;genetic diversity;worming;flea treatment;socialisation;return to breeder policy;deposit"
+}

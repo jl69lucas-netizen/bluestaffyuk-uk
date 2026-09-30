@@ -1,0 +1,398 @@
+=== RUN 1 ===
+
+> bsuk@0.1.0 extract
+> python3 scripts/extract_wp.py
+
+extracted 40 pages (28 locations); 17 stub page(s) noindexed
+
+> bsuk@0.1.0 redirects
+> python3 scripts/build_redirects.py
+
+wrote 18 redirects
+
+> bsuk@0.1.0 llms
+> python3 scripts/build_llms_txt.py
+
+wrote /Users/apple/Downloads/BSUK/public/llms.txt (3363 bytes)
+index: page-sitemap.xml, post-sitemap.xml, location-sitemap.xml, puppy-sitemap.xml, video-sitemap.xml
+
+> bsuk@0.1.0 check:all
+> npm run check:parity && npm run check:redirects && npm run check:schema && npm run check:sitemaps && npm run check:placeholders
+
+
+> bsuk@0.1.0 check:parity
+> python3 scripts/migration_parity.py
+
+# Migration parity
+
+Built pages measured against what the extractor promised. `raw` is the old
+`.entry-content` before the extractor's deliberate removals (dead WordPress forms,
+the four sold pups' cards); `expected` is the same page after them; `built` is what
+`article.prose-migrated` renders. Note that `raw` is itself measured after site
+chrome and dead forms are stripped, so it slightly understates the WordPress body.
+The gate compares expected → built with a 2% whitespace band; headings must match
+exactly, embeds must never decrease, a built page missing its article scope fails,
+and expected must keep at least 60% of raw's words.
+
+| URL | words raw→expected→built | headings exp→built | images exp→built | embeds exp→built | cards removed | result |
+| --- | --- | --- | --- | --- | --- | --- |
+| /blue-staffy-blog-guides/ | 0→0→142 | 0→3 | 0→0 | 0→0 | 0 | PASS (archive) |
+| /blue-staffy-health-uk/ | 3510→3165→3165 | 62→62 | 8→8 | 0→0 | 4 | PASS |
+| /blue-staffy-pup-sale-uk/ | 1133→788→788 | 18→18 | 5→5 | 0→0 | 4 | PASS |
+| /blue-staffy-uk-breeders/ | 2316→1780→1780 | 27→27 | 7→7 | 1→1 | 4 | PASS |
+| /buy-blue-staffy-puppies-uk/ | 2488→2254→2254 | 27→27 | 7→7 | 1→1 | 5 | PASS |
+| /buy-staffy-puppies-for-sale-uk/ | 4706→4706→4706 | 50→50 | 13→13 | 1→1 | 0 | PASS |
+| / | 3369→3112→3112 | 59→59 | 14→14 | 2→2 | 4 | PASS |
+| /privacy-policy-uk/ | 1015→1015→1015 | 23→23 | 3→3 | 0→0 | 0 | PASS |
+| /thank-you-blue-staffy-puppies-journey/ | 422→422→422 | 5→5 | 1→1 | 0→0 | 0 | PASS |
+| /uk-blue-staffy-breeders-contact/ | 397→397→397 | 6→6 | 1→1 | 0→0 | 0 | PASS |
+| /uk-blue-staffy-puppy-buying-guide/ | 6117→6117→6117 | 68→68 | 17→17 | 1→1 | 0 | PASS |
+| /uk-locations/blue-staffies-newcastle-under-lyme/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-aberdeen/ | 476→443→443 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-birmingham/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-bristol-uk/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-dundee/ | 463→430→430 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-edinburgh/ | 485→452→452 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-for-sale-in-leicester/ | 7→7→7 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-for-sale-leeds/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-hull/ | 470→437→437 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-inverness/ | 469→436→436 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-london/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-manchester-uk/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-middlesbrough/ | 449→416→416 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-oxford/ | 473→440→440 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-south-yorkshire/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-sunderland/ | 464→431→431 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-uk/ | 2112→1767→1767 | 29→29 | 11→11 | 0→0 | 4 | PASS |
+| /uk-locations/blue-staffy-puppies-york/ | 474→441→441 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/buy-blue-staffy-puppy-coventry-area/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-breeding-dogs-glasgow/ | 1853→1508→1508 | 19→19 | 4→4 | 1→1 | 4 | PASS |
+| /uk-locations/staffy-puppies-cardiff-wales/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-cornwall/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-essex/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-glasgow/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-liverpool/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-nottingham/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-wolverhampton/ | 3→3→3 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/uk-staffordshire-bull-terrier-breeder/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-staffordshire-bull-terrier-guide/ | 4975→4630→4630 | 72→72 | 10→10 | 1→1 | 4 | PASS |
+
+examined 40 pages, 0 failing
+
+examined 40 pages, 0 failing
+
+> bsuk@0.1.0 check:redirects
+> python3 scripts/redirect_check.py
+
+# Redirects and internal links
+
+Every concrete redirect must reach a live page in exactly one hop; wildcard and
+placeholder rules have only their target checked. Every root-relative reference in
+every built page must resolve; one that resolves only *through* a redirect is
+reported as a warning, since Foundation keeps two legacy in-body links verbatim and
+the fix belongs in the extractor's rewrite map, not in generated HTML. WordPress
+leftovers fail outright; `SITE_URL_PLACEHOLDER` is counted only, as it is expected
+until the launch domain is set.
+
+## Problems
+
+None.
+
+
+## Redirected references (warning)
+
+None.
+
+SITE_URL_PLACEHOLDER occurrences: 545 (expected until launch)
+
+examined 18 redirects, 1964 internal refs (distinct per page); 0 redirected refs; 0 problems
+
+examined 18 redirects, 1964 internal refs (distinct per page); 0 redirected refs; 0 problems
+
+> bsuk@0.1.0 check:schema
+> python3 scripts/schema_check.py
+
+# Structured data
+
+Every `application/ld+json` block in every built page. Blocking: a block that does
+not parse, a `telephone` still holding PHONE_PLACEHOLDER, `InStock` on anything but
+an available puppy's page, an `@id` reference no node on the page defines, a Product
+with no `offers`, and an Offer stating price without priceCurrency (or the reverse).
+An Offer stating neither is a bare availability statement and is left alone.
+Advisory: duplicate sitewide nodes, empty `url`, a WebPage with no `name`, and the
+InStock URL quoted outside any Offer node.
+
+## Blocking
+
+None.
+
+
+## Advisory
+
+None.
+
+
+examined 49 pages; 0 blocking, 0 advisory
+
+examined 49 pages; 0 blocking, 0 advisory
+
+> bsuk@0.1.0 check:sitemaps
+> python3 scripts/sitemap_check.py
+
+WARNING: SITE_URL not set — auditing against https://SITE_URL_PLACEHOLDER
+# Sitemaps
+
+Every indexable built page appears in exactly one URL shard; `video-sitemap.xml` is
+supplementary and excluded from that count. Every `<loc>` must be a built page (or a
+served asset) that is not `noindex`, must start with the site base, and must not
+repeat within its shard. The index must list every shard in dist/ and nothing else,
+and robots.txt must point at exactly `<base>/sitemap_index.xml`.
+
+## Problems
+
+None.
+
+
+## Shards
+
+| shard | urls |
+| --- | --- |
+| location-sitemap.xml | 11 |
+| page-sitemap.xml | 13 |
+| post-sitemap.xml | 1 |
+| puppy-sitemap.xml | 6 |
+| video-sitemap.xml | 4 |
+
+31 of 49 built pages are indexable; each must appear in exactly one URL shard.
+
+examined 49 built pages, 5 shards, 35 sitemap urls; 0 problems
+
+examined 49 built pages, 5 shards, 35 sitemap urls; 0 problems
+
+> bsuk@0.1.0 check:placeholders
+> python3 scripts/placeholder_check.py
+
+# Placeholders (pre-launch build)
+  SITE_URL_PLACEHOLDER       586 occurrence(s) in 56 file(s)
+  PHONE_PLACEHOLDER            0 occurrence(s) in 0 file(s)
+  FORMSPREE_ID_PLACEHOLDER     0 occurrence(s) in 0 file(s)
+  TOTAL                      586
+placeholders: 586 (advisory — set BSUK_RELEASE=1 to make this blocking)
+
+> bsuk@0.1.0 test:py
+> python3 -m pytest tests/py -q
+
+........................................................................ [ 41%]
+........................................................................ [ 83%]
+.............................                                            [100%]
+=============================== warnings summary ===============================
+tests/py/test_extract_blog.py: 38 warnings
+tests/py/test_extract_core.py: 6 warnings
+tests/py/test_extract_writers.py: 43 warnings
+tests/py/test_images.py: 8 warnings
+tests/py/test_old_pups.py: 32 warnings
+tests/py/test_parity.py: 19 warnings
+  /Users/apple/Library/Python/3.9/lib/python/site-packages/bs4/builder/_lxml.py:124: DeprecationWarning: The 'strip_cdata' option of HTMLParser() has never done anything and will eventually be removed.
+    parser = parser(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+173 passed, 146 warnings in 50.13s
+=== RUN 2 ===
+
+> bsuk@0.1.0 extract
+> python3 scripts/extract_wp.py
+
+extracted 40 pages (28 locations); 17 stub page(s) noindexed
+
+> bsuk@0.1.0 redirects
+> python3 scripts/build_redirects.py
+
+wrote 18 redirects
+
+> bsuk@0.1.0 llms
+> python3 scripts/build_llms_txt.py
+
+wrote /Users/apple/Downloads/BSUK/public/llms.txt (3363 bytes)
+index: page-sitemap.xml, post-sitemap.xml, location-sitemap.xml, puppy-sitemap.xml, video-sitemap.xml
+
+> bsuk@0.1.0 check:all
+> npm run check:parity && npm run check:redirects && npm run check:schema && npm run check:sitemaps && npm run check:placeholders
+
+
+> bsuk@0.1.0 check:parity
+> python3 scripts/migration_parity.py
+
+# Migration parity
+
+Built pages measured against what the extractor promised. `raw` is the old
+`.entry-content` before the extractor's deliberate removals (dead WordPress forms,
+the four sold pups' cards); `expected` is the same page after them; `built` is what
+`article.prose-migrated` renders. Note that `raw` is itself measured after site
+chrome and dead forms are stripped, so it slightly understates the WordPress body.
+The gate compares expected → built with a 2% whitespace band; headings must match
+exactly, embeds must never decrease, a built page missing its article scope fails,
+and expected must keep at least 60% of raw's words.
+
+| URL | words raw→expected→built | headings exp→built | images exp→built | embeds exp→built | cards removed | result |
+| --- | --- | --- | --- | --- | --- | --- |
+| /blue-staffy-blog-guides/ | 0→0→142 | 0→3 | 0→0 | 0→0 | 0 | PASS (archive) |
+| /blue-staffy-health-uk/ | 3510→3165→3165 | 62→62 | 8→8 | 0→0 | 4 | PASS |
+| /blue-staffy-pup-sale-uk/ | 1133→788→788 | 18→18 | 5→5 | 0→0 | 4 | PASS |
+| /blue-staffy-uk-breeders/ | 2316→1780→1780 | 27→27 | 7→7 | 1→1 | 4 | PASS |
+| /buy-blue-staffy-puppies-uk/ | 2488→2254→2254 | 27→27 | 7→7 | 1→1 | 5 | PASS |
+| /buy-staffy-puppies-for-sale-uk/ | 4706→4706→4706 | 50→50 | 13→13 | 1→1 | 0 | PASS |
+| / | 3369→3112→3112 | 59→59 | 14→14 | 2→2 | 4 | PASS |
+| /privacy-policy-uk/ | 1015→1015→1015 | 23→23 | 3→3 | 0→0 | 0 | PASS |
+| /thank-you-blue-staffy-puppies-journey/ | 422→422→422 | 5→5 | 1→1 | 0→0 | 0 | PASS |
+| /uk-blue-staffy-breeders-contact/ | 397→397→397 | 6→6 | 1→1 | 0→0 | 0 | PASS |
+| /uk-blue-staffy-puppy-buying-guide/ | 6117→6117→6117 | 68→68 | 17→17 | 1→1 | 0 | PASS |
+| /uk-locations/blue-staffies-newcastle-under-lyme/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-aberdeen/ | 476→443→443 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-birmingham/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-bristol-uk/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-dundee/ | 463→430→430 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-edinburgh/ | 485→452→452 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-for-sale-in-leicester/ | 7→7→7 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-for-sale-leeds/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-hull/ | 470→437→437 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-inverness/ | 469→436→436 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-london/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-manchester-uk/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-middlesbrough/ | 449→416→416 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-oxford/ | 473→440→440 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-south-yorkshire/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-sunderland/ | 464→431→431 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-uk/ | 2112→1767→1767 | 29→29 | 11→11 | 0→0 | 4 | PASS |
+| /uk-locations/blue-staffy-puppies-york/ | 474→441→441 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/buy-blue-staffy-puppy-coventry-area/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-breeding-dogs-glasgow/ | 1853→1508→1508 | 19→19 | 4→4 | 1→1 | 4 | PASS |
+| /uk-locations/staffy-puppies-cardiff-wales/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-cornwall/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-essex/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-glasgow/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-liverpool/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-nottingham/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-wolverhampton/ | 3→3→3 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/uk-staffordshire-bull-terrier-breeder/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-staffordshire-bull-terrier-guide/ | 4975→4630→4630 | 72→72 | 10→10 | 1→1 | 4 | PASS |
+
+examined 40 pages, 0 failing
+
+examined 40 pages, 0 failing
+
+> bsuk@0.1.0 check:redirects
+> python3 scripts/redirect_check.py
+
+# Redirects and internal links
+
+Every concrete redirect must reach a live page in exactly one hop; wildcard and
+placeholder rules have only their target checked. Every root-relative reference in
+every built page must resolve; one that resolves only *through* a redirect is
+reported as a warning, since Foundation keeps two legacy in-body links verbatim and
+the fix belongs in the extractor's rewrite map, not in generated HTML. WordPress
+leftovers fail outright; `SITE_URL_PLACEHOLDER` is counted only, as it is expected
+until the launch domain is set.
+
+## Problems
+
+None.
+
+
+## Redirected references (warning)
+
+None.
+
+SITE_URL_PLACEHOLDER occurrences: 545 (expected until launch)
+
+examined 18 redirects, 1964 internal refs (distinct per page); 0 redirected refs; 0 problems
+
+examined 18 redirects, 1964 internal refs (distinct per page); 0 redirected refs; 0 problems
+
+> bsuk@0.1.0 check:schema
+> python3 scripts/schema_check.py
+
+# Structured data
+
+Every `application/ld+json` block in every built page. Blocking: a block that does
+not parse, a `telephone` still holding PHONE_PLACEHOLDER, `InStock` on anything but
+an available puppy's page, an `@id` reference no node on the page defines, a Product
+with no `offers`, and an Offer stating price without priceCurrency (or the reverse).
+An Offer stating neither is a bare availability statement and is left alone.
+Advisory: duplicate sitewide nodes, empty `url`, a WebPage with no `name`, and the
+InStock URL quoted outside any Offer node.
+
+## Blocking
+
+None.
+
+
+## Advisory
+
+None.
+
+
+examined 49 pages; 0 blocking, 0 advisory
+
+examined 49 pages; 0 blocking, 0 advisory
+
+> bsuk@0.1.0 check:sitemaps
+> python3 scripts/sitemap_check.py
+
+WARNING: SITE_URL not set — auditing against https://SITE_URL_PLACEHOLDER
+# Sitemaps
+
+Every indexable built page appears in exactly one URL shard; `video-sitemap.xml` is
+supplementary and excluded from that count. Every `<loc>` must be a built page (or a
+served asset) that is not `noindex`, must start with the site base, and must not
+repeat within its shard. The index must list every shard in dist/ and nothing else,
+and robots.txt must point at exactly `<base>/sitemap_index.xml`.
+
+## Problems
+
+None.
+
+
+## Shards
+
+| shard | urls |
+| --- | --- |
+| location-sitemap.xml | 11 |
+| page-sitemap.xml | 13 |
+| post-sitemap.xml | 1 |
+| puppy-sitemap.xml | 6 |
+| video-sitemap.xml | 4 |
+
+31 of 49 built pages are indexable; each must appear in exactly one URL shard.
+
+examined 49 built pages, 5 shards, 35 sitemap urls; 0 problems
+
+examined 49 built pages, 5 shards, 35 sitemap urls; 0 problems
+
+> bsuk@0.1.0 check:placeholders
+> python3 scripts/placeholder_check.py
+
+# Placeholders (pre-launch build)
+  SITE_URL_PLACEHOLDER       586 occurrence(s) in 56 file(s)
+  PHONE_PLACEHOLDER            0 occurrence(s) in 0 file(s)
+  FORMSPREE_ID_PLACEHOLDER     0 occurrence(s) in 0 file(s)
+  TOTAL                      586
+placeholders: 586 (advisory — set BSUK_RELEASE=1 to make this blocking)
+
+> bsuk@0.1.0 test:py
+> python3 -m pytest tests/py -q
+
+........................................................................ [ 41%]
+........................................................................ [ 83%]
+.............................                                            [100%]
+=============================== warnings summary ===============================
+tests/py/test_extract_blog.py: 38 warnings
+tests/py/test_extract_core.py: 6 warnings
+tests/py/test_extract_writers.py: 43 warnings
+tests/py/test_images.py: 8 warnings
+tests/py/test_old_pups.py: 32 warnings
+tests/py/test_parity.py: 19 warnings
+  /Users/apple/Library/Python/3.9/lib/python/site-packages/bs4/builder/_lxml.py:124: DeprecationWarning: The 'strip_cdata' option of HTMLParser() has never done anything and will eventually be removed.
+    parser = parser(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+173 passed, 146 warnings in 50.19s

@@ -1,0 +1,215 @@
+<title>London Component Design Pass</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.md blockquote{border-left:3px solid var(--blue);margin:10px 0;padding:2px 0 2px 14px;color:var(--ink-2)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK · project 5, step 0</p><h1 class="title">How will London&#x27;s components be designed and picked?</h1></div>
+<div class="meta"><span class="pill">2026-09-27</span> <span class="pill">design spec</span><br>docs/superpowers/specs/2026-09-27-london-component-design-pass-design.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy the whole document as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Summary">
+**Date:** 2026-09-27 · **Status:** approved in brainstorming (four sections, each confirmed by the
+user) · **Branch:** `london-components` (worktree `/Users/apple/Downloads/BSUK-london`, cut from
+`foundation` at `5b41cd5`) · **Project:** project 5, step 0 for the London page.
+</script>
+<script type="text/markdown" data-title="Why">
+The user's answer-board decision q01 (c) (`docs/reference/answer-board/answers/2026-09-26-project-5-decisions-before-the-first-city-page-2026-09-27.md`)
+puts a component design pass before any city page. The hero pool is exhausted: the six page
+families' 18 hero and 18 counter styles are all taken by the 12 built pages, and the city pages map
+to the `interior-guide` family, whose three heroes the guides own (Known Issue 60). The city pages
+also still render the migrated body on `BaseLayout`, with no kit components (Known Issue 87).
+
+The user's definition of done for a page starts here: 3 variants of each component → research →
+component picks → fan-out → build → all gates → Claude verifies → the user approves or fails the
+page.
+</script>
+<script type="text/markdown" data-title="Decisions (from the brainstorm)">
+| # | Question | Decision |
+|---|---|---|
+| 1 | Scope | **London only.** Each later city gets its own pass, page by page, checked against every earlier city's picks. |
+| 2 | Where picks happen | **A London component canvas** (a private Artifact), separate from the page board. The London board later shows only the picks, with real copy. |
+| 3 | Which components | **All 15 on the city page** (list below). The site header and footer stay site-wide. |
+| 4 | How variants are built | **Canvas mockups on the real tokens first; only the 15 picks are built into the kit.** The 30 unpicked variants join a city design pool. |
+</script>
+<script type="text/markdown" data-title="The 15 components">
+The city page's spine (`.claude/skills/bsuk-location-page-builder/SKILL.md` Step 2) plus the
+navigation the user named:
+
+1. Hero (image first on phones)
+2. Counter strip
+3. Trust strip
+4. Contents list (`PageNav`)
+5. Desktop dial (`PageDial`)
+6. Mobile sticky jump links (`SectionStrip`, with `SectionSheet`)
+7. Key takeaways
+8. Puppy cards (the six available puppies)
+9. Tables (stack on phones)
+10. Video
+11. Image + text section
+12. Reviews (city pages use a single review per slot)
+13. FAQ blocks (three blocks, 15–20 questions)
+14. Newsletter
+15. Contact form
+
+The dial and jump links were pruned to one arrangement on 2026-09-19. This pass reopens them to
+three variants, at the user's request.
+</script>
+<script type="text/markdown" data-title="1. Inputs and design rules">
+**Reference capture.** Playwright takes full-page screenshots of the four reference pages in
+`docs/research/2026-09-27-location-component-design-sources.md` (the MFS homepage and three
+sister-site pages) at 1280 and 375 widths. Each page is also cut section by section into
+per-component crops. With the 20 PNGs in `/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS`
+and the 42 in `/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas`, these form a
+per-component ideas index, kept outside the repo. The repo keeps only a summary: what idea each
+variant took, from where.
+
+**Must differ from.** For each component, a list of what the 12 built pages use: their approved
+picks and the existing S1–S3 styles in `src/lib/boardStyles.ts`. Each new variant differs from
+everything on that list, and from its two siblings, on at least two structural axes (layout,
+media position, density, framing). A colour change alone never counts.
+
+**Rules every variant meets.**
+- BSUK design tokens only (`src/styles/tokens.css`: steel, brass, bone, the two fonts, the fixed type scale, spacing, radius, shadow and motion).
+- The hero image comes first on phones.
+- Tables stack on phones (`data-label` cells).
+- Bleeds, letterboxes and backgrounds use design-system colours, never grey or black.
+- Every heading is a buyer question, followed by a conversational opening paragraph that answers it.
+- Accessible: contrast, focus states and tap targets.
+- Light and fast: CSS-first motion, no heavy scripts.
+- `rules/design.md` holds, and the files the `design-context-read-first` rule names are read first.
+
+**How each variant is made.** frontend-design proposes three directions per component from its
+references. impeccable then critiques and hardens every variant before it reaches the canvas.
+Placeholder copy is London-flavoured, so the design is judged in context. The real copy comes
+from the research after the picks.
+</script>
+<script type="text/markdown" data-title="2. The London component canvas">
+- **Page:** one private Artifact. Fifteen sections in city-page order, each with variants A, B and C and a one-line name for each.
+- **Previews:** each variant renders in a true-width frame at 1280, 768 or 375 (per section, or all at once). Phone is the default view.
+- **Newness note:** each variant has a note saying how it differs from what the built pages use.
+- **Phone layout:** on a phone, the canvas stacks the variants.
+- **Picking:** each component takes one pick (A, B, C, or "none — redesign") and a note. A general notes box sits at the end.
+- **Storage:** picks are stored in the canvas's own shared database, so the user can leave and come back and Claude reads them directly.
+- **Sending:** a "Send picks to Claude" control tells Claude the picks are done. If the notification does not arrive, the user says "read my picks".
+- **Redesign:** "none — redesign" produces three fresh variants of that component only, on the same canvas, with the note as the brief.
+- **Freeze:** when every component has a pick, the picks are saved in the repo (`data/design/city-picks/blue-staffy-puppies-london.json`) and the canvas is marked final. The London page board and the uniqueness gate read that file.
+</script>
+<script type="text/markdown" data-title="3. Building the picks">
+1. **Components.** The 15 picks become real Astro kit components, or variants of existing ones: new style entries in `src/lib/boardStyles.ts`, plus props or CSS.
+   - Each is registered in `src/components/kit/_registry.ts` with its fixture in `src/pages/kit-preview/` and its tests (the kit conventions, including `tests/py/test_design_components.py`).
+   - Nothing is copied from a sibling page.
+2. **The shell.** London gets its own `.astro` file, `src/pages/uk-locations/blue-staffy-puppies-london.astro`, on `PageShell`.
+   - That brings the dial, jump links, contents list and footer-CTA wiring.
+   - The other 27 cities stay on `src/pages/uk-locations/[slug].astro` until their own passes. The dynamic route must then not also build London's path.
+   - The page file built in this pass is a scaffold with the picked components and placeholder copy, kept out of the sitemap (`noindex`) until London's page run writes its real copy.
+3. **Mobile hero fix.** In `src/components/kit/Hero.astro`, the split, bleed and mosaic layouts put the copy above the photo on phones (`.pic { order: 2 }` has no mobile override).
+   - Every layout will paint the photo first below 900px.
+   - A new blocking render check, `layout-hero-image-first-mobile`, measures it on every page.
+   - The 12 built pages are re-checked. Any hero whose phone view changes is shown to the user.
+4. **A city pool in the uniqueness rule.**
+   - City pages get their own family in the rule-16 gate (`scripts/pageboard.py` `rule16_findings`) and in `src/lib/boardStyles.ts`. This closes Known Issue 60.
+   - The gate refuses a city pick that matches any earlier city's pick or any built page's pick, for all 15 components, not only hero and counter.
+   - London's approved picks are the first entries.
+   - The 30 unpicked variants are recorded in `data/design/city-pool.json` as available to later cities, each still subject to the same check.
+5. **Gates.**
+   - `npm run -s build`, `npm run -s check:all` and the render suites all pass, twice.
+   - The impeccable and frontend-design passes are recorded.
+   - `superpowers:verification-before-completion` runs.
+   - The user sees each built component beside its canvas version and confirms the match.
+</script>
+<script type="text/markdown" data-title="4. Order, scope and done">
+**Order**
+1. Capture the references and build the ideas index.
+2. Write the must-differ list.
+3. Design the 45 variants, then harden them (frontend-design, then impeccable).
+4. Publish the canvas. The user picks, and any redesign goes round again.
+5. Build the 15 picks, the mobile hero fix and the city pool.
+6. Run the gates, then the user confirms the side-by-side.
+
+**Next:** London's page run (`docs/reference/page-run.md`), with the picks in its board.
+
+**Out of scope**
+- London's copy, research and SEO.
+- The other 27 cities.
+- The site header and footer.
+- Any change to the 12 built pages, except the mobile hero-first fix.
+
+**Workflow**
+- Subagent-driven, with Opus implementers and a spec review then a quality review per task.
+- Artifacts for the canvas and the reports.
+- Commits carry the Fable 5.1 trailer. Nothing is pushed.
+- Merge into `foundation` only when the user says so.
+
+**Done means**
+- All 15 picks are approved on the canvas and saved in the repo.
+- They are built, with every gate passing twice.
+- impeccable, frontend-design and verification-before-completion are recorded.
+- The user has confirmed the side-by-side comparison.
+</script>
+<script type="text/markdown" data-title="Risks">
+- **Canvas weight.** 45 variants × 3 widths is a heavy page. Frames load lazily, one section at a time, and the phone view is the default.
+- **Mockup-to-kit drift.** The mockups use the kit's tokens and class conventions. The side-by-side confirmation catches any drift before the pass is done.
+- **The mobile hero fix changes built pages.** It is limited to phone widths, it is shown to the user, and the fix's render check proves it.
+- **Reference copying.** Variants take ideas, not markup. The ideas summary records the source of each idea, and no sister-site text or image is used.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'').replace(/<\\\/(script)/gi,'</$1');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy("# BlueStaffyUK \u2014 London component design pass\n\n"+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

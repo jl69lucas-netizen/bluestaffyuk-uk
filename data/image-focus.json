@@ -1,0 +1,30 @@
+{
+ "_comment": "Where the faces are in every photograph the city components paint (the London component design pass, Plan 2; learning loop 2026-09-27 shortlist item 2). `faces` are the boxes that must stay whole in any crop, as [x, y, w, h] in the MASTER's own pixels (`w` x `h`), recorded once per file by eye and approved with the pass. src/lib/imageFocus.ts derives each photo's crop (object-position) from the centre of its faces, and tests/render/checks/img.ts img-face-visible measures, on the painted page, that at least 90% of every face is painted and that no overlay covers more than 10% of one. A puppy photo carries its `scene` (what the photo shows, for the fuller alt src/lib/imageFocus.ts puppyAlt() writes where a component needs one that differs from the short one). A served file (/images/) also carries its served alt, word for word (working rule 11; tests/py/test_city_kit.py holds it to scripts/check_city_canvas.py served_alts()) and the width siblings baked beside it.",
+ "images": {
+  "Roman1.jpg": {"src": "puppies", "scene": "lying in long grass, looking up at the camera", "w": 1080, "h": 1081, "faces": [[235, 125, 345, 430]]},
+  "Roman2.jpg": {"src": "puppies", "scene": "lying on the grass", "w": 1080, "h": 1081, "faces": [[130, 290, 410, 410]]},
+  "Byrd1.jpg": {"src": "puppies", "scene": "standing on garden decking", "w": 1080, "h": 1080, "faces": [[380, 270, 330, 300]]},
+  "Ince1.jpg": {"src": "puppies", "scene": "standing on a paved patio", "w": 1080, "h": 1079, "faces": [[590, 300, 220, 230]]},
+  "Vennie.jpeg": {"src": "puppies", "scene": "curled up on a sheepskin rug", "w": 1080, "h": 1080, "faces": [[300, 470, 360, 350]]},
+  "Christa.jpeg": {"src": "puppies", "scene": "sitting up on a sheepskin rug", "w": 1080, "h": 1080, "faces": [[420, 190, 310, 320]]},
+  "Cheryl1.jpeg": {"src": "puppies", "scene": "lying on a wooden floor", "w": 1080, "h": 1350, "faces": [[330, 480, 230, 250]]},
+  "maggie-blue-staffy-dam-with-pups.webp": {"src": "images", "w": 780, "h": 585, "widths": [400, 760],
+   "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+   "faces": [[525, 50, 190, 170]]},
+  "ethical-staffy-puppy-london-delivery.webp": {"src": "images", "w": 540, "h": 664, "widths": [400],
+   "alt": "An ethical blue Staffy puppy, delivered professionally by BlueStaffyUK, happily with its new owners Mark and Emma P. in London.",
+   "faces": [[150, 125, 100, 140], [225, 200, 100, 85]]},
+  "jones-magnificent-blue-staffy-sire.webp": {"src": "images", "w": 780, "h": 780, "widths": [760],
+   "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.",
+   "faces": [[420, 225, 190, 180]]},
+  "jones-strong-staffy-sire-temperament.webp": {"src": "images", "w": 663, "h": 660, "widths": [400],
+   "alt": "Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament.",
+   "faces": [[280, 140, 150, 140]]},
+  "blue-staffy-testimonial-london-happy-owner.webp": {"src": "images", "w": 400, "h": 437, "widths": [],
+   "alt": "Happy Blue Staffy puppy owner from London sharing a testimonial",
+   "faces": [[40, 100, 190, 190], [185, 140, 200, 170]]},
+  "mark-blue-staffy-london.webp": {"src": "images", "w": 319, "h": 213, "widths": [],
+   "alt": "Mark with their healthy blue Staffy puppy from BlueStaffyUK.uk in London.",
+   "faces": [[80, 30, 135, 145]]}
+ }
+}

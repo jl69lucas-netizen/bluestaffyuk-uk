@@ -1,0 +1,264 @@
+---
+// src/components/kit/ContactFormKit.astro — the enquiry form (spec §5 #10). Picked
+// 2026-09-18: the stepped layout — three numbered fieldsets, about you / which puppy /
+// your message. It replaces src/components/ContactForm.astro in project 4 over the SAME
+// field contract: the same six named controls, the same honeypot, the same two hidden
+// fields and the same endpoint.
+//
+// THE CONTRACT IS NOT A LAYOUT CHOICE. scripts/form_contract_audit.py and
+// tests/render/checks/form.ts both read the built page for name/email/phone/location/puppy/
+// message, the _gotcha honeypot, hidden _next and _subject, method POST and the one
+// Formspree endpoint. A layout that dropped a field to look tidier would ship a form that
+// loses an enquiry.
+//
+// THE ENDPOINT IS NEVER A LITERAL. It is built in src/lib/formEndpoint.ts (shared with the
+// city newsletter) exactly the way ContactForm.astro builds it — from PUBLIC_FORMSPREE_ID, with a local '#contact' stub when the id is unset —
+// so a dev build has no live endpoint and no id is ever committed. `data-live` carries the
+// same fact to the client script project 4 wires up. There is no `action` override prop any
+// more: it existed so the design canvas's five specimens posted nowhere, and it went with
+// the canvas.
+//
+// THE PUPPY OPTIONS ARE DATA (rule 9): data/puppies.json, the available rows, plus the
+// waiting-list choice. A hard-coded pup would go stale the day one is reserved.
+//
+// Conventions: 4 (HTMLAttributes + ...rest + class:list), 6 (@layer components), 2 (the
+// focus ring reads --kit-ring).
+import type { HTMLAttributes } from 'astro/types';
+import puppiesJson from '../../../data/puppies.json';
+import { abs, type PuppyRow } from '../../lib/site';
+import { formEndpoint } from '../../lib/formEndpoint';
+import Button from './Button.astro';
+
+// THE ID PREFIX IS A PROP because the board preview renders this form three times on one
+// document, once per style, and a `for`/`id` pair that repeats points every label at the
+// first form's field. A page mounts ONE form and never passes it.
+//
+// `layout` (the London component design pass, Plan 2): `stepped` is the picked site form —
+// three numbered fieldsets under its own heading — and every built page gets it unchanged.
+// `grid` is the city contact line-up's form (contact-form B): the SAME controls, honeypot,
+// hidden fields, method and endpoint, laid flat on the band three to a row, with no heading of
+// its own (the section's H2 names it, through `labelledBy`) and an error line per required
+// field, tied to its control with `aria-describedby` and `aria-invalid` (plan2-notes, Task 9) by
+// CityContactLineup's script — kept there, so the pages that mount the stepped form ship no
+// new script. The grid layout is drawn for a steel band: its text and links read on-inverse.
+type Props = HTMLAttributes<'form'> & {
+  idPrefix?: string;
+  layout?: 'stepped' | 'grid';
+  /** The id of the heading that names a `grid` form (its section's H2). */
+  labelledBy?: string;
+};
+const { idPrefix = 'kit-contact-form', layout = 'stepped', labelledBy, class: cls, ...rest } = Astro.props;
+const grid = layout === 'grid';
+const { action, live } = formEndpoint();
+
+const puppies = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
+// The placeholder option is `disabled selected`, both words: HTML's default selectedness is
+// the first option that is NOT disabled, so `disabled` on its own would silently pre-select
+// the first puppy and the required check would pass on a choice nobody made.
+const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
+
+const f = idPrefix;
+const fields = [
+  { key: 'name', label: 'Your name', type: 'text', autocomplete: 'name', required: true },
+  { key: 'email', label: 'Email', type: 'email', autocomplete: 'email', required: true },
+  { key: 'phone', label: 'Phone', type: 'tel', autocomplete: 'tel', required: false },
+  { key: 'location', label: 'Town or postcode', type: 'text', autocomplete: 'address-level2', required: false },
+] as const;
+
+// The `grid` form's error lines, one per required control (shown by CSS on :user-invalid and
+// announced through aria-describedby once the script marks the control aria-invalid).
+const ERR: Record<string, string> = {
+  name: 'Please tell us your name.',
+  puppy: 'Please choose a puppy, or the next litter.',
+  message: 'Please tell us what you would like to know.',
+};
+// The email line has two: one for a field left empty, one for an address that is not whole.
+const EMAIL_ERR = { empty: 'Please give us your email address.', bad: 'That email address looks incomplete: it needs an @ and a full address.' };
+---
+{grid ? (
+<form
+  {...rest}
+  class:list={['kit-contact', cls]}
+  method="POST"
+  action={action}
+  data-form="contact"
+  data-layout="grid"
+  data-live={String(live)}
+  aria-labelledby={labelledBy}
+>
+  <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+  <input type="hidden" name="_subject" value="New Blue Staffy enquiry" />
+  <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  {fields.map((x) => (
+    <p class="field">
+      <label for={`${f}-${x.key}`}>{x.label}{' '}<span class="req">({x.required ? 'required' : 'optional'})</span></label>
+      <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} data-err={x.required ? `${f}-${x.key}-err` : undefined}
+        placeholder={x.key === 'email' ? ' ' : undefined} />
+      {x.required && (x.key === 'email'
+        ? <span class="err" id={`${f}-${x.key}-err`}><span class="e-empty">{EMAIL_ERR.empty}</span><span class="e-bad">{EMAIL_ERR.bad}</span></span>
+        : <span class="err" id={`${f}-${x.key}-err`}>{ERR[x.key]}</span>)}
+    </p>
+  ))}
+  <p class="field">
+    <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
+    <select id={`${f}-puppy`} name="puppy" required data-err={`${f}-puppy-err`}>
+      <option value="" disabled selected>Choose a puppy…</option>
+      {puppies.map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Boy' : 'Girl'} · {gbp(p.price_gbp)}</option>)}
+      <option value="waiting-list">The next litter, please</option>
+    </select>
+    <span class="err" id={`${f}-puppy-err`}>{ERR.puppy}</span>
+  </p>
+  <p class="field wide">
+    <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
+    <textarea id={`${f}-message`} name="message" rows="4" required data-err={`${f}-message-err`}></textarea>
+    <span class="err" id={`${f}-message-err`}>{ERR.message}</span>
+  </p>
+  <div class="go">
+    <Button kind="submit" type="submit" label="Send my enquiry" />
+    <p class="note">We reply by email. Your details are used only to answer your enquiry. See our <a href="/privacy-policy-uk/">privacy policy</a>.</p>
+  </div>
+</form>
+) : (
+<form
+  {...rest}
+  class:list={['kit-card', 'kit-contact', cls]}
+  method="POST"
+  action={action}
+  data-form="contact"
+  data-live={String(live)}
+  aria-labelledby={`${f}-h`}
+>
+  {/* Title Case, like every other heading on the site (rules/headings.md). It is a
+      literal rather than a `titleCase()` call because it is the component's own string and
+      not a page's approved wording — there is nothing here for a caser to normalise. */}
+  <h2 id={`${f}-h`}>Enquire About a Puppy</h2>
+
+  <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+  <input type="hidden" name="_subject" value="New Blue Staffy enquiry" />
+  <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <fieldset>
+    <legend>1 · About you</legend>
+    {fields.map((x) => (
+      <p class="field">
+        <label for={`${f}-${x.key}`}>{x.label}{x.required && <Fragment>{' '}<span class="req">(required)</span></Fragment>}</label>
+        <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} />
+      </p>
+    ))}
+  </fieldset>
+  <fieldset>
+    <legend>2 · Which puppy</legend>
+    <p class="field">
+      <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
+      <select id={`${f}-puppy`} name="puppy" required>
+        <option value="" disabled selected>Choose…</option>
+        {puppies.map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
+        <option value="waiting-list">Join the waiting list for the next litter</option>
+      </select>
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend>3 · Your message</legend>
+    <p class="field">
+      <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
+      <textarea id={`${f}-message`} name="message" rows="5" required></textarea>
+    </p>
+  </fieldset>
+
+  <Button kind="submit" type="submit" label="Send enquiry" />
+  <p class="note">We reply by email. Your details are used only to answer your enquiry. See our <a href="/privacy-policy-uk/">privacy policy</a>.</p>
+</form>
+)}
+
+<style>
+  @layer components {
+    /* The shell is .kit-card from src/styles/kit.css (convention 9): background, border,
+       radius and shadow come from there, and only the form's own box is spelled here. */
+    .kit-contact {
+      display: grid;
+      gap: var(--space-4);
+      max-width: 560px;
+      box-sizing: border-box;
+      padding: var(--space-6);
+      color: var(--color-text);
+    }
+
+    h2 { margin: 0; font-family: var(--font-display); font-size: var(--text-2xl); color: var(--color-brand); }
+
+    .field { margin: 0; display: grid; gap: 4px; min-width: 0; }
+    label { font-weight: 600; font-size: var(--text-sm); }
+    .req { font-weight: 400; font-size: var(--text-xs); color: var(--color-text-muted); }
+
+    /* width: 100% + box-sizing, as on the shipped contact page: an <input> without an
+       explicit width uses its `size` default and the document scrolls sideways at 375px. */
+    input, select, textarea {
+      width: 100%; max-width: 100%; box-sizing: border-box;
+      font: inherit; min-height: 44px; padding: 10px 12px;
+      border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+      background: var(--color-surface-raised); color: var(--color-text);
+    }
+    textarea { min-height: 96px; }
+    input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid var(--kit-ring); outline-offset: 2px;
+    }
+
+    fieldset {
+      margin: 0; padding: var(--space-4); display: grid; gap: var(--space-3);
+      border: var(--card-border); border-radius: var(--radius-md);
+    }
+    legend {
+      padding-inline: var(--space-2); font-family: var(--font-display);
+      font-weight: 600; color: var(--color-brand);
+    }
+
+    /* Off-screen rather than display:none: a honeypot a bot cannot see is a honeypot a bot
+       does not fill in. Never focusable — tabindex="-1" above. */
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
+
+    .note { margin: 0; font-size: var(--text-xs); color: var(--color-text-muted); }
+
+    /* THE GRID LAYOUT (`layout="grid"`): flat on its caller's band, no card shell, three
+       fields to a row from 1024px. Text colour comes from the band (`currentColor`), the
+       fields stay raised with ink text, and the ring reads --kit-ring (convention 2). */
+    .kit-contact[data-layout='grid'] { max-width: none; padding: var(--space-5) 0 0; gap: var(--space-3); color: inherit; border-top: 1px solid var(--color-steel-500); }
+    /* align-content: start — a field shares its grid row with a neighbour whose error line
+       has painted, and without it the label and control rows stretch into the extra height. */
+    [data-layout='grid'] .field { align-content: start; }
+    [data-layout='grid'] label { color: inherit; }
+    [data-layout='grid'] .req { color: var(--color-steel-100); font-size: var(--text-sm); }
+    [data-layout='grid'] input, [data-layout='grid'] select, [data-layout='grid'] textarea { min-height: 46px; border-color: var(--color-steel-300); }
+    [data-layout='grid'] textarea { min-height: 112px; resize: vertical; }
+    [data-layout='grid'] .err { display: none; font-size: var(--text-xs); color: var(--color-cta-soft); }
+    [data-layout='grid'] .field:has(:user-invalid) .err,
+    [data-layout='grid'] [aria-invalid='true'] + .err { display: block; }
+    /* A warn tint, not brass: brass is the focus ring's, and a field that is both focused and
+       invalid must read as two states (the Task 7b review). The grid form sits on a steel-900
+       band, where --color-warn is 2.66:1, so the band that mounts it passes its own tint in
+       --form-invalid (CityContactLineup: 5.31:1; WCAG 1.4.11 asks 3:1). */
+    [data-layout='grid'] :user-invalid { border: 2px solid var(--form-invalid, var(--color-warn)); }
+    /* An empty required email and a malformed one read differently, by CSS alone: the field's
+       placeholder is a single space, so :placeholder-shown means "nothing typed". */
+    [data-layout='grid'] .err .e-bad { display: none; }
+    [data-layout='grid'] input:not(:placeholder-shown) + .err .e-empty { display: none; }
+    [data-layout='grid'] input:not(:placeholder-shown) + .err .e-bad { display: inline; }
+    [data-layout='grid'] .go { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+    [data-layout='grid'] .note { color: inherit; font-size: var(--text-sm); }
+    /* Underlined: the site's preflight drops it, and colour alone does not tell a link apart
+       on the band (WCAG 1.4.1). */
+    [data-layout='grid'] .note a { color: var(--color-link-on-inverse); text-decoration: underline; text-underline-offset: 2px; }
+    /* The grid layout's tiers are the city band's box (CityContactLineup): tablet from 640px,
+       desktop from 800px, so the column beside a city dial reaches them (the Task 7b review). */
+    @container (width >= 640px) {
+      .kit-contact[data-layout='grid'] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-4); }
+      [data-layout='grid'] .wide, [data-layout='grid'] .go { grid-column: 1 / -1; }
+    }
+    @container (width >= 800px) {
+      .kit-contact[data-layout='grid'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+  }
+
+  /* Outside the layer on purpose: Button's `submit` kind is a full-width Tailwind utility
+     (`w-full`, in the utilities layer), which a rule inside @layer components cannot beat.
+     The grid form's submit sits beside its note, at its own width, as on the canvas. */
+  [data-layout='grid'] .go :global(.kit-btn) { width: auto; }
+</style>

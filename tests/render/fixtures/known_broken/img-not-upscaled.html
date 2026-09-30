@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>upscaled image</title>
+<!-- Learning loop 2026-09-27 (L6): a wide file cropped into a square box by object-fit: cover is
+     painted at 320/225 = 1.42x its own pixels, soft at every width. img-srcset-within-2x reads
+     only the other side of the same ratio (too many pixels), so it passes this page. -->
+<style>body{margin:0;font:16px/1.5 system-ui}img{display:block;width:320px;height:320px;object-fit:cover}</style>
+</head><body>
+<h1>Image sharpness</h1>
+<img src="../assets/narrow-400.png" width="400" height="225" alt="Blue Staffy puppy on a garden step, cropped square">
+</body></html>

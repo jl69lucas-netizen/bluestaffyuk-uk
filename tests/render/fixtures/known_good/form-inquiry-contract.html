@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>form contract satisfied</title>
+<style>.hp{display:none}</style></head><body>
+<main>
+  <h1>UK Blue Staffy Breeders Contact: Speak to Glasgow's Trusted Family Breeders</h1>
+  <!-- Skipped: a /search/ form is never judged, so it does not count toward `examined`. -->
+  <form action="/search/" method="get" role="search"><input name="q"><button>Search</button></form>
+  <!-- The real contact form, copied out of dist/uk-blue-staffy-breeders-contact/index.html
+       (2026-09-16) with the data-astro-cid-* attributes stripped. `FORM_ID_FROM_ENV` (the constant exported from
+       tests/render/checks/form.ts) is substituted with PUBLIC_FORMSPREE_ID when the fixture loads: the id may not sit in a
+       committed file. -->
+  <form method="POST" action="https://formspree.io/f/FORM_ID_FROM_ENV" data-form="contact">
+    <input type="hidden" name="_next" value="https://www.bluestaffyuk.com/thank-you-blue-staffy-puppies-journey/">
+    <input type="hidden" name="_subject" value="New Blue Staffy enquiry">
+    <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label>Your name <span class="req">(required)</span> <input name="name" required autocomplete="name"></label>
+    <label>Email <span class="req">(required)</span> <input type="email" name="email" required autocomplete="email"></label>
+    <label>Phone <input type="tel" name="phone" autocomplete="tel"></label>
+    <label>Town or postcode <input name="location" autocomplete="postal-code"></label>
+    <label>Which puppy? <span class="req">(required)</span>
+      <select name="puppy" required>
+        <option value="">Choose…</option>
+        <option value="roman">Roman · Male · £1,500</option>
+        <option value="vennie">Vennie · Female · £1,700</option>
+        <option value="waiting-list">Join the waiting list for the next litter</option>
+      </select></label>
+    <label>Message <span class="req">(required)</span> <textarea name="message" rows="5" required></textarea></label>
+    <button type="submit">Send enquiry</button>
+  </form>
+  <!-- Newsletter: exactly one visible email control, so the field contract does not apply;
+       its one real control carries a `name`, which is all the contract asks of it. -->
+  <form class="fs-nl-form" action="https://formspree.io/f/FORM_ID_FROM_ENV" method="POST">
+    <input type="email" name="email" required placeholder="you@example.com"><button>Subscribe</button>
+  </form>
+</main>
+</body></html>

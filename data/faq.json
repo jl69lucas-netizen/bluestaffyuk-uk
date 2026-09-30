@@ -1,0 +1,512 @@
+[
+  {
+    "id": "deposit",
+    "q": "How much is the deposit?",
+    "a": "£{deposit_gbp}, {deposit_terms}, secures your chosen puppy.",
+    "source": "data/settings.json"
+  },
+  {
+    "id": "delivery",
+    "q": "Do you deliver across the UK?",
+    "a": "Yes. {delivery_note}, from £{delivery_min_gbp} to £{delivery_max_gbp}.",
+    "source": "data/settings.json"
+  },
+  {
+    "id": "puppy-package",
+    "q": "What comes with a puppy?",
+    "a": "A comprehensive puppy package: the first vaccinations, a microchip, a full veterinary health check, deworming and defleaing, the relevant paperwork, and a puppy pack to help them settle in.",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "id": "enquiry-reply-time",
+    "q": "How long will you take to reply to my enquiry?",
+    "a": "We personally review and respond to every message within 24-48 business hours. If nothing has arrived by then, please check your spam or junk folder before writing again.",
+    "source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro"
+  },
+  {
+    "id": "enquiry-while-you-wait",
+    "q": "What can I read while I wait for your reply?",
+    "a": "Our Staffy breed guide covers temperament and needs, our health and care pages set out what stands behind every litter, and the blog guides are written for new owners. You can also see the puppies who are here today.",
+    "source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro"
+  },
+  {
+    "id": "enquiry-follow-up",
+    "q": "How do I follow up on my enquiry?",
+    "a": "Writing again at any time is fine rather than waiting, and our privacy policy sets out how the details you sent are handled.",
+    "source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro"
+  },
+  {
+    "id": "privacy-data-collected",
+    "q": "What personal information does BlueStaffyUK collect?",
+    "a": "When you enquire we collect your name, email address, phone number, postal address and anything you choose to tell us about your home and family. The website also records automated data such as your IP address, browser type and the pages you visit.",
+    "source": "src/pages/privacy-policy-uk/index.astro"
+  },
+  {
+    "id": "privacy-cookies",
+    "q": "Does this website use cookies?",
+    "a": "Yes. Essential cookies keep the site working and analytics cookies, including Google Analytics, help us see how the site is used and improve it.",
+    "source": "src/pages/privacy-policy-uk/index.astro"
+  },
+  {
+    "id": "privacy-delete-data",
+    "q": "How do I ask for my data to be deleted?",
+    "a": "Write to us at staffies@bluestaffyuk.uk or use the contact page. You can ask to view, correct or delete your data at any time, and we answer all legitimate requests within one month.",
+    "source": "src/pages/privacy-policy-uk/index.astro"
+  },
+  {
+    "id": "contact-visit",
+    "q": "Can I visit you before I decide?",
+    "a": "We do not run a walk-in facility. Our dogs are raised in a family home, so visits are strictly by appointment only, arranged with you once we have talked through your enquiry.",
+    "source": "src/pages/uk-blue-staffy-breeders-contact/index.astro"
+  },
+  {
+    "id": "contact-what-to-say",
+    "q": "What should I put in my message?",
+    "a": "As much detail as possible: your household, whether you are asking about a particular puppy or about availability generally, and anything you want to know about how we breed. It lets us answer properly in one reply, and we aim to respond within 24-48 business hours.",
+    "source": "src/pages/uk-blue-staffy-breeders-contact/index.astro"
+  },
+  {
+    "id": "about-health-tests",
+    "q": "Are the parents of your blue Staffy puppies health-tested?",
+    "a": "Yes. Maggie, our dam, and Jones, our sire, are both KC-registered with full pedigrees, are fully vaccinated, and have had DNA tests for L-2-HGA and HC-HSF4 and eye and elbow screening. That screening is what the genetic health of every litter rests on.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "about-home-raised",
+    "q": "Are the puppies raised in a family home or in kennels?",
+    "a": "In our home, not in kennels. Every litter grows up indoors with the family, with constant interaction, early socialisation and everyday household sights and sounds, and meets children, cats and older people before it leaves.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "health-dna-tests",
+    "q": "Which genetic tests have the parents had?",
+    "a": "Both parents are DNA tested for L-2-HGA, a neurological disorder affecting metabolism, and HC-HSF4, an inherited cataract. Both conditions are recessive, so a puppy is affected only when it inherits the gene from both parents.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-vaccinations",
+    "q": "What has a puppy had before it comes home?",
+    "a": "A veterinary health check, a first vaccination covering distemper, parvovirus, leptospirosis and hepatitis, a microchip, and deworming and flea treatment. It all goes on a vet-signed health card that comes with the puppy.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-lifespan",
+    "q": "How long does a Staffordshire Bull Terrier live?",
+    "a": "Twelve to fourteen years is the figure the Staffordshire Bull Terrier Club gives for a healthy, well-cared-for dog. Diet, daily exercise and regular vet checks are what decide where in that range a dog lands.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "guide-first-time-owners",
+    "q": "Are Staffordshire Bull Terriers good for first-time owners?",
+    "a": "Yes, as long as you are ready to socialise the puppy early and train consistently with rewards. Staffies are intelligent and eager to please, which makes them trainable, but they are strong-willed and they need company, so the commitment matters more than the experience.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-exercise",
+    "q": "How much exercise does a Staffordshire Bull Terrier need each day?",
+    "a": "At least an hour of vigorous exercise a day, ideally split into two sessions, plus something that works the mind. Brisk walks, play and dog sports such as agility, obedience, flyball or scent work all suit the breed.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-banned-breed",
+    "q": "Is the Staffordshire Bull Terrier a banned breed in the UK?",
+    "a": "No. The Staffordshire Bull Terrier is not a banned type under the Dangerous Dogs Act 1991, and it is legal to own, breed and import in the UK. A landlord or housing association may still restrict the breed, so ask for the pet policy in writing before you sign.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-flat-living",
+    "q": "Can a Staffordshire Bull Terrier live in a flat?",
+    "a": "Yes, provided the dog gets its daily exercise and mental stimulation. The breed is a medium size and is people-focused rather than territorial, so a large garden is not essential as long as walks and outdoor time are regular.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "buying-what-to-ask",
+    "q": "What should I ask a blue Staffy breeder before I buy?",
+    "a": "Ask to see the KC registration papers for both parents, ask which health tests they have had (L-2-HGA and HC-HSF4 by DNA, and their eyes and elbows), ask to see the puppy with its mother, and ask about vet checks, vaccinations, microchipping, worming, socialisation, the written contract and what happens if you cannot keep the dog.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "buying-best-age",
+    "q": "How old should a blue Staffy puppy be before it comes home?",
+    "a": "Eight weeks at the earliest. Those last weeks with the mother and the litter are where a puppy learns bite inhibition, boundaries and how to read another dog, and a breeder willing to let one go sooner is telling you something about how they work.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "buying-puppy-farm",
+    "q": "How do I tell an ethical breeder from a puppy farm?",
+    "a": "An ethical breeder invites you to their home, shows you the mother with the litter, shows the original registration papers, names the health tests on both parents, puts the terms in writing and stays reachable afterwards. A car-park meeting, an absent dam, paperwork that is in the post or pressure to decide today are each reason enough to leave.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "sale-reserve",
+    "q": "How do I reserve one of your Blue Staffy puppies?",
+    "a": "To reserve a Blue Staffy puppy, simply fill out the contact form on this page! Tell us which pup you’re interested in, and we’ll get back to you within 24-48 business hours to discuss the next steps and answer all your questions.",
+    "source": "src/pages/blue-staffy-pup-sale-uk/index.astro"
+  },
+  {
+    "id": "sale-kc-health-checked",
+    "q": "Are your Blue Staffy puppies Kennel Club registered and health-checked?",
+    "a": "Absolutely! All our Staffy puppies come from exceptional KC-registered lineage. They receive comprehensive health checks, their parents are DNA tested for common Staffy conditions (HC, L2HGA), and they are microchipped before entering their new homes. We pride ourselves on being ethical Blue Staffy breeders UK. Every puppy receives a full vet screening and vaccinations.",
+    "source": "src/pages/blue-staffy-pup-sale-uk/index.astro"
+  },
+  {
+    "id": "sale-delivery-uk",
+    "q": "Can you deliver a Blue Staffy puppy to my location in the UK?",
+    "a": "Yes, we offer safe and reliable Staffy puppy UK delivery services! We can arrange secure transport for your new family member directly to your doorstep, anywhere in the UK. Trusted DEFRA-approved transport to homes UK-wide.",
+    "source": "src/pages/blue-staffy-pup-sale-uk/index.astro"
+  },
+  {
+    "id": "sale-whats-included",
+    "q": "What’s included when I buy a Blue Staffy puppy from BlueStaffyUK?",
+    "a": "When you buy a Blue Staffy puppy UK from us, your pup comes with a full health check, microchip, initial vaccinations, and a puppy pack to help them settle in. We’re here to support your entire Staffy journey !",
+    "source": "src/pages/blue-staffy-pup-sale-uk/index.astro"
+  },
+  {
+    "id": "whyus-paperwork",
+    "q": "What paperwork comes with a puppy?",
+    "a": "The Kennel Club registration paperwork, the vaccination records, the microchipping details and a written puppy purchase contract. We can also give you the registration numbers of both parents, so you can check the pedigree yourself.",
+    "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
+  },
+  {
+    "id": "whyus-evidence",
+    "q": "Which health tests have both parents had?",
+    "a": "L-2-HGA and HC-HSF4 by DNA test, and eye and elbow screening. We hold no DNA certificates, so we name the tests and quote no result. You can see both parents, their registration papers and the veterinary records before you commit to a puppy, and again on the day you collect.",
+    "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
+  },
+  {
+    "id": "listing-availability",
+    "q": "How do I know a puppy is still available?",
+    "a": "The cards on our listing page are generated from our own list of available puppies, and that list is updated regularly, so a puppy still showing there is one nobody has reserved. Tell us which one you like and we will confirm before you pay anything.",
+    "source": "src/pages/buy-blue-staffy-puppies-uk/index.astro"
+  },
+  {
+    "id": "listing-health-clearances",
+    "q": "What health checks do your blue Staffy puppies come with?",
+    "a": "L-2-HGA and HC-HSF4 are the DNA tests Maggie and Jones have both had. Each puppy then has a veterinary health check, its worming and its first vaccinations, and every one of those is dated on the paperwork that travels with the dog.",
+    "source": "src/pages/buy-blue-staffy-puppies-uk/index.astro"
+  },
+  {
+    "id": "listing-first-time-owners",
+    "q": "Are blue Staffies suitable for first-time dog owners?",
+    "a": "Yes, for a household with the time to put in. Our Staffordshire Bull Terrier guide sets out what first-time owners take on, from early socialisation to the training a strong, people-focused dog needs.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "listing-reputable-breeders",
+    "q": "How do I know I’m buying from reputable blue Staffy breeders?",
+    "a": "Ask to see the parents and the registration papers, ask which health tests the parents have had, and read the written contract before you pay anything. Our buying guide lists the questions to ask and the puppy farm warning signs to walk away from.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "listing-cost",
+    "q": "How much does a blue Staffy cost UK?",
+    "a": "Every puppy is listed with its own price on its card, so you see the figure before you enquire. A £{deposit_gbp} deposit, {deposit_terms}, secures the one you choose.",
+    "source": "data/settings.json"
+  },
+  {
+    "id": "listing-pitbull",
+    "q": "Is a Staffy a pitbull?",
+    "a": "No. The Staffordshire Bull Terrier is its own Kennel Club breed, and our breed guide sets it side by side with the American Bully so the differences are easy to see.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "listing-scratching",
+    "q": "Why do Staffies scratch so much?",
+    "a": "Most often it is the skin: the breed is prone to allergies, and persistent scratching is worth a vet’s opinion. Our health page covers the skin conditions Staffies see and what we screen the parents for.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "listing-family-dog",
+    "q": "Do blue Staffies suit a family home?",
+    "a": "Yes — the breed’s old nickname is the nanny dog, and our breed guide explains where that reputation came from and what it asks of a household with children.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "listing-life-expectancy",
+    "q": "What is the life expectancy of a blue Staffy?",
+    "a": "The figure our health page sets out is 12–14 years. Read it as an average rather than a promise: genetics, weight and the standard of veterinary care all move it either way.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "listing-aggressive",
+    "q": "Are blue Staffies aggressive?",
+    "a": "No. The Staffordshire Bull Terrier is not a banned breed in the UK and is bred as a companion; our breed guide covers the law and the reputation together.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "listing-left-alone",
+    "q": "Can blue Staffies be left alone?",
+    "a": "Not for long stretches. Staffies are people-focused dogs, and our breed guide covers how long one can reasonably be left alone and how to build a puppy up to it.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "listing-training",
+    "q": "Are Staffies hard to train?",
+    "a": "They learn quickly and they are strong-willed with it, so consistency matters more than repetition. Our breed guide covers training and early socialisation in full.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "listing-sleep",
+    "q": "How long do Staffies sleep at night?",
+    "a": "A puppy sleeps far more than an adult does, and how much rest a Staffy needs changes as it grows; our breed guide’s life stage section covers what to expect at each age.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "home-ethical-breeder",
+    "q": "What makes BlueStaffyUK an ethical breeder?",
+    "a": "We are a small, family-run team dedicated to the health and well-being of every puppy. Both parents are DNA tested for L-2-HGA and HC-HSF4, every puppy is raised in our home and not a kennel, and we answer every question about them before you pay anything.",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "id": "home-family-children",
+    "q": "Are Blue Staffies good family pets, especially with children?",
+    "a": "Yes. A well-socialised and responsibly bred Staffordshire Bull Terrier is an excellent family companion, and the breed’s patience with children is why it was nicknamed the nanny dog. Ours meet the noise of an ordinary house before they leave it.",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "id": "home-parents-health-tested",
+    "q": "Are your puppies’ parents health-tested?",
+    "a": "Yes. Our dam and sire have both been screened by DNA test for L-2-HGA and HC-HSF4, the two inherited conditions this breed is tested for, and their eyes and elbows are screened as well.",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "id": "home-after-support",
+    "q": "Do you offer support after I take my puppy home?",
+    "a": "Your puppy leaves with a puppy pack, its health records and the rest of its paperwork, and you are welcome to write to us before or after the puppy is home. A question asked after the handover is answered the same way as one asked before it, within 24 to 48 business hours, and by us rather than by an agency.",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "id": "home-health-tests",
+    "q": "What health tests do you perform on your Blue Staffy breeding dogs?",
+    "a": "Every breeding dog we use is screened for the conditions this breed is watched for, which is L-2-HGA and HC-HSF4 by DNA test on both parents. What each test covers, and what it does not cover, is set out on our health page.",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "id": "home-whats-included",
+    "q": "What is included when I buy a Blue Staffy puppy from BlueStaffyUK.uk?",
+    "a": "A comprehensive puppy package: the first vaccinations, a microchip, a full veterinary health check, deworming and defleaing, the relevant paperwork, and a puppy pack to help them settle in.",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "id": "home-safe-delivery",
+    "q": "How do you ensure the safe delivery of Staffies across the UK?",
+    "a": "{delivery_note}, from £{delivery_min_gbp} to £{delivery_max_gbp}. Each journey is planned around the puppy rather than the route, and you can collect in person instead.",
+    "source": "data/settings.json"
+  },
+  {
+    "id": "home-price-range",
+    "q": "What is the typical price range for a Blue Staffy puppy from BlueStaffyUK.uk?",
+    "a": "Our prices are published per puppy rather than quoted as a range, and the figure on a puppy’s card is the figure you pay. A £{deposit_gbp} deposit, {deposit_terms}, holds the one you choose and comes off the price.",
+    "source": "data/settings.json"
+  },
+  {
+    "id": "home-health-guarantee",
+    "q": "Do you offer health guarantees for your blue staffy puppies?",
+    "a": "Yes. Every puppy leaves with our written {guarantee_phrase} alongside its vaccination and microchip records. Please ask us for the full wording before you pay a deposit.",
+    "source": "data/settings.json"
+  },
+  {
+    "id": "home-find-breeders",
+    "q": "Where can I find blue staffy breeders in the UK?",
+    "a": "Here, and on the pages this site keeps for each part of the country. We raise blue Staffordshire Bull Terrier puppies in our own home in Carlisle and deliver across the United Kingdom, and our breeders page sets out who we are.",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "id": "whyus-start",
+    "q": "I’m looking into getting a Staffy puppy. Where should I start?",
+    "a": "Start by finding a reputable, KC-registered breeder who performs genetic health checks. An ethical breeder will prioritize the puppy’s health and temperament and will be transparent about their breeding practices.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "whyus-american-english",
+    "q": "How can I tell if my puppy is an American or an English Staffy?",
+    "a": "A definitive way to tell is by checking its pedigree papers and Kennel Club registration. An English Staffordshire Bull Terrier from the UK will be registered with The Kennel Club and will adhere to their specific breed standard, which is smaller and more compact than the American variety.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "whyus-not-banned",
+    "q": "Why weren’t Staffordshire Bull Terriers banned in the UK?",
+    "a": "The Staffordshire Bull Terrier is not on the UK’s list of banned breeds. They are legally permitted in the UK due to their history as a family companion breed and their well-documented temperament as a “nanny dog.”",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "whyus-pit-bull",
+    "q": "What is the difference between a Staffy and a Pit Bull?",
+    "a": "The Staffordshire Bull Terrier is a distinct and officially recognized breed by The Kennel Club in the UK. The term “Pit Bull” is a general term often used to describe a type of dog, including breeds like the American Pit Bull Terrier, which are not recognized by the UK Kennel Club and are banned under the Dangerous Dogs Act. Staffies are a separate breed with a well-documented history as a family-friendly companion.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "whyus-amstaff",
+    "q": "What is the difference between an Amstaff and a Staffordshire Terrier (English)?",
+    "a": "The Amstaff is the American Staffordshire Terrier, a separate and larger breed. An English Staffordshire Bull Terrier is registered with The Kennel Club and is judged against its own breed standard, which our breed guide sets out in full.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "whyus-prone-to",
+    "q": "What are Staffies prone to?",
+    "a": "Mainly two inherited conditions, L-2-HGA and HC-HSF4, which is why both parents are DNA tested for them before any mating, and the skin allergies the breed is known for. Our health page covers both.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "whyus-stud-dogs",
+    "q": "Who Are the BlueStaffyUK Stud Dogs and How Do We Ensure Temperament in Our Breeding Program?",
+    "a": "Our own dogs. The parent dogs we breed from are chosen for a settled temperament as well as for their health testing, and you are welcome to meet the mother with the litter before you decide.",
+    "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
+  },
+  {
+    "id": "whyus-partner",
+    "q": "Why Should Families Choose BlueStaffyUK as Their Trusted Breeding Partner for Staffordshire Bull Terriers in the UK?",
+    "a": "Because everything this page claims rests on something real: the Kennel Club paperwork, the veterinary health check and the written puppy purchase contract, which you can read, and both parents’ DNA tests, which we name and answer questions about. Nothing on this page rests on a badge.",
+    "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
+  },
+  {
+    "id": "about-ethical",
+    "q": "What makes BlueStaffyUK ethical as a blue Staffy breeder?",
+    "a": "We prioritise the welfare, health, and temperament of our parent dogs above all else. This means comprehensive health testing for our Dam (Maggie) and Sire (Jones), KC registration, and raising puppies in a loving home environment. We are dedicated to transparent and responsible practices.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "about-health-tested",
+    "q": "Are your Staffordshire Bull Terrier puppies health-tested?",
+    "a": "Yes. Before any mating, we DNA test both parents, Maggie and Jones, for L-2-HGA and HC-HSF4, and every puppy has a veterinary health check before it leaves us.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "about-temperament",
+    "q": "What is the typical temperament of our puppies?",
+    "a": "Our home-raised blue Staffy puppies are known for their loving, confident, and well-socialized temperaments. Thanks to early exposure to family life and our careful breeding, they are ideal family dogs UK , known for their loyalty and playful nature.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "about-delivery-home",
+    "q": "Can I get a blue Staffy puppy delivered to my home?",
+    "a": "We offer safe and reliable UK-wide puppy delivery using DEFRA-approved pet transport services. This means wherever you are in the UK, your new de-wormed Staffy pup can arrive at your doorstep comfortably and securely.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "about-first-time",
+    "q": "What should a first-time dog owner know before getting a blue Staffy?",
+    "a": "For first-time dog owners, welcoming a blue Staffy is an exciting journey! We provide a comprehensive Puppy Care Guide, ensuring a smooth transition for both you and your new blue Staffy pup. Find helpful puppy care guidance from the RSPCA",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "about-two-breeds",
+    "q": "What two breeds make a Staffy?",
+    "a": "Bulldog and terrier crosses, in 19th-century England. Our breed guide sets out the history and the breed standard it produced.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "health-genetic-tested",
+    "q": "Are your puppies health tested for genetic diseases?",
+    "a": "Yes. Our parent Staffordshire Bull Terrier dogs are DNA tested for key hereditary conditions like L-2-HGA and HC-HSF4, which are the primary hereditary conditions in blue Staffies, and both have their eyes and elbows screened.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-l2hga-meaning",
+    "q": "What does L-2-HGA testing mean for my puppy’s health?",
+    "a": "L-2-HGA testing (L-2-Hydroxyglutaric Aciduria) is a crucial genetic screening for Staffies . It looks for the gene behind a severe neurological disorder that affects the brain, spinal cord, and muscles. It’s a key indicator of responsible breeding for health .",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-vaccinations-before-home",
+    "q": "What vaccinations do your puppies have before I take them home?",
+    "a": "Our blue Staffy puppies receive their first set of core puppy vaccinations UK (often for Distemper, Parvovirus, Leptospirosis, and Hepatitis) before leaving us, as part of the UK vaccination schedule for Staffy puppies . We provide a comprehensive vet-signed health card detailing their vaccination history.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-vet-records",
+    "q": "Do your puppies come with vet records and a health certificate?",
+    "a": "Yes, every KC registered Staffy puppy comes with a full blue Staffy health certificate , including detailed vet records of their initial health check, vaccinations, and deworming schedule. This provides a clear overview of their early initial veterinary care for puppies .",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-puppy-diet",
+    "q": "What should I feed my new Staffy puppy for the best diet?",
+    "a": "We recommend continuing with the high-quality puppy food your Staffy has been raised on initially (we provide a starter pack). This is crucial for how to keep my Staffy puppy healthy . Your vet can provide long-term advice on the best diet for Staffordshire Bull Terrier puppies based on their individual needs.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-kc-fewer-risks",
+    "q": "Do KC registered Staffies have fewer health risks?",
+    "a": "Yes. KC registration, combined with breeder DNA testing, reduces the chances of hereditary issues being passed down.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-average-lifespan",
+    "q": "What is the average lifespan of a Blue Staffy?",
+    "a": "A healthy, well-cared-for Staffordshire Bull Terrier can live 12–14 years , according to the Staffordshire Bull Terrier Club .",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-avoid-puppy-farm",
+    "q": "How can I avoid buying from a puppy farm?",
+    "a": "See the mother with the litter in the home the puppies were raised in, ask for the original registration papers rather than copies, find out which tests were run on each parent, and read the written contract before any money moves. A seller who will only meet you away from the premises, or who cannot produce the paperwork on the day, is a puppy farm until proved otherwise.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "guide-first-time-dog-owners",
+    "q": "Are Staffordshire Bull Terriers good for first-time dog owners?",
+    "a": "Yes, with commitment to early socialisation and consistent positive reinforcement training, Staffordshire Bull Terriers can be excellent companions for first-time owners. Their eagerness to please and people-oriented nature make them highly trainable. Our UK Staffordshire Bull Terrier care tips can help guide you.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-exercise-daily",
+    "q": "How much exercise does a Staffordshire Bull Terrier need daily?",
+    "a": "Staffies are energetic and require at least 1 hour of vigorous exercise daily, ideally split into two sessions. This can include brisk walks, playtime, and mental stimulation. Regular exercise is crucial for their physical and mental Blue Staffy health .",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-flats-uk",
+    "q": "Can Staffordshire Bull Terriers live in flats in the UK?",
+    "a": "Yes, Staffordshire Bull Terriers can adapt well to flat living, provided they receive sufficient daily exercise and mental stimulation. Their moderate size and people-focused nature mean they do not necessarily require a large garden, as long as their outdoor needs are met with regular walks and park visits.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-children-pets",
+    "q": "Do Staffies get along with children and other pets?",
+    "a": "Staffies are renowned for being excellent with children due to their affectionate and patient nature, earning them the “nanny dog” nickname. With careful and early socialisation with other pets , they can coexist peacefully. Supervision is always recommended, especially with young children or new pet introductions.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-downsides",
+    "q": "What are the downsides of Staffies?",
+    "a": "Like any breed, Staffies have potential downsides. They can be strong-willed and require consistent training and socialization from a young age. Due to their history, they can have a prey drive, so early socialization with other animals is crucial. Responsible ownership and understanding the breed’s needs are key.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-left-alone-8h",
+    "q": "Can Staffies be left alone for 8 hours?",
+    "a": "While adult Staffies can learn to tolerate being left alone for reasonable periods, consistently leaving any dog alone for 8 hours or more is generally not recommended. Staffies thrive on companionship and can become bored or anxious if left alone for too long. Gradual acclimatization and providing plenty of mental and physical stimulation are important.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-male-female",
+    "q": "Is a male or female Staffy better?",
+    "a": "The “better” sex depends entirely on individual preferences and lifestyle. Male Staffies can sometimes be more boisterous and overtly affectionate, while females may be slightly more independent. However, temperament is largely influenced by training, socialization, and individual personality, not just sex.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-attached-one-person",
+    "q": "Do Staffies get attached to one person?",
+    "a": "Staffordshire Bull Terriers are known for forming strong bonds with their families and can be particularly devoted to their primary caregiver. However, with proper socialization, they can be affectionate with all members of the household.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "blog-what-we-cover",
+    "q": "What do your blue Staffy guides cover?",
+    "a": "Four pages, and they do not overlap. The breed guide covers what a Staffordshire Bull Terrier is, what a day with one asks for and where it stands in UK law; the health page covers the DNA tests our parent dogs have had, the vaccination course and life expectancy; the buying guide covers the process, the questions to put to a breeder and the red flags; and the why-us page covers what a purchase from us comes with in writing.",
+    "source": "src/pages/blue-staffy-blog-guides/index.astro"
+  },
+  {
+    "id": "blog-updates",
+    "q": "How often do you add a new guide?",
+    "a": "We do not publish a schedule, and we would rather say so than invent one. What you can check instead is the last updated date on each page: it moves when the page is actually edited, and never because a date needed refreshing.",
+    "source": "src/pages/blue-staffy-blog-guides/index.astro"
+  },
+  {
+    "id": "blog-ask-a-question",
+    "q": "How do I ask something the guides do not answer?",
+    "a": "Send it to staffies@bluestaffyuk.uk. Every message lands with Lisa Bright rather than with an agency, and the inbox is watched between feeds, 09:00 to 23:00, seven days a week. Name the guide you were on and the part it left open — that tells us which page was not clear.",
+    "source": "src/pages/blue-staffy-blog-guides/index.astro"
+  }
+]

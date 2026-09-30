@@ -1,0 +1,129 @@
+{
+  "askedAt": "2026-09-29T13:15:32Z",
+  "id": "2026-09-29-lisa-bright-five-facts-before-the-london-page",
+  "intro": "Building London's components and checking the finished pages turned up five facts that only the\nbreeder can confirm. Until each one is answered, no page prints it. The site's rule is that a\nclaim with no proof on file is never stated. Each question says where the answer goes.",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "The health page says 10 times that the parents are \"DNA tested clear\" (and twice more on the breed guide), but the site keeps no proof of a result. Naming the tests is fine today. Stating a result (\"clear\") needs the certificate recorded: the lab's name and the date are enough; no upload is needed. Until then, those lines are marked as unproven.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, I hold both certificates; I give the lab and dates in the text box"
+        },
+        {
+          "id": "b",
+          "label": "I hold some of them; I say which in the text box"
+        },
+        {
+          "id": "c",
+          "label": "No certificates; the pages should only name the tests"
+        }
+      ],
+      "question": "Do you hold the DNA test certificates for Maggie and Jones (L-2-HGA and HC-HSF4)?",
+      "section": 0,
+      "where": "`data/quality/evidence-ledger.json` (the `parents-dna-clear` proof)."
+    },
+    {
+      "context": "The pages now say \"Two-year health guarantee\" and name no cover, and that is how they stay until you tell us. If it covers named conditions (for example hereditary or congenital conditions), write them in the text box as you would want them on the page.",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "Leave it as \"two-year health guarantee\", with no cover named"
+        },
+        {
+          "id": "b",
+          "label": "It covers what I write in the text box"
+        }
+      ],
+      "question": "What does the two-year health guarantee cover?",
+      "section": 0,
+      "where": "`data/settings.json` (the guarantee's wording)."
+    },
+    {
+      "context": "Buyers are told to expect one as a scam check. Our scam-advice section cannot list it as a safety sign unless we offer it ourselves.",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, always"
+        },
+        {
+          "id": "b",
+          "label": "Yes, on request"
+        },
+        {
+          "id": "c",
+          "label": "No"
+        }
+      ],
+      "question": "Do you offer buyers a live video call with the puppy and its mother before they pay?",
+      "section": 1,
+      "where": "the scam-advice checklist on the buy and city pages."
+    },
+    {
+      "context": "Buyers are warned about deposits paid by untraceable methods. The pages say nothing about payment until you tell us how we take it.",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "options": [
+        {
+          "id": "a",
+          "label": "Bank transfer"
+        },
+        {
+          "id": "b",
+          "label": "Card or a payment link"
+        },
+        {
+          "id": "c",
+          "label": "Other; I say what in the text box"
+        }
+      ],
+      "question": "How is the £500 deposit paid?",
+      "section": 1,
+      "where": "the \"safe payment\" section (it says \"not confirmed\" today)."
+    },
+    {
+      "context": "Your rule is that we take a puppy back only if it is our fault or the owner can no longer care for it. The pages state that rule but do not say it is in a contract.",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, it is in the written contract"
+        },
+        {
+          "id": "b",
+          "label": "No, it is our promise but not in the contract"
+        }
+      ],
+      "question": "Is the take-back promise written into the sale contract?",
+      "section": 1,
+      "where": "the trust and FAQ copy on the buy and city pages."
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Health"
+    },
+    {
+      "lead": "",
+      "title": "Buying and scams"
+    }
+  ],
+  "status": "open",
+  "title": "Lisa Bright · five facts before the London page"
+}

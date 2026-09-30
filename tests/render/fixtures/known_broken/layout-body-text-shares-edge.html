@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>unboxed prose on a released gutter beside a padded box</title>
+<!-- As the dial pages shipped before the design-polish pick 3(a) (2026-09-30): at 1024px and up
+     board-styles.css released the unboxed sections' own 24px gutter because the dial grid
+     already padded the column, while a .bl-box kept its padding, so unboxed text started 24px
+     left of boxed text (292 against 316 at 1280). Here the release applies at every width. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .page-body { padding-inline: 24px; }
+  .page-body > section:not(.bl-box) { padding-inline: 0; }
+  .bl-box { padding: 32px 24px; background: #F4F1EA; }
+</style>
+</head><body>
+<main>
+  <div class="page-shell"><div class="page-body">
+    <section class="bl-box"><h2>What We Screen For</h2><p>Boxed prose starts inside the box's padding.</p></section>
+    <section><h2>Our Health Testing</h2><p>Unboxed prose on the released gutter.</p><p>A second unboxed paragraph.</p></section>
+  </div></div>
+</main>
+</body></html>

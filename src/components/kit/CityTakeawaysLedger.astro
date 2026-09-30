@@ -1,0 +1,88 @@
+---
+// src/components/kit/CityTakeawaysLedger.astro — city component 7, key takeaways (London pick:
+// key-takeaways A, "Answer ledger"). An editorial answer sheet framed by rules only (a 4px steel
+// rule over the section, hairlines between rows; no box, no band, no shadow): a served
+// photograph in the left column, and on the right the question, its answer (set across the top
+// from 1024px), then three to six ruled rows, each a short caps label and one plain sentence.
+// The photo is first in source, so a phone meets it before the facts.
+//
+// The rows are the page's own words and each states a fact the data files or the breeder's
+// answers back (working rule 9). The photograph is a served file with its served alt (working
+// rule 11), cropped on its faces (src/lib/imageFocus.ts). Conventions 4 and 6.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { focusClass, servedPhoto } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
+
+export interface Takeaway { label: string; text: string }
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  photo: string;
+  caption?: string;
+  rows: Takeaway[];
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, photo, caption, rows, fit = 'column', class: cls, ...rest } = Astro.props;
+if (rows.length < 3 || rows.length > 6) throw new Error(`CityTakeawaysLedger: ${rows.length} rows; the ledger holds 3 to 6`);
+const p = servedPhoto(photo);
+// The .in column (max 1100px, 16px gutters; 24px and a 5fr/7fr split with a 48px gap on desktop).
+const sizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1100px) - 32px)`,
+  tablet: (B) => `calc(min(${B}, 1100px) - 32px)`,
+  desktop: (B) => `calc((min(${B}, 1100px) - 96px) * 5 / 12)`,
+});
+---
+<section {...rest} class:list={['city-kit', 'city-takeaways-ledger', cls]}>
+  <div class="in">
+    <figure class="pic">
+      <img src={p.file} srcset={p.srcset} sizes={sizes}
+        alt={p.alt} width={p.w} height={p.h} class={focusClass(photo)} loading="lazy" decoding="async" />
+      {caption && <figcaption>{caption}</figcaption>}
+    </figure>
+    <div class="body">
+      <div class="head">
+        <h2>{heading}</h2>
+        <p class="lede">{lede}</p>
+      </div>
+      <dl>
+        {rows.map((r) => <div class="row" data-takeaway><dt>{r.label}</dt><dd>{r.text}</dd></div>)}
+      </dl>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-takeaways-ledger { background: var(--color-surface); border-top: 4px solid var(--color-brand); border-bottom: 1px solid var(--color-border); }
+    .in { max-width: 1100px; margin: 0 auto; padding: var(--space-6) var(--space-4) var(--space-7); display: grid; gap: var(--space-5); }
+    .pic { margin: 0; }
+    .pic img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--radius-sm); background: var(--color-bone-50); }
+    figcaption { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-text-muted); }
+    h2 { margin: 0 0 var(--space-3); }
+    .lede { margin: 0 0 var(--space-4); font-size: var(--city-lead); color: var(--color-ink-2); }
+    dl { margin: 0; border-top: 1px solid var(--color-brand); }
+    .row { display: grid; gap: var(--space-1); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+    dt { font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-brand); }
+    dd { margin: 0; color: var(--color-text); }
+    @container (width >= 640px) { .row { grid-template-columns: 132px minmax(0, 1fr); gap: var(--space-4); align-items: baseline; } }
+    @container (640px <= width < 800px) { .pic img { aspect-ratio: 21 / 9; } }
+    @container (width >= 800px) {
+      .in {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "head head" "pic list";
+        gap: var(--space-5) var(--space-8); padding: var(--city-pad-y) var(--space-5);
+      }
+      .body { display: contents; }
+      /* The head's split is its own, wider for the question than the pic/list split below: in a
+         5fr column (about 307px at 1280) the H2 stacked to three lines; 7fr (about 429px) holds it
+         to two (the user's ruling, answer board q06, 2026-09-29; cityTypeFit 1b gates it). */
+      .head { grid-area: head; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-8); align-items: end; }
+      .head h2 { margin: 0; }
+      .lede { margin: 0; font-size: var(--city-lead); }
+      dl { grid-area: list; }
+      .pic { grid-area: pic; align-self: start; }
+      .pic img { aspect-ratio: 1 / 1; }
+    }
+  }
+</style>

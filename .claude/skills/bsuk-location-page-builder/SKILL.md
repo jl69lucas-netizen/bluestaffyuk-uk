@@ -1,0 +1,578 @@
+---
+name: bsuk-location-page-builder
+description: Use when building or rebuilding any UK city location page at /uk-locations/<slug>/ on BlueStaffyUK — derives the section list from a live competitor scan rather than a fixed template (competitors' section count + 3, via bsuk-query-augmentation), names the kit component and the render check for every section, and fixes the keyword, link, review, FAQ and schema rules for the 28 cities in data/locations.json. Triggers - "location page", "city page", "rebuild <city>", "/uk-locations/<slug>/".
+allowed-tools: [Read, Write, Bash]
+---
+
+# Location page builder
+
+One page per UK city under `/uk-locations/<slug>/`. The 28 slugs are `data/locations.json`
+and nowhere else. This file says how the page is shaped; the packs say how it is written.
+
+**Session open (the user's rulings, 2026-09-26):** grill-me → superpowers:writing-plans → this builder skill. Invoke each with the Skill tool by name; the full order is `docs/reference/page-run.md` row 1.
+
+**Research board before the outline (STOP 1, every page — the user's ruling, 2026-09-27):** after the research (page-run rows 4–7) the page goes through its research board, `docs/reference/page-run.md` row 8: built by `python3 scripts/research_board.py <slug>` from `data/research-boards/<slug>.json`: the competitor scan (top 5 on Google and Bing, why each ranks and its weakness, section counts, word target or `NOT FETCHED`), the query fan-out (PAA, Reddit, LLM intel), the keyword universe by intent with the four extra keyword types, the entities, 3 angle options (`bsuk-angle-agent`), 2–3 strategy directions and the framework options per section group, one option per choice marked (Recommended). The user picks on it, the picks are saved under `docs/reference/answer-board/answers/`, and the outline and the board are written from them and cite them. Nothing is outlined before the picks are recorded. Every city gets its research board: the city's row in `docs/superpowers/sessions/2026-09-25-location-pages-strategy.md` is one of the strategy directions on it, never a reason to go without it. **The outline is then its own approval, STOP 2** (page-run row 9, the user's ruling of 2026-09-29: "yes, separate approval"): the section matrix, `data/outlines/<slug>.json` built by `python3 scripts/outline_matrix.py <slug>` — the approval status, the word target and its source, the heading census (one H1, no skipped level) and one row per section with its H2–H6 tree, framework, words, keywords, Cat A/B/C, a Why grounded in the research board and its image — approved with `python3 scripts/outline_matrix.py <slug> --approve --answers <file>`. No component is selected and no page board is built before it: `python3 scripts/build_page_board.py <slug>` exits 2 (`outline-unapproved`). The page board is STOP 3 and the Asset Gate STOP 4.
+
+## The research board — what it carries (STOP 1)
+
+The research board is the city's whole research deliverable, not a summary of it. Its record is
+`data/research-boards/<slug>.json`; `python3 scripts/research_board.py <slug>` refuses (exit 1) a
+record missing any part below and writes `docs/artifacts/research/<slug>.html` and `.md`.
+
+| Section | Record field | What it holds | Where it comes from |
+|---|---|---|---|
+| 1 SERP snapshot | `serp.results[]`, `serp.structural_read` | every competitor in the top 5 on Google or Bing: its type, **why it ranks** and its **weakness (our wedge)**, each with its `evidence`; then a structural read of the SERP | `data/queries/<slug>.json` (row 5), each page read by `bsuk-framework-agent` |
+| 2 search intent | `intent` | dominant, secondary, emotional and local layers | the SERP and the question file |
+| 3 reverse engineering | `reverse_engineering[]`, `universal_gaps` | words, heading counts, tables, FAQ, byline and schema per competitor; the gaps every fetched page misses | words and H2s from the query file (never retyped); the rest from the saved page |
+| 4 owner language | `owner_language` | real quotes, each with its source URL | `bsuk-reddit-threads` |
+| 5 query fan-out | `fanout` | PAA, threads, the LLM-intel file | `bsuk-paa-agent`, `bsuk-reddit-threads`, `bsuk-llm-keyword-intel` |
+| 6–8 | `why_competitors_rank`, `how_we_win`, `content_gap` | the summary, our edge, the build list | sections 1–5 |
+| 9–12 | `entities`, `angles`, `strategies`, `frameworks` | the entities by class; 3 angles, 2–3 strategy directions, the framework options per section group, one (Recommended) each with its why and trade-off | `data/bsuk-ontology.json`, `bsuk-angle-agent`, the cluster strategy row and `bsuk-strategy-synthesizer`, `framework-*` |
+| 15–18 | `ai_overview`, `heading_types`, `serp_schema`, `authority` | the AI Overview (present or not, what it says, whom it cites); the heading shapes the ranking pages use and which wins; the schema types across the top results; referring domains and authority per competitor | `bsuk-paa-agent` on the live SERP, `bsuk-framework-agent` on the saved pages, the backlink tools through the spend guard |
+| 13–14 | `keywords.universe`, `keywords.distribution` | every keyword by intent with its volume, and where each is placed, section by section | row 6, `python3 scripts/keyword_variants.py <board slug or query-cache folder>` |
+
+**Nothing is inferred (working rule 9).** A finding cites its `evidence` — a saved fetch, a file
+under `data/queries/cache/` or `docs/research/` (never the query file), or a URL other than the
+result's own with the date it was `fetched` — or is written `NOT FETCHED — <barrier>`, naming what was tried and what stopped it; a
+bare `NOT FETCHED` is refused. The board's last section lists every `NOT FETCHED` with the
+command that fetches it, and `docs/reference/page-run.md`'s row 8 steps say the same.
+
+## The outline — the section matrix (STOP 2)
+
+After the research-board picks are recorded, the outline is written to `data/outlines/<slug>.json`
+and built by `python3 scripts/outline_matrix.py <slug>` into `docs/artifacts/outlines/<slug>.html`
+and `.md`: the approval status, the word target and its `source`, the heading census, and the
+distribution matrix — #, the section with its H2–H6 tree, framework, words, keywords (primary and
+secondary, from the research board's keyword universe), Cat (A mandatory core · B competitor-match
+· C our moat), Why (a B or C row names its `why_source` on the research board; a B row cites the
+SERP or the reverse-engineering table), and image. The census follows `rules/headings.md`: one H1,
+all six levels, no skipped level; at least 5 H5 and 5 H6 is advisory on a location page. A
+framework is a research-board pick or a `framework-*` skill; a C row cites `how_we_win`,
+`content_gap`, `universal_gaps` or a competitor's weakness; a B row cites a competitor whose
+why-it-ranks was fetched; every keyword the research board placed in a section sits in that row.
+The user approves it on its own, from its own answer-board batch (`--approve --answers <file>`);
+only then is the page board written from it, and the component previews built.
+
+## What wins when this file and something else disagree
+
+| Source | It owns |
+|---|---|
+| `CLAUDE.md` rules 1–17 | voice, branch, commit, outline-first, confidence gate, no fabricated claims (1–10) · reuse every image and video (11, 14) · every link on the board (12) · tables stacked on mobile (13) · **faithful rewrite (15)**: a city page with a migrated body keeps its verbatim set ("Before you write anything", item 4) · **per-page hero and counter, and a refresh delta on every section (16)** · **project 5 pages: outline only, six diverse links, an image on every heading (17)** — this skill's "Project 5 page rules (system-gaps)" block |
+| `rules/headings.md` | `heading-hierarchy-outline-gate` · `title-case-headings` · `header-style-declared` |
+| `rules/copy.md` | `write-from-outline-never-from-sibling` · `first-person-brand-voice` · `entity-4-move-loop` |
+| `rules/links.md` | `link-first-anchors` |
+| `rules/images.md` | `uniform-inbody-image-sizing` · `read-card-thumb-is-target-hero` |
+| `rules/design.md` | the nine visual rules · `layout-hero-counter-separation` · `layout-h3-image-first` |
+| `rules/schema.md` | structured data and `no-visible-date` |
+| `rules/gates.md` | `confidence-gate-97` · `verify-the-gate-first` |
+| `rules/puppies.md` | anything that states a price, a status or a delivery band |
+| `docs/reference/location-page-template.md` | structure, FAQ format and tone (this file's fact table wins for facts) |
+
+The packs win. Cite a rule id rather than restating the rule.
+
+## The facts a city page may state
+
+Everything here comes from a file, never from memory:
+
+| Fact | Source |
+|---|---|
+| Prices £1,500 (Roman, Byrd, Ince) · £1,700 (Vennie, Christa, Cheryl) | `data/puppies.json`, `data/price-matrix.json` |
+| £500 refundable deposit | `data/settings.json` → `deposit_gbp`, `deposit_refundable` |
+| £200–£350 UK home delivery, priced by distance, by DEFRA-approved transport | `data/settings.json` → `delivery_min_gbp`, `delivery_max_gbp`, `delivery_note` |
+| Where we are | `data/settings.json` → `location_label` (Carlisle · Cumbria) |
+| Breed lifespan 12–14 years | the Staffordshire Bull Terrier breed figure |
+| City, h1, title, description, canonical | `data/locations.json` |
+| Reviews | `data/reviews.json` — three real reviews, no others exist |
+| home-raised: every puppy is raised in our home, not a kennel | `data/faq.json` → row `about-home-raised` |
+| FAQ base set | `data/faq.json` |
+| The Staffordshire Bull Terrier is not a banned breed in the UK — not one of the types the Dangerous Dogs Act 1991 bans | the government's list, https://www.gov.uk/control-dog-public/banned-dogs (a row of `docs/reference/external-link-library.md`), linked where the line is stated; the user's ruling on Known Issue 46 (2026-09-23). Keep to "not a banned breed" / "not on the government's list"; never say any Staffy-type dog is legal or cannot be seized — the list bans by what a dog looks like, not by breed name |
+
+Not established, and therefore never written as a fact: a licence, a registration or a
+council permission (`LICENCE_CLAIM_PLACEHOLDER`), a statute or by-law other than the
+banned-breed line in the table above (`LEGAL_CLAIM_PLACEHOLDER`), a guarantee length typed by hand (read `guarantee_label` and `guarantee_days` instead),
+a named vet or local business, a mileage, a journey time, a delivery date, a local price, a
+city-level statistic, a health-test result. The parents' L-2-HGA and HC-HSF4 "clear" results
+are `NOT FETCHED` until the certificate is on file (`rules/copy.md`, `entity-4-move-loop`):
+`data/quality/evidence-ledger.json` records them as the `parents-dna-clear` claim at proof
+`NOT FETCHED`, and `scripts/query_augment.py` blocks, as "unverified fact", any question only
+a row making that claim could answer — the breeder's answer is Known Issue 41. A number
+nobody fetched is written `NOT FETCHED`.
+
+---
+
+## Step 1 — the competitor scan decides the section list
+
+**There is no fixed section count.** A fixed template produces 28 pages that differ
+only in a city name, which is the exact failure `dup-no-sibling-crossover` exists to catch.
+The mandatory spine is fixed; the body sections are derived per city.
+
+### Procedure
+
+1. Search the page's primary keyword (the city row's H1 keyword) on Google and on Bing, as
+   `/bsuk-query-augmentation` sets out. The three query shapes a buyer also types
+   (`staffy puppies for sale <city>`, `blue staffy puppies <city>`,
+   `staffordshire bull terrier breeder near <city>`) are an optional free gap scan: they
+   supply topics, never the count.
+2. Take the top-5 on each engine, merged — **marketplaces and directories included**; only
+   off-topic results are dropped. Fewer than three usable pages is a finding, not a blocker:
+   record it and derive from what exists.
+3. Record nothing by hand. The competitor record is the question file's `competitors` array
+   (`url`, `google_pos`, `bing_pos`, `h2_raw`, `h2_clean`, `outlier`, `blocked`), written by
+   `/bsuk-query-augmentation`; the board schema (`schemas/board.schema.json`) has no
+   competitor block. On the board, a body section that answers a competitor is
+   `group: "COMPETITOR-BASED"` and names that competitor's URL in its `why_source` —
+   `scripts/pageboard.py` refuses one without a URL. What a buyer asks that no pooled page
+   answers is the question file's `extra_sections` with `uncovered: true`.
+
+4. **Set the section count** with `/bsuk-query-augmentation` (it runs this scan with Bing
+   included and writes `data/queries/<slug>.json`). The pool is the top-5 Google results
+   plus the top-5 Bing results for the primary keyword, merged, **marketplaces and
+   directories included** — only off-topic results are dropped. Competitor headings come
+   from `python3 scripts/query_augment.py --extract-h2` run on each saved page; advert cards
+   and navigation never count, and nobody counts H2s by hand. The page matches the highest
+   real count (an outlier over 1.5× the next is recorded and skipped), then adds the three
+   `extra_sections` the question pool suggests: the target is that count + 3, and **never
+   fewer than 9 body sections**. `section_target.total` is the minimum;
+   `scripts/query_coverage_check.py` fails a page below it. Body topics come from what the
+   pooled pages cover plus the gaps, minus anything BSUK cannot state from the fact table
+   above. Drop a topic rather than pad it with a claim.
+   `docs/reference/location-page-template.md` is the full rule and the page's structure.
+5. Anything the scan could not supply is written `NOT FETCHED` in the board. Never a guess.
+
+The scan lives in `data/queries/<slug>.json`; the board (`data/boards/<slug>.json`) cites it
+section by section and is approved
+(`python3 scripts/board_approve.py <slug>`) before a section is written — no page is built
+without an approved board, and `python3 scripts/board_gate.py <slug>` refuses otherwise.
+The board key is the bare slug: the record is `data/boards/<slug>.json` and
+`python3 scripts/board_gate.py <slug>` takes the bare slug (`own_live_key` in
+`scripts/pageboard.py` resolves the live route `uk-locations/<slug>` through
+`data/page-map.json`). Never key the board `uk-locations/<slug>`: `scripts/board_gate.py`
+would look for `data/boards/uk-locations--<slug>.json`.
+
+---
+
+## Step 2 — the page spine
+
+The fixed frame, in the order `docs/reference/location-page-template.md` ("The fixed frame")
+sets. Frame parts sit in their own sections and are never counted as body sections. The
+derived body sections from step 1 fill the three gaps, split roughly evenly.
+
+**Every section is a `<section data-section-label="…">` inside `<main>`** — one per
+frame part and one per body section, never nested in another labelled section.
+`scripts/query_coverage_check.py` counts body sections by exactly that shape: a labelled
+section that holds an H2, is not `#top`, `#key-takeaways` or `#newsletter`, and holds no frame
+component (kit hero, counter, trust strip, page nav, review, FAQ block, form). A body H2 in an
+unlabelled `<div>`, or inside a frame section, is not counted, and the page falls short of
+its `section_target.total`.
+
+| # | Section | Kit component and props | Checks it must satisfy |
+|---|---|---|---|
+| 1 | Hero — image first | `Hero as="h1"` with the board's picked `layout` · `align` · `media` · `ledge` | `layout-image-box-reserved` · `img-alt-present-and-unique` · `layout-no-horizontal-overflow` |
+| 2 | Counter strip | `CounterStrip` — this page's own `stats`, the board's picked `tiles` · `label` | `layout-hero-counter-separation` |
+| 3 | Trust strip | `TrustStrip` | `a11y-text-contrast-aa` |
+| 4 | Table of contents | `PageNav` | `nav-anchors-resolve` · `nav-jump-target-lands` |
+| 5 | Key takeaways, `id="key-takeaways"` | `InfoCard kind="fact"` | `sem-statement-label-visible` |
+| 6 | Review — top | `Testimonial mode="single" reviews={…}` | `a11y-text-contrast-aa` · its own section |
+| 7 | FAQ — top | `Faq` | `sem-heading-order` · FAQPage schema below |
+| — | Body sections (derived, step 1) | `InfoCard` · `PuppyCard` · `SectionDivider` (add `inverse` on a dark band) | `layout-h3-image-first` · `sem-section-opening-paragraph` · `sem-heading-order` · `sem-all-six-levels` |
+| 8 | Review — middle | `Testimonial mode="single" reviews={…}` | its own section, never inside a body section |
+| 9 | FAQ — middle | `Faq` | `sem-heading-order` · FAQPage schema below |
+| — | Body sections (derived, step 1) | `InfoCard` · `PuppyCard` · `SectionDivider` (add `inverse` on a dark band) | `layout-h3-image-first` · `sem-section-opening-paragraph` · `sem-heading-order` · `sem-all-six-levels` |
+| 10 | Newsletter, `id="newsletter"` | `InfoCard kind="recommendation" label="Newsletter"` | `layout-tap-target-size` · the only newsletter on the page |
+| — | Body sections (derived, step 1) | `InfoCard` · `PuppyCard` · `SectionDivider` (add `inverse` on a dark band) | `layout-h3-image-first` · `sem-section-opening-paragraph` · `sem-heading-order` · `sem-all-six-levels` |
+| 11 | Review — bottom | `Testimonial mode="single" reviews={…}` | `a11y-text-contrast-aa` · its own section, never inside a body section |
+| 12 | FAQ — bottom | `Faq` | `sem-heading-order` · FAQPage schema below |
+| 13 | Enquiry form | `ContactFormKit` | `form-inquiry-contract` · `layout-tap-target-size` |
+| — | Footer | `SiteFooterKit` | inherited from `BaseLayout`; never hand-written, not a frame part |
+
+**Four checks block from board approval on.** `layout-hero-counter-separation`, `layout-h3-image-first`, `sem-section-opening-paragraph` and `sem-title-case-headings` are blocking on a new page as soon as its board is approved (`tests/render/targets.json` `promotions`, scope `new-pages`), so the first build is held to them: place each `BodyImage` directly after its H3 and before that block's prose, or the first build blocks.
+
+In-body image bleed uses design colours (bone), never grey or black; new portraits are baked `--og-style A` (`reframe_og.py … --style contain`), never blurfill — user ruling 2026-09-26, rules/images.md.
+
+**No `variant` prop and no letter — but the arrangement props are the page's own.** The
+letters in `data/design/picks.json` are a record of project 3's component picks, never a prop:
+project 3's prune (design-system spec §11 amendment 4) deleted every losing variant and every
+`variant` prop, and handing a letter to a component is a build error. What a component DOES
+take is its per-page arrangement, read from the page's approved board with
+`const pick = pickedStyle(record, '<section id>')` (`src/lib/pickedStyle.ts`), exactly as the
+rebuilt pages do (`src/pages/blue-staffy-health-uk/index.astro`): the hero's
+`layout={pick.layout.hero}` (the style's `hero` axis — there is no `pick.layout.layout`),
+`align={pick.layout.align}`, `media={pick.layout.media}` and `ledge={pick.layout.ledge}`; the
+counter's `tiles={pick.layout.tiles}` and `label={pick.layout.label}`. The figures themselves
+live in the record, not the pick: the counter's are the `stats` array of the board section whose
+`shape` is `stats` (`[{n, label, source}]`), and the hero ledge's chips or aside rows are the
+top section's `hero` object. Rule 16 gives every
+page its own three hero and three counter styles on its board; never copy a sibling city's
+pick. Reviews keep a board pick but never a grid: a review section is a kit shape, so the
+board schema makes it offer `S1`/`S2`/`S3` like every kit section, and `S2` and `S3` are
+grids. A city board picks `S1` ("One review given room") for every review section, and every
+city review slot is `Testimonial mode="single"` (see Reviews), never `mode={pick.layout.mode}`.
+
+The props a city page passes, as `src/components/kit/*.astro` declares them:
+
+| Component | Props |
+|---|---|
+| `Hero` | `title`, `eyebrow`, `lede`, `image` (required — there is no default photo; `imageAlt` with it) and `as` (`h1` · `h2`; a location page's hero is the page's H1, so `as="h1"`), and the arrangement from the board pick: `layout` (`split` · `stacked` · `mosaic` · `panel` · `bleed`), `align` (`left` · `center`), `media` (`none` · `left` · `right` · `top`), `ledge` (`none` · `chips` · `stats` · `aside` · `ticks`). When `image` is a `/images/…` path string, also pass `imageWidth`, `imageHeight` and `imageSrcset` — `img_dims` and `img-srcset-within-2x` are blocking |
+| `CounterStrip` | `stats` (required: `[{n, label, source?}]` — this page's own facts, rule 16), `tiles` and `label` (from the board pick) |
+| `TrustStrip` | `items` (`[{t, d, i}]`) |
+| `PageNav` | `sections` (`[{id, label}]`, one per H2, each id real) |
+| `Faq` | `items` (`[{id, q, a, source}]`, the `FaqRow` shape in `src/lib/faq.ts`). **Always pass the block's picks**: without `items` it renders the WHOLE bank. `q` is the question as written on the page (the `covered_by.text`), `a` is the bank row's answer or the settings-key fact, `source` what backs it |
+| `PuppyCard` | `slug` (a row of `data/puppies.json`) |
+| `Testimonial` | `mode` (`single` · `grid`, default `single`) and `reviews` — the rows for THIS slot, from `data/reviews.json`. A city page passes `mode="single"` and one row per slot (see Reviews) |
+| `InfoCard` | `kind` (`fact` · `observed` · `recommendation`, the whole vocabulary in `src/lib/statement.ts`), `label` to override the default word, `heading` and `body`. Omitted, `heading` and `body` fall back to a health-test card — the newsletter card must pass both |
+| `SectionDivider` | `inverse` — set it when the divider sits on a dark band |
+| `Button` | `kind` (`primary` · `outline` · `inverse` · `submit` · `text`, default `primary`) and `label` |
+| `ContactFormKit` | `idPrefix` only when a page carries two forms |
+
+`InfoCard kind="note"` **does not exist**: `sem-statement-label-visible` accepts exactly the
+three kinds above and treats anything else as a defect. A newsletter block is a
+`recommendation` with an explicit `label` ("Newsletter"), which keeps the label visible and
+the check silent.
+
+**Hero.** The image comes before the copy, and its box is reserved so nothing reflows under
+it: 390–450px tall on desktop (the 400px band of `rules/design.md` rule 9), `auto` on
+mobile. Hero and counter strip never share one continuous background — a tone shift **and** a
+1px rule at minimum (`layout-hero-counter-separation`).
+
+**Reviews.** `data/reviews.json` holds three, so top / middle / bottom is those three, one per
+slot, each `Testimonial mode="single" reviews={[row]}` — the bottom slot included. A `grid`
+at the bottom would repeat the two rows already shown above it, so a city page never uses
+one. A review is never written, never re-attributed to another city,
+and a slot with nothing real in it carries the placeholder the component already emits
+(`scripts/placeholder_check.py` counts it) rather than invented praise. Each review sits in
+its own section, never inside a body section.
+
+**Newsletter.** One block per location page, frame part 10 (`id="newsletter"`); there is
+never a second, and no other element takes that id. It says what a subscriber gets and
+nothing about how many subscribers there are.
+
+**Contact form.** `ContactFormKit` only — never a hand-rolled form. The contract is asserted
+by `form-inquiry-contract`, and `PUBLIC_FORMSPREE_ID` is unset until project 6.
+
+**Tap targets.** Every control, jump link and accordion summary is at least 44px
+(`layout-tap-target-size`). Every `PageNav` entry resolves to a real id and lands on the
+heading rather than past it (`nav-jump-target-lands`).
+
+---
+
+## Step 3 — keywords and entities
+
+**Primary keyword** is the city row's `h1`, already in the UK city pattern
+`Blue Staffy Puppies <City> UK` / `Staffy Puppies for Sale <City>`. Never rewrite it here;
+`data/locations.json` is generated.
+
+**Variation, so 28 siblings do not read as one page.** Each page takes its long-tail set
+from its own outline and its own competitor gaps:
+
+- transactional — `buy staffy puppy <city>`, `blue staffy puppies available <city>`
+- conversational — `where to find a staffy breeder near <city>`
+- logistics — `staffy puppy delivered to <city>`, `collection or delivery <city>`
+- comparison — `blue staffy vs blue brindle`, `kc registered vs unregistered`
+- LSI / entity — Staffordshire Bull Terrier, blue coat dilution, L-2-HGA, HC-HSF4, early
+  socialisation, home-reared, refundable deposit
+
+**Rule: write from the outline, never from a sibling** (`CLAUDE.md` rule 8). Reuse
+components, CSS and structure freely; never open another city's page to reword a paragraph.
+A page copied and then reworded passes `dup-no-sibling-crossover` and still breaks the rule.
+
+**Query augmentation (before writing).** Run `/bsuk-query-augmentation <slug> location
+"<primary keyword>" /uk-locations/<slug>/` before the outline. Its question file decides the
+FAQ picks, the three extra sections and the section target; answer every `must_answer`
+question on the page and record where in `covered_by`. When the page is rebuilt, add its
+bare slug (the route's last segment, e.g. `blue-staffy-puppies-manchester-uk`) to
+`data/facts/rebuilt.json` — the key the other gates use — and only then does
+`npm run check:queries` hold the page; until then it is skipped as awaiting rebuild.
+
+**One key per city page.** The facts, link-parity and verbatim gates and pageboard key a city
+page by its bare slug and find it at `dist/uk-locations/<slug>/index.html` through
+`data/page-map.json` (`scripts/_slugs.py`). The query gate finds the same page through the
+route in its question file, `data/queries/<slug>.json` (that route must end in `/<slug>/`), and
+accepts the bare slug in `data/facts/rebuilt.json`. So one `data/facts/rebuilt.json` entry
+covers every gate. Add a city's slug there only once its rebuilt page is built —
+`[slug].astro` builds all 28 routes, so a slug listed early is judged against the old migrated
+page.
+
+**Links.** Anchors start the sentence, never trail it (`link-first-anchors`). Vary anchor
+text across the page — exact, partial and descriptive — and never `click here`. Internal
+targets are the real routes in the "Links" list of `docs/reference/location-page-template.md`:
+`/available-puppies/` and its puppy pages, the buy pages (`/buy-blue-staffy-puppies-uk/`,
+`/buy-staffy-puppies-for-sale-uk/`, `/blue-staffy-pup-sale-uk/`), the buying guide, the breed
+guide, health, the breeder story, contact, the homepage, the blog hub and its posts, and 3–5
+nearby city pages. There is no delivery page and no pricing page: those facts are stated on
+the page itself. External links go only to URLs in `docs/reference/external-link-library.md`
+(breed and health authorities, gov.uk for law topics); never to a competitor, a marketplace,
+or a local business.
+
+**UK geography.** The nearby-city cluster is the other rows of `data/locations.json`, picked
+by real proximity to the target city. Distance and delivery are expressed only as
+`settings.delivery_min_gbp`–`settings.delivery_max_gbp` by distance,
+by DEFRA-approved transport, or as collection from `settings.location_label`.
+Never a mileage, never a drive time, never a delivery date.
+
+---
+
+## Step 4 — schema
+
+Per `rules/schema.md`, enforced by `python3 scripts/schema_check.py`:
+
+- **LocalBusiness** — name, `address` and geo from `data/settings.json`, `priceRange`,
+  `openingHours`, `sameAs` from `socials`, and `areaServed` naming the target city.
+  **No `telephone` key while `settings.phone` is `PHONE_PLACEHOLDER`**: an unresolved
+  placeholder in schema is worse than an absent property.
+- **Product** — only where the page shows a puppy. One offer per product node
+  (`schema-single-product-offer`); `availability` is `InStock` only for a pup
+  `data/puppies.json` marks Available, and a sold pup is `SoldOut`
+  (`schema-sold-not-instock`).
+- **FAQPage** — one node, carrying every visible Q&A and nothing that is not visible.
+- `dateModified` is present in schema and never rendered as visible text
+  (`schema-date-modified-present`, `schema-no-visible-date`).
+- Every `@id` a node references is defined by a real node on the page.
+
+---
+
+## Step 5 — FAQ
+
+Three `Faq` blocks — **top** (5–7: price, deposit, delivery to this city, reserving),
+**middle** (5–7: paperwork, health testing, visiting, age at collection) and **bottom**
+(7–10: flats, children and other pets, training, lifespan, coat) — carrying exactly the
+questions `data/queries/<slug>.json` picked for each block, 17–20 in practice. Picks come
+only from the question file: to change one, change the data (a bank row in `data/faq.json`,
+a settings key, a real sourced question) and rebuild the file — never swap, add or drop a
+pick by hand. A question may name the city ("Do You Deliver Staffy Puppies to Manchester?")
+only if its meaning and its fact are unchanged; record the wording used on the page in
+`covered_by.text`. Each question renders as an H3 with a short, direct answer drawn only from its fact: the
+`a` of the `bank:<id>` row named in the question's `found_in`, or the data key its
+`fact_source` names (`data/settings.json#deposit_gbp`) — never from the whole page file a
+`fact_source` path may point at, and never from a bank row whose answer makes a `NOT FETCHED`
+ledger claim (`parents-dna-clear`), even when `found_in` names it. Links sit inside answers, anchor first. An answer that
+introduces a new fact is a fabricated claim with extra steps. FAQPage schema carries exactly
+the visible questions, no visible date. `scripts/query_coverage_check.py` holds all of this.
+
+---
+
+## Step 6 — gates
+
+The gates are rows 12 to 21 of `docs/reference/page-run.md`, in that order: that file is the
+authority, and this is its city-page spelling. The render rows come BEFORE Harden (row 13, then
+rows 14 and 15), and every page gate runs twice through one command, `npm run gate:page -- <slug>`.
+
+**Mandatory on every project 5 page (the user's rulings, 2026-09-26).** After the render gates
+(row 13), invoke the `impeccable:impeccable` skill, then the
+`frontend-design:frontend-design` skill, with the Skill tool (never paraphrased, never skipped),
+on the built page at 375 / 768 / 1280 in a painting browser; a pass that proposes a visual
+change is previewed before it is applied (working rule 6), and the palette never changes.
+Before any "page done" or "ready for approval" claim, invoke the
+`superpowers:verification-before-completion` skill. Each pass is recorded in the page's run
+record (`scripts/page_run_record.py`).
+
+In page-run order (row 12's build and site checks, with the slug added to
+`data/facts/rebuilt.json` and `tests/render/targets.json`; row 13 render; rows 14–15 Harden,
+each committed then recorded; row 16 static scan; row 17 commit, rebuild so the page is dated from that commit, then the two-run gate; row 18
+the verification record, committed, then the full gate; row 19 the ledger):
+
+```bash
+npm run -s build
+npm run -s check:all
+python3 scripts/board_gate.py <slug>
+npm run test:render:meta
+npm run test:render:pages
+python3 scripts/page_run_record.py <slug> impeccable --findings <n> --fixed <n>
+python3 scripts/page_run_record.py <slug> frontend-design --findings <n> --fixed <n>
+python3 scripts/page_hardening_scan.py uk-locations/<slug> --fail-on-error
+npm run -s build
+npm run gate:page -- <slug> --skip-record
+python3 scripts/page_run_record.py <slug> verification --run "npm run -s build" --run "npm run -s check:all" --run "npm run gate:page -- <slug> --skip-record" --claim "<claim>"
+npm run gate:page -- <slug>
+python3 scripts/measurement_ledger.py <project> --slugs <slug>
+```
+
+`npm run gate:page -- <slug>` takes the bare key and runs, twice each and diffed:
+`python3 scripts/dup_content_audit.py` (body and `--headers`),
+`python3 scripts/final_page_audit.py uk-locations/<slug> --type location`,
+`python3 scripts/page_hardening_scan.py uk-locations/<slug>`,
+`python3 scripts/aeo_audit.py uk-locations/<slug>`,
+`python3 scripts/evidence_audit.py uk-locations/<slug> --type location --fail-on-error` and
+`python3 scripts/board_gate.py <slug>`, and fails an approved city page missing from
+`data/facts/rebuilt.json` or `tests/render/targets.json`. Run any of them by hand to read a
+finding, never instead of the gate.
+
+`test:render:meta` is the gate that checks the checkers — run it before trusting any page
+result. A gate's output is a hypothesis about the page: confirm a reported defect on the
+built page before editing anything, and read a PASS's examined count before believing it
+(`rules/gates.md`, `.claude/skills/bsuk-gate-integrity/SKILL.md`). The page audits take
+the page's route as the slug (`uk-locations/<slug>`): with no slug,
+`scripts/final_page_audit.py` audits the flat pages and never a city page,
+`scripts/evidence_audit.py` matches 0 pages and exits 1, and `scripts/aeo_audit.py` refuses.
+`scripts/dup_content_audit.py` is site-wide by design. Each exits 1 on a real FAIL or ERROR —
+the AEO audit leaves out a page whose only ERRORs are migration-baseline checks, and the dup
+audit exits 1 on any finding; `--fail-on-error` also fails the AEO and evidence audits on a WARN, and `--json` writes the
+result under `docs/reports/`.
+
+---
+
+## Worked example — `uk-locations/blue-staffy-puppies-manchester-uk`
+
+That row is a five-word stub today, carrying `"robots": "noindex, follow"` and
+`"defects": ["stub"]`. Its H1 is `Blue Staffy Puppies Manchester UK` and its canonical is
+`/uk-locations/blue-staffy-puppies-manchester-uk/` — both taken from the row, never
+rewritten here.
+
+**Question file: `data/queries/blue-staffy-puppies-manchester-uk.json`.** Every pooled page
+was a marketplace or directory, and the build's cleaning left none of them a body H2 (one was
+a challenge page, recorded as blocked), so `section_target.total` is the floor, 9; the three
+`extra_sections` are temperament, paperwork and health. Nothing below is an approved outline;
+it is the shape the list takes from that file, in the frame order of step 2: nine body
+sections, three in each gap.
+
+| # | Section | Where it comes from |
+|---|---|---|
+| 1 | Hero — Blue Staffy Puppies Manchester UK | row `h1`; `Hero`, arranged by this page's own board pick (rule 16) |
+| 2 | Counter strip — this page's own figures, chosen on its board from its facts, never a set a sibling city shares | `CounterStrip`, `tiles` and `label` from this page's board pick (rule 16) |
+| 3 | Trust strip | `TrustStrip` |
+| 4 | On This Page | `PageNav`, one entry per H2 below |
+| 5 | Key Takeaways | `InfoCard kind="fact"` |
+| 6 | Review — top | one row of `data/reviews.json`; `Testimonial mode="single"` |
+| 7 | FAQ — top | the `top` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` |
+| 8 | Our Litter and What Each Puppy Costs | `data/puppies.json`; `PuppyCard` |
+| 9 | Getting Your Puppy to Manchester | `settings.delivery_*`, or collection from `settings.location_label` |
+| 10 | Reserving a Puppy With a £500 Refundable Deposit | `settings.deposit_gbp`, `settings.deposit_refundable` |
+| 11 | Review — middle | a second row of `data/reviews.json`; `Testimonial mode="single"` |
+| 12 | FAQ — middle | the `middle` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` |
+| 13 | Raised in Our Home, Not a Kennel | `rules/copy.md` evidence loop |
+| 14 | Visiting Us in Carlisle Before You Decide | `data/faq.json` → row `contact-visit`; visits by appointment only |
+| 15 | Cities Near Manchester We Deliver To | sibling rows of `data/locations.json` |
+| 16 | Newsletter | `InfoCard kind="recommendation" label="Newsletter"` |
+| 17 | Extra section (question pool) | `extra_sections[0]` in `data/queries/blue-staffy-puppies-manchester-uk.json` |
+| 18 | Extra section (question pool) | `extra_sections[1]` in `data/queries/blue-staffy-puppies-manchester-uk.json` |
+| 19 | Extra section (question pool) | `extra_sections[2]` in `data/queries/blue-staffy-puppies-manchester-uk.json` |
+| 20 | Review — bottom | the third row of `data/reviews.json`; `Testimonial mode="single"` |
+| 21 | FAQ — bottom | the `bottom` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` |
+| 22 | Ask Us About a Puppy | `ContactFormKit` |
+
+Word-count target: `NOT FETCHED` until the scan gives a competitor median. Never pick a
+number first and write to fill it.
+
+**What this page may not say**, whatever the scan finds on a competitor: a Manchester vet or
+kennel by name, a council licence, a by-law, a mileage or drive time, a delivery date, a
+Manchester-specific price, or a review from a Manchester buyer that is not already in
+`data/reviews.json`.
+
+---
+
+## Before you write anything
+
+1. Read the row in `data/locations.json`, then `data/settings.json`, `data/puppies.json`,
+   `data/reviews.json`, `data/faq.json`, `data/design/picks.json`.
+2. Run `/bsuk-query-augmentation` for the slug (competitor scan, questions, FAQ picks, section
+   target). The board cites that question file; it has no competitor block of its own
+   (step 1, item 3).
+3. Produce the outline — H1→H6 tree, the derived section list with its derivation, keyword
+   distribution, review and newsletter positions, FAQ list, schema plan — as the section matrix
+   (`data/outlines/<slug>.json`, `python3 scripts/outline_matrix.py <slug>`) and get it
+   approved on its own, STOP 2 (`rules/headings.md` outline gate, `CLAUDE.md` rule 5,
+   `rules/gates.md` `outline-approved-before-page-board`).
+4. Before rewriting a page that already exists, extract what the rebuild must keep:
+   `python3 scripts/facts_preserved_check.py --extract <key>` (its facts into
+   `data/facts/<key>.json`) and, where rule 15 applies (the page is in
+   `data/verbatim/applies.json`), `python3 scripts/verbatim_set_check.py --extract <key>`
+   (its verbatim set into `data/verbatim/<key>.json`). The facts extract reads the built
+   migrated page (`dist/uk-locations/<slug>/index.html`); the verbatim extract reads the city's
+   row of `data/locations.json` at the frozen migration commit. `<key>` is the page's bare slug,
+   a city page included (`blue-staffy-health-uk`, `blue-staffy-puppies-manchester-uk`). Run
+   these extracts FIRST, before any rewrite, while `dist/` still holds the migrated page: the
+   facts extraction cannot be redone afterwards. Never start a city rewrite without them.
+5. Approve the board, then build. Once the rebuilt page is built, add its bare slug to
+   `data/facts/rebuilt.json`.
+6. Below 97% confidence: write what is not blocked, log the question to the brief's
+   `## Open Flags`, ask exactly one narrow question, keep going. Never dead-stop.
+
+## Keyword variants — the four extra keyword types (system-gaps, 2026-09-24)
+
+A new location, comparison or blog board carries four keyword types beyond the nine the
+brief names: `variation`, `related`, `cooccurring` and `similar`, each a list in a section's
+`keywords`. The page needs at least one term of each type SOMEWHERE — not in every section.
+The `keyword-variants-missing` check in `scripts/family_rules.py` warns on a draft and fails
+from `boarded` on. The twelve pages built before this rule are never asked.
+
+Where the terms come from: after the query augmentation has cached its files and before the
+outline is boarded, run `python3 scripts/keyword_variants.py <board slug or query-cache folder>`
+(the board slug resolves to its cache folder, e.g. `uk-locations/blue-staffy-puppies-manchester`
+→ `blue-staffy-puppies-manchester-uk`). It reads the cached files under `data/queries/` only (no paid call) and proposes each list with the source of
+every term: variations are spellings of the head term the cached text actually uses, related
+terms are the search engine's related-searches box, co-occurring terms are phrases found in
+two or more cached documents, and similar terms are how the ranking pages word the same
+query. Put each term in the section where it reads naturally; drop a term that reads badly
+anywhere rather than force it. Exit 6 means nothing is cached for the slug yet: run
+bsuk-query-augmentation first. The board's block 4 shows every term as a chip grouped by
+type, with the sections that use it.
+
+## Build from the approved outline (system-gaps)
+
+The user's ruling of 2026-09-24: build from the outline, never from crossovers, siblings or
+duplicates. `rules/copy.md` `write-from-outline-never-from-sibling` is the method and
+`outline-provenance-gate` is the gate that checks what the method leaves behind. Both bind
+every city page this skill builds.
+
+1. Write each body section from the approved board record, `data/boards/<slug>.json`, and
+   from nothing else. The section's H2 is its `heading`; its H3s are its `tree` nodes, in
+   record order, word for word (the build may title-case them). The copy answers the
+   section's `intent` inside its `words` band.
+2. Never open another city's page, board or built HTML for wording. The only text a sibling
+   may share is the whitelist in `scripts/dup_content_audit.py`; a sentence that differs from
+   a sibling's only by the city name is a copy, and the gate fails it.
+3. A heading the tree does not carry, including an info card's H3, goes back to the board:
+   add it to the tree and re-approve, then build. Never add one at build time.
+4. The H4-H6 ladder is written at build time. Each ladder heading is new to this page and to
+   the site.
+5. After `npm run build`, run `python3 scripts/outline_provenance_check.py <slug>` on this
+   city page and fix every FAIL in the copy, never by widening the whitelist. Only then add the
+   city page to `data/facts/rebuilt.json`; from that point `npm run check:all` re-runs the gate on
+   it with every other listed new-family page. The check ids it prints (`outline-extra`,
+   `outline-missing`, `outline-order`, `outline-unknown-section`, `outline-duplicate-heading`,
+   `outline-heading-crossover`, `outline-copy-crossover`, `outline-sentence-crossover`,
+   `outline-unapproved`, `outline-not-found`) are listed in the script's docstring.
+
+## Project 5 page rules (system-gaps)
+
+These bind every location, comparison and blog-post page built from 2026-09-24 on. The
+board refuses the record until each holds (`scripts/family_rules.py`); none of them applies
+to the twelve pages built before.
+
+1. **Keywords.** Run `python3 scripts/keyword_variants.py <board slug or query-cache folder>`
+   (add `--also <cache dir>` when a registry folder holds the page's SERP) and write its
+   proposals into the sections' `keywords.variation`, `related`, `cooccurring` and `similar`,
+   keeping only terms the section really uses. An empty type fails `keyword-variants-missing` from `boarded` on.
+2. **Entities.** Run `python3 scripts/ontology_seed.py --check`. Every entity a section names
+   is in `data/bsuk-ontology.json` with a source; a health result stays PROPOSED until the
+   evidence ledger holds it. The board shows them by class.
+3. **External links.** At least six on six domains from four source types (gov, registry,
+   vet-charity, welfare, research, local — `other` does not count toward the four), all rows
+   of `docs/reference/external-link-library.md` (`external-links-six-diverse`). A location page
+   adds its own council's dog or animal-licensing page as a `local` row, after
+   `curl -sIL <url>` returns 200, dated in the Verified column.
+4. **Anchors.** Every internal and external link carries `anchor_type` (exact, partial, lsi,
+   natural, branded, naked-url): three or more internal types with at most two exact, three
+   or more external types (`anchor-type-variation`), and never an in-copy internal anchor
+   another board already uses for the same route (nav tiles excepted)
+   (`anchor-reuse-sitewide`).
+5. **Images.** Run `python3 scripts/image_candidates.py <slug> --write`. The hero and every
+   body H2 and body H3 (FAQ blocks excepted) carry an image slot (`image-slot-missing`),
+   filled in this order: the page's own migrated image, another served image, a file from
+   the breeder's `Assets/Images/` folder (outside git; `BSUK_ASSETS_DIR` overrides) ingested
+   with `python3 scripts/ingest_image.py folder`. When none fits,
+   the slot is `source: generate` with an OG style, or `source: infographic` with an IG style,
+   named in `IMAGE-DESIGNS.md`. The generated file is drafted with
+   `python3 scripts/ingest_image.py draft`, approved on a second pass of the board by its
+   sha12 pick, and only then published with `python3 scripts/ingest_image.py publish`
+   (`image-generated-unapproved`). Every image slot has its `assets[]` row (slot, kind, w,
+   h, required) planned at boarding; ingest and publish only fill its `file` and `status`.
+   A slot without one fails `image-asset-row-missing`.
+6. **Board and approval.** The board's block 7b lists every rule above for this page,
+   evaluated as approval will see it; `scripts/board_approve.py` refuses the approval, and
+   any re-approval, while one of them FAILs. The build-gate image checks are listed but never
+   block approval: they can only pass after the image is approved and published.
+7. **Routes.** A page whose route is not its bare slug (a city page under `/uk-locations/`,
+   a post under the blog hub) has its row in `data/page-map.json` before it is built; without
+   it `check:outline` looks for `dist/<slug>/` and reports `outline-not-found`.
+8. **After the build,** `npm run -s check:outline` (also in `check:all`) must report the page
+   examined with 0 problems.

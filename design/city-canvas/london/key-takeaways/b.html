@@ -1,0 +1,48 @@
+<style>
+/* Key takeaways B — Tick card. One raised card (card surface, card border, card shadow)
+   centred on the bone page, a wide crop of Ince across its top, then the question, its
+   answer and four large-type ticked lines, each a brass-filled tick disc and one sentence.
+   Airy, unhurried, a checklist a buyer can read aloud. */
+.ktB{background:var(--color-surface);padding:var(--space-7) var(--space-4)}
+.ktB .card{max-width:760px;margin:0 auto;background:var(--color-surface-raised);border:var(--card-border);border-radius:var(--card-radius);box-shadow:var(--shadow-card);overflow:hidden}
+.ktB .pic{margin:0}
+.ktB .pic img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:62% 30%;background:var(--color-bone-50)}
+.ktB .body{padding:var(--space-5) var(--space-5) var(--space-6)}
+.ktB h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);text-wrap:balance}
+.ktB .lede{margin:0 0 var(--space-5);color:var(--color-ink-2)}
+.ktB ul{list-style:none;margin:0;padding:var(--space-5) 0 0;border-top:1px solid var(--color-border);display:grid;gap:var(--space-5)}
+.ktB li{margin:0;max-width:none;display:grid;grid-template-columns:32px minmax(0,1fr);gap:var(--space-4);align-items:start;font-size:var(--text-lg);line-height:var(--text-lg--line-height);color:var(--color-text)}
+.ktB .tick{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--color-cta);color:var(--color-cta-ink);margin-top:1px}
+.ktB .tick svg{width:18px;height:18px}
+.ktB .nb{white-space:nowrap}
+.ktB .foot{margin:var(--space-6) 0 0;display:flex;flex-wrap:wrap;gap:var(--space-3) var(--space-5);align-items:center}
+.ktB .cta{display:inline-flex;align-items:center;gap:var(--space-2);min-height:48px;padding:0 var(--space-6);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
+.ktB .cta:hover{background:var(--color-cta-hover)}
+.ktB .cta svg{width:1em;height:1em}
+.ktB .note{margin:0;font-size:var(--text-sm);color:var(--color-text-muted)}
+@media (min-width:768px){
+  .ktB{padding:var(--space-10) var(--space-5)}
+  .ktB .pic img{aspect-ratio:21/9}
+  .ktB .body{padding:var(--space-7) var(--space-9) var(--space-8)}
+  .ktB h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+}
+</style>
+<section data-component="key-takeaways" data-variant="b" class="ktB">
+  <div class="card">
+    <figure class="pic"><img src="/puppies/Ince1.jpg" alt="Ince, a solid blue Staffy boy, standing on a garden patio" width="1080" height="1079" loading="lazy"></figure>
+    <div class="body">
+      <h2>What Do You Need to Know Before Booking a Viewing?</h2>
+      <p class="lede">Four things to settle before you pay anything, whether you live in Hackney or Harrow, each with a plain answer from Lisa Bright in Carlisle.</p>
+      <ul>
+        <li data-takeaway><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><span>The price on the card is the puppy's price, plus delivery or collection: £1,500 for a boy, £1,700 for a girl.</span></li>
+        <li data-takeaway><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><span>A £500 deposit books your viewing and reserves your puppy, and it comes off the price.</span></li>
+        <li data-takeaway><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><span>London delivery is £200 to £350 by DEFRA-approved transport, priced by distance, or you collect in Carlisle.</span></li>
+        <li data-takeaway><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><span>Both parents are DNA-tested for <span class="nb">L-2-HGA</span> and <span class="nb">HC-HSF4</span>, and every puppy has a two-year genetic health guarantee.</span></li>
+      </ul>
+      <div class="foot">
+        <a class="cta" href="#contact">Ask Lisa a question <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <p class="note">You may also speak to our vet before you decide.</p>
+      </div>
+    </div>
+  </div>
+</section>

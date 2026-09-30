@@ -1,0 +1,50 @@
+{
+ "component": "jump-links",
+ "variants": {
+  "a": {
+   "name": "Stepper band",
+   "description": "A sticky steel band of dot-and-name stops on one line, a square All 8 key at its end raising a bottom sheet of the section questions.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/jump-links/sister-near-me-375-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/jump-links/sister-comparison-375-01.png"
+   ],
+   "differs_from": "Stops on a line (a stepper) across a steel band with a square end key; the built strips are pill, tab-chip or text rows and the built sheets open from a tab, a pill or a round button.",
+   "axes": {
+    "layout": "stepper",
+    "media": "none",
+    "density": "compact",
+    "framing": "band"
+   }
+  },
+  "b": {
+   "name": "Drop panel",
+   "description": "A sticky raised card with a photo, a wide Jump to a section control and an Enquire link; the control drops a grid of icon tiles.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea-modern.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/modern-faq-idea.png"
+   ],
+   "differs_from": "One wide control in a raised card with a photo drops a panel down from the strip; the built strips list every section as chips and the built sheets rise from the bottom.",
+   "axes": {
+    "layout": "drop-panel",
+    "media": "left",
+    "density": "regular",
+    "framing": "card"
+   }
+  },
+  "c": {
+   "name": "Photo pager",
+   "description": "A sticky sunk tray showing the section you are in: its photo, n of 8, its name, a step back and on; the All key slides in a side sheet.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/jump-links/sister-comparison-375-02.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/jump-links/sister-for-sale-375-01.png"
+   ],
+   "differs_from": "The strip shows one photo-led place with previous and next steps, not a row of every section; the built strips are imageless chip rows and the built sheets are bottom sheets.",
+   "axes": {
+    "layout": "photo-pager",
+    "media": "inline",
+    "density": "regular",
+    "framing": "inset"
+   }
+  }
+ }
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>body headings in ink, and a brand heading on the band</title>
+<!-- As the built pages shipped before the design-polish pick 1(a) (2026-09-30): every body H2
+     and H3 inherited --color-ink from <body>, although rules/design.md rule 1 gives headings
+     --color-brand. The second box is the other half: a heading in a steel band box that took
+     the brand colour paints steel on steel, 1.00:1. -->
+<style>
+  :root { --color-brand: #1F3A52; --color-ink: #1B2430; --color-bone: #F4F1EA; --color-on-inverse: #F4F1EA; }
+  body { margin: 0; font: 17px/1.65 Georgia, serif; color: var(--color-ink); }
+  .bl-box { padding: 32px 24px; }
+  .bl-frame-plain { background: var(--color-bone); }
+  .bl-frame-band { background: var(--color-brand); color: var(--color-on-inverse); }
+  .bl-frame-band h2 { color: var(--color-brand); }
+</style>
+</head><body>
+<main>
+  <section class="bl-box bl-frame-plain">
+    <h2>Our Health Testing Process</h2>
+    <p>Every parent is screened before a litter is planned.</p>
+    <h3>BVA/KC Health Schemes</h3>
+    <p>The schemes we use, named on the page.</p>
+  </section>
+  <section class="bl-box bl-frame-band">
+    <h2>Where Our Puppies Go</h2>
+    <p>A band box: its heading must not take the band's own colour.</p>
+  </section>
+</main>
+</body></html>

@@ -1,0 +1,81 @@
+/* src/styles/kit.css — kit primitives shared by MORE THAN ONE component (convention 9).
+   Imported from global.css. No colour is spelled here: every value is a token from
+   tokens.css, which stays the only file in src/ with a hex.
+
+   A rule earns a place in this file the moment a SECOND component needs it. Until then it
+   belongs in that one component's scoped <style>. Copying a card shell or a chip into a
+   second component instead of moving it here is the drift this file exists to stop.
+
+   These are global classes on purpose: an Astro component's scoped styles cannot be shared,
+   and a component applies one of these alongside its own scoped class, which keeps the
+   per-component overrides (padding, aspect ratio, direction) exactly where they belong.
+
+   No hex here; the spacing and radius literals are kept verbatim from the components these
+   rules were lifted out of, so moving them changed nothing on screen. */
+@layer components {
+  /* The mark: Mark.astro's `<use>` svg, mounted by the header, the footer and
+     SectionDivider. It carried no rule at all, which is what the advisory
+     `css-class-resolves` rows on the real pages were reporting — a class in the markup
+     that resolves to nothing. Minimal on purpose: the svg is given its width and height as
+     attributes, so all a rule owes it is a box that is exactly those attributes.
+
+     `display: block`, not `inline-block`: an inline-level replaced element sits on the text
+     baseline and drags the line box's descender space along with it, which is the few stray
+     pixels under a logo that make a header read as mis-centred and that `vertical-align`
+     only approximates away. All three mounts (header, footer, SectionDivider) are flex
+     containers, where display is blockified regardless and the honest declaration is the
+     block one; `flex: none` is the half that does real work there — it stops the mark being
+     shrunk below its own width when the row runs short, which is a squashed logo rather than
+     a wrapped one. */
+  .kit-mark { display: block; flex: none; }
+
+  /* A 24px tap target for a link that is otherwise just a line of text
+     (`layout-tap-target-size`, blocking; WCAG 2.5.8). A 14-16px link is a 17-20px box, and
+     the check forgives a small target only while nothing sits within 24px of its centre —
+     which is never true of a breadcrumb trail or a list of links. `display: inline-block` is
+     what makes the vertical padding count towards the box at all. Used by Breadcrumb.astro
+     and the locations hub; it earned its place here the moment there were two of them. */
+  .tap-24 { display: inline-block; padding-block: 4px; }
+
+  /* The card shell: PuppyCard and TrustStrip. */
+  .kit-card {
+    background: var(--color-surface-raised);
+    border: var(--card-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-card);
+  }
+  /* The hover lift is opt-in: a card that is not a link should not rise under the pointer. */
+  .kit-card--lift {
+    transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  }
+  .kit-card--lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+
+  /* The chip: PuppyCard's meta row and the Hero's trust chips. Brass is a FILL
+     (--kit-chip-strong) carrying --color-cta-ink, never small brass text on a light card. */
+  .kit-chip {
+    display: inline-block;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+  }
+  /* On a dark band the steel-on-steel chip disappears, so the fill becomes a bone tint of
+     the band's own text colour and the label takes that colour outright. */
+  [data-surface="inverse"] .kit-chip {
+    background: color-mix(in srgb, var(--color-text-on-inverse) 14%, transparent);
+    color: var(--color-text-on-inverse);
+  }
+}
+
+/* THE FOCUS CLASSES (the London component design pass, Plan 2). A photograph's crop comes from
+   data/image-focus.json through src/lib/imageFocus.ts `focusClass()`, which emits
+   `focus fx-NN fy-NN`: the centre of the file's faces, on a 5% grid. A crop is a CLASS, never
+   an inline `style="object-position:…"` (plan2-notes), and never a number typed beside one
+   image. `img-face-visible` (tests/render/checks/img.ts) measures what these paint. */
+@layer components {
+  .focus { object-position: var(--fx, 50%) var(--fy, 50%); }
+  .fx-0 { --fx: 0%; } .fx-5 { --fx: 5%; } .fx-10 { --fx: 10%; } .fx-15 { --fx: 15%; } .fx-20 { --fx: 20%; } .fx-25 { --fx: 25%; } .fx-30 { --fx: 30%; } .fx-35 { --fx: 35%; } .fx-40 { --fx: 40%; } .fx-45 { --fx: 45%; } .fx-50 { --fx: 50%; } .fx-55 { --fx: 55%; } .fx-60 { --fx: 60%; } .fx-65 { --fx: 65%; } .fx-70 { --fx: 70%; } .fx-75 { --fx: 75%; } .fx-80 { --fx: 80%; } .fx-85 { --fx: 85%; } .fx-90 { --fx: 90%; } .fx-95 { --fx: 95%; } .fx-100 { --fx: 100%; }
+  .fy-0 { --fy: 0%; } .fy-5 { --fy: 5%; } .fy-10 { --fy: 10%; } .fy-15 { --fy: 15%; } .fy-20 { --fy: 20%; } .fy-25 { --fy: 25%; } .fy-30 { --fy: 30%; } .fy-35 { --fy: 35%; } .fy-40 { --fy: 40%; } .fy-45 { --fy: 45%; } .fy-50 { --fy: 50%; } .fy-55 { --fy: 55%; } .fy-60 { --fy: 60%; } .fy-65 { --fy: 65%; } .fy-70 { --fy: 70%; } .fy-75 { --fy: 75%; } .fy-80 { --fy: 80%; } .fy-85 { --fy: 85%; } .fy-90 { --fy: 90%; } .fy-95 { --fy: 95%; } .fy-100 { --fy: 100%; }
+}

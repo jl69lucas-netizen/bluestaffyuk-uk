@@ -1,0 +1,57 @@
+{
+  "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper via the claude.ai connector, 2026-09-25. Request: keyword 'Where can I buy a blue Staffy puppy near Cardiff, and what should I ask the breeder?', language en, location United Kingdom. The connector's response carries no cost field and no keyword field. Saved as returned (answer text and sources whole). Nothing dropped: the answer and its sources held no phone, email, street address, postcode, WhatsApp, maps or social-profile link, and the response listed no local businesses.",
+  "id": "09250753-2496-0629-0000-ce8bb5599bab",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "items": [
+    {
+      "type": "chat_gpt_text",
+      "rank_group": 1,
+      "rank_absolute": 1,
+      "markdown": "If you’re looking for a **blue Staffordshire Bull Terrier (Staffy) puppy near Cardiff**, I’d focus on finding a health-tested breeder rather than choosing purely by colour. Blue Staffies are popular, and the colour can sometimes lead to inflated prices or breeders prioritising appearance over health. [Staffie-Owners.co.uk](https://www.staffie-owners.co.uk/staffies-for-sale/cardiff?colour=blue&keywords=Working+Chunky&price=1000&utm_source=chatgpt.com) \n\n## Where to look around Cardiff\n\n- **The Royal Kennel Club puppy search** — a good starting point because you can filter Staffordshire Bull Terriers by location and look for breeders who provide health information. [Royal Kennel Club](https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com)\n- **Local Staffy puppy listings around Cardiff/Penarth/Barry/Caerphilly** — there are currently listings advertised in the wider Cardiff area, including blue Staffies, but treat marketplace adverts as leads only and vet the breeder carefully. [Staffie-Owners.co.uk](https://www.staffie-owners.co.uk/staffies-for-sale/penarth-cardiff?colour=blue&kc_registered=yes&utm_source=chatgpt.com) [Staffie-Owners.co.uk](https://www.staffie-owners.co.uk/staffies-for-sale/cardiff-caerdydd-south-glamorgan?sex=female&utm_source=chatgpt.com)\n- Consider widening the search radius to **South Wales** (e.g., Bridgend, Swansea, Caerphilly, Rhondda Cynon Taf) if you’re willing to wait for the right litter. [Pets4Homes](https://www.pets4homes.co.uk/classifieds/pgofm3el-kc-registered-staffordshire-bull-terrier-puppies-cardiff/?utm_source=chatgpt.com)\n\nI’d be cautious with anyone who:\n\n- has multiple litters available at once,\n- won’t let you see the puppy with its mother,\n- wants to meet in a car park or deliver the puppy,\n- cannot show health test paperwork,\n- focuses mainly on “rare blue” or “XL/chunky” marketing.\n\n## Questions to ask the breeder\n\n### Health testing (very important for Staffies)\n\nAsk:\n\n1. **“Have both parents been health tested? Can I see the certificates?”**\n\n - Ask specifically about:\n\n - **L-2-HGA (L-2-hydroxyglutaric aciduria)** — a neurological condition seen in Staffordshire Bull Terriers.\n- **HC-HSF4 hereditary cataracts** — an inherited eye condition.\n- Eye screening results.\n- Don’t accept “the parents are healthy” as a substitute for testing. Some carriers can look completely normal.\n2. **“Can I see the mother with the puppies?”**\n\n - The dam should be present, comfortable, and interacting normally with the litter.\n3. **“Where are the puppies raised?”**\n\n - Good signs:\n\n - inside a family environment,\n- exposed to normal household sounds,\n- handled regularly,\n- beginning socialisation.\n\n### About the puppy\n\nAsk:\n\n- “What have you done to socialise the puppies?”\n- “Have they met children, other dogs, visitors, household noises?”\n- “Which puppy’s temperament suits a first-time owner/family home?”\n- “What food are they currently eating?”\n- “Have they been wormed and when?”\n- “Have they been microchipped?”\n- “What vaccinations have they had?”\n\n### About paperwork\n\nAsk for:\n\n- Kennel Club registration details (if advertised as KC registered).\n- Microchip information.\n- Vaccination record.\n- Worming/flea treatment record.\n- Written sales contract/health guarantee.\n- Copies of parents’ health test results.\n\n## Things I’d ask specifically about a blue Staffy\n\n- “Why did you choose this pairing?”\n- “Are you breeding for temperament and health, or mainly colour?”\n- “Do either parent have skin problems, allergies, or recurring ear issues?”\n- “Have previous puppies from these parents had any health problems?”\n\n## A good sign\n\nA responsible breeder will usually ask **you** questions too — about your home, experience with dogs, work hours, exercise plans, and what life the puppy will have.\n\nIf you tell me whether you mean **Cardiff, Wales** and roughly how far you’re willing to travel (e.g., 30 miles, 1–2 hours), I can help narrow the search area and what to check in specific adverts.\n\n",
+      "sources": [
+        {
+          "type": "chat_gpt_source",
+          "title": "Working Chunky Blue Staffordshire Bull Terrier Puppies For Sale In Cardiff Under £1,000 | Staffie Owners",
+          "domain": "www.staffie-owners.co.uk",
+          "url": "https://www.staffie-owners.co.uk/staffies-for-sale/cardiff?colour=blue&keywords=Working+Chunky&price=1000&utm_source=chatgpt.com",
+          "source_name": "Staffie-Owners.co.uk",
+          "publication_date": "2026-08-10 00:00:00 +00:00",
+          "markdown": "[Staffie-Owners.co.uk](https://www.staffie-owners.co.uk/staffies-for-sale/cardiff?colour=blue&keywords=Working+Chunky&price=1000&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Find a puppy | The Royal Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Kennel Club Registered Blue Staffordshire Bull Terrier Puppies For Sale In Penarth, Cardiff | Staffie Owners",
+          "domain": "www.staffie-owners.co.uk",
+          "url": "https://www.staffie-owners.co.uk/staffies-for-sale/penarth-cardiff?colour=blue&kc_registered=yes&utm_source=chatgpt.com",
+          "source_name": "Staffie-Owners.co.uk",
+          "markdown": "[Staffie-Owners.co.uk](https://www.staffie-owners.co.uk/staffies-for-sale/penarth-cardiff?colour=blue&kc_registered=yes&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Female (Bitch) Staffordshire Bull Terrier Puppies For Sale In Cardiff | Staffie Owners",
+          "domain": "www.staffie-owners.co.uk",
+          "url": "https://www.staffie-owners.co.uk/staffies-for-sale/cardiff-caerdydd-south-glamorgan?sex=female&utm_source=chatgpt.com",
+          "source_name": "Staffie-Owners.co.uk",
+          "markdown": "[Staffie-Owners.co.uk](https://www.staffie-owners.co.uk/staffies-for-sale/cardiff-caerdydd-south-glamorgan?sex=female&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier Puppies for sale in Cardiff, Cardiff | Pets4Homes",
+          "domain": "www.pets4homes.co.uk",
+          "url": "https://www.pets4homes.co.uk/classifieds/pgofm3el-kc-registered-staffordshire-bull-terrier-puppies-cardiff/?utm_source=chatgpt.com",
+          "source_name": "Pets4Homes",
+          "markdown": "[Pets4Homes](https://www.pets4homes.co.uk/classifieds/pgofm3el-kc-registered-staffordshire-bull-terrier-puppies-cardiff/?utm_source=chatgpt.com)"
+        }
+      ]
+    }
+  ]
+}

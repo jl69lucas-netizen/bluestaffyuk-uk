@@ -1,0 +1,87 @@
+{
+  "source": "ai_engines",
+  "status": "ok",
+  "fetched": "2026-09-23",
+  "questions": [
+    {
+      "text": "Where can I buy a blue Staffy puppy near Manchester?",
+      "detail": "ai_chatgpt",
+      "fact_source": "bank:home-find-breeders"
+    },
+    {
+      "text": "Can I see the puppy with its mother where the litter was raised?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    },
+    {
+      "text": "Can I see the parents' health-test certificates?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    },
+    {
+      "text": "Have both parents been tested for L-2-HGA and hereditary cataracts?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    },
+    {
+      "text": "Have the parents had eye examinations and elbow screening?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    },
+    {
+      "text": "What are the parents' Kennel Club registered names?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    },
+    {
+      "text": "What is the parents' coefficient of inbreeding?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    },
+    {
+      "text": "Has the puppy been microchipped and vet checked?",
+      "detail": "ai_chatgpt",
+      "fact_source": "bank:puppy-package"
+    },
+    {
+      "text": "What vaccinations, worming and flea treatments has the puppy had?",
+      "detail": "ai_chatgpt",
+      "fact_source": "bank:health-vaccinations"
+    },
+    {
+      "text": "What socialisation has the puppy had?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    },
+    {
+      "text": "What food is the puppy eating now?",
+      "detail": "ai_chatgpt",
+      "fact_source": "bank:health-puppy-diet"
+    },
+    {
+      "text": "Do you give a written contract and a return-to-breeder policy?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    },
+    {
+      "text": "Can I contact you for advice for the dog's whole life?",
+      "detail": "ai_chatgpt",
+      "fact_source": "bank:home-after-support"
+    },
+    {
+      "text": "How do I spot a bad Staffy breeder?",
+      "detail": "ai_chatgpt",
+      "fact_source": "bank:buying-puppy-farm"
+    },
+    {
+      "text": "Is a blue Staffy healthier than other colours?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    },
+    {
+      "text": "Should I pay a deposit before I have seen the puppy?",
+      "detail": "ai_chatgpt",
+      "fact_source": null
+    }
+  ]
+}

@@ -1,0 +1,447 @@
+---
+// src/pages/board-preview/[slug].astro — the hidden noindex route that renders a board
+// record's three styles per section, so the board shows RENDERED options rather than the
+// names of options.
+//
+// IT OWNS NO LAYOUT. The arrangement of a section comes from `boxClass()` in
+// src/lib/boardStyles.ts and the classes it names, which live in src/styles/board-styles.css
+// (global, via global.css). A page rebuilt from the approved record calls the SAME function
+// with the picked style, so what the breeder approves here is what P5 ships. The scoped
+// block at the bottom of this file is the preview's own chrome — the section labels and the
+// spacing between the three renderings — and nothing in it is part of a style.
+//
+// One page per DRAFT record (`meta.status != "approved"`), plus any record flagged
+// `meta.preview: true`. Every section of the record is emitted three times as
+// `<section data-section="<id>" data-style="S1|S2|S3">`; scripts/build_board_previews.py
+// cuts those blocks out of the built page and scripts/build_page_board.py embeds them in
+// the board as srcdoc iframes at 1280 / 768 / 375.
+//
+// THE COPY IS THE RECORD'S OWN. `heading` is the H2, `intent` is the lede, and each `tree`
+// node becomes an H3 stub carrying one sentence of the intent. Nothing is invented here
+// (working rule 9): the preview exists to show the SHAPE of a section, and the real prose
+// is written in P5 against the approved style.
+//
+// IMAGES BY ORIGINAL PUBLIC PATH. A section names image SLOTS; the record's top-level
+// `assets` carry the file each slot is filled with. Those files are the legacy `/images/…`
+// ones the migration kept, so they are plain `<img src="/images/…">` — and the kit Hero
+// takes the same string through its `image` prop. astro:assets would want them under
+// src/assets/ and would re-hash them, which is what working rule 11 says not to do.
+//
+// noindex, and `board-preview` is in form_contract_audit.py's NON_CONTENT_ROUTES: a form
+// rendered here is a specimen of the kit's form, not a reachable enquiry form.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/kit/Hero.astro';
+import InfoCard from '../../components/kit/InfoCard.astro';
+import PuppyCard from '../../components/kit/PuppyCard.astro';
+import TrustStrip from '../../components/kit/TrustStrip.astro';
+import CounterStrip from '../../components/kit/CounterStrip.astro';
+import Testimonial from '../../components/kit/Testimonial.astro';
+import Faq from '../../components/kit/Faq.astro';
+import ContactFormKit from '../../components/kit/ContactFormKit.astro';
+import SectionDivider from '../../components/kit/SectionDivider.astro';
+import PageDial from '../../components/kit/PageDial.astro';
+import SectionSheet from '../../components/kit/SectionSheet.astro';
+import SectionStrip from '../../components/kit/SectionStrip.astro';
+import DataTable from '../../components/kit/DataTable.astro';
+import VideoEmbed from '../../components/kit/VideoEmbed.astro';
+import Button from '../../components/kit/Button.astro';
+import { boxClass, layoutTypeFor, stylesForSection } from '../../lib/boardStyles';
+import { loadFaq } from '../../lib/faq';
+import puppies from '../../../data/puppies.json';
+import imageManifest from '../../../data/image-manifest.json';
+
+interface TreeNode { level: number; heading: string; intent: string; children: TreeNode[] }
+interface ImageSlot { slot: string; kind: string; required: boolean; prompt: string }
+interface Asset {
+  slot: string; kind: string; w: number; h: number;
+  required: boolean; status: string; file: string | null; alt: string; caption?: string;
+}
+/** A `table`-shaped section's own data. Optional on every other shape, and the ONLY place
+ *  a table's numbers live: the route never derives a table from the tree, because a column
+ *  order and a row order are content decisions the board has to show before it is approved. */
+interface TableData { caption: string; columns: string[]; rows: (string | number)[][]; numeric?: number[] }
+/** A `video`-shaped section's own data. The id is the OLD SITE's YouTube id, reused
+ *  (working rule 14); the route never invents one, exactly as it never invents a table. */
+interface VideoData { id: string; title: string; caption?: string }
+/** Working rule 16. `stats` is what a counter strip (or a hero with a `stats` ledge) PRINTS,
+ *  each row carrying the data path it came from; `hero` is the per-page furniture a hero's
+ *  `ledge` axis selects between; `refresh` is the section's recorded delta. All three live on
+ *  the record for the `table` block's reason: a figure the route derived would be a figure
+ *  nobody approved. */
+/** A source is one path or several: `£200–£350` is two facts and cites two. */
+type Source = string | string[];
+interface StatRow { n: string; label: string; source: Source }
+/** A ledge entry is a plain string when it states no figure, and `{text, source}` when it
+ *  does — the record carries the path, the renderer only ever sees the text. */
+type LedgeEntry = string | { text: string; source: Source };
+interface HeroData {
+  chips?: LedgeEntry[]; ticks?: LedgeEntry[];
+  aside?: {
+    title?: string; quote?: string;
+    rows?: { label: string; value: string; source?: Source }[];
+    items?: LedgeEntry[];
+  };
+}
+interface RefreshData { axis: string; note: string }
+interface Section {
+  id: string; n: number; heading: string; intent: string; shape: string;
+  tree: TreeNode[]; images: ImageSlot[]; styles?: string[]; table?: TableData; video?: VideoData;
+  stats?: StatRow[]; hero?: HeroData; refresh?: RefreshData;
+}
+/** The parts of `schemas/board.schema.json` this route reads — named in full, so a field
+ *  that moves in the schema is a type error here rather than an `undefined` at build. */
+interface BoardRecord {
+  meta: {
+    slug: string;
+    page_type: string;
+    /** Working rule 16's layout family, when the record states one. */
+    layout_type?: string;
+    status: 'draft' | 'boarded' | 'approved' | 'built' | 'released';
+    preview?: boolean;
+    research_as_of: string;
+    sources: { path: string; fetched: string }[];
+  };
+  h1: { variants: string[]; recommended: number; pick: number | null };
+  sections: Section[];
+  assets: Asset[];
+}
+
+export async function getStaticPaths() {
+  // eager: the record IS the page's data, so there is nothing to defer.
+  const files = import.meta.glob<BoardRecord>('../../../data/boards/*.json', { eager: true, import: 'default' });
+  return Object.values(files)
+    .filter((r) => r.meta.status !== 'approved' || r.meta.preview === true)
+    .map((record) => ({ params: { slug: record.meta.slug }, props: { record } }));
+}
+
+const { record } = Astro.props as { record: BoardRecord };
+// A DATE, because `schema-date-modified-present` is blocking and an undated page is an
+// undated page whether a crawler is allowed to read it or not. Not `new Date()` and not
+// data/page-dates.json either: this page is generated from ONE file, and the honest date
+// for it is the day that record's research was done. It moves when the record moves.
+const stamp = record.meta.research_as_of;
+const pageSchema = [{
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `/board-preview/${record.meta.slug}/#webpage`,
+  url: `/board-preview/${record.meta.slug}/`,
+  name: `Board preview — /${record.meta.slug}/`,
+  datePublished: stamp,
+  dateModified: stamp,
+  inLanguage: 'en-GB',
+}];
+
+const h1 = record.h1.variants[record.h1.pick ?? record.h1.recommended] ?? record.h1.variants[0];
+const faqRows = loadFaq();
+const pupSlugs = (puppies as { slug: string }[]).map((p) => p.slug);
+
+/** The file a section's first image slot resolves to, from the record's asset list. */
+/** The baked `-<width>.webp` sibling a legacy image has, if it has one.
+ *
+ *  A public path is copied verbatim and nothing in the build knows its candidates, so a hero
+ *  `<img>` with no `srcset` decodes one file at whatever the slot happens to be — which is
+ *  `img-srcset-within-2x` (blocking) the moment the card paints narrower than half the file's
+ *  intrinsic width, as it does at 375px. `data/image-manifest.json` records the sibling's
+ *  width as `sib_w`, so the candidates are read from the manifest rather than guessed. */
+const MANIFEST = imageManifest as Record<string, { w: number; h: number; sib_w: number | null }>;
+const srcsetFor = (file: string, w: number) => {
+  const stem = file.replace(/^.*\//, '').replace(/\.[a-z0-9]+$/i, '');
+  const ext = (file.match(/\.[a-z0-9]+$/i) || ['.webp'])[0];
+  const sib = MANIFEST[stem]?.sib_w;
+  if (!sib || !w || sib >= w) return undefined;
+  return `${file.replace(ext, '')}-${sib}${ext} ${sib}w, ${file} ${w}w`;
+};
+
+/** The first filled photo a section names, WITH its intrinsic size. The size is not optional
+ *  furniture: an `<img>` without `width`/`height` reserves no box, so the page reflows when
+ *  the photo lands, and `img_dims` (scripts/final_page_audit.py) is blocking on exactly that.
+ *  Every hero on the eight new preview routes shipped without one until this returned them. */
+const assetFor = (s: Section) => {
+  const slot = s.images[0]?.slot;
+  if (!slot) return null;
+  const a = record.assets.find((x) => x.slot === slot && x.file);
+  if (!a) return null;
+  const src = a.file as string;
+  return { src, alt: a.alt || s.heading, w: a.w, h: a.h, srcset: srcsetFor(src, a.w) };
+};
+
+/** EVERY filled photo a section names, for the `mosaic` hero layout. Fewer than two and the
+ *  hero falls back to the single photo — the arrangement degrades rather than inventing a
+ *  tile, which is rule 9 applied to a layout instead of to a sentence. */
+const assetsFor = (s: Section) =>
+  s.images
+    .map((slot) => record.assets.find((x) => x.slot === slot.slot && x.file))
+    .filter((a): a is Asset => !!a)
+    .map((a) => ({ src: a.file as string, alt: a.alt || s.heading,
+                   w: a.w, h: a.h, caption: a.caption }));
+
+/** The TEXT of a ledge entry. The `source` beside it is the record's business and the gate's
+ *  (`ledge-source-unresolved`); a hero never renders a citation, so it is dropped here and
+ *  the kit component keeps taking plain strings. */
+const ledgeText = (e: LedgeEntry) => (typeof e === 'string' ? e : e.text);
+const ledgeList = (xs: LedgeEntry[] | undefined) => (xs ?? []).map(ledgeText);
+
+/** The layout family this record's hero and counter strip are cut for (working rule 16). */
+const layoutType = layoutTypeFor(record.meta.page_type, record.meta.layout_type ?? null);
+
+/** The FAQ rows a `faq`-shaped section names. A record names its rows by `data/faq.json`
+ *  id in the section's tree (one node per row); a section that names none shows them all,
+ *  so a draft board still renders the shape rather than an empty accordion. */
+const faqFor = (s: Section) => {
+  const named = new Set(s.tree.map((n) => n.heading.trim()));
+  const picked = faqRows.filter((r) => named.has(r.id));
+  return picked.length ? picked : faqRows;
+};
+
+/** One sentence of the section intent, per tree node — the stub body a style is judged on. */
+const sentences = (text: string) =>
+  text.split(/(?<=[.!?])\s+/).map((t) => t.trim()).filter(Boolean);
+const stub = (s: Section, i: number) => {
+  const parts = sentences(s.intent);
+  return parts.length ? parts[i % parts.length] : s.intent;
+};
+
+/** The shapes with a renderer of their own; anything else falls through to prose. */
+const KIT_SHAPES = ['hero', 'trust', 'stats', 'divider', 'reviews', 'faq', 'form', 'puppies',
+                    'takeaways', 'dial', 'sheet', 'strip', 'table', 'video'];
+
+/** The three CHROME shapes. They are not a stretch of page: they are the in-page nav, and an
+ *  in-page nav with nothing to navigate is three identical empty lists. So each block gets
+ *  its OWN six stub targets — real `<h3 id>` headings the dial's and the sheet's hrefs
+ *  resolve to — and the ids carry the style id, because the same section is rendered three
+ *  times on one document and a duplicated id would point every dial at the first block's
+ *  copy. Six because that is the length the dial's ring was measured against (`of 6`), and
+ *  the length at which a section list stops being a list and starts needing a dial. */
+const CHROME_SHAPES = ['dial', 'sheet', 'strip'];
+const STUB_LABELS = ['Where we are', 'Send a message', 'What to tell us',
+                     'How we reply', 'Owners', 'Questions'];
+const stubTargets = (s: Section, styleId: string) =>
+  STUB_LABELS.map((label, i) => ({ id: `${s.id}-${styleId}-t${i + 1}`, label }));
+---
+
+<BaseLayout
+  title={`Board preview — /${record.meta.slug}/`}
+  description="Hidden style preview for a BlueStaffyUK page board. Three arrangements per section, rendered from the kit."
+  noindex={true}
+  schema={pageSchema}
+>
+  <div class="bp-page">
+    <p class="bp-note">
+      Board preview for <code>{record.meta.slug}</code> — {record.sections.length} sections ×3 styles.
+      Not a page: it exists so the board can show rendered options.
+    </p>
+    <h1 class="bp-h1">{h1}</h1>
+
+    {record.sections.map((s) => (
+      <div class="bp-group">
+        <p class="bp-label">{String(s.n).padStart(2, '0')} · {s.heading} <span>{s.shape}</span>
+          {/* The recorded refresh delta, printed where the arrangement it describes is
+              rendered. It is preview chrome, not part of a style — the cutter takes the
+              inside of [data-section][data-style] and this sits outside it. */}
+          {s.refresh && <em class="bp-refresh">{s.refresh.axis}: {s.refresh.note}</em>}
+        </p>
+        {stylesForSection(s.shape, s.styles, layoutType).map((st) => {
+          const l = st.layout;
+          const img = assetFor(s);
+          const heads = s.tree;
+          return (
+            <section data-section={s.id} data-style={st.id} data-style-name={st.name} class="bp-style">
+              <div class={boxClass(st)}>
+                {/* A hero renders its own heading and lede — a second copy above it would
+                    be the preview's chrome pretending to be the page. */}
+                {s.shape !== 'hero' && (
+                  <header class="bl-head">
+                    {l.heading === 'eyebrow' && <p class="bl-eyebrow">{st.name}</p>}
+                    <h2>{s.heading}</h2>
+                    <p class="bl-lede">{sentences(s.intent)[0] ?? s.intent}</p>
+                  </header>
+                )}
+
+                <div class="bl-body">
+                  {/* Working rule 16. The ARRANGEMENT comes from the picked style's own
+                      axes; the DATA comes from the record. A ledge the record supplied
+                      nothing for renders nothing — Hero.astro decides that, not this route,
+                      so the same hero on a rebuilt page behaves identically. */}
+                  {s.shape === 'hero' && (
+                    <Hero
+                      as="h2"
+                      title={s.heading}
+                      lede={sentences(s.intent)[0] ?? s.intent}
+                      image={img?.src}
+                      imageAlt={img?.alt}
+                      imageWidth={img?.w}
+                      imageHeight={img?.h}
+                      imageSrcset={img?.srcset}
+                      layout={l.hero ?? 'split'}
+                      align={l.align ?? 'left'}
+                      media={l.media ?? 'right'}
+                      ledge={l.ledge ?? 'none'}
+                      chips={ledgeList(s.hero?.chips)}
+                      ticks={ledgeList(s.hero?.ticks)}
+                      stats={(s.stats ?? []).map((r) => ({ n: r.n, label: r.label }))}
+                      mosaic={assetsFor(s)}
+                    >
+                      {/* The aside is the PAGE's markup, handed to the hero's box through the
+                          slot. A rebuilt page writes its own; this is the record's, rendered
+                          the same way so the arrangement on the board is the arrangement that
+                          ships. `ledge: 'aside'` with nothing here renders no aside at all. */}
+                      {l.ledge === 'aside' && s.hero?.aside && (
+                        <div slot="aside">
+                          {s.hero.aside.title && <p class="aside-title">{s.hero.aside.title}</p>}
+                          {s.hero.aside.quote && <blockquote class="aside-quote">{s.hero.aside.quote}</blockquote>}
+                          {(s.hero.aside.rows ?? []).length > 0 && (
+                            <dl class="aside-rows">
+                              {(s.hero.aside.rows ?? []).map((r) => (<><dt>{r.label}</dt><dd>{r.value}</dd></>))}
+                            </dl>
+                          )}
+                          {(s.hero.aside.items ?? []).length > 0 && (
+                            <ul class="aside-items">
+                              {ledgeList(s.hero.aside.items).map((i) => <li>{i}</li>)}
+                            </ul>
+                          )}
+                        </div>
+                      )}
+                    </Hero>
+                  )}
+                  {s.shape === 'trust' && <TrustStrip />}
+                  {s.shape === 'stats' && (
+                    <CounterStrip
+                      tiles={l.tiles ?? 'inline'}
+                      label={l.label ?? 'under'}
+                      stats={(s.stats ?? []).map((r) => ({ n: r.n, label: r.label }))}
+                    />
+                  )}
+                  {s.shape === 'divider' && <SectionDivider inverse={l.frame === 'band'} />}
+                  {s.shape === 'reviews' && <Testimonial mode={l.mode ?? 'single'} />}
+                  {s.shape === 'faq' && <Faq items={faqFor(s)} />}
+                  {/* The three arrangements are the box's `bl-chrome-*` class, not a prop:
+                      one component, three stylesheets' worth of chrome, and the same
+                      stacking below 640px in all three (working rule 13). A `table` section
+                      with no `table` block renders nothing rather than an invented grid —
+                      rule 9 applies to a preview exactly as it applies to a page. */}
+                  {s.shape === 'table' && s.table && (
+                    <DataTable
+                      caption={s.table.caption}
+                      columns={s.table.columns}
+                      rows={s.table.rows}
+                      numeric={s.table.numeric}
+                    />
+                  )}
+                  {/* Component 18. The `play` axis is a PROP, not a class: S1 and S2 put the
+                      player in the document and differ by their bed, S3 renders the
+                      thumbnail facade and fetches the player on the first click. A `video`
+                      section with no `video` block renders nothing rather than an invented
+                      id — rule 9 and working rule 14 both. */}
+                  {s.shape === 'video' && s.video && (
+                    <VideoEmbed
+                      id={s.video.id}
+                      title={s.video.title}
+                      caption={s.video.caption}
+                      play={l.play ?? 'facade'}
+                    />
+                  )}
+                  {/* Three copies of one form on one document: each needs its own id space
+                      or every label points at the first copy's field. */}
+                  {s.shape === 'form' && <ContactFormKit idPrefix={`${s.id}-${st.id}-form`} />}
+                  {s.shape === 'puppies' && (
+                    <div class="bl-cards">
+                      {pupSlugs.slice(0, l.list === 'grid-2' ? 2 : 3).map((slug) => <PuppyCard slug={slug} />)}
+                    </div>
+                  )}
+                  {CHROME_SHAPES.includes(s.shape) && (
+                    <div class="bp-chrome">
+                      {/* The picks are MADE (2026-09-19): dial S2, sheet S2, strip S2, and
+                          the losing arrangements are deleted from the three components. A
+                          chrome section on an existing record still renders three blocks —
+                          its three historical style ids — but all three now show the one
+                          shipped arrangement, which is the honest thing for a board that is
+                          being re-read after the decision rather than before it. */}
+                      {s.shape === 'dial' && (
+                        <PageDial sections={stubTargets(s, st.id)} idPrefix={`${s.id}-${st.id}-dial`} />
+                      )}
+                      {s.shape === 'sheet' && <SectionSheet sections={stubTargets(s, st.id)} />}
+                      {/* The strip is `position: sticky`, and inside a preview frame it pins
+                          to the FRAME, not to the viewport. */}
+                      {s.shape === 'strip' && <SectionStrip sections={stubTargets(s, st.id)} />}
+                      <div class="bp-targets">
+                        {stubTargets(s, st.id).map((t, i) => (
+                          <div>
+                            <h3 id={t.id}>{t.label}</h3>
+                            <p>{stub(s, i)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {s.shape === 'takeaways' && (
+                    <div class="bl-cards">
+                      {(heads.length ? heads : [{ heading: s.heading, intent: s.intent, level: 3, children: [] }]).map((n, i) => (
+                        <InfoCard kind="fact" heading={n.heading} body={n.intent || stub(s, i)} />
+                      ))}
+                    </div>
+                  )}
+                  {!KIT_SHAPES.includes(s.shape) && (
+                    <div class="bl-prose">
+                      {img && l.media && l.media !== 'none' && (
+                        <img class="bl-img" src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+                      )}
+                      {heads.map((n, i) => (
+                        <div class="bl-stub">
+                          <h3>{n.heading}</h3>
+                          <p>{n.intent || stub(s, i)}</p>
+                        </div>
+                      ))}
+                      {!heads.length && <p>{s.intent}</p>}
+                    </div>
+                  )}
+                </div>
+
+                {l.aside === 'infocard' && (
+                  <aside class="bl-aside">
+                    <InfoCard kind="fact" heading={s.heading} body={sentences(s.intent)[0] ?? s.intent} />
+                  </aside>
+                )}
+                {l.aside === 'jump' && (
+                  <aside class="bl-aside">
+                    <p class="bl-eyebrow">In this section</p>
+                    <ul>{(heads.length ? heads : [{ heading: s.heading }]).map((n) => <li>{n.heading}</li>)}</ul>
+                    <Button kind="outline" label="Available puppies" href="/available-puppies/" />
+                  </aside>
+                )}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  @layer components {
+    /* The preview's OWN chrome. None of it is part of a style — the cutter takes the inside
+       of `[data-section][data-style]`, and everything below sits outside that. */
+    .bp-page { max-width: 1280px; margin-inline: auto; padding: var(--space-6) var(--space-5) var(--space-12); }
+    .bp-note { font-size: var(--text-sm); color: var(--color-text-muted); }
+    .bp-h1 { font-family: var(--font-display); font-size: var(--text-3xl); }
+    .bp-label { margin: var(--space-8) 0 var(--space-2); font-size: var(--text-xs); font-weight: 600;
+                letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+    .bp-label span { color: var(--color-brand); }
+    .bp-refresh { display: block; margin-top: var(--space-1); font-style: normal;
+                  text-transform: none; letter-spacing: 0; color: var(--color-text); }
+    .bp-style { margin: 0 0 var(--space-6); }
+    /* The chrome shapes only: the nav on the left (where PageShell puts it) and the six
+       stub targets beside it, so the dial has something to point at and the sheet's bar or
+       button has a column of page to sit over. Preview chrome, not part of a style. */
+    /* minmax(0, 1fr), not the implicit `auto` track: an auto track grows to its widest
+       item's min-content, and the STRIP specimen's min-content is its whole row of links —
+       933px at 375, which scrolled the page sideways by 606px (Known Issue 32). A zero
+       minimum lets the strip keep its own scroller instead of widening the page. */
+    .bp-chrome { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+    @media (min-width: 1024px) {
+      .bp-chrome { grid-template-columns: 196px minmax(0, 1fr); }
+    }
+    .bp-targets h3 { margin: var(--space-4) 0 var(--space-1); font-size: var(--text-lg); }
+    .bp-targets p { margin: 0; color: var(--color-text-muted); }
+  }
+</style>

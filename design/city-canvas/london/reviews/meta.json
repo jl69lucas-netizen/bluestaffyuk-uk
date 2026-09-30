@@ -1,0 +1,53 @@
+{
+ "component": "reviews",
+ "variants": {
+  "a": {
+   "name": "Owner's letter",
+   "description": "Mark J's London review on a raised letter card, his own photo from the site at its left, a brass quote mark and a signed foot.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/reviews/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/reviews/mfs-home-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/about:team-idea1.png"
+   ],
+   "differs_from": "One review with the reviewer's own photo on a raised card; S1 gives one review room with no photo and no frame, S2 and S3 are grids.",
+   "axes": {
+    "layout": "letter",
+    "media": "left",
+    "density": "airy",
+    "framing": "card"
+   }
+  },
+  "b": {
+   "name": "Two London notes",
+   "description": "A sunk tray opening on a wide photo of Vennie, then the two London reviews stacked one per slot, the second stepped in.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/reviews/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/reviews/sister-comparison-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/review-component-idea.png"
+   ],
+   "differs_from": "Two reviews stacked in one column under a section photo, in a sunk tray; the built rows carry no photo and sit plain or on a band.",
+   "axes": {
+    "layout": "stack",
+    "media": "top",
+    "density": "compact",
+    "framing": "inset"
+   }
+  },
+  "c": {
+   "name": "Kennel wall",
+   "description": "A photo of Jones bleeds to the right edge of the page; a bone plate overlaps it with the question and Rachel L.'s review set large.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/reviews/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/review-idea1.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/about:team-idea1.png"
+   ],
+   "differs_from": "A single review on a plate over a credited photo that bleeds to the page edge; the built rows have no photo and a plain or band frame.",
+   "axes": {
+    "layout": "overlap",
+    "media": "right",
+    "density": "regular",
+    "framing": "bleed"
+   }
+  }
+ }
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>city type-fit: known broken</title>
+<style>body{margin:0;font:17px/1.6 Georgia,serif} .city-kit{padding:24px} p{margin:0 0 16px}
+.chunky{font-size:40px;line-height:1.1}
+.tall-head{font-size:16px;line-height:1.2;max-width:6ch}
+.wide{width:90ch;max-width:none}
+.long{max-width:20ch}
+.tall{height:4000px}</style></head>
+<body>
+<!-- One of each defect the check names, each on its own element so each fires by itself:
+     a heading over its cap, a heading over three lines, a paragraph wider than 75ch, a
+     paragraph over the line cap, a section taller than the viewport cap, and (its own section)
+     a desktop H2 whose measure is too narrow for its box. The review
+     paragraph is inside a blockquote: it is NOT exempt, and fires like any other. -->
+<!-- A section H2 held to the phone measure (22ch) in a 900px, desktop-tier box: a short question
+     stacked to three lines beside empty space (the side-by-side review, 2026-09-29). -->
+<section class="city-kit city-narrow-measure" style="width:900px;padding:0">
+  <h2 style="font-size:26px;line-height:1.18;max-width:22ch;text-wrap:balance">What Did a London Family Say After Their Puppy Came Home?</h2>
+</section>
+<!-- The same H2 at the desktop measure (34ch, which does not bind) in a 900px box whose LAYOUT
+     gives it a 5fr column (the takeaways' old head grid, 2026-09-29): three lines is a defect
+     whatever the cause (answer board q06). -->
+<section class="city-kit city-narrow-column" style="width:900px;padding:0">
+  <div style="display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:48px">
+    <h2 style="font-size:26px;line-height:1.18;max-width:34ch;text-wrap:balance">What Should a London Buyer Take From This Page?</h2>
+    <p>Five plain answers.</p>
+  </div>
+</section>
+<section class="city-kit city-broken">
+  <h2 class="chunky">Chunky</h2>
+  <h3 class="tall-head">Which Puppy Will You Ask About First Today?</h3>
+  <p class="wide">Short but set far wider than seventy-five characters.</p>
+  <blockquote><p class="long">A review that is never split runs line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line.</p></blockquote>
+  <div class="tall"></div>
+</section>
+</body></html>

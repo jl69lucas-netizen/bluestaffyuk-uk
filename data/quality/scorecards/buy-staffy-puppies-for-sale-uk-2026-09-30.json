@@ -1,0 +1,164 @@
+{
+  "slug": "buy-staffy-puppies-for-sale-uk",
+  "date": "2026-09-30",
+  "page_type": "for-sale",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 45
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1260,
+    "layout-tap-target-size": 245,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 3,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 126,
+    "layout-text-has-side-gutter": 961,
+    "layout-boxed-h2-fits": 42,
+    "layout-kit-band-full-bleed": 0,
+    "layout-heading-size-order": 93,
+    "layout-heading-lines": 126,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 2,
+    "layout-body-heading-brand": 147,
+    "layout-body-text-shares-edge": 39,
+    "img-srcset-within-2x": 60,
+    "img-not-upscaled": 51,
+    "img-alt-present-and-unique": 60,
+    "img-sizes-matches-box": 0,
+    "img-face-visible": 18,
+    "nav-anchors-resolve": 213,
+    "nav-jump-target-lands": 51,
+    "nav-bottom-chrome-clear": 34,
+    "nav-breadcrumb-separator-spaced": 3,
+    "sem-heading-order": 276,
+    "sem-all-six-levels": 276,
+    "sem-title-case-headings": 276,
+    "sem-section-opening-paragraph": 276,
+    "sem-statement-label-visible": 24,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 18,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 2076,
+    "css-no-dead-component-rule": 1047,
+    "css-component-color-not-overridden": 79,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 1221,
+    "a11y-no-duplicate-ids": 93,
+    "a11y-hero-ledge-contrast": 12,
+    "form-inquiry-contract": 3
+  },
+  "defects": {
+    "LAYOUT": 3,
+    "IMG": 2,
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "LAYOUT": 3,
+    "IMG": 24,
+    "CSS": 252,
+    "DUP": 9
+  },
+  "total": 14,
+  "total_instances": 288,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "layout-h3-image-first",
+      "count": 1,
+      "message": "1 H3 block(s) put prose before their image: What KC Registered Staffy Bull Puppies Are for Sal"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "img-not-upscaled",
+      "count": 10,
+      "message": "10 upscaled image(s): buy-staffy-puppies-for-sale-uk-bluestaffyuk.webp file=500x375 painted=828x150 visible=828x150 cover 1.66x | hqdefault.jpg file=480x360 painted=876x493 visible=876x493 cover 1.82x | staffy-puppies-norwich-for-sale-uk.webp file=512x440 painted=874x751 visible=874x751 fill 1.71x | english-blue-staffy-for-sale-puppy.webp file=512x512 painted=876x876 visible=876x876 fill 1.71x | vet-checked-blue-staffy-puppy-near-me.webp file=512x473 painted=876x809 visible=876x809 fill 1.71x | affordable-vs-premium-blue-staffy-breeders-comparison.webp file=512x468 painted=876x801 visible=876x801 fill 1.71x | best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp file=333x499 painted=568x851 visible=568x851 fill 1.71x | trusted-blue-staffy-breeder-reviews-satisfied-owners.webp file=500x375 painted=568x426 visible=568x426 fill 1.14x | premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp file=500x334 painted=876x585 visible=876x585 fill 1.75x | local-blue-staffy-breeders-near-me-uk.webp file=512x452 painted=876x773 visible=876x773 fill 1.71x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x14, bl-list-stack x12, bl-head-above x10, bl-cols-1 x9, bl-media-none x8, bl-head-eyebrow x3, counter-wrap x1, bl-aside-infocard x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 76,
+      "message": "76 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about christa cheryl\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "layout-h3-image-first",
+      "count": 1,
+      "message": "1 H3 block(s) put prose before their image: What KC Registered Staffy Bull Puppies Are for Sal"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x14, bl-list-stack x12, bl-head-above x10, bl-cols-1 x9, bl-media-none x8, bl-head-eyebrow x3, counter-wrap x1, bl-aside-infocard x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 76,
+      "message": "76 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about christa cheryl\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "layout-h3-image-first",
+      "count": 1,
+      "message": "1 H3 block(s) put prose before their image: What KC Registered Staffy Bull Puppies Are for Sal"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 14,
+      "message": "14 upscaled image(s): buy-staffy-puppies-for-sale-uk-bluestaffyuk.webp file=500x375 painted=672x448 visible=672x448 cover 1.34x | hqdefault.jpg file=480x360 painted=720x405 visible=720x405 cover 1.50x | staffy-puppies-norwich-for-sale-uk.webp file=512x440 painted=718x617 visible=718x617 fill 1.40x | english-blue-staffy-for-sale-puppy.webp file=512x512 painted=720x720 visible=720x720 fill 1.41x | vet-checked-blue-staffy-puppy-near-me.webp file=512x473 painted=720x665 visible=720x665 fill 1.41x | avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp file=498x500 painted=720x723 visible=720x723 fill 1.45x | kennel-club-assured-breeder-vs-others-bluestaffyuk.webp file=500x375 painted=720x540 visible=720x540 fill 1.44x | blue-staffy-bully-puppies-for-sale-uk-kc-certified.webp file=500x500 painted=720x720 visible=720x720 fill 1.44x | healthy-staffy-puppy-for-sale-uk.webp file=506x348 painted=720x495 visible=720x495 fill 1.42x | affordable-vs-premium-blue-staffy-breeders-comparison.webp file=512x468 painted=720x658 visible=720x658 fill 1.41x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x14, bl-list-stack x12, bl-head-above x10, bl-cols-1 x9, bl-media-none x8, bl-head-eyebrow x3, counter-wrap x1, bl-aside-infocard x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 76,
+      "message": "76 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about christa cheryl\""
+    }
+  ]
+}

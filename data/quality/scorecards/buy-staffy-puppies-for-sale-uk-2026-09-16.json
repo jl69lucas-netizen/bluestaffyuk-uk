@@ -1,0 +1,176 @@
+{
+  "slug": "buy-staffy-puppies-for-sale-uk",
+  "date": "2026-09-16",
+  "page_type": "for-sale",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1989,
+    "layout-tap-target-size": 243,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "img-srcset-within-2x": 42,
+    "img-alt-present-and-unique": 42,
+    "nav-anchors-resolve": 18,
+    "nav-jump-target-lands": 9,
+    "sem-heading-order": 150,
+    "sem-all-six-levels": 150,
+    "sem-title-case-headings": 147,
+    "sem-section-opening-paragraph": 147,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 18,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 3270,
+    "css-no-dead-component-rule": 0,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 144,
+    "a11y-text-contrast-aa": 1368,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "LAYOUT": 2,
+    "IMG": 2,
+    "SEM": 9,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "LAYOUT": 2,
+    "IMG": 2,
+    "SEM": 96,
+    "CSS": 684,
+    "DUP": 30
+  },
+  "total": 19,
+  "total_instances": 814,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "layout-tap-target-size",
+      "count": 1,
+      "message": "1 control(s) under 24x24: a 105x20 \"Pets4Homes\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "img-srcset-within-2x",
+      "count": 1,
+      "message": "1 oversized image(s): best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp natural=760 painted=333 2.28x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 8,
+      "message": "below the 5-per-level floor: H5=1, H6=1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 20,
+      "message": "20 heading(s) not in Title Case: H1 \"with\" in \"Buy Staffy Puppies for Sale UK with BlueStaffy\" | H2 \"from\" in \"Looking to Buy Staffy Puppies for Sale UK? Tru\" | H3 \"story\" in \"Our story began with a simple love for the Sta\" | H3 \"are\" in \"What are the Best Dog Socialisation Tips, and \" | H3 \"with\" in \"How Does BlueStaffyUK Help Families Avoid Pupp\" | H3 \"from\" in \"What Can Families Expect from DEFRA-Approved P\" | H3 \"with\" in \"What Does BlueStaffyUK Include with Blue Staff\" | H3 \"is\" in \"What is the Difference Between Affordable vs p\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 4,
+      "message": "4 heading(s) with no opening paragraph: H2→H3 \"Building Trust – Transparency from Day O\" | H4→H5 \"Staffordshire Bull Terrier breed guides.\" | H5→H6 \"Blog posts with tips on puppy socialisat\" | H2→H3 \"Frequently Asked Questions About Staffie\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 228,
+      "message": "228 class(es) on rendered elements match no CSS rule: uagb-ifb-content x49, uagb-ifb-title-wrap x49, wp-block-uagb-info-box x48, uagb-infobox__content-wrap x48, uagb-infobox-image-valign-top x48, uagb-ifb-title x43, uagb-ifb-desc x42, wp-block-uagb-container x37, uagb-infobox-icon-above-title x28, uagb-is-root-container x21, alignfull x20, uagb-infobox-left x20"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 10,
+      "message": "10 passage(s) shared with a sibling: 36w vs /blue-staffy-health-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /blue-staffy-uk-breeders/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /buy-blue-staffy-puppies-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 8,
+      "message": "below the 5-per-level floor: H5=1, H6=1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 20,
+      "message": "20 heading(s) not in Title Case: H1 \"with\" in \"Buy Staffy Puppies for Sale UK with BlueStaffy\" | H2 \"from\" in \"Looking to Buy Staffy Puppies for Sale UK? Tru\" | H3 \"story\" in \"Our story began with a simple love for the Sta\" | H3 \"are\" in \"What are the Best Dog Socialisation Tips, and \" | H3 \"with\" in \"How Does BlueStaffyUK Help Families Avoid Pupp\" | H3 \"from\" in \"What Can Families Expect from DEFRA-Approved P\" | H3 \"with\" in \"What Does BlueStaffyUK Include with Blue Staff\" | H3 \"is\" in \"What is the Difference Between Affordable vs p\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 4,
+      "message": "4 heading(s) with no opening paragraph: H2→H3 \"Building Trust – Transparency from Day O\" | H4→H5 \"Staffordshire Bull Terrier breed guides.\" | H5→H6 \"Blog posts with tips on puppy socialisat\" | H2→H3 \"Frequently Asked Questions About Staffie\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 228,
+      "message": "228 class(es) on rendered elements match no CSS rule: uagb-ifb-content x49, uagb-ifb-title-wrap x49, wp-block-uagb-info-box x48, uagb-infobox__content-wrap x48, uagb-infobox-image-valign-top x48, uagb-ifb-title x43, uagb-ifb-desc x42, wp-block-uagb-container x37, uagb-infobox-icon-above-title x28, uagb-is-root-container x21, alignfull x20, uagb-infobox-left x20"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 10,
+      "message": "10 passage(s) shared with a sibling: 36w vs /blue-staffy-health-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /blue-staffy-uk-breeders/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /buy-blue-staffy-puppies-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \""
+    },
+    {
+      "viewport": 768,
+      "checkId": "layout-tap-target-size",
+      "count": 1,
+      "message": "1 control(s) under 24x24: a 105x20 \"Pets4Homes\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-srcset-within-2x",
+      "count": 1,
+      "message": "1 oversized image(s): best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp natural=768 painted=333 2.31x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 8,
+      "message": "below the 5-per-level floor: H5=1, H6=1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 20,
+      "message": "20 heading(s) not in Title Case: H1 \"with\" in \"Buy Staffy Puppies for Sale UK with BlueStaffy\" | H2 \"from\" in \"Looking to Buy Staffy Puppies for Sale UK? Tru\" | H3 \"story\" in \"Our story began with a simple love for the Sta\" | H3 \"are\" in \"What are the Best Dog Socialisation Tips, and \" | H3 \"with\" in \"How Does BlueStaffyUK Help Families Avoid Pupp\" | H3 \"from\" in \"What Can Families Expect from DEFRA-Approved P\" | H3 \"with\" in \"What Does BlueStaffyUK Include with Blue Staff\" | H3 \"is\" in \"What is the Difference Between Affordable vs p\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 4,
+      "message": "4 heading(s) with no opening paragraph: H2→H3 \"Building Trust – Transparency from Day O\" | H4→H5 \"Staffordshire Bull Terrier breed guides.\" | H5→H6 \"Blog posts with tips on puppy socialisat\" | H2→H3 \"Frequently Asked Questions About Staffie\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 228,
+      "message": "228 class(es) on rendered elements match no CSS rule: uagb-ifb-content x49, uagb-ifb-title-wrap x49, wp-block-uagb-info-box x48, uagb-infobox__content-wrap x48, uagb-infobox-image-valign-top x48, uagb-ifb-title x43, uagb-ifb-desc x42, wp-block-uagb-container x37, uagb-infobox-icon-above-title x28, uagb-is-root-container x21, alignfull x20, uagb-infobox-left x20"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 10,
+      "message": "10 passage(s) shared with a sibling: 36w vs /blue-staffy-health-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /blue-staffy-uk-breeders/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /buy-blue-staffy-puppies-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \""
+    }
+  ]
+}

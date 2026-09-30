@@ -1,0 +1,117 @@
+{
+  "slug": "available-puppies/roman",
+  "date": "2026-09-27",
+  "page_type": "puppy",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 32
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 157,
+    "layout-tap-target-size": 82,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 5,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 0,
+    "img-srcset-within-2x": 6,
+    "img-alt-present-and-unique": 6,
+    "img-sizes-matches-box": 0,
+    "nav-anchors-resolve": 3,
+    "nav-jump-target-lands": 3,
+    "nav-bottom-chrome-clear": 0,
+    "sem-heading-order": 3,
+    "sem-all-six-levels": 3,
+    "sem-title-case-headings": 3,
+    "sem-section-opening-paragraph": 3,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 3,
+    "schema-sold-not-instock": 3,
+    "schema-date-modified-present": 15,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 225,
+    "css-no-dead-component-rule": 345,
+    "css-component-color-not-overridden": 11,
+    "dup-no-sibling-crossover": 180,
+    "a11y-text-contrast-aa": 157,
+    "a11y-no-duplicate-ids": 21,
+    "a11y-hero-ledge-contrast": 0,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "SEM": 6,
+    "CSS": 3
+  },
+  "instances": {
+    "SEM": 18,
+    "CSS": 207
+  },
+  "total": 9,
+  "total_instances": 225,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 5,
+      "message": "heading level(s) absent: H2, H3, H4, H5, H6 — inventory H1:1 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 1,
+      "message": "1 heading(s) not in Title Case: H1 \"white\" in \"Roman: Blue and white Male Blue Staffy Puppy\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 69,
+      "message": "69 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 5,
+      "message": "heading level(s) absent: H2, H3, H4, H5, H6 — inventory H1:1 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 1,
+      "message": "1 heading(s) not in Title Case: H1 \"white\" in \"Roman: Blue and white Male Blue Staffy Puppy\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 69,
+      "message": "69 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 5,
+      "message": "heading level(s) absent: H2, H3, H4, H5, H6 — inventory H1:1 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 1,
+      "message": "1 heading(s) not in Title Case: H1 \"white\" in \"Roman: Blue and white Male Blue Staffy Puppy\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 69,
+      "message": "69 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    }
+  ]
+}

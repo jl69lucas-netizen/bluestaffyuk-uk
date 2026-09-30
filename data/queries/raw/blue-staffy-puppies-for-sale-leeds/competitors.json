@@ -1,0 +1,96 @@
+{
+  "status": "fallback",
+  "fetched": "2026-09-23",
+  "pages": [
+    {
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/west-yorkshire/leeds/",
+      "google_pos": 1,
+      "bing_pos": 3,
+      "h2": [
+        "21 Puppies found"
+      ],
+      "h2_all": 1,
+      "blocked": false
+    },
+    {
+      "url": "https://www.freeads.co.uk/leeds/buy-sell/pets/dogs/staffordshire-bull-terrier/",
+      "google_pos": 2,
+      "bing_pos": 2,
+      "h2": [
+        "Refine your results",
+        "You might also like near Leeds",
+        "Latest featured ads in Staffordshire Bull Terrier",
+        "Buyer's Advice"
+      ],
+      "h2_all": 14,
+      "blocked": false
+    },
+    {
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/leeds-west-yorkshire",
+      "google_pos": 3,
+      "bing_pos": null,
+      "h2": [
+        "10 Staffie Puppies For Sale In Leeds, West Yorkshire",
+        "Frequently Asked Questions"
+      ],
+      "h2_all": 22,
+      "blocked": false
+    },
+    {
+      "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/leeds-west-yorkshire",
+      "google_pos": 4,
+      "bing_pos": null,
+      "h2": [
+        "Recommended for you",
+        "Nearest towns and cities",
+        "Fetch the latest puppy news by joining our pack"
+      ],
+      "h2_all": 3,
+      "blocked": false
+    },
+    {
+      "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier",
+      "google_pos": 5,
+      "bing_pos": null,
+      "h2": [],
+      "h2_all": 30,
+      "blocked": false
+    },
+    {
+      "url": "https://www.freeads.co.uk/leeds/buy-sell/pets/dogs/staffordshire-bull-terrier/colour/blue",
+      "google_pos": null,
+      "bing_pos": 1,
+      "h2": [
+        "Refine your results",
+        "You might also like near Leeds",
+        "Latest featured ads in Staffordshire Bull Terrier",
+        "Buyer's Advice"
+      ],
+      "h2_all": 14,
+      "blocked": false
+    },
+    {
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=blue+staf",
+      "google_pos": null,
+      "bing_pos": 4,
+      "h2": [
+        "63 Puppies found"
+      ],
+      "h2_all": 1,
+      "blocked": false
+    },
+    {
+      "url": "https://englishbluestaffypuppies.com/available-blue-staffy",
+      "google_pos": null,
+      "bing_pos": 5,
+      "h2": [
+        "AVAILABLE BLUE STAFFY PUPPIES",
+        "Blue Staffy Puppies For Sale Near me UK",
+        "Meet the Parents"
+      ],
+      "h2_all": 3,
+      "blocked": false
+    }
+  ],
+  "note": "Google positions come from the free browser read (serp_google fallback), not the paid DataForSEO response. HTML saved from the headless browser to the session scratchpad; staffie-owners and gumtree saved as the server HTML (same-origin fetch) because the rendered DOM carried an injected cookie-consent modal. h2/h2_all/blocked are exactly the --extract-h2 output."
+}

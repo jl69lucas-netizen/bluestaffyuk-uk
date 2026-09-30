@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8"><title>broken vs still-loading images</title>
+<style>img{width:200px;height:120px;display:block}</style>
+<!-- GENUINELY BROKEN: 404. Settles to complete===true, naturalWidth===0.
+     This one MUST be reported — a broken page must never score clean. -->
+<img id="broken" src="/definitely-not-a-real-image-404.webp" alt="broken">
+<!-- FINE: a real, decodable inline image. Must be examined, never skipped. -->
+<img id="ok" alt="ok" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">

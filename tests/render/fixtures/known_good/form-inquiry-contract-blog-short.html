@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>blog-kind page, short form contract</title>
+<style>.hp{display:none}</style></head><body>
+<main>
+  <!-- Form actions carry FORM_ID_FROM_ENV — the constant exported from
+       tests/render/checks/form.ts; meta.spec.ts substitutes PUBLIC_FORMSPREE_ID for it at
+       load time, because the real id may not sit in a committed file. -->
+  <h1>Blue Staffy Blog and Guides</h1>
+  <!-- A blog-kind page (data/page-map.json kind "blog") carries the SHORT contract:
+       name, email and message only, each required, plus the honeypot and both hidden
+       fields. Phone, location and the puppy select are not asked for on a post. -->
+  <form method="POST" action="https://formspree.io/f/FORM_ID_FROM_ENV" data-form="contact">
+    <input type="hidden" name="_next" value="https://www.bluestaffyuk.com/thank-you-blue-staffy-puppies-journey/">
+    <input type="hidden" name="_subject" value="New Blue Staffy enquiry — blog">
+    <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label>Your name <input name="name" required autocomplete="name"></label>
+    <label>Email <input type="email" name="email" required autocomplete="email"></label>
+    <label>Message <textarea name="message" rows="5" required></textarea></label>
+    <button type="submit">Send enquiry</button>
+  </form>
+</main>
+</body></html>

@@ -1,0 +1,505 @@
+{
+ "meta": {
+  "slug": "_demo",
+  "page_type": "interior",
+  "layout_type": "interior-utility",
+  "status": "draft",
+  "preview": true,
+  "research_as_of": "2026-09-19",
+  "sources": [
+   {
+    "path": "docs/superpowers/plans/2026-09-19-page-rebuilds.md",
+    "fetched": "2026-09-19"
+   }
+  ]
+ },
+ "brief": {
+  "goal": "Give the board-preview route, the style cutter and their tests one record to render, so the tooling is exercised before the first real page board exists.",
+  "scope": "Four sections, one per rendering family the route branches on: a hero, a prose section with an image, a review slot and an FAQ.",
+  "gates": [
+   "board-previews",
+   "form-contract"
+  ],
+  "done": "The route builds, the cutter writes twelve blocks, and the board shows three styles per section at three widths.",
+  "out_of_scope": [
+   "page copy",
+   "a real slug",
+   "anything a visitor can reach"
+  ],
+  "primary_keyword": "blue staffy puppies uk",
+  "angles": [
+   {
+    "name": "fixture",
+    "hook": "one record that exercises every branch of the route",
+    "why_not": ""
+   },
+   {
+    "name": "copy of the homepage record",
+    "hook": "reuse the one record that exists",
+    "why_not": "the homepage record is approved and all-standard, so it renders no style and would leave the route untested"
+   }
+  ],
+  "strategy": {
+   "name": "fixture",
+   "why": "The tooling needs a subject before the first page board is written.",
+   "trade_off": "It is one more record to keep valid as the schema moves."
+  },
+  "cta": {
+   "cadence": {
+    "min": 400,
+    "max": 700
+   },
+   "destination": "#ask",
+   "anchors": [
+    "Ask a question"
+   ],
+   "global_cta": "hidden"
+  },
+  "tool": {
+   "pick": "none",
+   "evidence": "A fixture record renders the kit; it asks the reader to calculate nothing.",
+   "trade_off": ""
+  },
+  "schema": {
+   "types": [
+    "WebPage"
+   ],
+   "offer_model": "none"
+  }
+ },
+ "h1": {
+  "variants": [
+   "Board preview fixture",
+   "A record the preview route renders",
+   "Four sections, three styles each",
+   "The style preview fixture",
+   "Preview fixture for the page board"
+  ],
+  "recommended": 0,
+  "pick": null
+ },
+ "meta_set": {
+  "titles": [
+   "Board preview fixture | BlueStaffyUK",
+   "Preview fixture — page board styles",
+   "Style preview fixture for the page board"
+  ],
+  "descriptions": [
+   "A fixture board record that the hidden preview route renders three ways per section, so the board tooling has a subject before the first page board.",
+   "The demo board record. It is not a page: it exists so the preview route, the style cutter and the board builder can be exercised end to end in tests.",
+   "Four sections, three styles each, rendered from the kit on a hidden noindex route so the page board can show arrangements instead of listing their names."
+  ],
+  "recommended": {
+   "title": 0,
+   "description": 1
+  },
+  "pick": {
+   "title": null,
+   "description": null
+  }
+ },
+ "sections": [
+  {
+   "id": "opening",
+   "n": 1,
+   "heading": "Indoors With Us From Day One",
+   "intent": "The opener says who we are and what the visitor is looking at. It carries the promise the rest of the page has to keep. The heading is deliberately NOT a wording any real page carries: this is a fixture, it is measured against every live page by `board_gate.py`, and a heading it shares with one of them is a collision no page edit can end.",
+   "category": "C",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "The first screen decides whether the rest of the page is read, so the opener is judged as its own arrangement.",
+   "why_source": "docs/superpowers/plans/2026-09-19-page-rebuilds.md Task 5",
+   "framework": "EEBP",
+   "words": {
+    "min": 80,
+    "max": 200
+   },
+   "shape": "hero",
+   "styles": [
+    "H-UT1",
+    "H-UT2",
+    "H-UT3"
+   ],
+   "hero": {
+    "chips": [
+     "Health-tested parents",
+     "Raised in the home"
+    ],
+    "aside": {
+     "title": "Key facts",
+     "rows": [
+      {
+       "label": "Deposit",
+       "value": "£500, refundable",
+       "source": "data/settings.json#deposit_gbp"
+      },
+      {
+       "label": "Delivery",
+       "value": "£200–£350",
+       "source": [
+        "data/settings.json#delivery_min_gbp",
+        "data/settings.json#delivery_max_gbp"
+       ]
+      }
+     ]
+    }
+   },
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "blue staffy puppies uk"
+    ],
+    "lsi": [],
+    "longtail": [],
+    "brand": [],
+    "geo": [],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [],
+   "images": [
+    {
+     "slot": "opening-photo",
+     "kind": "photo",
+     "required": false,
+     "prompt": "the opener photo, reused at its original public path"
+    },
+    {
+     "slot": "opening-tile-2",
+     "kind": "photo",
+     "required": false,
+     "prompt": "the second mosaic tile, reused at its original public path"
+    },
+    {
+     "slot": "opening-tile-3",
+     "kind": "photo",
+     "required": false,
+     "prompt": "the third mosaic tile, reused at its original public path"
+    }
+   ],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   }
+  },
+  {
+   "id": "at-a-glance",
+   "n": 2,
+   "heading": "At A Glance",
+   "intent": "The three figures a reader wants before they read anything else. Each one is resolved from a data file, never typed.",
+   "category": "C",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "A counter strip is the fixture's only way to prove the per-page figure rows render and resolve.",
+   "why_source": "docs/superpowers/plans/2026-09-19-page-rebuilds.md Task 5",
+   "framework": "FAB",
+   "words": {
+    "min": 0,
+    "max": 40
+   },
+   "shape": "stats",
+   "styles": [
+    "C-UT1",
+    "C-UT2",
+    "C-UT3"
+   ],
+   "stats": [
+    {
+     "n": "6",
+     "label": "puppies in the litter",
+     "source": "data/puppies.json#len"
+    },
+    {
+     "n": "£500",
+     "label": "refundable deposit",
+     "source": "data/settings.json#deposit_gbp"
+    },
+    {
+     "n": "£200–£350",
+     "label": "UK delivery by distance",
+     "source": [
+      "data/settings.json#delivery_min_gbp",
+      "data/settings.json#delivery_max_gbp"
+     ]
+    }
+   ],
+   "refresh": {
+    "axis": "container",
+    "note": "ring tiles rather than the homepage's flush line, so a guide reads as a reference page"
+   },
+   "keywords": {
+    "primary": [],
+    "lsi": [],
+    "longtail": [],
+    "brand": [],
+    "geo": [],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   }
+  },
+  {
+   "id": "how-we-raise",
+   "n": 3,
+   "heading": "How our puppies are raised",
+   "intent": "The prose section: what happens between birth and collection. It is the shape most sections of a real page will use.",
+   "category": "C",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "Most sections of a rebuilt page are prose with one image, so the fixture has to exercise that branch.",
+   "why_source": "docs/superpowers/plans/2026-09-19-page-rebuilds.md Task 5",
+   "framework": "EEBP",
+   "words": {
+    "min": 80,
+    "max": 200
+   },
+   "shape": "standard",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "keywords": {
+    "primary": [
+     "blue staffy puppies uk"
+    ],
+    "lsi": [],
+    "longtail": [],
+    "brand": [],
+    "geo": [],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "The first eight weeks",
+     "intent": "Puppies stay with their mother for the first eight weeks.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Health checks",
+     "intent": "Every puppy has a full veterinary health check before it leaves.",
+     "children": []
+    }
+   ],
+   "images": [
+    {
+     "slot": "raise-photo",
+     "kind": "photo",
+     "required": false,
+     "prompt": "a blue Staffordshire Bull Terrier in a family home"
+    }
+   ],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   }
+  },
+  {
+   "id": "owners",
+   "n": 4,
+   "heading": "What our owners say",
+   "intent": "One review slot, so the board shows the single and grid arrangements side by side.",
+   "category": "C",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "A review slot reads very differently as one quote given room and as a grid, and that is a pick, not a default.",
+   "why_source": "docs/superpowers/plans/2026-09-19-page-rebuilds.md Task 5",
+   "framework": "EEBP",
+   "words": {
+    "min": 80,
+    "max": 200
+   },
+   "shape": "reviews",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "keywords": {
+    "primary": [
+     "blue staffy puppies uk"
+    ],
+    "lsi": [],
+    "longtail": [],
+    "brand": [],
+    "geo": [],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   }
+  },
+  {
+   "id": "questions",
+   "n": 5,
+   "heading": "Questions we are asked",
+   "intent": "The FAQ rows, so the accordion arrangement is judged with real questions in it.",
+   "category": "C",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "The FAQ is the longest block on most pages and its arrangement changes how much of the page it eats.",
+   "why_source": "docs/superpowers/plans/2026-09-19-page-rebuilds.md Task 5",
+   "framework": "EEBP",
+   "words": {
+    "min": 80,
+    "max": 200
+   },
+   "shape": "faq",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "keywords": {
+    "primary": [
+     "blue staffy puppies uk"
+    ],
+    "lsi": [],
+    "longtail": [],
+    "brand": [],
+    "geo": [],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "deposit",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "delivery",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "puppy-package",
+     "intent": "",
+     "children": []
+    }
+   ],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   }
+  }
+ ],
+ "tuple": {
+  "hero": "kit",
+  "dial": "kit",
+  "rail": "",
+  "toc": "kit",
+  "takeaway": [
+   "kit"
+  ],
+  "table": "",
+  "faq": "kit",
+  "stepper": "",
+  "newsletter": {
+   "after": "",
+   "variant": ""
+  },
+  "h6_prefixes": [
+   "Kennel Note:"
+  ]
+ },
+ "assets": [
+  {
+   "slot": "opening-photo",
+   "kind": "photo",
+   "w": 612,
+   "h": 612,
+   "required": false,
+   "status": "baked",
+   "file": "/images/blue-staffy-puppy-for-sale-uk.webp",
+   "alt": "A blue Staffordshire Bull Terrier puppy for sale in the UK"
+  },
+  {
+   "slot": "raise-photo",
+   "kind": "photo",
+   "w": 512,
+   "h": 478,
+   "required": false,
+   "status": "baked",
+   "file": "/images/1blue-staffy-family-breeder.webp",
+   "alt": "A blue Staffordshire Bull Terrier in a family home"
+  },
+  {
+   "slot": "opening-tile-2",
+   "kind": "photo",
+   "w": 760,
+   "h": 753,
+   "required": false,
+   "status": "baked",
+   "file": "/images/blue-staffy-puppies-uk-litter1-760.webp",
+   "alt": "Blue Staffy puppies from the current litter"
+  },
+  {
+   "slot": "opening-tile-3",
+   "kind": "photo",
+   "w": 600,
+   "h": 450,
+   "required": false,
+   "status": "baked",
+   "file": "/images/blue-staffy-family-dog-uk.webp",
+   "alt": "A blue Staffordshire Bull Terrier at home with the family"
+  }
+ ],
+ "approval": null
+}

@@ -1,0 +1,430 @@
+<title>London Side by Side</title>
+<style>
+:root{--bg:#F4F1EA;--card:#FAF8F3;--ink:#1B2430;--muted:#46566B;--rule:#DAD6CC;--accent:#1F3A52;--brass:#A8861C;--band:#1F3A52;--band-ink:#F4F1EA;--note:#EFE3B4}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#14202B;--card:#1B2A38;--ink:#EEF1F4;--muted:#B6C2CC;--rule:#2C3A47;--accent:#8FA3B8;--brass:#C9A227;--band:#0E1720;--band-ink:#E4EAF1;--note:#2A2A1C}}
+:root[data-theme="dark"]{--bg:#14202B;--card:#1B2A38;--ink:#EEF1F4;--muted:#B6C2CC;--rule:#2C3A47;--accent:#8FA3B8;--brass:#C9A227;--band:#0E1720;--band-ink:#E4EAF1;--note:#2A2A1C}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{background:var(--band);color:var(--band-ink);border-bottom:3px solid var(--brass)}
+.top .in,main{max-width:1320px;margin:0 auto;padding-left:16px;padding-right:16px}
+.top .in{padding-top:24px;padding-bottom:20px}
+h1{margin:0 0 8px;font:700 clamp(24px,5vw,32px)/1.2 Fraunces,Georgia,serif}
+.intro{margin:0;max-width:70ch;opacity:.9}
+main{padding-top:24px;padding-bottom:64px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px;margin:0 0 24px;min-width:0}
+h2{margin:0 0 4px;font:700 20px/1.3 Fraunces,Georgia,serif;color:var(--accent)}
+.n{color:var(--brass);margin-right:6px}
+.key{margin:0 0 12px;color:var(--muted);font-size:14px;overflow-wrap:anywhere}
+code{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+.differs{background:var(--note);border-left:3px solid var(--brass);border-radius:6px;padding:10px 12px;margin:0 0 16px;font-size:14px}
+.dh{margin:0 0 4px;font-weight:700}
+.differs ul{margin:0;padding-left:18px}.differs li{max-width:80ch}
+.pair{margin:0 0 20px;padding-top:12px;border-top:1px solid var(--rule)}
+.pair figcaption{font-weight:700;margin:0 0 8px;color:var(--accent)}
+.two{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.two>div{min-width:0}
+.lab{margin:0 0 4px;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.two img{display:block;max-width:100%;height:auto;border:1px solid var(--rule);border-radius:6px;background:#fff}
+.absent{margin:0;padding:16px;border:1px dashed var(--rule);border-radius:6px;color:var(--muted);font-size:14px}
+@media (min-width:900px){.w375 .two{grid-template-columns:repeat(2,minmax(0,375px))}.w768 .two,.w1280 .two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<header class="top"><div class="in">
+<h1>London Components, Side by Side</h1>
+<p class="intro">Each of the fifteen components you picked on the London component canvas, beside the component as built on the real London page, at phone (375px), tablet (768px) and desktop (1280px) width. The built copies carry the page's placeholder copy and the site's data (puppies, prices, served photos with their served alt text). Each card says what differs on purpose. Tell us which ones match, and what differs on any that do not.</p>
+</div></header>
+<main>
+
+    <section class="card" id="hero">
+      <h2><span class="n">01</span> C1 · City hero (litter filmstrip)</h2>
+      <p class="key"><code>london/hero/b</code> → <code>src/components/kit/CityHeroFilmstrip.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/hero-375-canvas.jpg" alt="hero as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/hero-375-built.jpg" alt="C1 · City hero (litter filmstrip) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/hero-768-canvas.jpg" alt="hero as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/hero-768-built.jpg" alt="C1 · City hero (litter filmstrip) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/hero-1280-canvas.jpg" alt="hero as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/hero-1280-built.jpg" alt="C1 · City hero (litter filmstrip) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="counter-strip">
+      <h2><span class="n">02</span> C2 · City counter strip (price scale)</h2>
+      <p class="key"><code>london/counter-strip/c</code> → <code>src/components/kit/CityPriceScale.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>From 640 to 839px the price scale's count sits above the line, not on it, so the figures keep their own width.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/counter-strip-375-canvas.jpg" alt="counter-strip as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/counter-strip-375-built.jpg" alt="C2 · City counter strip (price scale) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/counter-strip-768-canvas.jpg" alt="counter-strip as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/counter-strip-768-built.jpg" alt="C2 · City counter strip (price scale) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/counter-strip-1280-canvas.jpg" alt="counter-strip as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/counter-strip-1280-built.jpg" alt="C2 · City counter strip (price scale) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="trust-strip">
+      <h2><span class="n">03</span> C3 · City trust strip (photo ledger)</h2>
+      <p class="key"><code>london/trust-strip/c</code> → <code>src/components/kit/CityTrustLedger.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>A different served photo where the canvas repeated Maggie's (Code fact 4): one served photo appears once per page, so this one carries Jones's portrait.</li><li>The two-year health guarantee is printed from data/settings.json (guarantee_days 730, guarantee_label), your answer of 2026-09-29 (answer board q07), never typed on the page.</li><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/trust-strip-375-canvas.jpg" alt="trust-strip as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/trust-strip-375-built.jpg" alt="C3 · City trust strip (photo ledger) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/trust-strip-768-canvas.jpg" alt="trust-strip as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/trust-strip-768-built.jpg" alt="C3 · City trust strip (photo ledger) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/trust-strip-1280-canvas.jpg" alt="trust-strip as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/trust-strip-1280-built.jpg" alt="C3 · City trust strip (photo ledger) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="contents-list">
+      <h2><span class="n">04</span> C4 · City contents list (photo index)</h2>
+      <p class="key"><code>london/contents-list/c</code> → <code>src/components/kit/CityContentsPhotoIndex.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contents-list-375-canvas.jpg" alt="contents-list as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/contents-list-375-built.jpg" alt="C4 · City contents list (photo index) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contents-list-768-canvas.jpg" alt="contents-list as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/contents-list-768-built.jpg" alt="C4 · City contents list (photo index) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contents-list-1280-canvas.jpg" alt="contents-list as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><p class="absent">Not shown at 1280px by design. The contents list shows below 1024px only: from 1024px the dial beside the body is the page's contents, as on the other pages (your ruling, answer board q05, 2026-09-29).</p></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="desktop-dial">
+      <h2><span class="n">05</span> C5 · City desktop dial (photo marker)</h2>
+      <p class="key"><code>london/desktop-dial/c</code> → <code>src/components/kit/CityDialPhotoMarker.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li><li>The dial follows the reader: its marked row is the section being read. The canvas marked its first row; the built dial is shot where the whole dial is on screen, with the reader in &quot;The page in six answers&quot;, so that row is marked.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><p class="absent">The canvas frame does not show it at 375px either, only its stand-in sections.</p></div>
+          <div><p class="lab">Built on the London page</p><p class="absent">Not shown at 375px by design. The dial is desktop navigation: it shows from 1024px, and the jump band stands in for it on phones and tablets.</p></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><p class="absent">The canvas frame does not show it at 768px either, only its stand-in sections.</p></div>
+          <div><p class="lab">Built on the London page</p><p class="absent">Not shown at 768px by design. The dial is desktop navigation: it shows from 1024px, and the jump band stands in for it on phones and tablets.</p></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/desktop-dial-1280-canvas.jpg" alt="desktop-dial as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/desktop-dial-1280-built.jpg" alt="C5 · City desktop dial (photo marker) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="jump-links">
+      <h2><span class="n">06</span> C6 · City jump links (stepper band)</h2>
+      <p class="key"><code>london/jump-links/a</code> → <code>src/components/kit/CityJumpStepper.astro</code></p>
+      
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/jump-links-375-canvas.jpg" alt="jump-links as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/jump-links-375-built.jpg" alt="C6 · City jump links (stepper band) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/jump-links-768-canvas.jpg" alt="jump-links as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/jump-links-768-built.jpg" alt="C6 · City jump links (stepper band) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><p class="absent">The canvas frame does not show it at 1280px either, only its stand-in sections.</p></div>
+          <div><p class="lab">Built on the London page</p><p class="absent">Not shown at 1280px by design. The jump band is phone and tablet navigation: it shows below 1024px, and the dial beside the body takes its place from 1024px.</p></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="key-takeaways">
+      <h2><span class="n">07</span> C7 · City key takeaways (answer ledger)</h2>
+      <p class="key"><code>london/key-takeaways/a</code> → <code>src/components/kit/CityTakeawaysLedger.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>A different served photo where the canvas repeated Maggie's (Code fact 4): one served photo appears once per page, so this one carries Jones seated.</li><li>The two-year health guarantee is printed from data/settings.json (guarantee_days 730, guarantee_label), your answer of 2026-09-29 (answer board q07), never typed on the page.</li><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/key-takeaways-375-canvas.jpg" alt="key-takeaways as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/key-takeaways-375-built.jpg" alt="C7 · City key takeaways (answer ledger) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/key-takeaways-768-canvas.jpg" alt="key-takeaways as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/key-takeaways-768-built.jpg" alt="C7 · City key takeaways (answer ledger) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/key-takeaways-1280-canvas.jpg" alt="key-takeaways as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/key-takeaways-1280-built.jpg" alt="C7 · City key takeaways (answer ledger) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="puppy-cards">
+      <h2><span class="n">08</span> C8 · City puppy cards (family sheet)</h2>
+      <p class="key"><code>london/puppy-cards/b</code> → <code>src/components/kit/CityPuppySheet.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/puppy-cards-375-canvas.jpg" alt="puppy-cards as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/puppy-cards-375-built.jpg" alt="C8 · City puppy cards (family sheet) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/puppy-cards-768-canvas.jpg" alt="puppy-cards as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/puppy-cards-768-built.jpg" alt="C8 · City puppy cards (family sheet) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/puppy-cards-1280-canvas.jpg" alt="puppy-cards as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/puppy-cards-1280-built.jpg" alt="C8 · City puppy cards (family sheet) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="tables">
+      <h2><span class="n">09</span> C9 · City table (litter roster)</h2>
+      <p class="key"><code>london/tables/a</code> → <code>src/components/kit/CityRoster.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/tables-375-canvas.jpg" alt="tables as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/tables-375-built.jpg" alt="C9 · City table (litter roster) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/tables-768-canvas.jpg" alt="tables as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/tables-768-built.jpg" alt="C9 · City table (litter roster) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/tables-1280-canvas.jpg" alt="tables as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/tables-1280-built.jpg" alt="C9 · City table (litter roster) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="video">
+      <h2><span class="n">10</span> C10 · City video (side panel)</h2>
+      <p class="key"><code>london/video/c</code> → <code>src/components/kit/CityVideoPanel.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/video-375-canvas.jpg" alt="video as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/video-375-built.jpg" alt="C10 · City video (side panel) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/video-768-canvas.jpg" alt="video as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/video-768-built.jpg" alt="C10 · City video (side panel) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/video-1280-canvas.jpg" alt="video as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/video-1280-built.jpg" alt="C10 · City video (side panel) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="image-text">
+      <h2><span class="n">11</span> C11 · City image and text (two chapters)</h2>
+      <p class="key"><code>london/image-text/c</code> → <code>src/components/kit/CityChapters.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>A different served photo where the canvas repeated Maggie's (Code fact 4): one served photo appears once per page, so this one carries Byrd for chapter one.</li><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/image-text-375-canvas.jpg" alt="image-text as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/image-text-375-built.jpg" alt="C11 · City image and text (two chapters) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/image-text-768-canvas.jpg" alt="image-text as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/image-text-768-built.jpg" alt="C11 · City image and text (two chapters) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/image-text-1280-canvas.jpg" alt="image-text as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/image-text-1280-built.jpg" alt="C11 · City image and text (two chapters) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="reviews">
+      <h2><span class="n">12</span> C12 · City review (owner's letter)</h2>
+      <p class="key"><code>london/reviews/a</code> → <code>src/components/kit/CityLetter.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>The review is split into three paragraphs rather than one block.</li><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/reviews-375-canvas.jpg" alt="reviews as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/reviews-375-built.jpg" alt="C12 · City review (owner's letter) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/reviews-768-canvas.jpg" alt="reviews as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/reviews-768-built.jpg" alt="C12 · City review (owner's letter) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/reviews-1280-canvas.jpg" alt="reviews as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/reviews-1280-built.jpg" alt="C12 · City review (owner's letter) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="faq-blocks">
+      <h2><span class="n">13</span> C13 · City FAQ blocks (steel ledger)</h2>
+      <p class="key"><code>london/faq-blocks/a</code> → <code>src/components/kit/CityFaqLedger.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>A different served photo where the canvas repeated Maggie's (Code fact 4): one served photo appears once per page, so this one carries the London owner photo in the rail.</li><li>The canvas frame stacks all three FAQ blocks; the page places them apart (buying, checking us, Staffy life), each under the section it answers, so the built shot is the first block, the one with the photo rail.</li><li>The two-year health guarantee is printed from data/settings.json (guarantee_days 730, guarantee_label), your answer of 2026-09-29 (answer board q07), never typed on the page.</li><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/faq-blocks-375-canvas.jpg" alt="faq-blocks as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/faq-blocks-375-built.jpg" alt="C13 · City FAQ blocks (steel ledger) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/faq-blocks-768-canvas.jpg" alt="faq-blocks as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/faq-blocks-768-built.jpg" alt="C13 · City FAQ blocks (steel ledger) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/faq-blocks-1280-canvas.jpg" alt="faq-blocks as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/faq-blocks-1280-built.jpg" alt="C13 · City FAQ blocks (steel ledger) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="newsletter">
+      <h2><span class="n">14</span> C14 · City newsletter (litter notice)</h2>
+      <p class="key"><code>london/newsletter/a</code> → <code>src/components/kit/CityNewsletterNotice.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/newsletter-375-canvas.jpg" alt="newsletter as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/newsletter-375-built.jpg" alt="C14 · City newsletter (litter notice) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/newsletter-768-canvas.jpg" alt="newsletter as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/newsletter-768-built.jpg" alt="C14 · City newsletter (litter notice) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/newsletter-1280-canvas.jpg" alt="newsletter as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/newsletter-1280-built.jpg" alt="C14 · City newsletter (litter notice) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="contact-form">
+      <h2><span class="n">15</span> C15 · City contact form (litter line-up)</h2>
+      <p class="key"><code>london/contact-form/b</code> → <code>src/components/kit/CityContactLineup.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.</li><li>The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contact-form-375-canvas.jpg" alt="contact-form as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/contact-form-375-built.jpg" alt="C15 · City contact form (litter line-up) as built on the London page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contact-form-768-canvas.jpg" alt="contact-form as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/contact-form-768-built.jpg" alt="C15 · City contact form (litter line-up) as built on the London page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contact-form-1280-canvas.jpg" alt="contact-form as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the London page</p><img src="side-by-side/contact-form-1280-built.jpg" alt="C15 · City contact form (litter line-up) as built on the London page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+</main>

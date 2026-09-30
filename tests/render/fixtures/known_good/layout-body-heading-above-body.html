@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>body headings above the body size</title>
+<!-- The same page with option (a)'s scale: the H2 and H3 paint above the 17px body. The kit
+     card's H3 stays at 17px and is not examined; a hidden H2 is not examined either; and a
+     15px caption paragraph does not move the body size, because the body size is the size
+     carrying the most paragraph text. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  main { padding: 0 24px; }
+  h2 { font-size: 22px; font-weight: 700; line-height: 1.18; margin: 32px 0 8px; }
+  h3 { font-size: 18px; font-weight: 600; line-height: 1.25; margin: 24px 0 8px; }
+  .kit-card h3 { font-size: 17px; }
+  .caption { font-size: 15px; }
+  .gone { display: none; font-size: 12px; }
+  @media (min-width: 640px) { h2 { font-size: 25px; } }
+  @media (min-width: 800px) { h2 { font-size: 28px; } h3 { font-size: 20px; } }
+</style>
+</head><body>
+<main>
+  <section>
+    <h2>Our Rigorous Health Testing Process</h2>
+    <p>Every parent is screened before a litter is planned, and the tests are named on the page.</p>
+    <h3>BVA/KC Health Schemes</h3>
+    <p>The eye and elbow schemes are run by the British Veterinary Association with the Kennel Club.</p>
+    <p class="caption">A short caption.</p>
+    <h2 class="gone">A Hidden Heading</h2>
+  </section>
+  <div class="kit-card"><h3>Kit Card Heading</h3><p>A component heading, sized by the component.</p></div>
+</main>
+</body></html>

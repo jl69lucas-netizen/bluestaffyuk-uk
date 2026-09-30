@@ -1,0 +1,39 @@
+<style>
+/* Newsletter B — Steel band. One compact, centred band in steel-700 across the page: a brass
+   line-icon envelope, the question in bone, its answer, and a single joined row of email
+   field and brass submit (stacked on a phone). No photo and no card: it is the quiet dark
+   stop in the run of the page, short enough to pass in one glance. */
+.nlB{background:var(--color-surface-inverse);color:var(--color-text-on-inverse)}
+.nlB .in{max-width:720px;margin:0 auto;padding:var(--space-6) var(--space-4);text-align:center}
+.nlB .ic{display:inline-grid;place-items:center;width:44px;height:44px;margin-bottom:var(--space-3);border:1px solid var(--color-steel-500);border-radius:50%;color:var(--color-cta)}
+.nlB .ic svg{width:22px;height:22px}
+.nlB h2{margin:0;color:var(--color-text-on-inverse);font-size:var(--text-xl);line-height:var(--text-xl--line-height);text-wrap:balance}
+.nlB .lede{margin:var(--space-2) auto var(--space-5);max-width:58ch;text-wrap:pretty;font-size:var(--text-sm);line-height:var(--text-sm--line-height);color:var(--color-text-on-inverse)}
+.nlB form{display:grid;gap:var(--space-2);max-width:520px;margin:0 auto;text-align:left}
+.nlB label{font-size:var(--text-sm);font-weight:600;color:var(--color-text-on-inverse)}
+.nlB .row{display:grid;gap:var(--space-2)}
+.nlB input{width:100%;min-height:48px;padding:10px 14px;font:inherit;color:var(--color-text);background:var(--color-surface-raised);border:1px solid var(--color-steel-300);border-radius:var(--btn-form-radius)}
+.nlB input:focus-visible,.nlB button:focus-visible{outline:3px solid var(--color-focus-on-inverse);outline-offset:2px}
+.nlB input:user-invalid{border:2px solid var(--color-cta)}
+.nlB .err{display:none;margin:0;font-size:var(--text-sm);color:var(--color-cta-soft)}
+.nlB form:has(input:user-invalid) .err{display:block}
+.nlB button{min-height:48px;padding:10px 22px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out)}
+.nlB button:hover{background:var(--color-cta-hover)}
+@media (min-width:640px){.nlB .row{grid-template-columns:minmax(0,1fr) auto}}
+@media (min-width:1024px){.nlB .in{padding:var(--space-7) var(--space-4)}}
+</style>
+<section data-component="newsletter" data-variant="b" class="nlB on-inverse">
+  <div class="in">
+    <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+    <h2>Shall We Tell You When the Next Litter Is Due?</h2>
+    <p class="lede">Give us your email and we send one short note to you in London when our next litter is on the way. That is all this list is for.</p>
+    <form data-newsletter aria-label="Next litter note sign-up">
+      <label for="nlB-email">Your email address</label>
+      <div class="row">
+        <input id="nlB-email" name="email" type="email" autocomplete="email" required>
+        <button type="submit">Tell me</button>
+      </div>
+      <p class="err">That email address looks incomplete. Please check it and try again.</p>
+    </form>
+  </div>
+</section>

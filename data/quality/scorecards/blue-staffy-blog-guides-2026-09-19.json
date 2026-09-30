@@ -1,0 +1,130 @@
+{
+  "slug": "blue-staffy-blog-guides",
+  "date": "2026-09-19",
+  "page_type": "blog",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 207,
+    "layout-tap-target-size": 132,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 0,
+    "img-srcset-within-2x": 0,
+    "img-alt-present-and-unique": 0,
+    "nav-anchors-resolve": 3,
+    "nav-jump-target-lands": 3,
+    "sem-heading-order": 9,
+    "sem-all-six-levels": 9,
+    "sem-title-case-headings": 9,
+    "sem-section-opening-paragraph": 9,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 45,
+    "css-no-dead-component-rule": 45,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 195,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "SEM": 6,
+    "SCHEMA": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "SEM": 15,
+    "SCHEMA": 3,
+    "DUP": 3
+  },
+  "total": 12,
+  "total_instances": 21,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:2 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 1,
+      "message": "1 heading(s) with no opening paragraph: H1→H2 \"How To Choose The Right Blue Staffy Pupp\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 4 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 35w vs /uk-blue-staffy-puppy-buying-guide/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:2 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 1,
+      "message": "1 heading(s) with no opening paragraph: H1→H2 \"How To Choose The Right Blue Staffy Pupp\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 4 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 35w vs /uk-blue-staffy-puppy-buying-guide/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:2 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 1,
+      "message": "1 heading(s) with no opening paragraph: H1→H2 \"How To Choose The Right Blue Staffy Pupp\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 4 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 35w vs /uk-blue-staffy-puppy-buying-guide/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\""
+    }
+  ]
+}

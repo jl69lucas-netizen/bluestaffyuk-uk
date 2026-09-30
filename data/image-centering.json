@@ -1,0 +1,4 @@
+{
+  "_comment": "Optional art-direction overrides for the 1408x768 body crop: {\"<image stem>\": [cx, cy]} with 0..1 floats (0.5,0.5 is centre, lower cy keeps more headroom). Stems absent here use (0.5, 0.5). Puppy gallery stems are '<slug>-<photo>' lowercased.",
+  "_example": [0.5, 0.35]
+}

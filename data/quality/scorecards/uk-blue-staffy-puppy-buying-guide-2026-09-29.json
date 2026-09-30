@@ -1,0 +1,161 @@
+{
+  "slug": "uk-blue-staffy-puppy-buying-guide",
+  "date": "2026-09-29",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 42
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1448,
+    "layout-tap-target-size": 235,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 21,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 9,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 204,
+    "layout-text-has-side-gutter": 1252,
+    "layout-boxed-h2-fits": 30,
+    "layout-kit-band-full-bleed": 0,
+    "layout-heading-size-order": 162,
+    "layout-heading-lines": 204,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 2,
+    "img-srcset-within-2x": 69,
+    "img-not-upscaled": 69,
+    "img-alt-present-and-unique": 69,
+    "img-sizes-matches-box": 3,
+    "img-face-visible": 18,
+    "nav-anchors-resolve": 267,
+    "nav-jump-target-lands": 63,
+    "nav-bottom-chrome-clear": 42,
+    "sem-heading-order": 303,
+    "sem-all-six-levels": 303,
+    "sem-title-case-headings": 303,
+    "sem-section-opening-paragraph": 303,
+    "sem-statement-label-visible": 12,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 21,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1701,
+    "css-no-dead-component-rule": 972,
+    "css-component-color-not-overridden": 64,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 1385,
+    "a11y-no-duplicate-ids": 84,
+    "a11y-hero-ledge-contrast": 12,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "LAYOUT": 3,
+    "IMG": 2,
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "LAYOUT": 21,
+    "IMG": 39,
+    "CSS": 234,
+    "DUP": 12
+  },
+  "total": 14,
+  "total_instances": 306,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "layout-h3-image-first",
+      "count": 7,
+      "message": "7 H3 block(s) put prose before their image: Step Five: Collection or Delivery | How to Find Excellent Blue Staffy Breeders UK?: Wh | What Are the Pros and Cons of Owning a Blue Staffy | What to Look for in a Healthy Blue Staffy Pup? | What You Need to Buy for a New Staffy Puppy | Gentle Handling"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "img-not-upscaled",
+      "count": 17,
+      "message": "17 upscaled image(s): how-to-buy-blue-staffy-puppy-uk-steps1.webp file=512x474 painted=826x150 visible=826x150 cover 1.61x | blue-staffy-research.webp file=615x573 painted=924x861 visible=924x861 fill 1.50x | defra-pet-transport-process.webp file=512x512 painted=924x924 visible=924x924 fill 1.80x | 1blue-staffy-family-breeder.webp file=512x478 painted=874x816 visible=874x816 fill 1.71x | pros-and-cons-of-owning-a-blue-staffy-uk.webp file=512x512 painted=924x924 visible=924x924 fill 1.80x | purebred-blue-male-staffy-available-for-rehoming.webp file=400x400 painted=924x924 visible=924x924 fill 2.31x | blue-staffy-health-prioritising-wellbeing.webp file=512x768 painted=924x1386 visible=924x1386 fill 1.80x | blue-staffy-vet-check.webp file=512x477 painted=924x861 visible=924x861 fill 1.80x | healthy-blue-staffy-pups-for-sale-certified.webp file=400x400 painted=924x924 visible=924x924 fill 2.31x | blue-staffy-puppy-preparation.webp file=512x475 painted=924x857 visible=924x857 fill 1.80x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-media-none x9, bl-list-stack x8, bl-chrome-ruled x8, bl-cols-1 x7, bl-head-above x7, bl-head-eyebrow x1, counter-wrap x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 71,
+      "message": "71 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 35w vs /how-to-choose-the-right-blue-staffy-puppy-for-your-family/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "layout-h3-image-first",
+      "count": 7,
+      "message": "7 H3 block(s) put prose before their image: Step Five: Collection or Delivery | How to Find Excellent Blue Staffy Breeders UK?: Wh | What Are the Pros and Cons of Owning a Blue Staffy | What to Look for in a Healthy Blue Staffy Pup? | What You Need to Buy for a New Staffy Puppy | Gentle Handling"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-media-none x9, bl-list-stack x8, bl-chrome-ruled x8, bl-cols-1 x7, bl-head-above x7, bl-head-eyebrow x1, counter-wrap x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 71,
+      "message": "71 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 35w vs /how-to-choose-the-right-blue-staffy-puppy-for-your-family/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "layout-h3-image-first",
+      "count": 7,
+      "message": "7 H3 block(s) put prose before their image: Step Five: Collection or Delivery | How to Find Excellent Blue Staffy Breeders UK?: Wh | What Are the Pros and Cons of Owning a Blue Staffy | What to Look for in a Healthy Blue Staffy Pup? | What You Need to Buy for a New Staffy Puppy | Gentle Handling"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 22,
+      "message": "22 upscaled image(s): how-to-buy-blue-staffy-puppy-uk-steps1.webp file=512x474 painted=670x377 visible=670x377 cover 1.31x | blue-staffy-research.webp file=615x573 painted=720x671 visible=720x671 fill 1.17x | defra-pet-transport-process.webp file=512x512 painted=720x720 visible=720x720 fill 1.41x | 1blue-staffy-family-breeder.webp file=512x478 painted=718x670 visible=718x670 fill 1.40x | pros-and-cons-of-owning-a-blue-staffy-uk.webp file=512x512 painted=720x720 visible=720x720 fill 1.41x | purebred-blue-male-staffy-available-for-rehoming.webp file=400x400 painted=720x720 visible=720x720 fill 1.80x | blue-staffy-health-prioritising-wellbeing.webp file=512x768 painted=720x1080 visible=720x1080 fill 1.41x | blue-staffy-vet-check.webp file=512x477 painted=720x671 visible=720x671 fill 1.41x | healthy-blue-staffy-pups-for-sale-certified.webp file=400x400 painted=720x720 visible=720x720 fill 1.80x | blue-staffy-puppy-preparation.webp file=512x475 painted=720x668 visible=720x668 fill 1.41x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-media-none x9, bl-list-stack x8, bl-chrome-ruled x8, bl-cols-1 x7, bl-head-above x7, bl-head-eyebrow x1, counter-wrap x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 71,
+      "message": "71 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 35w vs /how-to-choose-the-right-blue-staffy-puppy-for-your-family/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\""
+    }
+  ]
+}

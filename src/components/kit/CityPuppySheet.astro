@@ -1,0 +1,146 @@
+---
+// src/components/kit/CityPuppySheet.astro — city component 8, the puppy cards (London pick:
+// puppy-cards B, "Family sheet"). A sunk steel-100 tray (no shadow) that opens with the family —
+// a served photograph of the dam with her puppies beside the question and its answer — and under
+// it the available puppies laid out like prints: a photo, a bone-50 mount with the name, a brass
+// price tag, sex and colour, the status, the delivery line and an Ask link stretched over the
+// whole print. Three across from 768px, two on a phone.
+//
+// THE PRINTS ARE data/puppies.json (plan2-notes, Task 7): name, sex (Boy/Girl), colour,
+// `price_gbp`, `status` and `card_photo`, through astro:assets with a bounded srcset and the crop
+// on the puppy's face (src/lib/imageFocus.ts) — never six pasted blocks and never an inline crop.
+// ONE TAP TARGET PER PRINT: the Ask link is the only link and its ::after covers the print. It
+// goes where the site's puppy links go (`/available-puppies/<slug>/`), labelled "Ask About <name>".
+// THE DELIVERY LINE is rules/puppies.md's canonical one from src/lib/cityKit.ts, on every print
+// (tests/py/test_puppy_card_delivery.py reads `.city-pup .deliv`). The foot is the user's deposit
+// ruling, from the same file. Conventions 4 and 6; brass is a fill with --color-cta-ink text.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass, puppyAlt, servedPhoto } from '../../lib/imageFocus';
+import { availablePuppies, citySizes, DELIVERY_BAND, deliveryLine, depositLine, money, sexWord, type CityFit } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  /** The family photograph: a served file named in data/image-focus.json. */
+  photo: string;
+  caption?: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, photo, caption, fit = 'column', class: cls, ...rest } = Astro.props;
+const fam = servedPhoto(photo);
+const pups = availablePuppies();
+// The tray is the box less the root's gutters (12px a side; 24px from a 1024px viewport, which
+// the desktop lines assume), at most 1200px, less its own padding (12px; 32px from tablet).
+const famSizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1224px) - 64px)`,
+  tablet: (B) => `calc((min(${B}, 1224px) - 120px) * 5 / 12)`,
+  desktop: (B) => `calc((min(${B}, 1248px) - 144px) * 5 / 12)`,
+});
+const printSizes = citySizes(fit, {
+  phone: (B) => `calc((min(${B}, 1224px) - 60px) / 2 - 16px)`,
+  tablet: (B) => `calc((min(${B}, 1224px) - 120px) / 3 - 16px)`,
+  desktop: (B) => `calc((min(${B}, 1248px) - 160px) / 3 - 16px)`,
+});
+// The canonical line, with its band held on one line (the canvas's nowrap; plan2-notes Task 7).
+// Split from deliveryLine itself, so the words stay the one source's.
+const [delivPre, delivPost] = deliveryLine.split(DELIVERY_BAND);
+---
+<section {...rest} class:list={['city-kit', 'city-sheet', cls]}>
+  <div class="tray">
+    <div class="head">
+      <figure class="fam">
+        <img src={fam.file} srcset={fam.srcset} sizes={famSizes}
+          alt={fam.alt} width={fam.w} height={fam.h} class={focusClass(photo)} loading="lazy" decoding="async" />
+        {caption && <figcaption>{caption}</figcaption>}
+      </figure>
+      <div>
+        <h2>{heading}</h2>
+        <p class="lede">{lede}</p>
+      </div>
+    </div>
+    <div class="grid">
+      {pups.map((p) => (
+        <article class="city-pup" data-puppy>
+          <Image src={puppyImage(p.card_photo)} alt={puppyAlt(p, 'scene')}
+            widths={[240, 400, 600]} sizes={printSizes}
+            class={focusClass(p.card_photo)} loading="lazy" decoding="async" />
+          <div class="txt">
+            <div class="top"><h3>{p.name}</h3><p class="price">{money(p.price_gbp)}</p></div>
+            <p class="meta">{sexWord(p)} · {p.colour}</p>
+            <p class="st">{p.status}</p>
+            <p class="deliv">{delivPre}<span class="band">{DELIVERY_BAND}</span>{delivPost}</p>
+            <a class="ask" href={`/available-puppies/${p.slug}/`}>Ask About {p.name}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+    <p class="foot">{depositLine}</p>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-sheet { background: var(--color-surface); padding: var(--space-6) 0; }
+    .tray { max-width: min(1200px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    .head { display: grid; gap: var(--space-4); margin-bottom: var(--space-5); padding: 0 var(--space-2); }
+    .fam { margin: 0; }
+    .fam img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--radius-md); background: var(--color-bone-50); }
+    figcaption { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-ink-2); }
+    h2 { margin: 0 0 var(--space-3); }
+    .lede { margin: 0; font-size: var(--city-lead); color: var(--color-text); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+    .city-pup {
+      position: relative; display: flex; flex-direction: column; padding: var(--space-2);
+      border-radius: var(--radius-md); background: var(--counter-bed);
+      outline: 2px solid transparent; outline-offset: 0; transition: outline-color var(--dur-fast) var(--ease-out);
+    }
+    .city-pup:hover { outline-color: var(--color-brand); }
+    .city-pup :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-sm); background: var(--color-bone-100); }
+    .txt { display: flex; flex-direction: column; flex: 1; padding: var(--space-3) var(--space-1) 0; }
+    .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-1) var(--space-2); }
+    h3 { margin: 0; }
+    .price {
+      margin: 0; padding: 2px var(--space-2); border-radius: var(--radius-sm); background: var(--color-cta); color: var(--color-cta-ink);
+      font-weight: 700; font-size: var(--text-sm); font-feature-settings: 'tnum';
+    }
+    .meta { margin: var(--space-1) 0 0; font-size: var(--text-sm); line-height: 1.4; color: var(--color-ink-2); }
+    .st { margin: 2px 0 0; font-size: var(--text-sm); font-weight: 600; color: var(--color-ok); }
+    .deliv { margin: var(--space-1) 0 var(--space-2); font-size: var(--text-xs); line-height: 1.35; color: var(--color-ink-2); }
+    .band { white-space: nowrap; }
+    .ask {
+      margin-top: auto; display: flex; align-items: center; gap: var(--space-1); min-height: 44px; padding-top: var(--space-2);
+      border-top: 1px solid var(--color-border); font-weight: 700; font-size: var(--text-sm); color: var(--color-link); text-decoration: none;
+    }
+    .ask svg { width: 1em; height: 1em; flex: none; transition: transform var(--dur-fast) var(--ease-out); }
+    .ask::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius-md); }
+    .ask:focus-visible { outline: none; }
+    /* The keyboard ring is the stretched link's own box (its ::after covers the print), so it
+       rings the whole print on .ask:focus-visible, with no parent selector (the Task 7b quality review, M6). */
+    .ask:focus-visible::after { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .city-pup:hover .ask svg { transform: translateX(3px); }
+    .foot { margin: var(--space-4) var(--space-2) 0; font-size: var(--text-sm); color: var(--color-ink-2); }
+    @container (width < 640px) {
+      .top { flex-direction: column; align-items: flex-start; }
+      .ask { font-size: var(--text-xs); gap: 0; }
+      .ask svg { display: none; }
+    }
+    @container (width >= 640px) {
+      .tray { padding: var(--space-6) var(--space-6) var(--space-5); }
+      .head { padding: 0; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-6); align-items: center; }
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+      .foot { margin: var(--space-5) 0 0; }
+    }
+    @container (width >= 800px) {
+      .tray { max-width: min(1200px, calc(100% - 2 * var(--space-5))); margin-block: var(--space-2); }
+      .grid { gap: var(--space-5); }
+      .city-pup :global(img) { aspect-ratio: 1 / 1; }
+    }
+    @media (prefers-reduced-motion: reduce) { .city-pup, .ask svg { transition: none; } }
+  }
+</style>

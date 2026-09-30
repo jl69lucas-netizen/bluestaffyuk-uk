@@ -1,0 +1,67 @@
+<style>
+/* Contact B — Litter line-up. A deep-steel band opens on its question, then the six puppies
+   in one line-up of small square photos with name, sex and price plates (3 × 2 on a phone,
+   6 across from 768): the reader sees who they can ask about before they choose one in the
+   form below. The form sits straight on the band, compact: three fields to a row at 1024+,
+   raised-surface fields with bone labels, and a brass submit on the form radius. The photos are a
+   picture of the litter, not controls: no hover, no pointer. */
+.cfB{background:var(--color-surface-deep);color:var(--color-text-on-inverse)}
+.cfB .in{max-width:1160px;margin:0 auto;padding:var(--space-7) var(--space-4)}
+.cfB h2{margin:0;color:var(--color-text-on-inverse);font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:24ch}
+.cfB .lede{margin:var(--space-3) 0 var(--space-5);max-width:60ch;color:var(--color-steel-100)}
+.cfB .pups{list-style:none;margin:0 0 var(--space-6);padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-3)}
+.cfB .pups li{margin:0;display:grid;gap:2px;pointer-events:none}
+.cfB .pups img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;border-radius:var(--radius-md);background:var(--color-steel-700);margin-bottom:var(--space-1)}
+.cfB .nm{font-family:var(--font-display);font-weight:600;font-size:var(--text-base);line-height:1.2}
+.cfB .pr{font-size:var(--text-xs);color:var(--color-steel-100)}
+.cfB form{display:grid;gap:var(--space-3);padding-top:var(--space-5);border-top:1px solid var(--color-steel-500)}
+.cfB .f{display:grid;gap:4px;margin:0;min-width:0;align-content:start}
+.cfB label{font-size:var(--text-sm);font-weight:600;color:var(--color-text-on-inverse)}
+.cfB label i{font-style:normal;font-weight:400;color:var(--color-steel-100)}
+.cfB input,.cfB select,.cfB textarea{width:100%;min-height:46px;padding:9px 12px;font:inherit;color:var(--color-text);background:var(--color-surface-raised);border:1px solid var(--color-steel-300);border-radius:var(--radius-sm)}
+.cfB textarea{min-height:112px;resize:vertical}
+.cfB input:focus-visible,.cfB select:focus-visible,.cfB textarea:focus-visible,.cfB button:focus-visible{outline:3px solid var(--color-focus-on-inverse);outline-offset:2px}
+.cfB :user-invalid{border:2px solid var(--color-cta)}
+.cfB .err{display:none;font-size:var(--text-xs);color:var(--color-cta-soft)}
+.cfB .f:has(:user-invalid) .err{display:block}
+.cfB .go{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-4)}
+.cfB button{min-height:48px;padding:10px 24px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out)}
+.cfB button:hover{background:var(--color-cta-hover)}
+.cfB .after{margin:0;font-size:var(--text-sm);color:var(--color-steel-100)}
+@media (min-width:768px){
+  .cfB .in{padding:var(--space-9) var(--space-6)}
+  .cfB .pups{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .cfB form{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--space-4)}
+  .cfB .wide,.cfB .go{grid-column:1/-1}
+}
+@media (min-width:1024px){
+  .cfB form{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cfB .pups{gap:var(--space-4)}
+}
+</style>
+<section data-component="contact-form" data-variant="b" class="cfB on-inverse">
+  <div class="in">
+    <h2>Which of Our Six Puppies Would You Like to Ask About?</h2>
+    <p class="lede">Here are all six as they are today. Choose one in the form, tell us where in London you live, and we reply by email with the answers to everything you asked.</p>
+    <ul class="pups" aria-label="The six puppies available now">
+        <li><img src="/puppies/Roman2.jpg" alt="Roman, a blue and white boy, stretched out on the grass" width="1080" height="1081" loading="lazy" style="object-position:50% 35%"><span class="nm">Roman</span><span class="pr">Boy · £1,500</span></li>
+        <li><img src="/puppies/Byrd1.jpg" alt="Byrd, a white boy, standing on garden decking" width="1080" height="1080" loading="lazy" style="object-position:50% 30%"><span class="nm">Byrd</span><span class="pr">Boy · £1,500</span></li>
+        <li><img src="/puppies/Ince1.jpg" alt="Ince, a solid blue boy, on a paved garden patio" width="1080" height="1079" loading="lazy" style="object-position:50% 30%"><span class="nm">Ince</span><span class="pr">Boy · £1,500</span></li>
+        <li><img src="/puppies/Vennie.jpeg" alt="Vennie, a blue and white girl, curled up on a fleece" width="1080" height="1080" loading="lazy" style="object-position:50% 40%"><span class="nm">Vennie</span><span class="pr">Girl · £1,700</span></li>
+        <li><img src="/puppies/Christa.jpeg" alt="Christa, a blue girl, sitting on a sheepskin" width="1080" height="1080" loading="lazy" style="object-position:50% 30%"><span class="nm">Christa</span><span class="pr">Girl · £1,700</span></li>
+        <li><img src="/puppies/Cheryl1.jpeg" alt="Cheryl, a blue girl with a white blaze, on a wooden floor" width="1080" height="1350" loading="lazy" style="object-position:50% 30%"><span class="nm">Cheryl</span><span class="pr">Girl · £1,700</span></li>
+    </ul>
+    <form data-contact-form method="post" aria-label="Enquire about a puppy">
+      <p class="f"><label for="cfB-name">Your name <i>(required)</i></label><input id="cfB-name" name="name" type="text" autocomplete="name" required><span class="err">Please tell us your name.</span></p>
+      <p class="f"><label for="cfB-email">Email <i>(required)</i></label><input id="cfB-email" name="email" type="email" autocomplete="email" required><span class="err">That email address looks incomplete.</span></p>
+      <p class="f"><label for="cfB-phone">Phone <i>(optional)</i></label><input id="cfB-phone" name="phone" type="tel" autocomplete="tel"></p>
+      <p class="f"><label for="cfB-location">Town or postcode <i>(optional)</i></label><input id="cfB-location" name="location" type="text" autocomplete="address-level2"></p>
+      <p class="f"><label for="cfB-puppy">Which puppy? <i>(required)</i></label><select id="cfB-puppy" name="puppy" required><option value="" disabled selected>Choose a puppy…</option><option value="roman">Roman · Boy · £1,500</option><option value="byrd">Byrd · Boy · £1,500</option><option value="ince">Ince · Boy · £1,500</option><option value="vennie">Vennie · Girl · £1,700</option><option value="christa">Christa · Girl · £1,700</option><option value="cheryl">Cheryl · Girl · £1,700</option><option value="waiting-list">The next litter, please</option></select><span class="err">Please choose a puppy, or the next litter.</span></p>
+      <p class="f wide"><label for="cfB-message">Message <i>(required)</i></label><textarea id="cfB-message" name="message" rows="4" required></textarea><span class="err">Please tell us what you would like to know.</span></p>
+      <div class="go">
+        <button type="submit">Send my enquiry</button>
+        <p class="after">We reply by email within 24 to 48 business hours.</p>
+      </div>
+    </form>
+  </div>
+</section>

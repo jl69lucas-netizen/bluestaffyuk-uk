@@ -1,0 +1,115 @@
+{
+  "slug": "blue-staffy-blog-guides",
+  "date": "2026-09-29",
+  "page_type": "blog",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 42
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 506,
+    "layout-tap-target-size": 124,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 45,
+    "layout-text-has-side-gutter": 329,
+    "layout-boxed-h2-fits": 18,
+    "layout-kit-band-full-bleed": 0,
+    "layout-heading-size-order": 33,
+    "layout-heading-lines": 45,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 2,
+    "img-srcset-within-2x": 3,
+    "img-not-upscaled": 3,
+    "img-alt-present-and-unique": 3,
+    "img-sizes-matches-box": 0,
+    "img-face-visible": 0,
+    "nav-anchors-resolve": 99,
+    "nav-jump-target-lands": 27,
+    "nav-bottom-chrome-clear": 18,
+    "sem-heading-order": 117,
+    "sem-all-six-levels": 117,
+    "sem-title-case-headings": 117,
+    "sem-section-opening-paragraph": 117,
+    "sem-statement-label-visible": 12,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 18,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 801,
+    "css-no-dead-component-rule": 903,
+    "css-component-color-not-overridden": 64,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 506,
+    "a11y-no-duplicate-ids": 48,
+    "a11y-hero-ledge-contrast": 6,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "CSS": 6,
+    "IMG": 1
+  },
+  "instances": {
+    "CSS": 234,
+    "IMG": 1
+  },
+  "total": 7,
+  "total_instances": 235,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x7, bl-list-stack x6, bl-cols-1 x5, bl-head-above x5, bl-media-none x4, counter-wrap x1, bl-head-eyebrow x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 71,
+      "message": "71 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x7, bl-list-stack x6, bl-cols-1 x5, bl-head-above x5, bl-media-none x4, counter-wrap x1, bl-head-eyebrow x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 71,
+      "message": "71 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 1,
+      "message": "1 upscaled image(s): blue-staffy-puppies-near-me-uk-available.webp file=512x768 painted=672x448 visible=672x448 cover 1.31x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x7, bl-list-stack x6, bl-cols-1 x5, bl-head-above x5, bl-media-none x4, counter-wrap x1, bl-head-eyebrow x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 71,
+      "message": "71 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    }
+  ]
+}

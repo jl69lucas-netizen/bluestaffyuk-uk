@@ -1,0 +1,317 @@
+[
+  {
+    "ts": "2026-09-23T01:08:28Z",
+    "slug": "blue-staffy-puppies-manchester-uk",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google depth10 paa1 (response carries no cost; conservative estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T01:09:37Z",
+    "slug": "blue-staffy-puppies-manchester-uk",
+    "source": "serp_bing",
+    "endpoint": "serp_organic_live_advanced bing depth10 (response carries no cost; conservative estimate; results were for 'blue' only — unusable)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T01:10:39Z",
+    "slug": "blue-staffy-puppies-manchester-uk",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK (response carries no cost; conservative estimate)",
+    "cost_usd": 0.1
+  },
+  {
+    "ts": "2026-09-23T19:33:33Z",
+    "slug": "registry-blue-staffy-puppies-for-sale",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:34:31Z",
+    "slug": "registry-staffordshire-bull-terrier-puppies-for-sale-uk",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:35:04Z",
+    "slug": "registry-blue-staffy-breeder",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:35:45Z",
+    "slug": "registry-staffy-puppies-for-sale-london",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:36:18Z",
+    "slug": "registry-staffy-puppies-for-sale-birmingham",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:36:46Z",
+    "slug": "registry-staffy-puppies-for-sale-manchester",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:37:15Z",
+    "slug": "registry-staffy-puppies-for-sale-leeds",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:37:42Z",
+    "slug": "registry-staffy-puppies-for-sale-liverpool",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:38:06Z",
+    "slug": "registry-kc-registered-staffy-puppies",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:38:39Z",
+    "slug": "registry-staffy-puppy-price-uk",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T20:14:35Z",
+    "slug": "blue-staffy-puppies-for-sale-leeds",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.1
+  },
+  {
+    "ts": "2026-09-25T07:27:42Z",
+    "slug": "blue-staffy-puppies-birmingham",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:29:56Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:33:04Z",
+    "slug": "staffy-puppies-for-sale-liverpool",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:36:12Z",
+    "slug": "staffy-puppies-for-sale-glasgow",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:38:30Z",
+    "slug": "blue-staffy-puppies-bristol-uk",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:41:00Z",
+    "slug": "staffy-puppies-for-sale-nottingham",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:43:58Z",
+    "slug": "blue-staffy-puppies-for-sale-in-leicester",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:47:00Z",
+    "slug": "blue-staffies-newcastle-under-lyme",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:49:35Z",
+    "slug": "blue-staffy-puppies-south-yorkshire",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:51:48Z",
+    "slug": "buy-blue-staffy-puppy-coventry-area",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:54:15Z",
+    "slug": "staffy-puppies-cardiff-wales",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:56:20Z",
+    "slug": "staffy-puppies-for-sale-cornwall",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:58:36Z",
+    "slug": "staffy-puppies-for-sale-essex",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:01:27Z",
+    "slug": "staffy-puppies-wolverhampton",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:04:12Z",
+    "slug": "blue-staffy-puppies-aberdeen",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:07:12Z",
+    "slug": "blue-staffy-puppies-dundee",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:09:44Z",
+    "slug": "blue-staffy-puppies-edinburgh",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:12:37Z",
+    "slug": "blue-staffy-puppies-hull",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:15:16Z",
+    "slug": "blue-staffy-puppies-inverness",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:17:22Z",
+    "slug": "blue-staffy-puppies-middlesbrough",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:20:23Z",
+    "slug": "blue-staffy-puppies-oxford",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:23:11Z",
+    "slug": "blue-staffy-puppies-sunderland",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:25:32Z",
+    "slug": "blue-staffy-puppies-york",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:28:17Z",
+    "slug": "blue-staffy-puppies-uk",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:31:31Z",
+    "slug": "uk-staffordshire-bull-terrier-breeder",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:34:28Z",
+    "slug": "staffy-breeding-dogs-glasgow",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:37:19Z",
+    "slug": "blue-staffy-puppies-manchester-uk",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-30T00:30:33Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 paa1 (response carries no cost; typical-call estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-30T00:37:29Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "keyword_volume",
+    "endpoint": "kw_data_google_ads_search_volume UK en, 30 keywords in one task (response carries no cost; guard estimate)",
+    "cost_usd": 0.1
+  },
+  {
+    "ts": "2026-09-30T00:37:52Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "backlinks",
+    "endpoint": "backlinks_bulk_ranks 5 targets, rank_scale one_hundred (response carries no cost; guard estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-30T00:38:12Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "backlinks",
+    "endpoint": "backlinks_bulk_referring_domains 5 targets (response carries no cost; guard estimate)",
+    "cost_usd": 0.05
+  }
+]

@@ -1,0 +1,115 @@
+{
+ "id": "staffordshirebullterrierkennel",
+ "root_domain": "staffordshirebullterrierkennel.com",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "NOT FETCHED",
+  "reason": "tier 5 — not used as a model"
+ },
+ "page_types": {
+  "status": "NOT FETCHED",
+  "reason": "tier 5 — homepage only: no map fetched"
+ },
+ "cities": {
+  "status": "ok",
+  "values": []
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "Place",
+   "PostalAddress",
+   "PetStore",
+   "Organization",
+   "ImageObject",
+   "WebSite",
+   "SearchAction",
+   "WebPage",
+   "Person",
+   "Article"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://staffordshirebullterrierkennel.com/",
+    "title": "",
+    "h1": "",
+    "h2": []
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": false,
+   "health_tests_named": [],
+   "vet_checks_mentioned": false,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": true,
+   "contact_source": "raw-html",
+   "reviews_shown": 0
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 1019,
+   "url_count": {
+    "status": "NOT FETCHED",
+    "reason": "tier 5 — homepage only: no map fetched"
+   },
+   "h2_per_page": {
+    "https://staffordshirebullterrierkennel.com/": 8
+   }
+  }
+ },
+ "blog": {
+  "status": "NOT FETCHED",
+  "reason": "tier 5 — homepage only: no map and no post fetched"
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 20,
+   "alt_text": "descriptive",
+   "alt_missing": 0,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "phone",
+    "email",
+    "visit"
+   ],
+   "prices_shown": false,
+   "price_amounts_as_printed": [],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": []
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": {
+    "status": "NOT FETCHED",
+    "reason": "phone emulation could not load the homepage: net::ERR_SSL_PROTOCOL_ERROR on two attempts"
+   },
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "A suspect seller, not a model: it wins a London map-pack slot with a generic breed-name site that shows no licence, no council, no UK town, no health tests and no reviews, marks itself as a US pet store in its structured data and offers to ship puppies worldwide. BSUK beats it simply by showing what it cannot: a named council licence, a real town, test results and sourced reviews."
+}

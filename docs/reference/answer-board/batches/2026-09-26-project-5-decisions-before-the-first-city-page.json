@@ -1,0 +1,120 @@
+{
+  "askedAt": "2026-09-26T12:00:00Z",
+  "id": "2026-09-26-project-5-decisions-before-the-first-city-page",
+  "intro": "Project 5 starts with the London page, and the London board cannot be approved until these are\nsettled (Known Issues 60, 61, 63, 67 and 70 in `docs/reference/session-log.md`). Pick an option\nfor each; add a note if you want something different. Claude's recommendation is marked.",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "Working rule 16 says no two pages share a hero, but city pages map to the interior-guide family, whose three heroes the guides already use. Recommended: (a) — it scales to 28 pages and keeps rule 16's intent, because each city's own photo and text make its hero unique; the rule-16 gate learns the new family.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "A location hero family: one design, varied per city by rule (its own photo and text)"
+        },
+        {
+          "id": "b",
+          "label": "Exempt the city pages from rule 16 by name, as the utility pages are"
+        },
+        {
+          "id": "c",
+          "label": "A design pass first: a new hero pool for the city pages, rotated so neighbours differ"
+        }
+      ],
+      "question": "How should the 28 city pages get their heroes?",
+      "section": 0,
+      "where": "Known Issue 60; `src/lib/boardStyles.ts`; the location builder skill."
+    },
+    {
+      "context": "Today every city page comes from one template, `src/pages/uk-locations/[slug].astro`, fed by `data/locations.json`. Recommended: (a) — one template for 28 pages, and the board freshness check (Known Issue 63) needs only that template added to what it watches.",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "Keep the one template; it renders the rebuilt layout when the city's record says so"
+        },
+        {
+          "id": "b",
+          "label": "One `.astro` file per city, like the 12 pages already rebuilt"
+        },
+        {
+          "id": "c",
+          "label": "Content files per city, rendered by one template"
+        }
+      ],
+      "question": "Where should a rebuilt city page's source live?",
+      "section": 0,
+      "where": "Known Issues 61 and 63."
+    },
+    {
+      "context": "Today the evidence ledger, the FAQ rows and the boards write L-2-HGA and HC-HSF4; the copy rules write L2-HGA and HC. Recommended: (a) — the Kennel Club's own test names, and the spelling most files already use.",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "L-2-HGA and HC-HSF4"
+        },
+        {
+          "id": "b",
+          "label": "L2-HGA and HC"
+        }
+      ],
+      "question": "Which spelling should every page use for the two DNA tests?",
+      "section": 1,
+      "where": "Known Issue 67; everything moves to the one you pick."
+    },
+    {
+      "context": "New pages need an image on every heading; where no existing photo fits, one is generated after you approve it on the board. Without the key, project 5 uses existing photos only.",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, I will add it before the London board"
+        },
+        {
+          "id": "b",
+          "label": "Later: use existing photos only for now"
+        }
+      ],
+      "question": "Will you add your Gemini API key now?",
+      "section": 1,
+      "where": "`GEMINI_API_KEY` in `.env` (you add it yourself); Known Issue 70."
+    },
+    {
+      "context": "Optional.",
+      "key": "q05",
+      "kind": "text",
+      "n": 5,
+      "options": [],
+      "question": "Anything else Claude should know before the London page?",
+      "section": 2,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Heroes and page source"
+    },
+    {
+      "lead": "",
+      "title": "Spelling and images"
+    },
+    {
+      "lead": "",
+      "title": "Anything else"
+    }
+  ],
+  "status": "open",
+  "title": "Project 5 · decisions before the first city page"
+}

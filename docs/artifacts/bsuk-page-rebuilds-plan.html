@@ -1,0 +1,736 @@
+<title>BSUK Page Rebuilds Plan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Project 4 of 6</p><h1 class="title">Page rebuilds implementation plan</h1></div>
+<div class="meta"><span class="pill">status: executed</span> <span class="pill">2026-09-22</span><br>docs/superpowers/plans/2026-09-19-page-rebuilds.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Rebuild the eleven rich pages and the blog on the project 3 kit, each written fresh from a board the user approves section by section, with the desktop dial and mobile section jump links added to the kit and every known-wrong fact (Glasgow, prices, byline, duplicate headers, dates) fixed.
+
+**Architecture:** Two new kit components (dial, section sheet) land first with harness coverage. Shared tooling follows: a facts-preserved gate that replaces migration parity for rebuilt pages, a board-preview route + cutter that renders three styles per section from the kit, and the board builder re-based on the tokens. Then twelve page tasks with one shape each: outline → board record → board published → user picks → build → gates → commit. Hubs get the kit shell. Close-out mirrors project 3.
+
+**Tech Stack:** Astro 6.3.8, Tailwind 4.3, the kit in `src/components/kit/`, Python 3 + pytest, Playwright harness, the board system (`scripts/pageboard.py`, `build_page_board.py`, `board_approve.py`, `board_gate.py`, `schemas/board.schema.json`), Artifact tool (boards with `db`).
+
+**Spec:** `docs/superpowers/specs/2026-09-19-page-rebuilds-design.md` (Artifact https://claude.ai/artifact/LrTbp44VxpGNmtmpjx5GNi).
+
+**Working rules for every task.** Branch `page-rebuilds` (cut from `foundation` at `63a7b12`). Run from `/Users/apple/Downloads/BSUK`. Never push. Every commit ends with `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` — that exact name. No hex outside `src/styles/tokens.css`; no emoji (inline stroke SVG); never write parrot/bird/CAG/`cag-`/a hosting provider; `Glasgow` may be written only in Known Issue 16 text and the Glasgow location page's slug. Every existing image and video is reused at its original path with its alt text (working rule 11). No invented claims (rule 9): a fact comes from the migrated page body, `data/*.json`, `rules/`, or is `NOT FETCHED`. Before every commit: `python3 scripts/marker_check.py | tail -1` = `0 problems`, `set -a; source .env; set +a; npm run build 2>&1 | grep "page(s) built"`, `python3 -m pytest tests/py -q -x 2>&1 | tail -1` green, registries green. Source `.env` before any build so the form audit runs. Kit conventions in `src/components/kit/_registry.ts` are binding; the kit has NO `variant` prop (`Button kind`, `Testimonial mode|reviews`, `InfoCard kind`, `SectionDivider inverse`, `Hero as`).
+
+---
+</script>
+<script type="text/markdown" data-title="File structure">
+| Path | Responsibility |
+|---|---|
+| `src/components/kit/PageDial.astro` | desktop sticky dial: progress ring + numbered list + scroll-spy |
+| `src/components/kit/SectionSheet.astro` | mobile bottom tab bar + Sections bottom sheet (`<dialog>`) |
+| `src/lib/sections.ts` | `sectionsOf(html)` / `SectionRef` type shared by dial, sheet, board tooling |
+| `tests/render/checks/nav.ts` | gains `nav-bottom-chrome-clear` (tab bar never covers a jump target) |
+| `tests/render/fixtures/{known_good,known_broken}/kit-bottom-chrome*.html` | fixture pair |
+| `scripts/facts_preserved_check.py` | rebuilt page keeps every fact/image/embed of its migrated body or lists it as dropped |
+| `data/facts/<slug>.json` | extracted fact set per migrated page (generated once, committed) |
+| `src/pages/board-preview/[slug].astro` | hidden noindex route: three styles per section from the board record |
+| `scripts/build_board_previews.py` | cuts the built route into per-style snippets for the board |
+| `scripts/build_page_board.py` | re-palette'd; renders outline, three styles per section, pick controls, db save |
+| `scripts/board_approve.py` / `board_gate.py` | unchanged API; gate learns the `styles` pick set |
+| `data/boards/<slug>.json` | one record per page |
+| `src/pages/<slug>/index.astro` | the rebuilt page, hand-written from the approved record on the kit |
+| `src/layouts/PageShell.astro` | kit shell (header, dial/sheet, footer) used by every rebuilt page and the hubs |
+| `data/page-dates.json` | git-derived dates, wired into the build |
+| `docs/reports/page-rebuilds-gate-report.md` | close-out |
+
+---
+</script>
+<script type="text/markdown" data-title="Task 1: `src/lib/sections.ts` and `PageDial.astro`">
+**Files:**
+- Create: `src/lib/sections.ts`, `src/components/kit/PageDial.astro`
+- Modify: `data/design/components.json` (+ row 14), `src/components/kit/_registry.ts`, `src/pages/kit-preview/index.astro` (renders it), `tests/py/test_design_components.py`
+
+- [ ] **Step 1: Write the failing test**
+
+Append to `tests/py/test_design_components.py`:
+
+```python
+def test_components_json_has_fifteen_rows_after_project_4_additions():
+    ids = [r["id"] for r in json.loads((ROOT / "data/design/components.json").read_text())]
+    assert ids[-2:] == ["page-dial", "section-sheet"], ids[-2:]
+
+
+def test_built_page_dial_has_ring_list_and_spy_hooks():
+    s = _preview_sections()  # existing helper: dict id -> inner html of /kit-preview/
+    dial = s["page-dial"]
+    assert 'class="kit-dial' in dial and "<nav" in dial and 'aria-label="Sections"' in dial
+    assert dial.count("<li") >= 6 and 'data-spy="' in dial
+    assert "<svg" in dial and "<circle" in dial          # the progress ring
+    assert "#" not in re.sub(r'href="#[^"]+"', "", dial) or "style=" not in dial  # no inline hex
+```
+
+- [ ] **Step 2: Run it to see it fail**
+
+Run: `python3 -m pytest tests/py/test_design_components.py -q -k "fifteen or page_dial"`
+Expected: 2 failed.
+
+- [ ] **Step 3: Write `src/lib/sections.ts`**
+
+```ts
+// src/lib/sections.ts — the section list a page exposes to PageDial and SectionSheet.
+// A section is any <section id="…" data-section-label="…"> in the page body; both components
+// take the list as a prop so the page owns the order (the board record's section order).
+export interface SectionRef { id: string; label: string }
+export const sectionsFromRecord = (record: { sections: { id: string; heading: string }[] }): SectionRef[] =>
+  record.sections.map((s) => ({ id: s.id, label: s.heading.replace(/:.*$/, '').trim() }));
+```
+
+- [ ] **Step 4: Write `PageDial.astro`**
+
+```astro
+---
+// src/components/kit/PageDial.astro — desktop in-page dial (spec §3): sticky sidebar card,
+// 64px progress ring ("n of N"), numbered section list, scroll-spy. Hidden below 1024px
+// (SectionSheet takes over). Metrics match the source site's dial: 196px column, 64/50 ring,
+// rows ≥24px, dashed top rule. Tokens only; card shell from kit.css.
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+type Props = HTMLAttributes<'aside'> & { sections: SectionRef[]; title?: string };
+const { sections, title = 'On this page', class: cls, ...rest } = Astro.props;
+const N = sections.length;
+const C = 2 * Math.PI * 22; // ring circumference at r=22 (50px inner box)
+---
+<aside class:list={['kit-dial kit-card', cls]} data-dial {...rest}>
+  <div class="ring" aria-hidden="true">
+    <svg viewBox="0 0 64 64" width="64" height="64"><circle cx="32" cy="32" r="22" class="track" /><circle cx="32" cy="32" r="22" class="fill" style={`stroke-dasharray:${C.toFixed(1)};stroke-dashoffset:${C.toFixed(1)}`} data-ring /></svg>
+    <span class="n"><b data-ring-n>1</b><small>of {N}</small></span>
+  </div>
+  <nav aria-label="Sections"><p class="t">{title}</p><ol>
+    {sections.map((s, i) => <li><a href={`#${s.id}`} data-spy={s.id}><span class="num">{String(i + 1).padStart(2, '0')}</span><span class="lab">{s.label}</span></a></li>)}
+  </ol></nav>
+</aside>
+<script>
+  // Scroll-spy: the section whose top is nearest below the header wins; ring shows n of N.
+  const dial = document.querySelector<HTMLElement>('[data-dial]');
+  if (dial) {
+    const links = [...dial.querySelectorAll<HTMLAnchorElement>('[data-spy]')];
+    const ring = dial.querySelector<SVGCircleElement>('[data-ring]');
+    const nEl = dial.querySelector<HTMLElement>('[data-ring-n]');
+    const C = 2 * Math.PI * 22;
+    const targets = links.map((a) => document.getElementById(a.dataset.spy!)).filter(Boolean) as HTMLElement[];
+    const set = (i: number) => {
+      links.forEach((a, j) => a.toggleAttribute('aria-current', j === i));
+      if (ring) ring.style.strokeDashoffset = String(C * (1 - (i + 1) / links.length));
+      if (nEl) nEl.textContent = String(i + 1);
+    };
+    const io = new IntersectionObserver((es) => {
+      const vis = es.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (vis[0]) set(targets.indexOf(vis[0].target as HTMLElement));
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    targets.forEach((t) => io.observe(t));
+    set(0);
+  }
+<\/script>
+<style>
+  @layer components {
+    .kit-dial { display: none; }
+    @media (min-width: 1024px) {
+      .kit-dial { display: flex; flex-direction: column; gap: 10px; align-items: stretch; width: 196px; padding: 12px 10px; position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); max-height: calc(100vh - var(--hdr) - 32px); overflow-y: auto; color: var(--color-text); }
+    }
+    .ring { position: relative; width: 64px; height: 64px; margin: 2px auto 0; flex: none; }
+    .ring svg { transform: rotate(-90deg); }
+    .track { fill: none; stroke: var(--color-border); stroke-width: 6; }
+    .fill { fill: none; stroke: var(--color-cta); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset var(--dur-base) var(--ease-out); }
+    .n { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; line-height: 1; }
+    .n b { font-family: var(--font-display); font-size: 15px; color: var(--color-brand); }
+    .n small { display: block; font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-muted); }
+    .t { margin: 0; font-size: var(--text-xs); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+    ol { list-style: none; margin: 0; padding: 8px 0 0; display: grid; gap: 1px; border-top: 1px dashed var(--color-border); }
+    li a { display: flex; gap: 7px; align-items: baseline; min-height: 24px; padding: 3px 4px; border-radius: var(--radius-sm); font-size: var(--text-sm); color: var(--color-text); text-decoration: none; }
+    li a[aria-current] { background: var(--color-brand-soft); color: var(--color-brand); font-weight: 600; }
+    li a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 1px; }
+    .num { font-feature-settings: "tnum"; color: var(--color-text-muted); font-size: var(--text-xs); }
+    @media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+  }
+</style>
+```
+
+- [ ] **Step 5: Register and mount on kit-preview**
+
+Add to `data/design/components.json`: `{"id": "page-dial", "file": "PageDial.astro", "title": "14 · Page dial (desktop)", "board_width": 640}`. In `_registry.ts` add `ComponentId` member `'page-dial'` and entry `{ C: PageDial, demo: [{ sections: [{id:'a',label:'Health'},{id:'b',label:'Delivery'},{id:'c',label:'Deposit'},{id:'d',label:'Puppies'},{id:'e',label:'FAQ'},{id:'f',label:'Contact'}] }] }`. `kit-preview` renders every REGISTRY entry already; add six `<section id="a"…"f">` stubs inside the page-dial demo wrapper so scroll-spy has targets (wrap: extend `demoStyle` with `'with-targets'`).
+
+- [ ] **Step 6: Build, test, commit**
+
+Run: `set -a; source .env; set +a; npm run build 2>&1 | grep "page(s) built" && python3 -m pytest tests/py/test_design_components.py tests/py/test_design_tokens.py -q | tail -1 && python3 scripts/marker_check.py | tail -1`
+Expected: 51 pages; green; 0 problems.
+
+```bash
+git add src/lib/sections.ts src/components/kit data/design/components.json src/pages/kit-preview tests/py
+git commit -m "kit: PageDial — desktop dial with progress ring and scroll-spy (component 14)
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 2: `SectionSheet.astro` (mobile tab bar + bottom sheet) and the bottom-chrome harness check">
+**Files:**
+- Create: `src/components/kit/SectionSheet.astro`, `tests/render/fixtures/known_good/kit-bottom-chrome-clear.html`, `tests/render/fixtures/known_broken/kit-bottom-chrome-covers.html`
+- Modify: `tests/render/checks/nav.ts`, `tests/render/meta.spec.ts` (describe for the kit pair), `data/design/components.json` (+ row 15), `_registry.ts`, `tests/py/test_design_components.py`
+
+- [ ] **Step 1: Write the failing test**
+
+```python
+def test_built_section_sheet_has_tab_bar_and_dialog():
+    s = _preview_sections()["section-sheet"]
+    assert 'class="kit-tabbar' in s and s.count("<a ") >= 3 and "<button" in s
+    assert "<dialog" in s and 'aria-label="Sections"' in s
+    assert s.count("<svg") >= 4 and "<img" not in s
+```
+
+Run: `python3 -m pytest tests/py/test_design_components.py -q -k section_sheet` → 1 failed.
+
+- [ ] **Step 2: Write the component**
+
+```astro
+---
+// src/components/kit/SectionSheet.astro — mobile/tablet in-page nav (spec §3): a fixed bottom
+// tab bar (Home · Puppies · Contact · Sections) whose Sections tab opens a native <dialog>
+// bottom sheet listing the page's sections with scroll-spy. Hidden at ≥1024px (PageDial
+// takes over). The bar is 64px tall and reserves that space with body padding so no jump
+// target lands under it (nav-bottom-chrome-clear measures it).
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+import Button from './Button.astro';
+type Props = HTMLAttributes<'div'> & { sections: SectionRef[]; ctaLabel?: string; ctaHref?: string };
+const { sections, ctaLabel = 'Available puppies', ctaHref = '/available-puppies/', class: cls, ...rest } = Astro.props;
+const I = {
+  home: 'M3 11l9-8 9 8v10H3z M9 21v-6h6v6',
+  pup: 'M4 8c0-3 2-5 5-5h6c3 0 5 2 5 5v8a5 5 0 0 1-10 0V8 M9 20h6',
+  mail: 'M4 5h16v14H4z M4 7l8 6 8-6',
+  list: 'M4 7h16M4 12h16M4 17h10',
+};
+const tabs = [['Home', '/', I.home], ['Puppies', '/available-puppies/', I.pup], ['Contact', '/uk-blue-staffy-breeders-contact/', I.mail]];
+---
+<div class:list={['kit-sheet', cls]} data-sheet {...rest}>
+  <nav class="kit-tabbar" aria-label="Site">
+    {tabs.map(([l, h, d]) => <a href={h}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={d} /></svg><span>{l}</span></a>)}
+    <button type="button" data-open aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg><span>Sections</span></button>
+  </nav>
+  <dialog class="sheet" aria-label="Sections" data-dialog>
+    <div class="grab" aria-hidden="true"></div>
+    <ol>{sections.map((s, i) => <li><a href={`#${s.id}`} data-spy={s.id}><span class="num">{String(i + 1).padStart(2, '0')}</span>{s.label}</a></li>)}</ol>
+    <div class="cta"><Button kind="primary" href={ctaHref} label={ctaLabel} /><button type="button" class="close" data-close>Close</button></div>
+  </dialog>
+</div>
+<script>
+  const root = document.querySelector<HTMLElement>('[data-sheet]');
+  if (root) {
+    const dlg = root.querySelector<HTMLDialogElement>('[data-dialog]')!;
+    root.querySelector('[data-open]')?.addEventListener('click', () => dlg.showModal());
+    root.querySelector('[data-close]')?.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => dlg.close()));
+    const links = [...dlg.querySelectorAll<HTMLAnchorElement>('[data-spy]')];
+    const targets = links.map((a) => document.getElementById(a.dataset.spy!)).filter(Boolean) as HTMLElement[];
+    const io = new IntersectionObserver((es) => {
+      const vis = es.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (vis[0]) { const i = targets.indexOf(vis[0].target as HTMLElement); links.forEach((a, j) => a.toggleAttribute('aria-current', j === i)); }
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    targets.forEach((t) => io.observe(t));
+  }
+<\/script>
+<style is:global>
+  @media (max-width: 1023px) { body:has(.kit-sheet) { padding-bottom: 64px; } }
+</style>
+<style>
+  @layer components {
+    .kit-sheet { display: contents; }
+    .kit-tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; height: 64px; display: grid; grid-template-columns: repeat(4, 1fr); background: var(--color-surface-raised); border-top: 1px solid var(--color-border); box-shadow: var(--shadow-card); }
+    .kit-tabbar a, .kit-tabbar button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 44px; font: 600 var(--text-xs)/1 var(--font-body); color: var(--color-brand); text-decoration: none; background: none; border: 0; cursor: pointer; }
+    .kit-tabbar svg { width: 22px; height: 22px; }
+    .kit-tabbar :focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -3px; }
+    .sheet { border: 0; padding: var(--space-4) var(--space-5) var(--space-6); width: min(100%, 560px); max-height: 80vh; margin: auto auto 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--color-surface-raised); color: var(--color-text); }
+    .sheet::backdrop { background: rgb(20 32 43 / .5); }
+    .grab { width: 40px; height: 4px; border-radius: 2px; background: var(--color-border); margin: 0 auto var(--space-3); }
+    .sheet ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+    .sheet li a { display: flex; gap: var(--space-3); align-items: center; min-height: 44px; padding: 0 var(--space-2); border-radius: var(--radius-sm); color: var(--color-text); text-decoration: none; }
+    .sheet li a[aria-current] { background: var(--color-brand-soft); color: var(--color-brand); font-weight: 600; }
+    .num { font-feature-settings: "tnum"; color: var(--color-text-muted); font-size: var(--text-xs); }
+    .cta { display: flex; gap: var(--space-3); margin-top: var(--space-4); align-items: center; }
+    .close { min-height: 44px; padding: 0 var(--space-4); background: none; border: 1px solid var(--color-border); border-radius: var(--btn-radius); font: 600 var(--text-sm) var(--font-body); color: var(--color-text); cursor: pointer; }
+    @media (min-width: 1024px) { .kit-tabbar, .sheet { display: none; } }
+    @media print { .kit-tabbar { display: none; } }
+  }
+</style>
+```
+
+`rgb(20 32 43 / .5)` is a hex-free literal of `--color-steel-900`; replace with `color-mix(in srgb, var(--color-surface-deep) 50%, transparent)` if the no-hex test's regex objects to the numbers (it matches `#` only, so it will pass; keep tokens where possible).
+
+- [ ] **Step 3: The harness check**
+
+Append to `tests/render/checks/nav.ts` (read the file's `register` pattern first and match it):
+
+```ts
+/** A fixed bottom bar must never cover the landing position of an in-page jump target.
+ *  Judged unit: each in-page link's target; measured = target top after the jump relative
+ *  to the bar's top. Bars: any fixed element whose box touches the viewport bottom and
+ *  spans ≥80% of the width. */
+register({
+  id: 'nav-bottom-chrome-clear',
+  family: 'NAV',
+  severity: 'blocking',
+  describe: 'a fixed bottom bar must not cover in-page jump targets',
+  minExamined: 1,
+  async run(page, viewport) {
+    const r = await page.evaluate(() => {
+      const H = window.innerHeight, W = window.innerWidth;
+      const bars = [...document.body.querySelectorAll<HTMLElement>('*')].filter((el) => {
+        const cs = getComputedStyle(el); if (cs.position !== 'fixed' || cs.display === 'none') return false;
+        const b = el.getBoundingClientRect(); return b.bottom >= H - 1 && b.width >= W * 0.8 && b.height > 0 && b.height < H * 0.4;
+      });
+      if (!bars.length) return { examined: 0, bad: [] as string[] };
+      const barTop = Math.min(...bars.map((b) => b.getBoundingClientRect().top));
+      const links = [...document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')].filter((a) => a.getAttribute('href')!.length > 1);
+      const bad: string[] = []; let examined = 0;
+      for (const a of links) {
+        const t = document.getElementById(a.getAttribute('href')!.slice(1)); if (!t) continue; examined++;
+        t.scrollIntoView(); const top = t.getBoundingClientRect().top;
+        if (top >= barTop) bad.push(a.getAttribute('href')!);
+      }
+      window.scrollTo(0, 0);
+      return { examined, bad };
+    });
+    return { examined: r.examined, defects: r.bad.map((h) => ({ checkId: 'nav-bottom-chrome-clear', family: 'NAV' as const, viewport, count: 1, message: `jump target ${h} lands under the bottom bar` })) };
+  },
+});
+```
+
+Fixtures: `known_good/kit-bottom-chrome-clear.html` = a tall page with a 64px fixed bottom bar, `body { padding-bottom: 64px }`, six `<section id>` and a list of `#` links, sections tall enough that the last one's top sits above the bar after `scrollIntoView`; `known_broken/kit-bottom-chrome-covers.html` = the same with the last section only 40px tall and no body padding, so its top lands under the bar. Add a describe in `tests/render/meta.spec.ts` like the counter pair's (loads both files, asserts silent/fires). Wire `NAV` is already in every page type. Run: `npm run test:render:meta -- -g "bottom-chrome" 2>&1 | tail -2` → green.
+
+- [ ] **Step 4: Register, build, test, commit**
+
+`components.json` row 15 `{"id": "section-sheet", "file": "SectionSheet.astro", "title": "15 · Section sheet (mobile)", "board_width": 640}`; `_registry.ts` entry with the same six demo sections. Build; `python3 -m pytest tests/py -q -x | tail -1`; marker 0.
+
+```bash
+git add src/components/kit data/design/components.json tests/render tests/py src/pages/kit-preview
+git commit -m "kit: SectionSheet — mobile tab bar and Sections bottom sheet (component 15); nav-bottom-chrome-clear check
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 3: `PageShell.astro`, hubs on the kit shell, `generate_page_dates.py` wired">
+**Files:**
+- Create: `src/layouts/PageShell.astro`
+- Modify: `src/pages/available-puppies/index.astro`, `src/pages/uk-locations/index.astro`, `src/pages/blog/index.astro`, `src/pages/available-puppies/[slug].astro`, `src/layouts/BaseLayout.astro` (dateModified from `data/page-dates.json`), `package.json` (`prebuild`: `npm run dates`), `tests/py/test_page_dates.py`
+
+- [ ] **Step 1: Write the failing test**
+
+```python
+# tests/py/test_page_dates.py (append)
+def test_every_built_page_carries_a_real_date_modified():
+    import json, pathlib, re
+    root = pathlib.Path(__file__).resolve().parents[2]
+    dates = json.loads((root / "data/page-dates.json").read_text())
+    for html in (root / "dist").rglob("index.html"):
+        route = "/" + str(html.parent.relative_to(root / "dist")).replace(".", "") 
+        route = route.rstrip("/") + "/" if route != "/" else "/"
+        t = html.read_text()
+        m = re.search(r'"dateModified":\s*"(\d{4}-\d{2}-\d{2})', t)
+        if route in dates:
+            assert m and m.group(1) == dates[route][:10], route
+```
+
+Run it → fails (no `dateModified` from the file on most pages).
+
+- [ ] **Step 2: `PageShell.astro`**
+
+```astro
+---
+// src/layouts/PageShell.astro — the kit shell every rebuilt page and hub uses: BaseLayout
+// (head, sprite, favicons) + SiteHeaderKit + [PageDial | SectionSheet] + slot + SiteFooterKit.
+import BaseLayout from './BaseLayout.astro';
+import SiteHeaderKit from '../components/kit/SiteHeaderKit.astro';
+import SiteFooterKit from '../components/kit/SiteFooterKit.astro';
+import PageDial from '../components/kit/PageDial.astro';
+import SectionSheet from '../components/kit/SectionSheet.astro';
+import type { SectionRef } from '../lib/sections';
+interface Props { title: string; description: string; sections?: SectionRef[]; noindex?: boolean; schema?: unknown; canonical?: string }
+const { sections = [], ...head } = Astro.props;
+const nav = sections.length >= 6;
+---
+<BaseLayout {...head}>
+  <SiteHeaderKit slot="header" />
+  <div class:list={['page-shell', { 'has-dial': nav }]}>
+    {nav && <PageDial sections={sections} />}
+    <div class="page-body"><slot /></div>
+  </div>
+  {nav && <SectionSheet sections={sections} />}
+  <SiteFooterKit slot="footer" />
+</BaseLayout>
+<style>
+  @layer components {
+    .page-shell { max-width: var(--container); margin-inline: auto; padding-inline: var(--space-5); }
+    @media (min-width: 1024px) { .page-shell.has-dial { display: grid; grid-template-columns: 196px minmax(0, 1fr); gap: 28px; align-items: start; } }
+  }
+</style>
+```
+
+Check `BaseLayout.astro` for `header`/`footer` slots (it renders the legacy `SiteHeader`/`SiteFooter` today): give it named slots with the legacy components as the fallback content, so un-rebuilt pages are unchanged and `PageShell` overrides them.
+
+- [ ] **Step 3: Dates**
+
+`package.json`: `"prebuild": "python3 scripts/generate_page_dates.py"`. `BaseLayout.astro`: read `data/page-dates.json`, look up `Astro.url.pathname`, and pass `dateModified` into `Schema.astro`'s WebPage node (check `Schema.astro`'s props). `tests/py/test_package_scripts.py` may pin the script surface; update it.
+
+- [ ] **Step 4: Hubs and puppy pages on `PageShell`** (no content change; `sections` omitted → no dial). Build; `python3 scripts/migration_parity.py | tail -1` stays `0 failing` (hubs are not parity targets; verify); `npm run test:render:pages` → no new blocking row; `python3 -m pytest tests/py -q -x | tail -1`.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add src/layouts src/pages package.json data/page-dates.json tests/py
+git commit -m "shell: PageShell on the kit for hubs and puppy pages; page dates wired into the build
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 4: `facts_preserved_check.py` and the fact sets">
+**Files:**
+- Create: `scripts/facts_preserved_check.py`, `data/facts/<slug>.json` ×12 (generated), `tests/py/test_facts_preserved.py`
+- Modify: `package.json` (`check:facts` in `check:all`), `scripts/migration_parity.py` (skips slugs listed in `data/facts/rebuilt.json`)
+
+- [ ] **Step 1: Write the failing test**
+
+```python
+# tests/py/test_facts_preserved.py
+import json, pathlib, subprocess, sys
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+import facts_preserved_check as F
+
+OLD = "<article class='prose-migrated'><p>Puppies from £1,500 and £1,700. Roman and Byrd are DNA tested for L-2-HGA.</p><img src='/images/blue-staffy-puppy-for-sale-uk.webp' alt='x'><iframe src='https://www.youtube.com/embed/g9iV9RVr_Sk'></iframe></article>"
+
+
+def test_extract_finds_prices_names_tests_images_embeds():
+    f = F.extract(OLD, names=["Roman", "Byrd", "Ince"])
+    assert f["prices"] == ["£1,500", "£1,700"]
+    assert f["names"] == ["Roman", "Byrd"]
+    assert "L-2-HGA" in f["tests"]
+    assert f["images"] == ["/images/blue-staffy-puppy-for-sale-uk.webp"]
+    assert f["embeds"] == ["g9iV9RVr_Sk"]
+
+
+def test_check_reports_missing_unless_dropped():
+    facts = F.extract(OLD, names=["Roman", "Byrd"])
+    new = "<main><p>Roman is £1,500. L-2-HGA clear.</p><img src='/images/blue-staffy-puppy-for-sale-uk.webp'></main>"
+    missing = F.missing(facts, new, dropped={"names": ["Byrd"], "prices": ["£1,700"]})
+    assert missing == {"embeds": ["g9iV9RVr_Sk"]}
+```
+
+Run → `ModuleNotFoundError`.
+
+- [ ] **Step 2: Write the checker**
+
+```python
+#!/usr/bin/env python3
+"""facts_preserved_check.py — a rebuilt page must keep every fact its migrated body carried.
+
+Facts = prices (£ amounts), puppy names (from data/puppies.json + the four removed pups are
+NOT facts), health-test names, credential phrases, image paths, YouTube embed ids. Extracted
+ONCE from the migrated page (data/facts/<slug>.json, `--extract` before the rewrite) and
+checked against dist/<slug>/index.html after it. A fact may be dropped only if the board
+record lists it under `dropped` with a reason (data/boards/<slug>.json → "dropped").
+Slugs in data/facts/rebuilt.json are exempt from migration_parity.py and subject to this.
+"""
+import argparse, json, pathlib, re, sys
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+PRICE = re.compile(r"£\s?\d{1,3}(?:,\d{3})*(?:\.\d\d)?")
+TESTS = ["L-2-HGA", "HC-HSF4", "HC", "DNA", "KC", "microchip", "vaccinat"]
+CREDS = ["KC-registered", "Kennel Club", "DEFRA", "licence", "Lucy"]
+IMG = re.compile(r'<img[^>]+src="([^"]+)"')
+EMBED = re.compile(r"youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{6,})")
+TAG = re.compile(r"<[^>]+>")
+
+
+def extract(html, names):
+    text = TAG.sub(" ", html)
+    return {
+        "prices": sorted(set(PRICE.findall(text)), key=lambda p: int(re.sub(r"[^\d]", "", p))),
+        "names": [n for n in names if re.search(rf"\b{re.escape(n)}\b", text)],
+        "tests": [t for t in TESTS if t in text],
+        "creds": [c for c in CREDS if c.lower() in text.lower()],
+        "images": sorted(set(IMG.findall(html))),
+        "embeds": sorted(set(EMBED.findall(html))),
+    }
+
+
+def missing(facts, new_html, dropped=None):
+    dropped = dropped or {}
+    text = TAG.sub(" ", new_html)
+    out = {}
+    for k, vals in facts.items():
+        drop = set(dropped.get(k, []))
+        miss = []
+        for v in vals:
+            if v in drop:
+                continue
+            if k == "images":
+                present = v in new_html
+            elif k == "embeds":
+                present = v in new_html
+            elif k == "creds":
+                present = v.lower() in text.lower()
+            else:
+                present = v in text
+            if not present:
+                miss.append(v)
+        if miss:
+            out[k] = miss
+    return out
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--extract", metavar="SLUG", help="extract facts from dist/<slug>/ into data/facts/<slug>.json")
+    ap.add_argument("--check", action="store_true", help="check every slug in data/facts/rebuilt.json")
+    a = ap.parse_args(argv)
+    names = [p["name"] for p in json.loads((ROOT / "data/puppies.json").read_text())]
+    if a.extract:
+        slug = a.extract
+        html = (ROOT / "dist" / (slug if slug != "index" else "") / "index.html").read_text()
+        body = re.search(r"<article[^>]*prose-migrated[^>]*>(.*?)</article>", html, re.S)
+        (ROOT / "data/facts").mkdir(exist_ok=True)
+        (ROOT / f"data/facts/{slug}.json").write_text(json.dumps(extract(body.group(1) if body else html, names), indent=1) + "\n")
+        print(f"extracted facts for {slug}")
+        return 0
+    rebuilt = json.loads((ROOT / "data/facts/rebuilt.json").read_text()) if (ROOT / "data/facts/rebuilt.json").exists() else []
+    problems = 0
+    for slug in rebuilt:
+        facts = json.loads((ROOT / f"data/facts/{slug}.json").read_text())
+        rec = json.loads((ROOT / f"data/boards/{slug}.json").read_text())
+        html = (ROOT / "dist" / (slug if slug != "index" else "") / "index.html").read_text()
+        miss = missing(facts, html, rec.get("dropped", {}))
+        for k, vs in miss.items():
+            for v in vs:
+                print(f"{slug}: missing {k} {v!r}"); problems += 1
+    print(f"examined {len(rebuilt)} rebuilt pages; {problems} problems")
+    return 1 if problems else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+The `dropped` key needs adding to `schemas/board.schema.json` (object of string arrays, optional) — `pageboard._validate` enforces the schema.
+
+- [ ] **Step 3: Extract the twelve fact sets from the current (migrated) build** — run `python3 scripts/facts_preserved_check.py --extract <slug>` for each of the twelve slugs (`index` for `/`; blog index slug `blue-staffy-blog-guides`). Commit the JSON. Create `data/facts/rebuilt.json` = `[]`. Add `"check:facts": "python3 scripts/facts_preserved_check.py --check"` to `package.json` and into the `check:all` chain; make `migration_parity.py` skip slugs in `rebuilt.json` (print `skipped N rebuilt`).
+
+- [ ] **Step 4: Test, commit**
+
+`python3 -m pytest tests/py/test_facts_preserved.py tests/py/test_parity.py tests/py/test_package_scripts.py -q`; `npm run check:all 2>&1 | tail -3`.
+
+```bash
+git add scripts data/facts schemas package.json tests/py
+git commit -m "gates: facts_preserved_check replaces parity for rebuilt pages; fact sets extracted
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 5: Board tooling — preview route, style cutter, board builder on the tokens">
+**Files:**
+- Create: `src/pages/board-preview/[slug].astro`, `scripts/build_board_previews.py`, `tests/py/test_board_previews.py`
+- Modify: `scripts/build_page_board.py` (palette → tokens; style options per section; picks UI), `scripts/board_gate.py` (every section with candidates has a pick), `scripts/form_contract_audit.py` (`NON_CONTENT_ROUTES` += `board-preview`), `schemas/board.schema.json` (`styles` per section), `data/boards/index.json` (schema migration)
+
+- [ ] **Step 1: Write the failing tests**
+
+```python
+# tests/py/test_board_previews.py
+import json, pathlib, sys
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+import build_board_previews as P
+
+
+def test_style_blocks_are_cut_per_section_and_style():
+    html = ('<section data-section="hero" data-style="S1">A</section>'
+            '<section data-section="hero" data-style="S2">B</section>'
+            '<section data-section="faq" data-style="S1">C</section>')
+    blocks = P.cut(html)
+    assert set(blocks) == {("hero", "S1"), ("hero", "S2"), ("faq", "S1")}
+    assert blocks[("hero", "S2")] == "B"
+
+
+def test_record_without_three_styles_is_refused():
+    rec = {"sections": [{"id": "hero", "styles": ["S1", "S2"]}]}
+    try:
+        P.validate_styles(rec); assert False
+    except P.StyleError as e:
+        assert "hero" in str(e)
+```
+
+- [ ] **Step 2: The preview route**
+
+`src/pages/board-preview/[slug].astro` — `getStaticPaths` over `data/boards/*.json` whose `meta.status != "approved"` or whose `styles_preview: true`; for each section of the record renders three `<section data-section={id} data-style="S1|S2|S3">` blocks, each mounting the kit component the section's `shape` maps to (`hero`→`Hero`, `takeaways`→`InfoCard kind="fact"` list, `standard`→ heading + prose + optional `InfoCard`, `puppies`→`PuppyCard` grid, `reviews`→`Testimonial mode`, `faq`→`Faq`, `form`→`ContactFormKit`, `stats`→`CounterStrip`, `trust`→`TrustStrip`, `divider`→`SectionDivider`) in three structurally different arrangements defined ONCE in `src/lib/boardStyles.ts` (a map `shape → [S1, S2, S3]` of layout descriptors: column count, image position, band or card, list vs grid). Copy comes from the record (`heading`, `intent`, first `tree` items as body stubs, real images from `images`). Noindex; `NON_CONTENT_ROUTES` gains `board-preview` (self-expiry test: the folder exists).
+
+- [ ] **Step 3: The cutter and the builder**
+
+`scripts/build_board_previews.py`: `cut(html) -> {(section, style): inner}`; `validate_styles(record)`; `main(slug)` builds `dist/board-preview/<slug>/index.html` blocks + the page CSS (via `scripts/_kit_sections.py`) into `data/boards/previews/<slug>.json` (gitignored) which `build_page_board.py` embeds as `<iframe srcdoc>` per style at 1280/768/375 (three `<iframe>`s with `width` set; the board is ours, so `srcdoc` iframes are fine there). `build_page_board.py`: replace the CSS variables with the token values (steel/brass/bone; hex allowed in this generated doc), add per section a `<fieldset>` of radios `style-<id>` = S1/S2/S3 with the three iframe previews, keep the existing pick/notes/approve mechanism (`picks[<id>] = "S1"`). `board_gate.py`: a section whose `styles` is non-empty and whose approval `picks` lacks it is a FAIL `style-unpicked`. Schema: `sections[].styles: string[]` (0 or 3 entries) and top-level `dropped`.
+
+- [ ] **Step 4: Migrate the homepage record and test**
+
+`data/boards/index.json` gains `styles: []` per section (no preview yet; the homepage is rebuilt last). `python3 -m pytest tests/py/test_page_board.py tests/py/test_board_previews.py tests/py/test_form_contract_audit.py -q`; `python3 scripts/board_gate.py index` still `3 FAIL · 2 WARN` (the carried duplicates; unchanged until the homepage task). Build (51 pages + 0 previews).
+
+```bash
+git add src/pages/board-preview src/lib/boardStyles.ts scripts schemas data/boards tests/py package.json .gitignore
+git commit -m "boards: three rendered styles per section — preview route, cutter, builder on the tokens, gate rule
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+</script>
+<script type="text/markdown" data-title="Task 6: Facts and settings — Carlisle, form contract, review whitelist">
+**Files:**
+- Modify: `data/settings.json` (`address` → town-level), `src/components/Schema.astro` (address fields), `scripts/schema_check.py` (accepts an address without street/postcode), `scripts/form_contract_audit.py` (`PUPPY_OPTION` → the kit form's option set), `src/components/ContactForm.astro` (legacy form gets the same option set), `scripts/dup_content_audit.py` (review quotes whitelisted from `data/reviews.json`), `tests/py/test_dup_whitelist_measured.py`, `CLAUDE.md` line 3 (breeder location), `.claude/agents/*` project-context blocks that say Glasgow (list them: `grep -rln Glasgow .claude`), `docs/reference/session-log.md` Known Issue 16 (status: settings and instruction tree done; page bodies follow per page)
+
+- [ ] **Step 1: Failing tests** — `tests/py/test_data_files.py`: `settings.address == {"city": "Carlisle", "region": "Cumbria", "country": "GB"}` and no `lat`/`lng`/`postcode`; `tests/py/test_form_contract_audit.py`: `PUPPY_OPTION` is not Glasgow-bound and the kit form on the contact page passes `full`; `tests/py/test_agent_facts.py`: `Glasgow` joins the banned tokens for `.claude/`.
+
+- [ ] **Step 2: Apply**, run `grep -rn Glasgow .claude CLAUDE.md rules data/settings.json | wc -l` → 0; `python3 scripts/schema_check.py | tail -1` → `0 blocking`; `python3 scripts/form_contract_audit.py | tail -1` → `0 problems`; `python3 scripts/dup_content_audit.py | tail -1` (review lines no longer counted); full pytest.
+
+- [ ] **Step 3: Commit** `facts: Carlisle · Cumbria in settings, schema and the instruction tree; form contract re-based; review quotes whitelisted`.
+
+---
+</script>
+<script type="text/markdown" data-title="The page procedure (used by Tasks 7–18)">
+Every page task runs these steps; the task lists only its inputs. The steps are written out once here and referenced by number from each page task — an implementer executing a page task reads this block first.
+
+- **P1 Research.** Read the migrated page (`src/pages/<slug>/index.astro` body, `data/facts/<slug>.json`, `dist/<slug>/index.html`), `data/page-map.json` row, the linked images in `data/image-manifest.json`. Competitor scan: search (Firecrawl `firecrawl_search` or web search) for 3–5 UK Staffordshire Bull Terrier breeder pages with the same intent; record for each: URL, word count, H2 list, FAQ count, schema types, trust signals; unavailable → `NOT FETCHED`. Query augmentation: list 8–12 questions/entities AI search asks for the primary keyword; map each to a section or FAQ.
+- **P2 Outline → record.** Write `data/boards/<slug>.json` per `schemas/board.schema.json`: `meta` (slug, page_type, status `draft`, sources), `brief` (intent, audience, primary keyword, competitor summary, query map), `h1` options (3), `meta_set` (3 titles 50–60, 3 descriptions 140–160, recommended), `sections` in order (id, heading, intent, why + why_source, words min/max, shape, keywords, entities, tree H3–H6, images by ORIGINAL path, links internal/external, `styles: ["S1","S2","S3"]`, `options`), review slots as sections of shape `reviews` with `mode`, FAQ section listing the `data/faq.json` ids (add page rows there with `source`), `tuple` (dial: `"kit"`, toc: `"kit"`, newsletter, h6_prefixes), `dropped` (facts intentionally not carried, each with a reason), `assets`. Validate: `python3 -c "import scripts.pageboard as PB; PB.load_record('<slug>')"` (or the module's loader) → no `BoardError`.
+- **P3 Board.** `npm run build` (the preview route renders the record's three styles), `python3 scripts/build_board_previews.py <slug>`, `python3 scripts/build_page_board.py <slug>` → `docs/artifacts/boards/<slug>.html`; commit the record and the HTML. The controller publishes the board Artifact with `capabilities: {"db": {"rules": [{"path": "", "write": "admin"}]}}` and records the URL in `data/design/artifacts.json` → `boards.<slug>`. **PAUSE: the user picks** (style per section, review modes, H1, title, description; on the contact board also the dial and sheet style).
+- **P4 Approve.** Controller reads `boards/<slug>` from the board's database (ArtifactData) into `data/boards/inbox/<slug>.json`; `python3 scripts/board_approve.py <slug>` (refuses on a stale hash or missing pick) → record `status: approved`.
+- **P4b Re-approve (only when a build review moves wording inside the hash).** A defect found at P5/P6 sometimes lives in a field `record_hash` covers — a heading that collides with a page built *after* this board was approved, a links block under the external floor, a counter heading that miscounts its own tiles. Replaying the inbox cannot re-approve it: the inbox carries the PRE-approval hash and none of `pre_approval_hashes()`'s four readings reproduces it once `approval`, `approval_previous` and `tuple.hero` have moved. Edit the record, then `python3 scripts/board_approve.py --reapprove <slug> --reason "<why>"`, which keeps every pick, the H1 and the meta indices exactly, recomputes the hash, and appends `{at, reason, changed_paths}` to `approval.reapprovals` (`changed_paths` is the JSON-pointer diff against `git show HEAD:data/boards/<slug>.json`, over the hashed projection). It REFUSES a diff that touches a pick, a `styles` menu, a figure's `n` or `source`, a ledge source, a section id, or that adds/removes a section — those are answers the breeder gave and need a real re-pick on the board. Rebuild the board HTML (`build_page_board.py <slug>`) so the artifact source matches the record; do not re-publish. Spec §9 amendment 11.
+- **P5 Build the page.** Rewrite `src/pages/<slug>/index.astro` on `PageShell` from the approved record: `sections={sectionsFromRecord(record)}`; each section `<section id={s.id} data-section-label>` using the picked style from `src/lib/boardStyles.ts`; prose written fresh, first person, from the outline (never paste the old body); images by original path with the original alt; embeds kept; FAQ from `data/faq.json`; reviews from `data/reviews.json` by slot with `REVIEW_PLACEHOLDER` for empty slots; schema (WebPage/Article/Product/FAQPage as the page type needs). Add the slug to `data/facts/rebuilt.json`; remove it from `migration_parity.py`'s targets (the skip list does it).
+- **P6 Gates.** `set -a; source .env; set +a; npm run build`; `npm run check:all` (facts-preserved 0 problems, redirects 0, schema 0, sitemaps 0, marker 0); `python3 scripts/board_gate.py <slug>` 0 FAIL; `python3 scripts/final_page_audit.py --slug <slug>`, `dup_content_audit.py`, `aeo_audit.py --slug <slug>`, `evidence_audit.py --slug <slug>` (check each script's slug flag) with 0 real errors for the page; `npm run test:render:pages` → the page's rows 0 blocking, no new blocking row site-wide (`node scripts/build_scorecard.mjs --run first`; update `docs/reports/render-baseline-project4.md` via `scripts/render_baseline.py --out` at close-out only); `python3 -m pytest tests/py -q -x`. Lighthouse for that page type not below the project 3 table (`scripts/perf_audit.py` or the direct sweep; note Known Issue about nested slugs).
+- **P7 Commit** `page(<slug>): rebuilt from approved board <n> — <one line>` with the trailer, and update the Known Issues the page closes (9, 11, 12 as applicable).
+
+---
+</script>
+<script type="text/markdown" data-title="Task 7: `/privacy-policy-uk/`">
+Intent: legal page, calm; shape `standard` ×N; no reviews, no puppies; 1 image if the old page had one; H1 "Privacy Policy"; sections from the migrated body's headings (keep legal substance; rewrite prose in Lisa's voice where it is prose, keep legal clauses' meaning). Word target ≈ migrated words ±15%. Steps P1–P7. Pause at P3.
+</script>
+<script type="text/markdown" data-title="Task 8: `/thank-you-blue-staffy-puppies-journey/`">
+Intent: post-enquiry confirmation; shapes: hero (text-only variant not available — use Hero with the puppy master), next-steps `InfoCard` list, one review `single`, puppies grid (available), contact fallback. Noindex stays (check page-map). Steps P1–P7.
+</script>
+<script type="text/markdown" data-title="Task 9: `/uk-blue-staffy-breeders-contact/`">
+Intent: contact; shapes: hero, trust strip, contact form (kit), "how to reach us" facts (email, hours, Carlisle · Cumbria; phone placeholder stays hidden until project 6), FAQ (deposit/delivery/visits from `data/faq.json`), one review. **This board also carries the dial and section-sheet style picks** (three styles each, rendered on the preview route from `boardStyles.ts` `dial`/`sheet` maps); after approval the picked styles are baked into `PageDial.astro`/`SectionSheet.astro` (remove the other two) before P5. Steps P1–P7.
+</script>
+<script type="text/markdown" data-title="Task 10: `/blue-staffy-uk-breeders/` (about)">
+Intent: who we are; byline `Sharine Amelia` dropped (Known Issue 12: listed in `dropped` with reason); Lisa Bright as author; the two homepage-colliding headings avoided (Known Issue 9); sections: hero, our story, health testing (L-2-HGA, HC-HSF4), home raising, KC, delivery, reviews (grid of the three real), puppies grid, FAQ. Steps P1–P7.
+</script>
+<script type="text/markdown" data-title="Task 11: `/blue-staffy-health-uk/`">
+Intent: health authority page; guide shape: hero, key takeaways, dial-worthy 8–12 sections (tests, diet, exercise, common conditions, vet checks, lifespan 12–14), one review, FAQ, CTA. Every old image reused (8 per parity table). Old price band `£850 to £1,200` dropped with reason (Known Issue 11) and locked prices stated. Steps P1–P7.
+</script>
+<script type="text/markdown" data-title="Task 12: `/uk-staffordshire-bull-terrier-guide/`">
+Intent: breed guide; 10 images, 1 embed reused; sections from the migrated H2 list re-cut to 10–14; `InfoCard kind="fact"` for breed facts; FAQ; old prices dropped with reason. Steps P1–P7.
+</script>
+<script type="text/markdown" data-title="Task 13: `/uk-blue-staffy-puppy-buying-guide/`">
+Intent: buying guide; the "How to Buy Your Blue Staffy Puppy" heading collision (Known Issue 9) resolved by giving THIS page the buying steps and the homepage a different heading; 17 images, 1 embed reused; 15-questions section as an `InfoCard` list; FAQ. Steps P1–P7.
+</script>
+<script type="text/markdown" data-title="Task 14: `/blue-staffy-blog-guides/` + the post">
+Intent: blog index rebuilt on the kit (post cards from the collection, `PuppyCard`-like card style S1–S3), and the one post's layout (`src/pages/[...post].astro` on `PageShell` with dial when ≥6 sections). Content of the post is NOT rewritten (build 5 owns blog copy); only the layout. Steps P1–P7 for the index; the post gets P5–P7 only.
+</script>
+<script type="text/markdown" data-title="Task 15: `/blue-staffy-pup-sale-uk/`">
+Intent: price, deposit, delivery, what is included; sections: hero, counter strip (deposit/delivery/available), price table from `data/price-matrix.json`, what's included, delivery by distance from Carlisle, reviews, puppies grid, FAQ. Steps P1–P7.
+</script>
+<script type="text/markdown" data-title="Task 16: `/buy-staffy-puppies-for-sale-uk/`">
+Intent: why this breeder; 13 images, 1 embed reused; sections: hero, trust strip, 7 reasons as `InfoCard`s, health testing, home raising, after-care, reviews grid, puppies grid, FAQ. Steps P1–P7.
+</script>
+<script type="text/markdown" data-title="Task 17: `/buy-blue-staffy-puppies-uk/` (for-sale)">
+Intent: the listing and how to buy; hero, counter, puppies grid (all six), 3 safe steps, delivery, reviews, FAQ, form. Steps P1–P7.
+</script>
+<script type="text/markdown" data-title="Task 18: `/` (homepage)">
+Intent: everything above, condensed; reuses `data/boards/index.json` (migrate the record: sections re-cut, `styles` filled, the two colliding headings renamed so `board_gate.py index` reaches 0 FAIL); 14 images, 2 embeds reused; reviews top/bottom; puppies grid; location cluster link block. Steps P1–P7. Known Issue 9 closes here.
+
+---
+</script>
+<script type="text/markdown" data-title="Task 19: Close-out">
+- [x] Two full runs into `docs/reports/page-rebuilds-run.log` (build, `check:all`, pytest, render meta, render pages, scorecard, `python3 scripts/render_baseline.py --out docs/reports/render-baseline-project4.md` then `python3 scripts/render_baseline.py --check --out docs/reports/render-baseline-project4.md` (`--write` is `--out`'s older spelling and takes the path itself, so the two are never combined)); halves identical after normalisation.
+- [x] Lighthouse warm median of 3 on the five page types vs the project 3 table.
+- [x] `docs/reports/page-rebuilds-gate-report.md` (structure as project 3's): Context; Build; Components 14–15; Shell; Facts preserved (per page: kept / dropped with reasons); Boards (12 URLs, picks summary); Pages (per page: sections, words, images reused, reviews used / placeholders); Harness (family table vs project 3, rebuilt pages at 0 blocking, `nav-bottom-chrome-clear`); Ported gates table; Placeholders (`REVIEW_PLACEHOLDER` count = reviews still needed); Lighthouse; Second run; Open items (carry 3, 5–7, 10, 13–15, 17–19, 21–26 with status; close 8, 9, 11, 12, 16, 20; add new); Definition of done §7 line by line.
+- [x] Session log project 4 section; Known Issues updated; registries; Artifacts for report, plan (executed) and spec (amended); `data/design/artifacts.json` `boards` complete.
+- [x] Commit; verify trailer count = commit count; then (controller) merge `page-rebuilds` into `foundation` fast-forward, memory update, session-closer naming project 5.
+
+**Executed 2026-09-22.** Step 0 (`f94baee`) corrected the copy around four video sections before measuring. Both runs are in `docs/reports/page-rebuilds-run.log`; one pytest line drifted (two tests that skip until the project 4 baseline block exists) and its cause is fixed by committing the block. Lighthouse ran on the five page types and the twelve rebuilt pages, mobile and desktop. The merge into `foundation` was taken with `--no-ff` at the controller's instruction rather than fast-forward, so the build keeps one merge commit; `page-rebuilds` is kept. Report: `docs/reports/page-rebuilds-gate-report.md`.
+
+---
+</script>
+<script type="text/markdown" data-title="Self-review">
+**Spec coverage.** §1 scope → Tasks 7–18 (twelve pages), Task 3 (hubs, dates), Task 6 (Glasgow, form contract); §3 → Tasks 1–2; §4 → Task 5 + P2–P4; §5 → P1, P2, P5, Task 4 (facts preserved), Task 6 (reviews whitelist, Carlisle), Task 3 (dates); §6 order → Tasks 7–18 in that order, gates → P6; §7 done → Task 19; §8 risks: boards can be published ahead (P3 is independent per page), placeholders counted (P5, Task 19), scan fallback (P1), bottom chrome measured (Task 2).
+
+**Placeholders.** None of "TBD/TODO". Page tasks are deliberately short: their full procedure is the "page procedure" block, which is complete code-and-command text, not a reference to another task's code; each page task supplies the inputs that differ. `boardStyles.ts` content is defined in Task 5 as a shape→three-layouts map; the implementer of Task 5 writes it in full for the ten shapes listed there.
+
+**Consistency.** Component ids `page-dial` / `section-sheet` (Tasks 1, 2, components.json rows 14, 15); `SectionRef` from `src/lib/sections.ts` used by both components and `PageShell`; `styles` per section = `["S1","S2","S3"]` in the record, `picks[<section id>]` = the style string (Task 5, P3, P4); `dropped` object read by `facts_preserved_check.py` (Task 4) and written in P2; `data/facts/rebuilt.json` written in P5 and read by both gates.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# '+'BlueStaffyUK Rebuild — Project 4 of 6: plan'+'\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

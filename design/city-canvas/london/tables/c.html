@@ -1,0 +1,67 @@
+<style>
+/* Tables C — Boy or girl. A two-column comparison, one column for the boys and one for the
+   girls, each headed by a photo (Roman, Vennie) with the column name set under it. Rows:
+   price, the puppies by name, their colours, the deposit, delivery. Framed by rules only:
+   a 4px steel rule over the section, a steel rule under the photo heads, hairlines between
+   rows, no box and no band. Airy: generous rows, the figures in the display face. On a
+   phone the two photos stay side by side as the heads, and each row stacks into its
+   question and two labelled answers, with no sideways scroll. */
+.tbC{background:var(--color-surface);border-top:4px solid var(--color-brand);border-bottom:1px solid var(--color-border)}
+.tbC .in{max-width:960px;margin:0 auto;padding:var(--space-7) var(--space-4)}
+.tbC h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);max-width:24ch;text-wrap:balance}
+.tbC .lede{margin:0 0 var(--space-6);color:var(--color-ink-2);max-width:60ch}
+.tbC table{width:100%;border-collapse:collapse;table-layout:fixed;color:var(--color-text)}
+.tbC caption{caption-side:top;text-align:left;padding-bottom:var(--space-4);font-size:var(--text-xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-brand)}
+.tbC thead th{padding:0 var(--space-3) var(--space-4);vertical-align:bottom;text-align:left;border-bottom:2px solid var(--color-brand)}
+.tbC thead .corner{width:28%}
+.tbC .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tbC .face{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius-md);background:var(--color-bone-50);margin-bottom:var(--space-3)}
+.tbC .col{display:block;font-family:var(--font-display);font-size:var(--text-2xl);line-height:1.1;color:var(--color-brand)}
+.tbC .colsub{display:block;margin-top:2px;font-size:var(--text-sm);font-weight:400;color:var(--color-ink-2)}
+.tbC tbody th,.tbC tbody td{padding:var(--space-5) var(--space-3);text-align:left;vertical-align:top;border-bottom:1px solid var(--color-border)}
+.tbC tbody th{font-weight:600;color:var(--color-ink-2);font-size:var(--text-sm);text-transform:uppercase;letter-spacing:.1em;padding-left:0}
+.tbC .fig{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:600;line-height:1.1;color:var(--color-brand);font-variant-numeric:tabular-nums}
+.tbC td .same{color:var(--color-ink-2)}
+@media (max-width:640px){
+  .tbC table,.tbC thead,.tbC tbody,.tbC th,.tbC td,.tbC caption{display:block}
+  .tbC table{table-layout:auto}
+  .tbC thead tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3);border-bottom:2px solid var(--color-brand);padding-bottom:var(--space-3)}
+  .tbC thead th{padding:0;border:0}
+  .tbC thead .corner{display:none}
+  .tbC .col{font-size:var(--text-xl)}
+  .tbC tbody tr{display:block;padding:var(--space-4) 0;border-bottom:1px solid var(--color-border)}
+  .tbC tbody th,.tbC tbody td{border:0;padding:0}
+  .tbC tbody th{margin-bottom:var(--space-2)}
+  .tbC tbody td{display:grid;grid-template-columns:64px minmax(0,1fr);gap:var(--space-3);align-items:baseline;padding:4px 0}
+  .tbC tbody td::before{content:attr(data-label);font-weight:700;font-size:var(--text-sm);color:var(--color-brand)}
+  .tbC .fig{font-size:var(--text-xl)}
+}
+@media (min-width:1024px){
+  .tbC .in{padding:var(--space-10) var(--space-5)}
+  .tbC h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .tbC .face{aspect-ratio:16/10}
+}
+</style>
+<section data-component="tables" data-variant="c" class="tbC">
+  <div class="in">
+    <h2>Should You Choose a Boy or a Girl?</h2>
+    <p class="lede">Only you know which will suit your London home, but the plain differences between our boys and girls come down to price and names, and the deposit and delivery are the same for both.</p>
+    <table data-table>
+      <caption>Boys and girls, compared</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="corner"><span class="sr">What differs</span></th>
+          <th scope="col"><img class="face" src="/puppies/Roman2.jpg" alt="Roman, one of the boys, lying on a lawn" width="1080" height="1081" loading="lazy" style="object-position:22% 5%"><span class="col">Boys</span><span class="colsub">3 available</span></th>
+          <th scope="col"><img class="face" src="/puppies/Vennie.jpeg" alt="Vennie, one of the girls, curled on a sheepskin rug" width="1080" height="1080" loading="lazy" style="object-position:38% 62%"><span class="col">Girls</span><span class="colsub">3 available</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Price</th><td data-label="Boys"><span class="fig">£1,500</span></td><td data-label="Girls"><span class="fig">£1,700</span></td></tr>
+        <tr><th scope="row">The puppies</th><td data-label="Boys">Roman, Byrd and Ince</td><td data-label="Girls">Vennie, Christa and Cheryl</td></tr>
+        <tr><th scope="row">Colours</th><td data-label="Boys">Blue and white, white, blue</td><td data-label="Girls">Blue and white, blue, blue with white blaze</td></tr>
+        <tr><th scope="row">Deposit</th><td data-label="Boys">£500 books your viewing and reserves your puppy</td><td data-label="Girls"><span class="same">£500, the same</span></td></tr>
+        <tr><th scope="row">Delivery</th><td data-label="Boys">£200 to £350 by distance, or collect in Carlisle</td><td data-label="Girls"><span class="same">£200 to £350, the same</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

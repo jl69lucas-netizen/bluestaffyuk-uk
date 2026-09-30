@@ -1,0 +1,44 @@
+{
+  "site_name": "Blue Staffy UK",
+  "tagline": "Your Trusted UK Blue Staffy Breeders",
+  "breeder_name": "Lisa Bright",
+  "location_label": "Carlisle · Cumbria",
+  "address": {
+    "city": "Carlisle",
+    "region": "Cumbria",
+    "country": "GB"
+  },
+  "phone": "PHONE_PLACEHOLDER",
+  "email": "staffies@bluestaffyuk.uk",
+  "hours": "Mo-Su 09:00-23:00",
+  "price_range": "£1500 - £1700",
+  "deposit_gbp": 500,
+  "deposit_refundable": true,
+  "delivery_min_gbp": 200,
+  "delivery_max_gbp": 350,
+  "delivery_note": "UK home delivery by DEFRA-approved transport, priced by distance",
+  "query_budget_usd": 0.5,
+  "query_total_budget_usd": 1.0,
+  "query_typical_call_usd": 0.01,
+  "guarantee_days": 730,
+  "guarantee_label": "Two-year health guarantee",
+  "guarantee_note": "Ask us for the full terms before you pay a deposit.",
+  "guarantee_source": "the breeder's answer, answer board q07, 2026-09-29",
+  "guarantee_cover": "covers health issues and birth defects for two years from the day your puppy comes home",
+  "guarantee_cover_source": "the breeder's answer, answer board q02, 2026-09-29: 'Against any heaalth issues and birth defects within two years of ownershipping', spelling corrected, and 'within two years of ownership' read as starting the day the owner takes the puppy. A clause, not a sentence: a page adds it only where a guarantee sentence already carries it, read through src/lib/site.ts guaranteeCover() or src/lib/cityKit.ts guaranteeRow().",
+  "age_weeks": 10,
+  "age_weeks_note": "The litter's age as the breeder gave it (answer board q08, 2026-09-29): a page states it as '10 weeks old' from age_weeks, and no date of birth is known, so none is stated. An age goes stale; confirm it before a page prints it.",
+  "socials": {
+    "x": "https://x.com/bluestaffyuk",
+    "youtube": "https://www.youtube.com/@BlueStaffyUK-v2d",
+    "instagram": "https://www.instagram.com/bluestaffyukingdom",
+    "facebook": "https://www.facebook.com/bluestaffyuk"
+  },
+  "youtube_embeds": [
+    "g9iV9RVr_Sk",
+    "g88qOo9C94c",
+    "fXhu9jDS6CA"
+  ],
+  "logo": "/brand/logo-stacked.svg",
+  "logo_header": "/brand/logo-horizontal.svg"
+}

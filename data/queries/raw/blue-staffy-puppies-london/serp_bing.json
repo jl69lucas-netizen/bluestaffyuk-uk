@@ -1,0 +1,49 @@
+{
+  "source": "serp_bing",
+  "status": "ok",
+  "fetched": "2026-09-30",
+  "note": "Read free in the browser (Playwright MCP), cc=GB, setlang=en-GB. Non-essential cookies declined. Result URLs decoded from Bing's click-tracking links. Position 10 is a personal Facebook profile: its id query was dropped (a third-party profile link), leaving the bare profile.php URL. The page showed no related searches and no related questions, so questions is empty.",
+  "results": [
+    {
+      "bing_pos": 1,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/london?colour=blue"
+    },
+    {
+      "bing_pos": 2,
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-london/london/"
+    },
+    {
+      "bing_pos": 3,
+      "url": "https://www.freeads.co.uk/london/buy-sell/pets/dogs/staffordshire-bull-terrier/"
+    },
+    {
+      "bing_pos": 4,
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=blue"
+    },
+    {
+      "bing_pos": 5,
+      "url": "https://englishbluestaffypuppies.com/"
+    },
+    {
+      "bing_pos": 6,
+      "url": "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/london"
+    },
+    {
+      "bing_pos": 7,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale?colour=blue"
+    },
+    {
+      "bing_pos": 8,
+      "url": "https://www.petsloo.co.uk/listing-category/dogs-puppies/staffordshire-bull-terriers/"
+    },
+    {
+      "bing_pos": 9,
+      "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/london"
+    },
+    {
+      "bing_pos": 10,
+      "url": "https://www.facebook.com/profile.php"
+    }
+  ],
+  "questions": []
+}

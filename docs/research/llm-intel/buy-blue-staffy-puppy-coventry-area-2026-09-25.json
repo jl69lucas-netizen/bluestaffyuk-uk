@@ -1,0 +1,390 @@
+{
+ "slug": "buy-blue-staffy-puppy-coventry-area",
+ "date": "2026-09-25",
+ "engine": "chatgpt",
+ "endpoint": "ai_optimization_chat_gpt_scraper",
+ "location": "United Kingdom",
+ "query": "Where can I buy a blue Staffy puppy near Coventry, and what should I ask the breeder?",
+ "query_source": {
+  "from": "city",
+  "gap_matrix": null,
+  "gap_topics": []
+ },
+ "stale": [],
+ "fetched": {
+  "status": "ok",
+  "fetched_on": "2026-09-25"
+ },
+ "raw": "data/queries/raw/buy-blue-staffy-puppy-coventry-area/ai_engines.response.json",
+ "answer_text": "verbatim",
+ "paid_this_run": true,
+ "bsuk_cited": false,
+ "citations": [
+  {
+   "domain": "royalkennelclub.com",
+   "registry_id": "royalkennelclub",
+   "tier": 2,
+   "platform": false
+  },
+  {
+   "domain": "pdsa.org.uk",
+   "registry_id": "pdsa",
+   "tier": 3,
+   "platform": false
+  }
+ ],
+ "local_businesses": [
+  {
+   "domain": "earlsgravebullterriers.com",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "domain": "trojanstaffuk.com",
+   "registry_id": "trojanstaffuk",
+   "tier": 1,
+   "platform": false
+  },
+  {
+   "domain": "ueniweb.com",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "domain": "thestaffordshirebullterrier.co.uk",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Brazen Kennels",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "The Staffordshire Bull Terrier Club",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy Puppies for Sale UK",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy Society UK",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffordshire Bull Terrier Puppy Breeder",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffie Central UK",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy puppies available for adoption Uk",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Small Animal Rescue Coventry",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  }
+ ],
+ "citation_gap": [
+  "pdsa",
+  "royalkennelclub",
+  "trojanstaffuk"
+ ],
+ "risks": [],
+ "page_source": {
+  "kind": "page-map",
+  "path": "data/page-map.json",
+  "provisional": true,
+  "note": "dist/uk-locations/buy-blue-staffy-puppy-coventry-area/index.html is a noindex stub; no question file; checked against the page map's title, H1 and headings"
+ },
+ "entities": [
+  {
+   "entity": "health tests",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "l-2-hga",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "hc-hsf4",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "meet the mother",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "microchip",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "vaccinations",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "kc registration",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "contract",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "royal kennel club",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "staffordshire bull terrier club",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "brazen kennels",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "pdsa",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "staffordshire bull terrier",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "puppy finder",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "classified ad",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "breed standard",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "coefficient of inbreeding",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "registered names",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "elbow examinations",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "eye examinations",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "hip elbow scores",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "certificates",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "health screening",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "allergies",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "skin problems",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "neurological problems",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "eye problems",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "socialisation",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "worming",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "food",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "routine",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "take the dog back",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "second visit",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "deposit",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "warning sign",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "rare fashionable colour",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "premium",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "temperament",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "coventry",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "berkswell",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "cannock",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  }
+ ],
+ "format": {
+  "status": "ok",
+  "list": "bulleted",
+  "length": "long",
+  "words": 495,
+  "opening": "statement"
+ },
+ "llm_mentions": {
+  "status": "NOT FETCHED",
+  "reason": "llm_mentions only once BSUK's domain is live (project 6)"
+ },
+ "extra": "royal kennel club|kennel club;staffordshire bull terrier club;brazen kennels;pdsa;staffordshire bull terrier;puppy finder;classified ad;breed standard;coefficient of inbreeding|inbreeding coefficient;registered names;elbow examinations;eye examinations|eye test;hip elbow scores;certificates;health screening;allergies;skin problems;neurological problems;eye problems;socialisation|socialised;worming;food;routine;take the dog back;second visit;deposit;warning sign;rare fashionable colour|fashionable colour;premium;temperament;coventry;berkswell;cannock"
+}

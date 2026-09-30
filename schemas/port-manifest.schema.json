@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bluestaffyuk.local/schemas/port-manifest.schema.json",
+  "title": "CAG → BSUK port manifest",
+  "description": "Every file that crosses from ~/Downloads/CAG into ~/Downloads/BSUK, and how. This file is the record; scripts/port_from_cag.py applies it; scripts/marker_check.py proves the result. A file that is not in this manifest did not cross. Rows stay in the order they were added, grouped by task: the manifest is the chronological record of the port, so never sort or regroup it.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["src", "dst", "mode", "notes"],
+    "properties": {
+      "src": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Path relative to ~/Downloads/CAG. Never absolute, never containing '..'.",
+        "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$)).+$"
+      },
+      "dst": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Path relative to ~/Downloads/BSUK. Unique across the whole manifest.",
+        "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$)).+$"
+      },
+      "mode": {
+        "enum": ["copy", "rename", "rebase", "deferred"],
+        "description": "copy = byte-identical at the same relative path; rename = byte-identical at a new path; rebase = first copy then hand-edited, never overwritten again; deferred = recorded, not written. MODES in scripts/port_from_cag.py is the authority for this enum; keep the two in step."
+      },
+      "notes": {
+        "type": "string",
+        "minLength": 1,
+        "description": "For rebase: what must change. For deferred: which project picks it up. For copy/rename: why it needs no edit."
+      }
+    }
+  }
+}

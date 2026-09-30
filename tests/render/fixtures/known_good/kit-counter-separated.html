@@ -1,0 +1,35 @@
+<!doctype html><meta charset=utf-8><title>known-good: kit CounterStrip separated from the kit Hero</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  The KIT's own geometry, not a generic one. tests/render/fixtures/known_good/
+  layout-hero-counter-separation.html already proves the CHECK can be satisfied; this pair
+  proves the shipped component satisfies it — the values below are what
+  src/components/kit/CounterStrip.astro variant a resolves its tokens to
+  (--counter-bed = bone-50, --color-border = rule) under the inverse hero band
+  (--color-surface-inverse = steel-700). Fixtures are test data, so hex is spelled here;
+  the no-hex rule scans src/components/kit/ only.
+-->
+<style>
+  body { margin:0; background:#F4F1EA; font:16px/1.5 system-ui; }
+  .kit-hero { background:#1F3A52; color:#F4F1EA; padding:80px 24px; }
+  .kit-hero h1 { margin:0 0 8px; font-size:44px; line-height:1.08; }
+  /* Both halves of the rule: the bed shifts tone away from the steel band AND there is a
+     1px top rule. Losing either is the defect the known_broken half carries. */
+  .counter-wrap { background:#FAF8F3; border-top:1px solid #DAD6CC; padding:32px 24px; color:#1F3A52; }
+  .counter-row { list-style:none; margin:0; padding:0; display:flex; gap:24px; text-align:center; }
+  .counter-row li { flex:1; }
+  .counter-row strong { display:block; font-size:36px; line-height:1.1; }
+  .counter-row span { font-size:15px; color:#5E6B7A; }
+</style>
+<section class="kit-hero">
+  <h1>Blue Staffy puppies raised in a family home</h1>
+  <p>Health-tested parents, Kennel Club registration paperwork, and UK delivery from £200.</p>
+</section>
+<section class="counter-wrap" data-counters aria-label="At a glance">
+  <ul class="counter-row">
+    <li><strong>6</strong><span>puppies available now</span></li>
+    <li><strong>£500</strong><span>refundable deposit</span></li>
+    <li><strong>£200–£350</strong><span>UK delivery by distance</span></li>
+  </ul>
+</section>
+<main><p>Body copy follows.</p></main>

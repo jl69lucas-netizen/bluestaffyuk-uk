@@ -1,0 +1,702 @@
+<title>BSUK Design System Gate Report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Project 3 of 6</p><h1 class="title">Design system gate report</h1></div>
+<div class="meta"><span class="pill">status: complete</span> <span class="pill">2026-09-19</span><br>docs/reports/design-system-gate-report.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+BlueStaffyUK rebuild, project 3 of 6. Written by hand from the real outputs of the two full
+runs recorded in `docs/reports/design-system-run.log`, the Lighthouse sweep, and the gate
+scripts re-run at close-out. Date 2026-09-19. Branch `design-system`, no remote, nothing
+pushed.
+
+Spec: `docs/superpowers/specs/2026-09-18-design-system-design.md`. §9 is the definition of
+done **as amended by §11 (amendments 1–7)**; the checklist at the end answers it line by
+line in its amended form. Where §9's literal text and an amendment disagree, the amendment
+wins: the Claude Design prompt pack is replaced by the published Design System artifact, the
+mark is the L1 badge rather than a stroke drawing, the `/design-canvas/` route became
+`/kit-preview/`, the canvas is 39 boards rather than 65, and `Testimonial` carries modes.
+
+Read the two severities differently, as in project 2. The **system gates** — parity,
+redirects, schema, sitemaps, the marker gate, both registries, the render baseline checker
+and pytest — are zero-tolerance and are all at zero. The **content audits** (final page,
+page hardening, duplicate content, AEO, evidence) and the **render pages** run report large
+non-zero counts against body HTML that is still Foundation's verbatim WordPress migration.
+This project built a component kit and mounted none of it on a real page except the shell,
+so those counts are a carried baseline, not defects introduced here. Every such number is
+tagged **baseline** or **regression**; there are no regressions.
+
+**One earlier controller statement is corrected here.** During Task 16 the controller
+reported `npm run test:render:pages` as "0 failed". That was a stale-scorecard artefact — the
+run was reading a scorecard directory from an earlier build rather than the pages gate's own
+result. The true figure is **46 failing pages**, unchanged from project 2, with blocking rows
+moving **67 → 58**. Every figure in this report comes from the two runs in the log or from a
+command re-run at close-out; none is typed from memory.
+
+---
+</script>
+<script type="text/markdown" data-title="Build">
+| | |
+| --- | --- |
+| Command | `npm run build` (Astro 6.3.8, pinned) |
+| Pages built | **51** `index.html` (49 at project 2, plus `/kit-preview/` and `/search/`) |
+| Postbuild | `scripts/generate_sitemaps.py` — 5 shards; `scripts/build_search_index.py` — `public/` and `dist/` copies |
+| Exit | clean, both runs |
+</script>
+<script type="text/markdown" data-title="Tokens">
+`src/styles/tokens.css` holds **66** custom properties in a three-layer `@theme` — primitive,
+semantic, component — and rule 1 in `rules/design.md` forbids a hex anywhere else under
+`src/`. The hex ban is enforced by a strict-xfail pair so that a test which stops finding
+violations fails rather than passing vacuously.
+
+| | |
+| --- | --- |
+| `tests/py/test_design_tokens.py` | **10** tests |
+| `tests/py/test_brand_assets.py` | **7** tests |
+| `tests/py/test_design_picks.py` | **5** tests |
+| `tests/py/test_design_components.py` | **37** tests |
+| `data/design/contrast.json` | **20** foreground/background pairs, every one asserted at WCAG AA by `test_contrast_pairs_clear_aa` |
+
+**The brand-tint alias.** `--color-brand-tint` is declared as `var(--color-steel-300)` rather
+than as its own hex. It exists because the mark's skull needs a light steel that is already in
+the palette: giving it a new literal would have put a fourteenth blue in the system and broken
+rule 1's "one hex per primitive". It is the one semantic colour token in the file that names
+another token in the same family instead of a value, and the Design System artifact carries
+the same relationship as `"{color-steel-300}"` (spec §11 amendment 7a).
+
+Brass (`--color-cta`) is documented in `_registry.ts` as a fill with `--color-cta-ink` text, or
+an accent on a dark band, and never the colour of small text on a light surface, where it
+measures 2.1:1.
+</script>
+<script type="text/markdown" data-title="Logo">
+**The mark is the L1 badge** (spec §11 amendment 3a): a flat-shaded cartoon Staffordshire Bull
+Terrier head — broad skull, rose ears, white blaze, breed grin with a brass tongue — inside a
+steel roundel with a brass ring. The original stroke-based, `currentColor` mark was voided at
+the user's review because the line drawing did not read as the breed. The geometry lives once
+in `src/components/kit/markShapes.ts`; `MarkSprite.astro` emits `<symbol id="bsuk-mark">` and
+`<symbol id="bsuk-mark-inverse">` once per document from `BaseLayout`, and `Mark.astro` is a
+`<use>` at one of them, with a `standalone` prop that inlines the paths for the self-contained
+lockup documents (amendment 4e). `dist/index.html` carries **2** `<symbol>` elements and **2**
+`bsuk-mark` references, which is the sprite working as designed.
+
+**Four lockups**, generated by `scripts/build_lockups.py` from the mark and the tokens:
+
+| File | Bytes | Use |
+|---|---:|---|
+| `public/brand/logo-horizontal.svg` | 15,087 | site header, inlined with `?raw` |
+| `public/brand/logo-stacked.svg` | 15,110 | tall placements |
+| `public/brand/logo-mono.svg` | 15,394 | inverse bands — the footer |
+| `public/brand/logo-icon.svg` | 1,463 | the badge alone; the favicon source |
+
+**Four favicon renders**, generated by `scripts/build_favicons.py` from `logo-icon.svg`:
+`public/favicon.svg`, `favicon-32.png` (32), `apple-touch-icon.png` (180) and `icon-512.png`
+(512). `icon-512.png` is not only a favicon — it is also the raster the JSON-LD `image` points
+at, which is why it is built rather than hand-exported.
+
+**The mono treatment decision, and why the footer uses it.** Task 20's text said the stacked
+lockup in the footer at 96px. That is wrong and was not followed. The footer is an inverse
+band (`data-surface="inverse"`), and the stacked lockup is self-coloured: its wordmark is
+`--color-brand`, which is steel-700 — the band's own background — so it would render
+invisible. The mono lockup is the one built for this case: `currentColor` over three tones, so
+it takes the band's bone text colour. The deviation is recorded in a comment at
+`src/components/SiteFooter.astro:9`. The header inlines `logo-horizontal.svg`; the footer
+inlines `logo-mono.svg`; both use `?raw` at build time so neither costs a request.
+</script>
+<script type="text/markdown" data-title="Kit">
+**Thirteen components** in `src/components/kit/`, one file each, in `data/design/components.json`
+order. The folder also holds `Mark.astro`, `MarkSprite.astro`, `markShapes.ts` and
+`_registry.ts` — the mark machinery and the registry, which are not themselves kit components
+and carry no board.
+
+Each component was built in five variants, put on the canvas, and pruned to the one the user
+picked. The letters below are from `data/design/picks.json` (pulled `2026-09-18T20:24:48Z`, all
+thirteen `by: owner`).
+
+| # | Component | File | Pick | What it became |
+|---|---|---|---|---|
+| 1 | Site header + nav | `SiteHeaderKit.astro` | **a** | Logo only, no wordmark text (amendment 3b), with an on-site search pill between the nav and the CTA; the drawer is every layout's mobile nav |
+| 2 | Hero | `Hero.astro` | **c** | Image first in the DOM, section clamped 390–450px on desktop; the copy is sized to fit and the photo is what the clamp crops (rule 10, amendment 4c) |
+| 3 | Buttons | `Button.astro` | **a** | Brass pill primary; all five treatments survive the prune as `kind` (below) |
+| 4 | Puppy card | `PuppyCard.astro` | **c** | Photos moved to `astro:assets` with a bounded `srcset` — the fix for Known Issue 4 |
+| 5 | Trust strip | `TrustStrip.astro` | **d** | Line-icon row, no emoji (rule 7) |
+| 6 | Stat / counter strip | `CounterStrip.astro` | **d** | An inline hero-edge row; carries `.counter-wrap` + `[data-counters]`, the hooks `layout-hero-counter-separation` reads |
+| 7 | Content / info card | `InfoCard.astro` | **b** | Brand header band; two `.stmt-label` cards with `data-kind`, the subject of `sem-statement-label-visible`. The image-top treatment was one of the four dropped, which is why the preview carries a separate convention specimen for `layout-h3-image-first` |
+| 8 | Testimonial | `Testimonial.astro` | **b** | Kept as `mode` (below), rows from `data/reviews.json`, three verbatim reviews |
+| 9 | FAQ accordion | `Faq.astro` | **c** | Native `<details>`; rows from `data/faq.json` |
+| 10 | Contact form | `ContactFormKit.astro` | **c** | One form, the whole field contract, `_gotcha` honeypot and hidden `_next`/`_subject`; its puppy select is built from `data/puppies.json` availability plus a waiting-list choice |
+| 11 | Breadcrumb + in-page nav | `PageNav.astro` | **c** | Anchors that resolve — every kit-preview section gained a `kit-<id>` id so the demo names real targets |
+| 12 | Footer | `SiteFooterKit.astro` | **a** | Plus the CTA band above the columns and social icons with their platform names (amendment 5) |
+| 13 | Section divider | `SectionDivider.astro` | **a** | The mark centred on a rule; added as component 13 at spec approval (amendment 1) |
+
+Mark variant **L1** was picked separately from the component picks, in a second round.
+
+**Two props survive the prune, both renamed to what they are** (amendment 4b). `Button.kind`
+is `primary | outline | inverse | submit | text` — five *jobs*, not five styles, because a page
+needs more than one button. `Testimonial.mode` is `single | grid`, and the component gained an
+explicit `reviews` array so a page can place the remainder of its rows rather than silently
+dropping them; the placement rule is prose in `rules/copy.md`. Every other `variant` prop is
+gone, and `tests/py/test_design_picks.py::test_after_prune_no_variant_prop_remains` fails if one
+comes back.
+
+**Kit conventions.** Ten of them, written into the header of `src/components/kit/_registry.ts`
+after the Task 5 quality review and binding on Tasks 6–15: no second `<main>`; focus rings read
+`var(--kit-ring)` rather than a fixed focus token, because `--color-focus` is the same steel as
+the inverse surface and a fixed ring vanishes on dark bands; colour from `currentColor` or a
+context variable with a default; `Props extends HTMLAttributes<'tag'>` with `...rest` spread and
+`class:list`; content through named slots, size/mode/data through props; overridable rules inside
+`@layer components`; registration with demo fixtures; a dist assertion in
+`test_design_components.py`; a primitive needed by a second component moves to
+`src/styles/kit.css` (`.kit-card`, `.kit-card--lift`, `.kit-chip`); and convention 10 — a
+*positional* check is inert on a preview page, because every demo is the first child of its own
+section, so those checks are covered by fixture pairs under `tests/render/fixtures/` instead.
+
+**`/kit-preview/`** replaces the deleted `/design-canvas/` route (amendment 4a). It is
+`noindex`, renders one section per component from `_registry.ts` with no per-component branch,
+and is the source the artboard builder cuts from and the only place the per-component dist
+assertions can point at until project 4 mounts the kit on real pages.
+`tests/py/test_design_components.py::test_no_canvas_route_after_prune` keeps the old route
+deleted, and `form_contract_audit.py`'s `NON_CONTENT_ROUTES` names `kit-preview` with a
+self-expiry test that requires the directory to exist.
+</script>
+<script type="text/markdown" data-title="Canvas and picks">
+| Artifact | URL |
+|---|---|
+| Design canvas | `https://claude.ai/artifact/TAc7sSMqtcANRq9ujEQ5uR` |
+| Picks board | `https://claude.ai/artifact/6SDNFTFxTj3KLhgC2Gpdc8` |
+| Design System | `https://claude.ai/artifact/FfuXWrR6syXHkXHyAoAwno` |
+
+Recorded in `data/design/artifacts.json`.
+
+**Board history: 65 → 91 → 39.** Sixty-five was thirteen components at five variants each, the
+count §9 was written against. Amendment 3d added 375px and 768px artboards for every *picked*
+variant, taking the published canvas to ninety-one. Amendment 4a's prune then deleted the
+losers, leaving **39** — thirteen components at their own board width plus a `-m375` row and a
+`-t768` row each, named `<component>.dc.html`, `<component>-m375.dc.html`,
+`<component>-t768.dc.html`. `docs/artifacts/canvas/project/` holds exactly 39 `.dc.html` files
+and `canvas.json` declares `boards: 39`. The mobile and tablet rows exist so that narrow
+renderings are judged rather than assumed, and they earned their place immediately: the
+three-up `Testimonial` was holding 816px of grid tracks at a 375px viewport and pushing the
+document sideways, which only the 375 row could show.
+
+**How the picks were taken.** The board is an Artifact with a shared database; the owner
+clicked thirteen picks plus the mark into it, the rows were read back with the `ArtifactData`
+tool into a one-shot operator inbox, and `scripts/pull_design_picks.py` wrote
+`data/design/picks.json` from them. That inbox (`data/design/inbox/`) was a hand-off buffer for
+a single session and is **deleted at close-out**, together with the now-dead
+`scripts/canvas_publish_manifest.py`. `data/design/picks.json` is the committed record and the
+only thing anything reads; `scripts/design_system_publish_manifest.py` stays, because the
+Design System artifact is still republished from it.
+
+Image assets are de-duplicated through `data/design/canvas-assets.json` (eleven uploads for the
+canvas) and `data/design/design-system-assets.json` (fourteen for the Design System); the
+generators refuse to write an asset entry whose blob is missing, print the upload list and exit
+2 rather than publishing a page with broken images.
+</script>
+<script type="text/markdown" data-title="Search">
+Amendment 3b's header search pill is a real on-site index, built at build time from
+`data/page-map.json`, the puppies and the posts — no third-party service.
+
+| | |
+| --- | --- |
+| `public/search-index.json` | **31** rows |
+| By type | Page 13 · Location 11 · Puppy 6 · Blog 1 |
+| Written to | `public/` **and** `dist/` — `scripts/build_search_index.py` writes both, because Astro copies `public/` into `dist/` before postbuild and the shipped index was otherwise one build stale (amendment 4f) |
+| Route | `/search/` — built, titled "Search — BlueStaffyUK", and says when its list is truncated |
+| Gate | `npm run test:render:search` — 18 passed |
+
+**The combobox** (amendment 4d). The drawer's duplicate form, input, hint and second results
+list are gone: there is one form, which CSS gives a full-width bar row below 768px when the
+drawer is open. The input carries `role="combobox"`, `aria-expanded`, `aria-controls` and
+`aria-activedescendant`; the list is a `listbox` of `option`s; ArrowUp/ArrowDown/Home/End/
+Enter/Escape and focusout all work, and the pointer path works too (commit `55f94d4`). The list
+is deliberately **not** an `aria-live` region — a live region holding the active option is
+re-announced on every keystroke and every arrow press — so the result count goes to a separate
+polite status line. `src/lib/search.ts` refuses a row whose url is not root-relative rather than
+assigning it to `a.href`. The pill ships in `SiteHeaderKit.astro`; the shipped site header keeps
+its own markup until project 4 mounts the kit.
+</script>
+<script type="text/markdown" data-title="Harness">
+**Pytest** — `npm run test:py`:
+
+```
+1353 passed, 7 skipped, 1 xfailed, 146 warnings in 91.16s
+```
+
+Identical on both runs. Project 2 finished at 1240 passed; this project added 113, including
+`test_design_tokens.py`, `test_brand_assets.py` and `test_design_picks.py`, none of them
+skipped. The one `xfailed` is the strict-xfail that proves the hex ban's detector still fires.
+
+**Render meta** — `npm run test:render:meta`: **324 passed, 36 skipped**, exit 0, both runs, and
+**Guard 2 prints no `DEFERRED` line**. Project 2 left three checks in
+`tests/render/targets.json` `deferred_checks` waiting on this project's kit. All three are
+promoted and the map is now `{}` beside a note recording it:
+
+| Check | Where it now has nodes |
+|---|---|
+| `layout-hero-counter-separation` | the picked `CounterStrip` on `/kit-preview/`, via `.counter-wrap` + `[data-counters]` |
+| `sem-statement-label-visible` | the picked `InfoCard`'s two `.stmt-label` cards with their `data-kind` |
+| `layout-h3-image-first` | a dedicated convention specimen on `/kit-preview/` — an `<h3>`, an `<Image class="sec-img">` and a `<p class="prose">` — because the picked InfoCard owns no `.sec-img` |
+
+The plan's Task 21 step 1 (mount three components on `src/pages/index.astro`) was **superseded
+and not executed** (amendment 6): the page that carries the conventions is `/kit-preview/`,
+added to `tests/render/targets.json` as a target under a new `page_type: "preview"` wired to all
+nine families with `corpus: false`, so a specimen never moves the quality trend of the shipped
+site.
+
+**Render pages** — `npm run test:render:pages`: **8 passed, 46 failed**, exit 1, both runs.
+That is the recorded project 3 baseline in `docs/reports/render-baseline-project3.md`,
+regenerated from this project's own scorecard run and re-verified by `npm run baseline`
+(`examined render-baseline-project3.md; 0 problems`, both runs). The scorecard is **261 defect
+rows across 18 page scorecards** (run=first, harness 2.0.0).
+
+| Family | Blocking (P2 → P3) | Advisory (P2 → P3) | Pages (P2 → P3) |
+|---|---|---|---|
+| A11Y | 0 → 0 | 3 → 5 | 1 → 2 |
+| CSS | 0 → 0 | 51 → 42 | 17 → 13 |
+| DUP | 0 → 0 | 33 → 36 | 11 → 12 |
+| FORM | 0 → 0 | 3 → 3 | 1 → 1 |
+| IMG | **15 → 6** | 0 → 0 | 6 → 3 |
+| LAYOUT | 4 → 4 | 0 → 0 | 2 → 2 |
+| NAV | 18 → 18 | 0 → 0 | 6 → 6 |
+| SCHEMA | 21 → 21 | 0 → 0 | 7 → 7 |
+| SEM | 9 → 9 | 108 → 117 | 17 → 18 |
+| **Total** | **67 → 58** | **198 → 203** | **17 → 18** |
+
+The page count rises 17 → 18 because `/kit-preview/` joined the target list. **No blocking row
+appeared on any page that did not already carry it in the 2026-09-17 scorecard.** The blocking
+fall is entirely `img-srcset-within-2x`, below. The advisory movements are the new page's own
+rows plus the DUP and SEM consequences of a page that repeats the site chrome thirteen times.
+
+**`img-srcset-within-2x`: 15 → 6** (Known Issue 4's image pass). Task 6 moved the puppy photos to
+`astro:assets` with a bounded `srcset`, which cleared every puppy-page row. The remaining six are
+two images on three pages, at two viewports each, and none of them is a puppy photo:
+
+| Page | Viewport | Image | Ratio |
+|---|---:|---|---:|
+| `index` | 768 | `mark-blue-staffy-london.webp` | 2.40x |
+| `index` | 1280 | `mark-blue-staffy-london.webp` | 2.38x |
+| `blue-staffy-pup-sale-uk` | 768 | `mark-blue-staffy-london.webp` | 2.40x |
+| `blue-staffy-pup-sale-uk` | 1280 | `mark-blue-staffy-london.webp` | 2.38x |
+| `buy-staffy-puppies-for-sale-uk` | 768 | `best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp` | 2.31x |
+| `buy-staffy-puppies-for-sale-uk` | 1280 | `best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp` | 2.28x |
+
+Both are plain `<img>` tags in migrated WordPress body copy, not kit components, so they are
+project 4's to convert when it re-authors those pages. §9's literal "at 0" is therefore not met;
+see the definition-of-done table.
+
+**kit-preview's own rows.** 23 rows / 109 instances at three viewports, **zero blocking at all
+three**. Nine SEM rows (heading inventory and title case on component labels like "4 · Puppy
+card"), six CSS, three DUP, three FORM and two A11Y — all advisory. The two A11Y and one FORM
+row are carried as new open items below. Being measured found four real defects in the preview
+during Task 21, all fixed rather than baselined: a `PageNav` demo pointing at four anchors no
+page had; a missing `dateModified`; the three-up `Testimonial` overflowing 375px because a flex
+item's automatic minimum size is its max-content width; and a second `position: sticky` site
+header that the chrome probe absorbed into the top band, so no `scroll-margin-top` could land an
+anchor inside it.
+
+**The hero overflow measurement** (amendment 4c). The old ceiling test read the rounded artboard
+height, which `max-height` plus a hidden overflow produces whether a hero *fits* the band or is
+being *cut off* by it — and the shipped hero was in fact clipping its own CTA row while
+measuring as a pass. `scripts/measure_canvas_heights.mjs` now records, per hero and at three
+widths, the scroll overflow of `.inner` and of the section, the `.lede` clamp's own overflow,
+and the CTA row's bottom edge relative to the section's:
+
+| Width | Height | `.inner` overflow | Section overflow | `.lede` overflow | CTA bottom vs section |
+|---:|---:|---:|---:|---:|---:|
+| 1024 | 450 | 0 | 0 | 0 | −71 |
+| 1100 | 450 | 0 | 0 | 0 | −71 |
+| 1280 | 450 | 0 | 0 | 0 | −71 |
+
+Zero overflow everywhere and the CTA row 71px inside the box.
+`test_measured_hero_fits_its_clamp_without_clipping_anything` asserts all four columns; a board
+height alone cannot tell fitting from clipping.
+</script>
+<script type="text/markdown" data-title="Ported gates">
+Every gate re-run at close-out with `.env` sourced. "Baseline" means the number measures
+Foundation's migrated WordPress body HTML and is the starting line for projects 4–5;
+"regression" would mean this project introduced it. **There are no regressions.**
+
+| Gate | Summary line | Exit | Tag |
+|---|---|---|---|
+| `scripts/migration_parity.py` | `examined 40 pages, 0 failing` | 0 | zero-tolerance, green |
+| `scripts/redirect_check.py` | `examined 18 redirects, 2186 internal refs (distinct per page); 0 redirected refs; 0 problems` | 0 | zero-tolerance, green |
+| `scripts/schema_check.py` | `examined 51 pages; 0 blocking, 0 advisory` | 0 | zero-tolerance, green |
+| `scripts/sitemap_check.py` | `examined 51 built pages, 5 shards, 35 sitemap urls; 0 problems` | 0 | zero-tolerance, green |
+| `scripts/marker_check.py` | `examined 240 files; 0 problems` | 0 | zero-tolerance, green |
+| `scripts/build_agent_registry.py --check` | `examined 36 agents; 0 problems` | 0 | zero-tolerance, green |
+| `scripts/build_system_registry.py --check` | `examined docs/reference/system-registry.md; 0 problems` | 0 | zero-tolerance, green |
+| `scripts/render_baseline.py --check` | `examined render-baseline-project3.md; 0 problems` | 0 | zero-tolerance, green |
+| `scripts/form_contract_audit.py` | `examined 2 forms; 0 problems  (inquiry 2, in-scope 1, newsletter 0)` | 0 | green — the second form is the kit's |
+| `scripts/placeholder_check.py` | `placeholders: 1605 (advisory — set BSUK_RELEASE=1 to make this blocking)` | 0 | by design until project 6; **down** from 1698 |
+| `scripts/final_page_audit.py` | `examined 12 pages; 12 problems  (0 PASS · 0 PASS-WITH-WARNINGS · 12 FAIL)` · `baseline-only FAIL pages: 0  (failing only all_six_levels, min_h5_5, min_h6_5 — the migration baseline)` | **1** | baseline (migrated headings) |
+| `scripts/page_hardening_scan.py` | `BSUK page-hardening scan — 29 source files, 51 built pages` · `148 ERROR · 4 WARN` | 0 | baseline (migrated images and markup); WARN 27 → 4 |
+| `scripts/dup_content_audit.py` | `FAIL — 135 duplicated passages ≥12 words.` | **1** | baseline (migrated copy; project 4) — unchanged from project 2 |
+| `scripts/aeo_audit.py --all` | `examined 51 pages; 38 problems (186 WARN)` · `baseline-only FAIL pages: 38 (failing only freshness …); pages with a real ERROR: 0` | 0 | baseline (freshness only — project 4) |
+| `scripts/evidence_audit.py --all` | `examined 51 pages; 47 problems (4 WARN)` | **1** | baseline (term budgets on migrated copy) |
+| `scripts/board_gate.py index` | `3 FAIL · 2 WARN` | **1** | baseline — the three carried `header-collision` rows in migrated copy (Known Issue 9) |
+| `scripts/quality_report.py` | report printed; worst family SEM (126 rows); 0 open overrides; 17 rules with no backing test | 0 | baseline |
+| `bash scripts/health-sweep.sh` | sections 1–3 and 5 PASS; section 4 (LIVE SITE) `WARN no SITE_URL — skipping live checks (project 6)` | **0** | **improved** — project 2 exited 1 here |
+
+`page_hardening_scan.py`'s ERROR count rises 130 → 148 and its WARN count falls 27 → 4. The
+rise is arithmetic, not a regression: the scan grew from 25 source files / 49 built pages to
+29 / 51, and `/kit-preview/` alone contributes the three `kit-card`, `kit-card--lift` and
+`kit-chip` "styled but never rendered" rows, which are the shared primitives in
+`src/styles/kit.css` that the preview's picked variants do not all use. No ERROR class is new.
+
+Every non-zero exit above is a migrated-content baseline or a designed refusal. None is a
+defect this project introduced.
+</script>
+<script type="text/markdown" data-title="Lighthouse">
+Warm median of 3 runs per page type against `npx astro preview` on localhost, headless Chrome,
+Lighthouse 13.4.1, mobile emulation — the same method and the same five page types as the
+Foundation sweep, so the two tables are comparable. **Recorded, not a gate** (§9.7). Raw JSON is
+written under `docs/reports/lh/`, which is gitignored; only these medians are committed.
+
+| Page type | URL | Perf | A11y | Best practices | SEO | Agentic | FCP | LCP | TBT | CLS | Speed Index |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| home | `/` | 99 | 100 | 100 | 100 | 100 | 939 ms | 1978 ms | 0 ms | 0.000 | 939 ms |
+| for-sale | `/buy-blue-staffy-puppies-uk/` | 99 | 100 | 100 | 92 | 100 | 920 ms | 2047 ms | 53 ms | 0.000 | 920 ms |
+| puppy | `/available-puppies/roman/` | 100 | 100 | 100 | 100 | 100 | 830 ms | 1516 ms | 0 ms | 0.000 | 830 ms |
+| location | `/uk-locations/blue-staffy-puppies-uk/` | 100 | 100 | 100 | 92 | 100 | 912 ms | 1373 ms | 0 ms | 0.000 | 2007 ms |
+| blog | `/blue-staffy-blog-guides/` | 100 | 100 | 100 | 100 | 100 | 835 ms | 839 ms | 0 ms | 0.000 | 835 ms |
+
+Against the Foundation baseline (home 99/100/100/100 · for-sale 99/100/100/92 · puppy
+98/100/100/100 · location 100/100/100/92 · blog 100/100/100/100):
+
+| Page type | Perf | A11y | Best practices | SEO |
+|---|---|---|---|---|
+| home | = 99 | = 100 | = 100 | = 100 |
+| for-sale | = 99 | = 100 | = 100 | = 92 |
+| puppy | **98 → 100** | = 100 | = 100 | = 100 |
+| location | = 100 | = 100 | = 100 | = 92 |
+| blog | = 100 | = 100 | = 100 | = 100 |
+
+**No category score fell on any page type**, and one rose: the puppy page's Performance went
+98 → 100 and its LCP 2277 ms → 1516 ms, which is the `astro:assets` conversion of the pup hero
+photo — the same change that took `img-srcset-within-2x` from 15 rows to 6. Foundation predicted
+both numbers would move together, and they did.
+
+**Why no drop, given the header now inlines a 15 KB lockup and a mark sprite.** The header
+inlines `logo-horizontal.svg` (15,084 bytes) and `MarkSprite` emits 3,281 bytes of `<symbol>`
+per document; the footer inlines `logo-mono.svg` (15,394 bytes). All three are markup in the
+HTML response, not requests, so they cost bytes rather than round trips, and they replace image
+requests the old text/CSS logo never made either way. `dist/index.html` is 163,450 bytes, of
+which 52,438 is inline SVG. It is measurable page weight and it is carried below as an open
+item, but on this sweep it moved no category score. The five URLs are also the *shipped* pages,
+and per amendment 6 the kit is not mounted on any of them except the shell — so what this table
+measures of project 3 is the tokens, the fonts and the two lockups, not the thirteen components.
+Project 4 mounts the kit and should re-run this sweep.
+
+The two SEO 92s are the same single audit Foundation recorded, `link-text` on migrated body
+copy, and are unchanged. Localhost flatters the network metrics; treat the category scores as
+the record and the millisecond columns as relative between page types.
+</script>
+<script type="text/markdown" data-title="Placeholders">
+`python3 scripts/placeholder_check.py`, at close-out, with the run log present:
+
+| Token | Occurrences | Files |
+|---|---:|---:|
+| `SITE_URL_PLACEHOLDER` | 903 | 115 |
+| `PHONE_PLACEHOLDER` | 22 | 14 |
+| `FORMSPREE_ID_PLACEHOLDER` | 0 | 0 |
+| `LICENCE_CLAIM_PLACEHOLDER` | 536 | 74 |
+| `LEGAL_CLAIM_PLACEHOLDER` | 144 | 70 |
+| **`REVIEW_PLACEHOLDER`** | **0** | **0** |
+| **TOTAL** | **1605** | |
+
+§9.1 requires that the total not rise except for `REVIEW_PLACEHOLDER` slots. It **fell**, 1698
+→ 1605, and `REVIEW_PLACEHOLDER` — the token this project introduced for a review slot a page
+has not yet been given rows for — is at zero, because `Testimonial` takes an explicit `reviews`
+array and every specimen on `/kit-preview/` is fed real rows from `data/reviews.json`. The fall
+is the rule rewrite in Tasks 3–4, which replaced repeated licence and legal stand-in sentences
+in `.claude` with single prose statements.
+
+`BSUK_RELEASE=1 npm run check:placeholders` still refuses to ship any of them.
+</script>
+<script type="text/markdown" data-title="Working rule 11, and the two logo rasters this project nearly lost">
+Found by the whole-branch review at close-out, after the two gate runs, and fixed in the
+review commit.
+
+Project 3 replaced the logo with SVG lockups and, while doing it, deleted the two rasters the
+old logo was served from — `public/images/blue-staffy-uk-official-logo0.png` and
+`public/images/blue-staffy-uk-header-logo-88.webp`. Nothing in `src/` referenced them any
+more, the build was green, and every gate stayed at zero, because no gate in this repo knew
+that a URL with no reference in the source tree can still be a URL somebody fetches. Both
+files had been served long enough to rank in Google Images.
+
+The breeder confirmed the constraint on 2026-09-19 and it is now **CLAUDE.md working rule
+11**: every file under `public/images/`, and the YouTube embeds in `data/settings.json`, is
+reused first by any page projects 4–6 build or rebuild, keeping the original filename, path
+and alt text; a served file is never renamed, deleted or re-encoded, and a replacement image
+is added *beside* the old one rather than in its place. It is carried as **Known Issue 26**, a
+standing constraint rather than a defect with an owner.
+
+Both rasters are restored at their original paths. The rule now has a mechanical backstop in
+two halves, so neither side can drift:
+
+| Test | What it asserts |
+|---|---|
+| `tests/py/test_images.py::test_legacy_logo_rasters_are_still_served` | both files **exist** under `public/images/`, citing rule 11 |
+| `tests/py/test_brand_assets.py::test_settings_and_shell_use_the_svg_logo` | no `.astro` **references** them — the shell is on the SVG lockups |
+
+The second test previously asserted the two files were *absent*; those two lines were the
+thing that would have re-deleted them on the next pass, and they are gone, with the reasoning
+recorded in their place. Absence of a reference is now proved without proving absence of the
+file, which is the distinction rule 11 turns on.
+</script>
+<script type="text/markdown" data-title="The location-page-builder skill, rebuilt">
+Out of the original plan and recorded here so it is not read as scope creep.
+`.claude/skills/bsuk-location-page-builder/SKILL.md` was rebuilt in commit `3977975` around a
+**per-city competitor scan**: the section list for a city page is derived from what actually
+ranks for that city rather than from a fixed template, and every section names the kit component
+that renders it and the render check that judges it. It was rebuilt in this project because
+project 3 is what made the kit component names real — a skill that names `InfoCard` and
+`Testimonial` could not have been written before they existed — and because project 5 will
+build 28 pages from it. The skill also names the query-augmentation step and records that there
+is no skill for it (amendment 3f); that gap is carried as a new open item.
+
+**Corrected at close-out.** The skill's page-spine table was written while the kit still had
+five variants per component, so every row named a variant letter (`Hero` variant `c`,
+`InfoCard` variant `b`) and a paragraph told the reader to take those letters from
+`data/design/picks.json`. After the prune there is no `variant` prop to pass, so those
+instructions would have produced a build error on the first city page project 5 tried. The
+table now names the real API — a component renders its picked design and takes no letter, and
+`Button kind`, `Testimonial mode` plus an optional `reviews`, `InfoCard kind`,
+`SectionDivider inverse` and `Hero as` are the only props there are — with `picks.json`
+described as the record of what was picked rather than an input. One substantive bug went with
+it: the newsletter block was specified as `InfoCard kind="note"`, and `note` is not in the
+statement vocabulary (`src/lib/statement.ts` holds exactly `fact`, `observed`,
+`recommendation`), so `sem-statement-label-visible` would have reported every newsletter block
+as a defect. It is now `kind="recommendation"` with an explicit `label="Newsletter"`.
+</script>
+<script type="text/markdown" data-title="Second-run confirmation">
+§9.1–9.3: every check runs twice; both runs must be clean.
+
+The full pipeline — `build` → `check:all` → `test:py` → `test:render:meta` →
+`test:render:pages` → `build_scorecard.mjs --run first` → `baseline` — ran twice back to back
+into `docs/reports/design-system-run.log`. The two halves are **identical after normalising
+times**, verified programmatically rather than by eye.
+
+**The method, stated so it can be repeated.** The log is split on `=== RUN 2 ===`. Each half is
+reduced to a list of lines with: ANSI colour escapes stripped; `[WebServer]` request-log lines
+dropped (one line per HTTP request from the Playwright fixture server, whose interleaving across
+workers is nondeterministic by construction); leading `HH:MM:SS` clock stamps removed; every
+elapsed-time form (`1.6m`, `91.16s`, `(+3ms)`, `(0:01:31)`) replaced by `T`; Astro's asset
+ordinals `(8/46)` replaced by `(N/N)`; and Playwright's per-test ordinal (`✓ 104 [vp768] › …`)
+replaced by `N`, because Playwright numbers tests in completion order across parallel workers.
+The two normalised lists are then compared as **multisets**, so that a line appearing in a
+different position but the same number of times counts as identical:
+
+```
+run1 normalised lines: 1673
+run2 normalised lines: 1673
+multiset differences : 0
+```
+
+Zero differences. Every summary line is therefore the same on both runs: build `51 page(s)
+built`; parity `40 pages, 0 failing`; redirects `2186 internal refs; 0 problems`; schema
+`51 pages; 0 blocking, 0 advisory`; sitemaps `51 built pages, 5 shards, 35 sitemap urls; 0
+problems`; placeholders `1605`; marker `240 files; 0 problems`; agents `36 agents; 0 problems`;
+pytest `1353 passed, 7 skipped, 1 xfailed`; meta `324 passed, 36 skipped`; pages `8 passed, 46
+failed`; scorecard `261 defect ROWS across 18 pages`; baseline `0 problems`.
+
+Before the normalisation was applied the raw diff showed 350 differing lines and, after dropping
+the request log, 18 — nine tests whose Playwright ordinal differed by one between runs. Both
+classes are ordering, not outcome; the multiset comparison is what proves that.
+</script>
+<script type="text/markdown" data-title="Credentials">
+**No credential value appears anywhere in this report, in any committed file, or in
+`docs/reports/design-system-run.log`.** Rather than asserting that by eye, the two guards
+written at project 2's close-out were run with the log present:
+
+```
+python3 -m pytest tests/py/test_secret_shapes.py tests/py/test_no_env_value_committed.py -q
+4 passed in 1.76s
+```
+
+`test_no_env_value_committed.py` checks every value in `.env` against all tracked files, the run
+log and the Artifacts; `test_secret_shapes.py` scans the marker gate's roots plus reports,
+artifacts, scorecards and fixtures for credential shapes, skipping git-ignored paths. Both are
+also inside `npm run test:py`, so they ran twice within the pipeline as well.
+
+`.env` is unchanged by this project: eleven keys, mode `600`, gitignored, absent from
+`git status --porcelain`. Project 2's Incident and its **pending OAuth rotation** are unchanged
+and remain open as Known Issue 15.
+</script>
+<script type="text/markdown" data-title="Open items for later projects">
+Known Issue 4 is **closed by this project**. Items 3 and 5–16 carry forward with current status;
+17–26 are new.
+
+3. **The orphan check is blinded by the catch-all route.** `builtRoutesWithoutSource()` in
+   `tests/render/lib/freshness.ts` still cannot prove any route orphaned while
+   `src/pages/[...post].astro` matches every path. Unchanged by this project. **Carried
+   forward.**
+4. **Puppy `srcset` 2x rows — CLOSED.** Task 6 moved the puppy photos to `astro:assets` with a
+   bounded `srcset`. `img-srcset-within-2x` 15 rows / 6 pages → **6 rows / 3 pages**, and the
+   puppy page's Lighthouse LCP 2277 ms → 1516 ms with Performance 98 → 100. The remaining six
+   rows are two migrated-body `<img>` tags on three pages, named in the Harness section, and
+   belong to **project 4**'s content pass.
+5. **`nav-jump-target-lands` baseline.** 18 rows over 6 pages, unchanged. Migrated in-page
+   anchors. **Carried forward.**
+6. **17 stub locations are noindexed.** Unchanged. **Project 5.**
+7. **Placeholders.** Five tokens, total 1698 → 1605; `REVIEW_PLACEHOLDER` at 0. The two
+   legal-claim stand-ins still await **Lisa Bright's** confirmation; the site-URL and phone
+   stand-ins resolve at **project 6**.
+8. **`schema-date-modified-present`.** 18 rows over 6 pages, unchanged; needs
+   `generate_page_dates.py` wired into the content pass. **Project 4.** See also item 20.
+9. **Three carried header duplicates.** `board_gate.py index` still reports `3 FAIL · 2 WARN`
+   on migrated copy. **Project 4.**
+10. **Deferred-check id drift.** `bottom-bar-under-tabbar` and `analytics-double-load` remain
+    Python page-hardening checks with no harness equivalent. Unchanged.
+11. **Old price range in migrated copy.** Unchanged; page bodies are content. **Project 4.**
+12. **`Sharine Amelia` byline.** Unchanged. **Project 4.**
+13. **`INDEXNOW_KEY` empty, `SITE_URL` still the placeholder.** Unchanged. **Project 6.** One
+    thing improved: `health-sweep.sh` now exits 0 rather than 1, because its live-site section
+    WARNs on the absent `SITE_URL` instead of reporting three failed fetches.
+14. **GSC and GA4 pulls are unwired.** Unchanged. **Project 6.**
+15. **Two live credential values were committed in this branch — ROTATION STILL PENDING.**
+    Unchanged by this project. Both guards pass on every run, but the OAuth client rotation in
+    the Google Cloud Console is still owed by the user before project 6.
+16. **The breeder has relocated: Carlisle, Cumbria, England.** Project 3 carried the new
+    geography in the tokens and lockups only, as planned. The copy, `data/settings.json`, the
+    schema `address` / `areaServed` and the fact lint's locked geography are still the old city
+    and are **project 4**'s. One strand moved: `ContactFormKit.astro` carries no collection
+    option naming the former city, so mounting it in project 4 closes the form half of this
+    item — but `form_contract_audit.py`'s `PUPPY_OPTION` constant still *requires* that option,
+    which is why the kit form reports one advisory row (item 22).
+17. **There is no query-augmentation skill.** The rebuilt location-page-builder skill names the
+    step — expand the primary keyword into the real questions before writing, and mirror the
+    strongest six into the FAQ — and records that no skill performs it, so it is done by hand or
+    not at all. **Project 5** needs one before it builds 28 city pages.
+18. **The hero lede is clamped to two lines.** Rule 10 holds the lede to two lines and
+    `lede_overflow` is measured at zero today, which means the copy currently fits. It is a
+    standing constraint on every hero project 4 writes: copy needing a third line must be
+    shortened, because the clamp will not grow and the test will fail rather than truncate
+    silently. **Project 4** should know this before it writes hero copy.
+19. **`Button.kind` keeps all five treatments — TO BE CONFIRMED BY THE USER.** The prune deleted
+    every other `variant` prop; `Button` kept `primary | outline | inverse | submit | text` on
+    the reasoning that they are five jobs rather than five styles (amendment 4b). That is a
+    judgment made during execution and **the user has not confirmed it**. If any treatment is
+    not wanted, deleting it is a one-line registry change plus its fixtures, and is cheapest
+    before project 4 mounts buttons on real pages.
+20. **`data/page-dates.json` is generated but unwired.** `npm run dates` writes it from git
+    history and `/kit-preview/` reads it for its `WebPage` `dateModified` — the only consumer in
+    the tree. The 18 `schema-date-modified-present` rows on real pages (item 8) are exactly the
+    pages that do not read it yet. **Project 4** wires it into the content pass and into sitemap
+    `lastmod`.
+21. **`.dot` separator contrast, 4.49:1.** Two advisory `a11y-text-contrast-aa` rows on
+    `/kit-preview/` at 768 and 1280: the middle-dot separator measures 4.49:1 against its
+    surface and AA wants 4.50:1. It is one hundredth of a ratio point and it is a decorative
+    separator, but it is a real row and the fix is one token step darker. **Project 4**, with
+    the pair added to `data/design/contrast.json` so the test guards it thereafter.
+22. **The kit contact form reports one missing screening option.** `form-inquiry-contract`
+    reports one advisory row at all three viewports: the puppy select is missing the collection
+    option that `form_contract_audit.py`'s `PUPPY_OPTION` constant requires. The kit form is
+    right and the constant is wrong — the option names a collection point the breeder has left
+    (item 16). **Project 4** re-bases the constant, the option and the visible label together.
+23. **Page weight of the inline lockups.** The header inlines 15,084 bytes of SVG, the footer
+    15,394, and the mark sprite adds 3,281 per document; `dist/index.html` is 163,450 bytes, of
+    which 52,438 is inline SVG. It cost no Lighthouse category on this sweep, but it is paid on
+    every page of the site and grows with nothing. If project 4 or 6 wants it back, the lockups
+    can become `<use>` references into the same sprite the mark already uses, at the cost of one
+    request. **Recorded, not yet a defect.**
+24. **The fonts are not vendored.** Fraunces and Source Sans 3 are loaded from Google Fonts, and
+    the Design System artifact's `type.fonts` is `[]` for that reason (amendment 7c). That is a
+    third-party request on every page and a privacy consideration at launch. **Project 6**
+    should decide whether to self-host before the site is public.
+25. **`render_baseline.py`'s default is now project 3.** `REPORT` in the script points at
+    `docs/reports/render-baseline-project3.md`; the project 2 file is a published record and is
+    never regenerated. Whoever opens project 4 must repoint the default at a new project 4
+    baseline file, or `npm run baseline` will keep judging project 4's scorecards against
+    project 3's table.
+26. **Existing images and videos must be reused with their URLs intact — working rule 11.**
+    See the section below. **Standing constraint for projects 4–6.**
+</script>
+<script type="text/markdown" data-title="Definition of done — spec §9, as amended by §11">
+| # | Requirement (amended) | Verdict | Evidence |
+|---|---|---|---|
+| 1 | `check:all` green twice; marker gate `0 problems`; the placeholder total does not rise except for `REVIEW_PLACEHOLDER` slots, which are listed here | **PASS** | exit 0 both runs; `examined 240 files; 0 problems`; placeholders **1698 → 1605**, a fall; `REVIEW_PLACEHOLDER` **0**, table above |
+| 2 | `test:py` green twice, including `test_design_tokens.py`, `test_brand_assets.py` and `test_design_picks.py`, not skipped | **PASS** | `1353 passed, 7 skipped, 1 xfailed` on both gate runs, and **`1355 passed, 7 skipped, 1 xfailed`** after the close-out review added two tests — the legacy-raster guard for working rule 11, and the artifact-name-to-file mapping guard; the three files contribute 10 + 7 + 5 tests and none is skipped; the `xfailed` is the strict-xfail proving the hex-ban detector still fires |
+| 3 | `test:render:meta` green, the three deferred checks promoted, Guard 2 prints no `DEFERRED`; `test:render:pages` at the recorded project 3 baseline with no new blocking row and `img-srcset-within-2x` at 0 | **PASS-WITH-DEVIATION** | meta `324 passed, 36 skipped`, exit 0, both runs, `deferred_checks` is `{}` and no `DEFERRED` line is printed; pages `8 passed, 46 failed` both runs against `render-baseline-project3.md`, `npm run baseline` `0 problems`, **no new blocking row on any page**. **Deviation:** `img-srcset-within-2x` is at **6**, not 0 — 15 → 6, with the remaining six named above. They are migrated-body `<img>` tags on three pages, not kit output; §9 assumed the image pass would reach every image, and it reached every image the kit owns |
+| 4 | `picks.json` holds thirteen picks; `src/components/kit/` has thirteen components and no `variant` prop; `/design-canvas/` is gone | **PASS** | `picks.json` — 13 picks, all `by: owner`, plus the separate mark pick; thirteen component files matching `components.json`, beside `Mark.astro`, `MarkSprite.astro`, `markShapes.ts` and `_registry.ts`, which are the mark machinery and the registry rather than components; `test_after_prune_no_variant_prop_remains` and `test_no_canvas_route_after_prune` both pass |
+| 5 | `public/brand/` holds the four lockups; the four favicon renders are built from them; header and footer render the SVG logo | **PASS** | the four lockups are in `public/brand/` (sizes tabled above). **The four favicon renders sit at the `public/` root, not under `public/brand/`** — `public/favicon.svg`, `public/favicon-32.png`, `public/apple-touch-icon.png`, `public/icon-512.png` — because a favicon is fetched from a fixed root path and moving it under `brand/` would break it; §9's wording folds them into the `brand/` sentence, the filesystem does not. Header inlines `logo-horizontal.svg`, footer inlines `logo-mono.svg` — the documented deviation from Task 20's "stacked at 96px", because a self-coloured lockup is invisible on the inverse band |
+| 6 | The three Artifacts are published and their URLs recorded in `data/design/artifacts.json`: the canvas, the picks board, the Design System | **PASS-WITH-DEVIATION** | all three URLs recorded and live. **Deviation of number, per amendment 4a:** the canvas is **39** boards, not §9's sixty-five — 65 at first publication, 91 after the mobile and tablet rows, 39 after the prune. `docs/artifacts/canvas/project/` holds 39 `.dc.html` files and `canvas.json` declares `boards: 39`. Per amendment 7, the third artifact is the **Design System** built by `scripts/build_design_system.py`, not §7's draft prompt pack, and it has no component bundle — the previews are static renderings cut from `dist/kit-preview/` |
+| 7 | Lighthouse warm median of 3 on the five Foundation page types: no category score below the Foundation baseline. Recorded, not a gate | **PASS** | table above; three page types equal on all four categories, location equal, and **puppy rises 98 → 100** on Performance with LCP 2277 → 1516 ms. Nothing fell. Same method as Foundation: `npx astro preview`, headless Chrome, Lighthouse 13.4.1, mobile emulation |
+| 8 | `docs/reports/design-system-gate-report.md` written and published as an Artifact; this spec and the plan published as Artifacts | **PASS-WITH-DEVIATION** | this file; `docs/artifacts/bsuk-design-system-gate-report.html`, `bsuk-design-system-plan.html` and `bsuk-design-system-spec.html` all built at close-out. **Two deviations.** (a) `scripts/build_report_artifact.py` takes **no arguments** — it is hard-wired to Foundation's two reports — so the gate-report artifact was built with `scripts/build_spec_artifact.py`, which takes exactly the argument order the plan quotes, and which is also what built project 2's gate-report artifact. (b) **All three are published**: gate report `https://claude.ai/artifact/4h6bFhh29coDkUSZM2XEuM`, plan `https://claude.ai/artifact/1n1t2aAZMv8mqeyrzdBfSx`, spec `https://claude.ai/artifact/T9UYfQtidvt6iN6NzrqWy9` |
+| 9 | Every commit carries `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` | **PASS** | branch range `e049f55..HEAD`, `e049f55` being the cut point from `foundation`: **61** commits — 58 of build, the close-out, the working-rule-11 commit and the review-fix commit — and **61** carrying the trailer |
+| 10 | Session-closer names project 4 as next and lists the new open flags appended to `docs/reference/session-log.md` Known Issues | **PASS** | project 3 section added to the session log, Known Issue 4 marked CLOSED, and new items **17–26** appended; the session-closer names **project 4, page rebuilds** as next |
+
+**Verdict count: 7 PASS · 3 PASS-WITH-DEVIATION · 0 FAIL.**
+
+Rows 6 and 8(a) are recorded in spec §11 or are tooling facts with no bearing on the work. Row
+3's deviation is the one that matters: `img-srcset-within-2x` is at 6 rather than 0, and those
+six rows are real, named, and belong to project 4's content pass — the definition of done
+assumed an image pass that could reach migrated body markup, and this project deliberately did
+not edit page content. Row 8(b) is now closed: all three Artifacts are published, and their URLs are in the row.
+
+Two things are owed by people rather than by code before this project is fully closed: the
+**OAuth rotation** from project 2 (Known Issue 15), and the user's **confirmation of
+`Button.kind`** keeping all five treatments (Known Issue 19).
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK Rebuild — Project 3 of 6: Design system gate report\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

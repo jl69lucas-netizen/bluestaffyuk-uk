@@ -1,0 +1,108 @@
+---
+// src/components/kit/CityLetter.astro — city component 12, the review (London pick: reviews A,
+// "Owner's letter"). One review set as a letter on a raised card: the owner's own photograph
+// from the site pinned at the left (on top on a phone, at no more than its own width), a large
+// steel quotation mark, the review word for word and a signed foot with the name and place. No
+// stars, no score (seo-rules Rule 33: no AggregateRating), one review per slot.
+//
+// THE REVIEW IS data/reviews.json, SELECTED BY NAME (plan2-notes, Task 8; the way
+// buy-blue-staffy-puppies-uk selects Rachel L.), never pasted: a name the file does not carry
+// stops the build, and the quote renders exactly as the file has it. The photograph is the
+// served file the homepage pairs with the same review, with its served alt (working rule 11).
+// Conventions 4 and 6.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import reviewsJson from '../../../data/reviews.json';
+import { focusClass, servedPhoto } from '../../lib/imageFocus';
+import { citySizes, splitReview, type CityFit } from '../../lib/cityKit';
+
+interface Review { quote: string; name: string; place: string; source: string }
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  name: string;
+  photo: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, name, photo, fit = 'column', class: cls, ...rest } = Astro.props;
+const all = reviewsJson as Review[];
+const index = all.findIndex((r) => r.name === name);
+if (index < 0) throw new Error(`CityLetter: data/reviews.json has no review by ${name}`);
+const review = all[index];
+// THE REVIEW IS SPLIT INTO PARAGRAPHS AT ITS SENTENCE BREAKS, at render (the Task 7b spec
+// review): one 436-character paragraph ran 12 lines on a phone and 9 in the city column, past the
+// type-fit caps (8 below 1024px, 6 from it). src/lib/cityKit.ts splitReview keeps the words and
+// their order exactly (data/reviews.json is untouched) and joins sentences while a paragraph stays
+// within PARA_CHARS, which at the narrowest measure (about 38 characters a line at 375px, about 48
+// in the 832px column) keeps a paragraph to 6 lines and 4 lines.
+const PARA_CHARS = 200;
+const paras = splitReview(review.quote, PARA_CHARS);
+const p = servedPhoto(photo);
+// The photograph paints at its OWN width (its width/height attributes, from data/image-focus.json
+// through servedPhoto()), never wider, and shrinks with the card; pinned beside the letter on
+// desktop it takes the 9fr of the card's 9fr / 16fr split (the card inside a 1000px measure, less
+// 32px gutters, 40px padding and a 40px gap). Nothing here is fitted to one photo.
+const sizes = citySizes(fit, {
+  phone: () => `${p.w}px`,
+  tablet: () => `${p.w}px`,
+  desktop: (B) => `min(${p.w}px, calc((min(${B}, 1000px) - 184px) * 9 / 25))`,
+});
+---
+<section {...rest} class:list={['city-kit', 'city-letter', cls]}>
+  <div class="in">
+    <div class="head">
+      <h2>{heading}</h2>
+      <p class="lede">{lede}</p>
+    </div>
+    <div class="card" data-review-slot>
+      <figure class="pic">
+        <img src={p.file} srcset={p.srcset} sizes={sizes} alt={p.alt}
+          width={p.w} height={p.h} class={focusClass(photo)} loading="lazy" decoding="async" />
+      </figure>
+      <div>
+        <blockquote data-review={index}>
+          <span class="mark" aria-hidden="true">“</span>
+          {paras.map((t) => <p>{t}</p>)}
+        </blockquote>
+        <p class="sig"><cite>{review.name}</cite><span>{review.place}</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-letter { background: var(--color-surface); }
+    .in { max-width: 1000px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
+    .head { max-width: 640px; margin: 0 0 var(--space-6); }
+    h2 { margin: 0 0 var(--space-3); }
+    .lede { margin: 0; font-size: var(--city-lead); color: var(--color-text); }
+    .card {
+      display: grid; gap: var(--space-5); padding: var(--space-5); background: var(--color-surface-raised);
+      border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--shadow-card);
+    }
+    /* No width of its own: the img's width/height attributes are the photo's own size and
+       ratio, `justify-self: start` shrinks the figure to it, and max-width lets it give way. */
+    .pic { margin: 0; justify-self: start; max-width: 100%; }
+    .pic img { display: block; max-width: 100%; height: auto; border-radius: var(--radius-md); background: var(--color-bone-50); }
+    blockquote { margin: 0; position: relative; }
+    .mark { display: block; height: 44px; margin: 0 0 var(--space-1); font-family: var(--font-display); font-size: calc(var(--city-h2) * 2.4); line-height: 1; color: var(--color-brand-mid); }
+    blockquote p { margin: 0; font-size: var(--city-lead); line-height: 1.6; color: var(--color-text); }
+    blockquote p + p { margin-top: 0.75em; }
+    .sig {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
+      margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border);
+    }
+    cite { font-family: var(--font-display); font-style: normal; font-size: var(--city-h3); font-weight: 600; color: var(--color-brand); }
+    .sig span { font-size: var(--text-sm); color: var(--color-ink-2); }
+    @container (width >= 640px) {
+      .in { padding: var(--city-pad-y) var(--space-6); }
+      .card { padding: var(--space-6); }
+    }
+    @container (width >= 800px) {
+      .card { grid-template-columns: minmax(0, 9fr) minmax(0, 16fr); gap: var(--space-7); align-items: start; }
+      .pic { position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
+    }
+  }
+</style>

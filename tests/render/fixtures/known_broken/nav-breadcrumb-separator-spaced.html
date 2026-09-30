@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a breadcrumb separator flush against the next crumb</title>
+<!-- Today's markup (src/components/Breadcrumb.astro before the design-polish pick 4(a),
+     2026-09-30): the separator and the crumb sit in one <li> with no space between them (Astro's
+     compressed output drops it), and the <ol>'s 8px gap falls only between whole list items, so
+     there are 8px before each › and none after it. -->
+<style>body { margin: 0; font: 17px/1.65 Georgia, serif; } .container { padding-inline: 24px; }</style>
+</head><body>
+<nav aria-label="Breadcrumb" class="container" style="font-size:14px;padding-top:12px"><ol style="display:flex;gap:8px;list-style:none;padding:0;margin:0;flex-wrap:wrap"><li><a href="/">Home</a></li><li><span aria-hidden="true">›</span><a href="/uk-locations/">UK Locations</a></li><li><span aria-hidden="true">›</span><span aria-current="page">Blue Staffy Puppies London</span></li></ol></nav>
+<main><h1>Blue Staffy Puppies London</h1></main>
+</body></html>

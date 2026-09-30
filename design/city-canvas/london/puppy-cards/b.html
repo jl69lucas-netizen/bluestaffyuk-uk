@@ -1,0 +1,126 @@
+<style>
+/* Puppy cards B — Family sheet. A sunk steel-100 tray (no shadow, no raised surface) that
+   opens with the family: a section photo of Maggie, the dam, with her puppies beside the
+   question and its answer. Under it the six are laid out like prints: a photo, a bone-50
+   mount with the name, a brass price tag, sex and colour, Available, the delivery line and
+   an Ask link stretched over the whole print, so the print is the tap target and nothing
+   looks tappable that is not. Three across from 768px, two across on a phone. */
+.pcB{background:var(--color-surface);padding:var(--space-6) var(--space-3)}
+.pcB .tray{max-width:1200px;margin:0 auto;background:var(--color-brand-soft);border-radius:var(--radius-lg);padding:var(--space-5) var(--space-3) var(--space-4)}
+.pcB .head{padding:0 var(--space-2);margin-bottom:var(--space-5);display:grid;gap:var(--space-4)}
+.pcB .fam{margin:0}
+.pcB .fam img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:70% 45%;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.pcB .fam figcaption{margin-top:var(--space-2);font-size:var(--text-xs);color:var(--color-ink-2)}
+.pcB .deliv{margin:var(--space-1) 0 var(--space-2);font-size:var(--text-xs);line-height:1.35;color:var(--color-ink-2)}
+.pcB h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);text-wrap:balance}
+.pcB .lede{margin:0;color:var(--color-text);max-width:62ch}
+.pcB .sheet{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}
+.pcB .pup{position:relative;display:flex;flex-direction:column;background:var(--counter-bed);border-radius:var(--radius-md);padding:var(--space-2);transition:outline-color var(--dur-fast) var(--ease-out);outline:2px solid transparent;outline-offset:0}
+.pcB .pup:hover{outline-color:var(--color-brand)}
+.pcB .pup:focus-within{outline:3px solid var(--color-focus);outline-offset:2px}
+.pcB .pup img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:var(--radius-sm);background:var(--color-bone-100)}
+.pcB .txt{display:flex;flex-direction:column;flex:1;padding:var(--space-3) var(--space-1) 0}
+.pcB .top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-1) var(--space-2)}
+.pcB h3{margin:0;font-size:var(--text-xl);line-height:1.2}
+.pcB .price{margin:0;padding:2px var(--space-2);border-radius:var(--radius-sm);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;font-size:var(--text-sm);font-variant-numeric:tabular-nums}
+.pcB .meta{margin:var(--space-1) 0 0;font-size:var(--text-sm);line-height:1.4;color:var(--color-ink-2)}
+.pcB .st{margin:2px 0 0;font-size:var(--text-sm);font-weight:600;color:var(--color-ok)}
+.pcB .ask{margin-top:auto;display:flex;align-items:center;gap:var(--space-1);min-height:44px;padding-top:var(--space-2);border-top:1px solid var(--color-border);font-weight:700;font-size:var(--text-sm);color:var(--color-link);text-decoration:none}
+.pcB .ask svg{width:1em;height:1em;flex:none;transition:transform var(--dur-fast) var(--ease-out)}
+.pcB .ask::after{content:"";position:absolute;inset:0;border-radius:var(--radius-md)}
+.pcB .ask:focus-visible{outline:none}
+.pcB .pup:hover .ask svg{transform:translateX(3px)}
+.pcB .foot{margin:var(--space-4) var(--space-2) 0;font-size:var(--text-sm);color:var(--color-ink-2)}
+@media (max-width:767px){
+  .pcB .top{flex-direction:column;align-items:flex-start}
+  .pcB .ask{font-size:var(--text-xs);gap:0}
+  .pcB .ask svg{display:none}
+}
+@media (min-width:768px){
+  .pcB .tray{padding:var(--space-7) var(--space-6) var(--space-5)}
+  .pcB .head{padding:0;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-6);align-items:center}
+  .pcB .sheet{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4)}
+  .pcB .foot{margin:var(--space-5) 0 0}
+}
+@media (min-width:1024px){
+  .pcB{padding:var(--space-10) var(--space-5)}
+  .pcB h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .pcB .sheet{gap:var(--space-5)}
+  .pcB .pup img{aspect-ratio:1/1}
+}
+.pcB .nb{white-space:nowrap}
+</style>
+<section data-component="puppy-cards" data-variant="b" class="pcB" id="puppies">
+  <div class="tray">
+    <div class="head">
+      <figure class="fam"><img src="/images/maggie-blue-staffy-dam-with-pups.webp" alt="A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups." width="780" height="585" loading="lazy"><figcaption>Maggie, the dam, with her puppies in Carlisle</figcaption></figure>
+      <div class="copy">
+        <h2>Which Puppy Will You Ask About First?</h2>
+        <p class="lede">Maggie and Jones's six are laid out here like family prints, three boys at £1,500 and three girls at £1,700, so you can pick a favourite from London before you ask.</p>
+      </div>
+    </div>
+    <div class="sheet">
+      <article class="pup" data-puppy>
+        <img src="/puppies/Roman2.jpg" alt="Roman, a blue and white Staffy boy with blue eyes, lying on a lawn" width="1080" height="1081" loading="lazy" style="object-position:22% 5%">
+        <div class="txt">
+          <div class="top"><h3 data-heading-exempt="puppy-name">Roman</h3><p class="price">£1,500</p></div>
+          <p class="meta">Boy · Blue and white</p>
+          <p class="st">Available</p>
+          <p class="deliv">UK home delivery <span class="nb">£200–£350</span> by distance · or collect in Carlisle</p>
+          <a class="ask" href="#contact">Ask About Roman <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </article>
+      <article class="pup" data-puppy>
+        <img src="/puppies/Byrd1.jpg" alt="Byrd, a white Staffy boy, standing on decking" width="1080" height="1080" loading="lazy" style="object-position:50% 35%">
+        <div class="txt">
+          <div class="top"><h3 data-heading-exempt="puppy-name">Byrd</h3><p class="price">£1,500</p></div>
+          <p class="meta">Boy · White</p>
+          <p class="st">Available</p>
+          <p class="deliv">UK home delivery <span class="nb">£200–£350</span> by distance · or collect in Carlisle</p>
+          <a class="ask" href="#contact">Ask About Byrd <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </article>
+      <article class="pup" data-puppy>
+        <img src="/puppies/Ince1.jpg" alt="Ince, a solid blue Staffy boy, standing on a patio" width="1080" height="1079" loading="lazy" style="object-position:62% 35%">
+        <div class="txt">
+          <div class="top"><h3 data-heading-exempt="puppy-name">Ince</h3><p class="price">£1,500</p></div>
+          <p class="meta">Boy · Blue</p>
+          <p class="st">Available</p>
+          <p class="deliv">UK home delivery <span class="nb">£200–£350</span> by distance · or collect in Carlisle</p>
+          <a class="ask" href="#contact">Ask About Ince <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </article>
+      <article class="pup" data-puppy>
+        <img src="/puppies/Vennie.jpeg" alt="Vennie, a white Staffy girl with blue patches, curled on a sheepskin rug" width="1080" height="1080" loading="lazy" style="object-position:38% 62%">
+        <div class="txt">
+          <div class="top"><h3 data-heading-exempt="puppy-name">Vennie</h3><p class="price">£1,700</p></div>
+          <p class="meta">Girl · Blue and white</p>
+          <p class="st">Available</p>
+          <p class="deliv">UK home delivery <span class="nb">£200–£350</span> by distance · or collect in Carlisle</p>
+          <a class="ask" href="#contact">Ask About Vennie <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </article>
+      <article class="pup" data-puppy>
+        <img src="/puppies/Christa.jpeg" alt="Christa, a blue Staffy girl with a white chest, sitting on a sheepskin rug" width="1080" height="1080" loading="lazy" style="object-position:50% 30%">
+        <div class="txt">
+          <div class="top"><h3 data-heading-exempt="puppy-name">Christa</h3><p class="price">£1,700</p></div>
+          <p class="meta">Girl · Blue</p>
+          <p class="st">Available</p>
+          <p class="deliv">UK home delivery <span class="nb">£200–£350</span> by distance · or collect in Carlisle</p>
+          <a class="ask" href="#contact">Ask About Christa <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </article>
+      <article class="pup" data-puppy>
+        <img src="/puppies/Cheryl1.jpeg" alt="Cheryl, a blue Staffy girl with a white blaze, lying on a wooden floor" width="1080" height="1350" loading="lazy" style="object-position:52% 42%">
+        <div class="txt">
+          <div class="top"><h3 data-heading-exempt="puppy-name">Cheryl</h3><p class="price">£1,700</p></div>
+          <p class="meta">Girl · Blue with white blaze</p>
+          <p class="st">Available</p>
+          <p class="deliv">UK home delivery <span class="nb">£200–£350</span> by distance · or collect in Carlisle</p>
+          <a class="ask" href="#contact">Ask About Cheryl <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </article>
+    </div>
+    <p class="foot">£500 books your viewing and reserves your puppy, and it comes off the price.</p>
+  </div>
+</section>

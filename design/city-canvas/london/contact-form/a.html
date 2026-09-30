@@ -1,0 +1,68 @@
+<style>
+/* Contact A — Letter to Carlisle. The enquiry is written as a short letter on ruled
+   stationery: "Dear Lisa, my name is ___", one blank to a line, each blank a real field with
+   its own small label printed beneath it, the puppy a select inside the sentence, then an
+   open message and a signed-off submit. Framed by rules only (a 4px steel rule over the
+   section, the letter's hairline writing lines), airy, no card, no photo. On a phone every
+   blank drops to its own full-width line. */
+.cfA{background:var(--color-surface)}
+.cfA .in{max-width:880px;margin:0 auto;padding:var(--space-8) var(--space-4)}
+.cfA .top{border-top:4px solid var(--color-brand);padding-top:var(--space-5)}
+.cfA h2{margin:0;font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:22ch}
+.cfA .lede{margin:var(--space-3) 0 var(--space-7);max-width:56ch;color:var(--color-ink-2)}
+.cfA form{margin:0}
+.cfA .line{margin:0;padding:var(--space-3) 0 var(--space-4);border-bottom:1px solid var(--color-border);font-size:var(--text-lg);line-height:var(--text-lg--line-height);color:var(--color-text)}
+.cfA .greet{padding-top:0;font-weight:600}
+.cfA .blank{display:flex;flex-direction:column;vertical-align:top;margin:var(--space-2) 0 0}
+.cfA .blank label{order:2;font-family:var(--font-body);font-size:var(--text-xs);line-height:1.4;color:var(--color-text-muted)}
+.cfA .blank label b{font-weight:600;color:var(--color-text)}
+.cfA input,.cfA select,.cfA textarea{width:100%;min-height:48px;padding:8px 12px;font:inherit;font-family:var(--font-body);font-size:var(--text-base);line-height:1.4;color:var(--color-text);background:var(--color-surface-raised);border:0;border-bottom:2px solid var(--color-brand);border-radius:var(--radius-sm) var(--radius-sm) 0 0}
+.cfA textarea{display:block;min-height:140px;resize:vertical}
+.cfA input:focus-visible,.cfA select:focus-visible,.cfA textarea:focus-visible,.cfA button:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.cfA :user-invalid{border-bottom-color:var(--color-warn)}
+.cfA .err{display:none;font-family:var(--font-body);font-size:var(--text-xs);line-height:1.4;color:var(--color-warn)}
+.cfA .blank:has(:user-invalid) .err{display:block;order:3}
+.cfA .msg{display:grid;gap:var(--space-2);padding:var(--space-4) 0;border-bottom:1px solid var(--color-border)}
+.cfA .msg label{font-size:var(--text-sm);font-weight:600}
+.cfA .sign{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-4);padding-top:var(--space-5)}
+.cfA button{min-height:48px;padding:10px 24px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out)}
+.cfA button:hover{background:var(--color-cta-hover)}
+.cfA .after{margin:0;max-width:44ch;font-size:var(--text-sm);color:var(--color-text-muted)}
+@media (min-width:768px){
+  .cfA .in{padding:var(--space-10) var(--space-6)}
+  .cfA .line{display:flex;align-items:baseline;gap:var(--space-3)}
+  .cfA .greet{display:block}
+  .cfA .blank{display:inline-flex;margin:0;flex:0 1 auto}
+  .cfA .blank.w1{width:15em}.cfA .blank.w2{width:13em}.cfA .blank.w3{width:16em}
+  .cfA .blank input,.cfA .blank select{font-size:var(--text-base)}
+}
+</style>
+<section data-component="contact-form" data-variant="a" class="cfA">
+  <div class="in">
+    <div class="top">
+      <h2>What Would You Like to Ask Us From London?</h2>
+      <p class="lede">Write to us the way you would write a letter. Tell us who you are, which puppy caught your eye and what you want to know, and we reply by email within 24 to 48 business hours.</p>
+    </div>
+    <form data-contact-form method="post" aria-label="A letter to BlueStaffyUK">
+      <p class="line greet">Dear Lisa,</p>
+      <p class="line">My name is
+        <span class="blank w1"><input id="cfA-name" name="name" type="text" autocomplete="name" required><label for="cfA-name"><b>Your name</b> (required)</label><span class="err">Please tell us your name.</span></span></p>
+      <p class="line">My part of London is
+        <span class="blank w2"><input id="cfA-location" name="location" type="text" autocomplete="address-level2"><label for="cfA-location"><b>Town or postcode</b> (optional)</label></span></p>
+      <p class="line">I would like to ask about
+        <span class="blank w3"><select id="cfA-puppy" name="puppy" required><option value="" disabled selected>Choose a puppy…</option><option value="roman">Roman · Boy · £1,500</option><option value="byrd">Byrd · Boy · £1,500</option><option value="ince">Ince · Boy · £1,500</option><option value="vennie">Vennie · Girl · £1,700</option><option value="christa">Christa · Girl · £1,700</option><option value="cheryl">Cheryl · Girl · £1,700</option><option value="waiting-list">The next litter, please</option></select><label for="cfA-puppy"><b>Which puppy?</b> (required)</label><span class="err">Please choose a puppy, or the next litter.</span></span></p>
+      <p class="line">Please write back to
+        <span class="blank w3"><input id="cfA-email" name="email" type="email" autocomplete="email" required><label for="cfA-email"><b>Email</b> (required)</label><span class="err">That email address looks incomplete.</span></span></p>
+      <p class="line">If it is easier, call me on
+        <span class="blank w2"><input id="cfA-phone" name="phone" type="tel" autocomplete="tel"><label for="cfA-phone"><b>Phone</b> (optional)</label></span></p>
+      <div class="msg">
+        <label for="cfA-message">What I would like to know (required)</label>
+        <textarea id="cfA-message" name="message" rows="5" required></textarea>
+      </div>
+      <div class="sign">
+        <button type="submit">Send my letter</button>
+        <p class="after">When it arrives, we reply by email. Your details are used only to answer you.</p>
+      </div>
+    </form>
+  </div>
+</section>

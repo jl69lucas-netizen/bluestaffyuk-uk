@@ -1,0 +1,145 @@
+<style>
+/* FAQ C — Lead answer. Each block opens under a 4px steel rule with its question set large
+   on the left and its answer on the right. The block's first question follows open, as a
+   lead answer set in the display face and a larger body size; the rest fold into a
+   two-column grid of hairline rows with plus marks at 1024+. Airy and editorial, framed by
+   rules only: no band, no card, no photo. */
+.fqC{background:var(--color-surface)}
+.fqC .in{max-width:1160px;margin:0 auto;padding:var(--space-8) var(--space-4)}
+.fqC .blk{border-top:4px solid var(--color-brand);padding-top:var(--space-5)}
+.fqC .blk+.blk{margin-top:var(--space-10)}
+.fqC .head{display:grid;gap:var(--space-3);margin-bottom:var(--space-6)}
+.fqC h2{margin:0;font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:22ch}
+.fqC .head p{margin:0;max-width:58ch;color:var(--color-ink-2)}
+.fqC summary{display:flex;align-items:flex-start;gap:var(--space-3);cursor:pointer;list-style:none;border-radius:var(--radius-sm)}
+.fqC summary::-webkit-details-marker{display:none}
+.fqC summary:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.fqC .n{flex:none;padding-top:.3em;font-size:var(--text-xs);font-weight:700;font-feature-settings:"tnum";color:var(--color-text-muted)}
+.fqC h3{flex:1;margin:0;color:var(--color-brand)}
+.fqC .pm{order:2;flex:none;position:relative;width:14px;height:14px;margin-top:.45em;color:var(--color-brand)}
+.fqC .pm::before,.fqC .pm::after{content:"";position:absolute;left:0;top:6px;width:14px;height:2px;background:currentColor;transition:transform var(--dur-base) var(--ease-out)}
+.fqC .pm::after{transform:rotate(90deg)}
+.fqC details[open] .pm::after{transform:rotate(0deg)}
+.fqC .lead{padding:var(--space-5) 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);margin-bottom:var(--space-2)}
+.fqC .lead summary{min-height:44px}
+.fqC .lead h3{font-size:var(--text-xl);line-height:var(--text-xl--line-height)}
+.fqC .lead>p{margin:var(--space-3) 0 0;padding-left:calc(var(--space-3) + 1.6em);max-width:62ch;font-size:var(--text-lg);line-height:var(--text-lg--line-height);font-weight:400;color:var(--color-text)}
+.fqC .grid{display:grid}
+.fqC .row{border-bottom:1px solid var(--color-border)}
+.fqC .row summary{min-height:52px;padding:var(--space-3) 0;align-items:center}
+.fqC .row .n{padding-top:0}
+.fqC .row .pm{margin-top:0}
+.fqC .row h3{font-size:var(--text-base);line-height:1.4}
+.fqC .row>p{margin:0;padding:0 0 var(--space-4) calc(var(--space-3) + 1.6em);color:var(--color-text)}
+@media (min-width:768px){.fqC .in{padding:var(--space-10) var(--space-6)}}
+@media (min-width:1024px){
+  .fqC .head{grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-8);align-items:end}
+  .fqC h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .fqC .head p{font-size:var(--text-lg);line-height:var(--text-lg--line-height)}
+  .fqC .grid{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--space-8);align-items:start}
+}
+</style>
+<section data-component="faq-blocks" data-variant="c" class="fqC">
+  <div class="in">
+    <div class="blk" data-faq-block="buy">
+      <div class="head">
+        <h2>What Do London Buyers Ask Before Reserving a Puppy?</h2>
+        <p>The first questions from London are nearly always about money and the journey, so here are our straight answers on the prices, the deposit, delivery and collection.</p>
+      </div>
+        <details class="lead" open>
+          <summary><span class="n" aria-hidden="true">01</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>How Much Does a Blue Staffy Puppy Cost If I Live in London?</h3></summary>
+          <p>The price is the same wherever you live: £1,500 for each of our boys, Roman, Byrd and Ince, and £1,700 for each of our girls, Vennie, Christa and Cheryl.</p>
+        </details>
+      <div class="grid">
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">02</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Which Puppies Can I Ask About Right Now?</h3></summary>
+          <p>All six are available: Roman (blue and white), Byrd (white) and Ince (blue) are the boys, and Vennie (blue and white), Christa (blue) and Cheryl (blue with a white blaze) are the girls.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">03</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>What Does the £500 Deposit Do?</h3></summary>
+          <p>Your £500 deposit books your viewing and reserves your puppy, and it comes off the price, so it is part of what you pay rather than an extra on top.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">04</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Do You Deliver Puppies to London?</h3></summary>
+          <p>Yes. We bring your puppy to your door in London by DEFRA-approved transport, and delivery costs £200–£350, priced by distance.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">05</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Can I Collect My Puppy From Carlisle Instead?</h3></summary>
+          <p>Yes. If you would rather make the trip yourself, you can collect your puppy from us in Carlisle instead of paying for home delivery.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">06</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>How Do I Reserve a Puppy From London?</h3></summary>
+          <p>Send us the enquiry form with the name of the puppy you like, and we reply by email within 24 to 48 business hours to talk through the next steps.</p>
+        </details>
+      </div>
+    </div>
+    <div class="blk" data-faq-block="trust">
+      <div class="head">
+        <h2>How Can You Check Us From London Before You Travel?</h2>
+        <p>You cannot pop round the corner from London, so we put the checks in your hands: the parents, their tests, our vet and what happens if something goes wrong.</p>
+      </div>
+        <details class="lead" open>
+          <summary><span class="n" aria-hidden="true">07</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Who Are the Parents of Your Puppies?</h3></summary>
+          <p>Maggie is our dam and Jones is our sire. Both are our own dogs, both are KC registered, and both were health tested before the litter.</p>
+        </details>
+      <div class="grid">
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">08</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Which Health Tests Do the Parents Have?</h3></summary>
+          <p>Maggie and Jones are both DNA tested clear of L-2-HGA and HC-HSF4, and both have had their eyes and elbows screened. Our health page explains what each test covers.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">09</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Can I Speak to Your Vet Before I Decide?</h3></summary>
+          <p>Yes. Buyers are welcome to contact our vet, so you can hear about the parents and the litter from someone other than us before you commit.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">10</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Is There a Health Guarantee With Every Puppy?</h3></summary>
+          <p>Yes. Every puppy we place comes with a two-year genetic health guarantee, and the cover is the same for a home in London as for one anywhere else.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">11</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>What Happens If I Can No Longer Keep My Puppy?</h3></summary>
+          <p>We take the puppy back, and we do the same if a fault is ours. Tell us as soon as you know, and we will talk it through with you.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">12</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>How Are Your Puppies Raised Before They Leave?</h3></summary>
+          <p>In our home, not in a kennel. Every litter is raised on Puppy Culture with Early Neurological Stimulation (ENS), and grows up among everyday household sights and sounds.</p>
+        </details>
+      </div>
+    </div>
+    <div class="blk" data-faq-block="life">
+      <div class="head">
+        <h2>Will a Staffy Suit Your London Home?</h2>
+        <p>London life means flats, busy parks and long days at work, so these answers cover space, exercise, children, time alone, training and how long a Staffy shares your home.</p>
+      </div>
+        <details class="lead" open>
+          <summary><span class="n" aria-hidden="true">13</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Can a Staffy Live Happily in a London Flat?</h3></summary>
+          <p>Yes, as long as the dog gets its daily exercise and something to think about. A Staffy is a medium-sized, people-focused dog, so a big garden matters less than regular walks.</p>
+        </details>
+      <div class="grid">
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">14</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>How Much Exercise Does a Staffy Need Each Day?</h3></summary>
+          <p>At least an hour of vigorous exercise a day, ideally split into two sessions, plus play or training that works the mind as well as the legs.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">15</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Are Staffies Good With Children?</h3></summary>
+          <p>A well-socialised Staffordshire Bull Terrier is a patient family companion, which is where the old nickname, the nanny dog, comes from. Supervision still matters with any dog.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">16</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Can a Staffy Be Left Alone While I Am at Work?</h3></summary>
+          <p>Not for long stretches. Staffies are people-focused dogs that want company, so a puppy needs to be built up to short spells alone, a little at a time.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">17</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Are Staffies Easy to Train?</h3></summary>
+          <p>They learn quickly and they are strong-willed with it, so short, consistent sessions with rewards work far better than long ones or a raised voice.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">18</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Is a Staffy a Good First Dog?</h3></summary>
+          <p>Yes, for a household ready to socialise the puppy early and train it consistently. Staffies are eager to please, but they need company, so the commitment matters most.</p>
+        </details>
+        <details class="row">
+          <summary><span class="n" aria-hidden="true">19</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>How Long Does a Staffordshire Bull Terrier Live?</h3></summary>
+          <p>Twelve to fourteen years is the figure the Staffordshire Bull Terrier Club gives for a healthy, well-cared-for dog. Diet, exercise and regular vet checks decide where in that range a dog lands.</p>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>

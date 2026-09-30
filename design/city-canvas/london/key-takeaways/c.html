@@ -1,0 +1,42 @@
+<style>
+/* Key takeaways C — Numbered decisions. A sunk steel-100 panel pressed into the bone page
+   (no shadow, no raised surface). Three decisions, each a large display numeral, a bold
+   lead and one sentence, beside a tall photo of Cheryl that fills the panel's right side.
+   Compact: three things, not six. Photo first in source, so a phone sees her first. */
+.ktC{background:var(--color-surface);padding:var(--space-6) var(--space-3)}
+.ktC .panel{max-width:1100px;margin:0 auto;background:var(--color-brand-soft);border-radius:var(--radius-lg);display:grid;overflow:hidden}
+.ktC .pic{margin:0}
+.ktC .pic img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 40%;background:var(--color-bone-50)}
+.ktC .body{padding:var(--space-5) var(--space-4) var(--space-6)}
+.ktC h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);text-wrap:balance}
+.ktC .lede{margin:0 0 var(--space-4);color:var(--color-text)}
+.ktC ol{list-style:none;margin:0;padding:0;counter-reset:kt}
+.ktC li{margin:0;max-width:none;counter-increment:kt;display:grid;grid-template-columns:48px minmax(0,1fr);gap:var(--space-3);padding:var(--space-4) 0;border-top:1px solid var(--color-steel-300)}
+.ktC li::before{content:counter(kt);font-family:var(--font-display);font-size:var(--text-4xl);line-height:.9;font-weight:600;color:var(--color-brand)}
+.ktC .lead{display:block;font-weight:700;color:var(--color-brand);font-size:var(--text-lg);line-height:1.3;margin-bottom:2px}
+.ktC .txt{color:var(--color-text)}
+@media (min-width:640px) and (max-width:1023px){.ktC .pic img{aspect-ratio:21/9;object-position:50% 38%}}
+@media (min-width:1024px){
+  .ktC{padding:var(--space-10) var(--space-5)}
+  .ktC .panel{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+  .ktC .pic{order:2;position:relative;min-height:100%}
+  .ktC .pic img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;object-position:50% 35%}
+  .ktC .body{padding:var(--space-8) var(--space-8) var(--space-7)}
+  .ktC h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+  .ktC li{grid-template-columns:64px minmax(0,1fr)}
+}
+</style>
+<section data-component="key-takeaways" data-variant="c" class="ktC">
+  <div class="panel">
+    <figure class="pic"><img src="/puppies/Cheryl1.jpeg" alt="Cheryl, a blue Staffy girl with a white blaze, lying on a wooden floor" width="1080" height="1350" loading="lazy"></figure>
+    <div class="body">
+      <h2>Which Three Facts Matter Most to a London Buyer?</h2>
+      <p class="lede">Strip the page back to what decides it and you are left with three: which puppy, how you hold one, and how your puppy reaches your door.</p>
+      <ol>
+        <li data-takeaway><span><span class="lead">Six puppies, two prices.</span><span class="txt">Roman, Byrd and Ince at £1,500; Vennie, Christa and Cheryl at £1,700. All six are available.</span></span></li>
+        <li data-takeaway><span><span class="lead">£500 holds the one you choose.</span><span class="txt">The deposit books your viewing and reserves your puppy, and it comes off the price.</span></span></li>
+        <li data-takeaway><span><span class="lead">Door to door, or collect.</span><span class="txt">DEFRA-approved transport to London for £200 to £350, priced by distance, or collection in Carlisle.</span></span></li>
+      </ol>
+    </div>
+  </div>
+</section>

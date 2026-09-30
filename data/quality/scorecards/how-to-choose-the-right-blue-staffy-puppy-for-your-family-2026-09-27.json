@@ -1,0 +1,119 @@
+{
+  "slug": "how-to-choose-the-right-blue-staffy-puppy-for-your-family",
+  "date": "2026-09-27",
+  "page_type": "blog",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 32
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 163,
+    "layout-tap-target-size": 88,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 0,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 0,
+    "img-srcset-within-2x": 0,
+    "img-alt-present-and-unique": 0,
+    "img-sizes-matches-box": 0,
+    "nav-anchors-resolve": 9,
+    "nav-jump-target-lands": 9,
+    "nav-bottom-chrome-clear": 0,
+    "sem-heading-order": 9,
+    "sem-all-six-levels": 9,
+    "sem-title-case-headings": 9,
+    "sem-section-opening-paragraph": 9,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 258,
+    "css-no-dead-component-rule": 759,
+    "css-component-color-not-overridden": 26,
+    "dup-no-sibling-crossover": 180,
+    "a11y-text-contrast-aa": 157,
+    "a11y-no-duplicate-ids": 30,
+    "a11y-hero-ledge-contrast": 0,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "SEM": 3,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "SEM": 12,
+    "CSS": 441,
+    "DUP": 3
+  },
+  "total": 9,
+  "total_instances": 456,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:2 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 147,
+      "message": "147 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 35w vs /uk-blue-staffy-puppy-buying-guide/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:2 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 147,
+      "message": "147 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 35w vs /uk-blue-staffy-puppy-buying-guide/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:2 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 147,
+      "message": "147 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 35w vs /uk-blue-staffy-puppy-buying-guide/ \"uk embarking on the journey to welcome a blue staffordshire bull terrier puppy into your u\""
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+---
+// src/components/kit/CityChapters.astro — city component 11, image and text (London pick:
+// image-text C, "Two chapters"). A sunk steel-100 tray that reads like two short chapters of one
+// story: each chapter is a brass numeral and a place, an H3 question, its own photograph, then
+// the prose that answers it. A hairline divides the chapters. On a phone each runs numeral,
+// heading, photo, prose in one column; from 768px the photo and the prose sit side by side under
+// the heading; from 1024px heading, photo and prose are three columns.
+//
+// THE PHOTO IS THE H3's NEXT SIBLING (rule 17 and `layout-h3-image-first`): the check walks the
+// heading's following siblings, so the numeral sits BEFORE the heading and nothing wraps the
+// heading — the canvas's `.hd` wrapper would have hidden the photo from it. The photo carries
+// `.bl-img`: a served file renders through BodyImage (its path, its served alt, its baked
+// siblings — working rule 11), a puppy photo through astro:assets with the page's own alt; both
+// are cropped on their faces (src/lib/imageFocus.ts), never by an inline style.
+// Conventions 4 and 6; brass is a fill (the numeral disc) with --color-cta-ink text.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import BodyImage from '../BodyImage.astro';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass, focusRow, servedPhoto } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
+
+export interface Chapter { place: string; question: string; photo: string; photoAlt?: string; text: string }
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  chapters: Chapter[];
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, chapters, fit = 'column', class: cls, ...rest } = Astro.props;
+if (chapters.length < 1 || chapters.length > 2) throw new Error('CityChapters: one or two chapters');
+// The tray is the box less 12px gutters, at most 1100px, less its padding (16px; 32px from tablet):
+// the photo is the tray on a phone, 1fr of 2.3fr beside the prose, 7fr of 21fr (at most 340px) on desktop.
+const SIZES = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
+  tablet: (B) => `calc((min(${B}, 1124px) - 112px) / 2.3)`,
+  desktop: (B) => `min(340px, calc((min(${B}, 1124px) - 152px) * 7 / 21))`,
+});
+---
+<section {...rest} class:list={['city-kit', 'city-chapters', cls]}>
+  <div class="tray">
+    <h2>{heading}</h2>
+    <p class="lede">{lede}</p>
+    {chapters.map((c, i) => {
+      const served = focusRow(c.photo).src === 'images';
+      const asset = served ? servedPhoto(c.photo) : null;
+      if (!served && !c.photoAlt) throw new Error(`CityChapters: ${c.photo} is a puppy photo and needs its photoAlt`);
+      return (
+        <div class="ch">
+          <span class="num"><b aria-hidden="true">{i + 1}</b>{c.place}</span>
+          <h3>{c.question}</h3>
+          {asset
+            ? <BodyImage asset={asset} srcset={asset.srcset} sizes={SIZES} class={`${focusClass(c.photo)} media`} />
+            : <Image src={puppyImage(c.photo)} alt={c.photoAlt!} widths={[400, 700]} sizes={SIZES}
+                class={`bl-img media ${focusClass(c.photo)}`} loading="lazy" decoding="async" />}
+          <p>{c.text}</p>
+        </div>
+      );
+    })}
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-chapters { background: var(--color-surface); padding: var(--space-6) 0; }
+    .tray { max-width: min(1100px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    h2 { margin: 0 0 var(--space-2); }
+    .lede { margin: 0 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); }
+    .ch {
+      display: grid; gap: var(--space-3); padding: var(--space-5) 0; border-top: 1px solid var(--color-steel-300);
+      grid-template-areas: "num" "h3" "img" "text";
+    }
+    .num { grid-area: num; display: block; font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.08em; color: var(--color-ink-2); }
+    .num b {
+      display: inline-grid; place-items: center; width: 28px; height: 28px; margin-right: var(--space-2);
+      border-radius: 50%; background: var(--color-cta); color: var(--color-cta-ink); font-size: var(--text-sm);
+    }
+    h3 { grid-area: h3; margin: 0; }
+    /* The numeral belongs to its heading: the canvas set them a --space-1 apart, inside the
+       chapter's --space-3 rhythm, so the H3 is pulled up by the difference. */
+    .num + h3 { margin-top: calc(var(--space-1) - var(--space-3)); }
+    .ch :global(.media) {
+      grid-area: img; display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover;
+      border-radius: var(--radius-md); background: var(--color-bone-50);
+    }
+    .ch p { grid-area: text; margin: 0; color: var(--color-text); }
+    @container (width >= 640px) {
+      .tray { padding: var(--space-6) var(--space-6); }
+      .ch {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); grid-template-areas: "num num" "h3 h3" "img text";
+        column-gap: var(--space-5); row-gap: var(--space-3); align-items: start;
+      }
+    }
+    @container (width >= 800px) {
+      .ch {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr) minmax(0, 9fr); grid-template-rows: auto 1fr;
+        grid-template-areas: "num img text" "h3 img text"; column-gap: var(--space-6);
+      }
+      .ch :global(.media) { max-width: 340px; }
+    }
+    /* The column beside a city dial (an 800–999px box): the canvas's 5 / 7 / 9 split left the
+       heading 150px, five lines a question, so the heading column takes a little from the prose. */
+    @container (800px <= width < 1000px) {
+      .ch { grid-template-columns: minmax(0, 6fr) minmax(0, 7fr) minmax(0, 8fr); }
+    }
+  }
+</style>

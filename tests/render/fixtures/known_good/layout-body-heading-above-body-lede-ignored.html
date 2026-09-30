@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a long lede does not set the body size</title>
+<!-- The Known Issue 97 review, item 8: text far above the page's base size (a 24px pull-quote or
+     lede, over 1.25x the 17px base) is not body text, even when it carries the most characters.
+     The old measure took it as the body and failed the 20px H3 under 17px prose. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  main { padding: 0 24px; }
+  h2 { font-size: 28px; } h3 { font-size: 20px; }
+  .lede { font-size: 24px; }
+</style>
+</head><body>
+<main>
+  <h2>Our Story</h2>
+  <p class="lede">There was no business plan behind this, only two dogs we loved and a kennel we built around them, one litter at a time, over the years that followed our first Staffy's arrival home in Carlisle.</p>
+  <h3>Why the Staffordshire Bull Terrier</h3>
+  <p>Prose at the body size under the heading.</p>
+</main>
+</body></html>

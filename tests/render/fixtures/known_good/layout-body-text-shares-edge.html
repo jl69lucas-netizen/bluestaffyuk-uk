@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>unboxed and boxed prose on one edge</title>
+<!-- The design-polish pick 3(a): unboxed sections keep their 24px gutter at every width, the
+     box's own padding, so the two start on one edge. A kit card's prose and a list indented under
+     a paragraph are not the column's edge; the edge is each group's leftmost paragraph. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .page-body > section:not(.bl-box) { padding-inline: 24px; }
+  .bl-box { padding: 32px 24px; background: #F4F1EA; }
+  .kit-card { margin-left: 60px; }
+  blockquote p { margin-left: 40px; }
+</style>
+</head><body>
+<main>
+  <div class="page-shell"><div class="page-body">
+    <section class="bl-box"><h2>What We Screen For</h2><p>Boxed prose starts inside the box's padding.</p><div class="kit-card"><p>A kit card sets its own inset.</p></div></section>
+    <section><h2>Our Health Testing</h2><p>Unboxed prose on the same edge.</p><blockquote><p>An indented quote.</p></blockquote><p>A second unboxed paragraph.</p></section>
+  </div></div>
+</main>
+</body></html>

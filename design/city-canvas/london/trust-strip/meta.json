@@ -1,0 +1,51 @@
+{
+ "component": "trust-strip",
+ "variants": {
+  "a": {
+   "name": "Route line",
+   "description": "Claims as stops on a transit-map line from the parents in Carlisle to a London door; vertical on phones, ruled top and bottom.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/trust-strip/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-1.png"
+   ],
+   "differs_from": "The claims are joined in order on one route line under its own question heading; the built strips are flat single or double columns.",
+   "axes": {
+    "layout": "route-line",
+    "media": "none",
+    "density": "regular",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Seal band",
+   "description": "Six promises as brass-ringed seals with two-line labels across a full-width steel band.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-1.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Trust-ComponentDesign.png"
+   ],
+   "differs_from": "A six-across seal grid on a steel band; the built trust strips are one or two columns, plain or carded, never on a band.",
+   "axes": {
+    "layout": "seal-band",
+    "media": "none",
+    "density": "compact",
+    "framing": "band"
+   }
+  },
+  "c": {
+   "name": "Photo ledger",
+   "description": "A card with a photo of Maggie, the dam, and her puppies left; a question heading and a two-column ledger of icon claims right.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/trust-strip/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/trust-strip/mfs-home-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png"
+   ],
+   "differs_from": "The only trust strip with a photo, and its claims form a two-column ledger beside it; the built strips carry no image and no heading.",
+   "axes": {
+    "layout": "photo-ledger",
+    "media": "left",
+    "density": "airy",
+    "framing": "card"
+   }
+  }
+ }
+}

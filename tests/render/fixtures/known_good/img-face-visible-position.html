@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a letterbox positioned on a low face</title>
+<!-- The CROP half must read object-position, not assume a centred crop. Vennie's face sits low
+     in her photo (data/image-focus.json: y 470-820 of 1080). A 340x130 letterbox shows a band
+     413 master pixels tall: centred, it would cut her muzzle off (~79% painted); pinned at
+     50% 66% it shows y 440-853 and her whole face. Silent is correct here. -->
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui; }
+  img { display: block; width: 340px; height: 130px; margin: 24px; object-fit: cover; object-position: 50% 66%; }
+</style>
+</head><body>
+<h1>Vennie</h1>
+<img src="/src/assets/puppies/Vennie.jpeg" width="1080" height="1080" alt="Vennie curled up on a sheepskin rug">
+</body></html>

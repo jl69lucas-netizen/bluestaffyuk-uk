@@ -1,0 +1,23 @@
+{
+ "slug": "blue-staffy-puppies-london",
+ "canvas": "london",
+ "canvas_url": "https://claude.ai/artifact/EHMKbn9kV3qcfJfPrJhhXN",
+ "approved_at": "2026-09-27T20:49:24Z",
+ "picks": {
+  "hero": "london/hero/b",
+  "counter-strip": "london/counter-strip/c",
+  "trust-strip": "london/trust-strip/c",
+  "contents-list": "london/contents-list/c",
+  "desktop-dial": "london/desktop-dial/c",
+  "jump-links": "london/jump-links/a",
+  "key-takeaways": "london/key-takeaways/a",
+  "puppy-cards": "london/puppy-cards/b",
+  "tables": "london/tables/a",
+  "video": "london/video/c",
+  "image-text": "london/image-text/c",
+  "reviews": "london/reviews/a",
+  "faq-blocks": "london/faq-blocks/a",
+  "newsletter": "london/newsletter/a",
+  "contact-form": "london/contact-form/b"
+ }
+}

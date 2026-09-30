@@ -1,0 +1,45 @@
+<style>
+/* Trust C — Photo ledger. A card on the bone page (raised surface, card border, card
+   shadow): a photo of Maggie, the dam, with her puppies on the left, filling its column, and on the right a question heading, its answer, then the claims as a two-column
+   ledger, each a line icon, a bold claim and one plain line of detail. Airy and unhurried. */
+.tsC{background:var(--color-surface);padding:var(--space-6) var(--space-3)}
+.tsC .sheet{max-width:1200px;margin:0 auto;background:var(--color-surface-raised);border:var(--card-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:var(--space-3);display:grid;gap:var(--space-5)}
+.tsC .pic{margin:0}
+.tsC .pic figcaption{margin-top:var(--space-2);font-size:var(--text-xs);color:var(--color-ink-2)}
+.tsC .pic img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:78% 40%;border-radius:var(--radius-md);background:var(--color-surface)}
+.tsC .body{padding:0 var(--space-2) var(--space-3)}
+.tsC h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);text-wrap:balance}
+.tsC .intro{margin:0 0 var(--space-5);color:var(--color-ink-2)}
+.tsC ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-5)}
+.tsC li{margin:0;max-width:none;display:grid;grid-template-columns:40px minmax(0,1fr);gap:var(--space-3);align-items:start}
+.tsC .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:var(--radius-sm);background:var(--color-brand-soft);color:var(--color-brand)}
+.tsC .ic svg{width:20px;height:20px}
+.tsC .t{display:block;font-weight:700;color:var(--color-ink);line-height:1.35}
+.tsC .nb{white-space:nowrap}
+.tsC .d{display:block;font-size:var(--text-sm);color:var(--color-ink-2);margin-top:2px}
+@media (min-width:768px){.tsC ul{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-6) var(--space-6)}}
+@media (min-width:1024px){
+  .tsC{padding:var(--space-10) var(--space-5)}
+  .tsC .sheet{grid-template-columns:390px minmax(0,1fr);align-items:start;gap:var(--space-8);padding:var(--space-4) var(--space-8) var(--space-4) var(--space-4)}
+  .tsC .pic{padding-top:var(--space-4);align-self:stretch;display:flex;flex-direction:column}
+  .tsC .pic img{flex:1;min-height:0;aspect-ratio:auto;height:auto;object-position:80% 50%}
+  .tsC .body{padding:var(--space-4) 0}
+}
+</style>
+<section data-component="trust-strip" data-variant="c" class="tsC">
+  <div class="sheet">
+    <figure class="pic"><img src="/images/maggie-blue-staffy-dam-with-pups.webp" alt="A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups." width="780" height="585" loading="lazy"><figcaption>Maggie, the dam, with her puppies</figcaption></figure>
+    <div class="body">
+      <h2>What Should You Check Before Buying a Blue Staffy in London?</h2>
+      <p class="intro">The health of the parents, how the litter was raised and what happens if something goes wrong. Here is where each of ours stands.</p>
+      <ul>
+        <li data-trust-item><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2c0 5 8 5 8 10s-8 5-8 10M16 2c0 5-8 5-8 10s8 5 8 10M9 6h6M9 18h6"/></svg></span><span><span class="t">DNA-tested parents</span><span class="d">Maggie and Jones, tested for <span class="nb">L-2-HGA</span> and <span class="nb">HC-HSF4</span></span></span></li>
+        <li data-trust-item><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><span><span class="t">Eye and elbow screening</span><span class="d">Eyes for hereditary cataracts and other inherited eye diseases</span></span></li>
+        <li data-trust-item><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg></span><span><span class="t">A two-year genetic health guarantee</span><span class="d">And you may speak to our vet before you decide</span></span></li>
+        <li data-trust-item><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg></span><span><span class="t">Puppy Culture and ENS</span><span class="d">Early neurological stimulation, raised in the home</span></span></li>
+        <li data-trust-item><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><span><span class="t">We take a puppy back</span><span class="d">If the fault is ours, or you can no longer care for it</span></span></li>
+        <li data-trust-item><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h13v10H1zM14 10h4l3 3v3h-7"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg></span><span><span class="t">To your London door</span><span class="d">DEFRA-approved transport, or collect in Carlisle</span></span></li>
+      </ul>
+    </div>
+  </div>
+</section>

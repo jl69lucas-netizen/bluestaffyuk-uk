@@ -1,0 +1,53 @@
+{
+ "component": "faq-blocks",
+ "variants": {
+  "a": {
+   "name": "Steel ledger",
+   "description": "A deep-steel band: Maggie's photo on a sticky rail at the left, the three blocks as one numbered ledger of 19 questions beside it.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/faq-blocks/sister-for-sale-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/faq-blocks/sister-for-sale-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/modern-faq-idea.png"
+   ],
+   "differs_from": "A photo rail beside a numbered ledger on a deep band; the built rows carry no photo and sit plain or in a card.",
+   "axes": {
+    "layout": "photo-rail",
+    "media": "left",
+    "density": "regular",
+    "framing": "band"
+   }
+  },
+  "b": {
+   "name": "Three trays",
+   "description": "The three blocks side by side at 1024+ as three sunk steel-100 trays, each with a 1 of 3 tag, its question and tight chevron rows.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/faq-blocks/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/faq-blocks/sister-near-me-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/faq-idea0.png"
+   ],
+   "differs_from": "Three sunk trays in three columns, no jump list; S1 is one plain column, S2 a heading beside one list, S3 one card with a jump list.",
+   "axes": {
+    "layout": "tri-column",
+    "media": "none",
+    "density": "compact",
+    "framing": "inset"
+   }
+  },
+  "c": {
+   "name": "Lead answer",
+   "description": "Each block under a steel rule: question left, answer right, its first question open as a large lead, the rest folded in two columns.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/faq-blocks/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/faq-blocks/mfs-home-1280-02.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-FAQ-Design-Componet.png"
+   ],
+   "differs_from": "An open lead answer over a two-column grid of folded rows, ruled; the built rows are one list, plain or in a card.",
+   "axes": {
+    "layout": "lead-grid",
+    "media": "none",
+    "density": "airy",
+    "framing": "rule"
+   }
+  }
+ }
+}

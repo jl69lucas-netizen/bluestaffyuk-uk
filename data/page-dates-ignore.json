@@ -1,0 +1,57 @@
+{
+  "_meta": {
+    "description": "Commits that changed a page's SOURCES without changing what any built page says. scripts/generate_page_dates.py skips each commit for the source paths it names when it dates a route, so a refactor never stamps a false dateModified on the pages it did not change (working rule 9). A commit is listed only after the built pages it touched were diffed against the build before it. Never list a commit that changed a page's words, facts or images.",
+    "generated_by": "hand-maintained; read by scripts/generate_page_dates.py",
+    "floor_override": "Optional. route -> {datePublished, reason}. The publication floor is one-way (no run moves a route's datePublished later than any committed map gave it); a date an old map got WRONG is corrected here, with its reason, never by rewriting history.",
+    "fanout_accepted": "Optional. [{sha, reason}]: a commit that moves dateModified on 3 or more routes because every one of those pages really changed. Without an entry here or in `commits`, such a commit stops the date step (the fan-out guard, Task 8b)."
+  },
+  "commits": [
+    {
+      "sha": "65202670bad8309db18d879d73da7b64e8b43f44",
+      "paths": [
+        "src/pages/uk-locations/[slug].astro"
+      ],
+      "reason": "Plan 2 Task 8: the location template skips a city with its own file (London); the other 27 city pages build byte-for-byte as before outside <style>. The same commit created London's own page file, which stays dated by it."
+    },
+    {
+      "sha": "c2705da7cbcb85cbc53c9b005ca5d917a7d6b1b2",
+      "paths": [
+        "src/pages/uk-locations/[slug].astro"
+      ],
+      "reason": "Task 8 quality review M4: the own-file glob also matches <slug>/index.astro; no city has that form, so the 27 template pages build byte-for-byte as before outside <style> (diffed against the 86632ce build)."
+    },
+    {
+      "sha": "142b3d6b56a834397a5cc8eab71bce9cd542577f",
+      "paths": [
+        "src/pages/uk-locations/blue-staffy-puppies-london.astro"
+      ],
+      "reason": "Task 8 quality review M5: header comment corrected and each section question defined once in a const; the built London page is identical apart from its own WebPage date node (diffed against a build of 8f87f1f)."
+    },
+    {
+      "sha": "b32c691d0f3b2bc4a5b154a91a35e0074d369ca0",
+      "paths": [
+        "src/pages/blue-staffy-health-uk/index.astro",
+        "src/pages/blue-staffy-pup-sale-uk/index.astro",
+        "src/pages/blue-staffy-uk-breeders/index.astro",
+        "src/pages/buy-blue-staffy-puppies-uk/index.astro",
+        "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
+        "src/pages/index.astro",
+        "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+        "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+      ],
+      "reason": "Task 10b re-review, item 4: comment-only edits in eight page files (stale notes that said the guarantee is unset). The built pages were diffed against the build before it (95b0013): no page's HTML changed, so no route is re-dated by it."
+    },
+    {
+      "sha": "0fbf289aae6964efb8eaf397703adf5e0b92bc6d",
+      "paths": [
+        "src/pages/[...post].astro"
+      ],
+      "reason": "The design-polish pick 3(a) (2026-09-30): the blog template's scoped <style> only (.post-body takes the container's box; its non-paragraph children keep the 760px measure). The built post was diffed against the build before it (220b0c9): byte-identical outside <style>, so the post is not re-dated by it."
+    }
+  ],
+  "floor_override": {},
+  "fanout_accepted": [
+    {"sha": "de8853fd2822b4249e0b7bc84200c56e68aceea4", "reason": "The user's ruling of 2026-09-29 (\"Correct them now\"): /, /blue-staffy-health-uk/, /blue-staffy-pup-sale-uk/ and /buy-blue-staffy-puppies-uk/ each replace a statement that no guarantee length is stated with the two-year health guarantee (answer board q07). Diffed against the build before it: only those statements (and the home FAQPage answer text) changed on each page, so each page's dateModified moves for a real content change."},
+    {"sha": "516074247bf8af514b170bc8b5960cf5073eca3c", "reason": "The breeder's answer, answer board q01 (2026-09-29): no DNA certificates are held, so every built line that stated a DNA result is reworded to name the test only. Diffed against the build before it: on /blue-staffy-blog-guides/, /uk-blue-staffy-puppy-buying-guide/ and /uk-staffordshire-bull-terrier-guide/ (and on the other rebuilt pages this commit touched) only those result lines, their headings and the FAQPage answer text changed, so each page's dateModified moves for a real content change (Known Issue 98). Not re-dated, and known: /uk-blue-staffy-breeders-contact/ changed too, through the kit TrustStrip's default line (src/components/kit/TrustStrip.astro), and a kit component dates no page; that is the kit-change gap Known Issue 94 records."}
+  ]
+}

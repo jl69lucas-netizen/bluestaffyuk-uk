@@ -1,0 +1,114 @@
+{
+  "askedAt": "2026-09-29T23:45:53Z",
+  "id": "2026-09-29-design-polish-four-picks-for-the-built-pages",
+  "intro": "These four design items were left over from the heading-scale fix (Known Issue 97). Each one is\nshown before and after on the built pages at 375, 768 and 1280px:\nhttps://claude.ai/artifact/62uBFgPUhReLHb2mcDPsZW. Nothing changes until you pick. Claude's\nrecommendation is marked.",
+  "project": "site-content",
+  "questions": [
+    {
+      "context": "Headings are near-black ink today. The design rules and the London components use the brand blue. Recommended: (a). It follows `rules/design.md` rule 1, and the site's components already paint 138 of their 169 headings blue. Trade-off: contrast drops from 15.7:1 to 11.8:1 on white, still more than twice the accessibility minimum.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "Brand blue for section headings and subheadings"
+        },
+        {
+          "id": "b",
+          "label": "Brand blue for section headings only; subheadings stay ink"
+        },
+        {
+          "id": "c",
+          "label": "Keep ink"
+        }
+      ],
+      "question": "What colour should headings be?",
+      "section": 0,
+      "where": "`src/styles/board-styles.css` on all built pages."
+    },
+    {
+      "context": "Boxed section headings are regular weight today, while all other section headings are bold. Recommended: (a). It matches the other section headings and London. Trade-off: on phones three more long boxed headings run to four lines (two with 600).",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "Bold (700), like the others"
+        },
+        {
+          "id": "b",
+          "label": "Semi-bold (600)"
+        },
+        {
+          "id": "c",
+          "label": "Keep regular"
+        }
+      ],
+      "question": "How bold should the headings inside boxes be?",
+      "section": 0,
+      "where": "`src/styles/board-styles.css`."
+    },
+    {
+      "context": "On the dial pages, plain text starts 24px left of boxed text from 1024px up. On the blog post, the body starts 212px right of its title and date at 1280px. Recommended: (a). Every page gets one edge, and the blog post body lines up with its title. Trade-off: photos in plain sections are 48px narrower on desktop.",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "One edge, the box's, with the blog body on the title's edge"
+        },
+        {
+          "id": "b",
+          "label": "Boxes move out 24px to meet the plain text"
+        },
+        {
+          "id": "c",
+          "label": "Keep as is"
+        }
+      ],
+      "question": "Should plain text and boxed text start at the same left edge on desktop?",
+      "section": 1,
+      "where": "`src/styles/board-styles.css` and the blog post template."
+    },
+    {
+      "context": "Today it reads \"Home ›How To Choose…\": there is no space after the arrow on all 49 pages, and the blog crumb is not in the site's title casing. Recommended: (a). It gives one spacing and one casing everywhere. Trade-off: on 10 old city pages the crumb's casing will differ slightly from their old headings until those pages are rebuilt.",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "options": [
+        {
+          "id": "a",
+          "label": "Space after the arrow, and the site's title casing everywhere"
+        },
+        {
+          "id": "b",
+          "label": "Space after the arrow, casing fixed on the blog only"
+        },
+        {
+          "id": "c",
+          "label": "Space after the arrow only"
+        }
+      ],
+      "question": "How should the breadcrumb look?",
+      "section": 1,
+      "where": "`src/components/Breadcrumb.astro` and `src/layouts/BaseLayout.astro`."
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Headings"
+    },
+    {
+      "lead": "",
+      "title": "Layout"
+    }
+  ],
+  "status": "open",
+  "title": "Design polish · four picks for the built pages"
+}

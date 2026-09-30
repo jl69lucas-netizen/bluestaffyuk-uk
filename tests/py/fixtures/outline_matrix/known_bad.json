@@ -1,0 +1,147 @@
+{
+  "slug": "fixture-city",
+  "page_type": "location",
+  "route": "/uk-locations/fixture-city/",
+  "date": "2026-09-29",
+  "research_board": "tests/py/fixtures/research_board/record.json",
+  "h1": "Blue Staffy Puppies for Sale in Fixture City",
+  "word_target": {
+    "min": 900,
+    "max": 1400,
+    "source": "the query file has no median (two of three competitors are listings); the breeder's band on the answer board"
+  },
+  "sections": [
+    {
+      "n": "1",
+      "section": "Hero",
+      "headings": [
+        {
+          "level": 1,
+          "text": "Blue Staffy Puppies for Sale in Fixture City",
+          "children": []
+        }
+      ],
+      "framework": "—",
+      "words": 80,
+      "cat": "A",
+      "why": "—",
+      "keywords": {
+        "primary": [
+          "blue staffy puppies fixture city"
+        ]
+      },
+      "image": "OG hero (the page's own)"
+    },
+    {
+      "n": "2",
+      "section": "Counter strip",
+      "headings": [],
+      "framework": "—",
+      "words": 20,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "—"
+    },
+    {
+      "n": "3",
+      "section": "Delivery",
+      "headings": [
+        {
+          "level": 2,
+          "text": "How Do We Deliver to Fixture City?",
+          "children": [
+            {
+              "level": 4,
+              "text": "What Does Delivery Cost?",
+              "children": [
+                {
+                  "level": 5,
+                  "text": "What to Bring",
+                  "children": [
+                    {
+                      "level": 6,
+                      "text": "A Note on Travel Crates",
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "QAB",
+      "words": 380,
+      "why": "No competitor states a delivery band",
+      "why_source": "universal_gaps[0]",
+      "keywords": {
+        "primary": [
+          "staffy delivery fixture city"
+        ],
+        "secondary": [
+          "blue staffy price"
+        ]
+      },
+      "image": "INF delivery band"
+    },
+    {
+      "n": "4",
+      "section": "Family life",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Are Blue Staffies Good With Children?",
+          "children": [
+            {
+              "level": 4,
+              "text": "Skipped Straight to an H4",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "framework": "QAB",
+      "words": 320,
+      "cat": "B",
+      "why_source": "serp.results[1]",
+      "keywords": {
+        "primary": [
+          "are blue staffies good with children"
+        ]
+      },
+      "image": "OG family photo"
+    },
+    {
+      "n": "5",
+      "section": "FAQ",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Questions From Fixture City Buyers",
+          "children": []
+        }
+      ],
+      "faq": true,
+      "framework": "QAB",
+      "words": 300,
+      "cat": "A",
+      "why": "—",
+      "keywords": {
+        "primary": [
+          "blue staffy puppies fixture city"
+        ]
+      },
+      "image": "—"
+    }
+  ],
+  "schema": "FAQPage + LocalBusiness + BreadcrumbList",
+  "components": "Chosen at STOP 3 (the page board), after this outline is approved.",
+  "approval": null,
+  "_known_bad": [
+    "section 3 has no Cat",
+    "section 4 has no Why",
+    "section 3 and 4 skip from H2 to H4",
+    "the census has no H3 at all"
+  ]
+}

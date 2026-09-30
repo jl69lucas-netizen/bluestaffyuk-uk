@@ -1,0 +1,369 @@
+/* src/styles/board-styles.css — the CSS half of src/lib/boardStyles.ts.
+   Imported by global.css, so it is on every page.
+
+   WHY IT IS NOT A SCOPED BLOCK IN THE PREVIEW ROUTE. `boxClass()` is called twice: once by
+   src/pages/board-preview/[slug].astro, so the breeder can compare S1/S2/S3, and once by a
+   page rebuilt from the approved record (the page procedure's P5). If these rules lived in
+   the preview route's scoped <style>, the approved arrangement would exist only on the
+   board and the real page would have to reimplement it — which is the one thing a
+   reproducible pick has to rule out. One class list, one stylesheet, both callers.
+
+   NO HEX: every value is a token from tokens.css, which stays the only file in src/ that
+   spells a colour. Everything is in @layer components, so a caller's utility still wins.
+
+   THE SEVEN AXES. `bl-frame-*` is the bed, `bl-cols-*` the desktop column count,
+   `bl-media-*` where the image sits, `bl-list-*` how repeated parts lay out, `bl-aside-*`
+   the block beside the body, `bl-head-*` where the H2 sits. (`mode` is the seventh and is
+   a PROP, not a class: it goes straight to the kit component that takes one.)
+
+   NO `column-count` ANYWHERE. Multi-column text flowed over `.bl-body` would also flow the
+   root of whatever kit component that body contains — a PuppyCard grid or an accordion cut
+   in half down the middle. Two columns are a grid on `.bl-prose`, which is the preview's
+   own wrapper and never a component root. */
+@layer components {
+  .bl-box {
+    display: grid;
+    gap: var(--space-5);
+    align-items: start;
+    min-width: 0;
+    padding: var(--space-6) var(--space-5);
+    border-radius: var(--card-radius);
+  }
+  .bl-box > * { min-width: 0; }
+
+  /* --- the bed ---------------------------------------------------------------------- */
+  .bl-frame-plain { background: var(--color-surface); color: var(--color-text); }
+  .bl-frame-card {
+    background: var(--color-surface-raised);
+    border: var(--card-border);
+    box-shadow: var(--shadow-card);
+  }
+  .bl-frame-band { background: var(--color-surface-inverse); color: var(--color-text-on-inverse); }
+  /* UNDERLINED, not just recoloured. `--color-link-on-inverse` against the band's own text
+     colour is under the 3:1 Lighthouse asks of a link told apart by colour alone
+     (`link-in-text-block`, measured on /thank-you-blue-staffy-puppies-journey/ 2026-09-20,
+     accessibility 96), and rules/links.md wants body links underlined regardless. The bone
+     surfaces already underline through global.css; the band did not. */
+  .bl-frame-band a { color: var(--color-link-on-inverse); text-decoration: underline; text-underline-offset: 2px; }
+
+  /* A box's own H2 is on option (a)'s H2 scale below, so boxed and unboxed H2s share one scale
+     (found with Known Issue 97: at --text-2xl, 30px on the inherited 1.65 line-height, the
+     health page's first boxed H2 was four lines and 198px tall at 375). The tiers are the city
+     kit's edges. Held by tests/render/checks/layout.ts::layout-boxed-h2-fits. */
+  .bl-box h2 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    line-height: 1.18;
+    text-wrap: balance;
+    margin: 0 0 var(--space-2);
+  }
+  @media (width >= 640px) { .bl-box h2 { font-size: 25px; } }
+  @media (width >= 800px) { .bl-box h2 { font-size: 28px; } }
+  /* ...and at the unboxed H2's weight, 700 (the design-polish pick 2(a), the user in chat
+     2026-09-30; preview docs/artifacts/bsuk-design-polish-preview.html, item 2): a box's own H2
+     painted at the body's 400 (the preflight's `font-weight: inherit`) beside the unboxed H2's
+     700. A sibling rule, not a line in `.bl-box h2`, because that selector also reaches the kit
+     contact form's "Enquire About a Puppy" inside a box; kit and city-kit headings keep their
+     own weight. Held by tests/render/checks/layout.ts::layout-boxed-h2-fits. */
+  .bl-box h2:not(:where([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-weight: 700; }
+
+  /* THE BODY HEADING SCALE (Known Issue 97; the user's pick, option (a), the city scale,
+     2026-09-29; preview docs/artifacts/bsuk-heading-scale-preview.html). Every H2/H3 outside a
+     `.bl-box` head painted at the 17px body size, because the rule above was the only heading
+     size a body section had. The tiers are the city kit's own edges (src/styles/city.css:
+     phone < 640px, tablet 640-799px, desktop >= 800px); the phone H3 is 18px, not the city's
+     17, because body text here is 17px. Everything is inside `:where()`, so it is (0,0,1):
+     `.bl-stub h3`, `.bl-box h2` and every kit rule still win (and the first two are set to the
+     same tiers). The edges use range syntax, as city.css does; the preview's block was
+     `min-width`, with the same edges. Held by
+     tests/render/checks/layout.ts::layout-body-heading-above-body. */
+  /* Body headings in <main>. Not a .bl-box's own H2 (its rule above puts it on the same H2 tiers), not a kit or city-kit component. */
+  main :where(h2:not(.bl-box h2, [class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.18; text-wrap: balance; }
+  main :where(h3:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-weight: 600; line-height: 1.25; text-wrap: balance; }
+  main :where(h4:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-weight: 700; line-height: 1.3; text-wrap: balance; margin-block: var(--space-5) var(--space-1); }
+  /* phone, below 640px */
+  main :where(h2:not(.bl-box h2, [class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 22px; margin-block: var(--space-6) var(--space-2); }
+  main :where(h3:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+  main :where(h4:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 17px; }
+  @media (width >= 640px) { /* tablet */
+    main :where(h2:not(.bl-box h2, [class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 25px; margin-block: var(--space-7) var(--space-3); }
+    main :where(h3:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 18px; margin-block: var(--space-5) var(--space-2); }
+    main :where(h4:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 17px; }
+  }
+  @media (width >= 800px) { /* desktop */
+    main :where(h2:not(.bl-box h2, [class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 28px; margin-block: var(--space-8) var(--space-3); }
+    main :where(h3:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 20px; margin-block: var(--space-6) var(--space-2); }
+    main :where(h4:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 18px; }
+  }
+  main :where(h2:not(.bl-box h2, [class^="kit-"] *, [class*=" kit-"] *, .city-kit *), h3:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *), h4:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)):where(:first-child) { margin-block-start: 0; }
+  /* THE BODY HEADING COLOUR (the design-polish pick 1(a), the user in chat 2026-09-30; preview
+     docs/artifacts/bsuk-design-polish-preview.html, item 1). rules/design.md rule 1 gives
+     "headings" --color-brand, and the kit and city kit already paint theirs in it, while every
+     body H2/H3 inherited --color-ink from <body>. H4 follows (the preview's offer, taken because
+     rule 1 names headings without a level). A heading in a band or inverse box keeps the band's
+     bone (brand on steel is 1.00:1); kit and city-kit headings keep their own. Brand measures
+     11.76:1 on white and 10.43:1 on bone (data/design/contrast.json). (0,0,1), so any class
+     still wins. Held by tests/render/checks/layout.ts::layout-body-heading-brand. */
+  main :where(h2, h3, h4):not(:where([class^="kit-"] *, [class*=" kit-"] *, .city-kit *, .bl-frame-band *, .on-inverse *, [data-surface="inverse"] *)) { color: var(--color-brand); }
+  /* A heading inside a list item titles a card (the puppy cards on /available-puppies/, the post
+     card on /blog/), so it takes the H3 tier whatever its level: at the H2 tier a puppy's name was
+     22-28px bold in a 243px card (the Known Issue 97 review, item 10). Same (0,0,1) weight as the
+     rules above, later in the file, so it wins over them and loses to any class. */
+  main :where(li :is(h2, h3):not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 18px; font-weight: 600; line-height: 1.25; }
+  @media (width >= 800px) { main :where(li :is(h2, h3):not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 20px; } }
+
+  /* THE SIDE GUTTER OF WHAT IS NOT A BOX (found with Known Issue 97, 2026-09-29). PageShell adds
+     no gutter until the dial's column exists (>= 1024px), because every kit section and every
+     `.bl-box` owns its own. The migrated sections that are not a box (`.page-body > section`
+     with no class) owned none, so below 1024px their headings and paragraphs ran from x = 0 to
+     the edge on ten of the twelve built pages. A contents list mounted by a page rather than
+     by the shell (the blog-post template's `.page-toc`) misses the shell's scoped gutter the
+     same way. They take a box's own 24px, at every width (see the note below the rule). A kit or city-kit section root owns its own gutter (a city
+     section's lives on its inner tray) and is left alone, and so is a wrapper whose child is a kit
+     section band (the blog-post template's `<section slot="hero">` around the kit hero, or a CTA
+     band): the band spans its column, and padding the wrapper inset it with a white strip each
+     side (the Known Issue 97 review). Only a kit SECTION child counts: the health page's unboxed
+     sections hold kit cards as direct children and still need the gutter for their prose. Held
+     by tests/render/checks/layout.ts::layout-text-has-side-gutter and ::layout-kit-band-full-bleed. */
+  .page-body > :where(section:not(.bl-box, .city-kit, [class^="kit-"], [class*=" kit-"], :has(> section[class^="kit-"], > section[class*=" kit-"]))) { padding-inline: var(--space-5); }
+  /* A page-mounted contents list takes the container's box, as PageShell's scoped rule gives the
+     shell's own: on the blog post its chips started at x = 24 under a "Last updated" line at the
+     container's x = 64 (1280). Same box at every width, so the 24px gutter holds at 375
+     (the Known Issue 97 re-review, B2; layout-toc-aligns-with-container). (0,3,0), so it
+     outranks PageNav's own `.kit-nav { max-width: 640px }`, as the shell's scoped rule does. */
+  .page-body > .kit-nav.page-toc { max-width: var(--container); margin-inline: auto; padding-inline: var(--space-5); }
+  /* No release at 1024px and up (the design-polish pick 3(a), the user in chat 2026-09-30;
+     preview docs/artifacts/bsuk-design-polish-preview.html, item 3). A rule here set the unboxed
+     sections' padding to 0 where the dial grid already pads the column, while a .bl-box kept its
+     24px, so unboxed text started 24px left of boxed text (292 against 316 at 1280). The gutter
+     above now holds at every width, one edge, the box's. Held by
+     tests/render/checks/layout.ts::layout-body-text-shares-edge. */
+  .bl-lede { margin: 0; font-size: var(--text-lg); max-width: 60ch; }
+  .bl-eyebrow {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .bl-frame-band .bl-eyebrow, .bl-frame-band .bl-lede { color: inherit; }
+
+  /* --- the grid --------------------------------------------------------------------- */
+  /* One column below 900px, always: two columns on a phone is one column with a scrollbar.
+     The desktop rules are written as three MUTUALLY EXCLUSIVE selectors rather than as
+     overrides of each other, so `bl-head-inline` never has to out-specify `bl-aside-none`;
+     exactly one of them matches any box. */
+  @media (min-width: 900px) {
+    /* Heading BESIDE the body: the head takes the narrow column and the body the wide one,
+       whatever the aside is doing. */
+    .bl-cols-2.bl-head-inline {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+    .bl-cols-2.bl-head-inline > .bl-head { grid-column: 1; grid-row: 1; }
+    .bl-cols-2.bl-head-inline > .bl-body { grid-column: 2; grid-row: 1 / span 2; }
+    .bl-cols-2.bl-head-inline > .bl-aside { grid-column: 1; grid-row: 2; }
+
+    /* Heading ABOVE, with something beside the body. */
+    .bl-cols-2:not(.bl-head-inline):not(.bl-aside-none) {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
+    .bl-cols-2:not(.bl-head-inline):not(.bl-aside-none) > .bl-head { grid-column: 1 / -1; }
+    .bl-cols-2:not(.bl-head-inline):not(.bl-aside-none) > .bl-body { grid-column: 1; }
+    .bl-cols-2:not(.bl-head-inline):not(.bl-aside-none) > .bl-aside { grid-column: 2; }
+
+    /* Heading ABOVE and nothing beside it: the two columns are the PROSE's, not the box's. */
+    .bl-cols-2:not(.bl-head-inline).bl-aside-none > .bl-body > .bl-prose {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-6);
+    }
+  }
+
+  /* --- the body --------------------------------------------------------------------- */
+  .bl-body { min-width: 0; }
+  .bl-prose { display: grid; gap: var(--space-4); align-content: start; }
+  /* On option (a)'s H3 tier, like every other body H3 (the Known Issue 97 review, item 2): at
+     --text-xl (24px) a box's H3s painted larger than the box's own 22px H2 on a phone. Held by
+     tests/render/checks/layout.ts::layout-heading-size-order. */
+  .bl-stub h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0 0 var(--space-1);
+  }
+  @media (width >= 800px) { .bl-stub h3 { font-size: 20px; } }
+  .bl-stub p { margin: 0; max-width: 68ch; }
+
+  /* --- media ------------------------------------------------------------------------ */
+  .bl-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+  }
+  /* The prose image spans the prose grid and is placed by `bl-media-*`. `order` rather than
+     `float`: a float inside a grid item does nothing predictable, and the two-column prose
+     above is a grid. */
+  .bl-prose > .bl-img { grid-column: 1 / -1; }
+  .bl-media-top .bl-prose > .bl-img { order: -1; }
+  @media (min-width: 900px) {
+    .bl-media-right .bl-prose > .bl-img,
+    .bl-media-left .bl-prose > .bl-img { max-width: 420px; grid-column: auto; }
+    .bl-media-left .bl-prose > .bl-img { order: -1; justify-self: start; }
+    .bl-media-right .bl-prose > .bl-img { order: 99; justify-self: end; }
+    /* The uniform box never takes the 420px side cap: its size is the whole point. At full
+       width it sits directly under its heading (rule 17, image-first), never after the prose
+       as the natural right-hand image does. */
+    .bl-media-left .bl-prose > .bl-img.sec-img,
+    .bl-media-right .bl-prose > .bl-img.sec-img { max-width: 760px; grid-column: 1 / -1; justify-self: center; order: -1; }
+  }
+
+  /* THE UNIFORM BOX (rules/images.md `uniform-inbody-image-sizing`; answer-board ruling (a),
+     2026-09-26). A project 5 page paints every in-body image — photo or infographic — in ONE
+     rectangle: 760px wide, 1408:768 (16:9), cropped by `object-fit: cover` rather than
+     squashed, the same at every width. BodyImage's `focal` prop moves the crop, never the box.
+     A fixed ratio reserves its height before the file arrives, so it cannot shift the page.
+     The twelve pages built before project 5 keep the natural `.bl-img` until they are touched.
+     The background is bone (`--color-surface`), per the user's note on the ruling: "No grey or
+     black bleed on phones" — any letterbox, crop edge or still-loading area shows a
+     design-system colour, never grey, black or the page behind it.
+     tests/py/test_uniform_image_box.py. */
+  .bl-img.sec-img {
+    width: 100%;
+    max-width: 760px;
+    aspect-ratio: 1408 / 768;
+    height: auto;
+    object-fit: cover;
+    margin-inline: auto;
+    background-color: var(--color-surface);
+  }
+  /* A portrait (`box="tall"`) keeps the box on desktop and turns 4:5 on a phone or a tablet
+     held upright, full width of the column (never 100vw: that overflows by the scrollbar), so
+     a standing dog is not cropped to its shoulders. A landscape phone keeps the 16:9 box.
+     899.98px pairs with the min-width: 900px rules above without a 1px overlap. The `sizes`
+     for this box is TALL_SIZES (src/lib/assets.ts). */
+  @media (max-width: 899.98px) and (orientation: portrait) {
+    .bl-img.sec-img.og-tall { aspect-ratio: 4 / 5; max-width: 100%; }
+  }
+
+  /* THE HERO'S OWN PHOTO. The kit Hero is a two-column grid whose photo is first in source
+     order and second on screen (its rule 10 DOM order). `bl-media-*` moves it without the
+     component learning about boards: left swaps the two orders, top collapses the grid to
+     one column and puts the photo first.
+
+     THE `.bl-box` PREFIX IS LOAD-BEARING on any rule that targets a component ROOT. Astro
+     scopes a component's own styles with an ATTRIBUTE selector — `.kit-hero[data-astro-cid-…]`
+     is (0,2,0), not the (0,1,0) a `:where()` would leave — so a bare `.bl-frame-band
+     .kit-hero` ties with it and loses on source order. A rule that reaches INTO the
+     component (`.bl-media-left .kit-hero .pic`) is already (0,3,0) and needs no prefix. */
+  .bl-media-left .kit-hero .pic { order: 1; }
+  .bl-media-left .kit-hero .copy { order: 2; }
+  /* `media: top` stacks the two, so the hero's rule-10 ceiling has to come off with it:
+     450px is the height of a SPLIT hero, and applied to a stacked one it would simply cut
+     the copy off below the photo — a style that renders as a clipped one.
+
+     Working rule 16 narrows all four to the SPLIT hero, which is the arrangement they were
+     written for and the one the four pages built before that rule carry. The per-page
+     `stacked` and `bleed` layouts stack by construction and budget their own height inside
+     the 450px ceiling (src/components/kit/Hero.astro), so releasing it for them would give
+     the site one page with a 700px band. */
+  .bl-box.bl-media-top .kit-hero[data-hero-layout="split"] { max-height: none; }
+  .bl-media-top .kit-hero[data-hero-layout="split"] .inner { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .bl-media-top .kit-hero[data-hero-layout="split"] .pic { order: 1; aspect-ratio: 16 / 5; max-height: none; height: auto; }
+  .bl-media-top .kit-hero[data-hero-layout="split"] .copy { order: 2; }
+  /* A hero on a band takes the band's colours; its own bed would otherwise paint over it. */
+  .bl-box.bl-frame-band .kit-hero { background: transparent; color: inherit; }
+  .bl-frame-band .kit-hero .title,
+  .bl-frame-band .kit-hero .eyebrow { color: inherit; }
+  /* THE LEDGE FOLLOWS THE BAND. `.hstats strong` and `.hstats span` name `--color-brand` and
+     `--color-text` in Hero.astro, which is right on the bone surface and invisible on steel:
+     /blue-staffy-pup-sale-uk/'s H-FS3 printed "£1,500" and "£1,700" at 1:1 and their labels at
+     1.33:1. On a band the figures and their labels take the band's own ink. Chips need nothing
+     here — `.kit-chip` paints its own light bed and names its own ink — and ticks inherit.
+     `a11y-hero-ledge-contrast` (blocking) measures every ledge node against its painted bed. */
+  /* `.bl-box` prefix for the reason the hero rules above carry: the scoped `.hstats strong` is
+     (0,3,1) with its two cid attributes, so an unprefixed rule would tie and lose on order. */
+  .bl-box.bl-frame-band .kit-hero .hstats strong,
+  .bl-box.bl-frame-band .kit-hero .hstats span { color: var(--color-text-on-inverse); }
+  /* An `outline` button is steel on steel here, which is a CTA nobody can see. On a band it
+     takes the band's own colour, the way the kit's `inverse` kind does. */
+  .bl-frame-band .kit-btn[data-kind="outline"],
+  .bl-frame-band .kit-btn[data-kind="text"] {
+    color: var(--color-text-on-inverse);
+    border-color: currentColor;
+  }
+  .bl-box.bl-frame-card .kit-hero { background: transparent; }
+  /* THE PHOTO KEEPS ITS RATIO INSIDE A BOARD BOX. At >=1024px the kit Hero drops `.pic`'s
+     4:5 ratio for `height: 100%` so the photo fills a 390-450px band the page owns. Inside a
+     `.bl-box` the band is not the page's any more — the box's own padding and grid decide the
+     row — so before the photo loads the row is sized by the image's INTRINSIC 500x500 and
+     after it loads by the copy, and the section shrinks by 35-60px as it arrives. That is
+     `layout-image-box-reserved` (blocking, measured at 1280 on all three rebuilt pages,
+     2026-09-20). Restoring the declared ratio makes the reserved box and the painted box the
+     same box, which is what the check asks of every image. */
+  @media (min-width: 1024px) {
+    .bl-box .kit-hero .pic { aspect-ratio: 4 / 5; height: auto; align-self: center; }
+  }
+
+  /* --- lists ------------------------------------------------------------------------ */
+  .bl-cards { display: grid; gap: var(--space-4); min-width: 0; }
+  .bl-list-grid-2 .bl-cards { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .bl-list-grid-3 .bl-cards { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .bl-list-rail .bl-cards {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(240px, 1fr);
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+  }
+
+  /* --- the table chrome --------------------------------------------------------------
+     DataTable's three board styles (component 17, spec §9 amendment 5). The component
+     paints S1 itself, so a copy outside a board box is a finished table rather than an
+     unstyled one; these rules are the other two, plus the band re-point S1 needs when it
+     lands on a steel bed.
+
+     NONE OF THEM TOUCHES THE STACK. Below 640px `.stack-table` turns every cell into a
+     block with its column name printed from `data-label`, and that is working rule 13, not
+     an option — so every rule here is written to disappear at that width rather than to
+     survive it. `layout-table-stacks-on-mobile` is what holds them to it.
+
+     `.bl-box` prefixes the rules that reach the TABLE ROOT, for the specificity reason the
+     hero rules above already carry: Astro scopes the component's own `.kit-table` with an
+     attribute selector, which is (0,2,0). A rule that reaches INSIDE (a row, a cell) is
+     already past that and needs no prefix. */
+  .bl-box.bl-frame-band .kit-table { --kit-band: var(--color-surface-deep); color: inherit; }
+  /* A video on a band re-points its caption token to the band's ink (VideoEmbed's convention
+     3). `--kit-caption` defaults to the muted ink, which is 2.16:1 on steel — the breed guide's
+     S2 caption shipped at that. The VideoEmbed root is a scoped `.kit-video[data-astro-cid-…]`
+     (0,2,0), so the re-point needs (0,3,0) to win inside the same layer. */
+  .bl-box.bl-frame-band .kit-video { --kit-caption: var(--color-text-on-inverse); }
+  .bl-frame-band .kit-table caption,
+  .bl-frame-band .kit-table tbody th { color: inherit; }
+
+  @media (min-width: 641px) {
+    /* S2 — zebra rows inside a card. The stripe is a tint of the page surface rather than a
+       second grey, so the card it sits in stays the lighter of the two, and the horizontal
+       rules come off: the banding is already saying where a row ends. */
+    .bl-chrome-zebra .kit-table tbody tr:nth-child(even) > * { background: var(--color-surface); }
+    .bl-chrome-zebra .kit-table tbody th,
+    .bl-chrome-zebra .kit-table tbody td { border-bottom: 0; }
+
+    /* S3 — no horizontal rules at all; the columns are told apart by a brass hairline
+       between them, and the header band becomes brand text over the page's own surface.
+       Brass is the RULE here, never the colour of the text beside it (2.1:1 on bone). */
+    .bl-chrome-brass .kit-table tbody th,
+    .bl-chrome-brass .kit-table tbody td { border-bottom: 0; }
+    .bl-chrome-brass .kit-table thead th { background: transparent; color: var(--color-brand); }
+    .bl-chrome-brass .kit-table thead tr { border-bottom: 2px solid var(--color-cta); }
+    .bl-chrome-brass .kit-table thead th + th,
+    .bl-chrome-brass .kit-table tbody th ~ td { border-left: 2px solid var(--color-cta); }
+    .bl-frame-band .bl-chrome-brass .kit-table thead th,
+    .bl-chrome-brass.bl-frame-band .kit-table thead th { color: inherit; }
+  }
+
+  /* --- the aside -------------------------------------------------------------------- */
+  .bl-aside { display: grid; gap: var(--space-3); align-content: start; }
+  .bl-aside ul { margin: 0; padding-left: var(--space-5); }
+}

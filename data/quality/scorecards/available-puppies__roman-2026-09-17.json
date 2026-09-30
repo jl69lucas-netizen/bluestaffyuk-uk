@@ -1,0 +1,144 @@
+{
+  "slug": "available-puppies/roman",
+  "date": "2026-09-17",
+  "page_type": "puppy",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 219,
+    "layout-tap-target-size": 132,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 10,
+    "img-srcset-within-2x": 12,
+    "img-alt-present-and-unique": 12,
+    "nav-anchors-resolve": 3,
+    "nav-jump-target-lands": 3,
+    "sem-heading-order": 3,
+    "sem-all-six-levels": 3,
+    "sem-title-case-headings": 3,
+    "sem-section-opening-paragraph": 3,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 3,
+    "schema-sold-not-instock": 3,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 24,
+    "css-no-dead-component-rule": 0,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 144,
+    "a11y-text-contrast-aa": 213,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "SEM": 6,
+    "SCHEMA": 3,
+    "CSS": 3,
+    "IMG": 2
+  },
+  "instances": {
+    "SEM": 18,
+    "SCHEMA": 3,
+    "CSS": 6,
+    "IMG": 2
+  },
+  "total": 14,
+  "total_instances": 29,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 5,
+      "message": "heading level(s) absent: H2, H3, H4, H5, H6 — inventory H1:1 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 1,
+      "message": "1 heading(s) not in Title Case: H1 \"white\" in \"Roman: Blue and white Male Blue Staffy Puppy\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 4 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: site-header x1, site-footer x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "img-srcset-within-2x",
+      "count": 1,
+      "message": "1 oversized image(s): roman-portrait-4x5.webp natural=800 painted=327 2.45x"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 5,
+      "message": "heading level(s) absent: H2, H3, H4, H5, H6 — inventory H1:1 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 1,
+      "message": "1 heading(s) not in Title Case: H1 \"white\" in \"Roman: Blue and white Male Blue Staffy Puppy\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 4 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: site-header x1, site-footer x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-srcset-within-2x",
+      "count": 1,
+      "message": "1 oversized image(s): roman-portrait-4x5.webp natural=800 painted=344 2.33x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 5,
+      "message": "heading level(s) absent: H2, H3, H4, H5, H6 — inventory H1:1 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 1,
+      "message": "1 heading(s) not in Title Case: H1 \"white\" in \"Roman: Blue and white Male Blue Staffy Puppy\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 4 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: site-header x1, site-footer x1"
+    }
+  ]
+}

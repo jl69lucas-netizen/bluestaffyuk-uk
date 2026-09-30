@@ -1,0 +1,34 @@
+{
+  "definition": "`page_rate` (rework touching src/public) is the headline; `harness_rate` is checker self-repair, tracked separately so improving the harness cannot worsen the headline. `rate` is the union. Empty at the system transfer: BSUK starts with no measured windows. Windows are appended by hand (.claude/skills/bsuk-learning-loop/SKILL.md Step 5); the source repo's writer script was not ported, and scripts/quality_report.py reads this file.",
+  "windows": [
+    {
+      "window": "brief-parity",
+      "from": "2026-09-26",
+      "to": "2026-09-27",
+      "range": "b99d7d6^..499b449",
+      "total": 85,
+      "rework": 51,
+      "rate": 0.6,
+      "page_rework": 4,
+      "page_rate": 0.047,
+      "harness_rework": 45,
+      "harness_rate": 0.529,
+      "note": "Harness-building project: 45 of 51 rework commits are review rounds on gates written in the same build. Page rework = 13623cf, cc26cf5, dd29aec, 0c7bf89. Other = 7ee22d5, 90db8fd."
+    },
+    {
+      "window": "london-components",
+      "from": "2026-09-27",
+      "to": "2026-09-27",
+      "range": "5b41cd5..4256934",
+      "total": 31,
+      "rework": 10,
+      "rate": 0.323,
+      "page_rework": 1,
+      "page_rate": 0.032,
+      "harness_rework": 1,
+      "harness_rate": 0.032,
+      "canvas_rework": 7,
+      "note": "Design pass: the deliverable is design/city-canvas/, outside src/ and public/, so page_rate understates it; canvas_rework (44bbfa8, 5f5a038, 447cdfd, 17ba9a1, 9cc9757, 62df243, be49bb3) is the honest figure, 7/31 = 22.6%. Page = be67a9f; harness = fc23018; 7ce341a (parents fact reversed) counted in rework. 7ab7b21 is a false grep hit."
+    }
+  ]
+}

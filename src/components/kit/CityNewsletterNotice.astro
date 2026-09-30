@@ -1,0 +1,127 @@
+---
+// src/components/kit/CityNewsletterNotice.astro — city component 14, the newsletter (London pick:
+// newsletter A, "Litter notice"). A raised card in the bone page: a puppy photograph on its left
+// from 768px (a short strip on top on a phone), and on the right a small ruled eyebrow, the
+// question, its answer, and one email field over a brass submit. It says exactly what the list
+// is for.
+//
+// THE KIT HAD NO NEWSLETTER (plan2-notes, Task 9). It posts to the ONE endpoint every form uses
+// (src/lib/formEndpoint.ts), `method="POST"`, with the `_gotcha` honeypot and the hidden `_next`
+// and `_subject` — and it keeps exactly ONE real control, an email input with a name, so
+// scripts/form_contract_audit.py classes it `newsletter`. Its error line is tied to the field
+// with `aria-describedby` and `aria-invalid` once native validation fails it.
+// Conventions 2, 4, 6; the submit is a brass fill on the form radius.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { abs } from '../../lib/site';
+import { formEndpoint } from '../../lib/formEndpoint';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  eyebrow: string;
+  heading: string;
+  lede: string;
+  photo: string;
+  photoAlt: string;
+  button?: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { eyebrow, heading, lede, photo, photoAlt, button = 'Send me the litter note', fit = 'column', class: cls, ...rest } = Astro.props;
+// The card is the .in column (max 1040px, 16px gutters; 32px from tablet); from tablet the photo is its 5fr of 12.
+const sizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1040px) - 32px)`,
+  tablet: (B) => `calc((min(${B}, 1040px) - 64px) * 5 / 12)`,
+  desktop: (B) => `calc((min(${B}, 1040px) - 64px) * 5 / 12)`,
+});
+const { action, live } = formEndpoint();
+---
+<section {...rest} class:list={['city-kit', 'city-newsletter-notice', cls]}>
+  <div class="in">
+    <div class="card">
+      <figure>
+        <Image src={puppyImage(photo)} alt={photoAlt} widths={[400, 600, 800]}
+          sizes={sizes} class={focusClass(photo)} loading="lazy" decoding="async" />
+      </figure>
+      <div class="body">
+        <p class="eye">{eyebrow}</p>
+        <h2 id="city-news-h">{heading}</h2>
+        <p class="lede">{lede}</p>
+        <form method="POST" action={action} data-form="newsletter" data-newsletter data-live={String(live)} aria-labelledby="city-news-h">
+          <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+          <input type="hidden" name="_subject" value="Litter note sign-up" />
+          <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <label for="city-news-email">Your email address</label>
+          <input id="city-news-email" name="email" type="email" autocomplete="email" required placeholder=" " />
+          <p class="err" id="city-news-err"><span class="e-empty">Please give us your email address.</span><span class="e-bad">That address looks incomplete: it needs an @ and a full address.</span></p>
+          <button type="submit">{button}</button>
+          <p class="small">We use your email only for this note.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  const input = document.querySelector<HTMLInputElement>('#city-news-email');
+  if (input) {
+    const mark = (bad: boolean) => {
+      if (bad) { input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', 'city-news-err'); }
+      else { input.removeAttribute('aria-invalid'); input.removeAttribute('aria-describedby'); }
+    };
+    input.addEventListener('invalid', () => mark(true));
+    input.addEventListener('input', () => { if (input.hasAttribute('aria-invalid')) mark(!input.checkValidity()); });
+  }
+</script>
+<style>
+  @layer components {
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-newsletter-notice { background: var(--color-surface); }
+    .in { max-width: 1040px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
+    .card {
+      display: grid; overflow: hidden; background: var(--color-surface-raised); border: var(--card-border);
+      border-radius: var(--card-radius); box-shadow: var(--shadow-card);
+    }
+    figure { margin: 0; background: var(--color-bone-50); }
+    figure :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+    .body { padding: var(--space-6) var(--space-5); }
+    .eye {
+      display: flex; align-items: center; gap: var(--space-2); margin: 0 0 var(--space-3); font-size: var(--text-xs);
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-brand);
+    }
+    .eye::before { content: ""; width: 24px; height: 2px; background: var(--color-cta); }
+    h2 { margin: 0; }
+    .lede { margin: var(--space-3) 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); }
+    form { display: grid; gap: var(--space-3); max-width: 440px; }
+    label { font-size: var(--text-sm); font-weight: 600; color: var(--color-text); }
+    input[type='email'] {
+      width: 100%; min-height: 48px; padding: 10px 14px; font: inherit; color: var(--color-text);
+      background: var(--color-bone-50); border: 1px solid var(--color-steel-300); border-radius: var(--btn-form-radius);
+    }
+    input[type='email']:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-color: var(--color-brand); }
+    input[type='email']:user-invalid { border-color: var(--color-warn); }
+    .err { display: none; margin: 0; font-size: var(--text-sm); color: var(--color-warn); }
+    form:has(input:user-invalid) .err, [aria-invalid='true'] + .err { display: block; }
+    /* Empty or malformed, by CSS alone: the placeholder is one space, so :placeholder-shown means
+       nothing was typed (the Task 7b review). */
+    .e-bad { display: none; }
+    input:not(:placeholder-shown) + .err .e-empty { display: none; }
+    input:not(:placeholder-shown) + .err .e-bad { display: inline; }
+    button {
+      min-height: 48px; padding: 10px 20px; font: inherit; font-weight: 700; color: var(--color-cta-ink); background: var(--color-cta);
+      border: 0; border-radius: var(--btn-form-radius); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    button:hover { background: var(--color-cta-hover); }
+    button:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .small { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
+    @container (width >= 640px) {
+      .in { padding: var(--city-pad-y) var(--space-6); }
+      .card { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+      figure :global(img) { height: 100%; aspect-ratio: auto; min-height: 360px; }
+      .body { padding: var(--space-6); }
+    }
+  }
+</style>

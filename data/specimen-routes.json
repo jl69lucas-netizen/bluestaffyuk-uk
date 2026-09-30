@@ -1,0 +1,4 @@
+{
+  "_comment": "Specimen routes: noindex scaffolding that renders components and board styles against demo data (/kit-preview/, /board-preview/<slug>/, and every route under them). A passage shared with one is one passage rendered twice, never duplicate content, so no duplicate-content gate counts a specimen route as a sibling. The ONE list both gates read: scripts/dup_content_audit.py (and pageboard.py and rendered_changes.py through it) and tests/render/lib/dupCorpus.ts. Before 2026-09-28 the harness had no copy and drifted from the Python audit (the Task 7b quality review, I1). Prefixes are page keys (scripts/_slugs.py page_key), anchored at the start.",
+  "prefixes": ["board-preview/", "kit-preview/"]
+}

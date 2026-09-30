@@ -1,0 +1,99 @@
+---
+// src/components/kit/CityContactLineup.astro — city component 15, the contact form (London
+// pick: contact-form B, "Litter line-up"). A deep-steel band opens on its question, then the
+// available puppies in one line-up of small square photographs with name, sex and price (three
+// by two on a phone, one row from 768px), so the reader sees who they can ask about before
+// choosing one in the form below it.
+//
+// THE FORM IS ContactFormKit (plan2-notes, Task 9), `layout="grid"`: the six named controls,
+// the `_gotcha` honeypot, the hidden `_next` and `_subject`, `method="POST"` and the one
+// endpoint — scripts/form_contract_audit.py passes it exactly as it passes the site form. This
+// component adds the script that ties each required control to its error line (aria-describedby,
+// aria-invalid), so the pages that mount the stepped form ship nothing new.
+//
+// THE LINE-UP IS A PICTURE, NOT A CONTROL (the Task 9 review): no link, no hover, no pointer.
+// Each photo sits beside its printed name and price, so it is decorative (alt="") — a described
+// photo would read the puppy twice, and the same six photographs are described elsewhere on a
+// city page. The rows are data/puppies.json. Conventions 2 (`.on-inverse`), 4, 6.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import ContactFormKit from './ContactFormKit.astro';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+import { availablePuppies, citySizes, money, sexWord, type CityFit } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, fit = 'column', class: cls, ...rest } = Astro.props;
+// The line-up is the .in column (max 1160px, 16px gutters; 32px from tablet): three across with
+// 12px gaps on a phone, six across from tablet (16px gaps on desktop).
+const sizes = citySizes(fit, {
+  phone: (B) => `calc((min(${B}, 1160px) - 56px) / 3)`,
+  tablet: (B) => `calc((min(${B}, 1160px) - 124px) / 6)`,
+  desktop: (B) => `calc((min(${B}, 1160px) - 144px) / 6)`,
+});
+const pups = availablePuppies();
+---
+<section {...rest} class:list={['city-kit', 'city-contact', 'on-inverse', cls]}>
+  <div class="in">
+    <h2 id="city-contact-h">{heading}</h2>
+    <p class="lede">{lede}</p>
+    <ul class="pups" aria-label="The puppies available now">
+      {pups.map((p) => (
+        <li>
+          <Image src={puppyImage(p.card_photo)} alt="" widths={[200, 360]} sizes={sizes}
+            class={focusClass(p.card_photo)} loading="lazy" decoding="async" />
+          <span class="nm">{p.name}</span><span class="pr">{sexWord(p)} · {money(p.price_gbp)}</span>
+        </li>
+      ))}
+    </ul>
+    <ContactFormKit layout="grid" labelledBy="city-contact-h" idPrefix="city-contact" data-contact-form />
+  </div>
+</section>
+<script>
+  // The grid form's errors, tied to their controls. A control that fails native validation is
+  // marked aria-invalid and described by its error line; once it is valid again both go.
+  // Native validation still decides; this only tells assistive technology what it decided.
+  document.querySelectorAll<HTMLFormElement>('form[data-layout="grid"]').forEach((form) => {
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('[data-err]').forEach((el) => {
+      const mark = (bad: boolean) => {
+        if (bad) {
+          el.setAttribute('aria-invalid', 'true');
+          el.setAttribute('aria-describedby', el.dataset.err!);
+        } else {
+          el.removeAttribute('aria-invalid');
+          el.removeAttribute('aria-describedby');
+        }
+      };
+      el.addEventListener('invalid', () => mark(true));
+      el.addEventListener('input', () => { if (el.hasAttribute('aria-invalid')) mark(!el.checkValidity()); });
+      el.addEventListener('change', () => { if (el.hasAttribute('aria-invalid')) mark(!el.checkValidity()); });
+    });
+  });
+</script>
+<style>
+  @layer components {
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    /* The band's invalid-border tint for the grid form (src/styles/city.css; 5.31:1 on steel-900). */
+    .city-contact { --form-invalid: var(--city-warn-on-inverse); }
+    .city-contact { background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
+    .in { max-width: 1160px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
+    h2 { margin: 0; color: var(--color-text-on-inverse); }
+    .lede { margin: var(--space-3) 0 var(--space-5); font-size: var(--city-lead); color: var(--color-steel-100); }
+    .pups { list-style: none; margin: 0 0 var(--space-6); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
+    .pups li { margin: 0; display: grid; gap: 2px; }
+    .pups :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); margin-bottom: var(--space-1); }
+    .nm { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); line-height: 1.2; }
+    .pr { font-size: var(--text-xs); color: var(--color-steel-100); }
+    @container (width >= 640px) {
+      .in { padding: var(--city-pad-y) var(--space-6); }
+      .pups { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
+    @container (width >= 800px) { .pups { gap: var(--space-4); } }
+  }
+</style>

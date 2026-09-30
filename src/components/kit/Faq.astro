@@ -1,0 +1,59 @@
+---
+// src/components/kit/Faq.astro — the FAQ accordion (spec §5 #9). Picked 2026-09-18: the
+// numbered treatment, a leading 01/02/03 against each question.
+//
+// Native <details>/<summary>, not a scripted accordion: it opens with JavaScript off, it
+// is keyboard-operable and announced without an aria-expanded of our own, and the browser
+// handles find-in-page opening the right panel. The question is an <h3> inside the
+// <summary> so the answers are navigable as a heading list; <summary> permits flow
+// content, and the disclosure role stays on the <summary> itself.
+//
+// THE ROWS ARE DATA (rule 9): data/faq.json via src/lib/faq.ts, each row naming in
+// `source` the page or settings file that backs its answer, with the money and the
+// delivery wording interpolated from data/settings.json at load. The plan's third question
+// was "can we meet the mother"; the migrated pages make that claim only as generic buying
+// advice in the buying guide, never as a promise this breeder makes, so the third row is
+// the puppy package the homepage already describes.
+//
+// Convention 2: the summary's focus ring reads --kit-ring, so it survives on a dark band.
+//
+// THE QUESTION IS A HEADING, SO IT IS TITLE CASE (rules/headings.md, amended 2026-09-20).
+// The old exemption said FAQ questions "live in `<summary>`, not a heading tag" — but this
+// component puts an `<h3>` inside the summary, which is what makes the answers navigable as
+// a heading list, and both title-case checkers select every h1-h6 under `<main>`. So the
+// question is measured like any other heading and is cased like one here, at RENDER: the
+// row in data/faq.json keeps its natural sentence-case wording, which is what the FAQPage
+// schema's `name` and the dup gate read, and the page shows the heading form of it.
+import type { HTMLAttributes } from 'astro/types';
+import { loadFaq, type FaqRow } from '../../lib/faq';
+import { titleCase } from '../../lib/headings';
+
+type Props = HTMLAttributes<'div'> & { items?: FaqRow[] };
+const { items = loadFaq(), class: cls, ...rest } = Astro.props;
+---
+<div {...rest} class:list={['kit-faq', cls]}>
+  {items.map((it, i) => (
+    <details>
+      <summary>
+        <span class="num">{String(i + 1).padStart(2, '0')}</span>
+        <h3 class="q">{titleCase(it.q)}</h3>
+      </summary>
+      <p>{it.a}</p>
+    </details>
+  ))}
+</div>
+<style>
+  @layer components {
+    .kit-faq { max-width: 640px; display: grid; gap: var(--space-2); color: var(--color-text); }
+    details { background: var(--color-surface-raised); border-radius: var(--radius-md); }
+    summary { display: flex; align-items: center; gap: var(--space-3); cursor: pointer; list-style: none; padding: var(--space-4); min-height: 44px; font-weight: 600; font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-brand); }
+    summary::-webkit-details-marker { display: none; }
+    .q { flex: 1; margin: 0; font: inherit; color: inherit; }
+    p { margin: 0; padding: 0 var(--space-4) var(--space-4); font-size: var(--text-base); }
+    /* The number is a muted label, not brass: brass is 2.1:1 as small text on bone. */
+    .num { font-family: var(--font-body); font-size: var(--text-sm); color: var(--color-text-muted); font-feature-settings: "tnum"; }
+    /* --kit-ring, not --color-focus: the ring has to survive if this list is dropped on a
+       steel band, where the fixed focus token is the band's own colour (convention 2). */
+    summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+  }
+</style>

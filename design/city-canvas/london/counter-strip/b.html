@@ -1,0 +1,38 @@
+<style>
+/* Counter B — Figure sentence. The figures are set inside one plain-spoken sentence beside a
+   2×3 grid of the six puppies, each figure raised in the display face on a steel-100
+   highlight, so the strip reads as a statement a buyer can repeat rather than a dashboard of
+   tiles. Its own bone-50 bed, parted from the hero by a 3px steel rule and a hairline. */
+.csB{background:var(--counter-bed);border-top:1px solid var(--color-border);box-shadow:inset 0 3px 0 var(--color-brand)}
+.csB .in{max-width:1200px;margin:0 auto;padding:var(--space-6) var(--space-4) var(--space-7);display:grid;gap:var(--space-5)}
+.csB .pic{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;border-radius:var(--radius-md);overflow:hidden;align-self:center}
+.csB .pic img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;background:var(--color-surface)}
+.csB .say{margin:0;max-width:none;font-size:var(--text-lg);line-height:1.9;color:var(--color-ink);text-wrap:pretty}
+.csB .f{white-space:nowrap}
+.csB .f b{font-family:var(--font-display);font-weight:700;font-size:1.15em;line-height:1;color:var(--color-brand);background:var(--color-brand-soft);border-radius:var(--radius-sm);padding:0 .18em;margin:0 .06em;font-variant-numeric:lining-nums;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.csB .note{margin:var(--space-3) 0 0;font-size:var(--text-sm);color:var(--color-ink-2)}
+@media (min-width:768px){
+  .csB .in{grid-template-columns:220px minmax(0,1fr);align-items:center;gap:var(--space-7)}
+  .csB .say{font-size:var(--text-xl);line-height:1.75}
+}
+@media (min-width:1024px){
+  .csB .in{grid-template-columns:260px minmax(0,1fr);gap:var(--space-9);padding:var(--space-7) var(--space-5)}
+  .csB .say{font-size:var(--text-2xl);line-height:1.6;max-width:42ch}
+}
+</style>
+<section data-component="counter-strip" data-variant="b" class="csB">
+  <div class="in">
+    <figure class="pic">
+      <img src="/puppies/Roman2.jpg" alt="Roman on a lawn" width="1080" height="1081" loading="lazy">
+      <img src="/puppies/Byrd1.jpg" alt="Byrd on decking" width="1080" height="1080" loading="lazy">
+      <img src="/puppies/Ince1.jpg" alt="Ince by a fence" width="1080" height="1079" loading="lazy">
+      <img src="/puppies/Vennie.jpeg" alt="Vennie on a fleece" width="1080" height="1080" loading="lazy">
+      <img src="/puppies/Christa.jpeg" alt="Christa on a fleece" width="1080" height="1080" loading="lazy">
+      <img src="/puppies/Cheryl1.jpeg" alt="Cheryl on a wooden floor" width="1080" height="1350" loading="lazy">
+    </figure>
+    <div>
+      <p class="say"><span class="f" data-figure><b>6</b> puppies</span> are ready now: <span class="f" data-figure><b>3</b> boys</span> at <span class="f" data-figure><b>£1,500</b></span> and <span class="f" data-figure><b>3</b> girls</span> at <span class="f" data-figure><b>£1,700</b></span>, brought to London for <span class="f" data-figure><b>£200–£350</b></span>.</p>
+      <p class="note">Delivery is priced by distance. A £500 deposit books your viewing and reserves your puppy.</p>
+    </div>
+  </div>
+</section>

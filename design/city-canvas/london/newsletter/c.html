@@ -1,0 +1,52 @@
+<style>
+/* Newsletter C — Ruled row. Framed by rules only, in the open bone page: a 4px steel rule
+   above, a hairline below. At 1024+ the question and its answer sit on the left and the
+   form on the right, field and submit on one line, a small "what you get" list under it;
+   below 1024 it stacks. Airy, left-set, no band, no card, no photo. */
+.nlC{background:var(--color-surface)}
+.nlC .in{max-width:1120px;margin:0 auto;padding:var(--space-8) var(--space-4)}
+.nlC .box{display:grid;gap:var(--space-6);padding:var(--space-7) 0;border-top:4px solid var(--color-brand);border-bottom:1px solid var(--color-border)}
+.nlC h2{margin:0;font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);text-wrap:balance;max-width:20ch}
+.nlC .lede{margin:var(--space-3) 0 0;max-width:48ch;color:var(--color-ink-2)}
+.nlC form{display:grid;gap:var(--space-2);align-content:start}
+.nlC label{font-size:var(--text-sm);font-weight:600;color:var(--color-text)}
+.nlC .row{display:grid;gap:var(--space-2)}
+.nlC input{width:100%;min-height:52px;padding:12px 16px;font:inherit;color:var(--color-text);background:var(--color-surface-raised);border:1px solid var(--color-steel-300);border-radius:var(--btn-form-radius)}
+.nlC input:focus-visible,.nlC button:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.nlC input:user-invalid{border-color:var(--color-warn)}
+.nlC .err{display:none;margin:0;font-size:var(--text-sm);color:var(--color-warn)}
+.nlC form:has(input:user-invalid) .err{display:block}
+.nlC button{min-height:52px;padding:12px 24px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out)}
+.nlC button:hover{background:var(--color-cta-hover)}
+.nlC ul{list-style:none;margin:var(--space-3) 0 0;padding:0;display:grid;gap:var(--space-2)}
+.nlC li{display:flex;gap:var(--space-2);align-items:baseline;font-size:var(--text-sm);color:var(--color-text)}
+.nlC li svg{flex:none;width:16px;height:16px;align-self:center;color:var(--color-ok)}
+@media (min-width:640px){.nlC .row{grid-template-columns:minmax(0,1fr) auto}}
+@media (min-width:1024px){
+  .nlC .in{padding:var(--space-10) var(--space-6)}
+  .nlC .box{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-10);align-items:center;padding:var(--space-9) 0}
+  .nlC h2{font-size:var(--text-3xl);line-height:var(--text-3xl--line-height)}
+}
+</style>
+<section data-component="newsletter" data-variant="c" class="nlC">
+  <div class="in">
+    <div class="box">
+      <div>
+        <h2>Would You Like to Hear When Our Next Litter Is Due?</h2>
+        <p class="lede">If none of our six puppies is the one for your London home, leave your email here and we will send you a short note when the next litter is on its way.</p>
+      </div>
+      <form data-newsletter aria-label="Next litter sign-up">
+        <label for="nlC-email">Email for the litter note</label>
+        <div class="row">
+          <input id="nlC-email" name="email" type="email" autocomplete="email" required>
+          <button type="submit">Add my email</button>
+        </div>
+        <p class="err">Please enter a full email address, with an @ in it.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>One note when a litter is due</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Written by us in Carlisle, sent to you in London</li>
+        </ul>
+      </form>
+    </div>
+  </div>
+</section>

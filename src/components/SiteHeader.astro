@@ -1,0 +1,49 @@
+---
+import { SITE, NAV } from '../lib/site';
+const here = Astro.url.pathname;
+// The lockup is INLINED, not an <img>. Three reasons, in order of weight:
+// (1) Known Issue 4's worst row was this header — a 1024px PNG master painted at 44 CSS px
+//     on 51 of 51 page-viewports, 1.7MB for a 44px mark. Vector has no oversize to be
+//     wrong about, and inline vector is not a request either;
+// (2) inline SVG takes its colour from the page, so a mono treatment can be swapped in on
+//     a dark band later without a second file and without a second network round trip;
+// (3) the wordmark is IN the lockup, so the header stops rendering the site name twice.
+// `?raw` inlines the file's text into the bundle at BUILD time. Not readFileSync: this
+// frontmatter is bundled into dist/.prerender/ before it runs, so a path relative to
+// import.meta.url resolves against the chunk's directory and not this file's.
+import logo from '../../public/brand/logo-horizontal.svg?raw';
+---
+<header class="site-header">
+  <div class="container">
+    {/* The <a> carries the accessible name, because the wordmark inside it is outlines and
+        not text. The lockup's own <title> is then redundant, but it is what the standalone
+        file needs when it is opened on its own, and a labelled link overrides it here. */}
+    <a href="/" class="site-header__logo" aria-label={`${SITE.site_name} home`}>
+      <Fragment set:html={logo} />
+    </a>
+    <nav aria-label="Main"><ul>
+      {NAV.map((n) => <li><a href={n.href} aria-current={n.href === here ? 'page' : undefined}>{n.label}</a></li>)}
+    </ul></nav>
+  </div>
+</header>
+<style>
+  @layer components {
+    .site-header {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--hdr-bg);
+      border-bottom: 1px solid var(--color-rule);
+      min-height: var(--hdr);
+    }
+    .site-header > .container {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; min-height: var(--hdr);
+    }
+    .site-header__logo { display: flex; align-items: center; text-decoration: none; }
+    /* Height alone; the lockup's own viewBox keeps the ratio. `:global` because the SVG
+       arrives through set:html and so carries no scope attribute of its own. */
+    .site-header__logo :global(svg) { height: 44px; width: auto; display: block; }
+    .site-header nav ul {
+      display: flex; gap: 18px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap;
+    }
+  }
+</style>

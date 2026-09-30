@@ -1,0 +1,110 @@
+/* src/styles/city.css — the city components' shared CSS (the London component design pass,
+   Plan 2), imported ONLY by src/layouts/CityShell.astro and the City*.astro components, so Astro
+   bundles it on a page that mounts a city component and on no other (the Task 7b quality review,
+   I2: in kit.css and global.css it was inlined on all twelve built pages). The layer order is
+   restated first so that, wherever the bundler places this file, `components` never becomes a
+   lower layer than Tailwind's `base`. */
+@layer theme, base, components, utilities;
+
+/* The city dial's column (desktop-dial C, CityDialPhotoMarker). Mirrors src/lib/cityKit.ts DIAL_W;
+   tests/py/test_city_kit.py holds the two equal. PageShell's own-dial grid sizes that column
+   `auto`, so the dial's width is this one number. */
+:root { --city-dial-w: 272px; }
+
+/* The warn tint an invalid field's border takes on a steel-900 band (the grid contact form):
+   #D9784F is 5.31:1 against steel-900, where --color-warn (#9A4A2A) is 2.66:1 (WCAG 1.4.11
+   asks 3:1). A tint of the same hue, never the focus ring's brass. tests/py/test_city_kit.py
+   measures it. */
+:root { --city-warn-on-inverse: #D9784F; }
+
+/* THE CITY COMPONENTS' TYPE BASE. The canvas the user picked from painted every variant in a frame
+   whose base set headings in the display face in brand steel, on the browser's own bold, with no
+   measure on paragraphs; the site's base inherits the weight and the colour and holds
+   `main p, main li` to 70ch. Every city component root carries `city-kit`, so the built component
+   sets its type as the approved variant did, at one class of specificity (`:where()`), so a
+   component's own scoped rule still wins. */
+@layer components {
+  .city-kit :where(h1, h2, h3) { font-weight: 700; color: var(--color-brand); }
+  .city-kit :where(p, li) { max-width: none; }
+}
+
+/* THE TIERS — ONE PAIR OF EDGES FOR TYPE AND LAYOUT (the Task 7b quality review, I4). Every city
+   root is an inline-size container with NO inline padding (its gutters live on an inner tray or
+   panel), so its content box is the section's box, and every tier edge in the kit reads it:
+     phone    width < 640px
+     tablet   640px <= width < 800px
+     desktop  width >= 800px
+   These mirror src/lib/cityKit.ts TIER ({ tablet: 640, desktop: 800 }); a test holds the two
+   equal. A full-width strip (the hero, the price scale, the trust ledger, the contents panel) is
+   the viewport wide, so its `@media` edges read the same box. The nav furniture (the jump stepper
+   and the dial) is no container: its fixed-size chrome takes the phone tier's type always, which
+   it only uses for labels. */
+@layer components {
+  .city-kit:not([data-city-jump-stepper], [data-city-dial-photo-marker]) { container-type: inline-size; }
+}
+
+/* THE CITY TYPE SCALE (Task 7b item 10; the user's ruling, 2026-09-28: "all font/text, headers,
+   body texts … must have desktop, mobile and tablet … sizes, it must fit well, no big headers,
+   nice even paragraphs … No chunky title or long/tall sections/paragraphs"). A city section is as
+   narrow as the 656px column beside the dial, so its type is its own, in ONE place, here: no city
+   component sets a heading, lead or body size of its own. Each step is a clamp on `cqi` (1% of the
+   section's box) inside the tier it belongs to:
+     tier     box          h1      h2      h3/card  lead  body  label  numeral  (h2 measure 22/28/34ch)
+     phone    < 640px      ≤26     ≤22     ≤17      17    16    12     ≤40
+     tablet   640–799px    ≤30     ≤25     ≤18      18    17    12     ≤48
+     desktop  ≥ 800px      ≤34     ≤28     ≤20      18    17    13     ≤56
+   The tier values are set on the root's DIRECT children (`.city-kit > *`, whose container is the
+   root) and inherit down. tests/render/lib/cityTypeFit.ts gates the caps, three-line headings, the
+   75ch measure, the paragraph length and the section height. --city-pad-y and --city-gap are the
+   same tiers' rhythm. */
+@layer components {
+  .city-kit {
+    --city-h1: clamp(24px, 17px + 2.4cqi, 26px);
+    --city-h2: clamp(20px, 15px + 2cqi, 22px);
+    --city-h3: clamp(16px, 13px + 1.2cqi, 17px);
+    --city-lead: 17px;
+    --city-body: 16px;
+    --city-label: 12px;
+    --city-num: clamp(34px, 20px + 6cqi, 40px);
+    --city-lh-head: 1.18;
+    --city-h2-measure: 22ch;
+    --city-pad-y: 32px;
+    --city-gap: 16px;
+  }
+  @container (width >= 640px) {
+    .city-kit > * {
+      --city-h1: clamp(28px, 14px + 2.2cqi, 30px);
+      --city-h2: clamp(23px, 13px + 1.6cqi, 25px);
+      --city-h2-measure: 28ch;
+      --city-h3: 18px;
+      --city-lead: 18px;
+      --city-body: 17px;
+      --city-num: clamp(42px, 10px + 5cqi, 48px);
+      --city-pad-y: 40px;
+      --city-gap: 20px;
+    }
+  }
+  @container (width >= 800px) {
+    .city-kit > * {
+      --city-h1: clamp(31px, 20px + 1.4cqi, 34px);
+      --city-h2: clamp(26px, 16px + 1.5cqi, 28px);
+      --city-h2-measure: 34ch;
+      --city-h3: clamp(19px, 12px + 1cqi, 20px);
+      --city-label: 13px;
+      --city-num: clamp(50px, 20px + 4cqi, 56px);
+      --city-pad-y: 48px;
+      --city-gap: 24px;
+    }
+  }
+  .city-kit :where(h1, h2, h3) { line-height: var(--city-lh-head); text-wrap: balance; }
+  .city-kit :where(h1) { font-size: var(--city-h1); max-inline-size: 22ch; }
+  /* The H2 measure is per tier (22 / 28 / 34ch; `ch` resolves in the heading's own font): a flat
+     22ch stacked a short question to three lines in an 830px desktop section (the side-by-side
+     review, 2026-09-29). tests/render/lib/cityTypeFit.ts 1b gates it. */
+  .city-kit :where(h2) { font-size: var(--city-h2); max-inline-size: var(--city-h2-measure); }
+  .city-kit :where(h3) { font-size: var(--city-h3); }
+  /* Reading text only: a form's `p.field` rows are layout, and a 65ch cap on them shrank the
+     contact form's full-width message field to 549px (the Task 7b design pass). */
+  .city-kit :where(p:not(form *), li, dd) { font-size: var(--city-body); line-height: 1.6; }
+  .city-kit :where(p:not(form *)) { text-wrap: pretty; max-inline-size: 65ch; }
+}

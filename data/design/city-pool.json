@@ -1,0 +1,65 @@
+{
+ "_comment": "The city design pool: canvas variants no city has picked, per component, open to a later city's pass. Written when a city's picks freeze (London: Plan 2 of the London component design pass). Every entry is <city>/<component>/<a|b|c>; scripts/pageboard.py city_pool_findings refuses an entry that is malformed, unknown on its canvas, or already picked.",
+ "available": {
+  "hero": [
+   "london/hero/a",
+   "london/hero/c"
+  ],
+  "counter-strip": [
+   "london/counter-strip/a",
+   "london/counter-strip/b"
+  ],
+  "trust-strip": [
+   "london/trust-strip/a",
+   "london/trust-strip/b"
+  ],
+  "contents-list": [
+   "london/contents-list/a",
+   "london/contents-list/b"
+  ],
+  "desktop-dial": [
+   "london/desktop-dial/a",
+   "london/desktop-dial/b"
+  ],
+  "jump-links": [
+   "london/jump-links/b",
+   "london/jump-links/c"
+  ],
+  "key-takeaways": [
+   "london/key-takeaways/b",
+   "london/key-takeaways/c"
+  ],
+  "puppy-cards": [
+   "london/puppy-cards/a",
+   "london/puppy-cards/c"
+  ],
+  "tables": [
+   "london/tables/b",
+   "london/tables/c"
+  ],
+  "video": [
+   "london/video/a",
+   "london/video/b"
+  ],
+  "image-text": [
+   "london/image-text/a",
+   "london/image-text/b"
+  ],
+  "reviews": [
+   "london/reviews/b",
+   "london/reviews/c"
+  ],
+  "faq-blocks": [
+   "london/faq-blocks/b",
+   "london/faq-blocks/c"
+  ],
+  "newsletter": [
+   "london/newsletter/b",
+   "london/newsletter/c"
+  ],
+  "contact-form": [
+   "london/contact-form/a",
+   "london/contact-form/c"
+  ]
+ }
+}

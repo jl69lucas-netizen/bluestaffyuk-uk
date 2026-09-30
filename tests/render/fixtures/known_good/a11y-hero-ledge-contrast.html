@@ -1,0 +1,63 @@
+<!doctype html><meta charset=utf-8><title>known-good: a hero ledge on a steel band takes the band ink</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  THE KIT's hero with a `stats` ledge on a steel band (H-FS3, `frame: band`), and a chip row
+  under it. The band sets `--color-text-on-inverse` on everything beneath it; the chips paint
+  their own light bed and so state their own ink.
+
+  The pair differs in the two `.hstats` colours only. BROKEN is what /blue-staffy-pup-sale-uk/
+  shipped: `.hstats strong` named `--color-brand` and `.hstats span` `--color-text`, so
+  "£1,500" and "£1,700" were steel on steel (1:1) and their labels ink on steel (1.33:1).
+  GOOD is the fix: on a band the ledge takes the band's ink. The two chips pass in both, which
+  is the point — a chip names the ink for the bed it paints.
+
+  Fixtures cannot read tokens.css, so the hex is spelled here; the no-hex rule scans src/ only:
+  --color-surface-inverse #1F3A52, --color-text-on-inverse #F4F1EA,
+  --color-surface-raised #FFFFFF, --color-text #22303C, --color-brand #1F3A52,
+  --color-text-muted #5E6B7A.
+
+  VIDEO CAPTIONS ARE THE SAME DEFECT ONE COMPONENT OVER (2026-09-22 audit). The breed guide's
+  S2 video sits on a steel band, and VideoEmbed's caption reads `--kit-caption`, which the
+  component defaults to the muted ink: 2.16:1 on steel. BROKEN keeps that default; GOOD
+  re-points it to the band's ink, as board-styles.css now does. The caption is the seventh
+  judged node.
+-->
+<style>
+  body { margin:0; font:16px/1.5 system-ui; }
+  .bl-frame-band { background:#1F3A52; color:#F4F1EA; padding:24px; }
+  .kit-hero { background:transparent; color:inherit; }
+  .copy h1 { margin:0 0 8px; font-size:30px; }
+  .lede { margin:0 0 16px; font-size:18px; }
+  .hstats { list-style:none; margin:0 0 16px; padding:0; display:flex; gap:24px; }
+  .hstats li { display:flex; flex-direction:column; gap:2px; }
+  .hstats strong { font-size:22px; line-height:1.1; color:#F4F1EA; }
+  .hstats span { font-size:12px; color:#F4F1EA; }
+  .chips { list-style:none; margin:0; padding:0; display:flex; gap:8px; }
+  .chips li { padding:6px 12px; background:#FFFFFF; color:#22303C; border:1px solid #DAD6CC; }
+  .kit-video { margin:24px 0 0; }
+  .kit-video .frame { width:320px; height:180px; background:#0B1620; }
+  .kit-video figcaption { font-size:14px; color:#F4F1EA; }
+</style>
+<main>
+  <section class="bl-box bl-frame-band">
+    <section class="kit-hero" data-hero-ledge="stats">
+      <div class="inner">
+        <div class="copy">
+          <h1>Blue Staffy Puppies for Sale, Priced by Sex</h1>
+          <p class="lede">Two prices, and the deposit that holds either.</p>
+          <ul class="hstats">
+            <li><strong>£1,500</strong><span>males</span></li>
+            <li><strong>£1,700</strong><span>females</span></li>
+          </ul>
+          <ul class="chips"><li>KC registered</li><li>Microchipped</li></ul>
+        </div>
+      </div>
+    </section>
+  </section>
+  <section class="bl-box bl-frame-band">
+    <figure class="kit-video">
+      <div class="frame"></div>
+      <figcaption>The breed guide in short, on film.</figcaption>
+    </figure>
+  </section>
+</main>

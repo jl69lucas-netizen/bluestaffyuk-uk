@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>every page-scoped rule renders</title>
+<style>
+  body { margin:0; font:16px/1.5 system-ui }
+  .puppy-card[data-astro-cid-fixture] { border:1px solid #e7ddd3; padding:16px }
+  .puppy-name[data-astro-cid-fixture] { font-size:18px }
+  /* STATE variants. These match nothing while a static probe looks, because the state is
+     toggled by JS — and they are NOT dead: the base component is on the page. The first
+     version reported `.bsuk-fab.visible`, `.bsuk-sheet-scrim.open` and
+     `.nav-dropdown-btn[aria-expanded="true"] + .nav-dropdown` as dead on every page of
+     the live site. Judged by stripping state qualifiers and re-testing the base, never
+     by matching class NAMES. */
+  .puppy-card.is-reserved[data-astro-cid-fixture] { opacity:.6 }
+  .puppy-card[data-open="true"][data-astro-cid-fixture] .puppy-name { color:#b04228 }
+</style></head><body>
+<div class="puppy-card" data-astro-cid-fixture>
+  <h2 class="puppy-name" data-astro-cid-fixture>Roman</h2>
+</div>
+</body></html>

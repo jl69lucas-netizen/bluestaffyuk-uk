@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a boxed H2 on the city scale</title>
+<!-- The same box on option (a)'s H2 scale: 22 / 25 / 28px at line-height 1.18, balanced, so it
+     is under each tier's cap and within three lines. A kit component's H2 inside the box sets its
+     own type and is not examined, whatever its size. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .bl-box { padding: 32px 24px; }
+  .bl-box h2 { font-size: 22px; line-height: 1.18; text-wrap: balance; margin: 0 0 8px; }
+  .kit-card h2 { font-size: 36px; }
+  @media (min-width: 640px) { .bl-box h2 { font-size: 25px; } }
+  @media (min-width: 800px) { .bl-box h2 { font-size: 28px; } }
+</style>
+</head><body>
+<main>
+  <section class="bl-box">
+    <h2>Blue Staffy Health UK : Our Health Testing and Vet Checks</h2>
+    <p>Every parent is screened before a litter is planned, and the tests are named on the page.</p>
+    <div class="kit-card"><h2>A Kit Card</h2></div>
+  </section>
+  <section class="bl-box">
+    <h2>What We Screen For</h2>
+    <p>A second box, so the check judges more than one heading.</p>
+  </section>
+</main>
+</body></html>

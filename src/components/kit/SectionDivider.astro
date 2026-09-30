@@ -1,0 +1,35 @@
+---
+// src/components/kit/SectionDivider.astro — the section divider (spec §5 #13).
+// Picked 2026-09-18: the mark centred on a rule, with a rule running out to each margin.
+//
+// `role="separator"` and nothing else on the wrapper: a separator is real structure worth
+// exposing, and `aria-hidden` on the same element would delete the subtree from the
+// accessibility tree and take the role with it. The ornament inside is hidden instead — the
+// mark is passed `title=""`, which makes it aria-hidden — because the sections either side
+// already carry their own headings.
+//
+// The divider sits on the bone surface AND inside dark bands, so it never names a colour of
+// its own: it inherits `currentColor` through `--kit-divider-color`, which defaults to the
+// brand steel and which `.on-inverse` / `[data-surface="inverse"]` overrides to the inverse
+// text colour. Nothing here reads `--color-brand` directly.
+import type { HTMLAttributes } from 'astro/types';
+import Mark from './Mark.astro';
+// `inverse` is passed straight to the mark: the divider is dropped onto bone and onto
+// steel bands alike, and only the caller knows which. It changes nothing else here.
+type Props = HTMLAttributes<'div'> & { inverse?: boolean };
+const { inverse = false, class: cls, ...rest } = Astro.props;
+---
+<div {...rest} class:list={['kit-divider', cls]} role="separator">
+  <span class="rule" />
+  <span class="medal"><Mark inverse={inverse} size={40} title="" /></span>
+  <span class="rule" />
+</div>
+<style>
+  @layer components {
+  .kit-divider { display: flex; align-items: center; gap: var(--space-4); width: 100%; max-width: var(--container); margin: var(--space-8) auto; padding-inline: var(--space-5); color: var(--kit-divider-color, var(--color-brand)); }
+  :global(.on-inverse) .kit-divider, :global([data-surface="inverse"]) .kit-divider { --kit-divider-color: var(--color-text-on-inverse); }
+  /* currentColor, not a fixed steel: on a dark band the rule follows the inverse text colour. */
+  .rule { flex: 1; height: 2px; background: currentColor; opacity: .5; }
+  .medal { display: inline-flex; padding: var(--space-2); border-radius: 50%; border: 1px solid var(--color-border); background: var(--color-surface-raised); }
+  }
+</style>

@@ -1,0 +1,50 @@
+{
+ "id": "petsforlove",
+ "root_domain": "petsforlove.co.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "page_types": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "cities": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "schema_types": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "pages": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "trust": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "content": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "blog": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "visual": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "conversion": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "technical": {
+  "status": "NOT FETCHED",
+  "reason": "homepage status none (no response: connection timed out)"
+ },
+ "key_insight": "petsforlove.co.uk could not be analysed: its homepage gave no response (the connection timed out for Firecrawl and for a browser on 2026-09-25), so nothing on the site was read. Whether it has moved, closed or is only down is a registry call for bsuk-competitor-registry."
+}

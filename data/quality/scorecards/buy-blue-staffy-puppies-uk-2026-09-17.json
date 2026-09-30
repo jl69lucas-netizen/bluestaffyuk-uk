@@ -1,0 +1,188 @@
+{
+  "slug": "buy-blue-staffy-puppies-uk",
+  "date": "2026-09-17",
+  "page_type": "for-sale",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1050,
+    "layout-tap-target-size": 216,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "img-srcset-within-2x": 42,
+    "img-alt-present-and-unique": 42,
+    "nav-anchors-resolve": 12,
+    "nav-jump-target-lands": 9,
+    "sem-heading-order": 102,
+    "sem-all-six-levels": 102,
+    "sem-title-case-headings": 102,
+    "sem-section-opening-paragraph": 102,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 15,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 2148,
+    "css-no-dead-component-rule": 0,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 144,
+    "a11y-text-contrast-aa": 846,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "IMG": 3,
+    "NAV": 3,
+    "SEM": 9,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "IMG": 18,
+    "NAV": 6,
+    "SEM": 24,
+    "CSS": 567,
+    "DUP": 9
+  },
+  "total": 21,
+  "total_instances": 624,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "img-srcset-within-2x",
+      "count": 6,
+      "message": "6 oversized image(s): roman-card-800.webp natural=800 painted=271 2.95x | byrd-card-800.webp natural=800 painted=271 2.95x | ince-card-800.webp natural=800 painted=271 2.95x | vennie-card-800.webp natural=800 painted=271 2.95x | christa-card-800.webp natural=800 painted=271 2.95x | cheryl-card-800.webp natural=800 painted=271 2.95x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "nav-jump-target-lands",
+      "count": 2,
+      "message": "2 of 3 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #get-staffy@1437px, #contact-now@47378px"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:14 H3:19 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 3,
+      "message": "3 heading(s) not in Title Case: H2 \"from\" in \"Why Buy a Blue Staffy from BlueStaffyUK? Our C\" | H2 \"from\" in \"Why Choose a Blue Staffy from BlueStaffyUK?\" | H2 \"puppy\" in \"Need Staffy puppy delivery to London, Manchest\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 2,
+      "message": "2 heading(s) with no opening paragraph: H2→H3 \"Blue Staffy News: Join 500+ Readers!\" | H2→H3 \"Need Staffy puppy delivery to London, Ma\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 189,
+      "message": "189 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x37, wp-block-uagb-info-box x24, uagb-infobox__content-wrap x24, uagb-infobox-image-valign-top x24, uagb-ifb-content x24, uagb-ifb-title-wrap x24, uagb-faq-icon-wrap x24, uagb-ifb-title x22, uagb-ifb-desc x22, uagb-infobox-icon-above-title x21, alignfull x15, uagb-is-root-container x15"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 14w vs /index/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\" | 12w vs /blue-staffy-uk-breeders/ \"defra approved pet transport services this means whether you re looking for\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "img-srcset-within-2x",
+      "count": 6,
+      "message": "6 oversized image(s): roman-card-800.webp natural=800 painted=325 2.46x | byrd-card-800.webp natural=800 painted=325 2.46x | ince-card-800.webp natural=800 painted=325 2.46x | vennie-card-800.webp natural=800 painted=325 2.46x | christa-card-800.webp natural=800 painted=325 2.46x | cheryl-card-800.webp natural=800 painted=325 2.46x"
+    },
+    {
+      "viewport": 375,
+      "checkId": "nav-jump-target-lands",
+      "count": 2,
+      "message": "2 of 3 in-page links land outside 113-181px (measured chrome 121px = header:121) — no single page-level cause identified; first: #get-staffy@1715px, #contact-now@30738px"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:14 H3:19 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 3,
+      "message": "3 heading(s) not in Title Case: H2 \"from\" in \"Why Buy a Blue Staffy from BlueStaffyUK? Our C\" | H2 \"from\" in \"Why Choose a Blue Staffy from BlueStaffyUK?\" | H2 \"puppy\" in \"Need Staffy puppy delivery to London, Manchest\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 2,
+      "message": "2 heading(s) with no opening paragraph: H2→H3 \"Blue Staffy News: Join 500+ Readers!\" | H2→H3 \"Need Staffy puppy delivery to London, Ma\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 189,
+      "message": "189 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x37, wp-block-uagb-info-box x24, uagb-infobox__content-wrap x24, uagb-infobox-image-valign-top x24, uagb-ifb-content x24, uagb-ifb-title-wrap x24, uagb-faq-icon-wrap x24, uagb-ifb-title x22, uagb-ifb-desc x22, uagb-infobox-icon-above-title x21, alignfull x15, uagb-is-root-container x15"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 14w vs /index/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\" | 12w vs /blue-staffy-uk-breeders/ \"defra approved pet transport services this means whether you re looking for\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-srcset-within-2x",
+      "count": 6,
+      "message": "6 oversized image(s): roman-card-800.webp natural=800 painted=348 2.30x | byrd-card-800.webp natural=800 painted=348 2.30x | ince-card-800.webp natural=800 painted=348 2.30x | vennie-card-800.webp natural=800 painted=348 2.30x | christa-card-800.webp natural=800 painted=348 2.30x | cheryl-card-800.webp natural=800 painted=348 2.30x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "nav-jump-target-lands",
+      "count": 2,
+      "message": "2 of 3 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #get-staffy@1439px, #contact-now@47381px"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:14 H3:19 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 3,
+      "message": "3 heading(s) not in Title Case: H2 \"from\" in \"Why Buy a Blue Staffy from BlueStaffyUK? Our C\" | H2 \"from\" in \"Why Choose a Blue Staffy from BlueStaffyUK?\" | H2 \"puppy\" in \"Need Staffy puppy delivery to London, Manchest\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 2,
+      "message": "2 heading(s) with no opening paragraph: H2→H3 \"Blue Staffy News: Join 500+ Readers!\" | H2→H3 \"Need Staffy puppy delivery to London, Ma\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 189,
+      "message": "189 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x37, wp-block-uagb-info-box x24, uagb-infobox__content-wrap x24, uagb-infobox-image-valign-top x24, uagb-ifb-content x24, uagb-ifb-title-wrap x24, uagb-faq-icon-wrap x24, uagb-ifb-title x22, uagb-ifb-desc x22, uagb-infobox-icon-above-title x21, alignfull x15, uagb-is-root-container x15"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 14w vs /index/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\" | 12w vs /blue-staffy-uk-breeders/ \"defra approved pet transport services this means whether you re looking for\""
+    }
+  ]
+}

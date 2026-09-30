@@ -1,0 +1,112 @@
+{
+  "slug": "uk-locations/blue-staffy-puppies-birmingham",
+  "date": "2026-09-19",
+  "page_type": "location",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 183,
+    "layout-tap-target-size": 129,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 0,
+    "img-srcset-within-2x": 0,
+    "img-alt-present-and-unique": 0,
+    "nav-anchors-resolve": 3,
+    "nav-jump-target-lands": 3,
+    "sem-heading-order": 0,
+    "sem-all-six-levels": 0,
+    "sem-title-case-headings": 0,
+    "sem-section-opening-paragraph": 0,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 9,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 48,
+    "css-no-dead-component-rule": 45,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 177,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "SEM": 3,
+    "SCHEMA": 3,
+    "CSS": 3
+  },
+  "instances": {
+    "SEM": 18,
+    "SCHEMA": 3,
+    "CSS": 3
+  },
+  "total": 9,
+  "total_instances": 24,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 6,
+      "message": "heading level(s) absent: H1, H2, H3, H4, H5, H6 — inventory H1:0 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 1,
+      "message": "1 class(es) on rendered elements match no CSS rule: prose-migrated x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 6,
+      "message": "heading level(s) absent: H1, H2, H3, H4, H5, H6 — inventory H1:0 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 1,
+      "message": "1 class(es) on rendered elements match no CSS rule: prose-migrated x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 6,
+      "message": "heading level(s) absent: H1, H2, H3, H4, H5, H6 — inventory H1:0 H2:0 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 1,
+      "message": "1 class(es) on rendered elements match no CSS rule: prose-migrated x1"
+    }
+  ]
+}

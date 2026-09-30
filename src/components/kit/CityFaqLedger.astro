@@ -1,0 +1,128 @@
+---
+// src/components/kit/CityFaqLedger.astro — city component 13, one FAQ block (London pick:
+// faq-blocks A, "Steel ledger"). A deep-steel band holding one block of questions as a numbered
+// ledger, each row a native `<details>` with a brass-200 number and a plus that turns to a minus.
+// The FIRST block of a page may carry the rail: a served photograph over three figures in brief,
+// sticky beside the ledger from 1024px, a short strip on top on a phone.
+//
+// A CITY PAGE MOUNTS THREE, at the template's three places (plan2-notes, Task 9), not together
+// as on the canvas: `start` carries the numbering across them (01–06, 07–12, 13–18 on the specimen), and the
+// rail goes with the top block only. The rows come from the page's question file, never from the
+// canvas fragment; each question is an `<h3>` inside its `<summary>` and is Title Cased at render
+// (Faq.astro's contract; rules/headings.md), while the FAQPage node keeps the file's wording
+// (src/lib/cityKit.ts `faqPageNode`, fed the same rows).
+//
+// THE RAIL'S FIGURES AND WORDS ARE DATA (src/lib/cityKit.ts): the deposit and its ruling
+// (`depositBrief`), the delivery band and how a puppy travels (`transportLine`, from
+// data/settings.json `delivery_note`). The guarantee row is `guaranteeRow()`, printed only when
+// data/settings.json carries its length, label and note (`guarantee_days`, `guarantee_label`,
+// `guarantee_note`): two years, the breeder's answer (answer board q07, 2026-09-29; rule 9). Conventions 2 (`.on-inverse` sets the ring), 4, 6.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { titleCase } from '../../lib/headings';
+import { focusClass, servedPhoto } from '../../lib/imageFocus';
+import { citySizes, DELIVERY_BAND, DEPOSIT, depositBrief, guaranteeRow, transportLine, type CityFit } from '../../lib/cityKit';
+
+export interface CityFaqRow { q: string; a: string }
+type Props = HTMLAttributes<'section'> & {
+  heading: string;
+  lede: string;
+  items: CityFaqRow[];
+  /** The number of this block's first question (1 for the top block). */
+  start?: number;
+  /** The top block's rail: a served photograph and its caption. */
+  rail?: { photo: string; caption: string };
+  /** A stable key for the block (`data-faq-block`). */
+  block: string;
+  /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, items, start = 1, rail, block, fit = 'column', class: cls, ...rest } = Astro.props;
+// The rail is the .in column (max 1200px, 16px gutters; 32px from tablet) and, on desktop, the
+// 4fr of its 4fr / 9fr split with a 48px gap.
+const railSizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1200px) - 32px)`,
+  tablet: (B) => `calc(min(${B}, 1200px) - 64px)`,
+  desktop: (B) => `calc((min(${B}, 1200px) - 112px) * 4 / 13)`,
+});
+const pad = (n: number) => String(n).padStart(2, '0');
+const photo = rail ? servedPhoto(rail.photo) : null;
+const guarantee = guaranteeRow();
+const brief = [
+  { t: `${DEPOSIT} deposit`, d: depositBrief },
+  { t: `${DELIVERY_BAND} delivery`, d: transportLine },
+  ...(guarantee ? [guarantee] : []),
+];
+---
+<section {...rest} class:list={['city-kit', 'city-faq', 'on-inverse', { 'has-rail': rail }, cls]} data-faq-block={block}>
+  <div class="in">
+    {rail && photo && (
+      <div class="rail">
+        <figure>
+          <img src={photo.file} srcset={photo.srcset} sizes={railSizes}
+            alt={photo.alt} width={photo.w} height={photo.h} class={focusClass(rail.photo)} loading="lazy" decoding="async" />
+          <figcaption>{rail.caption}</figcaption>
+        </figure>
+        <dl class="brief">{brief.map((b) => <div><dt>{b.t}</dt><dd>{b.d}</dd></div>)}</dl>
+      </div>
+    )}
+    <div class="blk">
+      <h2>{heading}</h2>
+      <p class="lede">{lede}</p>
+      <div class="list">
+        {items.map((it, i) => (
+          <details>
+            <summary><span class="n" aria-hidden="true">{pad(start + i)}</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>{titleCase(it.q)}</h3></summary>
+            <p>{it.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A container (src/styles/city.css): its tiers read this section's own box. */
+    .city-faq { background: var(--color-surface-deep); color: var(--color-text-on-inverse); }
+    .in { max-width: 1200px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); display: grid; gap: var(--space-6); }
+    figure { margin: 0; }
+    .rail img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-md); background: var(--color-steel-700); }
+    figcaption { margin-top: var(--space-2); font-size: var(--text-sm); line-height: 1.45; color: var(--color-steel-100); }
+    .brief { display: none; margin: var(--space-5) 0 0; padding: 0; border-top: 1px solid var(--color-steel-500); }
+    .brief div { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-steel-500); }
+    dt { font-family: var(--font-display); font-weight: 600; font-size: var(--city-h3); line-height: 1.3; }
+    dd { margin: 2px 0 0; font-size: var(--text-sm); line-height: 1.45; color: var(--color-steel-100); }
+    h2 { margin: 0; color: var(--color-text-on-inverse); }
+    .lede { margin: var(--space-3) 0 var(--space-5); font-size: var(--city-lead); color: var(--color-steel-100); }
+    /* A block without the rail keeps the ledger's own measure (the canvas column), so a
+       question and its plus stay within one glance when the band is full width. */
+    .city-faq:not(.has-rail) .blk { max-width: 780px; }
+    .list { border-top: 1px solid var(--color-steel-500); }
+    details { border-bottom: 1px solid var(--color-steel-500); }
+    summary {
+      display: flex; align-items: baseline; gap: var(--space-3); min-height: 52px; padding: var(--space-3) var(--space-1);
+      cursor: pointer; list-style: none; border-radius: var(--radius-sm); transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary:hover { background: var(--color-steel-700); }
+    summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .n { flex: none; width: 2.2em; font-size: var(--text-sm); font-weight: 700; font-feature-settings: "tnum"; color: var(--color-cta-soft); }
+    h3 { flex: 1; margin: 0; color: var(--color-text-on-inverse); }
+    .pm { order: 2; flex: none; position: relative; width: 16px; height: 16px; align-self: center; color: var(--color-cta); }
+    .pm::before, .pm::after { content: ""; position: absolute; left: 0; top: 7px; width: 16px; height: 2px; background: currentColor; transition: transform var(--dur-base) var(--ease-out); }
+    .pm::after { transform: rotate(90deg); }
+    details[open] .pm::after { transform: rotate(0deg); }
+    details > p { margin: 0; padding: 0 var(--space-1) var(--space-5) calc(2.2em * 15 / 17 + var(--space-3) + var(--space-1)); max-width: 64ch; color: var(--color-steel-100); }
+    @container (width >= 640px) {
+      .in { padding: var(--city-pad-y) var(--space-6); }
+      .rail img { aspect-ratio: 21 / 9; }
+    }
+    @container (width >= 800px) {
+      .has-rail .in { grid-template-columns: minmax(0, 4fr) minmax(0, 9fr); gap: var(--space-8); align-items: start; }
+      .rail { position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
+      .rail img { aspect-ratio: 4 / 3; }
+      .brief { display: grid; }
+    }
+    @media (prefers-reduced-motion: reduce) { summary, .pm::before, .pm::after { transition: none; } }
+  }
+</style>

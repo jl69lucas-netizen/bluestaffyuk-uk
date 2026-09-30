@@ -1,0 +1,64 @@
+{
+  "id": "09250822-2496-0629-0000-e7e15d42f8a5",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "items": [
+    {
+      "type": "chat_gpt_text",
+      "rank_group": 1,
+      "rank_absolute": 1,
+      "markdown": "If you’re looking around **Sunderland**, I’d start with the Royal Kennel Club’s puppy listings rather than buying from a generic classified ad. Its current Staffordshire Bull Terrier search shows a **blue litter in Newcastle**, with both parents having at least one recorded health test. That listing is worth investigating, but the KC itself stresses that buyers still need to vet breeders independently. [Royal Kennel Club](https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com) [The Kennel Club](https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com) \n\nThere’s also a **North Eastern Staffordshire Bull Terrier Club** listed by the breed community, whose puppy-coordinator contact can be useful for finding established local breeders. [Staffordshire Bull Terrier Society](https://www.scsbts.com/sbt-welfare-and-rescue/buying-a-puppy/?utm_source=chatgpt.com) \n\n### What I'd ask the breeder\n\nFor a Staffy, don't settle for “both parents are health checked.” Ask to **see the actual certificates/results** for:\n\n- **HC-HSF4-2 (hereditary cataracts)** DNA test.\n- **L-2-HGA** DNA test.\n- **Eye examination**, including litter eye screening before puppies leave.\n- **Elbow dysplasia** screening.\n- The parents' **KC registration details and health-test results**. These are among the breed-specific tests recommended by the Royal Kennel Club. [The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com) [Royal Kennel Club](https://www.royalkennelclub.com/BreedSpecificRequirements?utm_source=chatgpt.com)\n- The parents' **inbreeding coefficient**, and ask whether there are known health problems in their lines.\n\nI'd also ask:\n\n1. **Can I see the puppy with its mother and the rest of the litter at your home?**\n2. **How old is the mother, and how many litters has she had?**\n3. **Can I meet the father, or see his health certificates if he doesn't live there?**\n4. **Why did you choose this particular mating?**\n5. **What socialisation have the puppies had—children, household noises, other dogs, handling, car journeys?**\n6. **What food are they eating and what routine are they used to?**\n7. **Will the puppy be microchipped, vaccinated and wormed before collection?**\n8. **What paperwork comes with the puppy?**\n9. **What happens if I develop a problem after taking the puppy home? Will you take the dog back?**\n10. **Can I speak to previous puppy owners?**\n\n### One important point about “blue”\n\nDon't let the colour become the main selling point. A blue Staffy can be perfectly healthy, but **colour does not tell you whether the breeder is responsible or whether the puppy's parents have been properly health tested**. The Royal Kennel Club's breed guidance puts substantial emphasis on genetic and clinical health screening. [The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com) \n\nI'd also be wary of adverts using phrases such as **“rare blue,” “micro blue,” “XXL,” “champion bloodline”** or charging a large premium principally because of colour. Look at the parents, health evidence and breeding practices rather than the marketing.\n\n**Before paying a deposit**, visit in person, see the mother interacting with the litter, check the paperwork yourself, and don't allow a seller to pressure you into transferring money because “someone else is coming to collect.”\n\nIf you want, I can ****, and separate the listings into *worth contacting* vs *red flags*.\n\n",
+      "sources": [
+        {
+          "type": "chat_gpt_source",
+          "title": "Find a puppy | The Royal Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Find a puppy | The Kennel Club",
+          "domain": "www.thekennelclub.org.uk",
+          "url": "https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com",
+          "source_name": "The Kennel Club",
+          "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/search/find-an-assured-breeder/?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Buying a Puppy",
+          "domain": "www.scsbts.com",
+          "url": "https://www.scsbts.com/sbt-welfare-and-rescue/buying-a-puppy/?utm_source=chatgpt.com",
+          "source_name": "Staffordshire Bull Terrier Society",
+          "markdown": "[Staffordshire Bull Terrier Society](https://www.scsbts.com/sbt-welfare-and-rescue/buying-a-puppy/?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+          "domain": "www.thekennelclub.org.uk",
+          "url": "https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com",
+          "source_name": "The Kennel Club",
+          "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "The Royal Kennel Club Health Standard | The Royal Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/BreedSpecificRequirements?utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/BreedSpecificRequirements?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+          "domain": "www.thekennelclub.org.uk",
+          "url": "https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com",
+          "source_name": "The Kennel Club",
+          "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com)"
+        }
+      ]
+    }
+  ],
+  "_saved_note": "ChatGPT answer bought 2026-09-25 via DataForSEO ai_optimization_chat_gpt_scraper, location United Kingdom, language en, for the query: Where can I buy a blue Staffy puppy near Sunderland, and what should I ask the breeder? The response carries no keyword field. Saved as returned: it holds no local businesses and no third-party contact details (no phone, email, street address, postcode, WhatsApp, maps or social-profile link, and no personal name), so nothing was removed. The answer text (chat_gpt_text markdown) and its sources are kept whole."
+}
