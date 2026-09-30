@@ -62,7 +62,13 @@ from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 
-PAID_SOURCES = ("serp_google", "ai_engines")
+PAID_SOURCES = ("serp_google", "ai_engines", "keyword_volume", "backlinks")
+# keyword_volume (Google Ads / Labs search volume, one batched call) and backlinks (backlinks
+# summary or bulk ranks / referring domains) were added for London's page run on the user's
+# approval (2026-09-30, chat). They are never question sources (CANDIDATE_SOURCES). Each has a
+# conservative per-call estimate the guard never counts below, so an unlogged source cannot
+# slip under the caps at the settings' typical SERP cost.
+SOURCE_ESTIMATE_USD = {"keyword_volume": 0.10, "backlinks": 0.05}
 # Bing is read free in the browser (spec §14.5) and threads come from the recency ladder:
 # neither is ever budget-checked or recorded. Order is merge order: first phrasing wins.
 CANDIDATE_SOURCES = ("serp_google", "serp_bing", "ai_engines", "threads")
@@ -1388,7 +1394,8 @@ def spend_basis(source, root=ROOT):
     """(total, typical, basis) as the guard counts them.
 
     With no dashboard reading: total = every logged cost, typical = the larger of
-    query_typical_call_usd and every cost logged for `source` (the rule before Known Issue 45
+    query_typical_call_usd, the source's SOURCE_ESTIMATE_USD floor (when it has one) and every
+    cost logged for `source` (the rule before Known Issue 45
     closed). With one: the calls the latest reading covers count at their REAL cost, opening
     minus balance, and only calls logged after it add their logged cost and set `typical`.
     Raises on an unreadable file, a cost that is not a finite number, or a
@@ -1410,7 +1417,8 @@ def spend_basis(source, root=ROOT):
     else:
         later, basis = log, ""
         total = sum(e["cost_usd"] for e in log)
-    typical = max([e["cost_usd"] for e in later if e["source"] == source] + [configured])
+    typical = max([e["cost_usd"] for e in later if e["source"] == source] + [configured]
+                  + [SOURCE_ESTIMATE_USD.get(source, configured)])
     return round(total, 6), typical, basis
 
 
@@ -1936,8 +1944,9 @@ def main(argv=None):
                         for u in dropped))
         return EXIT_OK
     if a.preflight:
-        if a.source not in CANDIDATE_SOURCES:
-            ap.error("--source must be one of " + ", ".join(CANDIDATE_SOURCES))
+        known = CANDIDATE_SOURCES + tuple(x for x in PAID_SOURCES if x not in CANDIDATE_SOURCES)
+        if a.source not in known:
+            ap.error("--source must be one of " + ", ".join(known))
         code = preflight(slug, a.source, root, a.refresh, a.today)
         print({EXIT_OK: "proceed", EXIT_CACHED: "cached — make no call",
                EXIT_BUDGET: "budget would be exceeded — stop and report"}[code])
