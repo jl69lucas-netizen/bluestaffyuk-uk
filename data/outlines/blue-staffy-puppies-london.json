@@ -1,0 +1,742 @@
+{
+  "slug": "blue-staffy-puppies-london",
+  "page_type": "location",
+  "route": "/uk-locations/blue-staffy-puppies-london/",
+  "date": "2026-09-30",
+  "research_board": "data/research-boards/blue-staffy-puppies-london.json",
+  "h1": "Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?",
+  "word_target": {
+    "min": 2000,
+    "max": 3000,
+    "source": "median NOT FETCHED in data/queries/blue-staffy-puppies-london.json; the user's 2,000–3,000 band (answer board 2026-09-27), confirmed at STOP 1 q05"
+  },
+  "header_style": "Style 1 Pure Conversational · FAQ register — every H2/H3 a buyer question (user, 2026-09-27)",
+  "sections": [
+    {
+      "n": "1",
+      "section": "Hero and opening (title, H1, first paragraph)",
+      "headings": [
+        {
+          "level": 1,
+          "text": "Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?",
+          "children": []
+        }
+      ],
+      "framework": "EEBP",
+      "words": 110,
+      "cat": "A",
+      "why": "—",
+      "keywords": {
+        "primary": [
+          "blue staffy puppies london"
+        ],
+        "secondary": [
+          "staffordshire bull terrier puppies and dogs for sale in london",
+          "blue staffordshire bull terrier puppies",
+          "staffies in london",
+          "blue staffy"
+        ]
+      },
+      "image": "Hero: public/images/maggie-blue-staffy-dam-with-pups.webp (served; Maggie with her pups — the puppy and its mother the video call shows); alternate public/images/kc-registered-blue-staffy-pups-london.webp",
+      "note": "First lines say only the video call comes before the deposit; the visit to Carlisle comes after it (angle A1 trade-off). Signed by Lisa Bright (S2)."
+    },
+    {
+      "n": "2",
+      "section": "Counter strip",
+      "headings": [],
+      "framework": "—",
+      "words": 20,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "—",
+      "note": "This page's own figures, read from data/puppies.json, data/price-matrix.json and data/settings.json (working rule 16); never typed"
+    },
+    {
+      "n": "3",
+      "section": "Trust strip",
+      "headings": [],
+      "framework": "—",
+      "words": 20,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "—"
+    },
+    {
+      "n": "4",
+      "section": "Contents",
+      "headings": [],
+      "framework": "—",
+      "words": 30,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "—"
+    },
+    {
+      "n": "5",
+      "section": "Key takeaways",
+      "headings": [],
+      "framework": "—",
+      "words": 80,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "—",
+      "note": "Statements, no heading below H1; every figure read from data"
+    },
+    {
+      "n": "6",
+      "section": "Review — top",
+      "headings": [],
+      "framework": "—",
+      "words": 55,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "Reviewer card: Mark J, London (data/reviews.json row 2)"
+    },
+    {
+      "n": "7",
+      "section": "FAQ block (top)",
+      "headings": [
+        {
+          "level": 2,
+          "text": "What Do London Buyers Ask Before They Reserve a Blue Staffy?",
+          "children": [
+            {
+              "level": 3,
+              "text": "How Much Are Blue Staffy Puppies in the UK?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Can I Get a Blue Staffy Puppy Delivered to My Home?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Do You Deliver Across the UK?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "How Much Is a Blue Staffordshire Puppy?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "How Do I Know a Puppy Is Still Available?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "How Do I Reserve One of Your Blue Staffy Puppies?",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "faq": true,
+      "framework": "QAB",
+      "words": 260,
+      "cat": "A",
+      "why": "—",
+      "keywords": {
+        "primary": [
+          "blue staffy puppies london"
+        ]
+      },
+      "image": "—",
+      "note": "The question file's six top-block picks, score order (5, 4, 4, 4, 3, 3; ties in file order); prices answered from data/price-matrix.json"
+    },
+    {
+      "n": "8",
+      "section": "The deposit and viewing",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Do I Have to Pay a Deposit Before I See My Blue Staffy Puppy?",
+          "children": [
+            {
+              "level": 3,
+              "text": "Can I Watch the Puppy and Its Mother on a Live Video Call First?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "How Do I Ask Lisa for the Video Call?",
+                  "children": [
+                    {
+                      "level": 5,
+                      "text": "What Should I Ask to See While We Are on the Call?",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "Why Does Seeing Maggie on Camera Matter?",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "text": "What Does the Deposit Actually Do?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "How Do I Pay the Deposit, and Does It Come Off the Price?",
+                  "children": [
+                    {
+                      "level": 5,
+                      "text": "What Happens to the Deposit If I Change My Mind?",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "How Much of the Deposit Comes Back, and Until When?",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "PDB",
+      "words": 240,
+      "cat": "C",
+      "why": "The London buyer's named fear (session brief Q8) that no ranking page answers in its own voice. Carries: the deposit books the viewing and reserves the puppy; it comes off the price; it is paid by bank transfer; a live video call with the puppy and its mother is offered on request before any deposit; and the refund clause — up to 70% refundable if you change your mind up to 1 day before collection or delivery — read from a data key the build adds to data/settings.json (user ruling 2026-09-30, session brief Open Flags). The deposit amount is read from deposit_gbp. Never called plainly \"refundable\".",
+      "why_source": "how_we_win[0]",
+      "keywords": {
+        "primary": [
+          "should i see the puppy with its mother before any money changes hands",
+          "is it safe to pay a deposit to a seller i found through an online advert"
+        ],
+        "secondary": [
+          "how do i tell a genuine online puppy advert from a scam",
+          "staffy breeder"
+        ]
+      },
+      "image": "H2: public/images/breeder-sitting-blue-staffy-puppy-home.webp (served) · H3 video call: a phone-screen video-call image — candidate public/images/uk-blue-staffy-breeders-contact-form-support.webp, else a generated image per IMAGE-DESIGNS.md approved on the board · H3 deposit: IG-2 Process Steps infographic (video call → deposit → viewing → collection or delivery), or public/images/how-to-buy-blue-staffy-puppy-uk-steps1.webp"
+    },
+    {
+      "n": "9",
+      "section": "Delivery and collection",
+      "headings": [
+        {
+          "level": 2,
+          "text": "How Does a Blue Staffy Puppy Get From Carlisle to London?",
+          "children": [
+            {
+              "level": 3,
+              "text": "What Does Home Delivery to London Cost, and How Does the Puppy Travel?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "Is the Transport DEFRA-Approved?",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "text": "Can I Collect My Puppy in Carlisle Instead?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "What Should I Bring for the Journey Home to London?",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "FAB",
+      "words": 170,
+      "cat": "C",
+      "why": "No ranking page prices getting a puppy to London or says how it travels. Carries the UK home delivery band and method from data/settings.json (delivery_min_gbp, delivery_max_gbp, delivery_note), and collection in Carlisle as the alternative.",
+      "why_source": "universal_gaps[3]",
+      "keywords": {
+        "primary": [
+          "staffie puppies in london"
+        ],
+        "secondary": [
+          "staffordshire puppy"
+        ]
+      },
+      "image": "H2: public/images/ethical-staffy-puppy-london-delivery.webp (served) · H3 delivery: public/images/defra-pet-transport-process.webp · H3 collection: public/images/blue-staffy-puppy-preparation.webp"
+    },
+    {
+      "n": "10",
+      "section": "The litter and prices",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Which Blue Staffy Puppies Are Available Now, and What Do They Cost?",
+          "children": [
+            {
+              "level": 3,
+              "text": "Who Are the Parents, Maggie and Jones?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "What Is Maggie Like as a Mother?",
+                  "children": []
+                },
+                {
+                  "level": 4,
+                  "text": "What Does Jones Pass On as the Sire?",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "text": "How Much Is Each Puppy in This Litter?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "Where Can I See Each Puppy's Own Page?",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "EEBP",
+      "words": 190,
+      "cat": "C",
+      "why": "No ranking page is a single accountable breeder with prices. Carries the six puppies and their prices from data/puppies.json and data/price-matrix.json (never typed) and the parents, Maggie (dam) and Jones (sire).",
+      "why_source": "universal_gaps[7]",
+      "keywords": {
+        "primary": [
+          "blue staffy puppies london price",
+          "how much are blue staffy puppies in the uk"
+        ],
+        "secondary": [
+          "how much is a blue staffordshire puppy",
+          "blue staffy puppies",
+          "blue staffy puppy",
+          "blue staffie puppies",
+          "how rare are blue staffies"
+        ]
+      },
+      "image": "H2: public/images/blue-staffy-puppies-uk-litter1.webp (served) · H3 parents: public/images/jones-magnificent-blue-staffy-sire.webp, with public/images/maggie-blue-staffy-dam-with-pups.webp repeated under a new alt (rule 11) · H3 prices: the puppy card images public/images/puppies/<slug>-card-800.webp",
+      "note": "\"how rare are blue staffies\" is answered in prose from a cited breed source, with no invented rarity figure"
+    },
+    {
+      "n": "11",
+      "section": "Review — middle",
+      "headings": [],
+      "framework": "—",
+      "words": 55,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "Reviewer card: Rachel L., London (data/reviews.json row 3)"
+    },
+    {
+      "n": "12",
+      "section": "FAQ block (middle)",
+      "headings": [
+        {
+          "level": 2,
+          "text": "What Do London Buyers Ask About Visiting, Health and Support?",
+          "children": [
+            {
+              "level": 3,
+              "text": "Should I See the Puppy With Its Mother Before Any Money Changes Hands?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Are the Puppy's Parents Health Tested?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Will the Breeder Still Support Me After I Collect the Puppy?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Can I Visit You Before I Decide?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Do You Offer Health Guarantees for Your Blue Staffy Puppies?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK.uk?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "What Makes BlueStaffyUK an Ethical Breeder?",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "faq": true,
+      "framework": "QAB",
+      "words": 300,
+      "cat": "A",
+      "why": "—",
+      "keywords": {
+        "primary": [
+          "blue staffy puppies london"
+        ]
+      },
+      "image": "—",
+      "note": "The question file's seven middle-block picks, score order (5, 4, 4, 3, 2, 2, 2; ties in file order); the guarantee answer reads guarantee_label and guarantee_cover, never typed; the parents answer names the tests, never a result"
+    },
+    {
+      "n": "13",
+      "section": "Health and raising",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Which Health Tests Should a Staffy Breeder Talk You Through?",
+          "children": [
+            {
+              "level": 3,
+              "text": "What Are L-2-HGA and HC-HSF4, and Why Should I Ask About Them?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "What About Eye and Elbow Checks?",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "text": "What Does Kennel Club Registration Tell Me as a Buyer?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "How Do I Check a Registration Myself?",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "QAB",
+      "words": 180,
+      "cat": "C",
+      "why": "The parents' named tests — L-2-HGA, HC-HSF4, eye and elbow — named, never a result or a DNA certificate (plan Ruling 4); Kennel Club registration explained; no licence claim (Ruling 5).",
+      "why_source": "content_gap[3]",
+      "keywords": {
+        "primary": [
+          "health tested staffy breeder"
+        ],
+        "secondary": [
+          "blue staffy puppies london kennel club",
+          "kennel club",
+          "staffy breeders",
+          "blue staffordshire",
+          "blue staffie"
+        ]
+      },
+      "image": "H2: public/images/find-health-certified-staffy-breeders-uk.webp (served) · H3 tests: public/images/what-health-tests-blue-staffies-need.webp · H3 Kennel Club: public/images/kc-registered-blue-staffy-pups-london.webp"
+    },
+    {
+      "n": "14",
+      "section": "What comes with the puppy",
+      "headings": [
+        {
+          "level": 2,
+          "text": "What Paperwork and Care Come Home With Our Puppies?",
+          "children": [
+            {
+              "level": 3,
+              "text": "Is the Puppy Microchipped and Vaccinated Before It Leaves?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "What Does the Written Contract Cover?",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "EEBP",
+      "words": 130,
+      "cat": "C",
+      "why": "What comes home with the puppy — microchip, vaccinations, Kennel Club registration paperwork and the written contract — a gap no ranking page fills; each item stated only as the breeder has confirmed it.",
+      "why_source": "content_gap[4]",
+      "keywords": {
+        "primary": [
+          "kennel club"
+        ]
+      },
+      "image": "H2: public/images/puppy-vaccinations-uk.webp (served) · H3: public/images/blue-staffy-puppy-vet-check-uk.webp"
+    },
+    {
+      "n": "15",
+      "section": "London life",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Will a Blue Staffy Be Happy Living in London?",
+          "children": [
+            {
+              "level": 3,
+              "text": "Can a Staffy Settle in a London Flat Without a Garden?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "What Behaviour Issues Should a Flat Owner Watch For?",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "text": "Is a Staffy Happy Left Alone While I Commute?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "How Long Can a Young Puppy Be Left at First?",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "QAB",
+      "words": 160,
+      "cat": "C",
+      "why": "London life — flats, a Staffy as a house dog, time alone — which no ranking page answers for a London buyer.",
+      "why_source": "content_gap[5]",
+      "keywords": {
+        "primary": [
+          "is a staffy a good house dog"
+        ],
+        "secondary": [
+          "what are common staffie behavioral issues",
+          "blue staffies",
+          "blue staffordshire bull terrier"
+        ]
+      },
+      "image": "H2: public/images/blue-staffy-testimonial-london-happy-owner.webp (served) · H3 flat: public/images/blue-staffy-family-dog-uk.webp · H3 alone: public/images/playful-blue-staffy-lawn-uk.webp"
+    },
+    {
+      "n": "16",
+      "section": "Newsletter",
+      "headings": [],
+      "framework": "—",
+      "words": 35,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "—"
+    },
+    {
+      "n": "17",
+      "section": "Temperament (extra section)",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Are Blue Staffies Aggressive, or Just Very Attached to Their People?",
+          "children": [
+            {
+              "level": 3,
+              "text": "Will My Staffy Bond With One Person or the Whole Household?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "How Much Exercise Keeps a Staffy Calm Each Day?",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "QAB",
+      "words": 130,
+      "cat": "C",
+      "why": "Extra section 1 of 3 (question file extra_sections, topic temperament, uncovered: true — no pooled page answers it): aggression, attachment and daily exercise, the house-dog temperament content_gap[5] points to.",
+      "why_source": "content_gap[5]",
+      "keywords": {
+        "primary": [
+          "what are common staffie behavioral issues"
+        ]
+      },
+      "image": "H2: public/images/busting-common-staffy-myths-loving-family-dog.webp (served) · H3: public/images/1blue-staffy-family-breeder.webp",
+      "note": "keyword repeated from London life (not moved) so the row has a primary; the distribution places none here"
+    },
+    {
+      "n": "18",
+      "section": "Breed (extra section)",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Is a Blue Staffy a Pit Bull or an American Staffy?",
+          "children": [
+            {
+              "level": 3,
+              "text": "How Can I Tell an English Staffy From an American One?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "What Makes a Staffy's Coat Blue?",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "QAB",
+      "words": 130,
+      "cat": "C",
+      "why": "Extra section 2 of 3 (question file extra_sections, topic breed, uncovered: true): pit bull, American or English Staffy, and what makes a Staffy blue — the colour answer no ranking page gives.",
+      "why_source": "universal_gaps[6]",
+      "keywords": {
+        "primary": [
+          "blue staffordshire bull terrier"
+        ]
+      },
+      "image": "H2: public/images/staffordshire-bull-terrier-vs-american-bully-comparison.webp (served) · H3: public/images/sbt-history-heritage-from-pit-to-pet.webp",
+      "note": "keyword repeated from London life (not moved) so the row has a primary"
+    },
+    {
+      "n": "19",
+      "section": "Health (extra section)",
+      "headings": [
+        {
+          "level": 2,
+          "text": "What Health Problems Are Staffies Prone To?",
+          "children": [
+            {
+              "level": 3,
+              "text": "Why Do Some Staffies Scratch So Much?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "When Should I Call the Vet About Itchy Skin?",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "framework": "QAB",
+      "words": 130,
+      "cat": "C",
+      "why": "Extra section 3 of 3 (question file extra_sections, topic health, uncovered: true): what the breed is prone to and itchy skin, with breed facts cited to a named source and no result for our dogs.",
+      "why_source": "content_gap[3]",
+      "keywords": {
+        "primary": [
+          "health tested staffy breeder"
+        ]
+      },
+      "image": "H2: public/images/blue-staffy-health-prioritising-wellbeing.webp (served) · H3: public/images/blue-staffy-vet-check.webp",
+      "note": "keyword repeated from Health and raising (not moved) so the row has a primary"
+    },
+    {
+      "n": "20",
+      "section": "Review — bottom",
+      "headings": [],
+      "framework": "—",
+      "words": 55,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "Reviewer card: The Victoria Family, Manchester (data/reviews.json row 1)"
+    },
+    {
+      "n": "21",
+      "section": "The FAQ blocks",
+      "headings": [
+        {
+          "level": 2,
+          "text": "What Do London Buyers Ask About Living With a Staffy?",
+          "children": [
+            {
+              "level": 3,
+              "text": "Are Blue Staffies Suitable for First-Time Dog Owners?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Is a Staffy a Good House Dog?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Is It Better to Get a Male or Female Staffy?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Are Blue Staffies Good Family Pets, Especially With Children?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Are Staffies Hard to Train?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Are the Puppies Raised in a Family Home or in Kennels?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Can a Staffordshire Bull Terrier Live in a Flat?",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "faq": true,
+      "framework": "QAB",
+      "words": 300,
+      "cat": "A",
+      "why": "—",
+      "keywords": {
+        "primary": [
+          "is it better to get a male or female staffy"
+        ]
+      },
+      "image": "—",
+      "note": "The bottom FAQ block; named \"The FAQ blocks\" because the research board's distribution places its FAQ keyword under that name. The question file's seven bottom-block picks, score order (4, 4, 4, 2, 2, 2, 2; ties in file order)"
+    },
+    {
+      "n": "22",
+      "section": "Enquiry form",
+      "headings": [],
+      "framework": "—",
+      "words": 40,
+      "cat": "A",
+      "why": "—",
+      "keywords": {},
+      "image": "—"
+    }
+  ],
+  "schema": "LocalBusiness (areaServed London; no telephone while PHONE_PLACEHOLDER) + FAQPage (exactly the visible questions) + BreadcrumbList + VideoObject if the video section is kept + Product only where a puppy card shows (one offer each)",
+  "components": "Chosen at STOP 3 (the page board), after this outline is approved; the 15 London picks are the menu.",
+  "approval": null
+}
