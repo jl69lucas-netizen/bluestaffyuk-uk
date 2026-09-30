@@ -841,7 +841,7 @@
       "headings": [
         {
           "level": 2,
-          "text": "Which Health Tests Should a Staffy Breeder Talk You Through?",
+          "text": "What Should a Health Tested Staffy Breeder Show You Before You Buy?",
           "children": [
             {
               "level": 3,
@@ -1642,7 +1642,12 @@
   ],
   "schema": "LocalBusiness (areaServed London; no telephone while PHONE_PLACEHOLDER) + FAQPage (exactly the visible questions) + BreadcrumbList + VideoObject if the video section is kept + Product only where a puppy card shows (one offer each)",
   "components": "Chosen at STOP 3 (the page board), after this outline is approved; the 15 London picks are the menu.",
-  "approval": null,
+  "approval": {
+    "approved_on": "2026-09-30",
+    "answers": "docs/reference/answer-board/answers/2026-09-30-outline-v2-blue-staffy-puppies-london-2026-09-30.json",
+    "record_hash": "93a195fccb044bea",
+    "research_hash": "15f05584a59597e8"
+  },
   "header_crossover": {
     "date": "2026-09-30",
     "tool": "scripts/pageboard.py header_precheck() with its _whitelisted() and head-term shingle filters (the page-board collision gate), run from a one-off driver; scripts/dup_content_audit.py --headers reads only a built dist/, which this worktree does not have",
@@ -1994,6 +1999,13 @@
       "was": "Why Do Some Staffies Scratch So Much?",
       "now": "Why Do Some Blue Staffies Scratch So Much?",
       "reason": "Two-Keyword Headers (seo-rules Rule 28b): adds a universe keyword beside the heading's related term ('blue staffies' + 'scratch')"
+    },
+    {
+      "row": "13",
+      "level": 2,
+      "was": "Which Health Tests Should a Staffy Breeder Talk You Through?",
+      "now": "What Should a Health Tested Staffy Breeder Show You Before You Buy?",
+      "reason": "STOP 2 v2 q02 (a): the user took every (Recommended) variant, 2026-09-30"
     }
   ]
 }
