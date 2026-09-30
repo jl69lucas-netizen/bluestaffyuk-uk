@@ -1311,12 +1311,17 @@ register({
  * THE UNIT is one visible `.page-toc`. Its list's left edge (the first painted item) must sit
  * within 1px of the content edge of the page's container, measured by placing an empty
  * `.container` in the same parent. A page with no `<main>` is a defect.
+ *
+ * AND THE BODY UNDER IT (the design-polish pick 3(a), 2026-09-30): the blog post's body was a
+ * centred 760px measure with a 16px gutter, so under chips at x = 64 its prose started at x = 276
+ * (1280), 148 (1024), 20 (768) and 16 (375). The first visible paragraph after the list in the
+ * same parent, outside a kit or city-kit component, must start on the same container edge.
  */
 register({
   id: 'layout-toc-aligns-with-container',
   family: 'LAYOUT',
   severity: 'blocking',
-  describe: 'a page contents list starts on the page container\'s content edge',
+  describe: 'a page contents list, and the body under it, start on the page container\'s content edge',
   minExamined: 1,
   async run(page: Page, viewport: number): Promise<CheckResult> {
     const r = await page.evaluate(() => {
@@ -1340,6 +1345,20 @@ register({
         const left = first.getBoundingClientRect().left;
         if (Math.abs(left - edge) > 1) {
           bad.push(`the contents list starts at x = ${Math.round(left)}, the container's content edge is x = ${Math.round(edge)}`);
+        }
+        let para: Element | null = null;
+        for (let sib = toc.nextElementSibling; sib && !para; sib = sib.nextElementSibling) {
+          const ps = sib.matches('p') ? [sib] : Array.from(sib.querySelectorAll('p'));
+          para = ps.find((p) => !p.closest('[class^="kit-"], [class*=" kit-"], .city-kit')
+            && p.checkVisibility({ visibilityProperty: true }) && (p.textContent || '').trim() !== '') || null;
+        }
+        if (para) {
+          const range = document.createRange();
+          range.selectNodeContents(para);
+          const xs = Array.from(range.getClientRects()).filter((x) => x.width > 0 && x.height > 0).map((x) => x.left);
+          if (xs.length && Math.abs(Math.min(...xs) - edge) > 1) {
+            bad.push(`the body under the contents list starts at x = ${Math.round(Math.min(...xs))}, the container's content edge is x = ${Math.round(edge)}`);
+          }
         }
       }
       return { noMain: false, examined, bad };
@@ -1431,6 +1450,80 @@ register({
           count: r.bad.length,
           message: `${r.bad.length} of ${r.examined} body heading(s) off the brand colour rule: ${r.bad.slice(0, 6).join(' | ')}`,
         }]
+        : [],
+    };
+  },
+});
+
+/**
+ * UNBOXED AND BOXED PROSE START ON ONE EDGE (the design-polish pick 3(a), 2026-09-30; preview
+ * docs/artifacts/bsuk-design-polish-preview.html, item 3).
+ *
+ * Below 1024px an unboxed section and a `.bl-box` both carried 24px, so their text agreed. At
+ * 1024px and up board-styles.css released the unboxed sections' gutter (the dial grid already
+ * pads the column) while a box kept its padding, so on every dial page with unboxed sections the
+ * unboxed text started 24px left of the boxed text (252 against 276 at 1024, 292 against 316 at
+ * 1280): two text edges in one column.
+ *
+ * THE UNIT is one visible paragraph in a page column (the nearest `.page-body`, else `<main>`)
+ * outside any kit or city-kit component (those set their own insets). A paragraph inside a
+ * `.bl-box` is boxed, any other unboxed; each group's edge is its leftmost painted text. Where a
+ * column has both, the unboxed edge must sit within 1px of the boxed edge. The examined count is
+ * the unboxed paragraphs so compared (a column with only one group compares nothing). The blog
+ * post has no box; its body is held to the container edge by `layout-toc-aligns-with-container`.
+ * A page with no `<main>` is a defect.
+ */
+register({
+  id: 'layout-body-text-shares-edge',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'unboxed and boxed prose in a page column start on one edge',
+  minExamined: 2,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await page.evaluate(() => document.fonts.ready);
+    const r = await page.evaluate(() => {
+      const main = document.querySelector('main');
+      if (!main) return { noMain: true, examined: 0, bad: [] as string[] };
+      const KIT = '[class^="kit-"], [class*=" kit-"], .city-kit';
+      const left = (el: Element) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const xs = Array.from(range.getClientRects()).filter((x) => x.width > 0 && x.height > 0).map((x) => x.left);
+        return xs.length ? Math.min(...xs) : null;
+      };
+      const columns = Array.from(main.querySelectorAll('.page-body'));
+      if (!columns.length) columns.push(main);
+      let examined = 0;
+      const bad: string[] = [];
+      for (const col of columns) {
+        const boxed: { x: number; t: string }[] = [];
+        const unboxed: { x: number; t: string }[] = [];
+        for (const p of Array.from(col.querySelectorAll('p'))) {
+          if (p.closest(KIT) || !p.checkVisibility({ visibilityProperty: true })) continue;
+          if ((p.closest('.page-body') || main) !== col) continue;
+          const text = (p.textContent || '').trim().replace(/\s+/g, ' ');
+          if (!text) continue;
+          const x = left(p);
+          if (x === null) continue;
+          (p.closest('.bl-box') ? boxed : unboxed).push({ x, t: text.slice(0, 40) });
+        }
+        if (!boxed.length || !unboxed.length) continue;
+        examined += unboxed.length;
+        const b = boxed.reduce((m, e) => (e.x < m.x ? e : m));
+        const u = unboxed.reduce((m, e) => (e.x < m.x ? e : m));
+        if (Math.abs(u.x - b.x) > 1) {
+          bad.push(`unboxed prose starts at x = ${Math.round(u.x)} ("${u.t}"), boxed prose at x = ${Math.round(b.x)} ("${b.t}")`);
+        }
+      }
+      return { noMain: false, examined, bad };
+    });
+    if (r.noMain) {
+      return { examined: 0, defects: [{ checkId: 'layout-body-text-shares-edge', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no prose could be judged' }] };
+    }
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{ checkId: 'layout-body-text-shares-edge', family: 'LAYOUT' as const, viewport, count: r.bad.length, message: r.bad.join(' | ') }]
         : [],
     };
   },

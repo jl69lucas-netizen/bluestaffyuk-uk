@@ -118,8 +118,7 @@
      with no class) owned none, so below 1024px their headings and paragraphs ran from x = 0 to
      the edge on ten of the twelve built pages. A contents list mounted by a page rather than
      by the shell (the blog-post template's `.page-toc`) misses the shell's scoped gutter the
-     same way. They take a box's own 24px. Where the shell's grid already pads the column, the
-     sections keep the width they had. A kit or city-kit section root owns its own gutter (a city
+     same way. They take a box's own 24px, at every width (see the note below the rule). A kit or city-kit section root owns its own gutter (a city
      section's lives on its inner tray) and is left alone, and so is a wrapper whose child is a kit
      section band (the blog-post template's `<section slot="hero">` around the kit hero, or a CTA
      band): the band spans its column, and padding the wrapper inset it with a white strip each
@@ -133,9 +132,12 @@
      (the Known Issue 97 re-review, B2; layout-toc-aligns-with-container). (0,3,0), so it
      outranks PageNav's own `.kit-nav { max-width: 640px }`, as the shell's scoped rule does. */
   .page-body > .kit-nav.page-toc { max-width: var(--container); margin-inline: auto; padding-inline: var(--space-5); }
-  @media (width >= 1024px) {
-    .page-shell:is(.has-dial, .has-own-dial) > .page-body > :where(section:not(.bl-box, .city-kit, [class^="kit-"], [class*=" kit-"], :has(> section[class^="kit-"], > section[class*=" kit-"]))) { padding-inline: 0; }
-  }
+  /* No release at 1024px and up (the design-polish pick 3(a), the user in chat 2026-09-30;
+     preview docs/artifacts/bsuk-design-polish-preview.html, item 3). A rule here set the unboxed
+     sections' padding to 0 where the dial grid already pads the column, while a .bl-box kept its
+     24px, so unboxed text started 24px left of boxed text (292 against 316 at 1280). The gutter
+     above now holds at every width, one edge, the box's. Held by
+     tests/render/checks/layout.ts::layout-body-text-shares-edge. */
   .bl-lede { margin: 0; font-size: var(--text-lg); max-width: 60ch; }
   .bl-eyebrow {
     margin: 0 0 var(--space-2);

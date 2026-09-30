@@ -85,6 +85,12 @@
       "cluster_cleared": "new 2026-09-30 (the design-polish pick 1(a)) together with the body-heading colour rule in src/styles/board-styles.css that makes it pass: blocking on every page from its first run, because every body H2, H3 and H4 on the built pages painted --color-ink while rules/design.md rule 1 gives headings --color-brand; a heading in a band or inverse box fails the other way, when it paints the brand colour on the band",
       "false_reports": 0
     },
+    "layout-body-text-shares-edge": {
+      "scope": "all",
+      "since": "2026-09-30",
+      "cluster_cleared": "new 2026-09-30 (the design-polish pick 3(a)) together with the deletion of the unboxed-gutter release rule in src/styles/board-styles.css that makes it pass: blocking on every page from its first run; on the build before the change it fired at 1280 on every dial page with unboxed sections (unboxed text at x = 292, boxed at x = 316) and was clean at 375 and 768",
+      "false_reports": 0
+    },
     "layout-heading-size-order": {
       "scope": "all",
       "since": "2026-09-29",

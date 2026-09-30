@@ -180,8 +180,17 @@ const schema = [
        rules have to reach them with `:global()`. Only what a MARKDOWN body needs is here —
        the measure, the heading rhythm, the image box — and every value is a kit token, so a
        post reads like the rest of the site without a second type scale beside it. */
-    .post-body { max-width: var(--text-max); margin-inline: auto;
-                 padding-inline: var(--space-4); padding-block: var(--space-8); }
+    /* ON THE CONTAINER'S EDGE, AT THE TEXT MEASURE (the design-polish pick 3(a), the user in chat
+       2026-09-30). The body was a centred 760px box with a 16px gutter, so under the hero, the
+       date and the contents chips (all on the 1200px container's 24px edge) its prose started at
+       x = 276 at 1280 and 16 at 375. The box is now the container's and each child keeps the
+       760px measure from its left edge. A paragraph is left out: global.css caps `main p` at 70ch
+       in @layer base, which this layer would otherwise override, and the move is an edge, not a
+       longer line (the paragraphs stay 591px wide at 17px, as before). Held by
+       layout-toc-aligns-with-container. */
+    .post-body { max-width: var(--container); margin-inline: auto;
+                 padding-inline: var(--space-5); padding-block: var(--space-8); }
+    .post-body > :global(:not(p)) { max-width: var(--text-max); }
     /* NO `scroll-margin-top` HERE. global.css gives every `[id]`
        `calc(var(--hdr-measured, var(--hdr)) + 16px)`, measured off the real sticky header at
        runtime; a fixed value in this block out-specified it and landed every H2 jump 64px up

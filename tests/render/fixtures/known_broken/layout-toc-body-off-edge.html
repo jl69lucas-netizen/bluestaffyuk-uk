@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>the body under the contents list off the container edge</title>
+<!-- As the blog post shipped before the design-polish pick 3(a) (2026-09-30): "Last updated" and
+     the contents chips start on the container edge, but the post body is a centred 760px measure
+     with a 16px gutter, so its prose starts elsewhere at every width. The chips are on the edge,
+     so only the body reading can fire. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  .container { max-width: 1200px; margin-inline: auto; padding-inline: 24px; }
+  .page-body > .page-toc { max-width: 1200px; margin-inline: auto; padding-inline: 24px; }
+  .toc ul { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0; }
+  .post-body { max-width: 200px; margin-inline: auto; padding-inline: 16px; }
+</style>
+</head><body>
+<main>
+  <div class="page-shell"><div class="page-body">
+    <div class="container post-date"><p>Last updated: 21 September 2026</p></div>
+    <div class="kit-nav page-toc"><nav class="toc"><ul><li><a href="#a">Buy</a></li><li><a href="#b">Guide</a></li></ul></nav></div>
+    <article class="post-body"><p>The first paragraph of the post.</p></article>
+  </div></div>
+</main>
+</body></html>

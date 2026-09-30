@@ -2184,3 +2184,19 @@ test.describe('layout-boxed-h2-fits judges the weight', () => {
     expect(r.defects[0].message).toContain('weight 400');
   });
 });
+
+/**
+ * The contents-list check also holds the body under the list to the container edge (the
+ * design-polish pick 3(a), 2026-09-30). The generic known_broken fixture fires on the chips, so it
+ * cannot show the body reading works: here the chips are on the edge and only the body is off.
+ */
+test.describe('layout-toc-aligns-with-container judges the body under the list', () => {
+  test('a centred post body under on-edge chips fires', async ({ page }, testInfo) => {
+    expect((await page.goto(fixtureUrl('known_broken', 'layout-toc-body-off-edge')))?.status()).toBe(200);
+    const check = registry.find((c) => c.id === 'layout-toc-aligns-with-container')!;
+    const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(1);
+    expect(r.defects.length, 'a post body off the container edge passed').toBe(1);
+    expect(r.defects[0].message, 'only the body reading fires; the chips are on the edge').toMatch(/^the body under the contents list starts at x = \d+, the container's content edge is x = \d+$/);
+  });
+});
