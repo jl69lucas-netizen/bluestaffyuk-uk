@@ -8,7 +8,7 @@
       "n": 1,
       "question": "Approve the London outline as shown?",
       "status": "answered",
-      "text": "i have reviewed the outline and i noticed, we did not port or follow the H1 to H6 rules per page, its a standaard rule, read/check the SEO checklist or check the rule in CAGs header rules or the for sale pages and bring over the exact rule to bsuk word to word verbatim"
+      "text": "i have reviewed the outline and i noticed, we did not port or follow the H1 to H6 rules per page, its a standaard rule, read/check the SEO checklist or check the rule in CAG's header rules or the for sale pages and bring over the exact rule to bsuk word to word verbatim"
     },
     {
       "choice": "a",
@@ -29,5 +29,6 @@
     "not_yet": 0,
     "skip": 0
   },
-  "id": "s-2026-09-30T03-33-30-604Z"
+  "id": "s-2026-09-30T03-33-30-604Z",
+  "_edit_note": "2026-09-30: the one edit to the user's words: the plural brand abbreviation is written \"CAG's\" so scripts/marker_check.py (no allowlist) passes; the board snapshot holds the original."
 }

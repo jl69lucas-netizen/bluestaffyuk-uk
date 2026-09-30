@@ -99,6 +99,12 @@ Roman, Byrd and Ince at £1,500; Vennie, Christa and Cheryl at £1,700. The depo
 and refundable. Never write a health screen or a licence: neither is established. The
 guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it.
 
+### "Polish or de-cannibalise the puppy pages"
+→ `.claude/skills/bsuk-puppy-page-excellence/SKILL.md` — differentiates the
+`/available-puppies/` pages on the axes `data/puppies.json` actually records (colour and
+marking within a sex, sex across a shared colour), plus the banked image, contrast,
+Product/Offer and geo-block fixes. Ends in `bsuk-final-page-pass`.
+
 ### "Ask the user questions" / "read my answers"
 → the answer board: `docs/reference/answer-board/README.md`. A batch is made with
 `python3 scripts/answer_board_batch.py <sheet> --project <name>` and written to the board with
