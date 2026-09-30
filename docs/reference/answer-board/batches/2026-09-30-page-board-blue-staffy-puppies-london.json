@@ -1,0 +1,37 @@
+{
+  "askedAt": "2026-09-30T04:38:14Z",
+  "id": "2026-09-30-page-board-blue-staffy-puppies-london",
+  "intro": "The page board: https://claude.ai/artifact/CbemmwUeW5qGEmEFog7ezz. It maps each approved outline section to its London kit component (the ones you picked in the component pass, so there are no style trios to choose), lists all 27 links (21 internal, including 4 enquiry links, and 6 external) with their anchor types, and shows all 29 image slots. Make any image picks on the board itself and press its approve button; this question records that you have.",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "Recommended: (a). Why: block 7b shows every project 5 rule passing, and the gate's only remaining fail is the approval itself. Trade-off: 28 of the 29 image slots use photos already served on the site (none of London itself; your Assets folder is not reachable from this cloud session), and one slot is an IG-2 infographic still to be made. The hero keeps Maggie's served alt (rule 11), so the primary keyword sits in her second photo's alt instead of the hero's.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "Approved on the board"
+        },
+        {
+          "id": "b",
+          "label": "Changes needed (say which in the text box)"
+        }
+      ],
+      "question": "Have you approved the London page board?",
+      "section": 0,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Approval"
+    }
+  ],
+  "status": "open",
+  "title": "London page board · approve the components, links and images"
+}
