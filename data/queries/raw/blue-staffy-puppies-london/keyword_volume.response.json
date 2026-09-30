@@ -1,0 +1,84 @@
+{
+ "_saved_note": "DataForSEO kw_data_google_ads_search_volume via the claude.ai connector, 2026-09-30. Request: 30 keywords (listed in _request.keywords), location United Kingdom, language en, one task. The connector's response carries no cost field; recorded at the guard's keyword_volume estimate ($0.10). Saved as returned: the response lists only the first 10 of the 30 keywords, and none of the 10 carries a search_volume, competition, cpc or monthly_searches field — the connector returned keyword and location_code only. No third-party contact detail was present.",
+ "_request": {
+  "keywords": [
+   "blue staffy puppies london",
+   "how much are blue staffy puppies in the uk",
+   "how much is a blue staffordshire puppy",
+   "how rare are blue staffies",
+   "is it better to get a male or female staffy",
+   "what are common staffie behavioral issues",
+   "is a staffy a good house dog",
+   "blue staffy puppies london price",
+   "blue staffy puppies london kennel club",
+   "staffordshire bull terrier puppies and dogs for sale in london",
+   "staffie puppies in london",
+   "staffies in london",
+   "blue staffy",
+   "blue staffie",
+   "blue staffie puppies",
+   "blue staffy puppies",
+   "blue staffordshire bull terrier",
+   "blue staffies",
+   "blue staffy puppy",
+   "blue staffordshire bull terrier puppies",
+   "blue staffordshire",
+   "kennel club",
+   "staffordshire puppy",
+   "staffy breeder",
+   "staffy breeders",
+   "health tested staffy breeder",
+   "staffie puppies for sale in barnet london",
+   "blue staffie puppies for sale in southall london",
+   "blue staffie puppies for sale in paddington london",
+   "chunky working blue staffordshire bull terrier"
+  ],
+  "location_name": "United Kingdom",
+  "language_code": "en"
+ },
+ "id": "09300037-2496-0367-0000-f3ea949b702a",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "keyword": "blue staffy puppies london",
+   "location_code": 2826
+  },
+  {
+   "keyword": "how much are blue staffy puppies in the uk",
+   "location_code": 2826
+  },
+  {
+   "keyword": "how much is a blue staffordshire puppy",
+   "location_code": 2826
+  },
+  {
+   "keyword": "how rare are blue staffies",
+   "location_code": 2826
+  },
+  {
+   "keyword": "is it better to get a male or female staffy",
+   "location_code": 2826
+  },
+  {
+   "keyword": "what are common staffie behavioral issues",
+   "location_code": 2826
+  },
+  {
+   "keyword": "is a staffy a good house dog",
+   "location_code": 2826
+  },
+  {
+   "keyword": "blue staffy puppies london price",
+   "location_code": 2826
+  },
+  {
+   "keyword": "blue staffy puppies london kennel club",
+   "location_code": 2826
+  },
+  {
+   "keyword": "staffordshire bull terrier puppies and dogs for sale in london",
+   "location_code": 2826
+  }
+ ]
+}

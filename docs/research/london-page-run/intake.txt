@@ -1,0 +1,16 @@
+intake for /uk-locations/blue-staffy-puppies-london/
+  Mode                               stub
+  Page type                          location
+  Route                              /uk-locations/blue-staffy-puppies-london/
+  Robots                             noindex, follow
+  Built page                         not built
+  Sitemap entry                      no dist/ to read
+  H1 (migrated row)                  EMPTY
+  Verbatim set                       stub — no verbatim set (Known Issue 79)
+  Rule 15 applies                    no
+  Question file                      none — run bsuk-query-augmentation
+  LLM intel                          docs/research/llm-intel/blue-staffy-puppies-london-2026-09-25.json (ok)
+  Board                              none
+  Search Console baseline            NOT FETCHED — GSC property unverified (domain expired); no exports on disk (data/page-map.json)
+  Inbound links (other pages' main)  no dist/ to read
+  Retired-term hits                  none

@@ -1,0 +1,130 @@
+{
+  "source": "threads",
+  "status": "ok",
+  "fetched": "2026-09-30",
+  "note": "Five threads seeded from data/queries/thread-ledger.json (read 2026-09-23 by the Leeds and Manchester runs; reuse window 180 days), scored for London. Five new candidates found by two Firecrawl searches on 2026-09-30 (4 credits) could not be opened: NOT FETCHED — www.reddit.com returned its 'Prove your humanity' bot wall to the Playwright MCP browser and to the chrome-devtools browser, WebFetch is refused for www.reddit.com, and /last30days is not installed in this non-interactive session. The unopened candidates are listed in docs/research/london-page-run/thread-search-2026-09-30.json and contribute no question.",
+  "questions": [
+    {
+      "text": "How can I be sure a puppy's Kennel Club registration will be issued if the papers are delayed?",
+      "detail": "thread:https://www.reddit.com/r/AskUK/comments/1okt0wb/buying_puppy_in_uk_are_we_getting_scamed/",
+      "fact_source": null
+    },
+    {
+      "text": "Where can I find a reputable, health-tested Staffy breeder in the UK?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "fact_source": null
+    },
+    {
+      "text": "Are the puppy's parents health tested?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "fact_source": "bank:about-health-tests"
+    },
+    {
+      "text": "Is there a waiting list for a well-bred Staffy puppy?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "fact_source": null
+    },
+    {
+      "text": "Will the breeder still support me after I collect the puppy?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "fact_source": "bank:home-after-support"
+    },
+    {
+      "text": "How do I find a reputable, health-tested Staffy breeder in the UK?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "fact_source": null
+    },
+    {
+      "text": "Can a Staffordshire Bull Terrier breed club point me to breeders with planned litters?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "fact_source": null
+    },
+    {
+      "text": "Can I go to a dog show to meet breeders if I have never owned a dog?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "fact_source": null
+    },
+    {
+      "text": "As a first-time owner, should I get a Staffy puppy or an adult rescue?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "fact_source": null
+    },
+    {
+      "text": "How do I tell a genuine online puppy advert from a scam?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/",
+      "fact_source": null
+    },
+    {
+      "text": "How can I tell whether a puppy advert on a UK classifieds site is genuine?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/",
+      "fact_source": null
+    },
+    {
+      "text": "Should I see the puppy with its mother before any money changes hands?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/",
+      "fact_source": "bank:health-avoid-puppy-farm"
+    },
+    {
+      "text": "Is it safe to pay a deposit to a seller I found through an online advert?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/",
+      "fact_source": null
+    },
+    {
+      "text": "Should I adopt a rescue dog or buy from a breeder?",
+      "detail": "thread:https://www.reddit.com/r/UK_Pets/comments/1v3ixmh/adoptingbuying_a_dog/",
+      "fact_source": null
+    }
+  ],
+  "threads": [
+    {
+      "permalink": "https://www.reddit.com/r/AskUK/comments/1okt0wb/buying_puppy_in_uk_are_we_getting_scamed/",
+      "title": "Buying puppy in uk, are we getting scamed?",
+      "subreddit": "r/AskUK",
+      "posted": "2025-10",
+      "replies": 49,
+      "score": 8,
+      "stale": false,
+      "seeded_from": "2026-09-23"
+    },
+    {
+      "permalink": "https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+      "title": "Reputable Staffordshire Bull Terrier breeders (UK)",
+      "subreddit": "r/UK_Pets",
+      "posted": "2026-04",
+      "replies": 32,
+      "score": 7,
+      "stale": false,
+      "seeded_from": "2026-09-23"
+    },
+    {
+      "permalink": "https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/",
+      "title": "Pets4homesuk",
+      "subreddit": "r/UK_Pets",
+      "posted": "2026-06",
+      "replies": 96,
+      "score": 8,
+      "stale": false,
+      "seeded_from": "2026-09-23"
+    },
+    {
+      "permalink": "https://www.reddit.com/r/UK_Pets/comments/1v3ixmh/adoptingbuying_a_dog/",
+      "title": "Adopting/Buying a dog",
+      "subreddit": "r/UK_Pets",
+      "posted": "2026-07",
+      "replies": 44,
+      "score": 6,
+      "stale": false,
+      "seeded_from": "2026-09-23"
+    },
+    {
+      "permalink": "https://www.reddit.com/r/puppy101/comments/1pcj7ph/getting_a_staffy_puppy_soon_but_i_live_on_a_2nd/",
+      "title": "Getting a Staffy puppy soon but I live on a 2nd floor flat advice on potty training?",
+      "subreddit": "r/puppy101",
+      "posted": "2025-12",
+      "replies": 17,
+      "score": 6,
+      "stale": false,
+      "seeded_from": "2026-09-23"
+    }
+  ]
+}

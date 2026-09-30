@@ -562,6 +562,101 @@
       "authorization": "ASSERTED",
       "source": "docs/reference/external-link-library.md",
       "owner_page": null
+    },
+    {
+      "id": "ont:maggie",
+      "name": "Maggie",
+      "aliases": [
+        "the dam",
+        "Maggie (dam)"
+      ],
+      "class": "Organism",
+      "authorization": "PROPOSED",
+      "source": "docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:jones",
+      "name": "Jones",
+      "aliases": [
+        "the sire",
+        "Jones (sire)"
+      ],
+      "class": "Organism",
+      "authorization": "PROPOSED",
+      "source": "docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:elbow-screening",
+      "name": "Elbow screening",
+      "aliases": [
+        "elbow testing",
+        "elbow screen"
+      ],
+      "class": "Health",
+      "authorization": "PROPOSED",
+      "source": null,
+      "owner_page": "blue-staffy-health-uk"
+    },
+    {
+      "id": "ont:puppy-culture",
+      "name": "Puppy Culture",
+      "aliases": [
+        "the Puppy Culture programme"
+      ],
+      "class": "Method",
+      "authorization": "PROPOSED",
+      "source": "docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:early-neurological-stimulation",
+      "name": "Early neurological stimulation",
+      "aliases": [
+        "ENS",
+        "early neurological stimulation (ENS)"
+      ],
+      "class": "Method",
+      "authorization": "PROPOSED",
+      "source": "docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:kc-registration-paperwork",
+      "name": "Kennel Club registration paperwork",
+      "aliases": [
+        "KC registration papers",
+        "registration papers"
+      ],
+      "class": "Documentation",
+      "authorization": "PROPOSED",
+      "source": "data/faq.json",
+      "owner_page": null
+    },
+    {
+      "id": "ont:vaccination-record",
+      "name": "Vaccination record",
+      "aliases": [
+        "vaccination records",
+        "vaccination card"
+      ],
+      "class": "Documentation",
+      "authorization": "PROPOSED",
+      "source": "data/faq.json",
+      "owner_page": null
+    },
+    {
+      "id": "ont:puppy-purchase-contract",
+      "name": "Written puppy purchase contract",
+      "aliases": [
+        "puppy contract",
+        "purchase contract"
+      ],
+      "class": "Documentation",
+      "authorization": "PROPOSED",
+      "source": "data/faq.json",
+      "owner_page": null
     }
   ]
 }

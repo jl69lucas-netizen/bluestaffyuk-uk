@@ -1,0 +1,79 @@
+{
+ "_saved_note": "Two DataForSEO Backlinks calls via the claude.ai connector, 2026-09-30, for the five competitor domains of London's pool (the four distinct domains of the Google top 5 and Bing top 5, plus ukpets.com, the next distinct domain, Bing #6): backlinks_bulk_ranks (rank_scale one_hundred) and backlinks_bulk_referring_domains. Neither response carries a cost field; each recorded at the guard's backlinks estimate ($0.05). Saved as returned. englishbluestaffypuppies.com came back from bulk_ranks with no rank field. No third-party contact detail was present.",
+ "targets": [
+  "staffie-owners.co.uk",
+  "pets4homes.co.uk",
+  "freeads.co.uk",
+  "englishbluestaffypuppies.com",
+  "ukpets.com"
+ ],
+ "bulk_ranks": {
+  "id": "09300037-2496-0347-0000-927cb6c83853",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "rank_scale": "one_hundred",
+  "items": [
+   {
+    "target": "staffie-owners.co.uk",
+    "rank": 14
+   },
+   {
+    "target": "pets4homes.co.uk",
+    "rank": 59
+   },
+   {
+    "target": "freeads.co.uk",
+    "rank": 51
+   },
+   {
+    "target": "englishbluestaffypuppies.com"
+   },
+   {
+    "target": "ukpets.com",
+    "rank": 44
+   }
+  ]
+ },
+ "bulk_referring_domains": {
+  "id": "09300037-2496-0351-0000-f7e722768d7b",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "items": [
+   {
+    "target": "staffie-owners.co.uk",
+    "referring_domains": 51,
+    "referring_domains_nofollow": 12,
+    "referring_main_domains": 47,
+    "referring_main_domains_nofollow": 12
+   },
+   {
+    "target": "pets4homes.co.uk",
+    "referring_domains": 17047,
+    "referring_domains_nofollow": 1405,
+    "referring_main_domains": 16622,
+    "referring_main_domains_nofollow": 1125
+   },
+   {
+    "target": "freeads.co.uk",
+    "referring_domains": 3517,
+    "referring_domains_nofollow": 1279,
+    "referring_main_domains": 2987,
+    "referring_main_domains_nofollow": 809
+   },
+   {
+    "target": "englishbluestaffypuppies.com",
+    "referring_domains": 149,
+    "referring_domains_nofollow": 1,
+    "referring_main_domains": 149,
+    "referring_main_domains_nofollow": 1
+   },
+   {
+    "target": "ukpets.com",
+    "referring_domains": 2638,
+    "referring_domains_nofollow": 182,
+    "referring_main_domains": 2584,
+    "referring_main_domains_nofollow": 182
+   }
+  ]
+ }
+}

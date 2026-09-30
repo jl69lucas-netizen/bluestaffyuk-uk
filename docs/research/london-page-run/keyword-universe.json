@@ -1,0 +1,238 @@
+{
+ "slug": "blue-staffy-puppies-london",
+ "date": "2026-09-30",
+ "volumes": "Bought on the user's approval (Task 4, 2026-09-30): one DataForSEO kw_data_google_ads_search_volume task for 30 keywords, UK, en. The connector returned the first 10 keywords only and no search_volume for any of them, so each keyword's volume below is written with the barrier that stopped it. Evidence: data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json",
+ "universe": [
+  {
+   "keyword": "blue staffy puppies london",
+   "intent": "transactional",
+   "type": "primary",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "the primary keyword (session brief; plan Task 10)"
+  },
+  {
+   "keyword": "how much are blue staffy puppies in the uk",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "Google People Also Ask, data/queries/raw/blue-staffy-puppies-london/serp_google.json (2026-09-30)"
+  },
+  {
+   "keyword": "how much is a blue staffordshire puppy",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "Google People Also Ask, data/queries/raw/blue-staffy-puppies-london/serp_google.json (2026-09-30)"
+  },
+  {
+   "keyword": "how rare are blue staffies",
+   "intent": "informational",
+   "type": "question",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "Google People Also Ask, data/queries/raw/blue-staffy-puppies-london/serp_google.json (2026-09-30)"
+  },
+  {
+   "keyword": "is it better to get a male or female staffy",
+   "intent": "informational",
+   "type": "question",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "Google People Also Ask, data/queries/raw/blue-staffy-puppies-london/serp_google.json (2026-09-30)"
+  },
+  {
+   "keyword": "what are common staffie behavioral issues",
+   "intent": "informational",
+   "type": "question",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "Google People Also Ask, data/queries/raw/blue-staffy-puppies-london/serp_google.json (2026-09-30)"
+  },
+  {
+   "keyword": "is a staffy a good house dog",
+   "intent": "informational",
+   "type": "question",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "Google People Also Ask, data/queries/raw/blue-staffy-puppies-london/serp_google.json (2026-09-30)"
+  },
+  {
+   "keyword": "blue staffy puppies london price",
+   "intent": "commercial",
+   "type": "related",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "Google related searches, data/queries/raw/blue-staffy-puppies-london/serp_google.json (2026-09-30)"
+  },
+  {
+   "keyword": "blue staffy puppies london kennel club",
+   "intent": "commercial",
+   "type": "related",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "Google related searches, data/queries/raw/blue-staffy-puppies-london/serp_google.json (2026-09-30)"
+  },
+  {
+   "keyword": "staffordshire bull terrier puppies and dogs for sale in london",
+   "intent": "transactional",
+   "type": "secondary",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) returned this keyword with no search_volume value",
+   "source": "cluster strategy, docs/superpowers/sessions/2026-09-25-location-pages-strategy.md lines 23-24"
+  },
+  {
+   "keyword": "staffie puppies in london",
+   "intent": "local",
+   "type": "secondary",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "cluster strategy, docs/superpowers/sessions/2026-09-25-location-pages-strategy.md lines 23-24; gap matrix docs/research/gap-matrix-2026-09-25.md line 97"
+  },
+  {
+   "keyword": "staffies in london",
+   "intent": "local",
+   "type": "secondary",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "cluster strategy, docs/superpowers/sessions/2026-09-25-location-pages-strategy.md lines 23-24; gap matrix docs/research/gap-matrix-2026-09-25.md line 108"
+  },
+  {
+   "keyword": "blue staffy",
+   "intent": "informational",
+   "type": "variation",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (variation)"
+  },
+  {
+   "keyword": "blue staffie",
+   "intent": "informational",
+   "type": "variation",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (variation)"
+  },
+  {
+   "keyword": "blue staffie puppies",
+   "intent": "commercial",
+   "type": "variation",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (variation)"
+  },
+  {
+   "keyword": "blue staffy puppies",
+   "intent": "commercial",
+   "type": "variation",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (variation)"
+  },
+  {
+   "keyword": "blue staffordshire bull terrier",
+   "intent": "informational",
+   "type": "variation",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (variation)"
+  },
+  {
+   "keyword": "blue staffies",
+   "intent": "informational",
+   "type": "variation",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (variation)"
+  },
+  {
+   "keyword": "blue staffy puppy",
+   "intent": "commercial",
+   "type": "variation",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (variation)"
+  },
+  {
+   "keyword": "blue staffordshire bull terrier puppies",
+   "intent": "commercial",
+   "type": "variation",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (variation)"
+  },
+  {
+   "keyword": "blue staffordshire",
+   "intent": "informational",
+   "type": "cooccurring",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (cooccurring)"
+  },
+  {
+   "keyword": "kennel club",
+   "intent": "navigational",
+   "type": "cooccurring",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (cooccurring)"
+  },
+  {
+   "keyword": "staffordshire puppy",
+   "intent": "commercial",
+   "type": "cooccurring",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (cooccurring)"
+  },
+  {
+   "keyword": "staffy breeder",
+   "intent": "commercial",
+   "type": "cooccurring",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (cooccurring)"
+  },
+  {
+   "keyword": "staffy breeders",
+   "intent": "commercial",
+   "type": "cooccurring",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (cooccurring)"
+  },
+  {
+   "keyword": "health tested staffy breeder",
+   "intent": "commercial",
+   "type": "cooccurring",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (cooccurring: health-tested staffy breeder)"
+  },
+  {
+   "keyword": "staffie puppies for sale in barnet london",
+   "intent": "transactional",
+   "type": "similar",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (similar: how the ranking pages word the query)"
+  },
+  {
+   "keyword": "blue staffie puppies for sale in southall london",
+   "intent": "transactional",
+   "type": "similar",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (similar: how the ranking pages word the query)"
+  },
+  {
+   "keyword": "blue staffie puppies for sale in paddington london",
+   "intent": "transactional",
+   "type": "similar",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (similar: how the ranking pages word the query)"
+  },
+  {
+   "keyword": "chunky working blue staffordshire bull terrier",
+   "intent": "transactional",
+   "type": "similar",
+   "volume": "NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30; data/queries/raw/blue-staffy-puppies-london/keyword_volume.response.json) was sent this keyword but its response listed only the first 10 of 30",
+   "source": "keyword variants, docs/research/london-page-run/keyword-variants.json (similar: how the ranking pages word the query)"
+  },
+  {
+   "keyword": "is it safe to pay a deposit to a seller i found through an online advert",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "NOT FETCHED — a thread question, not a search phrase: longer than the 10 words the Google Ads search-volume call accepts, so it was not sent",
+   "source": "deposit-fear question as found, data/queries/raw/blue-staffy-puppies-london/threads.json (r/UK_Pets 1uil782)"
+  },
+  {
+   "keyword": "should i see the puppy with its mother before any money changes hands",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "NOT FETCHED — a thread question, not a search phrase: longer than the 10 words the Google Ads search-volume call accepts, so it was not sent",
+   "source": "deposit-fear question as found, data/queries/raw/blue-staffy-puppies-london/threads.json (r/UK_Pets 1uil782)"
+  },
+  {
+   "keyword": "how do i tell a genuine online puppy advert from a scam",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "NOT FETCHED — a thread question, not a search phrase: longer than the 10 words the Google Ads search-volume call accepts, so it was not sent",
+   "source": "deposit-fear question as found, data/queries/raw/blue-staffy-puppies-london/threads.json (r/UK_Pets 1uil782)"
+  }
+ ]
+}

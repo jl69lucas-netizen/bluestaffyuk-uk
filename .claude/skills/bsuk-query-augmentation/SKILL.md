@@ -62,6 +62,12 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
 python3 scripts/query_augment.py --preflight <slug> --source <serp_google|ai_engines>
 ```
 
+Two further paid sources exist, never question sources and only on the user's yes for the
+page (added for London, 2026-09-30): `keyword_volume` (one batched DataForSEO search-volume
+call, UK, English) and `backlinks` (a backlinks summary or the bulk ranks / referring-domains
+calls for the top competitor domains). The guard counts each at no less than its
+`SOURCE_ESTIMATE_USD` in `scripts/query_augment.py`; the caps are unchanged.
+
 One preflight per paid call. Bing is read free, so `serp_bing` is never preflighted (a free
 read needs no budget check). A saved `<source>.response.json`, or a `<source>.json` with
 `"status": "ok"`, counts as bought: exit 3, no call. A `fallback` or `NOT FETCHED` file does

@@ -1,0 +1,126 @@
+[
+  {
+    "id": "ont:lisa-bright",
+    "class": "People"
+  },
+  {
+    "id": "ont:london",
+    "class": "Place"
+  },
+  {
+    "id": "ont:carlisle",
+    "class": "Place"
+  },
+  {
+    "id": "ont:cumbria",
+    "class": "Place"
+  },
+  {
+    "id": "ont:staffordshire-bull-terrier",
+    "class": "Organism"
+  },
+  {
+    "id": "ont:blue-coat",
+    "class": "Organism"
+  },
+  {
+    "id": "ont:maggie",
+    "class": "Organism"
+  },
+  {
+    "id": "ont:jones",
+    "class": "Organism"
+  },
+  {
+    "id": "ont:refundable-deposit",
+    "class": "Commerce"
+  },
+  {
+    "id": "ont:defra-approved-transport",
+    "class": "Logistics"
+  },
+  {
+    "id": "ont:l-2-hga-dna-test",
+    "class": "Health"
+  },
+  {
+    "id": "ont:hc-hsf4-dna-test",
+    "class": "Health"
+  },
+  {
+    "id": "ont:bva-kc-eye-scheme",
+    "class": "Health"
+  },
+  {
+    "id": "ont:elbow-screening",
+    "class": "Health"
+  },
+  {
+    "id": "ont:health-guarantee",
+    "class": "Health"
+  },
+  {
+    "id": "ont:puppy-culture",
+    "class": "Method"
+  },
+  {
+    "id": "ont:early-neurological-stimulation",
+    "class": "Method"
+  },
+  {
+    "id": "ont:kc-registration-paperwork",
+    "class": "Documentation"
+  },
+  {
+    "id": "ont:vaccination-record",
+    "class": "Documentation"
+  },
+  {
+    "id": "ont:puppy-purchase-contract",
+    "class": "Documentation"
+  },
+  {
+    "id": "ont:the-kennel-club",
+    "class": "Organization"
+  },
+  {
+    "id": "ont:bva",
+    "class": "Organization"
+  },
+  {
+    "id": "ont:rspca",
+    "class": "Organization"
+  },
+  {
+    "id": "ont:paag",
+    "class": "Organization"
+  },
+  {
+    "id": "ont:pdsa",
+    "class": "Organization"
+  },
+  {
+    "id": "ont:dogs-trust",
+    "class": "Organization"
+  },
+  {
+    "id": "ont:blue-cross",
+    "class": "Organization"
+  },
+  {
+    "id": "ont:uk-government",
+    "class": "Organization"
+  },
+  {
+    "id": "ont:dog-microchipping-law",
+    "class": "Regulation"
+  },
+  {
+    "id": "ont:welfare-in-transport-pb10308",
+    "class": "Regulation"
+  },
+  {
+    "id": "ont:dangerous-dogs-act-1991",
+    "class": "Regulation"
+  }
+]

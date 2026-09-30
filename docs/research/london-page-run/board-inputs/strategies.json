@@ -1,0 +1,26 @@
+[
+ {
+  "id": "S1",
+  "direction": "The cluster strategy's London row, verbatim: rebuild the London stub on \"staffordshire bull terrier puppies and dogs for sale in london\", answer the engine's checklist (health tests, L-2-HGA, HC-HSF4, meet the mother, microchip, vaccinations, KC registration, contract), and carry breeder proof against the tier-5 map-pack listing. Its licence item is dropped under the user's 2026-09-27 ruling, not answered with a placeholder.",
+  "source": "docs/superpowers/sessions/2026-09-25-location-pages-strategy.md line 107",
+  "recommended": false,
+  "why": "It is already set for the whole city cluster. It closes the keyword-gap London row, 10 (3+2+3+2), high on the points scale, on the matrix's most contested city (London 12/20).",
+  "trade_off": "It predates the London SERP read, the question file and the user's Q8 answer, so it never answers the deposit-before-viewing worry. Its licence item is now dropped, and its checks rest on the 2026-09-25 page-map llm-intel file (provisional)."
+ },
+ {
+  "id": "S2",
+  "direction": "Deposit first: a question-led breeder page that answers the London buyer's main worry, paying the deposit before seeing the puppy, head-on from data and the rulings. It then covers delivery to London, the litter and its price, the named tests (no result) and London life. Lisa Bright signs it, with Person and FAQPage markup.",
+  "source": "docs/research/london-page-run/strategies.md (S2), resting on docs/research/london-page-run/serp-findings.md, data/queries/blue-staffy-puppies-london.json, docs/research/llm-intel/blue-staffy-puppies-london-2026-09-30.json, docs/research/gap-matrix-2026-09-25.md, docs/research/keyword-gap-2026-09-25.md and data/queries/raw/blue-staffy-puppies-london/backlinks.response.json",
+  "recommended": true,
+  "why": "The prose-answer lane is empty. The question file excludes every listing page because the card grid holds between 80% and 100% of its prose, and the one usable page has 51 words. Staffie Owners' London facets print an h2_raw of 22 against an h2_clean of 1 or 0. No rival states deposit terms of its own. The see-the-mother-before-money question shares the question file's top score (5), and the engine's answer names \"deposit\" where the question file's picks do not carry it (llm-intel, question-file kind, provisional). A signed byline closes the matrix's Person gap, 5/20, medium (the 5/20 includes the tier-5 report). The H1 still pairs the full breed name with London, so the keyword-gap's London row, 10 (3+2+3+2), closes as it would under S1.",
+  "trade_off": "It gives up the listing shape that holds Google's page one (a live count, ItemList, Product and Offer, FAQPage), which S3 would copy. Its lead answer waits on the refund wording (plan Ruling 2): until the deposit-wording branch merges, it can say what the deposit does and offer the video call first, but not when the money comes back. It is also the most writing of S1–S3."
+ },
+ {
+  "id": "S3",
+  "direction": "The honest listing: take Google's page-one facet shape (breed, colour and London in the H1, a live count and a price range, an ItemList of Product and Offer, FAQPage) with one breeder's litter at data prices in a stacked table. It says up front that the puppies are in Carlisle and how they reach London.",
+  "source": "docs/research/london-page-run/strategies.md (S3), resting on docs/research/london-page-run/serp-findings.md, data/queries/raw/blue-staffy-puppies-london/backlinks.response.json, docs/research/keyword-gap-2026-09-25.md, docs/research/gap-matrix-2026-09-25.md and data/queries/blue-staffy-puppies-london.json",
+  "recommended": false,
+  "why": "Google's page one for this query is one facet template that wins on shape and markup, not links. The keyword-gap's London row names a listing (10 (3+2+3+2), high on the points scale), and every competitor whose page types were read has a listing (matrix 19/19).",
+  "trade_off": "It lists the same puppies as /available-puppies/ and each puppy's page, so the pages compete and their Product markup repeats. One litter cannot match feeds of far more adverts (the Freeads report counts \"about 250 adverts across the UK\"). The table empties as puppies go home, and the deposit worry sits below the inventory."
+ }
+]

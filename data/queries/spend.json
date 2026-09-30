@@ -285,5 +285,33 @@
     "source": "ai_engines",
     "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
     "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-30T00:30:33Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 paa1 (response carries no cost; typical-call estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-30T00:37:29Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "keyword_volume",
+    "endpoint": "kw_data_google_ads_search_volume UK en, 30 keywords in one task (response carries no cost; guard estimate)",
+    "cost_usd": 0.1
+  },
+  {
+    "ts": "2026-09-30T00:37:52Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "backlinks",
+    "endpoint": "backlinks_bulk_ranks 5 targets, rank_scale one_hundred (response carries no cost; guard estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-30T00:38:12Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "backlinks",
+    "endpoint": "backlinks_bulk_referring_domains 5 targets (response carries no cost; guard estimate)",
+    "cost_usd": 0.05
   }
 ]

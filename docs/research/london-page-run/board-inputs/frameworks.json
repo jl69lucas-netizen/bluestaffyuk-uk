@@ -1,0 +1,81 @@
+{
+ "frameworks": [
+  {
+   "group": "Hero and opening",
+   "options": [
+    "EEBP",
+    "AIDA",
+    "PDB"
+   ],
+   "recommended": "EEBP",
+   "why": "The first sentence is the part that gets lifted. Google shows the first sentence of Staffie Owners' #1–#3 pages, a live count and a price range, as their snippet (serp-findings.md). The ChatGPT answer to the London query opens on a statement and does not cite BSUK (LLM format.opening, bsuk_cited false). EEBP's first two moves put a named breeder, a real town, six named puppies at printed prices and the delivery band into that first sentence. Those are the \"single accountable breeder with prices\" and \"honest location\" gaps all nine ranking pages leave open (serp-findings.md, Universal gaps). The hero's counter figures are the same evidence, read from data (working rule 16).",
+   "trade_off": "A fact-first opener has less pull than an AIDA hook. It states the answer to the deposit fear (the video call before any deposit, and a deposit that books the viewing) but does not work through the fear; that job falls to the deposit and viewing group."
+  },
+  {
+   "group": "The deposit and viewing",
+   "options": [
+    "PDB",
+    "BAB",
+    "PAS"
+   ],
+   "recommended": "PDB",
+   "why": "The user named this fear as the London buyer's main worry and main reason to leave (session brief Q8). framework-pdb is written for a reader who arrives with a named fear, and its page table maps location pages to this distance-and-trust pain. The research gives Depth real material: one of the question file's two top-scored questions is \"Should I see the puppy with its mother before any money changes hands?\" (score 5, must-answer, from r/UK_Pets); the ChatGPT answer names \"meet the mother\" and \"deposit\" (LLM entities); and on page one deposits appear only inside individual sellers' adverts, with no page offering a live video call before a deposit in its own voice (serp-findings.md, Universal gaps). The Brief is then met from plan Ruling 1: a live video call with the puppy and its mother on request before any deposit (q03), a deposit that books the viewing, reserves the puppy and comes off the price (depositLine), and payment by bank transfer (q04).",
+   "trade_off": "PDB opens on the fear before the facts, so the section runs longer than a straight answer, against the ruling on short sections. Its Pain beat must name the reader's worry without calling the process \"pay before you see\" (breeder follow-up Q3/Q5, 2026-09-27). With no fetched scam statistic, Depth rests on the SERP and thread evidence and must stop short of agitation. The Brief cannot carry the refund condition until the deposit-wording branch merges (plan Ruling 2)."
+  },
+  {
+   "group": "The litter and prices",
+   "options": [
+    "EEBP",
+    "FAB",
+    "QAB"
+   ],
+   "recommended": "EEBP",
+   "why": "framework-eebp is the skill for puppy cards, price rows and documentation panels on transactional pages, and London's primary keyword is transactional (keyword-universe.json). The ChatGPT answer names \"kc registration\", \"microchip\", \"vaccinations\" and \"contract\" in its high band, none of them carried yet (LLM entities, on_page false). EEBP's Entity and Evidence moves put each one on a row beside a named puppy and the parents, Maggie and Jones (entities.md; plan Ruling 3). No ranking page does this: there are 0 tables on all nine, and eight of the nine are feeds of other people's adverts (serp-findings.md, Universal gaps).",
+   "trade_off": "The rows read like a spec sheet, and Evidence is limited to what data holds: name, sex, coat, price, age and the paperwork list. data/puppies.json carries no temperament note per puppy, and the parents' test results cannot be evidence because no certificates are held (q01), so the rows carry no health line."
+  },
+  {
+   "group": "Delivery and collection",
+   "options": [
+    "FAB",
+    "EEBP",
+    "QAB"
+   ],
+   "recommended": "FAB",
+   "why": "A London buyer's real choice is between two routes: UK home delivery by DEFRA-approved transport at £200–£350, priced by distance, or collection in Carlisle (data/settings.json). framework-fab lists delivery tiers as its own use, an advantage and a benefit per tier, and its Advantage beat is where two routes are weighed. The gap is total: no page on either engine prices getting a puppy to London or says how it travels (serp-findings.md, Universal gaps). All three delivery questions in the question file sit in its top block at score 4, and two are must-answer.",
+   "trade_off": "Each advantage has to come from data, which holds the band, the method and \"priced by distance\" but no London figure inside the band, no journey time, vehicle or stops. So the advantages speak to cost and method, never to travel detail."
+  },
+  {
+   "group": "Health and raising",
+   "options": [
+    "QAB",
+    "EEBP",
+    "BAB"
+   ],
+   "recommended": "QAB",
+   "why": "The ChatGPT answer to the London query is itself a list of what to ask a breeder. It names HC-HSF4 in its high band, and L-2-HGA, eye testing, elbow testing and socialisation in its medium band (LLM entities). The question file's top health question is direct: \"Are the puppy's parents health tested?\" (score 4, must-answer, from r/UK_Pets). QAB answers it as asked. The Answer names the tests (L-2-HGA, HC-HSF4, eye screening, elbow screening), points to The Kennel Club, the source the ChatGPT answer cites for them, and describes Puppy Culture, ENS and home-raising (entities.md), all without a result (q01; plan Ruling 4). EEBP fits worse because its skill will not take an unproven row as evidence, which leaves its Evidence beat empty for the health half.",
+   "trade_off": "The ChatGPT answer's checklist also asks for test certificates and a DNA result (LLM entities, medium band), and this section cannot supply either: no certificates are held (q01; entities.md, Excluded). The Benefit beat has to promise openness (the tests named, the guarantee as data/settings.json words it), never a health outcome."
+  },
+  {
+   "group": "London life",
+   "options": [
+    "QAB",
+    "PAS",
+    "BAB"
+   ],
+   "recommended": "QAB",
+   "why": "These questions already arrive as questions. Google's PAA asks \"Is a Staffy a good house dog?\" and \"Is it better to get a male or female Staffy?\", and the question file marks the flat, daily-exercise and first-time-owner questions must-answer. No ranking page answers a city-living question in its body: question H2s are 0 of 9, and the headings are listing furniture (serp-findings.md). QAB lets each answer carry a sourced breed fact, such as the PDSA on exercise or Dogs Trust on the breed (entities.md), in the neutral register allowed for breed facts (CLAUDE.md rule 1), and its Benefit ties that fact to a London home.",
+   "trade_off": "Several QAB sections in a row can read like a second FAQ. The strongest London-life questions (house dog, flat, first-time owners, male or female, children) are also bottom-block FAQ picks, which no header may repeat (plan Ruling 7), so the outline has to split them between headers and the FAQ."
+  },
+  {
+   "group": "The FAQ blocks",
+   "options": [
+    "QAB",
+    "EEBP"
+   ],
+   "recommended": "QAB",
+   "why": "framework-qab is the FAQ framework, and it sets location pages at six QAB items or more with FAQPage JSON-LD. The plan fixes three blocks (top 5–7, middle 5–7, bottom 7–10: 15–20 H3s), every pick from the question file, which holds 20 picks today: 6 top, 7 middle and 7 bottom, 4 of them Google PAA questions. On page one, FAQPage markup appears only on the five Staffie Owners pages that hold Google #1–#4 and Bing #1 (serp-findings.md, SERP schema), so a marked-up QAB block answers the winning template's FAQ with the page's own facts.",
+   "trade_off": "The Benefit beat adds a sentence to every answer, against the ruling on short sections, so each Benefit has to stay one short sentence. QAB also pulls the page's best questions into the FAQ, while no FAQ question may repeat a header (plan Ruling 7)."
+  }
+ ],
+ "header_style": "Style 1 (Pure Conversational), FAQ register. Why: the user ruled on 2026-09-27 that every header is an FAQ-style buyer question answered first by a conversational paragraph (answer board, project 5 decisions q05; plan Ruling 7). The question file is written the same way: 85 of its 87 entries are questions. Its PAA share is 6 of 87 (6.9%), which is every People Also Ask question Google showed for \"blue staffy puppies london\" on 2026-09-30 (6 of 6); those make up 4 of the 20 FAQ picks (20.0%) and 6 of the 22 questions found in live search rather than the site's own FAQ bank (27.3%). No ranking page uses a question H2 (0 of 9, serp-findings.md), so the register is open ground. This departs from the location default (Style 2 with the geo modifier) and is declared as rules/headings.md header-style-declared requires. Trade-off: less room for exact-match heading keywords. A natural question rarely carries \"blue staffy puppies london\" word for word, while Google's winning template stacks breed, colour and place into its H1, so the exact phrase has to be carried by the title tag and the opening paragraphs."
+}
