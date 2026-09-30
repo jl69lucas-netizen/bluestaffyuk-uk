@@ -1,0 +1,86 @@
+{
+  "source": "serp_google",
+  "status": "ok",
+  "fetched": "2026-09-30",
+  "note": "DataForSEO serp_organic_live_advanced, google, United Kingdom, en, depth 10, PAA click depth 1; raw response serp_google.response.json. Nine organic results were returned (depth 10 counts the AI Overview and PAA blocks).",
+  "results": [
+    {
+      "google_pos": 1,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/southall-london?colour=blue&distance=75&sex=male&sort=price_high"
+    },
+    {
+      "google_pos": 2,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/paddington-london?colour=blue&keywords=Chunky+Working&ready_to_leave=2_months&sort=price_high"
+    },
+    {
+      "google_pos": 3,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/uxbridge-london?colour=blue&cross_breed=no&keywords=good+with"
+    },
+    {
+      "google_pos": 4,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/camden-town-london?colour=blue&keywords=vaccinations&price=1500"
+    },
+    {
+      "google_pos": 5,
+      "url": "https://www.tiktok.com/@puppyyogaclublondon/video/7664573369207065878"
+    },
+    {
+      "google_pos": 6,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/barnet-london"
+    },
+    {
+      "google_pos": 7,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/london?colour=blue&current_age=newborn&keywords=Microchipped"
+    },
+    {
+      "google_pos": 8,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/southall-london?colour=blue&current_age=4-6_weeks&sort=price_high"
+    },
+    {
+      "google_pos": 9,
+      "url": "https://www.jerseytile.com/?x=29688454031850"
+    }
+  ],
+  "questions": [
+    {
+      "text": "How much are blue Staffy puppies in the UK?",
+      "detail": "serp_google_paa",
+      "fact_source": "bank:listing-cost"
+    },
+    {
+      "text": "How much is a blue Staffordshire puppy?",
+      "detail": "serp_google_paa",
+      "fact_source": "bank:listing-cost"
+    },
+    {
+      "text": "How rare are blue Staffies?",
+      "detail": "serp_google_paa",
+      "fact_source": null
+    },
+    {
+      "text": "Is it better to get a male or female Staffy?",
+      "detail": "serp_google_paa",
+      "fact_source": "bank:guide-male-female"
+    },
+    {
+      "text": "What are common Staffie behavioral issues?",
+      "detail": "serp_google_paa",
+      "fact_source": null
+    },
+    {
+      "text": "Is a Staffy a good house dog?",
+      "detail": "serp_google_paa",
+      "fact_source": "bank:listing-family-dog"
+    },
+    {
+      "text": "Blue staffy puppies london price",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Blue staffy puppies london kennel club",
+      "detail": "serp_google_related",
+      "fact_source": null
+    }
+  ]
+}

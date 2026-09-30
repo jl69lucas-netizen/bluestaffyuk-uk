@@ -285,5 +285,12 @@
     "source": "ai_engines",
     "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
     "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-30T00:30:33Z",
+    "slug": "blue-staffy-puppies-london",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 paa1 (response carries no cost; typical-call estimate)",
+    "cost_usd": 0.01
   }
 ]
