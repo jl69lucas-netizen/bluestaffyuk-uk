@@ -409,3 +409,67 @@ register({
     };
   },
 });
+
+/**
+ * A BREADCRUMB SEPARATOR IS SPACED BOTH SIDES (the design-polish pick 4(a), 2026-09-30; preview
+ * docs/artifacts/bsuk-design-polish-preview.html, item 4).
+ *
+ * src/components/Breadcrumb.astro renders the › and the crumb in one <li>; Astro's compressed
+ * output drops the space between them, and the <ol>'s 8px gap spaces only whole list items, so on
+ * all 49 routed pages with a trail there were 8px before each › and 0px after it ("Home ›Blue
+ * Staffy Health UK"; -4px on the blog post at 375, where the leaf wraps).
+ *
+ * THE UNIT is one visible › separator (a `[aria-hidden="true"]` span in a breadcrumb `<li>`). The
+ * gap after it is from its box's right edge to the first painted glyph of the crumb that follows
+ * in the same `<li>`; the gap before it is from the previous crumb's last painted glyph when that
+ * sits on the same line, else the `<ol>`'s own column gap. It fails when the two differ by more
+ * than 1px. A page with no breadcrumb has nothing to judge (the home page).
+ */
+register({
+  id: 'nav-breadcrumb-separator-spaced',
+  family: 'NAV',
+  severity: 'blocking',
+  describe: 'the gap after each breadcrumb › matches the gap before it',
+  minExamined: 2,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await page.evaluate(() => document.fonts.ready);
+    const r = await page.evaluate(() => {
+      const glyphs = (el: Element) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        return Array.from(range.getClientRects()).filter((x) => x.width > 0 && x.height > 0);
+      };
+      let examined = 0;
+      const bad: string[] = [];
+      for (const nav of Array.from(document.querySelectorAll('nav[aria-label="Breadcrumb" i]'))) {
+        const ol = nav.querySelector('ol, ul');
+        if (!ol) continue;
+        const colGap = parseFloat(getComputedStyle(ol).columnGap) || 0;
+        const items = Array.from(ol.children).filter((li) => li.tagName === 'LI');
+        items.forEach((li, i) => {
+          const sep = li.querySelector(':scope > [aria-hidden="true"]');
+          if (!sep || sep.getClientRects().length === 0) return;
+          const label = Array.from(li.children).find((c) => c !== sep && glyphs(c).length);
+          if (!label) return;
+          examined++;
+          const sb = sep.getBoundingClientRect();
+          const after = glyphs(label)[0].left - sb.right;
+          let before = colGap;
+          const prev = i > 0 ? glyphs(items[i - 1]) : [];
+          const last = prev[prev.length - 1];
+          if (last && Math.abs(last.top - sb.top) < sb.height / 2) before = sb.left - last.right;
+          if (Math.abs(after - before) > 1) {
+            bad.push(`"${(label.textContent || '').trim().slice(0, 40)}": ${Math.round(before)}px before the ›, ${Math.round(after)}px after it`);
+          }
+        });
+      }
+      return { examined, bad };
+    });
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{ checkId: 'nav-breadcrumb-separator-spaced', family: 'NAV' as const, viewport, count: r.bad.length, message: r.bad.join(' | ') }]
+        : [],
+    };
+  },
+});

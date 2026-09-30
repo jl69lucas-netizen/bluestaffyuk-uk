@@ -169,6 +169,12 @@
       "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
       "false_reports": 0
     },
+    "nav-breadcrumb-separator-spaced": {
+      "scope": "all",
+      "since": "2026-09-30",
+      "cluster_cleared": "new 2026-09-30 (the design-polish pick 4(a)) together with the flex <li> in src/components/Breadcrumb.astro that makes it pass: blocking on every page from its first run, because every routed page with a trail had 8px before each separator and 0px after it (-4px on the blog post at 375); the home page has no trail and examines nothing",
+      "false_reports": 0
+    },
     "nav-jump-target-lands": {
       "scope": "all",
       "since": "2026-09-26",

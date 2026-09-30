@@ -9,7 +9,20 @@ const trail = crumbs(path, title);
 // alone in its band; the kit header is a different height, and the moment a hub moved onto
 // it the four crumb links on those pages started failing. `.tap-24` is the shared rule in
 // src/styles/kit.css — the locations hub needs exactly the same thing.
+//
+// 8px EACH SIDE OF THE › (the design-polish pick 4(a), the user in chat 2026-09-30; preview
+// docs/artifacts/bsuk-design-polish-preview.html, item 4). The › and the crumb share one <li>, and
+// Astro's compressed output drops the space between the two expressions, so the <ol>'s gap fell
+// only between whole items: 8px before each ›, 0px after it. Each <li> is a flex row with the same
+// 8px gap. It is a stylesheet rule, not a `style` attribute, so the built markup is unchanged; the
+// kit's own trail (PageNav's `.crumbs`) is not this nav and keeps its own rule. Held by
+// tests/render/checks/nav.ts::nav-breadcrumb-separator-spaced.
 ---
 {trail.length > 1 && <nav aria-label="Breadcrumb" class="container" style="font-size:14px;padding-top:12px"><ol style="display:flex;gap:8px;list-style:none;padding:0;margin:0;flex-wrap:wrap">
   {trail.map((c, i) => <li>{i > 0 && <span aria-hidden="true">›</span>} {i === trail.length - 1 ? <span aria-current="page">{c.label}</span> : <a href={c.href} class="tap-24">{c.label}</a>}</li>)}
 </ol></nav>}
+<style is:global>
+  @layer components {
+    nav[aria-label="Breadcrumb"].container > ol > li { display: flex; align-items: baseline; gap: 8px; }
+  }
+</style>

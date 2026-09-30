@@ -6,6 +6,7 @@ import SiteFooter from '../components/SiteFooter.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Schema from '../components/Schema.astro';
 import { SITE, LOGO_RASTER, abs } from '../lib/site';
+import { titleCase } from '../lib/headings';
 import pageDates from '../../data/page-dates.json';
 // Exported so src/layouts/PageShell.astro can EXTEND it rather than restate it. The shell
 // forwards every head prop untouched, and a second hand-written copy of this list is a copy
@@ -18,7 +19,12 @@ const { title, description, canonical = Astro.url.pathname, robots = 'index, fol
 // is a pitch. Printed as the last crumb (and as the BreadcrumbList's last `name`) it reads as
 // a sentence with a pipe in it. So the default crumb is the title's first segment, cut at the
 // first ` | ` or spaced dash; a page that wants a different name still passes `crumbTitle`.
-const crumbTitle = Astro.props.crumbTitle ?? (title.split(/\s+(?:\||—|–)\s+/)[0].trim() || title);
+// THE LAST CRUMB IS IN THE SITE'S TITLE CASE (the design-polish pick 4(a), the user in chat
+// 2026-09-30): the crumb names the same page the H1 does, through the same caser
+// (src/lib/headings.ts), so a migrated row typed "For Sale" or "blue staffies ..." reads like the
+// rest of the trail. The BreadcrumbList's last `name` reads the same value (Schema.astro), so the
+// schema and the visible leaf change together. Held by tests/py/test_breadcrumb_title_case.py.
+const crumbTitle = titleCase(Astro.props.crumbTitle ?? (title.split(/\s+(?:\||—|–)\s+/)[0].trim() || title));
 // `noindex` is the shorthand for the internal pages; it wins over any `robots` string and
 // still resolves to the SAME single robots meta below, because that one tag is what
 // scripts/generate_sitemaps.py and scripts/sitemap_check.py read to decide indexability —
