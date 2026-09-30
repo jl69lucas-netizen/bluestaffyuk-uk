@@ -23,7 +23,13 @@ unless that board is approved as it stands. The deliverable carries:
                              Framework, Words, Keywords (primary / secondary, from the research
                              board's keyword universe), Cat (A mandatory core · B competitor-match
                              · C our moat), Why, Image
-  one block per section      the same row laid out, so each has its own copy button
+  one block per section      the same row laid out, so each has its own copy button; when
+                             the row carries them (all optional, rendering only): its fear,
+                             CTA, opener hint, table, H4 image slots, and a body H2's numbered
+                             variants with the (Recommended) one's why and trade-off
+  page-level sections        when present (optional): opener rule, heading crossover (tool,
+                             examined count, hits), heading changes, parked keywords (flagged
+                             for the user's decision), planned tests, build notes
   schema and component notes
 
 The rows are held to the research board:
@@ -498,6 +504,158 @@ def _kw(s):
     return "P: " + (", ".join(pri) or "—") + ("; S: " + ", ".join(sec) if sec else "")
 
 
+def _txt(v):
+    """A value of any shape as one line of markdown — the optional fields are free-form."""
+    if v is None:
+        return "—"
+    if isinstance(v, str):
+        return v or "—"
+    if isinstance(v, list):
+        return "; ".join(_txt(x) for x in v) or "—"
+    if isinstance(v, dict):
+        return " · ".join(f"{k}: {_txt(x)}" for k, x in v.items()) or "—"
+    return str(v)
+
+
+def _row_extras(s):
+    """The optional per-row fields — fear, CTA, opener hint, table, H4 image slots — as
+    bullet lines; none of them is required, and a row without them adds nothing."""
+    out = []
+    if s.get("fear"):
+        out.append(f"- **Fear:** {_txt(s['fear'])}"
+                   + (f" (source: `{_txt(s['fear_source'])}`)" if s.get("fear_source") else ""))
+    cta = s.get("cta")
+    if isinstance(cta, dict) and cta:
+        line = f"- **CTA:** [{_txt(cta.get('anchor'))}]({_txt(cta.get('href'))})"
+        bits = [f"{k}: {_txt(cta[k])}" for k in ("anchor_type", "placement") if cta.get(k)]
+        if bits:
+            line += " — " + " · ".join(bits)
+        if cta.get("note"):
+            line += f". {_txt(cta['note'])}"
+        out.append(line)
+    elif cta:
+        out.append(f"- **CTA:** {_txt(cta)}")
+    if s.get("opener"):
+        out.append(f"- **Opener hint:** {_txt(s['opener'])}")
+    t = s.get("table")
+    if isinstance(t, dict) and t:
+        out.append(f"- **Table** ({_txt(t.get('shape', 'table'))}"
+                   + (f", under {_txt(t['under'])}" if t.get("under") else "") + "):")
+        if t.get("caption"):
+            out.append(f"  - Caption: {_txt(t['caption'])}")
+        cols = t.get("columns")
+        if isinstance(cols, list) and cols:
+            out.append("  - Columns: " + "; ".join(
+                (f"{_txt(c.get('label'))} ← {_txt(c.get('source'))}" if isinstance(c, dict) else _txt(c))
+                for c in cols))
+        for k in ("rows", "mobile", "why", "note"):
+            if t.get(k):
+                out.append(f"  - {k.capitalize()}: {_txt(t[k])}")
+    elif t:
+        out.append(f"- **Table:** {_txt(t)}")
+    imgs = s.get("h4_images")
+    if isinstance(imgs, list) and imgs:
+        out.append("- **H4 image slots:**")
+        for im in imgs:
+            if isinstance(im, dict):
+                line = f"  - H4 \"{_txt(im.get('h4'))}\": `{_txt(im.get('image'))}`"
+                if im.get("alt"):
+                    line += f" — alt: \"{_txt(im['alt'])}\""
+                if im.get("alt_source"):
+                    line += f" ({_txt(im['alt_source'])})"
+                out.append(line)
+            else:
+                out.append(f"  - {_txt(im)}")
+    return out
+
+
+def _variants_block(s):
+    """A body H2's alternative wordings, numbered, the recommended one marked — the user picks
+    among them at STOP 2."""
+    vs = s.get("variants")
+    if not isinstance(vs, list) or not vs:
+        return []
+    out = ["", "**H2 variants** (pick one at STOP 2):", ""]
+    for i, v in enumerate(vs, 1):
+        if not isinstance(v, dict):
+            out.append(f"{i}. {_txt(v)}")
+            continue
+        line = f"{i}. {_txt(v.get('text'))}"
+        if v.get("recommended"):
+            line += " **(Recommended)**"
+        bits = []
+        if v.get("keywords"):
+            bits.append("keywords: " + _txt(v["keywords"]))
+        if v.get("related_term"):
+            bits.append("related term: " + _txt(v["related_term"]))
+        if bits:
+            line += " — " + " · ".join(bits)
+        out.append(line)
+        if v.get("why"):
+            out.append(f"   - Why: {_txt(v['why'])}")
+        if v.get("trade_off"):
+            out.append(f"   - Trade-off: {_txt(v['trade_off'])}")
+    return out
+
+
+def _page_level(record):
+    """The optional outline-level sections: opener rule, heading crossover, heading changes,
+    parked keywords, planned tests and build notes."""
+    out = []
+    if record.get("opener_rule"):
+        out.append(("Opener Rule", _txt(record["opener_rule"])))
+    hc = record.get("header_crossover")
+    if isinstance(hc, dict) and hc:
+        lines = []
+        for k in ("date", "tool", "corpus"):
+            if hc.get(k):
+                lines.append(f"- **{k.capitalize()}:** {_txt(hc[k])}")
+        ex = hc.get("examined")
+        if ex:
+            lines.append(f"- **Examined:** {_txt(ex)}")
+        hits = hc.get("hits") if isinstance(hc.get("hits"), list) else []
+        counts = [f"{k.replace('_', ' ')}: {hc[k]}" for k in ("body_hits", "faq_hits") if k in hc]
+        lines.append(f"- **Hits:** {len(hits)}" + (f" ({', '.join(counts)})" if counts else ""))
+        if hc.get("fixed_before_record"):
+            lines.append(f"- **Fixed before the record:** {_txt(hc['fixed_before_record'])}")
+        body = "\n".join(lines)
+        if hits:
+            rows = [[h.get("severity", "—"), h.get("heading", "—"), h.get("kind", "—"),
+                     _txt(h.get("shingles")), h.get("with_page", "—"), h.get("with_heading", "—"),
+                     h.get("note", "—")] if isinstance(h, dict) else ["—", _txt(h), "", "", "", "", ""]
+                    for h in hits]
+            body += "\n\n" + MA.table(["Severity", "Heading", "Kind", "Shingles", "With page",
+                                        "With heading", "Note"], rows)
+        out.append(("Heading Crossover", body))
+    elif hc:
+        out.append(("Heading Crossover", _txt(hc)))
+    ch = record.get("heading_changes")
+    if isinstance(ch, list) and ch:
+        rows = [[c.get("row", "—"), f"H{c['level']}" if c.get("level") else "—", c.get("was", "—"),
+                 c.get("now", "—"), c.get("reason", "—")] if isinstance(c, dict)
+                else ["—", "—", "—", _txt(c), "—"] for c in ch]
+        out.append(("Heading Changes", MA.table(["Row", "Level", "Was", "Now", "Reason"], rows)))
+    pk = record.get("parked_keywords")
+    if isinstance(pk, list) and pk:
+        lines = ["**NEEDS YOUR DECISION** — these keywords are parked, not placed on the page:", ""]
+        for k in pk:
+            if isinstance(k, dict):
+                lines.append(f"- **{_txt(k.get('keyword'))}** — {_txt(k.get('status'))}")
+                for f in ("seen_in", "decision"):
+                    if k.get(f):
+                        lines.append(f"  - {f.replace('_', ' ').capitalize()}: {_txt(k[f])}")
+            else:
+                lines.append(f"- {_txt(k)}")
+        out.append(("Parked Keywords — Your Decision", "\n".join(lines)))
+    for key, title in (("planned_tests", "Planned Tests"), ("build_notes", "Build Notes")):
+        v = record.get(key)
+        if isinstance(v, list) and v:
+            out.append((title, "\n".join(f"- {_txt(x)}" for x in v)))
+        elif v:
+            out.append((title, _txt(v)))
+    return out
+
+
 def sections(record, research):
     counts, _ = census(record)
     wt = record["word_target"]
@@ -537,9 +695,12 @@ def sections(record, research):
                 f"- **Keywords:** {_kw(s)}",
                 f"- **Why:** {s['why']}" + (f" (research board: `{s['why_source']}`)" if s.get("why_source") else ""),
                 f"- **Image:** {s.get('image') or '—'}"]
+        body += _row_extras(s)
         if s.get("headings"):
             body += ["", "**Headings:**", ""] + tree_list(s["headings"])
+        body += _variants_block(s)
         out.append((f"§{s['n']} {s['section']}", "\n".join(body)))
+    out += _page_level(record)
     notes = []
     if record.get("schema"):
         notes.append(f"**Schema:** {record['schema']}")
