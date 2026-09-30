@@ -2047,7 +2047,9 @@ def gate_findings(board, ont, ledger, live, stage="build"):
 
     picks = (board.get("approval") or {}).get("picks", {})
     for s in board["sections"]:
-        pick = s["options"]["pick"] or picks.get(s["id"])
+        # A city section's component was picked in the city's component design pass
+        # (data/design/city-picks/<slug>.json); it names it, and the kit takes no style.
+        pick = s["options"]["pick"] or picks.get(s["id"]) or s.get("component")
         if s["shape"] != "standard" and not pick:
             add("signature-no-pick", "FAIL", f"section {s['id']} ({s['shape']}) has no component pick")
         # A nav-shaped section IS the page's table of contents, so its pick and tuple.toc
@@ -2090,7 +2092,17 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     # Reuses the live map the gate already loaded for the header pre-check. When it is
     # empty the gate has already FAILed on header-precheck-examined-zero, and guessing at
     # dead links from an unbuilt tree would only add noise to that.
+    # A bare same-page fragment (`#enquiry`) must name a section id of THIS record — that id
+    # is the element the build gives the section, so a fragment no section carries is a link
+    # to nothing on the page. Judged whether or not dist/ was read: it needs only the record.
+    section_ids = {s["id"] for s in board["sections"]}
+    for sid, l in internal:
+        if l["href"].startswith("#") and l["href"][1:] not in section_ids:
+            add("links-fragment-dead", "FAIL",
+                f"section {sid}: {l['href']} names no section id of this record")
     for sid, l in (internal if live else []):
+        if l["href"].startswith("#"):
+            continue
         path = l["href"].split("#", 1)[0].split("?", 1)[0]
         target = path if path.endswith("/") else path + "/"
         if target not in live:

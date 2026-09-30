@@ -551,6 +551,8 @@ def picked_sections(board, ledger=None, slug=None):
         if s.get("styles"):
             out.append(s["id"])
             continue
+        if s.get("component"):
+            continue          # a city section: picked on the city canvas, nothing to ask here
         if s["shape"] == "standard":
             continue
         if ledger is not None and not s["options"]["pick"]:
@@ -667,6 +669,10 @@ def resolve_internal(href, routes):
     """(text, css class) for one internal target. A route the build wrote resolves; a route
     only the page map knows is planned but unbuilt; a route neither knows is dead, and a dead
     internal link is the one thing on this block that has to be rewritten before approval."""
+    if href.strip().startswith("#"):
+        # A same-page fragment: pageboard.gate_findings checks it names a section id of this
+        # record (`links-fragment-dead`); there is no route to resolve.
+        return ("yes", "lk-ok")
     r = route_of(href)
     built, mapped = routes["built"], routes["mapped"]
     if built is None:
@@ -970,7 +976,13 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                 + refresh_line(s)
                 + f"\n<textarea class=\"note\" name=\"note-{s['id']}\" placeholder=\"Note for this section (optional)\">{esc(s['options']['note'])}</textarea>")
             continue
-        if s["shape"] == "standard":
+        if s.get("component"):
+            # A city section renders the component its city's design pass picked
+            # (data/design/city-picks/<slug>.json). The City kit takes no style, so no trio is
+            # offered: shown, never offered — a radio here would be a choice the build ignores.
+            cards = [f'<div class="opt"><div class="nothumb">{esc(s["component"])}</div>'
+                     f'<span class="why">picked in the city component design pass — nothing to pick here</span></div>']
+        elif s["shape"] == "standard":
             dflt = standard_default(s, board)
             cards = [f'<div class="opt"><div class="nothumb">{esc(dflt)}</div>'
                      f'<span class="why">the default a standard section gets — nothing to pick</span></div>']

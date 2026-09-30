@@ -204,6 +204,51 @@ def derive_tuple(board, base):
     return t
 
 
+# ── a CITY page's tuple ───────────────────────────────────────────────────────────────
+#
+# A city page (meta.layout_type "city") takes every component from its own component design
+# pass, data/design/city-picks/<slug>.json, and the City kit takes no style prop. Deriving its
+# tuple from S1–S3 picks would record generic kit shells (`hero-s2`, `pagenav-c`) the page
+# never renders, so its tuple is read from the city picks through city_components'
+# KIT_OF_VARIANT — the lowercase kit ids the ledger schema accepts. `newsletter` and the
+# declared `h6_prefixes` are authored content and carried through, as derive_tuple does.
+CITY_TUPLE_AXES = {"hero": "hero", "dial": "desktop-dial", "toc": "contents-list",
+                   "table": "tables", "faq": "faq-blocks", "stepper": "jump-links"}
+
+
+def is_city(board):
+    return (board.get("meta") or {}).get("layout_type") == PB.CITY_FAMILY
+
+
+def city_tuple(board, base, picks=None):
+    """The tuple a city board's frozen component picks imply, laid over `base`."""
+    from city_components import KIT_OF_VARIANT
+    slug = board["meta"]["slug"].rsplit("/", 1)[-1]
+    picks = PB.load_city_picks() if picks is None else picks
+    if slug not in picks:
+        raise PB.BoardError(f"city board {slug}: no data/design/city-picks/{slug}.json — its "
+                            "components are picked in its component design pass first")
+    chosen = picks[slug]["picks"]
+
+    def kit(component):
+        variant = chosen.get(component)
+        if variant not in KIT_OF_VARIANT:
+            raise PB.BoardError(f"city board {slug}: pick {component}={variant!r} names no kit "
+                                "component in city_components.KIT_OF_VARIANT")
+        return KIT_OF_VARIANT[variant]
+    t = json.loads(json.dumps(base))
+    for axis, component in CITY_TUPLE_AXES.items():
+        t[axis] = kit(component)
+    t["rail"] = ""
+    t["takeaway"] = [kit("key-takeaways")]
+    return t
+
+
+def tuple_for(board, base):
+    """derive_tuple for every board, city_tuple for a city board."""
+    return city_tuple(board, base) if is_city(board) else derive_tuple(board, base)
+
+
 def ledger_entry(board):
     """The row this page takes in data/component-ledger.json — the same eight keys every
     existing page carries, never a bare copy of the tuple (which would record the DECLARED
@@ -370,7 +415,8 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
 
     # The Approve button already refuses an incomplete set of picks; trusting it would make
     # a half-picked board approvable by anyone who wrote the database document by hand.
-    missing = [s["id"] for s in b["sections"] if s["shape"] != "standard" and not s["options"]["pick"]]
+    missing = [s["id"] for s in b["sections"]
+               if s["shape"] != "standard" and not s["options"]["pick"] and not s.get("component")]
     if missing:
         raise PB.BoardError(f"no component pick for signature section(s): {', '.join(missing)}")
 
@@ -383,7 +429,7 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
     # match again. On a re-run the base comes from the stamp, not from the rewritten tuple.
     prior = board.get("approval") or {}
     tuple_before = prior.get("tuple_before") or json.loads(json.dumps(board["tuple"]))
-    b["tuple"] = derive_tuple(b, tuple_before)
+    b["tuple"] = tuple_for(b, tuple_before)
 
     approval = dict(inbox)
     approval["tuple_before"] = tuple_before

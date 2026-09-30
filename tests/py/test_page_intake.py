@@ -335,7 +335,11 @@ def test_every_city_row_has_an_intake_and_the_empty_h1s_are_counted():
     rows = json.loads((ROOT / "data/locations.json").read_text(encoding="utf-8"))
     intakes = [PI.intake(r["slug"]) for r in rows]
     assert {i["mode"] for i in intakes} <= set(PI.MODES)
-    assert sum(i["h1"] == "EMPTY" for i in intakes) == sum(not r["h1"] for r in rows)
+    # A city with its own page board reads its H1 from the board (intake prefers it), so
+    # only rows with no H1 and no board are EMPTY.
+    boarded = {r["slug"] for r in rows if (ROOT / "data/boards" / f"{r['slug']}.json").is_file()}
+    assert sum(i["h1"] == "EMPTY" for i in intakes) == sum(
+        not r["h1"] and r["slug"] not in boarded for r in rows)
 
 
 # ── Known Issue 63: a city page's freshness sees the template that renders it ──────────────
