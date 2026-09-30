@@ -1,0 +1,22 @@
+{
+ "fetched": "2026-09-30",
+ "tool": "Firecrawl MCP firecrawl_search, sources web, limit 10 (2 credits per call, 4 in total)",
+ "status": "search results only; NOT FETCHED — none of these threads could be opened: www.reddit.com returned its 'Prove your humanity' bot wall to the Playwright MCP and chrome-devtools browsers, and WebFetch is refused for www.reddit.com",
+ "queries": [
+  {"query": "site:reddit.com puppy deposit before viewing uk breeder",
+   "candidates": [
+    "https://www.reddit.com/r/puppy101/comments/qo9ait/owner_wants_a_deposit_before_i_can_visit_a_puppy/",
+    "https://www.reddit.com/r/dogs/comments/18zkie0/do_breeders_in_the_uk_typically_require_a_deposit/",
+    "https://www.reddit.com/r/dogs/comments/6bovuw/discussion_help_when_is_normal_for_a_deposit_for/",
+    "https://www.reddit.com/r/puppy101/comments/1p3wmfd/how_does_buying_a_puppy_work_and_is_there_a_right/",
+    "https://www.reddit.com/r/UK_Pets/comments/1o77s9z/breeder_etiquette_advice/",
+    "https://www.reddit.com/r/UKPersonalFinance/comments/18unwi6/am_i_protected_sending_a_goods_deposit_to_a/"
+   ]},
+  {"query": "site:reddit.com staffy puppy london breeder deposit",
+   "candidates": [
+    "https://www.reddit.com/r/london/comments/tw3619/dog_owners_of_london_whats_it_like/",
+    "https://www.reddit.com/r/AskUK/comments/hals06/seriously_how_do_people_go_about_getting_a_puppy/",
+    "https://www.reddit.com/r/UK_Pets/comments/1hf4i2f/has_anyone_had_a_good_experience_with_pets4homes/"
+   ]}
+ ]
+}
