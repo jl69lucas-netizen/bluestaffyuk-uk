@@ -891,6 +891,11 @@ register({
  * THE UNIT is one visible H2 inside a `.bl-box` and outside any kit or city-kit component
  * (those set their own type). Lines are the painted height over the computed line-height. The
  * examined count is the headings judged; the fixture floor is 2.
+ *
+ * AND THE UNBOXED H2's WEIGHT (the design-polish pick 2(a), 2026-09-30): a boxed H2 painted at
+ * the body's 400 beside the unboxed H2's 700, one outline level at two weights. The weight a
+ * boxed H2 must match is read off a probe `<h2>` placed directly in `<main>`, so it is whatever
+ * the page's own body-heading rule gives an unboxed H2.
  */
 /**
  * Boxed H2s allowed past THREE LINES (never past the size cap), pinned by page and exact text.
@@ -900,9 +905,20 @@ register({
  * preview, "What the run measured"). A new long heading still fails.
  */
 const BOXED_H2_PINNED_LINES: Record<string, string[]> = {
+  index: [
+    // Four lines at 375 once boxed H2s took the unboxed H2's 700 (the design-polish pick 2(a),
+    // 2026-09-30; its preview named all three). Migrated, verbatim content: not reworded.
+    'Connecting Families Across the UK: We Ship Our Blue Staffy Puppies to Your Doorstep',
+  ],
   'buy-staffy-puppies-for-sale-uk': [
     'What Are the Key Takeaways When Choosing BlueStaffyUK for KC Registered Blue Staffy Puppies in the UK?',
     'Why Does BlueStaffyUK Health Test Puppies and What Does It Mean to Have Staffies From L-2-HGA Tested Parents?',
+    // Four lines at 375 at 700 (the design-polish pick 2(a)); migrated, not reworded.
+    'Where Can I Find Staffordshire Bull Terriers in the UK Without Compromising on Health?',
+  ],
+  'uk-staffordshire-bull-terrier-guide': [
+    // Four lines at 375 at 700 (the design-polish pick 2(a)); migrated, not reworded.
+    'Staffordshire Bull Terrier: The UK Staffordshire Bull Terrier Guide for UK Dog Lovers',
   ],
 };
 
@@ -910,16 +926,21 @@ register({
   id: 'layout-boxed-h2-fits',
   family: 'LAYOUT',
   severity: 'blocking',
-  describe: 'a boxed H2 is within its tier\'s size cap (22/25/28px) and three lines',
+  describe: 'a boxed H2 is within its tier\'s size cap (22/25/28px) and three lines, at the unboxed H2\'s weight',
   minExamined: 2,
   async run(page: Page, viewport: number, ctx: CheckContext): Promise<CheckResult> {
     await page.evaluate(() => document.fonts.ready);
     const pinned = BOXED_H2_PINNED_LINES[ctx?.slug ?? ''] ?? [];
     const r = await page.evaluate(({ pinned, tier, caps }) => {
       const main = document.querySelector('main');
-      if (!main) return { noMain: true, examined: 0, cap: 0, bad: [] as string[] };
+      if (!main) return { noMain: true, examined: 0, cap: 0, weight: '', bad: [] as string[] };
       const w = document.documentElement.clientWidth;
       const cap = w < tier.tablet ? caps[0] : w < tier.desktop ? caps[1] : caps[2];
+      const probe = document.createElement('h2');
+      probe.textContent = 'probe';
+      main.appendChild(probe);
+      const weight = getComputedStyle(probe).fontWeight;
+      probe.remove();
       let examined = 0;
       const bad: string[] = [];
       for (const h of Array.from(main.querySelectorAll('.bl-box h2'))) {
@@ -935,9 +956,10 @@ register({
         const why: string[] = [];
         if (fs > cap + 0.5) why.push(`${fs}px over the ${cap}px cap`);
         if (lines > 3 && !pinned.includes(full)) why.push(`${lines} lines, ${Math.round(height)}px tall`);
+        if (cs.fontWeight !== weight) why.push(`weight ${cs.fontWeight}, the unboxed H2's is ${weight}`);
         if (why.length) bad.push(`"${full.slice(0, 50)}" ${why.join(', ')}`);
       }
-      return { noMain: false, examined, cap, bad };
+      return { noMain: false, examined, cap, weight, bad };
     }, { pinned, tier: TIER, caps: HEADING_CAPS.H2 });
     if (r.noMain) {
       return { examined: 0, defects: [{ checkId: 'layout-boxed-h2-fits', family: 'LAYOUT' as const, viewport, count: 1, message: 'the page has no <main>, so no boxed H2 could be judged' }] };
@@ -950,7 +972,7 @@ register({
           family: 'LAYOUT' as const,
           viewport,
           count: r.bad.length,
-          message: `${r.bad.length} of ${r.examined} boxed H2(s) break the ${r.cap}px / three-line cap: ${r.bad.slice(0, 6).join(' | ')}`,
+          message: `${r.bad.length} of ${r.examined} boxed H2(s) break the ${r.cap}px / three-line cap or the unboxed H2's weight (${r.weight}): ${r.bad.slice(0, 6).join(' | ')}`,
         }]
         : [],
     };
@@ -1102,9 +1124,15 @@ register({
 /**
  * The 21 body headings over three lines on 2026-09-29, all at 375 (none at 768 or 1280), each a
  * long migrated heading: pinned by page and exact text, and listed in Known Issue 97's "Next" for
- * that page's next board touch. The two for-sale boxed H2s are also in BOXED_H2_PINNED_LINES.
+ * that page's next board touch, and the three boxed H2s the design-polish pick 2(a) took to four
+ * lines on 2026-09-30. The five boxed ones are also in BOXED_H2_PINNED_LINES.
  */
 const HEADING_LINES_PINNED: Record<string, string[]> = {
+  // The three boxed H2s the design-polish pick 2(a) (700, 2026-09-30) took to four lines at 375,
+  // as its preview named them; also in BOXED_H2_PINNED_LINES.
+  index: [
+    "Connecting Families Across the UK: We Ship Our Blue Staffy Puppies to Your Doorstep",
+  ],
   'blue-staffy-health-uk': [
     "One of the Most Common Queries We Hear Is: “What Vaccines Does My Blue Staffy Need in the UK?” Here’s a Simple Breakdown:",
   ],
@@ -1116,6 +1144,7 @@ const HEADING_LINES_PINNED: Record<string, string[]> = {
     "How Does BlueStaffyUK Compare to Generic Classified Puppy Ads in the UK?",
     "What Makes BlueStaffyUK.uk Different From Backyard Breeders – and How Can You Tell a Good Breeder?",
     "How Does BlueStaffyUK Ensure Safe, Legal, and Stress-Free Puppy Transport Across the UK?",
+    "Where Can I Find Staffordshire Bull Terriers in the UK Without Compromising on Health?",
   ],
   'uk-blue-staffy-puppy-buying-guide': [
     "Your Comprehensive Blue Staffy Puppy Buying Guide: Finding Your Perfect Bull Terrier Staffy With BlueStaffyUK.uk",
@@ -1135,6 +1164,7 @@ const HEADING_LINES_PINNED: Record<string, string[]> = {
   ],
   'uk-staffordshire-bull-terrier-guide': [
     "Staffies and UK Law: Understanding the Breed’s Legal Status & Public Perception",
+    "Staffordshire Bull Terrier: The UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
   ],
 };
 

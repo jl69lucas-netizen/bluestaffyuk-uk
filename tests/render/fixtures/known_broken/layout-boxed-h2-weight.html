@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a boxed H2 lighter than the unboxed H2</title>
+<!-- As the built pages shipped before the design-polish pick 2(a) (2026-09-30): `.bl-box h2` set
+     the family, size and line-height but no weight, so the preflight's `font-weight: inherit`
+     left it at the body's 400 while the unboxed H2 beside it is 700. Both boxed H2s are within
+     the size cap and three lines, so only the weight can fire. The kit contact form's H2 inside
+     a box sets its own weight and is not judged. -->
+<style>
+  body { margin: 0; font: 17px/1.65 Georgia, serif; }
+  h2 { font-weight: inherit; }
+  main :where(h2:not(.bl-box h2)) { font-weight: 700; }
+  .bl-box { padding: 32px 24px; }
+  .bl-box h2 { font-size: 22px; line-height: 1.18; margin: 0 0 8px; }
+  .kit-form h2 { font-weight: 400; }
+</style>
+</head><body>
+<main>
+  <section><h2>An Unboxed Section</h2><p>The unboxed H2 sets the weight a boxed one should match.</p></section>
+  <section class="bl-box">
+    <h2>What We Screen For</h2>
+    <p>A boxed H2 at 400.</p>
+    <div class="kit-form"><h2>Enquire About a Puppy</h2></div>
+  </section>
+  <section class="bl-box">
+    <h2>Where Our Puppies Go</h2>
+    <p>A second box, so the check judges more than one heading.</p>
+  </section>
+</main>
+</body></html>

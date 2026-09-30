@@ -2166,3 +2166,21 @@ test.describe('layout-kit-band-full-bleed sees a band that is not a hero', () =>
     expect(r.defects.length, 'the inset CTA band passed').toBe(1);
   });
 });
+
+/**
+ * A boxed H2 carries the unboxed H2's weight (the design-polish pick 2(a), 2026-09-30). The
+ * generic loop's known_broken fixture for layout-boxed-h2-fits fires on its SIZE, so it cannot
+ * show that the weight reading works: this fixture is within the size and line caps and only
+ * its 400 weight is wrong.
+ */
+test.describe('layout-boxed-h2-fits judges the weight', () => {
+  test('a boxed H2 lighter than the unboxed H2 fires', async ({ page }, testInfo) => {
+    expect((await page.goto(fixtureUrl('known_broken', 'layout-boxed-h2-weight')))?.status()).toBe(200);
+    const check = registry.find((c) => c.id === 'layout-boxed-h2-fits')!;
+    const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'both boxed H2s, not the kit form\'s').toBe(2);
+    expect(r.defects.length, 'a 400 boxed H2 beside a 700 unboxed H2 passed').toBe(1);
+    expect(r.defects[0].count).toBe(2);
+    expect(r.defects[0].message).toContain('weight 400');
+  });
+});

@@ -59,6 +59,13 @@
   }
   @media (width >= 640px) { .bl-box h2 { font-size: 25px; } }
   @media (width >= 800px) { .bl-box h2 { font-size: 28px; } }
+  /* ...and at the unboxed H2's weight, 700 (the design-polish pick 2(a), the user in chat
+     2026-09-30; preview docs/artifacts/bsuk-design-polish-preview.html, item 2): a box's own H2
+     painted at the body's 400 (the preflight's `font-weight: inherit`) beside the unboxed H2's
+     700. A sibling rule, not a line in `.bl-box h2`, because that selector also reaches the kit
+     contact form's "Enquire About a Puppy" inside a box; kit and city-kit headings keep their
+     own weight. Held by tests/render/checks/layout.ts::layout-boxed-h2-fits. */
+  .bl-box h2:not(:where([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-weight: 700; }
 
   /* THE BODY HEADING SCALE (Known Issue 97; the user's pick, option (a), the city scale,
      2026-09-29; preview docs/artifacts/bsuk-heading-scale-preview.html). Every H2/H3 outside a
