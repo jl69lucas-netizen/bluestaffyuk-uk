@@ -58,7 +58,10 @@ def _probe(*finding):
 
 
 def _real_records():
-    return [json.loads(p.read_text()) for p in sorted((ROOT / "data" / "boards").glob("*.json"))]
+    """The boards built before the new-page rules (working rule 17): the pages these tests
+    prove unchanged. A project 5 board (London onward) is a new page and is left out."""
+    records = [json.loads(p.read_text()) for p in sorted((ROOT / "data" / "boards").glob("*.json"))]
+    return [r for r in records if not FR.is_new_page(r)]
 
 
 # ── approval ──────────────────────────────────────────────────────────────────────────────
