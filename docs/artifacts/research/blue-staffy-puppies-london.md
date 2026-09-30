@@ -2,7 +2,7 @@
 
 ## Status
 
-Status: **AWAITING THE USER'S PICKS — STOP 1**
+Status: **APPROVED 2026-09-30** (STOP 1 cleared) — picks: `docs/reference/answer-board/answers/2026-09-30-research-board-blue-staffy-puppies-london-2026-09-30.json`
 
 Research method: Research for London's page run, 2026-09-30: Google SERP + People Also Ask (DataForSEO serp_organic_live_advanced, UK, en, depth 10), Bing read free in the browser, the nine competitor pages saved under data/queries/cache/blue-staffy-puppies-london/, threads via bsuk-reddit-threads (ledger reuse; new threads blocked), the LLM intel file docs/research/llm-intel/blue-staffy-puppies-london-2026-09-30.json, the Google AI Overview read in the user's own browser, keyword variants from the cache, and two DataForSEO backlinks calls for competitor authority (saved as data/queries/raw/blue-staffy-puppies-london/backlinks.response.json and cited in serp-findings.md; authority was fetched after the plan expected it to stay unfetched). Keyword volumes are NOT FETCHED: the Google Ads search-volume call returned no search_volume value. DataForSEO spend: $0.21 for London on 2026-09-30 (page cap $0.50/day); $0.51 of the $1.00 total cap counted.
 
