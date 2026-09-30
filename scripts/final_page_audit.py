@@ -22,6 +22,7 @@ from html.parser import HTMLParser
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _slugs import dist_path as _dist_path   # one slug-resolution convention, shared
+import family_rules as FR                     # the H5/H6 floor's one predicate (2026-09-30)
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
@@ -29,6 +30,8 @@ DEFAULT_JSON = ROOT / "docs/reports/final_page_audit.json"
 # The heading-outline gates every migrated page fails. Not excused — separated, so a
 # new defect is not lost among 12 identical rows.
 BASELINE_CHECKS = {"all_six_levels", "min_h5_5", "min_h6_5"}
+#: The 5-H5 / 5-H6 floor: WARN on the home and location profiles for a pre-rule page only.
+H5H6_FLOOR_CHECKS = ("min_h5_5", "min_h6_5")
 # data/settings.json: delivery_min_gbp 200, delivery_max_gbp 350.
 SHIP_RE = re.compile(r"£\s?200\b[\s\S]{0,80}£\s?350\b|£200\s*[–-]\s*£350")
 #: `<p class="kit-pagedate">Last updated: …</p>`, the kit component's own line. Flat by
@@ -115,7 +118,10 @@ PROFILES = {
         "min_h6_5": "WARN",
         "no_skip": "FAIL",
     },
-    "location": {                        # 40 thin state/city pages: depth is filled with real shipments, not headings
+    "location": {                        # the pre-rule city stubs: depth is filled with real shipments, not headings.
+        # min_h5_5 / min_h6_5 stay WARN here for those stubs only; a project 5 location page
+        # (a board or outline record on disk) takes FAIL through severity() below
+        # (user ruling 2026-09-30, STOP 2 of London; family_rules.h5h6_floor_severity).
         "no_aggregateoffer": "NA",
         "shipping_line": "NA", "wordcount_in_band": "NA", "real_hero_image": "NA",
         "min_h5_5": "WARN",
@@ -419,6 +425,9 @@ def severity(page_type, check, slug=None):
             return "NA"
         if check == "no_visible_date":
             return "FAIL" if (slug in POSTS and not date_is_sourced(slug)) else "NA"
+    if check in H5H6_FLOOR_CHECKS and page_type in FR.H5H6_ADVISORY_PAGE_TYPES and slug:
+        if FR.h5h6_floor_severity(page_type, slug, record=False) == "FAIL":
+            return "FAIL"
     prof = PROFILES.get(page_type, {})
     return prof.get(check, prof.get("_default", DEFAULT_SEVERITY))
 

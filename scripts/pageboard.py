@@ -1019,7 +1019,7 @@ def distribution(board):
     return {"rows": rows, "totals": totals, "h_counts": counts}
 
 
-ADVISORY_MIN_H5H6 = {"home", "location"}          # rules/headings.md, 2026-09-09
+ADVISORY_MIN_H5H6 = set(FR.H5H6_ADVISORY_PAGE_TYPES)  # rules/headings.md: WARN on the frozen home + pre-rule location pages only (2026-09-30)
 LIBRARY_LINK_MIN = 3
 LINK_FLOOR_TYPES = {"for-sale", "hub"}            # the transactional cluster and its hub
 # ── working rule 16: a counter figure resolves to a file on disk ───────────────────────────
@@ -2009,7 +2009,9 @@ def gate_findings(board, ont, ledger, live, stage="build"):
                 "this gate; a page read mid-build gives a real number about a page nobody "
                 "shipped.")
     if counts["h5"] < 5 or counts["h6"] < 5:
-        sev = "WARN" if board["meta"]["page_type"] in ADVISORY_MIN_H5H6 else "FAIL"
+        # WARN only on the homepage and a pre-rule location page; a project 5 page FAILs
+        # (user ruling 2026-09-30, STOP 2 of London; family_rules.h5h6_floor_severity).
+        sev = FR.h5h6_floor_severity(board["meta"]["page_type"], slug)
         add("min-h5-h6", sev,
             f"H5 {counts['h5']} / H6 {counts['h6']} ({source}) — floor is 5 each")
 

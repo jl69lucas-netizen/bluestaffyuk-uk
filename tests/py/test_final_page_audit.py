@@ -179,10 +179,28 @@ def test_sold_not_instock_explicit_fail_on_puppy():
 
 
 def test_home_and_location_profiles_downgrade_h5_h6_minimums_to_warn():
-    for pt in ("home", "location"):
-        assert A.severity(pt, "min_h5_5") == "WARN", pt
-        assert A.severity(pt, "min_h6_5") == "WARN", pt
-        assert A.severity(pt, "no_skip") == "FAIL", pt   # skipped levels stay a hard FAIL
+    # The homepage and a pre-rule location stub (no board, no outline record) keep the WARN.
+    for pt, slug in (("home", None), ("home", "index"), ("location", None),
+                     ("location", "uk-locations/blue-staffy-puppies-fixture-stub")):
+        assert A.severity(pt, "min_h5_5", slug) == "WARN", (pt, slug)
+        assert A.severity(pt, "min_h6_5", slug) == "WARN", (pt, slug)
+        assert A.severity(pt, "no_skip", slug) == "FAIL", pt   # skipped levels stay a hard FAIL
+
+
+def test_a_project_5_location_page_fails_the_h5_h6_minimums(tmp_path, monkeypatch):
+    """User ruling 2026-09-30 (STOP 2 of London): a location page built through the project 5
+    run (a board or outline record on disk, not one of the frozen twelve) FAILs the floor."""
+    import family_rules as FR
+    (tmp_path / "data/outlines").mkdir(parents=True)
+    (tmp_path / "data/outlines/blue-staffy-puppies-fixture.json").write_text("{}")
+    monkeypatch.setattr(FR, "_ROOT", tmp_path)
+    for slug in ("blue-staffy-puppies-fixture", "uk-locations/blue-staffy-puppies-fixture"):
+        assert A.severity("location", "min_h5_5", slug) == "FAIL", slug
+        assert A.severity("location", "min_h6_5", slug) == "FAIL", slug
+    assert A.severity("location", "min_h5_5", "blue-staffy-puppies-other") == "WARN"
+    # a frozen page with a record keeps the WARN
+    (tmp_path / "data/outlines/index.json").write_text("{}")
+    assert A.severity("home", "min_h5_5", "index") == "WARN"
 
 
 def test_home_profile_marks_breadcrumb_not_applicable():

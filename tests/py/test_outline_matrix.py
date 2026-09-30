@@ -105,7 +105,7 @@ def test_the_matrix_renders_every_column_with_copy_buttons_and_a_md_download(tmp
     md = md_path.read_text(encoding="utf-8")
     assert "Status: **AWAITING APPROVAL — STOP 2**" in md
     assert "**Target:** 900–1,400 words (source: " in md and "the matrix sums to 1,100 words" in md
-    assert "**Heading census:** 1 H1 · 3 H2 · 2 H3 · 1 H4 · 1 H5 · 1 H6" in md
+    assert "**Heading census:** 1 H1 · 3 H2 · 2 H3 · 1 H4 · 5 H5 · 5 H6" in md
     assert "| # | Section | Framework | Words | Keywords | Cat | Why | Image |" in md
     assert "H2 How Do We Deliver to Fixture City? (H3 What Does Delivery Cost? (H4" in md
     assert "(from `serp.results[1]`)" in md

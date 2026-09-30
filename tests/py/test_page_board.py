@@ -826,13 +826,31 @@ def test_gate_release_stage_fails_on_missing_required_slot_only_at_release():
     assert any(x["check"] == "asset-required-missing" and x["sev"] == "FAIL" for x in release)
 
 
-def test_gate_h5_h6_minimums_are_warn_on_home_and_location():
+def _h5h6_sev(b):
+    b["approval"]["record_hash"] = PB.record_hash(b)
+    f = {x["check"]: x["sev"] for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")}
+    return f.get("min-h5-h6")
+
+
+def test_gate_h5_h6_minimums_fail_on_a_project_5_location_board():
+    """User ruling 2026-09-30 (STOP 2 of London): a project 5 location board short of 5 H5
+    or 5 H6 FAILs, like every other page type — the 2026-09-09 WARN no longer covers it."""
     b = _approved(MIN_BOARD)
-    f = {x["check"]: x["sev"] for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")}
-    assert f.get("min-h5-h6") == "FAIL"           # hub page type: hard
-    b["meta"]["page_type"] = "location"; b["approval"]["record_hash"] = PB.record_hash(b)
-    f = {x["check"]: x["sev"] for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")}
-    assert f.get("min-h5-h6") == "WARN"
+    assert _h5h6_sev(b) == "FAIL"                  # hub page type: hard
+    b["meta"]["page_type"] = "location"            # slug "x": not one of the frozen twelve
+    assert _h5h6_sev(b) == "FAIL"
+
+
+def test_gate_h5_h6_minimums_stay_warn_on_home_and_a_pre_rule_location(monkeypatch):
+    import family_rules as FR
+    monkeypatch.setattr(FR, "BUILT_BEFORE_SYSTEM_GAPS", FR.BUILT_BEFORE_SYSTEM_GAPS | {"x"})
+    b = _approved(MIN_BOARD)
+    b["meta"]["page_type"] = "location"
+    assert _h5h6_sev(b) == "WARN"
+    b["meta"]["page_type"] = "home"
+    assert _h5h6_sev(b) == "WARN"
+    b["meta"]["page_type"] = "hub"
+    assert _h5h6_sev(b) == "FAIL"
 
 
 def test_gate_whitelist_matches_whole_tokens_not_substrings():

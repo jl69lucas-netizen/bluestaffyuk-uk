@@ -398,9 +398,11 @@ For pages with a delivery/delivery section, use web search to gather these entit
 - H2: 25–35 · H3: 40–50 · H4: 10–20
 - H5: minimum 5 — deep LSI / technical authority terms
 - H6: minimum 5 — voice-search phrasing, breeder notes, citations
-- All six levels on every full-length page, no skipped level. On the homepage and the location
-  pages the 5-per-level minimums are advisory (WARN); "all six levels" and "no skipped levels"
-  stay hard (`rules/headings.md`, `heading-hierarchy-outline-gate`).
+- All six levels on every full-length page, no skipped level. On the homepage and the pre-rule
+  location stubs the 5-per-level minimums are advisory (WARN); on every project 5 page
+  (location, comparison, blog) they are a hard FAIL (user ruling 2026-09-30); "all six levels"
+  and "no skipped levels" stay hard everywhere (`rules/headings.md`,
+  `heading-hierarchy-outline-gate`).
 
 **Two-Keyword Header Method (apply to every header that can carry a second term):**
 Each header should pull double SEO duty: **[secondary/conversational keyword] + [related LSI · NLP · entity · concurrent keyword · or long-form modifier]**. Don't stop at the obvious keyword — append a second, *useful* term that broadens the header's reach without keyword-stuffing.
