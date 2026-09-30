@@ -44,6 +44,8 @@ _(The user's exact answer to each question is appended here as the interview pro
 
 **Q14 — Urgency:** "no dateline, once we ggo thhrough all the steps, and gates/stop, we use impecable latrr to refine, polish each page"
 
+**Task 4 (paid calls):** user chose SERP + volumes + backlinks, 2026-09-30 (chat). That approves three DataForSEO calls for London, about $0.15–0.30 in total: the Google SERP with People Also Ask, one batched keyword search-volume call (UK, English), and a backlinks summary for the top-5 competitor domains. Caps unchanged: $0.50 per page per day, $1.00 total.
+
 ## Decisions Log
 - Framework, angles and strategy: to be picked by the user at STOP 1.
 - There is no deadline. Every step, gate and stop is done in full, then an impeccable refinement pass polishes each page (Q14).
@@ -56,6 +58,7 @@ _(The user's exact answer to each question is appended here as the interview pro
 - **Board:** London has no approved page board. That is expected; it comes at STOP 3.
 - **Audit:** London has not been through `@bsuk-content-audit-agent`. It is a stub with 4 words, so an audit adds little; the research board covers the intent and gaps.
 - **Hub:** `/uk-locations/` is built. Known Issue 86: the UK hub's body does not link the indexable city pages.
+- **Deposit refund clause (Ruling 2 of the London plan):** the user's condition is "if you change your mind up to 1 day before collection or delivery" (deposit-wording batch Q3 (b), 2026-09-27), which supersedes this brief's "if a visitor fails to show up". It lives on the unmerged `deposit-wording` branch; `data/settings.json` has no refund-wording key. London prints `depositLine` with no refund wording until that branch is merged (the user's call).
 
 ---
 <!-- The synthesized fields below are filled in at finalization, from the Q&A Log above. -->
