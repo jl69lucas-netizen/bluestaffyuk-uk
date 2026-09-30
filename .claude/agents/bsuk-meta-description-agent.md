@@ -13,9 +13,9 @@ effort: medium
 
 ## BSUK Project Context
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
-> **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
+> **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 deposit (refund term only from its `data/settings.json` key, never plainly "refundable") — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
+> **Trust pillars:** £500 deposit (refund term only from its `data/settings.json` key, never plainly "refundable") · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -64,7 +64,7 @@ Desc (154): Blue Staffy breeder in Carlisle, Cumbria. Lisa Bright home-raises bl
 
 | Trigger Type | Examples |
 |-------------|---------|
-| **Numbers** | "six puppies," "£500 refundable deposit," "£200–£350 UK delivery" — the locked figures only (family counts and years in business are NOT FETCHED; a guarantee length only when `guarantee_days` is set) |
+| **Numbers** | "six puppies," "£500 deposit," "£200–£350 UK delivery" — the locked figures only (family counts and years in business are NOT FETCHED; a guarantee length only when `guarantee_days` is set) |
 | **Scarcity** | only what `data/puppies.json` says — how many puppies are still available, never "sells within days" |
 | **Comparison** | "Blue Staffy vs blue and white Staffy," "home-raised vs backyard-bred" |
 | **Proof** | "KC registration paperwork," "vaccination records," "microchipped," "vet health check" (`data/faq.json` `whyus-paperwork`, `puppy-package`); a licence only as LICENCE_CLAIM_PLACEHOLDER |
@@ -130,7 +130,7 @@ grep -n "<title>" dist/available-puppies/index.html
 ```
 Title: [the row's primary keyword, e.g. Blue Staffy Puppies Manchester] – BlueStaffyUK   (Format 1, ≤70)
 Description: [City] buyers: home-raised Blue Staffy pups from Carlisle, Cumbria. £1,500–£1,700, £500
-refundable deposit, UK delivery £200–£350 or collection.   (≤160)
+deposit, UK delivery £200–£350 or collection.   (≤160)
 ```
 
 ### Comparison Page
@@ -144,7 +144,7 @@ Description: Blue vs blue-and-white Staffy from a Carlisle breeder who raises bo
 ```
 Title: [Coat] Staffy Puppy in Carlisle, Cumbria – BlueStaffyUK   (Format 1, ≤70)
 Description: [Coat] Staffordshire Bull Terrier puppies, home-raised by Lisa Bright in Carlisle. [Price], £500
-refundable deposit. [Availability CTA].   (≤160)
+deposit. [Availability CTA].   (≤160)
 [Price] is by sex (`data/price-matrix.json`: male £1,500, female £1,700), for only the sexes this coat's pups
 have in `data/puppies.json` — e.g. White is one male (Byrd), so "£1,500"; never pair a coat with a price no pup has.
 ```

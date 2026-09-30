@@ -97,7 +97,7 @@ For every core H2, generate 5 variations for A/B testing:
 **Maps to:** Technical and expert terms that establish topical authority on Staffordshire Bull Terrier breeding
 **Format:** Specific technical term + context or explanation
 **Purpose:** Signals expertise to Google and AIO; targets niche searchers who know the terminology
-**Status: MANDATORY — not optional. Every full-length page (22+ sections) must have ≥5 H5 headings.**
+**Status: MANDATORY — not optional. Every full-length page must have ≥5 H5 headings.**
 
 **Examples:**
 - "Meeting the Parents: Blue Staffy Genetic and Behavioural Lineage."
@@ -236,7 +236,7 @@ H2: Why Choose a Blue Staffy from BlueStaffyUK?
     H6: Is Roman Lead Trained Yet? Here's What to Expect at This Age.
 H2: How to Reserve Roman and Bring Him Home
   H3: The BSUK Reservation Process: 5 Simple Steps.
-    H4: The £500 Refundable Deposit, Payment, and What's Included in Roman's Delivery Package.
+    H4: The £500 Deposit, Payment, and What's Included in Roman's Delivery Package.
     H6: Ready to Go Now: How to Reserve Roman Today.
 ```
 
@@ -293,9 +293,10 @@ grep -oP '(?<=<)[hH][1-6]' dist/[slug]/index.html | grep -oP '[1-6]' | awk 'NR>1
 1. **One H1 per page** — non-negotiable
 2. **5 variations per core H2** — required for all commercial and location pages
 3. **No level skipping** — sequential order only (H1 → H2 → H3 → H4 → H5 → H6); jumping levels is BANNED
-4. **All six levels required** on every full-length page (22+ sections) — H5 and H6 are not optional
+4. **All six levels required** on every full-length page — H5 and H6 are not optional
 5. **H5 minimum: 5 per page** — supporting facts / warnings / examples (deep LSI / technical authority)
 6. **H6 minimum: 5 per page** — ultra-specific details / breeder notes / citations / voice-search queries
+6a. **No fixed H2/H3/H4 count** — H2/H3/H4 counts come from competitor research — the H2 count is the question file's `section_target` (competitors' highest cleaned H2 count + 3, floor 9) — never a fixed band (seo-rules Rule 28, amended 2026-09-30). Never pad a page to reach a number.
 7. **Question format preferred for H2/H3** — conversational, voice-search optimized
 8. **Audit command first** — always grep heading levels and run skip-detection before manual review
 9. **OUTLINE-FIRST APPROVAL GATE** — the full H1→H6 heading tree must be presented to the breeder and **approved before any page code is written or edited** (breeder rule 2026-06-20). Semantic map: H1=topic · H2=search intents · H3=subtopics/clusters · H4=micro-intent/PAA · H5=supporting facts/warnings/examples · H6=ultra-specific details/breeder notes/citations.

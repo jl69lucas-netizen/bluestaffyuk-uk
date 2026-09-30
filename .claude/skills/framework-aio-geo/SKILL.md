@@ -70,8 +70,8 @@ Source:    LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER
 Bad (vague): "Blue Staffy puppies come in different colours and live a long time."
 
 Good (citable): "Our current litter is six Staffordshire Bull Terrier puppies: the three males
-are £1,500 and the three females £1,700, and any of them can be reserved with a £500 refundable
-deposit. With routine veterinary care, Staffordshire Bull Terriers live 12–14
+are £1,500 and the three females £1,700, and any of them can be reserved with a £500
+deposit that comes off the price. With routine veterinary care, Staffordshire Bull Terriers live 12–14
 years — a typical lifespan for a medium-sized terrier breed."
 ```
 

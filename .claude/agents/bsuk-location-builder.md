@@ -13,9 +13,9 @@ effort: max
 
 ## BSUK Project Context
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
-> **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
+> **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 deposit (refund term only from its `data/settings.json` key, never plainly "refundable") — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name — the one exception is the banned-breed line under "What you may NOT write into a city page" (Known Issue 46).
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
+> **Trust pillars:** £500 deposit (refund term only from its `data/settings.json` key, never plainly "refundable") · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -70,7 +70,7 @@ Every location page is built by substituting these variables into its derived se
 | `{CITY_TRAVEL_NOTE}` | collection in Carlisle, or UK home delivery £200–£350 by distance (DEFRA-approved transport) | `data/settings.json` |
 | `{PRICE_FROM}` | £1,500 (Roman, Byrd, Ince) | `data/puppies.json` → `price_gbp` |
 | `{PRICE_TO}` | £1,700 (Vennie, Christa, Cheryl) | `data/puppies.json` → `price_gbp` |
-| `{DEPOSIT}` | £500 refundable | `data/settings.json` |
+| `{DEPOSIT}` | £500 (never plainly "refundable"; the refund term only from its settings key) | `data/settings.json` |
 
 ---
 
@@ -108,7 +108,7 @@ from, and no page may narrow the range to a single number until the breeder give
   `docs/reference/external-link-library.md`.
 - A travel time in hours, a mileage, or a delivery date. None of those are fetched.
 - A local price. Every price is Roman/Byrd/Ince £1,500 or Vennie/Christa/Cheryl £1,700 from
-  `data/puppies.json`, with the £500 refundable deposit.
+  `data/puppies.json`, with the £500 deposit.
 
 ### Fallback for Cities Not Listed Above
 

@@ -92,6 +92,7 @@ Conversational Q&A style (What/How/Is/Can/Where), per the Heading Hierarchy Outl
 the full H1→H6 outline is approved BEFORE any code, no skipped levels, all six levels,
 **≥5 H5 AND ≥5 H6** (`rules/headings.md`). Semantic map: H1 topic · H2 search intents ·
 H3 subtopics · H4 PAA/micro-intents · H5 supporting facts/warnings · H6 breeder notes.
+H2/H3/H4 counts come from competitor research — the H2 count is the question file's `section_target` (competitors' highest cleaned H2 count + 3, floor 9) — never a fixed band (seo-rules Rule 28, amended 2026-09-30).
 Draft 5 A/B variants for H1 and each major H2 at outline stage; the breeder picks. Unique
 hybrid headers per page — zero exact or template crossover with siblings (dup-gate `--headers`).
 
@@ -106,8 +107,9 @@ its card plus 1–2 body mentions. Every health, licence and legal entity is bou
 LEGAL_CLAIM_PLACEHOLDER in prose, or NOT FETCHED.
 
 ### 2e. Meta
-The puppy cluster uses the **extended 3-part format** — see §6a, which `rules/puppies.md`
-`puppies-extended-meta` names as the canonical spec. Three sets per page (Educational /
+The puppy cluster uses the sitewide meta standard — a one-clause title ≤70 characters and a
+description ≤160 — see §6a, which `rules/puppies.md` `puppies-extended-meta` names as the
+canonical spec. Three sets per page (Educational /
 Benefit-Solution / Transactional-Urgency), one marked (Recommended) with why and trade-off.
 
 ### 2f. Counter snippets
@@ -130,8 +132,8 @@ a row of `docs/reference/external-link-library.md` (a board naming any other URL
 1. **Puppy cards near the fold** — real pups from `data/puppies.json`, price from
    `data/price-matrix.json` through a helper, and the delivery line under the trust badges:
    `UK home delivery £200–£350 by distance · or collect in Carlisle`. **Never a card without
-   the delivery line** (`rules/puppies.md` `delivery-band-on-every-card`). The refundable
-   £500 deposit is stated wherever the band is.
+   the delivery line** (`rules/puppies.md` `delivery-band-on-every-card`). The £500
+   deposit is stated wherever the band is, never plainly "refundable" (`rules/puppies.md`).
 2. **Schema** — one `Product` with exactly one `Offer` per pup, several pups wrapped in an
    `ItemList`; never one `Product` with several offers, never a second bare `Product`
    outside the list (`rules/puppies.md` `product-schema-per-pup`, enforced by
@@ -247,19 +249,28 @@ a row of `docs/reference/external-link-library.md` (a board naming any other URL
 8. **Perf conclusions need ≥5 runs.** CLS is bimodal; a single Lighthouse run has produced a
    confident wrong attribution before. Read the distribution, not one number.
 
-## 6a. Meta — the extended 3-part format (canonical spec for `rules/puppies.md`)
+## 6a. Meta — one clause, ≤70 / ≤160 (canonical spec for `rules/puppies.md`)
 
-Every puppy-cluster page uses the extended 3-part meta. Do NOT truncate to a short title.
+Every puppy-cluster page follows `docs/reference/seo-rules.md` Rule 21 (title) and Rule 23
+(description), like every other page.
 
-- **Title** = `Primary Keyword | Related Conversational Query | Number + Positive Word | Brand — LSI/NLP Keywords`
-  — front-load the primary keyword; extend toward but **never past 280 characters**.
-- **Description** = `Primary Benefit | Secondary Benefit | Trust Signal + CTA`, **≤300 chars**.
+- **Title** — one clause, no pipe separators: primary keyword first, a true number only where
+  one exists, a power word, a long-tail conversational phrase if it fits, the brand last;
+  **≤70 characters** (`data/quality/evidence-budgets.json` `title_max_chars`, gated by
+  `scripts/pageboard.py` `meta-length`).
+- **Description** — one sentence flow: primary keyword + a long-tail or LSI variation + a
+  trust signal + a CTA, **≤160 characters** (the board's band is 140–160).
 - The real price floor comes from `data/price-matrix.json` (£1,500 for Roman, Byrd and Ince;
   £1,700 for Vennie, Christa and Cheryl), never typed by hand, plus real credentials and a
   branded ending.
 - A licence or statute claim in a title or description is written
   `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER` until it is confirmed — in prose
   only, never in a heading, a route or a code key.
+
+*Amended 2026-09-30 (user, answer board batch `2026-09-30-for-sale-rules-three-decisions`
+q03): the extended 3-part format (titles toward 280 characters, descriptions ≤300) is
+retired, matching CAG's 2026-09-09 ruling. The built for-sale pages already use 50–60-character
+titles, so no live page changes.*
 
 ## 6b. Component fidelity — the recurring mistake
 

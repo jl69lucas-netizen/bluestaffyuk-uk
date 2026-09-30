@@ -134,7 +134,7 @@ The reply time is `data/faq.json` `home-after-support` ("within 24 to 48 busines
 <h2>Ready to Meet Your Blue Staffy Puppy?</h2>
 <p>Fill out our quick inquiry form. Lisa Bright replies personally within 24 to 48 business hours
    — not an automated email, a real reply with available puppies that match your family.</p>
-<p><strong>A £500 refundable deposit holds your puppy.</strong> KC registration, a vet health check, first vaccinations and a microchip come with every puppy.</p>
+<p><strong>A £500 deposit holds your puppy and comes off the price.</strong> KC registration, a vet health check, first vaccinations and a microchip come with every puppy.</p>
 [Inquiry Form — 3 fields: name, email, the puppy you're interested in (any of the six in `data/puppies.json`, or "any pup")]
 <p class="bsuk-form-note">We reply within 24 to 48 business hours, ourselves, not an agency. No spam, no pressure, no bait-and-switch.</p>
 ```

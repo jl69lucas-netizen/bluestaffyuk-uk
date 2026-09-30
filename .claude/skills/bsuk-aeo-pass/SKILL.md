@@ -120,7 +120,7 @@ Answer engines prefer structure they can lift whole.
   directly; once a comparison page is built, make sure the *money* pages link it.
 - **Lists** — enumerate documents, stages, tiers.
 - **Stat-bearing headers** — put the number *in the heading*:
-  "**£500** Refundable Deposit" · "**£1,500–£1,700** for a Puppy From Our Litter" ·
+  "**£500** Deposit to Reserve a Puppy" · "**£1,500–£1,700** for a Puppy From Our Litter" ·
   "**£200–£350** UK Home Delivery" · "**12–14 Years**: The Breed's Lifespan". Every figure comes
   from `data/*.json`; a years-in-business figure is `NOT FETCHED` and never goes in a heading; the length of the
   guarantee goes in one only as `guarantee_days` and `guarantee_label` word it.

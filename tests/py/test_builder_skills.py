@@ -447,12 +447,25 @@ def test_the_checklist_full_sweep_no_unbacked_claims_and_every_cited_rule_exists
     cited = cited_rules(CHECKLIST)
     assert cited and sorted(cited - exists) == [], sorted(cited - exists)
     counters = CHECKLIST[CHECKLIST.index("**Counter Snippets"):CHECKLIST.index("**Contact/Inquiry Forms")]
-    for counter in ("£500 Refundable Deposit", "12–14 Year Lifespan", "28 UK Cities Covered",
+    for counter in ("£500 Reservation Deposit", "12–14 Year Lifespan", "28 UK Cities Covered",
                     "Home-Reared in Carlisle"):
         assert counter in counters, counter
     step5 = CHECKLIST[CHECKLIST.index("**Header count targets"):CHECKLIST.index("**Two-Keyword Header")]
-    for level in ("H2: 25–35", "H3: 40–50", "H4: 10–20", "H5: minimum 5", "H6: minimum 5"):
+    for level in ("H1: exactly 1", "H5: minimum 5", "H6: minimum 5", "section_target"):
         assert level in step5, level
+    # Rule 28 amended 2026-09-30 (user): H2/H3/H4 counts come from competitor research, never
+    # a fixed band. The old bands may be named only as retired.
+    for band in ("H2: 25–35", "H3: 40–50", "H4: 10–20"):
+        assert band not in step5, band
+
+
+def test_rule_28_sets_no_fixed_h2_h3_h4_band():
+    seo_rules = (ROOT / "docs/reference/seo-rules.md").read_text(encoding="utf-8")
+    rule_28 = seo_rules[seo_rules.index("**Rule 28"):seo_rules.index("**Rule 29")]
+    assert "**25–35**" not in rule_28 and "**40–50**" not in rule_28
+    for needle in ("no fixed band", "section_target", "+ 3", "Amended 2026-09-30",
+                   "minimum 5", "exactly **1**"):
+        assert needle in rule_28, needle
 
 
 # ── the board gate and the per-page audits (Task 11 review) ──────────────────

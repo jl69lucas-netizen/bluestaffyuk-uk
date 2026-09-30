@@ -13,9 +13,9 @@ effort: high
 
 ## BSUK Project Context
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
-> **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
+> **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 deposit (refund term only from its `data/settings.json` key, never plainly "refundable") — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
+> **Trust pillars:** £500 deposit (refund term only from its `data/settings.json` key, never plainly "refundable") · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -44,7 +44,7 @@ All components are self-contained HTML blocks: zero external dependencies, zero 
 Every interactive block is a kit component, `src/components/kit/<Name>.astro`, following the ten conventions at the top of `src/components/kit/_registry.ts`: registered there with demo fixtures, rendered on `/kit-preview/`, with a dist assertion in `tests/py/test_design_components.py`. None of the five below is built yet; each is previewed on the page's board before it ships (CLAUDE.md rules 6 and 10).
 
 ### 1. First-Year Cost Calculator
-Input: which puppy, from `data/puppies.json` (`name`, `sex`, `price_gbp`). Output: the purchase price, the £500 refundable deposit (`data/settings.json`), and every running cost written `NOT FETCHED` until the breeder supplies it. Never a total the data files do not hold.
+Input: which puppy, from `data/puppies.json` (`name`, `sex`, `price_gbp`). Output: the purchase price, the £500 deposit (`data/settings.json`; never plainly "refundable"), and every running cost written `NOT FETCHED` until the breeder supplies it. Never a total the data files do not hold.
 
 ### 2. Coat and Temperament Fit Quiz
 Questions about the buyer's home and experience. The result names puppies from `data/puppies.json` by their recorded `colour` and `sex`; a temperament claim the breeder has not made stays `LICENCE_CLAIM_PLACEHOLDER` until evidenced.
