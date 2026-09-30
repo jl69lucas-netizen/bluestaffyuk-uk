@@ -1,8 +1,7 @@
 # Session Brief — 2026-09-30
 
-> **Status:** IN PROGRESS. The interview is underway; resume with `grill-me --resume`.
+> **Status:** READY. The interview is complete.
 > **Last updated:** 2026-09-30 (pre-filled from disk)
-> **Next question:** Q9
 
 ## Q&A Log (Verbatim)
 _(The user's exact answer to each question is appended here as the interview proceeds. Entries marked "from disk" were read from the repo, not asked, and are pending the user's confirmation.)_
@@ -41,8 +40,14 @@ _(The user's exact answer to each question is appended here as the interview pro
 
 - **CONSTRAINT:** The deposit-first fear is the London buyer's main worry and main reason to leave. The page must answer it head-on: the deposit books the viewing and reserves the puppy, a video call is offered before the deposit, the deposit is up to 70% refundable if a visitor fails to show up, and it comes off the price. All of this comes from the rulings on record and data.
 
+**Q9 — Benchmark:** "no, we use the competitors research data to build the page, until we published the sites, i can see it myself then we determine"
+
+**Q14 — Urgency:** "no dateline, once we ggo thhrough all the steps, and gates/stop, we use impecable latrr to refine, polish each page"
+
 ## Decisions Log
 - Framework, angles and strategy: to be picked by the user at STOP 1.
+- There is no deadline. Every step, gate and stop is done in full, then an impeccable refinement pass polishes each page (Q14).
+- No benchmark page: the London page is built from the competitor research data. The user judges it once the site is published (Q9).
 - The primary reader fear to resolve is paying the deposit before seeing the puppy (user, Q8).
 - The London component kit (15 picks, confirmed 2026-09-29) is the menu; the outline decides the sections.
 
@@ -54,3 +59,47 @@ _(The user's exact answer to each question is appended here as the interview pro
 
 ---
 <!-- The synthesized fields below are filled in at finalization, from the Q&A Log above. -->
+
+## Business Focus
+Build London, the first of the 28 city pages, from real competitor research, and approve it stop by stop. The page has to win over a London buyer who fears paying a deposit before seeing the puppy. It must do that with facts that are true and read from data.
+
+## SESSION CONTEXT
+- **Page type:** location (city)
+- **Target keyword:** blue staffy puppies london. The research board confirms the primary keyword and its distribution.
+- **Framework:** picked at STOP 1 (research board).
+- **Framework reason:** recorded at STOP 1.
+- **AIO / GEO approach:** picked at STOP 1.
+- **AIO notes:** `docs/research/llm-intel/blue-staffy-puppies-london-2026-09-25.json` is the one-engine input; its `bsuk_cited` is reported on the research board.
+- **Component style:** city kit (15 components confirmed 2026-09-29). The outline decides the sections, and the page board maps each section to a component.
+- **Visual plan:** picked on the page board (STOP 3). Every H2/H3 and the hero get an image (rule 17).
+- **Audit status:** not run. The page is a 4-word stub; the research board covers intent and gaps.
+- **LLM visibility:** see the llm-intel file above (reported at STOP 1).
+- **Structure.json entry:** location cluster under `/uk-locations/`.
+- **Hub page:** `/uk-locations/` (built; Known Issue 86: its body does not link the city pages).
+- **Internal links needed:** chosen on the page board (rule 12: every link is on the board).
+
+## Today's Target
+- **Page:** `/uk-locations/blue-staffy-puppies-london/`
+- **Goal:** the full page run (research → STOP 1 → STOP 2 → STOP 3 → build → gates), then Claude verifies and the user approves.
+- **Reader:** a London buyer. Their main fear, and main reason to leave, is paying the deposit before seeing the puppy.
+- **Benchmark:** none. The page is built from the competitor research data.
+
+## Constraints
+See every CONSTRAINT line in the Q&A Log above.
+
+## Repeat / Avoid
+- **Repeat:** subagent build, then spec review, then quality review. Every page change is proven by a check that fails first.
+- **Avoid:**
+  - choosing components before the outline is approved;
+  - stating health results;
+  - calling the deposit plainly "refundable".
+
+## Urgency
+No deadline. Every step, gate and stop comes first, then an impeccable refinement pass.
+
+## Recommended Next Steps
+- **Page-run row 1:** the `superpowers:writing-plans` skill writes London's page plan, then the `bsuk-location-page-builder` skill loads. Then run `python3 scripts/page_run_record.py blue-staffy-puppies-london session-open --builder bsuk-location-page-builder`.
+- **Rows 2–7:** intake, URL decision, research inventory, competitor research and query fan-out (`bsuk-query-augmentation`), keyword deliverables and entities.
+- **Row 8:** the research board, which is STOP 1. The user picks the angles, strategy, frameworks and keywords.
+
+## What's Next
