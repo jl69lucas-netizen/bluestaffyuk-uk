@@ -1,0 +1,138 @@
+{
+  "slug": "thank-you-blue-staffy-puppies-journey",
+  "date": "2026-09-30",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 45
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 669,
+    "layout-tap-target-size": 178,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 36,
+    "layout-text-has-side-gutter": 366,
+    "layout-boxed-h2-fits": 15,
+    "layout-kit-band-full-bleed": 0,
+    "layout-heading-size-order": 24,
+    "layout-heading-lines": 36,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 2,
+    "layout-body-heading-brand": 51,
+    "layout-body-text-shares-edge": 39,
+    "img-srcset-within-2x": 21,
+    "img-not-upscaled": 12,
+    "img-alt-present-and-unique": 21,
+    "img-sizes-matches-box": 0,
+    "img-face-visible": 18,
+    "nav-anchors-resolve": 99,
+    "nav-jump-target-lands": 27,
+    "nav-bottom-chrome-clear": 18,
+    "nav-breadcrumb-separator-spaced": 3,
+    "sem-heading-order": 123,
+    "sem-all-six-levels": 123,
+    "sem-title-case-headings": 123,
+    "sem-section-opening-paragraph": 123,
+    "sem-statement-label-visible": 12,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1320,
+    "css-no-dead-component-rule": 921,
+    "css-component-color-not-overridden": 66,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 636,
+    "a11y-no-duplicate-ids": 48,
+    "a11y-hero-ledge-contrast": 0,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "CSS": 6,
+    "DUP": 3,
+    "IMG": 1
+  },
+  "instances": {
+    "CSS": 237,
+    "DUP": 9,
+    "IMG": 1
+  },
+  "total": 10,
+  "total_instances": 247,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x6, bl-media-none x5, bl-list-stack x4, bl-head-above x3, bl-cols-1 x2, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 71,
+      "message": "71 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about christa cheryl\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x6, bl-media-none x5, bl-list-stack x4, bl-head-above x3, bl-cols-1 x2, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 71,
+      "message": "71 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about christa cheryl\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 1,
+      "message": "1 upscaled image(s): thank-you-from-bluestaffyuk-happy-family-blue-staffy.webp file=500x500 painted=670x447 visible=670x447 cover 1.34x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-chrome-ruled x6, bl-media-none x5, bl-list-stack x4, bl-head-above x3, bl-cols-1 x2, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 71,
+      "message": "71 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 3,
+      "message": "3 passage(s) shared with a sibling: 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about byrd ince\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about ince vennie\" | 13w vs /uk-locations/blue-staffy-puppies-london/ \"delivery 200 350 by distance or collect in carlisle ask about christa cheryl\""
+    }
+  ]
+}
