@@ -1,0 +1,83 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "A1: \"Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?\" (a live video call with your puppy and Maggie before any deposit; then £500 books your viewing, reserves your puppy and comes off the price)",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Which angle should the London page take?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "S2: deposit first, a question-led breeder page signed by Lisa Bright",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Which strategy direction?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Take every recommended framework",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Which framework for each section group?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, as shown",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "Is this keyword universe and its distribution right?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "2,000–3,000 words",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "Word band?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, no local council link",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "External links without a council licensing page?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "I'll push the branch; merge it before the outline",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "question": "The deposit-wording branch is not on GitHub yet. How should London's deposit answer read?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-09-30T02:49:56.651Z",
+  "batchId": "2026-09-30-research-board-blue-staffy-puppies-london",
+  "counts": {
+    "answered": 7,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-09-30T02-49-56-649Z"
+}
