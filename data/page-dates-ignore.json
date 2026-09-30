@@ -40,6 +40,13 @@
         "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
       ],
       "reason": "Task 10b re-review, item 4: comment-only edits in eight page files (stale notes that said the guarantee is unset). The built pages were diffed against the build before it (95b0013): no page's HTML changed, so no route is re-dated by it."
+    },
+    {
+      "sha": "0fbf289aae6964efb8eaf397703adf5e0b92bc6d",
+      "paths": [
+        "src/pages/[...post].astro"
+      ],
+      "reason": "The design-polish pick 3(a) (2026-09-30): the blog template's scoped <style> only (.post-body takes the container's box; its non-paragraph children keep the 760px measure). The built post was diffed against the build before it (220b0c9): byte-identical outside <style>, so the post is not re-dated by it."
     }
   ],
   "floor_override": {},
