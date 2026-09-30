@@ -1093,9 +1093,9 @@
   },
   {
     "src": ".claude/skills/cag-bird-page-excellence/SKILL.md",
-    "dst": ".claude/skills/bsuk-bird-page-excellence/SKILL.md",
-    "mode": "deferred",
-    "notes": "parrot-only page polish; bsuk-final-page-pass covers the gate — recorded 2026-09-23, never ported"
+    "dst": ".claude/skills/bsuk-puppy-page-excellence/SKILL.md",
+    "mode": "rebase",
+    "notes": "ported 2026-09-30, the user's ruling (was deferred 2026-09-23): re-based as the polish/differentiation skill for /available-puppies/<slug>/ and the hub; facts read from data/puppies.json, data/price-matrix.json and data/settings.json; the life-stage split becomes colour (and the white-blaze marking) within a sex and sex across the two colour pairs, with the missing temperament/age axis named as a gap; work-on-trunk/push-to-deploy becomes rules 2-3; the downscale re-encode becomes a shrink-only sibling (rule 11); contrast re-based to data/design/contrast.json tokens. Dropped: the CITES and wildlife-agency link rows (no BSUK counterpart), the CDN script-loader dashboard toggle (no host until project 6), the JumpRail row (no such component in src/components), the video-hero poster preload (puppy pages have no video hero), the price-page cheap-query FAQ row and the auto-push amend lesson (no remote)"
   },
   {
     "src": ".claude/agents/cag-bird-personality.md",
