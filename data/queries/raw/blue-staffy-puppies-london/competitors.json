@@ -1,0 +1,512 @@
+{
+  "status": "ok",
+  "fetched": "2026-09-30",
+  "note": "Pool: Google top 5 organic (DataForSEO, 2026-09-30) merged with Bing top 5 (browser, 2026-09-30), de-duplicated by URL. Dropped as off-topic: Google #5, a TikTok puppy-yoga/therapy video (https://www.tiktok.com/@puppyyogaclublondon/video/7664573369207065878), which sells no puppy and answers no buyer question. Saved with curl (1-6, 8-9); 7 (freeads) returned a Cloudflare 'Just a moment' page to curl and was saved as a Playwright capture of the rendered page after the browser's own check cleared unaided (no interaction). No Firecrawl credit was used.",
+  "pages": [
+    {
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/southall-london?colour=blue&distance=75&sex=male&sort=price_high",
+      "google_pos": 1,
+      "bing_pos": null,
+      "h2": [
+        "6 Male (Dog) Blue Staffie Puppies For Sale In Southall, London",
+        "Frequently Asked Questions"
+      ],
+      "h2_all": 22,
+      "blocked": false,
+      "metrics": {
+        "title": "Male (Dog) Blue Staffordshire Bull Terrier Puppies For Sale In Southall, London | Staffie Owners",
+        "meta_description": "6 Male (Dog) Blue Staffordshire Bull Terrier puppies for sale in Southall, London from trusted breeders and sellers - explore KC-registered litters and health-tested puppies on the UK's leading Staffie classifieds site",
+        "word_count": 2234,
+        "intro_words": 0,
+        "sections": [
+          {
+            "h2": "6 Male (Dog) Blue Staffie Puppies For Sale In Southall, London",
+            "words": 140,
+            "h3_count": 0,
+            "h3": []
+          },
+          {
+            "h2": "Frequently Asked Questions",
+            "words": 253,
+            "h3_count": 5,
+            "h3": [
+              "How much does a Blue Staffie puppy cost?",
+              "Where can I find a Blue Staffie puppy for sale in Southall?",
+              "What are the typical traits of male Staffie puppies?",
+              "Are male Staffies easier or harder to train than females?",
+              "Should I neuter my male Staffie puppy?"
+            ]
+          }
+        ],
+        "h3_count": 6,
+        "images": 21,
+        "videos": 0,
+        "tables": 0,
+        "schema_types": [
+          "Answer",
+          "Brand",
+          "BreadcrumbList",
+          "FAQPage",
+          "ItemList",
+          "ListItem",
+          "Offer",
+          "Organization",
+          "Person",
+          "Place",
+          "Product",
+          "PropertyValue",
+          "Question",
+          "SearchResultsPage"
+        ],
+        "scope": "main",
+        "grid_share": 81,
+        "section_share": 19,
+        "listing": "card grid holds 81% of the prose",
+        "scrubbed": 0
+      }
+    },
+    {
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/paddington-london?colour=blue&keywords=Chunky+Working&ready_to_leave=2_months&sort=price_high",
+      "google_pos": 2,
+      "bing_pos": null,
+      "h2": [
+        "2 Chunky Working Blue Staffie Puppies For Sale In Paddington, London",
+        "Frequently Asked Questions"
+      ],
+      "h2_all": 22,
+      "blocked": false,
+      "metrics": {
+        "title": "Chunky Working Blue Staffordshire Bull Terrier Puppies For Sale In Paddington, London | Staffie Owners",
+        "meta_description": "2 Chunky Working Blue Staffordshire Bull Terrier puppies for sale in Paddington, London from trusted breeders and sellers - explore KC-registered litters and health-tested puppies on the UK's leading Staffie classifieds site",
+        "word_count": 2162,
+        "intro_words": 0,
+        "sections": [
+          {
+            "h2": "2 Chunky Working Blue Staffie Puppies For Sale In Paddington, London",
+            "words": 140,
+            "h3_count": 0,
+            "h3": []
+          },
+          {
+            "h2": "Frequently Asked Questions",
+            "words": 248,
+            "h3_count": 4,
+            "h3": [
+              "How much does a Blue Staffie puppy cost?",
+              "Where can I find a Blue Staffie puppy for sale in Paddington?",
+              "What should I look for when buying a Staffie puppy?",
+              "Is it better to buy a puppy from a licensed breeder?"
+            ]
+          }
+        ],
+        "h3_count": 5,
+        "images": 21,
+        "videos": 0,
+        "tables": 0,
+        "schema_types": [
+          "Answer",
+          "Brand",
+          "BreadcrumbList",
+          "FAQPage",
+          "ItemList",
+          "ListItem",
+          "Offer",
+          "Organization",
+          "Person",
+          "Place",
+          "Product",
+          "PropertyValue",
+          "Question",
+          "SearchResultsPage"
+        ],
+        "scope": "main",
+        "grid_share": 80,
+        "section_share": 20,
+        "listing": "card grid holds 80% of the prose",
+        "scrubbed": 0
+      }
+    },
+    {
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/uxbridge-london?colour=blue&cross_breed=no&keywords=good+with",
+      "google_pos": 3,
+      "bing_pos": null,
+      "h2": [
+        "3 Good With Blue Purebred Staffie Puppies For Sale In Uxbridge, London",
+        "Frequently Asked Questions"
+      ],
+      "h2_all": 22,
+      "blocked": false,
+      "metrics": {
+        "title": "Good With Blue Purebred Staffordshire Bull Terrier Puppies For Sale In Uxbridge, London | Staffie Owners",
+        "meta_description": "3 Purebred Good With Blue Staffordshire Bull Terrier puppies for sale in Uxbridge, London on the UK's largest dedicated site to buy and sell Staffie puppies near you",
+        "word_count": 2193,
+        "intro_words": 0,
+        "sections": [
+          {
+            "h2": "3 Good With Blue Purebred Staffie Puppies For Sale In Uxbridge, London",
+            "words": 140,
+            "h3_count": 0,
+            "h3": []
+          },
+          {
+            "h2": "Frequently Asked Questions",
+            "words": 248,
+            "h3_count": 4,
+            "h3": [
+              "How much does a Blue Staffie puppy cost?",
+              "Where can I find a Blue Staffie puppy for sale in Uxbridge?",
+              "What should I look for when buying a Staffie puppy?",
+              "Is it better to buy a puppy from a licensed breeder?"
+            ]
+          }
+        ],
+        "h3_count": 5,
+        "images": 21,
+        "videos": 0,
+        "tables": 0,
+        "schema_types": [
+          "Answer",
+          "Brand",
+          "BreadcrumbList",
+          "FAQPage",
+          "ItemList",
+          "ListItem",
+          "Offer",
+          "Organization",
+          "Person",
+          "Place",
+          "Product",
+          "PropertyValue",
+          "Question",
+          "SearchResultsPage"
+        ],
+        "scope": "main",
+        "grid_share": 81,
+        "section_share": 19,
+        "listing": "card grid holds 81% of the prose",
+        "scrubbed": 0
+      }
+    },
+    {
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/camden-town-london?colour=blue&keywords=vaccinations&price=1500",
+      "google_pos": 4,
+      "bing_pos": null,
+      "h2": [
+        "1 Vaccinations Blue Staffie Puppies For Sale In Camden Town, London Under £1,500",
+        "Frequently Asked Questions"
+      ],
+      "h2_all": 22,
+      "blocked": false,
+      "metrics": {
+        "title": "Vaccinations Blue Staffordshire Bull Terrier Puppies For Sale In Camden Town, London Under £1,500 | Staffie Owners",
+        "meta_description": "Vaccinations Blue Staffordshire Bull Terrier puppies for sale in Camden Town, London under £1,500 from trusted breeders and sellers - explore KC-registered litters and health-tested puppies on the UK's leading Staffie classifieds site",
+        "word_count": 2189,
+        "intro_words": 0,
+        "sections": [
+          {
+            "h2": "1 Vaccinations Blue Staffie Puppies For Sale In Camden Town, London Under £1,500",
+            "words": 111,
+            "h3_count": 0,
+            "h3": []
+          },
+          {
+            "h2": "Frequently Asked Questions",
+            "words": 249,
+            "h3_count": 4,
+            "h3": [
+              "How much does a Blue Staffie puppy cost?",
+              "Where can I find a Blue Staffie puppy for sale in Camden Town?",
+              "What should I look for when buying a Staffie puppy?",
+              "Is it better to buy a puppy from a licensed breeder?"
+            ]
+          }
+        ],
+        "h3_count": 5,
+        "images": 21,
+        "videos": 0,
+        "tables": 0,
+        "schema_types": [
+          "Answer",
+          "Brand",
+          "BreadcrumbList",
+          "FAQPage",
+          "ItemList",
+          "ListItem",
+          "Offer",
+          "Organization",
+          "Person",
+          "Place",
+          "Product",
+          "PropertyValue",
+          "Question",
+          "SearchResultsPage"
+        ],
+        "scope": "main",
+        "grid_share": 82,
+        "section_share": 18,
+        "listing": "card grid holds 82% of the prose",
+        "scrubbed": 0
+      }
+    },
+    {
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/london?colour=blue",
+      "google_pos": null,
+      "bing_pos": 1,
+      "h2": [
+        "7 Blue Staffie Puppies For Sale In London",
+        "Frequently Asked Questions"
+      ],
+      "h2_all": 22,
+      "blocked": false,
+      "metrics": {
+        "title": "Blue Staffordshire Bull Terrier Puppies For Sale In London | Staffie Owners",
+        "meta_description": "7 Blue Staffordshire Bull Terrier puppies for sale in London from trusted breeders and sellers - explore KC-registered litters and health-tested puppies on the UK's leading Staffie classifieds site",
+        "word_count": 2296,
+        "intro_words": 0,
+        "sections": [
+          {
+            "h2": "7 Blue Staffie Puppies For Sale In London",
+            "words": 125,
+            "h3_count": 0,
+            "h3": []
+          },
+          {
+            "h2": "Frequently Asked Questions",
+            "words": 248,
+            "h3_count": 4,
+            "h3": [
+              "How much does a Blue Staffie puppy cost?",
+              "Where can I find a Blue Staffie puppy for sale in London?",
+              "What should I look for when buying a Staffie puppy?",
+              "Is it better to buy a puppy from a licensed breeder?"
+            ]
+          }
+        ],
+        "h3_count": 5,
+        "images": 24,
+        "videos": 0,
+        "tables": 0,
+        "schema_types": [
+          "Answer",
+          "Brand",
+          "BreadcrumbList",
+          "FAQPage",
+          "ItemList",
+          "ListItem",
+          "Offer",
+          "Organization",
+          "Person",
+          "Place",
+          "Product",
+          "PropertyValue",
+          "Question",
+          "SearchResultsPage"
+        ],
+        "scope": "main",
+        "grid_share": 82,
+        "section_share": 18,
+        "listing": "card grid holds 82% of the prose",
+        "scrubbed": 0
+      }
+    },
+    {
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-london/london/",
+      "google_pos": null,
+      "bing_pos": 2,
+      "h2": [
+        "19 Puppies found"
+      ],
+      "h2_all": 1,
+      "blocked": false,
+      "metrics": {
+        "title": "Staffordshire Bull Terrier Puppies for sale in London, Greater London | Pets4Homes",
+        "meta_description": "Find 19 Staffordshire Bull Terrier Puppies for sale in London, Greater London on Pets4Homes - UK’s largest pet classifieds site to buy and sell puppies near you.",
+        "word_count": 1365,
+        "intro_words": 4,
+        "sections": [
+          {
+            "h2": "19 Puppies found",
+            "words": 1196,
+            "h3_count": 25,
+            "h3": []
+          }
+        ],
+        "h3_count": 25,
+        "images": 26,
+        "videos": 3,
+        "tables": 0,
+        "schema_types": [
+          "AggregateOffer",
+          "Product"
+        ],
+        "scope": "body",
+        "grid_share": 100,
+        "section_share": 100,
+        "listing": "card grid holds 100% of the prose",
+        "scrubbed": 0
+      }
+    },
+    {
+      "url": "https://www.freeads.co.uk/london/buy-sell/pets/dogs/staffordshire-bull-terrier/",
+      "google_pos": null,
+      "bing_pos": 3,
+      "h2": [
+        "Refine your results",
+        "You might also like near London",
+        "Latest featured ads in Staffordshire Bull Terrier",
+        "Buyer's Advice"
+      ],
+      "h2_all": 14,
+      "blocked": false,
+      "metrics": {
+        "title": "Staffordshire Bull Terrier Puppies and Dogs for sale in London | Freeads Pets",
+        "meta_description": "Find 240 Staffordshire Bull Terrier for sale on Freeads Pets in London. Give a puppy a forever home or rehome a rescue. Create new dog alerts. Advertise a dog for FREE.",
+        "word_count": 3727,
+        "intro_words": 46,
+        "sections": [
+          {
+            "h2": "Refine your results",
+            "words": 882,
+            "h3_count": 5,
+            "h3": [
+              "Category",
+              "Location",
+              "Miles",
+              "Distance",
+              "Price Range (£)"
+            ]
+          },
+          {
+            "h2": "You might also like near London",
+            "words": 113,
+            "h3_count": 0,
+            "h3": []
+          },
+          {
+            "h2": "Latest featured ads in Staffordshire Bull Terrier",
+            "words": 2583,
+            "h3_count": 3,
+            "h3": [
+              "Which size of breed are you looking for?",
+              "Popular Mixed Breeds",
+              "Which type of dog are you looking for?"
+            ]
+          },
+          {
+            "h2": "Buyer's Advice",
+            "words": 34,
+            "h3_count": 0,
+            "h3": []
+          }
+        ],
+        "h3_count": 8,
+        "images": 211,
+        "videos": 10,
+        "tables": 0,
+        "schema_types": [
+          "BreadcrumbList",
+          "ImageObject",
+          "ListItem",
+          "Organization",
+          "VideoObject",
+          "WebSite"
+        ],
+        "scope": "body",
+        "grid_share": 0,
+        "section_share": 98,
+        "listing": null,
+        "scrubbed": 0
+      }
+    },
+    {
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=blue",
+      "google_pos": null,
+      "bing_pos": 4,
+      "h2": [
+        "67 Puppies found"
+      ],
+      "h2_all": 1,
+      "blocked": false,
+      "metrics": {
+        "title": "Blue Staffordshire Bull Terrier Puppies for sale | Pets4Homes",
+        "meta_description": "Find 67 Blue Staffordshire Bull Terrier Puppies for sale on Pets4Homes - UK’s largest pet classifieds site to buy and sell puppies near you.",
+        "word_count": 1690,
+        "intro_words": 4,
+        "sections": [
+          {
+            "h2": "67 Puppies found",
+            "words": 1498,
+            "h3_count": 30,
+            "h3": []
+          }
+        ],
+        "h3_count": 30,
+        "images": 33,
+        "videos": 7,
+        "tables": 0,
+        "schema_types": [
+          "AggregateOffer",
+          "Product"
+        ],
+        "scope": "body",
+        "grid_share": 100,
+        "section_share": 100,
+        "listing": "card grid holds 100% of the prose",
+        "scrubbed": 0
+      }
+    },
+    {
+      "url": "https://englishbluestaffypuppies.com/",
+      "google_pos": null,
+      "bing_pos": 5,
+      "h2": [
+        "Find Your Furry Friend's Favorites at TILLCARR Staffordshire",
+        "Welcome to English Blue Staffy Puppies Home of TILLCARR",
+        "Contact TILLCARR Staffordshire Bull Terriers"
+      ],
+      "h2_all": 3,
+      "blocked": false,
+      "metrics": {
+        "title": "English Blue Staffordshire Bull Terrier Puppies for Sale in London",
+        "meta_description": "Blue Staffy puppies for sale in London. Healthy, friendly, UK‑bred pups. Blue Staffordshire Bull Terrier UK Blue Staffy puppies near me",
+        "word_count": 51,
+        "intro_words": 47,
+        "sections": [
+          {
+            "h2": "Find Your Furry Friend's Favorites at TILLCARR Staffordshire",
+            "words": 0,
+            "h3_count": 0,
+            "h3": []
+          },
+          {
+            "h2": "Welcome to English Blue Staffy Puppies Home of TILLCARR",
+            "words": 0,
+            "h3_count": 0,
+            "h3": []
+          },
+          {
+            "h2": "Contact TILLCARR Staffordshire Bull Terriers",
+            "words": 0,
+            "h3_count": 0,
+            "h3": []
+          }
+        ],
+        "h3_count": 0,
+        "images": 1,
+        "videos": 0,
+        "tables": 0,
+        "schema_types": [
+          "GeoCoordinates",
+          "LocalBusiness",
+          "OpeningHoursSpecification",
+          "PostalAddress"
+        ],
+        "scope": "main",
+        "grid_share": 0,
+        "section_share": 0,
+        "listing": null,
+        "scrubbed": 0
+      }
+    }
+  ]
+}
