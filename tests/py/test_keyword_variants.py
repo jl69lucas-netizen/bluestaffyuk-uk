@@ -46,8 +46,11 @@ def test_every_built_record_still_validates_and_keeps_its_approval():
     for p in sorted((ROOT / "data" / "boards").glob("*.json")):
         board = json.loads(p.read_text(encoding="utf-8"))
         PB.validate_board(board)
-        for s in board["sections"]:
-            assert not set(s["keywords"]) & set(OPTIONAL), (p.name, s["id"])
+        # The boards built before the optional types existed never carry them; a new-family
+        # page (working rule 17) must, so the check is scoped to the older records.
+        if not FR.is_new_page(board):
+            for s in board["sections"]:
+                assert not set(s["keywords"]) & set(OPTIONAL), (p.name, s["id"])
         if board["meta"]["status"] == "approved":
             assert PB.approval_matches(board), p.name
             seen += 1
