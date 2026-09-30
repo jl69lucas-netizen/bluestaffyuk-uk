@@ -1,0 +1,167 @@
+{
+  "askedAt": "2026-09-30T02:23:13Z",
+  "id": "2026-09-30-research-board-blue-staffy-puppies-london",
+  "intro": "The research board for /uk-locations/blue-staffy-puppies-london/: https://claude.ai/artifact/UCZrjbPCMzksbhoTNT97yJ. Nothing is outlined until you pick. Claude's recommendation is marked.",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "Recommended: (a) A1, video call first, then the deposit books the visit. Why: it answers your named fear (paying the deposit before seeing the puppy) where page one is silent. None of the nine page-one pages states deposit terms in its own voice or offers a video call before a deposit, and \"Should I see the puppy with its mother before any money changes hands?\" is the question file's only score-5 thread question. Trade-off: until the deposit-wording branch lands, the page can say what the £500 does but not when any of it comes back. And only the video call comes before the deposit, so the opening must say the visit to Carlisle comes after it.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "A1: \"Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?\" (a live video call with your puppy and Maggie before any deposit; then £500 books your viewing, reserves your puppy and comes off the price)"
+        },
+        {
+          "id": "b",
+          "label": "A2: \"How Will My Blue Staffy Puppy Get From Carlisle to London?\" (lead with the distance and delivery; it raises the distance before the video call settles the fear)"
+        },
+        {
+          "id": "c",
+          "label": "A3: \"How Much Does a Blue Staffy Puppy Cost, Delivered to London?\" (every figure printed first; price is page one's most claimed ground, and data/faq.json already answers it)"
+        }
+      ],
+      "question": "Which angle should the London page take?",
+      "section": 0,
+      "where": "the outline's H1, opening and section order."
+    },
+    {
+      "context": "Recommended: (a) S2, deposit first. Why: the prose-answer lane is empty. Every page-one page is a listing feed or template, and no rival states deposit terms of its own. A signed byline also closes the Person gap, and the H1 still closes the keyword-gap's London row (10, high). Trade-off: it gives up the listing shape that holds Google's page one (live count, ItemList/Product/Offer). It is also the most writing, and its lead answer waits on the refund wording.",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "S2: deposit first, a question-led breeder page signed by Lisa Bright"
+        },
+        {
+          "id": "b",
+          "label": "S1: the cluster strategy's London row (the engine's checklist; predates the London SERP and never answers the deposit worry)"
+        },
+        {
+          "id": "c",
+          "label": "S3: the honest listing (copy Google's facet shape with one litter; competes with /available-puppies/ and empties as puppies go home)"
+        }
+      ],
+      "question": "Which strategy direction?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). - Hero and opening: EEBP (the first sentence is what gets lifted) - The deposit and viewing: PDB (for a reader who arrives with a named fear) - The litter and prices: EEBP (puppy cards and price rows on a transactional page) - Delivery and collection: FAB (two routes, delivery or collection in Carlisle) - Health and raising: QAB (the engine's answer is a list of what to ask a breeder) - London life: QAB (the questions arrive as questions) - The FAQ blocks: QAB Header style: Style 1, every header a buyer question (your 2026-09-27 ruling).",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "Take every recommended framework"
+        },
+        {
+          "id": "b",
+          "label": "Change some (say which in the text box)"
+        }
+      ],
+      "question": "Which framework for each section group?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "There are 33 keywords: 1 primary (\"blue staffy puppies london\"), 9 questions, 2 related, 3 secondary, 8 variations, 6 co-occurring and 4 similar. By intent, 15 are commercial, 9 informational, 6 transactional, 2 local and 1 navigational. They are placed across 7 section groups. Four competitor district-facet keywords (Barnet, Southall, Paddington, \"chunky working\") are parked because we hold no stock there. Volumes are NOT FETCHED: the DataForSEO Google Ads call returned no search_volume for any keyword. Recommended: (a). Trade-off: without volumes, the placement rests on the SERP, PAA and question-file scores, not on search demand.",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, as shown"
+        },
+        {
+          "id": "b",
+          "label": "Change it (say what in the text box)"
+        }
+      ],
+      "question": "Is this keyword universe and its distribution right?",
+      "section": 1,
+      "where": ""
+    },
+    {
+      "context": "The competitor median is NOT FETCHED: only one prose competitor page exists (51 words), because every listing page is excluded. The band therefore falls back to 2,000–3,000, per your 2026-09-27 ruling. The section target is 9. Recommended: (a). Trade-off: no competitor length to beat or match.",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "options": [
+        {
+          "id": "a",
+          "label": "2,000–3,000 words"
+        },
+        {
+          "id": "b",
+          "label": "Another band (type it)"
+        }
+      ],
+      "question": "Word band?",
+      "section": 1,
+      "where": ""
+    },
+    {
+      "context": "London has 33 borough councils, and the licence stays off the site. So the six external links would come from gov, registry, vet-charity, welfare and research sources, with no `local` row. Recommended: (a). Trade-off: the page carries no local-authority signal.",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, no local council link"
+        },
+        {
+          "id": "b",
+          "label": "Add a London council page that says nothing about licensing (name it in the text box)"
+        }
+      ],
+      "question": "External links without a council licensing page?",
+      "section": 1,
+      "where": ""
+    },
+    {
+      "context": "The refund clause (\"up to 70% refundable if you change your mind up to 1 day before collection or delivery\") lives only on your local `deposit-wording` branch. The safety check blocked its push, so this cloud session cannot merge it. You can push it with `git -C ~/Downloads/BSUK push origin 048515a311382a7f44fd5f6db7a7f14b1f29f2d2:refs/heads/deposit-wording`. Recommended: (a). Trade-off: the outline waits on your push, but London's lead answer is complete from its first draft.",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "options": [
+        {
+          "id": "a",
+          "label": "I'll push the branch; merge it before the outline"
+        },
+        {
+          "id": "b",
+          "label": "Build without it: print `depositLine` with no refund wording, and add the clause later"
+        }
+      ],
+      "question": "The deposit-wording branch is not on GitHub yet. How should London's deposit answer read?",
+      "section": 2,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Direction"
+    },
+    {
+      "lead": "",
+      "title": "Keywords and size"
+    },
+    {
+      "lead": "",
+      "title": "Deposit wording"
+    }
+  ],
+  "status": "open",
+  "title": "London research board · pick the angle, strategy, frameworks and keywords"
+}
