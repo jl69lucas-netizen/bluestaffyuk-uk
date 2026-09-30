@@ -44,7 +44,7 @@ QAB:
 Q: How much does a blue Staffy puppy cost from a reputable breeder?
 A: Blue Staffy puppies from BlueStaffyUK are priced at £1,500–£1,700. This includes 
    KC registration, microchip number, vet health check, first vaccinations, worming record, 
-   and a vet-signed health card. A £500 refundable deposit holds your puppy.
+   and a vet-signed health card. A £500 deposit holds your puppy and comes off the price.
 B: Transparent pricing means no surprise paperwork fees after you've already bonded with 
    your puppy — and no "registration add-on" charges at handover.
 ```

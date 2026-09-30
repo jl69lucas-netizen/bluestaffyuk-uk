@@ -105,7 +105,7 @@ def test_the_matrix_renders_every_column_with_copy_buttons_and_a_md_download(tmp
     md = md_path.read_text(encoding="utf-8")
     assert "Status: **AWAITING APPROVAL — STOP 2**" in md
     assert "**Target:** 900–1,400 words (source: " in md and "the matrix sums to 1,100 words" in md
-    assert "**Heading census:** 1 H1 · 3 H2 · 2 H3 · 1 H4 · 1 H5 · 1 H6" in md
+    assert "**Heading census:** 1 H1 · 3 H2 · 2 H3 · 1 H4 · 5 H5 · 5 H6" in md
     assert "| # | Section | Framework | Words | Keywords | Cat | Why | Image |" in md
     assert "H2 How Do We Deliver to Fixture City? (H3 What Does Delivery Cost? (H4" in md
     assert "(from `serp.results[1]`)" in md
@@ -134,3 +134,29 @@ def test_approval_is_stamped_with_the_hash_and_goes_stale_on_an_edit(tmp_path):
 def test_the_outline_is_not_approved_with_the_research_boards_answers():
     with pytest.raises(OM.OutlineError, match="same answers"):
         OM.approve(_load("good.json"), "tests/py/fixtures/research_board/answers.json")
+
+
+def test_optional_variants_fear_cta_and_page_level_fields_render_in_the_md(tmp_path):
+    rec = _load("good.json")
+    row = rec["sections"][2]
+    row["fear"] = "Paying before seeing the puppy"
+    row["fear_source"] = "intent.emotional"
+    row["cta"] = {"href": "#enquiry", "anchor": "Send us your enquiry", "anchor_type": "natural"}
+    row["opener"] = "Answer first: no."
+    row["table"] = {"shape": "table", "caption": "The litter", "columns": [{"label": "Puppy", "source": "puppies.json"}]}
+    row["variants"] = [{"text": "Variant One?", "recommended": True, "why": "Because W",
+                        "trade_off": "Costs T"}, {"text": "Variant Two?"}]
+    rec["parked_keywords"] = [{"keyword": "cheap pups", "status": "parked", "decision": "the user's"}]
+    rec["header_crossover"] = {"tool": "header_precheck", "examined": {"proposed_headings": 9},
+                               "hits": []}
+    rec["planned_tests"] = ["a planned test"]
+    md = OM.build(rec, _research(), tmp_path)[1].read_text(encoding="utf-8")
+    assert "- **Fear:** Paying before seeing the puppy (source: `intent.emotional`)" in md
+    assert "- **CTA:** [Send us your enquiry](#enquiry)" in md
+    assert "- **Opener hint:** Answer first: no." in md
+    assert "Caption: The litter" in md and "Puppy ← puppies.json" in md
+    assert "1. Variant One? **(Recommended)**" in md and "2. Variant Two?" in md
+    assert "Why: Because W" in md and "Trade-off: Costs T" in md
+    assert "## Parked Keywords — Your Decision" in md and "NEEDS YOUR DECISION" in md
+    assert "## Heading Crossover" in md and "proposed_headings: 9" in md and "**Hits:** 0" in md
+    assert "## Planned Tests" in md and "- a planned test" in md

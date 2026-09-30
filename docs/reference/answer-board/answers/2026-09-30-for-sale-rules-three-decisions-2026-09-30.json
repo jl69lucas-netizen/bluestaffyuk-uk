@@ -1,0 +1,43 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, fold them all in",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Fold the missed CAG rules into London's outline before you see it again?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Keep H2–H4 set by the competitor section target; enforce all six levels and ≥5 H5/H6 only",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Heading counts: should Rule 28's H2 25–35 and H3 40–50 be enforced?",
+      "status": "answered",
+      "text": "No to this rule \"28's H2 25–35 and H3 40–50\", H2, etc going forward is determine by competitors research, competitors Number of H2 etc"
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Retire it; titles are one clause, ≤70 characters",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Retire the 280-character title rule for puppy pages?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-09-30T03:50:30.446Z",
+  "batchId": "2026-09-30-for-sale-rules-three-decisions",
+  "counts": {
+    "answered": 3,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-09-30T03-50-30-445Z"
+}

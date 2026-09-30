@@ -83,7 +83,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
 
-## Skills — 61
+## Skills — 62
 
 One SKILL.md per directory under `.claude/skills/`. The `bsuk-*` set is the ported
 system; the rest are the generic writing, research and framework skills.
@@ -115,6 +115,7 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/bsuk-perf-gate/SKILL.md`
 - `.claude/skills/bsuk-photo-ingest/SKILL.md`
 - `.claude/skills/bsuk-puppy-page-builder/SKILL.md`
+- `.claude/skills/bsuk-puppy-page-excellence/SKILL.md`
 - `.claude/skills/bsuk-query-augmentation/SKILL.md`
 - `.claude/skills/bsuk-reddit-threads/SKILL.md`
 - `.claude/skills/bsuk-seo-master-checklist/SKILL.md`
@@ -265,7 +266,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/verbatim_set_check.py`
 - `scripts/workflow_ref_check.py`
 
-## Data files — 26
+## Data files — 29
 
 - `data/agent-registry.json`
 - `data/boards/`
@@ -280,15 +281,18 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/image-ingest.json`
 - `data/image-manifest.json`
 - `data/locations.json`
+- `data/outlines/`
 - `data/page-dates-ignore.json`
 - `data/page-dates.json`
 - `data/page-map.json`
+- `data/page-runs/`
 - `data/port-manifest.json`
 - `data/price-matrix.json`
 - `data/puppies.json`
 - `data/quality/`
 - `data/queries/`
 - `data/redirects.json`
+- `data/research-boards/`
 - `data/reviews.json`
 - `data/settings.json`
 - `data/specimen-routes.json`
@@ -353,11 +357,11 @@ and exits non-zero on a problem.
 ## Deferred — recorded, not written
 
 `data/port-manifest.json` records every file that crossed and every file that
-deliberately did not. 35 rows are `deferred`.
+deliberately did not. 34 rows are `deferred`.
 
 - **project 3** — 4 rows (deferred to project 3, see data/port-manifest.json)
 - **project 6** — 18 rows (deferred to project 6, see data/port-manifest.json)
-- **no project** — 13 rows the spec rules out of the transfer entirely; they stay
+- **no project** — 12 rows the spec rules out of the transfer entirely; they stay
   in the source repo (not ported — source repo only)
 
 Deferred paths are not listed here by name: a name is a path, and a path this repo

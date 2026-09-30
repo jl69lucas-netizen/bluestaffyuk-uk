@@ -133,7 +133,7 @@ sections are split roughly evenly across the three gaps.
 | Source topic | BSUK version |
 |---|---|
 | Why choose the breeder | Lisa Bright, home-raised litters, Carlisle · Cumbria — only facts in the skill's fact table |
-| Available puppies by type | The litter in `data/puppies.json`, prices from `data/price-matrix.json`: £1,500 and £1,700 pups, deposit £500 refundable |
+| Available puppies by type | The litter in `data/puppies.json`, prices from `data/price-matrix.json`: £1,500 and £1,700 pups, deposit £500 (never plainly "refundable"; refund term from its settings key) |
 | Temperament | Breed facts consistent with the breed guide; prose written fresh (`CLAUDE.md` rule 8); link to it |
 | Health and wellness | Only what `data/quality/evidence-ledger.json` records. The health entities (BVA hip and elbow scores; the L2-HGA, HC and PHPV DNA tests) stay `NOT FETCHED` until the certificate is on file (`rules/copy.md`) |
 | Grooming | Short coat, nail, ear and teeth care |

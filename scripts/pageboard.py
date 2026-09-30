@@ -1019,7 +1019,7 @@ def distribution(board):
     return {"rows": rows, "totals": totals, "h_counts": counts}
 
 
-ADVISORY_MIN_H5H6 = {"home", "location"}          # rules/headings.md, 2026-09-09
+ADVISORY_MIN_H5H6 = set(FR.H5H6_ADVISORY_PAGE_TYPES)  # rules/headings.md: WARN on the frozen home + pre-rule location pages only (2026-09-30)
 LIBRARY_LINK_MIN = 3
 LINK_FLOOR_TYPES = {"for-sale", "hub"}            # the transactional cluster and its hub
 # ── working rule 16: a counter figure resolves to a file on disk ───────────────────────────
@@ -2009,7 +2009,9 @@ def gate_findings(board, ont, ledger, live, stage="build"):
                 "this gate; a page read mid-build gives a real number about a page nobody "
                 "shipped.")
     if counts["h5"] < 5 or counts["h6"] < 5:
-        sev = "WARN" if board["meta"]["page_type"] in ADVISORY_MIN_H5H6 else "FAIL"
+        # WARN only on the homepage and a pre-rule location page; a project 5 page FAILs
+        # (user ruling 2026-09-30, STOP 2 of London; family_rules.h5h6_floor_severity).
+        sev = FR.h5h6_floor_severity(board["meta"]["page_type"], slug)
         add("min-h5-h6", sev,
             f"H5 {counts['h5']} / H6 {counts['h6']} ({source}) — floor is 5 each")
 
@@ -2045,7 +2047,9 @@ def gate_findings(board, ont, ledger, live, stage="build"):
 
     picks = (board.get("approval") or {}).get("picks", {})
     for s in board["sections"]:
-        pick = s["options"]["pick"] or picks.get(s["id"])
+        # A city section's component was picked in the city's component design pass
+        # (data/design/city-picks/<slug>.json); it names it, and the kit takes no style.
+        pick = s["options"]["pick"] or picks.get(s["id"]) or s.get("component")
         if s["shape"] != "standard" and not pick:
             add("signature-no-pick", "FAIL", f"section {s['id']} ({s['shape']}) has no component pick")
         # A nav-shaped section IS the page's table of contents, so its pick and tuple.toc
@@ -2088,7 +2092,17 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     # Reuses the live map the gate already loaded for the header pre-check. When it is
     # empty the gate has already FAILed on header-precheck-examined-zero, and guessing at
     # dead links from an unbuilt tree would only add noise to that.
+    # A bare same-page fragment (`#enquiry`) must name a section id of THIS record — that id
+    # is the element the build gives the section, so a fragment no section carries is a link
+    # to nothing on the page. Judged whether or not dist/ was read: it needs only the record.
+    section_ids = {s["id"] for s in board["sections"]}
+    for sid, l in internal:
+        if l["href"].startswith("#") and l["href"][1:] not in section_ids:
+            add("links-fragment-dead", "FAIL",
+                f"section {sid}: {l['href']} names no section id of this record")
     for sid, l in (internal if live else []):
+        if l["href"].startswith("#"):
+            continue
         path = l["href"].split("#", 1)[0].split("?", 1)[0]
         target = path if path.endswith("/") else path + "/"
         if target not in live:

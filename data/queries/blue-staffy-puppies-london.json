@@ -363,7 +363,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Can a Staffordshire Bull Terrier Live in a London Flat?"
+      }
     },
     {
       "id": "q-can-blue-staffy-be-left-alone-ef945b",
@@ -394,7 +397,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Can I Get a Blue Staffy Puppy Delivered to My Home in London?"
+      }
     },
     {
       "id": "q-can-i-go-to-a-dog-show-to-584dc7",
@@ -516,7 +522,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Can I Get a Blue Staffy Puppy Delivered to My Home in London?"
+      }
     },
     {
       "id": "q-do-you-offer-health-guarantees-for-your-b-04ef4b",
@@ -743,7 +752,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Do I Reserve One of Your Blue Staffy Puppies From London?"
+      }
     },
     {
       "id": "q-how-do-i-tell-a-genuine-online-puppy-455a61",
@@ -879,7 +891,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Much Are Blue Staffy Puppies in the UK?"
+      }
     },
     {
       "id": "q-how-much-is-the-deposit-2cce23",
@@ -894,7 +909,10 @@
       "must_answer": false,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Much Is the Deposit?"
+      }
     },
     {
       "id": "q-how-often-do-you-add-a-new-guide-156016",
@@ -1196,7 +1214,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK?"
+      }
     },
     {
       "id": "q-what-is-the-average-lifespan-of-a-blue-73b18f",
@@ -1302,7 +1323,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "What Makes BlueStaffyUK an Ethical Breeder for London Buyers?"
+      }
     },
     {
       "id": "q-what-paperwork-comes-with-a-puppy-7f78f0",
@@ -1452,7 +1476,10 @@
       "must_answer": false,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Where Can I Find Blue Staffy Breeders in the UK?"
+      }
     },
     {
       "id": "q-who-are-the-bluestaffyuk-stud-dogs-and-ho-54449c",

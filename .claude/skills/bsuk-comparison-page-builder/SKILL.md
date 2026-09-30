@@ -110,7 +110,7 @@ support, drop the rest, and never pad to a number. Pillar structure (adapt per p
 | 25 | H2 | Final CTA + page-specific inquiry form + newsletter | brass pill; one `ContactFormKit` — the page's only form and its closer (§11 item 6) |
 
 **Hard structural gates (non-negotiable):**
-- Full **H1→H6 outline presented and approved BEFORE any code** — no skipped levels, all six levels, **≥5 H5 AND ≥5 H6**.
+- Full **H1→H6 outline presented and approved BEFORE any code** — no skipped levels, all six levels, **≥5 H5 AND ≥5 H6**. H2/H3/H4 counts come from competitor research — the H2 count is the question file's `section_target` (competitors' highest cleaned H2 count + 3, floor 9) — never a fixed band (seo-rules Rule 28, amended 2026-09-30).
 - **An image under every body heading** (`rules/images.md`, user ruling G1): the hero and every body H2 and body H3 (FAQ blocks excepted) carry an image slot — an OG photo, a generated image or an IG-style infographic, per `IMAGE-DESIGNS.md` §7–§9 (§11 item 2).
 - Word count: `NOT FETCHED` until the scan gives a competitor median — never pick a number first and write to fill it.
 - Headers conversational/Quora-style, hybrid question+entity, **unique per page** (dup H2s across spokes = dup content).

@@ -1181,7 +1181,8 @@
          "properties": {
           "href": {
            "type": "string",
-           "pattern": "^/"
+           "pattern": "^(/|#[a-z0-9-]+$)",
+           "comment": "A site path, or a bare same-page fragment (`#enquiry`) naming a section id of this record; pageboard.gate_findings FAILs `links-fragment-dead` on a fragment no section carries."
           },
           "anchor": {
            "type": "string",
@@ -1332,6 +1333,11 @@
       "type": "string",
       "minLength": 1,
       "description": "working rule 15: the migrated page's first paragraph under this heading, which the build pastes as the section's (or node's) FIRST paragraph before any fresh prose. Where the old paragraph stated a wrong fact this holds the CORRECTED text and `verbatim.changed` carries the row that says so."
+     },
+     "component": {
+      "comment": "A CITY page's section names the kit component it renders (the lowercase id scripts/city_components.py KIT_OF_VARIANT gives the variant picked in the city's component design pass, data/design/city-picks/<slug>.json). The City kit takes no style prop, so such a section offers no S1–S3 trio: the pick was made on the city canvas, and a board radio would be a choice the build ignores. A section that names one is exempt from the kit-shape `styles` requirement, from `signature-no-pick` and from the approve button's pick list.",
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
      }
     },
     "allOf": [
@@ -1357,7 +1363,7 @@
       }
      },
      {
-      "comment": "A KIT shape draws its component from src/lib/boardStyles.ts, not from a ledger pool, so its board offers rendered arrangements and nothing else. A kit-shaped section with no `styles` would therefore reach the approve button owing a pick it is never shown a control for — an unapprovable board. The nine are required to carry the three. `standard` is deliberately NOT among them: it is shared with the ported CAG shapes, it is what every section of the existing homepage record is, and its board still offers the ledger default.",
+      "comment": "A KIT shape draws its component from src/lib/boardStyles.ts, not from a ledger pool, so its board offers rendered arrangements and nothing else. A kit-shaped section with no `styles` would therefore reach the approve button owing a pick it is never shown a control for — an unapprovable board. The nine are required to carry the three. `standard` is deliberately NOT among them: it is shared with the ported CAG shapes, it is what every section of the existing homepage record is, and its board still offers the ledger default. A section that names its city-kit `component` is exempt (its pick was made in the city's component design pass).",
       "if": {
        "required": [
         "shape"
@@ -1381,6 +1387,11 @@
           "video"
          ]
         }
+       },
+       "not": {
+        "required": [
+         "component"
+        ]
        }
       },
       "then": {

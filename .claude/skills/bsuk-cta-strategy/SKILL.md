@@ -21,7 +21,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 > **Brand note:** the breeder is **Lisa Bright**, Carlisle, Cumbria. Locked figures:
 > six named pups at **£1,500** (Roman, Byrd, Ince) and **£1,700** (Vennie, Christa, Cheryl);
-> a refundable **£500** deposit; **UK home delivery £200–£350** by distance,
+> a **£500** deposit (never plainly "refundable"); **UK home delivery £200–£350** by distance,
 > by DEFRA-approved transport, or collection in Carlisle; **28 UK cities**; a **12–14 year** breed lifespan.
 > Everything else is NOT FETCHED. The licence line is LICENCE_CLAIM_PLACEHOLDER.
 > Never let another breeder's vocabulary back in — see
@@ -168,7 +168,7 @@ Name the parents' L-2-HGA and HC-HSF4 DNA tests, never a result: the results are
 > **Button:** See All Pricing
 
 ⚡ **Direct & Transactional:**
-> "£1,500 for a male, £1,700 for a female. A £500 refundable deposit reserves any of them."
+> "£1,500 for a male, £1,700 for a female. A £500 deposit reserves any of them and comes off the price."
 > **Button:** View Current Prices
 
 🌱 **Ethical & Quality:**

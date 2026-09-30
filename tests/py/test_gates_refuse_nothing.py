@@ -82,7 +82,9 @@ def _no_refs(root):
 
 def _no_research(root):
     _write(root, "data/quality/not-fetched-baseline.json", {})
-    for rel in ("data/boards", "data/queries", "docs/research"):
+    # Every root the lint scans (its SCOPE), so a new root cannot leave input behind.
+    for rel in ("data/boards", "data/queries", "data/research-boards", "data/outlines",
+                "docs/research"):
         _empty_dir(root, rel)
 
 

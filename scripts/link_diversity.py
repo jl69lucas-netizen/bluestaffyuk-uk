@@ -172,6 +172,10 @@ def _route(href):
     parts = urlsplit(raw.strip())
     if parts.scheme or parts.netloc:
         return None
+    # A bare same-page fragment (`#enquiry`, schema `^#[a-z0-9-]+$`) lands on THIS page, not on
+    # a route another board could own, so the reuse check leaves it out too.
+    if raw.strip().startswith("#"):
+        return None
     path = urlsplit(raw).path.strip()
     if not path.startswith("/"):
         path = "/" + path

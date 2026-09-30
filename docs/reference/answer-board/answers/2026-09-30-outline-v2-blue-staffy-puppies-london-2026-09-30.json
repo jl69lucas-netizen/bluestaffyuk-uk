@@ -1,0 +1,43 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Approve as shown",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Approve the London outline v2 as shown?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Take every (Recommended) variant",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Which H2 wordings?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "Keep both parked; row 10's H4 answers the search without targeting it",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Add the two \"cheap\" and \"free\" searches to London's keyword list?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-09-30T04:09:20.979Z",
+  "batchId": "2026-09-30-outline-v2-blue-staffy-puppies-london",
+  "counts": {
+    "answered": 3,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-09-30T04-09-20-972Z"
+}

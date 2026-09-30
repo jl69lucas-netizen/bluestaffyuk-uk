@@ -14,9 +14,9 @@ effort: high
 
 ## BSUK Project Context
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
-> **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
+> **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 deposit (refund term only from its `data/settings.json` key, never plainly "refundable") — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
+> **Trust pillars:** £500 deposit (refund term only from its `data/settings.json` key, never plainly "refundable") · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it, and state what it covers only as `guarantee_cover` words it
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -66,7 +66,7 @@ The UK puppy-scam market — online adverts and social-media sellers claiming pa
 
 ### Solution (what BSUK built)
 - What travels with a puppy is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence — list nothing you have not seen
-- The £500 deposit is refundable, and that is a locked fact you may state plainly
+- The £500 deposit (`deposit_gbp`) is a locked fact; its refund term is stated only as the refund-clause key in `data/settings.json` words it, never plainly "refundable"
 - Lisa Bright answers the phone (PHONE_PLACEHOLDER) after the sale — not an automated system
 
 ### H-S-S Framework Application
@@ -85,7 +85,7 @@ Solution: the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) + 
 | 3 | Our Story | Story | custom | How BSUK started — background, timeline, puppies raised |
 | 4 | Meet Lisa Bright | Story | custom | Photo, personal bio, why they breed, personal connection to Blue Staffies |
 | 5 | Our Philosophy | Story | `features` | 3 core beliefs: documentation first, small-batch only, lifetime support |
-| 6 | What Makes Us Different | Solution | `features` | home-raised with the family, the £500 refundable deposit, collection in Carlisle or UK delivery £200–£350 by distance; every licence claim stays LICENCE_CLAIM_PLACEHOLDER; a health claim only where `data/quality/evidence-ledger.json` holds its proof (none today — `parents-dna-clear` is NOT FETCHED: name the tests, never a result); the guarantee only as `data/settings.json` `guarantee_label` words it (its length is `guarantee_days`), never typed; the puppy-package items (`data/faq.json` `puppy-package`) may be named |
+| 6 | What Makes Us Different | Solution | `features` | home-raised with the family, the £500 deposit, collection in Carlisle or UK delivery £200–£350 by distance; every licence claim stays LICENCE_CLAIM_PLACEHOLDER; a health claim only where `data/quality/evidence-ledger.json` holds its proof (none today — `parents-dna-clear` is NOT FETCHED: name the tests, never a result); the guarantee only as `data/settings.json` `guarantee_label` words it (its length is `guarantee_days`), never typed; the puppy-package items (`data/faq.json` `puppy-package`) may be named |
 | 7 | Our Breeding Standards | Solution | custom | How the parents are chosen, which health tests they have (name the tests, never a result — the evidence ledger holds no proof yet), whelping process |
 | 8 | Documentation You Receive | Solution | custom | The paperwork that goes home with a puppy — Kennel Club registration paperwork, vaccination records, microchipping details and a written puppy purchase contract (`data/faq.json` `whyus-paperwork`); both parents' registration numbers on request. A licence number stays LICENCE_CLAIM_PLACEHOLDER |
 | 9 | Testimonials | Solution | `testimonials` | 3 family stories — emphasize documentation transparency and post-sale support |

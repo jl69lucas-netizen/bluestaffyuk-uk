@@ -110,7 +110,7 @@ Evidence: First-year vet costs are NOT FETCHED — quote a figure only when the 
           are NOT FETCHED (illness + re-vaccination + paperwork issues).
           Source: BSUK owner survey data.
 Profile:  The £1,500 (male) / £1,700 (female) price is the locked fact; vet costs are NOT FETCHED. A breeder who can show the paperwork (`data/faq.json` `whyus-paperwork`) is
-          KC-registered puppy with full paperwork from day one. £500 deposit, refundable.
+          KC-registered puppy with full paperwork from day one. £500 deposit, taken off the price.
 ```
 
 ---

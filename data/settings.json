@@ -14,6 +14,8 @@
   "price_range": "£1500 - £1700",
   "deposit_gbp": 500,
   "deposit_refundable": true,
+  "deposit_refund_clause": "up to 70% refundable if you change your mind up to 1 day before collection or delivery",
+  "deposit_refund_clause_source": "the user's wording: the deposit-wording answer batch Q3 (b), 2026-09-27 (the condition 'if you change your mind up to 1 day before collection or delivery'), and the in-chat ruling of 2026-09-30 that lands it as this data key at the London build (docs/superpowers/sessions/2026-09-30-session-brief.md, Open Flags). A clause, not a sentence: a page adds it only where a deposit sentence already carries it, and never renders deposit_refundable as a plain 'refundable'.",
   "delivery_min_gbp": 200,
   "delivery_max_gbp": 350,
   "delivery_note": "UK home delivery by DEFRA-approved transport, priced by distance",

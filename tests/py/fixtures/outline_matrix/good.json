@@ -69,6 +69,50 @@
                           "children": []
                         }
                       ]
+                    },
+                    {
+                      "level": 5,
+                      "text": "What the Deposit Covers",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "A Note on Refund Timing",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "level": 5,
+                      "text": "How Delivery Distance Is Priced",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "Where the Transport Guidance Is Published",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "level": 5,
+                      "text": "What Comes Home With the Puppy",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "A Note on the Microchip Record",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "level": 5,
+                      "text": "When the Puppy Can Travel",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "A Note on Rest Stops",
+                          "children": []
+                        }
+                      ]
                     }
                   ]
                 }

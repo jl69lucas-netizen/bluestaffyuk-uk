@@ -255,7 +255,7 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 - 12–14 years average lifespan
 - £1,500–£1,700 Blue Staffy price range
 - £1,500 a male · £1,700 a female (`data/price-matrix.json`) — the price follows the sex, not the coat
-- £500 refundable deposit · £200–£350 delivery, priced by distance
+- £500 deposit (refund term only from its `data/settings.json` key, never plainly "refundable") · £200–£350 delivery, priced by distance
 
 **6. Credential/Certification Entities (placeholders until confirmed — Rule 57):**
 - LICENCE_CLAIM_PLACEHOLDER licence (the statute behind it is LEGAL_CLAIM_PLACEHOLDER)
@@ -395,12 +395,17 @@ For pages with a delivery/delivery section, use web search to gather these entit
 
 **Header count targets (Rule 28):**
 - H1: exactly 1 per page (hero only)
-- H2: 25–35 · H3: 40–50 · H4: 10–20
+- H2 / H3 / H4: no fixed band — set by competitor research. The H2 count is `section_target` in
+  the question file (competitors' highest cleaned H2 count + 3, floor 9); H3/H4 depth follows the
+  competitors and the question pool. Never pad to a number. (Rule 28 amended 2026-09-30, user:
+  the former 25–35 / 40–50 / 10–20 bands are retired.)
 - H5: minimum 5 — deep LSI / technical authority terms
 - H6: minimum 5 — voice-search phrasing, breeder notes, citations
-- All six levels on every full-length page, no skipped level. On the homepage and the location
-  pages the 5-per-level minimums are advisory (WARN); "all six levels" and "no skipped levels"
-  stay hard (`rules/headings.md`, `heading-hierarchy-outline-gate`).
+- All six levels on every full-length page, no skipped level. On the homepage and the pre-rule
+  location stubs the 5-per-level minimums are advisory (WARN); on every project 5 page
+  (location, comparison, blog) they are a hard FAIL (user ruling 2026-09-30); "all six levels"
+  and "no skipped levels" stay hard everywhere (`rules/headings.md`,
+  `heading-hierarchy-outline-gate`).
 
 **Two-Keyword Header Method (apply to every header that can carry a second term):**
 Each header should pull double SEO duty: **[secondary/conversational keyword] + [related LSI · NLP · entity · concurrent keyword · or long-form modifier]**. Don't stop at the obvious keyword — append a second, *useful* term that broadens the header's reach without keyword-stuffing.
@@ -580,7 +585,7 @@ TIER 4: ENTITY & TRUST
     ☐ "12–14 year lifespan commitment..."
     ☐ "LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred..."
     ☐ "Raised in our home, not in kennels..." (`about-home-raised`)
-    ☐ A locked fact: £500 refundable deposit, £200–£350 delivery by distance, £1,500 / £1,700 (Rule 57)
+    ☐ A locked fact: £500 deposit (never plainly "refundable"), £200–£350 delivery by distance, £1,500 / £1,700 (Rule 57)
 
 TIER 5: QUALITY CONTROL
 —————————————————————————
@@ -716,7 +721,7 @@ Example: "[BlueStaffyUK](/blue-staffy-uk-breeders/) raises every litter in the f
 **Counter Snippets (Rule 31):**
 Four counters immediately after the hero, under four words each, each starting with a number or
 percentage, each stating something BlueStaffyUK can back:
-- `£500 Refundable Deposit`
+- `£500 Reservation Deposit`
 - `12–14 Year Lifespan`
 - `28 UK Cities Covered`
 - `Home-Reared in Carlisle`
@@ -806,7 +811,7 @@ Every section opening (1–2 sentences) must contain all four:
 - **Benefit** — what it means for the buyer
 - **Purpose** — the deeper reason it matters (a 12–14 year bond, a family commitment)
 
-Example (Rule 37's own): *"Roman is a blue Staffordshire Bull Terrier pup reared at home in Carlisle (entity) at £1,500 with a £500 refundable deposit (feature), handled daily so he settles into a new household within days rather than weeks (benefit) — the start of a 12–14 year relationship (purpose)."*
+Example (Rule 37's own): *"Roman is a blue Staffordshire Bull Terrier pup reared at home in Carlisle (entity) at £1,500 with a £500 deposit that comes off the price (feature), handled daily so he settles into a new household within days rather than weeks (benefit) — the start of a 12–14 year relationship (purpose)."*
 
 #### D. Conversational Header Format (Rules 38, 52)
 
@@ -884,11 +889,11 @@ planning labels only — never rendered into a title or description.
 - ≤ 160 characters, conversational, benefit-driven, one sentence flow
 - Must carry: primary keyword + a long-tail or LSI variation + a trust signal + a CTA
 - Emphasise what is locked: home-reared in Carlisle, UK delivery £200–£350 by distance via
-  DEFRA-approved transport or collection in Carlisle, £500 refundable deposit
+  DEFRA-approved transport or collection in Carlisle, the £500 deposit (never plainly "refundable")
 - Never emphasise a licence, a statute or a review count; a guarantee length only as `guarantee_days` and `guarantee_label` in `data/settings.json` word it
 
 Example:
-> Home-reared Blue Staffy puppies from Carlisle, £1,500–£1,700 with a £500 refundable deposit and UK delivery by DEFRA-approved transport. Ask about a pup today.
+> Home-reared Blue Staffy puppies from Carlisle, £1,500–£1,700 with a £500 deposit and UK delivery by DEFRA-approved transport. Ask about a pup today.
 
 #### B. Schema Markup (Rule 5)
 
