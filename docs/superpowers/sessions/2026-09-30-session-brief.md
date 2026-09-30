@@ -63,6 +63,7 @@ _(The user's exact answer to each question is appended here as the interview pro
 
 ---
 <!-- The synthesized fields below are filled in at finalization, from the Q&A Log above. -->
+- **External link live checks (Task 19, 2026-09-30):** `curl -sIL` to all six external hosts returned `000`: the session egress proxy refuses CONNECT with 403 (policy). Each is recorded `NOT FETCHED — egress proxy CONNECT 403` in `docs/research/london-page-run/links-plan.md`, with a Firecrawl `maxAge: 0` scrape returning 200 recorded beside it as a second source. This departs from the plan's "keep only 200s" (Task 19 Step 2). Re-run the curl checks from an unrestricted network before launch (project 6).
 
 ## Business Focus
 Build London, the first of the 28 city pages, from real competitor research, and approve it stop by stop. The page has to win over a London buyer who fears paying a deposit before seeing the puppy. It must do that with facts that are true and read from data.
