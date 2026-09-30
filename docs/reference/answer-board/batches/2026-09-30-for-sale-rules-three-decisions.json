@@ -1,0 +1,87 @@
+{
+  "askedAt": "2026-09-30T03:45:45Z",
+  "id": "2026-09-30-for-sale-rules-three-decisions",
+  "intro": "The comparison of CAG's for-sale rules with BSUK's port and the London run: https://claude.ai/artifact/H4cJdmjeYt28NANi4Ao3S4. London's outline now carries 6 H5 and 6 H6, and that minimum is hard for every project 5 page (your STOP 2 ruling).",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "These are the ten London misses plus the dropped items that apply: Entity/Feature/Benefit/Purpose openers, an enquiry link about every 600 words, a named buyer fear per section, images on 2–4 key H4s, two-keyword headings, an honest answer to \"cheap\" searches, one fact table, and a heading crossover check shown with the outline. Recommended: (a). Why: each is a CAG for-sale rule that applies to a transactional city page, and adding it now costs nothing at build. Trade-off: about 150 more words, which may push the 2,960-word outline past 3,000; if so, words come out of the FAQ blocks.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, fold them all in"
+        },
+        {
+          "id": "b",
+          "label": "Some only (say which in the text box)"
+        },
+        {
+          "id": "c",
+          "label": "No, keep the outline as is"
+        }
+      ],
+      "question": "Fold the missed CAG rules into London's outline before you see it again?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "London has 12 H2 and 35 H3. No built page meets the bands: the for-sale pages carry 11–16 H2 on 4,300–6,100 words. Recommended: (a). Why: 25+ H2s in 3,000 words is about 80 words per section, and your ≥5 H5/H6 ruling already sets the depth. Trade-off: London stays below a band that CAG's rule text states.",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "Keep H2–H4 set by the competitor section target; enforce all six levels and ≥5 H5/H6 only"
+        },
+        {
+          "id": "b",
+          "label": "Enforce H2 25–35, H3 40–50, H4 10–20 too (and raise the word band)"
+        },
+        {
+          "id": "c",
+          "label": "Something else (say what in the text box)"
+        }
+      ],
+      "question": "Heading counts: should Rule 28's H2 25–35 and H3 40–50 be enforced?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "CAG itself replaced it on 2026-09-09 with one-clause titles of 70 characters or fewer. BSUK's copy still says 280, but the built for-sale pages use 50–60-character titles and nothing tests the rule. Recommended: (a). Why: it matches CAG's later ruling and what the site already ships. Trade-off: none of the live pages change.",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "Retire it; titles are one clause, ≤70 characters"
+        },
+        {
+          "id": "b",
+          "label": "Keep the 280-character format for puppy pages"
+        }
+      ],
+      "question": "Retire the 280-character title rule for puppy pages?",
+      "section": 1,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "London outline"
+    },
+    {
+      "lead": "",
+      "title": "Rules"
+    }
+  ],
+  "status": "open",
+  "title": "CAG for-sale rules · three decisions before London's outline comes back"
+}
