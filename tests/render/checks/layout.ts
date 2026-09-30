@@ -1325,3 +1325,83 @@ register({
     };
   },
 });
+
+/**
+ * A BODY HEADING PAINTS THE BRAND COLOUR (the design-polish pick 1(a), 2026-09-30; preview
+ * docs/artifacts/bsuk-design-polish-preview.html, item 1).
+ *
+ * rules/design.md rule 1 gives headings `--color-brand`, and the kit and the city kit already
+ * paint theirs in it, but every body H2, H3 and H4 inherited `--color-ink` from <body>: one
+ * page, two heading colours. The other half is the steel band box: a heading there that took
+ * the brand colour would paint steel on steel (1.00:1).
+ *
+ * THE UNIT is one visible H2, H3 or H4 in `<main>` (a heading in a closed `<details>` is not
+ * visible) outside a kit or city-kit component (those set their own colour). A heading on a light bed fails when its computed colour is not the
+ * page's computed `--color-brand` (read off a probe in `<main>`); a heading inside a band or
+ * inverse bed (`.bl-frame-band`, `.on-inverse`, `[data-surface="inverse"]`) fails when it IS the
+ * brand colour. The kit preview's scroll-spy stub labels, muted on purpose, are skipped by the
+ * same page-and-exact-text pins as `layout-body-heading-above-body` (BODY_HEADING_PINNED). A page
+ * with no `<main>`, or with no `--color-brand` token to compare against, is a defect.
+ * `a11y-text-contrast-aa` keeps measuring the ratio itself.
+ */
+register({
+  id: 'layout-body-heading-brand',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'a body H2/H3/H4 on a light bed paints --color-brand, and one in a band box does not',
+  minExamined: 2,
+  async run(page: Page, viewport: number, ctx: CheckContext): Promise<CheckResult> {
+    const pinned = BODY_HEADING_PINNED[ctx?.slug ?? '']?.texts ?? [];
+    const r = await page.evaluate((pinned) => {
+      const main = document.querySelector('main');
+      if (!main) return { noMain: true, noToken: false, examined: 0, bad: [] as string[] };
+      if (!getComputedStyle(document.documentElement).getPropertyValue('--color-brand').trim()) {
+        return { noMain: false, noToken: true, examined: 0, bad: [] as string[] };
+      }
+      const probe = document.createElement('span');
+      probe.style.color = 'var(--color-brand)';
+      main.appendChild(probe);
+      const brand = getComputedStyle(probe).color;
+      probe.remove();
+      const INVERSE = '.bl-frame-band, .on-inverse, [data-surface="inverse"]';
+      let examined = 0;
+      const bad: string[] = [];
+      for (const h of Array.from(main.querySelectorAll('h2, h3, h4'))) {
+        // checkVisibility(), not client rects alone: a heading in a closed <details> keeps its
+        // boxes under content-visibility: hidden, and the reader cannot see it.
+        if (!h.checkVisibility({ visibilityProperty: true }) || h.getClientRects().length === 0) continue;
+        if (h.closest('[class^="kit-"], [class*=" kit-"], .city-kit')) continue;
+        const full = (h.textContent || '').trim().replace(/\s+/g, ' ');
+        if (pinned.includes(full)) continue;
+        examined++;
+        const color = getComputedStyle(h).color;
+        const text = full.slice(0, 50);
+        const tag = h.tagName.toLowerCase();
+        if (h.closest(INVERSE)) {
+          if (color === brand) bad.push(`${tag} in a band box paints the brand ${brand} on the band: "${text}"`);
+        } else if (color !== brand) {
+          bad.push(`${tag} paints ${color}, not the brand ${brand}: "${text}"`);
+        }
+      }
+      return { noMain: false, noToken: false, examined, bad };
+    }, pinned);
+    if (r.noMain || r.noToken) {
+      const message = r.noMain
+        ? 'the page has no <main>, so no heading could be judged'
+        : 'the page defines no --color-brand, so no heading colour could be judged';
+      return { examined: 0, defects: [{ checkId: 'layout-body-heading-brand', family: 'LAYOUT' as const, viewport, count: 1, message }] };
+    }
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{
+          checkId: 'layout-body-heading-brand',
+          family: 'LAYOUT' as const,
+          viewport,
+          count: r.bad.length,
+          message: `${r.bad.length} of ${r.examined} body heading(s) off the brand colour rule: ${r.bad.slice(0, 6).join(' | ')}`,
+        }]
+        : [],
+    };
+  },
+});

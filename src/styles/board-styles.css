@@ -89,6 +89,15 @@
     main :where(h4:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)) { font-size: 18px; }
   }
   main :where(h2:not(.bl-box h2, [class^="kit-"] *, [class*=" kit-"] *, .city-kit *), h3:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *), h4:not([class^="kit-"] *, [class*=" kit-"] *, .city-kit *)):where(:first-child) { margin-block-start: 0; }
+  /* THE BODY HEADING COLOUR (the design-polish pick 1(a), the user in chat 2026-09-30; preview
+     docs/artifacts/bsuk-design-polish-preview.html, item 1). rules/design.md rule 1 gives
+     "headings" --color-brand, and the kit and city kit already paint theirs in it, while every
+     body H2/H3 inherited --color-ink from <body>. H4 follows (the preview's offer, taken because
+     rule 1 names headings without a level). A heading in a band or inverse box keeps the band's
+     bone (brand on steel is 1.00:1); kit and city-kit headings keep their own. Brand measures
+     11.76:1 on white and 10.43:1 on bone (data/design/contrast.json). (0,0,1), so any class
+     still wins. Held by tests/render/checks/layout.ts::layout-body-heading-brand. */
+  main :where(h2, h3, h4):not(:where([class^="kit-"] *, [class*=" kit-"] *, .city-kit *, .bl-frame-band *, .on-inverse *, [data-surface="inverse"] *)) { color: var(--color-brand); }
   /* A heading inside a list item titles a card (the puppy cards on /available-puppies/, the post
      card on /blog/), so it takes the H3 tier whatever its level: at the H2 tier a puppy's name was
      22-28px bold in a 243px card (the Known Issue 97 review, item 10). Same (0,0,1) weight as the
