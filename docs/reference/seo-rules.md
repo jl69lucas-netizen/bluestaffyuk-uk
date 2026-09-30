@@ -213,7 +213,8 @@ first and write to fill it.
 - H6: **minimum 5** — voice-search phrasing, breeder notes, citations
 - All six levels are required on every full-length page. "H4/H5/H6 as needed" is BANNED.
   Shipping 1 H6 or 4 H5 is an automatic FAIL. See `rules/headings.md` for the pack that
-  holds this and for the home/location WARN exception.
+  holds this and for the WARN exception, which since 2026-09-30 covers only the homepage and
+  the pre-rule location stubs — a project 5 location page FAILs short of 5 H5 or 5 H6.
 
 **Rule 29 — Table of Contents**
 Required over 1,500 words, after the hero and key-takeaways block, anchored to every
@@ -380,7 +381,9 @@ section is written.
   facts, warnings, examples · **H6** ultra-specific details, breeder notes, citations.
 - H5 examples: "What the Deposit Covers", "How Delivery Distance Is Priced".
   H6 examples: "Is a Staffy Good With Children?", "What Happens After I Pay a Deposit?"
-- Minimum 5 H5 and 5 H6 per page (advisory WARN on the home and location profiles).
+- Minimum 5 H5 and 5 H6 per page — a hard FAIL on every project 5 page (location,
+  comparison, blog; user ruling 2026-09-30, STOP 2 of London); advisory WARN only on the
+  homepage and the pre-rule location stubs.
 - **OUTLINE-FIRST APPROVAL GATE:** the complete H1→H6 outline is shown and approved before
   any page is created or edited. Enforced by `scripts/final_page_audit.py`
   (`all_six_levels` / `min_h5_5` / `min_h6_5`) and written in full in `rules/headings.md`.

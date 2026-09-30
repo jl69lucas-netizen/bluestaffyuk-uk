@@ -548,7 +548,7 @@ and record what it ran in the page's run record (`docs/reference/page-run.md`, r
 1. npm run -s build
 2. python3 scripts/final_page_audit.py [--puppies]
    → page-type-aware, nested-slug aware. SUPERSEDES the source repo's interior audit, which was never ported.
-   → headings: all six levels, no skipped levels, Title Case; ≥5 H5/H6 advisory on homepage + location pages (2026-09-09)
+   → headings: all six levels, no skipped levels, Title Case; ≥5 H5/H6 advisory on the homepage + pre-rule location stubs (2026-09-09), hard FAIL on project 5 pages (2026-09-30)
    → schema · meta · image SEO · a11y traps · links · phone · compliance copy
    → one PASS / PASS-WITH-WARNINGS / FAIL verdict; triage every ✗
 3. anti-ai-writing  → AI-tell sweep on the final prose
@@ -677,7 +677,7 @@ bsuk-llm-keyword-intel <slug>
 
 ### Sprint 4 Gate
 - [ ] One PASS / PASS-WITH-WARNINGS verdict from `scripts/final_page_audit.py`; every ✗ triaged
-- [ ] All six heading levels present, no skipped levels; ≥5 H5/H6 advisory on homepage + location pages
+- [ ] All six heading levels present, no skipped levels; ≥5 H5/H6 advisory on the homepage + pre-rule location stubs, hard FAIL on project 5 pages (2026-09-30)
 - [ ] `python3 scripts/evidence_audit.py <slug>` → 0 ERROR; every WARN read and triaged
 - [ ] **Title Case on every H1–H6**; FAQ `<summary>` stays sentence case
 - [ ] **Header style declared + justified** at the outline gate (framework-heading-hierarchy §Header Style Selection)

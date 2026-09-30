@@ -315,17 +315,51 @@ def _research():
     return OM.research_for(_outline())
 
 
+def _short_of_the_floor(rec):
+    """The fixture's Delivery H4 carries five H5, each with one H6; keep the first only."""
+    h4 = rec["sections"][2]["headings"][0]["children"][0]["children"][0]
+    h4["children"] = h4["children"][:1]
+    return rec
+
+
 def test_parity_all_six_levels_are_required_and_the_h5_h6_floor_follows_bsuk():
     rec = _outline()
     rec["sections"][2]["headings"][0]["children"][0]["children"] = []      # drop H4–H6
     assert any("all six levels" in p for p in OM.validate(rec, _research()))
     good = _outline()
-    assert OM.validate(good, _research()) == []                           # location: WARN only
-    assert any("H5" in w for w in OM.warnings(good))
-    blog = dict(_outline(), page_type="blog")
+    assert OM.validate(good, _research()) == [] and OM.warnings(good) == []
+    blog = _short_of_the_floor(dict(_outline(), page_type="blog"))
     assert any("at least 5 H5" in p for p in OM.validate(blog, _research()))
     _md = "\n".join(b for _, b in OM.sections(good, _research()))
     assert "advisory" in _md and "source system" in _md
+
+
+def test_a_project_5_location_outline_short_of_five_h5_or_h6_fails():
+    """User ruling 2026-09-30 (STOP 2 of London): the 5-H5 / 5-H6 floor is a hard FAIL on
+    every project 5 page, location included — not the 2026-09-09 WARN."""
+    short = _short_of_the_floor(_outline())
+    assert short["page_type"] == "location"
+    problems = OM.validate(short, _research())
+    assert any("at least 5 H5" in p and "project 5 location" in p for p in problems), problems
+    assert OM.warnings(short) == []
+    one_h6_short = _outline()
+    h5s = one_h6_short["sections"][2]["headings"][0]["children"][0]["children"][0]["children"]
+    h5s[-1]["children"] = []                                              # 5 H5, 4 H6
+    assert any("short: H6" in p for p in OM.validate(one_h6_short, _research()))
+
+
+def test_the_homepage_and_a_pre_rule_location_page_keep_the_warn(monkeypatch):
+    """The frozen homepage and a location page built before project 5 keep the advisory
+    WARN, so no built page breaks."""
+    import family_rules as FR
+    home = _short_of_the_floor(dict(_outline(), page_type="home", slug="index"))
+    assert not any("at least 5 H5" in p for p in OM.validate(home, _research()))
+    assert any("advisory on a pre-rule home page" in w for w in OM.warnings(home))
+    monkeypatch.setattr(FR, "BUILT_BEFORE_SYSTEM_GAPS",
+                        FR.BUILT_BEFORE_SYSTEM_GAPS | {"fixture-city"})
+    stub = _short_of_the_floor(_outline())
+    assert not any("at least 5 H5" in p for p in OM.validate(stub, _research()))
+    assert any("advisory on a pre-rule location page" in w for w in OM.warnings(stub))
 
 
 def test_parity_framework_is_a_research_pick_or_a_standard_framework():

@@ -56,6 +56,42 @@ def is_new_page(board_or_slug):
     return bool(slug) and slug not in BUILT_BEFORE_SYSTEM_GAPS and not slug.startswith("_")
 
 
+# ── The H5/H6 heading floor (user ruling 2026-09-30, STOP 2 of London) ────────────────────
+#
+# rules/headings.md `heading-hierarchy-outline-gate` item 3: at least 5 H5 and 5 H6 on every
+# page. The 2026-09-09 evidence pass made that floor advisory (WARN) on the homepage and the
+# location pages; the user's ruling at London's STOP 2 ("we did not port or follow the H1 to
+# H6 rules per page, it's a standard rule") makes it a hard FAIL again on every page project 5
+# builds. The homepage and the pre-rule location stubs keep the WARN, so no built page breaks.
+# One predicate, read by scripts/pageboard.py (min-h5-h6), scripts/outline_matrix.py (the
+# census) and scripts/final_page_audit.py (min_h5_5 / min_h6_5), so the three cannot drift.
+H5H6_ADVISORY_PAGE_TYPES = ("home", "location")
+_ROOT = __import__("pathlib").Path(__file__).resolve().parents[1]
+
+
+def has_page_record(slug):
+    """True when the slug's last segment has a page board or an outline record on disk — the
+    mark of a page built through the project 5 run. The data-driven location stubs have
+    neither, so a built stub is still judged as a pre-rule page."""
+    bare = (slug or "").strip("/").rsplit("/", 1)[-1]
+    return bool(bare) and any((_ROOT / d / f"{bare}.json").exists()
+                              for d in ("data/boards", "data/outlines"))
+
+
+def h5h6_floor_severity(page_type, slug, *, record=True):
+    """FAIL or WARN for the 5-H5 / 5-H6 floor. WARN only on a home or location page that is
+    not a project 5 page (the frozen twelve, or a location stub with no board or outline).
+    `record=True` says the caller is judging a board or outline record, which only a project 5
+    page (or a frozen page's board) has; a caller reading dist/ passes `record=False` and the
+    slug must then carry a record on disk to count as a project 5 page."""
+    if page_type not in H5H6_ADVISORY_PAGE_TYPES:
+        return "FAIL"
+    bare = (slug or "").strip("/").rsplit("/", 1)[-1]
+    new = (page_type in NEW_FAMILY_PAGE_TYPES and is_new_page(bare)
+           and (record or has_page_record(bare)))
+    return "FAIL" if new else "WARN"
+
+
 def applies(board):
     m = board["meta"]
     return m["page_type"] in NEW_FAMILY_PAGE_TYPES and is_new_page(m["slug"])

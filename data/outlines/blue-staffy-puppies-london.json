@@ -365,7 +365,19 @@
                 {
                   "level": 4,
                   "text": "Is the Transport DEFRA-Approved?",
-                  "children": []
+                  "children": [
+                    {
+                      "level": 5,
+                      "text": "How Is the Delivery Price Worked Out for My London Postcode?",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "What Does the Government's Welfare in Transport Guidance Ask of a Carrier?",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -384,7 +396,7 @@
         }
       ],
       "framework": "FAB",
-      "words": 170,
+      "words": 190,
       "cat": "C",
       "why": "No ranking page prices getting a puppy to London or says how it travels. Carries the UK home delivery band and method from data/settings.json (delivery_min_gbp, delivery_max_gbp, delivery_note), and collection in Carlisle as the alternative.",
       "why_source": "universal_gaps[3]",
@@ -418,7 +430,8 @@
           "id": "ont:london",
           "why": "The delivery destination; secondary 'staffie puppies in london'."
         }
-      ]
+      ],
+      "note": "H5/H6 (user ruling 2026-09-30, the H1–H6 rule): the H5 states only that UK home delivery is priced by distance, inside the band read from delivery_min_gbp/delivery_max_gbp (delivery_note) — no per-mile rate and no typed London figure; the H6 is a citation of the government's Welfare in Transport guidance (ont:welfare-in-transport-pb10308), written as what the guidance asks, never as a claim about our carrier beyond DEFRA-approved transport."
     },
     {
       "n": "10",
@@ -440,7 +453,19 @@
                 {
                   "level": 4,
                   "text": "What Does Jones Pass On as the Sire?",
-                  "children": []
+                  "children": [
+                    {
+                      "level": 5,
+                      "text": "Why Does One Litter Have Blue, White, and Blue and White Puppies?",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "Which Coat Colour Is Each Puppy in This Litter?",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -459,7 +484,7 @@
         }
       ],
       "framework": "EEBP",
-      "words": 190,
+      "words": 210,
       "cat": "C",
       "why": "No ranking page is a single accountable breeder with prices. Carries the six puppies and their prices from data/puppies.json and data/price-matrix.json (never typed) and the parents, Maggie (dam) and Jones (sire).",
       "why_source": "universal_gaps[7]",
@@ -477,7 +502,7 @@
         ]
       },
       "image": "H2: public/images/blue-staffy-puppies-uk-litter1.webp (served) · H3 parents: public/images/jones-magnificent-blue-staffy-sire.webp, with public/images/maggie-blue-staffy-dam-with-pups.webp repeated under a new alt (rule 11) · H3 prices: the puppy card images public/images/puppies/<slug>-card-800.webp",
-      "note": "\"how rare are blue staffies\" is answered in prose from a cited breed source, with no invented rarity figure",
+      "note": "\"how rare are blue staffies\" is answered in prose from a cited breed source, with no invented rarity figure H5/H6 (user ruling 2026-09-30, the H1–H6 rule): the H5 explains, in neutral register from a cited breed source, why one litter can carry blue, white and blue-and-white coats (the dilute and white-marking genes), with no test result for Maggie or Jones; the H6 lists each puppy's colour read from data/puppies.json `colour`, never typed.",
       "entities": [
         {
           "id": "ont:blue-coat",
@@ -623,7 +648,19 @@
                 {
                   "level": 4,
                   "text": "What About Eye and Elbow Checks?",
-                  "children": []
+                  "children": [
+                    {
+                      "level": 5,
+                      "text": "Which Health-Test Warning Signs Should Make Me Walk Away From a Seller?",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "Where Can I Read the BVA and Kennel Club Scheme Rules for Myself?",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -642,7 +679,7 @@
         }
       ],
       "framework": "QAB",
-      "words": 180,
+      "words": 200,
       "cat": "C",
       "why": "The parents' named tests — L-2-HGA, HC-HSF4, eye and elbow — named, never a result or a DNA certificate (plan Ruling 4); Kennel Club registration explained; no licence claim (Ruling 5).",
       "why_source": "content_gap[3]",
@@ -688,7 +725,8 @@
           "id": "ont:kc-registration-paperwork",
           "why": "PAA 'Blue staffy puppies london kennel club' (QF, score 3)."
         }
-      ]
+      ],
+      "note": "H5/H6 (user ruling 2026-09-30, the H1–H6 rule): the H5 is a buyer warning — a seller who cannot show the paperwork for a test they name, or who offers a 'DNA clear' line with no certificate — and never states a result for our dogs (plan Ruling 4); the H6 is a citation of where the BVA and Kennel Club publish their scheme rules."
     },
     {
       "n": "14",
@@ -705,7 +743,19 @@
                 {
                   "level": 4,
                   "text": "What Does the Written Contract Cover?",
-                  "children": []
+                  "children": [
+                    {
+                      "level": 5,
+                      "text": "What Should I Check in the Contract Before I Sign?",
+                      "children": [
+                        {
+                          "level": 6,
+                          "text": "When Should I Ask for the Full Guarantee Terms?",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -713,7 +763,7 @@
         }
       ],
       "framework": "EEBP",
-      "words": 130,
+      "words": 150,
       "cat": "C",
       "why": "What comes home with the puppy — microchip, vaccinations, Kennel Club registration paperwork and the written contract — a gap no ranking page fills; each item stated only as the breeder has confirmed it.",
       "why_source": "content_gap[4]",
@@ -723,7 +773,7 @@
         ]
       },
       "image": "H2: public/images/puppy-vaccinations-uk.webp (served) · H3: public/images/blue-staffy-puppy-vet-check-uk.webp",
-      "note": "Build note: the written contract answer never copies the migrated \"non-refundable deposit\" line, and never renders deposit_refundable: true as a plain \"refundable\"; any deposit wording here points to row 8's refund clause.",
+      "note": "Build note: the written contract answer never copies the migrated \"non-refundable deposit\" line, and never renders deposit_refundable: true as a plain \"refundable\"; any deposit wording here points to row 8's refund clause. H5/H6 (user ruling 2026-09-30, the H1–H6 rule): the H5 is a buyer checklist for the contract (the deposit clause from row 8's refund data key, the guarantee in guarantee_label/guarantee_cover words only, what goes home with the puppy); the H6 is a breeder note from data/settings.json guarantee_note — ask for the full terms before you pay a deposit — never a typed guarantee length.",
       "entities": [
         {
           "id": "ont:kc-registration-paperwork",

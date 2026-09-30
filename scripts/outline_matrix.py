@@ -15,9 +15,10 @@ unless that board is approved as it stands. The deliverable carries:
   the heading census         H1–H6 counts over the whole outline, held to BSUK's own rule
                              (rules/headings.md `heading-hierarchy-outline-gate`): exactly one
                              H1, all six levels, no skipped level anywhere; at least 5 H5 and
-                             5 H6, a FAIL on a comparison or blog page and advisory (a WARN,
-                             shown on the census line) on a location page — where the source
-                             system required 5 of each on every page
+                             5 H6, a hard FAIL on every project 5 page — location, comparison
+                             and blog (user ruling 2026-09-30, STOP 2 of London), as the source
+                             system required on every page; advisory (a WARN on the census
+                             line) only on the homepage and the pre-rule location pages
   the distribution matrix    one row per section: #, Section with its H2–H6 tree inline,
                              Framework, Words, Keywords (primary / secondary, from the research
                              board's keyword universe), Cat (A mandatory core · B competitor-match
@@ -67,6 +68,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _md_artifact as MA  # noqa: E402
 import research_board as RB  # noqa: E402
+import family_rules as FR  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 RECORDS = "data/outlines"
@@ -75,8 +77,11 @@ CATS = {"A": "mandatory core", "B": "competitor-match", "C": "our moat"}
 DASH = ("—", "-", "")
 C_SOURCES = re.compile(r"^(?:(?:how_we_win|content_gap|universal_gaps)\[\d+\]|serp\.results\[\d+\]\.weakness)$")
 B_SOURCES = re.compile(r"^(?:serp\.results\[(\d+)\](?:\.(?:why_ranks|weakness))?|reverse_engineering\[(\d+)\])$")
-# rules/headings.md heading-hierarchy-outline-gate: the 5-per-level minimum is advisory here.
-ADVISORY_MIN_H5H6 = ("home", "location")
+# rules/headings.md heading-hierarchy-outline-gate: the 5-per-level minimum is advisory on
+# these page types only for a page that is not a project 5 page (the homepage, the pre-rule
+# location stubs); on a project 5 page it is a hard FAIL (user ruling 2026-09-30, STOP 2 of
+# London). family_rules.h5h6_floor_severity is the one predicate.
+ADVISORY_MIN_H5H6 = FR.H5H6_ADVISORY_PAGE_TYPES
 MIN_H5H6 = 5
 
 
@@ -241,18 +246,23 @@ def census(record, h1s=None):
     return counts, problems
 
 
+def _h5h6_sev(record):
+    return FR.h5h6_floor_severity(record.get("page_type"), record.get("slug"))
+
+
 def _h5h6_short(record, counts):
     return [f"H{lv}" for lv in (5, 6) if counts.get(lv, 0) < MIN_H5H6]
 
 
 def warnings(record):
-    """Advisory findings: the 5-per-level H5/H6 minimum on a location (or home) page."""
+    """Advisory findings: the 5-per-level H5/H6 minimum on the homepage or a pre-rule
+    location page. On a project 5 page the same shortfall is a problem, not a warning."""
     counts, _ = census(record)
     short = _h5h6_short(record, counts)
-    if short and record.get("page_type") in ADVISORY_MIN_H5H6:
+    if short and _h5h6_sev(record) == "WARN":
         return [f"heading census: fewer than {MIN_H5H6} " + " and ".join(short)
-                + f" — advisory on a {record.get('page_type')} page (rules/headings.md, 2026-09-09); "
-                  "never add a heading to hit the count"]
+                + f" — advisory on a pre-rule {record.get('page_type')} page (rules/headings.md, "
+                  "2026-09-09); never add a heading to hit the count"]
     return []
 
 
@@ -440,9 +450,10 @@ def _validate(record, research, root, p):
     counts, cp = census(record, h1s)
     p += cp
     short = _h5h6_short(record, counts)
-    if short and record.get("page_type") not in ADVISORY_MIN_H5H6:
-        p.append(f"heading census: at least {MIN_H5H6} H5 and {MIN_H5H6} H6 on a "
-                 f"{record.get('page_type')} page (rules/headings.md) — short: " + ", ".join(short))
+    if short and _h5h6_sev(record) == "FAIL":
+        p.append(f"heading census: at least {MIN_H5H6} H5 and {MIN_H5H6} H6 on a project 5 "
+                 f"{record.get('page_type')} page (rules/headings.md, user ruling 2026-09-30) — "
+                 "short: " + ", ".join(short))
     if record.get("h1") is not None and h1s and record.get("h1") != h1s[0]:
         p.append(f"h1 {record.get('h1')!r} is not the tree's H1 {h1s[0]!r}")
     if target_ok and raw and not wmin <= total <= wmax:
@@ -495,9 +506,10 @@ def sections(record, research):
     warn = warnings(record)
     census_md = (f"**Heading census:** {census_line(counts)} — exactly one H1, all six levels, no "
                  f"skipped level (BSUK: rules/headings.md `heading-hierarchy-outline-gate`). At least "
-                 f"{MIN_H5H6} H5 and {MIN_H5H6} H6 is a hard rule on comparison and blog pages and "
-                 f"advisory on location pages; the source system required {MIN_H5H6} of each on "
-                 f"every page.")
+                 f"{MIN_H5H6} H5 and {MIN_H5H6} H6 is a hard rule on every project 5 page — location, "
+                 f"comparison and blog (user ruling 2026-09-30) — as the source system required on "
+                 f"every page; it stays advisory only on the homepage and the pre-rule location "
+                 f"pages.")
     if warn:
         census_md += "\n\n" + "\n".join(f"- WARN {w}" for w in warn)
     head = [

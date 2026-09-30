@@ -46,7 +46,10 @@ distribution matrix — #, the section with its H2–H6 tree, framework, words, 
 secondary, from the research board's keyword universe), Cat (A mandatory core · B competitor-match
 · C our moat), Why (a B or C row names its `why_source` on the research board; a B row cites the
 SERP or the reverse-engineering table), and image. The census follows `rules/headings.md`: one H1,
-all six levels, no skipped level; at least 5 H5 and 5 H6 is advisory on a location page. A
+all six levels, no skipped level; at least 5 H5 and 5 H6 is a hard FAIL on a project 5 location
+page (user ruling 2026-09-30, STOP 2 of London — advisory only on the pre-rule stubs), each H5 a
+supporting fact, warning or example and each H6 an ultra-specific detail, breeder note,
+voice-search question or citation, spread across the sections that carry real content. A
 framework is a research-board pick or a `framework-*` skill; a C row cites `how_we_win`,
 `content_gap`, `universal_gaps` or a competitor's weakness; a B row cites a competitor whose
 why-it-ranks was fetched; every keyword the research board placed in a section sits in that row.
