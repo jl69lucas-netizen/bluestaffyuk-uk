@@ -527,7 +527,7 @@ python3 scripts/aeo_audit.py <slug>
 
 - [ ] Zero ERROR from `scripts/aeo_audit.py`
 - [ ] `python3 scripts/generate_page_dates.py --check` current, map committed
-- [ ] Facts correct: **LICENCE_CLAIM_PLACEHOLDER** · **£1,500 / £1,700** · **£500 refundable deposit** · the guarantee only as `guarantee_days` and `guarantee_label` word it
+- [ ] Facts correct: **LICENCE_CLAIM_PLACEHOLDER** · **£1,500 / £1,700** · **£500 deposit** (never plainly "refundable") · the guarantee only as `guarantee_days` and `guarantee_label` word it
 - [ ] No invented house-method name on the page (the breeder has never given one)
 - [ ] Part 2 (atomic sections) checked BY HAND — three sections read in isolation
 

@@ -350,8 +350,10 @@
   {
    "id": "puppies-extended-meta",
    "family": "COPY",
-   "enforced": "untested",
-   "pack": "rules/puppies.md"
+   "enforced": "test",
+   "pack": "rules/puppies.md",
+   "test": "tests/py/test_page_board.py",
+   "_note": "Amended 2026-09-30 (user, answer board batch 2026-09-30-for-sale-rules-three-decisions q03): the 280-character extended title is retired; titles are one clause, <=70 characters, descriptions <=160 (seo-rules Rules 21 and 23). The lengths are tested through scripts/pageboard.py meta-length (tests/py/test_page_board.py test_meta_set_rejects_a_long_title_a_description_off_band_and_a_fourth_variant and test_gate_meta_length_reads_the_per_slug_ceiling); 'one clause' itself has no mechanical check."
   },
   {
    "id": "delivery-band-on-every-card",
@@ -552,7 +554,7 @@
    "family": "LAYOUT",
    "enforced": "test",
    "pack": "rules/puppies.md",
-   "test": "tests/render/checks/layout.ts::layout-hero-counter-separation + tests/render/checks/layout.ts::layout-h3-image-first"
+   "test": "tests/render/checks/layout.ts::layout-hero-counter-separation + tests/render/checks/layout.ts::layout-h3-image-first + tests/render/checks/layout.ts::layout-hero-image-first-mobile"
   },
   {
    "id": "external-links-six-diverse",

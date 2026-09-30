@@ -175,7 +175,7 @@ rendered into a title or description tag.
 - ≤ 160 characters, conversational, benefit-driven, one sentence flow.
 - Must carry: primary keyword + a long-tail or LSI variation + a trust signal + a CTA.
 - Emphasise what is locked: home-reared in Carlisle, UK delivery £200–£350 by distance via
-  DEFRA-approved transport or collection in Carlisle, £500 refundable deposit.
+  DEFRA-approved transport or collection in Carlisle, the £500 deposit (never plainly "refundable").
 - Never emphasise a licence, a statute or a review count — none of those is established.
   The guarantee's length is emphasised only as `guarantee_days` and
   `guarantee_label` in `data/settings.json` word it.
@@ -208,7 +208,14 @@ first and write to fill it.
 
 **Rule 28 — Header Count Targets**
 - H1: exactly **1** per page (hero only)
-- H2: **25–35** · H3: **40–50** · H4: **10–20**
+- H2 / H3 / H4: **no fixed band.** The counts come from competitor research: the H2 count is
+  the question file's `section_target` (`data/queries/<slug>.json`): the competitors' highest
+  cleaned H2 count + 3, never fewer than 9 (Rule 26; `docs/reference/location-page-template.md`,
+  "Section count"), and the H3/H4 depth under each H2 follows what the competitors and the
+  question pool cover. Never pad a page to reach a number.
+  *Amended 2026-09-30 (user, answer board batch `2026-09-30-for-sale-rules-three-decisions`
+  q02): the former "H2 25–35 · H3 40–50 · H4 10–20" bands are retired — "going forward [it] is
+  determined by competitors research, competitors' number of H2".*
 - H5: **minimum 5** — deep LSI / technical authority terms
 - H6: **minimum 5** — voice-search phrasing, breeder notes, citations
 - All six levels are required on every full-length page. "H4/H5/H6 as needed" is BANNED.
@@ -227,7 +234,7 @@ is checked by `tests/render/checks/nav.ts`.
 **Rule 31 — Counter Snippets (After Hero)**
 Four counters immediately after the hero, under four words each, each starting with a
 number or percentage, each stating something BlueStaffyUK can back:
-`£500 Refundable Deposit` / `12–14 Year Lifespan` / `28 UK Cities Covered` /
+`£500 Reservation Deposit` / `12–14 Year Lifespan` / `28 UK Cities Covered` /
 `Home-Reared in Carlisle`. A counter that asserts a licence, an award or a review count is
 a defect, not a variation.
 
@@ -285,7 +292,7 @@ Every section's opening 1–2 sentences carry all four:
 - **Purpose** — the deeper reason it matters
 
 Example: *"Roman is a blue Staffordshire Bull Terrier pup reared at home in Carlisle
-(entity) at £1,500 with a £500 refundable deposit (feature), handled daily so he settles
+(entity) at £1,500 with a £500 deposit that comes off the price (feature), handled daily so he settles
 into a new household within days rather than weeks (benefit) — the start of a 12–14 year
 relationship (purpose)."*
 
@@ -375,7 +382,8 @@ section is written.
 **Rule 52 — Strict Heading Hierarchy + Mandatory H1–H6**
 - Sequential only: H1 → H2 → H3 → H4 → H5 → H6. Never skip a level. Stepping back up to
   start a new major section is fine.
-- All six levels required on every full-length page.
+- All six levels required on every full-length page. How many H2/H3/H4 a page carries is set
+  by competitor research, never a fixed band (Rule 28, amended 2026-09-30).
 - Semantic level map: **H1** page topic · **H2** main search intents · **H3** subtopics and
   keyword clusters · **H4** micro-intent answers and PAA coverage · **H5** supporting
   facts, warnings, examples · **H6** ultra-specific details, breeder notes, citations.

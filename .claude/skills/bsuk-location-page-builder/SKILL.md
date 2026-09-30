@@ -49,7 +49,7 @@ SERP or the reverse-engineering table), and image. The census follows `rules/hea
 all six levels, no skipped level; at least 5 H5 and 5 H6 is a hard FAIL on a project 5 location
 page (user ruling 2026-09-30, STOP 2 of London — advisory only on the pre-rule stubs), each H5 a
 supporting fact, warning or example and each H6 an ultra-specific detail, breeder note,
-voice-search question or citation, spread across the sections that carry real content. A
+voice-search question or citation, spread across the sections that carry real content. H2/H3/H4 counts come from competitor research — the H2 count is the question file's `section_target` (competitors' highest cleaned H2 count + 3, floor 9) — never a fixed band (seo-rules Rule 28, amended 2026-09-30). A
 framework is a research-board pick or a `framework-*` skill; a C row cites `how_we_win`,
 `content_gap`, `universal_gaps` or a competitor's weakness; a B row cites a competitor whose
 why-it-ranks was fetched; every keyword the research board placed in a section sits in that row.
@@ -80,7 +80,7 @@ Everything here comes from a file, never from memory:
 | Fact | Source |
 |---|---|
 | Prices £1,500 (Roman, Byrd, Ince) · £1,700 (Vennie, Christa, Cheryl) | `data/puppies.json`, `data/price-matrix.json` |
-| £500 refundable deposit | `data/settings.json` → `deposit_gbp`, `deposit_refundable` |
+| £500 deposit — never plainly "refundable"; its refund term only from the refund-clause key added to `data/settings.json` at build (amended 2026-09-30) | `data/settings.json` → `deposit_gbp` + that key |
 | £200–£350 UK home delivery, priced by distance, by DEFRA-approved transport | `data/settings.json` → `delivery_min_gbp`, `delivery_max_gbp`, `delivery_note` |
 | Where we are | `data/settings.json` → `location_label` (Carlisle · Cumbria) |
 | Breed lifespan 12–14 years | the Staffordshire Bull Terrier breed figure |
@@ -272,7 +272,7 @@ from its own outline and its own competitor gaps:
 - logistics — `staffy puppy delivered to <city>`, `collection or delivery <city>`
 - comparison — `blue staffy vs blue brindle`, `kc registered vs unregistered`
 - LSI / entity — Staffordshire Bull Terrier, blue coat dilution, L-2-HGA, HC-HSF4, early
-  socialisation, home-reared, refundable deposit
+  socialisation, home-reared, reservation deposit
 
 **Rule: write from the outline, never from a sibling** (`CLAUDE.md` rule 8). Reuse
 components, CSS and structure freely; never open another city's page to reword a paragraph.
@@ -438,7 +438,7 @@ sections, three in each gap.
 | 7 | FAQ — top | the `top` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` |
 | 8 | Our Litter and What Each Puppy Costs | `data/puppies.json`; `PuppyCard` |
 | 9 | Getting Your Puppy to Manchester | `settings.delivery_*`, or collection from `settings.location_label` |
-| 10 | Reserving a Puppy With a £500 Refundable Deposit | `settings.deposit_gbp`, `settings.deposit_refundable` |
+| 10 | Reserving a Puppy With a £500 Deposit | `settings.deposit_gbp` + the refund-clause key (never plainly "refundable") |
 | 11 | Review — middle | a second row of `data/reviews.json`; `Testimonial mode="single"` |
 | 12 | FAQ — middle | the `middle` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` |
 | 13 | Raised in Our Home, Not a Kennel | `rules/copy.md` evidence loop |

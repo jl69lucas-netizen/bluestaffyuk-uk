@@ -96,7 +96,7 @@ profile; `docs/research/keyword-gap-*.md`) → `@bsuk-strategy-synthesizer` →
 → `.claude/skills/bsuk-puppy-page-builder/SKILL.md` — one page per puppy in
 `data/puppies.json` under `src/pages/available-puppies/<slug>/`. Six puppies are locked:
 Roman, Byrd and Ince at £1,500; Vennie, Christa and Cheryl at £1,700. The deposit is £500
-and refundable. Never write a health screen or a licence: neither is established. The
+(`deposit_gbp`), never plainly "refundable". Never write a health screen or a licence: neither is established. The
 guarantee is `guarantee_label` in `data/settings.json` (its length is `guarantee_days`); read it, never type it.
 
 ### "Polish or de-cannibalise the puppy pages"

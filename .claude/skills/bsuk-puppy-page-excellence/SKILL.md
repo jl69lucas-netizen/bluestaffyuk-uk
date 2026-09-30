@@ -48,9 +48,9 @@ touched without an approved board: `python3 scripts/board_gate.py <slug>`.
    **Never** `AggregateRating` or `Review` (`docs/reference/seo-rules.md` Rule 33, working rule 9).
 5. **Facts from data, never typed.** Names, sex, colour, status and photos from
    `data/puppies.json`; prices and the deposit from `data/price-matrix.json`;
-   the delivery band and the guarantee from `data/settings.json` — delivery £200–£350 by
-   distance via DEFRA-approved transport, or collection in Carlisle; the guarantee only as
-   `guarantee_label` and, where a guarantee sentence already carries it, `guarantee_cover`.
+   the delivery band from `data/settings.json` — delivery £200–£350 by distance via
+   DEFRA-approved transport, or collection in Carlisle. The guarantee (`guarantee_days`) only as
+   `guarantee_label`, plus `guarantee_cover` (`guarantee_days`) where a guarantee sentence carries it.
    Any licence claim is `LICENCE_CLAIM_PLACEHOLDER`, any statute claim
    `LEGAL_CLAIM_PLACEHOLDER`. A health test may be **named**, never given a result or a
    certificate that no file records. No invented rearing-method labels. Phone is

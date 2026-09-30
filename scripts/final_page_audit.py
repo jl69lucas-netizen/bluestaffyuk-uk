@@ -444,6 +444,8 @@ def audit_html(slug, html, page_type="interior"):
     # --- Heading Outline Gate (seo-rules Rule 52, 2026-06-20) ---
     # All six levels REQUIRED; H5 >= 5 AND H6 >= 5 on every page. The breeder
     # will not pass a page that ships only 1 H6 or 4 H5. Hard FAIL by default.
+    # No H2/H3/H4 count band is checked here, on purpose: Rule 28 (amended 2026-09-30, user)
+    # sets those counts from competitor research (`section_target`), never a fixed band.
     r["all_six_levels"] = all(p.h[i]>=1 for i in range(1,7))
     r["min_h5_5"] = p.h[5] >= 5
     r["min_h6_5"] = p.h[6] >= 5
