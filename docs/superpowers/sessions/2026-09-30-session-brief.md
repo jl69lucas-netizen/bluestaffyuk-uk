@@ -59,6 +59,7 @@ _(The user's exact answer to each question is appended here as the interview pro
 - **Audit:** London has not been through `@bsuk-content-audit-agent`. It is a stub with 4 words, so an audit adds little; the research board covers the intent and gaps.
 - **Hub:** `/uk-locations/` is built. Known Issue 86: the UK hub's body does not link the indexable city pages.
 - **Deposit refund clause (Ruling 2 of the London plan):** the user's condition is "if you change your mind up to 1 day before collection or delivery" (deposit-wording batch Q3 (b), 2026-09-27), which supersedes this brief's "if a visitor fails to show up". It lives on the unmerged `deposit-wording` branch; `data/settings.json` has no refund-wording key. London prints `depositLine` with no refund wording until that branch is merged (the user's call).
+  - **Superseded 2026-09-30 (user, in chat):** "ignore that or just write when build the page, go to the next task". The `deposit-wording` branch is no longer awaited. At the build (Task 23 onward), the refund clause — the deposit is up to 70% refundable if you change your mind up to 1 day before collection or delivery — is added as a data key in `data/settings.json` and the London page reads it from there, never typed. The STOP 1 answer to q07 ((a), wait for the push) is replaced by this ruling. The outline carries the clause in the deposit section.
 
 ---
 <!-- The synthesized fields below are filled in at finalization, from the Q&A Log above. -->
