@@ -8,7 +8,7 @@
   "word_target": {
     "min": 2000,
     "max": 3000,
-    "source": "median NOT FETCHED in data/queries/blue-staffy-puppies-london.json; the user's 2,000–3,000 band (answer board 2026-09-27), confirmed at STOP 1 q05"
+    "source": "competitor median NOT FETCHED — fewer than two prose competitor pages in data/queries/blue-staffy-puppies-london.json (1 used); the user's 2,000–3,000 band (answer board 2026-09-27), confirmed at STOP 1 q05"
   },
   "header_style": "Style 1 Pure Conversational · FAQ register — every H2/H3 a buyer question (user, 2026-09-27)",
   "sections": [
@@ -95,7 +95,7 @@
       "cat": "A",
       "why": "—",
       "keywords": {},
-      "image": "Reviewer card: Mark J, London (data/reviews.json row 2)"
+      "image": "Reviewer card: Mark J, London (data/reviews.json, Mark J's review)"
     },
     {
       "n": "7",
@@ -112,17 +112,12 @@
             },
             {
               "level": 3,
-              "text": "Can I Get a Blue Staffy Puppy Delivered to My Home?",
+              "text": "Can I Get a Blue Staffy Puppy Delivered to My Home in London?",
               "children": []
             },
             {
               "level": 3,
-              "text": "Do You Deliver Across the UK?",
-              "children": []
-            },
-            {
-              "level": 3,
-              "text": "How Much Is a Blue Staffordshire Puppy?",
+              "text": "How Much Is the Deposit?",
               "children": []
             },
             {
@@ -132,7 +127,12 @@
             },
             {
               "level": 3,
-              "text": "How Do I Reserve One of Your Blue Staffy Puppies?",
+              "text": "How Do I Reserve One of Your Blue Staffy Puppies From London?",
+              "children": []
+            },
+            {
+              "level": 3,
+              "text": "Where Can I Find Blue Staffy Breeders in the UK?",
               "children": []
             }
           ]
@@ -140,7 +140,7 @@
       ],
       "faq": true,
       "framework": "QAB",
-      "words": 260,
+      "words": 220,
       "cat": "A",
       "why": "—",
       "keywords": {
@@ -149,7 +149,7 @@
         ]
       },
       "image": "—",
-      "note": "The question file's six top-block picks, score order (5, 4, 4, 4, 3, 3; ties in file order); prices answered from data/price-matrix.json"
+      "note": "Six questions in score order (5, 4, 3, 3, 3, 3; ties in the question file's rank order). Dropped as near-duplicates, each recorded with covered_by in data/queries/blue-staffy-puppies-london.json: 'How much is a blue Staffordshire puppy?' (covered by the UK price question; its keyword stays in row 10) and 'Do you deliver across the UK?' (covered by the London delivery question). Promoted: 'How much is the deposit?' and 'Where can I find blue staffy breeders in the UK?', the next fact-backed top-block questions. 'Is there a waiting list for a well-bred Staffy puppy?' (score 4) was not promoted: the question file marks it blocked, unverified fact, and no data file answers it (working rule 9). The deposit answer is two sentences: the amount from deposit_gbp, then a pointer to row 8. London wording added to the delivery and reserve questions (meaning unchanged); prices from data/price-matrix.json."
     },
     {
       "n": "8",
@@ -209,7 +209,7 @@
         }
       ],
       "framework": "PDB",
-      "words": 240,
+      "words": 380,
       "cat": "C",
       "why": "The London buyer's named fear (session brief Q8) that no ranking page answers in its own voice. Carries: the deposit books the viewing and reserves the puppy; it comes off the price; it is paid by bank transfer; a live video call with the puppy and its mother is offered on request before any deposit; and the refund clause — up to 70% refundable if you change your mind up to 1 day before collection or delivery — read from a data key the build adds to data/settings.json (user ruling 2026-09-30, session brief Open Flags). The deposit amount is read from deposit_gbp. Never called plainly \"refundable\".",
       "why_source": "how_we_win[0]",
@@ -223,7 +223,8 @@
           "staffy breeder"
         ]
       },
-      "image": "H2: public/images/breeder-sitting-blue-staffy-puppy-home.webp (served) · H3 video call: a phone-screen video-call image — candidate public/images/uk-blue-staffy-breeders-contact-form-support.webp, else a generated image per IMAGE-DESIGNS.md approved on the board · H3 deposit: IG-2 Process Steps infographic (video call → deposit → viewing → collection or delivery), or public/images/how-to-buy-blue-staffy-puppy-uk-steps1.webp"
+      "image": "H2: public/images/breeder-sitting-blue-staffy-puppy-home.webp (served) · H3 video call: a phone-screen video-call image — candidate public/images/uk-blue-staffy-breeders-contact-form-support.webp, else a generated image per IMAGE-DESIGNS.md approved on the board · H3 deposit: IG-2 Process Steps infographic (video call → deposit → viewing → collection or delivery), or public/images/how-to-buy-blue-staffy-puppy-uk-steps1.webp",
+      "note": "Build notes: data/settings.json deposit_refundable: true must never render as a plain \"refundable\" — the page states only the refund clause from its new data key (up to 70% refundable if you change your mind up to 1 day before collection or delivery). The migrated \"non-refundable deposit\" contract line is never copied. 380 words carry nine headings and the refund clause."
     },
     {
       "n": "9",
@@ -341,7 +342,7 @@
       "cat": "A",
       "why": "—",
       "keywords": {},
-      "image": "Reviewer card: Rachel L., London (data/reviews.json row 3)"
+      "image": "Reviewer card: Rachel L., London (data/reviews.json, Rachel L.'s review)"
     },
     {
       "n": "12",
@@ -378,12 +379,12 @@
             },
             {
               "level": 3,
-              "text": "What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK.uk?",
+              "text": "What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK?",
               "children": []
             },
             {
               "level": 3,
-              "text": "What Makes BlueStaffyUK an Ethical Breeder?",
+              "text": "What Makes BlueStaffyUK an Ethical Breeder for London Buyers?",
               "children": []
             }
           ]
@@ -391,7 +392,7 @@
       ],
       "faq": true,
       "framework": "QAB",
-      "words": 300,
+      "words": 260,
       "cat": "A",
       "why": "—",
       "keywords": {
@@ -400,7 +401,7 @@
         ]
       },
       "image": "—",
-      "note": "The question file's seven middle-block picks, score order (5, 4, 4, 3, 2, 2, 2; ties in file order); the guarantee answer reads guarantee_label and guarantee_cover, never typed; the parents answer names the tests, never a result"
+      "note": "The question file's seven middle-block picks, score order (5, 4, 4, 3, 2, 2, 2; ties in file order). 'Should I See the Puppy With Its Mother Before Any Money Changes Hands?' is answered in two sentences that point to row 8 (the deposit and viewing), which carries the full answer. The guarantee answer reads guarantee_label and guarantee_cover, never typed; the parents answer names the tests, never a result. London wording added to the ethical-breeder question; '.uk' dropped from the brand name."
     },
     {
       "n": "13",
@@ -486,7 +487,8 @@
           "kennel club"
         ]
       },
-      "image": "H2: public/images/puppy-vaccinations-uk.webp (served) · H3: public/images/blue-staffy-puppy-vet-check-uk.webp"
+      "image": "H2: public/images/puppy-vaccinations-uk.webp (served) · H3: public/images/blue-staffy-puppy-vet-check-uk.webp",
+      "note": "Build note: the written contract answer never copies the migrated \"non-refundable deposit\" line, and never renders deposit_refundable: true as a plain \"refundable\"; any deposit wording here points to row 8's refund clause."
     },
     {
       "n": "15",
@@ -498,11 +500,11 @@
           "children": [
             {
               "level": 3,
-              "text": "Can a Staffy Settle in a London Flat Without a Garden?",
+              "text": "How Does a Staffy Cope With Stairs, Lifts and Neighbours in a London Flat?",
               "children": [
                 {
                   "level": 4,
-                  "text": "What Behaviour Issues Should a Flat Owner Watch For?",
+                  "text": "Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?",
                   "children": []
                 }
               ]
@@ -524,7 +526,7 @@
       "framework": "QAB",
       "words": 160,
       "cat": "C",
-      "why": "London life — flats, a Staffy as a house dog, time alone — which no ranking page answers for a London buyer.",
+      "why": "London life — stairs and lifts, parks, neighbours and noise, a Staffy as a house dog, time alone — which no ranking page answers for a London buyer.",
       "why_source": "content_gap[5]",
       "keywords": {
         "primary": [
@@ -536,7 +538,8 @@
           "blue staffordshire bull terrier"
         ]
       },
-      "image": "H2: public/images/blue-staffy-testimonial-london-happy-owner.webp (served) · H3 flat: public/images/blue-staffy-family-dog-uk.webp · H3 alone: public/images/playful-blue-staffy-lawn-uk.webp"
+      "image": "H2: public/images/blue-staffy-testimonial-london-happy-owner.webp (served) · H3 stairs, lifts and neighbours: public/images/blue-staffy-family-dog-uk.webp · H3 alone: public/images/playful-blue-staffy-lawn-uk.webp",
+      "note": "'what are common staffie behavioral issues' stays listed as a secondary only because the approved research board's distribution places it in 'London life' and the validator holds it there; the row has no behaviour heading and the topic belongs to row 17. Park facts cite a named source."
     },
     {
       "n": "16",
@@ -559,11 +562,22 @@
           "children": [
             {
               "level": 3,
-              "text": "Will My Staffy Bond With One Person or the Whole Household?",
+              "text": "What Behaviour Issues Should I Expect From a Young Staffy?",
               "children": [
                 {
                   "level": 4,
                   "text": "How Much Exercise Keeps a Staffy Calm Each Day?",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "text": "Will My Staffy Bond With One Person or the Whole Household?",
+              "children": [
+                {
+                  "level": 4,
+                  "text": "How Do I Help a Clingy Staffy Cope With Time Apart?",
                   "children": []
                 }
               ]
@@ -572,7 +586,7 @@
         }
       ],
       "framework": "QAB",
-      "words": 130,
+      "words": 160,
       "cat": "C",
       "why": "Extra section 1 of 3 (question file extra_sections, topic temperament, uncovered: true — no pooled page answers it): aggression, attachment and daily exercise, the house-dog temperament content_gap[5] points to.",
       "why_source": "content_gap[5]",
@@ -581,8 +595,8 @@
           "what are common staffie behavioral issues"
         ]
       },
-      "image": "H2: public/images/busting-common-staffy-myths-loving-family-dog.webp (served) · H3: public/images/1blue-staffy-family-breeder.webp",
-      "note": "keyword repeated from London life (not moved) so the row has a primary; the distribution places none here"
+      "image": "H2: public/images/busting-common-staffy-myths-loving-family-dog.webp (served) · H3 behaviour: public/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp · H3 bonding: public/images/1blue-staffy-family-breeder.webp",
+      "note": "Owns the behaviour-issues topic and the keyword 'what are common staffie behavioral issues' as its primary (row 15 carries no behaviour heading)."
     },
     {
       "n": "18",
@@ -625,7 +639,7 @@
       "headings": [
         {
           "level": 2,
-          "text": "What Health Problems Are Staffies Prone To?",
+          "text": "What Everyday Health Problems Are Blue Staffies Prone To?",
           "children": [
             {
               "level": 3,
@@ -644,15 +658,15 @@
       "framework": "QAB",
       "words": 130,
       "cat": "C",
-      "why": "Extra section 3 of 3 (question file extra_sections, topic health, uncovered: true): what the breed is prone to and itchy skin, with breed facts cited to a named source and no result for our dogs.",
-      "why_source": "content_gap[3]",
+      "why": "Extra section 3 of 3 (question file extra_sections, topic health, uncovered: true): the everyday, non-hereditary problems — skin, allergies, itching — asked as 'What are Staffies prone to?' and 'Why do Staffies scratch so much?', which no ranking page answers under a question-led body heading. Hereditary tests (L-2-HGA, HC-HSF4) stay in row 13; this row points back to it.",
+      "why_source": "universal_gaps[8]",
       "keywords": {
         "primary": [
-          "health tested staffy breeder"
+          "blue staffies"
         ]
       },
       "image": "H2: public/images/blue-staffy-health-prioritising-wellbeing.webp (served) · H3: public/images/blue-staffy-vet-check.webp",
-      "note": "keyword repeated from Health and raising (not moved) so the row has a primary"
+      "note": "Non-hereditary problems only; breed facts cited to a named source. For inherited conditions it links back to row 13 rather than repeating L-2-HGA or HC-HSF4. 'blue staffies' repeated from London life (not moved) as the primary."
     },
     {
       "n": "20",
@@ -663,7 +677,7 @@
       "cat": "A",
       "why": "—",
       "keywords": {},
-      "image": "Reviewer card: The Victoria Family, Manchester (data/reviews.json row 1)"
+      "image": "Reviewer card: The Victoria Family, Manchester (data/reviews.json, The Victoria Family's review)"
     },
     {
       "n": "21",
@@ -705,7 +719,7 @@
             },
             {
               "level": 3,
-              "text": "Can a Staffordshire Bull Terrier Live in a Flat?",
+              "text": "Can a Staffordshire Bull Terrier Live in a London Flat?",
               "children": []
             }
           ]
@@ -713,7 +727,7 @@
       ],
       "faq": true,
       "framework": "QAB",
-      "words": 300,
+      "words": 270,
       "cat": "A",
       "why": "—",
       "keywords": {
@@ -722,7 +736,7 @@
         ]
       },
       "image": "—",
-      "note": "The bottom FAQ block; named \"The FAQ blocks\" because the research board's distribution places its FAQ keyword under that name. The question file's seven bottom-block picks, score order (4, 4, 4, 2, 2, 2, 2; ties in file order)"
+      "note": "The bottom FAQ block; named \"The FAQ blocks\" because the research board's distribution places its FAQ keyword under that name. The question file's seven bottom-block picks, score order (4, 4, 4, 2, 2, 2, 2; ties in file order). 'Is a Staffy a Good House Dog?' and the London-flat question are short answers that point to row 15, which answers the London specifics (stairs, lifts, parks, neighbours). London wording added to the flat question."
     },
     {
       "n": "22",
