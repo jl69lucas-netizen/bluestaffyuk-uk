@@ -18,3 +18,7 @@ docs/artifacts/canvas/
 docs/artifacts/design-system/
 data/boards/previews/
 data/queries/cache/
+
+# Python bytecode caches
+__pycache__/
+*.pyc
