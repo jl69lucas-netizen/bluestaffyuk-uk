@@ -843,7 +843,7 @@ There is no handoff skill today. `session-closer` fills the brief's "What's Next
 
 **Files:** Create `scripts/session_handoff.py`, `tests/py/test_session_handoff.py` and `.claude/skills/session-handoff/SKILL.md`. Output goes to `docs/reference/handoff/<date>-<branch>.md`.
 
-- [ ] **Step 1: Failing test:** `build(root, branch)` returns markdown containing:
+- [x] **Step 1: Failing test:** `build(root, branch)` returns markdown containing:
   - the branch and HEAD sha;
   - the worktree path;
   - each `## Open Flags` line of the newest `docs/superpowers/sessions/*-session-brief.md`;
@@ -852,15 +852,15 @@ There is no handoff skill today. `session-closer` fills the brief's "What's Next
   - the six standing working-rule numbers.
 
   Use a tmp_path fixture with a fake brief, plan and batch.
-- [ ] **Step 2: Run, FAIL.**
-- [ ] **Step 3: Implement** with `subprocess` git calls (`rev-parse`, `worktree list`, `log --oneline -10`) and pathlib globbing. Print to stdout and write the file. Never read `.env`, and never print anything matching `KEY|TOKEN|SECRET`. Add a test that a fixture `.env` value never appears in the output.
-- [ ] **Step 4:** Write SKILL.md. Trigger: "handoff", "continue in a new chat", "session handoff". Steps:
+- [x] **Step 2: Run, FAIL.**
+- [x] **Step 3: Implement** with `subprocess` git calls (`rev-parse`, `worktree list`, `log --oneline -10`) and pathlib globbing. Print to stdout and write the file. Never read `.env`, and never print anything matching `KEY|TOKEN|SECRET`. Add a test that a fixture `.env` value never appears in the output.
+- [x] **Step 4:** Write SKILL.md. Trigger: "handoff", "continue in a new chat", "session handoff". Steps:
   1. Run `session-closer` if the brief's What's Next is empty.
   2. Run `python3 scripts/session_handoff.py`.
   3. Publish the output as the handoff Artifact (update in place if one exists), with copy buttons.
   4. Paste the prompt in chat.
-- [ ] **Step 5:** Run it now and publish. Today's prompt is below; the script must reproduce its facts.
-- [ ] **Step 6: Commit** — `skill: session-handoff — paste-ready new-chat prompt from git, brief, plan and boards`.
+- [x] **Step 5:** Run it now and publish. Today's prompt is below; the script must reproduce its facts.
+- [x] **Step 6: Commit** — `skill: session-handoff — paste-ready new-chat prompt from git, brief, plan and boards`.
 
 **Today's handoff prompt (hand-written; Task 9 automates it):**
 
@@ -890,7 +890,7 @@ Cloud history: origin/london-components-98b173 was merged home 2026-10-02 (cherr
 
 **Files:** Create `docs/reference/answer-board/batches/2026-10-02-london-board-v2.md` (the sheet). The `.json` is generated from it.
 
-- [ ] **Step 1:** Write the sheet in the README format (`# Title`, `## Section`, `N. **Question?** context`, `- (a)` options). Each question marks one option **(Recommended)** with a Why and a trade-off (working rule 4). The questions:
+- [x] **Step 1:** Write the sheet in the README format (`# Title`, `## Section`, `N. **Question?** context`, `- (a)` options). Each question marks one option **(Recommended)** with a Why and a trade-off (working rule 4). The questions:
   1. **Density target (4c):**
      - (a) median band (Recommended): matches what ranks, with no stuffing risk under Google's spam policies;
      - (b) leader band.
@@ -929,18 +929,18 @@ Cloud history: origin/london-components-98b173 was merged home 2026-10-02 (cherr
       - (a) beside it (Recommended): working rule 11 keeps the served photos and their alts;
       - (b) instead of it.
   11. **Competitor words to adopt (block 5c):** tick the phrases that are true for us. The candidates are the 2–3 word phrases found on three or more competitor domains, e.g. vet checked, KC registered, mum & dad, ready to leave, family home, microchipped, wormed, vaccinated. Each one goes into a section's keywords only when a data file backs it.
-- [ ] **Step 2:** `python3 scripts/answer_board_batch.py docs/reference/answer-board/batches/2026-10-02-london-board-v2.md --project "London page board v2" --date 2026-10-02`
-- [ ] **Step 3:** ArtifactData `set`: collection `batches`, doc_id = the printed batch id, file_path = the JSON, url https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf.
-- [ ] **Step 4: Commit** both files. Chat says only "N new questions on the board: <link>".
+- [x] **Step 2:** `python3 scripts/answer_board_batch.py docs/reference/answer-board/batches/2026-10-02-london-board-v2.md --project "London page board v2" --date 2026-10-02`
+- [x] **Step 3:** ArtifactData `set`: collection `batches`, doc_id = the printed batch id, file_path = the JSON, url https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf.
+- [x] **Step 4: Commit** both files. Chat says only "N new questions on the board: <link>".
 
 ---
 
 ### Task 11: Rebuild and republish board v2 (same URL)
 
-- [ ] **Step 1:** Run, in order: `npm run -s build`, then `python3 scripts/build_board_previews.py blue-staffy-puppies-london`, then `python3 scripts/build_page_board.py blue-staffy-puppies-london`. Each must exit 0.
-- [ ] **Step 2:** Open the HTML in the browser pane at 1280 and 375. Check that every new block renders, that the infographic iframes load, and that the approve button refuses with no infographic picks.
-- [ ] **Step 3:** Run the Artifact tool's `read` on https://claude.ai/artifact/CbemmwUeW5qGEmEFog7ezz first (rule: read before republish). Then `publish` with `url` set to that, `file_path` set to the HTML, and the existing capabilities kept (omit `capabilities`). Confirm that the approval db is still empty, or that its `record_hash` mismatch is shown as "the record changed since this pick".
-- [ ] **Step 4:** Commit the regenerated `docs/artifacts/boards/*.html` and the IG previews.
+- [x] **Step 1:** Run, in order: `npm run -s build`, then `python3 scripts/build_board_previews.py blue-staffy-puppies-london`, then `python3 scripts/build_page_board.py blue-staffy-puppies-london`. Each must exit 0.
+- [x] **Step 2:** Open the HTML in the browser pane at 1280 and 375. Check that every new block renders, that the infographic iframes load, and that the approve button refuses with no infographic picks.
+- [x] **Step 3:** Run the Artifact tool's `read` on https://claude.ai/artifact/CbemmwUeW5qGEmEFog7ezz first (rule: read before republish). Then `publish` with `url` set to that, `file_path` set to the HTML, and the existing capabilities kept (omit `capabilities`). Confirm that the approval db is still empty, or that its `record_hash` mismatch is shown as "the record changed since this pick".
+- [x] **Step 4:** Commit the regenerated `docs/artifacts/boards/*.html` and the IG previews.
 
 ### Task 12: Gates, close and memory
 
