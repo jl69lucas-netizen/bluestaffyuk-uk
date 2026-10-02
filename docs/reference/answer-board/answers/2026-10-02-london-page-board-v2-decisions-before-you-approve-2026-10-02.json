@@ -1,0 +1,133 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Median band (p25–p75 of competitors)",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Which density target should the page aim for (block 4c)?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "Count listings too",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Should listing pages count in the density bands?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "All of them, wherever a data file backs the claim",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Which competitor words should the page use (block 5c)?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Answer it in the bottom FAQ block",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "\"How rare are blue Staffies?\" is a People Also Ask question with no section. What should we do?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Intent spread: three blocks when the questions reach all three groups (buying, the dog, living with it), each with 2+ questions, on a page of 2,000+ words; otherwise one bottom block",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "How should every page decide between FAQs at the top, middle and bottom, and one bottom FAQ?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "",
+      "choiceLabel": "",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "What does \"OG images, 4–5 per page\" mean?",
+      "status": "empty",
+      "text": "OG Means original image, not AI generated or infographics. You must scan the site for all real original images then use 4- 5 orignal images per page, choose the best section on the pages that best suits an og image before deciding which sections needs infographics or AI images. H2 and H3 headers, etc. "
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "Keep it, and I'll supply a sourced breed-standard data file first",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "question": "Should the \"Pit Bull or American Staffy?\" comparison infographic stay?",
+      "status": "answered",
+      "text": "or regenerate a new one with source data"
+    },
+    {
+      "choice": "",
+      "choiceLabel": "",
+      "key": "q08",
+      "kind": "choice",
+      "n": 8,
+      "question": "Should an infographic sit beside the section's photo or replace it?",
+      "status": "empty",
+      "text": "Not beside, each infographics get its own H2 orr H3 headerrs, see how its done on CAGS see this page, https://congoafricangreys.com/congo-vs-timneh-african-grey/, check and see that H3 anD H3 headers has infographics. this, https://congoafricangreys.com/baby-african-grey-parrot-for-sale/, make nice playful cartoonish infoggraphics"
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Close KI 70 on the generation proof",
+      "key": "q09",
+      "kind": "choice",
+      "n": 9,
+      "question": "Can the first generated test image close Known Issue 70?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, on every remaining page",
+      "key": "q10",
+      "kind": "choice",
+      "n": 10,
+      "question": "For every remaining page, should each section get a new or refreshed component, sized to that page's own sections and tools?",
+      "status": "answered",
+      "text": "What i meant is the board strructure, no page uses the same components, no duplicates, once we aare done with competitors researrch, that on new pages, we only build the new components based on each page data and from outline"
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Status line: branch · page · STOP number · last check:all result · Gemini calls today",
+      "key": "q11",
+      "kind": "choice",
+      "n": 11,
+      "question": "Which Claude Code mod should we build first?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "Add all four",
+      "key": "q12",
+      "kind": "choice",
+      "n": 12,
+      "question": "What else should every page board carry?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-02T23:46:23.968Z",
+  "batchId": "2026-10-02-london-page-board-v2-decisions-before-you-approve",
+  "counts": {
+    "answered": 10,
+    "empty": 2,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-02T23-46-23-960Z"
+}

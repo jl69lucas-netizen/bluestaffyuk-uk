@@ -1,0 +1,23 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Approved on the board",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Have you approved the London page board?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-02T23:46:32.235Z",
+  "batchId": "2026-09-30-page-board-blue-staffy-puppies-london",
+  "counts": {
+    "answered": 1,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-02T23-46-32-234Z"
+}
