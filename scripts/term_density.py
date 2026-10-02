@@ -10,8 +10,13 @@ it reports min / median / mean / max occurrences and two targets scaled to OUR w
   median band = [p25, p75] of competitor density x our_words / 1000
   leader band = [p75, max] of competitor density x our_words / 1000
 
-Counting uses keyword_metrics' matching (key_words + _starts over the _Page body), so the
-numbers in 4b and 4c mean the same thing. A competitor with no cache file is skipped, never
+Listing pages (query_augment.listing_reason) are skipped, because prose is what we compare
+against, so the pages counted here can differ from block 4b's five.
+
+Matching uses the same tokeniser and stop words as block 4b (keyword_metrics.key_words +
+_starts over the _Page body), but each term is counted on its own: a longer term's matches
+also count toward a shorter term it contains ("blue staffy puppies" inside "blue staffy").
+A competitor with no cache file is skipped, never
 counted as zero; no competitor body at all is "NOT FETCHED — <reason>".
 
     python3 scripts/term_density.py <slug>
@@ -27,6 +32,11 @@ import query_augment as QA  # noqa: E402
 ROOT = KM.ROOT
 TOP = KM.TOP
 NOT_FETCHED = "NOT FETCHED — no cached competitor page"
+UNUSED = "— (no competitor uses it)"
+THIN = 3
+OVERLAP_NOTE = ("Matching uses the same tokeniser and stop words as block 4b, but each term is "
+                "counted on its own, so a longer term's matches also count toward a shorter term "
+                "it contains (e.g. \"blue staffy puppies\" inside \"blue staffy\").")
 
 
 def _body_text(html):
@@ -93,7 +103,9 @@ def term_row(term, pages, our_words):
 
 
 def competitor_pages(slug, terms, root=ROOT):
-    """count_terms() for the top TOP non-blocked, cached, non-listing competitor pages."""
+    """count_terms() for the top TOP non-blocked, cached, non-listing competitor pages, each
+    with its url, its rank (1-based, in keyword_metrics' order of the non-blocked pages) and
+    `of` (how many non-blocked pages were ranked)."""
     bare = KM._bare(slug)
     path = pathlib.Path(root) / "data/queries/raw" / bare / "competitors.json"
     try:
@@ -103,7 +115,7 @@ def competitor_pages(slug, terms, root=ROOT):
     ranked = sorted(((n, p) for n, p in enumerate(pages, 1) if not p.get("blocked")),
                     key=KM._rank)
     out = []
-    for n, p in ranked:
+    for rank, (n, p) in enumerate(ranked, 1):
         if len(out) >= TOP:
             break
         cached = pathlib.Path(root) / "data/queries/cache" / bare / f"{n}.html"
@@ -112,7 +124,8 @@ def competitor_pages(slug, terms, root=ROOT):
         html = cached.read_text(encoding="utf-8", errors="replace")
         if QA.listing_reason(QA.page_metrics(html)):
             continue
-        out.append(dict(count_terms(html, terms), url=p.get("url", "")))
+        out.append(dict(count_terms(html, terms), url=p.get("url", ""), rank=rank,
+                        of=len(ranked)))
     return out
 
 
@@ -139,6 +152,15 @@ def rows(board, ont, root=ROOT):
     return [term_row(t, pages, our_words) for t in terms], pages
 
 
+def _num(v):
+    """An int when whole, else one decimal place."""
+    return int(v) if float(v).is_integer() else round(v, 1)
+
+
+def _band(r, key):
+    return UNUSED if not r["seen_on"] else "{}–{}".format(*r[key])
+
+
 def _md(head, body):
     def esc(v):
         return str(v).replace("|", "\\|")
@@ -157,11 +179,19 @@ def table(board, ont, root=ROOT):
         if r.get("note"):
             body.append([r["term"], r["note"], "", "", "", "", "", ""])
             continue
-        body.append([r["term"], f"{r['seen_on']}/{r['of']}", r["min"], r["median"], r["mean"],
-                     r["max"], "{}–{}".format(*r["target_median"]),
-                     "{}–{}".format(*r["target_leader"])])
-    urls = ", ".join(p["url"] for p in pages)
-    return f"Counted on {len(pages)} competitor bodies: {urls or 'NOT FETCHED'}\n\n" + _md(head, body)
+        body.append([r["term"], f"{r['seen_on']}/{r['of']}", r["min"], _num(r["median"]),
+                     r["mean"], r["max"], _band(r, "target_median"), _band(r, "target_leader")])
+    if pages:
+        ranks = ", ".join(str(p["rank"]) for p in pages)
+        urls = ", ".join(p["url"] for p in pages)
+        lines = [f"Counted on {len(pages)} non-listing competitor bodies (ranks {ranks} of "
+                 f"{pages[0]['of']}; listing pages skipped, so this differs from block 4b's "
+                 f"five): {urls}"]
+    else:
+        lines = ["Counted on 0 non-listing competitor bodies: NOT FETCHED"]
+    if len(pages) < THIN:
+        lines.append("**Thin pool:** fewer than three bodies — the bands are indicative only.")
+    return "\n\n".join(lines) + "\n\n" + _md(head, body) + "\n\n" + OVERLAP_NOTE
 
 
 def main(argv=None):
@@ -169,8 +199,12 @@ def main(argv=None):
     if len(argv) != 1:
         print("usage: python3 scripts/term_density.py <slug>", file=sys.stderr)
         return 2
-    bare = KM._bare(argv[0])
-    board = json.loads((ROOT / "data/boards" / f"{bare}.json").read_text(encoding="utf-8"))
+    path = ROOT / "data/boards" / f"{KM._bare(argv[0])}.json"
+    if not path.is_file():
+        print(f"usage: python3 scripts/term_density.py <slug> — no board at {path.relative_to(ROOT)}",
+              file=sys.stderr)
+        return 2
+    board = json.loads(path.read_text(encoding="utf-8"))
     ont = json.loads((ROOT / "data/bsuk-ontology.json").read_text(encoding="utf-8"))
     print(table(board, ont))
     return 0
