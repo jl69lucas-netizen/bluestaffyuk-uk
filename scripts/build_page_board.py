@@ -30,6 +30,7 @@ import pageboard as PB
 import link_diversity as LD
 import verbatim_set_check as VSC
 import image_rules as IR          # block 7's image pickers (system-gaps build, Task 10b)
+import image_candidates as IC      # the image slots, walked in outline order (refusal labels)
 import keyword_metrics as KM       # block 4b, the ours-vs-top-5 table (parity build Task 18)
 # Board v2 (plan 2026-10-02, Task 7): six blocks, on project 5 boards only.
 import serp_reading as SR          # block 1b, how Google reads this page
@@ -130,6 +131,9 @@ textarea.note{width:100%;min-height:52px;font:13px/1.5 "Source Sans 3",system-ui
 button.btn{font:inherit;font-size:14px;font-weight:600;padding:10px 18px;border-radius:50px;border:1px solid var(--clay-ink);background:var(--clay-ink);color:var(--on-clay);cursor:pointer}
 button.btn[disabled]{opacity:.5;cursor:default}
 .status{font-size:13px;color:var(--ink-2)}
+#approve .status:has(ul.missing){flex-basis:100%;color:var(--ink)}
+.status ul.missing{margin:6px 0 0;padding-left:20px;line-height:1.7}.status ul.missing a{color:var(--clay-ink)}
+fieldset[id^="choose-"],fieldset[id^="ig-"],div.opts[id^="choose-"]{scroll-margin-top:24px}
 .vtag{font-size:11px;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--clay);border-radius:3px;padding:0 4px;margin-left:6px}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--clay);outline-offset:2px}
 .kit .opt{gap:5px}
@@ -547,7 +551,7 @@ def style_fieldset(section, previews, locked=None):
             + f'</label><div class="frames">{frames}</div></div>')
     legend = (f'Locked — {esc(carried)}, carried from the previous approval'
               if carried else f'Pick one arrangement for {esc(section["heading"])}')
-    return (f'<fieldset class="styles{" locked" if carried else ""}"><legend>{legend}</legend>'
+    return (f'<fieldset class="styles{" locked" if carried else ""}" id="{esc(pick_anchor(sid))}"><legend>{legend}</legend>'
             + "".join(rows) + "</fieldset>")
 
 
@@ -888,6 +892,52 @@ def signature_sections(board, ledger=None, slug=None, ig_plan=None):
             + PB.ig_slots_required(board, ig_plan))
 
 
+BLOCK2_LABELS = (("h1", "H1"), ("meta-title", "title tag"), ("meta-description", "meta description"))
+
+
+def pick_anchor(pick_id):
+    """The page id the refusal links a missing pick to: block 6's control for a section,
+    block 7c's fieldset for `ig:<slot>`, block 7's fieldset for `img:<slot>` (written by
+    image_rules._slot_html), block 2's radio group for the H1 and the meta pair."""
+    if pick_id.startswith("ig:"):
+        return "ig-" + pick_id[3:]
+    if pick_id.startswith(IR.PICK_PREFIX):
+        return "img-" + pick_id[len(IR.PICK_PREFIX):]
+    return "choose-" + pick_id
+
+
+def signature_labels(board, ledger=None, slug=None, ig_plan=None):
+    """{pick id: {n, section, label, anchor}} for every id signature_sections() returns, plus
+    the H1 and the meta pair — what the approve refusal says for each pick still open.
+
+    `n` is the section number as block 3 prints it (two digits); a slot is charged to the
+    section that owns it — an `ig:` slot to its infographic-plan section, an `img:` slot to
+    the section image_candidates.iter_slots() walks it under. The H1 and meta radios are
+    block 2's, so their `n` is "2" (one digit, so it never reads as section 02)."""
+    by_id = {s["id"]: s for s in board["sections"]}
+    owner = {}
+    if PB.FR.applies(board):
+        plan = PB.ig_plan(board) if ig_plan is None else ig_plan
+        owner.update({"ig:" + p["slot"]: by_id.get(p["section"]) for p in plan})
+    for s, _n, img in IC.iter_slots(board):
+        owner.setdefault(IR.PICK_PREFIX + img["slot"], s)
+    out = {}
+    for pid in signature_sections(board, ledger, slug, ig_plan):
+        if pid.startswith("ig:"):
+            sec, label = owner.get(pid), f"infographic style ({pid})"
+        elif pid.startswith(IR.PICK_PREFIX):
+            sec, label = owner.get(pid), f"image ({pid})"
+        else:
+            sec = by_id.get(pid)
+            label = "component style" if sec and sec.get("styles") else "component"
+        out[pid] = {"n": f"{sec['n']:02d}" if sec else "",
+                    "section": sec["heading"] if sec else pid,
+                    "label": label, "anchor": pick_anchor(pid)}
+    for pid, label in BLOCK2_LABELS:
+        out[pid] = {"n": "2", "section": "H1 and meta", "label": label, "anchor": pick_anchor(pid)}
+    return out
+
+
 def infographic_docs(plan):
     """{"<slot>|<style>": the standalone preview document} for block 7c's frames, rendered
     with IG_FONT_BASE so the fonts resolve beside the published board. One copy per style;
@@ -939,7 +989,7 @@ def infographic_block(board, carried=None, plan=None):
         out.append(f"### {md(slot)} · {md(p['ig'])} {md(IP.IG_NAMES.get(p['ig'], ''))}\n\n"
                    f"**Heading:** {md(p['node'])}  \n**Why:** {md(p['why'])}"
                    + (f'\n\n<p class="rules-refused">{esc(pending)}</p>' if pending else "")
-                   + f'\n\n<fieldset class="styles"><legend>{legend}</legend>{"".join(rows)}</fieldset>')
+                   + f'\n\n<fieldset class="styles" id="{esc(pick_anchor("ig:" + slot))}"><legend>{legend}</legend>{"".join(rows)}</fieldset>')
     return "\n\n".join(out)
 
 
@@ -1015,10 +1065,12 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     mt_s, md_s = PB.meta_pick(board)
     mt, mdn = ms["titles"].index(mt_s), ms["descriptions"].index(md_s)
     parts.append(("2. H1 and meta", "\n".join([
-        "**H1** — the page's own promise", "",
+        f'<span class="oanchor" id="{pick_anchor("h1")}"></span>**H1** — the page\'s own promise', "",
         radio_list("h1", h1["variants"], h1["recommended"], picked), "",
+        f'<span class="oanchor" id="{pick_anchor("meta-title")}"></span>'
         f"**Title tag** — ceiling {PB.title_ceiling(slug)} characters", "",
         radio_list("meta-title", ms["titles"], ms["recommended"]["title"], mt), "",
+        f'<span class="oanchor" id="{pick_anchor("meta-description")}"></span>'
         f"**Meta description** — band {PB.DESC_MIN}–{PB.DESC_MAX} characters", "",
         radio_list("meta-description", ms["descriptions"], ms["recommended"]["description"], mdn),
     ])))
@@ -1114,7 +1166,11 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                      f'<span class="why">the default a standard section gets — nothing to pick</span></div>']
         else:
             cards = option_cards(s, ledger, slug, thumbs)
-        opt_html.append(f"### {s['n']:02d} · {md(s['heading'])} <span class=\"pill\">{md(s['shape'])}</span>\n\n<div class=\"opts\">{''.join(cards)}</div>\n"
+        # Only the option-card branch asks a question, so only it carries the anchor the
+        # approve refusal links a missing component pick to.
+        opts_id = (f' id="{esc(pick_anchor(s["id"]))}"'
+                   if not s.get("component") and s["shape"] != "standard" else "")
+        opt_html.append(f"### {s['n']:02d} · {md(s['heading'])} <span class=\"pill\">{md(s['shape'])}</span>\n\n<div class=\"opts\"{opts_id}>{''.join(cards)}</div>\n"
                         + refresh_line(s)
                         + f"<textarea class=\"note\" name=\"note-{s['id']}\" placeholder=\"Note for this section (optional)\">{esc(s['options']['note'])}</textarea>")
     parts.append(("6. Component options", "\n\n".join(opt_html) or "_No sections._"))
@@ -1216,44 +1272,85 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
   }});
 {ig_js}  var RECORD_HASH={js(record_hash)};var BOARD_DOC={js("boards/" + slug)};
   var SIGNATURE_SECTIONS={js(signature_sections(board, ledger, slug, ig_plan))};
+  var SIGNATURE_LABELS={js(signature_labels(board, ledger, slug, ig_plan))};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
+  var ref=null;                                       // the board database doc, once reached
+  function fieldOf(id){{return SIGNATURE_LABELS[id]&&SIGNATURE_LABELS[id].n==='2'?id:'pick-'+id;}}
+  // Every pick still open, in the order the breeder meets them: block 2 first, then the
+  // signature in its own (section) order.
+  function missingPicks(){{
+    var ids=['h1','meta-title','meta-description'].concat(SIGNATURE_SECTIONS);
+    return ids.filter(function(id){{
+      return !document.querySelector('input[name="'+fieldOf(id)+'"]:checked');
+    }});
+  }}
+  // One line per open pick — "§08 <section> — infographic style (ig:<slot>)" — each a link
+  // to its control; then the first one is scrolled to and its first radio focused.
+  function refuse(missing){{
+    st.textContent='';
+    var head=document.createElement('b');
+    head.textContent=missing.length+' pick(s) still open — approve again once each is made:';
+    st.appendChild(head);
+    var ul=document.createElement('ul');ul.className='missing';
+    missing.forEach(function(id){{
+      var e=SIGNATURE_LABELS[id]||{{n:'',section:id,label:id,anchor:''}};
+      var li=document.createElement('li');
+      var text=(e.n?(e.n.length<2?'Block '+e.n+' ':'§'+e.n+' '):'')+e.section+' — '+e.label;
+      var target=e.anchor&&document.getElementById(e.anchor);
+      if(target){{
+        var a=document.createElement('a');a.href='#'+e.anchor;a.textContent=text;
+        a.addEventListener('click',function(ev){{ev.preventDefault();jump(id);}});
+        li.appendChild(a);
+      }}else{{li.textContent=text;}}
+      ul.appendChild(li);
+    }});
+    st.appendChild(ul);
+    jump(missing[0]);
+  }}
+  function jump(id){{
+    var e=SIGNATURE_LABELS[id],target=e&&e.anchor&&document.getElementById(e.anchor);
+    if(target)target.scrollIntoView({{behavior:'smooth',block:'start'}});
+    var first=document.querySelector('input[name="'+fieldOf(id)+'"]:not([disabled])');
+    if(first)first.focus({{preventScroll:!!target}});
+  }}
+  // The click handler is wired BEFORE the claude.ai and database checks: a half-picked board
+  // is refused, and told what is open, in any viewer. Only the write needs the database.
+  btn.disabled=false;
+  btn.addEventListener('click',function(){{
+    // A half-picked board is worse than an unapproved one: the build would start and
+    // then guess a component. Refuse the write and name every pick still open.
+    var missing=missingPicks();
+    if(missing.length){{refuse(missing);btn.disabled=false;return;}}
+    if(!ref){{st.textContent='Every pick is made. Approval writes to the board database, which only claude.ai can reach — open this board there, or approve in chat.';return;}}
+    // missingPicks() already covers block 2; these guards stay so no record is ever sent
+    // with a missing index, whatever SIGNATURE_LABELS says.
+    var h1=document.querySelector('input[name="h1"]:checked');
+    if(!h1){{st.textContent='Pick an H1 before approving.';btn.disabled=false;return;}}
+    var mt=document.querySelector('input[name="meta-title"]:checked'),
+        mdsc=document.querySelector('input[name="meta-description"]:checked');
+    if(!mt||!mdsc){{st.textContent='Pick a title and a description before approving.';btn.disabled=false;return;}}
+    var picks={{}},notes={{}};
+    document.querySelectorAll('input[name^="pick-"]:checked').forEach(function(i){{picks[i.name.slice(5)]=i.value;}});
+    // Every note box, empty included — "" is how a cleared note reaches the record.
+    document.querySelectorAll('textarea[name^="note-"]').forEach(function(t){{notes[t.name.slice(5)]=t.value.trim();}});
+    var rec={{approved_at:new Date().toISOString(),h1:parseInt(h1.value,10),
+             meta:{{title:parseInt(mt.value,10),description:parseInt(mdsc.value,10)}},
+             picks:picks,notes:notes,canvas_version:null,record_hash:RECORD_HASH}};
+    btn.disabled=true;st.textContent='Saving…';
+    ref.set(rec).then(function(){{st.textContent='Approved '+rec.approved_at+'. Claude reads this back before building.';}})
+      .catch(function(e){{btn.disabled=false;st.textContent='Could not save: '+(e&&e.code?e.code:'error')+'. Try again, or approve in chat.';}});
+  }});
   if(!window.claude||!window.claude.use){{st.textContent='Open this board inside claude.ai to approve it.';return;}}
   window.claude.use("db").then(function(db){{
     if(!db){{st.textContent='Approval needs the board database, which this view cannot reach.';return;}}
-    var ref=db.doc(BOARD_DOC);
+    ref=db.doc(BOARD_DOC);
     ref.get().then(function(snap){{
       if(!snap||!snap.exists){{return;}}                 // absence is not an error: never approved
       var d=snap.data()||{{}};                            // frozen body; undefined only when !exists
       if(d.record_hash===RECORD_HASH){{st.textContent='Approved '+(d.approved_at||'earlier')+'.';}}
       else{{st.textContent='An earlier version of this board was approved — this record has changed since.';}}
     }}).catch(function(e){{st.textContent='Could not read the board database: '+(e&&e.code?e.code:'error')+'. Approve in chat.';}});
-    btn.disabled=false;st.textContent=st.textContent.indexOf('Approved')===0?st.textContent:'Ready.';
-    btn.addEventListener('click',function(){{
-      // A half-picked board is worse than an unapproved one: the build would start and
-      // then guess a component. Refuse the write and name the sections still open.
-      var missing=SIGNATURE_SECTIONS.filter(function(id){{
-        return !document.querySelector('input[name="pick-'+id+'"]:checked');
-      }});
-      if(missing.length){{
-        st.textContent=missing.length+' section(s) still need a pick: '+missing.join(', ');
-        btn.disabled=false;return;
-      }}
-      var h1=document.querySelector('input[name="h1"]:checked');
-      if(!h1){{st.textContent='Pick an H1 before approving.';btn.disabled=false;return;}}
-      var mt=document.querySelector('input[name="meta-title"]:checked'),
-          mdsc=document.querySelector('input[name="meta-description"]:checked');
-      if(!mt||!mdsc){{st.textContent='Pick a title and a description before approving.';btn.disabled=false;return;}}
-      var picks={{}},notes={{}};
-      document.querySelectorAll('input[name^="pick-"]:checked').forEach(function(i){{picks[i.name.slice(5)]=i.value;}});
-      // Every note box, empty included — "" is how a cleared note reaches the record.
-      document.querySelectorAll('textarea[name^="note-"]').forEach(function(t){{notes[t.name.slice(5)]=t.value.trim();}});
-      var rec={{approved_at:new Date().toISOString(),h1:parseInt(h1.value,10),
-               meta:{{title:parseInt(mt.value,10),description:parseInt(mdsc.value,10)}},
-               picks:picks,notes:notes,canvas_version:null,record_hash:RECORD_HASH}};
-      btn.disabled=true;st.textContent='Saving…';
-      ref.set(rec).then(function(){{st.textContent='Approved '+rec.approved_at+'. Claude reads this back before building.';}})
-        .catch(function(e){{btn.disabled=false;st.textContent='Could not save: '+(e&&e.code?e.code:'error')+'. Try again, or approve in chat.';}});
-    }});
+    st.textContent=st.textContent.indexOf('Approved')===0?st.textContent:'Ready.';
   }}).catch(function(e){{st.textContent='Board database unavailable: '+(e&&e.code?e.code:'error')+'. Approve in chat.';}});
 }})();
 </script>

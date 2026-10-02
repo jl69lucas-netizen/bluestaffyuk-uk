@@ -2704,3 +2704,100 @@ def test_js_escapes_a_script_close_and_an_html_comment_opener():
     out = BPB.js({"a": "</script><!-- x -->"})
     assert "</" not in out and "<!--" not in out
     assert out == '{"a": "<\\/script><\\!-- x -->"}'
+
+
+# ── London board v3 (plan 2026-10-02 v3, Task 1): the refusal names each missing pick ──────
+# The breeder: "if I miss a pick and click approve, it should tell me what I missed on the
+# board — name, the section number, etc." The approve script carries SIGNATURE_LABELS, one
+# entry per pick it waits for, and every anchor it links to is on the page.
+import re as _re
+
+BLOCK2_IDS = ("h1", "meta-title", "meta-description")
+
+
+def _signature_labels(html):
+    m = _re.search(r"var SIGNATURE_LABELS=(\{.*?\});\n", html)
+    assert m, "SIGNATURE_LABELS is not in the approve script"
+    return json.loads(m.group(1).replace("<\\/", "</").replace("<\\!--", "<!--"))
+
+
+@pytest.fixture(scope="module")
+def london_full():
+    """London as main() renders it — with block 7's image pickers, so every img: anchor exists."""
+    import build_page_board as BPB
+    import image_rules as IR
+    london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
+    ont = json.loads((ROOT / "data/bsuk-ontology.json").read_text())
+    html = BPB.render(london, ont, LEDGER_EMPTY, live={}, thumbs={}, slug=LONDON,
+                      images=IR.board_images(london))
+    return london, html
+
+
+def test_signature_labels_cover_every_pick_the_approve_button_waits_for(london_full):
+    import build_page_board as BPB
+    london, html = london_full
+    sig = BPB.signature_sections(london, LEDGER_EMPTY, LONDON)
+    labels = _signature_labels(html)
+    assert set(labels) == set(sig) | set(BLOCK2_IDS)
+    assert f"var SIGNATURE_LABELS={BPB.js(BPB.signature_labels(london, LEDGER_EMPTY, LONDON))};" in html
+    for key, e in labels.items():
+        assert set(e) == {"n", "section", "label", "anchor"}, key
+        assert all(isinstance(v, str) and v for v in e.values()), (key, e)
+
+
+def test_signature_labels_map_slots_to_the_section_that_owns_them(london_full):
+    import infographic_plan as IP
+    import image_candidates as IC
+    london, html = london_full
+    labels = _signature_labels(html)
+    by_id = {s["id"]: s for s in london["sections"]}
+    for p in IP.plan(london):
+        key = f"ig:{p['slot']}"
+        if key not in labels:
+            continue                                  # an optional (pending) slot
+        s = by_id[p["section"]]
+        assert labels[key]["n"] == f"{s['n']:02d}" and labels[key]["section"] == s["heading"]
+        assert labels[key]["label"] == f"infographic style ({key})"
+    for s, _n, img in IC.iter_slots(london):
+        key = f"img:{img['slot']}"
+        if key in labels:
+            assert labels[key]["n"] == f"{s['n']:02d}" and labels[key]["section"] == s["heading"]
+            assert labels[key]["label"] == f"image ({key})"
+    # The worked example the breeder will see first.
+    assert labels["ig:deposit-steps"]["n"] == "08"
+    assert labels["ig:deposit-steps"]["section"].startswith("Do I Have to Pay a Deposit")
+
+
+def test_signature_labels_put_h1_and_meta_in_block_2(london_full):
+    _, html = london_full
+    labels = _signature_labels(html)
+    assert {k: labels[k]["label"] for k in BLOCK2_IDS} == {
+        "h1": "H1", "meta-title": "title tag", "meta-description": "meta description"}
+    for k in BLOCK2_IDS:
+        assert labels[k]["n"] == "2" and labels[k]["section"] == "H1 and meta"
+
+
+def test_every_signature_anchor_is_an_id_on_the_board(london_full):
+    _, html = london_full
+    for key, e in _signature_labels(html).items():
+        assert html.count(f'id="{e["anchor"]}"') == 1, (key, e["anchor"])
+
+
+def test_refusal_lists_each_missing_pick_and_runs_before_the_database():
+    import build_page_board as BPB
+    html = BPB.render(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
+    script = html[html.index("var SIGNATURE_LABELS="):]
+    # The click handler is wired before the claude.ai check, so the refusal shows anywhere.
+    assert script.index("btn.addEventListener('click'") < script.index("window.claude")
+    assert "'§'+" in script and "scrollIntoView" in script and ".focus(" in script
+
+
+def test_signature_labels_on_a_pre_rule_board_cover_its_own_signature():
+    import build_page_board as BPB
+    b = _approved(MIN_BOARD)
+    html = BPB.render(b, ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
+    labels = _signature_labels(html)
+    assert set(labels) == set(BPB.signature_sections(b, LEDGER_EMPTY, "x")) | set(BLOCK2_IDS)
+    assert labels["puppies"]["n"] == "01" and labels["puppies"]["label"] == "component"
+    for key, e in labels.items():
+        assert html.count(f'id="{e["anchor"]}"') == 1, (key, e["anchor"])
