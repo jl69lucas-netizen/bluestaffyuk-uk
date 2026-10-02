@@ -75,7 +75,7 @@ Shared fixture: `tests/py/fixtures/competitor-pages/breeder-sections.html` alrea
 - Create: `scripts/term_density.py`
 - Test: `tests/py/test_term_density.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/py/test_term_density.py
@@ -106,12 +106,12 @@ def test_zero_competitor_pages_is_not_fetched():
     assert row["note"].startswith("NOT FETCHED")
 ```
 
-- [ ] **Step 2: Run to confirm it fails**
+- [x] **Step 2: Run to confirm it fails**
 
 Run: `python3 -m pytest tests/py/test_term_density.py -q`
 Expected: FAIL with `ModuleNotFoundError: No module named 'term_density'`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 #!/usr/bin/env python3
@@ -241,12 +241,12 @@ if __name__ == "__main__":
 
 Note for the implementer: Check that `KM._rank` and `KM._bare` exist with `grep -n "def _rank\|def _bare" scripts/keyword_metrics.py`. If `_rank` is not there, use the same `key=` that `competitor_rows` uses at line 362.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `python3 -m pytest tests/py/test_term_density.py -q` → expect 3 passed.
 Then run `python3 scripts/term_density.py blue-staffy-puppies-london | head -20` and check that the counts are non-zero for "blue staffy puppies"-type terms.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/term_density.py tests/py/test_term_density.py
@@ -265,7 +265,7 @@ The method answers "how do we beat them". It matches their terms type by type, t
 - Create: `scripts/term_gap.py`
 - Test: `tests/py/test_term_gap.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/py/test_term_gap.py
@@ -292,11 +292,11 @@ def test_entity_gap_uses_ontology_names_only():
     assert gaps[0]["seen_on"] == 1
 ```
 
-- [ ] **Step 2: Run to confirm it fails**
+- [x] **Step 2: Run to confirm it fails**
 
 Run: `python3 -m pytest tests/py/test_term_gap.py -q` → FAIL, module missing.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 #!/usr/bin/env python3
@@ -411,9 +411,9 @@ if __name__ == "__main__":
     print(block(b, o))
 ```
 
-- [ ] **Step 4: Run tests**, then `python3 scripts/term_gap.py blue-staffy-puppies-london | head -60`. Read the phrase list by eye. If boilerplate dominates (cookie text, nav), add those words to `GENERIC`, add a test that pins the case, and re-run.
+- [x] **Step 4: Run tests**, then `python3 scripts/term_gap.py blue-staffy-puppies-london | head -60`. Read the phrase list by eye. If boilerplate dominates (cookie text, nav), add those words to `GENERIC`, add a test that pins the case, and re-run.
 
-- [ ] **Step 5: Commit** — `feat(board): competitor phrase and entity gap with evidence (block 5c)` (Opus 5.5 trailer as in Task 1).
+- [x] **Step 5: Commit** — `feat(board): competitor phrase and entity gap with evidence (block 5c)` (Opus 5.5 trailer as in Task 1).
 
 ---
 
@@ -423,7 +423,7 @@ This is the deliverable that explains, from London's own SERP, what Google expec
 
 **Files:** Create `scripts/serp_reading.py`; Test `tests/py/test_serp_reading.py`
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```python
 import sys, pathlib, json
@@ -443,9 +443,9 @@ def test_features_and_expectations():
     assert r["paa"][0]["answered_by"] == "litter-prices"
 ```
 
-- [ ] **Step 2: Run, confirm FAIL.**
+- [x] **Step 2: Run, confirm FAIL.**
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 #!/usr/bin/env python3
@@ -526,8 +526,8 @@ if __name__ == "__main__":
     print(block(b))
 ```
 
-- [ ] **Step 4: Run the tests and the London CLI.** Any PAA row reading **none — gap** is an outline gap. List it in the batch (Task 10), and do not silently add a section.
-- [ ] **Step 5: Commit** — `feat(board): how Google reads this page, from the SERP (block 1b)`.
+- [x] **Step 4: Run the tests and the London CLI.** Any PAA row reading **none — gap** is an outline gap. List it in the batch (Task 10), and do not silently add a section.
+- [x] **Step 5: Commit** — `feat(board): how Google reads this page, from the SERP (block 1b)`.
 
 ---
 
@@ -539,7 +539,7 @@ if __name__ == "__main__":
 
 **Files:** Create `scripts/faq_layout.py`; Test `tests/py/test_faq_layout.py`; Modify `rules/copy.md` (a new bullet after line 52) and `.claude/skills/bsuk-query-augmentation/SKILL.md` lines 191–194 (after the breeder's pick).
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```python
 import sys, pathlib
@@ -559,8 +559,8 @@ def test_option_b_by_type():
     assert FL.decide([], words=5000, page_type="blog", method="B")["layout"] == "bottom"
 ```
 
-- [ ] **Step 2: Run, FAIL.**
-- [ ] **Step 3: Implement**
+- [x] **Step 2: Run, FAIL.**
+- [x] **Step 3: Implement**
 
 ```python
 #!/usr/bin/env python3
@@ -589,8 +589,8 @@ def decide(questions, words, page_type, method="A"):
 
 Before writing the final code, check whether `data/queries/blue-staffy-puppies-london.json` questions carry a topic key (`grep -o '"topic"' data/queries/blue-staffy-puppies-london.json | head -1`). If they do, spread uses `topic`. If not, it uses the TOPICS-assigned `block`, which spans at most 3. In that case set `SPREAD` against the TOPICS names by re-deriving them with `QA.TOPICS` regexes on the question text, and add that branch with its own test.
 
-- [ ] **Step 4: Board block 4d** shows both methods' result for this page side by side, with method A marked *(Recommended)* and its why. It also says which layout the current London outline already has (three blocks: `faq-top`, `faq-middle`, `faq-bottom`).
-- [ ] **Step 5: Commit** — `feat(board): FAQ placement decided by intent spread or page type (block 4d)`. The rule text in `rules/copy.md` and the skill goes in a separate commit **after** the breeder's pick (Task 12).
+- [x] **Step 4: Board block 4d** shows both methods' result for this page side by side, with method A marked *(Recommended)* and its why. It also says which layout the current London outline already has (three blocks: `faq-top`, `faq-middle`, `faq-bottom`).
+- [x] **Step 5: Commit** — `feat(board): FAQ placement decided by intent spread or page type (block 4d)`. The rule text in `rules/copy.md` and the skill goes in a separate commit **after** the breeder's pick (Task 12).
 
 ---
 
@@ -608,7 +608,7 @@ That trigger list is the one in `.claude/skills/bsuk-infographic/SKILL.md`. Each
 
 **Files:** Create `scripts/infographic_plan.py`, `tests/py/test_infographic_plan.py`; previews are written to `docs/artifacts/boards/ig/<slug>/<slot>-<style>.html`.
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```python
 import sys, pathlib
@@ -636,8 +636,8 @@ def test_existing_slot_kept():
     assert plan[0]["slot"] == "deposit-steps" and plan[0]["ig"] == "IG-2"
 ```
 
-- [ ] **Step 2: Run, FAIL.**
-- [ ] **Step 3: Implement**
+- [x] **Step 2: Run, FAIL.**
+- [x] **Step 3: Implement**
 
 ```python
 #!/usr/bin/env python3
@@ -700,9 +700,9 @@ def plan(board):
 
 Before running against London, confirm the real shape of an asset's section link. The `deposit-steps` asset may name its section under another key; check with `python3 -c "import json;print([a for a in json.load(open('data/boards/blue-staffy-puppies-london.json'))['assets'] if a['kind']=='infographic'])"`, and match `existing` to the key the record actually uses. Likewise check the `tree` node keys (`text` vs `heading`) on section 8.
 
-- [ ] **Step 4: Previews.** Add `render_preview(slot_plan, style, facts) -> html`, which writes one standalone HTML per (slot, style) using `src/styles/tokens.css` values inlined. The content comes only from the section's outline facts and the `data/*.json` keys the section already cites: prices from `data/price-matrix.json`, the delivery band from `data/settings.json`. The route map is schematic, Carlisle to London, never map tiles. Test that a preview contains the section's figures and no `£` value absent from the data files.
-- [ ] **Step 5:** Invoke the `frontend-design:frontend-design` skill on the three styles for one slot, then the rest (working rule 10: shown in the browser, never described). Use `mcp__Claude_Browser__preview_start` with the file URL at 375 / 768 / 1280.
-- [ ] **Step 6: Commit** — `feat(board): infographic need per section, three styles each (block 7c)`.
+- [x] **Step 4: Previews.** Add `render_preview(slot_plan, style, facts) -> html`, which writes one standalone HTML per (slot, style) using `src/styles/tokens.css` values inlined. The content comes only from the section's outline facts and the `data/*.json` keys the section already cites: prices from `data/price-matrix.json`, the delivery band from `data/settings.json`. The route map is schematic, Carlisle to London, never map tiles. Test that a preview contains the section's figures and no `£` value absent from the data files.
+- [x] **Step 5:** Invoke the `frontend-design:frontend-design` skill on the three styles for one slot, then the rest (working rule 10: shown in the browser, never described). Use `mcp__Claude_Browser__preview_start` with the file URL at 375 / 768 / 1280.
+- [x] **Step 6: Commit** — `feat(board): infographic need per section, three styles each (block 7c)`.
 
 ---
 
@@ -715,7 +715,7 @@ The breeder wrote "OG images: 4-5 per page". IMAGE-DESIGNS.md §1 says one share
 
 **Files:** Create `scripts/og_slots.py`, `tests/py/test_og_slots.py`.
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```python
 import sys, pathlib
@@ -731,13 +731,13 @@ def test_four_to_five_slots_share_card_first():
     assert all(s["og_style"] in "ACDEH" for s in slots)
 ```
 
-- [ ] **Step 2: Run, FAIL.**
-- [ ] **Step 3: Implement** `propose(board, n=5)`:
+- [x] **Step 2: Run, FAIL.**
+- [x] **Step 3: Implement** `propose(board, n=5)`:
   - Slot 0 is `og-share`, 1200×630, `og_style` "C" (Editorial Split), with the subject taken from the hero asset's alt.
   - The remaining `n-1` slots go to sections in board order, transactional intent first. Skip FAQ, review, newsletter and form sections, and skip any section whose image slot is the page's own migrated image.
   - Each slot gets `source: "generate"`, `og_style` cycled through A/E/D/H, `status: "proposed"`, and a `prompt_brief` taken from the section heading plus IMAGE-DESIGNS' negative list (natural ears, no chains or spiked collars, no bully-XL build).
-- [ ] **Step 4: Board block 7d** renders the slots with radio `pick-og:<slot>` (values `use` / `skip`). Do **not** add these to `SIGNATURE_SECTIONS` until the breeder answers the interpretation question.
-- [ ] **Step 5: Commit** — `feat(board): 4–5 OG slot proposals, share card first (block 7d)`.
+- [x] **Step 4: Board block 7d** renders the slots with radio `pick-og:<slot>` (values `use` / `skip`). Do **not** add these to `SIGNATURE_SECTIONS` until the breeder answers the interpretation question.
+- [x] **Step 5: Commit** — `feat(board): 4–5 OG slot proposals, share card first (block 7d)`.
 
 ---
 
@@ -747,16 +747,16 @@ The breeder supplied a key for this project and will delete it at the end. They 
 
 **Files:** Create `scripts/gemini_log.py`, `tests/py/test_gemini_log.py`. Modify `.claude/skills/bsuk-image-generation/SKILL.md` (every generate call goes through the logger). Modify `.claude/skills/session-closer/SKILL.md` and `.claude/skills/session-handoff/SKILL.md` (Task 9), adding the reminder. Modify `.gitignore` if the log should stay local.
 
-- [ ] **Step 1: Failing tests.**
+- [x] **Step 1: Failing tests.**
   - `log_call(model, slot, status, note="", path=tmp)` appends one JSON line `{ts, model, slot, status, note}`.
   - `summary(path)` returns calls today, calls in total, and failures by status code.
   - A line never contains the value of `GEMINI_API_KEY` (set a fixture env value and assert it is absent from the file), nor any token matching `AQ\.|AIza`.
-- [ ] **Step 2:** Implement. The log is `docs/reports/gemini-usage.jsonl`. The CLI is `python3 scripts/gemini_log.py summary`.
-- [ ] **Step 3:**
+- [x] **Step 2:** Implement. The log is `docs/reports/gemini-usage.jsonl`. The CLI is `python3 scripts/gemini_log.py summary`.
+- [x] **Step 3:**
   - The image-generation skill wraps every call: `log_call(...)` on success and on every exception, recording the status code (e.g. 402).
   - session-closer and session-handoff print `summary` plus the line "GEMINI_API_KEY is set in .env: delete it when image work is done (breeder's instruction, 2026-10-02)", whenever `.env` holds the key. They check without printing it.
-- [ ] **Step 4:** Back-fill three lines for today's calls: the two 402s on gemini-3-pro-image-preview and gemini-2.5-flash-image, and the 404 on gemini-2.5-flash. The model names and status codes are as reported in this session.
-- [ ] **Step 5: Commit** with the message `feat: Gemini usage log (no key ever written) and the delete-the-key reminder`.
+- [x] **Step 4:** Back-fill three lines for today's calls: the two 402s on gemini-3-pro-image-preview and gemini-2.5-flash-image, and the 404 on gemini-2.5-flash. The model names and status codes are as reported in this session.
+- [x] **Step 5: Commit** with the message `feat: Gemini usage log (no key ever written) and the delete-the-key reminder`.
 
 A status-line mod showing "Gemini: N calls today" is one of the mod options on the decisions batch (Task 10, Q5).
 
@@ -766,7 +766,7 @@ A status-line mod showing "Gemini: N calls today" is one of the mod options on t
 
 **Files:** Modify `scripts/build_page_board.py` (imports at the top; `render()` around lines 896, 949–960 and 1001–1008; `SIGNATURE_SECTIONS` around line 1081). Modify `tests/py/test_page_board.py`.
 
-- [ ] **Step 1: Failing test** in `tests/py/test_page_board.py`:
+- [x] **Step 1: Failing test** in `tests/py/test_page_board.py`:
 
 ```python
 def test_v2_blocks_on_new_family_only():
@@ -784,8 +784,8 @@ def test_v2_blocks_on_new_family_only():
 
 (Use the `ROOT` and `json` names that the file already imports. If the London render needs the `previews`, `routes` or `images` arguments, pass what `main()` passes.)
 
-- [ ] **Step 2: Run, FAIL.**
-- [ ] **Step 3: Implement.** Inside `render()`, after block 1 (line ~894):
+- [x] **Step 2: Run, FAIL.**
+- [x] **Step 3: Implement.** Inside `render()`, after block 1 (line ~894):
 ```python
     if new_family:
         parts.append(("1b. How Google reads this page", SR.block(board)))
@@ -806,14 +806,14 @@ After block 7b (line ~1008):
         parts.append(("7d. OG images", OG.block(board)))
 ```
 Add `import serp_reading as SR, term_density as TD, faq_layout as FL, term_gap as TG, infographic_plan as IP, og_slots as OG` beside the existing `import keyword_metrics as KM`, and give `faq_layout`, `infographic_plan` and `og_slots` a `block(board)` that returns markdown. Then add `[f"ig:{p['slot']}" for p in IP.plan(board)]` to the list `SIGNATURE_SECTIONS` is built from, so the approve button refuses until every infographic style is picked.
-- [ ] **Step 3b: Items carried from the Task 1–5 reviews.**
+- [x] **Step 3b: Items carried from the Task 1–5 reviews.**
   - **Block 4c:** print the "this differs from block 4b's five" clause only when a listing page was actually skipped.
   - **Block 1b:** "no breeder site ranks" becomes "no page classed as a breeder page".
   - **Block 7c fonts:** publish `public/fonts/*.woff2` once as Artifact `files` and pass the matching `font_base` to the infographic previews.
   - **Infographic placement:** each new infographic slot (litter-prices, delivery, health-tests, paperwork, breed) sits *beside* the H2's existing photo slot, never in place of it; the breeder can overrule this on the batch.
   - **Signature section:** the breed-split slot is not added to `SIGNATURE_SECTIONS` until the breeder answers the batch question on it.
-- [ ] **Step 4:** Run `npm run test:py`. Every pre-rule board test must stay byte-identical.
-- [ ] **Step 5: Commit** — `feat(board): v2 blocks 1b, 4c, 4d, 5c, 7c, 7d on project 5 boards`.
+- [x] **Step 4:** Run `npm run test:py`. Every pre-rule board test must stay byte-identical.
+- [x] **Step 5: Commit** — `feat(board): v2 blocks 1b, 4c, 4d, 5c, 7c, 7d on project 5 boards`.
 
 ---
 
@@ -825,15 +825,15 @@ Add `import serp_reading as SR, term_density as TD, faq_layout as FL, term_gap a
 
 **Files:** Create `.claude/skills/bsuk-competitor-parity/SKILL.md`. Modify `.claude/skills/bsuk-entity-agent/SKILL.md`, `.claude/agents/bsuk-keyword-verifier.md` and `.claude/agents/bsuk-entity-incorporation-agent.md` (add one "See also" line each). Modify `docs/reference/system-registry.md`.
 
-- [ ] **Step 1:** Write the SKILL.md with frontmatter `name: bsuk-competitor-parity` and a description starting "Use when a BSUK board or page must match or beat competitors on keywords and entities…". It has these sections:
+- [x] **Step 1:** Write the SKILL.md with frontmatter `name: bsuk-competitor-parity` and a description starting "Use when a BSUK board or page must match or beat competitors on keywords and entities…". It has these sections:
   - When: page-run rows 6, 7 and 10.
   - Run: `term_density.py`, `term_gap.py`, `serp_reading.py`.
   - Read the numbers: median band vs leader band, and the breeder's pick.
   - Beat them: type-by-type table; a gap enters a section only when it is true for us and sourced (`data/*.json`, ontology, evidence ledger), otherwise `NOT FETCHED`; never stuff past the band's upper bound.
   - Entity relationships: only ontology `relations`.
   - What fails: a term with no competitor page behind it; a count above the band.
-- [ ] **Step 2:** `python3 scripts/build_agent_registry.py --check` and `npm run check:markers` must both be green.
-- [ ] **Step 3: Commit** — `skill: bsuk-competitor-parity — match type by type, close 2+-page gaps, beat on evidence`.
+- [x] **Step 2:** `python3 scripts/build_agent_registry.py --check` and `npm run check:markers` must both be green.
+- [x] **Step 3: Commit** — `skill: bsuk-competitor-parity — match type by type, close 2+-page gaps, beat on evidence`.
 
 ---
 

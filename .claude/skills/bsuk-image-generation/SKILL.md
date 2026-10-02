@@ -37,8 +37,12 @@ Before the first generation in a session:
    installing it; it is not in `requirements.txt`.
 3. Every generation is a paid API call. Say how many images the run will make and ask before
    the first one. Regenerating a rejected image is a new call and is asked the same way.
-4. Use the model the `ce-gemini-imagegen` skill names as its default unless the breeder names
-   another; list the available models first, because model names change.
+4. Use the **cheapest** image model, `gemini-3.1-flash-lite-image` ($0.0336 per 1K image on the
+   Standard tier, Google's pricing page, read 2026-10-02), unless the breeder names another. Never use
+   a pro image model (`gemini-3-pro-image*`, 4× the price) unless the breeder asks for it
+   (breeder's instruction, 2026-10-02: "you must use the cheap model so we don't waste all credits").
+   Generate one image at a time, only for slots picked on a board. Model names change, so list
+   the available models first; if this one is gone, take the cheapest listed on the pricing page.
 
 ## Every call is logged
 
@@ -55,8 +59,9 @@ from gemini_log import log_call
 from google import genai
 from google.genai import types
 
-client = genai.Client()  # reads GEMINI_API_KEY from the environment; never pass it inline
-model, slot = "gemini-3-pro-image-preview", "og-delivery"
+client = genai.Client()  # reads GEMINI_API_KEY from the environment; never pass it inline.
+# Keep `client` in a variable: a temporary Client() is closed before the request is sent.
+model, slot = "gemini-3.1-flash-lite-image", "og-delivery"
 try:
     resp = client.models.generate_content(
         model=model, contents=prompt,
