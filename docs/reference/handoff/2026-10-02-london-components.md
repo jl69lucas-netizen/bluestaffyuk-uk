@@ -6,21 +6,21 @@ Continue this project in a new chat. Everything below was read from the repo by 
 
 - Worktree: `/Users/apple/Downloads/BSUK/BSUK-london`
 - Branch: `london-components`
-- HEAD: `4f5033d8`
-- git status: dirty (5 changed paths)
+- HEAD: `24715464`
+- git status: clean
 
 ## Last 10 commits
 
+- 24715464 chore: gate reports refreshed by check:all after board v2 (counts only)
+- 99590efe docs: answer-board batch — London page board v2 decisions (12 questions); board v2 published (version 2); plan Tasks 9–11 ticked
+- 78d99bcb fix(handoff): escaped quotes stay inside a double-quoted .env value; secret-key values redacted from three characters
+- 60325995 image skill: cheapest model by default (gemini-3.1-flash-lite-image), keep the client in a variable; plan: tick Tasks 1–8 and 6b
+- 93a401f6 fix(handoff): dotenv-accurate .env parsing for redaction, secret-key values at any length, more key shapes, git timeouts, plan mtime tie-break
 - 4f5033d8 KI 70: first real generated image (gemini-3.1-flash-lite-image, $0.0336/1K) passes the negative list; draft step pending (_demo slug refused by ingest_image)
 - 108f3442 skill: session-handoff — paste-ready new-chat prompt from git, brief, plan and boards
 - d8d5db81 skill: bsuk-competitor-parity — match type by type, close 2+-domain gaps, beat on evidence
 - 32013e33 fix(board): infographic plan faults as BoardError, per-page pending slots, one plan per render, js() escapes <!--
 - 43034c96 fix(board): server-side ig/og pick checks, slot picks carried on re-board, 7d wording
-- 1905d46d log: two Gemini smoke attempts with the third key (402, credits depleted; one client-closed script error)
-- 15a3f093 feat(board): v2 blocks 1b, 4c, 4d, 5c, 7c, 7d on project 5 boards
-- 0406fc25 fix(board): review fixes — whole-phrase names, case-insensitive unnaming, bounded intent cues; Gemini log counts malformed lines
-- 561b0b8c fix(board): OG slot subjects and briefs never name a real dog, person or litter (rule 9)
-- b6496bf3 feat: Gemini usage log (no key ever written) and the delete-the-key reminder
 
 ## Newest session brief
 
@@ -45,12 +45,11 @@ Continue this project in a new chat. Everything below was read from the repo by 
 ## Plan
 
 - Newest plan: `docs/superpowers/plans/2026-10-02-london-board-v2.md`
-- First task with an unchecked step: ### Task 9: Session handoff skill and today's prompt
+- First task with an unchecked step: ### Task 12: Gates, close and memory
 - The plan's checkboxes are ticked by hand and can lag the commits: compare this task with the commit log above before starting it.
 
 ## Boards and Artifacts
 
-- https://claude.ai/artifact/H4cJdmjeYt28NANi4Ao3S4
 - https://claude.ai/artifact/5aMizcnA5f4TJ3RSRhw1fx
 - https://claude.ai/artifact/CbemmwUeW5qGEmEFog7ezz
 - https://claude.ai/artifact/UCZrjbPCMzksbhoTNT97yJ
