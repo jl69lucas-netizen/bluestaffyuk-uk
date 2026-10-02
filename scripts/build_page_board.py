@@ -64,9 +64,6 @@ IG_FONT_BASE = "fonts/"
 #: The font files the previews name, read off infographic_plan's own @font-face rules so the
 #: publish list can never drift from what the frames request.
 IG_FONT_FILES = tuple(re.findall(r'url\("([^"]+)"\)', IP._fonts("")))
-#: Shared with board_approve.py through pageboard, so the button and the server agree.
-IG_PENDING = PB.IG_PENDING
-
 #: THE NAVIGATION BLOCK (spec §9 amendment 7). Four pieces of furniture that belong to the
 #: PAGE rather than to any one section — so they are never offered as a section's three
 #: styles and, before this block existed, were never shown on a board at all. They are
@@ -208,7 +205,10 @@ def md_with_urls(value):
 def js(value):
     """JSON for embedding in a <script>: `</script>` inside any string would close the
     block, so the sequence is written with the escape JSON allows and JS reads back."""
-    return json.dumps(value).replace("</", "<\\/")
+    # `<!--` is escaped too: inside a <script>, an HTML comment opener followed later by
+    # `<script` switches the parser into the double-escaped state, where `</script>` no
+    # longer closes the block. `<\!--` is the same string to JS.
+    return json.dumps(value).replace("</", "<\\/").replace("<!--", "<\\!--")
 
 
 def md_table(headers, rows):
@@ -879,38 +879,38 @@ def rules_block(findings):
     return RULES_CSS + f'<div class="rules">{"".join(rows)}</div>', refused
 
 
-ig_slots_required = PB.ig_slots_required
-
-
-def signature_sections(board, ledger=None, slug=None):
+def signature_sections(board, ledger=None, slug=None, ig_plan=None):
     """Every pick id the approve button refuses to leave empty: the sections, the image
-    slots, and (project 5 boards) the infographic styles. OG slots (`og:<slot>`) are never
-    in it — block 7d is a use/skip proposal, not a required decision."""
+    slots, and (project 5 boards) the infographic styles, from PB.ig_slots_required — the
+    helper board_approve.py re-checks with. OG slots (`og:<slot>`) are never in it — block
+    7d is a use/skip proposal, not a required decision. `ig_plan`: PB.ig_plan(), if held."""
     return (picked_sections(board, ledger, slug) + IR.slots_needing_pick(board)
-            + ig_slots_required(board))
+            + PB.ig_slots_required(board, ig_plan))
 
 
-def infographic_docs(board):
+def infographic_docs(plan):
     """{"<slot>|<style>": the standalone preview document} for block 7c's frames, rendered
     with IG_FONT_BASE so the fonts resolve beside the published board. One copy per style;
     the board's script pastes it into that style's three frames."""
     tokens = IP.load_tokens(PB.ROOT)
     return {f"{p['slot']}|{st['id']}": IP.render_preview(p, st["id"], p["facts"], tokens,
                                                           font_base=IG_FONT_BASE)
-            for p in IP.plan(board, PB.ROOT) for st in p["styles"]}
+            for p in plan for st in p["styles"]}
 
 
-def infographic_block(board, carried=None):
+def infographic_block(board, carried=None, plan=None):
     """Block 7c: per planned slot, its heading, IG type and why, and the three styles as one
     radio group `pick-ig:<slot>` (values plate / ruled / card), each style rendered at the
     three PREVIEW_W widths in srcdoc frames filled from IG_DOCS by the board's script.
-    `carried` (PB.locked_picks) pre-checks a style answered on an earlier approval."""
+    `carried` (PB.locked_picks) pre-checks a style answered on an earlier approval; `plan`
+    is the PB.ig_plan() render() already made."""
     carried = carried or {}
-    plan = IP.plan(board, root=None)
+    plan = PB.ig_plan(board) if plan is None else plan
     intro = ("Each infographic sits **beside the H2's existing photo**, never instead of it "
              "(working rule 11: every served image keeps its place, file and alt). Pick one "
              "style per slot; the same content is set three ways on the same tokens. "
-             "`python3 scripts/infographic_plan.py " + md(PB.slug_file(board["meta"]["slug"]))
+             "A style you picked before stays selected; check it if the infographic's type "
+             "changed. `python3 scripts/infographic_plan.py " + md(PB.slug_file(board["meta"]["slug"]))
              + "` prints the same plan.")
     if not plan:
         return intro + "\n\nNo section needs an infographic: no heading matched an IG trigger."
@@ -921,7 +921,7 @@ def infographic_block(board, carried=None):
     out = [intro, table]
     for p in plan:
         slot = p["slot"]
-        pending = IG_PENDING.get(slot)
+        pending = PB.ig_pending(board, slot)
         rows = []
         for st in p["styles"]:
             key = f"{slot}|{st['id']}"
@@ -1001,6 +1001,9 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     # Board v2 blocks ride on project 5 boards only, so the twelve built boards render
     # byte-for-byte as before (tests/py/test_family_rules_on_board.py).
     new_family = PB.FR.applies(board)
+    # Block 7c's plan, made ONCE (with its facts) and handed to the block, the frames and the
+    # approve signature. A record fault in it is a PB.BoardError, which main() reports.
+    ig_plan = PB.ig_plan(board, PB.ROOT) if new_family else []
     if new_family:
         parts.append(("1b. How Google reads this page", SR.block(board)))
 
@@ -1129,7 +1132,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     if PB.FR.applies(board):
         rules_html, refused = rules_block(rule_findings(board, ont))
         parts.append(("7b. Rules for new pages", rules_html))
-        parts.append(("7c. Infographics", infographic_block(board, locked)))
+        parts.append(("7c. Infographics", infographic_block(board, locked, ig_plan)))
         parts.append(("7d. OG images", og_block(board, locked)))
 
     status = ("Approved as it stands." if approved else
@@ -1146,7 +1149,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     # Block 7c's infographic frames: one standalone document per slot|style, pasted into
     # that style's three frames; its fonts resolve against the board's URL (IG_FONT_BASE).
     # Emitted on project 5 boards only, so a pre-rule board's script is unchanged.
-    ig_js = ("  var IG_DOCS=" + js(infographic_docs(board)) + ";\n"
+    ig_js = ("  var IG_DOCS=" + js(infographic_docs(ig_plan)) + ";\n"
              "  document.querySelectorAll('iframe[data-ig]').forEach(function(f){\n"
              "    var d=IG_DOCS[f.getAttribute('data-ig')];\n"
              "    if(d!==undefined)f.srcdoc=d;\n"
@@ -1212,7 +1215,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
       +NAV_CSS+'</style>'+inner;
   }});
 {ig_js}  var RECORD_HASH={js(record_hash)};var BOARD_DOC={js("boards/" + slug)};
-  var SIGNATURE_SECTIONS={js(signature_sections(board, ledger, slug))};
+  var SIGNATURE_SECTIONS={js(signature_sections(board, ledger, slug, ig_plan))};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
   if(!window.claude||!window.claude.use){{st.textContent='Open this board inside claude.ai to approve it.';return;}}
   window.claude.use("db").then(function(db){{
@@ -1292,8 +1295,14 @@ def main():
     except Exception as e:  # noqa: BLE001 — any intake failure only drops block 0
         intake = None
         print(f"board: no block 0 for {slug} — {type(e).__name__}: {e}", file=sys.stderr)
-    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images,
-                          intake), encoding="utf-8")
+    try:
+        html = render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images, intake)
+    except PB.BoardError as e:
+        # A record fault found while rendering (e.g. an unknown infographic_style): the same
+        # refusal approval gives, said plainly, and no half-written board on disk.
+        print(f"build-page-board REFUSED: {e}")
+        sys.exit(2)
+    out.write_text(html, encoding="utf-8")
     n_int = sum(len(s["links"]["internal"]) for s in board["sections"])
     n_ext = sum(len(s["links"]["external"]) for s in board["sections"])
     unresolved = sorted({l["href"] for s in board["sections"] for l in s["links"]["internal"]
@@ -1311,10 +1320,11 @@ def main():
         print("  some styles are not rendered: run npm run build, then "
               "python3 scripts/build_board_previews.py %s" % slug)
     if PB.FR.applies(board):
-        n_ig = len(IP.plan(board, root=None))
+        plan = PB.ig_plan(board)
+        n_ig = len(plan)
         files = {IG_FONT_BASE + f: f"public/fonts/{f}" for f in IG_FONT_FILES}
         print("  infographics: %d slot(s), %d previews inline; approval waits on %d"
-              % (n_ig, 3 * n_ig, len(ig_slots_required(board))))
+              % (n_ig, 3 * n_ig, len(PB.ig_slots_required(board, plan))))
         print("  publish with capabilities={\"db\": {}} and files=%s" % json.dumps(files))
 
 

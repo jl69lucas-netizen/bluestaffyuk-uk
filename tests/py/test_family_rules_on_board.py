@@ -322,6 +322,8 @@ def _slots(monkeypatch, ig=("delivery-route", "breed-split"), og=("og-share",)):
     monkeypatch.setattr(FR, "CHECKS", [])
     monkeypatch.setattr(IP, "plan", lambda board, root=None: [{"slot": s} for s in ig])
     monkeypatch.setattr(OG, "propose", lambda board, n=5: [{"slot": s} for s in og])
+    # breed-split is pending on THIS record (IG_PENDING is keyed by board slug and slot).
+    monkeypatch.setattr(PB, "IG_PENDING", {(_board()["meta"]["slug"], "breed-split"): "pending"})
 
 
 def test_infographic_and_og_picks_are_accepted(monkeypatch):
@@ -367,8 +369,43 @@ def test_the_approval_and_the_board_require_the_same_infographic_picks(monkeypat
     _slots(monkeypatch)
     b = _board()
     assert PB.ig_slots_required(b) == ["ig:delivery-route"]
-    assert BPB.ig_slots_required is PB.ig_slots_required
+    # One source: the board keeps no copy of the list or the pending table of its own.
+    assert not hasattr(BPB, "ig_slots_required") and not hasattr(BPB, "IG_PENDING")
     assert BPB.signature_sections(b, LEDGER, "x")[-1:] == ["ig:delivery-route"]
+
+
+def test_a_pending_slot_on_one_page_never_exempts_another_pages_slot(monkeypatch):
+    _slots(monkeypatch)
+    monkeypatch.setattr(PB, "IG_PENDING", {("blue-staffy-puppies-london", "breed-split"): "p"})
+    b = _board()                                   # the Manchester-slugged record
+    assert PB.ig_pending(b, "breed-split") is None
+    assert PB.ig_slots_required(b) == ["ig:delivery-route", "ig:breed-split"]
+
+
+def _bad_infographic_board():
+    """A record with an infographic slot whose style is unknown and whose section headings
+    match no IG trigger — infographic_plan.plan() raises ValueError on it."""
+    b = _board()
+    sec = next(s for s in b["sections"] if s["shape"] == "standard")
+    sec["heading"] = "Our Kennel Days"
+    for n in sec.get("tree") or []:
+        n["heading"] = "A Quiet Morning"
+    sec.setdefault("images", []).append({"slot": "kennel-graphic", "kind": "infographic",
+                                         "infographic_style": "IG-9"})
+    return b
+
+
+def test_an_unknown_infographic_style_is_a_board_error_from_approve(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [])
+    b = _bad_infographic_board()
+    with pytest.raises(PB.BoardError, match="kennel-graphic"):
+        BA.apply_approval(b, _inbox(b), ONT, LEDGER)
+
+
+def test_an_unknown_infographic_style_is_a_board_error_from_render(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [])
+    with pytest.raises(PB.BoardError, match="infographic plan for .*kennel-graphic"):
+        BPB.render(_bad_infographic_board(), ONT, LEDGER, live={}, thumbs={}, slug="x")
 
 
 def test_a_re_board_carries_slot_picks_whose_slots_still_exist(monkeypatch):

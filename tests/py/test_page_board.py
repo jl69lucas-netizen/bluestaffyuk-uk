@@ -2697,3 +2697,10 @@ def test_signature_sections_unchanged_on_a_pre_rule_board():
     b = _approved(MIN_BOARD)
     assert BPB.signature_sections(b, LEDGER_EMPTY, "x") == (
         BPB.picked_sections(b, LEDGER_EMPTY, "x") + IR.slots_needing_pick(b))
+
+
+def test_js_escapes_a_script_close_and_an_html_comment_opener():
+    import build_page_board as BPB
+    out = BPB.js({"a": "</script><!-- x -->"})
+    assert "</" not in out and "<!--" not in out
+    assert out == '{"a": "<\\/script><\\!-- x -->"}'

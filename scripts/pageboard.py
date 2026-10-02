@@ -1365,31 +1365,51 @@ def section_fingerprint(section):
 V2_PICKS = {"ig:": ("plate", "ruled", "card"), "og:": ("use", "skip")}
 V2_PICK_PREFIXES = tuple(V2_PICKS)
 #: Infographic slots whose content waits on a breeder answer: shown with their three styles,
-#: offered as an optional pick, and kept OUT of the required set.
+#: offered as an optional pick, and kept OUT of the required set. Keyed by (board slug, slot
+#: id), so one page's pending answer never exempts another page's slot of the same name.
 IG_PENDING = {
-    "breed-split": ("Pending your answer on the decisions batch: no breed-standard data exists, "
-                    "so this would show NOT FETCHED. Not required for approval."),
+    ("blue-staffy-puppies-london", "breed-split"): (
+        "Pending your answer on the decisions batch: no breed-standard data exists, "
+        "so this would show NOT FETCHED. Not required for approval."),
 }
 
 
-def v2_slots(board):
+def ig_pending(board, slot):
+    """The pending note for this board's `slot`, or None when the slot is a normal pick."""
+    return IG_PENDING.get(((board.get("meta") or {}).get("slug"), slot))
+
+
+def ig_plan(board, root=None):
+    """infographic_plan.plan(), with its record faults raised as BoardError.
+
+    plan() raises ValueError for an infographic slot whose `infographic_style` is missing or
+    unknown and whose headings match no trigger. That is a fault in the record, so the board
+    build and the approval both refuse on it with the same message, never a traceback."""
+    import infographic_plan as IP          # lazy: it imports nothing of ours, but og_slots does
+    try:
+        return IP.plan(board, root=root)
+    except ValueError as e:
+        raise BoardError(f"infographic plan for {(board.get('meta') or {}).get('slug')}: {e}") from None
+
+
+def v2_slots(board, plan=None):
     """{"ig:": {slot, ...}, "og:": {slot, ...}} — the slots this record offers a v2 pick for.
-    Empty on a pre-rule board, where blocks 7c and 7d are never shown."""
+    Empty on a pre-rule board, where blocks 7c and 7d are never shown. `plan` is an
+    ig_plan() the caller already has."""
     if not FR.applies(board):
         return {p: set() for p in V2_PICKS}
-    import infographic_plan as IP          # lazy: both modules import the query stack
     import og_slots as OG
-    return {"ig:": {p["slot"] for p in IP.plan(board, root=None)},
-            "og:": {o["slot"] for o in OG.propose(board)}}
+    plan = ig_plan(board) if plan is None else plan
+    return {"ig:": {p["slot"] for p in plan}, "og:": {o["slot"] for o in OG.propose(board)}}
 
 
-def ig_slots_required(board):
+def ig_slots_required(board, plan=None):
     """The `ig:<slot>` ids approval waits for: every planned infographic slot on a project 5
-    board except the ones pending a breeder answer (IG_PENDING)."""
+    board except the ones pending a breeder answer (ig_pending). `plan` as in v2_slots."""
     if not FR.applies(board):
         return []
-    import infographic_plan as IP
-    return [f"ig:{p['slot']}" for p in IP.plan(board, root=None) if p["slot"] not in IG_PENDING]
+    plan = ig_plan(board) if plan is None else plan
+    return [f"ig:{p['slot']}" for p in plan if not ig_pending(board, p["slot"])]
 
 
 def locked_picks(board):

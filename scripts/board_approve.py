@@ -431,8 +431,8 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
                if s["shape"] != "standard" and not s["options"]["pick"] and not s.get("component")]
     if missing:
         raise PB.BoardError(f"no component pick for signature section(s): {', '.join(missing)}")
-    # The same for block 7c, from the same helper the board's button reads
-    # (build_page_board.signature_sections), so the two lists cannot drift.
+    # The same for block 7c, from PB.ig_slots_required — the one helper the board's button
+    # also reads (build_page_board.signature_sections) — so the two lists cannot drift.
     missing_ig = [i for i in PB.ig_slots_required(b) if i not in inbox.get("picks", {})]
     if missing_ig:
         raise PB.BoardError(f"no infographic style pick for: {', '.join(missing_ig)}")
