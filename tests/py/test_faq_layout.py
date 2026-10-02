@@ -4,9 +4,10 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
 import faq_layout as FL
 import query_augment as QA
 
-SPREAD_QS = [{"text": "How much does a puppy cost?"}, {"text": "How do you deliver to London?"},
-             {"text": "Are they health tested?"}, {"text": "Are blue Staffies aggressive?"},
-             {"text": "Are they good with children?"}, {"text": "How do I crate train a puppy?"}]
+FS = "data/faq.json"
+SPREAD_QS = [{"text": t, "fact_source": FS} for t in (
+    "How much does a puppy cost?", "How do you deliver to London?", "Are they health tested?",
+    "Are blue Staffies aggressive?", "Are they good with children?", "How do I crate train a puppy?")]
 BUYING = SPREAD_QS[:2]
 DOG = SPREAD_QS[2:4]
 LIVING = SPREAD_QS[4:]
@@ -52,13 +53,28 @@ def test_option_b_by_type():
 
 
 def test_own_topic_key_wins_over_regex():
-    qs = [{"text": "How much does a puppy cost?", "topic": "health"}]
+    qs = [{"text": "How much does a puppy cost?", "topic": "health", "fact_source": FS}]
     assert FL.decide(qs, words=0, page_type="blog", method="A")["groups"]["dog"] == 1
 
 
 def test_unmatched_text_is_other_and_in_no_group():
     assert FL.topic_of({"text": "Zebra crossing?"}) == "other"
-    assert FL.group_counts([{"text": "Zebra crossing?"}]) == {"buying": 0, "dog": 0, "living": 0}
+    assert FL.group_counts([{"text": "Zebra crossing?", "fact_source": FS}]) == {
+        "buying": 0, "dog": 0, "living": 0}
+
+
+def test_question_without_fact_source_key_is_ignored():
+    qs = list(SPREAD_QS)
+    qs[5] = {"text": qs[5]["text"]}
+    assert FL.decide(qs, words=3000, page_type="blog", method="A")["groups"]["living"] == 1
+
+
+def test_decide_returns_why_for_both_methods():
+    a = FL.decide(SPREAD_QS, words=2400, page_type="location", method="A")
+    b = FL.decide(SPREAD_QS, words=2400, page_type="location", method="B")
+    assert a["why"].startswith("buying 2 · dog 2 · living 2; 2,400 words")
+    assert "page type `location` is one of" in b["why"] and "buying 2" in b["why"]
+    assert "buying" not in FL.decide(None, words=0, page_type="blog", method="B")["why"]
 
 
 def test_questions_without_a_fact_source_are_ignored_picked_or_not():

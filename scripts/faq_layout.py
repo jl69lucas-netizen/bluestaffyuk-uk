@@ -12,8 +12,8 @@ Two methods, shown side by side so the breeder can pick the rule:
       "other", which belongs to no group. The "block" field is never the topic.
   B · by page type: THREE_BLOCK_TYPES get three blocks, every other type one bottom block.
 
-A question counts when it is fact-backed: its "fact_source" is truthy, or it has no
-"fact_source" key at all (a bare list). The question file is data/queries/<slug>.json; when it
+A question counts only when it is fact-backed: bool(q.get("fact_source")) is true, so a
+question with no "fact_source" key is excluded. The question file is data/queries/<slug>.json; when it
 is missing, method A is "NOT FETCHED".
 
     python3 scripts/faq_layout.py <slug>
@@ -56,7 +56,7 @@ def topic_of(q):
 
 
 def fact_backed(questions):
-    return [q for q in questions if q.get("fact_source", True)]
+    return [q for q in questions if bool(q.get("fact_source"))]
 
 
 def group_counts(questions):
@@ -74,18 +74,36 @@ def word_target(board):
 
 
 def decide(questions, words, page_type, method="A"):
-    """{"method", "layout", "groups", "topics", "words", "page_type"} for one method."""
-    groups = group_counts(questions)
-    topics = sorted({topic_of(q) for q in fact_backed(questions)})
+    """{"method", "layout", "why", "groups", "topics", "words", "page_type"} for one method.
+
+    `questions` may be None for method B (no question file): its why then omits the counts.
+    """
+    known = questions is not None
+    groups = group_counts(questions or [])
+    topics = sorted({topic_of(q) for q in fact_backed(questions or [])})
+    r = {"method": method, "groups": groups, "topics": topics, "words": words,
+         "page_type": page_type}
     if method == "A":
+        if not known:
+            raise ValueError("method A needs the question file")
         spread = all(n >= GROUP_MIN for n in groups.values())
-        layout = THREE if spread and words >= MIN_WORDS else ONE
+        r["layout"] = THREE if spread and words >= MIN_WORDS else ONE
+        r["why"] = (f"{_groups_str(r)}; {words:,} words "
+                    f"(three blocks need every group at {GROUP_MIN}+ and {MIN_WORDS:,}+ words)")
     elif method == "B":
-        layout = THREE if page_type in THREE_BLOCK_TYPES else ONE
+        r["layout"] = THREE if page_type in THREE_BLOCK_TYPES else ONE
+        r["why"] = (f"page type `{page_type or 'unknown'}` "
+                    f"{'is' if page_type in THREE_BLOCK_TYPES else 'is not'} one of "
+                    f"{', '.join(sorted(THREE_BLOCK_TYPES))}; "
+                    + (f"{_groups_str(r)}; " if known else "")
+                    + f"{words:,} words, not used")
     else:
         raise ValueError(f"unknown method {method!r}")
-    return {"method": method, "layout": layout, "groups": groups, "topics": topics,
-            "words": words, "page_type": page_type}
+    return r
+
+
+def _groups_str(r):
+    return " · ".join(f"{g} {r['groups'][g]}" for g in GROUPS)
 
 
 def outline_layout(board):
@@ -101,34 +119,20 @@ def load_questions(slug, root=ROOT):
     return json.loads(path.read_text(encoding="utf-8")).get("questions", [])
 
 
-def _groups_str(r):
-    return " · ".join(f"{g} {r['groups'][g]}" for g in GROUPS)
-
-
-def _why_a(r):
-    return (f"{_groups_str(r)}; {r['words']:,} words "
-            f"(three blocks need every group at {GROUP_MIN}+ and {MIN_WORDS:,}+ words)")
-
-
 def block(board, root=ROOT):
     slug = board["meta"]["slug"]
     page_type = board["meta"].get("page_type", "")
     words = word_target(board)
     qs = load_questions(slug, root)
-    b = decide(qs or [], words, page_type, "B")
+    b = decide(qs, words, page_type, "B")
     if qs is None:
         a = None
         a_cells = [f"NOT FETCHED — no data/queries/{KM._bare(slug)}.json", "no question file to count"]
     else:
         a = decide(qs, words, page_type, "A")
-        a_cells = [a["layout"], _why_a(a)]
-    b_why = (f"page type `{page_type or 'unknown'}` "
-             f"{'is' if page_type in THREE_BLOCK_TYPES else 'is not'} one of "
-             f"{', '.join(sorted(THREE_BLOCK_TYPES))}; "
-             + (f"{_groups_str(a)}; " if a else "")
-             + f"{words:,} words, not used")
+        a_cells = [a["layout"], a["why"]]
     table = _md(["Method", "Result for this page", "Why"],
-                [["A · intent spread (Recommended)"] + a_cells, ["B · by page type", b["layout"], b_why]])
+                [["A · intent spread (Recommended)"] + a_cells, ["B · by page type", b["layout"], b["why"]]])
     have = outline_layout(board)
     lines = [
         "Top, middle and bottom FAQs answer a buyer early: someone who lands with a question "
