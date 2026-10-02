@@ -741,6 +741,27 @@ def test_four_to_five_slots_share_card_first():
 
 ---
 
+### Task 6b: Gemini usage log and the key-deletion reminder (user, 2026-10-02)
+
+The breeder supplied a key for this project and will delete it at the end. They asked for "strong monitoring and logging" of its use.
+
+**Files:** Create `scripts/gemini_log.py`, `tests/py/test_gemini_log.py`. Modify `.claude/skills/bsuk-image-generation/SKILL.md` (every generate call goes through the logger). Modify `.claude/skills/session-closer/SKILL.md` and `.claude/skills/session-handoff/SKILL.md` (Task 9), adding the reminder. Modify `.gitignore` if the log should stay local.
+
+- [ ] **Step 1: Failing tests.**
+  - `log_call(model, slot, status, note="", path=tmp)` appends one JSON line `{ts, model, slot, status, note}`.
+  - `summary(path)` returns calls today, calls in total, and failures by status code.
+  - A line never contains the value of `GEMINI_API_KEY` (set a fixture env value and assert it is absent from the file), nor any token matching `AQ\.|AIza`.
+- [ ] **Step 2:** Implement. The log is `docs/reports/gemini-usage.jsonl`. The CLI is `python3 scripts/gemini_log.py summary`.
+- [ ] **Step 3:**
+  - The image-generation skill wraps every call: `log_call(...)` on success and on every exception, recording the status code (e.g. 402).
+  - session-closer and session-handoff print `summary` plus the line "GEMINI_API_KEY is set in .env: delete it when image work is done (breeder's instruction, 2026-10-02)", whenever `.env` holds the key. They check without printing it.
+- [ ] **Step 4:** Back-fill three lines for today's calls: the two 402s on gemini-3-pro-image-preview and gemini-2.5-flash-image, and the 404 on gemini-2.5-flash. The model names and status codes are as reported in this session.
+- [ ] **Step 5: Commit** with the message `feat: Gemini usage log (no key ever written) and the delete-the-key reminder`.
+
+A status-line mod showing "Gemini: N calls today" is one of the mod options on the decisions batch (Task 10, Q5).
+
+---
+
 ### Task 7: Wire the blocks into the board
 
 **Files:** Modify `scripts/build_page_board.py` (imports at the top; `render()` around lines 896, 949–960 and 1001–1008; `SIGNATURE_SECTIONS` around line 1081). Modify `tests/py/test_page_board.py`.
@@ -785,6 +806,12 @@ After block 7b (line ~1008):
         parts.append(("7d. OG images", OG.block(board)))
 ```
 Add `import serp_reading as SR, term_density as TD, faq_layout as FL, term_gap as TG, infographic_plan as IP, og_slots as OG` beside the existing `import keyword_metrics as KM`, and give `faq_layout`, `infographic_plan` and `og_slots` a `block(board)` that returns markdown. Then add `[f"ig:{p['slot']}" for p in IP.plan(board)]` to the list `SIGNATURE_SECTIONS` is built from, so the approve button refuses until every infographic style is picked.
+- [ ] **Step 3b: Items carried from the Task 1–5 reviews.**
+  - **Block 4c:** print the "this differs from block 4b's five" clause only when a listing page was actually skipped.
+  - **Block 1b:** "no breeder site ranks" becomes "no page classed as a breeder page".
+  - **Block 7c fonts:** publish `public/fonts/*.woff2` once as Artifact `files` and pass the matching `font_base` to the infographic previews.
+  - **Infographic placement:** each new infographic slot (litter-prices, delivery, health-tests, paperwork, breed) sits *beside* the H2's existing photo slot, never in place of it; the breeder can overrule this on the batch.
+  - **Signature section:** the breed-split slot is not added to `SIGNATURE_SECTIONS` until the breeder answers the batch question on it.
 - [ ] **Step 4:** Run `npm run test:py`. Every pre-rule board test must stay byte-identical.
 - [ ] **Step 5: Commit** — `feat(board): v2 blocks 1b, 4c, 4d, 5c, 7c, 7d on project 5 boards`.
 
@@ -888,7 +915,20 @@ Cloud history: origin/london-components-98b173 was merged home 2026-10-02 (cherr
      - (d) a page-weight and LCP budget per section.
 
      Recommended: (a) and (b). The SERP data and the schema builder already exist, so these are cheap. Trade-off: (c) and (d) wait for the build.
-  7. **PAA gaps from block 1b** (only if Task 3 found any): add a section, or answer the question in an existing FAQ block.
+  7. **PAA gap from block 1b: "How rare are blue Staffies?"** has no section.
+     - (a) answer it in the bottom FAQ block, from the coat facts we already hold (Recommended);
+     - (b) add an H3 under the breed section.
+     - (c) leave it.
+  8. **Density pool (block 4c):** only 2 of London's 9 competitors are prose pages; the other 7 are listing grids.
+     - (a) keep listings out of the density bands, flagged as a thin pool (Recommended): listing card text isn't prose a page should copy;
+     - (b) count listings too.
+  9. **Breed-split infographic (IG-3, "Pit Bulls or American Staffies?"):** no data file holds breed-standard figures, so it would render as NOT FETCHED.
+     - (a) drop the slot (Recommended);
+     - (b) supply a breed-standard data file with sources first.
+  10. **Infographic beside or instead of the H2 photo:**
+      - (a) beside it (Recommended): working rule 11 keeps the served photos and their alts;
+      - (b) instead of it.
+  11. **Competitor words to adopt (block 5c):** tick the phrases that are true for us. The candidates are the 2–3 word phrases found on three or more competitor domains, e.g. vet checked, KC registered, mum & dad, ready to leave, family home, microchipped, wormed, vaccinated. Each one goes into a section's keywords only when a data file backs it.
 - [ ] **Step 2:** `python3 scripts/answer_board_batch.py docs/reference/answer-board/batches/2026-10-02-london-board-v2.md --project "London page board v2" --date 2026-10-02`
 - [ ] **Step 3:** ArtifactData `set`: collection `batches`, doc_id = the printed batch id, file_path = the JSON, url https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf.
 - [ ] **Step 4: Commit** both files. Chat says only "N new questions on the board: <link>".
