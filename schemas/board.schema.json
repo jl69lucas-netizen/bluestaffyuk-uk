@@ -1712,7 +1712,7 @@
     "picks": {
      "type": "object",
      "propertyNames": {
-      "pattern": "^(img:)?[a-z][a-z0-9-]*$"
+      "pattern": "^((img|ig|og):)?[a-z][a-z0-9-]*$"
      },
      "additionalProperties": {
       "type": "string"

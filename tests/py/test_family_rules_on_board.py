@@ -312,3 +312,24 @@ def test_a_blocked_entity_leaves_a_frozen_pages_approval_as_before(monkeypatch):
     monkeypatch.setattr(FR, "CHECKS", [])
     b, ont = _with_entity(_board(slug="blue-staffy-health-uk", page_type="guide"), "BLOCKED")
     BA.refuse_on_new_page_rules(b, ont)          # no raise: FR.applies leaves it out
+
+
+# ── board v2 (Task 7): the 7c / 7d picks name a slot, not a section ──────────────────────
+def test_infographic_and_og_picks_are_accepted(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [])
+    b = _board()
+    inbox = _inbox(b)
+    inbox["picks"].update({"ig:delivery-route": "ruled", "og:og-share": "skip"})
+    out = BA.apply_approval(b, inbox, ONT, LEDGER)
+    assert out["board"]["approval"]["picks"]["ig:delivery-route"] == "ruled"
+    assert out["board"]["approval"]["picks"]["og:og-share"] == "skip"
+
+
+@pytest.mark.parametrize("sid,val", [("ig:delivery-route", "fancy"), ("og:og-share", "maybe")])
+def test_an_off_menu_infographic_or_og_pick_is_refused(monkeypatch, sid, val):
+    monkeypatch.setattr(FR, "CHECKS", [])
+    b = _board()
+    inbox = _inbox(b)
+    inbox["picks"][sid] = val
+    with pytest.raises(PB.BoardError, match=sid):
+        BA.apply_approval(b, inbox, ONT, LEDGER)

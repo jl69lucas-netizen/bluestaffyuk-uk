@@ -333,7 +333,7 @@ def takeaways(r, sections):
                        "type holds a majority.")
         if top_n > 1:
             out.append(f"{top_dom} holds {top_n} of the {n} organic results"
-                       + ("; no breeder site ranks." if not by_type["breeder"] else "."))
+                       + ("; no page classed as a breeder page." if not by_type["breeder"] else "."))
     paa = r["paa"]
     if paa:
         gaps = [p["q"] for p in paa if not p["answered_by"]]

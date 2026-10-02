@@ -13,7 +13,16 @@ sandboxed srcdoc iframes at 1280 / 768 / 375. Run, in order:
     python3 scripts/build_board_previews.py <slug>
     python3 scripts/build_page_board.py <slug>
 
-Publish with the Artifact tool: file_path=<html>, capabilities={"db": {}}."""
+Publish with the Artifact tool: file_path=<html>, capabilities={"db": {}}. A project 5 board
+(block 7c, infographics) also publishes the two web fonts its infographic previews load, as
+Artifact `files` beside the page (IG_FONT_FILES; `main()` prints the exact map):
+
+    files={"fonts/fraunces-latin-standard-normal.woff2":
+               "public/fonts/fraunces-latin-standard-normal.woff2",
+           "fonts/source-sans-3-latin-wght-normal.woff2":
+               "public/fonts/source-sans-3-latin-wght-normal.woff2"}
+
+Without them the previews still render, in the token fallback stacks (Georgia, system-ui)."""
 import html as H, json, pathlib, re, sys
 from urllib.parse import urlsplit
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
@@ -22,6 +31,13 @@ import link_diversity as LD
 import verbatim_set_check as VSC
 import image_rules as IR          # block 7's image pickers (system-gaps build, Task 10b)
 import keyword_metrics as KM       # block 4b, the ours-vs-top-5 table (parity build Task 18)
+# Board v2 (plan 2026-10-02, Task 7): six blocks, on project 5 boards only.
+import serp_reading as SR          # block 1b, how Google reads this page
+import term_density as TD          # block 4c, per-term density against competitors
+import faq_layout as FL            # block 4d, where the FAQs sit
+import term_gap as TG              # block 5c, what competitors say that we do not
+import infographic_plan as IP      # block 7c, infographic style trios
+import og_slots as OG              # block 7d, the OG image slots
 import board_entities as BE
 import page_intake as PI          # block 0, the intake (the brief's target block)
 import outline_matrix as OM       # STOP 2: the outline is approved before the page board
@@ -36,6 +52,24 @@ PREVIEWS = PB.ROOT / "data" / "boards" / "previews"
 PREVIEW_H = 520
 #: The three widths each style is shown at: desktop, tablet, phone.
 PREVIEW_W = (1280, 768, 375)
+
+#: Block 7c's previews load their web fonts from here, RELATIVE TO THE BOARD: the frames are
+#: srcdoc documents, and a srcdoc document resolves relative URLs against its parent's base
+#: URL, so `fonts/x.woff2` is the file published beside the board as an Artifact `file`. The
+#: frames carry `sandbox="allow-same-origin"` (and nothing else, so still no script runs) for
+#: exactly this: an opaque-origin frame would fetch the font cross-origin, and a font fetch is
+#: CORS-checked. Opened from disk, `docs/artifacts/boards/fonts/` does not exist and the
+#: previews fall back to the token stacks — never to base64 fonts inlined into the board.
+IG_FONT_BASE = "fonts/"
+#: The font files the previews name, read off infographic_plan's own @font-face rules so the
+#: publish list can never drift from what the frames request.
+IG_FONT_FILES = tuple(re.findall(r'url\("([^"]+)"\)', IP._fonts("")))
+#: Infographic slots whose content waits on a breeder answer: shown with their three styles,
+#: offered as an optional pick, and kept OUT of the approve button's signature.
+IG_PENDING = {
+    "breed-split": ("Pending your answer on the decisions batch: no breed-standard data exists, "
+                    "so this would show NOT FETCHED. Not required for approval."),
+}
 
 #: THE NAVIGATION BLOCK (spec §9 amendment 7). Four pieces of furniture that belong to the
 #: PAGE rather than to any one section — so they are never offered as a section's three
@@ -849,6 +883,86 @@ def rules_block(findings):
     return RULES_CSS + f'<div class="rules">{"".join(rows)}</div>', refused
 
 
+def ig_slots_required(board):
+    """The `ig:<slot>` ids the approve button waits for: every planned infographic slot on a
+    project 5 board except the ones pending a breeder answer (IG_PENDING)."""
+    if not PB.FR.applies(board):
+        return []
+    return [f"ig:{p['slot']}" for p in IP.plan(board, root=None) if p["slot"] not in IG_PENDING]
+
+
+def signature_sections(board, ledger=None, slug=None):
+    """Every pick id the approve button refuses to leave empty: the sections, the image
+    slots, and (project 5 boards) the infographic styles. OG slots (`og:<slot>`) are never
+    in it — block 7d is a use/skip proposal, not a required decision."""
+    return (picked_sections(board, ledger, slug) + IR.slots_needing_pick(board)
+            + ig_slots_required(board))
+
+
+def infographic_docs(board):
+    """{"<slot>|<style>": the standalone preview document} for block 7c's frames, rendered
+    with IG_FONT_BASE so the fonts resolve beside the published board. One copy per style;
+    the board's script pastes it into that style's three frames."""
+    tokens = IP.load_tokens(PB.ROOT)
+    return {f"{p['slot']}|{st['id']}": IP.render_preview(p, st["id"], p["facts"], tokens,
+                                                          font_base=IG_FONT_BASE)
+            for p in IP.plan(board, PB.ROOT) for st in p["styles"]}
+
+
+def infographic_block(board):
+    """Block 7c: per planned slot, its heading, IG type and why, and the three styles as one
+    radio group `pick-ig:<slot>` (values plate / ruled / card), each style rendered at the
+    three PREVIEW_W widths in srcdoc frames filled from IG_DOCS by the board's script."""
+    plan = IP.plan(board, root=None)
+    intro = ("Each infographic sits **beside the H2's existing photo**, never instead of it "
+             "(working rule 11: every served image keeps its place, file and alt). Pick one "
+             "style per slot; the same content is set three ways on the same tokens. "
+             "`python3 scripts/infographic_plan.py " + md(PB.slug_file(board["meta"]["slug"]))
+             + "` prints the same plan.")
+    if not plan:
+        return intro + "\n\nNo section needs an infographic: no heading matched an IG trigger."
+    table = md_table(["Section", "Heading", "IG type", "Why it triggered"],
+                     [[md(p["section"]), md(p["node"]),
+                       md(f"{p['ig']} {IP.IG_NAMES.get(p['ig'], '')}"), md(p["why"])]
+                      for p in plan])
+    out = [intro, table]
+    for p in plan:
+        slot = p["slot"]
+        pending = IG_PENDING.get(slot)
+        rows = []
+        for st in p["styles"]:
+            key = f"{slot}|{st['id']}"
+            frames = "".join(
+                f'<div class="frame"><span>{w}px</span>'
+                f'<iframe title="{esc(st["label"])} at {w} pixels wide" sandbox="allow-same-origin" '
+                f'loading="eager" scrolling="auto" data-ig="{esc(key)}" width="{w}" height="{PREVIEW_H}" '
+                f'style="width:{w}px;height:{PREVIEW_H}px"></iframe></div>' for w in PREVIEW_W)
+            rows.append(f'<div class="style"><label><input type="radio" name="pick-ig:{esc(slot)}" '
+                        f'value="{esc(st["id"])}"> {esc(st["label"])}</label>'
+                        f'<div class="frames">{frames}</div></div>')
+        legend = (f"Optional — {esc(slot)}" if pending else f"Pick one style for {esc(slot)}")
+        out.append(f"### {md(slot)} · {md(p['ig'])} {md(IP.IG_NAMES.get(p['ig'], ''))}\n\n"
+                   f"**Heading:** {md(p['node'])}  \n**Why:** {md(p['why'])}"
+                   + (f'\n\n<p class="rules-refused">{esc(pending)}</p>' if pending else "")
+                   + f'\n\n<fieldset class="styles"><legend>{legend}</legend>{"".join(rows)}</fieldset>')
+    return "\n\n".join(out)
+
+
+def og_block(board):
+    """Block 7d: og_slots' proposal table, then a use/skip radio pair per slot
+    (`pick-og:<slot>`). Not in the approve signature: leaving one blank is allowed."""
+    text = OG.block(board)
+    if text.startswith("### "):          # the section title already says "7d. OG images"
+        text = text.split("\n", 1)[1].lstrip("\n")
+    pairs = "".join(
+        f'<div class="ogpick"><b>{esc(o["slot"])}</b>'
+        + "".join(f' <label><input type="radio" name="pick-og:{esc(o["slot"])}" value="{v}"> {v}</label>'
+                  for v in ("use", "skip"))
+        + "</div>" for o in OG.propose(board))
+    return (text + "\n\n**Use or skip each slot** — optional; a slot left blank is decided later.\n\n"
+            + f'<div class="ogpicks">{pairs}</div>')
+
+
 def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None,
            intake=None):
     previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
@@ -885,6 +999,12 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         "", "**Angles considered**", angles_table(brief),
         "", "**Research used**", md_table(["Source", "Fetched"], [[md(s["path"]), md(s["fetched"])] for s in m["sources"]]) if m["sources"] else "_no sources recorded_",
     ])))
+
+    # Board v2 blocks ride on project 5 boards only, so the twelve built boards render
+    # byte-for-byte as before (tests/py/test_family_rules_on_board.py).
+    new_family = PB.FR.applies(board)
+    if new_family:
+        parts.append(("1b. How Google reads this page", SR.block(board)))
 
     h1, ms = board["h1"], board["meta_set"]
     picked = h1["pick"] if h1["pick"] is not None else h1["recommended"]
@@ -928,7 +1048,6 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     # The four optional types get a column only where they mean something: on a new-family
     # page (where family_rules requires them) or on any board that already uses one.
     kgroups = BE.group_keywords(board)
-    new_family = PB.FR.applies(board)
     ktypes = [k for k in PB.ALL_KEYWORD_TYPES
               if k in PB.KEYWORD_TYPES or new_family or d["totals"][k]]
     rows = [[md(r["section"])] + [r[k] for k in ktypes] + [f"{r['words_min']}–{r['words_max']}"] for r in d["rows"]]
@@ -954,10 +1073,16 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                       f"{md(KM.CAPTION)} `python3 scripts/keyword_metrics.py "
                       f"{md(slug)}` prints the same table.\n\n"
                       + md_table(KM.COLUMNS, [[md(c) for c in KM.cells(r)] for r in kt["rows"]])))
+        parts.append(("4c. Term density against competitors", TD.table(board, ont)))
+        parts.append(("4d. FAQ placement", FL.block(board)))
     ent_md = (BE.entities_html(BE.group_entities(board, ont))
               + (f"\n\n**BLOCKED referenced: {', '.join(md(e) for e in auth['blocked'])}.** The board cannot be approved." if auth["blocked"] else "")
               + (f"\n\nPROPOSED (need a source): {', '.join(md(e) for e in auth['proposed'])}." if auth["proposed"] else ""))
     parts.append(("5. Entities", ent_md))
+    # Straight after the entities, because it is their mirror: what the competitors carry
+    # (phrases and ontology entities) that this board does not.
+    if new_family:
+        parts.append(("5c. What competitors say that we do not", TG.block(board, ont)))
 
     parts.append(("5b. The kit", f'<div class="opts kit">{"".join(kit_cards(board, ledger, thumbs, slug))}</div>'
                   "\n\nThe page-level tuple, for reading. Picks happen in block 6; a shell that is wrong here is "
@@ -1006,6 +1131,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     if PB.FR.applies(board):
         rules_html, refused = rules_block(rule_findings(board, ont))
         parts.append(("7b. Rules for new pages", rules_html))
+        parts.append(("7c. Infographics", infographic_block(board)))
+        parts.append(("7d. OG images", og_block(board)))
 
     status = ("Approved as it stands." if approved else
               REFUSAL_LINE if refused else "Connecting to the board database…")
@@ -1018,6 +1145,14 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
 
     blocks = "".join(f'<script type="text/markdown" data-title="{esc(t)}">\n{b}\n</script>\n' for t, b in parts)
     record_hash = PB.record_hash(board)
+    # Block 7c's infographic frames: one standalone document per slot|style, pasted into
+    # that style's three frames; its fonts resolve against the board's URL (IG_FONT_BASE).
+    # Emitted on project 5 boards only, so a pre-rule board's script is unchanged.
+    ig_js = ("  var IG_DOCS=" + js(infographic_docs(board)) + ";\n"
+             "  document.querySelectorAll('iframe[data-ig]').forEach(function(f){\n"
+             "    var d=IG_DOCS[f.getAttribute('data-ig')];\n"
+             "    if(d!==undefined)f.srcdoc=d;\n"
+             "  });\n") if new_family else ""
     # The charset is declared: the board carries em dashes and pound signs from the record
     # and from src/lib/boardStyles.ts, and a document served without one is decoded as
     # latin-1 by any viewer that does not send a charset of its own.
@@ -1078,8 +1213,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
       +'body{{margin:0;background:#F4F1EA;color:#1B2430;font-family:"Source Sans 3",system-ui,sans-serif}}'
       +NAV_CSS+'</style>'+inner;
   }});
-  var RECORD_HASH={js(record_hash)};var BOARD_DOC={js("boards/" + slug)};
-  var SIGNATURE_SECTIONS={js(picked_sections(board, ledger, slug) + IR.slots_needing_pick(board))};
+{ig_js}  var RECORD_HASH={js(record_hash)};var BOARD_DOC={js("boards/" + slug)};
+  var SIGNATURE_SECTIONS={js(signature_sections(board, ledger, slug))};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
   if(!window.claude||!window.claude.use){{st.textContent='Open this board inside claude.ai to approve it.';return;}}
   window.claude.use("db").then(function(db){{
@@ -1177,6 +1312,12 @@ def main():
     if want and have < want:
         print("  some styles are not rendered: run npm run build, then "
               "python3 scripts/build_board_previews.py %s" % slug)
+    if PB.FR.applies(board):
+        n_ig = len(IP.plan(board, root=None))
+        files = {IG_FONT_BASE + f: f"public/fonts/{f}" for f in IG_FONT_FILES}
+        print("  infographics: %d slot(s), %d previews inline; approval waits on %d"
+              % (n_ig, 3 * n_ig, len(ig_slots_required(board))))
+        print("  publish with capabilities={\"db\": {}} and files=%s" % json.dumps(files))
 
 
 if __name__ == "__main__":

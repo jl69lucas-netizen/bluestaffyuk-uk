@@ -2614,3 +2614,86 @@ def test_every_shipped_board_record_is_free_of_the_contradiction():
         assert PB.dropped_vs_verbatim(rec) == [], path.name
         checked += 1
     assert checked >= 13, checked
+
+
+# ── London board v2 (plan 2026-10-02, Task 7): blocks 1b, 4c, 4d, 5c, 7c, 7d ─────────────
+V2_TITLES = ["1b. How Google reads this page", "4c. Term density against competitors",
+             "4d. FAQ placement", "5c. What competitors say that we do not",
+             "7c. Infographics", "7d. OG images"]
+LONDON = "blue-staffy-puppies-london"
+
+
+@pytest.fixture(scope="module")
+def london_html():
+    import build_page_board as BPB
+    london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
+    ont = json.loads((ROOT / "data/bsuk-ontology.json").read_text())
+    return BPB.render(london, ont, LEDGER_EMPTY, live={}, thumbs={}, slug=LONDON)
+
+
+def test_v2_blocks_on_a_new_family_board(london_html):
+    for t in V2_TITLES:
+        assert f'data-title="{t}"' in london_html, t
+
+
+def test_v2_blocks_never_on_a_pre_rule_board():
+    import build_page_board as BPB
+    old = BPB.render(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
+    for t in V2_TITLES:
+        assert t not in old, t
+
+
+def _ig_slots():
+    import infographic_plan as IP
+    london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
+    return [p["slot"] for p in IP.plan(london)]
+
+
+def test_7c_offers_three_styles_per_infographic_slot(london_html):
+    slots = _ig_slots()
+    assert "breed-split" in slots and len(slots) >= 2
+    for slot in slots:
+        for style in ("plate", "ruled", "card"):
+            # breed-split is offered too, as an OPTIONAL pick: it is kept out of the approve
+            # signature (test below) until the breeder answers the batch question on it.
+            assert f'name="pick-ig:{slot}" value="{style}"' in london_html, (slot, style)
+    assert "Optional — breed-split" in london_html
+    assert ("Pending your answer on the decisions batch: no breed-standard data exists, so this "
+            "would show NOT FETCHED. Not required for approval.") in london_html
+    assert "beside the H2" in london_html
+
+
+def test_7c_previews_render_at_three_widths(london_html):
+    import build_page_board as BPB
+    for w in BPB.PREVIEW_W:
+        assert f'data-ig="deposit-steps|plate" width="{w}"' in london_html
+
+
+def test_7d_offers_use_or_skip_per_og_slot(london_html):
+    import og_slots as OG
+    london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
+    for s in OG.propose(london):
+        for v in ("use", "skip"):
+            assert f'name="pick-og:{s["slot"]}" value="{v}"' in london_html, (s["slot"], v)
+
+
+def test_signature_sections_wait_for_infographics_but_not_og():
+    import build_page_board as BPB
+    london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
+    sig = BPB.signature_sections(london, LEDGER_EMPTY, LONDON)
+    for slot in _ig_slots():
+        assert (f"ig:{slot}" in sig) == (slot != "breed-split"), slot
+    assert not any(s.startswith("og:") for s in sig)
+    # And the approve script carries exactly that list.
+    import build_page_board as BPB2
+    html = BPB2.render(london, json.loads((ROOT / "data/bsuk-ontology.json").read_text()),
+                       LEDGER_EMPTY, live={}, thumbs={}, slug=LONDON)
+    assert f"var SIGNATURE_SECTIONS={BPB.js(sig)};" in html
+
+
+def test_signature_sections_unchanged_on_a_pre_rule_board():
+    import build_page_board as BPB
+    import image_rules as IR
+    b = _approved(MIN_BOARD)
+    assert BPB.signature_sections(b, LEDGER_EMPTY, "x") == (
+        BPB.picked_sections(b, LEDGER_EMPTY, "x") + IR.slots_needing_pick(b))

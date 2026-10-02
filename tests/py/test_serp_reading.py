@@ -189,7 +189,7 @@ def test_top_domain_tie_goes_to_the_first_seen():
     r = {"ranking": _rank(["b.example", "a.example", "a.example", "b.example"]),
          "features": {}, "paa": [], "related": [], "aio_cites": []}
     tops = [b for b in SR.takeaways(r, []) if ".example holds " in b]
-    assert tops == ["b.example holds 2 of the 4 organic results; no breeder site ranks."]
+    assert tops == ["b.example holds 2 of the 4 organic results; no page classed as a breeder page."]
 
 
 def test_listings_bullet_wording_is_pinned():

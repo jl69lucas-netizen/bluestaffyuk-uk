@@ -348,6 +348,12 @@ def refuse_header_collisions(b, live, boards=None):
             + "\n(if a listed page changed since the last build, run npm run build and retry)")
 
 
+#: The board v2 pick groups that name a slot rather than a section: `ig:<slot>` (block 7c,
+#: the infographic style) and `og:<slot>` (block 7d, use or skip a proposed OG image).
+V2_PICKS = {"ig:": ("plate", "ruled", "card"), "og:": ("use", "skip")}
+V2_PICKS_PREFIXES = tuple(V2_PICKS)
+
+
 def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, boards=None):
     """The board, ledger and ontology as they stand after this approval. Pure: it reads
     nothing but its arguments and writes nothing — raise here and the files on disk are
@@ -366,6 +372,13 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
     for sid, pick in inbox.get("picks", {}).items():
         if sid.startswith(IR.PICK_PREFIX):
             continue                                  # an image pick, validated below
+        # Board v2 blocks 7c and 7d (build_page_board.py): an infographic style and an OG
+        # slot's use/skip. They name a slot, not a section, and live only in approval.picks.
+        if sid.startswith(V2_PICKS_PREFIXES):
+            prefix = sid.split(":", 1)[0] + ":"
+            if pick not in V2_PICKS[prefix]:
+                raise PB.BoardError(f"pick {sid}: {pick!r} is not one of {list(V2_PICKS[prefix])}")
+            continue
         if sid not in by_id:
             raise PB.BoardError(f"approval picks section {sid!r}, which is not in the record")
         # The pick has to come off the menu the board offered. It is matched on the BASE,

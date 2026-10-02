@@ -102,10 +102,11 @@ def term_row(term, pages, our_words):
     }
 
 
-def competitor_pages(slug, terms, root=ROOT):
+def competitor_pages(slug, terms, root=ROOT, skipped=None):
     """count_terms() for the top TOP non-blocked, cached, non-listing competitor pages, each
     with its url, its rank (1-based, in keyword_metrics' order of the non-blocked pages) and
-    `of` (how many non-blocked pages were ranked)."""
+    `of` (how many non-blocked pages were ranked). A listing page passed over on the way is
+    appended to `skipped` (its url), when the caller passes a list."""
     bare = KM._bare(slug)
     path = pathlib.Path(root) / "data/queries/raw" / bare / "competitors.json"
     try:
@@ -123,6 +124,8 @@ def competitor_pages(slug, terms, root=ROOT):
             continue
         html = cached.read_text(encoding="utf-8", errors="replace")
         if QA.listing_reason(QA.page_metrics(html)):
+            if skipped is not None:
+                skipped.append(p.get("url", ""))
             continue
         out.append(dict(count_terms(html, terms), url=p.get("url", ""), rank=rank,
                         of=len(ranked)))
@@ -143,12 +146,12 @@ def section_words(sec):
     return int(w)
 
 
-def rows(board, ont, root=ROOT):
+def rows(board, ont, root=ROOT, skipped=None):
     """(one term_row per board term and entity name, the competitor pages counted)."""
     terms, _ = KM.board_terms(board)
     terms = list(dict.fromkeys(terms + board_entity_names(board, ont)))
     our_words = sum(section_words(s) for s in board.get("sections", []))
-    pages = competitor_pages(board["meta"]["slug"], terms, root)
+    pages = competitor_pages(board["meta"]["slug"], terms, root, skipped)
     return [term_row(t, pages, our_words) for t in terms], pages
 
 
@@ -170,13 +173,9 @@ def md_table(head, body):
     return "\n".join(lines)
 
 
-# Old private names, kept for callers outside this change.
-_md = md_table
-_section_words = section_words
-
-
 def table(board, ont, root=ROOT):
-    rs, pages = rows(board, ont, root)
+    skipped = []
+    rs, pages = rows(board, ont, root, skipped)
     head = ["Term", "Seen on", "Min", "Median", "Mean", "Max",
             "Target · median band", "Target · leader band"]
     body = []
@@ -189,9 +188,12 @@ def table(board, ont, root=ROOT):
     if pages:
         ranks = ", ".join(str(p["rank"]) for p in pages)
         urls = ", ".join(p["url"] for p in pages)
+        # The clause is said only when it is true: a pool with no listing page in it is
+        # the same pool block 4b counts, and saying it differs would be a false warning.
+        why = ("; listing pages skipped, so this differs from block 4b's five"
+               if skipped else "")
         lines = [f"Counted on {len(pages)} non-listing competitor bodies (ranks {ranks} of "
-                 f"{pages[0]['of']}; listing pages skipped, so this differs from block 4b's "
-                 f"five): {urls}"]
+                 f"{pages[0]['of']}{why}): {urls}"]
     else:
         lines = ["Counted on 0 non-listing competitor bodies: NOT FETCHED"]
     if len(pages) < THIN:

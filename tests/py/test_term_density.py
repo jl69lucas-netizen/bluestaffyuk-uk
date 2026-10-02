@@ -115,14 +115,36 @@ def test_table_renders_ranks_thin_pool_dash_and_overlap_note(tmp_path):
     ont = {"entities": [{"id": "ont:a", "name": "Blue Staffy"}]}
     out = TD.table(board, ont, root=root)
     lines = out.splitlines()
-    assert lines[0] == ("Counted on 2 non-listing competitor bodies (ranks 1, 2 of 2; listing pages "
-                        "skipped, so this differs from block 4b's five): u1, u2")
+    # No listing page was in the pool, so the "differs from block 4b" clause is not said.
+    assert lines[0] == "Counted on 2 non-listing competitor bodies (ranks 1, 2 of 2): u1, u2"
     assert "**Thin pool:** fewer than three bodies — the bands are indicative only." in lines
     assert "| kennel club | 2/2 | 1 | 1 | 1.0 | 1 | 187–253 | 253–286 |" in lines
     assert ("| pedigree | 0/2 | 0 | 0 | 0.0 | 0 | — (no competitor uses it) "
             "| — (no competitor uses it) |") in lines
     assert "| Blue Staffy | 2/2 | 1 | 1.5 | 1.5 | 2 |" in out
     assert lines[-1] == TD.OVERLAP_NOTE
+
+
+def test_table_says_it_differs_from_4b_only_when_a_listing_was_skipped(tmp_path):
+    pages = [{"url": "u1", "google_pos": 1}, {"url": "u2", "google_pos": 2},
+             {"url": "u3", "google_pos": 3}]
+    root = _root(tmp_path, pages, {1: PAGE_A, 2: LISTING, 3: PAGE_B})
+    board = {"meta": {"slug": SLUG}, "sections": [{"keywords": {"primary": ["kennel club"]}}]}
+    first = TD.table(board, {"entities": []}, root=root).splitlines()[0]
+    assert first == ("Counted on 2 non-listing competitor bodies (ranks 1, 3 of 3; listing pages "
+                     "skipped, so this differs from block 4b's five): u1, u3")
+
+
+def test_skipped_collects_the_listing_urls(tmp_path):
+    pages = [{"url": "u1", "google_pos": 1}, {"url": "u2", "google_pos": 2}]
+    root = _root(tmp_path, pages, {1: LISTING, 2: PAGE_A})
+    skipped = []
+    TD.competitor_pages(SLUG, ["x"], root=root, skipped=skipped)
+    assert skipped == ["u1"]
+
+
+def test_the_old_private_aliases_are_gone():
+    assert not hasattr(TD, "_md") and not hasattr(TD, "_section_words")
 
 
 def test_table_with_no_bodies_is_not_fetched(tmp_path):
