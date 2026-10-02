@@ -135,13 +135,13 @@ def test_no_real_name_in_any_generated_brief():
     """Rule 9: a generated image never names a real dog, person or litter."""
     board = json.loads(LONDON.read_text())
     pups = json.loads((ROOT / "data/puppies.json").read_text())
-    forbidden = {p["name"] for p in pups} | {"Maggie", "Jones", "Lisa", "Bright"}
+    forbidden = {p["name"] for p in pups} | {"Maggie", "Jones", "Lisa Bright"}
     assert forbidden <= OG.real_names()
     slots = OG.propose(board)
     for s in slots:
-        for field in ("subject", "prompt_brief"):
+        for field in ("subject", "prompt_brief", "where"):
             for name in forbidden:
-                assert not re.search(r"\b%s\b" % name, s[field]), (s["slot"], field, name)
+                assert not re.search(r"\b%s\b" % name, s[field], re.I), (s["slot"], field, name)
     assert slots[0]["subject"] == "a blue Staffordshire Bull Terrier dam with her puppies, at home"
 
 
@@ -150,3 +150,42 @@ def test_unnamed_strips_names_from_headings():
     secs = [_sec("b0", "Is Roman the Right Puppy for You?")] + [_sec(f"b{i}", "B") for i in range(1, 4)]
     s = OG.propose({"sections": secs, "assets": []})[1]
     assert "Roman" not in s["subject"] and "Roman" not in s["prompt_brief"]
+
+
+def test_person_names_are_whole_phrases_only():
+    names = OG.real_names()
+    assert "Lisa Bright" in names
+    assert not {"Bright", "Victoria", "Mark", "Lisa", "Rachel"} & names
+    assert OG.unnamed("A Bright Future in London", names) == "A Bright Future in London"
+    assert OG.unnamed("Victoria Station", names) == "Victoria Station"
+    assert OG.unnamed("Lisa Bright's litter", names) == "litter"
+
+
+def test_unnamed_case_possessive_and_joins():
+    n = {"Roman", "Byrd", "Maggie"}
+    assert OG.unnamed("Meet ROMAN Today", n) == "Meet Today"
+    assert OG.unnamed("maggie’s pups at home", n) == "pups at home"
+    assert OG.unnamed("Roman-Byrd Litter", n) == "Litter"
+    assert OG.unnamed("Carlisle — London", n) == "Carlisle — London"
+
+
+def test_intent_cues_need_word_boundaries():
+    assert OG.intent_of(_sec("a", "A Priceless Companion")) == "informational"
+    assert OG.intent_of(_sec("b", "Costume Ideas for Staffies")) == "informational"
+    assert OG.intent_of(_sec("c", "What Do Puppies Cost?")) == "transactional"
+    assert OG.intent_of(_sec("d", "Prices This Year")) == "transactional"
+
+
+def test_brief_has_no_question_full_stop_and_sections_need_an_id():
+    secs = [_sec(f"b{i}", f"Is This Body {i}?") for i in range(4)] + [{"heading": "No id"}]
+    slots = OG.propose({"sections": secs, "assets": []})
+    assert all("?." not in s["prompt_brief"] for s in slots)
+    assert "Is This Body 0? Negative:" in slots[1]["prompt_brief"]
+    assert all(s["section"] for s in slots) and "og-None" not in {s["slot"] for s in slots}
+
+
+def test_fewer_wording_is_singular_or_plural():
+    one = OG.block({"sections": [_sec("b0", "B")], "assets": []})
+    assert "Only 1 eligible body section on this board, so 2 slots are proposed" in one
+    two = OG.block({"sections": [_sec("b0", "B"), _sec("b1", "C")], "assets": []})
+    assert "Only 2 eligible body sections on this board, so 3 slots are proposed" in two

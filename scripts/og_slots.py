@@ -57,11 +57,12 @@ INTENTS = ("transactional", "commercial", "informational", "navigational", "loca
 TIER = {"transactional": 0, "commercial": 1}
 
 TRANSACTIONAL = re.compile(
-    r"\bdeposit|\bprice|\bcost|\bavailable\b|\bbuy|\breserv|\bfor sale\b|\bdeliver|\bcollect"
-    r"|\border\b|£", re.I)
+    r"\b(?:deposits?|prices?|priced|pricing|costs?|costing|available|buy|buying|"
+    r"reserv(?:e|ed|ing|ation|ations)|for sale|deliver(?:y|ed|ing|ies)?|"
+    r"collect(?:ion|ing|ed)?|orders?)\b|£", re.I)
 COMMERCIAL = re.compile(
-    r"\bbreeder|\bhealth[- ]tested\b|\bpaperwork\b|\bkennel club\b|\bguarantee|\bvs\b"
-    r"|\bversus\b|\bcompare|\bbest\b|\breview", re.I)
+    r"\b(?:breeders?|health[- ]tested|paperwork|kennel club|guarantee[sd]?|vs|versus|"
+    r"compar(?:e|ed|ing|ison|isons)|best|reviews?)\b", re.I)
 
 FRAME_SHAPES = {"hero", "stats", "trust", "dial", "takeaways", "reviews", "faq", "form"}
 FRAME_IDS = {"top", "hero", "counter", "trust", "contents", "key-takeaways", "takeaways",
@@ -103,7 +104,7 @@ def intent_of(sec: dict) -> str:
 
 def eligible(board: dict) -> list[dict]:
     """Body sections ranked transactional, commercial, the rest; board order within a tier."""
-    body = [s for s in board.get("sections", []) if not _is_frame(s)]
+    body = [s for s in board.get("sections", []) if s.get("id") and not _is_frame(s)]
     order = sorted(range(len(body)), key=lambda i: (TIER.get(intent_of(body[i]), 2), i))
     return [body[i] for i in order]
 
@@ -124,14 +125,16 @@ def _hero_alt(board: dict) -> str | None:
 
 
 BREED = "a blue Staffordshire Bull Terrier"
-NAME_STOP = {"The", "Family", "And", "Of"}
 
 
 def real_names() -> set[str]:
     """Every real dog, person or litter name the repo holds, so none reaches a generated
     image's subject or prompt (CLAUDE.md rule 9): the puppies in data/puppies.json, the named
-    dogs in data/bsuk-ontology.json (single-word Organism entities: the dam and the sire), the
-    breeder (data/settings.json breeder_name) and the reviewers (data/reviews.json)."""
+    dogs in data/bsuk-ontology.json (single-word Organism entities: the dam and the sire; the
+    breed and the coat are multi-word), the breeder's full name (data/settings.json
+    breeder_name) and each reviewer's full display name (data/reviews.json). Person names are
+    whole phrases only: a lone first name or surname ("Bright", "Victoria") is ordinary
+    English and stays."""
     names: set[str] = set()
 
     def load(rel):
@@ -145,7 +148,6 @@ def real_names() -> set[str]:
         if not full:
             return
         names.add(full)
-        names.update(t for t in re.findall(r"[A-Z][a-z]{2,}", full) if t not in NAME_STOP)
 
     pups = load("data/puppies.json") or []
     for p in pups if isinstance(pups, list) else []:
@@ -164,12 +166,22 @@ def real_names() -> set[str]:
 
 
 def unnamed(text: str, names: set[str] | None = None) -> str:
-    """`text` with every real name removed (longest first), whitespace tidied."""
+    """`text` with every real name removed, case-insensitively and longest first, with its
+    possessive ('s or ’s). When a name was removed, the joins it leaves (a stranded hyphen or
+    dash, doubled spaces, a space before punctuation) are tidied; text with no name is
+    returned untouched."""
     names = real_names() if names is None else names
+    out = text
     for n in sorted(names, key=len, reverse=True):
-        text = re.sub(r"\b%s\b(?:'s)?" % re.escape(n), "", text)
-    text = re.sub(r"\s+([,.?!])", r"\1", re.sub(r"\s{2,}", " ", text))
-    return text.strip(" ,")
+        pat = r"(?<![\w])%s(?![\w])(?:['’]s\b)?" % re.escape(n)
+        out = re.sub(pat, "", out, flags=re.I)
+    if out == text:
+        return text
+    out = re.sub(r"(?<!\w)[-–—/&]+(?!\w)", " ", out)       # a join left with nothing beside it
+    out = re.sub(r"(?<!\w)[-–—]+(?=\w)|(?<=\w)[-–—]+(?!\w)", " ", out)
+    out = re.sub(r"\s{2,}", " ", out)
+    out = re.sub(r"\s+([,.?!:;])", r"\1", out)
+    return out.strip(" ,;:-–—")
 
 
 def _share_subject(alt: str | None) -> str:
@@ -192,7 +204,9 @@ def _hero_section(board: dict) -> str:
 
 
 def _brief(subject: str, neg: str) -> str:
-    return "Subject: %s Negative: %s" % (subject.rstrip(".") + ".", neg)
+    subject = subject.rstrip()
+    end = "" if subject[-1:] in ".?!" else "."
+    return "Subject: %s%s Negative: %s" % (subject, end, neg)
 
 
 def propose(board: dict, n: int = N_DEFAULT) -> list[dict]:
@@ -206,7 +220,7 @@ def propose(board: dict, n: int = N_DEFAULT) -> list[dict]:
     for i, sec in enumerate(eligible(board)[: n - 1]):
         heading = unnamed(sec.get("heading", ""), names)
         slots.append({"slot": "og-%s" % sec.get("id"), "section": sec.get("id"),
-                      "where": "H2 · %s" % sec.get("heading", ""), "kind": "photo", "source": "generate",
+                      "where": "H2 · %s" % heading, "kind": "photo", "source": "generate",
                       "status": "proposed", "w": INBODY_W, "h": INBODY_H,
                       "og_style": STYLE_CYCLE[i % len(STYLE_CYCLE)],
                       "intent": intent_of(sec), "subject": heading,
@@ -225,11 +239,11 @@ def block(board: dict, n: int = N_DEFAULT) -> str:
            "(working rule 11), and each is approved by the hash of its exact bytes at STOP 4.",
            ""]
     if len(slots) < want:
-        out += ["Only %d eligible body section%s on this board, so %d slot%s are proposed — "
-                "fewer than the %d asked for." % (len(slots) - 1,
-                                                    "" if len(slots) == 2 else "s",
-                                                    len(slots), "" if len(slots) == 1 else "s",
-                                                    want), ""]
+        k = len(slots) - 1
+        out += ["Only %d eligible body section%s on this board, so %d %s proposed — fewer "
+                "than the %d asked for." % (k, "" if k == 1 else "s", len(slots),
+                                            "slot is" if len(slots) == 1 else "slots are",
+                                            want), ""]
     rows = [[s["slot"], s["where"], "%d×%d" % (s["w"], s["h"]),
              "%s %s" % (s["og_style"], names.get(s["og_style"], "")), s["subject"]]
             for s in slots]

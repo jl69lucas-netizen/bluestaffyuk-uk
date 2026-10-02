@@ -1,3 +1,3 @@
-{"ts": "2026-10-02T00:00:00Z", "model": "gemini-3-pro-image-preview", "slot": "_demo/raise-photo", "status": 402, "note": "prepayment credits depleted"}
-{"ts": "2026-10-02T00:00:00Z", "model": "gemini-2.5-flash-image", "slot": "test", "status": 402, "note": "prepayment credits depleted"}
-{"ts": "2026-10-02T00:00:00Z", "model": "gemini-2.5-flash", "slot": "test", "status": 404, "note": "model no longer available"}
+{"ts": "2026-10-02T00:00:00Z", "model": "gemini-3-pro-image-preview", "slot": "_demo/raise-photo", "status": 402, "note": "prepayment credits depleted (backfilled; time unknown)"}
+{"ts": "2026-10-02T00:00:00Z", "model": "gemini-2.5-flash-image", "slot": "test", "status": 402, "note": "prepayment credits depleted (backfilled; time unknown)"}
+{"ts": "2026-10-02T00:00:00Z", "model": "gemini-2.5-flash", "slot": "test", "status": 404, "note": "model no longer available (backfilled; time unknown)"}

@@ -26,7 +26,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LOG = ROOT / "docs/reports/gemini-usage.jsonl"
-KEY_PATTERN = re.compile(r"AQ\.\S+|AIza\S+")
+KEY_PATTERN = re.compile(r"\bAQ\.\S+|\bAIza\S+")
 REDACTED = "[redacted]"
 USAGE = "usage: python3 scripts/gemini_log.py summary [--path <log.jsonl>] [--today YYYY-MM-DD]"
 
@@ -57,22 +57,36 @@ def log_call(model: str, slot: str, status, note: str = "", path=None, ts: str |
 
 
 def summary(path=None, today: str | None = None) -> dict:
-    """Calls today (UTC date), calls in total, and counts by status (keys as strings)."""
+    """Calls today, calls in total, counts by status (keys as strings) and lines that are not
+    JSON (`malformed`). Every date is UTC: `ts` is written in UTC, and `today` (YYYY-MM-DD)
+    defaults to the current UTC date, so a call late in a UK evening in summer counts on the
+    next UTC day."""
     p = Path(path or LOG)
     today = today or datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    rows = []
+    rows, malformed = [], 0
     if p.is_file():
         for line in p.read_text(encoding="utf-8").splitlines():
-            if line.strip():
-                rows.append(json.loads(line))
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                malformed += 1
+                continue
+            if isinstance(row, dict):
+                rows.append(row)
+            else:
+                malformed += 1
     by = Counter(str(r.get("status")) for r in rows)
     return {"today": sum(1 for r in rows if str(r.get("ts", "")).startswith(today)),
-            "total": len(rows), "by_status": dict(by)}
+            "total": len(rows), "by_status": dict(by), "malformed": malformed}
 
 
 def render(s: dict) -> str:
     statuses = ", ".join("%s: %d" % (k, v) for k, v in sorted(s["by_status"].items())) or "none"
-    return "Gemini usage: today %d, total %d; by status — %s" % (s["today"], s["total"], statuses)
+    line = "Gemini usage (UTC): today %d, total %d; by status — %s" % (s["today"], s["total"],
+                                                                       statuses)
+    return line + ("; malformed lines %d" % s["malformed"] if s.get("malformed") else "")
 
 
 def main(argv: list[str]) -> int:

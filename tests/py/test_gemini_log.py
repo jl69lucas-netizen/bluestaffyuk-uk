@@ -45,7 +45,7 @@ def test_summary_counts(tmp_path):
 
 def test_missing_log_is_zero_summary(tmp_path):
     s = GL.summary(tmp_path / "nope.jsonl", today="2026-10-02")
-    assert s == {"today": 0, "total": 0, "by_status": {}}
+    assert s == {"today": 0, "total": 0, "by_status": {}, "malformed": 0}
 
 
 def test_key_never_written(tmp_path, monkeypatch):
@@ -81,3 +81,20 @@ def test_committed_log_is_clean():
     for r in rows:
         assert set(r) == {"ts", "model", "slot", "status", "note"}
     assert not GL.KEY_PATTERN.search(p.read_text())
+
+
+def test_malformed_lines_are_counted_not_fatal(tmp_path):
+    p = tmp_path / "log.jsonl"
+    GL.log_call("m", "a", 200, path=p, ts="2026-10-02T09:00:00Z")
+    with p.open("a") as f:
+        f.write("{not json\n[1, 2]\n")
+    s = GL.summary(p, today="2026-10-02")
+    assert s["total"] == 1 and s["today"] == 1 and s["malformed"] == 2
+    assert "malformed lines 2" in GL.render(s)
+
+
+def test_redaction_spares_words_ending_in_aq(tmp_path):
+    p = tmp_path / "log.jsonl"
+    GL.log_call("m", "s", 200, note="see FAQ.md and AQ.realkey99", path=p)
+    note = _lines(p)[0]["note"]
+    assert note == "see FAQ.md and [redacted]"
