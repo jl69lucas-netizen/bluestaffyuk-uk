@@ -23,6 +23,7 @@ import json
 import pathlib
 import re
 import sys
+from collections import Counter
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import keyword_metrics as KM  # noqa: E402
@@ -71,7 +72,7 @@ GENERIC = frozenset(
     "they them much".split())
 
 # Scoring a question against one heading or FAQ question (see _score).
-EXACT, CONCEPT, WORD, HEADING_BONUS, THRESHOLD = 10, 2, 1, 1, 2
+EXACT, CONCEPT, WORD, HEADING_BONUS, THRESHOLD = 10, 2, 1, 1, 3
 
 PAGE_TYPES = ("listing", "breeder", "guide", "other", "off-topic")
 # The URL/title heuristic, used only when competitors.json has not measured the page:
@@ -156,7 +157,9 @@ def _score(q, text, is_heading):
 
 
 def answered_by(q, sections):
-    """The id of the section that best answers `q`, or None when no text reaches THRESHOLD.
+    """The id of the section that best answers `q`, or None when no text reaches THRESHOLD
+    (an exact question scores EXACT, which is above it). One shared concept alone (2) is not
+    enough: it needs a shared word or the section's own H2 behind it.
     Ties go to the section that comes first on the page."""
     best, best_id = 0, None
     for sec in sections or []:
@@ -308,27 +311,29 @@ def _plural(n, one, many=None):
 
 
 def takeaways(r, sections):
-    """3–6 bullets, each a count read from `r`. No bullet without a number behind it."""
+    """Up to 6 bullets. Each is a count read from `r`, and any reading of it is labelled:
+    "Reading:" for what the count suggests, "General guidance:" for advice that does not come
+    from this search. No bullet without a number behind it."""
     out, rank = [], r["ranking"]
     if rank:
         n = len(rank)
         by_type = {t: sum(1 for x in rank if x["type"] == t) for t in PAGE_TYPES}
-        top_dom = max({x["domain"] for x in rank}, key=lambda d: sum(1 for x in rank if x["domain"] == d))
-        top_n = sum(1 for x in rank if x["domain"] == top_dom)
+        # most_common keeps first-seen order on ties, and the ranking is in page order.
+        top_dom, top_n = Counter(x["domain"] for x in rank).most_common(1)[0]
         if by_type["listing"] * 2 > n:
-            out.append(f"{by_type['listing']} of {n} organic results are listings (puppies for "
-                       f"sale with prices) and {by_type['breeder']} "
-                       f"{'is a breeder page' if by_type['breeder'] == 1 else 'are breeder pages'}, "
-                       "so the pages ranking for this query are shopping pages: ours has to show "
-                       "price and availability above the fold, as they do.")
+            out.append(f"{by_type['listing']} of {n} organic results are listing pages (URL, "
+                       f"title or card grid says puppies for sale) and {by_type['breeder']} "
+                       f"{'is a breeder page' if by_type['breeder'] == 1 else 'are breeder pages'}. "
+                       "Reading: the pages ranking for this query are shopping pages, so ours "
+                       "should put price and availability above the fold.")
         else:
             out.append(f"The {n} organic results are {by_type['listing']} listings, "
                        f"{by_type['breeder']} breeder, {by_type['guide']} guide and "
-                       f"{by_type['other'] + by_type['off-topic']} other pages: no single page type owns "
-                       "this query.")
+                       f"{by_type['other'] + by_type['off-topic']} other pages. Reading: no single page "
+                       "type holds a majority.")
         if top_n > 1:
-            out.append(f"{top_dom} holds {top_n} of the {n} organic results, so the page we "
-                       f"compete with is that site's, not a breeder's.")
+            out.append(f"{top_dom} holds {top_n} of the {n} organic results"
+                       + ("; no breeder site ranks." if not by_type["breeder"] else "."))
     paa = r["paa"]
     if paa:
         gaps = [p["q"] for p in paa if not p["answered_by"]]
@@ -338,16 +343,16 @@ def takeaways(r, sections):
                        + "; ".join(f"“{g}”" for g in gaps) + ".")
         else:
             out.append(f"All {len(paa)} People Also Ask questions have a section that answers "
-                       "them; each answer should sit in the first sentence under its heading.")
+                       "them. General guidance: answer each one in the first sentence under its heading.")
     if "ai_overview" in r["features"]:
         what = (f"citing {', '.join(r['aio_cites'])}" if r["aio_cites"]
                 else "its sources were not in the saved response")
-        out.append(f"An AI Overview sits above the organic results ({what}): every question "
-                   "heading needs a direct 40–60 word answer an answer engine can lift.")
+        out.append(f"An AI Overview sits above the organic results ({what}). General guidance: "
+                   "answer each question heading directly in its first 40–60 words.")
     vids = sum(1 for x in rank if x["video"])
     if vids and len(out) < 6:
-        out.append(f"{vids} of {len(rank)} organic results show a video: a real video on our "
-                   "page, marked up with VideoObject, competes for that slot.")
+        out.append(f"{vids} of {len(rank)} organic results are flagged as video. General "
+                   "guidance: a real video with VideoObject markup is eligible for video results.")
     rel = r["related"]
     if rel and len(out) < 6:
         out.append(f"{_plural(len(rel), 'related search', 'related searches')}: "
@@ -411,8 +416,9 @@ def block(board, root=ROOT):
         return f"NOT FETCHED — no data/queries/raw/{bare}/serp_google*.json"
     serp = _load(proc)
     if serp.get("status", "ok") != "ok":
-        return f"NOT FETCHED — data/queries/raw/{bare}/serp_google.json status " \
-               f"{serp.get('status')}: {serp.get('note', '')}".rstrip(": ")
+        msg = f"NOT FETCHED — data/queries/raw/{bare}/serp_google.json status {serp.get('status')}"
+        note = (serp.get("note") or "").strip()
+        return f"{msg}: {note}" if note else msg
     comp_p = d / "competitors.json"
     comp = _load(comp_p) if comp_p.is_file() else None
     sections = board.get("sections") or []

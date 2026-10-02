@@ -178,3 +178,52 @@ def test_a_shared_synonym_word_is_not_counted_twice():
              "tree": [{"level": 3, "heading": "Does It Come Off the Price?"}]},
             {"id": "litter-prices", "heading": "What Do They Cost?"}]
     assert SR.answered_by("Blue staffy puppies london price", secs) == "litter-prices"
+
+
+def _rank(domains, kind="other"):
+    return [{"pos": i + 1, "domain": d, "url": "u", "title": "", "type": kind, "basis": "",
+             "video": False} for i, d in enumerate(domains)]
+
+
+def test_top_domain_tie_goes_to_the_first_seen():
+    r = {"ranking": _rank(["b.example", "a.example", "a.example", "b.example"]),
+         "features": {}, "paa": [], "related": [], "aio_cites": []}
+    tops = [b for b in SR.takeaways(r, []) if ".example holds " in b]
+    assert tops == ["b.example holds 2 of the 4 organic results; no breeder site ranks."]
+
+
+def test_listings_bullet_wording_is_pinned():
+    r = {"ranking": _rank(["s.example"] * 7, "listing") + _rank(["t.example", "j.example"]),
+         "features": {}, "paa": [], "related": [], "aio_cites": []}
+    assert SR.takeaways(r, [])[0] == (
+        "7 of 9 organic results are listing pages (URL, title or card grid says puppies for "
+        "sale) and 0 are breeder pages. Reading: the pages ranking for this query are shopping "
+        "pages, so ours should put price and availability above the fold.")
+
+
+def test_disclaimer_sentence_is_pinned(tmp_path):
+    d = tmp_path / "data/queries/raw/test-city"
+    d.mkdir(parents=True)
+    (d / "serp_google.response.json").write_text(json.dumps({"items": []}))
+    (d / "serp_google.json").write_text(json.dumps({"status": "ok", "fetched": "2026-09-30"}))
+    assert ("The 'What it rewards' column is general guidance on what each kind of result "
+            "tends to favour, not data from this search.") in SR.block(_board(), root=tmp_path)
+
+
+def test_a_non_ok_serp_is_not_fetched(tmp_path):
+    d = tmp_path / "data/queries/raw/test-city"
+    d.mkdir(parents=True)
+    (d / "serp_google.response.json").write_text(json.dumps({"items": []}))
+    (d / "serp_google.json").write_text(json.dumps({"status": "error", "note": "quota hit:"}))
+    assert SR.block(_board(), root=tmp_path) == (
+        "NOT FETCHED — data/queries/raw/test-city/serp_google.json status error: quota hit:")
+    (d / "serp_google.json").write_text(json.dumps({"status": "error"}))
+    assert SR.block(_board(), root=tmp_path) == (
+        "NOT FETCHED — data/queries/raw/test-city/serp_google.json status error")
+
+
+def test_one_shared_concept_alone_is_not_an_answer():
+    secs = [{"id": "deposit", "heading": "About Us",
+             "tree": [{"level": 3, "heading": "Can I Reserve One?"}]}]
+    assert SR.answered_by("How much is the deposit?", secs) is None
+    assert SR.answered_by("Can I reserve one?", secs) == "deposit"
