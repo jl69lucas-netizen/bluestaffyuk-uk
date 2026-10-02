@@ -10,12 +10,16 @@ carry:
 
   by type     for each board keyword type, how many of our terms of that type at least one
               competitor body contains (matched like block 4c: key_words phrase starts)
-  phrases     1–3 word phrases on at least `min_pages` distinct competitor pages that no
-              board term (nor board entity name) already covers; pages, of which prose, and
-              total mentions are the evidence. Generic words may not open or close a phrase,
+  phrases     1–3 word phrases on at least `min_domains` distinct competitor domains (a
+              competitor is a domain: five pages of one marketplace are one voice) that no
+              board term (nor board entity name) already covers; domains, pages, of which
+              prose, and total mentions are the evidence. Shown as two tables, phrases of 2–3
+              words first, then single words. Generic words may not open or close a phrase,
               and marketplace UI words, numbers, prices and single letters may not appear in it
   entities    ontology entities only (name or any alias as a whole key-word phrase) that no
-              board section lists and at least one competitor page names
+              board section lists and at least one competitor page names. A Place that is
+              another city of data/locations.json (or a county or region the ontology marks
+              with place_type) is never proposed; it is named on one line under the table
   relations   the ontology's `relations`, filtered to ends on the board or in the gaps; the
               ontology has no `relations` key yet, which is written NOT FETCHED
 
@@ -25,6 +29,7 @@ import json
 import pathlib
 import re
 import sys
+from urllib.parse import urlsplit
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import keyword_metrics as KM  # noqa: E402
@@ -32,7 +37,7 @@ import query_augment as QA  # noqa: E402
 import term_density as TD  # noqa: E402
 
 ROOT = KM.ROOT
-LIMIT = 60
+LIMIT = 30
 MAX_N = 3
 NO_RELATIONS = "NOT FETCHED — data/bsuk-ontology.json carries no `relations` key yet"
 NO_PAGES = "NOT FETCHED — no cached competitor page"
@@ -67,19 +72,35 @@ def _chunks(text):
     return out
 
 
+def domain_of(url):
+    """The url's host without "www.", lower-cased ("" when there is none)."""
+    host = (urlsplit(url or "").netloc or "").lower().split("@")[-1].split(":")[0]
+    return host[4:] if host.startswith("www.") else host
+
+
 def body(html, listing=False, **extra):
-    """One competitor body: its key-word tokens, its sentence chunks and its listing label."""
+    """One competitor body: its key-word tokens, its sentence chunks, its listing label and
+    its domain (from extra["url"])."""
     text = TD._body_text(html)
-    return dict(extra, listing=bool(listing), tokens=KM.key_words(text), chunks=_chunks(text))
+    return dict(extra, listing=bool(listing), domain=domain_of(extra.get("url", "")),
+                tokens=KM.key_words(text), chunks=_chunks(text))
 
 
-def _as_body(p):
-    return p if isinstance(p, dict) else body(p)
+def _bodies(pages):
+    """body() dicts for html strings or dicts; a page with no domain counts as its own
+    domain, so bare html fixtures are distinct competitors."""
+    out = []
+    for i, p in enumerate(pages):
+        b = p if isinstance(p, dict) else body(p)
+        if not b.get("domain"):
+            b = dict(b, domain=f"page-{i + 1}")
+        out.append(b)
+    return out
 
 
 def competitor_bodies(slug, root=ROOT):
     """Every non-blocked competitor page with a cache file, in keyword_metrics._rank order:
-    [{"n", "rank", "url", "listing", "tokens", "chunks"}]. rank is 1-based over the
+    [{"n", "rank", "url", "domain", "listing", "tokens", "chunks"}]. rank is 1-based over the
     non-blocked pages (a missing cache file keeps its rank and is skipped)."""
     bare = KM._bare(slug)
     path = pathlib.Path(root) / "data/queries/raw" / bare / "competitors.json"
@@ -115,16 +136,17 @@ def _ok(gram):
     return not any(t in STOP_UI or JUNK.match(t) for t in gram)
 
 
-def phrase_gaps(pages, board_terms, min_pages=2, limit=LIMIT):
-    """Phrases (1–MAX_N key words) found on at least `min_pages` distinct pages and not inside
-    any board term. `pages` are html strings or body() dicts. Each gap is
-    {"term", "pages", "prose", "mentions"}, sorted by pages, prose pages, mentions (all
-    descending), then term. A shorter phrase is dropped when a longer one containing it has
-    the same pages and mentions (it adds nothing)."""
-    bodies = [_as_body(p) for p in pages]
+def phrase_gaps(pages, board_terms, min_domains=2, limit=None):
+    """Phrases (1–MAX_N key words) found on at least `min_domains` distinct competitor domains
+    and not inside any board term. `pages` are html strings or body() dicts. Each gap is
+    {"term", "words", "domains", "pages", "prose", "mentions"}, sorted by domains, prose
+    pages, mentions (all descending), then term; `limit` cuts the list (None keeps all). A
+    shorter phrase is dropped when a longer one containing it has the same pages and
+    mentions (it adds nothing)."""
+    bodies = _bodies(pages)
     covered = [KM.key_words(t) for t in board_terms]
     covered = [c for c in covered if c]
-    seen = {}       # gram -> [pages, prose, mentions]
+    seen = {}       # gram -> {"domains": set, "pages", "prose", "mentions"}
     for b in bodies:
         local = {}
         for ch in b["chunks"]:
@@ -135,34 +157,35 @@ def phrase_gaps(pages, board_terms, min_pages=2, limit=LIMIT):
         for g, c in local.items():
             if not _ok(g):
                 continue
-            s = seen.setdefault(g, [0, 0, 0])
-            s[0] += 1
-            s[1] += 0 if b.get("listing") else 1
-            s[2] += c
-    keep = {g: s for g, s in seen.items()
-            if s[0] >= min_pages and not any(_contains(c, list(g)) for c in covered)}
+            st = seen.setdefault(g, {"domains": set(), "pages": 0, "prose": 0, "mentions": 0})
+            st["domains"].add(b["domain"])
+            st["pages"] += 1
+            st["prose"] += 0 if b.get("listing") else 1
+            st["mentions"] += c
+    keep = {g: st for g, st in seen.items()
+            if len(st["domains"]) >= min_domains
+            and not any(_contains(c, list(g)) for c in covered)}
     redundant = set()
-    for g, s in keep.items():
+    for g, st in keep.items():
         for n in range(1, len(g)):
             for i in range(len(g) - n + 1):
                 sub = g[i:i + n]
-                if sub in keep and keep[sub][0] == s[0] and keep[sub][2] == s[2]:
+                if (sub in keep and keep[sub]["pages"] == st["pages"]
+                        and keep[sub]["mentions"] == st["mentions"]):
                     redundant.add(sub)
-    rows = [{"term": " ".join(g), "pages": s[0], "prose": s[1], "mentions": s[2]}
-            for g, s in keep.items() if g not in redundant]
-    rows.sort(key=lambda r: (-r["pages"], -r["prose"], -r["mentions"], r["term"]))
-    return rows[:limit]
+    rows = [{"term": " ".join(g), "words": len(g), "domains": len(st["domains"]),
+             "pages": st["pages"], "prose": st["prose"], "mentions": st["mentions"]}
+            for g, st in keep.items() if g not in redundant]
+    rows.sort(key=lambda r: (-r["domains"], -r["prose"], -r["mentions"], r["term"]))
+    return rows if limit is None else rows[:limit]
 
 
 def _names(e):
     return [x for x in [e.get("name")] + list(e.get("aliases") or []) if (x or "").strip()]
 
 
-def entity_gaps(pages, ont, board_entity_ids):
-    """Ontology entities no board section lists that at least one page names (its name or any
-    alias as a whole key-word phrase): [{"id", "name", "class", "seen_on", "prose",
-    "mentions"}], sorted by pages, prose pages, mentions (descending), then name."""
-    bodies = [_as_body(p) for p in pages]
+def _entity_rows(pages, ont, board_entity_ids):
+    bodies = _bodies(pages)
     listed = set(board_entity_ids or [])
     out = []
     for e in (ont or {}).get("entities", []):
@@ -170,19 +193,61 @@ def entity_gaps(pages, ont, board_entity_ids):
             continue
         forms = [KM.key_words(x) for x in _names(e)]
         forms = [f for f in forms if f]
-        seen = prose = mentions = 0
+        domains, seen, prose, mentions = set(), 0, 0, 0
         for b in bodies:
             c = max((_count(f, b["tokens"]) for f in forms), default=0)
             if c:
+                domains.add(b["domain"])
                 seen += 1
                 prose += 0 if b.get("listing") else 1
                 mentions += c
         if seen:
             out.append({"id": e["id"], "name": e.get("name", e["id"]),
-                        "class": e.get("class", ""), "seen_on": seen, "prose": prose,
+                        "class": e.get("class", ""), "place_type": e.get("place_type", ""),
+                        "domains": len(domains), "seen_on": seen, "prose": prose,
                         "mentions": mentions})
-    out.sort(key=lambda r: (-r["seen_on"], -r["prose"], -r["mentions"], r["name"]))
+    out.sort(key=lambda r: (-r["domains"], -r["seen_on"], -r["prose"], -r["mentions"],
+                            r["name"]))
     return out
+
+
+def _is_other_place(row, other_places):
+    if row["class"] != "Place":
+        return False
+    return (row["name"].strip().lower() in other_places
+            or (row.get("place_type") or "").lower() in ("county", "region"))
+
+
+def entity_gaps(pages, ont, board_entity_ids, other_places=()):
+    """Ontology entities no board section lists that at least one page names (its name or any
+    alias as a whole key-word phrase): [{"id", "name", "class", "domains", "seen_on",
+    "prose", "mentions"}], sorted by domains, pages, prose pages, mentions (descending), then
+    name. A Place in `other_places` (lower-case names), or one the ontology marks
+    place_type county or region, is left out: see other_places_named()."""
+    others = {o.lower() for o in other_places}
+    return [r for r in _entity_rows(pages, ont, board_entity_ids)
+            if not _is_other_place(r, others)]
+
+
+def other_places_named(pages, ont, board_entity_ids, other_places=()):
+    """The Place rows entity_gaps() leaves out, most pages first, then name."""
+    others = {o.lower() for o in other_places}
+    rows = [r for r in _entity_rows(pages, ont, board_entity_ids) if _is_other_place(r, others)]
+    return sorted(rows, key=lambda r: (-r["seen_on"], r["name"]))
+
+
+def other_cities(slug, root=ROOT):
+    """Lower-case city names of data/locations.json other than this slug's own ("Glasgow
+    (breeding dogs)" read as Glasgow; the national "UK" rows are not a city)."""
+    try:
+        rows = json.loads((pathlib.Path(root) / "data/locations.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return set()
+    bare = KM._bare(slug)
+    own = {re.sub(r"\s*\(.*\)\s*$", "", r.get("city") or "").strip().lower()
+           for r in rows if r.get("slug") == bare}
+    names = {re.sub(r"\s*\(.*\)\s*$", "", r.get("city") or "").strip().lower() for r in rows}
+    return {n for n in names if n and n != "uk"} - own
 
 
 def _types(board):
@@ -199,7 +264,7 @@ def _types(board):
 def by_type(board, pages):
     """[{"type", "ours", "found"}] per board keyword type, in board order: how many of our
     terms of that type, and how many of them at least one competitor body contains."""
-    bodies = [_as_body(p) for p in pages]
+    bodies = _bodies(pages)
     rows = []
     for kind, terms in _types(board).items():
         found = sum(1 for t in terms
@@ -210,7 +275,11 @@ def by_type(board, pages):
 
 def relations_lines(ont, ids):
     """One line per ontology relation whose both ends are in `ids`; NOT FETCHED when the
-    ontology carries no `relations` key."""
+    ontology carries no `relations` key.
+
+    The shape is GUESSED: data/bsuk-ontology.json has no `relations` key yet, so the field
+    names read here ({from|subject|source, type|predicate|relation, to|object|target}) are
+    an assumption to check against the real key when it lands."""
     rels = (ont or {}).get("relations")
     if rels is None:
         return [NO_RELATIONS]
@@ -229,6 +298,27 @@ def _board_entity_ids(board):
                               for i in (s.get("entities") or [])))
 
 
+def _domain_line(bodies):
+    groups = {}
+    for b in bodies:
+        groups.setdefault(b["domain"], []).append(b)
+    parts = []
+    for d, bs in groups.items():
+        lst = sum(1 for b in bs if b["listing"])
+        kind = ("listing" if lst == len(bs) else "prose" if not lst
+                else f"{lst} listing, {len(bs) - lst} prose")
+        parts.append(f"{d} ×{len(bs)} ({kind})")
+    return len(groups), "; ".join(parts)
+
+
+def _phrase_table(rows, empty):
+    if not rows:
+        return empty
+    return TD._md(["Phrase", "Domains", "Pages", "Prose pages", "Mentions"],
+                  [[g["term"], g["domains"], g["pages"], g["prose"], g["mentions"]]
+                   for g in rows])
+
+
 def block(board, ont, root=ROOT):
     """Block 5c as markdown."""
     slug = board["meta"]["slug"]
@@ -237,8 +327,9 @@ def block(board, ont, root=ROOT):
     head = (f"Measured on {len(bodies)} competitor pages ({prose} prose, "
             f"{len(bodies) - prose} listing)")
     if bodies:
-        head += ": ranks " + ", ".join(str(b["rank"]) for b in bodies) + " — " + ", ".join(
-            f"{b['rank']} {b['url']}{' (listing)' if b['listing'] else ''}" for b in bodies)
+        n_dom, line = _domain_line(bodies)
+        head += (f" on {n_dom} domains: {line}. Ranks "
+                 + ", ".join(str(b["rank"]) for b in bodies) + ".")
     else:
         head += f": {NO_PAGES}"
     out = [head]
@@ -253,18 +344,26 @@ def block(board, ont, root=ROOT):
     covered, _ = KM.board_terms({"sections": [{"keywords": s.get("keywords") or {}}
                                               for s in board.get("sections", [])]})
     covered = covered + [n for i in ids if i in ents for n in _names(ents[i])]
+    gaps = phrase_gaps(bodies, covered, min_domains=2)
+    none = NO_PAGES if not bodies else "None — nothing on two domains is missing."
     out.append("**Phrases two or more competitors use and our board does not**")
-    gaps = phrase_gaps(bodies, covered, min_pages=2)
-    out.append(TD._md(["Phrase", "Pages", "Prose pages", "Mentions"],
-                      [[g["term"], g["pages"], g["prose"], g["mentions"]] for g in gaps])
-               if gaps else (NO_PAGES if not bodies else "None — no phrase on two pages is missing."))
+    out.append("Phrases (2–3 words)")
+    out.append(_phrase_table([g for g in gaps if g["words"] > 1][:LIMIT], none))
+    out.append("Single words")
+    out.append(_phrase_table([g for g in gaps if g["words"] == 1][:LIMIT], none))
 
     out.append("**Entities competitors name that no section lists (ontology only)**")
-    egaps = entity_gaps(bodies, ont, ids)
-    out.append(TD._md(["Entity", "Class", "Pages", "Prose pages"],
-                      [[e["name"], e["class"], e["seen_on"], e["prose"]] for e in egaps])
+    others = other_cities(slug, root)
+    egaps = entity_gaps(bodies, ont, ids, others)
+    out.append(TD._md(["Entity", "Class", "Domains", "Pages", "Prose pages"],
+                      [[e["name"], e["class"], e["domains"], e["seen_on"], e["prose"]]
+                       for e in egaps])
                if egaps else (NO_PAGES if not bodies else "None — every ontology entity a "
                               "competitor names is already on a section."))
+    named = other_places_named(bodies, ont, ids, others)
+    if named:
+        out.append("Other places named on competitor pages (not proposed for this page): "
+                   + ", ".join(f"{e['name']} ({e['seen_on']})" for e in named))
     out.append(SEED_NOTE)
 
     out.append("**Entity relationships on this page**")

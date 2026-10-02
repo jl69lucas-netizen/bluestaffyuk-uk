@@ -14,7 +14,7 @@ SLUG = "uk-locations/test-city"
 
 
 def test_ngram_needs_two_competitors():
-    gaps = TG.phrase_gaps([A, B, C], board_terms=["kennel club"], min_pages=2)
+    gaps = TG.phrase_gaps([A, B, C], board_terms=["kennel club"], min_domains=2)
     terms = {g["term"] for g in gaps}
     assert "microchipped" in terms and "vaccinated" in terms
     assert "puppy pack" not in terms
@@ -22,21 +22,38 @@ def test_ngram_needs_two_competitors():
 
 
 def test_a_phrase_inside_a_board_term_is_not_a_gap():
-    gaps = TG.phrase_gaps([A, B], board_terms=["microchipped and vaccinated puppies"], min_pages=2)
+    gaps = TG.phrase_gaps([A, B], board_terms=["microchipped and vaccinated puppies"], min_domains=2)
     assert "microchipped" not in {g["term"] for g in gaps}
+
+
+def test_a_phrase_on_three_pages_of_one_domain_is_not_a_gap():
+    pages = [TG.body(h, url="https://www.one.example/p%d" % i) for i, h in enumerate((A, B, A))]
+    assert "microchipped" not in {g["term"] for g in TG.phrase_gaps(pages, [], min_domains=2)}
+
+
+def test_a_phrase_on_two_domains_is_a_gap():
+    pages = [TG.body(A, url="https://www.one.example/a"), TG.body(A, url="https://one.example/b"),
+             TG.body(B, url="https://two.example/")]
+    g = {g["term"]: g for g in TG.phrase_gaps(pages, [], min_domains=2)}["microchipped"]
+    assert (g["domains"], g["pages"], g["prose"]) == (2, 3, 3)
+
+
+def test_domain_of():
+    assert TG.domain_of("https://www.Pets4Homes.co.uk/sale/?x=1") == "pets4homes.co.uk"
+    assert TG.domain_of("") == ""
 
 
 def test_listing_and_prose_split_counts():
     pages = [TG.body(A), TG.body(B), TG.body(LISTING, listing=True)]
-    gaps = {g["term"]: g for g in TG.phrase_gaps(pages, board_terms=[], min_pages=2)}
+    gaps = {g["term"]: g for g in TG.phrase_gaps(pages, board_terms=[], min_domains=2)}
     g = gaps["microchipped"]
-    assert g["pages"] == 3 and g["prose"] == 2 and g["mentions"] == 2 + 80
+    assert g["domains"] == 3 and g["pages"] == 3 and g["prose"] == 2 and g["mentions"] == 2 + 80
 
 
-def test_sort_pages_then_prose_then_mentions():
+def test_sort_domains_then_prose_then_mentions():
     pages = [TG.body(A), TG.body(B), TG.body(LISTING, listing=True)]
-    gaps = TG.phrase_gaps(pages, board_terms=[], min_pages=2)
-    keys = [(-g["pages"], -g["prose"], -g["mentions"], g["term"]) for g in gaps]
+    gaps = TG.phrase_gaps(pages, board_terms=[], min_domains=2)
+    keys = [(-g["domains"], -g["prose"], -g["mentions"], g["term"]) for g in gaps]
     assert keys == sorted(keys)
 
 
@@ -50,7 +67,7 @@ def test_ui_stop_set_is_pinned():
 def test_boilerplate_filter():
     ui = ("<html><body><main><p>View details. Save advert. Posted 3 days ago. 12 results. "
           "Sort by price. Filter results. 5 miles away. Premium listings. £1,500. 2024. x</p></main></body></html>")
-    gaps = TG.phrase_gaps([ui, ui], board_terms=[], min_pages=2)
+    gaps = TG.phrase_gaps([ui, ui], board_terms=[], min_domains=2)
     terms = {g["term"] for g in gaps}
     for w in ("view", "save", "ago", "posted", "results", "sort", "filter", "miles", "premium", "listings",
               "£1", "500", "2024", "x", "3", "12"):
@@ -75,6 +92,28 @@ def test_entity_gap_matches_aliases_and_skips_board_entities():
     pages = [TG.body(A), TG.body(B, listing=True)]
     gaps = TG.entity_gaps(pages, ont, board_entity_ids=["ont:vet"])
     assert [(g["id"], g["seen_on"], g["prose"]) for g in gaps] == [("ont:kc", 1, 1)]
+
+
+def test_other_cities_are_named_not_proposed(tmp_path):
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data/locations.json").write_text(json.dumps([
+        {"slug": "blue-staffy-puppies-london", "city": "London"},
+        {"slug": "staffy-breeding-dogs-glasgow", "city": "Glasgow (breeding dogs)"},
+        {"slug": "staffy-puppies-for-sale-essex", "city": "Essex"},
+        {"slug": "blue-staffy-puppies-uk", "city": "UK"}]), encoding="utf-8")
+    others = TG.other_cities("uk-locations/blue-staffy-puppies-london", tmp_path)
+    assert others == {"glasgow", "essex"}
+    page = "<html><body><main><p>Pups in Glasgow, Essex and Kent, from London. Vet checked.</p></main></body></html>"
+    ont = {"entities": [{"id": "ont:glasgow", "name": "Glasgow", "aliases": [], "class": "Place"},
+                        {"id": "ont:essex", "name": "Essex", "aliases": [], "class": "Place"},
+                        {"id": "ont:kent", "name": "Kent", "aliases": [], "class": "Place",
+                         "place_type": "county"},
+                        {"id": "ont:london", "name": "London", "aliases": [], "class": "Place"},
+                        {"id": "ont:vet", "name": "Vet", "aliases": [], "class": "Role"}]}
+    gaps = TG.entity_gaps([page], ont, ["ont:london"], others)
+    assert [g["id"] for g in gaps] == ["ont:vet"]
+    named = TG.other_places_named([page], ont, ["ont:london"], others)
+    assert {g["id"] for g in named} == {"ont:glasgow", "ont:essex", "ont:kent"}
 
 
 def test_by_type_view():
@@ -136,14 +175,18 @@ def test_block_has_every_section(tmp_path):
     ont = {"entities": [{"id": "ont:kc", "name": "Kennel Club", "aliases": [], "class": "Organization"},
                         {"id": "ont:vet", "name": "Veterinarian", "aliases": ["vet"], "class": "Role"}]}
     md = TG.block(board, ont, root)
-    assert md.startswith("Measured on 3 competitor pages (2 prose, 1 listing): ranks 1, 3, 4")
+    assert md.startswith("Measured on 3 competitor pages (2 prose, 1 listing) on 3 domains: "
+                         "a.example ×1 (prose); list.example ×1 (listing); b.example ×1 (prose). "
+                         "Ranks 1, 3, 4.")
     for h in ("**Your keyword types against theirs**",
               "**Phrases two or more competitors use and our board does not**",
               "**Entities competitors name that no section lists (ontology only)**",
               "**Entity relationships on this page**"):
         assert h in md
-    assert "| microchipped | 3 | 2 |" in md
-    assert "| Veterinarian | Role | 1 | 1 |" in md
+    assert "Phrases (2–3 words)" in md and "Single words" in md
+    assert md.index("Phrases (2–3 words)") < md.index("Single words")
+    assert "| microchipped | 3 | 3 | 2 |" in md
+    assert "| Veterinarian | Role | 1 | 1 | 1 |" in md
     assert "scripts/ontology_seed.py" in md
     assert TG.NO_RELATIONS in md
 
