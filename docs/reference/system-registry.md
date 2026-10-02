@@ -83,7 +83,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
 
-## Skills — 63
+## Skills — 64
 
 One SKILL.md per directory under `.claude/skills/`. The `bsuk-*` set is the ported
 system; the rest are the generic writing, research and framework skills.
@@ -150,6 +150,7 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/research-recency/SKILL.md`
 - `.claude/skills/section-auditor/SKILL.md`
 - `.claude/skills/session-closer/SKILL.md`
+- `.claude/skills/session-handoff/SKILL.md`
 - `.claude/skills/sitemap-agent/SKILL.md`
 
 ## Commands — 4
@@ -162,7 +163,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 106
+## Scripts — 107
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -266,6 +267,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/retired_facts_check.py`
 - `scripts/schema_check.py`
 - `scripts/serp_reading.py`
+- `scripts/session_handoff.py`
 - `scripts/sitemap_check.py`
 - `scripts/strategy_cite_check.py`
 - `scripts/term_density.py`
