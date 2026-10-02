@@ -3,16 +3,18 @@
 
 Two methods, shown side by side so the breeder can pick the rule:
 
-  A · intent spread (Recommended): three blocks when the page's picked FAQ questions span at
-      least SPREAD distinct topics AND the page's word target (the sum of the sections'
-      "words" midpoints) is at least MIN_WORDS; otherwise one bottom block. A question's topic
-      is its own "topic" key, else the first query_augment.TOPICS pattern its text matches,
-      else "other". The "block" field is never the topic: it has only three values.
+  A · intent spread (Recommended): every fact-backed question for the page, picked or not
+      (so the three-block pick cannot decide its own layout), is mapped topic -> intent group
+      (INTENT_GROUPS: buying, dog, living). Three blocks when every group has at least
+      GROUP_MIN questions AND the page's word target (the sum of the sections' "words"
+      midpoints) is at least MIN_WORDS; otherwise one bottom block. A question's topic is its
+      own "topic" key, else the first query_augment.TOPICS pattern its text matches, else
+      "other", which belongs to no group. The "block" field is never the topic.
   B · by page type: THREE_BLOCK_TYPES get three blocks, every other type one bottom block.
 
-A question counts when it is picked: its "faq" is truthy (query_augment.pick_faq writes the
-block name there), or it has no "faq" key at all (a bare list). The question file is
-data/queries/<slug>.json; when it is missing, method A is "NOT FETCHED".
+A question counts when it is fact-backed: its "fact_source" is truthy, or it has no
+"fact_source" key at all (a bare list). The question file is data/queries/<slug>.json; when it
+is missing, method A is "NOT FETCHED".
 
     python3 scripts/faq_layout.py <slug>
 """
@@ -26,8 +28,16 @@ import query_augment as QA  # noqa: E402
 from term_density import _md, _section_words  # noqa: E402
 
 ROOT = QA.ROOT
-SPREAD = 3
+GROUP_MIN = 2
 MIN_WORDS = 2000
+GROUPS = ("buying", "dog", "living")
+# Every query_augment.TOPICS name -> the stage of the buyer's read it belongs to.
+INTENT_GROUPS = {
+    "price": "buying", "reserve": "buying", "delivery": "buying", "visit": "buying",
+    "paperwork": "buying", "trust": "buying", "age": "buying",
+    "health": "dog", "temperament": "dog", "coat": "dog", "breed": "dog", "lifespan": "dog",
+    "home": "living", "family": "living", "training": "living", "care": "living",
+}
 # "for-sale" is the page_type the buy pages' boards carry; "buy" is kept as the plan named it.
 THREE_BLOCK_TYPES = frozenset({"location", "buy", "for-sale"})
 THREE, ONE = "top-middle-bottom", "bottom"
@@ -45,8 +55,18 @@ def topic_of(q):
     return topic or "other"
 
 
-def picked(questions):
-    return [q for q in questions if q.get("faq", True)]
+def fact_backed(questions):
+    return [q for q in questions if q.get("fact_source", True)]
+
+
+def group_counts(questions):
+    """{group: n} over the fact-backed questions; "other" and unmapped topics count nowhere."""
+    counts = {g: 0 for g in GROUPS}
+    for q in fact_backed(questions):
+        g = INTENT_GROUPS.get(topic_of(q))
+        if g:
+            counts[g] += 1
+    return counts
 
 
 def word_target(board):
@@ -54,16 +74,18 @@ def word_target(board):
 
 
 def decide(questions, words, page_type, method="A"):
-    """{"method", "layout", "topics", "words", "page_type"} for one method."""
-    topics = sorted({topic_of(q) for q in picked(questions)})
+    """{"method", "layout", "groups", "topics", "words", "page_type"} for one method."""
+    groups = group_counts(questions)
+    topics = sorted({topic_of(q) for q in fact_backed(questions)})
     if method == "A":
-        layout = THREE if len(topics) >= SPREAD and words >= MIN_WORDS else ONE
+        spread = all(n >= GROUP_MIN for n in groups.values())
+        layout = THREE if spread and words >= MIN_WORDS else ONE
     elif method == "B":
         layout = THREE if page_type in THREE_BLOCK_TYPES else ONE
     else:
         raise ValueError(f"unknown method {method!r}")
-    return {"method": method, "layout": layout, "topics": topics, "words": words,
-            "page_type": page_type}
+    return {"method": method, "layout": layout, "groups": groups, "topics": topics,
+            "words": words, "page_type": page_type}
 
 
 def outline_layout(board):
@@ -79,11 +101,13 @@ def load_questions(slug, root=ROOT):
     return json.loads(path.read_text(encoding="utf-8")).get("questions", [])
 
 
+def _groups_str(r):
+    return " · ".join(f"{g} {r['groups'][g]}" for g in GROUPS)
+
+
 def _why_a(r):
-    names = ", ".join(r["topics"]) or "none"
-    n = len(r["topics"])
-    return (f"{n} topic{'s' if n != 1 else ''} ({names}) against a spread of {SPREAD}; "
-            f"word target {r['words']:,} words against {MIN_WORDS:,}")
+    return (f"{_groups_str(r)}; {r['words']:,} words "
+            f"(three blocks need every group at {GROUP_MIN}+ and {MIN_WORDS:,}+ words)")
 
 
 def block(board, root=ROOT):
@@ -101,8 +125,8 @@ def block(board, root=ROOT):
     b_why = (f"page type `{page_type or 'unknown'}` "
              f"{'is' if page_type in THREE_BLOCK_TYPES else 'is not'} one of "
              f"{', '.join(sorted(THREE_BLOCK_TYPES))}; "
-             + (f"{len(a['topics'])} topics ({', '.join(a['topics']) or 'none'}), " if a else "")
-             + f"word target {words:,} words, not used")
+             + (f"{_groups_str(a)}; " if a else "")
+             + f"{words:,} words, not used")
     table = _md(["Method", "Result for this page", "Why"],
                 [["A · intent spread (Recommended)"] + a_cells, ["B · by page type", b["layout"], b_why]])
     have = outline_layout(board)
@@ -110,7 +134,9 @@ def block(board, root=ROOT):
         "Top, middle and bottom FAQs answer a buyer early: someone who lands with a question "
         "(price, delivery, health) gets it answered beside the section it belongs to, before "
         "they scroll away. One bottom FAQ is a closing block — it mops up what the body did "
-        "not say, and suits a page read top to bottom.",
+        "not say, and suits a page read top to bottom. Method A counts every fact-backed question "
+        "for the page, grouped into buying, the dog, and living with it; a page whose questions "
+        "reach all three groups gets an FAQ at each stage of the read.",
         "",
         table,
         "",
