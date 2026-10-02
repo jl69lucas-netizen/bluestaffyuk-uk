@@ -161,7 +161,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 103
+## Scripts — 104
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -224,6 +224,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/image_designs.py`
 - `scripts/image_rules.py`
 - `scripts/indexnow_submit.py`
+- `scripts/infographic_plan.py`
 - `scripts/ingest_image.py`
 - `scripts/keyword_metrics.py`
 - `scripts/keyword_variants.py`
