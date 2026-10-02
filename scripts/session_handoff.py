@@ -14,9 +14,11 @@ https://claude.ai/artifact/<id> link in the last five answer-board batch files p
 the standing instructions; and the Gemini line.
 
 Secrets: `.env` is read only to learn whether GEMINI_API_KEY has a non-empty value and to
-learn every value it must never print. The finished prompt has every `.env` value of six or
-more characters, and anything shaped like a key (`AQ.…`, `AIza…`, `sk-…`), replaced with
-`[redacted]` before it is returned.
+learn every value it must never print. It is parsed like a dotenv loader (quotes, multi-line
+quoted values, ` #` comments, `export`). The finished prompt has every value of a secret-looking
+key (`*_KEY`, `*_TOKEN`, `*_SECRET`, `*_PASSWORD`, `*_ID`, `*_PAT`) at any length, every other
+value of six or more characters, and anything shaped like a key (`AQ.…`, `AIza…`, `sk-…`,
+`ghp_…`, `github_pat_…`, `xox[bpa]-…`, `AKIA…`) replaced with `[redacted]`.
 
 `build(root, branch=None)` is the pure entry point the tests call. Python 3.9 stdlib only.
 """
@@ -36,9 +38,10 @@ HANDOFF = "docs/reference/handoff"
 GEMINI_LOG = "docs/reports/gemini-usage.jsonl"
 
 ARTIFACT = re.compile(r"https://claude\.ai/artifact/[A-Za-z0-9_-]+")
-ENV_LINE = re.compile(r"^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$")
-GEMINI_SET = re.compile(r"^\s*(?:export\s+)?GEMINI_API_KEY\s*=\s*['\"]?\s*[^\s'\"#]")
-KEY_SHAPE = re.compile(r"AQ\.\S+|AIza\S+|(?<![A-Za-z0-9])sk-\S+")
+ENV_LINE = re.compile(r"^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$")
+SECRET_KEY = re.compile(r"(?:^|_)(?:KEY|TOKEN|SECRET|PASSWORD|ID|PAT)$")
+KEY_SHAPE = re.compile(r"AQ\.\S+|AIza\S+|(?<![A-Za-z0-9])sk-\S+|ghp_\S+|github_pat_\S+"
+                       r"|xox[bpa]-\S+|AKIA[0-9A-Z]{16}")
 TASK = re.compile(r"^###\s+Task\b")
 OPEN_STEP = re.compile(r"^\s*- \[ \]")
 REDACTED = "[redacted]"
@@ -47,14 +50,19 @@ MIN_SECRET = 6
 STANDING = [
     "Read CLAUDE.md, docs/reference/page-run.md, the newest brief and MEMORY.md first",
     "Watch the answer board and any open page board with ArtifactComments at session start",
-    "Commit after every task; do not push unless the user says so",
+    "Commit after every task; never push unless the user explicitly says so (CLAUDE.md rule 3).",
 ]
 GEMINI_LINE = ("GEMINI_API_KEY is set in .env — delete it when image work is done "
                "(breeder's instruction, 2026-10-02)")
 
 
 def _git(root, *args):
-    r = subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True)
+    """git's stdout, or "" when git is missing, times out or fails (callers say NOT FETCHED)."""
+    try:
+        r = subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True,
+                           timeout=20)
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return ""
     return r.stdout.strip() if r.returncode == 0 else ""
 
 
@@ -85,9 +93,11 @@ def newest_brief(root):
 
 
 def newest_plan(root):
-    plans = sorted(p for p in (root / PLANS).glob("*.md")
-                   if re.match(r"\d{4}-\d{2}-\d{2}-", p.name))
-    return plans[-1] if plans else None
+    """The plan with the newest filename date; a tie on the date goes to the newest mtime."""
+    plans = [p for p in (root / PLANS).glob("*.md") if re.match(r"\d{4}-\d{2}-\d{2}-", p.name)]
+    if not plans:
+        return None
+    return max(plans, key=lambda p: (p.name[:10], p.stat().st_mtime, p.name))
 
 
 def first_open_task(text):
@@ -111,26 +121,64 @@ def artifact_urls(root):
     return seen
 
 
-def _env_lines(root):
-    return _read(root / ".env").splitlines()
+def parse_env(text):
+    """[(key, value)] from .env text, parsed the way a dotenv loader reads it.
 
-
-def gemini_key_set(root):
-    return any(GEMINI_SET.match(line) for line in _env_lines(root))
-
-
-def _env_values(root):
-    values = []
-    for line in _env_lines(root):
-        if line.lstrip().startswith("#"):
+    A quoted value (single or double) ends at its closing quote, across lines if it has to,
+    so a trailing `# note` is never part of it; an unquoted value ends before ` #`.
+    `export KEY=` is accepted. A comment line is skipped.
+    """
+    out, lines, i = [], text.splitlines(), 0
+    while i < len(lines):
+        line = lines[i]
+        i += 1
+        if not line.strip() or line.lstrip().startswith("#"):
             continue
         m = ENV_LINE.match(line)
         if not m:
             continue
-        v = m.group(2).strip().strip("'\"").strip()
-        if len(v) >= MIN_SECRET:
-            values.append(v)
-    return sorted(set(values), key=len, reverse=True)
+        key, rest = m.group(1), m.group(2).lstrip()
+        if rest[:1] in ("'", '"'):
+            q, body = rest[0], rest[1:]
+            close = body.find(q)
+            if close >= 0:
+                value = body[:close]
+            else:  # multi-line: run to the line that closes the quote (or end of file)
+                parts = [body]
+                while i < len(lines):
+                    nxt = lines[i]
+                    i += 1
+                    close = nxt.find(q)
+                    if close >= 0:
+                        parts.append(nxt[:close])
+                        break
+                    parts.append(nxt)
+                value = "\n".join(parts)
+        else:
+            value = re.split(r"\s#", rest, maxsplit=1)[0].strip()
+        out.append((key, value))
+    return out
+
+
+def _env(root):
+    return parse_env(_read(root / ".env"))
+
+
+def gemini_key_set(root):
+    return any(k == "GEMINI_API_KEY" and v.strip() for k, v in _env(root))
+
+
+def _env_secrets(root):
+    """Every string the prompt must not carry: each value (and each line of a multi-line
+    value). A key that looks secret is redacted at any length; any other key from MIN_SECRET."""
+    secrets = set()
+    for key, value in _env(root):
+        floor = 1 if SECRET_KEY.search(key.upper()) else MIN_SECRET
+        for piece in [value] + value.splitlines():
+            piece = piece.strip()
+            if len(piece) >= floor:
+                secrets.add(piece)
+    return sorted(secrets, key=len, reverse=True)
 
 
 def gemini_summary(root):
@@ -148,8 +196,11 @@ def gemini_summary(root):
 
 
 def scrub(text, root):
-    for v in _env_values(root):
-        text = text.replace(v, REDACTED)
+    for v in _env_secrets(root):
+        if len(v) >= MIN_SECRET:
+            text = text.replace(v, REDACTED)
+        else:  # a short secret is redacted wherever it stands as its own token
+            text = re.sub(r"(?<![A-Za-z0-9])%s(?![A-Za-z0-9])" % re.escape(v), REDACTED, text)
     return KEY_SHAPE.sub(REDACTED, text)
 
 

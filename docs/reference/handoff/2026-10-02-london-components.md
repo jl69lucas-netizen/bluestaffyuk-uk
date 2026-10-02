@@ -6,11 +6,13 @@ Continue this project in a new chat. Everything below was read from the repo by 
 
 - Worktree: `/Users/apple/Downloads/BSUK/BSUK-london`
 - Branch: `london-components`
-- HEAD: `d8d5db81`
-- git status: dirty (4 changed paths)
+- HEAD: `4f5033d8`
+- git status: dirty (5 changed paths)
 
 ## Last 10 commits
 
+- 4f5033d8 KI 70: first real generated image (gemini-3.1-flash-lite-image, $0.0336/1K) passes the negative list; draft step pending (_demo slug refused by ingest_image)
+- 108f3442 skill: session-handoff — paste-ready new-chat prompt from git, brief, plan and boards
 - d8d5db81 skill: bsuk-competitor-parity — match type by type, close 2+-domain gaps, beat on evidence
 - 32013e33 fix(board): infographic plan faults as BoardError, per-page pending slots, one plan per render, js() escapes <!--
 - 43034c96 fix(board): server-side ig/og pick checks, slot picks carried on re-board, 7d wording
@@ -19,8 +21,6 @@ Continue this project in a new chat. Everything below was read from the repo by 
 - 0406fc25 fix(board): review fixes — whole-phrase names, case-insensitive unnaming, bounded intent cues; Gemini log counts malformed lines
 - 561b0b8c fix(board): OG slot subjects and briefs never name a real dog, person or litter (rule 9)
 - b6496bf3 feat: Gemini usage log (no key ever written) and the delete-the-key reminder
-- 32002e75 feat(board): 4–5 OG slot proposals, share card first (block 7d)
-- 1e68ed36 plan(board v2): Task 6b Gemini usage log and delete-the-key reminder; review carry-overs into Tasks 7 and 10
 
 ## Newest session brief
 
@@ -45,7 +45,7 @@ Continue this project in a new chat. Everything below was read from the repo by 
 ## Plan
 
 - Newest plan: `docs/superpowers/plans/2026-10-02-london-board-v2.md`
-- First task with an unchecked step: ### Task 1: Per-term density against each competitor (`term_density.py`)
+- First task with an unchecked step: ### Task 9: Session handoff skill and today's prompt
 - The plan's checkboxes are ticked by hand and can lag the commits: compare this task with the commit log above before starting it.
 
 ## Boards and Artifacts
@@ -60,9 +60,9 @@ Continue this project in a new chat. Everything below was read from the repo by 
 
 - Read CLAUDE.md, docs/reference/page-run.md, the newest brief and MEMORY.md first
 - Watch the answer board and any open page board with ArtifactComments at session start
-- Commit after every task; do not push unless the user says so
+- Commit after every task; never push unless the user explicitly says so (CLAUDE.md rule 3).
 
 ## Gemini
 
 - GEMINI_API_KEY is set in .env — delete it when image work is done (breeder's instruction, 2026-10-02)
-- Gemini usage (UTC): today 5, total 5; by status — 402: 3, 404: 1, RuntimeError: 1
+- Gemini usage (UTC): today 6, total 6; by status — 200: 1, 402: 3, 404: 1, RuntimeError: 1

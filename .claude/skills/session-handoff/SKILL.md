@@ -40,8 +40,10 @@ brief's What's Next); this skill hands it to the next one.
 
 ## Never
 
-- **Paste a secret.** The script redacts every `.env` value and anything shaped like a key
-  (`AQ.…`, `AIza…`, `sk-…`). Never print `.env`, never add a value by hand, and never edit
+- **Paste a secret.** The script parses `.env` like a dotenv loader (quotes, multi-line
+  values, ` #` comments, `export`) and redacts every value of a secret-looking key at any
+  length, every other value of six or more characters, and anything shaped like a key
+  (`AQ.…`, `AIza…`, `sk-…`, `ghp_…`, `github_pat_…`, `xox[bpa]-…`, `AKIA…`). Never print `.env`, never add a value by hand, and never edit
   the redaction out. The Gemini line says only whether GEMINI_API_KEY is set.
 - **Claim state the script did not read.** If a line says `NOT FETCHED` or "none", the
   handoff says so. Do not add progress, test results or decisions from memory; if something

@@ -18,7 +18,8 @@ import session_handoff as SH  # noqa: E402
 FAKE_KEY = "AQ.Ab8RN6fakefakefakeKEYvalue1234567890"
 FAKE_OTHER = "sk-fakeOtherSecretValue987654"
 FAKE_PLAIN = "plainSecretValueNoPrefix42"
-SECRET_SHAPE = re.compile(r"AQ\.\S+|AIza\S+|(?<![A-Za-z0-9])sk-\S+")
+SECRET_SHAPE = re.compile(r"AQ\.\S+|AIza\S+|(?<![A-Za-z0-9])sk-\S+|ghp_\S+|github_pat_\S+"
+                          r"|xox[bpa]-\S+|AKIA[0-9A-Z]{16}")
 
 BRIEF = """# Session brief
 
@@ -163,7 +164,8 @@ def test_standing_instructions(repo):
     out = SH.build(repo)
     assert "Read CLAUDE.md, docs/reference/page-run.md, the newest brief and MEMORY.md first" in out
     assert "Watch the answer board and any open page board with ArtifactComments at session start" in out
-    assert "Commit after every task; do not push unless the user says so" in out
+    assert ("Commit after every task; never push unless the user explicitly says so "
+            "(CLAUDE.md rule 3).") in out
 
 
 def test_gemini_line_when_key_is_set(repo):
@@ -205,3 +207,95 @@ def test_print_only_writes_nothing(repo, capsys):
     assert SH.main([], root=repo) == 0
     assert not (repo / "docs/reference/handoff").exists()
     assert "work-branch" in capsys.readouterr().out
+
+
+# ── .env parsing: every form a dotenv loader accepts must still be redacted ──
+
+def leak_check(repo, env_text, secrets, quoted_in_brief=True):
+    """Write `env_text` as .env, quote every secret in the brief, and assert none survives."""
+    (repo / ".env").write_text(env_text, encoding="utf-8")
+    p = repo / "docs/superpowers/sessions/2026-09-30-session-brief.md"
+    if quoted_in_brief:
+        p.write_text(BRIEF.replace("the second open question.",
+                                   "pasted " + " and ".join(secrets) + " by mistake"),
+                     encoding="utf-8")
+    out = SH.build(repo)
+    for value in secrets:
+        assert value not in out, value
+    return out
+
+
+def test_double_quoted_value_with_inline_comment(repo):
+    leak_check(repo, 'B="quotedSECRET1" # note\n', ["quotedSECRET1"])
+
+
+def test_single_quoted_value_with_inline_comment(repo):
+    leak_check(repo, "B='singleSECRET9' # note\n", ["singleSECRET9"])
+
+
+def test_unquoted_value_with_inline_comment(repo):
+    leak_check(repo, "C=plainSECRET2 # note\n", ["plainSECRET2"])
+
+
+def test_export_prefix(repo):
+    leak_check(repo, "export EXPORTED_THING=exportSECRET3\n", ["exportSECRET3"])
+
+
+def test_short_value_of_a_secret_looking_key_is_redacted(repo):
+    out = leak_check(repo, "ABC_KEY=abc12\n", ["abc12"])
+    assert "[redacted]" in out
+
+
+def test_short_value_of_an_ordinary_key_is_left_alone(repo):
+    (repo / ".env").write_text("MODE=dev\n", encoding="utf-8")
+    p = repo / "docs/superpowers/sessions/2026-09-30-session-brief.md"
+    p.write_text(BRIEF.replace("the second open question.", "dev mode"), encoding="utf-8")
+    assert "dev mode" in SH.build(repo)
+
+
+def test_multi_line_quoted_value_is_redacted_line_by_line(repo):
+    env = 'CERT_BLOB="firstLINEsecret\nsecondLINEsecret\nthirdLINEsecret" # note\nNEXT=after\n'
+    pairs = SH.parse_env(env)
+    assert pairs[0] == ("CERT_BLOB", "firstLINEsecret\nsecondLINEsecret\nthirdLINEsecret")
+    assert pairs[1] == ("NEXT", "after")
+    leak_check(repo, env, ["firstLINEsecret", "secondLINEsecret", "thirdLINEsecret"])
+
+
+def test_parse_env_forms():
+    assert SH.parse_env('A="x y" # c\nB=\'z\' #c\nC=w # c\nexport D=v\n# E=no\nF=\n') == [
+        ("A", "x y"), ("B", "z"), ("C", "w"), ("D", "v"), ("F", "")]
+
+
+def test_new_key_shapes_are_redacted_without_an_env(repo):
+    (repo / ".env").unlink()
+    shapes = ["ghp_FAKEfake0123456789", "github_pat_FAKE_fake012345", "xoxb-111-fake-token",
+              "AKIAABCDEFGHIJKLMNOP"]
+    out = leak_check(repo, "", shapes)
+    assert not SECRET_SHAPE.search(out)
+
+
+def test_git_missing_or_hung_is_not_fetched(repo, monkeypatch):
+    def boom(*a, **k):
+        raise FileNotFoundError("git")
+    monkeypatch.setattr(SH.subprocess, "run", boom)
+    out = SH.build(repo)
+    assert "NOT FETCHED" in out
+
+    def hang(*a, **k):
+        assert k.get("timeout") == 20
+        raise SH.subprocess.TimeoutExpired("git", 20)
+    monkeypatch.setattr(SH.subprocess, "run", hang)
+    assert "NOT FETCHED" in SH.build(repo)
+
+
+def test_plan_tie_on_the_same_date_goes_to_the_newest_mtime(repo):
+    import os
+    plans = repo / "docs/superpowers/plans"
+    a, b = plans / "2026-10-02-aaa.md", plans / "2026-10-02-zzz.md"
+    a.write_text("### Task 1: From aaa\n- [ ] s\n", encoding="utf-8")
+    b.write_text("### Task 1: From zzz\n- [ ] s\n", encoding="utf-8")
+    os.utime(b, (1_000_000, 1_000_000))
+    os.utime(plans / "2026-10-02-new-plan.md", (1_000_000, 1_000_000))
+    os.utime(a, (2_000_000_000, 2_000_000_000))
+    out = SH.build(repo)
+    assert "2026-10-02-aaa.md" in out and "From aaa" in out
