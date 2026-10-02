@@ -72,6 +72,10 @@ The breeder also pressed Approve on board v2 (db `boards/blue-staffy-puppies-lon
   Invoke `frontend-design:frontend-design` first and render at 375/768/1280.
 - [ ] Facts come from data only. Ship the infographics as baked webp (the HTML screenshot through Playwright, then `bake_images.py`) so the figures are exact. No AI-drawn text.
 - [ ] breed-split: build `data/breed-standards.json` from the Royal Kennel Club SBT standard page (already on the links plan) and the AKC AmStaff standard page. Use Firecrawl scrape, `maxAge: 0`. Store each figure with its URL and fetched date, and remove `IG_PENDING`.
+- [ ] **Frame sizing defect, seen on the published v2 board on 2026-10-03.** The breed-split "Card" preview's 1280 frame is shorter than its content, so the card is clipped partway down. The three widths sit side by side with `align-items:flex-start`, so the tall 375 frame (scrolled off to the right) leaves a blank band under the shorter frames.
+  - Each frame's height must come from its own document: measure it at build time with Playwright at that width and store `{slot, style, width, height}`. Frames stack vertically below 900px of board width.
+  - Add a test that no preview document is taller than its frame height.
+  - Check every style on the published board in the browser pane, which is signed in to claude.ai as of 2026-10-03.
 - [ ] Tests, then commit. The outline changes are listed on the board in a "Changed since STOP 2" panel.
 
 ### Task 6: Board extras (ruling 12)
