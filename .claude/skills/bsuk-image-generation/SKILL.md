@@ -30,14 +30,50 @@ An infographic is never generated here; it is built by the `bsuk-infographic` sk
 Before the first generation in a session:
 
 1. Check the key is set without printing it: `test -n "$GEMINI_API_KEY" && echo set`.
-   BSUK's `.env` does not carry an image key today; if it is missing, stop and ask the breeder
-   to export one. Never echo, paste or commit a key.
+   The breeder supplied a key in `.env` (2026-10-02) and will delete it when image work is
+   done; if it is missing, stop and ask the breeder to export one. Never echo, paste or commit
+   a key.
 2. Check the package: `python3 -c "import google.genai"`. If it is missing, ask before
    installing it; it is not in `requirements.txt`.
 3. Every generation is a paid API call. Say how many images the run will make and ask before
    the first one. Regenerating a rejected image is a new call and is asked the same way.
 4. Use the model the `ce-gemini-imagegen` skill names as its default unless the breeder names
    another; list the available models first, because model names change.
+
+## Every call is logged
+
+Every generate call is wrapped with `log_call` from `scripts/gemini_log.py`: once on success
+(status 200) and once on every exception, recording the HTTP status the API returned (402 when
+the prepayment credits are depleted, 404 when a model is withdrawn). The log is
+`docs/reports/gemini-usage.jsonl`, committed, and never holds a key: `log_call` strips the
+value of `GEMINI_API_KEY` and writes anything shaped like `AQ.…` or `AIza…` as `[redacted]`.
+`python3 scripts/gemini_log.py summary` prints calls today, in total and by status.
+
+```python
+import sys; sys.path.insert(0, "scripts")
+from gemini_log import log_call
+from google import genai
+from google.genai import types
+
+client = genai.Client()  # reads GEMINI_API_KEY from the environment; never pass it inline
+model, slot = "gemini-3-pro-image-preview", "og-delivery"
+try:
+    resp = client.models.generate_content(
+        model=model, contents=prompt,
+        config=types.GenerateContentConfig(
+            response_modalities=["IMAGE"],
+            image_config=types.ImageConfig(aspect_ratio="16:9")))  # aspect_ratio ONLY
+    log_call(model, slot, 200)
+except Exception as e:
+    log_call(model, slot, getattr(e, "code", None) or getattr(e, "status_code", None) or "error",
+             note=str(e)[:200])
+    raise
+```
+
+**`ImageConfig` takes `aspect_ratio` only.** google-genai 1.47.0 (the installed version)
+rejects `image_size`, so the `ImageConfig(aspect_ratio=..., image_size=...)` call the
+`ce-gemini-imagegen` skill documents fails here: drop `image_size` and get the size from the
+framing bake (`scripts/ingest_image.py`), never from the API.
 
 ## Step 1: Read the slot
 

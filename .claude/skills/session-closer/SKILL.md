@@ -142,6 +142,21 @@ Never overwrite existing content. Only append to existing sections or create new
 
 ---
 
+### Step 4b — Gemini Usage and the Key Reminder
+
+Print the image-API usage log, then check whether the key is still in `.env` without ever
+printing it or any other `.env` line:
+
+```bash
+python3 scripts/gemini_log.py summary
+grep -q '^GEMINI_API_KEY=.' .env 2>/dev/null && echo "GEMINI_API_KEY is set in .env — delete it when image work is done (breeder's instruction, 2026-10-02)."
+```
+
+Carry the summary line, and the reminder when it prints, into the Step 5 confirmation. Never
+`cat`, `source` or echo `.env`, and never print the key's value.
+
+---
+
 ### Step 5 — Closing Confirmation
 
 After writing (or skipping) the CLAUDE.md patch:
@@ -150,6 +165,7 @@ After writing (or skipping) the CLAUDE.md patch:
 >
 > Brief: `docs/superpowers/sessions/[today's date]-session-brief.md` — What's Next filled.
 > CLAUDE.md: [updated / no changes needed]
+> Gemini: [the `gemini_log.py summary` line] [+ the delete-the-key reminder, if it printed]
 > Next session: Sprint 0 done? **YES** → `/grill-me` · **NO** → `@bsuk-competitor-intel --all` first, then grill-me
 >
 > See you next session."
@@ -163,7 +179,7 @@ After writing (or skipping) the CLAUDE.md patch:
 3. **Read git log, not memory** — use actual commit history to summarize what was done
 4. **One question at a time** — if you need to ask about uncommitted changes AND about CLAUDE.md, ask sequentially
 5. **Never commit a page under `src/pages/` without preview gate approval** — always check before touching page files
-6. **Golden Rule** — only Read, Write, and Bash (`git log`, `git status`, `ls docs/superpowers/sessions/`). No MCPs.
+6. **Golden Rule** — only Read, Write, and Bash (`git log`, `git status`, `ls docs/superpowers/sessions/`, and Step 4b's two commands). No MCPs.
 
 ---
 

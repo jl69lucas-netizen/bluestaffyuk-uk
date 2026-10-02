@@ -161,7 +161,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 105
+## Scripts — 106
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -216,6 +216,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/freeze_city_picks.py`
 - `scripts/gap_matrix.py`
 - `scripts/gate_page.py`
+- `scripts/gemini_log.py`
 - `scripts/generate_page_dates.py`
 - `scripts/generate_sitemaps.py`
 - `scripts/health-sweep.sh`
