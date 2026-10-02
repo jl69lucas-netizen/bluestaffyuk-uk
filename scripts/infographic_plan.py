@@ -24,6 +24,11 @@ Three styles per slot, the same content on the same tokens (src/styles/tokens.cs
   ruled  hairline rules on bone, ledger rhythm, tabular figures  (pairs with city-faq-ledger)
   card   white cards, steel accent rail, a line icon per item    (pairs with city-chapters)
 
+Fonts: previews load Fraunces and Source Sans 3 from the repo's public/fonts by a relative
+`font_base` (FONT_BASE), so they render true when opened from the repo. Task 7 publishes
+public/fonts once as Artifact files and passes that published `font_base` to render_preview;
+until then a published preview falls back to the token stacks (Georgia, system-ui).
+
 Previews are standalone HTML at docs/artifacts/boards/ig/<slug>/<slot>-<style>.html. Board
 Task 7 embeds them as iframes with one radio group per slot named `pick-ig:<slot>` (the pick
 signature is `ig:<slot>`), so approval waits until every slot's style is chosen.
@@ -138,6 +143,15 @@ def plan(board: dict, root: Path | None = ROOT) -> list[dict]:
                  "node": ex["_node"], "why": "infographic slot already on the board",
                  "prompt": ex.get("prompt") or asset.get("prompt") or "",
                  "alt": asset.get("alt") or ex.get("alt") or ""}
+            if p["ig"] not in IG_NAMES:
+                hit = match(_h2_h3(sec))
+                if not hit:
+                    raise ValueError(
+                        f"slot {ex['slot']!r}: infographic_style {p['ig']!r} is missing or "
+                        "unknown and no heading matches an IG trigger")
+                p["ig"] = hit[0]
+                p["why"] = (f"infographic slot already on the board; style {ex.get('infographic_style')!r} "
+                            f're-matched by "{hit[1]}" in "{hit[2]}"')
         else:
             hit = match(_h2_h3(sec))
             if not hit:
@@ -222,7 +236,7 @@ def facts_for(slot_plan: dict, root) -> dict:
     locs = _load(root, "locations.json") or []
     sec = _section(slot_plan, root)
     ig = slot_plan.get("ig")
-    city = _get(st, "settings.json", "address", "city")
+    city = str(_get(st, "settings.json", "address", "city"))
     deposit = _gbp(_get(st, "settings.json", "deposit_gbp"))
     clause = _get(st, "settings.json", "deposit_refund_clause")
     band = _band(_get(st, "settings.json", "delivery_min_gbp"),
@@ -310,10 +324,14 @@ def facts_for(slot_plan: dict, root) -> dict:
         texts = _h2_h3(sec)
         a = b = None
         for t in texts[1:] + texts[:1]:
-            m = (re.search(r"tell (?:an? )?(.+?) from (?:an? )?(.+?)(?: one)?\?", t, re.I)
-                 or re.search(r"(\w+ \w+) (?:vs\.?|versus|or) (\w+ \w+)", t, re.I))
+            m = re.search(r"tell (?:an? )?(.+?) from (?:an? )?(.+?)( one)?\?", t, re.I)
+            one = bool(m and m.group(3))
+            m = m or re.search(r"(\w+ \w+) (?:vs\.?|versus|or) (\w+ \w+)", t, re.I)
             if m:
                 a, b = m.group(1).strip(), m.group(2).strip()
+                # "an American one" / a bare adjective: borrow the head noun from subject A.
+                if (one or len(b.split()) == 1) and len(a.split()) > 1:
+                    b = f"{b} {a.split()[-1]}"
                 break
         missing = _nf("*", "breed-comparison file (height, weight, registry)")
         return {"title": title,
@@ -340,7 +358,14 @@ def _alt(p: dict) -> str:
         return f"{len(f['steps'])} steps: " + ", then ".join(
             s["title"].lower() for s in f["steps"])
     if ig == "IG-4":
-        return "Checklist: " + "; ".join(c["text"].rstrip("?") for c in f["checks"])
+        texts = [c["text"].rstrip("?") for c in f["checks"]]
+        shown = []
+        for x in texts[:6]:
+            if shown and len("; ".join(shown + [x])) > 250:
+                break
+            shown.append(x)
+        rest = len(texts) - len(shown)
+        return "Checklist: " + "; ".join(shown) + (f"; and {rest} more" if rest else "")
     if ig == "IG-3":
         return f"{f['subjects'][0]} compared with {f['subjects'][1]}"
     return p.get("heading", "")
@@ -654,7 +679,7 @@ def render_preview(slot_plan: dict, style_id: str, facts: dict, tokens: dict,
         f'<!-- BSUK Infographic: {esc(ig)} {esc(IG_NAMES.get(ig, ""))} | '
         f'{esc(slot_plan.get("page", ""))} | slot {esc(slot_plan.get("slot", ""))} | '
         f'style {esc(style_id)} -->'
-        f'<figure class="ig {ig.lower()} st-{style_id}" role="img" aria-label="{esc(alt)}">'
+        f'<figure class="ig {esc(ig.lower())} st-{esc(style_id)}" role="img" aria-label="{esc(alt)}">'
         f'<figcaption class="cap">{t(title)}</figcaption>'
         f"{_body(ig, facts)}</figure></body></html>\n")
 
@@ -685,8 +710,8 @@ def block(board: dict, root: Path | None = ROOT) -> str:
         return "No section needs an infographic: no heading matched an IG trigger.\n"
     lines = ["| Section | Heading | IG type | Why it triggered |", "|---|---|---|---|"]
     for p in rows:
-        lines.append(f"| {p['section']} | {p['node']} | {p['ig']} "
-                     f"{IG_NAMES.get(p['ig'], '')} | {p['why']} |")
+        cells = [p["section"], p["node"], f"{p['ig']} {IG_NAMES.get(p['ig'], '')}", p["why"]]
+        lines.append("| " + " | ".join(str(c).replace("|", "\\|") for c in cells) + " |")
     for p in rows:
         lines += ["", f"**{p['slot']}** ({p['ig']} {IG_NAMES.get(p['ig'], '')}) — pick one: "
                   f"radio `pick-ig:{p['slot']}`"]

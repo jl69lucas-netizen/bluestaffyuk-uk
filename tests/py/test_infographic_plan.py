@@ -165,3 +165,34 @@ def test_block_markdown_lists_slots_and_previews():
     for style in ("plate", "ruled", "card"):
         assert f"docs/artifacts/boards/ig/blue-staffy-puppies-london/delivery-route-{style}.html" in md
     assert "pick-ig:delivery-route" in md
+
+
+def test_breed_split_subjects_on_the_real_london_heading():
+    board = json.loads((IP.ROOT / "data/boards/blue-staffy-puppies-london.json").read_text())
+    p = [p for p in IP.plan(board) if p["section"] == "breed"][0]
+    assert p["facts"]["subjects"] == ["English Staffy", "American Staffy"]
+    assert p["alt"] == "English Staffy compared with American Staffy"
+
+
+def test_unknown_existing_style_is_rematched_or_refused():
+    img = {"slot": "x-ig", "kind": "infographic", "infographic_style": "IG-9"}
+    sec = {"id": "s", "heading": "What Does Delivery Cost?", "tree": [], "images": [img]}
+    p = IP.plan({"sections": [sec], "assets": []}, root=None)[0]
+    assert (p["slot"], p["ig"]) == ("x-ig", "IG-5")
+    bare = {"id": "s", "heading": "Will a Staffy Be Happy?", "tree": [],
+            "images": [{"slot": "x-ig", "kind": "infographic"}]}
+    import pytest
+    with pytest.raises(ValueError, match="x-ig"):
+        IP.plan({"sections": [bare], "assets": []}, root=None)
+
+
+def test_checklist_alt_is_capped():
+    checks = [{"text": f"Check number {i} with some words?", "icon": "check"} for i in range(10)]
+    alt = IP._alt({"ig": "IG-4", "facts": {"checks": checks}})
+    assert alt.endswith("; and 4 more") and len(alt) < 300
+
+
+def test_block_escapes_pipes():
+    sec = {"id": "x", "heading": "Cost | Price?", "tree": []}
+    md = IP.block({"meta": {"slug": "s"}, "sections": [sec], "assets": []}, root=None)
+    assert "Cost \\| Price?" in md
