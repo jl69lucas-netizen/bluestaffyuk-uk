@@ -249,3 +249,51 @@ def test_cli_usage(capsys):
     assert TG.main([]) == 2
     assert TG.main(["no-such-slug-anywhere"]) == 2
     assert "usage" in capsys.readouterr().err
+
+
+VET = ("<html><body><main><p>Vet checked pups. Vet checked litter. Kc registered. Kc registered. "
+       "Kc registered.</p></main></body></html>")
+
+
+def test_a_word_inside_a_shown_phrase_with_the_same_counts_is_dropped():
+    terms = {g["term"] for g in TG.phrase_gaps([VET, VET], [])}
+    assert "vet checked" in terms
+    assert "checked" not in terms and "vet" not in terms
+    assert "vet checked litter" in terms   # one mention against two: not the same counts
+
+
+def test_a_phrase_never_spans_a_full_stop():
+    page = "<html><body><main><p>Microchipped. Vaccinated.</p></main></body></html>"
+    terms = {g["term"] for g in TG.phrase_gaps([page, page], [])}
+    assert "microchipped" in terms and "vaccinated" in terms
+    assert not any("microchipped vaccinated" in t for t in terms)
+
+
+def test_a_word_comes_back_when_its_phrase_is_capped_out():
+    multi, single = TG.gap_tables([VET, VET], [], limit=1)
+    assert [g["term"] for g in multi] == ["kc registered"]
+    # "kc" and "registered" outrank "checked" but sit inside the shown "kc registered", so
+    # the one single-word slot goes to "checked", whose "vet checked" was capped out.
+    assert [g["term"] for g in single] == ["checked"]
+    multi, single = TG.gap_tables([VET, VET], [], limit=30)
+    assert "vet checked" in {g["term"] for g in multi}
+    assert "checked" not in {g["term"] for g in single}
+
+
+def test_other_places_sort_by_domains_then_pages():
+    ont = {"entities": [{"id": "ont:a", "name": "Aberdeen", "aliases": [], "class": "Place"},
+                        {"id": "ont:b", "name": "Bristol", "aliases": [], "class": "Place"}]}
+    a = "<html><body><main><p>Aberdeen pups.</p></main></body></html>"
+    b = "<html><body><main><p>Bristol pups.</p></main></body></html>"
+    pages = [TG.body(a, url="https://one.example/1"), TG.body(a, url="https://one.example/2"),
+             TG.body(a, url="https://one.example/3"), TG.body(b, url="https://one.example/4"),
+             TG.body(b, url="https://two.example/")]
+    named = TG.other_places_named(pages, ont, [], {"aberdeen", "bristol"})
+    assert [(n["name"], n["domains"], n["seen_on"]) for n in named] == [("Bristol", 2, 2),
+                                                                         ("Aberdeen", 1, 3)]
+
+
+def test_relations_of_an_unexpected_shape_never_raise():
+    for rels in ({"a": 1}, ["ont:a"], "x", [{"from": "ont:a"}, 3]):
+        assert TG.relations_lines({"entities": [], "relations": rels}, {"ont:a"}) == [TG.BAD_RELATIONS]
+    assert TG.BAD_RELATIONS.startswith("NOT FETCHED")
