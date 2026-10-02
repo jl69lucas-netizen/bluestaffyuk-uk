@@ -1,4 +1,5 @@
 import json
+import pytest
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
 import faq_layout as FL
@@ -14,6 +15,8 @@ LIVING = SPREAD_QS[4:]
 
 
 def test_fixture_texts_hit_the_expected_topics():
+    # Guards the fixtures, not faq_layout: if a QA.TOPICS regex changes, the group tests
+    # below would silently test different groups. This fails first and names the drift.
     assert [QA.topic_of(q["text"])[0] for q in SPREAD_QS] == [
         "price", "delivery", "health", "temperament", "family", "training"]
 
@@ -93,9 +96,9 @@ def test_word_target_is_sum_of_midpoints():
 def test_outline_layout_counts_faq_sections():
     three = {"sections": [{"id": "faq-top"}, {"id": "x"}, {"id": "faq-middle"}, {"id": "faq-bottom"}]}
     one = {"sections": [{"id": "x"}, {"id": "faq-bottom"}]}
-    assert FL.outline_layout(three) == "top-middle-bottom"
-    assert FL.outline_layout(one) == "bottom"
-    assert FL.outline_layout({"sections": [{"id": "x"}]}) == "none"
+    assert FL.outline_layout(three) == ("top-middle-bottom", 3)
+    assert FL.outline_layout(one) == ("bottom", 1)
+    assert FL.outline_layout({"sections": [{"id": "x"}]}) == ("none", 0)
 
 
 def _fixture(tmp_path, qs, sections, page_type="blog", write_queries=True):
@@ -138,3 +141,29 @@ def test_cli_usage(capsys):
     assert FL.main([]) == 2
     assert "usage" in capsys.readouterr().err
     assert FL.main(["no-such-page-xyz"]) == 2
+
+
+def test_option_a_three_blocks_at_exactly_min_words():
+    assert FL.MIN_WORDS == 2000
+    assert FL.decide(SPREAD_QS, words=2000, page_type="blog", method="A")["layout"] == "top-middle-bottom"
+    assert FL.decide(SPREAD_QS, words=1999, page_type="blog", method="A")["layout"] == "bottom"
+
+
+def test_decide_raises_on_unknown_method():
+    with pytest.raises(ValueError, match="unknown method"):
+        FL.decide(SPREAD_QS, words=2400, page_type="blog", method="C")
+
+
+def test_decide_method_a_raises_without_a_question_file():
+    with pytest.raises(ValueError, match="question file"):
+        FL.decide(None, words=2400, page_type="blog", method="A")
+
+
+def test_null_questions_is_an_empty_list_not_not_fetched(tmp_path):
+    (tmp_path / "data/queries").mkdir(parents=True)
+    (tmp_path / "data/queries/test-page.json").write_text('{"questions": null}', encoding="utf-8")
+    assert FL.load_questions("test-page", root=tmp_path) == []
+    board = {"meta": {"slug": "test-page", "page_type": "blog"}, "sections": [{"id": "faq-bottom", "words": 200}]}
+    out = FL.block(board, root=tmp_path)
+    assert "NOT FETCHED" not in out
+    assert "buying 0 · dog 0 · living 0; 200 words" in out

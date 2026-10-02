@@ -56,9 +56,9 @@ def test_pct():
 
 
 def test_section_words():
-    assert TD._section_words({"words": {"min": 99, "max": 121}}) == 110
-    assert TD._section_words({"words": 300}) == 300
-    assert TD._section_words({}) == 0
+    assert TD.section_words({"words": {"min": 99, "max": 121}}) == 110
+    assert TD.section_words({"words": 300}) == 300
+    assert TD.section_words({}) == 0
 
 
 def test_board_entity_names():

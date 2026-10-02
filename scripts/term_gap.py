@@ -393,7 +393,7 @@ def _domain_line(bodies):
 def _phrase_table(rows, empty):
     if not rows:
         return empty
-    return TD._md(["Phrase", "Domains", "Pages", "Prose pages", "Mentions"],
+    return TD.md_table(["Phrase", "Domains", "Pages", "Prose pages", "Mentions"],
                   [[g["term"], g["domains"], g["pages"], g["prose"], g["mentions"]]
                    for g in rows])
 
@@ -414,7 +414,7 @@ def block(board, ont, root=ROOT):
     out = [head]
 
     out.append("**Your keyword types against theirs**")
-    out.append(TD._md(["Type", "Our terms", "Found on a competitor"],
+    out.append(TD.md_table(["Type", "Our terms", "Found on a competitor"],
                       [[r["type"], r["ours"], r["found"] if bodies else NO_PAGES]
                        for r in by_type(board, bodies)]))
 
@@ -434,7 +434,7 @@ def block(board, ont, root=ROOT):
 
     out.append("**Entities competitors name that no section lists (ontology only)**")
     egaps, named = _split_entities(_entity_rows(bodies, ont, ids), others)
-    out.append(TD._md(["Entity", "Class", "Domains", "Pages", "Prose pages"],
+    out.append(TD.md_table(["Entity", "Class", "Domains", "Pages", "Prose pages"],
                       [[e["name"], e["class"], e["domains"], e["seen_on"], e["prose"]]
                        for e in egaps])
                if egaps else (NO_PAGES if not bodies else "None."))

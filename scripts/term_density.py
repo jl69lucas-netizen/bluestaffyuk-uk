@@ -135,7 +135,7 @@ def board_entity_names(board, ont):
     return list(dict.fromkeys(names[i] for i in ids if i in names))
 
 
-def _section_words(sec):
+def section_words(sec):
     """A section's word target: an int, or the midpoint of a board's {"min", "max"}."""
     w = sec.get("words") or 0
     if isinstance(w, dict):
@@ -147,7 +147,7 @@ def rows(board, ont, root=ROOT):
     """(one term_row per board term and entity name, the competitor pages counted)."""
     terms, _ = KM.board_terms(board)
     terms = list(dict.fromkeys(terms + board_entity_names(board, ont)))
-    our_words = sum(_section_words(s) for s in board.get("sections", []))
+    our_words = sum(section_words(s) for s in board.get("sections", []))
     pages = competitor_pages(board["meta"]["slug"], terms, root)
     return [term_row(t, pages, our_words) for t in terms], pages
 
@@ -161,13 +161,18 @@ def _band(r, key):
     return UNUSED if not r["seen_on"] else "{}–{}".format(*r[key])
 
 
-def _md(head, body):
+def md_table(head, body):
     def esc(v):
         return str(v).replace("|", "\\|")
     lines = ["| " + " | ".join(esc(h) for h in head) + " |",
              "|" + "|".join("---" for _ in head) + "|"]
     lines += ["| " + " | ".join(esc(c) for c in r) + " |" for r in body]
     return "\n".join(lines)
+
+
+# Old private names, kept for callers outside this change.
+_md = md_table
+_section_words = section_words
 
 
 def table(board, ont, root=ROOT):
@@ -191,7 +196,7 @@ def table(board, ont, root=ROOT):
         lines = ["Counted on 0 non-listing competitor bodies: NOT FETCHED"]
     if len(pages) < THIN:
         lines.append("**Thin pool:** fewer than three bodies — the bands are indicative only.")
-    return "\n\n".join(lines) + "\n\n" + _md(head, body) + "\n\n" + OVERLAP_NOTE
+    return "\n\n".join(lines) + "\n\n" + md_table(head, body) + "\n\n" + OVERLAP_NOTE
 
 
 def main(argv=None):

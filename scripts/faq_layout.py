@@ -25,7 +25,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import keyword_metrics as KM  # noqa: E402
 import query_augment as QA  # noqa: E402
-from term_density import _md, _section_words  # noqa: E402
+from term_density import md_table, section_words  # noqa: E402
 
 ROOT = QA.ROOT
 GROUP_MIN = 2
@@ -70,13 +70,14 @@ def group_counts(questions):
 
 
 def word_target(board):
-    return sum(_section_words(s) for s in board.get("sections", []))
+    return sum(section_words(s) for s in board.get("sections", []))
 
 
 def decide(questions, words, page_type, method="A"):
     """{"method", "layout", "why", "groups", "topics", "words", "page_type"} for one method.
 
-    `questions` may be None for method B (no question file): its why then omits the counts.
+    `words` is the page's word target, an int (word_target(board)). `questions` may be None
+    for method B (no question file): its why then omits the counts.
     """
     known = questions is not None
     groups = group_counts(questions or [])
@@ -107,16 +108,16 @@ def _groups_str(r):
 
 
 def outline_layout(board):
-    """The layout the board's outline has now, from its section ids starting "faq-"."""
+    """(layout, n): the layout the board's outline has now, from its n section ids starting "faq-"."""
     n = sum(1 for s in board.get("sections", []) if str(s.get("id", "")).startswith("faq-"))
-    return "none" if n == 0 else ONE if n == 1 else THREE if n == 3 else f"{n} blocks"
+    return ("none" if n == 0 else ONE if n == 1 else THREE if n == 3 else f"{n} blocks"), n
 
 
 def load_questions(slug, root=ROOT):
     path = pathlib.Path(root) / "data/queries" / f"{KM._bare(slug)}.json"
     if not path.is_file():
         return None
-    return json.loads(path.read_text(encoding="utf-8")).get("questions", [])
+    return json.loads(path.read_text(encoding="utf-8")).get("questions") or []
 
 
 def block(board, root=ROOT):
@@ -131,9 +132,9 @@ def block(board, root=ROOT):
     else:
         a = decide(qs, words, page_type, "A")
         a_cells = [a["layout"], a["why"]]
-    table = _md(["Method", "Result for this page", "Why"],
+    table = md_table(["Method", "Result for this page", "Why"],
                 [["A · intent spread (Recommended)"] + a_cells, ["B · by page type", b["layout"], b["why"]]])
-    have = outline_layout(board)
+    have, n_faq = outline_layout(board)
     lines = [
         "Top, middle and bottom FAQs answer a buyer early: someone who lands with a question "
         "(price, delivery, health) gets it answered beside the section it belongs to, before "
@@ -144,8 +145,8 @@ def block(board, root=ROOT):
         "",
         table,
         "",
-        f"The outline currently has **{have}** ({sum(1 for s in board.get('sections', []) if str(s.get('id', '')).startswith('faq-'))} "
-        f"section{'s' if have != ONE else ''} whose id starts `faq-`).",
+        f"The outline currently has **{have}** ({n_faq} section{'' if n_faq == 1 else 's'} "
+        "whose id starts `faq-`).",
     ]
     if a is None:
         lines.append("The recommended method cannot decide until the question file exists.")

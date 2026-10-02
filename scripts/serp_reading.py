@@ -378,7 +378,7 @@ def render(r, query, fetched, sections):
         "page has to do. The 'What it rewards' column is general guidance on what each kind "
         "of result tends to favour, not data from this search.",
         "",
-        TD._md(["On page one", "Count", "What it rewards"],
+        TD.md_table(["On page one", "Count", "What it rewards"],
                [[e["signal"].replace("_", " "), _count_cell(e, r), e["rewards"]]
                 for e in r["expect"]]),
         "",
@@ -386,19 +386,19 @@ def render(r, query, fetched, sections):
         "",
     ]
     if r["ranking"]:
-        lines.append(TD._md(["Pos", "Domain", "Page type"],
+        lines.append(TD.md_table(["Pos", "Domain", "Page type"],
                             [[x["pos"], x["domain"], f"{x['type']} ({x['basis']})"]
                              for x in r["ranking"]]))
     else:
         lines.append("No organic results in the saved response.")
     lines += ["", "#### What the AI Overview cites", ""]
     if r["aio_cites"]:
-        lines.append(TD._md(["Cited domain"], [[d] for d in r["aio_cites"]]))
+        lines.append(TD.md_table(["Cited domain"], [[d] for d in r["aio_cites"]]))
     else:
         lines.append(r["aio_note"])
     lines += ["", "#### People Also Ask → the section that answers it", ""]
     if r["paa"]:
-        lines.append(TD._md(["Question", "Answered by"], [
+        lines.append(TD.md_table(["Question", "Answered by"], [
             [p["q"], f"`{p['answered_by']}` — {heads.get(p['answered_by'], '')}"
              if p["answered_by"] else "**none — gap**"] for p in r["paa"]]))
     else:
