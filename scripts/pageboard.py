@@ -1356,8 +1356,45 @@ def section_fingerprint(section):
         json.dumps(body, sort_keys=True, ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
+# ── board v2 (plan 2026-10-02, Task 7): picks that name a slot, not a section ─────────────
+#
+# Block 7c offers an infographic style per slot (`ig:<slot>`), block 7d a use/skip per
+# proposed OG image (`og:<slot>`). The board (build_page_board.py), the approval
+# (board_approve.py) and the carry-forward (locked_picks) all read these from HERE, so what
+# the button waits for and what the server re-checks cannot drift apart.
+V2_PICKS = {"ig:": ("plate", "ruled", "card"), "og:": ("use", "skip")}
+V2_PICK_PREFIXES = tuple(V2_PICKS)
+#: Infographic slots whose content waits on a breeder answer: shown with their three styles,
+#: offered as an optional pick, and kept OUT of the required set.
+IG_PENDING = {
+    "breed-split": ("Pending your answer on the decisions batch: no breed-standard data exists, "
+                    "so this would show NOT FETCHED. Not required for approval."),
+}
+
+
+def v2_slots(board):
+    """{"ig:": {slot, ...}, "og:": {slot, ...}} — the slots this record offers a v2 pick for.
+    Empty on a pre-rule board, where blocks 7c and 7d are never shown."""
+    if not FR.applies(board):
+        return {p: set() for p in V2_PICKS}
+    import infographic_plan as IP          # lazy: both modules import the query stack
+    import og_slots as OG
+    return {"ig:": {p["slot"] for p in IP.plan(board, root=None)},
+            "og:": {o["slot"] for o in OG.propose(board)}}
+
+
+def ig_slots_required(board):
+    """The `ig:<slot>` ids approval waits for: every planned infographic slot on a project 5
+    board except the ones pending a breeder answer (IG_PENDING)."""
+    if not FR.applies(board):
+        return []
+    import infographic_plan as IP
+    return [f"ig:{p['slot']}" for p in IP.plan(board, root=None) if p["slot"] not in IG_PENDING]
+
+
 def locked_picks(board):
-    """{section id: style id} the board shows answered and locked, from `approval_previous`.
+    """{section id: style id} the board shows answered and locked, from `approval_previous`
+    (plus any `ig:`/`og:` slot pick whose slot is still offered — see the loop).
 
     THREE reasons a carried pick is dropped and the question asked again:
 
@@ -1378,7 +1415,17 @@ def locked_picks(board):
     hashes = prev.get("section_hashes") or {}
     by_id = {s["id"]: s for s in board.get("sections", [])}
     out = {}
+    slots = None
     for sid, pick in picks.items():
+        # A v2 pick (`ig:<slot>`, `og:<slot>`) names a slot. It is carried while that slot is
+        # still offered and the value is still on its menu, and dropped otherwise. Slots carry
+        # no fingerprint, so the board pre-fills a carried slot pick and leaves it changeable.
+        if sid.startswith(V2_PICK_PREFIXES):
+            slots = v2_slots(board) if slots is None else slots
+            prefix, slot = sid.split(":", 1)
+            if slot in slots[prefix + ":"] and pick in V2_PICKS[prefix + ":"]:
+                out[sid] = pick
+            continue
         s = by_id.get(sid)
         if not s or s["shape"] in PER_PAGE_SHAPES:
             continue

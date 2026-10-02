@@ -315,7 +315,9 @@ def test_board_approve_stores_img_picks_and_refuses_a_bad_one(repo, monkeypatch)
     monkeypatch.setattr(FR, "CHECKS", [FR.image_every_body_heading, FR.image_build_ready])
     b = _planned(_full())
     picks = {"opening": "H-UT1", "at-a-glance": "C-UT1", "how-we-raise": "S1", "owners": "S1",
-             "questions": "S1", "img:weeks-photo": "og:C", "img:checks-graphic": "ig:IG-2"}
+             "questions": "S1", "img:weeks-photo": "og:C", "img:checks-graphic": "ig:IG-2",
+             # board v2 block 7c: the infographic slot also needs its style picked
+             "ig:checks-graphic": "plate"}
     inbox = {"approved_at": "2026-09-24T12:00:00Z", "h1": 0, "picks": picks, "notes": {},
              "canvas_version": None, "record_hash": PB.record_hash(b)}
     out = BA.apply_approval(b, inbox, {"entities": []}, {"pools": {}, "pages": {}})

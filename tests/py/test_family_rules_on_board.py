@@ -315,8 +315,17 @@ def test_a_blocked_entity_leaves_a_frozen_pages_approval_as_before(monkeypatch):
 
 
 # ── board v2 (Task 7): the 7c / 7d picks name a slot, not a section ──────────────────────
-def test_infographic_and_og_picks_are_accepted(monkeypatch):
+def _slots(monkeypatch, ig=("delivery-route", "breed-split"), og=("og-share",)):
+    """Give the `_demo` record infographic and OG slots, through the modules PB reads."""
+    import infographic_plan as IP
+    import og_slots as OG
     monkeypatch.setattr(FR, "CHECKS", [])
+    monkeypatch.setattr(IP, "plan", lambda board, root=None: [{"slot": s} for s in ig])
+    monkeypatch.setattr(OG, "propose", lambda board, n=5: [{"slot": s} for s in og])
+
+
+def test_infographic_and_og_picks_are_accepted(monkeypatch):
+    _slots(monkeypatch)
     b = _board()
     inbox = _inbox(b)
     inbox["picks"].update({"ig:delivery-route": "ruled", "og:og-share": "skip"})
@@ -327,9 +336,61 @@ def test_infographic_and_og_picks_are_accepted(monkeypatch):
 
 @pytest.mark.parametrize("sid,val", [("ig:delivery-route", "fancy"), ("og:og-share", "maybe")])
 def test_an_off_menu_infographic_or_og_pick_is_refused(monkeypatch, sid, val):
-    monkeypatch.setattr(FR, "CHECKS", [])
+    _slots(monkeypatch)
     b = _board()
     inbox = _inbox(b)
-    inbox["picks"][sid] = val
+    inbox["picks"].update({"ig:delivery-route": "ruled", sid: val})
     with pytest.raises(PB.BoardError, match=sid):
         BA.apply_approval(b, inbox, ONT, LEDGER)
+
+
+def test_a_missing_required_infographic_pick_is_refused(monkeypatch):
+    # breed-split is pending (PB.IG_PENDING), so only delivery-route is required.
+    _slots(monkeypatch)
+    b = _board()
+    with pytest.raises(PB.BoardError, match="no infographic style pick for: ig:delivery-route$"):
+        BA.apply_approval(b, _inbox(b), ONT, LEDGER)
+
+
+@pytest.mark.parametrize("sid,val", [("ig:no-such-slot", "plate"), ("og:og-nowhere", "use")])
+def test_a_pick_for_an_unknown_slot_is_refused(monkeypatch, sid, val):
+    _slots(monkeypatch)
+    b = _board()
+    inbox = _inbox(b)
+    inbox["picks"].update({"ig:delivery-route": "ruled", sid: val})
+    with pytest.raises(PB.BoardError, match=f"approval picks '{sid}', which is not in the record"):
+        BA.apply_approval(b, inbox, ONT, LEDGER)
+
+
+def test_the_approval_and_the_board_require_the_same_infographic_picks(monkeypatch):
+    import build_page_board as BPB
+    _slots(monkeypatch)
+    b = _board()
+    assert PB.ig_slots_required(b) == ["ig:delivery-route"]
+    assert BPB.ig_slots_required is PB.ig_slots_required
+    assert BPB.signature_sections(b, LEDGER, "x")[-1:] == ["ig:delivery-route"]
+
+
+def test_a_re_board_carries_slot_picks_whose_slots_still_exist(monkeypatch):
+    _slots(monkeypatch)
+    b = _board()
+    b["approval_previous"] = {"picks": {"ig:delivery-route": "card",      # kept
+                                        "ig:gone-slot": "plate",          # slot gone
+                                        "ig:breed-split": "fancy",        # off the menu
+                                        "og:og-share": "use",             # kept
+                                        "og:og-gone": "skip"}}            # slot gone
+    assert PB.locked_picks(b) == {"ig:delivery-route": "card", "og:og-share": "use"}
+
+
+def test_a_carried_slot_pick_is_pre_checked_on_the_board(monkeypatch):
+    import build_page_board as BPB
+    import infographic_plan as IP
+    london = PB.load_board("blue-staffy-puppies-london")
+    slot = IP.plan(london, root=None)[0]["slot"]
+    out = BPB.infographic_block(london, {f"ig:{slot}": "ruled"})
+    assert f'name="pick-ig:{slot}" value="ruled" checked>' in out
+    assert f'name="pick-ig:{slot}" value="plate">' in out
+    og = BPB.og_block(london, {"og:og-share": "skip"})
+    assert 'name="pick-og:og-share" value="skip" checked>' in og
+    assert 'name="pick-og:og-share" value="use">' in og
+    assert "Each slot below has a use/skip choice (`pick-og:<slot>`); it is not required" in og

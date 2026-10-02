@@ -248,7 +248,8 @@ def block(board: dict, n: int = N_DEFAULT) -> str:
              "%s %s" % (s["og_style"], names.get(s["og_style"], "")), s["subject"]]
             for s in slots]
     out += [md_table(["Slot", "Where", "Size", "Framing style", "Subject"], rows), "",
-            "The board's radios will be `pick-og:<slot>` with the values `use` and `skip`. "
+            "Each slot below has a use/skip choice (`pick-og:<slot>`); it is not required "
+            "for approval. "
             "Gemini generation currently fails with HTTP 402 (prepayment credits depleted), "
             "so no image is generated until credits are restored."]
     return "\n".join(out)

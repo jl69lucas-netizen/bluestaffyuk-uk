@@ -64,12 +64,8 @@ IG_FONT_BASE = "fonts/"
 #: The font files the previews name, read off infographic_plan's own @font-face rules so the
 #: publish list can never drift from what the frames request.
 IG_FONT_FILES = tuple(re.findall(r'url\("([^"]+)"\)', IP._fonts("")))
-#: Infographic slots whose content waits on a breeder answer: shown with their three styles,
-#: offered as an optional pick, and kept OUT of the approve button's signature.
-IG_PENDING = {
-    "breed-split": ("Pending your answer on the decisions batch: no breed-standard data exists, "
-                    "so this would show NOT FETCHED. Not required for approval."),
-}
+#: Shared with board_approve.py through pageboard, so the button and the server agree.
+IG_PENDING = PB.IG_PENDING
 
 #: THE NAVIGATION BLOCK (spec §9 amendment 7). Four pieces of furniture that belong to the
 #: PAGE rather than to any one section — so they are never offered as a section's three
@@ -883,12 +879,7 @@ def rules_block(findings):
     return RULES_CSS + f'<div class="rules">{"".join(rows)}</div>', refused
 
 
-def ig_slots_required(board):
-    """The `ig:<slot>` ids the approve button waits for: every planned infographic slot on a
-    project 5 board except the ones pending a breeder answer (IG_PENDING)."""
-    if not PB.FR.applies(board):
-        return []
-    return [f"ig:{p['slot']}" for p in IP.plan(board, root=None) if p["slot"] not in IG_PENDING]
+ig_slots_required = PB.ig_slots_required
 
 
 def signature_sections(board, ledger=None, slug=None):
@@ -909,10 +900,12 @@ def infographic_docs(board):
             for p in IP.plan(board, PB.ROOT) for st in p["styles"]}
 
 
-def infographic_block(board):
+def infographic_block(board, carried=None):
     """Block 7c: per planned slot, its heading, IG type and why, and the three styles as one
     radio group `pick-ig:<slot>` (values plate / ruled / card), each style rendered at the
-    three PREVIEW_W widths in srcdoc frames filled from IG_DOCS by the board's script."""
+    three PREVIEW_W widths in srcdoc frames filled from IG_DOCS by the board's script.
+    `carried` (PB.locked_picks) pre-checks a style answered on an earlier approval."""
+    carried = carried or {}
     plan = IP.plan(board, root=None)
     intro = ("Each infographic sits **beside the H2's existing photo**, never instead of it "
              "(working rule 11: every served image keeps its place, file and alt). Pick one "
@@ -938,7 +931,9 @@ def infographic_block(board):
                 f'loading="eager" scrolling="auto" data-ig="{esc(key)}" width="{w}" height="{PREVIEW_H}" '
                 f'style="width:{w}px;height:{PREVIEW_H}px"></iframe></div>' for w in PREVIEW_W)
             rows.append(f'<div class="style"><label><input type="radio" name="pick-ig:{esc(slot)}" '
-                        f'value="{esc(st["id"])}"> {esc(st["label"])}</label>'
+                        f'value="{esc(st["id"])}"'
+                        f'{" checked" if carried.get("ig:" + slot) == st["id"] else ""}> '
+                        f'{esc(st["label"])}</label>'
                         f'<div class="frames">{frames}</div></div>')
         legend = (f"Optional — {esc(slot)}" if pending else f"Pick one style for {esc(slot)}")
         out.append(f"### {md(slot)} · {md(p['ig'])} {md(IP.IG_NAMES.get(p['ig'], ''))}\n\n"
@@ -948,15 +943,18 @@ def infographic_block(board):
     return "\n\n".join(out)
 
 
-def og_block(board):
+def og_block(board, carried=None):
     """Block 7d: og_slots' proposal table, then a use/skip radio pair per slot
-    (`pick-og:<slot>`). Not in the approve signature: leaving one blank is allowed."""
+    (`pick-og:<slot>`). Not in the approve signature: leaving one blank is allowed.
+    `carried` (PB.locked_picks) pre-checks an answer from an earlier approval."""
+    carried = carried or {}
     text = OG.block(board)
     if text.startswith("### "):          # the section title already says "7d. OG images"
         text = text.split("\n", 1)[1].lstrip("\n")
     pairs = "".join(
         f'<div class="ogpick"><b>{esc(o["slot"])}</b>'
-        + "".join(f' <label><input type="radio" name="pick-og:{esc(o["slot"])}" value="{v}"> {v}</label>'
+        + "".join(f' <label><input type="radio" name="pick-og:{esc(o["slot"])}" value="{v}"'
+                  f'{" checked" if carried.get("og:" + o["slot"]) == v else ""}> {v}</label>'
                   for v in ("use", "skip"))
         + "</div>" for o in OG.propose(board))
     return (text + "\n\n**Use or skip each slot** — optional; a slot left blank is decided later.\n\n"
@@ -1131,8 +1129,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     if PB.FR.applies(board):
         rules_html, refused = rules_block(rule_findings(board, ont))
         parts.append(("7b. Rules for new pages", rules_html))
-        parts.append(("7c. Infographics", infographic_block(board)))
-        parts.append(("7d. OG images", og_block(board)))
+        parts.append(("7c. Infographics", infographic_block(board, locked)))
+        parts.append(("7d. OG images", og_block(board, locked)))
 
     status = ("Approved as it stands." if approved else
               REFUSAL_LINE if refused else "Connecting to the board database…")

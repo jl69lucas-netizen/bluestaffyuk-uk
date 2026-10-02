@@ -41,8 +41,11 @@ def _inbox(board):
     return {"record_hash": PB.record_hash(board), "approved_at": "2026-09-30T00:00:00Z",
             "h1": 0, "meta": {"title": 0, "description": 0}, "notes": {},
             "canvas_version": None,
-            "picks": {"img:" + i["slot"]: "ig:" + i["infographic_style"]
-                      for _, _, i in BA.IR.IC.iter_slots(board) if i.get("source") == "infographic"}}
+            "picks": {**{"img:" + i["slot"]: "ig:" + i["infographic_style"]
+                         for _, _, i in BA.IR.IC.iter_slots(board)
+                         if i.get("source") == "infographic"},
+                      # board v2 block 7c: every required infographic slot needs a style
+                      **{sid: "plate" for sid in PB.ig_slots_required(board)}}}
 
 
 def test_a_city_board_approves_with_its_city_tuple_intact(london):
