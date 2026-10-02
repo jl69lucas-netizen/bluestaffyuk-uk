@@ -299,3 +299,18 @@ def test_plan_tie_on_the_same_date_goes_to_the_newest_mtime(repo):
     os.utime(a, (2_000_000_000, 2_000_000_000))
     out = SH.build(repo)
     assert "2026-10-02-aaa.md" in out and "From aaa" in out
+
+
+def test_escaped_quote_does_not_end_a_double_quoted_value(repo):
+    env = 'G_TOKEN="esc\\"tailSECRET5" # note\n'
+    assert SH.parse_env(env) == [("G_TOKEN", 'esc"tailSECRET5')]
+    out = leak_check(repo, env, ['esc\\"tailSECRET5', 'esc"tailSECRET5'])
+    assert "tailSECRET5" not in out
+
+
+def test_one_or_two_character_secret_values_are_not_substituted(repo):
+    (repo / ".env").write_text("H_ID=1\nJ_KEY=42\n", encoding="utf-8")
+    out = SH.build(repo)
+    assert "1. Build the London board." in out
+    assert "2. Post the decisions batch." in out
+    assert "[redacted]" not in out

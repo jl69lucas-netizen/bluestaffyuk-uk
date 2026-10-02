@@ -16,7 +16,7 @@ the standing instructions; and the Gemini line.
 Secrets: `.env` is read only to learn whether GEMINI_API_KEY has a non-empty value and to
 learn every value it must never print. It is parsed like a dotenv loader (quotes, multi-line
 quoted values, ` #` comments, `export`). The finished prompt has every value of a secret-looking
-key (`*_KEY`, `*_TOKEN`, `*_SECRET`, `*_PASSWORD`, `*_ID`, `*_PAT`) at any length, every other
+key (`*_KEY`, `*_TOKEN`, `*_SECRET`, `*_PASSWORD`, `*_ID`, `*_PAT`) from three characters, every other
 value of six or more characters, and anything shaped like a key (`AQ.…`, `AIza…`, `sk-…`,
 `ghp_…`, `github_pat_…`, `xox[bpa]-…`, `AKIA…`) replaced with `[redacted]`.
 
@@ -46,6 +46,9 @@ TASK = re.compile(r"^###\s+Task\b")
 OPEN_STEP = re.compile(r"^\s*- \[ \]")
 REDACTED = "[redacted]"
 MIN_SECRET = 6
+# A secret-looking key's value is redacted from three characters: a one- or two-character
+# value (`H_ID=1`) would blank every count, date and sha digit it happens to match.
+SHORT_SECRET = 3
 
 STANDING = [
     "Read CLAUDE.md, docs/reference/page-run.md, the newest brief and MEMORY.md first",
@@ -121,6 +124,20 @@ def artifact_urls(root):
     return seen
 
 
+def _close(s, q):
+    """Index of the quote `q` that closes a value in `s`, or -1. Inside double quotes a
+    backslash escapes the next character, so `\\"` does not close the value."""
+    i = 0
+    while i < len(s):
+        if q == '"' and s[i] == "\\":
+            i += 2
+            continue
+        if s[i] == q:
+            return i
+        i += 1
+    return -1
+
+
 def parse_env(text):
     """[(key, value)] from .env text, parsed the way a dotenv loader reads it.
 
@@ -140,7 +157,7 @@ def parse_env(text):
         key, rest = m.group(1), m.group(2).lstrip()
         if rest[:1] in ("'", '"'):
             q, body = rest[0], rest[1:]
-            close = body.find(q)
+            close = _close(body, q)
             if close >= 0:
                 value = body[:close]
             else:  # multi-line: run to the line that closes the quote (or end of file)
@@ -148,12 +165,14 @@ def parse_env(text):
                 while i < len(lines):
                     nxt = lines[i]
                     i += 1
-                    close = nxt.find(q)
+                    close = _close(nxt, q)
                     if close >= 0:
                         parts.append(nxt[:close])
                         break
                     parts.append(nxt)
                 value = "\n".join(parts)
+            if q == '"':
+                value = value.replace('\\"', '"')
         else:
             value = re.split(r"\s#", rest, maxsplit=1)[0].strip()
         out.append((key, value))
@@ -173,8 +192,9 @@ def _env_secrets(root):
     value). A key that looks secret is redacted at any length; any other key from MIN_SECRET."""
     secrets = set()
     for key, value in _env(root):
-        floor = 1 if SECRET_KEY.search(key.upper()) else MIN_SECRET
-        for piece in [value] + value.splitlines():
+        floor = SHORT_SECRET if SECRET_KEY.search(key.upper()) else MIN_SECRET
+        escaped = value.replace('"', '\\"')
+        for piece in [value, escaped] + value.splitlines() + escaped.splitlines():
             piece = piece.strip()
             if len(piece) >= floor:
                 secrets.add(piece)
