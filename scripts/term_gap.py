@@ -38,6 +38,7 @@ import term_density as TD  # noqa: E402
 
 ROOT = KM.ROOT
 LIMIT = 30
+MIN_DOMAINS = 2   # a phrase or an entity is a gap only when two competitor domains carry it
 MAX_N = 3
 NO_RELATIONS = "NOT FETCHED — data/bsuk-ontology.json carries no `relations` key yet"
 NO_PAGES = "NOT FETCHED — no cached competitor page"
@@ -57,7 +58,10 @@ STOP_GENERIC = frozenset(
 # freeads): a phrase holding any of them is page furniture, not something to say.
 STOP_UI = frozenset(
     "ad ads advert adverts ago click cookie cookies details filter filters hours listings menu "
-    "miles next page posted premium prev results save search show sign sort view".split())
+    "miles next page posted premium prev results save search show sign sort view "
+    # cookie-consent and video-player leftovers in the London top 30 (freeads, englishblue...)
+    "accept browser consent data partners personal policy preferences privacy processing "
+    "purposes tag tags".split())
 JUNK = re.compile(r"^(?:\d+|£.*|\d+(?:st|nd|rd|th|k|km|mi|am|pm|s)|[a-z])$")
 SPLIT = re.compile(r"[.!?;:|•·\n\r\t()\[\]\"“”]+")
 
@@ -136,14 +140,16 @@ def _ok(gram):
     return not any(t in STOP_UI or JUNK.match(t) for t in gram)
 
 
-def phrase_gaps(pages, board_terms, min_domains=2, limit=None):
+def phrase_gaps(pages, board_terms, min_domains=MIN_DOMAINS, limit=None, places=()):
     """Phrases (1–MAX_N key words) found on at least `min_domains` distinct competitor domains
     and not inside any board term. `pages` are html strings or body() dicts. Each gap is
     {"term", "words", "domains", "pages", "prose", "mentions"}, sorted by domains, prose
     pages, mentions (all descending), then term; `limit` cuts the list (None keeps all). A
     shorter phrase is dropped when a longer one containing it has the same pages and
-    mentions (it adds nothing)."""
+    mentions (it adds nothing). A phrase that is, or holds as whole words, one of `places`
+    (other cities and counties, see place_names()) is dropped."""
     bodies = _bodies(pages)
+    place_toks = [t for t in (KM.key_words(x) for x in places) if t]
     covered = [KM.key_words(t) for t in board_terms]
     covered = [c for c in covered if c]
     seen = {}       # gram -> {"domains": set, "pages", "prose", "mentions"}
@@ -164,7 +170,8 @@ def phrase_gaps(pages, board_terms, min_domains=2, limit=None):
             st["mentions"] += c
     keep = {g: st for g, st in seen.items()
             if len(st["domains"]) >= min_domains
-            and not any(_contains(c, list(g)) for c in covered)}
+            and not any(_contains(c, list(g)) for c in covered)
+            and not any(_contains(list(g), t) for t in place_toks)}
     redundant = set()
     for g, st in keep.items():
         for n in range(1, len(g)):
@@ -218,15 +225,29 @@ def _is_other_place(row, other_places):
             or (row.get("place_type") or "").lower() in ("county", "region"))
 
 
-def entity_gaps(pages, ont, board_entity_ids, other_places=()):
+def entity_gaps(pages, ont, board_entity_ids, other_places=(), min_domains=MIN_DOMAINS):
     """Ontology entities no board section lists that at least one page names (its name or any
     alias as a whole key-word phrase): [{"id", "name", "class", "domains", "seen_on",
     "prose", "mentions"}], sorted by domains, pages, prose pages, mentions (descending), then
     name. A Place in `other_places` (lower-case names), or one the ontology marks
-    place_type county or region, is left out: see other_places_named()."""
+    place_type county or region, is left out: see other_places_named(). An entity named on
+    fewer than `min_domains` competitor domains is not a gap."""
     others = {o.lower() for o in other_places}
     return [r for r in _entity_rows(pages, ont, board_entity_ids)
-            if not _is_other_place(r, others)]
+            if not _is_other_place(r, others) and r["domains"] >= min_domains]
+
+
+def place_names(ont, other_places):
+    """Every name and alias of the places phrases may not carry: `other_places` themselves
+    plus each ontology Place among them or marked place_type county or region."""
+    others = {o.lower() for o in other_places}
+    out = set(others)
+    for e in (ont or {}).get("entities", []):
+        row = {"class": e.get("class", ""), "name": e.get("name", ""),
+               "place_type": e.get("place_type", "")}
+        if _is_other_place(row, others):
+            out.update(n.lower() for n in _names(e))
+    return sorted(out)
 
 
 def other_places_named(pages, ont, board_entity_ids, other_places=()):
@@ -344,7 +365,8 @@ def block(board, ont, root=ROOT):
     covered, _ = KM.board_terms({"sections": [{"keywords": s.get("keywords") or {}}
                                               for s in board.get("sections", [])]})
     covered = covered + [n for i in ids if i in ents for n in _names(ents[i])]
-    gaps = phrase_gaps(bodies, covered, min_domains=2)
+    others = other_cities(slug, root)
+    gaps = phrase_gaps(bodies, covered, places=place_names(ont, others))
     none = NO_PAGES if not bodies else "None — nothing on two domains is missing."
     out.append("**Phrases two or more competitors use and our board does not**")
     out.append("Phrases (2–3 words)")
@@ -353,13 +375,11 @@ def block(board, ont, root=ROOT):
     out.append(_phrase_table([g for g in gaps if g["words"] == 1][:LIMIT], none))
 
     out.append("**Entities competitors name that no section lists (ontology only)**")
-    others = other_cities(slug, root)
     egaps = entity_gaps(bodies, ont, ids, others)
     out.append(TD._md(["Entity", "Class", "Domains", "Pages", "Prose pages"],
                       [[e["name"], e["class"], e["domains"], e["seen_on"], e["prose"]]
                        for e in egaps])
-               if egaps else (NO_PAGES if not bodies else "None — every ontology entity a "
-                              "competitor names is already on a section."))
+               if egaps else (NO_PAGES if not bodies else "None."))
     named = other_places_named(bodies, ont, ids, others)
     if named:
         out.append("Other places named on competitor pages (not proposed for this page): "

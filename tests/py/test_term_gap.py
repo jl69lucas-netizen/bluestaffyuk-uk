@@ -61,7 +61,20 @@ def test_ui_stop_set_is_pinned():
     # Every word here was seen on the London pool (staffie-owners, pets4homes, freeads).
     assert TG.STOP_UI == frozenset(
         "ad ads advert adverts ago click cookie cookies details filter filters hours listings menu "
-        "miles next page posted premium prev results save search show sign sort view".split())
+        "miles next page posted premium prev results save search show sign sort view "
+        "accept browser consent data partners personal policy preferences privacy processing "
+        "purposes tag tags".split())
+
+
+def test_generic_stop_set_is_pinned():
+    assert TG.STOP_GENERIC == frozenset(
+        "we our you your puppy puppies dog dogs page here more can will very also all one two get any "
+        "i it its this that these those be been was were has have had not no or but if so as up out "
+        "about just than then them they their there what when where which who how my me us "
+        "both other others well new first find feel now around she he her his him old read based "
+        "highest full free looking only own each every some most many much make made see go come "
+        "know need like still even really may might would could should do does did being per via "
+        "into over under after before off again too same such".split())
 
 
 def test_boilerplate_filter():
@@ -80,7 +93,7 @@ def test_boilerplate_filter():
 def test_entity_gap_uses_ontology_names_only():
     ont = {"entities": [{"id": "ont:kc", "name": "Kennel Club", "aliases": [], "class": "Organization"},
                         {"id": "ont:dogs-trust", "name": "Dogs Trust", "aliases": [], "class": "Organization"}]}
-    gaps = TG.entity_gaps([A, B], ont, board_entity_ids=[])
+    gaps = TG.entity_gaps([A, B], ont, board_entity_ids=[], min_domains=1)
     assert [g["id"] for g in gaps] == ["ont:kc"]
     assert gaps[0]["seen_on"] == 1
 
@@ -90,7 +103,7 @@ def test_entity_gap_matches_aliases_and_skips_board_entities():
                          "class": "Organization"},
                         {"id": "ont:vet", "name": "Veterinarian", "aliases": ["vet"], "class": "Role"}]}
     pages = [TG.body(A), TG.body(B, listing=True)]
-    gaps = TG.entity_gaps(pages, ont, board_entity_ids=["ont:vet"])
+    gaps = TG.entity_gaps(pages, ont, board_entity_ids=["ont:vet"], min_domains=1)
     assert [(g["id"], g["seen_on"], g["prose"]) for g in gaps] == [("ont:kc", 1, 1)]
 
 
@@ -110,10 +123,44 @@ def test_other_cities_are_named_not_proposed(tmp_path):
                          "place_type": "county"},
                         {"id": "ont:london", "name": "London", "aliases": [], "class": "Place"},
                         {"id": "ont:vet", "name": "Vet", "aliases": [], "class": "Role"}]}
-    gaps = TG.entity_gaps([page], ont, ["ont:london"], others)
+    gaps = TG.entity_gaps([page], ont, ["ont:london"], others, min_domains=1)
     assert [g["id"] for g in gaps] == ["ont:vet"]
     named = TG.other_places_named([page], ont, ["ont:london"], others)
     assert {g["id"] for g in named} == {"ont:glasgow", "ont:essex", "ont:kent"}
+
+
+def test_an_entity_needs_two_domains():
+    ont = {"entities": [{"id": "ont:kc", "name": "Kennel Club", "aliases": [], "class": "Organization"},
+                        {"id": "ont:vet", "name": "Vet", "aliases": [], "class": "Role"}]}
+    pages = [TG.body(A, url="https://one.example/a"), TG.body(A, url="https://www.one.example/b"),
+             TG.body(B, url="https://one.example/c"), TG.body(B, url="https://two.example/")]
+    assert TG.MIN_DOMAINS == 2
+    gaps = TG.entity_gaps(pages, ont, [])
+    assert [(g["id"], g["domains"], g["seen_on"]) for g in gaps] == [("ont:vet", 2, 2)]
+
+
+def test_phrases_never_carry_another_place():
+    page = ("<html><body><main><p>Staffy puppies Manchester ready. Birmingham pups vet checked. "
+            "Kent breeder. Vet checked.</p></main></body></html>")
+    ont = {"entities": [{"id": "ont:man", "name": "Manchester", "aliases": ["Manc"], "class": "Place"},
+                        {"id": "ont:kent", "name": "Kent", "aliases": [], "class": "Place",
+                         "place_type": "county"}]}
+    places = TG.place_names(ont, {"manchester", "birmingham"})
+    assert places == ["birmingham", "kent", "manc", "manchester"]
+    terms = {g["term"] for g in TG.phrase_gaps([page, page], [], places=places)}
+    assert "vet checked" in terms
+    assert not any(w in t.split() for t in terms for w in ("manchester", "birmingham", "kent"))
+
+
+def test_london_tables_carry_no_other_city():
+    import keyword_metrics as KM
+    board = json.loads((KM.ROOT / "data/boards/blue-staffy-puppies-london.json").read_text())
+    ont = json.loads((KM.ROOT / "data/bsuk-ontology.json").read_text())
+    md = TG.block(board, ont)
+    tables = md.split("**Phrases two or more")[1].split("**Entities competitors name")[0]
+    assert "| " in tables
+    for city in ("manchester", "birmingham"):
+        assert city not in tables.lower()
 
 
 def test_by_type_view():
@@ -186,7 +233,8 @@ def test_block_has_every_section(tmp_path):
     assert "Phrases (2–3 words)" in md and "Single words" in md
     assert md.index("Phrases (2–3 words)") < md.index("Single words")
     assert "| microchipped | 3 | 3 | 2 |" in md
-    assert "| Veterinarian | Role | 1 | 1 | 1 |" in md
+    ent = md.split("**Entities competitors name")[1].split("**Entity relationships")[0]
+    assert "None." in ent and "Veterinarian" not in ent   # one domain only
     assert "scripts/ontology_seed.py" in md
     assert TG.NO_RELATIONS in md
 
