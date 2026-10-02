@@ -33,8 +33,8 @@ ROOT = KM.ROOT
 
 # What each page-one block rewards, in plain English. A type not listed is "shown on page one".
 REWARDS = {
-    "ai_overview": "A direct 40–60 word answer under a question heading; named entities "
-                   "(breed, parents, places, schemes); a source an answer engine can quote.",
+    "ai_overview": "A direct 40–60 word answer under a question heading; named entities; "
+                   "a source an answer engine can quote.",
     "people_also_ask": "Question headings answered in their first sentence; FAQPage markup "
                        "that matches the visible questions and answers.",
     "local_pack": "The city named in the title, H1 and copy; true LocalBusiness facts.",
@@ -73,7 +73,7 @@ GENERIC = frozenset(
 # Scoring a question against one heading or FAQ question (see _score).
 EXACT, CONCEPT, WORD, HEADING_BONUS, THRESHOLD = 10, 2, 1, 1, 2
 
-PAGE_TYPES = ("listing", "breeder", "guide", "other")
+PAGE_TYPES = ("listing", "breeder", "guide", "other", "off-topic")
 # The URL/title heuristic, used only when competitors.json has not measured the page:
 #   listing  the URL or title says it sells: "for-sale", "for sale", "/sale/", "buy-sell",
 #            "classified"
@@ -120,7 +120,10 @@ def concepts(text):
 
 
 def content_words(text):
-    return {w for w in QA.normalise(text).split() if w not in KM.STOP and w not in GENERIC}
+    """Normalised words that say what a text is about. A word that is itself a synonym-table
+    term ("price", "deposit") is left to concepts(), so one shared word never scores twice."""
+    return {w for w in QA.normalise(text).split()
+            if w not in KM.STOP and w not in GENERIC and not concepts(w)}
 
 
 def _faq_q(intent):
@@ -188,8 +191,31 @@ def _domain(url):
     return m.group(1) if m else ""
 
 
+_DROPPED = re.compile(r"\bDropped(?: as off-topic)?:\s*(.*?)(?:\.\s+(?=[A-Z0-9])|\.?$)", re.S)
+_URL = re.compile(r"https?://[^\s)]+")
+
+
+def dropped(competitors):
+    """{url: reason} for the pages competitors.json's `note` says it dropped as off-topic. The
+    file has no structured field for this: the pool note records it in prose, e.g. "Dropped as
+    off-topic: Google #5, a TikTok video (https://…), which sells no puppy and …". The reason is
+    the text after the URL's closing bracket, or "dropped as off-topic" when there is none."""
+    out = {}
+    for m in _DROPPED.finditer((competitors or {}).get("note") or ""):
+        sent = m.group(1)
+        for u in _URL.finditer(sent):
+            after = sent[u.end():].lstrip(")").strip(" ,;")
+            after = re.sub(r"^(which|that)\s+", "", after)
+            out[u.group(0).rstrip(".,;")] = after or "dropped as off-topic"
+    return out
+
+
 def page_type(url, title, competitors=None):
-    """(type, basis). competitors.json's measurement wins; else the URL/title heuristic."""
+    """(type, basis). A page competitors.json dropped as off-topic is "off-topic"; then its
+    measurement wins; else the URL/title heuristic."""
+    gone = dropped(competitors)
+    if url in gone:
+        return "off-topic", f"dropped in competitors.json: {gone[url]}"
     for p in (competitors or {}).get("pages") or []:
         if p.get("url") == url:
             m = p.get("metrics") or {}
@@ -282,7 +308,7 @@ def _plural(n, one, many=None):
 
 
 def takeaways(r, sections):
-    """3–5 bullets, each a count read from `r`. No bullet without a number behind it."""
+    """3–6 bullets, each a count read from `r`. No bullet without a number behind it."""
     out, rank = [], r["ranking"]
     if rank:
         n = len(rank)
@@ -291,13 +317,15 @@ def takeaways(r, sections):
         top_n = sum(1 for x in rank if x["domain"] == top_dom)
         if by_type["listing"] * 2 > n:
             out.append(f"{by_type['listing']} of {n} organic results are listings (puppies for "
-                       f"sale with prices), and {by_type['breeder']} {'is a breeder page' if by_type['breeder'] == 1 else 'are breeder pages'}: "
-                       "Google reads this query as a shopping search, so our page has to show "
-                       "price and availability above the fold, as the listings do.")
+                       f"sale with prices) and {by_type['breeder']} "
+                       f"{'is a breeder page' if by_type['breeder'] == 1 else 'are breeder pages'}, "
+                       "so the pages ranking for this query are shopping pages: ours has to show "
+                       "price and availability above the fold, as they do.")
         else:
             out.append(f"The {n} organic results are {by_type['listing']} listings, "
                        f"{by_type['breeder']} breeder, {by_type['guide']} guide and "
-                       f"{by_type['other']} other pages: no single page type owns this query.")
+                       f"{by_type['other'] + by_type['off-topic']} other pages: no single page type owns "
+                       "this query.")
         if top_n > 1:
             out.append(f"{top_dom} holds {top_n} of the {n} organic results, so the page we "
                        f"compete with is that site's, not a breeder's.")
@@ -317,15 +345,15 @@ def takeaways(r, sections):
         out.append(f"An AI Overview sits above the organic results ({what}): every question "
                    "heading needs a direct 40–60 word answer an answer engine can lift.")
     vids = sum(1 for x in rank if x["video"])
-    if vids and len(out) < 5:
+    if vids and len(out) < 6:
         out.append(f"{vids} of {len(rank)} organic results show a video: a real video on our "
                    "page, marked up with VideoObject, competes for that slot.")
     rel = r["related"]
-    if rel and len(out) < 5:
+    if rel and len(out) < 6:
         out.append(f"{_plural(len(rel), 'related search', 'related searches')}: "
                    + "; ".join(f"“{x['q']}” → " + (f"`{x['answered_by']}`" if x["answered_by"]
                                                      else "no section") for x in rel) + ".")
-    return out[:5]
+    return out[:6]
 
 
 def _count_cell(e, r):
@@ -340,10 +368,10 @@ def render(r, query, fetched, sections):
     lines = [
         f"This is what Google's first page showed for **“{query}”** in the search result we "
         f"saved on {fetched}. Each block on that page is something Google chose to show for "
-        "this search, so together they are the clearest evidence of what it expects a page "
-        "to offer: the table says what each block tends to reward, the next tables show who "
+        "this search: the table counts them, the next tables show who "
         "ranks and what searchers ask, and the last list turns those counts into what our "
-        "page has to do.",
+        "page has to do. The 'What it rewards' column is general guidance on what each kind "
+        "of result tends to favour, not data from this search.",
         "",
         TD._md(["On page one", "Count", "What it rewards"],
                [[e["signal"].replace("_", " "), _count_cell(e, r), e["rewards"]]

@@ -135,7 +135,7 @@ def test_block_renders_every_part(tmp_path):
     assert "**none — gap**" in out
     tail = out.split("What this means for our page", 1)[1]
     bullets = [l for l in tail.splitlines() if l.startswith("- ")]
-    assert 3 <= len(bullets) <= 5
+    assert 3 <= len(bullets) <= 6
     assert any("1 of 2" in b and "gap" in b for b in bullets)
 
 
@@ -143,3 +143,38 @@ def test_cli_usage(capsys):
     assert SR.main([]) == 2
     assert SR.main(["no-such-page-slug"]) == 2
     assert "usage" in capsys.readouterr().err
+
+
+def test_related_searches_bullet_shows_when_there_are_related_searches():
+    rank = [{"pos": i, "domain": f"d{i % 2}.example", "url": "u", "title": "", "type": "listing",
+             "basis": "", "video": True} for i in range(1, 6)]
+    r = {"ranking": rank, "features": {"ai_overview": 1},
+         "paa": [{"q": "Q1", "answered_by": None}], "aio_cites": None,
+         "related": [{"q": "blue staffy puppies london price", "answered_by": "litter-prices"}]}
+    bullets = SR.takeaways(r, [])
+    assert len(bullets) == 6
+    assert any("related search" in b and "`litter-prices`" in b for b in bullets)
+
+
+def test_a_page_the_competitor_note_dropped_is_off_topic():
+    comp = {"note": "Pool: top 5. Dropped as off-topic: Google #5, a video "
+                    "(https://v.example/clip/1), which sells no puppy. Saved with curl (1-4).",
+            "pages": []}
+    r = SR.read({"items": [{"type": "organic", "rank_group": 5, "domain": "v.example",
+                            "url": "https://v.example/clip/1", "title": "Clip"},
+                           {"type": "organic", "rank_group": 6, "domain": "w.example",
+                            "url": "https://w.example/x", "title": "Thing"}]}, {}, [], competitors=comp)
+    assert r["ranking"][0]["type"] == "off-topic"
+    assert r["ranking"][0]["basis"] == "dropped in competitors.json: sells no puppy"
+    assert r["ranking"][1]["type"] == "other"
+
+
+def test_rewards_make_no_page_specific_claim():
+    assert "(breed, parents" not in SR.REWARDS["ai_overview"]
+
+
+def test_a_shared_synonym_word_is_not_counted_twice():
+    secs = [{"id": "deposit", "heading": "Do I Pay a Deposit?",
+             "tree": [{"level": 3, "heading": "Does It Come Off the Price?"}]},
+            {"id": "litter-prices", "heading": "What Do They Cost?"}]
+    assert SR.answered_by("Blue staffy puppies london price", secs) == "litter-prices"
