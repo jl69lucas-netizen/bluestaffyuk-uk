@@ -83,7 +83,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
 
-## Skills — 62
+## Skills — 63
 
 One SKILL.md per directory under `.claude/skills/`. The `bsuk-*` set is the ported
 system; the rest are the generic writing, research and framework skills.
@@ -93,6 +93,7 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/bsuk-blog-post/SKILL.md`
 - `.claude/skills/bsuk-broken-links/SKILL.md`
 - `.claude/skills/bsuk-comparison-page-builder/SKILL.md`
+- `.claude/skills/bsuk-competitor-parity/SKILL.md`
 - `.claude/skills/bsuk-component-refresh/SKILL.md`
 - `.claude/skills/bsuk-component-variations/SKILL.md`
 - `.claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md`

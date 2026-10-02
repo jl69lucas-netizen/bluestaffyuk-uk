@@ -262,3 +262,5 @@ For full pages (10+ sections, 3,000+ words), audit that keyword mentions stay at
 5. **Check the built page** — `dist/<slug>/index.html`, or `dist/uk-locations/<slug>/index.html` for a city page, after `npm run build`
 6. **Canonical check is mandatory** — non-negotiable per seo-rules.md
 7. **Distribution check on full pages** — run keyword distribution audit on any page over 3,000 words; flag OVER-STUFFED as a warning (no floor since 2026-09-09; never flag a page for too few mentions)
+
+See also: `bsuk-competitor-parity` — match competitors type by type, close 2+-domain gaps, beat them on evidence from data.

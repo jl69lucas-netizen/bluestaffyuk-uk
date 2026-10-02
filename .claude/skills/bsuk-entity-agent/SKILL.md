@@ -152,3 +152,5 @@ done
 5. **Location entities on all location pages** — the city, its region and its nearby cities from `data/locations.json` always present; never a mileage or a drive time
 6. **Credential entities in first 300 words** — veterinary health check, the parents' L-2-HGA and HC-HSF4 DNA tests, LICENCE_CLAIM_PLACEHOLDER appear early
 7. **Cross-reference price-matrix.json** — all pricing entities match the data file
+
+See also: `bsuk-competitor-parity` — match competitors type by type, close 2+-domain gaps, beat them on evidence from data.

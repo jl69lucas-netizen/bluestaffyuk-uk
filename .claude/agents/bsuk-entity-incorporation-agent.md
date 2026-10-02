@@ -152,3 +152,5 @@ visible questions; verify the rendered schema in `dist/` (`npm run check:schema`
 9. **Internal same-tab, outside citations new-tab** — never `target="_blank"` on an internal link.
 10. **Jump-link teasers to deep-dive sections** — and no `<a>` inside a string that also feeds JSON-LD.
 11. **No house method, no licence** — none is named; a licence stays LICENCE_CLAIM_PLACEHOLDER.
+
+See also: `bsuk-competitor-parity` — match competitors type by type, close 2+-domain gaps, beat them on evidence from data.
