@@ -1,5 +1,6 @@
 """Block 7d: 4–5 generated OG photo slots per page, the share card first."""
 import json
+import re
 import subprocess
 import sys, pathlib
 
@@ -78,8 +79,8 @@ def test_share_card_subject_is_hero_alt():
                            "images": [{"slot": "x-hero"}]}] + [_sec(f"b{i}", "B") for i in range(4)],
              "assets": [{"slot": "x-hero", "alt": "A blue Staffy dam with her pups."}]}
     share = OG.propose(board)[0]
-    assert share["subject"] == "A blue Staffy dam with her pups."
-    assert share["og_style"] == "C" and "A blue Staffy dam with her pups." in share["prompt_brief"]
+    assert share["subject"] == "a blue Staffordshire Bull Terrier dam with her puppies, at home"
+    assert share["og_style"] == "C" and share["subject"] in share["prompt_brief"]
     nohero = OG.propose({"sections": [_sec("b0", "B")], "assets": []})[0]
     assert nohero["subject"].startswith("NOT FETCHED")
 
@@ -122,10 +123,30 @@ def test_london_yields_five_slots():
         print(s["slot"], s["section"], s["w"], s["h"], s["og_style"], s["subject"][:60])
     assert len(slots) == 5
     assert slots[0]["slot"] == "og-share" and slots[0]["section"] == "top"
-    assert slots[0]["subject"] == next(a["alt"] for a in board["assets"]
-                                       if a["slot"] == "london-hero")
+    assert slots[0]["subject"] == "a blue Staffordshire Bull Terrier dam with her puppies, at home"
     assert [s["section"] for s in slots[1:]] == ["deposit-viewing", "delivery",
                                                  "litter-prices", "health-tests"]
     r = subprocess.run([sys.executable, str(ROOT / "scripts/og_slots.py"),
                         "blue-staffy-puppies-london"], capture_output=True, text=True)
     assert r.returncode == 0 and "og-share" in r.stdout
+
+
+def test_no_real_name_in_any_generated_brief():
+    """Rule 9: a generated image never names a real dog, person or litter."""
+    board = json.loads(LONDON.read_text())
+    pups = json.loads((ROOT / "data/puppies.json").read_text())
+    forbidden = {p["name"] for p in pups} | {"Maggie", "Jones", "Lisa", "Bright"}
+    assert forbidden <= OG.real_names()
+    slots = OG.propose(board)
+    for s in slots:
+        for field in ("subject", "prompt_brief"):
+            for name in forbidden:
+                assert not re.search(r"\b%s\b" % name, s[field]), (s["slot"], field, name)
+    assert slots[0]["subject"] == "a blue Staffordshire Bull Terrier dam with her puppies, at home"
+
+
+def test_unnamed_strips_names_from_headings():
+    assert OG.unnamed("Meet Roman and Maggie's Litter", {"Roman", "Maggie"}) == "Meet and Litter"
+    secs = [_sec("b0", "Is Roman the Right Puppy for You?")] + [_sec(f"b{i}", "B") for i in range(1, 4)]
+    s = OG.propose({"sections": secs, "assets": []})[1]
+    assert "Roman" not in s["subject"] and "Roman" not in s["prompt_brief"]

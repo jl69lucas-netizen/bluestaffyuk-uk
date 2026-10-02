@@ -11,7 +11,9 @@ pending their answer: 4–5 GENERATED photo slots per page, each beside the serv
   Slot 1   `og-share`, the Open Graph share card, 1200×630 (IMAGE-DESIGNS.md §1, "one per
            page"), framing style C (Editorial Split). Its subject is the hero asset's alt —
            §1 says the same subject as the hero, recomposed. No hero alt on the board is
-           written NOT FETCHED, never guessed.
+           written NOT FETCHED, never guessed. The subject is built from the alt's cues
+           (dam, puppies), never its words: no generated image's subject or prompt_brief
+           names a real dog, person or litter (CLAUDE.md rule 9; `real_names`, `unnamed`).
   Slot 2.. `og-<section id>`, on the highest-intent body H2s, in the in-body 1408×768 box
            (§1a; scripts/bake_images.py BOX and scripts/reframe_og.py W, H). Framing styles
            cycle A, E, D, H; never B (Blur-Fill is social-only and refused on new pages by
@@ -121,6 +123,67 @@ def _hero_alt(board: dict) -> str | None:
     return None
 
 
+BREED = "a blue Staffordshire Bull Terrier"
+NAME_STOP = {"The", "Family", "And", "Of"}
+
+
+def real_names() -> set[str]:
+    """Every real dog, person or litter name the repo holds, so none reaches a generated
+    image's subject or prompt (CLAUDE.md rule 9): the puppies in data/puppies.json, the named
+    dogs in data/bsuk-ontology.json (single-word Organism entities: the dam and the sire), the
+    breeder (data/settings.json breeder_name) and the reviewers (data/reviews.json)."""
+    names: set[str] = set()
+
+    def load(rel):
+        try:
+            return json.loads((ROOT / rel).read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return None
+
+    def add(full):
+        full = str(full or "").strip()
+        if not full:
+            return
+        names.add(full)
+        names.update(t for t in re.findall(r"[A-Z][a-z]{2,}", full) if t not in NAME_STOP)
+
+    pups = load("data/puppies.json") or []
+    for p in pups if isinstance(pups, list) else []:
+        add(p.get("name"))
+    onto = load("data/bsuk-ontology.json") or {}
+    for e in onto.get("entities", []) if isinstance(onto, dict) else []:
+        name = e.get("name", "")
+        if e.get("class") == "Organism" and name[:1].isupper() and " " not in name:
+            add(name)
+    settings = load("data/settings.json") or {}
+    add(settings.get("breeder_name") if isinstance(settings, dict) else "")
+    reviews = load("data/reviews.json") or []
+    for r in reviews if isinstance(reviews, list) else []:
+        add(r.get("name"))
+    return names
+
+
+def unnamed(text: str, names: set[str] | None = None) -> str:
+    """`text` with every real name removed (longest first), whitespace tidied."""
+    names = real_names() if names is None else names
+    for n in sorted(names, key=len, reverse=True):
+        text = re.sub(r"\b%s\b(?:'s)?" % re.escape(n), "", text)
+    text = re.sub(r"\s+([,.?!])", r"\1", re.sub(r"\s{2,}", " ", text))
+    return text.strip(" ,")
+
+
+def _share_subject(alt: str | None) -> str:
+    """The hero's subject without any proper name: built from the alt's cues, never its words."""
+    if not alt:
+        return "%s — the board has no hero asset alt" % NF
+    low = alt.lower()
+    if re.search(r"\b(dam|mother|mum)\b", low) and re.search(r"\bpup", low):
+        return "%s dam with her puppies, at home" % BREED
+    if re.search(r"\bpup", low):
+        return "%s puppy, at home" % BREED
+    return "%s, at home" % BREED
+
+
 def _hero_section(board: dict) -> str:
     for sec in board.get("sections", []):
         if sec.get("shape") == "hero" or sec.get("id") in ("top", "hero"):
@@ -135,15 +198,15 @@ def _brief(subject: str, neg: str) -> str:
 def propose(board: dict, n: int = N_DEFAULT) -> list[dict]:
     n = max(N_MIN, min(N_MAX, int(n)))
     neg = negative_list()
-    alt = _hero_alt(board)
-    subject = alt or "%s — the board has no hero asset alt" % NF
+    names = real_names()
+    subject = unnamed(_share_subject(_hero_alt(board)), names)
     slots = [dict(SHARE, section=_hero_section(board), where="Share card (Open Graph)",
                   kind="photo", source="generate", status="proposed", subject=subject,
                   prompt_brief=_brief(subject, neg))]
     for i, sec in enumerate(eligible(board)[: n - 1]):
-        heading = sec.get("heading", "")
+        heading = unnamed(sec.get("heading", ""), names)
         slots.append({"slot": "og-%s" % sec.get("id"), "section": sec.get("id"),
-                      "where": "H2 · %s" % heading, "kind": "photo", "source": "generate",
+                      "where": "H2 · %s" % sec.get("heading", ""), "kind": "photo", "source": "generate",
                       "status": "proposed", "w": INBODY_W, "h": INBODY_H,
                       "og_style": STYLE_CYCLE[i % len(STYLE_CYCLE)],
                       "intent": intent_of(sec), "subject": heading,
