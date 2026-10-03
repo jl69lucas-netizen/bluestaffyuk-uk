@@ -56,7 +56,9 @@ scripts/page_sections.resolve_page resolves that from data/page-map.json (and de
 
   python3 scripts/outline_provenance_check.py [slug ...] [--root DIR]
 
-Exit 1 on any problem, 0 otherwise. Prints every page it examined.
+Exit 1 on any problem, 0 otherwise. Prints every page it examined. A run with no slug that
+examines no page while an approved new-family board exists prints "not a pass" and exits 1:
+the gate owes that board a judgment and judged nothing.
 """
 import argparse
 import html as _h
@@ -508,6 +510,14 @@ def main(argv=None):
     print(f"examined {len(examined)} new-family pages{': ' + ', '.join(examined) if examined else ''} "
           f"({out_of_scope} boards out of family scope, {not_built} not built, "
           f"{awaiting} awaiting rebuild); {len(problems)} problems")
+    # Zero input is not a pass once an approved new-family board exists: the gate has
+    # something it owes a judgment on and judged nothing (tests/py/test_gates_refuse_nothing.py).
+    waiting = sorted(s for s, b in by_key.items()
+                     if FR.applies(b) and b["meta"].get("status") in APPROVED)
+    if not named and not examined and waiting:
+        print(f"examined 0 new-family pages while {len(waiting)} approved new-family board"
+              f"{'s' if len(waiting) != 1 else ''} exist ({', '.join(waiting)}) — not a pass")
+        return 1
     return 1 if problems else 0
 
 

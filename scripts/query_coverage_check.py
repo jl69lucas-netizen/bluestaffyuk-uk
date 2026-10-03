@@ -36,7 +36,8 @@ the gate cannot find would otherwise pass unseen. One whose page is built but no
 rebuilt — the old site's page is still in dist/ — is skipped, counted and named on an
 "awaiting rebuild:" line. A question file that is not valid JSON, or not valid against
 schemas/queries.schema.json, is a problem, and so is a data/facts/rebuilt.json that is not a
-JSON list of slugs. Exit 1 on any problem, 0 otherwise.
+JSON list of slugs. Exit 1 on any problem, 0 otherwise — and exit 1 with "not a pass" when it
+examines no page while an approved new-family board (family_rules.applies) exists.
 
   python3 scripts/query_coverage_check.py
 """
@@ -259,6 +260,26 @@ def route_slug(route):
     return route.strip("/").rsplit("/", 1)[-1] or "index"
 
 
+def approved_new_family(root):
+    """Slugs of the approved project 5 boards in data/boards/ (family_rules.applies, status
+    approved or later). While there are none, examining 0 pages is the expected result."""
+    import family_rules as FR      # imported here: only the zero-examined branch needs it
+    import page_sections as PS
+    ok = PS.statuses_from("approved")
+    out = []
+    for f in sorted((Path(root) / "data" / "boards").glob("*.json")):
+        if f.name.startswith("_"):
+            continue
+        try:
+            b = json.loads(f.read_text(encoding="utf-8"))
+        except ValueError:
+            continue
+        m = b.get("meta") or {}
+        if m.get("page_type") and m.get("slug") and FR.applies(b) and m.get("status") in ok:
+            out.append(m["slug"])
+    return out
+
+
 def rebuilt_keys(root):
     """(keys, problem). A missing file is no keys. A file that is not a JSON list of strings
     is a problem line, not a crash — and no keys, so nothing is judged against a list the gate
@@ -326,6 +347,13 @@ def main(argv=None):
         print(f"awaiting rebuild: {', '.join(awaiting)}")
     print(f"examined {examined} pages ({unbuilt} not built, {len(awaiting)} awaiting rebuild); "
           f"{len(problems)} problems")
+    # Zero input is not a pass once an approved project 5 board exists: the gate owes that
+    # page a judgment and judged nothing (tests/py/test_gates_refuse_nothing.py).
+    waiting = approved_new_family(root)
+    if not examined and waiting:
+        print(f"examined 0 pages while {len(waiting)} approved new-family board"
+              f"{'s' if len(waiting) != 1 else ''} exist ({', '.join(waiting)}) — not a pass")
+        return 1
     return 1 if problems else 0
 
 

@@ -125,8 +125,12 @@ def test_the_frame_is_never_compared_with_the_outline_or_the_siblings(tmp_path, 
 
 
 def test_a_page_not_yet_in_rebuilt_json_is_awaiting_rebuild(tmp_path, capsys):
+    """Counted as awaiting rebuild and not examined. The fixture's only board is approved, so
+    the run examined nothing it owed a judgment and refuses (2026-10-03: London's approval
+    lifted tests/py/test_gates_refuse_nothing.py's xfail; zero examined is not a pass)."""
     code, out = run(site(tmp_path, rebuilt=()), capsys)
-    assert code == 0 and "examined 0 new-family pages" in out and "1 awaiting rebuild" in out
+    assert "examined 0 new-family pages" in out and "1 awaiting rebuild" in out
+    assert code == 1 and "not a pass" in out
 
 
 def test_a_named_slug_is_examined_before_it_is_listed(tmp_path, capsys):
@@ -160,7 +164,10 @@ def test_a_listed_page_that_does_not_resolve_fails_once_the_site_is_built(tmp_pa
     root = site(tmp_path)
     (root / "dist" / "uk-locations" / SLUG / "index.html").unlink()
     code, out = run(root, capsys)
-    assert code == 0 and "1 not built" in out            # no dist/index.html: not built yet
+    # no dist/index.html: not built yet, so not an outline-not-found; but the one approved
+    # board was judged by nothing, so the run is not a pass (test_gates_refuse_nothing.py)
+    assert code == 1 and "1 not built" in out and "[outline-not-found]" not in out
+    assert "not a pass" in out
     (root / "dist" / "index.html").write_text("<html><main><h1>Home</h1></main></html>")
     code, out = run(root, capsys)
     assert code == 1 and "[outline-not-found]" in out
