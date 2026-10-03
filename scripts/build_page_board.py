@@ -1194,7 +1194,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     status = ("Approved as it stands." if approved else
               REFUSAL_LINE if refused else "Connecting to the board database…")
     approve = (f'<div id="approve"><button class="btn" id="approve-btn" disabled>Approve this board</button>'
-               f'<span class="status" id="approve-status">{status}</span></div>')
+               f'<span class="status" id="approve-status" role="status" aria-live="polite">{status}</span></div>')
     # The status span is rewritten by the database script below, so a refusal is also said
     # where no script touches it.
     refusal_note = f'\n\n<p class="rules-refused">{REFUSAL_LINE}</p>' if refused and not approved else ""
@@ -1275,6 +1275,14 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
   var SIGNATURE_LABELS={js(signature_labels(board, ledger, slug, ig_plan))};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
   var ref=null;                                       // the board database doc, once reached
+  // 'pending' until the database answers, 'ready' once it has, 'none' when this viewer has
+  // no claude.ai runtime or the call failed. Only 'none' earns the no-database message.
+  var dbState='pending';
+  // True while a refusal list is on screen: the database callbacks resolve on their own
+  // clock, and their "Ready." or "Approved …" must never wipe the list of open picks.
+  var refusing=false;
+  var APPROVED={js(bool(approved))};
+  function say(text){{if(!refusing)st.textContent=text;}}
   function fieldOf(id){{return SIGNATURE_LABELS[id]&&SIGNATURE_LABELS[id].n==='2'?id:'pick-'+id;}}
   // Every pick still open, in the order the breeder meets them: block 2 first, then the
   // signature in its own (section) order.
@@ -1287,7 +1295,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
   // One line per open pick — "§08 <section> — infographic style (ig:<slot>)" — each a link
   // to its control; then the first one is scrolled to and its first radio focused.
   function refuse(missing){{
-    st.textContent='';
+    refusing=true;st.textContent='';
     var head=document.createElement('b');
     head.textContent=missing.length+' pick(s) still open — approve again once each is made:';
     st.appendChild(head);
@@ -1315,13 +1323,21 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
   }}
   // The click handler is wired BEFORE the claude.ai and database checks: a half-picked board
   // is refused, and told what is open, in any viewer. Only the write needs the database.
-  btn.disabled=false;
+  // An already-approved board keeps its button disabled until the database answers, as it
+  // always has; any other board can be checked for open picks in any viewer.
+  if(!APPROVED)btn.disabled=false;
   btn.addEventListener('click',function(){{
     // A half-picked board is worse than an unapproved one: the build would start and
     // then guess a component. Refuse the write and name every pick still open.
     var missing=missingPicks();
     if(missing.length){{refuse(missing);btn.disabled=false;return;}}
-    if(!ref){{st.textContent='Every pick is made. Approval writes to the board database, which only claude.ai can reach — open this board there, or approve in chat.';return;}}
+    refusing=false;
+    if(!ref){{
+      st.textContent=dbState==='pending'
+        ?'Every pick is made. Connecting to the board database… click approve again in a moment.'
+        :'Every pick is made. Approval writes to the board database, which only claude.ai can reach — open this board there, or approve in chat.';
+      return;
+    }}
     // missingPicks() already covers block 2; these guards stay so no record is ever sent
     // with a missing index, whatever SIGNATURE_LABELS says.
     var h1=document.querySelector('input[name="h1"]:checked');
@@ -1340,18 +1356,20 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     ref.set(rec).then(function(){{st.textContent='Approved '+rec.approved_at+'. Claude reads this back before building.';}})
       .catch(function(e){{btn.disabled=false;st.textContent='Could not save: '+(e&&e.code?e.code:'error')+'. Try again, or approve in chat.';}});
   }});
-  if(!window.claude||!window.claude.use){{st.textContent='Open this board inside claude.ai to approve it.';return;}}
+  if(!window.claude||!window.claude.use){{dbState='none';say('Open this board inside claude.ai to approve it.');return;}}
+  if(!APPROVED)say('Connecting…');               // an approved board keeps saying so until the database answers
   window.claude.use("db").then(function(db){{
-    if(!db){{st.textContent='Approval needs the board database, which this view cannot reach.';return;}}
-    ref=db.doc(BOARD_DOC);
+    if(!db){{dbState='none';say('Approval needs the board database, which this view cannot reach.');return;}}
+    ref=db.doc(BOARD_DOC);dbState='ready';
     ref.get().then(function(snap){{
       if(!snap||!snap.exists){{return;}}                 // absence is not an error: never approved
       var d=snap.data()||{{}};                            // frozen body; undefined only when !exists
-      if(d.record_hash===RECORD_HASH){{st.textContent='Approved '+(d.approved_at||'earlier')+'.';}}
-      else{{st.textContent='An earlier version of this board was approved — this record has changed since.';}}
-    }}).catch(function(e){{st.textContent='Could not read the board database: '+(e&&e.code?e.code:'error')+'. Approve in chat.';}});
-    st.textContent=st.textContent.indexOf('Approved')===0?st.textContent:'Ready.';
-  }}).catch(function(e){{st.textContent='Board database unavailable: '+(e&&e.code?e.code:'error')+'. Approve in chat.';}});
+      if(d.record_hash===RECORD_HASH){{say('Approved '+(d.approved_at||'earlier')+'.');}}
+      else{{say('An earlier version of this board was approved — this record has changed since.');}}
+    }}).catch(function(e){{say('Could not read the board database: '+(e&&e.code?e.code:'error')+'. Approve in chat.');}});
+    btn.disabled=false;
+    if(!APPROVED)say('Ready.');
+  }}).catch(function(e){{dbState='none';say('Board database unavailable: '+(e&&e.code?e.code:'error')+'. Approve in chat.');}});
 }})();
 </script>
 """

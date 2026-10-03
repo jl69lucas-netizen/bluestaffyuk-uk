@@ -2801,3 +2801,96 @@ def test_signature_labels_on_a_pre_rule_board_cover_its_own_signature():
     assert labels["puppies"]["n"] == "01" and labels["puppies"]["label"] == "component"
     for key, e in labels.items():
         assert html.count(f'id="{e["anchor"]}"') == 1, (key, e["anchor"])
+
+
+# The approve script itself, run in a real browser: the list renders, it names the first open
+# pick, and a database that answers AFTER the click does not wipe it (review of Task 1).
+_REFUSAL_RUN = r"""
+const path = require('path');
+let chromium;
+try { ({ chromium } = require('playwright')); } catch (e) { console.log('SKIP no playwright'); process.exit(0); }
+(async () => {
+  let browser;
+  try { browser = await chromium.launch(); } catch (e) { console.log('SKIP no browser'); process.exit(0); }
+  const base = process.argv[2], out = {};
+  const uncheckAndClick = () => {
+    document.querySelectorAll('input[type=radio]:not([disabled])').forEach(i => { i.checked = false; });
+    document.getElementById('approve-btn').click();
+  };
+  const read = () => {
+    const st = document.getElementById('approve-status');
+    return { role: st.getAttribute('role'), live: st.getAttribute('aria-live'),
+             items: [...st.querySelectorAll('ul.missing li')].map(l => l.textContent),
+             links: st.querySelectorAll('ul.missing li a').length, text: st.textContent,
+             disabled: document.getElementById('approve-btn').disabled,
+             active: document.activeElement && document.activeElement.name };
+  };
+  // 1. No claude.ai runtime at all.
+  let page = await browser.newPage();
+  await page.goto(base + '/open.html');
+  out.before = await page.evaluate(read);
+  await page.evaluate(uncheckAndClick);
+  out.plain = await page.evaluate(read);
+  // 2. A runtime whose database answers 400 ms after load: the click lands first.
+  page = await browser.newPage();
+  await page.addInitScript(() => {
+    const doc = { get: () => Promise.resolve({ exists: true, data: () => ({ record_hash: 'old' }) }),
+                  set: () => Promise.resolve() };
+    window.claude = { use: () => new Promise(r => setTimeout(() => r({ doc: () => doc }), 400)) };
+  });
+  await page.goto(base + '/open.html');
+  out.connecting = await page.evaluate(() => document.getElementById('approve-status').textContent);
+  await page.evaluate(uncheckAndClick);
+  await page.waitForTimeout(1000);
+  out.raced = await page.evaluate(read);
+  // 3. An approved board keeps its button disabled with no runtime.
+  page = await browser.newPage();
+  await page.goto(base + '/approved.html');
+  out.approved = await page.evaluate(read);
+  console.log('RESULT ' + JSON.stringify(out));
+  await browser.close();
+})();
+"""
+
+
+def test_refusal_list_renders_in_a_browser_and_survives_the_database_answering(tmp_path):
+    import copy, functools, http.server, os, shutil, subprocess, threading
+    import build_page_board as BPB
+    if shutil.which("node") is None:
+        pytest.skip("node not installed")
+    from test_answer_board import _node_path
+    env = dict(os.environ, NODE_PATH=_node_path())
+    if subprocess.run(["node", "-e", "require('playwright')"], cwd=ROOT, env=env,
+                      capture_output=True).returncode != 0:
+        pytest.skip("playwright is not installed (node_modules here or in the main checkout)")
+    (tmp_path / "open.html").write_text(BPB.render(copy.deepcopy(MIN_BOARD), ONT_OK, LEDGER_EMPTY,
+                                                   live={}, thumbs={}, slug="x"), encoding="utf-8")
+    (tmp_path / "approved.html").write_text(BPB.render(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY,
+                                                       live={}, thumbs={}, slug="x"), encoding="utf-8")
+    script = tmp_path / "run.cjs"
+    script.write_text(_REFUSAL_RUN, encoding="utf-8")
+    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(tmp_path))
+    handler.log_message = lambda *a, **k: None
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        r = subprocess.run(["node", str(script), f"http://127.0.0.1:{server.server_address[1]}"],
+                           cwd=ROOT, env=env, capture_output=True, text=True, timeout=120)
+    finally:
+        server.shutdown()
+    if r.stdout.startswith("SKIP"):
+        pytest.skip(r.stdout.strip())
+    assert r.returncode == 0, r.stderr
+    res = json.loads(r.stdout.split("RESULT ", 1)[1])
+    first = "Block 2 H1 and meta — H1"
+    want = [first, "Block 2 H1 and meta — title tag", "Block 2 H1 and meta — meta description",
+            f"§01 {MIN_BOARD['sections'][0]['heading']} — component"]
+    assert res["before"]["role"] == "status" and res["before"]["live"] == "polite"
+    assert res["before"]["disabled"] is False
+    assert res["plain"]["items"] == want and res["plain"]["links"] == 4, res["plain"]
+    assert res["plain"]["active"] == "h1"
+    assert res["connecting"] == "Connecting…"
+    # The database answered after the click: its "Ready." / "An earlier version…" never landed.
+    assert res["raced"]["items"] == want, res["raced"]
+    assert "Ready." not in res["raced"]["text"] and "earlier version" not in res["raced"]["text"]
+    assert res["approved"]["disabled"] is True and res["approved"]["items"] == []
