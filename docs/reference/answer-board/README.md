@@ -36,11 +36,22 @@ On a Send notification (or when the user says "read my answers"):
    `batches/<batchId>/submissions`, doc_id `s-…`. With no snapshot, `list`
    `batches/<batchId>/answers`.
 2. Save it as `docs/reference/answer-board/answers/<batchId>-<YYYY-MM-DD>.json` (as stored) and
-   `.md` (question, status, picked option, text), and commit.
-3. ArtifactData `update` `batches/<batchId>`: `status: "received"`, `receivedAt` (ISO time),
+   `.md` (question, status, picked option, text).
+3. Before committing, run the source-repo marker pass on both saved files:
+   `python3 scripts/answer_board_save.py --neutralise <the .json> <the .md>`. The breeder's own
+   words can name the sibling site or paste its URLs, and `docs/reference/` is a root
+   `python3 scripts/marker_check.py` (`npm run check:markers`) scans with no allowlist; a
+   verbatim save once broke that gate (2026-10-02). The helper uses the markers from
+   `scripts/marker_check.py` itself: it replaces each hit whole with a neutral label
+   ("[sibling-site page]" for a URL, "[sibling-site term]" otherwise), keeps the JSON valid
+   and otherwise byte-identical, adds a note to the `.md`, and exits 0 only when
+   `marker_check` finds nothing left in either file. The original text stays in the board db
+   (the submission snapshot read in step 1), so nothing the breeder said is lost. Then
+   commit.
+4. ArtifactData `update` `batches/<batchId>`: `status: "received"`, `receivedAt` (ISO time),
    `receivedCommit` (the short hash), passing `if_version` from the last read of that batch so
    a change made since is not overwritten. The board moves the batch to Done.
-4. ArtifactComments `reply` in the Send's thread with the counts and the commit, then act on
+5. ArtifactComments `reply` in the Send's thread with the counts and the commit, then act on
    the answers.
 
 ### Additional questions
@@ -53,7 +64,8 @@ additional questions"):
    `additional` and take the newest `s-…` not yet saved under `answers/`). If the snapshot is missing, reply that
    the save failed and ask the user to press Send again.
 2. Save the text as sent to
-   `docs/reference/answer-board/answers/additional-<YYYY-MM-DD>-<sid>.md`, and commit.
+   `docs/reference/answer-board/answers/additional-<YYYY-MM-DD>-<sid>.md`, run the same marker
+   pass on it (`python3 scripts/answer_board_save.py --neutralise <the .md>`), and commit.
 3. ArtifactComments `reply` in the Send's thread (what you took on, and the commit), then act
    on it.
 
