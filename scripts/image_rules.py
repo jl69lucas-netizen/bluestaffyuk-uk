@@ -35,6 +35,16 @@ from `boarded` on (`image-asset-row-missing`): ingest and publish only fill its 
 A generated image is approved only by the `:<sha12>` form, which names the exact bytes the
 breeder saw: regenerate the file and the pick no longer matches, and the build gate fails.
 
+THE PHONE PICK (London D4, Asset Gate 2026-10-04). A planned INFOGRAPHIC slot may carry a
+second pick, `img:<slot>-phone` = `ig:IG-<n>:<sha12>`: its phone layout (drawn at the width
+it paints at on a phone; scripts/ingest_image.py `phone` drafts it as
+`<slot>-phone.webp` beside the box draft). It is valid exactly when `<slot>` is a planned
+infographic slot, the value names exact bytes, and IG-<n> is the box pick's own style; a
+photo slot or an unplanned one is refused. Like every pick it lives in `approval.picks` only:
+it plans no slot and no `assets[]` row, so no record hash moves. `ingest_image.py
+publish-phone` serves the approved bytes as `/images/<box stem>-phone.webp`, a NEW file
+beside the box's `-760` sibling, and the build gate holds that file to the approved sha.
+
 WHERE A GENERATED FILE IS. A draft is written to
 `data/boards/generated/<slug file>/<slot>.<webp|png|jpg>` (not public/, which ships whole),
 and the approved file is copied into public/images and named in the slot's `assets[]` row
@@ -310,6 +320,88 @@ def ingested(board, slot, filename, root=None):
         public_file(IC.ingest_target(filename), root) is not None
 
 
+# ── an infographic's phone layout: `img:<slot>-phone` ────────────────────────────────
+PHONE_SUFFIX = "-phone"
+
+
+def phone_base(slots, slot):
+    """The planned slot whose phone layout `slot` names (`<base>-phone`), or None. A slot the
+    record itself plans is never a phone pick, whatever its name."""
+    if slot in slots or not slot.endswith(PHONE_SUFFIX):
+        return None
+    base = slot[:-len(PHONE_SUFFIX)]
+    return base if base in slots else None
+
+
+def phone_served_file(board, base, root=None):
+    """`/images/<box stem>-phone.webp` beside the box file the slot's `assets[]` row names,
+    when it is a regular file in public/images; else None."""
+    row = asset_row(board, base)
+    f = row.get("file") if row else None
+    if not (isinstance(f, str) and f.endswith(".webp")):
+        return None
+    return public_file(f[:-len(".webp")] + PHONE_SUFFIX + ".webp", root)
+
+
+def phone_file(board, base, root=None):
+    """The phone layout the board shows for a slot: its draft, else its served copy."""
+    return draft_file(board, base + PHONE_SUFFIX, root) or phone_served_file(board, base, root)
+
+
+def phone_pick_problems(board, img, value, chosen, root=None):
+    """Why `img:<slot>-phone` = `value` cannot be approved, as printable lines: `img` is the
+    planned box slot, `chosen` every pick of the approval (the box pick is read from it)."""
+    base = img["slot"]
+    key = base + PHONE_SUFFIX
+    if img["kind"] != "infographic":
+        return [f"slot {key}: a phone layout belongs to an infographic slot, and {base} is a "
+                f"{img['kind']} slot"]
+    p = parse_pick(value)
+    if p is None or p["kind"] != "ig" or p["sha"] is None:
+        return [f"slot {key}: pick {value!r} is not ig:IG-<n>:<sha12> — a phone layout is "
+                "approved by its exact bytes"]
+    box = parse_pick(chosen.get(PICK_PREFIX + base) or "")
+    if box is None or box["kind"] != "ig":
+        return [f"slot {key}: the box slot {base} has no ig: pick, so its phone layout has no "
+                "style to match"]
+    if box["style"] != p["style"]:
+        return [f"slot {key}: {p['style']} is not the box pick's {box['style']}"]
+    f = phone_file(board, base, root)
+    if f is None:
+        return [f"slot {key}: approves a phone layout, and none exists for this slot"]
+    if (sha := file_sha(f)) != p["sha"]:
+        return [f"slot {key}: the pick approves sha {p['sha']}, but the board shows "
+                f"{f.relative_to(pathlib.Path(root or ROOT)).as_posix()} (sha {sha})"]
+    return []
+
+
+def phone_build_findings(board, slots, chosen, root):
+    """The build gate for phone picks: the approved bytes are served beside the box image."""
+    out = []
+    for key, raw in sorted(chosen.items()):
+        if not key.startswith(PICK_PREFIX):
+            continue
+        base = phone_base(slots, key[len(PICK_PREFIX):])
+        if base is None or slots[base]["kind"] != "infographic":
+            continue                                   # the approval refuses these
+        slot = base + PHONE_SUFFIX
+        p = parse_pick(raw)
+        if p is None or p["kind"] != "ig" or p["sha"] is None:
+            out.append((PICK_INVALID, "FAIL",
+                        f"slot {slot}: pick {raw!r} is not ig:IG-<n>:<sha12>"))
+            continue
+        f = phone_served_file(board, base, root)
+        if f is None:
+            out.append((GENERATED_NOT_INGESTED, "FAIL",
+                        f"slot {slot}: the approved phone layout is not in public/images beside "
+                        f"the box image yet (scripts/ingest_image.py publish-phone)"))
+        elif (sha := file_sha(f)) != p["sha"]:
+            out.append((GENERATED_UNAPPROVED, "FAIL",
+                        f"slot {slot}: {f.relative_to(root).as_posix()} is not the phone layout the "
+                        f"breeder approved (sha {sha} vs approved {p['sha']})"))
+    return out
+
+
 def build_findings(board, root=None):
     """Part (c): on an approved record, every slot resolves to a file the build may use."""
     if board["meta"]["status"] not in APPROVED_STATUSES:
@@ -353,6 +445,8 @@ def build_findings(board, root=None):
                 out.append((GENERATED_UNAPPROVED, "FAIL",
                             f"slot {slot}: {f.relative_to(root).as_posix()} is not the image the breeder approved "
                             f"(sha {sha} vs approved {c['sha']})"))
+    slots = {img["slot"]: img for s, n, img in IC.iter_slots(board)}
+    out += phone_build_findings(board, slots, chosen, root)
     return out
 
 
@@ -369,6 +463,9 @@ def validate_image_picks(board, chosen, root=None, assets_dir=None):
             continue
         slot = key[len(PICK_PREFIX):]
         img = slots.get(slot)
+        if img is None and (base := phone_base(slots, slot)) is not None:
+            errs += phone_pick_problems(board, slots[base], value, chosen, root)
+            continue
         if img is None:
             errs.append(f"approval picks image slot {slot!r}, which the record does not plan")
             continue

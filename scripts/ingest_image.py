@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bring a new image onto BlueStaffyUK: IMAGE-DESIGNS.md §6 and §9, as three commands.
+"""Bring a new image onto BlueStaffyUK: IMAGE-DESIGNS.md §6 and §9, as five commands.
 
   folder   a photo from the breeder's folder -> public/images/<stem>.webp (+ -760 sibling)
   draft    a generated master -> data/boards/generated/<slug file>/<slot>.webp, the exact
@@ -13,6 +13,14 @@
   publish  after the board approved THOSE bytes (pick `og:<style>:<sha12>` or
            `ig:IG-<n>:<sha12>`), copies them UNCHANGED into public/images/<stem>.webp, and the
            draft's own sibling, when it has one, unchanged as the -760 file
+  publish-phone  after the board approved an infographic's phone layout (pick
+           `img:<slot>-phone` = `ig:IG-<n>:<sha12>`, IG-<n> the box pick's own style), copies
+           THOSE bytes unchanged to public/images/<box stem>-phone.webp: a NEW file beside the
+           box and its -760 sibling, never in their place. The box is published first. It is
+           folded into the box's own rows, as the -760 sibling is: `phone` on its
+           data/image-ingest.json row, `phone_w`/`phone_h` on its manifest row (a stem of its own
+           would put an infographic in the served-photo pools). The board is not touched: a
+           phone layout has no assets[] row.
 
 Every command that writes to public/images/ also bakes the `-760` sibling, adds the measured
 row to data/image-manifest.json, records the image in data/image-ingest.json (the ledger this
@@ -51,6 +59,7 @@ Usage:
         [--sibling <760-wide phone bake>]
   python3 scripts/ingest_image.py phone <phone master> --board <slug> --slot <slot> --infographic IG-2
   python3 scripts/ingest_image.py publish --board <slug> --slot <slot> --stem <seo-stem>
+  python3 scripts/ingest_image.py publish-phone --board <slug> --slot <infographic slot>
 """
 import argparse
 import datetime
@@ -168,10 +177,19 @@ def served(stem, root=ROOT):
     return stem in _read_json(pathlib.Path(root) / MANIFEST, {})
 
 
+def manifest_row(row):
+    """A ledger row's manifest row: {"w", "h", "sib_w"}, plus "phone_w"/"phone_h" once its
+    phone layout is published (publish-phone)."""
+    out = {"w": row["w"], "h": row["h"], "sib_w": row["sib_w"]}
+    if row.get("phone"):
+        out.update(phone_w=row["phone"]["w"], phone_h=row["phone"]["h"])
+    return out
+
+
 def ingested_manifest_rows(root=ROOT):
-    """{stem: {"w", "h", "sib_w"}} for every image this script has ingested."""
+    """{stem: manifest_row()} for every image this script has ingested."""
     ledger = _read_json(pathlib.Path(root) / LEDGER, {})
-    return {s: {"w": r["w"], "h": r["h"], "sib_w": r["sib_w"]} for s, r in ledger.items()}
+    return {s: manifest_row(r) for s, r in ledger.items()}
 
 
 # ── baking ───────────────────────────────────────────────────────────────────────────────
@@ -638,6 +656,67 @@ def publish(slug, slot, stem, root=ROOT, today=None):
     return dict(row, stem=stem, sha12=sha)
 
 
+def publish_phone(slug, slot, root=ROOT, today=None):
+    """Copy an infographic's APPROVED phone layout (`img:<slot>-phone`) unchanged to
+    public/images/<box stem>-phone.webp, beside the published box, and record it on the box's
+    ledger and manifest rows. Returns {path, sha12, w, h}."""
+    root = pathlib.Path(root)
+    _refuse(_board_problems(slug, slot, root))
+    board = _read_json(board_path(slug, root), {})
+    row = _asset_row(board, slot)
+    if row.get("kind") != "infographic":
+        _refuse(["slot %r is a %s slot; a phone layout belongs to an infographic slot"
+                 % (slot, row.get("kind"))])
+    key = "img:%s%s" % (slot, image_rules.PHONE_SUFFIX)
+    picks = (board.get("approval") or {}).get("picks") or {}
+    if key not in picks:
+        _refuse(["%s is not approved: the approval names no pick for it — board the phone "
+                 "layout and approve its exact bytes" % key])
+    _refuse(image_rules.phone_pick_problems(board, {"slot": slot, "kind": "infographic"},
+                                            picks[key], picks, root))
+    src = phone_draft_path(slug, slot, root)
+    if not src.is_file():
+        _refuse(["no phone draft for slot %r at %s — run the phone command first" % (slot, src)])
+    sha = PICK.fullmatch(picks[key]).group("igsha")
+    f = row.get("file") or ""
+    m = re.fullmatch(r"/images/(?P<stem>[a-z0-9-]+)\.webp", f)
+    stem = m and m.group("stem")
+    ledger = _read_json(root / LEDGER, {})
+    manifest = _read_json(root / MANIFEST, {})
+    if not stem or not (root / IMAGES / ("%s.webp" % stem)).is_file() or stem not in ledger \
+            or stem not in manifest:
+        _refuse(["slot %r: publish the box image first (its assets[] row names %r, and the phone "
+                 "layout is served beside a published, ingested box)" % (slot, f or None)])
+    target = root / IMAGES / ("%s%s.webp" % (stem, image_rules.PHONE_SUFFIX))
+    if target.exists() or target.is_symlink() or served(target.stem, root) or ledger[stem].get("phone"):
+        _refuse(["%s is already served — rule 11: never replace a served image"
+                 % target.relative_to(root).as_posix()])
+    stage = _Stage("phone %r" % stem)
+    try:
+        tmp = stage.temp_for(target)
+        shutil.copyfile(src, tmp)
+        if file_sha(tmp) != sha:
+            raise Refused("the staged copy (sha %s) is not byte-identical to the approved phone "
+                          "layout (sha %s)" % (file_sha(tmp), sha))
+        kb = tmp.stat().st_size / 1024
+        if kb > reframe_og.SIB_MAX_KB:
+            raise Refused("the approved phone layout is %.1f KB, over its %s KB budget — re-draft "
+                          "it; nothing written" % (kb, reframe_og.SIB_MAX_KB))
+        with Image.open(tmp) as im:
+            w, h = im.size
+        ledger[stem]["phone"] = {"file": "/images/%s" % target.name, "w": w, "h": h,
+                                 "sha12": sha, "infographic_style": PICK.fullmatch(picks[key]).group("ig"),
+                                 "master": src.relative_to(root).as_posix(),
+                                 "ingested": _today(today)}
+        stage.json(root / LEDGER, ledger)
+        manifest[stem] = manifest_row(ledger[stem])
+        stage.json(root / MANIFEST, manifest)
+        stage.commit()
+    finally:
+        stage.close()
+    return {"path": target, "sha12": sha, "w": w, "h": h}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -645,6 +724,9 @@ def main(argv=None):
     d = sub.add_parser("draft")
     p = sub.add_parser("publish")
     ph = sub.add_parser("phone")
+    pp = sub.add_parser("publish-phone")
+    pp.add_argument("--board", required=True)
+    pp.add_argument("--slot", required=True, help="the infographic slot (not <slot>-phone)")
     ph.add_argument("master")
     ph.add_argument("--board", required=True)
     ph.add_argument("--slot", required=True)
@@ -676,6 +758,10 @@ def main(argv=None):
             print("phone draft %s  %dx%d  %s KB (%s)  sha12 %s\napprove on the board with "
                   "pick: %s = %s" % (r["path"].relative_to(ROOT), r["w"], r["h"], r["kb"],
                                      r["encoding"], r["sha12"], r["pick_key"], r["pick"]))
+        elif a.cmd == "publish-phone":
+            r = publish_phone(a.board, a.slot)
+            print("published %s  %dx%d  (sha12 %s, byte-identical to the approved phone layout)"
+                  % (r["path"].relative_to(ROOT), r["w"], r["h"], r["sha12"]))
         elif a.cmd == "draft":
             r = draft(a.master, a.board, a.slot, a.og_style, a.infographic, a.mobcrop,
                       sibling=a.sibling)

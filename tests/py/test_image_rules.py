@@ -464,3 +464,112 @@ def test_the_schema_refuses_a_slot_file_that_climbs_out():
             PB.validate_board(b)
     img["file"] = "/images/..x.webp"
     PB.validate_board(b)
+
+
+# ── an infographic's phone layout: `img:<slot>-phone` (London D4, Asset Gate 2026-10-04) ──
+# A planned INFOGRAPHIC slot may carry a second pick for its phone layout, approved by its
+# exact bytes and in the box pick's own IG style. It lives in approval.picks only, like the
+# box pick: no slot, no assets[] row, nothing inside the record hash.
+LEEDS_DRAFTS = ("data", "boards", "generated", "uk-locations--blue-staffy-puppies-leeds")
+
+
+def _phone_draft(repo, data=b"phone-v1"):
+    d = repo.joinpath(*LEEDS_DRAFTS)
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "checks-graphic-phone.webp").write_bytes(data)
+    return _sha(data)
+
+
+def test_a_phone_pick_is_valid_on_a_planned_infographic_slot(repo):
+    sha = _phone_draft(repo)
+    b = _full()
+    for box in ("ig:IG-2", "ig:IG-2:" + "c" * 12):
+        chosen = {"img:checks-graphic": box, "img:checks-graphic-phone": "ig:IG-2:" + sha}
+        errs = IR.validate_image_picks(b, chosen)
+        assert not [e for e in errs if "phone" in e], errs
+
+
+def test_a_phone_pick_is_refused_on_a_photo_slot_or_an_unplanned_one(repo):
+    b = _full()
+    errs = IR.validate_image_picks(b, {"img:weeks-photo": "og:C", "img:weeks-photo-phone": "ig:IG-2:" + "a" * 12,
+                                       "img:ghost-phone": "ig:IG-2:" + "a" * 12})
+    assert "approval picks image slot 'ghost-phone', which the record does not plan" in errs
+    assert ("slot weeks-photo-phone: a phone layout belongs to an infographic slot, and "
+            "weeks-photo is a photo slot") in errs
+
+
+@pytest.mark.parametrize("value, why", [
+    ("ig:IG-2", "is not ig:IG-<n>:<sha12>"),                  # a style alone approves no bytes
+    ("og:A:" + "a" * 12, "is not ig:IG-<n>:<sha12>"),
+    ("file:/images/1blue-staffy-family-breeder.webp", "is not ig:IG-<n>:<sha12>"),
+    ("ig:IG-3:%s", "IG-3 is not the box pick's IG-2"),
+    ("ig:IG-2:" + "0" * 12, "the pick approves sha 000000000000, but the board shows"),
+])
+def test_a_phone_pick_names_the_box_style_and_the_exact_bytes(repo, value, why):
+    sha = _phone_draft(repo)
+    b = _full()
+    chosen = {"img:checks-graphic": "ig:IG-2", "img:checks-graphic-phone": value.replace("%s", sha)}
+    errs = [e for e in IR.validate_image_picks(b, chosen) if e.startswith("slot checks-graphic-phone")]
+    assert len(errs) == 1 and why in errs[0], errs
+
+
+def test_a_phone_pick_needs_an_ig_box_pick_and_a_phone_draft(repo):
+    b = _full()
+    errs = IR.validate_image_picks(b, {"img:checks-graphic-phone": "ig:IG-2:" + "a" * 12})
+    assert errs == ["slot checks-graphic-phone: the box slot checks-graphic has no ig: pick, so its "
+                    "phone layout has no style to match"]
+    errs = IR.validate_image_picks(b, {"img:checks-graphic": "ig:IG-2",
+                                       "img:checks-graphic-phone": "ig:IG-2:" + "a" * 12})
+    assert errs == ["slot checks-graphic-phone: approves a phone layout, and none exists for this slot"]
+
+
+def test_a_published_phone_layout_is_checked_when_its_draft_is_gone(repo):
+    b = _planned(_full())
+    row = next(a for a in b["assets"] if a["slot"] == "checks-graphic")
+    row.update(file="/images/checks-graphic-served.webp", status="baked")
+    (repo / "public" / "images" / "checks-graphic-served-phone.webp").write_bytes(b"phone-v1")
+    chosen = {"img:checks-graphic": "ig:IG-2", "img:checks-graphic-phone": "ig:IG-2:" + _sha(b"phone-v1")}
+    assert IR.validate_image_picks(b, chosen) == []
+    assert IR.phone_served_file(b, "checks-graphic", repo) == \
+        repo / "public" / "images" / "checks-graphic-served-phone.webp"
+
+
+def test_the_build_gate_holds_a_phone_pick_to_its_served_bytes(repo):
+    b = _planned(_full("approved"))
+    (repo / "public" / "images" / "checks.webp").write_bytes(b"ig")
+    (repo / "public" / "images" / "four-week-litter.webp").write_bytes(b"photo")
+    for slot, f in (("checks-graphic", "/images/checks.webp"), ("weeks-photo", "/images/four-week-litter.webp")):
+        next(a for a in b["assets"] if a["slot"] == slot).update(file=f, status="baked")
+    b["approval"] = {"picks": {"img:weeks-photo": "og:C:" + _sha(b"photo"),
+                               "img:checks-graphic": "ig:IG-2:" + _sha(b"ig"),
+                               "img:checks-graphic-phone": "ig:IG-2:" + _sha(b"phone-v1")}}
+    found = IR.build_findings(b)
+    assert [(c, m.split(":")[0]) for c, sev, m in found] == [
+        ("image-generated-not-ingested", "slot checks-graphic-phone")]
+    (repo / "public" / "images" / "checks-phone.webp").write_bytes(b"phone-v2")
+    assert _ids(IR.build_findings(b)) == ["image-generated-unapproved"]
+    (repo / "public" / "images" / "checks-phone.webp").write_bytes(b"phone-v1")
+    assert IR.build_findings(b) == []
+    b["approval"]["picks"]["img:checks-graphic-phone"] = "ig:IG-2"
+    assert _ids(IR.build_findings(b)) == ["image-pick-invalid"]
+
+
+def test_board_approve_stores_a_phone_pick_outside_the_record_hash(repo, monkeypatch):
+    import board_approve as BA
+    monkeypatch.setattr(FR, "CHECKS", [FR.image_every_body_heading, FR.image_build_ready])
+    sha = _phone_draft(repo)
+    b = _planned(_full())
+    picks = {"opening": "H-UT1", "at-a-glance": "C-UT1", "how-we-raise": "S1", "owners": "S1",
+             "questions": "S1", "img:weeks-photo": "og:C", "img:checks-graphic": "ig:IG-2",
+             "ig:checks-graphic": "sticker"}
+    inbox = {"approved_at": "2026-09-24T12:00:00Z", "h1": 0, "picks": picks, "notes": {},
+             "canvas_version": None, "record_hash": PB.record_hash(b)}
+    without = BA.apply_approval(b, inbox, {"entities": []}, {"pools": {}, "pages": {}})["board"]
+    inbox["picks"] = dict(picks, **{"img:checks-graphic-phone": "ig:IG-2:" + sha})
+    out = BA.apply_approval(b, inbox, {"entities": []}, {"pools": {}, "pages": {}})["board"]
+    assert out["approval"]["picks"]["img:checks-graphic-phone"] == "ig:IG-2:" + sha
+    assert out["approval"]["record_hash"] == without["approval"]["record_hash"]
+    assert PB.approval_matches(out)
+    inbox["picks"] = dict(picks, **{"img:weeks-photo-phone": "ig:IG-2:" + sha})
+    with pytest.raises(PB.BoardError, match="image picks refused"):
+        BA.apply_approval(b, inbox, {"entities": []}, {"pools": {}, "pages": {}})

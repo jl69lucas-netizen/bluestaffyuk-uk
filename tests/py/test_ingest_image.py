@@ -249,8 +249,11 @@ def test_the_real_ledger_is_valid_and_every_row_is_in_the_manifest():
     ledger = json.loads((ROOT / "data/image-ingest.json").read_text(encoding="utf-8"))
     manifest = json.loads((ROOT / "data/image-manifest.json").read_text(encoding="utf-8"))
     for stem, row in ledger.items():
-        assert manifest.get(stem) == {"w": row["w"], "h": row["h"], "sib_w": row["sib_w"]}
+        assert manifest.get(stem) == ingested_manifest_rows(ROOT)[stem]
+        assert {"w": row["w"], "h": row["h"], "sib_w": row["sib_w"]}.items() <= manifest[stem].items()
         assert (ROOT / "public/images" / (stem + ".webp")).exists(), stem
+        if "phone" in row:                         # publish-phone: a new file beside the box
+            assert (ROOT / "public" / row["phone"]["file"].lstrip("/")).exists(), stem
 
 
 def test_cli_exit_codes(master):
@@ -607,3 +610,108 @@ def test_a_phone_draft_must_be_drawn_at_a_phone_width(repo, tmp_path):
 def test_a_phone_draft_needs_a_planned_slot(repo, tmp_path):
     with pytest.raises(Refused, match="assets"):
         ingest_image.phone_draft(_phone_layout(tmp_path), SLUG, "no-such-slot", "IG-2", root=repo)
+
+
+# ── publish-phone: the approved phone layout served beside the box (London D4, 2026-10-04) ──
+IG_SLOT = "steps-graphic"
+IG_STEM = "four-steps-to-buy-a-puppy-infographic"
+
+
+def _with_ig_slot(repo):
+    p = repo / "data/boards" / (slug_file(SLUG) + ".json")
+    b = json.loads(p.read_text())
+    b["assets"].append({"slot": IG_SLOT, "kind": "infographic", "w": 1408, "h": 768,
+                        "required": True, "status": "missing", "file": None, "alt": "Four steps"})
+    p.write_text(json.dumps(b, indent=2))
+
+
+def _pick(repo, key, value):
+    p = repo / "data/boards" / (slug_file(SLUG) + ".json")
+    b = json.loads(p.read_text())
+    b["approval"]["picks"][key] = value
+    p.write_text(json.dumps(b, indent=2))
+
+
+def _published_box_and_phone_draft(repo, master, tmp_path):
+    """The box approved and published, then its phone layout drafted (not yet approved)."""
+    _with_ig_slot(repo)
+    box = draft(master, SLUG, IG_SLOT, infographic="IG-2", root=repo)
+    _pick(repo, "img:" + IG_SLOT, box["pick"])
+    publish(SLUG, IG_SLOT, IG_STEM, root=repo, today=DAY)
+    return ingest_image.phone_draft(_phone_layout(tmp_path), SLUG, IG_SLOT, "IG-2", root=repo)
+
+
+def test_publish_phone_serves_the_approved_bytes_beside_the_box(repo, master, tmp_path):
+    ph = _published_box_and_phone_draft(repo, master, tmp_path)
+    images = repo / "public/images"
+    box_before = {n: (images / n).read_bytes() for n in (IG_STEM + ".webp", IG_STEM + "-760.webp")}
+    _pick(repo, ph["pick_key"], ph["pick"])
+    board_before = (repo / "data/boards" / (slug_file(SLUG) + ".json")).read_bytes()
+    r = ingest_image.publish_phone(SLUG, IG_SLOT, root=repo, today=DAY)
+    served = images / (IG_STEM + "-phone.webp")
+    assert r["path"] == served and r["sha12"] == ph["sha12"]
+    assert served.read_bytes() == ph["path"].read_bytes(), "copied UNCHANGED"
+    for n, data in box_before.items():
+        assert (images / n).read_bytes() == data, "the box and its -760 are never replaced"
+    assert (repo / "data/boards" / (slug_file(SLUG) + ".json")).read_bytes() == board_before, \
+        "the board is not touched: a phone layout has no assets[] row"
+    ledger = json.loads((repo / "data/image-ingest.json").read_text())
+    assert ledger[IG_STEM]["phone"] == {
+        "file": "/images/%s-phone.webp" % IG_STEM, "w": 622, "h": 1200, "sha12": ph["sha12"],
+        "infographic_style": "IG-2", "ingested": DAY.isoformat(),
+        "master": "data/boards/generated/%s/%s-phone.webp" % (slug_file(SLUG), IG_SLOT)}
+    manifest = json.loads((repo / "data/image-manifest.json").read_text())
+    assert manifest[IG_STEM] == {"w": 1408, "h": 768, "sib_w": 760, "phone_w": 622, "phone_h": 1200}
+    assert ingested_manifest_rows(repo)[IG_STEM] == manifest[IG_STEM], "npm run bake keeps it"
+    assert IG_STEM + "-phone" not in manifest, "folded into the box row, never its own stem"
+
+
+def test_publish_phone_refuses_until_those_exact_bytes_are_approved(repo, master, tmp_path):
+    ph = _published_box_and_phone_draft(repo, master, tmp_path)
+    served = repo / "public/images" / (IG_STEM + "-phone.webp")
+    with pytest.raises(Refused, match="not approved"):
+        ingest_image.publish_phone(SLUG, IG_SLOT, root=repo)
+    for bad, why in (("ig:IG-2", "exact bytes"), ("ig:IG-2:" + "0" * 12, "sha 000000000000"),
+                     ("ig:IG-3:" + ph["sha12"], "IG-3 is not the box pick's IG-2")):
+        _pick(repo, ph["pick_key"], bad)
+        with pytest.raises(Refused, match=why):
+            ingest_image.publish_phone(SLUG, IG_SLOT, root=repo)
+    assert not served.exists()
+    _pick(repo, ph["pick_key"], ph["pick"])
+    ingest_image.publish_phone(SLUG, IG_SLOT, root=repo)
+    with pytest.raises(Refused, match="rule 11"):                 # never replaced
+        ingest_image.publish_phone(SLUG, IG_SLOT, root=repo)
+
+
+def test_publish_phone_needs_the_box_published_first(repo, master, tmp_path):
+    _with_ig_slot(repo)
+    box = draft(master, SLUG, IG_SLOT, infographic="IG-2", root=repo)
+    _pick(repo, "img:" + IG_SLOT, box["pick"])
+    ph = ingest_image.phone_draft(_phone_layout(tmp_path), SLUG, IG_SLOT, "IG-2", root=repo)
+    _pick(repo, ph["pick_key"], ph["pick"])
+    with pytest.raises(Refused, match="publish the box"):
+        ingest_image.publish_phone(SLUG, IG_SLOT, root=repo)
+
+
+def test_publish_phone_refuses_a_photo_slot_and_an_unplanned_one(repo, tmp_path):
+    with pytest.raises(Refused, match="infographic slot"):
+        ingest_image.publish_phone(SLUG, "garden-photo", root=repo)
+    with pytest.raises(Refused, match="assets"):
+        ingest_image.publish_phone(SLUG, "no-such-slot", root=repo)
+
+
+def test_publish_phone_refuses_a_draft_over_its_budget(repo, master, tmp_path, monkeypatch):
+    ph = _published_box_and_phone_draft(repo, master, tmp_path)
+    _pick(repo, ph["pick_key"], ph["pick"])
+    monkeypatch.setattr(reframe_og, "SIB_MAX_KB", 0.001)
+    snap = snapshot(repo)
+    with pytest.raises(Refused, match="budget"):
+        ingest_image.publish_phone(SLUG, IG_SLOT, root=repo)
+    assert snapshot(repo) == snap, "nothing written"
+
+
+def test_cli_publish_phone_exit_codes():
+    script = ROOT / "scripts/ingest_image.py"
+    proc = subprocess.run([sys.executable, str(script), "publish-phone", "--board", "no-such-page",
+                           "--slot", "x"], capture_output=True, text=True)
+    assert proc.returncode == 2 and "no board" in proc.stderr, proc.stderr
