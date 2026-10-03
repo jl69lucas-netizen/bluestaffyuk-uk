@@ -316,12 +316,13 @@ def test_a_blocked_entity_leaves_a_frozen_pages_approval_as_before(monkeypatch):
 
 # ── board v2 (Task 7): the 7c / 7d picks name a slot, not a section ──────────────────────
 def _slots(monkeypatch, ig=("delivery-route", "breed-split"), og=("og-share",)):
-    """Give the `_demo` record infographic and OG slots, through the modules PB reads."""
+    """Give the `_demo` record infographic and original-photo slots, through the modules PB
+    reads."""
     import infographic_plan as IP
-    import og_slots as OG
+    import original_slots as OS
     monkeypatch.setattr(FR, "CHECKS", [])
     monkeypatch.setattr(IP, "plan", lambda board, root=None: [{"slot": s} for s in ig])
-    monkeypatch.setattr(OG, "propose", lambda board, n=5: [{"slot": s} for s in og])
+    monkeypatch.setattr(OS, "propose", lambda board, n=5, root=None: [{"slot": s} for s in og])
     # breed-split is pending on THIS record (IG_PENDING is keyed by board slug and slot).
     monkeypatch.setattr(PB, "IG_PENDING", {(_board()["meta"]["slug"], "breed-split"): "pending"})
 
@@ -427,7 +428,26 @@ def test_a_carried_slot_pick_is_pre_checked_on_the_board(monkeypatch):
     out = BPB.infographic_block(london, {f"ig:{slot}": "ruled"})
     assert f'name="pick-ig:{slot}" value="ruled" checked>' in out
     assert f'name="pick-ig:{slot}" value="plate">' in out
-    og = BPB.og_block(london, {"og:og-share": "skip"})
-    assert 'name="pick-og:og-share" value="skip" checked>' in og
-    assert 'name="pick-og:og-share" value="use">' in og
-    assert "Each slot below has a use/skip choice (`pick-og:<slot>`); it is not required" in og
+    import original_slots as OS
+    first = OS.propose(london, root=PB.ROOT)[0]["slot"]
+    og = BPB.og_block(london, {f"og:{first}": "swap"})
+    assert f'name="pick-og:{first}" value="swap" checked>' in og
+    assert f'name="pick-og:{first}" value="use">' in og
+    assert f'name="pick-og:{first}" value="skip">' in og
+    assert f'name="note-og:{first}"' in og
+    assert "Each slot below has a use / swap / skip choice (`pick-og:<slot>`" in og
+    assert "None is required for approval." in og
+
+
+def test_a_swap_note_names_an_offered_slot(monkeypatch):
+    _slots(monkeypatch)
+    b = _board()
+    inbox = _inbox(b)
+    inbox["picks"].update({"ig:delivery-route": "ruled", "og:og-share": "swap"})
+    inbox["notes"] = {"og:og-share": "the van photo instead"}
+    out = BA.apply_approval(b, inbox, ONT, LEDGER)
+    assert out["board"]["approval"]["notes"]["og:og-share"] == "the van photo instead"
+    assert out["board"]["approval"]["picks"]["og:og-share"] == "swap"
+    inbox["notes"] = {"og:og-nowhere": "x"}
+    with pytest.raises(PB.BoardError, match="approval notes 'og:og-nowhere', which is not in the record"):
+        BA.apply_approval(b, inbox, ONT, LEDGER)

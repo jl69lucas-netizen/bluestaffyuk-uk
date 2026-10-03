@@ -2619,7 +2619,7 @@ def test_every_shipped_board_record_is_free_of_the_contradiction():
 # ── London board v2 (plan 2026-10-02, Task 7): blocks 1b, 4c, 4d, 5c, 7c, 7d ─────────────
 V2_TITLES = ["1b. How Google reads this page", "4c. Term density against competitors",
              "4d. FAQ placement", "5c. What competitors say that we do not",
-             "7c. Infographics", "7d. OG images"]
+             "7c. Infographics", "7d. Original photos"]
 LONDON = "blue-staffy-puppies-london"
 
 
@@ -2669,11 +2669,14 @@ def test_7c_previews_render_at_three_widths(london_html):
         assert f'data-ig="deposit-steps|plate" width="{w}"' in london_html
 
 
-def test_7d_offers_use_or_skip_per_og_slot(london_html):
-    import og_slots as OG
+def test_7d_offers_use_swap_or_skip_per_original_photo_slot(london_html):
+    import original_slots as OS
     london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
-    for s in OG.propose(london):
-        for v in ("use", "skip"):
+    slots = OS.propose(london, root=ROOT)
+    assert 4 <= len(slots) <= 5
+    for s in slots:
+        assert f'name="note-og:{s["slot"]}"' in london_html, s["slot"]
+        for v in ("use", "swap", "skip"):
             assert f'name="pick-og:{s["slot"]}" value="{v}"' in london_html, (s["slot"], v)
 
 

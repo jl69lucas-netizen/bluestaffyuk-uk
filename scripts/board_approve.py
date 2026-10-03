@@ -367,8 +367,8 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
     for sid, pick in inbox.get("picks", {}).items():
         if sid.startswith(IR.PICK_PREFIX):
             continue                                  # an image pick, validated below
-        # Board v2 blocks 7c and 7d (build_page_board.py): an infographic style and an OG
-        # slot's use/skip. They name a slot, not a section, and live only in approval.picks.
+        # Board v2 blocks 7c and 7d (build_page_board.py): an infographic style and an
+        # original-photo slot's use/swap/skip. They name a slot, not a section, and live only in approval.picks.
         if sid.startswith(PB.V2_PICK_PREFIXES):
             prefix, slot = sid.split(":", 1)
             prefix += ":"
@@ -410,6 +410,13 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
         # nowhere else, so it is skipped here rather than refused: refusing it would make
         # the one page-level question on the board the one question that cannot be answered.
         if sid in PAGE_NOTE_KEYS:
+            continue
+        # Block 7d's "swap" note (`og:<slot>`) names a slot, like its pick: it is kept in
+        # `approval.notes` while that slot is offered, and refused when it is not.
+        if sid.startswith("og:"):
+            slots = PB.v2_slots(b) if slots is None else slots
+            if sid[3:] not in slots["og:"]:
+                raise PB.BoardError(f"approval notes {sid!r}, which is not in the record")
             continue
         if sid not in by_id:
             raise PB.BoardError(f"approval notes section {sid!r}, which is not in the record")

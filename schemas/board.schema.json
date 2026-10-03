@@ -1728,7 +1728,7 @@
     "notes": {
      "type": "object",
      "propertyNames": {
-      "pattern": "^[a-z][a-z0-9-]*$"
+      "pattern": "^(og:)?[a-z][a-z0-9-]*$"
      },
      "additionalProperties": {
       "type": "string"

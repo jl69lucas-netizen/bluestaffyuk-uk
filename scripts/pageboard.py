@@ -1358,11 +1358,13 @@ def section_fingerprint(section):
 
 # ── board v2 (plan 2026-10-02, Task 7): picks that name a slot, not a section ─────────────
 #
-# Block 7c offers an infographic style per slot (`ig:<slot>`), block 7d a use/skip per
-# proposed OG image (`og:<slot>`). The board (build_page_board.py), the approval
+# Block 7c offers an infographic style per slot (`ig:<slot>`), block 7d a use/swap/skip per
+# proposed ORIGINAL photo (`og:<slot>`, scripts/original_slots.py — the breeder's ruling q06,
+# 2026-10-02: OG means an original site photo; "swap" asks for a different one, in the note
+# `og:<slot>`). The board (build_page_board.py), the approval
 # (board_approve.py) and the carry-forward (locked_picks) all read these from HERE, so what
 # the button waits for and what the server re-checks cannot drift apart.
-V2_PICKS = {"ig:": ("plate", "ruled", "card"), "og:": ("use", "skip")}
+V2_PICKS = {"ig:": ("plate", "ruled", "card"), "og:": ("use", "swap", "skip")}
 V2_PICK_PREFIXES = tuple(V2_PICKS)
 #: Infographic slots whose content waits on a breeder answer: shown with their three styles,
 #: offered as an optional pick, and kept OUT of the required set. Keyed by (board slug, slot
@@ -1385,7 +1387,7 @@ def ig_plan(board, root=None):
     plan() raises ValueError for an infographic slot whose `infographic_style` is missing or
     unknown and whose headings match no trigger. That is a fault in the record, so the board
     build and the approval both refuse on it with the same message, never a traceback."""
-    import infographic_plan as IP          # lazy: it imports nothing of ours, but og_slots does
+    import infographic_plan as IP          # lazy, like original_slots in v2_slots
     try:
         return IP.plan(board, root=root)
     except ValueError as e:
@@ -1398,9 +1400,9 @@ def v2_slots(board, plan=None):
     ig_plan() the caller already has."""
     if not FR.applies(board):
         return {p: set() for p in V2_PICKS}
-    import og_slots as OG
+    import original_slots as OS
     plan = ig_plan(board) if plan is None else plan
-    return {"ig:": {p["slot"] for p in plan}, "og:": {o["slot"] for o in OG.propose(board)}}
+    return {"ig:": {p["slot"] for p in plan}, "og:": {o["slot"] for o in OS.propose(board)}}
 
 
 def ig_slots_required(board, plan=None):

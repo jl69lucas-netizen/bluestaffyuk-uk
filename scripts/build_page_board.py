@@ -39,7 +39,7 @@ import faq_layout as FL            # block 4d, where the FAQs sit
 import neighbourhoods as NB         # block 3d, the city areas and their keywords
 import term_gap as TG              # block 5c, what competitors say that we do not
 import infographic_plan as IP      # block 7c, infographic style trios
-import og_slots as OG              # block 7d, the OG image slots
+import original_slots as OS        # block 7d, the original-photo slots
 import board_entities as BE
 import page_intake as PI          # block 0, the intake (the brief's target block)
 import outline_matrix as OM       # STOP 2: the outline is approved before the page board
@@ -887,8 +887,8 @@ def rules_block(findings):
 def signature_sections(board, ledger=None, slug=None, ig_plan=None):
     """Every pick id the approve button refuses to leave empty: the sections, the image
     slots, and (project 5 boards) the infographic styles, from PB.ig_slots_required — the
-    helper board_approve.py re-checks with. OG slots (`og:<slot>`) are never in it — block
-    7d is a use/skip proposal, not a required decision. `ig_plan`: PB.ig_plan(), if held."""
+    helper board_approve.py re-checks with. Original-photo slots (`og:<slot>`) are never in
+    it — block 7d is a use/swap/skip proposal, not a required decision. `ig_plan`: PB.ig_plan(), if held."""
     return (picked_sections(board, ledger, slug) + IR.slots_needing_pick(board)
             + PB.ig_slots_required(board, ig_plan))
 
@@ -899,9 +899,12 @@ BLOCK2_LABELS = (("h1", "H1"), ("meta-title", "title tag"), ("meta-description",
 def pick_anchor(pick_id):
     """The page id the refusal links a missing pick to: block 6's control for a section,
     block 7c's fieldset for `ig:<slot>`, block 7's fieldset for `img:<slot>` (written by
-    image_rules._slot_html), block 2's radio group for the H1 and the meta pair."""
+    image_rules._slot_html), block 7d's row for `og:<slot>`, block 2's radio group for the
+    H1 and the meta pair."""
     if pick_id.startswith("ig:"):
         return "ig-" + pick_id[3:]
+    if pick_id.startswith("og:"):
+        return "og-" + pick_id[3:]
     if pick_id.startswith(IR.PICK_PREFIX):
         return "img-" + pick_id[len(IR.PICK_PREFIX):]
     return "choose-" + pick_id
@@ -920,6 +923,8 @@ def signature_labels(board, ledger=None, slug=None, ig_plan=None):
     if PB.FR.applies(board):
         plan = PB.ig_plan(board) if ig_plan is None else ig_plan
         owner.update({"ig:" + p["slot"]: by_id.get(p["section"]) for p in plan})
+        owner.update({"og:" + o["slot"]: by_id.get(o["section"])
+                      for o in OS.propose(board, root=PB.ROOT)})
     for s, _n, img in IC.iter_slots(board):
         owner.setdefault(IR.PICK_PREFIX + img["slot"], s)
     out = {}
@@ -928,6 +933,8 @@ def signature_labels(board, ledger=None, slug=None, ig_plan=None):
             sec, label = owner.get(pid), f"infographic style ({pid})"
         elif pid.startswith(IR.PICK_PREFIX):
             sec, label = owner.get(pid), f"image ({pid})"
+        elif pid.startswith("og:"):          # never required today; labelled if one becomes so
+            sec, label = owner.get(pid), f"original photo ({pid})"
         else:
             sec = by_id.get(pid)
             label = "component style" if sec and sec.get("styles") else "component"
@@ -995,21 +1002,28 @@ def infographic_block(board, carried=None, plan=None):
 
 
 def og_block(board, carried=None):
-    """Block 7d: og_slots' proposal table, then a use/skip radio pair per slot
-    (`pick-og:<slot>`). Not in the approve signature: leaving one blank is allowed.
-    `carried` (PB.locked_picks) pre-checks an answer from an earlier approval."""
+    """Block 7d: original_slots' proposal table (4–5 of the site's real photos on the
+    best-suited H2/H3s; the breeder's ruling q06, 2026-10-02), then per slot a radio group
+    `pick-og:<slot>` (use / swap / skip — PB.V2_PICKS) and a note `note-og:<slot>` for
+    the photo a swap should bring in. Not in the approve signature: a slot left blank is
+    allowed. `carried` (PB.locked_picks) pre-checks an answer from an earlier approval."""
     carried = carried or {}
-    text = OG.block(board)
-    if text.startswith("### "):          # the section title already says "7d. OG images"
+    text = OS.block(board, PB.ROOT)
+    if text.startswith("### "):          # the section title already says "7d. Original photos"
         text = text.split("\n", 1)[1].lstrip("\n")
-    pairs = "".join(
-        f'<div class="ogpick"><b>{esc(o["slot"])}</b>'
-        + "".join(f' <label><input type="radio" name="pick-og:{esc(o["slot"])}" value="{v}"'
-                  f'{" checked" if carried.get("og:" + o["slot"]) == v else ""}> {v}</label>'
-                  for v in ("use", "skip"))
-        + "</div>" for o in OG.propose(board))
-    return (text + "\n\n**Use or skip each slot** — optional; a slot left blank is decided later.\n\n"
-            + f'<div class="ogpicks">{pairs}</div>')
+    rows = []
+    for o in OS.propose(board, root=PB.ROOT):
+        slot = esc(o["slot"])
+        radios = "".join(
+            f' <label><input type="radio" name="pick-og:{slot}" value="{v}"'
+            f'{" checked" if carried.get("og:" + o["slot"]) == v else ""}> {v}</label>'
+            for v in PB.V2_PICKS["og:"])
+        rows.append(f'<div class="ogpick" id="{esc(pick_anchor("og:" + o["slot"]))}">'
+                    f'<b>{slot}</b> <span class="why">{esc(o["photo"])}</span>{radios}'
+                    f'<textarea class="note" name="note-og:{slot}" placeholder="Swap: which '
+                    f'original photo instead? (optional)"></textarea></div>')
+    return (text + "\n\n**Use, swap or skip each slot** — optional; a slot left blank is "
+            "decided later.\n\n" + f'<div class="ogpicks">{"".join(rows)}</div>')
 
 
 def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None,
@@ -1194,7 +1208,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         rules_html, refused = rules_block(rule_findings(board, ont))
         parts.append(("7b. Rules for new pages", rules_html))
         parts.append(("7c. Infographics", infographic_block(board, locked, ig_plan)))
-        parts.append(("7d. OG images", og_block(board, locked)))
+        parts.append(("7d. Original photos", og_block(board, locked)))
 
     status = ("Approved as it stands." if approved else
               REFUSAL_LINE if refused else "Connecting to the board database…")
