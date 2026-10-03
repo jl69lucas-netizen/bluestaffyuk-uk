@@ -508,5 +508,11 @@
     "q": "How do I ask something the guides do not answer?",
     "a": "Send it to staffies@bluestaffyuk.uk. Every message lands with Lisa Bright rather than with an agency, and the inbox is watched between feeds, 09:00 to 23:00, seven days a week. Name the guide you were on and the part it left open — that tells us which page was not clear.",
     "source": "src/pages/blue-staffy-blog-guides/index.astro"
+  },
+  {
+    "id": "breed-blue-rarity",
+    "q": "How Rare Are Blue Staffies?",
+    "a": "Blue is one of the colours the Royal Kennel Club breed standard lists for the Staffordshire Bull Terrier, alone or with white, so a blue Staffy is a recognised colour of the breed rather than a separate type. No registry publishes a count of blue Staffies that we can cite, so we do not quote a figure for how many there are. What we can tell you is the colour of each puppy in our current litter.",
+    "source": "data/breed-standards.json"
   }
 ]

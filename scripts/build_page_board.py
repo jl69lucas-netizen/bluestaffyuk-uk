@@ -461,8 +461,9 @@ def changes_block(board):
                       md(c["reason"])])
     return (f"**{len(rows)} heading(s) added since the outline was approved at STOP 2.** "
             "The approved outline record is unchanged; these rows are part of this board, so "
-            "approving the board approves them. Each new heading's only image is the infographic "
-            "it names, and its words come out of its section's band (the page total is unchanged).\n\n"
+            "approving the board approves them. A heading added for an infographic carries that "
+            "infographic as its only image; every new heading's words come out of its section's "
+            "band (the page total is unchanged).\n\n"
             + md_table(["Section", "New heading", "Keyword", "Image slot", "Words", "Why"], table))
 
 

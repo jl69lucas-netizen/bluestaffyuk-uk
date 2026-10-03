@@ -217,6 +217,13 @@
       "keyword": "blue staffordshire bull terrier",
       "slot": "breed-split",
       "reason": "breeder q08, 2026-10-02: each infographic gets its own heading"
+    },
+    {
+      "section": "faq-bottom",
+      "node": "tree[7]",
+      "level": 3,
+      "heading": "breed-blue-rarity",
+      "reason": "breeder q04, 2026-10-02: answer the PAA gap in the bottom FAQ"
     }
   ],
   "sections": [
@@ -2471,6 +2478,12 @@
           "level": 3,
           "heading": "london-life-7",
           "intent": "Q: Can a Staffordshire Bull Terrier Live in a London Flat? — the London row of data/faq.json this block renders, written at build from the outline",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "breed-blue-rarity",
+          "intent": "Q: How Rare Are Blue Staffies? — data/faq.json row `breed-blue-rarity` (breeder q04, 2026-10-02), already written: blue is a colour the Royal Kennel Club standard lists (data/breed-standards.json), and no rarity figure is given because no registry publishes one we can cite. It answers the People Also Ask gap",
           "children": []
         }
       ],

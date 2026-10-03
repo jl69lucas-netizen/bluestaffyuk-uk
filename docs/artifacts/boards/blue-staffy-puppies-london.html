@@ -146,7 +146,7 @@ table.mx caption{display:flex;align-items:center;gap:6px}table.mx caption .dot{m
 </style>
 <div class="wrap">
 <header class="masthead"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/blue-staffy-puppies-london/</h1></div>
-<div class="meta"><span class="pill">status: boarded</span> <span class="pill">research as of 2026-09-30</span><br>record <code>7a790be7120d</code></div></header>
+<div class="meta"><span class="pill">status: boarded</span> <span class="pill">research as of 2026-09-30</span><br>record <code>51a10e7c3a42</code></div></header>
 <p class="howto"><b>How to pick.</b> Read the outline in block 3, then work down block 6: each section shows its three arrangements rendered from the kit at 1280, 768 and 375 pixels. Choose the one whose SHAPE suits the section — the copy in the frames is the outline's own stub text, not the page's prose. Pick an H1 and a title/description pair in block 2, leave a note anywhere you want something changed, then approve in block 8.</p>
 <div id="doc"></div>
 </div>
@@ -240,7 +240,7 @@ NOT FETCHED — the AI Overview loads asynchronously, so the saved response hold
 |---|---|
 | How much are blue Staffy puppies in the UK? | `faq-top` — What Do London Buyers Ask Before They Reserve a Blue Staffy? |
 | How much is a blue Staffordshire puppy? | `litter-prices` — Which Blue Staffy Puppies Are Available Now, and What Do They Cost? |
-| How rare are blue Staffies? | **none — gap** |
+| How rare are blue Staffies? | `faq-bottom` — What Do London Buyers Ask About Living With a Staffy? |
 | Is it better to get a male or female Staffy? | `faq-bottom` — What Do London Buyers Ask About Living With a Staffy? |
 | What are common Staffie behavioral issues? | `temperament` — Are Blue Staffies Aggressive, or Just Very Attached to Their People? |
 | Is a Staffy a good house dog? | `faq-bottom` — What Do London Buyers Ask About Living With a Staffy? |
@@ -249,7 +249,7 @@ NOT FETCHED — the AI Overview loads asynchronously, so the saved response hold
 
 - 7 of 9 organic results are listing pages (URL, title or card grid says puppies for sale) and 0 are breeder pages. Reading: the pages ranking for this query are shopping pages, so ours should put price and availability above the fold.
 - www.staffie-owners.co.uk holds 7 of the 9 organic results; no page classed as a breeder page.
-- 5 of 6 People Also Ask questions have a section that answers them; 1 gap: “How rare are blue Staffies?”.
+- All 6 People Also Ask questions have a section that answers them. General guidance: answer each one in the first sentence under its heading.
 - An AI Overview sits above the organic results (its sources were not in the saved response). General guidance: answer each question heading directly in its first 40–60 words.
 - 2 of 9 organic results are flagged as video. General guidance: a real video with VideoObject markup is eligible for video results.
 - 2 related searches: “Blue staffy puppies london price” → `litter-prices`; “Blue staffy puppies london kennel club” → `paperwork`.
@@ -424,6 +424,7 @@ Widths come from a pinned Arial table (`scripts/board_extras.py` `ARIAL`), deskt
 │   ├─ H3 london-life-5
 │   ├─ H3 london-life-6
 │   ├─ H3 london-life-7
+│   ├─ H3 breed-blue-rarity   [added since STOP 2 — block 3e]
 <span class="oanchor" id="outline-enquiry">├─ H2 22  Send Your London Enquiry to Lisa   [A · mandatory · form · AIDA · 36–44w · CTA×1]</span></pre>
 
 No heading collides with a live page (exact, species-template or 5-word shingle).
@@ -644,7 +645,7 @@ Volumes are UK monthly Google searches from DataForSEO keyword data (`keyword_id
 **Not shown:** “barking” here is a dog barking, not the town of Barking: “staffordshire bull terrier barking”, “staffy barking”, “english bull terrier barking”, “blue staffy barking”, “american staffordshire terrier barking”, “american pit bull terrier barking”, “american staffy barking”, “staffy barking #sounds”, “staffy puppy barking”, “pit bull terrier barking”, “pitbull terrier barking”, “english staffordshire bull terrier barking”, “american staffordshire barking”, “how to stop staffy barking” · “westminster” here is the Westminster dog show, not the borough: “staffordshire bull terrier westminster”, “staffordshire bull terrier westminster 2022”, “american staffordshire terrier westminster”, “american pitbull terrier westminster” · Sutton in Ashfield is in Nottinghamshire: “staffy for sale sutton in ashfield” · Brentwood is in Essex, outside Greater London: “staffordshire bull terrier for sale near brentwood”.
 </script>
 <script type="text/markdown" data-title="3e. Changed since STOP 2">
-**6 heading(s) added since the outline was approved at STOP 2.** The approved outline record is unchanged; these rows are part of this board, so approving the board approves them. Each new heading's only image is the infographic it names, and its words come out of its section's band (the page total is unchanged).
+**7 heading(s) added since the outline was approved at STOP 2.** The approved outline record is unchanged; these rows are part of this board, so approving the board approves them. A heading added for an infographic carries that infographic as its only image; every new heading's words come out of its section's band (the page total is unchanged).
 
 | Section | New heading | Keyword | Image slot | Words | Why |
 |---|---|---|---|---|---|
@@ -654,6 +655,7 @@ Volumes are UK monthly Google searches from DataForSEO keyword data (`keyword_id
 | 13 What Should a Health Tested Staffy Breeder Show You Before You Buy? | H3 **Which DNA and Kennel Club Health Checks Should I Ask to See?** | kennel club | `health-tests-checklist` | 40–60 | breeder q08, 2026-10-02: each infographic gets its own heading |
 | 14 What Kennel Club Paperwork and Care Come Home With Our Puppies? | H3 **What Goes in the Folder for My Blue Staffordshire Bull Terrier?** | blue staffordshire bull terrier | `paperwork-checklist` | 40–60 | breeder q08, 2026-10-02: each infographic gets its own heading |
 | 18 Are Blue Staffordshire Bull Terriers Pit Bulls or American Staffies? | H3 **Blue Staffordshire Bull Terrier or AmStaff: How Do Their Breed Standards Differ?** | blue staffordshire bull terrier | `breed-split` | 40–60 | breeder q08, 2026-10-02: each infographic gets its own heading |
+| 21 What Do London Buyers Ask About Living With a Staffy? | H3 **breed-blue-rarity** | — | — | — | breeder q04, 2026-10-02: answer the PAA gap in the bottom FAQ |
 </script>
 <script type="text/markdown" data-title="3b. Image plan">
 | Section | Slot | Kind | Required | Prompt |
@@ -710,7 +712,7 @@ Every image slot the outline plans. Infographic prompts are the generation pack;
 | enquiry | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 36–44 |
 | **totals** | 15 | 0 | 0 | 1 | 2 | 4 | 0 | 0 | 0 | 8 | 1 | 5 | 2 | 2663–3254 |
 
-Headings: H1 1 · H2 22 · H3 41 · H4 17 · H5 6 · H6 6. Counts are ceilings, not floors.
+Headings: H1 1 · H2 22 · H3 42 · H4 17 · H5 6 · H6 6. Counts are ceilings, not floors.
 
 **Every keyword, by type** — a section number jumps to that section in block 3.
 
@@ -1589,6 +1591,14 @@ This preview emits: `BreadcrumbList`, `FAQPage`, `LocalBusiness`, `Offer`, `Pers
           "@type": "Answer",
           "text": "NOT FETCHED — data/faq.json has no row `london-life-7` yet (written at build from the outline)"
         }
+      },
+      {
+        "@type": "Question",
+        "name": "How Rare Are Blue Staffies?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Blue is one of the colours the Royal Kennel Club breed standard lists for the Staffordshire Bull Terrier, alone or with white, so a blue Staffy is a recognised colour of the breed rather than a separate type. No registry publishes a count of blue Staffies that we can cite, so we do not quote a figure for how many there are. What we can tell you is the colour of each puppy in our current litter."
+        }
       }
     ]
   }
@@ -1774,7 +1784,7 @@ document.querySelectorAll('.kv').forEach(function(root){
     var d=IG_DOCS[f.getAttribute('data-ig')];
     if(d!==undefined)f.srcdoc=d;
   });
-  var RECORD_HASH="7a790be7120db3559ec0eafcb34f098360d7b098371005247021834433c3ae14";var BOARD_DOC="boards/blue-staffy-puppies-london";
+  var RECORD_HASH="51a10e7c3a42680a63dd299092b6c205b58b8129bdb436a42d9abee2ff8ed6cb";var BOARD_DOC="boards/blue-staffy-puppies-london";
   var SIGNATURE_SECTIONS=["img:deposit-steps", "img:delivery-route", "img:litter-prices-figures", "img:health-tests-checklist", "img:paperwork-checklist", "img:breed-split", "ig:deposit-steps", "ig:delivery-route", "ig:litter-prices-figures", "ig:health-tests-checklist", "ig:paperwork-checklist", "ig:breed-split"];
   var SIGNATURE_LABELS={"img:deposit-steps": {"n": "08", "section": "Do I Have to Pay a Deposit Before I See My Blue Staffy Puppy?", "label": "image (img:deposit-steps)", "anchor": "img-deposit-steps"}, "img:delivery-route": {"n": "09", "section": "How Will My Blue Staffy Puppy Get From Carlisle to London?", "label": "image (img:delivery-route)", "anchor": "img-delivery-route"}, "img:litter-prices-figures": {"n": "10", "section": "Which Blue Staffy Puppies Are Available Now, and What Do They Cost?", "label": "image (img:litter-prices-figures)", "anchor": "img-litter-prices-figures"}, "img:health-tests-checklist": {"n": "13", "section": "What Should a Health Tested Staffy Breeder Show You Before You Buy?", "label": "image (img:health-tests-checklist)", "anchor": "img-health-tests-checklist"}, "img:paperwork-checklist": {"n": "14", "section": "What Kennel Club Paperwork and Care Come Home With Our Puppies?", "label": "image (img:paperwork-checklist)", "anchor": "img-paperwork-checklist"}, "img:breed-split": {"n": "18", "section": "Are Blue Staffordshire Bull Terriers Pit Bulls or American Staffies?", "label": "image (img:breed-split)", "anchor": "img-breed-split"}, "ig:deposit-steps": {"n": "08", "section": "Do I Have to Pay a Deposit Before I See My Blue Staffy Puppy?", "label": "infographic style (ig:deposit-steps)", "anchor": "ig-deposit-steps"}, "ig:delivery-route": {"n": "09", "section": "How Will My Blue Staffy Puppy Get From Carlisle to London?", "label": "infographic style (ig:delivery-route)", "anchor": "ig-delivery-route"}, "ig:litter-prices-figures": {"n": "10", "section": "Which Blue Staffy Puppies Are Available Now, and What Do They Cost?", "label": "infographic style (ig:litter-prices-figures)", "anchor": "ig-litter-prices-figures"}, "ig:health-tests-checklist": {"n": "13", "section": "What Should a Health Tested Staffy Breeder Show You Before You Buy?", "label": "infographic style (ig:health-tests-checklist)", "anchor": "ig-health-tests-checklist"}, "ig:paperwork-checklist": {"n": "14", "section": "What Kennel Club Paperwork and Care Come Home With Our Puppies?", "label": "infographic style (ig:paperwork-checklist)", "anchor": "ig-paperwork-checklist"}, "ig:breed-split": {"n": "18", "section": "Are Blue Staffordshire Bull Terriers Pit Bulls or American Staffies?", "label": "infographic style (ig:breed-split)", "anchor": "ig-breed-split"}, "h1": {"n": "2", "section": "H1 and meta", "label": "H1", "anchor": "choose-h1"}, "meta-title": {"n": "2", "section": "H1 and meta", "label": "title tag", "anchor": "choose-meta-title"}, "meta-description": {"n": "2", "section": "H1 and meta", "label": "meta description", "anchor": "choose-meta-description"}};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');

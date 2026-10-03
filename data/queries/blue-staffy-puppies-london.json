@@ -955,9 +955,12 @@
       "block": null,
       "fact_source": null,
       "must_answer": false,
-      "faq": null,
+      "faq": "bottom",
       "blocked": "unverified fact",
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Rare Are Blue Staffies?"
+      }
     },
     {
       "id": "q-im-looking-into-getting-a-staffy-puppy-wh-99b3ab",

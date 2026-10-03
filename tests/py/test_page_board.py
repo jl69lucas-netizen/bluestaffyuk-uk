@@ -2989,12 +2989,18 @@ def test_board_html_shows_block_3e_only_when_changes_are_recorded():
     assert "What Does Each Cost?" in html and "added since STOP 2" in html
 
 
-def test_london_records_six_changes_and_the_outline_record_is_still_approved(monkeypatch):
+def test_london_records_seven_changes_and_the_outline_record_is_still_approved(monkeypatch):
     import outline_matrix as OM
     monkeypatch.setattr(PB, "EXTERNAL_LIBRARY", PB.ROOT / "docs/reference/external-link-library.md")
     b = json.loads((PB.ROOT / "data/boards/blue-staffy-puppies-london.json").read_text())
     rows = b["outline_changes_since_stop2"]
-    assert len(rows) == 6 and all("q08" in r["reason"] for r in rows)
+    # Six infographic headings (breeder q08) and the rarity FAQ row (breeder q04), 2026-10-02.
+    assert len(rows) == 7
+    assert sum("q08" in r["reason"] for r in rows) == 6
+    q04 = [r for r in rows if "q04" in r["reason"]]
+    assert len(q04) == 1 and q04[0]["section"] == "faq-bottom" and q04[0]["heading"] == "breed-blue-rarity"
+    faq = json.loads((PB.ROOT / "data/faq.json").read_text())
+    assert any(r["id"] == "breed-blue-rarity" for r in faq)
     PB.validate_board(b)
     o = json.loads((PB.ROOT / "data/outlines/blue-staffy-puppies-london.json").read_text())
     assert OM.approval_state(o) == "approved" and o["approval"]["record_hash"] == "93a195fccb044bea"

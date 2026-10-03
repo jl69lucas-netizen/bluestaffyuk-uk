@@ -33,6 +33,9 @@ TOKENS = {
 # The phrases an answer asserts that are NOT a settings value — the part a reader would
 # treat as a promise. Each must appear on the page that row names.
 FACT_PHRASES = {
+    # Sourced to data/breed-standards.json (breeder q04, 2026-10-02): verified against the
+    # Royal Kennel Club quotes, which list blue among the breed's colours, with white.
+    "breed-blue-rarity": ["blue", "with white"],
     # "first vaccination", singular, from project 4 Task 18: the migrated body wrote
     # "initial vaccinations" and "first vaccinations", the rebuilt homepage writes "its first
     # vaccination" in `health` and "First vaccination" in the `whats-included` table, and the
@@ -357,6 +360,30 @@ def test_every_source_exists_and_a_settings_source_is_actually_used():
                 f"{r['id']} names settings as its source but interpolates nothing from it")
 
 
+# A row may also be sourced to a fetched-standards data file, whose every value restates its
+# source page with an exact `quote`. Such a row is verified against the quotes alone (what the
+# source page itself says), never against the file's paraphrased `value`s. First use: breeder
+# q04, 2026-10-02 — "How Rare Are Blue Staffies?" leans on the Royal Kennel Club colour list
+# and states no rarity figure, because no registry publishes one we can cite.
+DATA_QUOTE_SOURCES = {"data/breed-standards.json"}
+
+
+def _quote_text(path):
+    out = []
+
+    def walk(o):
+        if isinstance(o, dict):
+            if isinstance(o.get("quote"), str):
+                out.append(o["quote"])
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    walk(json.loads((ROOT / path).read_text()))
+    return "\n".join(out)
+
+
 def test_page_backed_answers_say_what_their_page_says():
     """The rule-9 assertion. A row sourced to a page must lean only on words that page
     uses; a phrase that has quietly left the page takes its answer with it."""
@@ -364,8 +391,11 @@ def test_page_backed_answers_say_what_their_page_says():
     for r in FAQ:
         if r["source"] == "data/settings.json":
             continue
-        assert r["source"].startswith("src/pages/"), (r["id"], r["source"])
-        text = _page_text(r["source"]).lower()
+        if r["source"] in DATA_QUOTE_SOURCES:
+            text = _quote_text(r["source"]).lower()
+        else:
+            assert r["source"].startswith("src/pages/"), (r["id"], r["source"])
+            text = _page_text(r["source"]).lower()
         phrases = FACT_PHRASES.get(r["id"])
         assert phrases, f"{r['id']} is page-sourced but names no fact phrases to verify"
         for phrase in phrases:
