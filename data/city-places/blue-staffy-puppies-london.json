@@ -366,8 +366,6 @@
     }
   },
   "not_fetched": [
-    "NOT FETCHED — handover points: needs the breeder (where London handovers actually happen). Never inferred from stations, car parks or services.",
-    "NOT FETCHED — first-hand London fact (q06): needs the breeder (a past London delivery, borough only, or a London owner's line). Not answered here.",
     "NOT FETCHED — Royal Parks dog page: https://www.royalparks.org.uk/visit/dogs returned 404 on 2026-10-03; the park rules above come from the Royal Parks' own PDFs instead.",
     "NOT FETCHED — borough for each Royal Park and for Epping Forest: the fetched owner pages do not name one, and it is not inferred.",
     "NOT FETCHED — Royal Parks off-lead areas as a positive list: neither Royal Parks PDF lists where dogs may be off the lead; they list only dog-free and dogs-on-leads areas.",
@@ -377,9 +375,46 @@
     "NOT FETCHED — Highgate Wood dog rule: the City of London byelaws page says only to keep pets under control and clean up after them; Schedule 2 (dog-prohibited areas) is not printed on the page."
   ],
   "breeder_questions": [
-    "Where do London handovers actually happen when you deliver, or do London buyers collect in Carlisle? (Borough or general area only, no address.)",
-    "Have you delivered a puppy to London before? Which area (borough only)?",
-    "Do you know a London owner who'd share a line about their Staffy's park routine?",
-    "Is there a London vet practice you have used yourself or would name? If not, the page links only the RCVS Find a Vet search."
+    "Where do London handovers actually happen when you deliver, or do London buyers collect in Carlisle? (Borough or general area only, no address.) — ANSWERED 2026-10-03 (answer board 2026-10-03-london-board-revision q08): take home delivery and handovers are by request. See first_hand[0].",
+    "Have you delivered a puppy to London before? Which area (borough only)? — ANSWERED 2026-10-03 (answer board 2026-10-03-london-board-revision q09): Croydon, Edmonton and Ilford. See first_hand[1].",
+    "Do you know a London owner who'd share a line about their Staffy's park routine? — ANSWERED 2026-10-03 (answer board 2026-10-03-london-board-revision q10), NOT USED: \"Chadwell, Dartford\" names places, not an owner's line. See first_hand[2].",
+    "Is there a London vet practice you have used yourself or would name? If not, the page links only the RCVS Find a Vet search. — ANSWERED 2026-10-03 (answer board 2026-10-03-london-board-revision q11): no London vet to name; the page links the RCVS Find a Vet search only. See first_hand[3]."
+  ],
+  "first_hand": [
+    {
+      "topic": "handover",
+      "question": "Where do London handovers happen, or do London buyers always collect in Carlisle or take home delivery?",
+      "value": "take home delivery and handovers are by request.",
+      "use": "usable",
+      "source": "answer board 2026-10-03-london-board-revision q08",
+      "date": "2026-10-03"
+    },
+    {
+      "topic": "past-delivery",
+      "question": "Have you delivered a puppy to London before, and may the page say so?",
+      "value": "croydon, Edmonton and Ilford",
+      "use": "usable",
+      "source": "answer board 2026-10-03-london-board-revision q09",
+      "date": "2026-10-03",
+      "note": "the breeder's answer as typed; a page names the three places as written (Croydon, Edmonton and Ilford) and infers no borough, date or number of deliveries"
+    },
+    {
+      "topic": "owner-line",
+      "question": "Do you know a London owner who would share a line about their Staffy's park routine?",
+      "value": "Chadwell, Dartford",
+      "use": "received-unused",
+      "source": "answer board 2026-10-03-london-board-revision q10",
+      "date": "2026-10-03",
+      "reason": "names places only: no owner and no line about a park routine to quote, and which Chadwell is meant is not inferred. A page never writes an owner's line the breeder did not give (working rule 9)"
+    },
+    {
+      "topic": "vet",
+      "question": "Is there a London vet you've used and would be happy to name?",
+      "value": "NO",
+      "use": "usable",
+      "source": "answer board 2026-10-03-london-board-revision q11",
+      "date": "2026-10-03",
+      "note": "no London practice is named; the page links the RCVS Find a Vet search only (vets.how)"
+    }
   ]
 }
