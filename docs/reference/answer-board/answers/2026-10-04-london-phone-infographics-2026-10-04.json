@@ -1,0 +1,23 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Approve all six",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Approve the six phone drafts as shown?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-03T23:07:09.252Z",
+  "batchId": "2026-10-04-london-phone-infographics",
+  "counts": {
+    "answered": 1,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-03T23-07-09-249Z"
+}
