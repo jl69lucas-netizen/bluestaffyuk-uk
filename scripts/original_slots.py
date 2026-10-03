@@ -15,8 +15,9 @@ name guards it carried live on in scripts/generated_briefs.py.
 INVENTORY. `inventory(root, board=None)` lists the real photos the site serves: one per stem
 of data/image-manifest.json that exists under public/images (size siblings such as `-760` are
 already folded there). The manifest records only measured sizes — no kind and no source — so a
-graphic is recognised by its filename (FILENAME_MARKERS) or by any alt the site shows it with
-(ALT_MARKERS, whole-word for "map" and "icons"). Puppy CARD crops (`-card-800`) and 4:5
+graphic is recognised by its filename (FILENAME_MARKERS, regexes on the basename: `^og-` is
+anchored so "dog-" never hits, an icon is a whole hyphen token) or by any alt the site shows it
+with (ALT_MARKERS; "map", "icon", "graphic" as whole words with an optional plural). Puppy CARD crops (`-card-800`) and 4:5
 PORTRAIT crops (`-portrait-4x5`) are real photos, but they are crops of a photo the inventory
 already holds at full frame (`puppies/<name>-<name>1.webp`), so they are left out: offering a
 crop beside its original would put the same photo up twice. Each item records its `path`, its
@@ -37,6 +38,7 @@ FIT. `fit(target, photo, board, taken=())` scores a (heading, photo) pair 0–10
               (SUBJECTS: parents and dam for the litter, a van for delivery, a vet for health,
               a family at home for life, Kennel Club papers for paperwork, the breeder for
               the deposit and viewing). Given once, however many classes match.
+    city      WEIGHTS["city"] when the photo names the board's own city (see CITIES).
     hero      WEIGHTS["hero"] when the photo is this page's hero image.
     taken     WEIGHTS["taken"] when the photo is already in another selected slot: one this
               proposal picked (`taken`), or an image slot this page's record already places
@@ -46,15 +48,23 @@ FIT. `fit(target, photo, board, taken=())` scores a (heading, photo) pair 0–10
 
 PICKER. `propose(board, n=5, root=None)` scores every eligible heading against every photo
 and takes pairs greedily, best first: at most one per section, never a photo twice, never a
-pair under FLOOR. Eligible headings are the body H2s (image_rules.body_sections: no hero,
+pair under FLOOR. Page uses and hero files are read once per call. Eligible headings are the body H2s (image_rules.body_sections: no hero,
 counter, trust, contents, takeaways, review, FAQ, newsletter or form section) and the level-3
 nodes under them. n is clamped to 4..5; a page with too few eligible sections or fitting
-photos gets fewer, and the block says so. The best pair is also the SHARE CARD, recomposed at
-1200×630 (IMAGE-DESIGNS.md §1, one per page) with framing style A (Contain on Bone) when the
-photo is landscape (w/h >= 1.3) and C (Editorial Split) otherwise. Each slot carries `slot`
+photos gets fewer, and the block says so. One slot is also the SHARE CARD at 1200×630
+(IMAGE-DESIGNS.md §1, one per page): the best slot whose photo is at least 1200px wide, with
+framing style A (Contain on Bone); when no proposed photo is that wide, the best slot with
+style C (Editorial Split — a half-width photo panel, never upscaled past the photo's own
+width), and the block says so (NO_WIDE). Each slot carries `slot`
 (`orig-<section>` for an H2, `orig-<section>-<three key words of the H3>` for an H3),
 `section`, `level`, `heading`, `photo`, `alt`, `fit` and `why` (the shared terms and the
 matched subject).
+
+CITIES. A photo whose filename or any served alt names a city other than the board's own is
+never offered (excluded, not penalised: a Glasgow family is not a London family). The cities
+are data/locations.json's, "UK" rows dropped and parentheticals stripped, matched as whole
+words ("York" never matches "Yorkshire"). The board's own city is the row whose slug is the
+board's; a board with no row has no own city, so every city-naming photo is left out.
 
 ALT (working rule 11). The first use of a photo on a page keeps its served alt; every repeat
 carries a NEW alt, never a copy. A photo the page already shows under another heading is a
@@ -86,21 +96,26 @@ import image_rules as IR  # noqa: E402
 from keyword_metrics import key_words  # noqa: E402
 from term_density import md_table  # noqa: E402
 
+#: Regexes searched in the file's BASENAME stem (no folder, no extension): `^og-` is anchored
+#: so "dog-" never matches, and an icon is a whole hyphen-delimited token ("iconic" is not).
 FILENAME_MARKERS = ("infographic", "comparison", "-vs-", "chart", "diagram", "steps",
-                    "process", "logo", "icon", "generated", "og-", "-card-", "-portrait-")
+                    "process", "logo", r"(?:^|-)icons?(?:-|$)", "generated", "^og-",
+                    "-card-", "-portrait-")
 ALT_MARKERS = ("infographic", "graphic", "illustrat", "icons", "montage", "map",
                "cover image", "silhouette", "visual comparison", "side-by-side",
                "quote displayed", "thank you message", "webpage")
-#: Alt markers matched as whole words ("map" must not hit "mapping"); the rest are substrings.
+#: Alt markers matched as whole words, a plural allowed ("map" must not hit "mapping",
+#: "graphic" does hit "graphics"); the rest are substrings.
 _WHOLE_WORD = frozenset({"map", "icons", "graphic"})
 
-WEIGHTS = {"per_term": 10, "overlap_max": 50, "intent": 30, "hero": -40, "taken": -50,
-           "portrait": -10, "small": -10}
+WEIGHTS = {"per_term": 10, "overlap_max": 50, "intent": 30, "city": 10, "hero": -40,
+           "taken": -50, "portrait": -10, "small": -10}
 MIN_WIDTH = 760
 FLOOR = 20
 N_MIN, N_MAX, N_DEFAULT = 4, 5, 5
 SHARE_W, SHARE_H = 1200, 630
 NEW_ALT = "NEW alt needed (repeat use, rule 11)"
+NO_WIDE = "No photo is 1200px wide; the share card uses the Editorial Split panel."
 NO_ALT = "NOT FETCHED — no served alt; NEW alt needed"
 QUESTION_WORDS = frozenset("""
 will can could should would does did i my me get which who where much many there here
@@ -136,6 +151,8 @@ def _header_size(path):
                 return struct.unpack(">II", head[16:24])
             if head[:4] == b"RIFF" and head[8:12] == b"WEBP":
                 kind = head[12:16]
+                if len(head) < 30:
+                    return None
                 if kind == b"VP8X":
                     w = int.from_bytes(head[24:27], "little") + 1
                     h = int.from_bytes(head[27:30], "little") + 1
@@ -174,6 +191,8 @@ def image_size(path):
     try:
         with Image.open(path) as im:
             return im.size
+    except Image.DecompressionBombError:
+        return None                        # a bomb is unreadable, never parsed further
     except OSError:
         return _header_size(path)
 
@@ -182,14 +201,58 @@ def image_size(path):
 def _alt_hit(alt, marker):
     low = (alt or "").lower()
     if marker in _WHOLE_WORD:
-        return re.search(r"\b%s\b" % re.escape(marker), low) is not None
+        stem = marker[:-1] if marker.endswith("s") else marker
+        return re.search(r"\b%ss?\b" % re.escape(stem), low) is not None
     return marker in low
 
 
+def _name_hit(path, marker):
+    return re.search(marker, Path(path).stem.lower()) is not None
+
+
 def _is_graphic(path, alts):
-    low = path.lower()
-    return (any(m in low for m in FILENAME_MARKERS)
+    return (any(_name_hit(path, m) for m in FILENAME_MARKERS)
             or any(_alt_hit(a, m) for a in alts for m in ALT_MARKERS))
+
+
+# ── cities ──────────────────────────────────────────────────────────────────────────────
+def _words(text):
+    return " ".join(re.findall(r"[a-z0-9]+", (text or "").lower()))
+
+
+@functools.lru_cache(maxsize=4)
+def _city_rows(root_s):
+    """((slug, city), ...) from data/locations.json: the "UK" rows dropped, parentheticals
+    stripped ("Glasgow (breeding dogs)" is Glasgow)."""
+    f = Path(root_s) / "data" / "locations.json"
+    rows = json.loads(f.read_text(encoding="utf-8")) if f.exists() else []
+    out = []
+    for r in rows:
+        city = re.sub(r"\s*\([^)]*\)", "", r.get("city") or "").strip()
+        if city and city.upper() != "UK":
+            out.append((r.get("slug", ""), city))
+    return tuple(out)
+
+
+def cities(root=None):
+    """Every city the location pages name, once each."""
+    return sorted({c for _s, c in _city_rows(str(Path(root or ROOT).resolve()))})
+
+
+def own_city(board, root=None):
+    """The board's own city: the data/locations.json row whose slug is the board's, else None."""
+    slug = ((board or {}).get("meta") or {}).get("slug", "")
+    slug = slug.rsplit("/", 1)[-1]
+    for s, c in _city_rows(str(Path(root or ROOT).resolve())):
+        if s == slug:
+            return c
+    return None
+
+
+def cities_named(text, names):
+    """The cities in `names` that `text` names as whole words ("York" is not "Yorkshire")."""
+    w = " %s " % _words(text)
+    return [c for c in names if " %s " % _words(c) in w]
 
 
 @functools.lru_cache(maxsize=4)
@@ -213,7 +276,7 @@ def _site_photos(root_s):
             continue
         size = image_size(f) or (0, 0)
         out.append({"path": path, "alt": site_alts[0] if site_alts else "",
-                    "w": size[0], "h": size[1]})
+                    "alts": site_alts, "w": size[0], "h": size[1]})
     return tuple(json.dumps(o) for o in out)
 
 
@@ -246,10 +309,15 @@ def _board_alts(board):
 
 
 def inventory(root=None, board=None):
-    """[{path, alt, w, h, used_on_page}] — the site's real photos (see the module doc)."""
+    """[{path, alt, w, h, used_on_page, own_city}] — the site's real photos (module doc).
+    With a board, a photo whose filename or any served alt names a city OTHER than the
+    board's own (data/locations.json) is left out — a Glasgow family never stands in for
+    London; `own_city` is True when it names the board's own city."""
     root = Path(root or ROOT)
     uses = page_uses(board) if board else {}
     balts = _board_alts(board)
+    names = cities(root) if board else []
+    home = own_city(board, root) if board else None
     out = []
     for raw in _site_photos(str(root.resolve())):
         p = json.loads(raw)
@@ -257,6 +325,12 @@ def inventory(root=None, board=None):
             p["alt"] = balts[p["path"]]
         elif p["path"] in balts:
             continue                       # this page's own alt names it a graphic
+        named = set(cities_named(" ".join([Path(p["path"]).stem.replace("-", " ")]
+                                          + p.get("alts", [p["alt"]]) + [p["alt"]]), names))
+        if named - {home}:
+            continue
+        p.pop("alts", None)
+        p["own_city"] = bool(home) and home in named
         p["used_on_page"] = uses.get(p["path"], [])
         out.append(p)
     return out
@@ -318,23 +392,32 @@ def hero_files(board):
     return out
 
 
-def _elsewhere(board, target, photo):
+def _context(board):
+    """(page_uses, hero_files) — read once per propose(), not once per pair."""
+    return page_uses(board), hero_files(board)
+
+
+def _elsewhere(uses, target, photo):
     """True when the page already shows `photo` in an image slot under another heading."""
     heading = target.get("heading", "")
-    return any(u["heading"] != heading for u in page_uses(board).get(photo["path"], []))
+    return any(u["heading"] != heading for u in uses.get(photo["path"], []))
 
 
-def _parts(target, photo, board, taken=()):
+def _parts(target, photo, board, taken=(), ctx=None):
+    uses, heroes = ctx if ctx is not None else _context(board)
     raw = {IC._fold(w): w for w in re.findall(r"[a-z0-9]+", _photo_text(photo).lower())}
     shared = sorted(raw.get(t, t) for t in _heading_side(target) & _photo_side(photo))
     subject = subject_of(target, photo)
     score = min(WEIGHTS["overlap_max"], WEIGHTS["per_term"] * len(shared))
     score += WEIGHTS["intent"] if subject else 0
     notes = []
-    if photo["path"] in hero_files(board):
+    if photo.get("own_city"):
+        score += WEIGHTS["city"]
+        shared = shared + ["(this city)"]
+    if photo["path"] in heroes:
         score += WEIGHTS["hero"]
         notes.append("hero photo")
-    elif photo["path"] in set(taken) or _elsewhere(board, target, photo):
+    elif photo["path"] in set(taken) or _elsewhere(uses, target, photo):
         score += WEIGHTS["taken"]
         notes.append("already in another slot")
     if photo.get("h", 0) > photo.get("w", 0):
@@ -391,13 +474,14 @@ def _why(shared, subject, notes):
 def propose(board, n=N_DEFAULT, root=None):
     n = max(N_MIN, min(N_MAX, int(n)))
     photos = inventory(root, board)
+    ctx = _context(board)
     pairs = []
     for order, sec in enumerate(eligible_sections(board)):
         targets = [(sec, None)] + [(sec, h3) for h3 in IR.body_h3s(sec)]
         for k, (s, node) in enumerate(targets):
             tgt = node if node is not None else s
             for p in photos:
-                score, shared, subject, notes = _parts(tgt, p, board)
+                score, shared, subject, notes = _parts(tgt, p, board, ctx=ctx)
                 if score >= FLOOR:
                     pairs.append((-score, order, k, p["path"], s, node, p, shared, subject,
                                   notes))
@@ -416,10 +500,15 @@ def propose(board, n=N_DEFAULT, root=None):
                       "w": p["w"], "h": p["h"], "alt": alt_for(board, sec, node, p),
                       "fit": -neg, "why": _why(shared, subject, notes)})
     if slots:
-        s0 = slots[0]
-        landscape = s0["h"] and s0["w"] / s0["h"] >= 1.3
-        s0["share"] = {"w": SHARE_W, "h": SHARE_H, "og_style": "A" if landscape else "C"}
+        wide = [s for s in slots if s["w"] >= SHARE_W]
+        card = wide[0] if wide else slots[0]
+        card["share"] = {"w": SHARE_W, "h": SHARE_H, "og_style": "A" if wide else "C"}
     return slots
+
+
+def share_slot(slots):
+    """The slot that also makes the share card, or None."""
+    return next((s for s in slots if s.get("share")), None)
 
 
 def claimed_sections(board, root=None):
@@ -450,12 +539,15 @@ def block(board, root=None, n=N_DEFAULT):
              str(s["fit"]), s["why"]] for s in slots]          # md_table escapes the pipes
     out += [md_table(["Slot", "Heading", "Photo", "Alt", "Fit", "Why"], rows) if rows
             else "_no heading on this board fits an original photo_", ""]
-    if slots:
-        sh = slots[0]["share"]
+    card = share_slot(slots)
+    if card:
+        sh = card["share"]
         out += ["**Share card:** `%s`'s photo, recomposed at %d×%d with framing style %s "
                 "(%s) — one per page (IMAGE-DESIGNS.md §1)."
-                % (slots[0]["slot"], sh["w"], sh["h"], sh["og_style"],
+                % (card["slot"], sh["w"], sh["h"], sh["og_style"],
                    names.get(sh["og_style"], "")), ""]
+        if sh["og_style"] == "C":
+            out += [NO_WIDE, ""]
     claimed = ", ".join("`%s`" % s["section"] for s in slots) or "none"
     out += ["**Sections these photos claim:** %s — the infographic plan skips these unless "
             "the breeder adds one." % claimed, "",

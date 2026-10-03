@@ -355,7 +355,7 @@ def test_a_missing_required_infographic_pick_is_refused(monkeypatch):
         BA.apply_approval(b, _inbox(b), ONT, LEDGER)
 
 
-@pytest.mark.parametrize("sid,val", [("ig:no-such-slot", "plate"), ("og:og-nowhere", "use")])
+@pytest.mark.parametrize("sid,val", [("ig:no-such-slot", "plate")])
 def test_a_pick_for_an_unknown_slot_is_refused(monkeypatch, sid, val):
     _slots(monkeypatch)
     b = _board()
@@ -448,6 +448,34 @@ def test_a_swap_note_names_an_offered_slot(monkeypatch):
     out = BA.apply_approval(b, inbox, ONT, LEDGER)
     assert out["board"]["approval"]["notes"]["og:og-share"] == "the van photo instead"
     assert out["board"]["approval"]["picks"]["og:og-share"] == "swap"
-    inbox["notes"] = {"og:og-nowhere": "x"}
-    with pytest.raises(PB.BoardError, match="approval notes 'og:og-nowhere', which is not in the record"):
-        BA.apply_approval(b, inbox, ONT, LEDGER)
+    assert "warnings" not in out["board"]["approval"]
+
+
+def test_a_stale_og_pick_or_note_is_dropped_with_a_warning(monkeypatch):
+    """Block 7d is optional and its slots move with the site's photos: an answer for a slot
+    no longer offered is set aside and recorded, never a refusal."""
+    _slots(monkeypatch)
+    b = _board()
+    inbox = _inbox(b)
+    inbox["picks"].update({"ig:delivery-route": "ruled", "og:og-nowhere": "use",
+                           "og:og-share": "use"})
+    inbox["notes"] = {"og:og-gone": "x"}
+    out = BA.apply_approval(b, inbox, ONT, LEDGER)
+    a = out["board"]["approval"]
+    assert "og:og-nowhere" not in a["picks"] and a["picks"]["og:og-share"] == "use"
+    assert "og:og-gone" not in a["notes"]
+    assert a["warnings"] == [
+        "dropped pick og:og-nowhere: block 7d no longer offers that slot",
+        "dropped note og:og-gone: block 7d no longer offers that slot"]
+
+
+def test_approve_clears_the_photo_cache(monkeypatch):
+    import original_slots as OS
+    _slots(monkeypatch)
+    OS._site_photos(str(PB.ROOT))
+    assert OS._site_photos.cache_info().currsize >= 1
+    b = _board()
+    inbox = _inbox(b)
+    inbox["picks"].update({"ig:delivery-route": "ruled"})
+    BA.apply_approval(b, inbox, ONT, LEDGER)
+    assert OS._site_photos.cache_info().currsize == 0

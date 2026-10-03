@@ -348,6 +348,24 @@ def refuse_header_collisions(b, live, boards=None):
             + "\n(if a listed page changed since the last build, run npm run build and retry)")
 
 
+def drop_stale_og(board, inbox):
+    """(inbox, warnings): the inbox less every block 7d pick (`og:<slot>`) and swap note whose
+    slot the record no longer offers, and one warning per dropped key. Block 7d is optional
+    and its slots move with the site's photos, so a stale answer is set aside and recorded in
+    `approval.warnings`, never a reason to refuse the approval."""
+    picks, notes = dict(inbox.get("picks", {})), dict(inbox.get("notes", {}))
+    keys = [k for k in list(picks) + list(notes) if k.startswith("og:")]
+    if not keys:
+        return inbox, []
+    offered = PB.v2_slots(board)["og:"]
+    warnings = []
+    for where, d in (("pick", picks), ("note", notes)):
+        for k in [k for k in d if k.startswith("og:") and k[3:] not in offered]:
+            del d[k]
+            warnings.append(f"dropped {where} {k}: block 7d no longer offers that slot")
+    return dict(inbox, picks=picks, notes=notes), warnings
+
+
 def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, boards=None):
     """The board, ledger and ontology as they stand after this approval. Pure: it reads
     nothing but its arguments and writes nothing — raise here and the files on disk are
@@ -362,8 +380,14 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
             "approval hash does not match the record — the record changed after the board was approved")
     b = json.loads(json.dumps(board))
     by_id = {s["id"]: s for s in b["sections"]}
+    # Block 7d reads the site's photos through a cache; a photo added or re-alted since the
+    # board was built must be seen here, so the approval starts from the files on disk.
+    import original_slots as OS
+    OS._site_photos.cache_clear()
+    OS._city_rows.cache_clear()
 
     slots = None                                      # PB.v2_slots(b), read once if needed
+    inbox, warnings = drop_stale_og(b, inbox)
     for sid, pick in inbox.get("picks", {}).items():
         if sid.startswith(IR.PICK_PREFIX):
             continue                                  # an image pick, validated below
@@ -414,10 +438,7 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
         # Block 7d's "swap" note (`og:<slot>`) names a slot, like its pick: it is kept in
         # `approval.notes` while that slot is offered, and refused when it is not.
         if sid.startswith("og:"):
-            slots = PB.v2_slots(b) if slots is None else slots
-            if sid[3:] not in slots["og:"]:
-                raise PB.BoardError(f"approval notes {sid!r}, which is not in the record")
-            continue
+            continue                                  # offered: drop_stale_og kept it
         if sid not in by_id:
             raise PB.BoardError(f"approval notes section {sid!r}, which is not in the record")
         by_id[sid]["options"]["note"] = note          # "" is the breeder clearing the note
@@ -456,6 +477,8 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
     b["tuple"] = tuple_for(b, tuple_before)
 
     approval = dict(inbox)
+    if warnings:
+        approval["warnings"] = warnings
     approval["tuple_before"] = tuple_before
     # Picks, notes and the H1 index are hashed CONTENT, and so are the canvas tweaks above,
     # so the stamped hash is the record with the breeder's choices in it — which is exactly

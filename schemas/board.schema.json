@@ -1744,6 +1744,11 @@
      "type": "string",
      "pattern": "^[0-9a-f]{64}$"
     },
+    "warnings": {
+     "comment": "Block 7d answers (og:<slot> picks or notes) whose slot the record no longer offers, set aside by scripts/board_approve.py drop_stale_og() instead of refusing the approval.",
+     "type": "array",
+     "items": {"type": "string"}
+    },
     "tuple_before": {
      "$ref": "#/properties/tuple",
      "description": "the tuple as the author wrote it, before board_approve.py derived the seven component axes from the picks; restoring it is what keeps re-approving an already-approved record idempotent"

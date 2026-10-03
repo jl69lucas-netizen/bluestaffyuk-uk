@@ -34,20 +34,32 @@ def inv():
 # ── inventory ───────────────────────────────────────────────────────────────────────────
 def test_exclusion_markers_are_pinned():
     assert OS.FILENAME_MARKERS == ("infographic", "comparison", "-vs-", "chart", "diagram",
-                                   "steps", "process", "logo", "icon", "generated", "og-",
-                                   "-card-", "-portrait-")
+                                   "steps", "process", "logo", r"(?:^|-)icons?(?:-|$)",
+                                   "generated", "^og-", "-card-", "-portrait-")
     assert OS.ALT_MARKERS == ("infographic", "graphic", "illustrat", "icons", "montage",
                               "map", "cover image", "silhouette", "visual comparison",
                               "side-by-side", "quote displayed", "thank you message",
                               "webpage")
 
 
+def test_markers_are_anchored_and_whole_word():
+    assert not OS._name_hit("/images/blue-staffy-family-dog-uk.webp", "^og-")
+    assert OS._name_hit("/images/og-share-london.webp", "^og-")
+    icon = OS.FILENAME_MARKERS[8]
+    assert not OS._name_hit("/images/iconic-staffy.webp", icon)
+    assert OS._name_hit("/images/paw-icon.webp", icon)
+    assert OS._name_hit("/images/icons-set.webp", icon)
+    assert OS._alt_hit("Bold graphics of a dog", "graphic")
+    assert OS._alt_hit("A graphic of a dog", "graphic")
+    assert not OS._alt_hit("A mapping exercise", "map")
+    assert OS._alt_hit("Two maps", "map")
+
+
 def test_inventory_is_real_photos_only(inv):
     paths = {p["path"] for p in inv}
     assert len(inv) >= 40
     for p in paths:
-        low = p.lower()
-        assert not any(m in low for m in OS.FILENAME_MARKERS), p
+        assert not any(OS._name_hit(p, m) for m in OS.FILENAME_MARKERS), p
         assert not re.search(r"-\d{2,4}\.webp$", p), p          # size siblings fold away
     for p in inv:
         assert not any(OS._alt_hit(p["alt"], m) for m in OS.ALT_MARKERS), p
@@ -55,7 +67,8 @@ def test_inventory_is_real_photos_only(inv):
     for keep in ("/images/maggie-blue-staffy-dam-with-pups.webp",
                  "/images/bluestaffyuk-nationwide-delivery.webp",
                  "/images/blue-staffy-vet-check.webp",
-                 "/images/puppies/roman-roman1.webp"):
+                 "/images/puppies/roman-roman1.webp",
+                 "/images/blue-staffy-family-dog-uk.webp"):                 # "dog-" is not "og-"
         assert keep in paths, keep
     # graphics are out — by filename and by alt
     for drop in ("/images/defra-pet-transport-process.webp",               # "process"
@@ -97,12 +110,25 @@ def test_stdlib_header_parser_matches_pil(tmp_path):
     junk = tmp_path / "x.webp"
     junk.write_bytes(b"not an image")
     assert OS._header_size(junk) is None
+    short = tmp_path / "short.webp"
+    short.write_bytes(b"RIFF\x00\x00\x00\x00WEBPVP8X\x0a\x00")       # cut off mid-header
+    assert OS._header_size(short) is None
+
+
+def test_a_decompression_bomb_is_unreadable(monkeypatch, tmp_path):
+    from PIL import Image
+    def bomb(*a, **k):
+        raise Image.DecompressionBombError("too big")
+    monkeypatch.setattr(Image, "open", bomb)
+    f = tmp_path / "x.webp"
+    f.write_bytes(b"RIFF")
+    assert OS.image_size(f) is None
 
 
 # ── fit ─────────────────────────────────────────────────────────────────────────────────
 def test_weights_are_pinned():
-    assert OS.WEIGHTS == {"per_term": 10, "overlap_max": 50, "intent": 30, "hero": -40,
-                          "taken": -50, "portrait": -10, "small": -10}
+    assert OS.WEIGHTS == {"per_term": 10, "overlap_max": 50, "intent": 30, "city": 10,
+                          "hero": -40, "taken": -50, "portrait": -10, "small": -10}
     assert OS.MIN_WIDTH == 760 and OS.FLOOR == 20
 
 
@@ -171,10 +197,17 @@ def test_london_proposal(london):
     assert len(photos) == len(set(photos))                           # no photo twice
     fits = [s["fit"] for s in slots]
     assert fits == sorted(fits, reverse=True) and fits[-1] >= OS.FLOOR
-    share = slots[0]
-    assert share["share"] == {"w": 1200, "h": 630, "og_style": share["share"]["og_style"]}
-    assert share["share"]["og_style"] in ("A", "C")
-    assert not any(s.get("share") for s in slots[1:])
+    shares = [s for s in slots if s.get("share")]
+    assert len(shares) == 1
+    sh = shares[0]["share"]
+    assert (sh["w"], sh["h"]) == (1200, 630)
+    assert sh["og_style"] == ("A" if shares[0]["w"] >= 1200 else "C")
+    names = OS.cities(ROOT)
+    inv = {p["path"]: p for p in OS.inventory(ROOT, london)}
+    for s in slots:
+        named = OS.cities_named(s["photo"].replace("-", " ") + " " + inv[s["photo"]]["alt"],
+                                names)
+        assert set(named) <= {"London"}, (s["photo"], named)
     for s in slots:
         assert re.fullmatch(r"orig-[a-z0-9-]+", s["slot"])
         assert s["slot"].startswith("orig-" + s["section"])
@@ -274,3 +307,65 @@ def test_negative_list_is_verbatim_one_line():
     neg = GB.negative_list()
     assert neg.startswith("no text, no watermarks") and neg.endswith("no cluttered background.")
     assert "\n" not in neg and ">" not in neg
+
+
+# ── cities (controller ruling: exclude, never penalise) ───────────────────────────────────
+def test_city_list_drops_uk_and_parentheticals():
+    names = OS.cities(ROOT)
+    assert "UK" not in names and "Glasgow" in names and "London" in names
+    assert not any("(" in c for c in names)
+    assert OS.own_city({"meta": {"slug": "blue-staffy-puppies-london"}}, ROOT) == "London"
+    assert OS.own_city({"meta": {"slug": "index"}}, ROOT) is None
+
+
+def test_york_never_matches_yorkshire():
+    names = ["York", "South Yorkshire", "Glasgow"]
+    assert OS.cities_named("puppies in Yorkshire", names) == []
+    assert OS.cities_named("a South Yorkshire family", names) == ["South Yorkshire"]
+    assert OS.cities_named("york-staffy", names) == ["York"]
+
+
+def test_a_glasgow_photo_is_excluded_on_london(london, inv):
+    paths = {p["path"] for p in OS.inventory(ROOT, london)}
+    glasgow = "/images/family-friendly-blue-staffy-glasgow.webp"
+    assert glasgow in {p["path"] for p in inv}                 # a real photo on the site
+    assert glasgow not in paths                                 # but never on London
+    assert "/images/victoria-family-blue-staffy-manchester.webp" not in paths
+    by = {p["path"]: p for p in OS.inventory(ROOT, london)}
+    assert by["/images/mark-blue-staffy-london.webp"]["own_city"] is True
+    assert by["/images/blue-staffy-vet-check.webp"]["own_city"] is False
+
+
+def test_own_city_photo_gets_the_bonus():
+    sec = {"heading": "Delivery by van"}
+    van = _photo("/images/van.webp", "delivery van")
+    assert OS.fit(sec, dict(van, own_city=True), {}) == OS.fit(sec, van, {}) + OS.WEIGHTS["city"]
+
+
+# ── share card ───────────────────────────────────────────────────────────────────────────
+def _fake(monkeypatch, photos):
+    monkeypatch.setattr(OS, "inventory", lambda root=None, board=None: photos)
+    secs = [{"id": f"s{i}", "heading": f"Delivery by van {i}", "shape": "standard", "tree": []}
+            for i in range(5)]
+    return {"meta": {"slug": "x"}, "assets": [], "sections": secs}
+
+
+def test_share_card_prefers_a_1200px_photo_with_style_a(monkeypatch):
+    photos = [_photo(f"/images/van{i}.webp", "delivery van extra words" if i == 0 else "delivery van",
+                     w=800 if i < 2 else 1400, h=600) for i in range(5)]
+    board = _fake(monkeypatch, photos)
+    slots = OS.propose(board)
+    card = OS.share_slot(slots)
+    assert card["w"] >= 1200 and card["share"]["og_style"] == "A"
+    assert card is not slots[0]                               # the best pair is only 800px
+    assert OS.NO_WIDE not in OS.block(board)
+
+
+def test_share_card_falls_back_to_editorial_split(monkeypatch):
+    photos = [_photo(f"/images/van{i}.webp", "delivery van", w=800, h=600) for i in range(5)]
+    board = _fake(monkeypatch, photos)
+    slots = OS.propose(board)
+    assert OS.share_slot(slots) is slots[0]
+    assert slots[0]["share"] == {"w": 1200, "h": 630, "og_style": "C"}
+    assert ("No photo is 1200px wide; the share card uses the Editorial Split panel."
+            in OS.block(board))
