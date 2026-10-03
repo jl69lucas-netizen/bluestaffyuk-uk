@@ -5,6 +5,15 @@
     "ingested": "2026-10-03",
     "master": "data/boards/generated/blue-staffy-puppies-london/litter-prices-figures.webp",
     "og_style": null,
+    "phone": {
+      "file": "/images/blue-staffy-litter-prices-and-deposit-infographic-phone.webp",
+      "h": 2282,
+      "infographic_style": "IG-1",
+      "ingested": "2026-10-04",
+      "master": "data/boards/generated/blue-staffy-puppies-london/litter-prices-figures-phone.webp",
+      "sha12": "13da72792676",
+      "w": 622
+    },
     "sib_w": 760,
     "source": "generate",
     "w": 1408
@@ -15,6 +24,15 @@
     "ingested": "2026-10-03",
     "master": "data/boards/generated/blue-staffy-puppies-london/delivery-route.webp",
     "og_style": null,
+    "phone": {
+      "file": "/images/blue-staffy-puppy-delivery-route-carlisle-to-london-infographic-phone.webp",
+      "h": 1644,
+      "infographic_style": "IG-5",
+      "ingested": "2026-10-04",
+      "master": "data/boards/generated/blue-staffy-puppies-london/delivery-route-phone.webp",
+      "sha12": "65f062070dc7",
+      "w": 622
+    },
     "sib_w": 760,
     "source": "generate",
     "w": 1408
@@ -25,6 +43,15 @@
     "ingested": "2026-10-03",
     "master": "data/boards/generated/blue-staffy-puppies-london/paperwork-checklist.webp",
     "og_style": null,
+    "phone": {
+      "file": "/images/blue-staffy-puppy-paperwork-folder-checklist-infographic-phone.webp",
+      "h": 1320,
+      "infographic_style": "IG-4",
+      "ingested": "2026-10-04",
+      "master": "data/boards/generated/blue-staffy-puppies-london/paperwork-checklist-phone.webp",
+      "sha12": "ab92b5718550",
+      "w": 622
+    },
     "sib_w": 760,
     "source": "generate",
     "w": 1408
@@ -35,6 +62,15 @@
     "ingested": "2026-10-03",
     "master": "data/boards/generated/blue-staffy-puppies-london/deposit-steps.webp",
     "og_style": null,
+    "phone": {
+      "file": "/images/four-steps-to-buy-a-blue-staffy-puppy-infographic-phone.webp",
+      "h": 2436,
+      "infographic_style": "IG-2",
+      "ingested": "2026-10-04",
+      "master": "data/boards/generated/blue-staffy-puppies-london/deposit-steps-phone.webp",
+      "sha12": "e0cec91357ef",
+      "w": 622
+    },
     "sib_w": 760,
     "source": "generate",
     "w": 1408
@@ -45,6 +81,15 @@
     "ingested": "2026-10-03",
     "master": "data/boards/generated/blue-staffy-puppies-london/breed-split.webp",
     "og_style": null,
+    "phone": {
+      "file": "/images/staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic-phone.webp",
+      "h": 2636,
+      "infographic_style": "IG-3",
+      "ingested": "2026-10-04",
+      "master": "data/boards/generated/blue-staffy-puppies-london/breed-split-phone.webp",
+      "sha12": "a774a934fdac",
+      "w": 467
+    },
     "sib_w": 760,
     "source": "generate",
     "w": 1408
@@ -55,6 +100,15 @@
     "ingested": "2026-10-03",
     "master": "data/boards/generated/blue-staffy-puppies-london/health-tests-checklist.webp",
     "og_style": null,
+    "phone": {
+      "file": "/images/staffy-health-tests-to-ask-a-breeder-infographic-phone.webp",
+      "h": 2514,
+      "infographic_style": "IG-4",
+      "ingested": "2026-10-04",
+      "master": "data/boards/generated/blue-staffy-puppies-london/health-tests-checklist-phone.webp",
+      "sha12": "f9487a2267d3",
+      "w": 622
+    },
     "sib_w": 760,
     "source": "generate",
     "w": 1408

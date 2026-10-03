@@ -46,6 +46,8 @@
   },
   "blue-staffy-litter-prices-and-deposit-infographic": {
     "h": 768,
+    "phone_h": 2282,
+    "phone_w": 622,
     "sib_w": 760,
     "w": 1408
   },
@@ -66,6 +68,8 @@
   },
   "blue-staffy-puppy-delivery-route-carlisle-to-london-infographic": {
     "h": 768,
+    "phone_h": 1644,
+    "phone_w": 622,
     "sib_w": 760,
     "w": 1408
   },
@@ -81,6 +85,8 @@
   },
   "blue-staffy-puppy-paperwork-folder-checklist-infographic": {
     "h": 768,
+    "phone_h": 1320,
+    "phone_w": 622,
     "sib_w": 760,
     "w": 1408
   },
@@ -216,6 +222,8 @@
   },
   "four-steps-to-buy-a-blue-staffy-puppy-infographic": {
     "h": 768,
+    "phone_h": 2436,
+    "phone_w": 622,
     "sib_w": 760,
     "w": 1408
   },
@@ -446,11 +454,15 @@
   },
   "staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic": {
     "h": 768,
+    "phone_h": 2636,
+    "phone_w": 467,
     "sib_w": 760,
     "w": 1408
   },
   "staffy-health-tests-to-ask-a-breeder-infographic": {
     "h": 768,
+    "phone_h": 2514,
+    "phone_w": 622,
     "sib_w": 760,
     "w": 1408
   },
