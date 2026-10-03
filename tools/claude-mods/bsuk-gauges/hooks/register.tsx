@@ -39,6 +39,18 @@ function statusLine(g: Gauges): string {
   return parts.join(' · ')
 }
 
+
+// The plan's session (5-hour) and weekly (7-day) limit windows, as the API reports them.
+const SESSION_KIND = 'five_hour'
+const WEEK_KIND = 'seven_day'
+function untilReset(resetsAt: string | undefined, now: number): string {
+  if (!resetsAt) return ''
+  const ms = new Date(resetsAt).getTime() - now
+  if (!(ms > 0)) return 'resetting'
+  const m = Math.round(ms / 60000)
+  return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60}m`
+}
+
 let lastReplyAt: number | null = null
 
 async function refresh($: any) {
@@ -139,12 +151,19 @@ export const register: Register = on => {
     const items = [
       chip('CONTEXT', pct(g.ctxPercent), (g.ctxPercent ?? 0) >= 80),
       chip('CACHE', left === null ? '—' : left === 0 ? 'cold' : `${Math.ceil(left / 60000)}m`, left !== null && left < 10 * 60000),
-      ...g.limits.map(l => chip(label(l.kind).toUpperCase(), `${Math.round(l.percentUsed)}%`, l.percentUsed >= 80)),
+      ...g.limits.filter(l => l.kind !== SESSION_KIND && l.kind !== WEEK_KIND).map(l => chip(label(l.kind).toUpperCase(), `${Math.round(l.percentUsed)}%`, l.percentUsed >= 80)),
       ...(g.usd !== null ? [chip('COST', `$${g.usd.toFixed(2)}`)] : []),
       ...(g.stop !== null ? [chip('STOP', `${g.stop}/4`)] : []),
       ...(g.row !== null ? [chip('ROW', `${g.row}`)] : []),
       chip('AGENTS', `${g.agentsRunning}`),
       chip('GEMINI', `${g.geminiToday}`),
+      (() => {
+        const sl = g.limits.find(l => l.kind === SESSION_KIND)
+        if (!sl) return chip('SESSION', 'no reading')
+        const left = untilReset(sl.resetsAt, g.now)
+        return chip('SESSION', `${Math.round(sl.percentUsed)}%${left ? ` · resets ${left}` : ''}`, sl.percentUsed >= 80)
+      })(),
+      ...g.limits.filter(l => l.kind === WEEK_KIND).map(l => chip('WEEK', `${Math.round(l.percentUsed)}%`, l.percentUsed >= 80)),
     ]
     return (
       <Box flexDirection="row" flexWrap="wrap" backgroundColor={STEEL_900} paddingX={1}>
@@ -184,7 +203,7 @@ export const register: Register = on => {
       <Box flexDirection="column" width="100%" gap={1}>
         {card('CONTEXT', pct(g.ctxPercent), g.ctxTokens === null ? '' : `${Math.round(g.ctxTokens / 1000)}k of ${Math.round(g.ctxWindow / 1000)}k tokens`, (g.ctxPercent ?? 0) / 100, (g.ctxPercent ?? 0) >= 80)}
         {card('1-HOUR CACHE', left === null ? '—' : left === 0 ? 'cold' : `${Math.ceil(left / 60000)}m`, left === null ? 'no reply yet' : left === 0 ? 'the next turn re-reads everything' : 'warm: the next turn is cheap', left === null ? null : left / CACHE_MS, left !== null && left < 10 * 60000)}
-        {g.limits.map(l => card(`${label(l.kind).toUpperCase()} LIMIT`, `${Math.round(l.percentUsed)}%`, l.resetsAt ? `resets ${new Date(l.resetsAt).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' })}` : '', l.percentUsed / 100, l.percentUsed >= 80))}
+        {g.limits.map(l => card(l.kind === SESSION_KIND ? 'SESSION LIMIT (5 HOURS)' : l.kind === WEEK_KIND ? 'WEEKLY LIMIT (7 DAYS)' : `${label(l.kind).toUpperCase()} LIMIT`, `${Math.round(l.percentUsed)}%`, l.resetsAt ? `resets ${new Date(l.resetsAt).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' })} · in ${untilReset(l.resetsAt, g.now)}` : '', l.percentUsed / 100, l.percentUsed >= 80))}
         {card('SESSION COST', g.usd === null ? '—' : `$${g.usd.toFixed(2)}`, `session ${Math.floor(mins / 60)}h ${mins % 60}m`, null)}
         {g.stop !== null ? card('PAGE RUN', `STOP ${g.stop}/4 · row ${g.row ?? '—'}`, g.rowName ?? '', null) : null}
         {card('AGENTS RUNNING', `${g.agentsRunning}`, 'open /bsuk-agents for each card', null)}
