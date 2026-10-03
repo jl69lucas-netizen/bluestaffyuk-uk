@@ -137,7 +137,7 @@ export const register: Register = on => {
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const g = await read($, gauges)
     if (!g || e.props.hasSurvey) return next(e)
-    const { Box, Text } = $.ui.resolve(e) as any
+    const { Box, Text, Button } = $.ui.resolve(e) as any
     // One quiet line: short grey labels, values in bold brass (orange when they need attention).
     const left = cacheLeftMs(g)
     const sl = g.limits.find(l => l.kind === SESSION_KIND)
@@ -164,6 +164,10 @@ export const register: Register = on => {
             </Text>
           ))}
         </Text>
+        <Text color={STEEL_300} dimColor> · </Text>
+        <Button key="close" label="close" plain dimColor onPress={() => $.prompt.submit({ text: '/session-closer', asUser: true })} />
+        <Text color={STEEL_300} dimColor> </Text>
+        <Button key="handoff" label="handoff" plain dimColor onPress={() => $.prompt.submit({ text: '/session-handoff', asUser: true })} />
       </Box>
     )
   })
