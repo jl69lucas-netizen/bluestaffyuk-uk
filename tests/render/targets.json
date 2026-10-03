@@ -249,6 +249,7 @@
     { "slug": "blue-staffy-blog-guides", "page_type": "blog", "corpus": true },
     { "slug": "how-to-choose-the-right-blue-staffy-puppy-for-your-family", "page_type": "blog", "corpus": false },
     { "slug": "blog", "page_type": "hub", "corpus": false },
-    { "slug": "kit-preview", "page_type": "preview", "corpus": false }
+    { "slug": "kit-preview", "page_type": "preview", "corpus": false },
+    {"slug": "uk-locations/blue-staffy-puppies-london", "page_type": "location", "corpus": true}
   ]
 }

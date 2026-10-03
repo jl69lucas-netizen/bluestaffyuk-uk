@@ -198,3 +198,11 @@ def test_every_rebuilt_page_is_in_link_parity_with_its_record(slug):
 @pytestmark_dist
 def test_the_gate_refuses_an_empty_run():
     assert L.main([]) == 2
+
+
+def test_a_same_page_fragment_in_the_record_is_not_owed_to_the_page():
+    """The page side drops `#section` jumps (nav-anchors-resolve owns them), so the record side
+    must drop them too, or every in-page CTA a board lists reads as missing (London, 2026-10-03)."""
+    record = {"sections": [{"links": {"internal": [{"href": "#enquiry"}, {"href": "/available-puppies/"}],
+                                      "external": []}}]}
+    assert L.record_links(record) == {"/available-puppies/"}

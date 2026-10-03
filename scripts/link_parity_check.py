@@ -171,12 +171,16 @@ def dropped_links(record):
 
 
 def record_links(record):
-    """Every href the record's sections list, internal and external."""
+    """Every href the record's sections list, internal and external, minus same-page
+    fragments: the page side drops `#section` jumps (nav-anchors-resolve owns them), so a
+    record that lists one must not be read as owing it to the page."""
     out = set()
     for s in record["sections"]:
         for side in ("internal", "external"):
             for l in s["links"][side]:
-                out.add(l["href"].strip())
+                href = l["href"].strip()
+                if not href.startswith("#"):
+                    out.add(href)
     return out
 
 
