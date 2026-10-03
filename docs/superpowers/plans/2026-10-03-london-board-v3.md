@@ -103,3 +103,9 @@ The breeder also pressed Approve on board v2 (db `boards/blue-staffy-puppies-lon
 ### Task 10: Gates
 - [ ] Run `check:all`, `test:render:meta`, and `test:py` (the known `test_render_baseline` failure only).
 - [ ] Run verification-before-completion, the handoff `--write`, and the memory update.
+
+## Follow-ups found during Task 9 (2026-10-03)
+- [ ] Block 7's photo picker (`scripts/image_candidates.py`) still offers other-city photos on a location board (e.g. `family-friendly-blue-staffy-glasgow.webp` for London). Apply `original_slots.is_location_board` and the other-city exclusion there too, with a test.
+- [ ] Build note: the eight faq-bottom answers must average 29 words or fewer to fit the approved 194–237 band.
+- [ ] Inbound links: London has 2 body links in. Add contextual links from `/uk-locations/` and the nearby city pages when they are rebuilt.
+- [ ] Several `-760` image siblings are no smaller than their originals; review the bake step's sibling sizing.
