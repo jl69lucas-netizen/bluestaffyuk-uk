@@ -132,16 +132,17 @@ export function chapterWideSizes(fit: CityFit = 'column'): string {
   });
 }
 
-/** The `sizes` of a photograph in a CityChapters chapter's TEXT column (a slot's own image under
- *  an H4), mirroring CityChapters.astro's grid: the tray less its padding on a phone, the 1.3fr of
- *  2.3fr from a 640px box, and at most the 9fr of 21fr from an 800px box (the 8fr step from 1000px
- *  paints narrower, which a larger `sizes` only over-serves by a little). Without it BodyImage's
- *  uniform default (100vw to 800px, then 760px) served a 760-1024px file into a 260-370px column. */
+/** The `sizes` of a photograph in a CityChapters chapter's TEXT (a slot's own image under an H4),
+ *  mirroring CityChapters.astro's grid: the tray less its padding on a phone, and from a 640px box
+ *  the chapter's full width, at most the uniform box's 760px, because the prose runs UNDER the
+ *  heading-and-photo row there (impeccable D1, 2026-10-03; it was the 1.3fr of 2.3fr, then the
+ *  9fr of 21fr, of a three-column chapter). Without it BodyImage's uniform default (100vw to 800px,
+ *  then 760px) served a 760-1024px file into a narrower box. */
 export function chapterTextSizes(fit: CityFit = 'column'): string {
   return citySizes(fit, {
     phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
-    tablet: (B) => `calc((min(${B}, 1124px) - 112px) * 1.3 / 2.3)`,
-    desktop: (B) => `calc((min(${B}, 1124px) - 152px) * 9 / 21)`,
+    tablet: (B) => `min(760px, calc(min(${B}, 1124px) - 88px))`,
+    desktop: (B) => `min(760px, calc(min(${B}, 1124px) - 88px))`,
   });
 }
 

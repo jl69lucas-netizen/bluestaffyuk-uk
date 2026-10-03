@@ -17,7 +17,7 @@ export interface LayoutResult { examined: number; defects: string[] }
 
 export function cityLayoutFollowsBox({ viewport, tier: edges }:
   { viewport: number; tier: { tablet: number; desktop: number } }): LayoutResult {
-  type Fact = ['beside', string, string] | ['row', string, number] | ['square', string] | ['fill', string, string];
+  type Fact = ['beside', string, string] | ['under', string, string] | ['row', string, number] | ['square', string] | ['fill', string, string];
   const SPEC: Record<string, { tablet: Fact[]; desktop: Fact[] }> = {
     '.city-takeaways-ledger': { tablet: [['beside', '.row dt', '.row dd']], desktop: [['beside', '.pic', 'dl']] },
     '.city-sheet': { tablet: [['row', '.city-pup', 3]], desktop: [['row', '.city-pup', 3], ['square', '.city-pup img']] },
@@ -28,7 +28,14 @@ export function cityLayoutFollowsBox({ viewport, tier: edges }:
       desktop: [['row', 'tbody tr:first-child > *', 5], ['beside', 'tbody tr:first-child th', 'tbody tr:first-child td.num'], ['row', 'thead th', 5]],
     },
     '.city-video': { tablet: [['beside', '.side > img', '.facts']], desktop: [['beside', '.grid > .kit-video', '.side']] },
-    '.city-chapters': { tablet: [['beside', '.ch .media', '.ch p']], desktop: [['beside', '.ch h3', '.ch .media'], ['beside', '.ch .media', '.ch p']] },
+    // From a 640px box a chapter opens on one row, its heading beside its photo, and the prose
+    // runs under that row from the heading's edge (impeccable D1, the breeder's ruling 2026-10-03).
+    // A wide chapter (an infographic) is one column at every width, so the root is a section with
+    // at least one chapter that is not.
+    '.city-chapters:has(.ch:not(.wide))': {
+      tablet: [['beside', '.ch:not(.wide) h3', '.ch:not(.wide) :is(.media, .media-u)'], ['under', '.ch:not(.wide) :is(.media, .media-u)', '.ch:not(.wide) .txt']],
+      desktop: [['beside', '.ch:not(.wide) h3', '.ch:not(.wide) :is(.media, .media-u)'], ['under', '.ch:not(.wide) :is(.media, .media-u)', '.ch:not(.wide) .txt']],
+    },
     '.city-letter': { tablet: [], desktop: [['beside', '.pic', 'blockquote']] },
     '.city-faq.has-rail': { tablet: [], desktop: [['beside', '.rail', '.blk']] },
     '.city-newsletter-notice': { tablet: [['beside', 'figure', '.body']], desktop: [['beside', 'figure', '.body']] },
@@ -58,6 +65,13 @@ export function cityLayoutFollowsBox({ viewport, tier: edges }:
           if (!a || !b) { defects.push(`${at}: ${f[1]} or ${f[2]} missing`); continue; }
           const ra = a.getBoundingClientRect(); const rb = b.getBoundingClientRect();
           if (!(ra.right <= rb.left + 1 && ra.top < rb.bottom && rb.top < ra.bottom)) defects.push(`${at}: ${f[1]} is not beside ${f[2]}`);
+        } else if (f[0] === 'under') {
+          // b starts below a's foot and reaches back past a's left edge: a full row under it,
+          // not a column beside it.
+          const a = root.querySelector(f[1]); const b = root.querySelector(f[2]);
+          if (!a || !b) { defects.push(`${at}: ${f[1]} or ${f[2]} missing`); continue; }
+          const ra = a.getBoundingClientRect(); const rb = b.getBoundingClientRect();
+          if (!(rb.top >= ra.bottom - 1 && rb.left < ra.left - 1)) defects.push(`${at}: ${f[2]} does not run under ${f[1]}`);
         } else if (f[0] === 'row') {
           const els = Array.from(root.querySelectorAll(f[1])).filter((e) => e.getBoundingClientRect().height > 0);
           if (!els.length) { defects.push(`${at}: ${f[1]} missing`); continue; }
