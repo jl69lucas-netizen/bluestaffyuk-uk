@@ -1,0 +1,72 @@
+<title>London Design Pass Decisions</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,650&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#F4F1EA;--panel:#FFFFFF;--rule:#DAD6CC;--fg:#1B2430;--fg-2:#46566B;--fg-3:#5E6B7A;--brass-soft:#EFE3B4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10181F;--panel:#16222D;--rule:#2A3B4B;--fg:#E7EDF2;--fg-2:#B7C4D0;--fg-3:#8FA3B8;--brass-soft:#3A3218;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10181F;--panel:#16222D;--rule:#2A3B4B;--fg:#E7EDF2;--fg-2:#B7C4D0;--fg-3:#8FA3B8;--brass-soft:#3A3218;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 "Source Sans 3",system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
+h1{font:650 clamp(26px,4vw,36px)/1.15 Fraunces,Georgia,serif;margin:0 0 6px;text-wrap:balance}
+h2{font:650 22px/1.2 Fraunces,Georgia,serif;margin:0;text-wrap:balance}
+.lede{color:var(--fg-2);max-width:70ch;margin:0 0 8px}
+.label{font:700 12px/1 "Source Sans 3",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3)}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px;margin-top:20px;min-width:0}
+.card header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pill{font:700 12px/1 "Source Sans 3",sans-serif;padding:6px 10px;border-radius:99px;background:var(--brass-soft);color:var(--fg)}
+.why{margin:0;color:var(--fg-2);max-width:78ch}.why b{color:var(--fg)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px}
+.quad{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px}
+figure{margin:0;min-width:0}figcaption{font-size:13px;color:var(--fg-3);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+figure img{display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:10px;background:#fff}
+.narrow img{max-width:375px}
+ul.done{margin:0;padding-left:20px;color:var(--fg-2)}ul.done b{color:var(--fg)}
+</style>
+<div class="wrap">
+  <p class="label">London page · Harden pass (frontend-design) · 3 October 2026</p>
+  <h1>Five design ideas, and one site-wide fix</h1>
+  <p class="lede">The frontend-design pass found the page reads as "a breeder's ledger in steel and brass, not a template", strongest in the first screen and the dark FAQ ledgers, weakest in the long middle. It fixed five things without changing any words, links or images:</p>
+  <ul class="done">
+    <li><b>40 invisible links:</b> links in the reading text had no underline and the same colour as the prose. They now carry a soft underline that strengthens on hover.</li>
+    <li><b>Hover states</b> on the hero's second link and the byline link.</li>
+    <li><b>Chapter spacing</b> now matches the sections around it at every width, the photo sits at the same gap as elsewhere, and a stray "·" no longer hangs at a line end in the stacked roster.</li>
+  </ul>
+  <p class="lede">The ideas below would change how the page looks, so each waits for you.</p>
+
+  <section class="card">
+    <header><h2>Site-wide · Underline links on every page</h2><span class="pill">Accessibility</span></header>
+    <p class="why"><b>What's wrong:</b> the same invisible-link problem fixed on London is on the homepage (48 links) and the health page (29), and likely every page built on the shared style. A link you can only find by colour fails WCAG for colour-blind readers. <b>The fix:</b> the London underline style moved into the site's shared stylesheet, so every page gets it. No screenshot is needed: it looks exactly like London's links now.</p>
+  </section>
+
+  <section class="card">
+    <header><h2>D5 · A lighter divider between chapters</h2><span class="pill">Rhythm</span></header>
+    <p class="why"><b>What's wrong:</b> sixteen identical seal dividers, each 154px tall, sit between every chapter, so the seal stops meaning "a new part". <b>The idea:</b> a thin steel hairline between chapters, and the seal kept only where the page turns into the FAQ blocks, the letters and the contact form.</p>
+    <div class="pair"><figure><figcaption>Now, 1280</figcaption><img src="D5-divider-cadence-1280-before.png" alt="Seal dividers between chapters at 1280"></figure><figure><figcaption>Idea, 1280</figcaption><img src="D5-divider-cadence-1280-preview.png" alt="Hairline dividers between chapters at 1280"></figure></div>
+    <div class="pair narrow"><figure><figcaption>Now, 375</figcaption><img src="D5-divider-cadence-375-before.png" alt="Seal dividers at 375"></figure><figure><figcaption>Idea, 375</figcaption><img src="D5-divider-cadence-375-preview.png" alt="Hairline dividers at 375"></figure></div>
+  </section>
+
+  <section class="card">
+    <header><h2>D6 · The hero photos settle in on load</h2><span class="pill">Motion</span></header>
+    <p class="why"><b>What's wrong:</b> nothing on the page moves; the hero arrives fully formed. <b>The idea:</b> the six filmstrip photos fade and rise 8px into place once, 200ms each, one after another. Transform and opacity only, and switched off for anyone whose device asks for less motion. Frames below at 0, 150, 300 and 500ms.</p>
+    <div class="quad"><figure><figcaption>0ms</figcaption><img src="D6-hero-settle-375-t0.png" alt="Hero at 0ms"></figure><figure><figcaption>150ms</figcaption><img src="D6-hero-settle-375-t150.png" alt="Hero at 150ms"></figure><figure><figcaption>300ms</figcaption><img src="D6-hero-settle-375-t300.png" alt="Hero at 300ms"></figure><figure><figcaption>500ms</figcaption><img src="D6-hero-settle-375-t500.png" alt="Hero at 500ms"></figure></div>
+  </section>
+
+  <section class="card">
+    <header><h2>D7 · The chapter panel's side margin</h2><span class="pill">Spacing</span></header>
+    <p class="why"><b>What's wrong:</b> the chapter panel sits 12px in from its band, where every other panel sits 16px in on a phone and 32px on bigger screens, so on desktop it looks slipped inside a thin frame. <b>The catch:</b> applying it shrinks the text column, and one photo (the registration-check photo) then loads at more than twice its shown size. It needs a smaller copy of that photo added first, beside the original.</p>
+    <div class="pair"><figure><figcaption>Now, 1280</figcaption><img src="D7-tray-gutter-1280-before.png" alt="Chapter panel margin at 1280, now"></figure><figure><figcaption>Idea, 1280</figcaption><img src="D7-tray-gutter-1280-preview.png" alt="Chapter panel margin at 1280, idea"></figure></div>
+  </section>
+
+  <section class="card">
+    <header><h2>D8 · Two photos cut their own lettering</h2><span class="pill">Images</span></header>
+    <p class="why"><b>What's wrong:</b> two images have words printed in them, and the crop cuts the words. The "Contact Us" graphic loses the top of its headline, and the Staffordshire / American Bully comparison loses "BULL TERRIER" and "BULLY". <b>The fix:</b> show the whole picture on the page's bone colour (no grey or black bars, per your image rule).</p>
+    <div class="pair"><figure><figcaption>Now, 1280</figcaption><img src="D8-crop-breed-labels-1280-before.png" alt="Breed comparison image cropped at 1280"></figure><figure><figcaption>Fix, 1280</figcaption><img src="D8-crop-breed-labels-1280-preview.png" alt="Breed comparison image shown whole at 1280"></figure></div>
+    <div class="pair"><figure><figcaption>Now, 1280</figcaption><img src="D8-crop-contact-graphic-1280-before.png" alt="Contact graphic cropped at 1280"></figure><figure><figcaption>Fix, 1280</figcaption><img src="D8-crop-contact-graphic-1280-preview.png" alt="Contact graphic shown whole at 1280"></figure></div>
+  </section>
+
+  <section class="card">
+    <header><h2>D9 · Footer line alignment and a missing hover</h2><span class="pill">Every page</span></header>
+    <p class="why"><b>What's wrong:</b> in the footer, "© 2026 Blue Staffy UK" sits 11–12px above "Privacy policy" on the same row, and the contact form's privacy link has no hover. <b>The fix:</b> centre the row and add the hover. It repaints the footer on every page and the form on four.</p>
+    <div class="pair narrow"><figure><figcaption>Now, 375</figcaption><img src="D9-footer-legal-375-before.png" alt="Footer legal row misaligned"></figure><figure><figcaption>Fix, 375</figcaption><img src="D9-footer-legal-375-preview.png" alt="Footer legal row aligned"></figure></div>
+  </section>
+</div>
