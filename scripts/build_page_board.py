@@ -1136,6 +1136,23 @@ FINDING_MARKERS = (('class="hit"', "a heading flagged against a live page"),
                    ("⚠ none", "a link with no anchor type"))
 
 
+#: Page furniture, never a body H2: a section of one of these shapes (or the newsletter
+#: signup, which rides on a `standard` shape) carries no image of its own by design, so a
+#: missing slot there is not a finding (coordinator ruling, 2026-10-03).
+FRAME_SHAPES = frozenset({"hero", "stats", "trust", "reviews", "faq", "form", "dial", "takeaways",
+                          "newsletter"})
+
+
+def is_frame_section(section):
+    return section["shape"] in FRAME_SHAPES or "newsletter" in section["id"]
+
+
+def refusing_fails(rules):
+    """The FAIL rows that refuse approval at STOP 3 — rules_block's own test. A build-stage
+    check (family_rules.APPROVAL_EXEMPT, e.g. `image-generated-unapproved`) is not one."""
+    return [r for r in rules or [] if r[1] == "FAIL" and r[0] not in PB.FR.APPROVAL_EXEMPT]
+
+
 def block_id(title):
     """"7c. Infographics" → "7c"."""
     return title.split(". ", 1)[0]
@@ -1164,15 +1181,8 @@ def block_findings(board, parts, facts):
     lk = facts.get("links")
     out["8b"] = ([f"orphan risk: {_n(len(lk['sources']), 'page')} link here from body copy, "
                   f"under {BX.ORPHAN_FLOOR}"] if lk and lk["orphan"] else [])
-    rules = facts.get("rules") or []
-    fails = [r for r in rules if r[1] == "FAIL"]
-    if facts.get("refused"):
-        out["7b"] = [f"{_n(len(fails), 'rule')} FAIL — approval will be refused"]
-    elif fails:
-        out["7b"] = [f"{_n(len(fails), 'rule')} FAIL until each infographic is generated and approved "
-                     "(checked at build); none refuses approval"]
-    else:
-        out["7b"] = []
+    fails = refusing_fails(facts.get("rules"))
+    out["7b"] = [f"{_n(len(fails), 'rule')} FAIL — approval will be refused"] if fails else []
     f3 = []
     if facts["hits"]:
         f3.append(f"{_n(len(facts['hits']), 'heading')} collide with a live page")
@@ -1181,13 +1191,15 @@ def block_findings(board, parts, facts):
     if dead:
         f3.append(f"{_n(dead, 'internal link')} dead")
     out["3"] = f3
-    bare = [s for s in board["sections"] if not s["images"] and s["shape"] != "standard"]
-    out["3b"] = [f"{_n(len(bare), 'section')} with no image slot"] if bare else []
+    # A body H2 with no image slot anywhere in its tree; page furniture never counts.
+    has_slot = {s["id"] for s, _node, _img in IC.iter_slots(board)}
+    bare = [s for s in board["sections"] if s["id"] not in has_slot and not is_frame_section(s)]
+    out["3b"] = [f"{_n(len(bare), 'body section')} with no image slot anywhere"] if bare else []
     blocked = facts["auth"]["blocked"]
     out["5"] = [f"{_n(len(blocked), 'BLOCKED entity', 'BLOCKED entities')} referenced"] if blocked else []
     for t, body in parts:
         bid = block_id(t)
-        if out.get(bid) or bid in ("2b", "8b", "7b"):
+        if out.get(bid) or bid in ("2b", "8b", "7b", "3b"):
             continue
         hit = [what for mark, what in FINDING_MARKERS if mark in body]
         out[bid] = [f"carries {hit[0]}"] if hit else []
@@ -1259,8 +1271,11 @@ def block_summary(bid, board, slug, ig_plan, facts, picks):
         rules = facts.get("rules") or []
         if not rules:
             return "Every new-page rule passes."
-        f = sum(r[1] == "FAIL" for r in rules)
-        return f"{f} FAIL, {len(rules) - f} WARN, run as approval runs them."
+        f = len(refusing_fails(rules))
+        build = sum(r[1] == "FAIL" for r in rules) - f
+        w = sum(r[1] != "FAIL" for r in rules)
+        return (f"{f} FAIL, {w} WARN at approval."
+                + (f" {_n(build, 'build-stage check')} run after images are made." if build else ""))
     if bid == "7c":
         return (f"{_n(len(ig_plan), 'infographic')}, each on its own heading. "
                 "Pick sticker, chalk or comic for each.")
@@ -1290,7 +1305,7 @@ def queue_meta(parts, board, slug, ig_plan, labels, facts):
                 picks[bid].append(pid)
                 break
     findings = block_findings(board, parts, facts)
-    passes = {"2b": True, "3": True, "7b": True, "8b": bool(facts.get("links") and facts["links"]["rows"] is not None)}
+    passes = {"2b": True, "3": True, "3b": True, "7b": True, "8b": bool(facts.get("links") and facts["links"]["rows"] is not None)}
     out = []
     for bid in ids:
         mine, found = picks[bid], findings.get(bid) or []
@@ -1439,7 +1454,7 @@ QUEUE_JS = r"""  // Decision queue (breeder pick B, 2026-10-03): one <details> c
 
 #: After the approve handler is wired: the header's progress, the bar's "N picks left", each
 #: card's live chip, and a refusal list that crosses picks off as they are made.
-QUEUE_TAIL_JS = r"""  var leftEl=document.getElementById('picks-left');
+QUEUE_TAIL_JS = r"""  var leftEl=document.getElementById('picks-left'),prefilled=null;
   function kindOf(id){
     var e=SIGNATURE_LABELS[id]||{};
     if(e.n==='2')return e.label;
@@ -1447,7 +1462,10 @@ QUEUE_TAIL_JS = r"""  var leftEl=document.getElementById('picks-left');
   }
   function progress(){
     var all=['h1','meta-title','meta-description'].concat(SIGNATURE_SECTIONS),open=missingPicks(),done=all.length-open.length;
-    document.getElementById('prog-text').textContent=done+' of '+all.length+' picks made';
+    // Recommended defaults the board pre-checks count as made, and are named as such.
+    if(prefilled===null)prefilled=done;
+    document.getElementById('prog-text').textContent=done+' of '+all.length+' picks made'
+      +(prefilled?' ('+prefilled+' pre-filled)':'');
     var pb=document.getElementById('prog-bar');pb.setAttribute('aria-valuenow',done);
     pb.firstChild.style.width=(all.length?Math.round(done/all.length*100):100)+'%';
     var kinds={},order=[];

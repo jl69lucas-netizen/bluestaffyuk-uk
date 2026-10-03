@@ -3188,6 +3188,7 @@ try { ({ chromium } = require('playwright')); } catch (e) { console.log('SKIP no
   let page = await browser.newPage();
   await page.goto(base + '/board.html#ref');
   out.start = await page.evaluate(() => ({ tab: document.querySelector('[role=tab][aria-selected=true]').getAttribute('data-tab'),
+    prog: document.getElementById('prog-text').textContent,
     cards: [...document.querySelectorAll('[role=tabpanel]')].map(p => p.querySelectorAll('details.card').length) }));
   await page.evaluate(clearAndApprove);
   out.refused = await page.evaluate(read);
@@ -3245,6 +3246,8 @@ def test_queue_refusal_jumps_across_tabs_in_a_browser(tmp_path, london_full):
     res = json.loads(r.stdout.split("RESULT ", 1)[1])
     tabs = _tabs(html)
     assert res["start"]["tab"] == "ref"
+    # Block 2's recommended H1, title and description are pre-checked: made, and named so.
+    assert res["start"]["prog"] == f"3 of {len(_signature_labels(html))} picks made (3 pre-filled)"
     assert res["start"]["cards"] == [sum(v == k for v in tabs.values()) for k in ("decide", "look", "ref")]
     n_open = len(_signature_labels(html))
     assert len(res["refused"]["items"]) == n_open and res["refused"]["links"] == n_open
@@ -3255,3 +3258,49 @@ def test_queue_refusal_jumps_across_tabs_in_a_browser(tmp_path, london_full):
     assert res["connecting"] == "Connecting…"
     assert len(res["raced"]["items"]) == n_open
     assert "Ready." not in res["raced"]["text"] and "earlier version" not in res["raced"]["text"]
+
+
+def _queue_facts(board, rules=()):
+    return {"hits": [], "qhits": [], "routes": {"built": None, "mapped": set()}, "rules": list(rules),
+            "refused": False, "links": None, "auth": {"blocked": [], "proposed": []},
+            "d": PB.distribution(board), "kit_n": 0, "mt": 0}
+
+
+def test_queue_7b_looks_only_at_fails_that_refuse_approval():
+    import build_page_board as BPB
+    london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
+    parts = [("7b. Rules for new pages", "x")]
+    build = ("image-generated-unapproved", "FAIL", "slot x: no generated image approved")
+    assert build[0] in PB.FR.APPROVAL_EXEMPT
+    c = BPB.queue_meta(parts, london, LONDON, [], {}, _queue_facts(london, [build]))[0]
+    assert c["tab"] == "ref" and "1 build-stage check run after images are made" in c["summary"]
+    refusing = ("two-keyword-header", "FAIL", "section y carries no keyword")
+    assert refusing[0] not in PB.FR.APPROVAL_EXEMPT
+    c = BPB.queue_meta(parts, london, LONDON, [], {}, _queue_facts(london, [build, refusing]))[0]
+    assert c["tab"] == "look" and "approval will be refused" in c["summary"]
+
+
+def test_queue_3b_looks_only_at_a_body_section_with_no_slot_anywhere():
+    import build_page_board as BPB
+    london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
+    parts = [("3b. Image plan", BPB.image_plan_table(london))]
+    c = BPB.queue_meta(parts, london, LONDON, [], {}, _queue_facts(london))[0]
+    assert c["tab"] == "ref", c["summary"]          # frame sections and newsletter never count
+    body = next(s for s in london["sections"] if s["id"] == "temperament")
+    body["images"] = []
+    for n in body["tree"]:
+        def strip(node):
+            node["images"] = []
+            for ch in node.get("children") or []:
+                strip(ch)
+        strip(n)
+    c = BPB.queue_meta(parts, london, LONDON, [], {}, _queue_facts(london))[0]
+    assert c["tab"] == "look" and "1 body section with no image slot anywhere" in c["summary"]
+
+
+def test_queue_london_look_tab_is_only_real_findings(london_full):
+    _, html = london_full
+    tabs = _tabs(html)
+    assert tabs["7b"] != "look" and tabs["3b"] != "look"
+    if PB.DIST.exists():
+        assert sorted(k for k, v in tabs.items() if v == "look") == ["2b", "8b"]
