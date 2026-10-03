@@ -850,7 +850,7 @@ numbers.
     **Closes when the aspect is budgeted rather than fixed** — the photo box sized from the
     space the copy leaves, not the other way round.
 
-31. **Two blocking rows on the two data-driven routes (corrected 2026-09-22). First half
+31. **Two blocking rows on the two data-driven routes (corrected 2026-09-22). Second half CLOSED 2026-10-03 with Known Issue 81 (c3b33e5c). First half
     CLOSED (project 5 readiness pass):** `/available-puppies/` opens each card at H2 —
     `src/components/PuppyList.astro` with `heading="none"` — so `sem-heading-order` is 3 rows
     → 0 there, guarded by `tests/py/test_puppy_hub_headings.py`. The location route's anchor
@@ -1559,7 +1559,7 @@ numbers.
     Foundation report is recorded in the repo, so it had nothing to republish; a published copy,
     if one exists, is republished from the committed HTML.
 
-81. **The UK hub's in-page anchor misses the landing band (the brief-parity close; carries Known Issue 31's second half).**
+81. **The UK hub's in-page anchor misses the landing band (the brief-parity close; carries Known Issue 31's second half). — CLOSED 2026-10-03 (c3b33e5c).** The migrated button carried `target="_blank"` on a same-page `#Staffy-adoption` link, so a click opened a second tab and the page never scrolled; the harness was right. `scripts/extract_wp.py` now drops `target` from bare `#fragment` links (test in `tests/py/test_extract_core.py`); the UK page passes `nav-jump-target-lands` at 375/768/1280. Glasgow carried the same pattern and is fixed by the same change.
     - **Where:** `npm run test:render:pages` fails `nav-jump-target-lands` on `uk-locations/blue-staffy-puppies-uk` at all three widths: `[NAV] 1 of 2 in-page links land outside` the band, first `#Staffy-adoption` at 2847px (375), 3495px (768) and 3493px (1280).
     - **Why it matters:** these are the only rows keeping the page run from a clean exit (ledger M3 blocking 3). The migrated body's anchor target sits outside the band that the sticky header leaves.
     - **Next:** project 5's hub refresh rebuilds the body and its anchor target, and the render run must then exit 0. Do not fix it inside another task (plan execution note 8).
