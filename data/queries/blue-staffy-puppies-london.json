@@ -1543,10 +1543,7 @@
       "must_answer": false,
       "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "Where Can I Find Blue Staffy Breeders in the UK?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-who-are-the-bluestaffyuk-stud-dogs-and-ho-54449c",
