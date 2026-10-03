@@ -23,7 +23,10 @@ import { titleCase } from '../../lib/headings';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
 import { citySizes, DELIVERY_BAND, DEPOSIT, depositBrief, guaranteeRow, transportLine, type CityFit } from '../../lib/cityKit';
 
-export interface CityFaqRow { q: string; a: string }
+/** One question. `more` is an in-page pointer to the section that answers it at length, set in
+ *  its own paragraph after the answer: the answer itself carries no link, because it is the
+ *  FAQPage node's text word for word. */
+export interface CityFaqRow { q: string; a: string; more?: { href: string; label: string } }
 type Props = HTMLAttributes<'section'> & {
   heading: string;
   lede: string;
@@ -69,11 +72,12 @@ const brief = [
     <div class="blk">
       <h2>{heading}</h2>
       <p class="lede">{lede}</p>
-      <div class="list">
+      <div class="list kit-faq">
         {items.map((it, i) => (
           <details>
             <summary><span class="n" aria-hidden="true">{pad(start + i)}</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>{titleCase(it.q)}</h3></summary>
             <p>{it.a}</p>
+            {it.more && <p class="more"><a href={it.more.href}>{it.more.label}</a></p>}
           </details>
         ))}
       </div>
@@ -112,6 +116,8 @@ const brief = [
     .pm::before, .pm::after { content: ""; position: absolute; left: 0; top: 7px; width: 16px; height: 2px; background: currentColor; transition: transform var(--dur-base) var(--ease-out); }
     .pm::after { transform: rotate(90deg); }
     details[open] .pm::after { transform: rotate(0deg); }
+    details > p.more { margin-top: calc(-1 * var(--space-3)); }
+    details > p.more a { color: var(--color-link-on-inverse); font-weight: 600; text-underline-offset: 3px; }
     details > p { margin: 0; padding: 0 var(--space-1) var(--space-5) calc(2.2em * 15 / 17 + var(--space-3) + var(--space-1)); max-width: 64ch; color: var(--color-steel-100); }
     @container (width >= 640px) {
       .in { padding: var(--city-pad-y) var(--space-6); }

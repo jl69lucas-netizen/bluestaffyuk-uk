@@ -247,6 +247,12 @@
   @media (max-width: 899.98px) and (orientation: portrait) {
     .bl-img.sec-img.og-tall { aspect-ratio: 4 / 5; max-width: 100%; }
   }
+  /* An infographic with an art-directed phone file (BodyImage `phone`, a `<picture>` whose
+     source below 640px is the tall `-760` layout): on a phone the box takes that file's own
+     ratio, from the source's width and height, so the stacked layout is never cropped. */
+  @media (max-width: 639px) {
+    .bl-img.sec-img.art-phone { aspect-ratio: auto; object-fit: contain; }
+  }
 
   /* THE HERO'S OWN PHOTO. The kit Hero is a two-column grid whose photo is first in source
      order and second on screen (its rule 10 DOM order). `bl-media-*` moves it without the

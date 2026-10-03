@@ -19,6 +19,9 @@ WHERE THIS DIFFERS FROM THE PLAN'S TASK 26 TEXT (written 2026-09-30; the approve
     body_sections) and on the three FAQ blocks. The approved board gives the frame rows (trust
     strip, takeaways, the three letters, the newsletter, the enquiry form, the contents) their
     own short labels, which are not questions, and the components render them as their H2.
+  - the FAQ questions are the board's, each in the wording the question file records for the
+    page (`covered_by.text`); two differ from the board's words because those collided with
+    headings on other live pages (2026-10-03, check:boards header-collision).
   - the FAQ count is not hard-coded at 15-20. The board approved 21 questions (top 6, middle 7,
     bottom 8, after the breeder added "How Rare Are Blue Staffies?" on 2026-10-02, q04), so the
     expected set is read from the board's FAQ trees and must equal every FAQ `covered_by` text in
@@ -83,6 +86,17 @@ def labelled_sections(html):
 def board_faq_questions(section_id):
     sec = next(s for s in BOARD["sections"] if s["id"] == section_id)
     return [re.match(r"Q: (.*?) —", n["intent"]).group(1) for n in sec["tree"]]
+
+
+def page_wording(board_q):
+    """The wording the question file records for a board question on the page (`covered_by`):
+    the board's own words, or a recorded change where they collide with another live page's
+    heading (scripts/pageboard.py header-collision)."""
+    faq = [q for q in QUERIES["questions"] if q.get("covered_by") and q["covered_by"]["where"] == "faq"]
+    hit = next((q for q in faq if norm(q["covered_by"]["text"]) == norm(board_q)), None) \
+        or next((q for q in faq if norm(q["question"]) == norm(board_q)), None)
+    assert hit, f"the question file covers no FAQ question {board_q!r}"
+    return hit["covered_by"]["text"]
 
 
 def test_london_is_no_longer_a_scaffold():
@@ -151,7 +165,7 @@ def test_three_faq_blocks_holding_exactly_the_approved_questions():
     secs = labelled_sections(html)
     expected_all = []
     for sid, (lo, hi) in FAQ_BAND.items():
-        want = board_faq_questions(sid)
+        want = [page_wording(q) for q in board_faq_questions(sid)]
         got = [text(q) for q in re.findall(r"<h3[^>]*data-faq-q[^>]*>(.*?)</h3>", secs[sid], re.S)]
         assert [norm(g) for g in got] == [norm(w) for w in want], sid
         assert lo <= len(got) <= hi, (sid, len(got))
@@ -209,9 +223,11 @@ def test_the_schema_names_london_and_carries_no_telephone():
     blocks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
     nodes = [n for b in blocks for n in (b if isinstance(b, list) else [b])]
     local = [n for n in nodes if n.get("@type") == "LocalBusiness"]
-    assert len(local) == 1
-    assert "London" in json.dumps(local[0].get("areaServed"))
-    assert "telephone" not in local[0]
+    # The layout's site-wide node (src/components/Schema.astro) and the page's own, which
+    # shares its @id and adds areaServed: one business, described twice, never two.
+    assert local and len({n.get("@id") for n in local}) == 1
+    assert any("London" in json.dumps(n.get("areaServed")) for n in local)
+    assert not [n for n in local if "telephone" in n]
 
 
 def test_noindex_until_the_user_approves_the_page():

@@ -13,6 +13,17 @@
 // siblings — working rule 11), a puppy photo through astro:assets with the page's own alt; both
 // are cropped on their faces (src/lib/imageFocus.ts), never by an inline style.
 // Conventions 4 and 6; brass is a fill (the numeral disc) with --color-cta-ink text.
+//
+// A WRITTEN PAGE NEEDS MORE THAN THE CANVAS'S TWO SHORT CHAPTERS (London's page run, row 12): an
+// approved outline gives a section an image under its H2, up to three H3s, and under each H3 an
+// H4-H6 ladder with its own links and images. So, all optional and none changing how the
+// specimen renders: `image` puts a body photograph between the H2 and the lede; a chapter may
+// take `asset` (a board record's baked row, through BodyImage in the uniform box, its served alt
+// kept) in place of `photo`; `wide` sets one chapter in a single column, for an infographic that
+// must not be squeezed into the photo column; the named slot `ch-<n>` carries the rest of
+// chapter n after its opening paragraph; and the default slot closes the tray (a section's
+// call to action). The opening paragraph is still the chapter's `text`, the first prose after
+// its photo.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
@@ -20,17 +31,39 @@ import BodyImage from '../BodyImage.astro';
 import { puppyImage } from '../../lib/puppyImages';
 import { focusClass, focusRow, servedPhoto } from '../../lib/imageFocus';
 import { citySizes, type CityFit } from '../../lib/cityKit';
+import type { BodyAsset } from '../BodyImage.astro';
 
-export interface Chapter { place: string; question: string; photo: string; photoAlt?: string; text: string }
+export interface Chapter {
+  place: string; question: string; text: string;
+  /** A puppy photo or a served file named in data/image-focus.json (the canvas's form). */
+  photo?: string; photoAlt?: string;
+  /** A board record's baked row, rendered by BodyImage in `box` (default `uniform`). */
+  asset?: BodyAsset; box?: 'uniform' | 'tall';
+  /** One column at every width (an infographic). */
+  wide?: boolean;
+}
 type Props = HTMLAttributes<'section'> & {
   heading: string;
   lede: string;
   chapters: Chapter[];
+  /** The photograph under the H2, before the lede (a board record's baked row). */
+  image?: BodyAsset;
   /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
   fit?: CityFit;
 };
-const { heading, lede, chapters, fit = 'column', class: cls, ...rest } = Astro.props;
-if (chapters.length < 1 || chapters.length > 2) throw new Error('CityChapters: one or two chapters');
+const { heading, lede, chapters, image, fit = 'column', class: cls, ...rest } = Astro.props;
+if (chapters.length < 1 || chapters.length > 3) throw new Error('CityChapters: one to three chapters');
+const missing = chapters.filter((c) => !c.photo && !c.asset).map((c) => c.question);
+if (missing.length) throw new Error(`CityChapters: no photo for ${missing.join(' | ')}`);
+// Each chapter's own slot, rendered once here: what follows its opening paragraph.
+const rich = await Promise.all(chapters.map((_, i) =>
+  Astro.slots.has(`ch-${i + 1}`) ? Astro.slots.render(`ch-${i + 1}`) : Promise.resolve('')));
+// The tray, less its padding (16px; 48px from tablet): the H2 photo and a wide chapter's image.
+const WIDE_SIZES = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
+  tablet: (B) => `min(760px, calc(min(${B}, 1124px) - 120px))`,
+  desktop: (B) => `min(760px, calc(min(${B}, 1124px) - 120px))`,
+});
 // The tray is the box less 12px gutters, at most 1100px, less its padding (16px; 32px from tablet):
 // the photo is the tray on a phone, 1fr of 2.3fr beside the prose, 7fr of 21fr (at most 340px) on desktop.
 const SIZES = citySizes(fit, {
@@ -42,23 +75,37 @@ const SIZES = citySizes(fit, {
 <section {...rest} class:list={['city-kit', 'city-chapters', cls]}>
   <div class="tray">
     <h2>{heading}</h2>
+    {image && <BodyImage asset={image} srcset={image.srcset} phone={image.phone} box="uniform" sizes={WIDE_SIZES} class="h2-img" />}
     <p class="lede">{lede}</p>
     {chapters.map((c, i) => {
-      const served = focusRow(c.photo).src === 'images';
-      const asset = served ? servedPhoto(c.photo) : null;
-      if (!served && !c.photoAlt) throw new Error(`CityChapters: ${c.photo} is a puppy photo and needs its photoAlt`);
+      if (c.asset) {
+        return (
+          <div class:list={['ch', { wide: c.wide }]}>
+            <span class="num"><b aria-hidden="true">{i + 1}</b>{c.place}</span>
+            <h3>{c.question}</h3>
+            <BodyImage asset={c.asset} srcset={c.asset.srcset} phone={c.asset.phone} box={c.box ?? 'uniform'}
+              sizes={c.wide ? WIDE_SIZES : SIZES} class="media-u" />
+            <div class="txt"><p>{c.text}</p><Fragment set:html={rich[i]} /></div>
+          </div>
+        );
+      }
+      const photo = c.photo!;
+      const served = focusRow(photo).src === 'images';
+      const asset = served ? servedPhoto(photo) : null;
+      if (!served && !c.photoAlt) throw new Error(`CityChapters: ${photo} is a puppy photo and needs its photoAlt`);
       return (
-        <div class="ch">
+        <div class:list={['ch', { wide: c.wide }]}>
           <span class="num"><b aria-hidden="true">{i + 1}</b>{c.place}</span>
           <h3>{c.question}</h3>
           {asset
-            ? <BodyImage asset={asset} srcset={asset.srcset} sizes={SIZES} class={`${focusClass(c.photo)} media`} />
-            : <Image src={puppyImage(c.photo)} alt={c.photoAlt!} widths={[400, 700]} sizes={SIZES}
-                class={`bl-img media ${focusClass(c.photo)}`} loading="lazy" decoding="async" />}
-          <p>{c.text}</p>
+            ? <BodyImage asset={asset} srcset={asset.srcset} sizes={SIZES} class={`${focusClass(photo)} media`} />
+            : <Image src={puppyImage(photo)} alt={c.photoAlt!} widths={[400, 700]} sizes={SIZES}
+                class={`bl-img media ${focusClass(photo)}`} loading="lazy" decoding="async" />}
+          <div class="txt"><p>{c.text}</p><Fragment set:html={rich[i]} /></div>
         </div>
       );
     })}
+    {Astro.slots.has('default') && <div class="close"><slot /></div>}
   </div>
 </section>
 <style>
@@ -85,7 +132,16 @@ const SIZES = citySizes(fit, {
       grid-area: img; display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover;
       border-radius: var(--radius-md); background: var(--color-bone-50);
     }
-    .ch p { grid-area: text; margin: 0; color: var(--color-text); }
+    .ch :global(.media-u) { grid-area: img; }
+    .txt { grid-area: text; min-width: 0; color: var(--color-text); }
+    .txt :global(p) { margin: 0 0 var(--space-3); color: var(--color-text); }
+    .txt :global(p:last-child) { margin-bottom: 0; }
+    .txt :global(:is(h4, h5, h6)) { margin: var(--space-4) 0 var(--space-2); }
+    .txt :global(.bl-img) { margin: var(--space-2) 0 var(--space-3); }
+    .txt :global(ul) { margin: 0 0 var(--space-3); padding-left: var(--space-5); }
+    .tray > :global(.h2-img) { margin: var(--space-2) auto var(--space-4); }
+    .close { padding-top: var(--space-4); border-top: 1px solid var(--color-steel-300); }
+    .close :global(p) { margin: 0; font-weight: 600; }
     @container (width >= 640px) {
       .tray { padding: var(--space-6) var(--space-6); }
       .ch {
@@ -99,7 +155,10 @@ const SIZES = citySizes(fit, {
         grid-template-areas: "num img text" "h3 img text"; column-gap: var(--space-6);
       }
       .ch :global(.media) { max-width: 340px; }
+      .ch:not(.wide) :global(.media-u) { max-width: 340px; }
     }
+    /* A wide chapter (an infographic) keeps one column at every width: heading, image, prose. */
+    .ch.wide { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "num" "h3" "img" "text"; }
     /* The column beside a city dial (an 800–999px box): the canvas's 5 / 7 / 9 split left the
        heading 150px, five lines a question, so the heading column takes a little from the prose. */
     @container (800px <= width < 1000px) {

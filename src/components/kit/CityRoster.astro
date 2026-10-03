@@ -26,17 +26,24 @@ import { puppyImage } from '../../lib/puppyImages';
 import { focusClass } from '../../lib/imageFocus';
 import { availablePuppies, deliveryLine, depositLine, money, sexWord } from '../../lib/cityKit';
 
-type Props = HTMLAttributes<'section'> & { heading: string; lede: string; caption: string };
-const { heading, lede, caption, class: cls, ...rest } = Astro.props;
+// `bare` (London's page run, row 12): the table and its foot alone, in a `div`, for a page whose
+// approved outline sets the fact table under an H3 rather than as a section of its own. It
+// takes no heading or lede then; the section around it owns those. Omitted, nothing changes.
+type Props = HTMLAttributes<'section'> & { heading?: string; lede?: string; caption: string; bare?: boolean };
+const { heading, lede, caption, bare = false, class: cls, ...rest } = Astro.props;
+if (!bare && (!heading || !lede)) throw new Error('CityRoster: a heading and a lede, unless it is bare');
+const Root = bare ? 'div' : 'section';
 const pups = availablePuppies();
 const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
 ---
-<section {...rest} class:list={['city-kit', 'city-roster', cls]}>
+<Root {...rest} class:list={['city-kit', 'city-roster', { bare }, cls]}>
   <div class="tray">
-    <div class="head">
-      <h2>{heading}</h2>
-      <p class="lede">{lede}</p>
-    </div>
+    {!bare && (
+      <div class="head">
+        <h2>{heading}</h2>
+        <p class="lede">{lede}</p>
+      </div>
+    )}
     <table class="stack-table" data-table>
       <caption>{caption}</caption>
       <thead><tr>{cols.map((c) => <th scope="col" class:list={[{ num: c === 'Price' }]}>{c}</th>)}</tr></thead>
@@ -58,13 +65,15 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
     </table>
     <p class="foot">{deliveryLine}. {depositLine}</p>
   </div>
-</section>
+</Root>
 <style>
   @layer components {
     /* A container (src/styles/city.css): its tiers read this section's own box. */
     .city-roster { background: var(--color-surface); padding: var(--space-6) 0; }
     .tray { max-width: min(1000px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     .head { padding: 0 var(--space-2) var(--space-4); }
+    .city-roster.bare { background: none; padding: 0; margin: var(--space-3) 0; }
+    .bare .tray { max-width: none; margin: 0; }
     h2 { margin: 0 0 var(--space-3); }
     .lede { margin: 0; font-size: var(--city-lead); color: var(--color-text); }
     table { width: 100%; border-collapse: collapse; font-size: var(--text-base); color: var(--color-text); }

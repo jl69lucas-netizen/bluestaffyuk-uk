@@ -32,6 +32,13 @@
 import type { FilledAsset } from '../lib/assets';
 import { BODY_SIZES, TALL_SIZES, UNIFORM_SIZES } from '../lib/assets';
 
+/** A phone-only art-directed file (an infographic's tall `-760` sibling): served below 640px
+ *  through `<picture>`, at its own intrinsic size, and never cropped by the uniform box. */
+export interface PhoneSource { src: string; w: number; h: number }
+/** The row a page hands BodyImage and the city components: the baked row, its candidate list
+ *  and, for an infographic, its phone layout. */
+export type BodyAsset = FilledAsset & { srcset?: string; phone?: PhoneSource };
+
 interface Props {
   /** The record's baked row: original path, original alt, measured intrinsic size. */
   asset: FilledAsset;
@@ -50,17 +57,26 @@ interface Props {
   focal?: string;
   /** Extra classes on the `<img>` (a city component's crop classes, `focus fx-NN fy-NN`). */
   class?: string;
+  /** An art-directed phone file (below 640px). Omitted, the `<img>` renders alone, as before. */
+  phone?: PhoneSource;
 }
 const FOCAL = /^\d{1,3}% \d{1,3}%$/;
-const { asset, srcset, box = 'natural', focal, class: extra } = Astro.props;
+const { asset, srcset, box = 'natural', focal, class: extra, phone } = Astro.props;
 const sizes = Astro.props.sizes ?? (box === 'tall' ? TALL_SIZES : box === 'uniform' ? UNIFORM_SIZES : BODY_SIZES);
-const cls = ['bl-img', box !== 'natural' && 'sec-img', box === 'tall' && 'og-tall', extra];
+const cls = ['bl-img', box !== 'natural' && 'sec-img', box === 'tall' && 'og-tall', phone && 'art-phone', extra];
 const style = box !== 'natural' && focal && FOCAL.test(focal) ? `object-position: ${focal}` : undefined;
 ---
 {/* `loading="lazy"` and `decoding="async"` are right for every in-body photograph and wrong
     for a hero: the hero is the LCP element and is eager with `fetchpriority="high"`, which is
     `Hero.astro`'s own business. This component is for the body only, which is why neither is
     a prop. */}
+{phone ? (
+<picture>
+  <source media="(max-width: 639px)" srcset={phone.src} width={phone.w} height={phone.h} />
+  <img class:list={cls} style={style} src={asset.file} alt={asset.alt} width={asset.w} height={asset.h}
+    srcset={srcset} sizes={sizes} loading="lazy" decoding="async" />
+</picture>
+) : (
 <img
   class:list={cls}
   style={style}
@@ -73,3 +89,4 @@ const style = box !== 'natural' && focal && FOCAL.test(focal) ? `object-position
   loading="lazy"
   decoding="async"
 />
+)}

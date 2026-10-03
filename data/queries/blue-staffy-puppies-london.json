@@ -3,8 +3,8 @@
   "page_type": "location",
   "primary_keyword": "blue staffy puppies london",
   "route": "/uk-locations/blue-staffy-puppies-london/",
-  "fetched": "2026-09-30",
-  "spend_usd": 0.02,
+  "fetched": "2026-10-03",
+  "spend_usd": 0.22,
   "sources": {
     "serp_google": "ok",
     "serp_bing": "ok",
@@ -165,7 +165,7 @@
         "q-do-staffy-get-attached-to-one-person-6d9e29",
         "q-how-much-exercise-does-a-staffy-need-dail-0d2427"
       ],
-      "heading": null
+      "heading": "Are Blue Staffies Aggressive, or Just Very Attached to Their People?"
     },
     {
       "topic": "breed",
@@ -175,7 +175,7 @@
         "q-is-a-staffy-a-pitbull-e881f1",
         "q-what-is-the-difference-between-a-staffy-a-3ff151"
       ],
-      "heading": null
+      "heading": "Are Blue Staffordshire Bull Terriers Pit Bulls or American Staffies?"
     },
     {
       "topic": "health",
@@ -185,7 +185,7 @@
         "q-what-does-l-2-hga-testing-mean-for-27d9f9",
         "q-why-do-staffy-scratch-so-much-5ca7a6"
       ],
-      "heading": null
+      "heading": "What Everyday Health Problems Are Blue Staffies Prone To?"
     }
   ],
   "questions": [
@@ -202,7 +202,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Are Blue Staffies Aggressive, or Just Very Attached to Their People?"
+      }
     },
     {
       "id": "q-are-blue-staffy-good-family-pets-especial-7e3356",
@@ -217,7 +220,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Are Blue Staffies Good Family Pets, Especially With Children?"
+      }
     },
     {
       "id": "q-are-blue-staffy-suitable-for-first-time-d-e4e6aa",
@@ -235,7 +241,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Are Blue Staffies Suitable for First-Time Dog Owners?"
+      }
     },
     {
       "id": "q-are-staffy-hard-to-train-a723a4",
@@ -250,7 +259,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Are Staffies Hard to Train?"
+      }
     },
     {
       "id": "q-are-the-parents-of-your-blue-staffy-puppy-523777",
@@ -272,7 +284,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Are the Puppy's Parents Health Tested?"
+      }
     },
     {
       "id": "q-are-the-puppy-raised-in-a-family-home-c93ef5",
@@ -287,7 +302,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Are the Puppies Raised in a Family Home or in Kennels?"
+      }
     },
     {
       "id": "q-are-your-blue-staffy-puppy-kennel-club-re-edca46",
@@ -430,7 +448,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Can I Visit You Before I Decide?"
+      }
     },
     {
       "id": "q-can-you-deliver-a-blue-staffy-puppy-to-74fa14",
@@ -461,7 +482,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Is a Staffy a Good House Dog?"
+      }
     },
     {
       "id": "q-do-kc-registered-staffy-have-fewer-health-b37f61",
@@ -506,7 +530,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Will My Staffy Bond With One Person or the Whole Household?"
+      }
     },
     {
       "id": "q-do-you-deliver-across-the-uk-fb0c4a",
@@ -540,7 +567,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Do You Offer Health Guarantees for Your Blue Staffy Puppies?"
+      }
     },
     {
       "id": "q-do-you-offer-support-after-i-take-my-d4ebe8",
@@ -556,7 +586,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Will the Breeder Still Support Me After I Collect the Puppy?"
+      }
     },
     {
       "id": "q-do-your-puppy-come-with-vet-records-and-30768c",
@@ -602,7 +635,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Should I See My Puppy With Its Mother Before Any Money Changes Hands?"
+      }
     },
     {
       "id": "q-how-can-i-be-sure-a-puppy-kennel-fb1d6b",
@@ -632,7 +668,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "How Can I Tell an English Staffy From an American One?"
+      }
     },
     {
       "id": "q-how-can-i-tell-whether-a-puppy-advert-20b0e5",
@@ -722,7 +761,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Do I Know a Puppy Is Still Available?"
+      }
     },
     {
       "id": "q-how-do-i-know-im-buying-from-reputable-0472b8",
@@ -846,7 +888,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Much Do Blue Staffy Puppies Cost in the UK?"
+      }
     },
     {
       "id": "q-how-much-exercise-does-a-staffy-need-dail-0d2427",
@@ -861,7 +906,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "How Much Exercise Keeps a Staffy Calm Each Day?"
+      }
     },
     {
       "id": "q-how-much-exercise-does-a-staffy-need-each-bd9421",
@@ -893,7 +941,7 @@
       "blocked": null,
       "covered_by": {
         "where": "faq",
-        "text": "How Much Are Blue Staffy Puppies in the UK?"
+        "text": "How Much Do Blue Staffy Puppies Cost in the UK?"
       }
     },
     {
@@ -948,15 +996,16 @@
       "id": "q-how-rare-are-blue-staffy-c63acb",
       "question": "How rare are blue Staffies?",
       "found_in": [
-        "serp_google_paa"
+        "serp_google_paa",
+        "bank:breed-blue-rarity"
       ],
-      "score": 3,
+      "score": 4,
       "topic": null,
       "block": null,
-      "fact_source": null,
+      "fact_source": "data/breed-standards.json",
       "must_answer": false,
-      "faq": "bottom",
-      "blocked": "unverified fact",
+      "faq": null,
+      "blocked": null,
       "covered_by": {
         "where": "faq",
         "text": "How Rare Are Blue Staffies?"
@@ -991,7 +1040,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Is It Better to Get a Male or Female Staffy?"
+      }
     },
     {
       "id": "q-is-a-staffy-a-pitbull-e881f1",
@@ -1006,7 +1058,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Are Blue Staffordshire Bull Terriers Pit Bulls or American Staffies?"
+      }
     },
     {
       "id": "q-is-it-safe-to-pay-a-deposit-to-6c495b",
@@ -1096,7 +1151,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "What Everyday Health Problems Are Blue Staffies Prone To?"
+      }
     },
     {
       "id": "q-what-are-the-downsides-of-staffy-c63e95",
@@ -1171,7 +1229,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "What Are L-2-HGA and HC-HSF4, and Why Should I Ask About Them?"
+      }
     },
     {
       "id": "q-what-has-a-puppy-had-before-it-comes-46de43",
@@ -1250,7 +1311,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Are Blue Staffordshire Bull Terriers Pit Bulls or American Staffies?"
+      }
     },
     {
       "id": "q-what-is-the-difference-between-an-amstaff-0fd204",
@@ -1512,7 +1576,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Why Do Some Blue Staffies Scratch So Much?"
+      }
     },
     {
       "id": "q-why-should-families-choose-bluestaffyuk-a-6d3355",
