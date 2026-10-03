@@ -138,36 +138,32 @@ export const register: Register = on => {
     const g = await read($, gauges)
     if (!g || e.props.hasSurvey) return next(e)
     const { Box, Text } = $.ui.resolve(e) as any
-    // Big-value readout: each value a bold chip on brass (orange when it needs attention),
-    // each label quiet beside it, so the numbers read from across the room.
+    // One quiet line: short grey labels, values in bold brass (orange when they need attention).
     const left = cacheLeftMs(g)
-    const chip = (name: string, value: string, warn = false) => (
-      <Text>
-        <Text color={STEEL_300}>{name} </Text>
-        <Text bold backgroundColor={warn ? WARN : BRASS_500} color={STEEL_900}> {value} </Text>
-        <Text>   </Text>
-      </Text>
-    )
-    const items = [
-      chip('CONTEXT', pct(g.ctxPercent), (g.ctxPercent ?? 0) >= 80),
-      chip('CACHE', left === null ? '—' : left === 0 ? 'cold' : `${Math.ceil(left / 60000)}m`, left !== null && left < 10 * 60000),
-      ...g.limits.filter(l => l.kind !== SESSION_KIND && l.kind !== WEEK_KIND).map(l => chip(label(l.kind).toUpperCase(), `${Math.round(l.percentUsed)}%`, l.percentUsed >= 80)),
-      ...(g.usd !== null ? [chip('COST', `$${g.usd.toFixed(2)}`)] : []),
-      ...(g.stop !== null ? [chip('STOP', `${g.stop}/4`)] : []),
-      ...(g.row !== null ? [chip('ROW', `${g.row}`)] : []),
-      chip('AGENTS', `${g.agentsRunning}`),
-      chip('GEMINI', `${g.geminiToday}`),
-      (() => {
-        const sl = g.limits.find(l => l.kind === SESSION_KIND)
-        if (!sl) return chip('SESSION', 'no reading')
-        const left = untilReset(sl.resetsAt, g.now)
-        return chip('SESSION', `${Math.round(sl.percentUsed)}%${left ? ` · resets ${left}` : ''}`, sl.percentUsed >= 80)
-      })(),
-      ...g.limits.filter(l => l.kind === WEEK_KIND).map(l => chip('WEEK', `${Math.round(l.percentUsed)}%`, l.percentUsed >= 80)),
+    const sl = g.limits.find(l => l.kind === SESSION_KIND)
+    const wk = g.limits.find(l => l.kind === WEEK_KIND)
+    const parts: Array<[string, string, boolean]> = [
+      ['ctx', pct(g.ctxPercent), (g.ctxPercent ?? 0) >= 80],
+      ['cache', left === null ? '—' : left === 0 ? 'cold' : `${Math.ceil(left / 60000)}m`, left !== null && left < 10 * 60000],
+      ...(g.usd !== null ? [['cost', `$${g.usd.toFixed(2)}`, false] as [string, string, boolean]] : []),
+      ...(g.stop !== null ? [['stop', `${g.stop}/4`, false] as [string, string, boolean]] : []),
+      ...(g.row !== null ? [['row', `${g.row}`, false] as [string, string, boolean]] : []),
+      ['agents', `${g.agentsRunning}`, false],
+      ['gemini', `${g.geminiToday}`, false],
+      ['session', sl ? `${Math.round(sl.percentUsed)}%${sl.resetsAt ? ` ↻${untilReset(sl.resetsAt, g.now).replace(' ', '')}` : ''}` : '—', !!sl && sl.percentUsed >= 80],
+      ...(wk ? [['week', `${Math.round(wk.percentUsed)}%`, wk.percentUsed >= 80] as [string, string, boolean]] : []),
     ]
     return (
-      <Box flexDirection="row" flexWrap="wrap" backgroundColor={STEEL_900} paddingX={1}>
-        {items}
+      <Box flexDirection="row" flexWrap="nowrap">
+        <Text wrap="truncate-end">
+          {parts.map(([name, value, warn], i) => (
+            <Text>
+              {i ? <Text color={STEEL_300} dimColor> · </Text> : null}
+              <Text color={STEEL_300} dimColor>{name} </Text>
+              <Text bold color={warn ? WARN : BRASS_500}>{value}</Text>
+            </Text>
+          ))}
+        </Text>
       </Box>
     )
   })
