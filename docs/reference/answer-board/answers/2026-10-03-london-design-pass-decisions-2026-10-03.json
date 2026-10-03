@@ -1,0 +1,73 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, on every page",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Underline the links on every page, as London's now are?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "D9 · Line up the footer's bottom row and give the form's privacy link a hover?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "D5 · A thin hairline between chapters, with the seal kept only where the page turns (FAQ, letters, contact)?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "D6 · Let the six hero photos settle in once on load (200ms each, off for anyone who asks for less motion)?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, add the smaller photo copy and apply it",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "D7 · Match the chapter panel's side margin to the other panels?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "D8 · Show the two lettered images whole (on the bone background), so their words aren't cut off?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-03T22:45:08.564Z",
+  "batchId": "2026-10-03-london-design-pass-decisions",
+  "counts": {
+    "answered": 6,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-03T22-45-08-557Z"
+}
