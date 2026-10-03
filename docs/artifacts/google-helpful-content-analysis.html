@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Google Helpful Content Review</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* BSUK brand tokens, from src/styles/tokens.css: steel 900/700/500/300/100, brass 600/500/200, bone 100/50, ink, rule */
+:root{--ground:#F4F1EA;--paper:#FAF8F3;--ink:#1B2430;--ink-2:#46566B;--ink-3:#5E6B7A;--line:#DAD6CC;--brand:#1F3A52;--brand-soft:#E4EAF1;--brand-mid:#5B7C99;--brass:#C9A227;--brass-soft:#EFE3B4;--brass-ink:#14202B;--code-bg:#ECE8DE;--ok:#2F6B4F;--warn:#9A4A2A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#14202B;--paper:#1A2734;--ink:#EDEFF2;--ink-2:#B9C4D0;--ink-3:#8FA3B8;--line:#2B3B4C;--brand:#8FA3B8;--brand-soft:#22313F;--brand-mid:#8FA3B8;--brass:#C9A227;--brass-soft:#3A3218;--brass-ink:#14202B;--code-bg:#101922;--ok:#7FC49F;--warn:#E39B7A}}
+:root[data-theme="dark"]{--ground:#14202B;--paper:#1A2734;--ink:#EDEFF2;--ink-2:#B9C4D0;--ink-3:#8FA3B8;--line:#2B3B4C;--brand:#8FA3B8;--brand-soft:#22313F;--brand-mid:#8FA3B8;--brass:#C9A227;--brass-soft:#3A3218;--brass-ink:#14202B;--code-bg:#101922;--ok:#7FC49F;--warn:#E39B7A}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ground);color:var(--ink)}
+body{font:16px/1.6 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 16px 96px}
+@media (min-width:700px){.wrap{padding:40px 28px 96px}}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--brand);margin-bottom:10px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-mid);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(26px,4.2vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.6}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.intro{color:var(--ink-2);max-width:78ch;margin:14px 0 4px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0 22px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;border:1px solid var(--brass);background:var(--brass);color:var(--brass-ink);cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--brand);border-color:var(--brand-mid);padding:5px 12px}
+button:focus-visible{outline:3px solid var(--brand-mid);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 24px}
+nav.toc a{color:var(--brand);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--brand)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--brand);border-radius:8px;padding:20px 24px 24px;margin:0 0 18px;scroll-margin-top:16px;min-width:0}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 8px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md{overflow-wrap:anywhere}
+.md p,.md li{max-width:78ch}
+.md h3{font-family:Fraunces,Georgia,serif;font-size:18px;font-weight:600;color:var(--brand);margin:22px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 16px}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--brass);padding:6px 8px}
+.md td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.md code{font:12.5px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.md strong{color:var(--ink)}
+.md a{color:var(--brand)}
+.md blockquote{border-left:3px solid var(--brass);margin:10px 0;padding:2px 0 2px 14px;color:var(--ink-2)}
+.status{font-size:12px;color:var(--ok);margin-right:8px}
+@media (max-width:640px){
+  header.mast{grid-template-columns:1fr}.meta{text-align:left}
+  section.sec{padding:16px 14px 18px}
+  .md table,.md thead,.md tbody,.md tr,.md td{display:block;width:100%}
+  .md thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .md tr{border:1px solid var(--line);border-radius:6px;margin:0 0 10px;padding:4px 10px;background:var(--ground)}
+  .md td{border-bottom:1px dashed var(--line);padding:6px 0}
+  .md td:last-child{border-bottom:0}
+  .md td[data-label]::before{content:attr(data-label);display:block;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK · read-only review</p><h1 class="title">Google&#x27;s helpful-content guidance against the BSUK system</h1></div>
+<div class="meta"><span class="pill">2026-10-03</span> <span class="pill">analysis</span><br>docs/reports/google-helpful-content-analysis-2026-10-03.md</div></header>
+<p class="intro">Read-only analysis, 2026-10-03, branch london-components. Two outputs were written: this report
+and its Artifact source, docs/artifacts/google-helpful-content-analysis.html. No other file was changed
+and nothing was committed. Each claim about Google cites a page that was fetched live on 2026-10-03.
+Each claim about our system cites a file in this repo. A fact that could not be established is written
+NOT FETCHED — &lt;barrier&gt;.</p>
+<div class="toolbar"><button class="btn" id="copy-all">Copy the whole document as Markdown</button><span class="status" id="all-status" role="status" aria-live="polite"></span><span>Each section has its own copy button; the copy is the exact markdown this page renders. The .md file is docs/reports/google-helpful-content-analysis-2026-10-03.md in the repo.</span></div>
+<nav class="toc" id="toc" aria-label="Sections"></nav>
+<main id="doc"></main>
+</div>
+<script type="text/markdown" id="doc-intro">
+Read-only analysis, 2026-10-03, branch `london-components`. Two outputs were written: this report
+and its Artifact source, `docs/artifacts/google-helpful-content-analysis.html`. No other file was changed
+and nothing was committed. Each claim about Google cites a page that was fetched live on 2026-10-03.
+Each claim about our system cites a file in this repo. A fact that could not be established is written
+`NOT FETCHED — <barrier>`.
+</script>
+<script type="text/markdown" data-title="Sources and dates">
+| Document | URL read | Date shown on the page |
+|---|---|---|
+| Creating helpful, reliable, people-first content | https://developers.google.com/search/docs/fundamentals/creating-helpful-content | **Last updated 2026-10-01 UTC** (page footer) |
+| How Google determines ranking results ("Automatically generating and ranking results") | https://www.google.com/intl/en_uk/search/howsearchworks/how-search-works/ranking-results/ | **No date on the page.** NOT FETCHED: the page has no "last updated" line. The server's HTTP `Last-Modified` header says Thu, 23 Oct 2025 18:30:00 GMT, but that is a header and not a content date. |
+| Latest Google Search documentation updates (changelog) | https://developers.google.com/search/updates | entries up to October 1, 2026 |
+| Google Search's guidance on using generative AI content | https://developers.google.com/search/docs/fundamentals/using-gen-ai-content | Last updated 2026-10-01 UTC |
+
+Method: both docs were fetched with Firecrawl (`maxAge: 0`) and curl. The URL in the brief,
+`/search/howsearchworks/how-search-works/ranking-results/`, served the fetcher Google's German
+edition (`og:locale de_all`), so this analysis reads the English (UK) edition of the same page.
+Google's page text is paraphrased here. Short quotes are attributed. Both developers.google.com
+pages carry a CC BY 4.0 licence in their footers.
+</script>
+<script type="text/markdown" data-title="What Google changed recently">
+**Established by a text diff.** I diffed the live helpful-content page (last updated 2026-10-01)
+sentence by sentence against the Wayback Machine snapshot of 2026-09-16
+(`web.archive.org/web/20260916015710/…/creating-helpful-content`, footer "Last updated 2025-12-10
+UTC"). The 2026-06-08 snapshot has the same date and the same text. The new version adds three
+things and changes nothing else:
+
+1. **Main content, after the E-E-A-T section.** A new paragraph says that, beyond E-E-A-T, the Search
+   Quality Evaluator Guidelines treat the quality of the *main content* as one of the most critical
+   factors. That means how well the main content lets the page achieve its purpose and give a
+   satisfying experience.
+2. **A new "Main content" section.** Main content is any part of the page that directly helps it
+   achieve its purpose. The section lists five kinds: primary text and media; **interactive
+   features** ("calculators, online tools, games, or search functionality"); user-generated
+   contributions; tabbed or expanded sections; and page titles and headings. It then names the four
+   attributes raters judge:
+   - **Effort.** Pages generated from feeds, or AI text produced without manual oversight or
+     curation, show little to no effort. Attribution "doesn't replace the need for original effort".
+   - **Originality.** Unique information or perspectives "that aren't already available on other
+     websites".
+   - **Talent or skill.** Clear writing, well-produced video and functional page tools.
+   - **Accuracy.** YMYL topics must be highly accurate and consistent with expert consensus.
+3. **Deceptive authorship, under "Who".** Fabricated creator profiles (AI-generated headshots,
+   made-up names, false credentials) are deception and a low-quality signal.
+
+**What the changelog says.** The 2026-10-01 entry names only the generative-AI guide, which was
+updated with information from the Search Quality Raters guidelines "to get our documentation in sync"
+with Google's developer-event presentations. The helpful-content page's own additions are not listed
+as a separate entry. The gen-AI guide now names two rater-guideline sections: scaled content abuse
+(4.6.5) and main content with little effort, originality or added value (4.6.6).
+
+**Earlier changelog entries for this doc:**
+
+| Date | Change |
+|---|---|
+| 2022-10 | The page was created, consolidating earlier posts |
+| 2023-02-08 | "Who, How, and Why" added |
+| 2023-04-19 | Page experience added |
+| 2023-09-14 | Points on removing content and changing dates added |
+| 2024-08-15 | Helpful-content FAQ redirected and the system's section archived, because the helpful content system became part of the core ranking systems in March 2024 |
+
+**Ranking-results page:** NOT FETCHED (what changed). The page shows no date, and the Search Central
+changelog does not cover google.com/search/howsearchworks. No snapshot diff was run on it.
+</script>
+<script type="text/markdown" data-title="Summary">
+- **What we cover well.** Accuracy and no fabrication: CLAUDE.md rule 9, `scripts/evidence_audit.py`
+  and the `NOT FETCHED` barrier lint. Copy that is not copied: `scripts/dup_content_audit.py` and
+  `scripts/outline_provenance_check.py`. Page experience: `scripts/perf_audit.py` floors and the render
+  harness at three widths. People-first intent: the research board's intent layers and the buyer's
+  named fear as the London angle.
+- **Top five gaps.**
+  1. **No byline and no Person markup.** No byline component exists in `src/layouts/` or
+     `src/components/`. No built page emits Person (checked in `dist/`), and blog posts use an
+     Organization author (`src/pages/[...post].astro:101`).
+  2. **No first-hand evidence on file.** `data/quality/evidence-ledger.json` holds one claim, and its
+     proof is `NOT FETCHED`. `data/image-manifest.json` records no provenance, so we cannot show which
+     photos are Lisa's own.
+  3. **No how/AI disclosure policy.** Nothing in `rules/`, `CLAUDE.md` or `IMAGE-DESIGNS.md` sets one.
+  4. **Some system rules aim at competitor numbers rather than the reader.** These are the section
+     word bands, the density "target" bands, "nothing added that a competitor domain does not carry",
+     the competitors-plus-3 section count, and the 5 × H5 / 5 × H6 floor (Section B).
+  5. **No unaffiliated reviewer.** Every reviewer is an internal agent or the breeder, and nobody
+     outside the build reads a page before it ships.
+- **London.** The page is not built yet. It is still the placeholder scaffold, `noindex`.
+  `bsuk-visual-intelligence` has never been run on it (Section F). The board is approved
+  (STOP 3 and STOP 4).
+</script>
+<script type="text/markdown" data-title="A. Coverage matrix: the helpful-content doc">
+Legend: **Yes** = held by a rule or gate. **Partly** = some of it is held, or it is held by judgment
+only. **No** = nothing in the system asks it.
+
+### Content and quality questions
+
+| Google's point (paraphrase) | Covered? | Where in our system | Gap / action |
+|---|---|---|---|
+| Original information, reporting, research or analysis | Partly | Research board `universal_gaps` / `how_we_win` (`data/research-boards/<slug>.json`, `scripts/research_board.py`); Cat C "our moat" rows (`scripts/outline_matrix.py`); real photos first (`scripts/original_slots.py`) | The original layer is mostly *data we already publish* (price, deposit, litter). We hold no breeder-owned data beyond that. See C. |
+| Substantial, complete description of the topic | Yes | Query fan-out, PAA and Reddit (page-run row 5); `scripts/faq_layout.py`; section matrix | Completeness is measured against competitors, not against the buyer's task (see D). |
+| Insight beyond the obvious | Partly | `.claude/agents/bsuk-non-commodity-content-agent.md` (the Provocateur phase) | That agent is **not a row of `docs/reference/page-run.md`**. It is only routed from `docs/reference/WORKFLOW.md:354`, so a page can ship without it. |
+| Draws on sources without copying; adds substantial value | Partly | Copying: `scripts/dup_content_audit.py`, `scripts/outline_provenance_check.py`, `rules/copy.md` `write-from-outline-never-from-sibling` | The value-added half is weaker. `.claude/skills/bsuk-competitor-parity/SKILL.md` says "Nothing is added that a competitor domain does not carry" (see B3). |
+| Main heading / title is a descriptive summary | Partly | Board H1 variants and meta sets (`data/boards/<slug>.json` `h1`, `meta_set`); title front-load in `scripts/keyword_metrics.py` / `scripts/family_rules.py` | London's H1 describes the *angle* (video before deposit), not the *page* (blue Staffy puppies for London buyers). The title covers the page. |
+| Heading / title avoids exaggeration | Yes | `scripts/evidence_audit.py` `no-unsourced-superlatives`; `.claude/skills/anti-ai-writing/SKILL.md` | — |
+| Worth bookmarking, sharing or recommending | No (judgment) | `.claude/skills/bsuk-visual-intelligence/SKILL.md` (judgment-class scores) | Nothing asks this before approval. |
+| Would be referenced by a magazine, encyclopedia or book | Partly | Citation-grade outbound sources: `docs/reference/external-link-library.md`; `rules/links.md` `external-links-six-diverse` | — |
+| Substantial value compared with other results | Yes | Why each competitor ranks and its weakness: `scripts/research_board.py` exits 1 without them | — |
+| Spelling or stylistic issues | Partly | Style: `anti-ai-writing`; Title Case: `tests/render/checks/sem.ts` `sem-title-case-headings` | **No spelling check exists**: no spellchecker in `scripts/` or `tests/`. Add a UK-English spell pass (S). |
+| Produced well, not hastily | Yes | Page-run rows 13–16: render harness, `impeccable:impeccable`, `frontend-design:frontend-design`, `scripts/page_hardening_scan.py` | — |
+| Mass-produced or outsourced across many creators or sites | Partly | Four approval stops per page (`docs/reference/page-run.md`); `rules/design.md` `own-components-per-page`; rule 16 (`tests/py/test_rule16_gate.py`) | 28 city pages drafted by agents are the scaled-content risk (B6). |
+
+### Expertise questions
+
+| Google's point | Covered? | Where | Gap / action |
+|---|---|---|---|
+| Presentation that earns trust: clear sourcing, evidence of expertise, author and site background, links to an author or About page | Partly | Sourcing: `rules/links.md`, `scripts/link_diversity.py`. About page: `/blue-staffy-uk-breeders/` (`.claude/agents/bsuk-about-builder.md`). Evidence ledger: `data/quality/evidence-ledger.json` | **No byline** in any layout or kit component, and no Person schema in any built page in `dist/`. The ledger holds one claim (`parents-dna-clear`), `NOT FETCHED`. |
+| Someone researching the site would find it well trusted | Partly | `.claude/agents/bsuk-trust-signals-agent.md` (counter, trust strip, three real reviews) | The Google review link is `NOT FETCHED` (no Place ID). There is no off-site reputation work. |
+| Written or reviewed by an expert or enthusiast | Partly | Breeder facts come from the answer board (`docs/reference/answer-board/`); approvals happen at STOP 1–4 | **No file records that Lisa Bright read a page's finished prose.** There is no vet review of the health sections. |
+| Easily verified factual errors | Yes | CLAUDE.md rule 9; `npm run check:facts`; `scripts/evidence_audit.py` `claim-unledgered`; `npm run check:barriers` | — |
+| Ask unaffiliated people you trust for an honest assessment | No | — | Every reviewer is an agent or the breeder. One unaffiliated reader per page type (S). |
+| Audit traffic drops | NOT FETCHED: no site, no Search Console until project 6 | `.claude/agents/bsuk-gsc-analytics.md` (inactive) | Project 6. |
+
+### Page experience
+
+| Google's point | Covered? | Where | Gap / action |
+|---|---|---|---|
+| A great overall page experience, not one or two metrics | Yes | `scripts/perf_audit.py` (Performance, Accessibility, Best Practices, SEO and Agentic Browsing, floors 0.995, warm median of five runs); `npm run test:render:pages` at 375/768/1280; `scripts/page_hardening_scan.py`; `.claude/agents/bsuk-accessibility-fixer.md`; `rules/design.md` | Field data waits for project 6: `--psi` and `--live` refuse on the `SITE_URL` placeholder. |
+
+### People-first questions
+
+| Google's point | Covered? | Where | Gap / action |
+|---|---|---|---|
+| An audience who would find it useful if they came to you directly | Yes | Research board `intent` (dominant, secondary, emotional and local layers); the ranked buyer fears in every agent's context | — |
+| First-hand expertise (used the product, visited the place) | Partly | Breeder answers (answer board); `data/puppies.json`; parents Maggie and Jones | The London page holds **no first-hand London experience** (past deliveries to London, London owners beyond two reviews). See C. |
+| A primary purpose or focus | Yes | `brief.goal` on every board (`data/boards/<slug>.json`) | — |
+| The reader learns enough to reach their goal | Partly | Board CTAs to `#enquiry`; FAQ blocks | London's goal is to reserve. Today the phone is `PHONE_PLACEHOLDER` and `PUBLIC_FORMSPREE_ID` is unset (project 6). The exact delivery price to London is not in data. |
+| A satisfying experience | Partly (judgment) | `bsuk-visual-intelligence` | Not run on London (F). |
+
+### Search-engine-first warning signs ("yes" is a warning)
+
+| Google's point | Our exposure | Where | Note / action |
+|---|---|---|---|
+| Made mainly to attract search visits | Some | 28 city pages exist because city keywords exist (`data/locations.json`) | Mitigated when each city page answers a real buyer fear in its own voice (London does: `brief.goal`). |
+| Lots of content on many topics hoping some performs | Low | One niche: one breeder, one breed | — |
+| Extensive automation to produce content | Some | Copy is drafted by agents (`.claude/agents/bsuk-seo-content-writer.md`) | Mitigated by human stops; **undisclosed** (see How). |
+| Mainly summarising others without adding much | Some | `.claude/skills/bsuk-competitor-parity/SKILL.md`, "Beat them, in this order", step 1–2 | B3. |
+| Writing because something is trending | None | — | — |
+| Readers need to search again | Some | London H5 "How Is the Delivery Price Worked Out for My London Postcode?" | Data holds only the band (`data/settings.json` `delivery_min_gbp` / `delivery_max_gbp`), so the heading promises more than the page can answer. |
+| Writing to a word count (Google says it has no preferred count) | **Yes** | Section `words` bands on every board; `scripts/outline_matrix.py` exits 1 when the matrix sum is outside the target; `docs/reference/seo-rules.md` Rule 27 | B1. |
+| Entering a niche without real expertise | None | Lisa Bright breeds the dogs | — |
+| Promising an answer that does not exist | Some | Same London H5. Also H4 "Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?": `data/bsuk-ontology.json` names no London park | Answer from a sourced link, or rephrase the heading. |
+| Changing dates to look fresh | None | `scripts/generate_page_dates.py` (dates from git history plus an ignore list); `rules/schema.md` `no-visible-date` | Minor: any commit touching a page file bumps `dateModified`, even a typo fix. |
+| Adding or removing content to look fresh | None | `rules/gates.md` `same-content-on-redesign` | — |
+
+### E-E-A-T, YMYL and main content (the new section)
+
+| Google's point | Covered? | Where | Gap / action |
+|---|---|---|---|
+| Trust matters most | Yes | Rule 9; `LICENCE_CLAIM_PLACEHOLDER`; `.claude/agents/bsuk-scam-trust-agent.md`; evidence ledger | — |
+| YMYL topics get more weight | Partly | A puppy purchase is money (£500 deposit, £1,500–£1,700) plus animal health; `.claude/skills/framework-eeat/SKILL.md` treats it as YMYL | No expert-consensus check on health sentences, and no vet review. |
+| Use the rater guidelines to self-assess | Partly | `framework-eeat` | Read SQRG §4.6.5 and §4.6.6 (named by the gen-AI guide) into the board's block 7b checklist (M). |
+| **New.** Main content includes interactive features | Partly | Board `brief.tool` (London: `none`, with evidence); `.claude/agents/bsuk-interactive-component.md` (five designs, **none built**) | E. |
+| **New.** Effort | Partly | Research, four stops, curated data | The text itself is AI-drafted. The effort lives in curation and data, so show it (How). |
+| **New.** Originality: not available on other sites | Partly | C | C. |
+| **New.** Talent or skill: clear writing, functional tools | Yes | `anti-ai-writing`; impeccable and frontend-design passes | — |
+| **New.** Accuracy, consistent with expert consensus for YMYL | Partly | `claim-unledgered`; BVA / Kennel Club links | No consensus check per health claim. |
+
+### Who, How, Why
+
+| Google's point | Covered? | Where | Gap / action |
+|---|---|---|---|
+| Who wrote it is self-evident | Partly | `rules/copy.md` `first-person-brand-voice` (Lisa Bright, "we / our") | The voice says who, but no byline does. |
+| Byline where readers expect one | **No** | No byline component; London's board plans Person markup (`brief.strategy.why`), but no template emits it | Add a byline plus Person (M). |
+| Byline leads to author background | **No** | The About page exists and is linked from no byline | Same fix. |
+| **New.** Avoid deceptive authorship | Yes, with a caveat | Rule 9; no invented credentials; no AI headshots | The copy is AI-drafted in Lisa's first person. Record her review of each page so the byline stays honest. |
+| How it was made, with evidence such as photos | Partly | `scripts/original_slots.py` (original photos before infographics and generated images) | `data/image-manifest.json` holds no provenance, per that script's docstring, so "our own photo" cannot be proven. |
+| AI or automation use is disclosed where readers would expect it | **No** | No disclosure policy in `rules/`, `CLAUDE.md` or `IMAGE-DESIGNS.md` | A one-line "how we write these pages" note on the About page, plus a rule (S). |
+| Background on how AI was used, and why | No | — | Same note. |
+| Why: created mainly to help people | Yes | `brief.goal`; the research board's `intent.emotional` | — |
+| Automation used to manipulate rankings is scaled content abuse | Some risk | 28 city pages; the gen-AI guide says many AI pages "without adding value" may break that policy | B6. |
+</script>
+<script type="text/markdown" data-title="A2. Coverage matrix: the ranking-results doc">
+| Google's factor (paraphrase) | Covered? | Where | Gap / action |
+|---|---|---|---|
+| **Meaning**: language models read the intent behind the query | Yes | Research board `intent`; `scripts/serp_reading.py` (block 1b); `bsuk-llm-keyword-intel` | — |
+| Meaning: spelling and synonyms | Yes | `scripts/keyword_variants.py` (four extra types); `scripts/term_gap.py` phrases | — |
+| Context cues: query words, language, local intent, current events | Partly | Query words: `serp_reading.py` features. Language: `<html lang="en-GB">` in `dist/`. Local: `scripts/neighbourhoods.py` (block 3d), LocalBusiness `areaServed` | For local intent, Google gives the example of nearby businesses. A Carlisle breeder cannot be local to London, so the London page has to win on relevance and quality, not proximity. |
+| **Relevance**: query keywords in headings and body | Yes | `scripts/keyword_metrics.py`; `family_rules.py` title-front-load and first-100-words | — |
+| Relevance: aggregated, anonymised interaction data | NOT FETCHED: no Search Console until project 6 | — | — |
+| Relevance beyond the keyword: pictures, videos, lists | Partly | An image under every heading (`rules/images.md` `image-every-body-heading`); tables (rule 13); FAQ lists | **The London board carries no video.** None of the three ids in `data/settings.json` `youtube_embeds` is on it, though the angle is "see the puppy on video". |
+| **Quality**: expertise, authoritativeness and trustworthiness signals | Partly | As in A | Byline and evidence gaps. |
+| Quality: prominent sites link to or cite the content | **No** | The research board records competitors' authority (`authority` key) only | No link-earning work in the system (project 6 at the earliest). |
+| Quality: rater feedback refines the systems | n/a | — | — |
+| **Usability**: page experience, mobile-friendly and fast | Yes | `perf_audit.py`, render harness, hardening scan | PSI field data in project 6. |
+| **Context and settings**: location, history, settings | n/a (Google's side) | — | — |
+| Freshness weighs more for some queries | Partly | Puppy `status` in `data/puppies.json`; `data/settings.json` `age_weeks_note` warns an age goes stale | No gate flags a stale litter, such as an age or "Available" status older than N weeks (S). |
+</script>
+<script type="text/markdown" data-title="B. What our system does that the doc argues against">
+Each item below gives the verdict first and then the options, with one marked **(Recommended)**,
+its reason from repo data, and its trade-off (CLAUDE.md rule 4).
+
+### B1. Word-count bands per section: a real conflict, mild in practice
+
+**Google:** one warning sign is writing to a particular word count because Google is believed to
+prefer one. Google adds "(No, we don't.)".
+
+**Ours:**
+
+- `docs/reference/seo-rules.md` Rule 27 sets the page target as the competitor median, and on
+  London it is the user's 2,000–3,000 band (`data/outlines/blue-staffy-puppies-london.json`
+  `word_target`, where the competitor median is `NOT FETCHED`).
+- Every board section carries a `{min, max}` band. London's deposit section is 356–435.
+- `scripts/outline_matrix.py` exits 1 when the matrix sum falls outside the target.
+
+The motive is planning, not a belief about Google. Rule 27 even says "never pick a number first
+and write to fill it". But a writer handed "356–435 words" will fill to 356.
+
+**Mitigation already in place:** `scripts/final_page_audit.py` sets `wordcount_in_band: NA` for
+the location profile, so the built page is not held to a count.
+
+**Options:**
+
+- **(Recommended) Keep the page-level range as a scope budget, and turn each section's band into a
+  ceiling with no floor.** A section ends when its question is answered.
+  - Change: `scripts/outline_matrix.py` and the board's `words` to `{max}`.
+  - Why: the system already did this for keyword frequency. `docs/reference/seo-rules.md` Rule 18
+    retired its floor on 2026-09-09 because "the floor manufactured the repetition".
+  - Trade-off: section lengths become less predictable, and the 2,000-word FAQ rule in
+    `scripts/faq_layout.py` (`MIN_WORDS`) needs a planned total, which the ceilings still give.
+- Drop word numbers entirely. This is cleaner, but loses the scope check the breeder approved at
+  STOP 2.
+- Keep as is. This is cheapest, but keeps the warning sign.
+
+### B2. Block 4c "Target · median band / leader band": partly a conflict
+
+**Google:** a page with a keyword hundreds of times is not what people want. Systems look for
+relevant content beyond the keyword.
+
+**Ours:** `scripts/term_density.py` prints per-term "Target" bands scaled from competitor bodies.
+On London (`density_pool: "all"`) three of the five bodies counted are marketplace listings. The
+breeder picked the median band (answer board, 2026-10-02 q01).
+
+No gate checks the built page against the band (no consumer of `target_median` outside the script
+and its test). `.claude/skills/bsuk-competitor-parity/SKILL.md` uses the band's top as a stuffing
+ceiling, which agrees with Google. The word "Target" and the lower bound are the conflict: they ask
+a writer to reach a count taken from advert-card text.
+
+**Options:**
+
+- **(Recommended) Relabel block 4c as "ceiling" and drop the lower bound.**
+  - Change: `scripts/term_density.py`, `table()`, and the parity skill's "pick the band".
+  - Why: the band's only enforced use is already "never exceed the upper bound". On London 45 of
+    the 61 rows read "no competitor uses it", so a floor has nothing to stand on.
+  - Trade-off: the "are we as thorough as page one?" nudge disappears. Block 5c "by type" still
+    shows coverage gaps.
+- Keep the bands, but compute them from prose pages only. London has 2 prose bodies, which is
+  below the script's own `THIN = 3`.
+
+### B3. Block 5c and the parity skill, "nothing is added that a competitor domain does not carry": a real conflict in wording, smaller in effect
+
+**Google:** sources should add substantial value and originality, not just be summarised or
+rewritten. The new Originality attribute asks for information that is not already on other
+websites.
+
+**Ours:** `.claude/skills/bsuk-competitor-parity/SKILL.md` opens with "Nothing is added that a
+competitor domain does not carry", and its order starts with "match each keyword type" and "close
+gaps carried by 2 or more domains". Its step 3, "beat them on evidence they lack", is the
+originality half. `scripts/term_gap.py` only ever proposes what competitors say.
+
+In practice London's nine Cat C rows cite `universal_gaps`, `content_gap` or `how_we_win`
+(board `why_source`), which are things *no* ranking page covers, so the outline is more original
+than the skill's wording.
+
+**Options:**
+
+- **(Recommended) Reorder the skill: evidence first, parity second.** Narrow the opening sentence
+  to "No *term* is added…" and add "originality first: every Cat C row names a fact a competitor
+  cannot state".
+  - Change: `.claude/skills/bsuk-competitor-parity/SKILL.md`.
+  - Why: it matches what London's approved outline actually did (Cat C rows from
+    `universal_gaps`, `content_gap` and `how_we_win`), at no code cost.
+  - Trade-off: the skill becomes less mechanical.
+- Add an originality count to block 5c: facts on our page that no competitor carries. This is
+  better evidence (M), but needs a facts extractor.
+
+### B4. Section count = competitors' highest H2 count + 3: structure set by competitors, mostly not a conflict
+
+**Ours:** `docs/reference/seo-rules.md` Rule 26; `.claude/skills/bsuk-location-page-builder/SKILL.md`.
+
+**Google:** the doc does not mention section counts. Its people-first questions ask whether the
+reader leaves having learned enough.
+
+London's three extra sections (temperament, breed, everyday health) answer real PAA and FAQ
+questions (`data/faq.json` `listing-pitbull`, `listing-scratching`, `listing-aggressive`), so they
+are not padding here.
+
+**Options:**
+
+- **(Recommended) Keep it, and add one line to the rule: an extra section must cite a buyer question
+  (PAA, Reddit or `data/faq.json` id), or it is dropped.** London already meets this.
+  - Change: `docs/reference/seo-rules.md` Rule 26.
+  - Why: it keeps the research-driven count, and London's extras already pass the test.
+  - Trade-off: none material.
+- Drop the "+3". This would lose the three topics no competitor covers.
+
+### B5. The 5 × H5 / 5 × H6 heading floor for project-5 location pages: a real conflict
+
+**Google:** titles and headings are main content when they summarise the topic and help the reader
+decide.
+
+**Ours:** `scripts/final_page_audit.py` makes `min_h5_5` and `min_h6_5` FAIL on a project 5
+location page (user ruling, 2026-09-30). The same file exempts blog posts, because meeting the
+floor there means headings "written for a checker" (`POST_EXEMPT_REASON`).
+
+London's outline has 6 H5 and 6 H6, all single-child chains, for example H4 → H5 → H6 "Why Does
+Seeing Maggie on Camera Matter?". The questions are real, but nesting each one a level deeper than
+its parent exists to reach the floor.
+
+**Options:**
+
+- **(Recommended) Make the floor WARN on location pages, as it already is on blog posts and the
+  homepage.** Let the depth follow the content.
+  - Change: `scripts/final_page_audit.py` `PROFILES["location"]` and
+    `family_rules.h5h6_floor_severity`.
+  - Why: the repo already gave this reasoning for posts, and a single-child H5 → H6 chain does not
+    help a reader scan.
+  - Trade-off: it reverses a 2026-09-30 user ruling, so it needs the breeder's yes on the answer
+    board. London's approved outline would then not need re-approval: WARN does not block it.
+- Keep the FAIL. This keeps the ruling and the heading-for-a-checker risk.
+
+### B6. Twenty-eight city pages drafted by agents: the scaled-content risk, the largest strategic one
+
+**Google:** the warning signs include extensive automation to produce content, and content
+"mass-produced … or spread across a large network". The gen-AI guide says using generative AI "to
+generate many pages without adding value for users" may violate the scaled content abuse policy.
+
+**Ours:** the mitigations are real.
+
+- A research board, outline and board, each approved by the breeder, per city (`rules/gates.md`).
+- Own components per page (`rules/design.md`).
+- Sentence- and passage-level duplication gates (`scripts/outline_provenance_check.py`).
+- No other city named (`scripts/term_gap.py`).
+
+The residual risk is that every city page's *facts* are identical (one breeder, one litter, one
+delivery band), so city value has to come from city-specific first-hand material that `data/` does
+not hold.
+
+**Options:**
+
+- **(Recommended) Build cities in order of real demand, and require each city page to carry at least
+  one city-specific first-hand fact** (a past delivery, a buyer there, a route note from Lisa).
+  Without one, the city stays a short honest stub, or folds into a regional page.
+  - Change: `docs/reference/page-run.md` row 8, plus a check in `scripts/family_rules.py`.
+  - Why: London's own research shows every ranking London page pads with far-away adverts
+    (`universal_gaps`, "No honest location"). Honesty about distance is our wedge, and a city page
+    with no city fact repeats their weakness.
+  - Trade-off: fewer city pages in project 5. Lisa has to supply one fact per city.
+- Build all 28 on the current controls. This is faster, and keeps the risk Google names.
+
+### Not conflicts
+
+- **No visible date** (`rules/schema.md`). Google does not ask for a visible date, only that dates
+  are honest.
+- **Keyword frequency caps.** `docs/reference/seo-rules.md` Rule 18 sets ceilings with no floor.
+  The primary cap of 30–35 is generous, but it is a cap.
+- **Title Case and question headings.** These are style, not manipulation.
+</script>
+<script type="text/markdown" data-title="C. Originality">
+**How the system enforces it today:**
+
+| Mechanism | File | What it guarantees |
+|---|---|---|
+| Write from the outline, never from a sibling | `rules/copy.md`; `scripts/outline_provenance_check.py` | No 12-word run or 6-word sentence is shared with another built page |
+| Duplicate gates | `scripts/dup_content_audit.py` (body and `--headers`) | No shared paragraphs or headings |
+| Cat C "our moat" rows | `scripts/outline_matrix.py`; research board `universal_gaps` | Each moat section cites a gap no ranking page fills |
+| The breeder's own facts | `data/settings.json` (deposit refund clause, guarantee cover, age), `data/puppies.json` (six named puppies), parents Maggie and Jones | Facts only this breeder can state |
+| Original photos first | `scripts/original_slots.py` (answer board q06, 2026-10-02) | Real site photos before infographics and generated images |
+| Non-commodity Triad | `.claude/agents/bsuk-non-commodity-content-agent.md` | Seed-story questions for Lisa, and counter-narratives |
+| Anti-AI phrasing | `.claude/skills/anti-ai-writing/SKILL.md` | Removes generic AI phrasing |
+
+**What is missing.** These are ranked by how much they would move Google's "Originality" and
+"Effort" attributes.
+
+1. **First-hand evidence files.** `data/quality/evidence-ledger.json` has one claim
+   (`parents-dna-clear`), and its proof is `NOT FETCHED`. The DNA certificates, a vet-check sheet
+   and a sample contract would let pages *show* the work. Google's "How" section uses photographs as
+   evidence of work for exactly this reason.
+2. **Photo provenance.** `data/image-manifest.json` records sizes only (the `scripts/original_slots.py`
+   docstring says so), so "this is our litter" cannot be proven per image. Add a `source` field:
+   `breeder` / `stock` / `generated` / `infographic`.
+3. **The breeder's own data over time.** Past litters (count, dates, colours), how many puppies went
+   to which regions, and how long a delivery to London took. None of it is in `data/`. It is the
+   most original thing a breeder can publish, and no marketplace can copy it.
+4. **The non-commodity pass is not in the run.** It sits in `WORKFLOW.md`, not in
+   `docs/reference/page-run.md`. Seed-story questions (its Phase 1) never reach the answer board by
+   default.
+5. **Video of the real dogs.** The site holds three YouTube ids (`data/settings.json`
+   `youtube_embeds`). What they show is NOT CHECKED here. If one shows Lisa's own dogs, it is
+   first-hand evidence, and London's angle is literally "see the puppy on video".
+</script>
+<script type="text/markdown" data-title="D. Purpose of the London page">
+**Purpose, from the approved board** (`data/boards/blue-staffy-puppies-london.json` `brief.goal`): a
+question-led breeder page for London buyers. It answers their named fear head-on. A live video call
+with the puppy and Maggie comes before any deposit, and the deposit then books the viewing, reserves
+the puppy and comes off the price.
+
+**Dominant intent** (research board `intent`): transactional, with page one made of marketplace
+listings. Every London ranking page is a feed of other people's adverts.
+
+**Does the order get a London buyer to the goal quickly?** Mostly. The quick answers are early and
+the proof is late. The word positions below are estimates from the board's section midpoints.
+
+| # | Section (board id: heading) | Starts ≈ word | Note for a London buyer |
+|---|---|---|---|
+| 1 | `top`: H1 "Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?" | 0 | Strong on the fear. It does not say "puppies available now" or "Carlisle". The title does. |
+| 2–5 | `counter`, `trust`, `contents`, `key-takeaways` | 110–260 | The counter (`city-price-scale`) puts prices in view early, which is good. Four frame bands before any body copy is a lot of chrome on a phone. |
+| 6 | `review-top`: "A Letter From Mark J in London" | 260 | A real London review (`data/reviews.json`). Good placement. |
+| 7 | `faq-top`: six quick answers (price, delivery, deposit, availability, reserve, breeders) | 315 | **This is where the fast answers are.** They are good, but they duplicate sections 8–10, which answer the same questions again in depth. |
+| 8 | `deposit-viewing`: "Do I Have to Pay a Deposit Before I See My Blue Staffy Puppy?" | 505 | The core of the angle. At about 395 words with an H4 → H5 → H6 chain, it is the longest section, which is right for the fear, though the chain is deep on a phone (B5). |
+| 9 | `delivery`: "How Will My Blue Staffy Puppy Get From Carlisle to London?" | 900 | Honest band (£200–£350, priced by distance) and collection. **Struggle:** no exact London price exists in data, and the H5 about pricing by postcode cannot be answered. |
+| 10 | `litter-prices`: "Which Blue Staffy Puppies Are Available Now, and What Do They Cost?" | 1,090 | **The puppies themselves come about 1,100 words down.** A buyer from a listings SERP expects cards first. |
+| 11–12 | `review-middle`, `faq-middle` | 1,380 | — |
+| 13–14 | `health-tests`, `paperwork` | 1,650 | Strong trust content. Test *names* only, with no result (ledger `NOT FETCHED`). That is honest, but a buyer will ask "where are the certificates?". |
+| 15 | `london-life` | 2,020 | Genuinely London-specific. The parks H4 needs a sourced answer. |
+| 16 | `newsletter` | 2,180 | Interrupts before three more body sections. |
+| 17–19 | `temperament`, `breed`, `everyday-health` | 2,210 | Breed information. Useful, but it is the least London-specific part of the page. |
+| 20 | `review-bottom`: "The Victoria Family in Manchester" | 2,650 | A Manchester review on the London page: honest, but off-city. |
+| 21 | `faq-bottom` | 2,700 | — |
+| 22 | `enquiry`: "Send Your London Enquiry to Lisa" | 2,920 | The only conversion route. CTAs every 500–700 words link here (`brief.cta`). |
+
+**Where a buyer might struggle:**
+
+1. **The puppies are late.** Recommended (not on the approved board): a compact puppy strip (names,
+   sex, colour, price, link to each puppy page) under the takeaways, reusing `city-roster` data. It
+   is a board change, so it goes to the breeder.
+2. **There is no way to reach Lisa today.** `PHONE_PLACEHOLDER` and the unset Formspree id are
+   correct pre-launch, but a video call needs a contact path. This is project 6's launch blocker,
+   not a page fix.
+3. **The delivery price is a band, not a London figure.** The board correctly refuses to invent
+   one. Answer the H5 honestly ("priced by distance; ask us for London's figure") or drop the H5.
+4. **The FAQ-top answers are repeated by sections 8–10.** Keep the FAQ answers to one line each,
+   pointing down to the section.
+5. **Proof is mostly promised, not shown.** The ledger has no certificate. Getting it on file before
+   the build would be the single biggest trust gain for this page.
+</script>
+<script type="text/markdown" data-title="E. Interactive features">
+Google's new "Main content" section counts interactive features (calculators, tools) as main
+content when they help the page achieve its purpose. The London board's tool decision is `none`
+(`brief.tool`). Its evidence is that the London delivery calculator would have "only
+delivery_min_gbp and delivery_max_gbp to work from … so it would invent the middle". **That is
+correct.**
+
+**London, by section:**
+
+| Board section | Candidate tool | Data that backs it (must exist) | Verdict |
+|---|---|---|---|
+| `deposit-viewing`: "What Should I Ask to See While We Are on the Call?" (H5) | **Video-call checklist**: tick-boxes the buyer uses *during* the call (mother present, puppy's own markings, paperwork shown on camera, refund clause read aloud) | The outline's own H5 content; `data/faq.json` `buying-what-to-ask`, `whyus-paperwork`, `listing-availability`; `data/settings.json` `deposit_refund_clause` | **Genuine (Recommended).** It serves the page's one purpose, it is honest (no invented figure), and it works without JavaScript (`<details>` and checkboxes). It is design 3 of `.claude/agents/bsuk-interactive-component.md` adapted. Trade-off: the board is approved with `tool: none`, so adding it reopens STOP 3 for one component, which must be this page's own (`rules/design.md` `own-components-per-page`). |
+| `litter-prices`: "How Much Is Each Blue Staffy Puppy in This Litter?" | Cost to your door: pick a puppy, choose collection or delivery, see the price plus a £200–£350 range | `data/puppies.json` `price_gbp`; `data/settings.json` `delivery_min_gbp`, `delivery_max_gbp`, `deposit_gbp` | **Borderline.** With six puppies and two prices, a static column ("delivered: £1,700–£1,850 / £1,900–£2,050") says the same thing without JavaScript. Prefer a table column. |
+| `delivery`: "What Does Delivery to London Cost…" | Delivery-band estimator by postcode | Only the band: no distance table, no per-mile rate | **Gimmick today.** It would invent the middle (the board's own evidence). It becomes real only if a distance or price table is recorded. |
+| `litter-prices` | Availability filter (sex, colour) | `data/puppies.json` (6 rows) | **Gimmick.** Six rows need no filter. |
+| `london-life` / `temperament` | Coat or temperament fit quiz | Nothing: temperament per puppy is not recorded | **Gimmick, and a claim risk** (a quiz result is a claim). |
+| any | First-year cost calculator | `data/financial-entities.json` is **not ported**, so running costs are `NOT FETCHED` | **Not buildable honestly** yet. |
+
+**Other page types:**
+
+- **Buy page** (`/buy-blue-staffy-puppies-uk/`): a reservation-steps checklist (deposit, video
+  call, contract, collection or delivery) from `data/settings.json` and `data/faq.json`
+  `sale-reserve`. Genuine. Cost to your door is a table column, not a tool.
+- **Puppy page** (`/available-puppies/<slug>/`): "Ask about Roman" prefills the enquiry form with
+  the puppy's name (`data/puppies.json` `name`). Genuine once the form is live in project 6. A
+  gallery already exists.
+- **Care blog:** printable checklists only where the post's content holds the items, such as a
+  first-week checklist. Quizzes and score widgets are gimmicks.
+- **Comparison:** a side-by-side table (rule 13 stacked table) is the tool. A toggle or slider adds
+  nothing. A male-against-female comparison has no weight or size data (`data/puppies.json`).
+- **Cost calculator anywhere:** blocked until a sourced running-cost file exists.
+</script>
+<script type="text/markdown" data-title="F. Visual intelligence on London">
+**It has not been run on London.**
+
+- `.claude/skills/bsuk-visual-intelligence/SKILL.md` exists. It was ported in `0a3c859` (Task 10c,
+  2026-09-29), which closed Known Issue 44 in `docs/reference/session-log.md`.
+- Its only recorded run is a read-only re-test of `/blue-staffy-health-uk/` (Known Issue 98,
+  `docs/reference/session-log.md`). That report was kept in the session scratchpad, not committed.
+- `data/page-runs/blue-staffy-puppies-london.json` holds only `session_open` (2026-09-30). There is
+  no `impeccable`, `frontend_design` or `verification_before_completion` key.
+- There is no `docs/superpowers/sessions/*-visual-intel-blue-staffy-puppies-london.md`, and no
+  report under `docs/reports/` mentions London and visual intelligence together.
+- The London route in `dist/` is the component **scaffold** with placeholder copy, `noindex`
+  (`src/pages/uk-locations/blue-staffy-puppies-london.astro`, header comment), so there is nothing
+  real to audit yet.
+
+Page-run row 16 runs it after the build. That is correct, and it cannot honestly be run earlier.
+</script>
+<script type="text/markdown" data-title="G. What we can learn">
+Ranked by impact against effort. Effort: S = under a day, M = one to three days, L = more. One item
+per group is marked **(Recommended)**.
+
+### Group 1: before London is built
+
+| # | Change | Google source line it rests on | File it would change | Effort | London |
+|---|---|---|---|---|---|
+| 1 | **(Recommended) Byline plus Person schema.** "Written by Lisa Bright, Carlisle", linking to the About page, with a recorded "reviewed by Lisa" date per page | Who: "Do pages carry a byline, where one might be expected?" (Google, Creating helpful content) | New kit byline component; `src/layouts/PageShell.astro`; `data/page-runs/<slug>.json` (a `breeder_review` key) | M | Now: the board already plans Person |
+| 2 | Get the DNA certificates and a sample contract on file as ledger proof | How: evidence of the work, such as photographs; E-E-A-T: trust is most important | `data/quality/evidence-ledger.json` | S (breeder) | Now |
+| 3 | Video-call checklist on `deposit-viewing` | Main content: interactive features, calculators and online tools | New London component; board `brief.tool` | S | Now, if STOP 3 reopens for it |
+| 4 | Move a compact puppy strip above `faq-top` | People-first: will the reader learn enough to reach their goal | `data/boards/blue-staffy-puppies-london.json` (board change) | S | Now, with the breeder's yes |
+| 5 | Answer or drop the unanswerable headings (postcode pricing H5, London parks H4) | Avoid promising an answer that does not exist | `data/outlines/blue-staffy-puppies-london.json` | S | Now (outline edit, re-approve) |
+
+### Group 2: system, for every page after London
+
+| # | Change | Google source line it rests on | File it would change | Effort | When |
+|---|---|---|---|---|---|
+| 6 | **(Recommended) Section word bands become ceilings; block 4c becomes a ceiling only** | Avoid writing to a word count ("No, we don't."); relevance beyond repeating the keyword | `scripts/outline_matrix.py`, `scripts/term_density.py`, `.claude/skills/bsuk-competitor-parity/SKILL.md` | S | Later (London's bands are approved) |
+| 7 | Put the non-commodity pass, with seed-story questions to Lisa, into page-run row 8, and require one city-specific first-hand fact per city | Originality: not already available on other websites; first-hand expertise | `docs/reference/page-run.md`; `scripts/family_rules.py` | M | Next city |
+| 8 | Image provenance field (`breeder` / `stock` / `generated` / `infographic`) | How: evidence such as photographs; Effort | `data/image-manifest.json`; `scripts/original_slots.py` | M | Later |
+| 9 | AI and automation disclosure: one honest line on the About page, and a rule | How: disclose AI use where readers would reasonably expect it | `rules/copy.md`; About page | S | Before launch (project 6) |
+| 10 | Heading floor 5 × H5 / 5 × H6 to WARN on location pages | Main content: headings that summarise and help users | `scripts/final_page_audit.py` | S | Needs the breeder's ruling |
+
+**Side findings** (outside the ranked list):
+
+- `CLAUDE.md`'s page-type table names a `bsuk-trust-signals` skill. No
+  `.claude/skills/bsuk-trust-signals/` directory exists; only the agent
+  `.claude/agents/bsuk-trust-signals-agent.md` does.
+- There is no spelling check anywhere in `scripts/` or `tests/`.
+- A stale-litter check would catch an `age_weeks` or "Available" status that has gone out of date
+  (`data/settings.json` `age_weeks_note`).
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var DOC_TITLE="Google's helpful-content guidance against the BSUK system";
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function flash(el,msg){el.textContent=msg;setTimeout(function(){el.textContent='';},1800);}
+  function copy(text,el){
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){flash(el,'Copied');},function(){fallback(text,el);});}else{fallback(text,el);}
+  }
+  function fallback(text,el){var t=document.createElement('textarea');t.value=text;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');flash(el,'Copied');}catch(e){flash(el,'Copy failed');}document.body.removeChild(t);}
+  function labelTables(root){
+    root.querySelectorAll('table').forEach(function(tb){
+      var heads=[].map.call(tb.querySelectorAll('thead th'),function(th){return th.textContent.trim();});
+      tb.querySelectorAll('tbody tr').forEach(function(tr){[].forEach.call(tr.children,function(td,i){if(heads[i])td.setAttribute('data-label',heads[i]);});});
+    });
+  }
+  var intro=document.getElementById('doc-intro').textContent.replace(/^\n+|\s+$/g,'');
+  document.querySelectorAll('script[type="text/markdown"][data-title]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    var full='## '+title+'\n\n'+md;all.push(full);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;sec.setAttribute('aria-labelledby',id+'-h');
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.id=id+'-h';h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.className='status';st.setAttribute('aria-live','polite');
+    var btn=document.createElement('button');btn.className='btn ghost';btn.type='button';btn.textContent='Copy section';btn.setAttribute('aria-label','Copy section: '+title);
+    btn.addEventListener('click',function(){copy(full,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';
+    if(window.marked){body.innerHTML=marked.parse(md);}else{var pre=document.createElement('pre');pre.textContent=md;pre.style.whiteSpace='pre-wrap';body.appendChild(pre);}
+    labelTables(body);sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  var whole='# '+DOC_TITLE+'\n\n'+intro+'\n\n'+all.join('\n\n')+'\n';
+  document.getElementById('copy-all').addEventListener('click',function(){copy(whole,document.getElementById('all-status'));});
+})();
+</script>
+</body>
+</html>
