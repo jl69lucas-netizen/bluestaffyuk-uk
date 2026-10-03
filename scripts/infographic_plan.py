@@ -538,7 +538,7 @@ def _items_html(items: list[dict]) -> str:
             f'<li class="it it-{esc(it.get("icon", "check"))}">'
             f'<span class="k">{i:02d}</span>'
             f'<span class="ic">{icon(it.get("icon", "check"))}</span>'
-            + (f'<span class="v">{t(it["value"])}</span>' if it.get("value") else "")
+            + (f'<span class="v fig">{t(it["value"])}</span>' if it.get("value") else "")
             + f'<span class="l">{t(it["label"])}</span>'
             + (f'<span class="n">{t(it["note"])}</span>' if it.get("note") else "")
             + "</li>")
@@ -569,15 +569,15 @@ def _body(ig: str, f: dict) -> str:
         return ('<div class="route">'
                 f'<div class="stop stop-a"><span class="dot"></span>'
                 f'<span class="ic">{icon("pin")}</span>'
-                f'<span class="city">{t(f.get("origin", ""))}</span>'
+                f'<span class="city fig">{t(f.get("origin", ""))}</span>'
                 f'<span class="n">{t(f.get("alternative", ""))}</span></div>'
                 '<div class="leg"><span class="line" aria-hidden="true"></span>'
                 f'<span class="ic">{icon("truck")}</span>'
-                f'<span class="v">{t(f.get("band", ""))}</span>'
+                f'<span class="v fig">{t(f.get("band", ""))}</span>'
                 f'<span class="n">{t(f.get("band_note", ""))}</span></div>'
                 f'<div class="stop stop-b"><span class="dot"></span>'
                 f'<span class="ic">{icon("pin")}</span>'
-                f'<span class="city">{t(f.get("destination", ""))}</span>'
+                f'<span class="city fig">{t(f.get("destination", ""))}</span>'
                 '<span class="n">Home delivery</span></div>'
                 '</div>')
     return ""
@@ -603,13 +603,15 @@ DOG = (
     'M40 37Q45 33 51 36M69 36Q75 33 80 37"/>'
     '<circle class="dg-ink" cx="46" cy="44" r="4.3"/><circle class="dg-ink" cx="74" cy="44" r="4.3"/>'
     '<circle class="dg-hi" cx="47.5" cy="42.5" r="1.4"/><circle class="dg-hi" cx="75.5" cy="42.5" r="1.4"/>'
-    # short, broad muzzle; wide nose; the big Staffy grin and tongue
+    # short, broad muzzle; a big nose pad with a shine; a closed, curved smile, and a small
+    # rounded tongue hanging below the lower lip, off to one side (never two front "teeth")
     '<path class="dg-pale" d="M39 66C39 56 48 51 60 51C72 51 81 56 81 66C81 78 72 84 60 84'
     'C48 84 39 78 39 66Z"/>'
-    '<path class="dg-tongue" d="M51 73C50 84 55 91 60 91C65 91 70 84 69 73Q60 78 51 73Z"/>'
-    '<path class="dg-ln" d="M60 79V86"/>'
-    '<path class="dg-ink" d="M50 56Q60 50 70 56Q67 63 60 63Q53 63 50 56Z"/>'
-    '<path class="dg-ln" d="M60 63V69M41 66Q51 79 60 69Q69 79 79 66"/>'
+    '<path class="dg-tongue" d="M62 75C61 83 64 88 68 88C72 88 74 83 73 73Q68 76 62 75Z"/>'
+    '<path class="dg-ln" d="M67.5 78V84"/>'
+    '<path class="dg-ink" d="M48 55Q60 47 72 55Q70 64 60 65Q50 64 48 55Z"/>'
+    '<ellipse class="dg-hi" cx="55.5" cy="54.5" rx="3.6" ry="1.8"/>'
+    '<path class="dg-ln" d="M60 65V69M43 68Q51 77 60 76Q69 76 77 66"/>'
     '</svg>')
 
 #: The chalk style's wobble: a turbulence displacement applied to the DRAWN lines only (box
@@ -638,10 +640,11 @@ body{background:var(--color-surface);color:var(--color-text);font-family:var(--f
 .cap-t{text-wrap:balance;min-width:0}
 .dog{display:block;width:100%;height:100%;overflow:visible}
 .dg-fur{fill:var(--color-brand-tint)}.dg-ear{fill:var(--color-brand-mid)}
-.dg-pale{fill:var(--color-bone-50)}.dg-tongue{fill:var(--color-cta-soft)}
+.dg-pale{fill:var(--color-bone-50)}.dg-tongue{fill:color-mix(in srgb,var(--color-warn) 42%,var(--color-bone-50))}
 .dg-ink{fill:var(--color-ink)}.dg-hi{fill:var(--color-white)}
 .dog path,.dog circle{stroke:var(--color-ink);stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round}
 .dog .dg-ln{fill:none}.dog .dg-hi{stroke:none}
+.dog ellipse{stroke:none}
 .defs{position:absolute;width:0;height:0;overflow:hidden}
 .items{list-style:none;margin:0;padding:0}
 .it,.stop,.leg{display:flex;flex-direction:column;min-width:0;position:relative}
@@ -707,15 +710,14 @@ body{background:var(--color-bone-100)}
  align-content:start;padding:var(--space-3) var(--space-2) 0}
 .it,.stop,.leg,.col,.verdict{background:var(--color-white);border:3px solid var(--color-ink);border-radius:var(--radius-lg);
  box-shadow:5px 5px 0 var(--color-ink)}
-.it{padding:var(--space-6) var(--space-5) var(--space-5);gap:var(--space-2)}
+.it{padding:78px var(--space-5) var(--space-5);gap:var(--space-2)}
 .it:nth-child(odd){transform:rotate(-1.2deg)}.it:nth-child(even){transform:rotate(1deg)}
 .k{position:absolute;top:-18px;left:-10px;width:42px;height:42px;border-radius:50%;background:var(--color-cta);
  border:3px solid var(--color-ink);display:grid;place-items:center;font-weight:800;font-size:var(--text-sm);
  color:var(--color-ink);transform:rotate(-8deg)}
 .ic{width:50px;height:50px;padding:11px;border-radius:16px;background:var(--color-brand-soft);
  border:2.5px solid var(--color-ink);color:var(--color-steel-700);transform:rotate(-5deg)}
-.it .ic{position:absolute;top:var(--space-4);right:var(--space-4)}
-.it .l{padding-right:56px}
+.it .ic{position:absolute;top:14px;right:14px}
 .v{font-size:var(--text-3xl);color:var(--color-steel-700)}
 .ig-2 .v{font-size:var(--text-2xl);white-space:nowrap}
 .l{font-size:var(--text-lg);color:var(--color-ink)}
@@ -724,7 +726,7 @@ body{background:var(--color-bone-100)}
 .ig-4 .it{flex-direction:row;align-items:center;gap:var(--space-4);padding:var(--space-4) var(--space-5)}
 .ig-4 .k{display:none}
 .ig-4 .it .ic{position:static;flex:0 0 46px;height:46px;padding:10px;border-radius:50%;background:var(--color-cta);color:var(--color-ink)}
-.ig-4 .it .l{padding-right:0;font-size:var(--text-base);font-weight:600}
+.ig-4 .it .l{font-size:var(--text-base);font-weight:600}
 .ig-4 .it-shield{background:var(--color-brand-soft)}
 .route{padding:var(--space-3) var(--space-2) var(--space-2)}
 .route::before{content:"";position:absolute;left:12%;right:12%;top:50%;border-top:4px dashed var(--color-ink);z-index:0}
@@ -856,7 +858,7 @@ body{background:var(--color-bone-100)}
  -webkit-mask-image:radial-gradient(circle at 100% 0,black 0,transparent 72%);mask-image:radial-gradient(circle at 100% 0,black 0,transparent 72%);
  pointer-events:none}
 .it:nth-child(3n+2)::before{background-image:radial-gradient(var(--color-cta) 26%,transparent 30%)}
-.it{padding:var(--space-8) var(--space-4) var(--space-4);gap:var(--space-2)}
+.it{padding:68px var(--space-4) var(--space-4);gap:var(--space-2)}
 .k{position:absolute;top:0;left:0;background:var(--color-cta);color:var(--color-steel-900);font-weight:800;
  font-size:var(--text-sm);letter-spacing:.08em;padding:3px 12px;border-right:3px solid var(--color-steel-900);
  border-bottom:3px solid var(--color-steel-900)}
@@ -906,10 +908,21 @@ body{background:var(--color-bone-100)}
 }
 
 
+#: Appended after every style: a figure drops a type step when its card is narrow, so it
+#: keeps its own line and never runs under the card's icon or out of the card (the check in
+#: scripts/ig_shots.mjs fails the measurement if one does).
+FIT_CSS = """
+.it{container-type:inline-size}
+@container (max-width:250px){.it .fig{font-size:var(--text-2xl)}}
+@container (max-width:205px){.it .fig{font-size:var(--text-xl)}}
+"""
+
+
 def _style_css(style_id: str, tokens: dict) -> str:
-    """The style's CSS, with the drawn SVG decorations stroked in the token steel."""
+    """The style's CSS, with the drawn SVG decorations stroked in the token steel, then
+    FIT_CSS."""
     ink = tokens.get("--color-steel-700", "currentColor").replace("#", "%23")
-    return STYLE_CSS[style_id].replace("STEELHEX", ink)
+    return STYLE_CSS[style_id].replace("STEELHEX", ink) + FIT_CSS
 
 
 def render_preview(slot_plan: dict, style_id: str, facts: dict, tokens: dict,
@@ -986,11 +999,19 @@ def browser_available(root: Path = ROOT) -> bool:
     return r.returncode == 0
 
 
+class FigureDefect(RuntimeError):
+    """A `.fig` (an exact figure) overflows its box or card, or touches an icon box."""
+
+
 def _shots(mode: str, spec: dict, root: Path = ROOT) -> dict:
     import subprocess
     r = subprocess.run(["node", str(ROOT / SHOTS_JS), mode], cwd=str(ROOT),
                        input=json.dumps({"root": str(root), **spec}), capture_output=True,
                        text=True, timeout=600)
+    if r.returncode == 3 and mode == "measure":
+        bad = [f"{key} @{w}: {msg}" for key, per in json.loads(r.stdout).items()
+               for w, m in per.items() for msg in m["problems"]]
+        raise FigureDefect("a figure overflows or sits under an icon:\n  " + "\n  ".join(bad))
     if r.returncode:
         raise RuntimeError(f"{SHOTS_JS} {mode} failed: {r.stderr.strip()[-800:]}")
     return json.loads(r.stdout)
@@ -999,7 +1020,10 @@ def _shots(mode: str, spec: dict, root: Path = ROOT) -> dict:
 def measure_heights(board: dict, root: Path = ROOT) -> dict:
     """Render every written preview at PREVIEW_WIDTHS in Chromium (fonts served) and write
     heights.json: {"widths": [...], "heights": {slot: {style: {"<width>": px}}}}. Prints a
-    warning for any preview wider than its viewport (a horizontal overflow)."""
+    warning for any preview wider than its viewport (a horizontal overflow).
+
+    Raises FigureDefect, and writes nothing, when any `.fig` text overflows its box or its
+    card or touches an icon box, at any width (scripts/ig_shots.mjs checks every preview)."""
     rows = plan(board, root)
     if not rows:
         return {}

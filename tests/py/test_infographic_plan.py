@@ -507,3 +507,34 @@ def test_bake_infographic_writes_the_two_webps(tmp_path):
 def test_bake_refuses_a_missing_preview(tmp_path):
     with pytest.raises(FileNotFoundError):
         IP.bake_infographic("fx", "nope", "sticker", tmp_path / "out", root=tmp_path)
+
+
+def test_every_exact_figure_is_marked_fig():
+    """The overflow/icon check in scripts/ig_shots.mjs reads `.fig`: every value and city."""
+    for p, sid, html in _london_previews():
+        assert 'class="v"' not in html and 'class="city"' not in html, (p["slot"], sid)
+        if p["ig"] in ("IG-1", "IG-5"):
+            assert 'class="v fig"' in html, (p["slot"], sid)
+        if p["ig"] == "IG-5":
+            assert html.count('class="city fig"') == 2
+
+
+@needs_browser
+def test_measure_refuses_a_figure_under_an_icon(tmp_path):
+    """The coordinator's defect (2026-10-03): "£200–£35" showed under the sticker's icon
+    tile. A fixture that forces a figure under its icon must fail the measurement, and no
+    heights.json may be written over it."""
+    slug, slot = "fx", "tiny-steps"
+    p = {"slot": slot, "ig": "IG-2", "page": slug, "node": "Tiny", "heading": "Tiny",
+         "alt": "One step", "styles": [{"id": "sticker", "label": "Sticker"}]}
+    facts = {"title": "Tiny", "steps": [
+        {"n": "01", "title": "One", "value": "£200–£350", "note": "first", "icon": "truck"}]}
+    html = IP.render_preview(p, "sticker", facts, IP.load_tokens(IP.ROOT))
+    html = html.replace("</style>", ".it .ic{top:78px;left:20px;right:auto}</style>")  # icon on figure
+    f = tmp_path / IP.preview_path(slug, slot, "sticker")
+    f.parent.mkdir(parents=True)
+    f.write_text(html)
+    jobs = [{"key": f"{slot}|sticker", "path": IP.preview_path(slug, slot, "sticker"),
+             "widths": [1280]}]
+    with pytest.raises(IP.FigureDefect, match="sits under an icon"):
+        IP._shots("measure", {"jobs": jobs}, tmp_path)
