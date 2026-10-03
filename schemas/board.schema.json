@@ -64,6 +64,183 @@
   }
  },
  "properties": {
+  "board_revisions": {
+   "description": "The breeder's decisions on a board that was already through STOP 3, each with the answer-board question it came from. Each row says what this record now carries (record_change) and what is left to the page builder (builder). Inside the record hash: approving the board approves them, and adding one sends an approved board back for approval. Board block 1c lists them. Optional, so a record without one keeps its hash and its board byte for byte. First use: the London board revision, answer board 2026-10-03-london-board-revision.",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "date",
+     "source",
+     "decision",
+     "record_change"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+     },
+     "source": {
+      "type": "string",
+      "pattern": "^answer board [0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+ q[0-9]{2}$",
+      "description": "answer board <batch id> qNN"
+     },
+     "decision": {
+      "type": "string",
+      "minLength": 1,
+      "description": "what the breeder picked or said"
+     },
+     "sections": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1
+      },
+      "description": "the section ids it touches; none for a page-level or data-file decision"
+     },
+     "record_change": {
+      "type": "string",
+      "minLength": 1,
+      "description": "what this record (or the data file it names) now carries because of it"
+     },
+     "builder": {
+      "type": "string",
+      "minLength": 1,
+      "description": "what is left for the page builder, when the decision changes page copy or markup"
+     }
+    }
+   }
+  },
+  "subcomponents": {
+   "description": "A piece built INSIDE a section, beside its component (a byline, a strip, a checklist, a places list): the section keeps its component and its heading tree, and the piece is recorded here with the style the breeder picked for it. Inside the record hash. Board block 6b lists them. scripts/pageboard.py validate_board requires the section, the node (when named) with that heading, and every href in `links` to be one of that section's own links (working rule 12). Optional, so a record without one keeps its hash and its board byte for byte. First use: the London board revision, 2026-10-03.",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "section",
+     "name",
+     "placement",
+     "style",
+     "source"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+     },
+     "section": {
+      "type": "string",
+      "minLength": 1,
+      "description": "the owning section's id"
+     },
+     "node": {
+      "type": "string",
+      "pattern": "^tree\\[[0-9]+\\](\\.children\\[[0-9]+\\])*$",
+      "description": "the heading the piece sits under, as a path in that section's tree; absent when it sits in the section's frame (under the H1 or after the block)"
+     },
+     "heading": {
+      "type": "string",
+      "minLength": 1,
+      "description": "that node's heading, checked against the tree"
+     },
+     "name": {
+      "type": "string",
+      "minLength": 1
+     },
+     "placement": {
+      "type": "string",
+      "minLength": 1,
+      "description": "where in the section it renders"
+     },
+     "style": {
+      "type": "object",
+      "required": [
+       "pick",
+       "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "pick": {
+        "type": "string",
+        "pattern": "^[A-Z]$"
+       },
+       "name": {
+        "type": "string",
+        "minLength": 1
+       },
+       "preview": {
+        "type": "string",
+        "minLength": 1,
+        "description": "the preview that showed the three styles"
+       }
+      }
+     },
+     "source": {
+      "type": "string",
+      "pattern": "^answer board [0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+ q[0-9]{2}$"
+     },
+     "data": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1
+      },
+      "description": "the data files and fields the piece renders from; nothing typed"
+     },
+     "condition": {
+      "type": "string",
+      "minLength": 1,
+      "description": "when a part of it renders, if not always"
+     },
+     "items": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "label",
+        "detail",
+        "from"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "group": {
+         "type": "string",
+         "minLength": 1
+        },
+        "label": {
+         "type": "string",
+         "minLength": 1
+        },
+        "detail": {
+         "type": "string",
+         "minLength": 1
+        },
+        "from": {
+         "type": "string",
+         "minLength": 1,
+         "description": "the data file or saved answer the item is written from"
+        }
+       }
+      }
+     },
+     "links": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1
+      },
+      "description": "the hrefs the piece carries, each one of its section's links"
+     },
+     "note": {
+      "type": "string",
+      "minLength": 1
+     }
+    }
+   }
+  },
   "outline_changes_since_stop2": {
    "description": "Headings this board adds to the outline approved at STOP 2 (data/outlines/<slug>.json), which is not edited: its approval hash covers the whole record, so the change is recorded here instead and is INSIDE this board's record hash — approving the board approves these changes. Board block 3e lists them. scripts/pageboard.py validate_board requires each row's node to exist in that section's tree with that heading at that level. First use: breeder q08, 2026-10-02 (each infographic gets its own heading).",
    "type": "array",

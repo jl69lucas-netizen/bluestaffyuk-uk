@@ -153,6 +153,7 @@ def validate_board(board):
                              "infographic only (breeder q08, 2026-10-02)")
     validate_change_budgets(board)
     validate_changes_are_new(board)
+    validate_subcomponents(board)
     nl = board["tuple"]["newsletter"]
     if bool(nl["after"]) != bool(nl["variant"]):
         raise BoardError("tuple.newsletter: `after` and `variant` are set together or not at all "
@@ -255,6 +256,44 @@ def validate_changes_are_new(board):
         if _heading_key(c["heading"]) in keys:
             raise BoardError(f"outline_changes_since_stop2: {c['heading']!r} is already in the "
                              f"approved outline {path.name} — a change row adds a new heading")
+
+
+def validate_subcomponents(board):
+    """`subcomponents` (a piece built inside a section, beside its component) and
+    `board_revisions` (the breeder's decisions after STOP 3) name sections of THIS record; a
+    piece's node, when named, is in that section's tree with the heading it says; and every
+    href a piece carries is one of its section's own links, so a piece can never carry a link
+    the board does not list (working rule 12). Both fields are optional: a record without them
+    is untouched."""
+    by_id = {s["id"]: s for s in board["sections"]}
+    seen = set()
+    for p in board.get("subcomponents") or []:
+        if p["id"] in seen:
+            raise BoardError(f"subcomponents: duplicate id {p['id']!r}")
+        seen.add(p["id"])
+        sec = by_id.get(p["section"])
+        if sec is None:
+            raise BoardError(f"subcomponents: {p['id']} names section {p['section']!r}, which this "
+                             "record does not have")
+        if "node" in p:
+            node = outline_change_node(board, p)
+            if node is None:
+                raise BoardError(f"subcomponents: {p['id']}: section {p['section']} has no node at {p['node']}")
+            if "heading" in p and node["heading"] != p["heading"]:
+                raise BoardError(f"subcomponents: {p['id']}: {p['section']} {p['node']} is "
+                                 f"{node['heading']!r}, not {p['heading']!r}")
+        elif "heading" in p:
+            raise BoardError(f"subcomponents: {p['id']} names a heading but no node")
+        hrefs = {l["href"] for kind in ("internal", "external") for l in sec["links"][kind]}
+        missing = [h for h in p.get("links") or [] if h not in hrefs]
+        if missing:
+            raise BoardError(f"subcomponents: {p['id']} carries {', '.join(missing)}, not in section "
+                             f"{p['section']}'s links — a link that is not on the board is not built")
+    for r in board.get("board_revisions") or []:
+        unknown = [s for s in r.get("sections") or [] if s not in by_id]
+        if unknown:
+            raise BoardError(f"board_revisions: {r['source']} names section(s) {', '.join(unknown)}, "
+                             "which this record does not have")
 
 
 _CHANGE_STEP = re.compile(r"(?:^tree|\.children)\[(\d+)\]")

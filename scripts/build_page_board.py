@@ -468,6 +468,56 @@ def changes_block(board):
             + md_table(["Section", "New heading", "Keyword", "Image slot", "Words", "Why"], table))
 
 
+def revisions_block(board):
+    """Block 1c: the breeder's decisions on a board already through STOP 3, each with the
+    answer-board question it came from, what this record now carries because of it and what is
+    left to the builder. The rows are inside the record hash, so approving the board approves
+    them."""
+    rows = board.get("board_revisions") or []
+    by_id = {s["id"]: s for s in board["sections"]}
+    table = [[md(r["date"]), md(r["source"]), md(r["decision"]),
+              ", ".join(f"{by_id[x]['n']:02d} {md(x)}" for x in r.get("sections") or []) or "page",
+              md(r["record_change"]), md(r.get("builder") or "—")] for r in rows]
+    return (f"**{len(rows)} decision(s) since the board was approved at STOP 3.** Each is recorded "
+            "with its answer-board question; approving the board approves them.\n\n"
+            + md_table(["Date", "Source", "Decision", "Sections", "What this record now carries",
+                        "Left for the builder"], table))
+
+
+def subcomponents_block(board):
+    """Block 6b: pieces built inside a section, beside its component, each with the style the
+    breeder picked, what it renders from, and the links it carries (each one is also in block
+    3's link list, by validate_board)."""
+    rows = board.get("subcomponents") or []
+    by_id = {s["id"]: s for s in board["sections"]}
+    out = [f"**{len(rows)} piece(s) inside sections.** Each section keeps its component and its "
+           "heading tree; the piece renders in the place named, in the style picked."]
+    for p in rows:
+        s = by_id[p["section"]]
+        st = p["style"]
+        head = f"### {s['n']:02d} · {md(s['heading'])} — {md(p['name'])} <span class=\"pill\">{md(st['pick'])} · {md(st['name'])}</span>"
+        lines = [head, "",
+                 f"**Where.** {md(p['placement'])}"
+                 + (f" Under {md(p['node'])}: {md(p['heading'])}." if p.get("heading") else ""),
+                 f"**Style.** {md(st['pick'])} · {md(st['name'])}, picked on {md(p['source'])}"
+                 + (f" ({md_with_urls(st['preview'])})." if st.get("preview") else ".")]
+        if p.get("data"):
+            lines.append("**Renders from.** " + "; ".join(md(x) for x in p["data"]) + ".")
+        if p.get("condition"):
+            lines.append(f"**Condition.** {md(p['condition'])}")
+        if p.get("links"):
+            lines.append("**Links.** " + ", ".join(f"`{md(h)}`" for h in p["links"])
+                         + " (listed in block 3).")
+        if p.get("note"):
+            lines.append(f"**Note.** {md(p['note'])}")
+        if p.get("items"):
+            lines += ["", md_table(["Group", "Item", "What it says", "From"],
+                                   [[md(i.get("group") or "—"), md(i["label"]), md(i["detail"]), md(i["from"])]
+                                    for i in p["items"]])]
+        out.append("\n\n".join(lines))
+    return "\n\n".join(out)
+
+
 def navigation_block(board, nav):
     """Block 3c: the four pieces of in-page navigation this page wears, rendered.
 
@@ -1101,20 +1151,21 @@ QUEUE_TABS = (("decide", "Your decisions", "Make these picks, then approve"),
 #: Reference groups, in board order — the approved preview's names.
 REF_GROUPS = ("Start", "Words people see", "Outline", "Keywords and entities", "Components",
               "Images", "Before you approve")
-BLOCK_GROUP = {"0": "Start", "1": "Start", "1b": "Start",
+BLOCK_GROUP = {"0": "Start", "1": "Start", "1b": "Start", "1c": "Start",
                "2": "Words people see", "2b": "Words people see",
                "3": "Outline", "3a": "Outline", "3b": "Outline", "3c": "Outline", "3d": "Outline",
                "3e": "Outline",
                "4": "Keywords and entities", "4b": "Keywords and entities", "4c": "Keywords and entities",
                "4d": "Keywords and entities", "4e": "Keywords and entities",
                "5": "Keywords and entities", "5c": "Keywords and entities",
-               "5b": "Components", "6": "Components",
+               "5b": "Components", "6": "Components", "6b": "Components",
                "7": "Images", "7b": "Images", "7c": "Images", "7d": "Images",
                "8": "Before you approve", "8a": "Before you approve", "8b": "Before you approve",
                "8c": "Before you approve"}
 #: Blocks that are decisions even with no required pick in them: approving the board approves
-#: 3e's headings, 7d's photo answers are optional picks, and 8 is the approval itself.
-DECIDE_ALWAYS = ("3e", "7d", "8")
+#: 3e's headings, 1c's decisions and 6b's pieces, 7d's photo answers are optional picks, and 8
+#: is the approval itself.
+DECIDE_ALWAYS = ("1c", "3e", "6b", "7d", "8")
 #: The fixed one-liners, for blocks whose module computes no summary of its own. Each says
 #: what the block shows, nothing more.
 BLOCK_SUMMARY = {
@@ -1248,6 +1299,13 @@ def block_summary(bid, board, slug, ig_plan, facts, picks):
     if bid == "3c":
         return (f"{_n(len(secs), 'section')}: all four navigation pieces mount." if len(secs) >= NAV_THRESHOLD
                 else f"{_n(len(secs), 'section')}: only the TOC mounts.")
+    if bid == "1c":
+        rows = board.get("board_revisions") or []
+        return f"{_n(len(rows), 'decision')} since STOP 3, each with its answer-board question. Approving the board approves them."
+    if bid == "6b":
+        rows = board.get("subcomponents") or []
+        return (f"{_n(len(rows), 'piece')} inside sections, each in its picked style: "
+                + ", ".join(f"{p['name']} ({p['style']['pick']})" for p in rows) + ".")
     if bid == "3e":
         rows = board.get("outline_changes_since_stop2") or []
         return f"{_n(len(rows), 'heading')} added since STOP 2. Approving the board approves them."
@@ -1593,6 +1651,11 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     if new_family:
         parts.append(("1b. How Google reads this page", SR.block(board)))
 
+    # The breeder's decisions after STOP 3 (London board revision, 2026-10-03). Only a board
+    # that records one shows the block, so every other board renders as before.
+    if board.get("board_revisions"):
+        parts.append(("1c. Decisions since STOP 3", revisions_block(board)))
+
     h1, ms = board["h1"], board["meta_set"]
     picked = h1["pick"] if h1["pick"] is not None else h1["recommended"]
     # The board must star the same pair the gate and the build will read, so the fallback
@@ -1728,6 +1791,10 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                         + refresh_line(s)
                         + f"<textarea class=\"note\" name=\"note-{s['id']}\" placeholder=\"Note for this section (optional)\">{esc(s['options']['note'])}</textarea>")
     parts.append(("6. Component options", "\n\n".join(opt_html) or "_No sections._"))
+    # Pieces inside sections (London board revision, 2026-10-03); only a board that records
+    # one shows the block.
+    if board.get("subcomponents"):
+        parts.append(("6b. Pieces inside sections", subcomponents_block(board)))
 
     slots = "".join(
         f'<div class="slot"><b>{esc(a["slot"])}</b> · {esc(a["kind"])} · {a["w"]}×{a["h"]} · {"required" if a["required"] else "optional"}'
