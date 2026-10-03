@@ -15,76 +15,94 @@ const PAGE_BOARDS: Record<string, string> = {
   'blue-staffy-puppies-london': 'https://claude.ai/artifact/CbemmwUeW5qGEmEFog7ezz',
 }
 
-// BSUK tokens (src/styles/tokens.css)
-const STEEL_900 = '#14202B'
-const STEEL_700 = '#1F3A52'
-const STEEL_300 = '#8FA3B8'
-const BRASS_500 = '#C9A227'
-const TODO = '#CFC8B8'
-const PANEL = '#FFFFFF'
+// BSUK tokens (src/styles/tokens.css), set for the dark pane: a steel-900 card, bone ink,
+// brass for a STOP and for the row in progress.
+const CARD = '#14202B'
+const CARD_2 = '#1B2A38'
+const INK = '#F4F1EA'
+const INK_2 = '#B9C6D3'
+const INK_3 = '#7F93A8'
+const DONE = '#8FB3D4'
+const BRASS = '#C9A227'
+const TODO = '#3A4C5E'
 
-const PHASES = ['Research', 'Plan', 'Build', 'Close']
 const PHASE_LABEL: Record<string, string> = {
-  Research: 'RESEARCH',
-  Plan: 'STOPS · PLAN & ASSETS',
-  Build: 'BUILD & HARDEN',
-  Close: 'GATES & CLOSE',
+  Research: 'Research',
+  Plan: 'Stops · plan & assets',
+  Build: 'Build & harden',
+  Close: 'Gates & close',
 }
 
 function esc(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
-function station(r: Row, x: number, y: number): string {
+// A tall, vertical line: one station per page-run row, its name beside it in reading size.
+// The markup is 880 wide so the pane scales it to its own width and the text stays large.
+const W = 880
+const LX = 92 // the line's x
+const ROW = 74
+const HEAD = 64
+
+function mark(r: Row, y: number): string {
   const done = r.state === 'done'
   const now = r.state === 'now'
-  const tip = `<title>Row ${r.row} · ${esc(r.name)} · ${r.state}${r.state === 'done' ? '' : ' · ' + esc(r.evidence)}</title>`
-  let mark: string
   if (r.stop) {
-    const fill = done ? BRASS_500 : now ? BRASS_500 : PANEL
-    const stroke = done || now ? STEEL_900 : TODO
-    mark = `<rect x="${x - 10}" y="${y - 10}" width="20" height="20" transform="rotate(45 ${x} ${y})" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>
-<text x="${x}" y="${y + 4}" font-size="10" font-weight="700" text-anchor="middle" fill="${done || now ? STEEL_900 : STEEL_300}">${r.stop}</text>`
-  } else if (now) {
-    mark = `<circle cx="${x}" cy="${y}" r="13" fill="${BRASS_500}" opacity=".28"><animate attributeName="r" values="9;15;9" dur="1.8s" repeatCount="indefinite"/></circle>
-<circle cx="${x}" cy="${y}" r="8" fill="${BRASS_500}" stroke="${STEEL_900}" stroke-width="2"/>`
-  } else {
-    mark = `<circle cx="${x}" cy="${y}" r="7" fill="${PANEL}" stroke="${done ? STEEL_700 : TODO}" stroke-width="3"/>${done ? `<circle cx="${x}" cy="${y}" r="3" fill="${STEEL_700}"/>` : ''}`
+    const fill = done || now ? BRASS : CARD
+    const stroke = done || now ? BRASS : TODO
+    return `<rect x="${LX - 17}" y="${y - 17}" width="34" height="34" rx="4" transform="rotate(45 ${LX} ${y})" fill="${fill}" stroke="${stroke}" stroke-width="3"/>
+<text x="${LX}" y="${y + 8}" font-size="22" font-weight="800" text-anchor="middle" fill="${done || now ? CARD : INK_3}">${r.stop}</text>`
   }
-  const label = now ? `${r.row} now` : String(r.row)
-  return `<g>${tip}${mark}<text x="${x}" y="${y + 24}" font-size="10" text-anchor="middle" fill="${now ? STEEL_900 : STEEL_300}" font-weight="${now ? 700 : 400}">${label}</text></g>`
+  if (now) {
+    return `<circle cx="${LX}" cy="${y}" r="26" fill="${BRASS}" opacity=".22"><animate attributeName="r" values="18;30;18" dur="1.8s" repeatCount="indefinite"/></circle>
+<circle cx="${LX}" cy="${y}" r="17" fill="${BRASS}"/><text x="${LX}" y="${y + 7}" font-size="18" font-weight="800" text-anchor="middle" fill="${CARD}">${r.row}</text>`
+  }
+  return `<circle cx="${LX}" cy="${y}" r="16" fill="${done ? DONE : CARD}" stroke="${done ? DONE : TODO}" stroke-width="4"/>
+<text x="${LX}" y="${y + 6}" font-size="15" font-weight="700" text-anchor="middle" fill="${done ? CARD : INK_3}">${r.row}</text>`
 }
 
 function svg(rt: Route): string {
-  const W = 360
-  const left = 24
-  const right = 336
-  let y = 70
+  let y = 150
   let body = ''
-  for (const phase of PHASES) {
+  let prevY: number | null = null
+  let prevLit = true
+  const lines: string[] = []
+  for (const phase of ['Research', 'Plan', 'Build', 'Close']) {
     const rows = rt.rows.filter(r => r.phase === phase)
     if (!rows.length) continue
-    const step = rows.length > 1 ? (right - left) / (rows.length - 1) : 0
-    const xs = rows.map((_, i) => left + i * step)
-    // the line: solid steel up to the last done/now station, dashed grey after it
-    const lastLit = rows.reduce((k, r, i) => (r.state !== 'todo' ? i : k), -1)
-    const ly = y + 26
-    body += `<text x="16" y="${y}" font-size="10.5" font-weight="700" letter-spacing=".08em" fill="${STEEL_300}">${esc(PHASE_LABEL[phase])}</text>`
-    if (lastLit >= 0) body += `<line x1="${left}" y1="${ly}" x2="${xs[lastLit]}" y2="${ly}" stroke="${STEEL_700}" stroke-width="5" stroke-linecap="round"/>`
-    if (lastLit < rows.length - 1) {
-      const from = lastLit >= 0 ? xs[lastLit] : left
-      body += `<line x1="${from}" y1="${ly}" x2="${right}" y2="${ly}" stroke="${TODO}" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 8"/>`
+    const done = rows.filter(r => r.state === 'done').length
+    body += `<text x="${LX + 44}" y="${y}" font-size="17" font-weight="800" letter-spacing="2.5" fill="${INK_3}">${esc(PHASE_LABEL[phase].toUpperCase())}</text>
+<text x="${W - 40}" y="${y}" font-size="17" font-weight="700" text-anchor="end" fill="${done === rows.length ? DONE : INK_3}">${done}/${rows.length}</text>`
+    y += HEAD - 10
+    for (const r of rows) {
+      const lit = r.state !== 'todo'
+      if (prevY !== null) {
+        lines.push(lit && prevLit
+          ? `<line x1="${LX}" y1="${prevY}" x2="${LX}" y2="${y}" stroke="${DONE}" stroke-width="8" stroke-linecap="round"/>`
+          : `<line x1="${LX}" y1="${prevY}" x2="${LX}" y2="${y}" stroke="${TODO}" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 12"/>`)
+      }
+      const now = r.state === 'now'
+      if (now) body += `<rect x="24" y="${y - 32}" width="${W - 48}" height="64" rx="14" fill="${CARD_2}" stroke="${BRASS}" stroke-width="2"/>`
+      const name = `${r.stop ? 'STOP ' + r.stop + ' · ' : ''}${esc(r.name)}`
+      const right = r.state === 'done' ? (r.stop ? 'approved' : 'done') : now ? 'in progress' : ''
+      body += `<g><title>Row ${r.row} · ${esc(r.name)} · ${r.state} · ${esc(r.evidence)}</title>
+${mark(r, y)}
+<text x="${LX + 44}" y="${y + 9}" font-size="${now ? 28 : 25}" font-weight="${now || r.stop ? 750 : 500}" fill="${r.state === 'todo' ? INK_3 : INK}">${name}</text>
+<text x="${W - 44}" y="${y + 8}" font-size="18" font-weight="700" text-anchor="end" fill="${now ? BRASS : r.stop && r.state === 'done' ? BRASS : DONE}">${right}</text></g>`
+      prevY = y
+      prevLit = lit
+      y += ROW
     }
-    rows.forEach((r, i) => {
-      body += station(r, xs[i], ly)
-    })
-    y += 70
+    y += 26
   }
-  const H = y - 10
+  const H = y + 10
+  const pct = Math.round((rt.rows.filter(r => r.state === 'done').length / rt.rows.length) * 100)
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="system-ui, -apple-system, Segoe UI, sans-serif">
-<rect x="0" y="0" width="${W}" height="${H}" rx="10" fill="${PANEL}"/>
-<text x="16" y="26" font-size="15" font-weight="700" fill="${STEEL_900}">${esc(rt.slug)}</text>
-<text x="16" y="44" font-size="12" fill="${STEEL_300}">STOP ${rt.stops_done}/4 · branch ${esc(rt.branch)}</text>
+<rect x="0" y="0" width="${W}" height="${H}" rx="20" fill="${CARD}"/>
+<text x="40" y="62" font-size="34" font-weight="800" fill="${INK}">${esc(rt.slug)}</text>
+<text x="40" y="100" font-size="20" fill="${INK_2}">STOP ${rt.stops_done}/4 · ${pct}% of the run proved · ${esc(rt.branch)}</text>
+<rect x="40" y="114" width="${W - 80}" height="8" rx="4" fill="${TODO}"/><rect x="40" y="114" width="${((W - 80) * pct) / 100}" height="8" rx="4" fill="${BRASS}"/>
+${lines.join('\n')}
 ${body}
 </svg>`
 }
@@ -143,8 +161,6 @@ export const register: Register = on => {
     const els = $.ui.resolve(e) as any
     const { Box, Text, Link } = els
     if (!rt) return <Text dimColor>{err ? `No route: ${err}` : 'Reading the page run…'}</Text>
-    const now = rt.rows.find(r => r.state === 'now')
-    const next3 = rt.rows.filter(r => r.state === 'todo').slice(0, 3)
     const board = PAGE_BOARDS[rt.slug]
     return (
       <Box flexDirection="column">
@@ -153,16 +169,14 @@ export const register: Register = on => {
         ) : (
           <Box flexDirection="column">
             {rt.rows.map(r => (
-              <Text color={r.state === 'now' ? BRASS_500 : undefined} dimColor={r.state === 'todo'}>
+              <Text color={r.state === 'now' ? BRASS : undefined} dimColor={r.state === 'todo'}>
                 {r.state === 'done' ? '●' : r.state === 'now' ? '◉' : '○'} {String(r.row).padStart(2)} {r.stop ? `STOP ${r.stop} · ` : ''}{r.name}
               </Text>
             ))}
           </Box>
         )}
-        <Text bold>Now: {now ? `row ${now.row} · ${now.name}` : 'every row proved'}</Text>
-        {next3.length > 0 && <Text dimColor>Next: {next3.map(r => `${r.row} ${r.name}`).join(' → ')}</Text>}
         {rt.needs_you.map(n => (
-          <Text color={BRASS_500}>▲ {n}</Text>
+          <Text color={BRASS}>▲ {n}</Text>
         ))}
         <Text dimColor>{rt.commit}</Text>
         <Box flexDirection="row" gap={2}>
