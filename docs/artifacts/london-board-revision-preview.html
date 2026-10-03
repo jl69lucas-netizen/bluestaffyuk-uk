@@ -591,7 +591,7 @@ body { margin: 0; background: var(--pv-bg); color: var(--pv-fg); font-family: va
       <h2><span class="n">3</span>Video-call checklist</h2>
       <dl class="pv-facts">
         <dt>Where</dt><dd><code>deposit-viewing</code>, chapter 1, under the H5 "What Should I Ask to See While We Are on the Call?" and its paragraph. In <code>city-chapters</code> that prose column is only about 260px wide at 1280, so the checklist runs across the chapter's full width beneath the paragraph.</dd>
-        <dt>Items</dt><dd>Eight, each from a data file or one of Lisa's answers (named in an HTML comment on each item): Maggie on camera (q03), your puppy's markings against its listing (<code>puppies.json</code>), the paperwork and the contract on camera (<code>faq.json</code> <code>whyus-paperwork</code>, q05), the tests named only, with no results (q01), the parents' registration numbers, the deposit with <code>deposit_refund_clause</code> read out (q04 bank transfer), and the guarantee from <code>guarantee_label</code> / <code>guarantee_cover</code> / <code>guarantee_note</code>.</dd>
+        <dt>Items</dt><dd>Eight, each from a data file or one of Lisa's answers (named in an HTML comment on each item): Maggie on camera (q03), your puppy's markings against its listing (<code>puppies.json</code>), the paperwork and the contract on camera (<code>faq.json</code> <code>whyus-paperwork</code>, q05), the tests named only, never saying the parents had them or a result (q01), the parents' registration numbers, the deposit with <code>deposit_refund_clause</code> read out (q04 bank transfer), and the guarantee from <code>guarantee_label</code> / <code>guarantee_cover</code> / <code>guarantee_note</code>.</dd>
         <dt>Mechanics</dt><dd>A native <code>&lt;input type="checkbox"&gt;</code> inside its <code>&lt;label&gt;</code>, with no JavaScript. A ticked item gets a brass strike-through through CSS <code>:has()</code>. Nothing is saved: the boxes are for use during the call.</dd>
       </dl>
     </header>
@@ -622,7 +622,7 @@ body { margin: 0; background: var(--pv-bg); color: var(--pv-fg); font-family: va
                 <p class="grp">Out loud</p>
                 <ul>
                   <!-- source: answers 2026-09-29 q01 (name the tests, never a result); data/faq.json about-health-tests -->
-                  <li><label><input type="checkbox"><span><span class="t">The health tests, by name</span><span class="d">Ask us to name each test both parents have had: L-2-HGA, HC-HSF4, eye screening and elbow screening.</span></span></label></li>
+                  <li><label><input type="checkbox"><span><span class="t">The health tests, by name</span><span class="d">Ask us about each of these tests by name: L-2-HGA, HC-HSF4, eye screening and elbow screening.</span></span></label></li>
                   <!-- source: data/faq.json whyus-paperwork ("the registration numbers of both parents, so you can check the pedigree yourself") -->
                   <li><label><input type="checkbox"><span><span class="t">The parents' registration numbers</span><span class="d">Write them down so you can check the pedigree yourself.</span></span></label></li>
                   <!-- source: data/settings.json deposit_gbp + deposit_refund_clause (both INTERPOLATED at build); answers 2026-09-29 q04 (bank transfer) -->
@@ -667,7 +667,7 @@ body { margin: 0; background: var(--pv-bg); color: var(--pv-fg); font-family: va
                   <div class="pane-hd"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#EFE3B4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H9l-5 4z"/><path d="M8 9.5h8M8 12h5"/></svg><span><b>Ask to hear, out loud</b><small>Tick each one as we answer it</small></span></div>
                   <ul>
                     <!-- source: answers 2026-09-29 q01 (tests named only); data/faq.json about-health-tests -->
-                    <li><label><input type="checkbox"><span><span class="t">The health tests, by name</span><span class="d">Ask us to name each test both parents have had: L-2-HGA, HC-HSF4, eye screening and elbow screening.</span></span></label></li>
+                    <li><label><input type="checkbox"><span><span class="t">The health tests, by name</span><span class="d">Ask us about each of these tests by name: L-2-HGA, HC-HSF4, eye screening and elbow screening.</span></span></label></li>
                     <!-- source: data/faq.json whyus-paperwork -->
                     <li><label><input type="checkbox"><span><span class="t">The parents' registration numbers</span><span class="d">Write them down so you can check the pedigree yourself.</span></span></label></li>
                     <!-- source: data/settings.json deposit_gbp + deposit_refund_clause (INTERPOLATED); answers 2026-09-29 q04 -->
@@ -711,7 +711,7 @@ body { margin: 0; background: var(--pv-bg); color: var(--pv-fg); font-family: va
                   <ul>
                     <li class="grp" aria-hidden="true">Out loud</li>
                     <!-- source: answers 2026-09-29 q01; data/faq.json about-health-tests -->
-                    <li><label><input type="checkbox"><span><span class="t">The health tests, by name</span><span class="d">L-2-HGA, HC-HSF4, eye screening and elbow screening, for both parents.</span></span></label></li>
+                    <li><label><input type="checkbox"><span><span class="t">The health tests, by name</span><span class="d">Ask about each by name: L-2-HGA, HC-HSF4, eye screening and elbow screening.</span></span></label></li>
                     <!-- source: data/faq.json whyus-paperwork -->
                     <li><label><input type="checkbox"><span><span class="t">The parents' registration numbers</span><span class="d">Write them down so you can check the pedigree yourself.</span></span></label></li>
                     <!-- source: data/settings.json deposit_gbp + deposit_refund_clause (INTERPOLATED); answers 2026-09-29 q04 -->
@@ -749,7 +749,7 @@ body { margin: 0; background: var(--pv-bg); color: var(--pv-fg); font-family: va
           <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
           <div class="tray">
             <h4 class="hd"><small>H4 · london-life, chapter 1</small>Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?</h4>
-            <p class="prose">In whichever park is nearest you, on a lead until its recall is reliable. How much exercise a Staffy-sized dog needs is set out by the PDSA, and two good outings a day is what ours are used to.</p>
+            <p class="prose">In whichever park is nearest you, on a lead until its recall is reliable. How much exercise a Staffy-sized dog needs is set out by the PDSA.</p>
             <div class="pl pl-a">
               <!-- every fact: data/city-places/blue-staffy-puppies-london.json places[].facts[].value; links: its .source -->
               <div class="cards">
@@ -802,7 +802,7 @@ body { margin: 0; background: var(--pv-bg); color: var(--pv-fg); font-family: va
           <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
           <div class="tray">
             <h4 class="hd"><small>H4 · london-life, chapter 1</small>Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?</h4>
-            <p class="prose">In whichever park is nearest you, on a lead until its recall is reliable. How much exercise a Staffy-sized dog needs is set out by the PDSA, and two good outings a day is what ours are used to.</p>
+            <p class="prose">In whichever park is nearest you, on a lead until its recall is reliable. How much exercise a Staffy-sized dog needs is set out by the PDSA.</p>
             <div class="pl pl-b">
               <!-- cells: data/city-places/blue-staffy-puppies-london.json places[].facts[].value, shortened to the places they name -->
               <table class="stack-table">
@@ -838,7 +838,7 @@ body { margin: 0; background: var(--pv-bg); color: var(--pv-fg); font-family: va
           <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
           <div class="tray">
             <h4 class="hd"><small>H4 · london-life, chapter 1</small>Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?</h4>
-            <p class="prose">In whichever park is nearest you, on a lead until its recall is reliable. How much exercise a Staffy-sized dog needs is set out by the PDSA, and two good outings a day is what ours are used to.</p>
+            <p class="prose">In whichever park is nearest you, on a lead until its recall is reliable. How much exercise a Staffy-sized dog needs is set out by the PDSA.</p>
             <div class="pl pl-c">
               <!-- grouped on places[].managed_by; every fact is places[].facts[].value; header links are the facts' .source URLs, each once -->
               <div class="grp-row">
