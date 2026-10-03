@@ -213,7 +213,7 @@
       "section": "breed",
       "node": "tree[1]",
       "level": 3,
-      "heading": "How Do Blue Staffordshire Bull Terrier and American Staffordshire Standards Compare Side by Side?",
+      "heading": "Blue Staffordshire Bull Terrier or AmStaff: How Do Their Breed Standards Differ?",
       "keyword": "blue staffordshire bull terrier",
       "slot": "breed-split",
       "reason": "breeder q08, 2026-10-02: each infographic gets its own heading"
@@ -2182,7 +2182,7 @@
         },
         {
           "level": 3,
-          "heading": "How Do Blue Staffordshire Bull Terrier and American Staffordshire Standards Compare Side by Side?",
+          "heading": "Blue Staffordshire Bull Terrier or AmStaff: How Do Their Breed Standards Differ?",
           "intent": "infographic: the two breed standards side by side, every figure quoted from data/breed-standards.json with its source",
           "children": [],
           "images": [
