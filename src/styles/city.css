@@ -107,17 +107,6 @@
      contact form's full-width message field to 549px (the Task 7b design pass). */
   .city-kit :where(p:not(form *), li, dd) { font-size: var(--city-body); line-height: 1.6; }
   .city-kit :where(p:not(form *)) { text-wrap: pretty; max-inline-size: 65ch; }
-  /* A LINK IN READING TEXT IS UNDERLINED (frontend-design harden pass, 2026-10-03). The site's
-     preflight sets `a { color: inherit; text-decoration: inherit }` and no city component set
-     either back, so the Link-First anchors in the chapters, the FAQ "more" pointers and the vet
-     line painted exactly as the prose around them: a link told apart by nothing (WCAG 1.4.1).
-     The underline takes the text's own colour at half strength, so it reads on bone, steel-100
-     and the steel bands alike with no new colour; hover draws it at full strength and 2px.
-     Thickness and colour only: no layout moves. A component that styles its own link (the
-     byline, the hero's secondary link, the contact note) keeps its rule, which is more specific. */
-  .city-kit :where(p:not(form *)) a {
-    text-decoration-line: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
-    text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
-  }
-  .city-kit :where(p:not(form *)) a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; }
+  /* A link in reading text is underlined: the rule moved to src/styles/global.css ("A LINK IN
+     READING TEXT IS UNDERLINED"), site-wide, with this kit's selector kept as it was. */
 }

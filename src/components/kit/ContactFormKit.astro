@@ -246,6 +246,12 @@ const EMAIL_ERR = { empty: 'Please give us your email address.', bad: 'That emai
     /* Underlined: the site's preflight drops it, and colour alone does not tell a link apart
        on the band (WCAG 1.4.1). */
     [data-layout='grid'] .note a { color: var(--color-link-on-inverse); text-decoration: underline; text-underline-offset: 2px; }
+    /* THE PRIVACY LINK HAS THE SHARED HOVER (frontend-design D9, the breeder's yes, 2026-10-03
+       q02): it had none on any layout. The reading-text underline (src/styles/global.css): half
+       strength at rest, full strength and 2px under the pointer; the grid layout keeps its own
+       colour and offset. */
+    .note a { text-decoration-line: underline; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, currentColor 50%, transparent); }
+    .note a:hover, [data-layout='grid'] .note a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; }
     /* The grid layout's tiers are the city band's box (CityContactLineup): tablet from 640px,
        desktop from 800px, so the column beside a city dial reaches them (the Task 7b review). */
     @container (width >= 640px) {
