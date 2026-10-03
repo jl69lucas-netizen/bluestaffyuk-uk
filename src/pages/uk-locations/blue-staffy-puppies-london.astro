@@ -522,7 +522,11 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     </Fragment>
     <Fragment slot="ch-2">
       <h4>{tree('health-tests', 1, 0)}</h4>
-      <BodyImage asset={photo('health-kc-check')} srcset={photo('health-kc-check').srcset} box="tall" />
+      {/* A portrait master (500x750) in the tall box paints the text's width at every tier (it is
+          width-bound in 4:5 and in 16:9 alike), so its sizes are the text's, not TALL_SIZES' 230vw,
+          which is for a 16:9 file cropped to 4:5 and asked 2.8x once its -240/-400 siblings gave
+          it a srcset (frontend-design D7). */}
+      <BodyImage asset={photo('health-kc-check')} srcset={photo('health-kc-check').srcset} box="tall" sizes={TEXT_SIZES} />
       <p>Ask us for both parents' registration numbers and check the pedigree with the Kennel Club.</p>
     </Fragment>
   </CityChapters>
