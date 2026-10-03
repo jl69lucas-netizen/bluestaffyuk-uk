@@ -25,9 +25,12 @@ const trail = crumbs(path, title);
   @layer components {
     nav[aria-label="Breadcrumb"].container > ol > li { display: flex; align-items: baseline; gap: 8px; }
     /* EVERY CRUMB LINK IS A 44x44 TARGET (impeccable D3, the breeder's yes on every page,
-       2026-10-03 q04). `.tap-24` gave a 31px line; the link is now a 44px-tall flex box at least
-       44px wide ("Home" is 38px of text), its text where it was, left-aligned and centred in its
-       own line. Size only: no colour, weight or separator moves. */
-    nav[aria-label="Breadcrumb"].container > ol > li > a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; padding-block: 0; }
+       2026-10-03 q04). `.tap-24` gave a 31px line; the link is now a 44px-tall flex box, and it
+       reaches 44px wide by 8px of padding each side cancelled by an 8px negative margin, so the
+       box grows and the TEXT stays exactly where it was: the 8px either side of each › holds
+       (nav-breadcrumb-separator-spaced; a plain min-width pushed the › 9px right of "Home"). Two
+       neighbours' boxes stay apart: 8px + the › + 8px between their texts is wider than the 16px
+       they reach into it. Size only: no colour, weight or separator moves. */
+    nav[aria-label="Breadcrumb"].container > ol > li > a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 8px; margin-inline: -8px; }
   }
 </style>
