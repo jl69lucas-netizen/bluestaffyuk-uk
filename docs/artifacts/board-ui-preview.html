@@ -1,0 +1,204 @@
+<title>Page Board Layouts</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: two switchable board shells (A side rail, B decision queue) on the board's own tokens */
+:root{
+  --ground:#F4F1EA;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#5E6B7A;--line:#DAD6CC;
+  --steel:#1F3A52;--steel-soft:#E4EAF1;--brass:#A8861C;--brass-soft:#EFE3B4;
+  --ok:#2D6A4F;--ok-soft:#DCEFE4;--warn:#9A4A2A;--warn-soft:#F6E1D6;--need:#7A5A00;--need-soft:#F7EBC2;
+  --display:"Fraunces",Georgia,serif;--body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#121B24;--paper:#1A2633;--ink:#F1EEE6;--ink-2:#C9D3DE;--ink-3:#93A3B5;--line:#33465A;
+  --steel:#8FB0CC;--steel-soft:#22364A;--brass:#E0C063;--brass-soft:#3A3220;
+  --ok:#7CC9A0;--ok-soft:#1D3A2C;--warn:#F0A78A;--warn-soft:#3E2519;--need:#E9C964;--need-soft:#3B3216;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#121B24;--paper:#1A2633;--ink:#F1EEE6;--ink-2:#C9D3DE;--ink-3:#93A3B5;--line:#33465A;
+  --steel:#8FB0CC;--steel-soft:#22364A;--brass:#E0C063;--brass-soft:#3A3220;
+  --ok:#7CC9A0;--ok-soft:#1D3A2C;--warn:#F0A78A;--warn-soft:#3E2519;--need:#E9C964;--need-soft:#3B3216;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--ground);color:var(--ink);font:15px/1.55 var(--body);margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.top h1{font:700 18px/1.2 var(--display);margin:0;letter-spacing:.01em}
+.top .route{font-size:12.5px;color:var(--ink-3)}
+.switch{margin-left:auto;display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.switch button{border:0;background:transparent;padding:6px 14px;cursor:pointer;font-weight:600;font-size:13px}
+.switch button[aria-pressed="true"]{background:var(--steel);color:var(--paper)}
+.note{font-size:12.5px;color:var(--ink-3);padding:8px 16px;background:var(--brass-soft);border-bottom:1px solid var(--line)}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;letter-spacing:.03em;padding:1px 8px;border-radius:999px;white-space:nowrap;text-transform:uppercase}
+.chip.need{background:var(--need-soft);color:var(--need)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.info{background:var(--steel-soft);color:var(--ink-2)}
+.prog{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)}
+.bar{width:120px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brass)}
+/* ---------- shared block body ---------- */
+.blk h2{font:700 24px/1.2 var(--display);margin:0 0 4px;text-wrap:balance}
+.blk .sum{color:var(--ink-2);margin:0 0 14px;max-width:68ch}
+.blk table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.blk th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);border-bottom:2px solid var(--steel);padding:6px 8px}
+.blk td{border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top}
+.tw{overflow-x:auto}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);cursor:pointer}
+.opt input{margin-top:4px}
+.opts{display:grid;gap:8px}
+.opt .px{font-size:12px;color:var(--ink-3)}
+.igs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ig{border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--paper);display:grid;gap:6px;cursor:pointer}
+.ig .art{height:120px;border-radius:6px;display:grid;place-items:center;font:700 15px var(--display);color:var(--steel)}
+.ig.sticker .art{background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transform:rotate(-1deg)}
+.ig.chalk .art{background:repeating-linear-gradient(0deg,transparent 0 15px,var(--line) 15px 16px),repeating-linear-gradient(90deg,transparent 0 15px,var(--line) 15px 16px);border:2px dashed var(--steel)}
+.ig.comic .art{background:radial-gradient(var(--line) 1.5px,transparent 1.6px) 0 0/8px 8px,var(--paper);border:4px solid var(--ink)}
+.ig label{display:flex;gap:6px;align-items:center;font-weight:600;font-size:13px}
+.ph{font-size:12.5px;color:var(--ink-3);border:1px dashed var(--line);border-radius:8px;padding:12px;text-align:center}
+/* ---------- Design A: side rail ---------- */
+.A{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:calc(100% - 90px)}
+.rail{position:sticky;top:57px;align-self:start;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--line);background:var(--paper);padding:12px 10px 40px}
+.rail .filter{display:flex;gap:6px;margin:0 4px 10px;flex-wrap:wrap}
+.rail .filter button{border:1px solid var(--line);background:var(--ground);border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer}
+.rail .filter button[aria-pressed="true"]{background:var(--steel);color:var(--paper);border-color:var(--steel)}
+.grp{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:14px 8px 4px}
+.rail a{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:6px;align-items:center;padding:6px 8px;border-radius:6px;text-decoration:none;color:var(--ink);font-size:13.5px}
+.rail a .n{font:600 12px var(--body);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.rail a[aria-current="true"]{background:var(--steel-soft);box-shadow:inset 3px 0 0 var(--steel)}
+.rail a:hover{background:var(--ground)}
+.pane{padding:24px clamp(16px,4vw,48px) 90px;min-width:0}
+.pane .crumb{font-size:12.5px;color:var(--ink-3);margin-bottom:6px}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:28px;padding-top:14px;border-top:1px solid var(--line)}
+.pager button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:8px 14px;cursor:pointer;text-align:left;max-width:48%}
+.pager small{display:block;font-size:11px;color:var(--ink-3)}
+.mobsel{display:none}
+@media (max-width:820px){
+  .A{grid-template-columns:1fr}
+  .rail{display:none}
+  .mobsel{display:block;position:sticky;top:57px;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);padding:8px 16px}
+  .mobsel select{width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--ground);color:var(--ink);font:inherit}
+  .igs{grid-template-columns:1fr}
+}
+/* ---------- Design B: decision queue ---------- */
+.B{max-width:980px;margin:0 auto;padding:20px 16px 120px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:16px;flex-wrap:wrap}
+.tabs button{border:0;border-bottom:3px solid transparent;background:none;padding:8px 12px;cursor:pointer;font-weight:600;color:var(--ink-2)}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brass)}
+.tabs .count{font-size:11px;background:var(--need-soft);color:var(--need);border-radius:999px;padding:0 7px;margin-left:4px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
+.card>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 14px}
+.card>summary::-webkit-details-marker{display:none}
+.card>summary .n{font:700 15px var(--display);color:var(--steel)}
+.card>summary b{display:block;font-size:15px}
+.card>summary span.s{display:block;font-size:13px;color:var(--ink-2)}
+.card[open]>summary{border-bottom:1px solid var(--line)}
+.card .in{padding:16px}
+.card.need{border-left:4px solid var(--brass)}
+.stagehead{font:700 13px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:20px 2px 8px}
+.approvebar{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:1px solid var(--line);display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;z-index:15}
+.approvebar .btn{background:var(--brass);color:var(--ink);border:0;border-radius:999px;padding:9px 20px;font-weight:700;cursor:pointer}
+.approvebar .btn[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+.approvebar .left{font-size:13.5px;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="top">
+  <div><h1>Page Board · London</h1><div class="route">/uk-locations/blue-staffy-puppies-london/ · STOP 3 · record 16657838</div></div>
+  <div class="prog" id="prog"></div>
+  <div class="switch" role="group" aria-label="Choose a layout">
+    <button id="swA" aria-pressed="true">A · Side rail</button>
+    <button id="swB" aria-pressed="false">B · Decision queue</button>
+  </div>
+</div>
+<div class="note">Layout preview only. Every block on the real board stays; these two shells change how you move through it. The content shown is a sample of the real board's blocks and figures.</div>
+
+<div id="viewA"></div>
+<div id="viewB" hidden></div>
+
+<script>
+const BLOCKS=[
+ {id:"0",g:"Start",t:"Intake — found by looking",st:"info",s:"Stub page, location type, noindex today, question file and LLM intel present."},
+ {id:"1",g:"Start",t:"Brief",st:"info",s:"Goal, scope, gates. Strategy A1: a video call before any deposit. Schema plan: LocalBusiness, Person, FAQPage, BreadcrumbList, Product, Offer."},
+ {id:"1b",g:"Start",t:"How Google reads this page",st:"info",s:"7 of 9 page-one results are listing pages, 0 are breeder pages. 6 of 6 People Also Ask questions now have an answer on the page."},
+ {id:"2",g:"Words people see",t:"H1 and meta",st:"need",picks:3,s:"Pick the H1, the title tag and the meta description.",body:"h1"},
+ {id:"2b",g:"Words people see",t:"How the result could look in Google",st:"warn",s:"Title 590 of 600px fits. All three descriptions are 961–982px: may be cut on desktop.",body:"serp"},
+ {id:"3",g:"Outline",t:"Outline",st:"info",s:"22 H2, 41 H3, 17 H4, 6 H5, 6 H6. 27 links: 21 internal, 6 external."},
+ {id:"3a",g:"Outline",t:"Verbatim set",st:"info",s:"Stub page: no verbatim set to keep (Known Issue 79)."},
+ {id:"3c",g:"Outline",t:"Navigation on this page",st:"info",s:"4 navigation components rendered from the London kit."},
+ {id:"3d",g:"Outline",t:"Neighbourhoods",st:"info",s:"London-wide searches carry the volume (320/mo). Enfield and Sutton 10/mo each: name them in delivery copy and one FAQ.",body:"nb"},
+ {id:"3e",g:"Outline",t:"Changed since STOP 2",st:"need",picks:0,s:"7 changes: 6 infographic headings and 1 FAQ row. Approving the board approves them.",body:"changes"},
+ {id:"3b",g:"Outline",t:"Image plan",st:"info",s:"Every body H2 and H3 has an image slot."},
+ {id:"4",g:"Keywords and entities",t:"Distribution",st:"info",s:"Which keyword sits in which section, by type."},
+ {id:"4b",g:"Keywords and entities",t:"Keyword metrics",st:"info",s:"Our planned tags against the top five pages."},
+ {id:"4c",g:"Keywords and entities",t:"Term density against competitors",st:"info",s:"5 competitor bodies: 3 listing, 2 prose. Median band targets per term."},
+ {id:"4d",g:"Keywords and entities",t:"FAQ placement",st:"ok",s:"Method A: buying 28 · dog 25 · living 10 on 2,955 words, so top, middle and bottom FAQ blocks. Matches the outline."},
+ {id:"5",g:"Keywords and entities",t:"Entities",st:"info",s:"Entities by class with the sections that name them."},
+ {id:"5c",g:"Keywords and entities",t:"What competitors say that we do not",st:"info",s:"Phrases on 3+ competitor sites: vet checked, KC registered, mum and dad, ready to leave, family home."},
+ {id:"5b",g:"Components",t:"The kit",st:"info",s:"London's 15 city components."},
+ {id:"6",g:"Components",t:"Component options",st:"ok",s:"All 22 sections are mapped to their London component."},
+ {id:"7",g:"Images",t:"Images and styles",st:"need",picks:1,s:"35 image slots. 1 slot needs a pick: the deposit-choose photo."},
+ {id:"7b",g:"Images",t:"Rules for new pages",st:"ok",s:"Every project 5 rule passes."},
+ {id:"7c",g:"Images",t:"Infographics",st:"need",picks:6,s:"6 infographics, each on its own heading. Pick sticker, chalk or comic for each.",body:"ig"},
+ {id:"7d",g:"Images",t:"Original photos",st:"info",s:"5 real site photos proposed on the best-fit headings. Use, swap or skip each (optional)."},
+ {id:"8a",g:"Before you approve",t:"Structured data the page will emit",st:"info",s:"WebSite, LocalBusiness, Person (planned), BreadcrumbList, 6 Product + Offer, FAQPage."},
+ {id:"8b",g:"Before you approve",t:"Internal links in and out",st:"warn",s:"21 links out. Only 2 pages link in from body text: orphan risk."},
+ {id:"8c",g:"Before you approve",t:"Page weight and LCP budget",st:"info",s:"Images 1.29 MB at phone size. LCP: the hero photo, 94 KB."},
+ {id:"8",g:"Before you approve",t:"Approve",st:"need",picks:0,s:"Records your picks and the board's hash.",body:"approve"}
+];
+const PICKS_TOTAL=BLOCKS.reduce((a,b)=>a+(b.picks||0),0);
+let picked=new Set(["2:0","2:1","2:2"]);
+const chipTxt={need:"needs pick",ok:"passes",warn:"look",info:"info"};
+const chip=b=>`<span class="chip ${b.st}">${b.st==="need"&&b.picks?b.picks+" to pick":chipTxt[b.st]}</span>`;
+const IGS=[["deposit-steps","§08","What Are the Four Steps to Buying From a Staffy Breeder?"],["delivery-route","§09","Which Way Does My Staffordshire Puppy Travel to London?"],["litter-prices-figures","§10","How Many Blue Staffy Puppies Are Left, and What Deposit Holds One?"],["health-tests-checklist","§13","Which DNA and Kennel Club Health Checks Should I Ask to See?"],["paperwork-checklist","§14","What Goes in the Folder for My Blue Staffordshire Bull Terrier?"],["breed-split","§18","Blue Staffordshire Bull Terrier or AmStaff: How Do Their Breed Standards Differ?"]];
+function body(b,pre){
+  const P=pre||"";
+  if(b.body==="h1")return `<div class="opts">${["Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?","Blue Staffy Puppies for London, Delivered From Our Carlisle Home","Blue Staffy Puppies London: Watch Your Puppy on Video First"].map((t,i)=>`<label class="opt"><input type="radio" name="${P}h1" ${i==0?"checked":""}><span>${t}<br><span class="px">${[70,64,59][i]} characters</span></span></label>`).join("")}</div><p class="sum" style="margin-top:12px">Title tag and meta description pickers follow the same pattern.</p>`;
+  if(b.body==="serp")return `<div class="tw"><table><tr><th></th><th>Width</th><th>Verdict</th></tr><tr><td>Title, desktop</td><td>590px</td><td>fits (600px)</td></tr><tr><td>Description, desktop</td><td>961px</td><td>may be cut (920–990px)</td></tr></table></div>`;
+  if(b.body==="nb")return `<div class="tw"><table><tr><th>Area</th><th>Searches/mo</th><th>Use</th></tr><tr><td>Enfield</td><td>10</td><td>Delivery copy + one FAQ</td></tr><tr><td>Sutton</td><td>10</td><td>Delivery copy + one FAQ</td></tr><tr><td>Croydon</td><td>none measured</td><td>"We deliver across London, including …"</td></tr></table></div>`;
+  if(b.body==="changes")return `<div class="tw"><table><tr><th>Section</th><th>Added heading</th></tr>${IGS.map(r=>`<tr><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}<tr><td>§21</td><td>FAQ: How Rare Are Blue Staffies?</td></tr></table></div>`;
+  if(b.body==="ig")return IGS.map(([slot,n,h])=>`<div style="margin-bottom:18px"><div class="crumb"><b>${n}</b> · ${h}</div><div class="igs">${["sticker","chalk","comic"].map(s=>`<label class="ig ${s}"><div class="art">${s}</div><span><input type="radio" name="${P}ig-${slot}" data-k="7c:${slot}"> ${s[0].toUpperCase()+s.slice(1)}</span></label>`).join("")}</div></div>`).join("")+`<p class="ph">On the real board each style shows at 1280, 768 and 375px.</p>`;
+  if(b.body==="approve")return `<p class="sum">The Approve button lists anything you missed, by section number and pick, and jumps to it.</p>`;
+  return `<p class="ph">The block's full content (tables, cards, previews) appears here, unchanged from the current board.</p>`;
+}
+function prog(){const n=Math.min(picked.size,PICKS_TOTAL);document.getElementById("prog").innerHTML=`<span>${n} of ${PICKS_TOTAL} picks made</span><span class="bar"><i style="width:${Math.round(n/PICKS_TOTAL*100)}%"></i></span>`;const L=document.getElementById("left");if(L)L.textContent=PICKS_TOTAL-n?`${PICKS_TOTAL-n} picks left: 6 infographic styles, 1 image`:"All picks made";}
+document.addEventListener("change",e=>{const k=e.target.dataset&&e.target.dataset.k;if(k){picked.add(k);prog();}});
+
+/* ---- A ---- */
+let cur=0,filt="all";
+function renderA(){
+  const groups=[...new Set(BLOCKS.map(b=>b.g))];
+  const vis=b=>filt==="all"||(filt==="need"&&(b.st==="need"))||(filt==="look"&&b.st==="warn");
+  const rail=`<nav class="rail" aria-label="Board blocks"><div class="filter" role="group" aria-label="Filter">${[["all","All 27"],["need","Needs pick"],["look","Look"]].map(([k,l])=>`<button data-f="${k}" aria-pressed="${filt===k}">${l}</button>`).join("")}</div>${groups.map(g=>{const items=BLOCKS.map((b,i)=>[b,i]).filter(([b])=>b.g===g&&vis(b));return items.length?`<div class="grp">${g}</div>`+items.map(([b,i])=>`<a href="#b${b.id}" data-i="${i}" aria-current="${i===cur}"><span class="n">${b.id}</span><span>${b.t}</span>${chip(b)}</a>`).join(""):"";}).join("")}</nav>`;
+  const b=BLOCKS[cur],p=BLOCKS[cur-1],n=BLOCKS[cur+1];
+  const sel=`<div class="mobsel"><label for="msel" class="grp" style="margin:0 0 4px;display:block">Jump to block</label><select id="msel">${BLOCKS.map((x,i)=>`<option value="${i}" ${i===cur?"selected":""}>${x.id} · ${x.t} (${x.st==="need"&&x.picks?x.picks+" to pick":chipTxt[x.st]})</option>`).join("")}</select></div>`;
+  document.getElementById("viewA").innerHTML=sel+`<div class="A">${rail}<main class="pane blk" id="paneA"><div class="crumb">${b.g} · block ${b.id} · ${cur+1} of ${BLOCKS.length}</div><h2>${b.t} ${chip(b)}</h2><p class="sum">${b.s}</p>${body(b,"A")}<div class="pager">${p?`<button data-go="${cur-1}"><small>← Previous</small>${p.id} · ${p.t}</button>`:"<span></span>"}${n?`<button data-go="${cur+1}" style="text-align:right"><small>Next →</small>${n.id} · ${n.t}</button>`:""}</div></main></div>`;
+}
+document.addEventListener("click",e=>{
+  const a=e.target.closest(".rail a");if(a){e.preventDefault();cur=+a.dataset.i;renderA();document.getElementById("paneA").scrollIntoView({block:"start"});return;}
+  const f=e.target.closest("[data-f]");if(f){filt=f.dataset.f;renderA();return;}
+  const g=e.target.closest("[data-go]");if(g){cur=+g.dataset.go;renderA();window.scrollTo({top:0});return;}
+});
+document.addEventListener("change",e=>{if(e.target.id==="msel"){cur=+e.target.value;renderA();}});
+document.addEventListener("keydown",e=>{if(document.getElementById("viewA").hidden||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;if(e.key==="ArrowRight"&&cur<BLOCKS.length-1){cur++;renderA();}if(e.key==="ArrowLeft"&&cur>0){cur--;renderA();}});
+
+/* ---- B ---- */
+let tab="decide";
+function renderB(){
+  const need=BLOCKS.filter(b=>b.st==="need"),look=BLOCKS.filter(b=>b.st==="warn"),ref=BLOCKS.filter(b=>b.st==="info"||b.st==="ok");
+  const card=(b,open)=>`<details class="card ${b.st==="need"?"need":""}" ${open?"open":""}><summary><span class="n">${b.id}</span><span><b>${b.t}</b><span class="s">${b.s}</span></span>${chip(b)}</summary><div class="in blk">${body(b,"B")}</div></details>`;
+  let html=`<div class="tabs" role="tablist">${[["decide","Your decisions",need.length],["look","Look before approving",look.length],["ref","Reference",ref.length]].map(([k,l,c])=>`<button role="tab" data-tab="${k}" aria-selected="${tab===k}">${l}<span class="count">${c}</span></button>`).join("")}</div>`;
+  if(tab==="decide")html+=`<div class="stagehead">Make these picks, then approve</div>`+need.map((b,i)=>card(b,i===0)).join("");
+  if(tab==="look")html+=`<div class="stagehead">Findings to read before you approve</div>`+look.map(b=>card(b,true)).join("");
+  if(tab==="ref"){const groups=[...new Set(ref.map(b=>b.g))];html+=groups.map(g=>`<div class="stagehead">${g}</div>`+ref.filter(b=>b.g===g).map(b=>card(b,false)).join("")).join("");}
+  document.getElementById("viewB").innerHTML=`<div class="B">${html}</div><div class="approvebar"><span class="left" id="left"></span><button class="btn" aria-disabled="true">Approve board</button></div>`;
+  prog();
+}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-tab]");if(t){tab=t.dataset.tab;renderB();}});
+
+/* ---- switch ---- */
+function show(w){document.getElementById("viewA").hidden=w!=="A";document.getElementById("viewB").hidden=w!=="B";document.getElementById("swA").setAttribute("aria-pressed",w==="A");document.getElementById("swB").setAttribute("aria-pressed",w==="B");try{localStorage.setItem("boardLayout",w)}catch(_){} }
+document.getElementById("swA").onclick=()=>show("A");document.getElementById("swB").onclick=()=>show("B");
+renderA();renderB();prog();
+let start="A";try{start=localStorage.getItem("boardLayout")||"A"}catch(_){}
+if(location.hash==="#B")start="B";show(start);
+</script>
