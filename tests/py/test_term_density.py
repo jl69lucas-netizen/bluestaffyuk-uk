@@ -158,3 +158,87 @@ def test_cli_needs_a_known_slug(capsys):
     assert TD.main([]) == 2
     assert TD.main(["no-such-board-slug"]) == 2
     assert "usage" in capsys.readouterr().err
+
+
+# --- density pool (breeder q02, 2026-10-02: "Count listings too") -------------------------
+
+def _pool_root(tmp_path):
+    pages = [{"url": "u1", "google_pos": 1}, {"url": "u2", "google_pos": 2},
+             {"url": "u3", "google_pos": 3}]
+    return _root(tmp_path, pages, {1: LISTING, 2: PAGE_A, 3: PAGE_B})
+
+
+def test_include_listings_keeps_them_and_tags_each_kind(tmp_path):
+    root = _pool_root(tmp_path)
+    got = TD.competitor_pages(SLUG, ["kennel club"], root=root, include_listings=True)
+    assert [(p["url"], p["rank"], p["kind"]) for p in got] == [
+        ("u1", 1, "listing"), ("u2", 2, "prose"), ("u3", 3, "prose")]
+
+
+def test_include_listings_defaults_to_false(tmp_path):
+    root = _pool_root(tmp_path)
+    assert [p["url"] for p in TD.competitor_pages(SLUG, ["x"], root=root)] == ["u2", "u3"]
+
+
+def test_include_listings_still_caps_at_top_in_rank_order(tmp_path, monkeypatch):
+    monkeypatch.setattr(TD, "TOP", 2)
+    root = _pool_root(tmp_path)
+    got = TD.competitor_pages(SLUG, ["x"], root=root, include_listings=True)
+    assert [p["url"] for p in got] == ["u1", "u2"]
+
+
+def test_board_without_density_pool_is_the_prose_pool(tmp_path):
+    root = _pool_root(tmp_path)
+    board = {"meta": {"slug": SLUG}, "sections": [{"keywords": {"primary": ["kennel club"]}}]}
+    _, pages = TD.rows(board, {"entities": []}, root)
+    assert [p["url"] for p in pages] == ["u2", "u3"]
+    first = TD.table(board, {"entities": []}, root=root).splitlines()[0]
+    assert "listing pages skipped, so this differs from block 4b's five" in first
+
+
+def test_density_pool_all_counts_listings_with_a_prose_column(tmp_path):
+    root = _pool_root(tmp_path)
+    board = {"meta": {"slug": SLUG}, "density_pool": "all",
+             "sections": [{"keywords": {"primary": ["kennel club"]}}]}
+    _, pages = TD.rows(board, {"entities": []}, root)
+    assert [p["url"] for p in pages] == ["u1", "u2", "u3"]
+    out = TD.table(board, {"entities": []}, root=root)
+    lines = out.splitlines()
+    assert lines[0] == ("Counted on 3 competitor bodies (1 listing, 2 prose; ranks 1, 2, 3 of 3) "
+                        "— listing pages are counted, as the breeder ruled on 2026-10-02 (q02): "
+                        "u1, u2, u3")
+    assert "differs from block 4b" not in out
+    assert "Thin pool" not in out
+    assert any(l.startswith("| Term | Seen on | Seen on (prose) | Min |") for l in lines)
+    assert "| kennel club | 2/3 | 2/2 | 0 | 1 | 0.7 | 1 |" in out
+
+
+def test_density_pool_all_thin_only_when_the_total_is_under_three(tmp_path):
+    pages = [{"url": "u1", "google_pos": 1}, {"url": "u2", "google_pos": 2}]
+    root = _root(tmp_path, pages, {1: LISTING, 2: PAGE_A})
+    board = {"meta": {"slug": SLUG}, "density_pool": "all",
+             "sections": [{"keywords": {"primary": ["kennel club"]}}]}
+    out = TD.table(board, {"entities": []}, root=root)
+    assert out.splitlines()[0].startswith("Counted on 2 competitor bodies (1 listing, 1 prose;")
+    assert "**Thin pool:**" in out
+
+
+def test_density_pool_all_no_prose_body_says_so_in_the_prose_column(tmp_path):
+    pages = [{"url": "u1", "google_pos": 1}]
+    root = _root(tmp_path, pages, {1: LISTING})
+    board = {"meta": {"slug": SLUG}, "density_pool": "all",
+             "sections": [{"keywords": {"primary": ["kennel club"]}}]}
+    out = TD.table(board, {"entities": []}, root=root)
+    assert "| kennel club | 0/1 | 0/0 |" in out
+
+
+def test_london_board_counts_five_bodies_with_listings():
+    board = json.loads((TD.ROOT / "data/boards/blue-staffy-puppies-london.json").read_text())
+    assert board.get("density_pool") == "all"
+    ont = json.loads((TD.ROOT / "data/bsuk-ontology.json").read_text())
+    _, pages = TD.rows(board, ont)
+    assert len(pages) == 5
+    assert [p["rank"] for p in pages] == sorted(p["rank"] for p in pages)
+    first = TD.table(board, ont).splitlines()[0]
+    assert first.startswith("Counted on 5 competitor bodies (")
+    assert "Thin pool" not in TD.table(board, ont)

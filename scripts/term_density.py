@@ -10,8 +10,12 @@ it reports min / median / mean / max occurrences and two targets scaled to OUR w
   median band = [p25, p75] of competitor density x our_words / 1000
   leader band = [p75, max] of competitor density x our_words / 1000
 
-Listing pages (query_augment.listing_reason) are skipped, because prose is what we compare
-against, so the pages counted here can differ from block 4b's five.
+Which pages are counted is the board's `density_pool`. "prose" (the default, and every
+board recorded before the ruling) skips listing pages (query_augment.listing_reason), because
+prose is what we compare against, so the pages counted can differ from block 4b's five. "all"
+counts listing pages too, as the breeder ruled on 2026-10-02 (answer board q02, "Count
+listings too", against the recommendation); the table then adds a "Seen on (prose)" column so
+the prose-only reading stays visible beside the pooled one.
 
 Matching uses the same tokeniser and stop words as block 4b (keyword_metrics.key_words +
 _starts over the _Page body), but each term is counted on its own: a longer term's matches
@@ -34,6 +38,8 @@ TOP = KM.TOP
 NOT_FETCHED = "NOT FETCHED — no cached competitor page"
 UNUSED = "— (no competitor uses it)"
 THIN = 3
+POOLS = ("all", "prose")
+RULING = "listing pages are counted, as the breeder ruled on 2026-10-02 (q02)"
 OVERLAP_NOTE = ("Matching uses the same tokeniser and stop words as block 4b, but each term is "
                 "counted on its own, so a longer term's matches also count toward a shorter term "
                 "it contains (e.g. \"blue staffy puppies\" inside \"blue staffy\").")
@@ -102,11 +108,13 @@ def term_row(term, pages, our_words):
     }
 
 
-def competitor_pages(slug, terms, root=ROOT, skipped=None):
+def competitor_pages(slug, terms, root=ROOT, skipped=None, include_listings=False):
     """count_terms() for the top TOP non-blocked, cached, non-listing competitor pages, each
-    with its url, its rank (1-based, in keyword_metrics' order of the non-blocked pages) and
-    `of` (how many non-blocked pages were ranked). A listing page passed over on the way is
-    appended to `skipped` (its url), when the caller passes a list."""
+    with its url, its rank (1-based, in keyword_metrics' order of the non-blocked pages),
+    `of` (how many non-blocked pages were ranked) and `kind` ("listing" or "prose"). A
+    listing page passed over on the way is appended to `skipped` (its url), when the caller
+    passes a list. With `include_listings` a listing page is kept instead, tagged
+    "listing", and counts toward the TOP cap in rank order like any other body."""
     bare = KM._bare(slug)
     path = pathlib.Path(root) / "data/queries/raw" / bare / "competitors.json"
     try:
@@ -123,12 +131,13 @@ def competitor_pages(slug, terms, root=ROOT, skipped=None):
         if not cached.exists():
             continue
         html = cached.read_text(encoding="utf-8", errors="replace")
-        if QA.listing_reason(QA.page_metrics(html)):
+        listing = bool(QA.listing_reason(QA.page_metrics(html)))
+        if listing and not include_listings:
             if skipped is not None:
                 skipped.append(p.get("url", ""))
             continue
         out.append(dict(count_terms(html, terms), url=p.get("url", ""), rank=rank,
-                        of=len(ranked)))
+                        of=len(ranked), kind="listing" if listing else "prose"))
     return out
 
 
@@ -146,12 +155,22 @@ def section_words(sec):
     return int(w)
 
 
+def density_pool(board):
+    """The board's pool: "all" (listing pages counted) or "prose" (the default)."""
+    pool = board.get("density_pool") or "prose"
+    if pool not in POOLS:
+        raise ValueError(f"density_pool must be one of {POOLS}, not {pool!r}")
+    return pool
+
+
 def rows(board, ont, root=ROOT, skipped=None):
-    """(one term_row per board term and entity name, the competitor pages counted)."""
+    """(one term_row per board term and entity name, the competitor pages counted). The
+    pool is the board's `density_pool`; see density_pool()."""
     terms, _ = KM.board_terms(board)
     terms = list(dict.fromkeys(terms + board_entity_names(board, ont)))
     our_words = sum(section_words(s) for s in board.get("sections", []))
-    pages = competitor_pages(board["meta"]["slug"], terms, root, skipped)
+    pages = competitor_pages(board["meta"]["slug"], terms, root, skipped,
+                             include_listings=density_pool(board) == "all")
     return [term_row(t, pages, our_words) for t in terms], pages
 
 
@@ -176,16 +195,30 @@ def md_table(head, body):
 def table(board, ont, root=ROOT):
     skipped = []
     rs, pages = rows(board, ont, root, skipped)
-    head = ["Term", "Seen on", "Min", "Median", "Mean", "Max",
-            "Target · median band", "Target · leader band"]
+    pooled = density_pool(board) == "all"
+    prose = [p for p in pages if p.get("kind") != "listing"]
+    head = ["Term", "Seen on"] + (["Seen on (prose)"] if pooled else []) + [
+        "Min", "Median", "Mean", "Max", "Target · median band", "Target · leader band"]
     body = []
     for r in rs:
         if r.get("note"):
-            body.append([r["term"], r["note"], "", "", "", "", "", ""])
+            body.append([r["term"], r["note"]] + [""] * (len(head) - 2))
             continue
-        body.append([r["term"], f"{r['seen_on']}/{r['of']}", r["min"], _num(r["median"]),
-                     r["mean"], r["max"], _band(r, "target_median"), _band(r, "target_leader")])
-    if pages:
+        seen = [f"{r['seen_on']}/{r['of']}"]
+        if pooled:
+            n = sum(1 for p in prose if p["counts"].get(r["term"], 0))
+            seen.append(f"{n}/{len(prose)}")
+        body.append([r["term"]] + seen + [r["min"], _num(r["median"]), r["mean"], r["max"],
+                                          _band(r, "target_median"), _band(r, "target_leader")])
+    if pages and pooled:
+        ranks = ", ".join(str(p["rank"]) for p in pages)
+        urls = ", ".join(p["url"] for p in pages)
+        n_list = len(pages) - len(prose)
+        lines = [f"Counted on {len(pages)} competitor bodies ({n_list} listing, {len(prose)} "
+                 f"prose; ranks {ranks} of {pages[0]['of']}) — {RULING}: {urls}"]
+    elif pooled:
+        lines = ["Counted on 0 competitor bodies: NOT FETCHED"]
+    elif pages:
         ranks = ", ".join(str(p["rank"]) for p in pages)
         urls = ", ".join(p["url"] for p in pages)
         # The clause is said only when it is true: a pool with no listing page in it is

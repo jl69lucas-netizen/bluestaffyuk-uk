@@ -60,6 +60,13 @@
   }
  },
  "properties": {
+  "density_pool": {
+   "enum": [
+    "all",
+    "prose"
+   ],
+   "description": "Block 4c (scripts/term_density.py): which competitor bodies the density bands count. \"all\" counts listing pages too, as the breeder ruled on 2026-10-02 (answer board q02, \"Count listings too\"); \"prose\" skips them. Absent means \"prose\", so a board recorded before the ruling is unchanged."
+  },
   "meta": {
    "type": "object",
    "required": [
