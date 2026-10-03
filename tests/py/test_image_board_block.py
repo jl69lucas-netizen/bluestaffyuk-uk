@@ -50,7 +50,13 @@ def _html(board, images):
 
 
 def _block(html):
-    return html.split('data-title="7. Images &amp; styles">', 1)[1].split("</script>", 1)[0]
+    # A project 5 board renders in the decision-queue layout (bfdf53fc), whose block tags carry
+    # data-id / data-tab / data-chip … after the title; a pre-rule board's tag ends at the title.
+    import re
+    m = re.search(r'<script type="text/markdown" data-title="7\. Images &amp; styles"[^>]*>(.*?)</script>',
+                  html, re.S)
+    assert m, "the board has no block 7"
+    return m.group(1)
 
 
 def test_every_slot_gets_a_radio_group_with_thumbnails_and_styles(repo):

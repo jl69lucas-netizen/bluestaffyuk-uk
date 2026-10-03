@@ -1559,6 +1559,27 @@ def locked_picks(board):
     return out
 
 
+def slot_picks_shown(board, locked=None, plan=None):
+    """{`ig:`/`og:` id: value} the board shows checked in blocks 7c and 7d: the carried picks
+    (`locked`, PB.locked_picks) overlaid by the LIVE approval's, in pick_in_force's order.
+
+    locked_picks reads `approval_previous` only, which a FIRST approval does not have — so the
+    approved London board (STOP 3, 2026-10-03) showed its six infographic styles unpicked while
+    block 7 showed its img: picks from the approval. A live pick is shown under the same test a
+    carried one is: its slot still offered and its value still on the menu. `plan` as in v2_slots."""
+    locked = locked_picks(board) if locked is None else locked
+    out = {k: v for k, v in locked.items() if k.startswith(V2_PICK_PREFIXES)}
+    live = {k: v for k, v in ((board.get("approval") or {}).get("picks") or {}).items()
+            if k.startswith(V2_PICK_PREFIXES)}
+    if live:
+        slots = v2_slots(board, plan)
+        for sid, pick in live.items():
+            prefix, slot = sid.split(":", 1)
+            if slot in slots[prefix + ":"] and pick in V2_PICKS[prefix + ":"]:
+                out[sid] = pick
+    return out
+
+
 # ── working rule 16: no two pages share a hero or a counter ────────────────────────────────
 #
 # The rule's uniqueness half had no check: the three guides all took H-GD3 and the three

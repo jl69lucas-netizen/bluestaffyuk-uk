@@ -329,12 +329,23 @@ def test_base_of():
 
 def test_every_tuple_component_appears_in_some_pool():
     """A tuple may draw from any pool — the litter page's TOC is the nav pool's dial-1-clay — but a
-    component no pool carries can never be offered to a sibling page again."""
+    component no pool carries can never be offered to a sibling page again.
+
+    A page the own-components rule judges (rules/design.md own-components-per-page; a project 5
+    page, PB.component_judges) is the inverse: its components are its own, built from its own
+    outline, and must NEVER sit in a shared pool, where they would be offered to a sibling
+    (the City kit's variants live in data/design/city-pool.json, not here)."""
     ledger = PB.load_ledger()
     pooled = {PB.base_of(c) for pool in ledger["pools"].values() for c in pool}
-    orphans = {PB.base_of(cid): slug for slug, t in ledger["pages"].items()
+    # The live records, read raw: this module validates against a FIXTURE link library.
+    own = {slug for slug in ledger["pages"]
+           if PB.component_judges(json.loads(PB.board_path(slug).read_text()))}
+    orphans = {PB.base_of(cid): slug for slug, t in ledger["pages"].items() if slug not in own
                for cid in PB.tuple_component_ids(t) if PB.base_of(cid) not in pooled}
     assert orphans == {}
+    offered = {PB.base_of(cid): slug for slug in own
+               for cid in PB.tuple_component_ids(ledger["pages"][slug]) if PB.base_of(cid) in pooled}
+    assert offered == {}
 
 
 def test_validate_ledger_rejects_the_unnamed_refresh_placeholder():
@@ -2769,6 +2780,55 @@ def london_full():
     return london, html
 
 
+@pytest.fixture(scope="module")
+def london_unapproved():
+    """London rendered as an UNAPPROVED board (a deep copy with `approval=None`). The breeder
+    approved the live record at STOP 3 (f27ab66), and an approved board keeps its Approve button
+    disabled until the database answers — so the refusal flow can only be driven on a copy."""
+    import copy
+    import build_page_board as BPB
+    import image_rules as IR
+    london = copy.deepcopy(json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text()))
+    london["approval"] = None
+    ont = json.loads((ROOT / "data/bsuk-ontology.json").read_text())
+    html = BPB.render(london, ont, LEDGER_EMPTY, live={}, thumbs={}, slug=LONDON,
+                      images=IR.board_images(london))
+    return london, html
+
+
+def test_an_approved_board_shows_every_slot_pick_the_breeder_made():
+    """The approval's own ig:/og:/img: picks are shown checked on the board it approved. A first
+    approval has no `approval_previous`, so reading carried picks alone left the infographic and
+    original-photo radios blank on London's approved board while block 7 showed its img: picks."""
+    import copy
+    import re
+    import build_page_board as BPB
+    import image_rules as IR
+    import original_slots as OS
+    london = json.loads(PB.board_path(LONDON).read_text())   # raw: the fixture link library
+    london.pop("approval_previous", None)
+    plan = PB.ig_plan(london)
+    og_slots = [o["slot"] for o in OS.propose(london, root=PB.ROOT)]
+    picks = {f"ig:{p['slot']}": PB.V2_PICKS["ig:"][i % 3] for i, p in enumerate(plan)}
+    picks.update({f"og:{s}": PB.V2_PICKS["og:"][i % 3] for i, s in enumerate(og_slots)})
+    london["approval"] = {"approved_at": "2026-10-03T00:00:00Z", "h1": 0,
+                          "meta": {"title": 0, "description": 0}, "picks": picks, "notes": {},
+                          "canvas_version": None, "record_hash": PB.record_hash(london)}
+    html = BPB.render(london, PB.load_ontology(), LEDGER_EMPTY, live={}, thumbs={}, slug=LONDON,
+                      images=IR.board_images(london))
+    checked = {m.group(1): m.group(2) for m in
+               re.finditer(r'name="pick-((?:ig|og):[^"]+)" value="([^"]+)" checked>', html)}
+    assert plan and og_slots and checked == picks
+    # The live approval wins over a carried one, as pick_in_force orders them.
+    first = f"ig:{plan[0]['slot']}"
+    other = next(v for v in PB.V2_PICKS["ig:"] if v != picks[first])
+    london["approval_previous"] = {"picks": {first: other}}
+    html = BPB.render(london, PB.load_ontology(), LEDGER_EMPTY, live={}, thumbs={}, slug=LONDON,
+                      images=IR.board_images(london))
+    assert f'name="pick-{first}" value="{picks[first]}" checked>' in html
+    assert f'name="pick-{first}" value="{other}" checked>' not in html
+
+
 def test_signature_labels_cover_every_pick_the_approve_button_waits_for(london_full):
     import build_page_board as BPB
     london, html = london_full
@@ -3218,7 +3278,7 @@ try { ({ chromium } = require('playwright')); } catch (e) { console.log('SKIP no
 """
 
 
-def test_queue_refusal_jumps_across_tabs_in_a_browser(tmp_path, london_full):
+def test_queue_refusal_jumps_across_tabs_in_a_browser(tmp_path, london_unapproved):
     import functools, http.server, os, shutil, subprocess, threading
     if shutil.which("node") is None:
         pytest.skip("node not installed")
@@ -3227,7 +3287,7 @@ def test_queue_refusal_jumps_across_tabs_in_a_browser(tmp_path, london_full):
     if subprocess.run(["node", "-e", "require('playwright')"], cwd=ROOT, env=env,
                       capture_output=True).returncode != 0:
         pytest.skip("playwright is not installed (node_modules here or in the main checkout)")
-    london, html = london_full
+    london, html = london_unapproved
     (tmp_path / "board.html").write_text(html, encoding="utf-8")
     script = tmp_path / "run.cjs"
     script.write_text(_QUEUE_RUN, encoding="utf-8")

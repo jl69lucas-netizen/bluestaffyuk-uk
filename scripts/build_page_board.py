@@ -1737,8 +1737,11 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         rfind = rule_findings(board, ont)
         rules_html, refused = rules_block(rfind)
         parts.append(("7b. Rules for new pages", rules_html))
-        parts.append(("7c. Infographics", infographic_block(board, locked, ig_plan)))
-        parts.append(("7d. Original photos", og_block(board, locked)))
+        # The slot picks in force: carried, overlaid by the live approval's (a first approval
+        # has no approval_previous, so `locked` alone left an approved board's 7c/7d blank).
+        shown = PB.slot_picks_shown(board, locked, ig_plan)
+        parts.append(("7c. Infographics", infographic_block(board, shown, ig_plan)))
+        parts.append(("7d. Original photos", og_block(board, shown)))
 
     # Breeder q12 (2026-10-02): the structured data, the internal-link map and the page
     # weight, read last before approving; project 5 boards only.
