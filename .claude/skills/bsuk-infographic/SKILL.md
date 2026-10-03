@@ -83,7 +83,7 @@ python3 scripts/build_page_board.py <slug>              # board frames sized fro
   preview's sha256.
 - **Freshness.** A preview edited without re-measuring fails
   `test_heights_json_is_not_stale`.
-- **Without Chromium.** `--write` deletes `heights.json` (the board falls back to scrolling
+- **Without Chromium.** `--write` deletes that file (the board falls back to scrolling
   frames) and exits 2.
 
 **The `.fig` gate.** Every exact figure (a price, the band, a city) carries `class="fig"`. The
