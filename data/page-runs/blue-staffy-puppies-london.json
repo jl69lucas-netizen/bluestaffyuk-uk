@@ -24,5 +24,23 @@
       "D4 (P2 image): the six tall phone infographics paint at ~0.42x on a phone and their labels become illegible; needs a redrawn phone layout through the board's image slots and the Asset Gate; preview docs/reports/impeccable-london/D4-infographic-phone-375.png"
     ],
     "commit": "390a65a37eb6ba24988feb5f19fac8ff09b7f67e"
+  },
+  "frontend_design": {
+    "ran_on": "2026-10-03",
+    "widths": [
+      375,
+      768,
+      1280
+    ],
+    "findings": 10,
+    "fixed": 5,
+    "deferred": [
+      "D5 (P3 motif): sixteen identical seal dividers at one 154px cadence; a hairline between chapter bands is a motif change, preview docs/reports/frontend-design-london/D5-divider-cadence-{375,1280}-preview.png (working rule 6)",
+      "D6 (P3 motion): no page-load moment; proposed filmstrip settle-in (opacity + 8px rise, 200ms, 60ms stagger, reduced-motion off) is a new motion moment, frames docs/reports/frontend-design-london/D6-hero-settle-{375,1280}-t*.png",
+      "D7 (P2 spacing): chapter tray 12px side inset vs siblings 16/32px; applying it pushed kc-registered-staffy-puppies.webp (500px, no siblings) to 2.05x at 1280 (img-srcset-within-2x), needs a width sibling at the image step first; preview docs/reports/frontend-design-london/D7-tray-gutter-{375,768,1280}-preview.png",
+      "D8 (P2 image): two crops cut baked lettering (Contact Us graphic, Staffordshire/American Bully labels); crop box and focus are the board's image slots (Asset Gate); preview docs/reports/frontend-design-london/D8-crop-*-preview.png",
+      "D9 (P3 chrome): footer legal row baselines 11-12px apart and the contact form kit's privacy link has no hover; shared by every page / four pages, previewed first; preview docs/reports/frontend-design-london/D9-footer-legal-{375,1280}-preview.png"
+    ],
+    "commit": "e7181a6a912ad081aab78cfa4802c8621b453580"
   }
 }
