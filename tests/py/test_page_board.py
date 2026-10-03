@@ -3058,3 +3058,27 @@ def test_a_change_row_must_be_new_against_the_approved_outline(tmp_path, monkeyp
     b["outline_changes_since_stop2"][0]["heading"] = "Our Kennel Today!"
     with pytest.raises(PB.BoardError, match="already in the approved outline"):
         PB.validate_board(b)
+
+
+# ── London board v3 (plan 2026-10-03, Task 6): blocks 2b, 8a, 8b, 8c (breeder q12) ────────
+V3_EXTRA_TITLES = ["2b. How the result could look in Google",
+                   "8a. Structured data the page will emit",
+                   "8b. Internal links in and out",
+                   "8c. Page weight and LCP budget"]
+
+
+def test_q12_blocks_on_the_london_board_in_order(london_html):
+    at = [london_html.index(f'data-title="{t}"') for t in V3_EXTRA_TITLES]
+    assert london_html.index('data-title="2. H1 and meta"') < at[0] < \
+        london_html.index('data-title="3. Outline"')
+    assert at[1] < at[2] < at[3] < london_html.index('data-title="8. Approve"')
+    # every title and description option in block 2 carries its pixel width
+    assert london_html.count("px, fits") + london_html.count("px, cut") >= 6
+
+
+def test_q12_blocks_never_on_a_pre_rule_board():
+    import build_page_board as BPB
+    old = BPB.render(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
+    for t in V3_EXTRA_TITLES:
+        assert t not in old, t
+    assert "px, fits" not in old and "px, cut" not in old

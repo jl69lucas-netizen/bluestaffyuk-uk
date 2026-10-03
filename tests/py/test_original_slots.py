@@ -367,8 +367,11 @@ def test_share_card_falls_back_to_editorial_split(monkeypatch):
     slots = OS.propose(board)
     assert OS.share_slot(slots) is slots[0]
     assert slots[0]["share"] == {"w": 1200, "h": 630, "og_style": "C"}
-    assert ("No photo is 1200px wide; the share card uses the Editorial Split panel."
-            in OS.block(board))
+    assert ("No photo is 1200px wide; the share card uses the Editorial Split panel, where the "
+            "photo is shown at up to its own width." in OS.block(board))
+    # The old wording claimed the half-width panel is never upscaled: false for a 512px photo
+    # in a ~600px panel (Task 4 review). The note no longer makes that claim.
+    assert "upscaled" not in OS.NO_WIDE
 
 
 def test_a_non_location_board_keeps_city_photos():

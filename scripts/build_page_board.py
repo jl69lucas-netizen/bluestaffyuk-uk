@@ -40,6 +40,7 @@ import neighbourhoods as NB         # block 3d, the city areas and their keyword
 import term_gap as TG              # block 5c, what competitors say that we do not
 import infographic_plan as IP      # block 7c, infographic style trios
 import original_slots as OS        # block 7d, the original-photo slots
+import board_extras as BX           # blocks 2b, 8a, 8b, 8c (breeder q12, 2026-10-02)
 import board_entities as BE
 import page_intake as PI          # block 0, the intake (the brief's target block)
 import outline_matrix as OM       # STOP 2: the outline is approved before the page board
@@ -651,13 +652,16 @@ def standard_default(section, board):
     return "ledger default"
 
 
-def radio_list(name, items, recommended, picked):
+def radio_list(name, items, recommended, picked, px=None):
     """One radio group, one line per variant, the recommendation starred, every variant
     carrying its own length. The label keeps the click target on the text: three
-    70-character titles are an unreasonable click target as bare radios."""
+    70-character titles are an unreasonable click target as bare radios. `px`, when given,
+    is a function of the variant that returns its pixel width label (block 2b's measure, on
+    project 5 boards only)."""
     return "\n".join(
         f'{"⭐ " if i == recommended else ""}<label><input type="radio" name="{esc(name)}" value="{i}"'
-        f'{" checked" if i == picked else ""}> {esc(v)} <span class="why">({len(v)} chars)</span></label>  '
+        f'{" checked" if i == picked else ""}> {esc(v)} <span class="why">({len(v)} chars'
+        f'{(" · " + esc(px(v))) if px else ""})</span></label>  '
         for i, v in enumerate(items))
 
 
@@ -1128,11 +1132,17 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         radio_list("h1", h1["variants"], h1["recommended"], picked), "",
         f'<span class="oanchor" id="{pick_anchor("meta-title")}"></span>'
         f"**Title tag** — ceiling {PB.title_ceiling(slug)} characters", "",
-        radio_list("meta-title", ms["titles"], ms["recommended"]["title"], mt), "",
+        radio_list("meta-title", ms["titles"], ms["recommended"]["title"], mt,
+                   px=(lambda v: BX.option_px(v, "title")) if new_family else None), "",
         f'<span class="oanchor" id="{pick_anchor("meta-description")}"></span>'
         f"**Meta description** — band {PB.DESC_MIN}–{PB.DESC_MAX} characters", "",
-        radio_list("meta-description", ms["descriptions"], ms["recommended"]["description"], mdn),
+        radio_list("meta-description", ms["descriptions"], ms["recommended"]["description"], mdn,
+                   px=(lambda v: BX.option_px(v, "description")) if new_family else None),
     ])))
+    # Breeder q12 (2026-10-02): how the picked pair could look as a Google result, measured
+    # in pixels; project 5 boards only, so the twelve built boards render as before.
+    if new_family:
+        parts.append(("2b. How the result could look in Google", BX.serp_block(board, PB.ROOT)))
 
     parts.append(("3. Outline", f"<pre class=\"tree\">{outline_block(board, hits + qhits)}</pre>\n\n"
                   + (f"**{len(hits)} heading(s) collide with a live page.** Rewrite them before approving; "
@@ -1257,6 +1267,13 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         parts.append(("7b. Rules for new pages", rules_html))
         parts.append(("7c. Infographics", infographic_block(board, locked, ig_plan)))
         parts.append(("7d. Original photos", og_block(board, locked)))
+
+    # Breeder q12 (2026-10-02): the structured data, the internal-link map and the page
+    # weight, read last before approving; project 5 boards only.
+    if new_family:
+        parts.append(("8a. Structured data the page will emit", BX.schema_block(board, PB.ROOT)))
+        parts.append(("8b. Internal links in and out", BX.links_block(board, PB.ROOT, PB.DIST)))
+        parts.append(("8c. Page weight and LCP budget", BX.weight_block(board, PB.ROOT)))
 
     status = ("Approved as it stands." if approved else
               REFUSAL_LINE if refused else "Connecting to the board database…")

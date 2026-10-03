@@ -54,8 +54,8 @@ nodes under them. n is clamped to 4..5; a page with too few eligible sections or
 photos gets fewer, and the block says so. One slot is also the SHARE CARD at 1200×630
 (IMAGE-DESIGNS.md §1, one per page): the best slot whose photo is at least 1200px wide, with
 framing style A (Contain on Bone); when no proposed photo is that wide, the best slot with
-style C (Editorial Split — a half-width photo panel, never upscaled past the photo's own
-width), and the block says so (NO_WIDE). Each slot carries `slot`
+style C (Editorial Split — a half-width photo panel, where the photo is shown at up to its own
+width; this module plans the slot and resizes nothing), and the block says so (NO_WIDE). Each slot carries `slot`
 (`orig-<section>` for an H2, `orig-<section>-<three key words of the H3>` for an H3),
 `section`, `level`, `heading`, `photo`, `alt`, `fit` and `why` (the shared terms and the
 matched subject).
@@ -122,7 +122,8 @@ FLOOR = 20
 N_MIN, N_MAX, N_DEFAULT = 4, 5, 5
 SHARE_W, SHARE_H = 1200, 630
 NEW_ALT = "NEW alt needed (repeat use, rule 11)"
-NO_WIDE = "No photo is 1200px wide; the share card uses the Editorial Split panel."
+NO_WIDE = ("No photo is 1200px wide; the share card uses the Editorial Split panel, where the "
+           "photo is shown at up to its own width.")
 NO_ALT = "NOT FETCHED — no served alt; NEW alt needed"
 QUESTION_WORDS = frozenset("""
 will can could should would does did i my me get which who where much many there here
