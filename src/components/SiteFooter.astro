@@ -43,7 +43,9 @@ import logo from '../../public/brand/logo-mono.svg?raw';
       display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
     .site-footer h2 { font-size: 1.1rem; }
-    .site-footer a { color: inherit; }
+    /* Every footer link a 44x44 target (impeccable D3, the breeder's yes on every page,
+       2026-10-03 q04): the 27 city pages and /search/ still carry this footer. */
+    .site-footer a { color: inherit; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
     .site-footer ul { list-style: none; padding: 0; }
     .site-footer__cities { columns: 2; }
     .site-footer__legal { margin-top: 24px; font-size: 13px; opacity: .85; }

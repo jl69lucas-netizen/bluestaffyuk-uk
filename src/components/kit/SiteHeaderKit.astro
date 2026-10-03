@@ -235,7 +235,9 @@ const here = Astro.url.pathname;
   @layer components {
     .kit-hdr { position: sticky; top: 0; z-index: 50; background: var(--hdr-bg); border-bottom: 1px solid var(--color-border); min-height: var(--hdr); color: var(--color-text); }
     .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: var(--hdr); flex-wrap: wrap; }
-    .brand { display: inline-flex; align-items: center; gap: var(--space-3); text-decoration: none; color: inherit; }
+    /* A 44x44 target (impeccable D3, the breeder's yes on every page, 2026-10-03 q04): the mark is
+       40px, so the link is held to 44px and centres it; nothing moves but the link's own box. */
+    .brand { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); min-width: 44px; min-height: 44px; text-decoration: none; color: inherit; }
     .brand:focus-visible, .nav a:focus-visible, .drawer summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     .nav ul { display: flex; gap: var(--space-5); list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
     .nav a { color: inherit; text-decoration: none; font-weight: 600; font-size: var(--text-sm); padding: var(--space-3) 0; display: inline-block; min-height: 44px; line-height: 20px; }
