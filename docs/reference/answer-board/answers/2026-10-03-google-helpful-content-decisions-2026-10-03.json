@@ -1,0 +1,73 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, byline plus Person, and a recorded read by me",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Add a byline (\"Written by Lisa Bright, Carlisle\", linking to the About page) with Person markup, and record that you read each page before it goes live?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, preview it for my approval",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Add a video-call checklist to London's deposit section (tick-boxes the buyer uses during the call: mum on camera, the puppy's own markings, paperwork shown, the refund clause read out)?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, preview it for my approval",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Show a compact strip of the six puppies (name, sex, colour, price) near the top of London, not only at the litter section about 1,100 words down?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, from the next page",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "Turn each section's word band into a maximum only (no minimum), and relabel the term-density table as a ceiling, not a target?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, warn only",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "Make the \"five H5 and five H6 headings\" floor a warning on location pages, not a fail?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "Before a city gets a full page, must you supply at least one first-hand fact about that city (a past delivery there, a buyer there, a note on the route)?",
+      "status": "answered",
+      "text": "That is why i want neighborhood section, you must use specific city landmarks, vets, parks, dog parts, so each city page looks and sound different,, no duplicate contrnt/pages, etc"
+    }
+  ],
+  "at": "2026-10-03T18:29:56.342Z",
+  "batchId": "2026-10-03-google-helpful-content-decisions",
+  "counts": {
+    "answered": 6,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-03T18-29-56-340Z"
+}
