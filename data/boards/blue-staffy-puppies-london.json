@@ -297,6 +297,13 @@
             "anchor_type": "partial",
             "sentence_start": true,
             "why": "docs/research/london-page-run/links-plan.md: Hero · supports 'the puppies on this page are real and listed'; the transactional next step. Resolves today: yes — src/pages/available-puppies/index.astro"
+          },
+          {
+            "href": "/blue-staffy-uk-breeders/",
+            "anchor": "Lisa Bright",
+            "nav": true,
+            "anchor_type": "branded",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q01 (a) byline style A; q06 (a) adds it to the board): the byline under the H1 names the author, and her name opens the About page, which tells her breeder story. A byline credit, not a prose sentence, so it is a nav link. Resolves today: yes — dist/blue-staffy-uk-breeders/"
           }
         ],
         "external": []
@@ -525,7 +532,50 @@
       "tree": [],
       "images": [],
       "links": {
-        "internal": [],
+        "internal": [
+          {
+            "href": "/available-puppies/roman/",
+            "anchor": "Roman",
+            "nav": true,
+            "anchor_type": "natural",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q02 (a) puppy strip style A; q06 (a) adds it to the board): one tap from the ticket strip to Roman's own page; the whole ticket (name, sex, colour and price from data/puppies.json, price interpolated) is the link. A strip of tiles, so a nav link. Resolves today: yes — dist/available-puppies/roman/"
+          },
+          {
+            "href": "/available-puppies/byrd/",
+            "anchor": "Byrd",
+            "nav": true,
+            "anchor_type": "natural",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q02 (a) puppy strip style A; q06 (a) adds it to the board): one tap from the ticket strip to Byrd's own page; the whole ticket (name, sex, colour and price from data/puppies.json, price interpolated) is the link. A strip of tiles, so a nav link. Resolves today: yes — dist/available-puppies/byrd/"
+          },
+          {
+            "href": "/available-puppies/ince/",
+            "anchor": "Ince",
+            "nav": true,
+            "anchor_type": "natural",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q02 (a) puppy strip style A; q06 (a) adds it to the board): one tap from the ticket strip to Ince's own page; the whole ticket (name, sex, colour and price from data/puppies.json, price interpolated) is the link. A strip of tiles, so a nav link. Resolves today: yes — dist/available-puppies/ince/"
+          },
+          {
+            "href": "/available-puppies/vennie/",
+            "anchor": "Vennie",
+            "nav": true,
+            "anchor_type": "natural",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q02 (a) puppy strip style A; q06 (a) adds it to the board): one tap from the ticket strip to Vennie's own page; the whole ticket (name, sex, colour and price from data/puppies.json, price interpolated) is the link. A strip of tiles, so a nav link. Resolves today: yes — dist/available-puppies/vennie/"
+          },
+          {
+            "href": "/available-puppies/christa/",
+            "anchor": "Christa",
+            "nav": true,
+            "anchor_type": "natural",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q02 (a) puppy strip style A; q06 (a) adds it to the board): one tap from the ticket strip to Christa's own page; the whole ticket (name, sex, colour and price from data/puppies.json, price interpolated) is the link. A strip of tiles, so a nav link. Resolves today: yes — dist/available-puppies/christa/"
+          },
+          {
+            "href": "/available-puppies/cheryl/",
+            "anchor": "Cheryl",
+            "nav": true,
+            "anchor_type": "natural",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q02 (a) puppy strip style A; q06 (a) adds it to the board): one tap from the ticket strip to Cheryl's own page; the whole ticket (name, sex, colour and price from data/puppies.json, price interpolated) is the link. A strip of tiles, so a nav link. Resolves today: yes — dist/available-puppies/cheryl/"
+          }
+        ],
         "external": []
       },
       "options": {
@@ -655,12 +705,6 @@
           "heading": "london-buy-5",
           "intent": "Q: How Do I Reserve One of Your Blue Staffy Puppies From London? — the London row of data/faq.json this block renders, written at build from the outline",
           "children": []
-        },
-        {
-          "level": 3,
-          "heading": "london-buy-6",
-          "intent": "Q: Where Can I Find Blue Staffy Breeders in the UK? — the London row of data/faq.json this block renders, written at build from the outline (the site already answers the same question as row `home-find-breeders`; this row carries the London wording and pointers)",
-          "children": []
         }
       ],
       "images": [],
@@ -674,7 +718,7 @@
         ],
         "excluded": [],
         "pick": null,
-        "note": "Component: CityFaqLedger — city pick london/faq-blocks/a. CityFaqLedger block `buy`. The tree names the block's rows by data/faq.json id (the repo's FAQ-block convention, scripts/page_sections.py): each id's intent carries the approved question word for word. The questions: How Much Are Blue Staffy Puppies in the UK? | Can I Get a Blue Staffy Puppy Delivered to My Home in London? | How Much Is the Deposit? | How Do I Know a Puppy Is Still Available? | How Do I Reserve One of Your Blue Staffy Puppies From London? | Where Can I Find Blue Staffy Breeders in the UK?. Answers carry no <a> (they feed FAQPage JSON-LD); a pointer to a section sits in its own paragraph outside the answer. SectionDivider (M5, outline build_notes): a divider sits before this section on the built page. The London city kit has no divider component of its own (the fifteen picks carry none) and the board schema's `divider` shape would add a section the outline does not have, so it is carried as this note and built from the shared kit's src/components/kit/SectionDivider.astro; the seam-parity test (seams = sections) is Task 26. Outline row 7 · FAQ block (top) · Cat A · framework QAB · 190 words. Outline note: Six questions in score order (5, 4, 3, 3, 3, 3; ties in the question file's rank order). Dropped as near-duplicates, each recorded with covered_by in data/queries/blue-staffy-puppies-london.json: 'How much is a blue Staffordshire puppy?' (covered by the UK price question; its keyword stays in row 10) and 'Do you deliver across the UK?' (covered by the London delivery question). Promoted: 'How much is the deposit?' and 'Where can I find blue staffy breeders in the UK?', the next fact-backed top-block questions. 'Is there a waiting list for a well-bred Staffy puppy?' (score 4) was not promoted: the question file marks it blocked, unverified fact, and no data file answers it (working rule 9). The deposit answer is two sentences: the amount from deposit_gbp, then a pointer to row 8. London wording added to the delivery and reserve questions (meaning unchanged); prices from data/price-matrix.json. Words 220 → 190 (2026-09-30): room for the CAG for-sale additions (four #enquiry CTAs, the counter-position H4, the GEO fact table); every answer stays two to three sentences. Image plan (outline): — Entities (why): ont:refundable-deposit — (Recommended) FAQ 'How Much Is the Deposit?' (QF top block); answered from depositLine. Trade-off: the refund clause, never a plain 'refundable'.; ont:blue-coat — FAQ 'How Much Are Blue Staffy Puppies in the UK?' (PAA); price from data/price-matrix.json.; ont:defra-approved-transport — FAQ on home delivery to London (QF q-can-i-get-a-blue-staffy-puppy-delivered-ad16e3, score 4).; ont:london — Block heading names London buyers; primary keyword."
+        "note": "Component: CityFaqLedger — city pick london/faq-blocks/a. CityFaqLedger block `buy`. The tree names the block's rows by data/faq.json id (the repo's FAQ-block convention, scripts/page_sections.py): each id's intent carries the approved question word for word. The questions: How Much Are Blue Staffy Puppies in the UK? | Can I Get a Blue Staffy Puppy Delivered to My Home in London? | How Much Is the Deposit? | How Do I Know a Puppy Is Still Available? | How Do I Reserve One of Your Blue Staffy Puppies From London?. Answers carry no <a> (they feed FAQPage JSON-LD); a pointer to a section sits in its own paragraph outside the answer. SectionDivider (M5, outline build_notes): a divider sits before this section on the built page. The London city kit has no divider component of its own (the fifteen picks carry none) and the board schema's `divider` shape would add a section the outline does not have, so it is carried as this note and built from the shared kit's src/components/kit/SectionDivider.astro; the seam-parity test (seams = sections) is Task 26. Outline row 7 · FAQ block (top) · Cat A · framework QAB · 190 words. Outline note: Six questions in score order (5, 4, 3, 3, 3, 3; ties in the question file's rank order). Dropped as near-duplicates, each recorded with covered_by in data/queries/blue-staffy-puppies-london.json: 'How much is a blue Staffordshire puppy?' (covered by the UK price question; its keyword stays in row 10) and 'Do you deliver across the UK?' (covered by the London delivery question). Promoted: 'How much is the deposit?' and 'Where can I find blue staffy breeders in the UK?', the next fact-backed top-block questions. 'Is there a waiting list for a well-bred Staffy puppy?' (score 4) was not promoted: the question file marks it blocked, unverified fact, and no data file answers it (working rule 9). The deposit answer is two sentences: the amount from deposit_gbp, then a pointer to row 8. London wording added to the delivery and reserve questions (meaning unchanged); prices from data/price-matrix.json. Words 220 → 190 (2026-09-30): room for the CAG for-sale additions (four #enquiry CTAs, the counter-position H4, the GEO fact table); every answer stays two to three sentences. Image plan (outline): — Entities (why): ont:refundable-deposit — (Recommended) FAQ 'How Much Is the Deposit?' (QF top block); answered from depositLine. Trade-off: the refund clause, never a plain 'refundable'.; ont:blue-coat — FAQ 'How Much Are Blue Staffy Puppies in the UK?' (PAA); price from data/price-matrix.json.; ont:defra-approved-transport — FAQ on home delivery to London (QF q-can-i-get-a-blue-staffy-puppy-delivered-ad16e3, score 4).; ont:london — Block heading names London buyers; primary keyword. Dropped 2026-10-03 (answer board 2026-10-03-london-board-revision q05 (a)): 'Where Can I Find Blue Staffy Breeders in the UK?' (london-buy-6), so the top block carries five questions and the page twenty (5 · 7 · 8), inside the location range of 15–20."
       },
       "component": "city-faq-ledger",
       "refresh": {
@@ -1937,6 +1981,62 @@
             "anchor_type": "partial",
             "library_row": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/how-much-exercise-does-your-dog-need",
             "why": "docs/research/london-page-run/links-plan.md: Row 15 (vet-charity). The daily exercise a London owner plans around parks and a commute. Live check 2026-09-30: NOT FETCHED — egress proxy CONNECT 403 (policy denial); Firecrawl scrape 200."
+          },
+          {
+            "href": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+            "anchor": "Dogs in the Royal Parks (PDF)",
+            "anchor_type": "partial",
+            "library_row": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q04 (c) London places style C; q06 (a) adds it to the board): the Royal Parks group header, linked once for Hyde Park, Kensington Gardens, The Regent's Park and Primrose Hill, Richmond Park and Greenwich Park. Source of the facts quoted from data/city-places/blue-staffy-puppies-london.json. Live check 2026-10-03: HTTP 200 (curl)."
+          },
+          {
+            "href": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath",
+            "anchor": "Dog walking at Hampstead Heath",
+            "anchor_type": "partial",
+            "library_row": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q04 (c) London places style C; q06 (a) adds it to the board): the City of London Corporation group header, the source for Hampstead Heath. Source of the facts quoted from data/city-places/blue-staffy-puppies-london.json. Live check 2026-10-03: HTTP 200 (curl)."
+          },
+          {
+            "href": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest",
+            "anchor": "Dog walking in Epping Forest",
+            "anchor_type": "partial",
+            "library_row": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q04 (c) London places style C; q06 (a) adds it to the board): the City of London Corporation group header, the source for Epping Forest. Source of the facts quoted from data/city-places/blue-staffy-puppies-london.json. Live check 2026-10-03: HTTP 200 (curl)."
+          },
+          {
+            "href": "https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf",
+            "anchor": "Enfield PSPO 3 (PDF)",
+            "anchor_type": "branded",
+            "library_row": "https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q04 (c) London places style C; q06 (a) adds it to the board): the Enfield Council group header, the source for the Trent Country Park Water Garden lead rule. Source of the facts quoted from data/city-places/blue-staffy-puppies-london.json. Live check 2026-10-03: HTTP 403 to curl (the council's bot wall); HTTP 200 through a Firecrawl fetch the same day."
+          },
+          {
+            "href": "https://www.enfield.gov.uk/services/leisure-and-culture/parks",
+            "anchor": "Enfield Council's parks page",
+            "anchor_type": "branded",
+            "library_row": "https://www.enfield.gov.uk/services/leisure-and-culture/parks",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q04 (c) London places style C; q06 (a) adds it to the board): the Enfield Council group header, the source for Trent Park's own byelaws. Source of the facts quoted from data/city-places/blue-staffy-puppies-london.json. Live check 2026-10-03: HTTP 403 to curl (the council's bot wall); HTTP 200 through a Firecrawl fetch the same day."
+          },
+          {
+            "href": "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park",
+            "anchor": "Oaks Park, Sutton Council",
+            "anchor_type": "branded",
+            "library_row": "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q04 (c) London places style C; q06 (a) adds it to the board): the London Borough of Sutton group header, the source for Oaks Park. Source of the facts quoted from data/city-places/blue-staffy-puppies-london.json. Live check 2026-10-03: HTTP 200 (curl)."
+          },
+          {
+            "href": "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park",
+            "anchor": "Overton Park, Sutton Council",
+            "anchor_type": "branded",
+            "library_row": "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q04 (c) London places style C; q06 (a) adds it to the board): the London Borough of Sutton group header, the source for Overton Park. Source of the facts quoted from data/city-places/blue-staffy-puppies-london.json. Live check 2026-10-03: HTTP 200 (curl)."
+          },
+          {
+            "href": "https://www.rcvs.org.uk/animal-owners/find-a-vet",
+            "anchor": "The RCVS Find a Vet search",
+            "anchor_type": "branded",
+            "library_row": "https://www.rcvs.org.uk/animal-owners/find-a-vet",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision q04 (c) London places style C; q06 (a) adds it to the board): the vet line under the places: find a registered vet near you and check a vet's registration. No practice is named (q11: the breeder has no London vet to name). Source of the facts quoted from data/city-places/blue-staffy-puppies-london.json. Live check 2026-10-03: HTTP 200 (curl)."
           }
         ]
       },
@@ -2539,7 +2639,15 @@
       "tree": [],
       "images": [],
       "links": {
-        "internal": [],
+        "internal": [
+          {
+            "href": "/privacy-policy-uk/",
+            "anchor": "privacy policy",
+            "nav": true,
+            "anchor_type": "partial",
+            "why": "London board revision (answer board 2026-10-03-london-board-revision preview section 5 row 8; q06 (a) adds it to the board): the enquiry form's privacy note (\"See our privacy policy\"), already on the built page and missing from the board's link list until now. Form chrome, not prose, so a nav link. Resolves today: yes — dist/privacy-policy-uk/"
+          }
+        ],
         "external": []
       },
       "options": {
@@ -3042,5 +3150,293 @@
         "London Note:"
       ]
     }
-  }
+  },
+  "subcomponents": [
+    {
+      "id": "byline",
+      "section": "top",
+      "name": "Byline",
+      "placement": "inside the city-hero-filmstrip hero, directly under the H1, above the lead paragraph",
+      "style": {
+        "pick": "A",
+        "name": "Signed rule",
+        "preview": "docs/artifacts/london-board-revision-preview.html (https://claude.ai/artifact/1NCaKipdpYadM1zUyUV1Jn)"
+      },
+      "source": "answer board 2026-10-03-london-board-revision q01",
+      "data": [
+        "data/settings.json (the breeder's name and town)",
+        "data/page-runs/blue-staffy-puppies-london.json breeder_review (its date)"
+      ],
+      "condition": "line 1, \"Written by Lisa Bright, breeder, Carlisle\", always renders. Line 2, \"Read and approved by Lisa on <date>\", renders only once data/page-runs/blue-staffy-puppies-london.json holds a breeder_review (answer board 2026-10-03-google-helpful-content-decisions q01); until then it is not printed at all. No headshot.",
+      "links": [
+        "/blue-staffy-uk-breeders/"
+      ],
+      "note": "With the byline in place the hero lead's closing sign-off \"Lisa Bright, BlueStaffyUK.\" is dropped (q07 (a)); see board_revisions."
+    },
+    {
+      "id": "puppy-strip",
+      "section": "key-takeaways",
+      "name": "Puppy strip",
+      "placement": "straight after the city-takeaways-ledger rows, in the content column beside the page dial; no new heading, so the outline is unchanged",
+      "style": {
+        "pick": "A",
+        "name": "Ticket strip",
+        "preview": "docs/artifacts/london-board-revision-preview.html (https://claude.ai/artifact/1NCaKipdpYadM1zUyUV1Jn)"
+      },
+      "source": "answer board 2026-10-03-london-board-revision q02",
+      "data": [
+        "data/puppies.json name, sex, colour, price_gbp (price interpolated at build, never typed)"
+      ],
+      "links": [
+        "/available-puppies/roman/",
+        "/available-puppies/byrd/",
+        "/available-puppies/ince/",
+        "/available-puppies/vennie/",
+        "/available-puppies/christa/",
+        "/available-puppies/cheryl/"
+      ],
+      "note": "Six tickets (Roman, Byrd, Ince, Vennie, Christa, Cheryl), no photo: the hero filmstrip already shows the six faces one screen up (working rule 11)."
+    },
+    {
+      "id": "video-call-checklist",
+      "section": "deposit-viewing",
+      "node": "tree[0].children[0].children[0]",
+      "heading": "What Should I Ask to See While We Are on the Call?",
+      "name": "Video-call checklist",
+      "placement": "under the H5 and its paragraph, across the chapter's full width; native checkboxes inside their labels, no JavaScript, nothing saved",
+      "style": {
+        "pick": "B",
+        "name": "Look and listen",
+        "preview": "docs/artifacts/london-board-revision-preview.html (https://claude.ai/artifact/1NCaKipdpYadM1zUyUV1Jn)"
+      },
+      "source": "answer board 2026-10-03-london-board-revision q03",
+      "data": [
+        "data/faq.json about-health-tests, whyus-paperwork",
+        "data/puppies.json colour",
+        "data/settings.json deposit_gbp, deposit_refund_clause, guarantee_label, guarantee_cover, guarantee_note (interpolated)",
+        "answers 2026-09-29 q01, q03, q04, q05"
+      ],
+      "items": [
+        {
+          "group": "Ask to see, on camera",
+          "label": "Maggie, with the litter",
+          "detail": "Ask us to turn the camera to Maggie, our dam, with her puppies.",
+          "from": "answers 2026-09-29 q03; data/faq.json about-health-tests"
+        },
+        {
+          "group": "Ask to see, on camera",
+          "label": "Your puppy's own markings",
+          "detail": "See your puppy up close and match its coat to the colour on its listing. Cheryl, for one, is listed as blue with a white blaze.",
+          "from": "data/puppies.json colour (Cheryl: \"Blue with white blaze\")"
+        },
+        {
+          "group": "Ask to see, on camera",
+          "label": "The paperwork",
+          "detail": "The Kennel Club registration paperwork, the vaccination records and the microchipping details.",
+          "from": "data/faq.json whyus-paperwork"
+        },
+        {
+          "group": "Ask to see, on camera",
+          "label": "The written contract",
+          "detail": "Our puppy purchase contract, with the take-back promise written into it.",
+          "from": "data/faq.json whyus-paperwork; answers 2026-09-29 q05"
+        },
+        {
+          "group": "Ask to hear, out loud",
+          "label": "The health tests, by name",
+          "detail": "Ask us about each of these tests by name: L-2-HGA, HC-HSF4, eye screening and elbow screening.",
+          "from": "answers 2026-09-29 q01 (the tests are named only, never a result); data/faq.json about-health-tests"
+        },
+        {
+          "group": "Ask to hear, out loud",
+          "label": "The parents' registration numbers",
+          "detail": "Write them down so you can check the pedigree yourself.",
+          "from": "data/faq.json whyus-paperwork"
+        },
+        {
+          "group": "Ask to hear, out loud",
+          "label": "The deposit terms",
+          "detail": "£500, paid by bank transfer: up to 70% refundable if you change your mind up to 1 day before collection or delivery.",
+          "from": "data/settings.json deposit_gbp and deposit_refund_clause, both interpolated at build; answers 2026-09-29 q04 (bank transfer)"
+        },
+        {
+          "group": "Ask to hear, out loud",
+          "label": "The Two-year health guarantee",
+          "detail": "It covers health issues and birth defects for two years from the day your puppy comes home. Ask us for the full terms before you pay a deposit.",
+          "from": "data/settings.json guarantee_label, guarantee_cover and guarantee_note, all interpolated at build"
+        }
+      ],
+      "note": "The items are the preview's wording, word for word. The price, the refund clause, the guarantee's label, cover and note, and the puppy's colour are read from the data files named at build, never typed on the page. The checklist adds no links."
+    },
+    {
+      "id": "london-places",
+      "section": "london-life",
+      "node": "tree[0].children[0]",
+      "heading": "Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?",
+      "name": "London places",
+      "placement": "under the H4 and its paragraph, across the chapter's full width, then one RCVS Find a Vet line",
+      "style": {
+        "pick": "C",
+        "name": "Grouped by who sets the rules",
+        "preview": "docs/artifacts/london-board-revision-preview.html (https://claude.ai/artifact/1NCaKipdpYadM1zUyUV1Jn)"
+      },
+      "source": "answer board 2026-10-03-london-board-revision q04",
+      "data": [
+        "data/city-places/blue-staffy-puppies-london.json places[] grouped on managed_by; each fact is places[].facts[].value as the file words it",
+        "data/city-places/blue-staffy-puppies-london.json vets.source and vets.how (link the search, name no practice)"
+      ],
+      "items": [
+        {
+          "group": "The Royal Parks",
+          "label": "Hyde Park, Kensington Gardens, The Regent's Park and Primrose Hill, Richmond Park, Greenwich Park",
+          "detail": "each park's dog-free and on-a-lead facts; the group header links the Royal Parks PDF once",
+          "from": "data/city-places/blue-staffy-puppies-london.json places[managed_by=The Royal Parks]"
+        },
+        {
+          "group": "City of London Corporation",
+          "label": "Hampstead Heath, Epping Forest",
+          "detail": "each place's control, recall and lead facts; the header links each place's own page",
+          "from": "data/city-places/blue-staffy-puppies-london.json places[managed_by=City of London Corporation]"
+        },
+        {
+          "group": "Enfield Council",
+          "label": "Trent Country Park",
+          "detail": "the PSPO 3 Water Garden lead rule and Trent Park's own byelaws; the header links PSPO 3 and the parks page",
+          "from": "data/city-places/blue-staffy-puppies-london.json places[managed_by=Enfield Council]"
+        },
+        {
+          "group": "London Borough of Sutton",
+          "label": "Oaks Park, Overton Park",
+          "detail": "Oaks Park's dog-free picnic area; Overton Park, no dogs except guide dogs; the header links each park's page",
+          "from": "data/city-places/blue-staffy-puppies-london.json places[managed_by=London Borough of Sutton]"
+        },
+        {
+          "group": "Vets",
+          "label": "The RCVS Find a Vet search",
+          "detail": "find a registered vet near you and check a vet's registration; we name no London practice",
+          "from": "data/city-places/blue-staffy-puppies-london.json vets; answer board 2026-10-03-london-board-revision q11"
+        }
+      ],
+      "links": [
+        "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+        "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath",
+        "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest",
+        "https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf",
+        "https://www.enfield.gov.uk/services/leisure-and-culture/parks",
+        "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park",
+        "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park",
+        "https://www.rcvs.org.uk/animal-owners/find-a-vet"
+      ],
+      "note": "Left out on purpose: facts that are not about dogs (park sizes, toilets, a postal address), the file's general rules list, and any borough the sources do not name. Each publisher is linked once in its group header (8 links, not 12)."
+    }
+  ],
+  "board_revisions": [
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q01",
+      "decision": "Byline under the H1: style A · Signed rule. \"Written by Lisa Bright, breeder, Carlisle\", her name linking to /blue-staffy-uk-breeders/; the \"Read and approved by Lisa on <date>\" line only once the page-run record holds a breeder_review (answer board 2026-10-03-google-helpful-content-decisions q01). No headshot.",
+      "sections": [
+        "top"
+      ],
+      "record_change": "subcomponents[byline]; top.links.internal + /blue-staffy-uk-breeders/ (nav)",
+      "builder": "Render the byline in the hero under the H1; gate line 2 on data/page-runs/blue-staffy-puppies-london.json breeder_review."
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q02",
+      "decision": "Puppy strip under the key takeaways: style A · Ticket strip. The six puppies from data/puppies.json, each linking to its own page; no new heading.",
+      "sections": [
+        "key-takeaways"
+      ],
+      "record_change": "subcomponents[puppy-strip]; key-takeaways.links.internal + six /available-puppies/<slug>/ (nav)",
+      "builder": "Render the strip after the takeaways ledger; prices interpolated from price_gbp."
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q03",
+      "decision": "Video-call checklist: style B · Look and listen, the eight items as the preview shows them (the tests named only, never that the parents had them).",
+      "sections": [
+        "deposit-viewing"
+      ],
+      "record_change": "subcomponents[video-call-checklist] with its eight items, under the deposit-viewing H5",
+      "builder": "Render the two panes under the H5 and its paragraph; values in braces interpolated."
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q04",
+      "decision": "London places: style C · Grouped by who sets the rules, from data/city-places/blue-staffy-puppies-london.json, plus the RCVS Find a Vet line.",
+      "sections": [
+        "london-life"
+      ],
+      "record_change": "subcomponents[london-places]; london-life.links.external + eight library rows",
+      "builder": "Render the four publisher groups and the vet line under the parks H4."
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q05",
+      "decision": "FAQ: drop \"Where Can I Find Blue Staffy Breeders in the UK?\" from the top block (21 → 20).",
+      "sections": [
+        "faq-top"
+      ],
+      "record_change": "faq-top.tree loses london-buy-6 (6 → 5; the page's FAQ 21 → 20: 5 · 7 · 8); data/queries/blue-staffy-puppies-london.json clears that question's covered_by",
+      "builder": "Remove the question from the top FAQ block and from FAQPage; the data/faq.json row london-buy-6 is then unused."
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q06",
+      "decision": "Add all the new links from the preview's section 5 to the board.",
+      "sections": [
+        "top",
+        "key-takeaways",
+        "enquiry",
+        "london-life"
+      ],
+      "record_change": "16 link placements: top 1, key-takeaways 6, enquiry 1 (/privacy-policy-uk/, already on the built page), london-life 8 external (each added to docs/reference/external-link-library.md)"
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q07",
+      "decision": "Drop the hero lead's closing sign-off \"Lisa Bright, BlueStaffyUK.\", which the byline now says.",
+      "sections": [
+        "top"
+      ],
+      "record_change": "recorded here; the hero lead is page copy, so the record's tree is unchanged",
+      "builder": "Delete \"Lisa Bright, BlueStaffyUK.\" from the end of the hero lead paragraph."
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q08",
+      "decision": "Breeder fact: \"take home delivery and handovers are by request.\"",
+      "sections": [
+        "delivery"
+      ],
+      "record_change": "data/city-places/blue-staffy-puppies-london.json first_hand[0] (usable); the handover breeder question marked answered",
+      "builder": "A page may say London handovers are by request; no place is named or inferred."
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q09",
+      "decision": "Breeder fact: past London deliveries to Croydon, Edmonton and Ilford.",
+      "sections": [
+        "delivery"
+      ],
+      "record_change": "data/city-places/blue-staffy-puppies-london.json first_hand[1] (usable)",
+      "builder": "A page may name the three places as written; no borough, date or count is inferred."
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q10",
+      "decision": "Breeder answer \"Chadwell, Dartford\" to the London owner's park-line question.",
+      "record_change": "data/city-places/blue-staffy-puppies-london.json first_hand[2], received but unused: it names places, not an owner's line about a park routine, so there is nothing to quote (working rule 9)"
+    },
+    {
+      "date": "2026-10-03",
+      "source": "answer board 2026-10-03-london-board-revision q11",
+      "decision": "Breeder answer: no London vet to name.",
+      "sections": [
+        "london-life"
+      ],
+      "record_change": "data/city-places/blue-staffy-puppies-london.json first_hand[3]; the vet breeder question marked answered; the page links the RCVS Find a Vet search only"
+    }
+  ]
 }

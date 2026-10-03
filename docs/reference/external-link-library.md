@@ -65,6 +65,14 @@ header name, so a row without a type is reported by `tests/py/test_link_diversit
 | https://www.dogstrust.org.uk/dog-advice/getting-dog/breeds/staffordshire-bull-terrier | dogstrust.org.uk | Dogs Trust's Staffordshire Bull Terrier breed page — a rehoming charity's own account of the breed | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | welfare |
 | https://paag.org.uk/ | paag.org.uk | The Pet Advertising Advisory Group's how-to-buy-a-pet advice — independent guidance for a buyer answering an online pet advert | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | welfare |
 | https://pmc.ncbi.nlm.nih.gov/articles/PMC7510130/ | pmc.ncbi.nlm.nih.gov | Pegram, Wonham, Brodbelt, Church and others, "Staffordshire Bull Terriers in the UK: their disorder predispositions and protections" (Canine Medicine and Genetics, 2020) — a study of anonymised VetCompass veterinary records, open access on PubMed Central | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | research |
+| https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf | royalparks.org.uk | The Royal Parks' own "Dogs in the Royal Parks" rules — where dogs may not go and where they must be on a lead in Hyde Park, Kensington Gardens, The Regent's Park and Primrose Hill, Richmond Park and Greenwich Park | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 | other |
+| https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath | cityoflondon.gov.uk | The City of London Corporation on dog walking at Hampstead Heath — control, recall, clearing up and the professional dog-walker licence | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 | local |
+| https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest | cityoflondon.gov.uk | The City of London Corporation's Dog Walking Code of Conduct for Epping Forest — effective control, recall and wildlife and livestock | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 | local |
+| https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf | enfield.gov.uk | Enfield Council's Public Spaces Protection Order 3 (from 23 October 2025) — the parks where dogs must be on a lead at all times, the Trent Country Park Water Garden among them | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 (headless fetch; plain curl 403) | local |
+| https://www.enfield.gov.uk/services/leisure-and-culture/parks | enfield.gov.uk | Enfield Council's general park information page — its park byelaws, Trent Park's own among them, and its dog notices | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 (headless fetch; plain curl 403) | local |
+| https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park | sutton.gov.uk | The London Borough of Sutton's Oaks Park page — its dog-free picnic area | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 | local |
+| https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park | sutton.gov.uk | The London Borough of Sutton's Overton Park page — a recreation ground where dogs are not permitted, guide dogs excepted | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 | local |
+| https://www.rcvs.org.uk/animal-owners/find-a-vet | rcvs.org.uk | The Royal College of Veterinary Surgeons' Find a Vet search — the official register a buyer uses to find a registered vet near them and check that a vet is registered; we name no practice | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 | vet-charity |
 
 ## Provenance
 
@@ -117,7 +125,9 @@ The one added on 2026-09-20 for `/buy-staffy-puppies-for-sale-uk/` is a URL the 
 already carried, and it was re-checked that day. The Blue Cross socialisation page answers a
 plain `curl` with 403 — the site's bot filter, not a dead page — so it was checked through a
 headless browser instead and returned 200 at the same URL; that is the only row in this table
-whose check needed one.
+whose check needed one until the London rows below.
+
+The eight added on 2026-10-03 for `/uk-locations/blue-staffy-puppies-london/` are the London places block and its vet line (answer board 2026-10-03-london-board-revision q04, q06), each the source a fact in `data/city-places/blue-staffy-puppies-london.json` is quoted from. Six returned 200 to `curl` that day. Enfield Council's two answer a plain `curl` with 403, the site's bot filter, so they were checked through a headless fetch instead and returned 200 at the same URLs.
 
 That board adds no other row. Every other outside URL the migrated body carried is logged in
 the record's `dropped.links`: an encyclopaedia entry, two image libraries, a North American
