@@ -300,3 +300,24 @@ def test_the_breeders_london_answers_and_nothing_she_did_not_give():
     body = main_text(built())
     assert "Croydon, Edmonton and Ilford" in body and "handovers are by request" in body
     assert "Chadwell" not in body and "Dartford" not in body
+
+
+def test_the_phone_source_serves_each_approved_phone_layout_at_its_real_size():
+    """Below 640px each infographic serves its phone layout — the `img:<slot>-phone` pick the
+    breeder approved at the Asset Gate (2026-10-04 q01), published byte-identical beside the box
+    — at the size the manifest measured, and never the older `-760` file (kept on disk, rule 11)."""
+    html = built()
+    manifest = json.loads((ROOT / "data/image-manifest.json").read_text(encoding="utf-8"))
+    picks = BOARD["approval"]["picks"]
+    sources = re.findall(r'<source media="\(max-width: 639px\)" srcset="([^"]+)"[^>]*'
+                         r'width="(\d+)" height="(\d+)"', html)
+    rows = [a for a in BOARD["assets"] if a["kind"] == "infographic"]
+    assert len(rows) == 6 and len(sources) == 6
+    for a in rows:
+        stem = a["file"][len("/images/"):-len(".webp")]
+        assert f"img:{a['slot']}-phone" in picks, a["slot"]
+        m = manifest[stem]
+        want = (f"/images/{stem}-phone.webp {m['phone_w']}w", str(m["phone_w"]), str(m["phone_h"]))
+        assert want in sources, (a["slot"], sources)
+        assert (ROOT / "public/images" / f"{stem}-760.webp").exists(), "rule 11: kept on disk"
+    assert "infographic-760" not in html

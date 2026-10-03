@@ -32,11 +32,11 @@
 import type { FilledAsset } from '../lib/assets';
 import { BODY_SIZES, TALL_SIZES, UNIFORM_SIZES } from '../lib/assets';
 
-/** A phone-only art-directed file (an infographic's tall `-760` sibling): served below 640px
+/** A phone-only art-directed file (an infographic's phone layout): served below 640px
  *  through `<picture>`, at its own intrinsic size, and never cropped by the uniform box. */
 export interface PhoneSource {
   src: string; w: number; h: number;
-  /** Its own candidate list (a smaller bake beside the -760 file), read against `sizes`. Omitted
+  /** Its own candidate list (`w` descriptors), read against `sizes`. Omitted
    *  renders the single file, as before. */
   srcset?: string;
 }

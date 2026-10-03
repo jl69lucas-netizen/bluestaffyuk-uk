@@ -23,7 +23,10 @@
 // KEPT OUT OF THE INDEX until the user approves the page (`noindex, follow`, Task 37 flips it).
 //
 // THE SIX INFOGRAPHICS (approved on the answer board, 2026-10-03 q02 a) are art-directed: the wide
-// file in the uniform box, its tall `-760` layout below 640px. Each is one entry of `IG` below.
+// file in the uniform box, and below 640px its phone layout (`<box stem>-phone.webp`, drawn at the
+// width it paints at on a phone, at 2x; approved at the Asset Gate, answer board 2026-10-04 q01).
+// The older `-760` files stay served (working rule 11); this page no longer points at them. Each
+// is one entry of `IG` below.
 //
 // ONE SERVED PHOTOGRAPH, ONE ALT PER USE: Maggie's photograph opens the page in the trust ledger
 // with its served alt (the board's `london-hero` slot) and returns under the parents' H4 with the
@@ -33,6 +36,7 @@ import CityShell from '../../layouts/CityShell.astro';
 import locations from '../../../data/locations.json';
 import settings from '../../../data/settings.json';
 import board from '../../../data/boards/blue-staffy-puppies-london.json';
+import imageManifest from '../../../data/image-manifest.json';
 import standards from '../../../data/breed-standards.json';
 import faqBank from '../../../data/faq.json';
 import queries from '../../../data/queries/blue-staffy-puppies-london.json';
@@ -130,32 +134,41 @@ const photo = (slot: string): BodyAsset => {
   const widths = SIBLINGS.filter((w) => w < a.w && inPublic(a.file.replace(/(\.[a-z]+)$/, `-${w}$1`)));
   return widths.length ? { ...a, srcset: bakedSrcset(a, widths, inPublic) } : a;
 };
-/** An approved infographic: the wide file, its tall phone layout and the alt it is read by. To
- *  swap one, change its entry here. */
-const infographic = (slot: string, alt: string, phone: { w: number; h: number }): BodyAsset => {
+const MANIFEST = imageManifest as Record<string, { w: number; h: number; sib_w: number | null;
+  phone_w?: number; phone_h?: number }>;
+/** An approved infographic: the wide file, its phone layout and the alt it is read by. To swap
+ *  one, change its entry here. */
+const infographic = (slot: string, alt: string): BodyAsset => {
   const a = asset(slot);
-  // Each layout has a smaller bake beside it (harden pass 2026-10-03): the wide file a 720w one,
-  // for the 540-710px box it paints in from 640px; the tall phone file a 400w one, for the ~320px
-  // box on a phone. The served files stay as they are (working rule 11).
-  const tall = { ...a, slot: `${slot}-phone`, file: a.file.replace(/\.webp$/, '-760.webp'), ...phone };
+  // The wide file has a 720w bake beside it (harden pass 2026-10-03) for the 540-710px box it
+  // paints in from 640px. The phone layout (`img:<slot>-phone`, published by
+  // scripts/ingest_image.py publish-phone) is one file drawn for the ~311px phone box at 2x: its
+  // real size is the manifest's `phone_w`/`phone_h`, and its `w` descriptor read against `sizes`
+  // gives the browser that density, so it lands on screen at the size its labels were drawn for.
+  const stem = a.file.replace(/^\/images\//, '').replace(/\.webp$/, '');
+  const row = MANIFEST[stem];
+  if (!row?.phone_w || !row.phone_h) {
+    throw new Error(`${slot}: data/image-manifest.json records no published phone layout for ${stem}`);
+  }
+  const tall = { ...a, slot: `${slot}-phone`, file: `/images/${stem}-phone.webp`, w: row.phone_w, h: row.phone_h };
   return { ...a, alt: a.alt || alt, srcset: bakedSrcset(a, [720], inPublic),
-    phone: { src: tall.file, ...phone, srcset: bakedSrcset(tall, [400], inPublic) } };
+    phone: { src: tall.file, w: tall.w, h: tall.h, srcset: bakedSrcset(tall, [], inPublic) } };
 };
 // A photo in a chapter's text column, and one in a wide chapter's (full-width) text.
 const TEXT_SIZES = chapterTextSizes();
 const WIDE_TEXT_SIZES = chapterWideSizes();
 const IG = {
-  'deposit-steps': infographic('deposit-steps', '', { w: 760, h: 1013 }),
+  'deposit-steps': infographic('deposit-steps', ''),
   'delivery-route': infographic('delivery-route',
-    `The route from ${TOWN} to London: collection in ${TOWN}, or UK home delivery by DEFRA-approved transport, priced by distance`, { w: 760, h: 692 }),
+    `The route from ${TOWN} to London: collection in ${TOWN}, or UK home delivery by DEFRA-approved transport, priced by distance`),
   'litter-prices-figures': infographic('litter-prices-figures',
-    'Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now', { w: 760, h: 1062 }),
+    'Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now'),
   'health-tests-checklist': infographic('health-tests-checklist',
-    'A checklist of six health questions to put to a Staffy breeder, from the two DNA tests to checking a Kennel Club registration', { w: 760, h: 754 }),
+    'A checklist of six health questions to put to a Staffy breeder, from the two DNA tests to checking a Kennel Club registration'),
   'paperwork-checklist': infographic('paperwork-checklist',
-    "A checklist for your puppy's folder: microchip and vaccinations, the written contract, what to check before signing, and the guarantee", { w: 760, h: 458 }),
+    "A checklist for your puppy's folder: microchip and vaccinations, the written contract, what to check before signing, and the guarantee"),
   'breed-split': infographic('breed-split',
-    'The English Staffy and American Staffordshire Terrier breed standards side by side: the standard, height, coat colours and UK law', { w: 760, h: 1187 }),
+    'The English Staffy and American Staffordshire Terrier breed standards side by side: the standard, height, coat colours and UK law'),
 };
 
 // ── links (the board's, Link-First) ────────────────────────────────────────────────────────
