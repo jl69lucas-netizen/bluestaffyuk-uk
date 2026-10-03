@@ -3,7 +3,8 @@
 
 Parity build, Task 21. A bare `NOT FETCHED` cannot be compared against a later run: nobody
 knows what to try next. So in the research a page is built from — data/boards/*.json,
-data/queries/**/*.json, data/research-boards/*.json, data/outlines/*.json and
+data/queries/**/*.json, data/research-boards/*.json, data/outlines/*.json,
+data/city-places/*.json (a city's sourced places, from 2026-10-03) and
 docs/research/**/*.{md,json} — every NOT FETCHED is written
 
   text   NOT FETCHED — <barrier>      (an en dash, a colon or an opening bracket also count;
@@ -48,6 +49,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 BASELINE = pathlib.Path("data/quality/not-fetched-baseline.json")
 SCOPE = (("data/boards", ("*.json",)), ("data/queries", ("**/*.json",)),
          ("data/research-boards", ("*.json",)), ("data/outlines", ("*.json",)),
+         ("data/city-places", ("*.json",)),
          ("docs/research", ("**/*.md", "**/*.json")))
 IGNORED = ("data/boards/inbox/", "data/boards/previews/", "data/queries/cache/")
 TOKEN = re.compile(r"NOT FETCHED")

@@ -95,6 +95,21 @@ def test_the_scope_is_boards_queries_and_research_only(tmp_path):
                                                        "data/queries/raw/s/threads.json:$.status"]
 
 
+def test_a_city_places_file_is_in_scope(tmp_path):
+    """data/city-places/<slug>.json is the research a city section is written from (the
+    bsuk-city-places skill tells its author to run check:barriers), so a bare NOT FETCHED
+    there fails like one in a board or a query file; a named one passes."""
+    root = _root(tmp_path, {"data/city-places/x.json":
+                            '{"not_fetched": ["NOT FETCHED"], "vets": {"how": "NOT FETCHED."}}',
+                            "data/city-places/y.json":
+                            '{"not_fetched": ["NOT FETCHED — the council page returned 403"]}'},
+                 {"files": {}})
+    probs, examined, _ = L.lint(root)
+    assert examined == 2
+    assert sorted(p.split("  ")[0] for p in probs) == ["data/city-places/x.json:$.not_fetched[0]",
+                                                       "data/city-places/x.json:$.vets.how"]
+
+
 def test_an_unreadable_json_file_is_a_problem(tmp_path):
     root = _root(tmp_path, {"data/queries/x.json": "{NOT FETCHED"}, {"files": {}})
     probs, _, _ = L.lint(root)
