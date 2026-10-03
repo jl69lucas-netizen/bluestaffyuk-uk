@@ -121,7 +121,10 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
     .lede { margin: 0 0 var(--space-4); font-size: var(--city-lead); color: var(--color-text-on-inverse); }
     .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
     .cta {
-      display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--space-6);
+      display: inline-flex; align-items: center; min-height: 48px; padding: var(--space-2) var(--space-6);
+      /* On a phone the label can take two lines: balanced, centred, with room above and below
+         inside the pill (harden pass 2026-10-03). */
+      line-height: 1.25; text-align: center; text-wrap: balance;
       border-radius: var(--btn-radius); background: var(--color-cta); color: var(--color-cta-ink);
       font-weight: 700; text-decoration: none; transition: background-color var(--dur-fast) var(--ease-out);
     }

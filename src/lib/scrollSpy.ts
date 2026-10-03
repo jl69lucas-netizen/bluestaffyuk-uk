@@ -38,8 +38,12 @@ export function watchSections(targets: HTMLElement[], onChange: (i: number) => v
   const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
   let fromObserver = 0;
   let last = -1;
+  // Above the first section (the hero, the takeaways, the first FAQ block) the first row is
+  // current, as on a fresh load: the observer alone kept the last row it saw, so a reader who
+  // scrolled back to the top was told they were still in a later section (harden pass 2026-10-03).
+  const aboveFirst = () => targets[0].getBoundingClientRect().top > window.innerHeight * 0.45;
   const apply = () => {
-    const i = atBottom() ? N - 1 : fromObserver;
+    const i = atBottom() ? N - 1 : aboveFirst() ? 0 : fromObserver;
     if (i !== last) {
       last = i;
       onChange(i);

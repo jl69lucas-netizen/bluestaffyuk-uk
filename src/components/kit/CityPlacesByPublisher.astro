@@ -62,22 +62,26 @@ const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const
       padding: var(--space-4) 0; border-top: 1px solid color-mix(in srgb, var(--color-steel-300) 60%, transparent);
     }
     .grp:first-child { border-top: 0; padding-top: var(--space-1); }
-    .owner-k { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-3); }
+    /* Harden pass 2026-10-03: the label sat at 11px in --color-ink-3 on the steel-100 tray, 4.49:1
+       (under AA); it takes the kit's caption tier and --color-ink-2 (6.18:1, data/design/contrast.json). */
+    .owner-k { margin: 0; font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-2); }
     .owner-n { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 650; font-size: 19px; line-height: 1.2; color: var(--color-brand); }
-    .owner ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-    .owner li { margin: 0; font-size: var(--text-sm); line-height: 1.4; }
-    .owner li::before { content: "↗ "; color: var(--color-brass-600); }
-    .owner a { color: var(--color-link); overflow-wrap: anywhere; }
+    .owner ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+    .owner li { margin: 0; font-size: var(--text-sm); line-height: 1.4; display: flex; align-items: baseline; gap: 0.3em; }
+    .owner li::before { content: "↗"; color: var(--color-brass-600); }
+    /* Each source link is its own 44px row (a standalone link, not a word in a sentence). */
+    .owner a { color: var(--color-link); overflow-wrap: anywhere; display: inline-flex; align-items: center; min-height: 44px; }
     .owner a:focus-visible, .vet a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: 2px; }
     .places { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); min-width: 0; }
-    .place { background: var(--color-bone-50); border-radius: 12px; padding: 12px 14px; border-left: 3px solid var(--color-brass-500); min-width: 0; }
+    /* A whole hairline, not a 3px brass side stripe (impeccable absolute ban, harden pass 2026-10-03). */
+    .place { background: var(--color-bone-50); border-radius: 12px; padding: 12px 14px; border: 1px solid var(--color-border); min-width: 0; }
     .nm { margin: 0; font-family: var(--font-display); font-size: 16px; font-weight: 650; line-height: 1.25; color: var(--color-brand); }
-    .who { margin: 1px 0 0; font-size: 12.5px; line-height: 1.4; color: var(--color-ink-3); }
+    .who { margin: 1px 0 0; font-size: var(--text-xs); line-height: var(--text-xs--line-height); color: var(--color-ink-3); }
     .facts { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
-    .facts li { margin: 0; font-size: 14.5px; line-height: 1.45; }
+    .facts li { margin: 0; font-size: var(--text-sm); line-height: 1.45; }
     .chip {
       display: inline-block; margin-right: 6px; vertical-align: 1px; padding: 2px 8px; border-radius: var(--radius-pill);
-      font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.5; white-space: nowrap;
+      font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.4; white-space: nowrap;
     }
     .k-no { background: color-mix(in srgb, var(--color-warn) 13%, var(--color-white)); color: var(--color-warn); }
     .k-lead { background: var(--color-steel-100); color: var(--color-steel-700); }
