@@ -492,3 +492,82 @@ def test_a_slot_id_must_match_whole(repo, master):
             draft(master, SLUG, bad, og_style="B", root=repo)
         with pytest.raises(Refused, match="is not a slot id"):
             publish(SLUG, bad, STEM, root=repo)
+
+
+# ── --sibling: an infographic's own phone layout served as -760 ────────────────────────
+
+def _phone_sibling(tmp_path, h=900, noisy=False):
+    p = tmp_path / "phone-760.png"
+    if noisy:
+        rnd = random.Random(7)
+        im = Image.new("RGB", (760, h))
+        im.putdata([tuple(rnd.randrange(256) for _ in range(3)) for _ in range(760 * h)])
+    else:
+        im = Image.new("RGBA", (760, h), (0, 0, 0, 0))
+        im.paste((40, 60, 80, 255), (40, 40, 720, h - 40))
+    im.save(p)
+    return p
+
+
+def test_publish_serves_the_drafts_own_sibling_unchanged(repo, master, tmp_path):
+    sib = _phone_sibling(tmp_path)
+    r = draft(master, SLUG, "garden-photo", infographic="IG-2", root=repo, sibling=sib)
+    stored = repo / "data/boards/generated" / slug_file(SLUG) / "garden-photo-760.webp"
+    assert r["sibling"] == stored and Image.open(stored).size == (760, 900)
+    assert stored.stat().st_size <= reframe_og.SIB_MAX_KB * 1024
+    assert Image.open(stored).convert("RGB").getpixel((5, 5)) != (0, 0, 0), \
+        "the transparent margin is laid on bone, never dropped to black"
+    approve(repo, r["pick"])
+    publish(SLUG, "garden-photo", STEM, root=repo, today=DAY)
+    served = repo / "public/images" / (STEM + "-760.webp")
+    assert served.read_bytes() == stored.read_bytes(), "the phone layout, not a shrunk box"
+    assert Image.open(served).size == (760, 900)
+    manifest = json.loads((repo / "data/image-manifest.json").read_text())
+    assert manifest[STEM] == {"w": 1408, "h": 768, "sib_w": 760}
+
+
+def test_a_sibling_over_its_budget_is_refused_and_nothing_written(repo, master, tmp_path):
+    with pytest.raises(Refused, match=r"sibling.*KB"):
+        draft(master, SLUG, "garden-photo", infographic="IG-2", root=repo,
+              sibling=_phone_sibling(tmp_path, h=1600, noisy=True))
+    assert not (repo / "data/boards/generated" / slug_file(SLUG)).exists() or not list(
+        (repo / "data/boards/generated" / slug_file(SLUG)).glob("garden-photo*.webp"))
+
+
+def test_a_sibling_must_be_exactly_760_wide(repo, master, tmp_path):
+    p = tmp_path / "wide.png"
+    Image.new("RGB", (800, 600), (40, 60, 80)).save(p)
+    with pytest.raises(Refused, match="760 wide"):
+        draft(master, SLUG, "garden-photo", infographic="IG-2", root=repo, sibling=p)
+
+
+def test_without_a_sibling_publish_shrinks_the_box_and_a_stale_sibling_is_removed(
+        repo, master, tmp_path):
+    draft(master, SLUG, "garden-photo", infographic="IG-2", root=repo,
+          sibling=_phone_sibling(tmp_path))
+    r = draft(master, SLUG, "garden-photo", infographic="IG-2", root=repo)
+    assert "sibling" not in r
+    assert not (repo / "data/boards/generated" / slug_file(SLUG) / "garden-photo-760.webp").exists()
+    approve(repo, r["pick"])
+    publish(SLUG, "garden-photo", STEM, root=repo, today=DAY)
+    assert Image.open(repo / "public/images" / (STEM + "-760.webp")).size == (760, 415)
+
+
+def test_an_infographic_that_leaves_its_box_mostly_empty_is_refused(repo, tmp_path):
+    """The coordinator's review (2026-10-03): the first drafts filled about half the box."""
+    p = tmp_path / "small.png"
+    Image.new("RGB", (500, 200), (40, 60, 80)).save(p)     # never enlarged: ~35% of the box
+    with pytest.raises(Refused, match="floor"):
+        draft(p, SLUG, "garden-photo", infographic="IG-2", root=repo)
+
+
+def test_a_transparent_infographic_master_has_no_band_against_the_frame(repo, tmp_path):
+    p = tmp_path / "ig.png"
+    im = Image.new("RGBA", (2000, 1090), (0, 0, 0, 0))
+    im.paste((40, 60, 80, 255), (40, 40, 1960, 1050))
+    im.save(p)
+    r = draft(p, SLUG, "garden-photo", infographic="IG-2", root=repo)
+    out = Image.open(r["path"]).convert("RGB")
+    bed = reframe_og.gradient()
+    for xy in ((50, 30), (1360, 30), (50, 740), (1360, 740), (30, 384)):
+        assert max(abs(a - b) for a, b in zip(out.getpixel(xy), bed.getpixel(xy))) <= 3, xy

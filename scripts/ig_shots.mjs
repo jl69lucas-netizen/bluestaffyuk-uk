@@ -2,6 +2,7 @@
 //
 //   node scripts/ig_shots.mjs measure   < jobs.json   # {root, jobs:[{key, path, widths:[…]}]}
 //   node scripts/ig_shots.mjs shoot     < jobs.json   # {root, jobs:[{path, width, height, out}]}
+//   node scripts/ig_shots.mjs crop      < jobs.json   # {root, jobs:[{path, widths:[…], ratio?, margin?, out}]}
 //
 // `root` is served over a localhost static server, so a preview's relative font URL
 // (../../../../../public/fonts/…) resolves to the repo's own woff2 files and the fonts the
@@ -90,8 +91,76 @@ try {
         h: Math.max(document.documentElement.scrollHeight, window.innerHeight) }));
       await page.close();
     }
+  } else if (mode === 'crop') {
+    // One job per baked file. The page background is made transparent and the body padding
+    // set to `margin`, so the screenshot is the figure itself plus an even transparent margin
+    // (wide enough for the hard shadows and the tilted stickers) and never the page's own
+    // bone: the framing (reframe_og.contain_alpha) lays it on the frame's bone, so no
+    // two-tone band can form. Every width in `widths` is measured; with a `ratio` the width
+    // whose figure box is closest to it (in log terms) is shot, without one the first width.
+    // The figure's 1100px reading cap is lifted, so a wide box can be filled by a wide render.
+    // `min_font` is the smallest computed font size of any visible text in the figure, in
+    // CSS px (image px at the default `scale` 1; a `scale` of 2 shoots at twice the pixels,
+    // for a master the framing will shrink into its box rather than enlarge).
+    for (const job of spec.jobs) {
+      const M = job.margin ?? 16;
+      const open = async (width) => {
+        const page = await browser.newPage({ viewport: { width, height: 800 }, deviceScaleFactor: job.scale ?? 1 });
+        page.setDefaultTimeout(TIMEOUT);
+        await page.goto(base + job.path, { waitUntil: 'load' });
+        await page.addStyleTag({ content: `html,body{background:transparent !important}body{padding:${M}px !important}.ig{max-width:none !important}` });
+        await page.evaluate(() => document.fonts.ready);
+        return page;
+      };
+      const box = (page) => page.evaluate((m) => {
+        const r = document.querySelector('figure.ig').getBoundingClientRect();
+        // An exact figure (.fig) broken over two lines ("£200–" / "£350") is a defect at that
+        // width: the width is never shot, whatever its shape.
+        const wrapped = [...document.querySelectorAll('.fig')].filter((el) => {
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          const tops = [...range.getClientRects()].filter((q) => q.width > 0).map((q) => Math.round(q.top));
+          return tops.some((t) => Math.abs(t - tops[0]) > 2);
+        }).map((el) => el.textContent.trim());
+        return { x: Math.max(0, Math.floor(r.left + window.scrollX - m)), y: Math.max(0, Math.floor(r.top + window.scrollY - m)),
+                 w: Math.ceil(r.width + 2 * m), h: Math.ceil(r.height + 2 * m), wrapped };
+      }, M);
+      let best = null;
+      const tried = {};
+      for (const width of job.widths) {
+        const page = await open(width);
+        const b = await box(page);
+        await page.close();
+        const err = job.ratio ? Math.abs(Math.log((b.w / b.h) / job.ratio)) : 0;
+        tried[width] = { w: b.w, h: b.h, ratio: +(b.w / b.h).toFixed(3), wrapped: b.wrapped };
+        if (b.wrapped.length) continue;
+        if (!best || err < best.err - 1e-9) best = { width, err };
+      }
+      if (!best) throw new Error(`${job.path}: an exact figure wraps at every width: ${JSON.stringify(tried)}`);
+      const page = await open(best.width);
+      const b = await box(page);
+      const fonts = await page.evaluate(() => {
+        const fig = document.querySelector('figure.ig');
+        const walk = document.createTreeWalker(fig, NodeFilter.SHOW_TEXT);
+        let min = Infinity, text = '';
+        for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+          if (!n.textContent.trim()) continue;
+          const el = n.parentElement;
+          if (!el || el.closest('[aria-hidden="true"]') || !el.getClientRects().length) continue;
+          const cs = getComputedStyle(el);
+          if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+          const px = parseFloat(cs.fontSize);
+          if (px < min) { min = px; text = n.textContent.trim().slice(0, 60); }
+        }
+        return { min_font: min, min_font_text: text };
+      });
+      await page.screenshot({ path: job.out, fullPage: true, omitBackground: true,
+        clip: { x: b.x, y: b.y, width: b.w, height: b.h } });
+      await page.close();
+      out[job.out] = { width: best.width, w: b.w, h: b.h, tried, ...fonts };
+    }
   } else {
-    throw new Error(`unknown mode ${mode}; use measure or shoot`);
+    throw new Error(`unknown mode ${mode}; use measure, shoot or crop`);
   }
 } finally {
   // close() can hang on a wedged browser: give it 5s, then exit hard below. Playwright's own

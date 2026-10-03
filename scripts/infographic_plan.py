@@ -39,8 +39,10 @@ No preview carries a script or fetches anything but the two web fonts.
 Frame heights: measure_heights() renders every preview at the board's three widths in
 Playwright (scripts/ig_shots.mjs, fonts served) and writes HEIGHTS_FILE; the board sizes each
 frame from it, so no frame is shorter than its document (the v2 "Card" clipping fix).
-Baking: bake_infographic() screenshots ONE picked style per slot into public/images/
-infographics/ — only after the breeder picks (Task 9 / STOP 4), never all three styles.
+Baking: bake_infographic() crops ONE picked style per slot to its figure, at the width that
+fits the 1408x768 box, plus a 760-wide phone sibling — the two masters
+`ingest_image.py draft --infographic IG-n --sibling` takes — only after the breeder picks
+(Task 9 / STOP 4), never all three styles.
 
 Fonts: previews load Fraunces and Source Sans 3 from the repo's public/fonts by a relative
 `font_base` (FONT_BASE), so they render true when opened from the repo. Task 7 publishes
@@ -590,7 +592,9 @@ DOG = (
     '<svg class="dog" viewBox="0 0 120 112" aria-hidden="true" focusable="false">'
     # thick neck and shoulders, with the white chest blaze
     '<path class="dg-fur" d="M27 78C17 88 13 102 13 112H107C107 102 103 88 93 78Z"/>'
-    '<path class="dg-pale" d="M50 90Q60 111 70 90Z"/>'
+    # (the white chest blaze is a large-dog detail: at 96px or less it sat right under the
+    # tongue and read as one more white tooth, so it belongs to dg-big)
+    '<g class="dg-big"><path class="dg-pale" d="M50 90Q60 111 70 90Z"/></g>'
     # rose ears: small, set high, folded back so the inner fold shows
     '<path class="dg-ear" d="M40 27C31 18 19 18 12 27C17 31 19 37 20 42C25 35 30 33 35 36Z"/>'
     '<path class="dg-ear" d="M80 27C89 18 101 18 108 27C103 31 101 37 100 42C95 35 90 33 85 36Z"/>'
@@ -604,7 +608,9 @@ DOG = (
     '<circle class="dg-ink" cx="46" cy="44" r="4.3"/><circle class="dg-ink" cx="74" cy="44" r="4.3"/>'
     '<circle class="dg-hi" cx="47.5" cy="42.5" r="1.4"/><circle class="dg-hi" cx="75.5" cy="42.5" r="1.4"/>'
     # short, broad muzzle; a big nose pad with a shine; a closed, curved smile, and a small
-    # rounded tongue hanging below the lower lip, off to one side (never two front "teeth")
+    # rounded tongue hanging below the lower lip, off to one side (never two front "teeth").
+    # This is the LARGE mouth (dg-big). It is never drawn at 96px or less (dg-small below).
+    '<g class="dg-big">'
     '<path class="dg-pale" d="M39 66C39 56 48 51 60 51C72 51 81 56 81 66C81 78 72 84 60 84'
     'C48 84 39 78 39 66Z"/>'
     '<path class="dg-tongue" d="M62 75C61 83 64 88 68 88C72 88 74 83 73 73Q68 76 62 75Z"/>'
@@ -612,6 +618,17 @@ DOG = (
     '<path class="dg-ink" d="M48 55Q60 47 72 55Q70 64 60 65Q50 64 48 55Z"/>'
     '<ellipse class="dg-hi" cx="55.5" cy="54.5" rx="3.6" ry="1.8"/>'
     '<path class="dg-ln" d="M60 65V69M43 68Q51 77 60 76Q69 76 77 66"/>'
+    '</g>'
+    # The SMALL mouth, for every dog drawn at 96px or less (all the caption dogs, 56-92px):
+    # at that size the pale muzzle split by the nose line read as white buck teeth (the
+    # coordinator's review of the baked deposit-steps draft, 2026-10-03). So: no pale muzzle,
+    # no white shape near the mouth, a plain nose, ONE curved smile line and a small tongue
+    # in the palette tint hanging from it.
+    '<g class="dg-small">'
+    '<path class="dg-ink" d="M50 56Q60 49 70 56Q68 64 60 65Q52 64 50 56Z"/>'
+    '<path class="dg-ln" d="M43 69Q60 82 77 69"/>'
+    '<path class="dg-tongue" d="M60 75C60 81 62 84 65 84C68 84 70 81 69 74Q64 76 60 75Z"/>'
+    '</g>'
     '</svg>')
 
 #: The chalk style's wobble: a turbulence displacement applied to the DRAWN lines only (box
@@ -644,6 +661,8 @@ body{background:var(--color-surface);color:var(--color-text);font-family:var(--f
 .dg-ink{fill:var(--color-ink)}.dg-hi{fill:var(--color-white)}
 .dog path,.dog circle{stroke:var(--color-ink);stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round}
 .dog .dg-ln{fill:none}.dog .dg-hi{stroke:none}
+.dog .dg-small{display:none}
+.cap .dog .dg-big{display:none}.cap .dog .dg-small{display:inline}
 .dog ellipse{stroke:none}
 .defs{position:absolute;width:0;height:0;overflow:hidden}
 .items{list-style:none;margin:0;padding:0}
@@ -976,7 +995,15 @@ SHOTS_JS = "scripts/ig_shots.mjs"
 #: The asset row size (scripts/bake_images.py BOX) and the guide sibling's width.
 BAKE_BOX = (1408, 768)
 BAKE_SIB_W = 760
-BAKE_DIR = "public/images/infographics"
+#: The render widths searched for the one whose figure is shaped like the box.
+BAKE_WIDTHS = tuple(range(760, 1409, 16))
+#: Transparent margin around the figure: wide enough for the hard shadows and the tilts.
+BAKE_MARGIN = 16
+#: The framed box must be covered at least this far along its binding side
+#: (scripts/ingest_image.py FILL_MIN holds a draft to the same floor).
+FILL_MIN = 0.85
+#: The smallest text the phone sibling may carry, in px at 760 wide.
+SIB_MIN_FONT = 14
 
 
 def heights_path(slug: str) -> str:
@@ -1083,37 +1110,70 @@ def load_heights(slug: str, root: Path = ROOT) -> dict:
         return {}
 
 
+class BakeDefect(RuntimeError):
+    """A bake that would ship a box mostly empty, or phone text below the readable floor."""
+
+
 def bake_infographic(slug: str, slot: str, style: str, out_dir=None, root: Path = ROOT) -> dict:
-    """Bake ONE picked style of one slot for the built page: screenshot its preview at the
-    asset row size (BAKE_BOX, 1408×768 viewport) and at BAKE_SIB_W (760) wide, in Chromium with
-    the fonts served, and write `<slug>-<slot>-<style>.webp` and `…-760.webp` to `out_dir`
-    (default public/images/infographics/), held to bake_images.py's size budget.
+    """Bake ONE picked style of one slot into the two lossless masters the draft takes:
+
+      `<slug>-<slot>-<style>.png`      the figure for the 1408×768 box
+      `<slug>-<slot>-<style>-760.png`  the reflowed phone layout, exactly 760 wide
+
+    Both are cropped to the figure plus an even transparent margin (scripts/ig_shots.mjs
+    `crop`), never the page's own bone, so Style A (reframe_og.contain_alpha) lays them on
+    the frame's bone with no two-tone band. The box master is rendered at the width in
+    BAKE_WIDTHS whose figure is closest in shape to the box (1408:768), at twice the pixels,
+    so the framing shrinks it into the box (it never enlarges) and it fills it.
+
+    Refuses (BakeDefect, nothing kept) when the framed box would be covered under
+    FILL_MIN of its width or height, whichever binds, or when any visible text in the phone
+    sibling renders under SIB_MIN_FONT px at 760 wide.
 
     WHEN: only after the breeder picks, one style per slot — at Task 9 or the Asset Gate
     (STOP 4). Never bake all three styles: an unpicked style is a board preview, not an asset.
-    The screenshot is full page, never clipped; a graphic taller than 768px keeps its height
-    (the returned dims say so). Returns {"full": path, "sib": path, "w", "h", "sib_w", "sib_h"}."""
+    Then: `ingest_image.py draft <full> --infographic IG-n --sibling <sib>`.
+    `out_dir` defaults to a temp folder: masters are inputs to the draft, never served.
+    Returns {"full", "sib", "w", "h", "sib_w", "sib_h", "width", "fill", "sib_min_font"}."""
     import tempfile
     sys.path.insert(0, str(ROOT / "scripts"))
     from PIL import Image
-    import bake_images as BI
-    out_dir = Path(out_dir) if out_dir is not None else Path(root) / BAKE_DIR
+    import reframe_og
+    out_dir = (Path(out_dir) if out_dir is not None
+               else Path(tempfile.mkdtemp(prefix=f"bsuk-ig-{slug}-")))
     out_dir.mkdir(parents=True, exist_ok=True)
     src = preview_path(slug, slot, style)
     if not (Path(root) / src).exists():
         raise FileNotFoundError(f"no preview to bake: {src}")
     stem = f"{slug}-{slot}-{style}"
-    with tempfile.TemporaryDirectory() as tmp:
-        png_full, png_sib = Path(tmp) / "full.png", Path(tmp) / "sib.png"
-        _shots("shoot", {"jobs": [
-            {"path": src, "width": BAKE_BOX[0], "height": BAKE_BOX[1], "out": str(png_full)},
-            {"path": src, "width": BAKE_SIB_W, "height": 400, "out": str(png_sib)}]}, root)
-        full = BI._save_within_budget(Image.open(png_full).convert("RGB"),
-                                      out_dir / f"{stem}.webp", allow_downscale=False)
-        sib = BI._save_within_budget(Image.open(png_sib).convert("RGB"),
-                                     out_dir / f"{stem}-760.webp", allow_downscale=False)
-    return {"full": str(out_dir / f"{stem}.webp"), "sib": str(out_dir / f"{stem}-760.webp"),
-            "w": full.width, "h": full.height, "sib_w": sib.width, "sib_h": sib.height}
+    full_p, sib_p = out_dir / f"{stem}.png", out_dir / f"{stem}-760.png"
+    got = _shots("crop", {"jobs": [
+        {"path": src, "widths": list(BAKE_WIDTHS), "ratio": BAKE_BOX[0] / BAKE_BOX[1],
+         "margin": BAKE_MARGIN, "scale": 2, "out": str(full_p)},
+        {"path": src, "widths": [BAKE_SIB_W], "margin": BAKE_MARGIN, "out": str(sib_p)}]}, root)
+    full_m, sib_m = got[str(full_p)], got[str(sib_p)]
+    problems = []
+    with Image.open(full_p) as im:
+        framed = reframe_og.contain_alpha(im)
+        w, h = im.size
+    fill = reframe_og.content_fill(framed)
+    if max(fill) < FILL_MIN:
+        problems.append(f"the framed box is covered {fill[0]:.0%} wide and {fill[1]:.0%} high, "
+                        f"under the {FILL_MIN:.0%} floor")
+    with Image.open(sib_p) as im:
+        sib_w, sib_h = im.size
+    if sib_w != BAKE_SIB_W:
+        problems.append(f"the phone sibling is {sib_w} wide, not {BAKE_SIB_W}")
+    if sib_m["min_font"] < SIB_MIN_FONT:
+        problems.append(f"phone sibling text {sib_m['min_font_text']!r} renders at "
+                        f"{sib_m['min_font']}px, under {SIB_MIN_FONT}px")
+    if problems:
+        full_p.unlink(missing_ok=True)
+        sib_p.unlink(missing_ok=True)
+        raise BakeDefect(f"{slot} ({style}): " + "; ".join(problems))
+    return {"full": str(full_p), "sib": str(sib_p), "w": w, "h": h, "sib_w": sib_w,
+            "sib_h": sib_h, "width": full_m["width"], "fill": fill,
+            "full_min_font": full_m["min_font"], "sib_min_font": sib_m["min_font"]}
 
 
 def block(board: dict, root: Path | None = ROOT) -> str:

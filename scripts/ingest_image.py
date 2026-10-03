@@ -4,8 +4,11 @@
   folder   a photo from the breeder's folder -> public/images/<stem>.webp (+ -760 sibling)
   draft    a generated master -> data/boards/generated/<slug file>/<slot>.webp, the exact
            bytes the board shows for approval; prints their sha12 and the pick that approves
+           (--sibling: an infographic's 760-wide phone layout, stored beside it as
+           <slot>-760.webp)
   publish  after the board approved THOSE bytes (pick `og:<style>:<sha12>` or
-           `ig:IG-<n>:<sha12>`), copies them UNCHANGED into public/images/<stem>.webp
+           `ig:IG-<n>:<sha12>`), copies them UNCHANGED into public/images/<stem>.webp, and the
+           draft's own sibling, when it has one, unchanged as the -760 file
 
 Every command that writes to public/images/ also bakes the `-760` sibling, adds the measured
 row to data/image-manifest.json, records the image in data/image-ingest.json (the ledger this
@@ -41,6 +44,7 @@ Usage:
         [--board <slug> --slot <slot>] [--dry-run]
   python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --og-style A
   python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --infographic IG-2
+        [--sibling <760-wide phone bake>]
   python3 scripts/ingest_image.py publish --board <slug> --slot <slot> --stem <seo-stem>
 """
 import argparse
@@ -70,6 +74,7 @@ DRAFTS = "data/boards/generated"
 MASTER_SUFFIXES = (".jpg", ".jpeg", ".png", ".webp")
 DRAFT_EXTS = (".webp", ".png", ".jpg")
 NATIVE_MAX_H = 1760
+FILL_MIN = 0.85
 
 # 3 to 10 lowercase words joined by single hyphens: what the pipeline's SEO filename
 # convention produces, and nothing a camera or a download names a file by default.
@@ -187,9 +192,13 @@ def _retired_problems(og_style, slug):
 
 def bake(master, og_style=None, infographic=None, mobcrop=""):
     """The framed full-size image for the requested style."""
-    im = reframe_og.load(master)
     if infographic:
-        return reframe_og.render(im, "contain")
+        # A baked infographic master has a transparent background (scripts/ig_shots.mjs
+        # crop): it is laid on the frame's own bone through its alpha, so no band forms.
+        with Image.open(master) as raw:
+            rgba = raw.convert("RGBA")
+        return reframe_og.contain_alpha(rgba)
+    im = reframe_og.load(master)
     if og_style in BAKED:
         return reframe_og.render(im, BAKED[og_style], mobcrop=mobcrop if og_style == "B" else "")
     scale = min(1.0, reframe_og.W / im.width, NATIVE_MAX_H / im.height)
@@ -197,6 +206,39 @@ def bake(master, og_style=None, infographic=None, mobcrop=""):
         im = im.resize((max(1, round(im.width * scale)), max(1, round(im.height * scale))),
                        Image.LANCZOS)
     return im
+
+
+def fill_problems(full, infographic):
+    """An infographic must fill its box: the content's bounding box covers at least FILL_MIN
+    of the box's width or height, whichever binds (the coordinator's review, 2026-10-03: the
+    first drafts filled about half the box and left a bone band below)."""
+    if not infographic:
+        return []
+    fw, fh = reframe_og.content_fill(full)
+    if max(fw, fh) < FILL_MIN:
+        return ["the infographic covers %.0f%% of the box's width and %.0f%% of its height, "
+                "under the %.0f%% floor — bake it at a width whose shape fits the box"
+                % (fw * 100, fh * 100, FILL_MIN * 100)]
+    return []
+
+
+def load_sibling(path):
+    """A supplied -760 sibling (an infographic's reflowed phone bake), flattened onto bone.
+    Returns (image, problems)."""
+    path = pathlib.Path(path)
+    problems = _check_master(path)
+    if problems:
+        return None, ["sibling: " + p for p in problems]
+    with Image.open(path) as raw:
+        im = reframe_og.flatten_on_bone(raw.convert("RGBA"))
+    if im.width != reframe_og.SIB_W:
+        return None, ["sibling %s is %d wide; a -760 sibling is exactly %d wide"
+                      % (path.name, im.width, reframe_og.SIB_W)]
+    return im, []
+
+
+def sibling_draft_path(slug, slot, root=ROOT):
+    return draft_path(slug, slot, root).with_name(slot + "-760.webp")
 
 
 def sibling_of(full):
@@ -333,7 +375,7 @@ def _budget_problems(full, stem):
 
 
 def _publish_files(full_bytes_from, full_img, stem, row, root, slug=None, slot=None,
-                   expect_sha=None):
+                   expect_sha=None, sib_bytes_from=None):
     """Stage the full image (copied byte for byte when a path is given), its sibling, the
     ledger row, the manifest row and the board, then move them all into place. Refused
     (nothing written) when an image misses its budget or the copy is not the approved bytes."""
@@ -356,14 +398,24 @@ def _publish_files(full_bytes_from, full_img, stem, row, root, slug=None, slot=N
         else:
             _encode_staged(stage, full_img, full_path, reframe_og.MAX_KB,
                            "/images/%s.webp" % stem, over)
-        sib = sibling_of(full_img)
-        if sib is not None:
-            _encode_staged(stage, sib, images / ("%s-760.webp" % stem), reframe_og.SIB_MAX_KB,
-                           "/images/%s-760.webp" % stem, over)
+        if sib_bytes_from is not None:          # the draft's own sibling, copied unchanged
+            tmp = stage.temp_for(images / ("%s-760.webp" % stem))
+            shutil.copyfile(sib_bytes_from, tmp)
+            kb = round(tmp.stat().st_size / 1024, 1)
+            if kb > reframe_og.SIB_MAX_KB:
+                over.append("the draft's -760 sibling is %s KB, over the %s KB budget — re-draft it"
+                            % (kb, reframe_og.SIB_MAX_KB))
+            with Image.open(tmp) as s_im:
+                sib_w = s_im.width
+        else:
+            sib = sibling_of(full_img)
+            sib_w = sib.width if sib is not None else None
+            if sib is not None:
+                _encode_staged(stage, sib, images / ("%s-760.webp" % stem),
+                               reframe_og.SIB_MAX_KB, "/images/%s-760.webp" % stem, over)
         if over:
             raise Refused("; ".join(over) + " — nothing written")
-        row.update({"w": full_img.width, "h": full_img.height,
-                    "sib_w": sib.width if sib is not None else None})
+        row.update({"w": full_img.width, "h": full_img.height, "sib_w": sib_w})
         ledger = _read_json(root / LEDGER, {})
         ledger[stem] = row
         stage.json(root / LEDGER, ledger)
@@ -419,9 +471,15 @@ def folder(master, stem=None, og_style=None, infographic=None, mobcrop="", slug=
     return dict(row, stem=stem)
 
 
-def draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root=ROOT):
+def draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root=ROOT,
+          sibling=None):
     """A generated master baked into the board's draft folder. Returns the path, the sha12
-    of the bytes written, and the pick that approves exactly those bytes."""
+    of the bytes written, and the pick that approves exactly those bytes.
+
+    `sibling` (an infographic's reflowed 760-wide phone bake) is stored beside the draft as
+    `<slot>-760.webp`, held to the sibling budget, and `publish` serves it as the -760 file
+    instead of shrinking the whole box. Without it any stored sibling is removed, and publish
+    shrinks the box as before."""
     master, root = pathlib.Path(master), pathlib.Path(root)
     problems = (_check_master(master) + _style_problems(og_style, infographic, mobcrop)
                 + _slug_problems(slug) + _retired_problems(og_style, slug))
@@ -429,14 +487,23 @@ def draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root=
         problems.append("slot %r is not a slot id" % slot)
     if not _slug_problems(slug) and not board_path(slug, root).exists():
         problems.append("no board for %s" % slug)
+    sib_img = None
+    if sibling is not None and not problems:
+        sib_img, sib_problems = load_sibling(sibling)
+        problems += sib_problems
     _refuse(problems)
     full = bake(master, og_style, infographic, mobcrop)
+    _refuse(fill_problems(full, infographic))
     out = draft_path(slug, slot, root)
+    sib_out = sibling_draft_path(slug, slot, root)
     out.parent.mkdir(parents=True, exist_ok=True)
     stage, over = _Stage("draft %s" % out), []
     try:
         _encode_staged(stage, full, out, reframe_og.MAX_KB, "the draft", over)
-        sib = sibling_of(full)
+        sib = None if sib_img is not None else sibling_of(full)
+        if sib_img is not None:
+            _encode_staged(stage, sib_img, sib_out, reframe_og.SIB_MAX_KB,
+                           "the supplied -760 sibling", over)
         if sib is not None:                    # checked now so publish cannot fail on it later
             probe = _Stage()
             try:
@@ -450,12 +517,17 @@ def draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root=
             stale = out.with_suffix(ext)
             if stale.exists() and stale != out:
                 stale.unlink()
+        if sib_img is None and (sib_out.exists() or sib_out.is_symlink()):
+            sib_out.unlink()                   # a stale sibling never outlives its draft
         stage.commit()
     finally:
         stage.close()
     sha = file_sha(out)
     pick = ("og:%s:%s" % (og_style, sha)) if og_style else ("ig:%s:%s" % (infographic, sha))
-    return {"path": out, "sha12": sha, "pick": pick}
+    r = {"path": out, "sha12": sha, "pick": pick}
+    if sib_img is not None:
+        r.update(sibling=sib_out, sibling_sha12=file_sha(sib_out))
+    return r
 
 
 def publish(slug, slot, stem, root=ROOT, today=None):
@@ -483,7 +555,9 @@ def publish(slug, slot, stem, root=ROOT, today=None):
     row = {"master": src.relative_to(root).as_posix(), "source": "generate",
            "og_style": m.group("og"), "infographic_style": m.group("ig"),
            "ingested": _today(today)}
-    _publish_files(src, full, stem, row, root, slug, slot, expect_sha=sha)
+    sib_src = sibling_draft_path(slug, slot, root)
+    _publish_files(src, full, stem, row, root, slug, slot, expect_sha=sha,
+                   sib_bytes_from=sib_src if sib_src.exists() else None)
     return dict(row, stem=stem, sha12=sha)
 
 
@@ -505,6 +579,8 @@ def main(argv=None):
     for s in (d, p):
         s.add_argument("--board", required=True)
         s.add_argument("--slot", required=True)
+    d.add_argument("--sibling", metavar="PATH",
+                   help="a 760-wide phone sibling, stored with the draft and served as -760")
     p.add_argument("--stem", required=True)
     a = ap.parse_args(argv)
     try:
@@ -514,9 +590,13 @@ def main(argv=None):
             print("%s /images/%s.webp  [%s]" % ("would ingest" if a.dry_run else "ingested",
                                                 r["stem"], a.og_style or a.infographic))
         elif a.cmd == "draft":
-            r = draft(a.master, a.board, a.slot, a.og_style, a.infographic, a.mobcrop)
+            r = draft(a.master, a.board, a.slot, a.og_style, a.infographic, a.mobcrop,
+                      sibling=a.sibling)
             print("draft %s  sha12 %s\napprove on the board with pick: %s"
                   % (r["path"].relative_to(ROOT), r["sha12"], r["pick"]))
+            if "sibling" in r:
+                print("sibling %s  sha12 %s" % (r["sibling"].relative_to(ROOT),
+                                                r["sibling_sha12"]))
         else:
             r = publish(a.board, a.slot, a.stem)
             print("published /images/%s.webp (sha12 %s, byte-identical to the approved draft)"

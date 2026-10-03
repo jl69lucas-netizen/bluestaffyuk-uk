@@ -37,7 +37,7 @@ import re
 import sys
 import warnings
 
-from PIL import Image, ImageEnhance, ImageFilter, ImageOps
+from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageOps
 
 W, H = 1408, 768
 SIB_W, SIB_H = 760, 415
@@ -123,6 +123,40 @@ def contain(im, w=W, h=H, pad=0.90):
     fg = im.copy()
     fg.thumbnail((int(w * pad), int(h * pad)), Image.LANCZOS)
     return _paste_centred(gradient(w, h), fg)
+
+
+def contain_alpha(im, w=W, h=H, pad=0.94):
+    """Style A for a master with a transparent background (a baked infographic): the master
+    is contained as contain() does it, but composited onto the bone gradient through its own
+    alpha, so its margin IS the frame's bone and no two-tone band can form. The bed margin is
+    3% a side (pad 0.94), not 5%: the master already carries its own transparent margin."""
+    fg = im.convert("RGBA")
+    fg.thumbnail((int(w * pad), int(h * pad)), Image.LANCZOS)
+    bed = gradient(w, h).convert("RGBA")
+    bed.alpha_composite(fg, ((w - fg.width) // 2, (h - fg.height) // 2))
+    return bed.convert("RGB")
+
+
+def flatten_on_bone(im):
+    """An RGBA image laid on a bone gradient of its own size (an infographic's -760 sibling,
+    which is shown as baked, never framed)."""
+    if im.mode != "RGBA":
+        return im.convert("RGB")
+    bed = gradient(im.width, im.height).convert("RGBA")
+    bed.alpha_composite(im)
+    return bed.convert("RGB")
+
+
+def content_fill(img, threshold=12):
+    """(width share, height share) of `img` covered by content: the bounding box of every
+    pixel that differs from the bone gradient bed by more than `threshold` in any channel."""
+    bed = gradient(img.width, img.height)
+    r, g, b = ImageChops.difference(img.convert("RGB"), bed).split()
+    diff = ImageChops.lighter(ImageChops.lighter(r, g), b)
+    box = diff.point(lambda v: 255 if v > threshold else 0).getbbox()
+    if not box:
+        return 0.0, 0.0
+    return (box[2] - box[0]) / img.width, (box[3] - box[1]) / img.height
 
 
 def blurfill(im, w=W, h=H, blur=14, fgw=None, fgh=None, fgup=False):

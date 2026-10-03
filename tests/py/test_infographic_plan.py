@@ -480,10 +480,7 @@ def test_stored_heights_match_a_fresh_measurement(tmp_path):
                 assert stored[slot][style][w] - h <= 2, (slot, style, w, "stale: re-measure")
 
 
-@needs_browser
-def test_bake_infographic_writes_the_two_webps(tmp_path):
-    """A tiny fixture preview baked to the asset row size and the 760 sibling."""
-    from PIL import Image
+def _tiny_preview(tmp_path, extra_css=""):
     slug, slot, style = "fx", "tiny-steps", "sticker"
     p = {"slot": slot, "ig": "IG-2", "page": slug, "node": "Tiny", "heading": "Tiny",
          "alt": "Two steps: one, then two"}
@@ -491,17 +488,64 @@ def test_bake_infographic_writes_the_two_webps(tmp_path):
         {"n": "01", "title": "One", "value": "£1", "note": "first", "icon": "check"},
         {"n": "02", "title": "Two", "value": "", "note": "second", "icon": "eye"}]}
     f = tmp_path / IP.preview_path(slug, slot, style)
-    f.parent.mkdir(parents=True)
-    f.write_text(IP.render_preview(p, style, facts, IP.load_tokens(IP.ROOT)))
+    f.parent.mkdir(parents=True, exist_ok=True)
+    html = IP.render_preview(p, style, facts, IP.load_tokens(IP.ROOT))
+    f.write_text(html.replace("</style>", extra_css + "</style>"))
+    return slug, slot, style
+
+
+@needs_browser
+def test_bake_infographic_writes_two_cropped_masters(tmp_path):
+    """The box master is cropped to the figure on a transparent ground, at twice the pixels,
+    and fills the framed box; the phone master is exactly 760 wide with no text under 14px."""
+    from PIL import Image
+    import reframe_og
+    slug, slot, style = _tiny_preview(tmp_path)
     out = tmp_path / "out"
     got = IP.bake_infographic(slug, slot, style, out, root=tmp_path)
-    full, sib = out / f"{slug}-{slot}-{style}.webp", out / f"{slug}-{slot}-{style}-760.webp"
+    full, sib = out / f"{slug}-{slot}-{style}.png", out / f"{slug}-{slot}-{style}-760.png"
     assert got["full"] == str(full) and got["sib"] == str(sib)
     with Image.open(full) as a, Image.open(sib) as b:
-        assert a.format == b.format == "WEBP"
-        assert a.width == IP.BAKE_BOX[0] and a.height >= IP.BAKE_BOX[1]
+        assert a.mode == "RGBA" and a.getpixel((0, 0))[3] == 0, "no page bone in the master"
         assert b.width == IP.BAKE_SIB_W
+        assert max(reframe_og.content_fill(reframe_og.contain_alpha(a))) >= IP.FILL_MIN
+    assert got["sib_min_font"] >= IP.SIB_MIN_FONT
+    assert IP.BAKE_WIDTHS[0] <= got["width"] <= IP.BAKE_WIDTHS[-1]
     assert sorted(x.name for x in out.iterdir()) == sorted([full.name, sib.name])
+
+
+@needs_browser
+def test_bake_refuses_a_box_it_cannot_fill(tmp_path):
+    """The first London drafts covered about half the box. A figure held to 200x100px cannot be
+    shot big enough to fill it, and the bake must say so rather than ship it."""
+    slug, slot, style = _tiny_preview(tmp_path, ".ig{width:200px !important;height:100px !important;overflow:hidden}")
+    with pytest.raises(IP.BakeDefect, match="floor"):
+        IP.bake_infographic(slug, slot, style, tmp_path / "out", root=tmp_path)
+    assert not list((tmp_path / "out").iterdir())
+
+
+@needs_browser
+def test_bake_refuses_phone_text_under_14px(tmp_path):
+    slug, slot, style = _tiny_preview(tmp_path, ".n{font-size:12px !important}")
+    with pytest.raises(IP.BakeDefect, match="under 14px"):
+        IP.bake_infographic(slug, slot, style, tmp_path / "out", root=tmp_path)
+
+
+def test_every_caption_dog_draws_the_small_mouth():
+    """At 96px or less the large mouth's pale muzzle read as white buck teeth (coordinator,
+    2026-10-03). Every caption dog is drawn at 96px or less, and the caption shows only the
+    small mouth: one smile line and a tongue, with no white or pale shape."""
+    small = re.search(r'<g class="dg-small">(.*?)</g>', IP.DOG).group(1)
+    assert "dg-pale" not in small and "dg-hi" not in small and "ellipse" not in small
+    assert small.count('class="dg-ln"') == 1 and "dg-tongue" in small
+    css = IP.BASE_CSS
+    assert ".cap .dog .dg-big{display:none}" in css and ".cap .dog .dg-small{display:inline}" in css
+    for sid in IP.STYLES:
+        for px in re.findall(r"\.cap \.dog\{[^}]*?(?:flex(?:-basis)?:(?:0 0 )?)(\d+)px",
+                             IP.STYLE_CSS[sid["id"]]):
+            assert int(px) <= 96, (sid["id"], px)
+        for px in re.findall(r"\.cap \.dog\{[^}]*?width:(\d+)px", IP.STYLE_CSS[sid["id"]]):
+            assert int(px) <= 96, (sid["id"], px)
 
 
 def test_bake_refuses_a_missing_preview(tmp_path):

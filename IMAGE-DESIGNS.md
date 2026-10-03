@@ -226,8 +226,14 @@ so a stale file fails a test. Without Chromium it deletes that file and exits 2.
 overflows its box or card or touches an icon.
 
 **Baking.** Only after the pick, one style per slot (Task 9 or STOP 4):
-`infographic_plan.bake_infographic()` writes `public/images/infographics/<slug>-<slot>-<style>.webp`
-and `-760.webp`.
+`infographic_plan.bake_infographic()` writes two lossless masters, both cropped to the figure on
+a transparent ground: the box master, rendered at the width whose figure is shaped most like
+1408:768 (no exact figure may wrap there), and the reflowed phone layout, exactly 760 wide. It
+refuses a box covered under 85% of its binding side, and phone text under 14px. Then
+`python3 scripts/ingest_image.py draft <box master> --board <slug> --slot <slot> --infographic IG-<n> --sibling <phone master>`
+frames the box master with Style A through its alpha (the margin is the frame's own bone, so no
+band), stores the phone master beside the draft as `<slot>-760.webp`, and `publish` serves that
+file as the `-760` sibling instead of shrinking the box.
 
 ---
 

@@ -92,9 +92,12 @@ its box or card, or touches an icon box, at any width. Icons get a reserved corn
 get their own line, and a figure in a narrow card drops a type step.
 
 **Bake after the pick, one style per slot.**
-`infographic_plan.bake_infographic(slug, slot, style)` screenshots the PICKED style at
-1408×768 and 760 wide. It writes `public/images/infographics/<slug>-<slot>-<style>.webp` and
-`-760.webp`, and it runs at Task 9 or STOP 4. Never bake the unpicked styles.
+`infographic_plan.bake_infographic(slug, slot, style)` crops the PICKED style to its figure
+twice: once at the width that fills the 1408×768 box, once as the 760-wide phone layout. It
+writes the two lossless masters (`<slug>-<slot>-<style>.png` and `-760.png`) and refuses a box
+covered under 85% or phone text under 14px. Draft them together with
+`ingest_image.py draft <box> --infographic IG-n --sibling <phone>`; it runs at Task 9 or STOP 4.
+Never bake the unpicked styles.
 
 ## IG-1 Stat Panel
 

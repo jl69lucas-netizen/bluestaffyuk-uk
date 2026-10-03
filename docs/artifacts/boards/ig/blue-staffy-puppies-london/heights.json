@@ -105,34 +105,34 @@
   },
   "sha256": {
     "breed-split": {
-      "chalk": "30e66b5696c5eb61b17eb21e4755a5a348a2c0c4320a5f28410ac30661dd3bf8",
-      "comic": "3154e2cf7b8ac8f33d614d123532e392a610c44b42bafbff0c40f604b2d0c364",
-      "sticker": "e430c122a002c3f6f3935b55179a3956c73969ea1b5ec2d20ea48cda03d77b86"
+      "chalk": "cbaffebddaf1e4a4793b3c7ff3ad85303d8fc670b99b3e806b4e6b0ea89347ee",
+      "comic": "2e52aa440c18940e26e0e53ba1ec69110856ffffa0df8e2d57436bf2a60c6b8e",
+      "sticker": "0f3c66d94a17db258b2da6747a18410ba44dd0f8fb782f7778d1bafaaab9ca65"
     },
     "delivery-route": {
-      "chalk": "ad17cb20e80ae691f0dbdbc426cda43676344455a2469c7dd0f82dd3be30eb36",
-      "comic": "c3f44b9d1bb48dd184422bdd3fe92a0ff88e790519fa90f1e4150493efef4001",
-      "sticker": "fd0ab45cad9e349d8d4e2d034e811d828d5ed1e8337d833c7431e982f72f767c"
+      "chalk": "a26e3ca582b2100c3f9a3e77d5c11a3e6160129915f274b7976ef5db95ab9823",
+      "comic": "e9fd37633efdbd001748bd8b0c1635afac856655b9a15e673d9ce1530e7ac35d",
+      "sticker": "552cb668150fece23e3460eaa00ec73d691ac6433c2a899618fac81c7dcb295a"
     },
     "deposit-steps": {
-      "chalk": "cfe58d6c51b06bad7641de7549fb06a732daeb41a0d6085f8ef521d580220597",
-      "comic": "3f7506cb98c07a490922a6f526d11594029a3724ee5af980f53d9ef1b1339dec",
-      "sticker": "9c12c7b53339cfb0b34b4aac24fac0ff2e7a1c0a394e05d03c978156a492311e"
+      "chalk": "def309ce07736afc5d888d7dd50d84b38690bc365022aea03d0c60c4242e28d1",
+      "comic": "85c32b054a9e3ba164ff642d4b4a14b691d18f69cdf3a94018f0cebf237b4627",
+      "sticker": "47f777276b9854ffb1b66bbbf3c0cd878ef4f62b24a34008e63317c57e0cab4d"
     },
     "health-tests-checklist": {
-      "chalk": "5d8ac19e357d9fce1d92cd95537761073e933f7e4d23dcc61b253da2e7f19dbe",
-      "comic": "cda590d7f22bad259f11dfde16fa8a2fd14b5df59877def7a95d3e0adfe486ca",
-      "sticker": "771a0fee9ae1b2a3ea5c9b4020246e124d2a7f23f4171ecf5f34785ba4d665b2"
+      "chalk": "8c9a295df9236e40e37e99decdfce314de027507a1b2e4619d6d6dc99eeec181",
+      "comic": "fc1f658883a5a5f1c968d038f04c9a8ae4b90fe00fef65fea2a95ee6cc78ce64",
+      "sticker": "d6308cd2e56dbe22cbb645f8b7d744475cfe340dca538656f294bcb1c446058a"
     },
     "litter-prices-figures": {
-      "chalk": "fe444e75a85724f99c2e16fb71350919d706d38954e992ca4b0b16e8491472ed",
-      "comic": "48a160d99c429e7a2ce69edf27c9d7eaaff1f4ee52bb42c91b3cfa9eb7edd35e",
-      "sticker": "955884b47a4c9806c17f164d395c8c3d818011597ff7076280e9966a54b9b3ae"
+      "chalk": "4439894e6fb036e7532fcf54a7612eab29494ff15df0fcefc860da46f9e296d1",
+      "comic": "97c94a8adfc6fecc2c132b64556cdab2ec2a482a3f63afee0fdb5cc65e95a557",
+      "sticker": "0ebb7a5a5631afc41caf5bc0d750b61e0260e427a27a2de53319ee1f1e926216"
     },
     "paperwork-checklist": {
-      "chalk": "3a5cdb84e5cd89b55c44c02265d3f20773c64ee01509ed816e977b76a02ba326",
-      "comic": "d9c0aa7ed08d58955c04400999f3bc0ecee021b456c4a9c89658aa1778e06731",
-      "sticker": "184e83e6a9d8d66b8e51b11ccff02da90b18bed7339f0ac9e3470fdcc3fe5cf6"
+      "chalk": "14eb715011d13842b15fa00589d2eedffba9568e1f0941db4fb895f50f3ec4b2",
+      "comic": "e3837fb28aca7f51f52beb0d7fbd1762949077c5cd3100aa20582b0ff7747d4b",
+      "sticker": "fdf83bae3f3b4e8ea4260d2329b1630e93f6bb0c27dfebe88edebd311c6862ff"
     }
   },
   "widths": [
