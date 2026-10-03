@@ -174,6 +174,91 @@ def test_breed_split_subjects_on_the_real_london_heading():
     assert p["alt"] == "English Staffy compared with American Staffy"
 
 
+BREED_SEC = {"id": "breed", "heading": "Are Blue Staffies Pit Bulls or American Staffies?",
+             "tree": [{"level": 3, "heading": "How Can I Tell an English Staffy From an American One?",
+                       "children": []}]}
+
+
+def _sourced(value, src="https://www.royalkennelclub.com/x"):
+    return {"value": value, "quote": value, "source": src, "fetched": "2026-10-03"}
+
+
+def _breeds(tmp_path, standards):
+    root = _data(tmp_path)
+    if standards is not None:
+        (root / "data" / "breed-standards.json").write_text(json.dumps(standards))
+    board = {"meta": {"slug": "blue-staffy-puppies-london"}, "sections": [BREED_SEC], "assets": []}
+    # The tmp root holds no board file, so hand facts_for the section (and its H3) directly.
+    return root, {**IP.plan(board, root=root)[0], "_sec": BREED_SEC}
+
+
+TEST_STANDARDS = {"fetched": "2026-10-03", "breeds": {
+    "staffordshire-bull-terrier": {
+        "height": _sourced("31–37 cm"), "weight": _sourced("9–12 kg"),
+        "colours": _sourced("Teal or mauve"), "uk_legal_status": _sourced("Fine everywhere")},
+    "american-staffordshire-terrier": {
+        "height": _sourced("51 in", "https://images.akc.org/x"),
+        "weight": {"value": "NOT FETCHED — the test standard gives no weight figure"},
+        "colours": _sourced("Plaid", "https://images.akc.org/x"),
+        "uk_legal_status": _sourced("Fine here too", "https://www.gov.uk/x")}},
+    "comparison_verdict": {"value": "Two test breeds.", "clauses": [
+        {"text": "Two test breeds.", "source": "https://www.gov.uk/x"}]}}
+
+
+def test_breed_split_facts_come_from_the_breed_standards_file(tmp_path):
+    root, p = _breeds(tmp_path, TEST_STANDARDS)
+    f = IP.facts_for(p, root)
+    assert [r["attr"] for r in f["rows"]] == ["Height", "Coat colours", "UK law"]
+    assert f["rows"][0] == {"attr": "Height", "a": "31–37 cm", "b": "51 in"}
+    assert f["verdict"] == "Two test breeds."
+    assert f["credit"] == "Source: Royal Kennel Club / AKC / GOV.UK"
+    for html in _render_all(p, root).values():
+        assert "31–37 cm" in html and "Plaid" in html and "Source: Royal Kennel Club" in html
+        # Weight is NOT FETCHED for one subject, so the row is left out, never half-shown.
+        assert "9–12 kg" not in html and "NOT FETCHED" not in html
+
+
+def _figure_text(html):
+    fig = html[html.index("<figure"):html.index("</figure>")]
+    return re.sub(r"<[^>]+>", " ", fig)
+
+
+def test_no_number_or_pound_amount_outside_the_file_renders(tmp_path):
+    root, p = _breeds(tmp_path, TEST_STANDARDS)
+    allowed = set(re.findall(r"\d+(?:\.\d+)?", json.dumps(TEST_STANDARDS, ensure_ascii=False)))
+    for sid, html in _render_all(p, root).items():
+        text = _figure_text(html)
+        assert "£" not in text, sid
+        for n in re.findall(r"\d+(?:\.\d+)?", text):
+            assert n in allowed, (sid, n)
+    # And on the real London board, against the real file.
+    board = json.loads((IP.ROOT / "data/boards/blue-staffy-puppies-london.json").read_text())
+    real = [q for q in IP.plan(board) if q["slot"] == "breed-split"][0]
+    data = (IP.ROOT / "data/breed-standards.json").read_text()
+    allowed = set(re.findall(r"\d+(?:\.\d+)?", data))
+    for sid, html in _render_all(real, IP.ROOT).items():
+        text = _figure_text(html)
+        assert "£" not in text and "NOT FETCHED" not in text, sid
+        assert "Source: Royal Kennel Club / AKC / GOV.UK" in text, sid
+        for n in re.findall(r"\d+(?:\.\d+)?", text):
+            assert n in allowed, (sid, n)
+
+
+def test_breed_split_without_the_file_renders_not_fetched(tmp_path):
+    root, p = _breeds(tmp_path, None)
+    for html in _render_all(p, root).values():
+        assert "NOT FETCHED — data/breed-standards.json breeds missing" in html
+        assert 'class="nf"' in html
+
+
+def test_an_unsourced_field_never_renders(tmp_path):
+    std = json.loads(json.dumps(TEST_STANDARDS))
+    std["breeds"]["staffordshire-bull-terrier"]["colours"] = {"value": "Unsourced colour"}
+    root, p = _breeds(tmp_path, std)
+    for html in _render_all(p, root).values():
+        assert "Unsourced colour" not in html
+
+
 def test_unknown_existing_style_is_rematched_or_refused():
     img = {"slot": "x-ig", "kind": "infographic", "infographic_style": "IG-9"}
     sec = {"id": "s", "heading": "What Does Delivery Cost?", "tree": [], "images": [img]}

@@ -13,8 +13,10 @@ trust, contents, takeaways, reviews, FAQ blocks, newsletter, form) never get one
 infographic slot already on the board (an `images` entry of kind "infographic" on the section
 or a tree node, or an asset naming its `section`) keeps its slot id and IG type.
 
-Every figure comes from data/settings.json, data/price-matrix.json, data/puppies.json or
-data/locations.json, or is the section's own outline text (heading, H3s, the slot prompt).
+Every figure comes from data/settings.json, data/price-matrix.json, data/puppies.json,
+data/locations.json or data/breed-standards.json (the IG-3 breed split: sourced, quoted
+breed-standard fields, breeder q07, 2026-10-02), or is the section's own outline text
+(heading, H3s, the slot prompt).
 A fact the data does not hold is written `NOT FETCHED — <file> <key> missing` and rendered
 visibly (class "nf"), never guessed (CLAUDE.md rule 9). The deposit is only ever qualified by
 settings `deposit_refund_clause`, never called plainly refundable.
@@ -227,6 +229,37 @@ def _steps_from_prompt(prompt: str) -> list[str]:
     return [p for p in parts if p]
 
 
+#: IG-3 rows, in order: (data/breed-standards.json field, row label). A row is shown only when
+#: BOTH subjects' standards state it, so the split compares like with like.
+SPLIT_FIELDS = (("standard", "Breed standard"), ("height", "Height"), ("weight", "Weight"),
+                ("colours", "Coat colours"), ("uk_legal_status", "UK law"))
+#: Source caption: a host in a used source URL -> the name the caption gives it.
+CREDITS = (("royalkennelclub.com", "Royal Kennel Club"), ("akc.org", "AKC"),
+           ("ukcdogs.com", "UKC"), ("gov.uk", "GOV.UK"))
+
+
+def _breed_key(subject: str) -> str:
+    """The data/breed-standards.json breed an outline subject names."""
+    low = subject.lower()
+    if "pit" in low:
+        return "american-pit-bull-terrier"
+    if "american" in low:
+        return "american-staffordshire-terrier"
+    return "staffordshire-bull-terrier"
+
+
+def _fact_value(field):
+    """A sourced field's value, or None when it is missing, unsourced or NOT FETCHED."""
+    if not isinstance(field, dict):
+        return None
+    v = field.get("value")
+    if not isinstance(v, str) or not v or v.startswith(NF):
+        return None
+    if "clauses" not in field and not (field.get("source") and field.get("quote")):
+        return None
+    return v
+
+
 def facts_for(slot_plan: dict, root) -> dict:
     """The slot's facts, read only from data/ under `root` and the section's outline text."""
     root = Path(root)
@@ -333,14 +366,42 @@ def facts_for(slot_plan: dict, root) -> dict:
                 if (one or len(b.split()) == 1) and len(a.split()) > 1:
                     b = f"{b} {a.split()[-1]}"
                 break
-        missing = _nf("*", "breed-comparison file (height, weight, registry)")
-        return {"title": title,
-                "subjects": [a or _nf("*", "comparison subject"),
-                             b or _nf("*", "comparison subject")],
-                "rows": [{"attr": "Breed-standard figures", "a": missing, "b": missing}],
-                "verdict": _nf("*", "comparison verdict"),
+        subjects = [a or _nf("*", "comparison subject"), b or _nf("*", "comparison subject")]
+        bs = _load(root, "breed-standards.json")
+        if not isinstance(bs, dict) or not isinstance(bs.get("breeds"), dict):
+            missing = _nf("breed-standards.json", "breeds")
+            return {"title": title, "subjects": subjects,
+                    "rows": [{"attr": "Breed-standard figures", "a": missing, "b": missing}],
+                    "verdict": _nf("breed-standards.json", "comparison_verdict"),
+                    "sources": {"subjects": "outline H3 heading",
+                                "rows": "none — data/breed-standards.json is missing"}}
+        keys = [_breed_key(x) for x in subjects]
+        breeds = [bs["breeds"].get(k) or {} for k in keys]
+        rows, used = [], set()
+        for field, attr in SPLIT_FIELDS:
+            va, vb = (_fact_value(br.get(field)) for br in breeds)
+            if va is None or vb is None:          # both breeds must state it: comparable only
+                continue
+            rows.append({"attr": attr, "a": va, "b": vb})
+            used |= {br[field]["source"] for br in breeds}
+            if len(rows) == 5:
+                break
+        if not rows:
+            rows = [{"attr": "Breed-standard figures",
+                     "a": _nf("breed-standards.json", f"breeds.{keys[0]}"),
+                     "b": _nf("breed-standards.json", f"breeds.{keys[1]}")}]
+        verdict = _fact_value(bs.get("comparison_verdict")) or _nf(
+            "breed-standards.json", "comparison_verdict")
+        for c in (bs.get("comparison_verdict") or {}).get("clauses") or []:
+            used.add(c.get("source", ""))
+        credit = [n for host, n in CREDITS if any(host in u for u in used)]
+        return {"title": title, "subjects": subjects, "rows": rows, "verdict": verdict,
+                "credit": "Source: " + " / ".join(credit) if credit else "",
                 "sources": {"subjects": "outline H3 heading",
-                            "rows": "none — no data file holds breed-standard figures"}}
+                            "rows": "data/breed-standards.json breeds."
+                                    + ", ".join(keys) + " (" + ", ".join(
+                                        f for f, _ in SPLIT_FIELDS) + ")",
+                            "verdict": "data/breed-standards.json comparison_verdict"}}
     return {"title": title, "sources": {}}
 
 
@@ -450,7 +511,8 @@ def _body(ig: str, f: dict) -> str:
         return ('<div class="split">'
                 f'<div class="col col-a"><p class="col-h">{t(a)}</p><ul>{rows_a}</ul></div>'
                 f'<div class="col col-b"><p class="col-h">{t(b)}</p><ul>{rows_b}</ul></div>'
-                f'</div><p class="verdict">{t(f.get("verdict", ""))}</p>')
+                f'</div><p class="verdict">{t(f.get("verdict", ""))}</p>'
+                + (f'<p class="src">{esc(f["credit"])}</p>' if f.get("credit") else ""))
     if ig == "IG-5":
         return ('<div class="route">'
                 f'<div class="stop stop-a"><span class="dot"></span>'
@@ -495,6 +557,7 @@ body{background:var(--color-surface);color:var(--color-text);font-family:var(--f
 .split ul{list-style:none;margin:0;padding:0}
 .col-h{font-family:var(--font-display);font-weight:600;font-size:var(--text-xl);margin:0 0 var(--space-3)}
 .verdict{margin:0}
+.src{margin:var(--space-2) 0 0;font-size:var(--text-xs);opacity:.8}
 @media (max-width:767px){
  .ig{min-height:0}
  .route{grid-template-columns:1fr;gap:var(--space-3)}

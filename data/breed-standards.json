@@ -1,0 +1,172 @@
+{
+  "fetched": "2026-10-03",
+  "about": "Breed-standard figures for the breed-split infographic (IG-3) on the London page (breeder q07, 2026-10-02). Every value restates its source page; quote is an exact excerpt of that page, fetched with Firecrawl on the date given. A value the source does not state is NOT FETCHED with its barrier, never inferred (CLAUDE.md rule 9). Units are as each standard states them.",
+  "sources": {
+    "royal-kennel-club": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
+    "akc": "https://images.akc.org/pdf/breeds/standards/AmericanStaffordshireTerrier.pdf",
+    "ukc": "https://www.ukcdogs.com/american-pit-bull-terrier",
+    "gov-uk": "https://www.gov.uk/control-dog-public/banned-dogs"
+  },
+  "breeds": {
+    "staffordshire-bull-terrier": {
+      "name": "Staffordshire Bull Terrier",
+      "standard": {
+        "value": "Royal Kennel Club standard, last updated 1 November 2025",
+        "quote": "Last updated 1 November 2025",
+        "source": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
+        "fetched": "2026-10-03"
+      },
+      "height": {
+        "value": "36–41 cm (14–16 in) at the withers",
+        "quote": "Desirable height at withers 36-41 cms (14 to 16 ins), these heights being related to the weights.",
+        "source": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
+        "fetched": "2026-10-03"
+      },
+      "weight": {
+        "value": "Dogs 13–17 kg (28–38 lb); bitches 11–15.4 kg (24¼–34 lb)",
+        "quote": "Weight: dogs: 13-17 kgs (28-38 lbs); bitches 11-15.4 kgs (24¼-34 lbs).",
+        "source": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
+        "fetched": "2026-10-03"
+      },
+      "size_note": {
+        "value": "The standard describes the ideal; a dog might be larger or smaller than its measurements",
+        "quote": "A dog might be larger or smaller than the size measurements stated in the breed standard.",
+        "source": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
+        "fetched": "2026-10-03"
+      },
+      "colours": {
+        "value": "White; red, fawn, black or blue, alone or with white; any shade of brindle, alone or with white",
+        "quote": "White. Red, fawn, black, blue, or any one of these colours with white. Any shade of brindle or any shade of brindle with white.",
+        "source": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
+        "fetched": "2026-10-03"
+      },
+      "blue_in_standard": {
+        "value": "Yes — blue is a listed colour",
+        "quote": "Red, fawn, black, blue, or any one of these colours with white.",
+        "source": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
+        "fetched": "2026-10-03"
+      },
+      "temperament_line": {
+        "value": "Bold, fearless and totally reliable",
+        "quote": "Bold, fearless and totally reliable.",
+        "source": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
+        "fetched": "2026-10-03"
+      },
+      "uk_legal_status": {
+        "value": "Not on the GOV.UK banned list; a banned type is judged by looks, not breed name",
+        "quote": "Whether your dog is a banned type depends on what it looks like, rather than its breed or name.",
+        "source": "https://www.gov.uk/control-dog-public/banned-dogs",
+        "fetched": "2026-10-03"
+      }
+    },
+    "american-staffordshire-terrier": {
+      "name": "American Staffordshire Terrier",
+      "standard": {
+        "value": "American Kennel Club standard, approved 10 June 1936",
+        "quote": "Approved June 10, 1936",
+        "source": "https://images.akc.org/pdf/breeds/standards/AmericanStaffordshireTerrier.pdf",
+        "fetched": "2026-10-03"
+      },
+      "height": {
+        "value": "About 18–19 in (males), 17–18 in (females) at the shoulders",
+        "quote": "about 18 to 19 inches at shoulders for the male and 17 to 18 inches for the female is to be considered preferable",
+        "source": "https://images.akc.org/pdf/breeds/standards/AmericanStaffordshireTerrier.pdf",
+        "fetched": "2026-10-03"
+      },
+      "weight": {
+        "value": "NOT FETCHED — the AKC standard (approved 1936) gives no weight figure, only that height and weight should be in proportion"
+      },
+      "colours": {
+        "value": "Any colour, solid, parti or patched; all white, over 80 per cent white, black and tan, and liver not encouraged",
+        "quote": "Any color, solid, parti, or patched is permissible",
+        "source": "https://images.akc.org/pdf/breeds/standards/AmericanStaffordshireTerrier.pdf",
+        "fetched": "2026-10-03"
+      },
+      "blue_in_standard": {
+        "value": "NOT FETCHED — the AKC standard does not name blue; it permits any colour, solid, parti or patched, and reading blue into that is an inference"
+      },
+      "temperament_line": {
+        "value": "His courage is proverbial",
+        "quote": "His courage is proverbial.",
+        "source": "https://images.akc.org/pdf/breeds/standards/AmericanStaffordshireTerrier.pdf",
+        "fetched": "2026-10-03"
+      },
+      "uk_legal_status": {
+        "value": "Not on the GOV.UK banned list; a banned type is judged by looks, not breed name",
+        "quote": "Whether your dog is a banned type depends on what it looks like, rather than its breed or name.",
+        "source": "https://www.gov.uk/control-dog-public/banned-dogs",
+        "fetched": "2026-10-03"
+      }
+    },
+    "american-pit-bull-terrier": {
+      "name": "American Pit Bull Terrier",
+      "standard": {
+        "value": "United Kennel Club standard, revised 1 May 2017",
+        "quote": "Revised May 1, 2017",
+        "source": "https://www.ukcdogs.com/american-pit-bull-terrier",
+        "fetched": "2026-10-03"
+      },
+      "height": {
+        "value": "18–21 in (males), 17–20 in (females) at the withers, as an approximate guideline only",
+        "quote": "mature males is from 18 to 21 inches at the withers; for mature females it is from 17 to 20 inches",
+        "source": "https://www.ukcdogs.com/american-pit-bull-terrier",
+        "fetched": "2026-10-03"
+      },
+      "weight": {
+        "value": "35–60 lb (males), 30–50 lb (females)",
+        "quote": "between 35 and 60 pounds. Desirable weight for a mature female in good condition is between 30 and 50 pounds",
+        "source": "https://www.ukcdogs.com/american-pit-bull-terrier",
+        "fetched": "2026-10-03"
+      },
+      "colours": {
+        "value": "Any colour, colour pattern or combination, except merle",
+        "quote": "Any color, color pattern, or combination of colors is acceptable, except for merle.",
+        "source": "https://www.ukcdogs.com/american-pit-bull-terrier",
+        "fetched": "2026-10-03"
+      },
+      "blue_in_standard": {
+        "value": "NOT FETCHED — the UKC standard does not name blue as a coat colour; it accepts any colour except merle, and names blue only as an eye-colour fault"
+      },
+      "temperament_line": {
+        "value": "Strength, confidence and zest for life",
+        "quote": "The essential characteristics of the American Pit Bull Terrier are strength, confidence, and zest for life.",
+        "source": "https://www.ukcdogs.com/american-pit-bull-terrier",
+        "fetched": "2026-10-03"
+      },
+      "uk_legal_status": {
+        "value": "Banned type in the UK: a dog matching many Pit Bull Terrier characteristics may be a banned type",
+        "quote": "For example, if your dog matches many of the characteristics of a Pit Bull Terrier, it may be a banned type.",
+        "source": "https://www.gov.uk/control-dog-public/banned-dogs",
+        "fetched": "2026-10-03"
+      }
+    }
+  },
+  "uk_banned_types": {
+    "value": "Pit Bull Terrier, Japanese Tosa, Dogo Argentino, Fila Brasileiro, XL Bully",
+    "quote": "In the UK, it’s against the law to own certain types of dog.",
+    "source": "https://www.gov.uk/control-dog-public/banned-dogs",
+    "fetched": "2026-10-03"
+  },
+  "comparison_verdict": {
+    "value": "The Staffordshire Bull Terrier and the American Staffordshire Terrier have separate breed standards. The Staffordshire Bull Terrier is not one of the types banned in the UK; the Pit Bull Terrier type is.",
+    "clauses": [
+      {
+        "text": "The Staffordshire Bull Terrier has its own Royal Kennel Club breed standard.",
+        "source": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/"
+      },
+      {
+        "text": "The American Staffordshire Terrier has its own American Kennel Club standard.",
+        "source": "https://images.akc.org/pdf/breeds/standards/AmericanStaffordshireTerrier.pdf"
+      },
+      {
+        "text": "The Staffordshire Bull Terrier is not one of the types banned in the UK.",
+        "source": "https://www.gov.uk/control-dog-public/banned-dogs"
+      },
+      {
+        "text": "The Pit Bull Terrier type is banned in the UK.",
+        "source": "https://www.gov.uk/control-dog-public/banned-dogs"
+      }
+    ],
+    "fetched": "2026-10-03"
+  }
+}

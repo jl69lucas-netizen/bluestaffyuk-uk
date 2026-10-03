@@ -375,6 +375,12 @@ def test_the_approval_and_the_board_require_the_same_infographic_picks(monkeypat
     assert BPB.signature_sections(b, LEDGER, "x")[-1:] == ["ig:delivery-route"]
 
 
+def test_no_real_infographic_slot_is_pending_once_its_data_is_sourced():
+    # London's breed-split waited on breed-standard data; data/breed-standards.json holds it
+    # now (breeder q07, 2026-10-02), so the slot is a required pick like the others.
+    assert ("blue-staffy-puppies-london", "breed-split") not in PB.IG_PENDING
+
+
 def test_a_pending_slot_on_one_page_never_exempts_another_pages_slot(monkeypatch):
     _slots(monkeypatch)
     monkeypatch.setattr(PB, "IG_PENDING", {("blue-staffy-puppies-london", "breed-split"): "p"})

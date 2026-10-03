@@ -1370,9 +1370,8 @@ V2_PICK_PREFIXES = tuple(V2_PICKS)
 #: offered as an optional pick, and kept OUT of the required set. Keyed by (board slug, slot
 #: id), so one page's pending answer never exempts another page's slot of the same name.
 IG_PENDING = {
-    ("blue-staffy-puppies-london", "breed-split"): (
-        "Pending your answer on the decisions batch: no breed-standard data exists, "
-        "so this would show NOT FETCHED. Not required for approval."),
+    # Empty today. London's breed-split waited here until data/breed-standards.json held the
+    # sourced breed-standard figures (breeder q07, 2026-10-02: keep the slot, with sourced data).
 }
 
 

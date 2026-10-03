@@ -2654,12 +2654,11 @@ def test_7c_offers_three_styles_per_infographic_slot(london_html):
     assert "breed-split" in slots and len(slots) >= 2
     for slot in slots:
         for style in ("plate", "ruled", "card"):
-            # breed-split is offered too, as an OPTIONAL pick: it is kept out of the approve
-            # signature (test below) until the breeder answers the batch question on it.
             assert f'name="pick-ig:{slot}" value="{style}"' in london_html, (slot, style)
-    assert "Optional — breed-split" in london_html
-    assert ("Pending your answer on the decisions batch: no breed-standard data exists, so this "
-            "would show NOT FETCHED. Not required for approval.") in london_html
+    # breed-split is a required pick now its data is sourced (breeder q07, 2026-10-02).
+    assert "Pick one style for breed-split" in london_html
+    assert "Optional — breed-split" not in london_html
+    assert "Pending your answer on the decisions batch" not in london_html
     assert "beside the H2" in london_html
 
 
@@ -2685,7 +2684,7 @@ def test_signature_sections_wait_for_infographics_but_not_og():
     london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
     sig = BPB.signature_sections(london, LEDGER_EMPTY, LONDON)
     for slot in _ig_slots():
-        assert (f"ig:{slot}" in sig) == (slot != "breed-split"), slot
+        assert f"ig:{slot}" in sig, slot
     assert not any(s.startswith("og:") for s in sig)
     # And the approve script carries exactly that list.
     import build_page_board as BPB2
