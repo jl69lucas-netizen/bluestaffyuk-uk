@@ -198,7 +198,7 @@ export const register: Register = on => {
               <Text color={live ? BRASS : c.status === 'failed' ? FAIL : DONE}>{live ? '◉ ' : c.status === 'failed' ? '✕ ' : '● '}</Text>
               {c.description}
             </Text>
-            <Text color={live ? BRASS : DONE}>{live ? age : `${c.status === 'failed' ? 'stopped' : 'done'} · ${age}`}</Text>
+            {live ? <Text bold backgroundColor={BRASS} color={CARD}> {age} </Text> : <Text color={DONE}>{`${c.status === 'failed' ? 'stopped' : 'done'} · ${age}`}</Text>}
           </Box>
           <Text color={INK_3}>
             {[c.type, c.model].filter(Boolean).join(' · ')}{c.type || c.model ? ' · ' : ''}{c.calls} tool calls
@@ -225,7 +225,7 @@ export const register: Register = on => {
         <Box flexDirection="column" width="100%" backgroundColor={CARD} borderStyle="round" borderColor={BRASS} paddingX={2} paddingY={1}>
           <Box flexDirection="row" justifyContent="space-between" width="100%">
             <Text bold color={INK}>Background agents</Text>
-            <Text bold color={running.length ? BRASS : DONE}>{running.length} running</Text>
+            <Text bold backgroundColor={running.length ? BRASS : DONE} color={CARD}> {running.length} running </Text>
           </Box>
           <Text color={INK_2}>
             {running.length} running · {finished.length - failed} done{failed ? ` · ${failed} stopped` : ''}

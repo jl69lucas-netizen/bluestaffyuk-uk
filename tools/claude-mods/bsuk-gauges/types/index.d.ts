@@ -11,6 +11,10 @@ export type Gauges = {
   geminiToday: number
   geminiOk: number
   now: number
+  stop: number | null
+  row: number | null
+  rowName: string | null
+  agentsRunning: number
 }
 
 declare module 'claude-code' {

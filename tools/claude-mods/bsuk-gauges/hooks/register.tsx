@@ -11,11 +11,10 @@ const GEMINI_LOG = 'docs/reports/gemini-usage.jsonl'
 const gauges = atom({ plugin: 'bsuk-gauges', key: 'gauges' } as const, null)
 
 // BSUK tokens (src/styles/tokens.css)
-const STEEL_700 = '#1F3A52'
 const STEEL_300 = '#8FA3B8'
 const BRASS_500 = '#C9A227'
 const WARN = '#B5652A'
-const TRACK = '#CFC8B8'
+const STEEL_900 = '#14202B'
 
 const pct = (n: number | null) => (n === null ? '—' : `${Math.round(n)}%`)
 const label = (kind: string) =>
@@ -40,46 +39,6 @@ function statusLine(g: Gauges): string {
   return parts.join(' · ')
 }
 
-function ring(cx: number, cy: number, r: number, frac: number, colour: string, big: string, small: string) {
-  const c = 2 * Math.PI * r
-  const on = Math.max(0, Math.min(1, frac)) * c
-  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${TRACK}" stroke-width="9"/>
-<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${colour}" stroke-width="9" stroke-linecap="round"
- stroke-dasharray="${on.toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"/>
-<text x="${cx}" y="${cy + 6}" text-anchor="middle" font-size="16" font-weight="700" fill="${STEEL_700}">${big}</text>
-<text x="${cx}" y="${cy + r + 22}" text-anchor="middle" font-size="12" fill="${STEEL_700}">${small}</text>`
-}
-
-function svg(g: Gauges): string {
-  const left = cacheLeftMs(g)
-  const ctxFrac = (g.ctxPercent ?? 0) / 100
-  const ctxColour = (g.ctxPercent ?? 0) >= 80 ? WARN : STEEL_700
-  const cacheFrac = left === null ? 0 : left / CACHE_MS
-  const rows = g.limits
-    .map((l, i) => {
-      const y = 150 + i * 34
-      const w = Math.max(0, Math.min(100, l.percentUsed)) * 2.2
-      const reset = l.resetsAt ? new Date(l.resetsAt).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' }) : ''
-      return `<text x="16" y="${y}" font-size="12" fill="${STEEL_700}">${label(l.kind)} window · ${Math.round(l.percentUsed)}%${reset ? ' · resets ' + reset : ''}</text>
-<rect x="16" y="${y + 6}" width="220" height="8" rx="4" fill="${TRACK}"/>
-<rect x="16" y="${y + 6}" width="${w.toFixed(1)}" height="8" rx="4" fill="${l.percentUsed >= 80 ? WARN : BRASS_500}"/>`
-    })
-    .join('\n')
-  const mins = Math.round((g.now - g.startedAt) / 60000)
-  const footY = 150 + g.limits.length * 34 + 14
-  const h = footY + 28
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 ${h}" width="340" height="${h}" font-family="system-ui, -apple-system, Segoe UI, sans-serif">
-${ring(64, 62, 38, ctxFrac, ctxColour, pct(g.ctxPercent), 'context')}
-${ring(170, 62, 38, cacheFrac, BRASS_500, left === null ? '—' : left === 0 ? 'cold' : Math.ceil(left / 60000) + 'm', '1-hour cache')}
-<text x="276" y="56" text-anchor="middle" font-size="18" font-weight="700" fill="${STEEL_700}">${g.usd === null ? '—' : '$' + g.usd.toFixed(2)}</text>
-<text x="276" y="74" text-anchor="middle" font-size="12" fill="${STEEL_300}">session cost</text>
-<text x="276" y="106" text-anchor="middle" font-size="18" font-weight="700" fill="${STEEL_700}">${g.geminiToday}/${g.geminiOk}</text>
-<text x="276" y="124" text-anchor="middle" font-size="12" fill="${STEEL_300}">gemini today/ok</text>
-${rows}
-<text x="16" y="${footY + 10}" font-size="12" fill="${STEEL_300}">session ${Math.floor(mins / 60)}h ${mins % 60}m · ${g.ctxTokens === null ? '' : Math.round(g.ctxTokens / 1000) + 'k of ' + Math.round(g.ctxWindow / 1000) + 'k tokens'}</text>
-</svg>`
-}
-
 let lastReplyAt: number | null = null
 
 async function refresh($: any) {
@@ -101,6 +60,25 @@ async function refresh($: any) {
   } catch {
     // no log in this folder: the gauge reads 0, which is the truth for this repo
   }
+  // The page run (scripts/pipeline_status.py, when this is a BSUK checkout) and the agent count.
+  let stop: number | null = null
+  let row: number | null = null
+  let rowName: string | null = null
+  try {
+    const r = await $.process.run(['python3', 'scripts/pipeline_status.py'], { timeoutMs: 20_000 })
+    if (r.exitCode === 0) {
+      const rt = JSON.parse(r.stdout)
+      stop = rt.stops_done
+      row = rt.now
+      rowName = rt.now_name
+    }
+  } catch {
+    // not a BSUK checkout: the band leaves the page run out
+  }
+  let agentsRunning = 0
+  try {
+    agentsRunning = (await $.agent.list()).filter((a: any) => a.status === 'running').length
+  } catch {}
   const g: Gauges = {
     ctxPercent: u.context.percent ?? null,
     ctxTokens: u.context.tokens ?? null,
@@ -112,6 +90,10 @@ async function refresh($: any) {
     geminiToday,
     geminiOk,
     now,
+    stop,
+    row,
+    rowName,
+    agentsRunning,
   }
   await update($, gauges, () => g)
   $.ui.status(statusLine(g))
@@ -140,22 +122,73 @@ export const register: Register = on => {
     return r
   })
 
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    const g = await read($, gauges)
+    if (!g || e.props.hasSurvey) return next(e)
+    const { Box, Text } = $.ui.resolve(e) as any
+    // Big-value readout: each value a bold chip on brass (orange when it needs attention),
+    // each label quiet beside it, so the numbers read from across the room.
+    const left = cacheLeftMs(g)
+    const chip = (name: string, value: string, warn = false) => (
+      <Text>
+        <Text color={STEEL_300}>{name} </Text>
+        <Text bold backgroundColor={warn ? WARN : BRASS_500} color={STEEL_900}> {value} </Text>
+        <Text>   </Text>
+      </Text>
+    )
+    const items = [
+      chip('CONTEXT', pct(g.ctxPercent), (g.ctxPercent ?? 0) >= 80),
+      chip('CACHE', left === null ? '—' : left === 0 ? 'cold' : `${Math.ceil(left / 60000)}m`, left !== null && left < 10 * 60000),
+      ...g.limits.map(l => chip(label(l.kind).toUpperCase(), `${Math.round(l.percentUsed)}%`, l.percentUsed >= 80)),
+      ...(g.usd !== null ? [chip('COST', `$${g.usd.toFixed(2)}`)] : []),
+      ...(g.stop !== null ? [chip('STOP', `${g.stop}/4`)] : []),
+      ...(g.row !== null ? [chip('ROW', `${g.row}`)] : []),
+      chip('AGENTS', `${g.agentsRunning}`),
+      chip('GEMINI', `${g.geminiToday}`),
+    ]
+    return (
+      <Box flexDirection="row" flexWrap="wrap" backgroundColor={STEEL_900} paddingX={1}>
+        {items}
+      </Box>
+    )
+  })
+
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const g = await read($, gauges)
-    const els = $.ui.resolve(e) as any
-    const { Box, Text } = els
+    const { Box, Text } = $.ui.resolve(e) as any
     if (!g) return <Text dimColor>Reading the session…</Text>
-    if (els.Svg) {
+    // Text cards, not a picture: values are bold brass chips at reading size.
+    const left = cacheLeftMs(g)
+    const BAR = 30
+    const bar = (frac: number, warn: boolean) => {
+      const lit = Math.max(0, Math.min(BAR, Math.round(frac * BAR)))
       return (
-        <Box flexDirection="column">
-          <els.Svg source={svg(g)} alt={statusLine(g)} />
-        </Box>
+        <Text>
+          <Text color={warn ? WARN : BRASS_500}>{'█'.repeat(lit)}</Text>
+          <Text color={'#3A4C5E'}>{'█'.repeat(BAR - lit)}</Text>
+        </Text>
       )
     }
+    const card = (name: string, value: string, note: string, frac: number | null, warn = false) => (
+      <Box flexDirection="column" width="100%" backgroundColor={STEEL_900} borderStyle="round" borderColor={warn ? WARN : BRASS_500} paddingX={2} paddingY={1}>
+        <Box flexDirection="row" justifyContent="space-between" width="100%">
+          <Text bold color={STEEL_300}>{name}</Text>
+          <Text bold backgroundColor={warn ? WARN : BRASS_500} color={STEEL_900}> {value} </Text>
+        </Box>
+        {frac !== null ? bar(frac, warn) : null}
+        <Text color={STEEL_300}>{note}</Text>
+      </Box>
+    )
+    const mins = Math.round((g.now - g.startedAt) / 60000)
     return (
-      <Box flexDirection="column">
-        <Text bold color={STEEL_300}>BSUK session gauges</Text>
-        <Text>{statusLine(g)}</Text>
+      <Box flexDirection="column" width="100%" gap={1}>
+        {card('CONTEXT', pct(g.ctxPercent), g.ctxTokens === null ? '' : `${Math.round(g.ctxTokens / 1000)}k of ${Math.round(g.ctxWindow / 1000)}k tokens`, (g.ctxPercent ?? 0) / 100, (g.ctxPercent ?? 0) >= 80)}
+        {card('1-HOUR CACHE', left === null ? '—' : left === 0 ? 'cold' : `${Math.ceil(left / 60000)}m`, left === null ? 'no reply yet' : left === 0 ? 'the next turn re-reads everything' : 'warm: the next turn is cheap', left === null ? null : left / CACHE_MS, left !== null && left < 10 * 60000)}
+        {g.limits.map(l => card(`${label(l.kind).toUpperCase()} LIMIT`, `${Math.round(l.percentUsed)}%`, l.resetsAt ? `resets ${new Date(l.resetsAt).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' })}` : '', l.percentUsed / 100, l.percentUsed >= 80))}
+        {card('SESSION COST', g.usd === null ? '—' : `$${g.usd.toFixed(2)}`, `session ${Math.floor(mins / 60)}h ${mins % 60}m`, null)}
+        {g.stop !== null ? card('PAGE RUN', `STOP ${g.stop}/4 · row ${g.row ?? '—'}`, g.rowName ?? '', null) : null}
+        {card('AGENTS RUNNING', `${g.agentsRunning}`, 'open /bsuk-agents for each card', null)}
+        {card('GEMINI TODAY', `${g.geminiToday} calls`, `${g.geminiOk} succeeded · the log keeps no £ figure`, null)}
       </Box>
     )
   })

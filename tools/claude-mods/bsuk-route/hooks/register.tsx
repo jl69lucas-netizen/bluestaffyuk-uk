@@ -96,8 +96,11 @@ export const register: Register = on => {
       <Box flexDirection="column" width="100%" gap={1}>
         <Box flexDirection="column" width="100%" backgroundColor={CARD} borderStyle="round" borderColor={BRASS} paddingX={2} paddingY={1}>
           <Text bold color={INK}>{rt.slug}</Text>
-          <Text color={INK_2}>
-            STOP {rt.stops_done}/4 · {proved} of {rt.rows.length} rows proved · {rt.branch}
+          <Text>
+            <Text bold backgroundColor={BRASS} color={CARD}> STOP {rt.stops_done}/4 </Text>
+            <Text color={INK_2}>  </Text>
+            <Text bold backgroundColor={DONE} color={CARD}> {proved}/{rt.rows.length} rows </Text>
+            <Text color={INK_2}>  {rt.branch}</Text>
           </Text>
           <Text>
             <Text color={BRASS}>{'█'.repeat(lit)}</Text>
@@ -119,7 +122,7 @@ export const register: Register = on => {
             <Box flexDirection="column" width="100%" backgroundColor={CARD} borderStyle="round" borderColor={complete ? DONE : TODO} paddingX={2} paddingY={1}>
               <Box flexDirection="row" justifyContent="space-between" width="100%">
                 <Text bold color={INK_3}>{PHASE_LABEL[phase].toUpperCase()}</Text>
-                <Text bold color={complete ? DONE : INK_3}>{done}/{rows.length}</Text>
+                <Text bold backgroundColor={complete ? DONE : BRASS} color={CARD}> {done}/{rows.length} </Text>
               </Box>
               {rows.map(r => {
                 const now = r.state === 'now'
