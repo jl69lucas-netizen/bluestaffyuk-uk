@@ -2894,3 +2894,13 @@ def test_refusal_list_renders_in_a_browser_and_survives_the_database_answering(t
     assert res["raced"]["items"] == want, res["raced"]
     assert "Ready." not in res["raced"]["text"] and "earlier version" not in res["raced"]["text"]
     assert res["approved"]["disabled"] is True and res["approved"]["items"] == []
+
+
+# ── London board v3 (plan 2026-10-03, Task 2): block 3d, the neighbourhoods ───────────────
+def test_3d_neighbourhoods_on_the_london_board_only(london_html):
+    import build_page_board as BPB
+    assert 'data-title="3d. Neighbourhoods"' in london_html
+    assert london_html.index('data-title="3c. Navigation on this page"') < \
+        london_html.index('data-title="3d. Neighbourhoods"')
+    old = BPB.render(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
+    assert "3d. Neighbourhoods" not in old

@@ -36,6 +36,7 @@ import keyword_metrics as KM       # block 4b, the ours-vs-top-5 table (parity b
 import serp_reading as SR          # block 1b, how Google reads this page
 import term_density as TD          # block 4c, per-term density against competitors
 import faq_layout as FL            # block 4d, where the FAQs sit
+import neighbourhoods as NB         # block 3d, the city areas and their keywords
 import term_gap as TG              # block 5c, what competitors say that we do not
 import infographic_plan as IP      # block 7c, infographic style trios
 import og_slots as OG              # block 7d, the OG image slots
@@ -1093,6 +1094,10 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     # After the outline, because the question it asks — is this the right furniture for this
     # page — is one a reader can only answer once they have seen the page's shape.
     parts.append(("3c. Navigation on this page", navigation_block(board, nav)))
+    # The breeder's question (2026-10-03): which areas of the city is this page targeting?
+    # Straight after the page's furniture, before the image plan; project 5 boards only.
+    if new_family:
+        parts.append(("3d. Neighbourhoods", NB.block(board)))
 
     parts.append(("3b. Image plan", image_plan_table(board)
                   + "\n\nEvery image slot the outline plans. Infographic prompts are the generation pack; "
