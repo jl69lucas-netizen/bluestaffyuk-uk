@@ -64,7 +64,9 @@ CITIES. A photo whose filename or any served alt names a city other than the boa
 never offered (excluded, not penalised: a Glasgow family is not a London family). The cities
 are data/locations.json's, "UK" rows dropped and parentheticals stripped, matched as whole
 words ("York" never matches "Yorkshire"). The board's own city is the row whose slug is the
-board's; a board with no row has no own city, so every city-naming photo is left out.
+board's. Both the exclusion and the own-city bonus apply to LOCATION boards only
+(is_location_board: page_type "location" or a locations row for the slug); every other board
+keeps city-named photos as normal.
 
 ALT (working rule 11). The first use of a photo on a page keeps its served alt; every repeat
 carries a NEW alt, never a copy. A photo the page already shows under another heading is a
@@ -249,6 +251,17 @@ def own_city(board, root=None):
     return None
 
 
+def is_location_board(board, root=None):
+    """True for a city page: meta.page_type "location", or a data/locations.json row whose
+    slug is the board's. Only these boards exclude other cities' photos and give their own
+    city a bonus (controller ruling, 2026-10-03); home, hubs, blog and comparison boards keep
+    city-named photos as normal."""
+    if not board:
+        return False
+    meta = board.get("meta") or {}
+    return meta.get("page_type") == "location" or own_city(board, root) is not None
+
+
 def cities_named(text, names):
     """The cities in `names` that `text` names as whole words ("York" is not "Yorkshire")."""
     w = " %s " % _words(text)
@@ -316,8 +329,9 @@ def inventory(root=None, board=None):
     root = Path(root or ROOT)
     uses = page_uses(board) if board else {}
     balts = _board_alts(board)
-    names = cities(root) if board else []
-    home = own_city(board, root) if board else None
+    local = is_location_board(board, root)
+    names = cities(root) if local else []
+    home = own_city(board, root) if local else None
     out = []
     for raw in _site_photos(str(root.resolve())):
         p = json.loads(raw)

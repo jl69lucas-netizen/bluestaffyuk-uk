@@ -369,3 +369,15 @@ def test_share_card_falls_back_to_editorial_split(monkeypatch):
     assert slots[0]["share"] == {"w": 1200, "h": 630, "og_style": "C"}
     assert ("No photo is 1200px wide; the share card uses the Editorial Split panel."
             in OS.block(board))
+
+
+def test_a_non_location_board_keeps_city_photos():
+    glasgow = "/images/family-friendly-blue-staffy-glasgow.webp"
+    for meta in ({"slug": "index", "page_type": "home"},
+                 {"slug": "blue-staffy-blog-guides", "page_type": "hub"}):
+        board = {"meta": meta, "assets": [], "sections": []}
+        assert not OS.is_location_board(board, ROOT)
+        by = {p["path"]: p for p in OS.inventory(ROOT, board)}
+        assert glasgow in by and by[glasgow]["own_city"] is False
+    assert OS.is_location_board({"meta": {"slug": "blue-staffy-puppies-london"}}, ROOT)
+    assert OS.is_location_board({"meta": {"slug": "new-city", "page_type": "location"}}, ROOT)
