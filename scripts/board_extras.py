@@ -25,7 +25,7 @@ import pathlib
 import re
 import sys
 from html.parser import HTMLParser
-from urllib.parse import urlsplit
+from urllib.parse import urljoin, urlsplit
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB  # noqa: E402
@@ -46,7 +46,7 @@ ARIAL = {
     "[": 278, "\\": 278, "]": 278, "^": 469, "_": 556, "`": 333,
     "{": 334, "|": 260, "}": 334, "~": 584,
     "–": 556, "—": 1000, "£": 556, "’": 222, "‘": 222, "“": 333, "”": 333, "…": 1000,
-    "·": 278, "×": 584, "›": 584, "€": 556,
+    "·": 278, "×": 584, "›": 333, "€": 556,
     **{d: 556 for d in "0123456789"},
     "A": 667, "B": 667, "C": 722, "D": 722, "E": 667, "F": 611, "G": 778, "H": 722, "I": 278,
     "J": 500, "K": 667, "L": 556, "M": 833, "N": 722, "O": 778, "P": 667, "Q": 778, "R": 722,
@@ -62,7 +62,13 @@ DESKTOP_W, MOBILE_W = 600, 360           # the result widths the mocks are drawn
 TITLE_PX, TITLE_SIZE = 600, 20           # desktop title: one line, 20px Arial
 MOBILE_TITLE_SIZE, MOBILE_LINES = 16, 2  # mobile title: about two lines at 16px
 MOBILE_LINE_PX = MOBILE_W - 2 * 16       # 360px result, 16px padding each side
-DESC_PX, DESC_SIZE = 920, 14             # description: about 920px in all, two lines at 14px
+DESC_PX, DESC_SIZE = 920, 14             # description: fits at or under 920px, 14px Arial
+DESC_MAX_PX = 990                        # over this it is cut; between the two it may be
+# The mobile description gets no number of its own: the repo holds no measured mobile width,
+# and Google's mobile result shows a varying number of lines by layout, so a separate mobile
+# figure would be a guess. The board says "same width rule as desktop (approximation)"
+# instead, which is the honest statement of what is being measured.
+MOBILE_DESC_RULE = "same width rule as desktop (approximation)"
 
 APPROX_LABEL = ("Approximation. Google may rewrite titles and descriptions and decides "
                 "truncation itself.")
@@ -146,6 +152,15 @@ def _settings(root):
     return json.loads((pathlib.Path(root) / "data/settings.json").read_text(encoding="utf-8"))
 
 
+def desc_verdict(px):
+    """Three verdicts for a description width: fits, may be cut, cut."""
+    if px <= DESC_PX:
+        return "fits"
+    if px <= DESC_MAX_PX:
+        return "may be cut (Google's width varies by layout)"
+    return "cut"
+
+
 def fit_rows(board):
     """Every title and description option of block 2 with its pixel widths and fit."""
     ms = board["meta_set"]
@@ -158,17 +173,17 @@ def fit_rows(board):
     for i, t in enumerate(ms["descriptions"]):
         d = text_px(t, DESC_SIZE)
         rows.append({"kind": "description", "i": i, "text": t, "px": d, "limit": DESC_PX,
-                     "fits": d <= DESC_PX, "mobile_fits": d <= DESC_PX})
+                     "verdict": desc_verdict(d)})
     return rows
 
 
 def option_px(text, kind):
-    """The short label block 2 prints beside an option: its desktop pixel width and fit."""
+    """The short label block 2 prints beside an option: its desktop pixel width and verdict."""
     if kind == "title":
-        px, lim = text_px(text, TITLE_SIZE), TITLE_PX
-    else:
-        px, lim = text_px(text, DESC_SIZE), DESC_PX
-    return f"{px:.0f} of {lim}px, {'fits' if px <= lim else 'cut'}"
+        px = text_px(text, TITLE_SIZE)
+        return f"{px:.0f}px, {'fits' if px <= TITLE_PX else 'cut'} (limit {TITLE_PX}px)"
+    px = text_px(text, DESC_SIZE)
+    return f"{px:.0f}px, {desc_verdict(px)} (fits ≤{DESC_PX}px, cut >{DESC_MAX_PX}px)"
 
 
 def _crumb_line(route, site_name):
@@ -184,11 +199,12 @@ def serp_mock(board, root=ROOT):
     site, crumb = _crumb_line(route, _settings(root).get("site_name", ""))
     t_desk, _ = truncate(title, TITLE_SIZE, TITLE_PX)
     t_mob, _ = wrap(title, MOBILE_TITLE_SIZE, MOBILE_LINE_PX, MOBILE_LINES)
-    d_shown, _ = truncate(desc, DESC_SIZE, DESC_PX)
+    # Shown whole up to the "may be cut" ceiling, cut past it.
+    d_shown, _ = truncate(desc, DESC_SIZE, DESC_MAX_PX)
     font = "font-family:Arial,sans-serif;"
     head = (f'<div style="{font}font-size:14px;color:#202124">{site}</div>'
             f'<div style="{font}font-size:12px;color:#4d5156;margin-bottom:4px">{crumb}</div>')
-    desk = (f'<div class="serp serp-desktop" style="width:{DESKTOP_W}px;max-width:100%;padding:12px 0;'
+    desk = (f'<div class="serp serp-desktop" style="width:{DESKTOP_W}px;max-width:100%;'
             f'background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;box-sizing:content-box">'
             f'<div style="{font}font-size:12px;color:#70757a;margin-bottom:6px">Desktop · {DESKTOP_W}px</div>'
             f'{head}<div style="{font}font-size:{TITLE_SIZE}px;line-height:1.3;color:#1a0dab;white-space:nowrap">'
@@ -217,23 +233,28 @@ def serp_block(board, root=ROOT):
            f"URL line: `{esc(page_url(route))}` — the site has no domain until project 6, so "
            "the placeholder is shown as it is.", "",
            serp_mock(board, root), "",
-           md_table(["", "Width", "Limit", "Fits"], [
-               ["Title, desktop (20px Arial)", f"{t_px:.0f}px", f"{TITLE_PX}px",
-                "yes" if t_px <= TITLE_PX else "no — cut with …"],
+           md_table(["", "Width", "Fits at or under", "Cut above", "Verdict"], [
+               ["Title, desktop (20px Arial)", f"{t_px:.0f}px", f"{TITLE_PX}px", f"{TITLE_PX}px",
+                "fits" if t_px <= TITLE_PX else "cut with …"],
                [f"Title, mobile (16px, {MOBILE_LINES} lines of {MOBILE_LINE_PX}px)",
                 f"{text_px(title, MOBILE_TITLE_SIZE):.0f}px",
-                f"{MOBILE_LINES} × {MOBILE_LINE_PX}px",
-                "yes" if not mcut else "no — cut with …"],
-               ["Description (14px, about two lines)", f"{d_px:.0f}px", f"{DESC_PX}px",
-                "yes" if d_px <= DESC_PX else "no — cut with …"]]), "",
+                f"{MOBILE_LINES} × {MOBILE_LINE_PX}px", f"{MOBILE_LINES} lines",
+                "fits" if not mcut else "cut with …"],
+               ["Description, desktop (14px)", f"{d_px:.0f}px", f"{DESC_PX}px", f"{DESC_MAX_PX}px",
+                desc_verdict(d_px)],
+               ["Description, mobile (14px)", f"{d_px:.0f}px", f"{DESC_PX}px", f"{DESC_MAX_PX}px",
+                f"{desc_verdict(d_px)} — {MOBILE_DESC_RULE}"]]), "",
            "**Every option in block 2, by pixel width**", "",
-           md_table(["Option", "Text", "Desktop width", "Fits desktop", "Fits mobile"], [
-               [f"{r['kind']} {r['i'] + 1}", md_cell(r["text"]), f"{r['px']:.0f} of {r['limit']}px",
-                "yes" if r["fits"] else "no", "yes" if r["mobile_fits"] else "no"]
+           md_table(["Option", "Text", "Width", "Verdict"], [
+               [f"{r['kind']} {r['i'] + 1}", md_cell(r["text"]), f"{r['px']:.0f}px",
+                (("fits" if r["fits"] else "cut") + f" (limit {TITLE_PX}px; mobile "
+                 + ("fits" if r["mobile_fits"] else "cut") + ")") if r["kind"] == "title"
+                else f"{r['verdict']} (fits ≤{DESC_PX}px, cut >{DESC_MAX_PX}px)"]
                for r in fit_rows(board)]), "",
            f"Widths come from a pinned Arial table (`scripts/board_extras.py` `ARIAL`), "
            f"desktop title {TITLE_PX}px at {TITLE_SIZE}px, mobile title {MOBILE_LINES} lines of "
-           f"{MOBILE_LINE_PX}px at {MOBILE_TITLE_SIZE}px, description {DESC_PX}px at {DESC_SIZE}px."]
+           f"{MOBILE_LINE_PX}px at {MOBILE_TITLE_SIZE}px, description fits at or under {DESC_PX}px and "
+           f"is cut above {DESC_MAX_PX}px at {DESC_SIZE}px; on mobile, {MOBILE_DESC_RULE}."]
     return "\n".join(out)
 
 
@@ -245,6 +266,8 @@ SCHEMA_NOTE = ("Preview only — the built page's JSON-LD is produced by the sit
 REFUSED_TYPES = {"AggregateRating": "seo-rules Rule 33: no AggregateRating markup",
                  "Review": "seo-rules Rule 33: no review markup in the preview; data/reviews.json "
                            "rows are shown as letters, not marked up"}
+LOGO_RE = re.compile(r"export const LOGO_RASTER = '([^']+)'")
+PLANNED_ONLY = {"Person": "planned for this page (board schema plan), not yet emitted by the site build"}
 NAV_RE = re.compile(r"\{\s*href:\s*'([^']+)',\s*label:\s*'([^']+)'\s*\}")
 KEEP_LOWER = {"uk", "and", "of", "for", "in", "the"}
 FAQ_Q = re.compile(r"^Q:\s*(.+?)\s+—\s")
@@ -254,6 +277,12 @@ def _title_case_slug(seg):
     """src/lib/site.ts titleCase, for a path segment."""
     return " ".join("UK" if w.lower() == "uk" else w.lower() if w.lower() in KEEP_LOWER
                     else w[:1].upper() + w[1:] for w in seg.split("-"))
+
+
+def _logo(root):
+    p = pathlib.Path(root) / "src/lib/site.ts"
+    m = LOGO_RE.search(p.read_text(encoding="utf-8")) if p.is_file() else None
+    return m.group(1) if m else None
 
 
 def _nav(root):
@@ -339,20 +368,32 @@ def jsonld_graph(board, root=ROOT):
     want = lambda t: t in types
     graph = []
     addr_in = s.get("address") or {}
-    ki16 = "NOT FETCHED — the breeder has supplied no {} for the new place (Known Issue 16)"
     if want("LocalBusiness"):
-        graph.append({
-            "@context": "https://schema.org", "@type": "LocalBusiness", "@id": f"{SITE_URL}/#business",
-            "name": s.get("site_name"), "url": SITE_URL, "email": s.get("email"),
-            "telephone": s.get("phone"), "priceRange": s.get("price_range"),
-            "address": {"@type": "PostalAddress", "addressLocality": addr_in.get("city"),
-                        "addressRegion": addr_in.get("region"),
-                        "addressCountry": addr_in.get("country"),
-                        "streetAddress": addr_in.get("street") or ki16.format("street"),
-                        "postalCode": addr_in.get("postcode") or ki16.format("postcode")},
-            "openingHours": s.get("hours"),
-            "sameAs": list((s.get("socials") or {}).values()) if isinstance(s.get("socials"), dict) else [],
-        })
+        # src/components/Schema.astro: an address key is added only when data/settings.json
+        # holds it, and telephone only once it is no longer the placeholder. The preview omits
+        # the same keys and lists them (omitted_keys) under the code block.
+        address = {"@type": "PostalAddress", "addressLocality": addr_in.get("city"),
+                   "addressCountry": addr_in.get("country")}
+        if addr_in.get("region"):
+            address["addressRegion"] = addr_in["region"]
+        if addr_in.get("street"):
+            address["streetAddress"] = addr_in["street"]
+        if addr_in.get("postcode"):
+            address["postalCode"] = addr_in["postcode"]
+        biz = {"@context": "https://schema.org", "@type": "LocalBusiness", "@id": f"{SITE_URL}/#business",
+               "name": s.get("site_name"), "url": SITE_URL, "email": s.get("email"),
+               "priceRange": s.get("price_range"), "address": address, "openingHours": s.get("hours"),
+               "sameAs": list((s.get("socials") or {}).values()) if isinstance(s.get("socials"), dict) else []}
+        logo = _logo(root)
+        if logo:
+            biz["image"] = SITE_URL + logo
+        if isinstance(addr_in.get("lat"), (int, float)) and isinstance(addr_in.get("lng"), (int, float)):
+            biz["geo"] = {"@type": "GeoCoordinates", "latitude": addr_in["lat"], "longitude": addr_in["lng"]}
+        if s.get("phone") and s.get("phone") != "PHONE_PLACEHOLDER":
+            biz["telephone"] = s["phone"]
+        graph.append(biz)
+        graph.append({"@context": "https://schema.org", "@type": "WebSite", "@id": f"{SITE_URL}/#website",
+                      "url": SITE_URL, "name": s.get("site_name")})
     if want("Person"):
         graph.append({"@context": "https://schema.org", "@type": "Person", "@id": f"{SITE_URL}/#breeder",
                       "name": s.get("breeder_name"), "worksFor": {"@id": f"{SITE_URL}/#business"},
@@ -375,7 +416,7 @@ def jsonld_graph(board, root=ROOT):
                           "image": f"{SITE_URL}/images/puppies/{p['slug']}-card-800.webp",
                           "brand": {"@type": "Brand", "name": s.get("site_name")},
                           "offers": {"@type": "Offer",
-                                     "price": str(price if price is not None else matrix),
+                                     "price": price if price is not None else matrix,
                                      "priceCurrency": pm.get("currency", "GBP"),
                                      "availability": "https://schema.org/InStock",
                                      "url": f"{SITE_URL}/available-puppies/{p['slug']}/",
@@ -386,6 +427,21 @@ def jsonld_graph(board, root=ROOT):
                                       "acceptedAnswer": {"@type": "Answer", "text": a}}
                                      for q, a in faq_rows(board, root)]})
     return graph
+
+
+def omitted_keys(root=ROOT):
+    """The keys the build leaves out for want of data, as the preview does."""
+    s = _settings(root)
+    a = s.get("address") or {}
+    out = []
+    if not s.get("phone") or s.get("phone") == "PHONE_PLACEHOLDER":
+        out.append("telephone (PHONE_PLACEHOLDER until project 6)")
+    missing = [k for k, f in (("streetAddress", "street"), ("postalCode", "postcode")) if not a.get(f)]
+    if missing:
+        out.append("/".join(missing) + " (Known Issue 16)")
+    if not (isinstance(a.get("lat"), (int, float)) and isinstance(a.get("lng"), (int, float))):
+        out.append("geo (no coordinates, Known Issue 16)")
+    return out
 
 
 def schema_block(board, root=ROOT):
@@ -402,12 +458,18 @@ def schema_block(board, root=ROOT):
         out.append(f"- `{esc(t)}` is not emitted — {REFUSED_TYPES[t]}.")
     for t in unknown:
         out.append(f"- `{esc(t)}` — NOT FETCHED: no data file this preview reads describes it.")
+    for t in types:
+        if t in PLANNED_ONLY and t in built:
+            out.append(f"- `{t}` — {PLANNED_ONLY[t]}.")
     out += ["- No `AggregateRating` and no review markup (seo-rules Rule 33).",
-            "- `telephone` prints `PHONE_PLACEHOLDER` and the street and postcode print NOT FETCHED: "
-            "the build leaves those fields out until the breeder supplies them (src/components/Schema.astro).",
+            "- `LocalBusiness`, `WebSite` and `BreadcrumbList` follow src/components/Schema.astro; "
+            "`Product` and `Offer` follow src/pages/available-puppies/[slug].astro.",
             "- Sources: `data/settings.json`, `data/puppies.json`, `data/price-matrix.json`, "
             "`data/faq.json` (the rows the FAQ sections list), the route for the breadcrumb.", "",
-            "```json", json.dumps(graph, indent=2, ensure_ascii=False).replace("</", "<\\/"), "```"]
+            "```json", json.dumps(graph, indent=2, ensure_ascii=False).replace("</", "<\\/"), "```", ""]
+    om = omitted_keys(root) if "LocalBusiness" in types else []
+    if om:
+        out.append("omitted: " + ", ".join(om))
     return "\n".join(out)
 
 
@@ -417,11 +479,28 @@ HOST = re.compile(r"^https?://[^/]+")
 ORPHAN_FLOOR = 3
 
 
-def norm_route(href):
-    path = urlsplit(HOST.sub("", str(href or "").strip())).path
-    if not path.startswith("/"):
+SITE_HOST = urlsplit(SITE_URL).netloc
+
+
+def norm_route(href, base="/"):
+    """The internal route an href lands on, or None for anything that is not an internal page
+    link. Relative hrefs resolve against `base`, the source page's URL path; only a link with
+    no host, or with the site's own placeholder host, is internal — another domain with the
+    same path is not; `/…/index.html` is `/…/`."""
+    href = str(href or "").strip()
+    if not href:
         return None
-    return "/" + path.strip("/") + "/" if path.strip("/") else "/"
+    u = urlsplit(href)
+    if u.scheme and u.scheme not in ("http", "https"):
+        return None                                   # mailto:, tel:, javascript:
+    if u.netloc and u.netloc != SITE_HOST:
+        return None
+    path = urlsplit(urljoin(SITE_URL + base, href)).path
+    if path.endswith("/index.html"):
+        path = path[:-len("index.html")]
+    elif not path.endswith("/") and not path.endswith(".html"):
+        path += "/"
+    return re.sub(r"/{2,}", "/", path)
 
 
 def links_out(board):
@@ -487,8 +566,8 @@ def links_in(route, dist):
             continue
         p = _Anchors()
         p.feed(page.read_text(encoding="utf-8", errors="ignore"))
-        hits = [a for a in p.found if norm_route(a["href"]) == target]
         src = "/" + rel[:-len("index.html")] if rel.endswith("index.html") else "/" + rel
+        hits = [a for a in p.found if norm_route(a["href"], src) == target]
         main_hits = [a for a in hits if a["in_main"]]
         for a in main_hits:
             rows.append({"source": src, "anchor": a["text"]})
@@ -530,6 +609,16 @@ def links_block(board, root=ROOT, dist=None):
 NOT_BAKED = "not baked — size after STOP 4"
 
 
+def _bake_max_kb(root):
+    """scripts/bake_images.py MAX_KB: imported, or read from its source where PIL (which that
+    module imports) is not installed."""
+    try:
+        import bake_images
+        return bake_images.MAX_KB
+    except ImportError:
+        p = pathlib.Path(root) / "scripts/bake_images.py"
+        m = re.search(r"^MAX_KB\s*=\s*(\d+)", p.read_text(encoding="utf-8"), re.M) if p.is_file() else None
+        return int(m.group(1)) if m else None
 
 
 def budget_source(root=ROOT):
@@ -539,12 +628,14 @@ def budget_source(root=ROOT):
     root = pathlib.Path(root)
     probes = [("scripts/perf_audit.py", "THRESHOLDS = {c: 0.995",
                "Lighthouse category floors only (every category 0.995) — a score, not bytes or ms"),
-              ("scripts/bake_images.py", "MAX_KB = 95",
-               "the bake budget per image: 95 KB, where 1 KB is 1,024 bytes"),
+              ("scripts/bake_images.py", "MAX_KB = ",
+               "the bake budget per image: MAX_KB = {max_kb} KB, where 1 KB is 1,024 bytes"),
               ("rules/images.md", "<100 KB WebP + -760.webp",
                "each in-body image ships as a <100 KB WebP plus its -760 sibling")]
+    max_kb = _bake_max_kb(root)
     cites = []
     for path, needle, what in probes:
+        what = what.format(max_kb=max_kb)
         p = root / path
         line = None
         if p.is_file():
@@ -561,8 +652,8 @@ def budget_source(root=ROOT):
             if re.search(r"\b\d+\s?KB\b|\bLCP\b|page weight", ln, re.I):
                 design_hit = i
                 break
-    per_image = 95 * 1024 if any(c["path"] == "scripts/bake_images.py" for c in cites) else None
-    return {"cites": cites, "design_line": design_hit, "per_image_bytes": per_image,
+    per_image = max_kb * 1024 if max_kb else None
+    return {"cites": cites, "design_line": design_hit, "per_image_bytes": per_image, "max_kb": max_kb,
             "page_budget_bytes": None, "lcp_budget_ms": None}
 
 
@@ -614,10 +705,13 @@ def weight_block(board, root=ROOT):
     src = budget_source(root)
     out = []
     # The budget, cited or declared absent.
-    out.append("**Budget.** No page-weight or LCP-time budget is stated in `scripts/perf_audit.py` "
-               "or `rules/design.md`" + (f" (rules/design.md line {src['design_line']} mentions one — read it)"
-                                         if src["design_line"] else "")
-               + ", so this block sets no page-total budget and no LCP target; it measures and shows the bytes. What the repo does state:")
+    if src["design_line"]:
+        out.append(f"**Note.** `rules/design.md` line {src['design_line']} mentions KB or LCP; "
+                   "read it there — this block does not turn it into a number.")
+    out.append("**Budget.** Neither `scripts/perf_audit.py` nor `rules/design.md` states a "
+               "page-weight or LCP-time number" + (" it can be measured against" if src["design_line"] else "")
+               + ", so this block shows the measured bytes against no page-total or LCP target. "
+               "What the repo does state:")
     for c in src["cites"]:
         out.append(f"- `{c['path']}:{c['line']}` — {c['what']}.")
     out.append("")
@@ -638,7 +732,7 @@ def weight_block(board, root=ROOT):
         size = NOT_BAKED if r["note"] == NOT_BAKED else (r["note"] or f"{_kb(r['bytes'])}")
         over = per is not None and r["bytes"] is not None and r["bytes"] > per
         body.append([md_cell(r["section"]), f"`{md_cell(r['slot'])}`", r["kind"],
-                     f"`{md_cell(r['file'])}`" if r["file"] else "—", size + (" ⚠ over 95 KB" if over else ""),
+                     f"`{md_cell(r['file'])}`" if r["file"] else "—", size + (f" ⚠ over {src['max_kb']} KB" if over else ""),
                      _kb(r["sib_bytes"]) if r["sib"] else "no sibling"])
     out.append(md_table(["Section", "Slot", "Kind", "File", "Bytes", "-760 sibling"], body)
                if body else "_No image slots on this board._")
@@ -677,7 +771,7 @@ def main(argv=None):
     if len(argv) != 1:
         print("usage: python3 scripts/board_extras.py <slug>", file=sys.stderr)
         return 2
-    path = ROOT / "data/boards" / f"{PB.slug_file(argv[0]) if hasattr(PB, 'slug_file') else argv[0]}.json"
+    path = ROOT / "data/boards" / f"{PB.slug_file(argv[0])}.json"
     if not path.is_file():
         print(f"no board at {path}", file=sys.stderr)
         return 2

@@ -60,6 +60,18 @@ def test_truncation_cuts_on_a_word_and_shows_an_ellipsis():
     assert short == "Short" and not cut2
 
 
+def test_the_breadcrumb_separator_is_333():
+    assert BX.ARIAL["›"] == 333
+
+
+def test_description_has_three_verdicts():
+    assert BX.desc_verdict(BX.DESC_PX) == "fits"
+    assert BX.desc_verdict(BX.DESC_PX + 1).startswith("may be cut")
+    assert BX.desc_verdict(BX.DESC_MAX_PX) .startswith("may be cut")
+    assert BX.desc_verdict(BX.DESC_MAX_PX + 1) == "cut"
+    assert (BX.DESC_PX, BX.DESC_MAX_PX) == (920, 990)
+
+
 def test_mobile_title_wraps_to_two_lines_at_most():
     lines, cut = BX.wrap("Blue Staffy Puppies London " * 6, 16, BX.MOBILE_LINE_PX, 2)
     assert len(lines) == 2 and cut and lines[-1].endswith("…")
@@ -75,6 +87,9 @@ def test_serp_block_shows_the_picked_pair_the_placeholder_url_and_the_label(lond
     assert "SITE_URL_PLACEHOLDER" in out and "uk-locations" in out
     assert BX.APPROX_LABEL in out
     assert "600px" in out and "360px" in out
+    assert "920px" in out and "990px" in out                     # both description limits
+    assert BX.MOBILE_DESC_RULE in out
+    assert "padding:12px 0" not in out                            # one padding per mock
     # every option of block 2 carries its own pixel width
     for v in london["meta_set"]["titles"] + london["meta_set"]["descriptions"]:
         assert BX.md_cell(v) in out
@@ -101,6 +116,20 @@ def test_jsonld_carries_every_type_the_brief_plans(london):
         assert t in types, t
     products = [n for n in graph if n["@type"] == "Product"]
     assert products and all(p["offers"]["@type"] == "Offer" for p in products)
+    assert all(isinstance(p["offers"]["price"], int) for p in products)   # a number, as [slug].astro
+
+
+def test_parity_with_schema_astro(london):
+    graph = BX.jsonld_graph(london, ROOT)
+    site = next(n for n in graph if n["@type"] == "WebSite")
+    assert site["@id"] == "https://SITE_URL_PLACEHOLDER/#website"
+    biz = next(n for n in graph if n["@type"] == "LocalBusiness")
+    assert biz["image"] == "https://SITE_URL_PLACEHOLDER/icon-512.png"   # abs(LOGO_RASTER)
+
+
+def test_person_is_labelled_planned_not_emitted(london):
+    out = BX.schema_block(london, ROOT)
+    assert "planned for this page (board schema plan), not yet emitted by the site build" in out
 
 
 def test_prices_come_from_the_data_files(london):
@@ -109,7 +138,7 @@ def test_prices_come_from_the_data_files(london):
     graph = BX.jsonld_graph(london, ROOT)
     for p in (n for n in graph if n["@type"] == "Product"):
         name = p["name"].split(" – ")[0]
-        assert int(p["offers"]["price"]) == avail[name]
+        assert p["offers"]["price"] == avail[name]
         assert p["offers"]["priceCurrency"] == "GBP"
 
 
@@ -129,12 +158,15 @@ def test_review_types_in_a_brief_are_refused_not_built():
     assert "Rule 33" in out
 
 
-def test_missing_fields_print_their_placeholder_never_a_guess(london):
+def test_keys_without_data_are_omitted_as_the_build_omits_them(london):
     biz = next(n for n in BX.jsonld_graph(london, ROOT) if n["@type"] == "LocalBusiness")
-    assert biz["telephone"] == "PHONE_PLACEHOLDER"
-    assert biz["address"]["streetAddress"].startswith("NOT FETCHED")
-    assert biz["address"]["postalCode"].startswith("NOT FETCHED")
+    assert "telephone" not in biz and "geo" not in biz
+    assert "streetAddress" not in biz["address"] and "postalCode" not in biz["address"]
     assert biz["url"].startswith("https://SITE_URL_PLACEHOLDER")
+    out = BX.schema_block(london, ROOT)
+    tail = out.split("```")[-1]
+    assert "omitted: telephone (PHONE_PLACEHOLDER until project 6), " \
+           "streetAddress/postalCode (Known Issue 16)" in tail
 
 
 def test_faq_rows_not_yet_in_data_print_not_fetched(london):
@@ -199,6 +231,30 @@ def test_links_in_reads_main_with_a_parser(tmp_path):
     assert chrome == 1
 
 
+def test_relative_hrefs_resolve_against_the_source_page(tmp_path):
+    _page(tmp_path, "uk-locations/a", '<a href="../x/">sibling</a><a href="x/">wrong</a>')
+    _page(tmp_path, "uk-locations", '<a href="x/">from the hub</a>')
+    rows, _ = BX.links_in("uk-locations/x", tmp_path)
+    assert sorted((r["source"], r["anchor"]) for r in rows) == [
+        ("/uk-locations/", "from the hub"), ("/uk-locations/a/", "sibling")]
+
+
+def test_another_domain_with_the_same_path_is_not_counted(tmp_path):
+    _page(tmp_path, "a", '<a href="https://example.com/uk-locations/x/">elsewhere</a>'
+                         '<a href="//example.com/uk-locations/x/">proto</a>'
+                         '<a href="mailto:x@y.z">mail</a>')
+    _page(tmp_path, "b", '<a href="https://SITE_URL_PLACEHOLDER/uk-locations/x/">ours</a>')
+    rows, _ = BX.links_in("uk-locations/x", tmp_path)
+    assert [(r["source"], r["anchor"]) for r in rows] == [("/b/", "ours")]
+
+
+def test_index_html_is_the_directory_route(tmp_path):
+    _page(tmp_path, "a", '<a href="/uk-locations/x/index.html">full path</a>')
+    rows, _ = BX.links_in("uk-locations/x", tmp_path)
+    assert [(r["source"], r["anchor"]) for r in rows] == [("/a/", "full path")]
+    assert BX.norm_route("index.html", "/uk-locations/x/") == "/uk-locations/x/"
+
+
 def test_links_block_says_not_fetched_without_dist(london, tmp_path):
     out = BX.links_block(london, ROOT, dist=tmp_path / "missing")
     assert "NOT FETCHED — dist/ not built (npm run build)" in out
@@ -238,7 +294,10 @@ def test_weight_block_names_the_lcp_candidate_and_a_page_total(london):
 
 
 def test_budget_is_cited_from_the_repo_or_none_is_claimed():
+    import bake_images
     src = BX.budget_source(ROOT)
+    assert src["max_kb"] == bake_images.MAX_KB
+    assert src["per_image_bytes"] == bake_images.MAX_KB * 1024
     for cite in src["cites"]:
         path, line = cite["path"], cite["line"]
         text = (ROOT / path).read_text(encoding="utf-8").splitlines()[line - 1]

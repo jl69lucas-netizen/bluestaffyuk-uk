@@ -3073,7 +3073,7 @@ def test_q12_blocks_on_the_london_board_in_order(london_html):
         london_html.index('data-title="3. Outline"')
     assert at[1] < at[2] < at[3] < london_html.index('data-title="8. Approve"')
     # every title and description option in block 2 carries its pixel width
-    assert london_html.count("px, fits") + london_html.count("px, cut") >= 6
+    assert sum(london_html.count(f"px, {w}") for w in ("fits", "may be cut", "cut")) >= 6
 
 
 def test_q12_blocks_never_on_a_pre_rule_board():
@@ -3081,4 +3081,4 @@ def test_q12_blocks_never_on_a_pre_rule_board():
     old = BPB.render(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
     for t in V3_EXTRA_TITLES:
         assert t not in old, t
-    assert "px, fits" not in old and "px, cut" not in old
+    assert "px, fits" not in old and "px, cut" not in old and "px, may be cut" not in old
