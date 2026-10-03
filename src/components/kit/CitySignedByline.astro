@@ -1,0 +1,70 @@
+---
+// src/components/kit/CitySignedByline.astro — city component 16, the byline under the H1 (London
+// board revision, answer board 2026-10-03-london-board-revision q01 (a): byline style A, "Signed
+// rule"; preview docs/artifacts/london-board-revision-preview.html). One line with a short brass
+// rule, no box and no headshot, mounted in CityHeroFilmstrip's `byline` slot on the steel band.
+//
+// LINE 1 ALWAYS RENDERS: "Written by <name>, breeder, <town>", the name linking to the About page
+// (a nav link on the board). LINE 2, "Read and approved by <first name> on <date>", renders ONLY
+// when the caller passes `reviewed`, which a page reads from its page-run record's
+// `breeder_review` (answer board 2026-10-03-google-helpful-content-decisions q01). With no date it
+// is not printed at all: the line never claims a read the record does not hold.
+//
+// The name and town are data/settings.json's, read by the caller. Conventions 2, 4, 6.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'div'> & {
+  /** The author, from data/settings.json `breeder_name`. */
+  name: string;
+  /** Where the name links (the About page). */
+  href: string;
+  /** The town, from data/settings.json `address.city`. */
+  town: string;
+  /** The date of the breeder's read (ISO yyyy-mm-dd), or nothing until it is recorded. */
+  reviewed?: string | null;
+};
+// `slot` is the hero's, not this root's: it is taken off so it is not printed as an attribute.
+const { name, href, town, reviewed, class: cls, slot: _slot, ...rest } = Astro.props as Props & { slot?: string };
+const first = name.split(/\s+/)[0];
+let readOn: string | null = null;
+if (reviewed) {
+  const d = new Date(`${reviewed}T12:00:00Z`);
+  if (Number.isNaN(d.getTime())) throw new Error(`CitySignedByline: "${reviewed}" is not a yyyy-mm-dd date`);
+  readOn = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+}
+---
+<div {...rest} class:list={['city-kit', 'city-signed-byline', cls]} data-byline>
+  <p class="by"><span>Written by <a href={href}>{name}</a>, breeder, {town}</span></p>
+  {readOn && (
+    <p class="read" data-byline-read>
+      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6.25" /><path d="M4.2 7.2l1.9 1.9 3.8-4" /></svg>
+      <span>Read and approved by {first} on <time datetime={reviewed}>{readOn}</time></span>
+    </p>
+  )}
+</div>
+<style>
+  @layer components {
+    /* Convention 3: the ink is the surface's. On the hero's steel band (`.on-inverse`, which sets
+       the inverse text colour) the link is brass-200 and the read line steel-300; on a bone
+       surface (the kit preview) the link is the site's link colour and the read line ink-3. */
+    .city-signed-byline { margin: var(--space-2) 0 var(--space-4); }
+    .by {
+      margin: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      font-size: var(--text-sm); line-height: 1.45; color: color-mix(in srgb, currentColor 90%, transparent);
+    }
+    .by::before { content: ""; width: 28px; height: 2px; background: var(--color-brass-500); flex: none; }
+    .by a {
+      color: var(--color-link); font-weight: 600; text-decoration: underline;
+      text-decoration-color: color-mix(in srgb, currentColor 55%, transparent); text-underline-offset: 3px;
+    }
+    :global(.on-inverse) .by a { color: var(--color-link-on-inverse); }
+    .by a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: 2px; }
+    .read {
+      margin: 6px 0 0 38px; display: flex; align-items: center; gap: 6px;
+      font-size: var(--text-xs); line-height: 1.45; color: var(--color-ink-3);
+    }
+    :global(.on-inverse) .read { color: var(--color-steel-300); }
+    .read svg { flex: none; fill: none; stroke: var(--color-brass-500); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  }
+</style>

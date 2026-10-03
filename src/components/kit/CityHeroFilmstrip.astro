@@ -16,6 +16,10 @@
 // photo is the LCP candidate: eager, `fetchpriority="high"`; the rest are eager too (a strip
 // above the fold that pops in tile by tile is worse than one that costs five small requests).
 //
+// THE BYLINE SLOT (London board revision, answer board 2026-10-03-london-board-revision q01): a
+// page may pass a byline (`slot="byline"`, e.g. CitySignedByline) and it renders directly under
+// the H1, inside the copy's head, so the lead and the strip do not move.
+//
 // Conventions 2 (focus rings read --kit-ring; the band sets it via `.on-inverse`), 4, 6.
 // Brass is a FILL (the CTA) with --color-cta-ink text, never small text on the steel band.
 import '../../styles/city.css';
@@ -67,6 +71,7 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
       <div class="head">
         {eyebrow && <p class="eyebrow">{eyebrow}</p>}
         <H class="title">{title}</H>
+        {Astro.slots.has('byline') && <slot name="byline" />}
       </div>
       <div>
         {lede && <p class="lede">{lede}</p>}

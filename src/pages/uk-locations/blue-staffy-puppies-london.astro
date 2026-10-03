@@ -36,6 +36,8 @@ import board from '../../../data/boards/blue-staffy-puppies-london.json';
 import standards from '../../../data/breed-standards.json';
 import faqBank from '../../../data/faq.json';
 import queries from '../../../data/queries/blue-staffy-puppies-london.json';
+import cityPlaces from '../../../data/city-places/blue-staffy-puppies-london.json';
+import pageRun from '../../../data/page-runs/blue-staffy-puppies-london.json';
 import type { LocationRow, PuppyRow } from '../../lib/site';
 import { SITE_URL } from '../../lib/site';
 import type { SectionRef } from '../../lib/sections';
@@ -56,6 +58,11 @@ import CityChapters from '../../components/kit/CityChapters.astro';
 import CityLetter from '../../components/kit/CityLetter.astro';
 import CityNewsletterNotice from '../../components/kit/CityNewsletterNotice.astro';
 import CityContactLineup from '../../components/kit/CityContactLineup.astro';
+import CitySignedByline from '../../components/kit/CitySignedByline.astro';
+import CityTicketStrip from '../../components/kit/CityTicketStrip.astro';
+import CityLookListenChecklist, { type CheckPane } from '../../components/kit/CityLookListenChecklist.astro';
+import CityPlacesByPublisher from '../../components/kit/CityPlacesByPublisher.astro';
+import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
 import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, depositBrief, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
 import { guaranteePhraseOf, guaranteeWords, type GuaranteeSettings } from '../../lib/guarantee';
 import { numberWord } from '../../lib/recordText';
@@ -145,6 +152,52 @@ const IG = {
 
 // ── links (the board's, Link-First) ────────────────────────────────────────────────────────
 const EXT = { target: '_blank', rel: 'noopener noreferrer' } as const;
+/** The board's anchor for a link a section lists: a link the board does not list is not built. */
+const anchorOf = (id: string, href: string) => {
+  const links = (SECTIONS[id].links ?? {}) as { internal?: { href: string; anchor: string }[]; external?: { href: string; anchor: string }[] };
+  const hit = [...(links.internal ?? []), ...(links.external ?? [])].find((l) => l.href === href);
+  if (!hit) throw new Error(`the London board's ${id} section lists no link to ${href}`);
+  return hit.anchor;
+};
+
+// ── the board revision of 2026-10-03 (block 1c; subcomponents in block 6b) ─────────────────
+// The byline (q01 a): its second line only once the page-run record holds the breeder's read.
+const REVIEWED = ((pageRun as { breeder_review?: string | { date?: string } }).breeder_review ?? null);
+const REVIEWED_ON = typeof REVIEWED === 'string' ? REVIEWED : REVIEWED?.date ?? null;
+// The breeder's London answers (q08, q09), read from the places file's first_hand rows.
+const firstHand = (topic: string) => {
+  const row = (cityPlaces.first_hand as { topic: string; value: string; use: string }[]).find((r) => r.topic === topic);
+  if (!row || row.use !== 'usable') throw new Error(`data/city-places/${SLUG}.json has no usable first_hand ${topic}`);
+  return row.value;
+};
+const PAST_DELIVERIES = cap(firstHand('past-delivery').trim());
+firstHand('handover');
+// The video-call checklist (q03 b): the record's eight items, word for word, every figure and
+// clause read from the data. The tests are named only; no result is stated (plan Ruling 4).
+const blaze = pups.find((p) => /blaze/i.test(p.colour)) ?? pups[0];
+const callChecklist: CheckPane[] = [
+  { title: 'Ask to see, on camera', hint: 'Tick each one as we show it', icon: 'look', items: [
+    { label: 'Maggie, with the litter', detail: 'Ask us to turn the camera to Maggie, our dam, with her puppies.' },
+    { label: "Your puppy's own markings",
+      detail: `See your puppy up close and match its coat to the colour on its listing. ${blaze.name}, for one, is listed as ${blaze.colour.toLowerCase()}.` },
+    { label: 'The paperwork', detail: 'The Kennel Club registration paperwork, the vaccination records and the microchipping details.' },
+    { label: 'The written contract', detail: 'Our puppy purchase contract, with the take-back promise written into it.' },
+  ] },
+  { title: 'Ask to hear, out loud', hint: 'Tick each one as we answer it', icon: 'listen', items: [
+    { label: 'The health tests, by name', detail: 'Ask us about each of these tests by name: L-2-HGA, HC-HSF4, eye screening and elbow screening.' },
+    { label: "The parents' registration numbers", detail: 'Write them down so you can check the pedigree yourself.' },
+    { label: 'The deposit terms', detail: `${DEPOSIT}, paid by bank transfer: ${REFUND}.` },
+    // The guarantee row's own wording (src/lib/guarantee.ts guaranteeRowParts): the label states the
+    // length, so the cover sentence drops it (review M1, 2026-09-29) and the note follows.
+    ...(guarantee ? [{ label: `The ${guarantee.t}`, detail: guarantee.d }] : []),
+  ] },
+];
+// The London places (q04 c): the places file grouped by publisher, the board's anchors.
+// One fact more is left out: the Heath's rule for professional dog walkers names a licence, and
+// nothing on this page is about a licence (plan Ruling 5; tests/py/test_london_page.py).
+const PLACE_GROUPS = placeGroups(cityPlaces.places as PlaceRow[], (href) => anchorOf('london-life', href),
+  (value) => /\blicen[cs]e\b/i.test(value));
+const VET = cityPlaces.vets.source;
 
 // ── the nav set: ten stops, each section's own H2 as its question ──────────────────────────
 const sections: SectionRef[] = [
@@ -184,8 +237,6 @@ const faqTop: CityFaqRow[] = [
     a: 'Our list is updated as puppies are reserved, so a puppy still on it is free, and we confirm the one you like before you pay anything.' },
   { q: 'How Do I Reserve One of Your Blue Staffy Puppies From London?',
     a: "Send the enquiry form at the foot of this page with the puppy's name, and we reply by email with the next steps." },
-  { q: 'Where Can I Find Blue Staffy Breeders in the UK?',
-    a: `Here. We raise blue Staffordshire Bull Terrier puppies in our own home in ${TOWN}, deliver across the UK, London included, and keep a page for each part of the country.` },
 ];
 const faqMiddle: CityFaqRow[] = [
   { q: 'Should I See My Puppy With Its Mother Before Any Money Changes Hands?',
@@ -274,10 +325,12 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     <CityHeroFilmstrip id="top" data-section-label={H2('top')}
       eyebrow={`${cap(LITTER)} puppies · ${TOWN} to London`}
       title={H1}
-      lede={`Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to us in ${TOWN} comes after that call. We raise every litter in our own home, and our blue Staffy puppies for London homes come from this one: ${LITTER} puppies, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}. Lisa Bright, BlueStaffyUK.`}
+      lede={`Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to us in ${TOWN} comes after that call. We raise every litter in our own home, and our blue Staffy puppies for London homes come from this one: ${LITTER} puppies, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}.`}
       cta={{ label: 'Blue Staffy puppies available now', href: '/available-puppies/' }}
       more={{ label: 'BlueStaffyUK', href: '/' }}
-    />
+    >
+      <CitySignedByline slot="byline" name={settings.breeder_name} href="/blue-staffy-uk-breeders/" town={TOWN} reviewed={REVIEWED_ON} />
+    </CityHeroFilmstrip>
     <CityPriceScale id="counter" data-section-label={H2('counter')} labels={{
       count: 'puppies available now',
       delivery: 'UK home delivery, priced by distance',
@@ -301,7 +354,9 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     heading={H2('key-takeaways')}
     lede={`${cap(numberWord(takeaways.length))} short answers for anyone reading from London.`}
     photo="jones-strong-staffy-sire-temperament.webp" caption={`Jones, our sire, at home in ${TOWN}`}
-    rows={takeaways} />
+    rows={takeaways}>
+    <CityTicketStrip />
+  </CityTakeawaysLedger>
 
   <SectionDivider />
   <CityLetter id="review-top" data-section-label={H2('review-top')}
@@ -333,8 +388,11 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <p><a href="/uk-blue-staffy-breeders-contact/">Booking a video call with us</a> takes one message: tell us which puppy you like and when you are free.</p>
       <h4>{tree('deposit-viewing', 0, 0)}</h4>
       <p>Send the enquiry form or write to us, name the puppy and give a time that suits you. We reply by email to fix the call.</p>
+    </Fragment>
+    <Fragment slot="ch-1-full">
       <h5>{tree('deposit-viewing', 0, 0, 0)}</h5>
       <p>Ask to see the puppy move about, then Maggie with the litter. Put any question you have about the parents, the paperwork or the contract.</p>
+      <CityLookListenChecklist panes={callChecklist} />
       <h6>{tree('deposit-viewing', 0, 0, 0, 0)}</h6>
       <p>Because a puppy shown with its mother, in the home it grew up in, is what you are told to look for. <a href="https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales" {...EXT}>The RSPCA's advice on puppy adverts</a> asks buyers to see the puppy with its mother, in person. Our call is a first look, and you still meet them in person when you visit.</p>
     </Fragment>
@@ -378,6 +436,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <p>A secure carrier or crate, a blanket, water and a towel, and time for short stops on the way.</p>
     </Fragment>
     <Fragment slot="ch-3">
+      <p>We have delivered to {PAST_DELIVERIES} before. London buyers take home delivery, and handovers are by request, so ask us when you enquire.</p>
       <p><a href="/uk-locations/staffy-puppies-for-sale-essex/">Buyers in Essex</a> have their own page. <a href="/uk-locations/blue-staffy-puppies-oxford/">Our page for Oxford families</a> is another. <a href="/uk-locations/buy-blue-staffy-puppy-coventry-area/">Coventry and the surrounding area</a> has one. <a href="/uk-locations/blue-staffy-puppies-for-sale-in-leicester/">Leicester readers</a> do too. <a href="/uk-locations/">The other UK cities we have written about</a> are listed together.</p>
     </Fragment>
   </CityChapters>
@@ -494,9 +553,11 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       { place: 'Alone', question: tree('london-life', 1), asset: photo('london-life-alone'),
         text: 'Not for long stretches. Staffies want company, so a puppy has to learn time alone slowly, a few minutes at a time.' },
     ]}>
-    <Fragment slot="ch-1">
+    <Fragment slot="ch-1-full">
       <h4>{tree('london-life', 0, 0)}</h4>
-      <p>In whichever park is nearest you, on a lead until its recall is reliable. <a href="https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/how-much-exercise-does-your-dog-need" {...EXT}>How much exercise a Staffy-sized dog needs</a> is set out by the PDSA.</p>
+      <p>In whichever park is nearest you, on a lead until its recall is reliable. <a href="https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/how-much-exercise-does-your-dog-need" {...EXT}>How much exercise a Staffy-sized dog needs</a> is set out by the PDSA. The rules differ from park to park. Here are the dog rules a few of them publish, grouped by who sets them.</p>
+      <CityPlacesByPublisher groups={PLACE_GROUPS}
+        vet={{ href: VET, anchor: anchorOf('london-life', VET), rest: "finds registered vets near you in London, and the register lets you check that a vet is registered. We don't name a London practice ourselves." }} />
     </Fragment>
     <Fragment slot="ch-2">
       <p><a href="/blue-staffy-blog-guides/">Settling a new puppy into a flat or a busy home</a> is one of the subjects in our guides.</p>

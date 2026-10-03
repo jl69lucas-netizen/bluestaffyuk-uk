@@ -232,3 +232,71 @@ def test_the_schema_names_london_and_carries_no_telephone():
 
 def test_noindex_until_the_user_approves_the_page():
     assert re.search(r'<meta name="robots" content="noindex[^"]*"', built())
+
+
+# --------------------------------------------------------------------------- the board revision
+# London's board revision (answer board 2026-10-03-london-board-revision q01-q09; the record's
+# `subcomponents`, block 6b, and `board_revisions`, block 1c).
+
+PLACES = json.loads((ROOT / "data/city-places" / f"{SLUG}.json").read_text(encoding="utf-8"))
+PUPPIES = [p for p in json.loads((ROOT / "data/puppies.json").read_text(encoding="utf-8")) if p["status"] == "Available"]
+RUN = json.loads((ROOT / "data/page-runs" / f"{SLUG}.json").read_text(encoding="utf-8"))
+
+
+def test_the_byline_sits_under_the_h1_and_claims_no_read_the_record_lacks():
+    secs = labelled_sections(built())
+    hero = secs["top"]
+    h1 = hero.index("</h1>")
+    by = re.search(r'<div[^>]*data-byline[^>]*>(.*?)</div>', hero[h1:], re.S)
+    assert by and hero.index("data-byline") < hero.index('class="lede"'), "the byline is under the H1, above the lead"
+    assert text(by.group(1)).replace(" ,", ",").startswith(f"Written by {SETTINGS['breeder_name']}, breeder, {SETTINGS['address']['city']}")
+    assert re.search(rf'href="/blue-staffy-uk-breeders/"[^>]*>{SETTINGS["breeder_name"]}</a>', by.group(1))
+    assert ("data-byline-read" in hero) == bool(RUN.get("breeder_review")), "line 2 only with the breeder's read"
+    assert "Lisa Bright, BlueStaffyUK." not in text(hero), "the lead's sign-off is dropped (q07)"
+
+
+def test_the_ticket_strip_follows_the_takeaways_one_ticket_per_puppy():
+    sec = labelled_sections(built())["key-takeaways"]
+    strip = sec[sec.index("data-ticket-strip"):]
+    assert sec.index("data-takeaway") < sec.index("data-ticket-strip")
+    tickets = re.findall(r'<a class="tk"[^>]*href="/available-puppies/([a-z-]+)/"[^>]*>(.*?)</a>', strip, re.S)
+    assert [s for s, _ in tickets] == [p["slug"] for p in PUPPIES]
+    for (_, body), p in zip(tickets, PUPPIES):
+        words = text(body)
+        assert words.startswith(p["name"]) and p["colour"] in words and f"£{p['price_gbp']:,}" in words, words
+    assert "<img" not in strip.split("</ul>", 1)[0] and not re.search(r"<h[1-6]", strip.split("</ul>", 1)[0])
+
+
+def test_the_call_checklist_is_eight_native_checkboxes_under_the_h5():
+    sec = labelled_sections(built())["deposit-viewing"]
+    h5 = sec.index("<h5")
+    ck = re.search(r'<div[^>]*data-call-checklist.*?</ul>\s*</div>\s*</div>\s*</div>', sec[h5:], re.S).group(0)
+    assert ck.count('type="checkbox"') == 8 and "<script" not in ck and "<a " not in ck
+    words = text(ck)
+    assert f"£{SETTINGS['deposit_gbp']}, paid by bank transfer: {SETTINGS['deposit_refund_clause']}." in words
+    assert SETTINGS["guarantee_label"] in words and SETTINGS["guarantee_note"] in words
+    assert "L-2-HGA, HC-HSF4, eye screening and elbow screening" in words
+    assert sec.index("data-call-checklist") < sec.index("<h6"), "under the H5, before the H6"
+
+
+def test_the_london_places_quote_the_file_and_link_each_source_once():
+    sec = labelled_sections(built())["london-life"]
+    pl = sec[sec.index("data-city-places"):]
+    words = text(pl)
+    shown = 0
+    for place in PLACES["places"]:
+        for f in place["facts"]:
+            if re.search(r"\bhectares?\b|\btoilets\b|^Address\b|\blicen[cs]e\b", f["value"], re.I):
+                assert f["value"] not in words, f["value"]
+            else:
+                assert H.escape(f["value"], quote=False) in pl or f["value"] in words, f["value"]
+                shown += 1
+    assert shown >= 20
+    hrefs = [H.unescape(h) for h in re.findall(r'<a\b[^>]*href="(https?://[^"]+)"', pl)]
+    assert len(hrefs) == len(set(hrefs)) == 8 and PLACES["vets"]["source"] in hrefs
+
+
+def test_the_breeders_london_answers_and_nothing_she_did_not_give():
+    body = main_text(built())
+    assert "Croydon, Edmonton and Ilford" in body and "handovers are by request" in body
+    assert "Chadwell" not in body and "Dartford" not in body

@@ -24,7 +24,10 @@ IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-s
 #: order (scripts/city_components.py). tests/py/test_city_kit.py holds them.
 CITY_IDS = ["city-hero-filmstrip", "city-price-scale", "city-trust-ledger", "city-contents-photo-index", "city-dial-photo-marker",
             "city-jump-stepper", "city-takeaways-ledger", "city-puppy-sheet", "city-roster", "city-video-panel",
-            "city-chapters", "city-letter", "city-faq-ledger", "city-newsletter-notice", "city-contact-lineup"]
+            "city-chapters", "city-letter", "city-faq-ledger", "city-newsletter-notice", "city-contact-lineup",
+            # The pieces INSIDE a city section (a board's `subcomponents`, block 6b), after the
+            # fifteen picks: London's board revision of 2026-10-03, answer board q01-q04.
+            "city-signed-byline", "city-ticket-strip", "city-look-listen-checklist", "city-places-by-publisher"]
 
 
 def load():

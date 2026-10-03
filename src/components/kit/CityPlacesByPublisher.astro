@@ -1,0 +1,96 @@
+---
+// src/components/kit/CityPlacesByPublisher.astro — city component 19, the places under a city's
+// parks heading (London board revision, answer board 2026-10-03-london-board-revision q04 (c):
+// London places style C, "Grouped by who sets the rules"; preview
+// docs/artifacts/london-board-revision-preview.html). One row per publisher: on the left who
+// sets the rules and their source pages, each linked ONCE; on the right a card per place with its
+// dog facts, each tagged "No dogs", "On a lead" or "Good to know". Then one vet line.
+//
+// THE PLACES ARE DATA: the caller groups data/city-places/<slug>.json (src/lib/cityPlaces.ts
+// `placeGroups`), so every fact is the file's `value`, worded as the file words it, and every
+// anchor is the board's. The component types no fact, no place and no URL. No heading: the place
+// names are labels, so the page's outline is unchanged. Conventions 2, 4, 6.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import type { PlaceGroup } from '../../lib/cityPlaces';
+
+type Props = HTMLAttributes<'div'> & {
+  groups: PlaceGroup[];
+  /** The vet line: the anchor opens the sentence (Link-First), the rest follows it. */
+  vet?: { href: string; anchor: string; rest: string };
+};
+const { groups, vet, class: cls, ...rest } = Astro.props;
+if (!groups.length) throw new Error('CityPlacesByPublisher: no publisher to show');
+const EXT = { target: '_blank', rel: 'noopener noreferrer' } as const;
+const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const;
+---
+<div {...rest} class:list={['city-kit', 'city-places-by-publisher', cls]} data-city-places>
+  {groups.map((g) => (
+    <div class="grp" data-publisher={g.publisher}>
+      <div class="owner">
+        <p class="owner-k">Rules set by</p>
+        <p class="owner-n">{g.publisher}</p>
+        <ul>
+          {g.sources.map((s) => <li><a href={s.href} {...EXT}>{s.anchor}</a></li>)}
+        </ul>
+      </div>
+      <div class="places">
+        {g.places.map((p) => (
+          <div class="place">
+            <p class="nm">{p.name}</p>
+            {p.where && <p class="who">{p.where}</p>}
+            <ul class="facts">
+              {p.facts.map((f) => <li><span class:list={['chip', `k-${f.kind}`]}>{CHIP[f.kind]}</span><span>{f.text}</span></li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  ))}
+  {vet && (
+    <div class="vet">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="7" /><path d="M13 7v12M7 13h12" /></svg>
+      <p><a href={vet.href} {...EXT}>{vet.anchor}</a> {vet.rest}</p>
+    </div>
+  )}
+</div>
+<style>
+  @layer components {
+    .city-places-by-publisher { margin: var(--space-4) 0 0; }
+    .grp {
+      display: grid; gap: 10px var(--space-6); grid-template-columns: minmax(0, 1fr);
+      padding: var(--space-4) 0; border-top: 1px solid color-mix(in srgb, var(--color-steel-300) 60%, transparent);
+    }
+    .grp:first-child { border-top: 0; padding-top: var(--space-1); }
+    .owner-k { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-3); }
+    .owner-n { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 650; font-size: 19px; line-height: 1.2; color: var(--color-brand); }
+    .owner ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+    .owner li { margin: 0; font-size: var(--text-sm); line-height: 1.4; }
+    .owner li::before { content: "↗ "; color: var(--color-brass-600); }
+    .owner a { color: var(--color-link); overflow-wrap: anywhere; }
+    .owner a:focus-visible, .vet a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: 2px; }
+    .places { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+    .place { background: var(--color-bone-50); border-radius: 12px; padding: 12px 14px; border-left: 3px solid var(--color-brass-500); min-width: 0; }
+    .nm { margin: 0; font-family: var(--font-display); font-size: 16px; font-weight: 650; line-height: 1.25; color: var(--color-brand); }
+    .who { margin: 1px 0 0; font-size: 12.5px; line-height: 1.4; color: var(--color-ink-3); }
+    .facts { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+    .facts li { margin: 0; font-size: 14.5px; line-height: 1.45; }
+    .chip {
+      display: inline-block; margin-right: 6px; vertical-align: 1px; padding: 2px 8px; border-radius: var(--radius-pill);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.5; white-space: nowrap;
+    }
+    .k-no { background: color-mix(in srgb, var(--color-warn) 13%, var(--color-white)); color: var(--color-warn); }
+    .k-lead { background: var(--color-steel-100); color: var(--color-steel-700); }
+    .k-note { background: var(--color-bone-100); color: var(--color-ink-2); box-shadow: inset 0 0 0 1px var(--color-border); }
+    .vet {
+      margin: var(--space-4) 0 0; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start;
+      padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--color-steel-300) 60%, transparent);
+    }
+    .vet svg { margin-top: 1px; }
+    .vet rect { fill: var(--color-brand); }
+    .vet path { fill: none; stroke: var(--color-brass-200); stroke-width: 2.6; stroke-linecap: round; }
+    .vet p { margin: 0; font-size: 15px; line-height: 1.5; }
+    @container (width >= 640px) { .places { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+    @container (width >= 800px) { .grp { grid-template-columns: 200px minmax(0, 1fr); } }
+  }
+</style>

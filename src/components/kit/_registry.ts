@@ -75,6 +75,13 @@ import CityLetter from './CityLetter.astro';
 import CityFaqLedger, { type CityFaqRow } from './CityFaqLedger.astro';
 import CityNewsletterNotice from './CityNewsletterNotice.astro';
 import CityContactLineup from './CityContactLineup.astro';
+import CitySignedByline from './CitySignedByline.astro';
+import CityTicketStrip from './CityTicketStrip.astro';
+import CityLookListenChecklist from './CityLookListenChecklist.astro';
+import CityPlacesByPublisher from './CityPlacesByPublisher.astro';
+import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
+import londonPlaces from '../../../data/city-places/blue-staffy-puppies-london.json';
+import londonBoard from '../../../data/boards/blue-staffy-puppies-london.json';
 import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine, guaranteeRow } from '../../lib/cityKit';
 import { numberWord } from '../../lib/recordText';
 /** The guarantee, from data/settings.json (answer board q07, 2026-09-29); null if the data loses it. */
@@ -94,7 +101,10 @@ export type ComponentId =
   // page singleton like the kit's. data/design/components.json rows with `"project": 5`.
   | 'city-hero-filmstrip' | 'city-price-scale' | 'city-trust-ledger' | 'city-contents-photo-index' | 'city-dial-photo-marker'
   | 'city-jump-stepper' | 'city-takeaways-ledger' | 'city-puppy-sheet' | 'city-roster' | 'city-video-panel'
-  | 'city-chapters' | 'city-letter' | 'city-faq-ledger' | 'city-newsletter-notice' | 'city-contact-lineup';
+  | 'city-chapters' | 'city-letter' | 'city-faq-ledger' | 'city-newsletter-notice' | 'city-contact-lineup'
+  // The pieces inside a city section (a board's `subcomponents`): London's board revision of
+  // 2026-10-03 (answer board 2026-10-03-london-board-revision q01-q04).
+  | 'city-signed-byline' | 'city-ticket-strip' | 'city-look-listen-checklist' | 'city-places-by-publisher';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -128,6 +138,9 @@ export interface ComponentRow {
    *  are records of project 3's closed five-option pick process and filter to `3`; the
    *  kit preview, this registry and the Design System artifact carry every row. */
   project: 3 | 4 | 5;
+  /** A piece inside a city section rather than a section of its own: the board record's
+   *  `subcomponents[].id` it builds (London's board revision, 2026-10-03). Not a canvas pick. */
+  subcomponent?: string;
 }
 
 /** The six sections the dial and the sheet both demo. One list, not two: the pair is one
@@ -634,6 +647,46 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       fit: 'full',
       heading: `Which of Our ${cap(LITTER)} Puppies Would You Like to Ask About?`,
       lede: `Here are all ${LITTER} as they are today. Choose one in the form, tell us where you live, and we reply by email with the answers to everything you asked.`,
+    }],
+  },
+  // ── the pieces inside a city section (London's board revision, 2026-10-03) ──────────────────
+  // The byline sits on the hero's steel band on a page; here it paints on the bone surface, so its
+  // ink is the surface's (convention 3). No read date is passed: the second line renders only when
+  // a page-run record holds the breeder's read, and a specimen claims none.
+  'city-signed-byline': {
+    C: CitySignedByline,
+    demo: [{ name: SITE.breeder_name, href: '#kit-city-signed-byline', town: SITE.address.city }],
+  },
+  // The tickets are data/puppies.json's available rows; the component reads them itself.
+  'city-ticket-strip': { C: CityTicketStrip },
+  // Each item states what the data files or the breeder's answers back; the tests are named only.
+  'city-look-listen-checklist': {
+    C: CityLookListenChecklist,
+    demo: [{
+      panes: [
+        { title: 'Ask to see, on camera', hint: 'Tick each one as we show it', icon: 'look', items: [
+          { label: 'The puppy with its mother', detail: 'Ask us to turn the camera to Maggie, our dam, with her puppies.' },
+          { label: 'The paperwork', detail: 'The Kennel Club registration paperwork, the vaccination records and the microchipping details.' },
+        ] },
+        { title: 'Ask to hear, out loud', hint: 'Tick each one as we answer it', icon: 'listen', items: [
+          { label: 'The health tests, by name', detail: 'L-2-HGA, HC-HSF4, eye screening and elbow screening.' },
+          { label: 'The deposit', detail: depositLine },
+          ...(GUARANTEE ? [{ label: GUARANTEE.t, detail: GUARANTEE.d }] : []),
+        ] },
+      ],
+    }],
+  },
+  // A places file is a city's own data, so the specimen is London's: the file grouped by who sets
+  // the rules, with the board's anchors, as the London page mounts it.
+  'city-places-by-publisher': {
+    C: CityPlacesByPublisher,
+    demo: [{
+      groups: placeGroups(londonPlaces.places as PlaceRow[], (href) => {
+        const s = londonBoard.sections.find((x) => x.id === 'london-life') as { links?: { external?: { href: string; anchor: string }[] } };
+        const hit = s?.links?.external?.find((l) => l.href === href);
+        if (!hit) throw new Error(`the London board lists no link to ${href}`);
+        return hit.anchor;
+      }, (value) => /\blicen[cs]e\b/i.test(value)),
     }],
   },
 };

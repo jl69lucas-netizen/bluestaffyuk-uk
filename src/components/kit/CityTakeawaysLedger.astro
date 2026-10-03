@@ -9,6 +9,9 @@
 // The rows are the page's own words and each states a fact the data files or the breeder's
 // answers back (working rule 9). The photograph is a served file with its served alt (working
 // rule 11), cropped on its faces (src/lib/imageFocus.ts). Conventions 4 and 6.
+//
+// THE DEFAULT SLOT renders straight after the rows, across the ledger's full width, with no
+// heading of its own (London board revision q02: the puppy strip, CityTicketStrip).
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
@@ -50,6 +53,7 @@ const sizes = citySizes(fit, {
         {rows.map((r) => <div class="row" data-takeaway><dt>{r.label}</dt><dd>{r.text}</dd></div>)}
       </dl>
     </div>
+    {Astro.slots.has('default') && <div class="after"><slot /></div>}
   </div>
 </section>
 <style>
@@ -70,7 +74,7 @@ const sizes = citySizes(fit, {
     @container (640px <= width < 800px) { .pic img { aspect-ratio: 21 / 9; } }
     @container (width >= 800px) {
       .in {
-        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "head head" "pic list";
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "head head" "pic list" "after after";
         gap: var(--space-5) var(--space-8); padding: var(--city-pad-y) var(--space-5);
       }
       .body { display: contents; }
@@ -81,6 +85,7 @@ const sizes = citySizes(fit, {
       .head h2 { margin: 0; }
       .lede { margin: 0; font-size: var(--city-lead); }
       dl { grid-area: list; }
+      .after { grid-area: after; }
       .pic { grid-area: pic; align-self: start; }
       .pic img { aspect-ratio: 1 / 1; }
     }

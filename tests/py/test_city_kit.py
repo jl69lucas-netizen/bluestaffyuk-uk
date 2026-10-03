@@ -756,10 +756,20 @@ def test_the_grid_layout_of_the_kit_form_is_opt_in():
 
 
 def test_every_london_pick_names_its_kit_component_and_every_city_row_is_one():
+    """Every city row is a canvas pick's component, except the pieces inside a section, which a
+    board's `subcomponents` (block 6b) names instead: each of those rows names the record entry
+    it builds, and that entry exists on the London board."""
     from city_components import COMPONENT_IDS, KIT_OF_VARIANT
     picks = json.loads((ROOT / "data/design/city-picks/blue-staffy-puppies-london.json").read_text())["picks"]
     assert list(picks) == list(COMPONENT_IDS)
-    assert [KIT_OF_VARIANT[picks[c]] for c in COMPONENT_IDS] == [r["id"] for r in city_rows()]
+    sections = [r for r in city_rows() if "subcomponent" not in r]
+    assert [KIT_OF_VARIANT[picks[c]] for c in COMPONENT_IDS] == [r["id"] for r in sections]
+    board = json.loads((ROOT / "data/boards/blue-staffy-puppies-london.json").read_text())
+    pieces = {s["id"] for s in board.get("subcomponents", [])}
+    subs = [r for r in city_rows() if "subcomponent" in r]
+    assert subs, "the London board revision's four pieces are registered"
+    assert {r["subcomponent"] for r in subs} <= pieces, sorted({r["subcomponent"] for r in subs} - pieces)
+    assert city_rows()[-len(subs):] == subs, "the pieces follow the fifteen picks"
 
 
 def _words(s):

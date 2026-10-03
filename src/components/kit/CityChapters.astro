@@ -58,6 +58,11 @@ if (missing.length) throw new Error(`CityChapters: no photo for ${missing.join('
 // Each chapter's own slot, rendered once here: what follows its opening paragraph.
 const rich = await Promise.all(chapters.map((_, i) =>
   Astro.slots.has(`ch-${i + 1}`) ? Astro.slots.render(`ch-${i + 1}`) : Promise.resolve('')));
+// Each chapter's full-width slot, `ch-<n>-full`: what follows the text column, across the whole
+// chapter at every width (London board revision q03 and q04: the rest of a chapter's ladder and
+// the piece that sits under it, the video-call checklist and the London places).
+const full = await Promise.all(chapters.map((_, i) =>
+  Astro.slots.has(`ch-${i + 1}-full`) ? Astro.slots.render(`ch-${i + 1}-full`) : Promise.resolve('')));
 // The tray, less its padding (16px; 48px from tablet): the H2 photo and a wide chapter's image.
 const WIDE_SIZES = citySizes(fit, {
   phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
@@ -86,6 +91,7 @@ const SIZES = citySizes(fit, {
             <BodyImage asset={c.asset} srcset={c.asset.srcset} phone={c.asset.phone} box={c.box ?? 'uniform'}
               sizes={c.wide ? WIDE_SIZES : SIZES} class="media-u" />
             <div class="txt"><p>{c.text}</p><Fragment set:html={rich[i]} /></div>
+            {full[i] && <div class="full"><Fragment set:html={full[i]} /></div>}
           </div>
         );
       }
@@ -102,6 +108,7 @@ const SIZES = citySizes(fit, {
             : <Image src={puppyImage(photo)} alt={c.photoAlt!} widths={[400, 700]} sizes={SIZES}
                 class={`bl-img media ${focusClass(photo)}`} loading="lazy" decoding="async" />}
           <div class="txt"><p>{c.text}</p><Fragment set:html={rich[i]} /></div>
+          {full[i] && <div class="full"><Fragment set:html={full[i]} /></div>}
         </div>
       );
     })}
@@ -137,6 +144,12 @@ const SIZES = citySizes(fit, {
     .txt :global(p) { margin: 0 0 var(--space-3); color: var(--color-text); }
     .txt :global(p:last-child) { margin-bottom: 0; }
     .txt :global(:is(h4, h5, h6)) { margin: var(--space-4) 0 var(--space-2); }
+    /* The full-width slot: a row of its own under the chapter's grid, spanning every column. */
+    .full { grid-column: 1 / -1; min-width: 0; color: var(--color-text); }
+    .full > :global(p) { margin: 0 0 var(--space-3); color: var(--color-text); }
+    .full > :global(:is(h4, h5, h6)) { margin: var(--space-2) 0 var(--space-2); }
+    .full > :global(* + :is(h4, h5, h6)) { margin-top: var(--space-5); }
+    .full > :global(:last-child) { margin-bottom: 0; }
     .txt :global(.bl-img) { margin: var(--space-2) 0 var(--space-3); }
     .txt :global(ul) { margin: 0 0 var(--space-3); padding-left: var(--space-5); }
     .tray > :global(.h2-img) { margin: var(--space-2) auto var(--space-4); }

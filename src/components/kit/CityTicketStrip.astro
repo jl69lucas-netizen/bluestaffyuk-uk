@@ -1,0 +1,82 @@
+---
+// src/components/kit/CityTicketStrip.astro — city component 17, the puppy strip (London board
+// revision, answer board 2026-10-03-london-board-revision q02 (a): puppy strip style A, "Ticket
+// strip"; preview docs/artifacts/london-board-revision-preview.html). One ticket per available
+// puppy, each ticket one link to that puppy's own page (/available-puppies/<slug>/, a nav link on
+// the board): the name, Boy or Girl, the colour, then a torn stub with the price.
+//
+// NO PHOTO: the hero filmstrip shows the same faces one screen up, and a second copy would repeat
+// their alts (working rule 11). NO HEADING: the strip adds nothing to the approved outline; it is
+// mounted in CityTakeawaysLedger's default slot, straight after the rows.
+//
+// THE PUPPIES ARE DATA: data/puppies.json's available rows (cityKit `availablePuppies`), the
+// price through cityKit `money(price_gbp)`; nothing is typed here. Two across on a phone, one
+// row of six from a 640px box. Conventions 2, 4, 6.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { availablePuppies, money, sexWord } from '../../lib/cityKit';
+import { numberWord } from '../../lib/recordText';
+
+type Props = HTMLAttributes<'div'> & {
+  /** The words before the count's noun are the component's; the caller may replace the label. */
+  label?: string;
+};
+const pups = availablePuppies();
+if (!pups.length) throw new Error('CityTicketStrip: data/puppies.json has no available puppy');
+const { label = `Our ${numberWord(pups.length)} puppies · each opens its own page`, class: cls, ...rest } = Astro.props;
+---
+<div {...rest} class:list={['city-kit', 'city-ticket-strip', cls]} data-ticket-strip>
+  <p class="label">{label}</p>
+  <ul>
+    {pups.map((p) => (
+      <li>
+        <a class="tk" href={`/available-puppies/${p.slug}/`} data-ticket={p.slug}>
+          <span class="tk-body">
+            <span class="tk-name">{p.name}</span>
+            <span class="tk-meta">{sexWord(p)} · {p.colour}</span>
+          </span>
+          <span class="tk-stub">
+            <span class="tk-price">{money(p.price_gbp)}</span>
+            <span class="tk-go" aria-hidden="true">→</span>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+<style>
+  @layer components {
+    .city-ticket-strip { --tk-notch: var(--color-surface); margin: 0; }
+    .label {
+      margin: 0 0 var(--space-3); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--color-ink-3);
+    }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    li { margin: 0; min-width: 0; }
+    .tk {
+      height: 100%; display: flex; flex-direction: column; background: var(--color-white);
+      border: 1px solid var(--color-border); border-radius: 10px; text-decoration: none; color: var(--color-text);
+      transition: border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+    }
+    .tk:hover { border-color: var(--color-steel-500); transform: translateY(-2px); }
+    .tk:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .tk-body { padding: 12px 12px 10px; flex: 1; min-width: 0; }
+    .tk-name { display: block; font-family: var(--font-display); font-weight: 650; font-size: 18px; line-height: 1.1; color: var(--color-brand); }
+    .tk-meta { display: block; margin-top: 4px; font-size: 13px; line-height: 1.35; color: var(--color-ink-2); overflow-wrap: anywhere; }
+    .tk-stub {
+      position: relative; border-top: 1.5px dashed var(--color-border); padding: 8px 12px;
+      display: flex; justify-content: space-between; align-items: center; gap: 6px;
+    }
+    .tk-stub::before, .tk-stub::after {
+      content: ""; position: absolute; top: -8px; width: 14px; height: 14px; border-radius: 50%; background: var(--tk-notch);
+    }
+    .tk-stub::before { left: -8px; }
+    .tk-stub::after { right: -8px; }
+    .tk-price { font-family: var(--font-display); font-weight: 650; font-size: 17px; font-variant-numeric: tabular-nums lining-nums; color: var(--color-text); }
+    .tk-go { color: var(--color-steel-500); font-size: 15px; }
+    /* One row of six from a 640px box: beside the dial at 1280 the strip is about 780px wide,
+       under the 800px tier, and the approved style is one row tall on desktop. */
+    @container (width >= 640px) { ul { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; } .tk-body { padding: 10px 10px 8px; } .tk-stub { padding: 8px 10px; } }
+    @media (prefers-reduced-motion: reduce) { .tk { transition: none; } .tk:hover { transform: none; } }
+  }
+</style>
