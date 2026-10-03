@@ -16,20 +16,34 @@ import type { HTMLAttributes } from 'astro/types';
 import Mark from './Mark.astro';
 // `inverse` is passed straight to the mark: the divider is dropped onto bone and onto
 // steel bands alike, and only the caller knows which. It changes nothing else here.
-type Props = HTMLAttributes<'div'> & { inverse?: boolean };
-const { inverse = false, class: cls, ...rest } = Astro.props;
+//
+// `hairline` (frontend-design D5 on London, the breeder's yes, answer board 2026-10-03
+// london-design-pass q03): one 1px steel-300 rule and no mark, for a seam INSIDE a run of like
+// sections (chapter band to chapter band), so the seal keeps meaning "the page turns here". It is
+// still a separator and still a `.kit-divider`, so seams = sections holds; it adds no space of its
+// own, the bands either side already set theirs.
+type Props = HTMLAttributes<'div'> & { inverse?: boolean; hairline?: boolean };
+const { inverse = false, hairline = false, class: cls, ...rest } = Astro.props;
 ---
+{hairline ? (
+<div {...rest} class:list={['kit-divider', 'hairline', cls]} role="separator">
+  <span class="rule" />
+</div>
+) : (
 <div {...rest} class:list={['kit-divider', cls]} role="separator">
   <span class="rule" />
   <span class="medal"><Mark inverse={inverse} size={40} title="" /></span>
   <span class="rule" />
 </div>
+)}
 <style>
   @layer components {
   .kit-divider { display: flex; align-items: center; gap: var(--space-4); width: 100%; max-width: var(--container); margin: var(--space-8) auto; padding-inline: var(--space-5); color: var(--kit-divider-color, var(--color-brand)); }
   :global(.on-inverse) .kit-divider, :global([data-surface="inverse"]) .kit-divider { --kit-divider-color: var(--color-text-on-inverse); }
   /* currentColor, not a fixed steel: on a dark band the rule follows the inverse text colour. */
   .rule { flex: 1; height: 2px; background: currentColor; opacity: .5; }
+  .kit-divider.hairline { margin: 0 auto; padding-inline: 0; gap: 0; }
+  .hairline .rule { height: 1px; background: var(--color-steel-300); opacity: 1; }
   .medal { display: inline-flex; padding: var(--space-2); border-radius: 50%; border: 1px solid var(--color-border); background: var(--color-surface-raised); }
   }
 </style>

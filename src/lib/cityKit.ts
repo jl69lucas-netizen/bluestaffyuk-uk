@@ -121,14 +121,16 @@ export function citySizes(fit: CityFit, at: { phone: (B: string) => string; tabl
 
 /** The `sizes` of CityChapters' full-width images (the photo under the H2, a wide chapter's
  *  infographic) and of anything in a wide chapter's text: the tray less its padding, at most 760px.
- *  Measured in a painting browser (harden pass 2026-10-03): 319px at 375, 680px at 768, 568px at
- *  1024 and 744px at 1280, which is the box less 56px on a phone and less 88px from a 640px box;
- *  the old `- 120px` under-asked by 32px, so a 720w candidate would have painted upscaled. */
+ *  The box less 64px on a phone (a 16px inset and 16px padding a side) and less 128px from a 640px
+ *  box (32px and 32px), since the tray took its siblings' side inset (frontend-design D7,
+ *  2026-10-03): 311 / 640 / 528 / 704px at 375 / 768 / 1024 / 1280 (it was 319 / 680 / 568 / 744 at a
+ *  12px inset). The harden pass's first `- 120px` under-asked by 32px, so a 720w candidate would
+ *  have painted upscaled. */
 export function chapterWideSizes(fit: CityFit = 'column'): string {
   return citySizes(fit, {
-    phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
-    tablet: (B) => `min(760px, calc(min(${B}, 1124px) - 88px))`,
-    desktop: (B) => `min(760px, calc(min(${B}, 1124px) - 88px))`,
+    phone: (B) => `calc(min(${B}, 1132px) - 64px)`,
+    tablet: (B) => `min(760px, calc(min(${B}, 1164px) - 128px))`,
+    desktop: (B) => `min(760px, calc(min(${B}, 1164px) - 128px))`,
   });
 }
 
@@ -140,9 +142,9 @@ export function chapterWideSizes(fit: CityFit = 'column'): string {
  *  then 760px) served a 760-1024px file into a narrower box. */
 export function chapterTextSizes(fit: CityFit = 'column'): string {
   return citySizes(fit, {
-    phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
-    tablet: (B) => `min(760px, calc(min(${B}, 1124px) - 88px))`,
-    desktop: (B) => `min(760px, calc(min(${B}, 1124px) - 88px))`,
+    phone: (B) => `calc(min(${B}, 1132px) - 64px)`,
+    tablet: (B) => `min(760px, calc(min(${B}, 1164px) - 128px))`,
+    desktop: (B) => `min(760px, calc(min(${B}, 1164px) - 128px))`,
   });
 }
 

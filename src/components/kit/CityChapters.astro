@@ -46,6 +46,9 @@ export interface Chapter {
   asset?: BodyAsset; box?: 'uniform' | 'tall';
   /** One column at every width (an infographic). */
   wide?: boolean;
+  /** Show the whole picture on the bone-50 ground instead of cropping it (a graphic with words
+   *  baked into it: frontend-design D8). */
+  contain?: boolean;
 }
 type Props = HTMLAttributes<'section'> & {
   heading: string;
@@ -53,10 +56,12 @@ type Props = HTMLAttributes<'section'> & {
   chapters: Chapter[];
   /** The photograph under the H2, before the lede (a board record's baked row). */
   image?: BodyAsset;
+  /** Show the H2 photograph whole on the bone-50 ground (a graphic with lettering: D8). */
+  imageContain?: boolean;
   /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
   fit?: CityFit;
 };
-const { heading, lede, chapters, image, fit = 'column', class: cls, ...rest } = Astro.props;
+const { heading, lede, chapters, image, imageContain = false, fit = 'column', class: cls, ...rest } = Astro.props;
 if (chapters.length < 1 || chapters.length > 3) throw new Error('CityChapters: one to three chapters');
 const missing = chapters.filter((c) => !c.photo && !c.asset).map((c) => c.question);
 if (missing.length) throw new Error(`CityChapters: no photo for ${missing.join(' | ')}`);
@@ -70,19 +75,20 @@ const full = await Promise.all(chapters.map((_, i) =>
   Astro.slots.has(`ch-${i + 1}-full`) ? Astro.slots.render(`ch-${i + 1}-full`) : Promise.resolve('')));
 // The tray, less its padding (16px; 48px from tablet): the H2 photo and a wide chapter's image.
 const WIDE_SIZES = chapterWideSizes(fit);
-// The tray is the box less 12px gutters, at most 1100px, less its padding (16px; 32px from tablet):
+// The tray is the box less its side inset (16px a side on a phone, 32px from a 640px box: D7), at
+// most 1100px, less its padding (16px; 32px from tablet):
 // the photo is the tray on a phone, and from a 640px box the second of two equal columns beside
 // the heading (24px apart on a tablet, 32px from a desktop box, where it stops at 340px).
 const SIZES = citySizes(fit, {
-  phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
-  tablet: (B) => `calc((min(${B}, 1124px) - 112px) / 2)`,
-  desktop: (B) => `min(340px, calc((min(${B}, 1124px) - 120px) / 2))`,
+  phone: (B) => `calc(min(${B}, 1132px) - 64px)`,
+  tablet: (B) => `calc((min(${B}, 1164px) - 152px) / 2)`,
+  desktop: (B) => `min(340px, calc((min(${B}, 1164px) - 160px) / 2))`,
 });
 ---
 <section {...rest} class:list={['city-kit', 'city-chapters', cls]}>
   <div class="tray">
     <h2>{heading}</h2>
-    {image && <BodyImage asset={image} srcset={image.srcset} phone={image.phone} box="uniform" sizes={WIDE_SIZES} class="h2-img" />}
+    {image && <BodyImage asset={image} srcset={image.srcset} phone={image.phone} box="uniform" sizes={WIDE_SIZES} class={imageContain ? 'h2-img fit-contain' : 'h2-img'} />}
     <p class="lede">{lede}</p>
     {chapters.map((c, i) => {
       if (c.asset) {
@@ -91,7 +97,7 @@ const SIZES = citySizes(fit, {
             <span class="num"><b aria-hidden="true">{i + 1}</b>{c.place}</span>
             <h3>{c.question}</h3>
             <BodyImage asset={c.asset} srcset={c.asset.srcset} phone={c.asset.phone} box={c.box ?? 'uniform'}
-              sizes={c.wide ? WIDE_SIZES : SIZES} class="media-u" />
+              sizes={c.wide ? WIDE_SIZES : SIZES} class={c.contain ? 'media-u fit-contain' : 'media-u'} />
             <div class="txt"><p>{c.text}</p><Fragment set:html={rich[i]} /></div>
             {full[i] && <div class="full"><Fragment set:html={full[i]} /></div>}
           </div>
@@ -125,10 +131,13 @@ const SIZES = citySizes(fit, {
        (32 / 40 / 48) top and bottom; the tray sat a flat 32px down at every tier, so from a tablet
        box the chapter bands ran tighter than the cards between them. The tray is the root's direct
        child, so it reads the tier's value; flow-root keeps its margins inside the painted band.
-       (Its 12px side inset, against the siblings' 16 / 32px, is deferred: a narrower tray tips a
-       served 500px photo past 2x its box. docs/reports/frontend-design-london-2026-10-03.md D7.) */
+       ITS SIDE INSET IS THE SIBLINGS' TOO (frontend-design D7, the breeder's yes, answer board
+       2026-10-03 london-design-pass q05): 16px a side on a phone and 32px from a 640px box, where it
+       sat 12px at every width and read as a panel slipped inside a thin bone frame. The 500px
+       kc-registered-staffy-puppies.webp that stopped it first time has -240/-400 siblings beside
+       it now (working rule 11), and src/lib/cityKit.ts's sizes follow the narrower tray. */
     .city-chapters { background: var(--color-surface); padding: 0; display: flow-root; }
-    .tray { max-width: min(1100px, calc(100% - 2 * var(--space-3))); margin: var(--city-pad-y) auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    .tray { max-width: min(1100px, calc(100% - 2 * var(--space-4))); margin: var(--city-pad-y) auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     h2 { margin: 0 0 var(--space-2); }
     .lede { margin: 0 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); }
     .ch {
@@ -149,6 +158,12 @@ const SIZES = citySizes(fit, {
       border-radius: var(--radius-md); background: var(--color-bone-50);
     }
     .ch :global(.media-u) { grid-area: img; }
+    /* A GRAPHIC WITH WORDS IN IT IS SHOWN WHOLE (frontend-design D8, the breeder's yes, answer
+       board 2026-10-03 london-design-pass q06): the uniform box's cover crop cut the top of the
+       "Contact Us" headline and the second line of the breed labels. `contain` fits the whole
+       picture in the same box, and what the picture does not fill is the bone-50 ground (the
+       image-bleed rule: a design colour, never grey or black). Opted into per image. */
+    .tray :global(img.fit-contain) { object-fit: contain; background: var(--color-bone-50); }
     .txt { grid-area: text; min-width: 0; color: var(--color-text); }
     .txt :global(p) { margin: 0 0 var(--space-3); color: var(--color-text); }
     .txt :global(p:last-child) { margin-bottom: 0; }
@@ -185,7 +200,7 @@ const SIZES = citySizes(fit, {
        take the chapter's width, as the full-width slot's and a wide chapter's do (the uniform box,
        rules/images.md): src/lib/cityKit.ts chapterTextSizes says so. */
     @container (width >= 640px) {
-      .tray { padding: var(--space-6) var(--space-6); }
+      .tray { max-width: min(1100px, calc(100% - 2 * var(--space-6))); padding: var(--space-6) var(--space-6); }
       .ch {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         grid-template-rows: 1fr auto auto 1fr auto;

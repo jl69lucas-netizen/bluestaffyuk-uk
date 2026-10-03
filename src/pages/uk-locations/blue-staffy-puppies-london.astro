@@ -385,7 +385,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     image={photo('deposit-h2')}
     lede={`No. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. After that call, your deposit books a visit to us in ${TOWN} and reserves the puppy you chose.`}
     chapters={[
-      { place: 'Before you pay', question: tree('deposit-viewing', 0), asset: photo('deposit-video-call'),
+      { place: 'Before you pay', question: tree('deposit-viewing', 0), asset: photo('deposit-video-call'), contain: true,
         text: 'Yes. Ask us for a live video call and we show you your puppy and Maggie together, at home, before you decide anything.' },
       { place: 'Once you choose', question: tree('deposit-viewing', 1), asset: photo('deposit-choose'),
         text: `It holds that puppy for you. Your ${DEPOSIT} deposit books your viewing in ${TOWN} and takes the puppy off our list, so nobody else can reserve it.` },
@@ -416,7 +416,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     <p><a href="#enquiry">Send us your enquiry and ask for the video call</a>, and tell us which puppy caught your eye.</p>
   </CityChapters>
 
-  <SectionDivider />
+  <SectionDivider hairline />
   <CityChapters id="delivery" data-section-label={H2('delivery')}
     heading={H2('delivery')}
     image={photo('delivery-h2')}
@@ -449,7 +449,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     </Fragment>
   </CityChapters>
 
-  <SectionDivider />
+  <SectionDivider hairline />
   <CityChapters id="litter-prices" data-section-label={H2('litter-prices')}
     heading={H2('litter-prices')}
     image={photo('litter-h2')}
@@ -527,7 +527,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     </Fragment>
   </CityChapters>
 
-  <SectionDivider />
+  <SectionDivider hairline />
   <CityChapters id="paperwork" data-section-label={H2('paperwork')}
     heading={H2('paperwork')}
     image={photo('paperwork-h2')}
@@ -550,7 +550,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     <p><a href="#enquiry">Ask us for the full terms before you reserve</a>, and read them at your own pace.</p>
   </CityChapters>
 
-  <SectionDivider />
+  <SectionDivider hairline />
   <CityChapters id="london-life" data-section-label={H2('london-life')}
     heading={H2('london-life')}
     image={photo('london-life-h2')}
@@ -604,10 +604,10 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     <p><a href="#enquiry">Tell us about your London home and household</a>, and ask whether a Staffy suits it.</p>
   </CityChapters>
 
-  <SectionDivider />
+  <SectionDivider hairline />
   <CityChapters id="breed" data-section-label={H2('breed')}
     heading={H2('breed')}
-    image={photo('breed-h2')}
+    image={photo('breed-h2')} imageContain
     lede="No. The blue Staffordshire Bull Terrier is a colour of the English breed, which has its own Kennel Club standard, separate from the AmStaff and the pit bull."
     chapters={[
       { place: 'English or American', question: tree('breed', 0), asset: photo('breed-english'),
@@ -625,7 +625,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     </Fragment>
   </CityChapters>
 
-  <SectionDivider />
+  <SectionDivider hairline />
   <CityChapters id="everyday-health" data-section-label={H2('everyday-health')}
     heading={H2('everyday-health')}
     image={photo('everyday-health-h2')}
