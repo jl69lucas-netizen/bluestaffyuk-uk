@@ -1,0 +1,94 @@
+{
+  "askedAt": "2026-10-03T22:02:08Z",
+  "id": "2026-10-03-london-harden-decisions",
+  "intro": "The impeccable pass fixed 9 defects on London without changing any words, links or images. Its score went from 13/20 to 15/20. These four would change how the page looks, so each one waits for your yes. Before and after for each: https://claude.ai/artifact/2rfZmgNNYgP7v8rnuRiszN",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "On a phone each is drawn about 319px wide, so its labels come out at 5–7px. Recommended: (a). Why: the infographics are on the page to be read, and right now a phone reader can't. Trade-off: six new image files (cheapest Gemini model where any generation is needed; mostly a re-bake of the same content). They come to you as drafts at the Asset Gate before anything is published.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, re-draw them for phones and bring them to the Asset Gate"
+        },
+        {
+          "id": "b",
+          "label": "No, keep them as they are"
+        }
+      ],
+      "question": "D4 · Re-draw the six phone infographics so their labels can be read?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "From 1024px wide there are tall empty spaces beside long prose. Recommended: (a). Why: it fills the empty space with something useful and changes nothing on a phone. Trade-off: on desktop the heading and photo stay put while the prose scrolls, which some readers notice.",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes"
+        },
+        {
+          "id": "b",
+          "label": "No"
+        }
+      ],
+      "question": "D1 · Keep the heading and photo in view beside long chapters on desktop?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: on a phone they currently look lighter than the paragraph under them, so they don't read as headings. Trade-off: none that I can see.",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes"
+        },
+        {
+          "id": "b",
+          "label": "No"
+        }
+      ],
+      "question": "D2 · Make the small chapter headings (H4 to H6) bold in brand steel, like the rest of the site?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "They pass the legal minimum (24px), but they're small for thumbs. Recommended: (a). Why: it's an accessibility gain on every page, with only slightly roomier spacing. Trade-off: it repaints the header, breadcrumb and footer on every built page, so every page's render gate re-runs.",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, on every page"
+        },
+        {
+          "id": "b",
+          "label": "No"
+        }
+      ],
+      "question": "D3 · Pad the header, breadcrumb and footer links to a 44px tap size on every page?",
+      "section": 0,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Changes"
+    }
+  ],
+  "status": "open",
+  "title": "London Harden pass · four visual changes"
+}
