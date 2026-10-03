@@ -83,7 +83,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
 
-## Skills — 64
+## Skills — 66
 
 One SKILL.md per directory under `.claude/skills/`. The `bsuk-*` set is the ported
 system; the rest are the generic writing, research and framework skills.
@@ -92,6 +92,7 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/bsuk-aeo-pass/SKILL.md`
 - `.claude/skills/bsuk-blog-post/SKILL.md`
 - `.claude/skills/bsuk-broken-links/SKILL.md`
+- `.claude/skills/bsuk-city-places/SKILL.md`
 - `.claude/skills/bsuk-comparison-page-builder/SKILL.md`
 - `.claude/skills/bsuk-competitor-parity/SKILL.md`
 - `.claude/skills/bsuk-component-refresh/SKILL.md`
@@ -113,6 +114,7 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/bsuk-learning-loop/SKILL.md`
 - `.claude/skills/bsuk-location-page-builder/SKILL.md`
 - `.claude/skills/bsuk-page-hardening/SKILL.md`
+- `.claude/skills/bsuk-people-first-review/SKILL.md`
 - `.claude/skills/bsuk-perf-gate/SKILL.md`
 - `.claude/skills/bsuk-photo-ingest/SKILL.md`
 - `.claude/skills/bsuk-puppy-page-builder/SKILL.md`
@@ -163,7 +165,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 112
+## Scripts — 114
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -244,6 +246,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/measurement_ledger.py`
 - `scripts/migration_parity.py`
 - `scripts/neighbourhoods.py`
+- `scripts/nlp_keywords.py`
 - `scripts/not_fetched_lint.py`
 - `scripts/ontology_seed.py`
 - `scripts/original_slots.py`
@@ -255,6 +258,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/page_sections.py`
 - `scripts/pageboard.py`
 - `scripts/perf_audit.py`
+- `scripts/pipeline_status.py`
 - `scripts/placeholder_check.py`
 - `scripts/port_from_cag.py`
 - `scripts/prune_variants.py`
@@ -281,12 +285,13 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/verbatim_set_check.py`
 - `scripts/workflow_ref_check.py`
 
-## Data files — 30
+## Data files — 31
 
 - `data/agent-registry.json`
 - `data/boards/`
 - `data/breed-standards.json`
 - `data/bsuk-ontology.json`
+- `data/city-places/`
 - `data/competitors.json`
 - `data/component-ledger.json`
 - `data/design/`
