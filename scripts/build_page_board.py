@@ -1075,8 +1075,459 @@ def og_block(board, carried=None):
             "decided later.\n\n" + f'<div class="ogpicks">{"".join(rows)}</div>')
 
 
+# ── The decision-queue layout (breeder pick B, 2026-10-03) ─────────────────────────────────
+# "The board is too long." Every block and all of its content stays; on a project 5 board the
+# blocks are dealt into three tabs — what the breeder must decide, what they should read
+# first, and the rest for reference — each block a collapsible card with a one-line summary,
+# and the approve button rides in a bar fixed to the foot of the board. The tab a block lands
+# in is computed from the board (the picks it holds, the findings its data raises), never
+# from its title. A pre-rule board never reaches any of this: it renders flat, byte for byte.
+
+HOWTO = ("<b>How to pick.</b> Read the outline in block 3, then work down block 6: each section shows its "
+         "three arrangements rendered from the kit at 1280, 768 and 375 pixels. Choose the one whose SHAPE "
+         "suits the section — the copy in the frames is the outline's own stub text, not the page's prose. "
+         "Pick an H1 and a title/description pair in block 2, leave a note anywhere you want something "
+         "changed, then approve in block 8.")
+QUEUE_HOWTO = ("<b>How to approve.</b> Work through <b>Your decisions</b> one card at a time, read "
+               "<b>Look before approving</b>, then press Approve in the bar at the foot of the board. "
+               "Everything else is under <b>Reference</b>, closed until you open it. Leave a note "
+               "anywhere you want something changed.")
+
+#: The three tabs, in order: (key, label, the line above the tab's cards).
+QUEUE_TABS = (("decide", "Your decisions", "Make these picks, then approve"),
+              ("look", "Look before approving", "Findings to read before you approve"),
+              ("ref", "Reference", ""))
+#: Reference groups, in board order — the approved preview's names.
+REF_GROUPS = ("Start", "Words people see", "Outline", "Keywords and entities", "Components",
+              "Images", "Before you approve")
+BLOCK_GROUP = {"0": "Start", "1": "Start", "1b": "Start",
+               "2": "Words people see", "2b": "Words people see",
+               "3": "Outline", "3a": "Outline", "3b": "Outline", "3c": "Outline", "3d": "Outline",
+               "3e": "Outline",
+               "4": "Keywords and entities", "4b": "Keywords and entities", "4c": "Keywords and entities",
+               "4d": "Keywords and entities", "5": "Keywords and entities", "5c": "Keywords and entities",
+               "5b": "Components", "6": "Components",
+               "7": "Images", "7b": "Images", "7c": "Images", "7d": "Images",
+               "8": "Before you approve", "8a": "Before you approve", "8b": "Before you approve",
+               "8c": "Before you approve"}
+#: Blocks that are decisions even with no required pick in them: approving the board approves
+#: 3e's headings, 7d's photo answers are optional picks, and 8 is the approval itself.
+DECIDE_ALWAYS = ("3e", "7d", "8")
+#: The fixed one-liners, for blocks whose module computes no summary of its own. Each says
+#: what the block shows, nothing more.
+BLOCK_SUMMARY = {
+    "0": "The page's starting state, read from the data files, the record and the built page.",
+    "1b": "What kind of page Google ranks for this search, and the questions people also ask.",
+    "3d": "Which areas of the city the page names, and the searches behind each.",
+    "4c": "How often competitor pages use each of our terms, against what we plan.",
+    "4d": "Where the FAQ blocks sit, from the questions' topics and the page's length.",
+    "5c": "Phrases and entities several competitor sites use that this board does not.",
+    "8c": "Image bytes per section, the page total and the LCP candidate.",
+    "8": "Records your H1, picks, notes and the record hash in the board database.",
+}
+#: Markers this file and its block modules write beside a WARN or FAIL row: a live-heading
+#: collision, a dead internal link, a FAIL pill, an image over its byte budget, a bold warning
+#: and an untyped anchor. Read only when a block's own data raised no finding.
+FINDING_MARKERS = (('class="hit"', "a heading flagged against a live page"),
+                   ("lk-bad", "a dead internal link"),
+                   ('class="pill fail"', "a FAIL row"),
+                   ("⚠ over ", "an image over its byte budget"),
+                   ("**⚠ ", "a flagged row"),
+                   ("⚠ none", "a link with no anchor type"))
+
+
+def block_id(title):
+    """"7c. Infographics" → "7c"."""
+    return title.split(". ", 1)[0]
+
+
+def _n(k, one, many=None):
+    return f"{k} {one if k == 1 else (many or one + 's')}"
+
+
+def block_findings(board, parts, facts):
+    """{block id: [finding, …]}: what the breeder should read before approving, from data the
+    blocks were rendered from — 2b's description verdicts, 8b's orphan flag, 7b's FAIL rows,
+    block 3's collisions and dead links, 3b's bare signature sections, block 5's BLOCKED
+    entities. A block none of those reach is checked for its markers (FINDING_MARKERS)."""
+    out = {}
+    fit = BX.fit_rows(board)
+    cut = [r for r in fit if r["kind"] == "description" and r["verdict"] != "fits"]
+    wide = [r for r in fit if r["kind"] == "title" and not r["fits"]]
+    f2b = []
+    if cut:
+        f2b.append(f"{len(cut)} of {sum(r['kind'] == 'description' for r in fit)} descriptions "
+                   "may be cut or cut on desktop")
+    if wide:
+        f2b.append(f"{_n(len(wide), 'title')} too wide for one line")
+    out["2b"] = f2b
+    lk = facts.get("links")
+    out["8b"] = ([f"orphan risk: {_n(len(lk['sources']), 'page')} link here from body copy, "
+                  f"under {BX.ORPHAN_FLOOR}"] if lk and lk["orphan"] else [])
+    rules = facts.get("rules") or []
+    fails = [r for r in rules if r[1] == "FAIL"]
+    if facts.get("refused"):
+        out["7b"] = [f"{_n(len(fails), 'rule')} FAIL — approval will be refused"]
+    elif fails:
+        out["7b"] = [f"{_n(len(fails), 'rule')} FAIL until each infographic is generated and approved "
+                     "(checked at build); none refuses approval"]
+    else:
+        out["7b"] = []
+    f3 = []
+    if facts["hits"]:
+        f3.append(f"{_n(len(facts['hits']), 'heading')} collide with a live page")
+    dead = sum(1 for s in board["sections"] for l in s["links"]["internal"]
+               if resolve_internal(l["href"], facts["routes"])[1] == "lk-bad")
+    if dead:
+        f3.append(f"{_n(dead, 'internal link')} dead")
+    out["3"] = f3
+    bare = [s for s in board["sections"] if not s["images"] and s["shape"] != "standard"]
+    out["3b"] = [f"{_n(len(bare), 'section')} with no image slot"] if bare else []
+    blocked = facts["auth"]["blocked"]
+    out["5"] = [f"{_n(len(blocked), 'BLOCKED entity', 'BLOCKED entities')} referenced"] if blocked else []
+    for t, body in parts:
+        bid = block_id(t)
+        if out.get(bid) or bid in ("2b", "8b", "7b"):
+            continue
+        hit = [what for mark, what in FINDING_MARKERS if mark in body]
+        out[bid] = [f"carries {hit[0]}"] if hit else []
+    return out
+
+
+def block_summary(bid, board, slug, ig_plan, facts, picks):
+    """One plain line per block, from the board's own numbers where they are cheap; the
+    BLOCK_SUMMARY sentence otherwise."""
+    secs = board["sections"]
+    d = facts["d"]
+    if bid == "1":
+        b = board["brief"]
+        return f"Goal, scope and gates. Strategy: {b['strategy']['name']}. Primary keyword: {b['primary_keyword']}."
+    if bid == "2":
+        return (f"Pick the H1 ({_n(len(board['h1']['variants']), 'option')}), the title tag "
+                f"({len(board['meta_set']['titles'])}) and the meta description "
+                f"({len(board['meta_set']['descriptions'])}).")
+    if bid == "2b":
+        fit = BX.fit_rows(board)
+        t = next((r for r in fit if r["kind"] == "title" and r["i"] == facts["mt"]), fit[0])
+        ds = [r["px"] for r in fit if r["kind"] == "description"]
+        return (f"Title {t['px']:.0f} of {t['limit']}px: {'fits' if t['fits'] else 'too wide'}. "
+                f"Descriptions {min(ds):.0f}–{max(ds):.0f}px against {BX.DESC_PX}px.")
+    if bid == "3":
+        c = d["h_counts"]
+        n_int = sum(len(s["links"]["internal"]) for s in secs)
+        n_ext = sum(len(s["links"]["external"]) for s in secs)
+        return (f"{c['h2']} H2, {c['h3']} H3, {c['h4']} H4, {c['h5']} H5, {c['h6']} H6. "
+                f"{n_int + n_ext} links: {n_int} internal, {n_ext} external.")
+    if bid == "3a":
+        applies = json.loads((PB.ROOT / "data/verbatim/applies.json").read_text(encoding="utf-8"))
+        vpath = PB.ROOT / f"data/verbatim/{slug}.json"
+        if slug in (applies.get("excluded") or {}):
+            return "Rule 15 does not reach this page."
+        if not vpath.exists():
+            return "No verbatim set has been extracted for this page."
+        n = sum(1 for _ in VSC.elements(json.loads(vpath.read_text(encoding="utf-8"))))
+        return f"{_n(n, 'element')} of the migrated page to carry word for word."
+    if bid == "3b":
+        n = sum(len(s["images"]) for s in secs)
+        return f"{_n(n, 'section-level image slot')} across {_n(len(secs), 'section')}, with their prompts."
+    if bid == "3c":
+        return (f"{_n(len(secs), 'section')}: all four navigation pieces mount." if len(secs) >= NAV_THRESHOLD
+                else f"{_n(len(secs), 'section')}: only the TOC mounts.")
+    if bid == "3e":
+        rows = board.get("outline_changes_since_stop2") or []
+        return f"{_n(len(rows), 'heading')} added since STOP 2. Approving the board approves them."
+    if bid == "4":
+        t = d["totals"]
+        kw = sum(v for k, v in t.items() if k in PB.ALL_KEYWORD_TYPES)
+        return (f"{_n(kw, 'keyword')} placed across {_n(len(secs), 'section')}; "
+                f"{t['words_min']}–{t['words_max']} words.")
+    if bid == "4b":
+        return f"Our planned tags against the top five pages, over {_n(KM.table(board)['terms'], 'keyword term')}."
+    if bid == "5":
+        n = len({e for s in secs for e in s["entities"]})
+        return f"{_n(n, 'entity', 'entities')} by class, with the sections that name them."
+    if bid == "5b":
+        return f"The page-level tuple: {_n(facts['kit_n'], 'shell')}, shown for reading. Picks happen in block 6."
+    if bid == "6":
+        k = len(picks)
+        return (f"{_n(len(secs), 'section')}; {_n(k, 'component pick')} to make." if k else
+                f"{_n(len(secs), 'section')}, each shown with its component. Nothing to pick here.")
+    if bid == "7":
+        return (f"{_n(len(board['assets']), 'image slot')} with their files and alts; "
+                f"{_n(len(picks), 'image')} to pick.")
+    if bid == "7b":
+        rules = facts.get("rules") or []
+        if not rules:
+            return "Every new-page rule passes."
+        f = sum(r[1] == "FAIL" for r in rules)
+        return f"{f} FAIL, {len(rules) - f} WARN, run as approval runs them."
+    if bid == "7c":
+        return (f"{_n(len(ig_plan), 'infographic')}, each on its own heading. "
+                "Pick sticker, chalk or comic for each.")
+    if bid == "7d":
+        n = len(OS.propose(board, root=PB.ROOT))
+        return f"{_n(n, 'real site photo')} proposed on the best-fit headings. Use, swap or skip each (optional)."
+    if bid == "8a":
+        return "Types planned: " + ", ".join(BX.schema_types(board)) + "."
+    if bid == "8b":
+        lk = facts.get("links")
+        if not lk or lk["rows"] is None:
+            return f"{_n(len(lk['outs']) if lk else 0, 'link')} out; links in NOT FETCHED until dist/ is built."
+        return (f"{_n(len(lk['outs']), 'link')} out · {len(lk['rows'])} in from "
+                f"{_n(len(lk['sources']), 'page')}' body copy.")
+    return BLOCK_SUMMARY.get(bid, "")
+
+
+def queue_meta(parts, board, slug, ig_plan, labels, facts):
+    """One dict per block, in board order: id, tab, group, chip class and text, summary, the
+    required pick ids it holds, and whether its card starts open. A pick belongs to the block
+    whose body carries its anchor id — the same anchor the approve refusal links to."""
+    ids = [block_id(t) for t, _ in parts]
+    picks = {bid: [] for bid in ids}
+    for pid, e in labels.items():
+        for (_t, body), bid in zip(parts, ids):
+            if f'id="{e["anchor"]}"' in body:
+                picks[bid].append(pid)
+                break
+    findings = block_findings(board, parts, facts)
+    passes = {"2b": True, "3": True, "7b": True, "8b": bool(facts.get("links") and facts["links"]["rows"] is not None)}
+    out = []
+    for bid in ids:
+        mine, found = picks[bid], findings.get(bid) or []
+        tab = "decide" if (mine or bid in DECIDE_ALWAYS) else "look" if found else "ref"
+        if mine:
+            chip, text = "need", f"{len(mine)} to pick"
+        elif tab == "look" or bid == "3e":
+            chip, text = "warn", "look"
+        elif passes.get(bid):
+            chip, text = "ok", "passes"
+        else:
+            chip, text = "info", "info"
+        summary = block_summary(bid, board, slug, ig_plan, facts, mine)
+        if found:
+            summary = (summary + " " if summary else "") + "Look: " + "; ".join(found) + "."
+        out.append({"id": bid, "tab": tab, "group": BLOCK_GROUP.get(bid, REF_GROUPS[-1]),
+                    "chip": chip, "chip_text": text, "summary": summary, "picks": mine, "open": False})
+    first = next((c for c in out if c["tab"] == "decide"), None)
+    if first:
+        first["open"] = True
+    for c in out:
+        if c["tab"] == "look":
+            c["open"] = True
+    return out
+
+
+def queue_shell(slug, m, record_hash, cards, n_picks, status):
+    """(sticky top bar, the tab bar and its three panels, the approve bar). The cards are
+    built into the panels' hosts by the board's script, from each block's data attributes."""
+    top = ('<header class="top"><div><p class="eyebrow">BlueStaffyUK · Page Board</p>'
+           f'<h1 class="title">/{esc(slug)}/</h1>'
+           f'<div class="route"><span class="pill">status: {esc(m["status"])}</span> '
+           f'<span class="pill">research as of {esc(m["research_as_of"])}</span> '
+           f'record <code>{record_hash[:12]}</code></div></div>'
+           '<div class="prog"><span id="prog-text">0 of ' + str(n_picks) + ' picks made</span>'
+           f'<span class="pbar" id="prog-bar" role="progressbar" aria-label="Picks made" '
+           f'aria-valuemin="0" aria-valuemax="{n_picks}" aria-valuenow="0"><i></i></span></div></header>\n')
+    count = {k: sum(c["tab"] == k for c in cards) for k, _l, _h in QUEUE_TABS}
+    tabs = "".join(
+        f'<button type="button" role="tab" id="tab-{k}" aria-controls="panel-{k}" data-tab="{k}" '
+        f'aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}">'
+        f'{esc(label)}<span class="count">{count[k]}</span></button>'
+        for i, (k, label, _h) in enumerate(QUEUE_TABS))
+    panels = []
+    for i, (k, label, head) in enumerate(QUEUE_TABS):
+        if k == "ref":
+            groups = [g for g in REF_GROUPS + tuple(sorted({c["group"] for c in cards} - set(REF_GROUPS)))
+                      if any(c["tab"] == "ref" and c["group"] == g for c in cards)]
+            inner = "".join(f'<p class="stagehead">{esc(g)}</p><div data-host="ref:{esc(g)}"></div>'
+                            for g in groups)
+        else:
+            inner = f'<p class="stagehead">{esc(head)}</p><div data-host="{k}"></div>'
+        if not count[k]:
+            inner += '<p class="empty">Nothing here: no block on this board raised a finding.</p>'
+        panels.append(f'<div role="tabpanel" id="panel-{k}" aria-labelledby="tab-{k}" data-panel="{k}"'
+                      f'{"" if i == 0 else " hidden"}>{inner}</div>')
+    doc = (f'<div class="tabs" role="tablist" aria-label="Board blocks">{tabs}</div>' + "".join(panels))
+    bar = ('<div class="q-bar"><div id="approve" class="q-in"><span class="left" id="picks-left"></span>'
+           f'<span class="status" id="approve-status" role="status" aria-live="polite">{status}</span>'
+           '<button class="btn" id="approve-btn" disabled>Approve this board</button></div></div>\n')
+    return top, doc, bar
+
+
+#: The flat layout's block loop: every block one <section>, in board order.
+FLAT_JS = r"""  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b){
+    var sec=document.createElement('section');sec.className='sec';
+    var h2=document.createElement('h2');h2.textContent=b.getAttribute('data-title');sec.appendChild(h2);
+    var body=document.createElement('div');body.className='md';
+    body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\n+|\s+$/g,'')):b.textContent;
+    sec.appendChild(body);doc.appendChild(sec);
+  });
+"""
+
+#: The queue layout's block loop and its tabs. Each block's markdown is parsed exactly as the
+#: flat loop parses it; only the box around it changes.
+QUEUE_JS = r"""  // Decision queue (breeder pick B, 2026-10-03): one <details> card per block, dealt into
+  // its tab's host by the data attributes build_page_board.py computed.
+  var TABS=['decide','look','ref'],TAB_KEY='board-tab:'+@@SLUG@@;
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b){
+    var tab=b.getAttribute('data-tab'),grp=b.getAttribute('data-group'),chipCls=b.getAttribute('data-chip');
+    var title=b.getAttribute('data-title'),bid=b.getAttribute('data-id');
+    var card=document.createElement('details');
+    card.className='card'+(chipCls==='need'?' need':'')+(tab==='look'?' warn':'');
+    card.id='block-'+bid;
+    if(b.hasAttribute('data-open'))card.open=true;
+    if(b.getAttribute('data-picks'))card.setAttribute('data-picks',b.getAttribute('data-picks'));
+    var sum=document.createElement('summary');
+    var n=document.createElement('span');n.className='n';n.textContent=bid;sum.appendChild(n);
+    var mid=document.createElement('span');mid.className='mid';
+    var t=document.createElement('b');t.className='ct';t.textContent=title.slice(bid.length+2);mid.appendChild(t);
+    var s=document.createElement('span');s.className='s';s.textContent=b.getAttribute('data-summary');mid.appendChild(s);
+    sum.appendChild(mid);
+    var chip=document.createElement('span');chip.className='chip '+chipCls;chip.textContent=b.getAttribute('data-chip-text');
+    sum.appendChild(chip);card.appendChild(sum);
+    var body=document.createElement('div');body.className='in md';
+    body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\n+|\s+$/g,'')):b.textContent;
+    card.appendChild(body);
+    var host=document.querySelector('[data-host="'+(tab==='ref'?'ref:'+grp:tab)+'"]');
+    (host||doc).appendChild(card);
+  });
+  var tabs=[].slice.call(document.querySelectorAll('[role="tab"]'));
+  function selectTab(k,focus){
+    tabs.forEach(function(t){
+      var on=t.getAttribute('data-tab')===k;
+      t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden=!on;
+      if(on&&focus)t.focus();
+    });
+    try{localStorage.setItem(TAB_KEY,k);}catch(_){}
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){selectTab(t.getAttribute('data-tab'));});
+    t.addEventListener('keydown',function(e){
+      var j=e.key==='ArrowRight'?(i+1)%tabs.length:e.key==='ArrowLeft'?(i-1+tabs.length)%tabs.length
+           :e.key==='Home'?0:e.key==='End'?tabs.length-1:null;
+      if(j!==null){e.preventDefault();selectTab(tabs[j].getAttribute('data-tab'),true);}
+    });
+  });
+  function tabFromHash(){var h=(location.hash||'').slice(1);return TABS.indexOf(h)>=0?h:null;}
+  var startTab=tabFromHash();
+  if(!startTab){try{startTab=localStorage.getItem(TAB_KEY);}catch(_){startTab=null;}}
+  selectTab(TABS.indexOf(startTab)>=0?startTab:'decide');
+  window.addEventListener('hashchange',function(){var h=tabFromHash();if(h)selectTab(h);});
+  // Show whatever holds `el`: its tab, then every closed card around it.
+  function reveal(el){
+    var p=el.closest('[role="tabpanel"]');
+    if(p&&p.hidden)selectTab(p.getAttribute('data-panel'));
+    for(var d=el.closest('details');d;d=d.parentElement&&d.parentElement.closest('details'))d.open=true;
+  }
+  // An in-board link (blocks 4 and 5's section chips) can point into a closed card or another
+  // tab: open the way first, and let the browser scroll as it always has.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="#"]');
+    if(!a||a.closest('ul.missing'))return;
+    var id=decodeURIComponent(a.getAttribute('href').slice(1)),el=id&&TABS.indexOf(id)<0&&document.getElementById(id);
+    if(el)reveal(el);
+  });
+  // The sticky header's height, for the anchors' scroll margin and the keyword filter bar.
+  var topBar=document.querySelector('header.top');
+  function topH(){
+    var h=topBar&&getComputedStyle(topBar).position==='sticky'?topBar.offsetHeight:0;
+    document.documentElement.style.setProperty('--top-h',h+'px');
+  }
+  topH();window.addEventListener('resize',topH);
+"""
+
+#: After the approve handler is wired: the header's progress, the bar's "N picks left", each
+#: card's live chip, and a refusal list that crosses picks off as they are made.
+QUEUE_TAIL_JS = r"""  var leftEl=document.getElementById('picks-left');
+  function kindOf(id){
+    var e=SIGNATURE_LABELS[id]||{};
+    if(e.n==='2')return e.label;
+    return id.indexOf('ig:')===0?'infographic style':id.indexOf('img:')===0?'image':'component';
+  }
+  function progress(){
+    var all=['h1','meta-title','meta-description'].concat(SIGNATURE_SECTIONS),open=missingPicks(),done=all.length-open.length;
+    document.getElementById('prog-text').textContent=done+' of '+all.length+' picks made';
+    var pb=document.getElementById('prog-bar');pb.setAttribute('aria-valuenow',done);
+    pb.firstChild.style.width=(all.length?Math.round(done/all.length*100):100)+'%';
+    var kinds={},order=[];
+    open.forEach(function(id){var k=kindOf(id);if(!kinds[k]){kinds[k]=0;order.push(k);}kinds[k]++;});
+    leftEl.textContent=open.length?open.length+(open.length===1?' pick':' picks')+' left: '
+      +order.map(function(k){return kinds[k]+' '+k+(kinds[k]>1?'s':'');}).join(', '):'All picks made';
+    document.querySelectorAll('details.card[data-picks]').forEach(function(c){
+      var k=c.getAttribute('data-picks').split(' ').filter(function(id){return open.indexOf(id)>=0;}).length;
+      var ch=c.querySelector('summary .chip');
+      ch.className='chip '+(k?'need':'ok');ch.textContent=k?k+' to pick':'all picked';
+      c.classList.toggle('need',!!k);
+    });
+    if(refusing){
+      var still=0;
+      st.querySelectorAll('ul.missing li[data-pick]').forEach(function(li){
+        var o=open.indexOf(li.getAttribute('data-pick'))>=0;li.classList.toggle('done',!o);if(o)still++;
+      });
+      if(!still){refusing=false;st.textContent='Every pick is made — press Approve.';}
+    }
+  }
+  document.addEventListener('change',function(e){if(e.target&&e.target.type==='radio')progress();});
+  progress();
+"""
+
+QUEUE_CSS = """
+:root{--ok:#2D6A4F;--ok-soft:#DCEFE4;--warn-soft:#F6E1D6;--need:#7A5A00;--need-soft:#F7EBC2}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ok:#7CC9A0;--ok-soft:#1D3A2C;--warn-soft:#3E2519;--need:#E9C964;--need-soft:#3B3216}}
+:root[data-theme="dark"]{--ok:#7CC9A0;--ok-soft:#1D3A2C;--warn-soft:#3E2519;--need:#E9C964;--need-soft:#3B3216}
+.wrap.q{max-width:980px;padding:20px 16px 160px}
+header.top{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between}
+header.top .eyebrow{margin:0 0 2px;font-size:11px}
+header.top h1.title{font-size:20px;line-height:1.2;overflow-wrap:anywhere}
+header.top .route{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.prog{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.pbar{display:block;width:120px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--clay-ink);transition:width .2s}
+.q .howto{margin-bottom:14px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:6px;flex-wrap:wrap}
+.tabs [role="tab"]{font:inherit;font-weight:600;border:0;border-bottom:3px solid transparent;background:none;padding:8px 12px;cursor:pointer;color:var(--ink-2)}
+.tabs [role="tab"][aria-selected="true"]{color:var(--ink);border-bottom-color:var(--clay-ink)}
+.tabs .count{font-size:11px;background:var(--need-soft);color:var(--need);border-radius:999px;padding:0 7px;margin-left:6px}
+.stagehead{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:20px 2px 8px}
+.q .empty{font-size:14px;color:var(--ink-3)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;margin-bottom:12px;min-width:0;overflow:clip}
+.card>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 14px}
+.card>summary::-webkit-details-marker{display:none}
+.card>summary:focus-visible{outline:3px solid var(--clay);outline-offset:-3px}
+.card>summary .n{font:700 15px "Fraunces",Georgia,serif;color:var(--green)}
+.card>summary .ct{display:block;font-size:15px}
+.card>summary .s{display:block;font-size:13px;color:var(--ink-2)}
+.card[open]>summary{border-bottom:1px solid var(--line)}
+.card>.in{padding:16px}
+.card.need{border-left:4px solid var(--clay-ink)}
+.card.warn{border-left:4px solid var(--warn)}
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.03em;padding:1px 8px;border-radius:999px;white-space:nowrap;text-transform:uppercase}
+.chip.need{background:var(--need-soft);color:var(--need)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.info{background:var(--green-soft);color:var(--ink-2)}
+.q [id]{scroll-margin-top:calc(var(--top-h,72px) + 16px)}
+.q .kv-bar{top:var(--top-h,72px)}
+.q .oanchor:target{scroll-margin-top:calc(var(--top-h,72px) + 16px)}
+div.q-bar{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--paper);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+#approve.q-in{max-width:948px;margin:0 auto;justify-content:center;gap:8px 14px}
+#approve.q-in .left{order:1;font-size:13.5px;color:var(--ink-2)}
+#approve.q-in .btn{order:2}
+#approve.q-in .status{order:3}
+#approve.q-in .status:has(ul.missing){order:0;max-height:40vh;overflow:auto;background:var(--ground);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.status ul.missing li.done{text-decoration:line-through;opacity:.6}
+@media (max-width:560px){header.top{position:static}.card>summary{grid-template-columns:34px minmax(0,1fr)}.card>summary .chip{grid-column:2;justify-self:start}.card>.in{padding:14px 12px}
+.tabs [role="tab"]{padding:8px 8px;font-size:14px}.wrap.q{padding-bottom:200px}
+#approve.q-in .left{font-size:12.5px}#approve.q-in .btn{padding:8px 16px}#approve.q-in .status{flex-basis:100%;text-align:center;font-size:12px}#approve.q-in .status:has(ul.missing){text-align:left}}
+"""
+
+
 def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None,
-           intake=None):
+           intake=None, layout="queue"):
+    """The board document. `layout` is "queue" (breeder pick B, 2026-10-03: the three-tab
+    decision queue with a sticky approve bar) or "flat" (every block as one long column, as
+    before). It only reaches project 5 boards: a pre-rule board is always flat, byte for byte."""
     previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
     nav = nav if nav is not None else {"css": "", "blocks": {}}
     routes = routes if routes is not None else load_routes()
@@ -1215,7 +1666,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     if new_family:
         parts.append(("5c. What competitors say that we do not", TG.block(board, ont)))
 
-    parts.append(("5b. The kit", f'<div class="opts kit">{"".join(kit_cards(board, ledger, thumbs, slug))}</div>'
+    kit = kit_cards(board, ledger, thumbs, slug)
+    parts.append(("5b. The kit", f'<div class="opts kit">{"".join(kit)}</div>'
                   "\n\nThe page-level tuple, for reading. Picks happen in block 6; a shell that is wrong here is "
                   "a record edit, not a radio."))
 
@@ -1262,31 +1714,55 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
 
     # 7b only on the pages the new-page rules bind, so the twelve built boards render
     # byte-for-byte as they did before these rules reached the board.
-    refused = False
+    refused, rfind = False, None
     if PB.FR.applies(board):
-        rules_html, refused = rules_block(rule_findings(board, ont))
+        rfind = rule_findings(board, ont)
+        rules_html, refused = rules_block(rfind)
         parts.append(("7b. Rules for new pages", rules_html))
         parts.append(("7c. Infographics", infographic_block(board, locked, ig_plan)))
         parts.append(("7d. Original photos", og_block(board, locked)))
 
     # Breeder q12 (2026-10-02): the structured data, the internal-link map and the page
     # weight, read last before approving; project 5 boards only.
+    links8b = None
     if new_family:
+        links8b = BX.links_data(board, PB.ROOT, PB.DIST)
         parts.append(("8a. Structured data the page will emit", BX.schema_block(board, PB.ROOT)))
-        parts.append(("8b. Internal links in and out", BX.links_block(board, PB.ROOT, PB.DIST)))
+        parts.append(("8b. Internal links in and out", BX.links_block(board, PB.ROOT, PB.DIST, data=links8b)))
         parts.append(("8c. Page weight and LCP budget", BX.weight_block(board, PB.ROOT)))
 
     status = ("Approved as it stands." if approved else
               REFUSAL_LINE if refused else "Connecting to the board database…")
-    approve = (f'<div id="approve"><button class="btn" id="approve-btn" disabled>Approve this board</button>'
+    # Breeder pick B (2026-10-03): on a project 5 board the button and its status live in the
+    # sticky bar at the foot of the board, so block 8 keeps only its words. One button, one
+    # status, one approval code path either way.
+    queue = new_family and layout == "queue"
+    approve = ("" if queue else
+               f'<div id="approve"><button class="btn" id="approve-btn" disabled>Approve this board</button>'
                f'<span class="status" id="approve-status" role="status" aria-live="polite">{status}</span></div>')
     # The status span is rewritten by the database script below, so a refusal is also said
     # where no script touches it.
     refusal_note = f'\n\n<p class="rules-refused">{REFUSAL_LINE}</p>' if refused and not approved else ""
-    parts.append(("8. Approve", approve + refusal_note + "\n\nWrites your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it."))
+    parts.append(("8. Approve", ("The **Approve** button is in the bar at the foot of the board, beside the "
+                                 "count of picks still open." if queue else approve)
+                  + refusal_note + "\n\nWrites your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it."))
 
-    blocks = "".join(f'<script type="text/markdown" data-title="{esc(t)}">\n{b}\n</script>\n' for t, b in parts)
     record_hash = PB.record_hash(board)
+    if queue:
+        labels = signature_labels(board, ledger, slug, ig_plan)
+        facts = {"hits": hits, "qhits": qhits, "routes": routes, "rules": rfind, "refused": refused,
+                 "links": links8b, "auth": auth, "d": d, "kit_n": len(kit), "mt": mt}
+        cards = queue_meta(parts, board, slug, ig_plan, labels, facts)
+        blocks = "".join(
+            f'<script type="text/markdown" data-title="{esc(t)}" data-id="{esc(c["id"])}" '
+            f'data-tab="{c["tab"]}" data-group="{esc(c["group"])}" data-chip="{c["chip"]}" '
+            f'data-chip-text="{esc(c["chip_text"])}" data-summary="{esc(c["summary"])}" '
+            f'data-picks="{esc(" ".join(c["picks"]))}"{" data-open" if c["open"] else ""}>\n{b}\n</script>\n'
+            for (t, b), c in zip(parts, cards))
+        n_picks = len(labels)
+        top, doc_html, bar = queue_shell(slug, m, record_hash, cards, n_picks, status)
+    else:
+        blocks = "".join(f'<script type="text/markdown" data-title="{esc(t)}">\n{b}\n</script>\n' for t, b in parts)
     # Block 7c's infographic frames: one standalone document per slot|style, pasted into
     # that style's three frames; its fonts resolve against the board's URL (IG_FONT_BASE).
     # Emitted on project 5 boards only, so a pre-rule board's script is unchanged.
@@ -1295,32 +1771,28 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
              "    var d=IG_DOCS[f.getAttribute('data-ig')];\n"
              "    if(d!==undefined)f.srcdoc=d;\n"
              "  });\n") if new_family else ""
+    masthead = "" if queue else (
+        f'<header class="masthead"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/{esc(slug)}/</h1></div>\n'
+        f'<div class="meta"><span class="pill">status: {esc(m["status"])}</span> <span class="pill">research as of {esc(m["research_as_of"])}</span><br>record <code>{record_hash[:12]}</code></div></header>\n')
+    if not queue:
+        top = doc_html = bar = ""
     # The charset is declared: the board carries em dashes and pound signs from the record
     # and from src/lib/boardStyles.ts, and a document served without one is decoded as
     # latin-1 by any viewer that does not send a charset of its own.
     return f"""<meta charset="utf-8">
 <title>Page Board: {esc(slug)}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&display=swap">
-<style>{CSS}{BE.CSS}</style>
-<div class="wrap">
-<header class="masthead"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/{esc(slug)}/</h1></div>
-<div class="meta"><span class="pill">status: {esc(m['status'])}</span> <span class="pill">research as of {esc(m['research_as_of'])}</span><br>record <code>{record_hash[:12]}</code></div></header>
-<p class="howto"><b>How to pick.</b> Read the outline in block 3, then work down block 6: each section shows its three arrangements rendered from the kit at 1280, 768 and 375 pixels. Choose the one whose SHAPE suits the section — the copy in the frames is the outline's own stub text, not the page's prose. Pick an H1 and a title/description pair in block 2, leave a note anywhere you want something changed, then approve in block 8.</p>
-<div id="doc"></div>
+<style>{CSS}{BE.CSS}{QUEUE_CSS if queue else ""}</style>
+{top}<div class="wrap{" q" if queue else ""}">
+{masthead}<p class="howto">{QUEUE_HOWTO if queue else HOWTO}</p>
+<div id="doc">{doc_html}</div>
 </div>
-{blocks}
+{bar}{blocks}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
 <script>
 (function(){{
   var doc=document.getElementById('doc');
-  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b){{
-    var sec=document.createElement('section');sec.className='sec';
-    var h2=document.createElement('h2');h2.textContent=b.getAttribute('data-title');sec.appendChild(h2);
-    var body=document.createElement('div');body.className='md';
-    body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\\n+|\\s+$/g,'')):b.textContent;
-    sec.appendChild(body);doc.appendChild(sec);
-  }});
-  // Blocks 4 and 5: the keyword and entity filters (scripts/board_entities.py).
+{QUEUE_JS.replace("@@SLUG@@", js(slug)) if queue else FLAT_JS}  // Blocks 4 and 5: the keyword and entity filters (scripts/board_entities.py).
   {BE.JS}
   // The style frames are filled HERE rather than carrying a static srcdoc each: the page
   // stylesheet is inlined once and pasted into every frame at load, instead of nine copies
@@ -1390,7 +1862,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
       var li=document.createElement('li');
       var text=(e.n?(e.n.length<2?'Block '+e.n+' ':'§'+e.n+' '):'')+e.section+' — '+e.label;
       var target=e.anchor&&document.getElementById(e.anchor);
-      if(target){{
+{"      li.setAttribute('data-pick',id);" + chr(10) if queue else ""}      if(target){{
         var a=document.createElement('a');a.href='#'+e.anchor;a.textContent=text;
         a.addEventListener('click',function(ev){{ev.preventDefault();jump(id);}});
         li.appendChild(a);
@@ -1402,7 +1874,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
   }}
   function jump(id){{
     var e=SIGNATURE_LABELS[id],target=e&&e.anchor&&document.getElementById(e.anchor);
-    if(target)target.scrollIntoView({{behavior:'smooth',block:'start'}});
+{"    if(target)reveal(target);" + chr(10) if queue else ""}    if(target)target.scrollIntoView({{behavior:'smooth',block:'start'}});
     var first=document.querySelector('input[name="'+fieldOf(id)+'"]:not([disabled])');
     if(first)first.focus({{preventScroll:!!target}});
   }}
@@ -1441,7 +1913,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     ref.set(rec).then(function(){{st.textContent='Approved '+rec.approved_at+'. Claude reads this back before building.';}})
       .catch(function(e){{btn.disabled=false;st.textContent='Could not save: '+(e&&e.code?e.code:'error')+'. Try again, or approve in chat.';}});
   }});
-  if(!window.claude||!window.claude.use){{dbState='none';say('Open this board inside claude.ai to approve it.');return;}}
+{QUEUE_TAIL_JS if queue else ""}  if(!window.claude||!window.claude.use){{dbState='none';say('Open this board inside claude.ai to approve it.');return;}}
   if(!APPROVED)say('Connecting…');               // an approved board keeps saying so until the database answers
   window.claude.use("db").then(function(db){{
     if(!db){{dbState='none';say('Approval needs the board database, which this view cannot reach.');return;}}

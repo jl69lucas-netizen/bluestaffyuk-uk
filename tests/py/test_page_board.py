@@ -3088,3 +3088,170 @@ def test_q12_blocks_never_on_a_pre_rule_board():
     for t in V3_EXTRA_TITLES:
         assert t not in old, t
     assert "px, fits" not in old and "px, cut" not in old and "px, may be cut" not in old
+
+
+# ── Decision-queue layout (breeder pick B, 2026-10-03) ──────────────────────────────────────
+# Every block keeps its content; on a project 5 board it is dealt into one of three tabs.
+_QUEUE_TAG = _re.compile(r'<script type="text/markdown" data-title="([^"]*)" data-id="([^"]*)" '
+                         r'data-tab="(\w+)" data-group="([^"]*)"')
+
+
+def _tabs(html):
+    return {m.group(2): m.group(3) for m in _QUEUE_TAG.finditer(html)}
+
+
+def test_queue_tabs_on_the_london_board(london_full):
+    import build_page_board as BPB
+    import image_rules as IR
+    import page_intake as PI
+    london, _ = london_full
+    html = BPB.render(london, json.loads((ROOT / "data/bsuk-ontology.json").read_text()), LEDGER_EMPTY,
+                      live={}, thumbs={}, slug=LONDON, images=IR.board_images(london),
+                      intake=PI.intake(LONDON))
+    tabs = _tabs(html)
+    for bid in ("2", "7c", "8", "3e", "7d"):
+        assert tabs[bid] == "decide", bid
+    for bid in ("0", "4"):
+        assert tabs[bid] == "ref", bid
+    assert 'role="tablist"' in html and html.count('role="tab" ') == 3
+    assert 'id="approve-btn"' in html and html.count('id="approve-status"') == 1
+    assert 'role="status" aria-live="polite"' in html
+
+
+def test_queue_look_tab_carries_2b_and_8b(london_full):
+    london, html = london_full
+    if not PB.DIST.exists():
+        pytest.skip("dist/ is not built — 8b's orphan flag reads it")
+    tabs = _tabs(html)
+    assert tabs["2b"] == "look" and tabs["8b"] == "look"
+
+
+def test_queue_classification_comes_from_the_board_not_the_title():
+    import build_page_board as BPB
+    parts = [("2. H1 and meta", '<span id="choose-h1"></span>'), ("9z. Anything", "plain"),
+             ("8b. Internal links in and out", "x")]
+    london = json.loads((ROOT / "data/boards" / f"{LONDON}.json").read_text())
+    facts = {"hits": [], "qhits": [], "routes": {"built": None, "mapped": set()}, "rules": [],
+             "refused": False, "links": {"outs": [], "rows": [], "sources": [], "orphan": True,
+                                          "route": "x", "chrome": 0},
+             "auth": {"blocked": [], "proposed": []}, "d": PB.distribution(london), "kit_n": 0, "mt": 0}
+    labels = {"h1": {"anchor": "choose-h1"}}
+    cards = {c["id"]: c for c in BPB.queue_meta(parts, london, LONDON, [], labels, facts)}
+    assert cards["2"]["tab"] == "decide" and cards["2"]["picks"] == ["h1"] and cards["2"]["open"]
+    assert cards["8b"]["tab"] == "look" and "orphan" in cards["8b"]["summary"]
+    assert cards["9z"]["tab"] == "ref"
+
+
+def test_queue_keeps_every_block_title_once_and_every_input(london_full):
+    import build_page_board as BPB
+    import image_rules as IR
+    london, html = london_full
+    flat = BPB.render(london, json.loads((ROOT / "data/bsuk-ontology.json").read_text()), LEDGER_EMPTY,
+                      live={}, thumbs={}, slug=LONDON, images=IR.board_images(london), layout="flat")
+    titles = _re.findall(r'<script type="text/markdown" data-title="([^"]*)"', flat)
+    assert len(titles) >= 25
+    for t in titles:
+        assert html.count(f'data-title="{t}"') == 1, t
+    names = lambda h: sorted(_re.findall(r'<(?:input|textarea)[^>]* name="([^"]+)"', h))
+    assert names(html) == names(flat)
+    assert {n for n in names(html) if n.startswith("pick-")} == {n for n in names(flat) if n.startswith("pick-")}
+
+
+def test_queue_never_reaches_a_pre_rule_board():
+    import build_page_board as BPB
+    b = _approved(MIN_BOARD)
+    q = BPB.render(b, ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
+    assert q == BPB.render(b, ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x", layout="flat")
+    for marker in ('role="tablist"', "data-tab=", "q-bar", "board-tab:", "reveal("):
+        assert marker not in q, marker
+
+
+_QUEUE_RUN = r"""
+let chromium;
+try { ({ chromium } = require('playwright')); } catch (e) { console.log('SKIP no playwright'); process.exit(0); }
+(async () => {
+  let browser;
+  try { browser = await chromium.launch(); } catch (e) { console.log('SKIP no browser'); process.exit(0); }
+  const base = process.argv[2], out = {};
+  const clearAndApprove = () => {
+    document.querySelectorAll('input[type=radio]:not([disabled])').forEach(i => { i.checked = false; });
+    document.getElementById('approve-btn').click();
+  };
+  const read = () => {
+    const st = document.getElementById('approve-status');
+    return { items: [...st.querySelectorAll('ul.missing li')].map(l => l.textContent),
+             links: st.querySelectorAll('ul.missing li a').length, text: st.textContent,
+             tab: document.querySelector('[role=tab][aria-selected=true]').getAttribute('data-tab'),
+             active: document.activeElement && document.activeElement.name };
+  };
+  // 1. No runtime: start on Reference (#ref), refuse, then jump to an infographic pick.
+  let page = await browser.newPage();
+  await page.goto(base + '/board.html#ref');
+  out.start = await page.evaluate(() => ({ tab: document.querySelector('[role=tab][aria-selected=true]').getAttribute('data-tab'),
+    cards: [...document.querySelectorAll('[role=tabpanel]')].map(p => p.querySelectorAll('details.card').length) }));
+  await page.evaluate(clearAndApprove);
+  out.refused = await page.evaluate(read);
+  await page.evaluate(() => { document.getElementById('tab-ref').click(); document.getElementById('block-7c').open = false; });
+  await page.evaluate(() => [...document.querySelectorAll('#approve-status ul.missing li a')]
+    .find(a => a.textContent.includes('(ig:breed-split)')).click());
+  await page.waitForTimeout(300);
+  out.jumped = await page.evaluate(() => ({ tab: document.querySelector('[role=tab][aria-selected=true]').getAttribute('data-tab'),
+    open: document.getElementById('block-7c').open, active: document.activeElement && document.activeElement.name }));
+  await page.evaluate(() => { const i = document.querySelector('input[name="pick-ig:breed-split"]'); i.checked = true;
+    i.dispatchEvent(new Event('change', { bubbles: true })); });
+  out.crossed = await page.evaluate(() => [...document.querySelectorAll('#approve-status ul.missing li.done')].map(l => l.textContent));
+  // 2. The database answers 3 s after load (this board is large); the click lands first and the list survives.
+  page = await browser.newPage();
+  await page.addInitScript(() => {
+    const doc = { get: () => Promise.resolve({ exists: true, data: () => ({ record_hash: 'old' }) }), set: () => Promise.resolve() };
+    window.claude = { use: () => new Promise(r => setTimeout(() => r({ doc: () => doc }), 3000)) };
+  });
+  await page.goto(base + '/board.html');
+  out.connecting = await page.evaluate(() => document.getElementById('approve-status').textContent);
+  await page.evaluate(clearAndApprove);
+  await page.waitForTimeout(4000);
+  out.raced = await page.evaluate(read);
+  console.log('RESULT ' + JSON.stringify(out));
+  await browser.close();
+})();
+"""
+
+
+def test_queue_refusal_jumps_across_tabs_in_a_browser(tmp_path, london_full):
+    import functools, http.server, os, shutil, subprocess, threading
+    if shutil.which("node") is None:
+        pytest.skip("node not installed")
+    from test_answer_board import _node_path
+    env = dict(os.environ, NODE_PATH=_node_path())
+    if subprocess.run(["node", "-e", "require('playwright')"], cwd=ROOT, env=env,
+                      capture_output=True).returncode != 0:
+        pytest.skip("playwright is not installed (node_modules here or in the main checkout)")
+    london, html = london_full
+    (tmp_path / "board.html").write_text(html, encoding="utf-8")
+    script = tmp_path / "run.cjs"
+    script.write_text(_QUEUE_RUN, encoding="utf-8")
+    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(tmp_path))
+    handler.log_message = lambda *a, **k: None
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        r = subprocess.run(["node", str(script), f"http://127.0.0.1:{server.server_address[1]}"],
+                           cwd=ROOT, env=env, capture_output=True, text=True, timeout=180)
+    finally:
+        server.shutdown()
+    if r.stdout.startswith("SKIP"):
+        pytest.skip(r.stdout.strip())
+    assert r.returncode == 0, r.stderr
+    res = json.loads(r.stdout.split("RESULT ", 1)[1])
+    tabs = _tabs(html)
+    assert res["start"]["tab"] == "ref"
+    assert res["start"]["cards"] == [sum(v == k for v in tabs.values()) for k in ("decide", "look", "ref")]
+    n_open = len(_signature_labels(html))
+    assert len(res["refused"]["items"]) == n_open and res["refused"]["links"] == n_open
+    assert res["refused"]["items"][0] == "Block 2 H1 and meta — H1"
+    assert res["refused"]["tab"] == "decide" and res["refused"]["active"] == "h1"
+    assert res["jumped"] == {"tab": "decide", "open": True, "active": "pick-ig:breed-split"}
+    assert len(res["crossed"]) == 1 and "ig:breed-split" in res["crossed"][0]
+    assert res["connecting"] == "Connecting…"
+    assert len(res["raced"]["items"]) == n_open
+    assert "Ready." not in res["raced"]["text"] and "earlier version" not in res["raced"]["text"]

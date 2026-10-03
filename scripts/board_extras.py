@@ -576,21 +576,37 @@ def links_in(route, dist):
     return rows, chrome
 
 
-def links_block(board, root=ROOT, dist=None):
+def links_data(board, root=ROOT, dist=None):
+    """Block 8b's numbers, read once: the planned links out, the built pages' body links in,
+    and whether the page is an orphan risk (fewer than ORPHAN_FLOOR pages link here from
+    body copy). `rows` is None when dist/ is not built — nothing was measured, so no orphan
+    finding is raised either. The board's decision-queue layout reads `orphan` to put 8b
+    under "Look before approving"; links_block renders the same dict."""
     dist = pathlib.Path(dist) if dist is not None else pathlib.Path(root) / "dist"
     route = route_of(board, root)
     outs = links_out(board)
+    if not dist.is_dir():
+        return {"route": route, "outs": outs, "rows": None, "sources": [], "chrome": 0,
+                "orphan": False}
+    rows, chrome = links_in(route, dist)
+    sources = sorted({r["source"] for r in rows})
+    return {"route": route, "outs": outs, "rows": rows, "sources": sources, "chrome": chrome,
+            "orphan": len(sources) < ORPHAN_FLOOR}
+
+
+def links_block(board, root=ROOT, dist=None, data=None):
+    d = data if data is not None else links_data(board, root, dist)
+    route, outs = d["route"], d["outs"]
     lines = [f"**Out — {len(outs)} internal link{'s' if len(outs) != 1 else ''} this board plans** "
              "(block 3's link tables, from the record)", ""]
     lines.append(md_table(["Target", "Anchor", "Section"],
                           [[f"`{md_cell(o['href'])}`", md_cell(o["anchor"]), md_cell(o["section"])]
                            for o in outs]) if outs else "_No internal links planned._")
     lines += ["", f"**In — built pages that link to `/{esc(route)}/`**", ""]
-    if not dist.is_dir():
+    if d["rows"] is None:
         lines.append("NOT FETCHED — dist/ not built (npm run build)")
         return "\n".join(lines)
-    rows, chrome = links_in(route, dist)
-    sources = sorted({r["source"] for r in rows})
+    rows, chrome, sources = d["rows"], d["chrome"], d["sources"]
     lines.append(md_table(["Source page", "Anchor"],
                           [[f"`{md_cell(r['source'])}`", md_cell(r["anchor"]) or "_no text_"]
                            for r in rows]) if rows else "_No built page links here from its body._")
@@ -598,7 +614,7 @@ def links_block(board, root=ROOT, dist=None):
                   f"page{'s' if len(sources) != 1 else ''}' `<main>` (read from `dist/` with an HTML "
                   f"parser) · {chrome} more page{'s' if chrome != 1 else ''} link it only from the "
                   "site header or footer, which is not counted."]
-    if len(sources) < ORPHAN_FLOOR:
+    if d["orphan"]:
         lines.append(f"\n**Orphan risk:** {len(sources)} page{'s' if len(sources) != 1 else ''} "
                      f"link here from body copy — under {ORPHAN_FLOOR}. Plan links in from the hub "
                      "and sibling pages.")
