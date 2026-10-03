@@ -11,16 +11,25 @@ neighbourhood keywords. This block reads only what is already on disk:
     serp_google.response.json, competitors.json), whose URLs and titles show which areas the
     ranking pages name (Barnet and Camden Town via staffie-owners listing URLs);
   * the page's keyword lists, keyword-universe.json and keyword-variants.json, in the
-    docs/research/ folder the board's meta.sources names. A phrase found there but not in the
-    keyword data is written NOT_IN_DATA.
+    docs/research/ folder the board's meta.sources names. A phrase whose recorded source says
+    it is how a ranking page words the query (organic_title, organic_snippet, competitor_h2) is
+    a COMPETITOR HEADING, listed apart from the searches with its source and its own recorded
+    volume barrier, read verbatim from keyword-universe.json. Any other list phrase not in the
+    keyword data is written NOT_IN_DATA (or its recorded barrier).
+
+The fetch date is read from the sidecar neighbourhood_keywords.request.json (how the call was
+made); without it the date is NOT FETCHED.
 
 Areas come from a fixed gazetteer (BOROUGHS, CITY, COMPASS, DISTRICTS) pinned by
 tests/py/test_neighbourhoods.py. It holds names only, never volumes. The regex filter that
 fetched the keyword data let in false positives, so:
 
-  * "barking" and "westminster" count only as a place: after in/near/around/from/to, in a
-    phrase that also says for sale / puppies / pups ("staffy barking" is a dog barking,
-    "staffordshire bull terrier westminster 2022" is the dog show);
+  * "barking" and "westminster" count only as a place: straight after for sale / puppies /
+    pups or a location preposition (in, near, around, from, to). A dog word straight before
+    them ("staffy barking", "staffordshire bull terrier westminster 2022"), "how to stop" or
+    "#sounds" is noise;
+  * bare "richmond" and "kingston" count only with "london" or "surrey" in the phrase (the
+    "upon Thames" forms are the borough names and always count);
   * OUTSIDE names a place that is not London (Sutton in Ashfield, Brentwood);
   * only Staffy phrases count (is_staffy): bull terrier, English bull terrier, American
     Staffordshire and pit bull phrases are other breeds.
@@ -44,14 +53,19 @@ from term_density import md_table  # noqa: E402
 
 ROOT = KM.ROOT
 RESPONSE = "neighbourhood_keywords.response.json"
+REQUEST = "neighbourhood_keywords.request.json"
 SCANNED_RAW = ("serp_google.json", "serp_google.response.json", "competitors.json")
-SCANNED_RESEARCH = ("keyword-universe.json", "keyword-variants.json")
-KEYWORD_FETCHED = "2026-10-03"
-KEYWORD_SOURCE = f"keyword data (DataForSEO keyword_ideas, {KEYWORD_FETCHED})"
+UNIVERSE, VARIANTS = "keyword-universe.json", "keyword-variants.json"
+SCANNED_RESEARCH = (UNIVERSE, VARIANTS)
+KEYWORD_SOURCE = "keyword data (DataForSEO keyword_ideas)"
 NOT_IN_DATA = "NOT FETCHED — not in keyword data"
+NO_SIDECAR = f"NOT FETCHED — no {REQUEST} records the fetch"
 COMPASS_BOROUGH = "— (compass area)"
 H3_MIN, FAQ_MIN = 50, 10
 LONDON_WIDE_TOP = 6
+# A list phrase whose every recorded source is ranking-page text is a competitor heading.
+HEADING_SOURCES = frozenset({"organic_title", "organic_snippet", "competitor_h2"})
+HEADING_MARK = "how the ranking pages word the query"
 
 BOROUGHS = (
     "Barking and Dagenham", "Barnet", "Bexley", "Brent", "Bromley", "Camden", "Croydon",
@@ -73,9 +87,12 @@ DISTRICTS = {
     "Stratford": "Newham", "Woolwich": "Greenwich", "Catford": "Lewisham",
     "Edmonton": "Enfield", "Dagenham": "Barking and Dagenham",
     "Barking": "Barking and Dagenham", "Southall": "Ealing", "Paddington": "Westminster",
+    "Richmond": "Richmond upon Thames", "Kingston": "Kingston upon Thames",
 }
 # Names that are also ordinary words or events; they count only as a place.
 AMBIGUOUS = frozenset({"barking", "westminster"})
+# Names shared with places outside London; they count only beside "london" or "surrey".
+NEEDS_CONTEXT = frozenset({"richmond", "kingston"})
 OUTSIDE = {
     "sutton in ashfield": "Sutton in Ashfield is in Nottinghamshire",
     "sutton coldfield": "Sutton Coldfield is in the West Midlands",
@@ -84,6 +101,8 @@ OUTSIDE = {
 REASONS = {
     "barking": "“barking” here is a dog barking, not the town of Barking",
     "westminster": "“westminster” here is the Westminster dog show, not the borough",
+    "richmond": "“richmond” without London or Surrey may be Richmond, North Yorkshire",
+    "kingston": "“kingston” without London or Surrey may be Kingston upon Hull",
     "breed": "another breed, not a Staffy term (bull terrier, English bull terrier, "
              "American Staffordshire, pit bull)",
 }
@@ -92,8 +111,10 @@ STAFFY = re.compile(r"\b(staffys?|staffie|staffies|staffordshire bull terriers?"
                     r"|staffordshire pupp\w*|staffordshire dogs?|staff pupp\w*|staff pups)\b")
 OTHER_BREED = re.compile(r"\b(american|english bull terriers?|miniature bull terriers?"
                          r"|mini bull terriers?|mini english bull|pit ?bulls?|pitbulls?)\b")
-PLACE_PREP = re.compile(r"\b(in|near|around|from|to)\s+$")
-SALE = re.compile(r"\b(for sale|pupp\w*|pups)\b")
+# An ambiguous name is a place straight after these; a dog word before it is noise.
+PLACE_BEFORE = re.compile(r"\b(in|near|around|from|to|for sale|puppies|pups)\s+$")
+NOISE = re.compile(r"\b(how to stop|sounds)\b")
+CONTEXT = re.compile(r"\b(london|surrey)\b")
 
 
 def _gazetteer():
@@ -121,6 +142,14 @@ def _blank_outside(n):
     return n
 
 
+def _is_place(name, n, start):
+    if name in AMBIGUOUS:
+        return not NOISE.search(n) and bool(PLACE_BEFORE.search(n[:start]))
+    if name in NEEDS_CONTEXT:
+        return bool(CONTEXT.search(n))
+    return True
+
+
 def _scan(text, strict=True):
     """[(name, start)] in text order, longest names first, no overlaps."""
     n = _blank_outside(_norm(text))
@@ -130,7 +159,7 @@ def _scan(text, strict=True):
             s, e = m.span()
             if any(s < te and ts < e for ts, te in taken):
                 continue
-            if strict and name in AMBIGUOUS and not (PLACE_PREP.search(n[:s]) and SALE.search(n)):
+            if strict and not _is_place(name, n, s):
                 continue
             taken.append((s, e))
             hits.append((name, s))
@@ -159,7 +188,7 @@ def exclusion_reason(text):
             return why
     loose = {name for name, _ in _scan(text, strict=False)}
     strict = {name for name, _ in _scan(text)}
-    for word in ("westminster", "barking"):
+    for word in ("westminster", "barking", "richmond", "kingston"):
         if word in loose and word not in strict:
             return REASONS[word]
     if loose and (STAFFY.search(n) is None or OTHER_BREED.search(n)):
@@ -187,38 +216,78 @@ def _load(path):
         return None
 
 
+def _raw_dir(board, root):
+    return pathlib.Path(root) / "data/queries/raw" / board["meta"]["slug"]
+
+
 def _research_dir(board, root):
     for s in board.get("meta", {}).get("sources", []):
         p = str(s.get("path", ""))
         if p.startswith("docs/research/"):
-            return root / pathlib.PurePosixPath(p).parent
-    return root / "docs/research" / board["meta"]["slug"]
+            return pathlib.Path(root) / pathlib.PurePosixPath(p).parent
+    return pathlib.Path(root) / "docs/research" / board["meta"]["slug"]
 
 
-def keyword_rows(board, root=ROOT):
-    """The response file's items as [(keyword, volume|None)], or None when it is not held."""
-    doc = _load(root / "data/queries/raw" / board["meta"]["slug"] / RESPONSE)
+def keyword_data(board, root=ROOT):
+    """{rows: [(keyword, volume|None)], total_count, fetched}, or None when no response is held."""
+    doc = _load(_raw_dir(board, root) / RESPONSE)
     if not isinstance(doc, dict) or not isinstance(doc.get("items"), list):
         return None
-    out = []
+    rows = []
     for it in doc["items"]:
         kw = str(it.get("keyword", "")).strip().lower()
         vol = (it.get("keyword_info") or {}).get("search_volume")
         if kw:
-            out.append((kw, vol if isinstance(vol, int) else None))
-    return out
+            rows.append((kw, vol if isinstance(vol, int) else None))
+    req = _load(_raw_dir(board, root) / REQUEST)
+    fetched = req.get("fetched") if isinstance(req, dict) and req.get("fetched") else NO_SIDECAR
+    total = doc.get("total_count") if isinstance(doc.get("total_count"), int) else None
+    return {"rows": rows, "total_count": total, "fetched": fetched}
 
 
-def _strings(node, key=None):
-    """Every (key, string) in a JSON tree."""
+def keyword_rows(board, root=ROOT):
+    """The response file's items as [(keyword, volume|None)], or None when it is not held."""
+    kd = keyword_data(board, root)
+    return None if kd is None else kd["rows"]
+
+
+def _strings(node):
+    """Every string in a JSON tree."""
     if isinstance(node, dict):
-        for k, v in node.items():
-            yield from _strings(v, k)
+        for v in node.values():
+            yield from _strings(v)
     elif isinstance(node, list):
         for v in node:
-            yield from _strings(v, key)
+            yield from _strings(v)
     elif isinstance(node, str):
-        yield key, node
+        yield node
+
+
+def _entries(node):
+    """Every dict in a JSON tree that carries a "keyword" or "term" string."""
+    if isinstance(node, dict):
+        if isinstance(node.get("keyword"), str) or isinstance(node.get("term"), str):
+            yield node
+        for v in node.values():
+            yield from _entries(v)
+    elif isinstance(node, list):
+        for v in node:
+            yield from _entries(v)
+
+
+def is_heading(entry):
+    """True when the entry's recorded source says it is how a ranking page words the query."""
+    srcs = entry.get("sources")
+    if isinstance(srcs, list) and srcs:
+        return set(srcs) <= HEADING_SOURCES
+    src = str(entry.get("source", ""))
+    return HEADING_MARK in src or any(h in src for h in HEADING_SOURCES)
+
+
+def _entry_source(fname, entry):
+    if isinstance(entry.get("sources"), list):
+        return f"{fname}: {', '.join(entry['sources'])}"
+    return f"{fname}: {entry.get('source', 'no source recorded')}"
 
 
 def areas(board, root=ROOT):
@@ -227,15 +296,23 @@ def areas(board, root=ROOT):
 
     def row(area, borough):
         return rows.setdefault(area, {"area": area, "borough": borough, "keywords": [],
-                                      "total_volume": None, "seen_in": []})
+                                      "headings": [], "total_volume": None, "seen_in": []})
 
     def seen(r, src):
         if src not in r["seen_in"]:
             r["seen_in"].append(src)
 
     def add_kw(r, kw, vol):
-        if all(k["kw"] != kw for k in r["keywords"]):
+        if all(_norm(k["kw"]) != _norm(kw) for k in r["keywords"]):
             r["keywords"].append({"kw": kw, "volume": vol})
+
+    def add_heading(r, text, source, vol):
+        for h in r["headings"]:
+            if h["heading"] == text:
+                if source not in h["sources"]:
+                    h["sources"].append(source)
+                return
+        r["headings"].append({"heading": text, "sources": [source], "volume": vol})
 
     kws = keyword_rows(board, root) or []
     volume_of = {_norm(k): v for k, v in kws}
@@ -247,31 +324,48 @@ def areas(board, root=ROOT):
             add_kw(r, kw, vol)
             seen(r, KEYWORD_SOURCE)
 
-    raw = root / "data/queries/raw" / board["meta"]["slug"]
-    research = _research_dir(board, root)
-    files = [(raw / f, False) for f in SCANNED_RAW] + [(research / f, True) for f in SCANNED_RESEARCH]
-    for path, is_list in files:
-        doc = _load(path)
+    raw, research = _raw_dir(board, root), _research_dir(board, root)
+    # The universe file records each phrase's own volume barrier; it is read, never reworded.
+    universe = _load(research / UNIVERSE)
+    barrier_of = {_norm(e["keyword"]): e["volume"] for e in _entries(universe or {})
+                  if isinstance(e.get("keyword"), str) and isinstance(e.get("volume"), str)}
+
+    def volume_for(phrase, fname):
+        if phrase in volume_of:
+            return volume_of[phrase]
+        if phrase in barrier_of:
+            return barrier_of[phrase]
+        return f"NOT FETCHED — {fname} records no volume for this phrase"
+
+    for path in [raw / f for f in SCANNED_RAW] + [research / f for f in SCANNED_RESEARCH]:
+        doc = universe if path.name == UNIVERSE and path.parent == research else _load(path)
         if doc is None:
             continue
         rel = path.relative_to(root).as_posix()
-        for key, s in _strings(doc):
+        for s in _strings(doc):
             if s.startswith(("http://", "https://")):
                 u = urlsplit(s)
                 text = u.path.replace("-", " ").replace("_", " ").replace("/", " ")
-                if not is_staffy(text):
-                    continue
-                for area, borough in lookup(text):
-                    seen(row(area, borough), f"{u.scheme}://{u.netloc}{u.path}")
+                if is_staffy(text):
+                    for area, borough in lookup(text):
+                        seen(row(area, borough), f"{u.scheme}://{u.netloc}{u.path}")
+            elif is_staffy(s):
+                for area, borough in lookup(s):
+                    seen(row(area, borough), rel)
+        if path.parent != research:
+            continue
+        for e in _entries(doc):
+            text = e.get("keyword") if isinstance(e.get("keyword"), str) else e["term"]
+            if not is_staffy(text):
                 continue
-            if not is_staffy(s):
-                continue
-            for area, borough in lookup(s):
+            phrase = _norm(text)  # "barnet, london" and "barnet london" are one phrase
+            for area, borough in lookup(text):
                 r = row(area, borough)
-                seen(r, rel)
-                if is_list and key in ("keyword", "term", "query"):
-                    phrase = _norm(s)  # "barnet, london" and "barnet london" are one phrase
-                    add_kw(r, phrase, volume_of[phrase] if phrase in volume_of else NOT_IN_DATA)
+                if is_heading(e):
+                    add_heading(r, phrase, _entry_source(path.name, e), volume_for(phrase, path.name))
+                else:
+                    add_kw(r, phrase, volume_for(phrase, path.name)
+                           if phrase in volume_of or phrase in barrier_of else NOT_IN_DATA)
 
     for r in rows.values():
         ints = [k["volume"] for k in r["keywords"] if isinstance(k["volume"], int)]
@@ -302,17 +396,25 @@ def _vol_cell(r):
         return str(r["total_volume"])
     if any(k["volume"] is None for k in r["keywords"]):
         return "none returned"
-    return NOT_IN_DATA
+    barriers = [k["volume"] for k in r["keywords"] if isinstance(k["volume"], str)]
+    return barriers[0] if barriers else NOT_IN_DATA
+
+
+def _vol_text(v):
+    return str(v) if isinstance(v, int) else "no volume" if v is None else v
 
 
 def _kw_cell(r):
     if not r["keywords"]:
-        return "— (area named by a ranking page, no keyword)"
-    parts = []
-    for k in r["keywords"]:
-        v = k["volume"]
-        parts.append(f"{k['kw']} ({v if isinstance(v, int) else 'no volume' if v is None else v})")
-    return "; ".join(parts)
+        return "—"
+    return "; ".join(f"{k['kw']} ({_vol_text(k['volume'])})" for k in r["keywords"])
+
+
+def _heading_cell(r):
+    if not r["headings"]:
+        return "—"
+    return "; ".join(f"“{h['heading']}” — source: {' + '.join(h['sources'])} — volume: "
+                     f"{_vol_text(h['volume'])}" for h in r["headings"])
 
 
 def _seen_cell(r):
@@ -333,41 +435,8 @@ def _names(rows):
     return ", ".join(names[:-1]) + f" and {names[-1]}" if len(names) > 1 else "".join(names)
 
 
-def block(board, root=ROOT):
-    kws = keyword_rows(board, root)
-    rows = areas(board, root)
-    lines = ["Which parts of the city this page could name, and the Staffy searches that name "
-             "them. Areas come from a fixed list of the 32 London boroughs, the City, the compass "
-             "areas (south east London and the like) and common towns mapped to their borough."]
-    if kws is None:
-        lines.append(f"Volumes: NOT FETCHED — no `{RESPONSE}` is held for this page, so every "
-                     f"area below carries `{NOT_IN_DATA}`.")
-    else:
-        lines.append(f"Volumes are UK monthly Google searches from DataForSEO keyword data "
-                     f"(`keyword_ideas`, UK, en), fetched {KEYWORD_FETCHED}: {len(kws)} rows held. "
-                     f"An area seen only on a ranking page or in the keyword lists carries "
-                     f"`{NOT_IN_DATA}`.")
-    lines.append("")
-
-    lines.append("**London as a whole** — the top London-wide Staffy terms, for comparison:")
-    lines.append("")
-    wide = london_wide(board, root)
-    if wide:
-        lines.append(md_table(["Keyword", "Monthly searches"], [[k, v] for k, v in wide]))
-    else:
-        lines.append("_NOT FETCHED — no London-wide Staffy term with a volume in the keyword data._")
-    lines.append("")
-
-    body = [[r["area"], r["borough"], _kw_cell(r), _vol_cell(r), _seen_cell(r),
-             USE_LABEL[use_of(r["total_volume"])]] for r in rows]
-    lines.append(md_table(["Area", "Borough", "Keywords found", "Monthly searches", "Where seen",
-                           "Suggested use"], body) if body else "_No London area found in the data._")
-    lines.append("")
-    lines.append(f"**Suggested use rule:** ≥ {H3_MIN}/mo → its own H3; {FAQ_MIN}–{H3_MIN - 1} → named "
-                 f"in the delivery section copy and one FAQ answer; below {FAQ_MIN} or no volume → "
-                 f"mention only in a “We deliver across London, including …” line, if at all.")
-    lines.append("")
-
+def target_line(rows, wide):
+    """The block's one "**Target:**" line, from the use rule and the London-wide terms."""
     h3 = [r for r in rows if use_of(r["total_volume"]) == "h3"]
     faq = [r for r in rows if use_of(r["total_volume"]) == "faq"]
     rest = [r for r in rows if use_of(r["total_volume"]) == "line"]
@@ -389,7 +458,50 @@ def block(board, root=ROOT):
                  + "), so the page targets London as a whole and names areas only as delivery reach.")
     else:
         t.append("London-wide volume is NOT FETCHED, so the target rests on area presence only.")
-    lines.append(" ".join(t))
+    return " ".join(t)
+
+
+def block(board, root=ROOT):
+    kd = keyword_data(board, root)
+    rows = areas(board, root)
+    lines = ["Which parts of the city this page could name, and the Staffy searches that name "
+             "them. Areas come from a fixed list of the 32 London boroughs, the City, the compass "
+             "areas (south east London and the like) and common towns mapped to their borough."]
+    if kd is None:
+        lines.append(f"Volumes: NOT FETCHED — no `{RESPONSE}` is held for this page, so every "
+                     f"area below carries `{NOT_IN_DATA}`.")
+    else:
+        total = kd["total_count"] if kd["total_count"] is not None else "an unrecorded number of"
+        lines.append(f"Volumes are UK monthly Google searches from DataForSEO keyword data "
+                     f"(`keyword_ideas`, UK, en), fetched {kd['fetched']}: {len(kd['rows'])} of "
+                     f"{total} rows held (DataForSEO total_count). An area seen only on a ranking "
+                     f"page or in the keyword lists carries `{NOT_IN_DATA}` or the barrier its "
+                     f"list records.")
+    lines.append("**Competitor headings** are phrases the keyword lists record as how a ranking "
+                 "page words the query (titles, snippets, H2s). They are not searches, so they "
+                 "sit in their own column with their source and their own recorded volume.")
+    lines.append("")
+
+    lines.append("**London as a whole** — the top London-wide Staffy terms, for comparison:")
+    lines.append("")
+    wide = london_wide(board, root)
+    if wide:
+        lines.append(md_table(["Keyword", "Monthly searches"], [[k, v] for k, v in wide]))
+    else:
+        lines.append("_NOT FETCHED — no London-wide Staffy term with a volume in the keyword data._")
+    lines.append("")
+
+    body = [[r["area"], r["borough"], _kw_cell(r), _heading_cell(r), _vol_cell(r), _seen_cell(r),
+             USE_LABEL[use_of(r["total_volume"])]] for r in rows]
+    lines.append(md_table(["Area", "Borough", "Keywords found", "Competitor headings",
+                           "Monthly searches", "Where seen", "Suggested use"], body)
+                 if body else "_No London area found in the data._")
+    lines.append("")
+    lines.append(f"**Suggested use rule:** ≥ {H3_MIN}/mo → its own H3; {FAQ_MIN}–{H3_MIN - 1} → named "
+                 f"in the delivery section copy and one FAQ answer; below {FAQ_MIN} or no volume → "
+                 f"mention only in a “We deliver across London, including …” line, if at all.")
+    lines.append("")
+    lines.append(target_line(rows, wide))
     lines.append("")
 
     dropped = not_shown(board, root)
@@ -413,7 +525,16 @@ def main(argv=None):
     if not path.is_file():
         print(f"{usage} — no board at {path.relative_to(ROOT)}", file=sys.stderr)
         return 2
-    print(block(json.loads(path.read_text(encoding="utf-8"))))
+    try:
+        board = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(board, dict) or not isinstance(board.get("meta"), dict) \
+                or not isinstance(board["meta"].get("slug"), str):
+            raise ValueError("board has no meta.slug")
+        out = block(board)
+    except (ValueError, KeyError, TypeError, AttributeError) as e:
+        print(f"{usage} — {path.relative_to(ROOT)} is not a readable board: {e}", file=sys.stderr)
+        return 2
+    print(out)
     return 0
 
 

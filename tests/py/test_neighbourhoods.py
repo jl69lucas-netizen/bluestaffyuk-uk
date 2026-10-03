@@ -9,6 +9,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
 import neighbourhoods as NB  # noqa: E402
 
 SLUG = "blue-staffy-puppies-x"
+UNIVERSE_BARRIER = ("NOT FETCHED — the DataForSEO Google Ads search-volume call (UK, en, 2026-09-30) "
+                    "was sent this keyword but its response listed only the first 10 of 30")
 
 
 def _board(slug=SLUG, research="docs/research/x-page-run/keyword-variants.json"):
@@ -42,6 +44,9 @@ RESPONSE_ROWS = [
     ("staffy barking", 50),
     ("staffordshire bull terrier barking", 50),
     ("staffy puppies for sale in barking", None),
+    ("staffies for sale barking", None),
+    ("staffy puppy barking", None),
+    ("staffy barking #sounds", 10),
     ("staffordshire bull terrier westminster 2022", 10),
     ("staffy for sale sutton in ashfield", None),
     ("english bull terrier for sale london", 50),
@@ -63,10 +68,17 @@ def root(tmp_path):
     _write(tmp_path, f"{raw}/competitors.json", {"pages": [
         {"url": "https://www.staffie-owners.co.uk/staffies-for-sale/uxbridge-london?colour=blue",
          "metrics": {"title": "Blue Staffordshire Bull Terrier puppies for sale in Uxbridge, London"}}]})
-    _write(tmp_path, "docs/research/x-page-run/keyword-variants.json", {"buckets": {"related": [
-        {"term": "staffy puppies peckham"}, {"term": "staffy puppies, peckham"}]}})
+    _write(tmp_path, f"{raw}/neighbourhood_keywords.request.json", {"fetched": "2026-10-03"})
+    _write(tmp_path, "docs/research/x-page-run/keyword-variants.json", {"buckets": {
+        "related": [{"term": "staffy puppies peckham", "sources": ["serp_google_related"]},
+                    {"term": "staffy puppies, peckham", "sources": ["serp_google_related"]}],
+        "similar": [{"term": "staffie puppies for sale in barnet, london", "sources": ["organic_title"]},
+                    {"term": "male (dog) blue staffie puppies for sale in southall, london",
+                     "sources": ["competitor_h2"]}]}})
     _write(tmp_path, "docs/research/x-page-run/keyword-universe.json", {"universe": [
-        {"keyword": "blue staffy puppies london", "volume": "NOT FETCHED — x"}]})
+        {"keyword": "blue staffy puppies london", "volume": "NOT FETCHED — x"},
+        {"keyword": "staffie puppies for sale in barnet london", "volume": UNIVERSE_BARRIER,
+         "source": "keyword variants (similar: how the ranking pages word the query)"}]})
     return tmp_path
 
 
@@ -108,7 +120,14 @@ def test_districts_map_to_their_borough(district, borough):
 
 
 def test_barking_counts_only_as_a_place():
-    assert NB.lookup("staffy puppies for sale in barking") == [("Barking", "Barking and Dagenham")]
+    place = [("Barking", "Barking and Dagenham")]
+    for kw in ("staffy puppies for sale in barking", "staffy puppies for sale barking",
+               "staffies for sale barking", "staffy puppies barking", "staffy pups barking",
+               "staffy puppies near barking"):
+        assert NB.lookup(kw) == place, kw
+    for kw in ("staffy puppy barking", "blue staffy barking", "staffy barking #sounds",
+               "staffy puppies for sale barking sounds", "how to stop staffy puppies barking"):
+        assert NB.lookup(kw) == [], kw
     assert NB.lookup("staffy barking") == []
     assert NB.lookup("staffordshire bull terrier barking") == []
     assert NB.lookup("how to stop staffy barking") == []
@@ -147,8 +166,8 @@ def test_areas_take_volumes_from_the_response_file_only(root):
 
 def test_excluded_phrases_never_make_a_row(root):
     rows = _by_area(NB.areas(_board(), root))
-    assert set(rows["Barking"]["keywords"][i]["kw"] for i in range(len(rows["Barking"]["keywords"]))) == {
-        "staffy puppies for sale in barking"}
+    assert {k["kw"] for k in rows["Barking"]["keywords"]} == {
+        "staffy puppies for sale in barking", "staffies for sale barking"}
     assert "Westminster" not in rows
     all_kws = {k["kw"] for r in rows.values() for k in r["keywords"]}
     assert "bull terrier puppies for sale croydon" not in all_kws
@@ -159,6 +178,17 @@ def test_serp_and_competitor_areas_are_seen_with_no_volume(root):
     rows = _by_area(NB.areas(_board(), root))
     barnet = rows["Barnet"]
     assert barnet["keywords"] == [] and barnet["total_volume"] is None
+    # The ranking pages' wording is a competitor heading, never a keyword found, and it keeps
+    # its own recorded barrier, merged across both list files.
+    assert barnet["headings"] == [{
+        "heading": "staffie puppies for sale in barnet london",
+        "sources": ["keyword-universe.json: keyword variants (similar: how the ranking pages word the query)",
+                    "keyword-variants.json: organic_title"],
+        "volume": UNIVERSE_BARRIER}]
+    southall = rows["Southall"]
+    assert southall["keywords"] == []
+    assert southall["headings"][0]["sources"] == ["keyword-variants.json: competitor_h2"]
+    assert southall["headings"][0]["volume"].startswith("NOT FETCHED — keyword-variants.json")
     assert "https://www.staffie-owners.co.uk/staffies-for-sale/barnet-london" in barnet["seen_in"]
     camden_town = rows["Camden Town"]
     assert camden_town["borough"] == "Camden"
@@ -174,6 +204,43 @@ def test_serp_and_competitor_areas_are_seen_with_no_volume(root):
 def test_keyword_data_is_named_as_a_source(root):
     rows = _by_area(NB.areas(_board(), root))
     assert NB.KEYWORD_SOURCE in rows["Enfield"]["seen_in"]
+
+
+def test_fetch_date_comes_from_the_sidecar(root):
+    (root / f"data/queries/raw/{SLUG}/neighbourhood_keywords.request.json").unlink()
+    assert NB.keyword_data(_board(), root)["fetched"] == NB.NO_SIDECAR
+    assert "fetched NOT FETCHED" in NB.block(_board(), root)
+
+
+@pytest.mark.parametrize("kw,hit", [
+    ("staffy puppies for sale richmond london", [("Richmond", "Richmond upon Thames")]),
+    ("staffy puppies kingston surrey", [("Kingston", "Kingston upon Thames")]),
+    ("staffy puppies kingston upon thames", [("Kingston upon Thames", "Kingston upon Thames")]),
+    ("staffy puppies richmond upon thames", [("Richmond upon Thames", "Richmond upon Thames")]),
+    ("staffy puppies for sale richmond", []),
+    ("staffy puppies kingston", []),
+])
+def test_richmond_and_kingston_need_london_or_surrey(kw, hit):
+    assert NB.lookup(kw) == hit
+
+
+def test_target_line_is_its_own_builder():
+    rows = [{"area": "A", "total_volume": 60}, {"area": "B", "total_volume": 12},
+            {"area": "C", "total_volume": None}]
+    t = NB.target_line(rows, [("staffy puppies for sale london", 320)])
+    assert t.startswith("**Target:** give A its own H3.")
+    assert "Name B in the delivery section copy" in t and "C show no measurable volume" in t
+    assert "320/mo against 60/mo" in t
+
+
+def test_malformed_board_exits_2(tmp_path, monkeypatch, capsys):
+    (tmp_path / "data/boards").mkdir(parents=True)
+    (tmp_path / "data/boards/bad.json").write_text("{not json", encoding="utf-8")
+    (tmp_path / "data/boards/nometa.json").write_text("[]", encoding="utf-8")
+    monkeypatch.setattr(NB, "ROOT", tmp_path)
+    assert NB.main(["bad"]) == 2
+    assert NB.main(["nometa"]) == 2
+    assert "usage" in capsys.readouterr().err
 
 
 def test_rows_sort_by_volume_then_name(root):
@@ -200,8 +267,14 @@ def test_suggested_use_is_mechanical(vol, use):
 
 def test_block_renders_the_table_target_and_not_shown(root):
     out = NB.block(_board(), root)
-    assert "| Area | Borough | Keywords found | Monthly searches | Where seen | Suggested use |" in out
-    assert "DataForSEO" in out and "2026-10-03" in out
+    assert ("| Area | Borough | Keywords found | Competitor headings | Monthly searches | Where seen "
+            "| Suggested use |") in out
+    assert "DataForSEO" in out and "fetched 2026-10-03" in out
+    assert f"{len(RESPONSE_ROWS)} of {len(RESPONSE_ROWS)} rows held (DataForSEO total_count)" in out
+    barnet = [ln for ln in out.splitlines() if ln.startswith("| Barnet")][0]
+    cells = [c.strip() for c in barnet.strip("|").split(" | ")]
+    assert cells[2] == "—"
+    assert "staffie puppies for sale in barnet london" in cells[3] and UNIVERSE_BARRIER in cells[3]
     assert "London as a whole" in out and "staffy puppies for sale london" in out and "320" in out
     assert "≥ 50/mo" in out and "10–49" in out
     target = [ln for ln in out.splitlines() if ln.startswith("**Target")]

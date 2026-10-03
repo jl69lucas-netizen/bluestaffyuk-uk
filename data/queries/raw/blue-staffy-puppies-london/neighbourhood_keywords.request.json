@@ -1,0 +1,16 @@
+{
+  "fetched": "2026-10-03",
+  "endpoint": "dataforseo_labs_google_keyword_ideas",
+  "location": "United Kingdom",
+  "language": "en",
+  "seeds": [
+    "staffy puppies london",
+    "staffie puppies for sale london",
+    "blue staffy london",
+    "staffordshire bull terrier puppies london"
+  ],
+  "filter": "regex on keyword: staff / staffie / staffy / bull terrier, plus London area names",
+  "order_by": "keyword_info.search_volume,desc",
+  "limit": 200,
+  "note": "Sidecar written 2026-10-03 to record how the controller called the endpoint (one paid call, approved in chat). The response is neighbourhood_keywords.response.json: 200 of 389 rows (total_count)."
+}
