@@ -150,7 +150,7 @@ These eight are the whole set. The source repo's other reference docs were not p
 - `CLAUDE.md` — the session file: the locked facts, the rule-pack router, the seventeen
   working rules (1–9 are the nine judgment rules)
 - `rules/README.md` and the ten packs in `rules/` — the written rules
-- `data/quality/rule-index.json` — the machine-readable ledger: 85 rules, of which 9 are
+- `data/quality/rule-index.json` — the machine-readable ledger: 86 rules, of which 9 are
   `enforced: judgment` and capped there. This is a different count from seo-rules.md's 57
   and always will be: the ledger indexes the `rules/` packs, the render-harness checks and
   CLAUDE.md working rules 10–17; seo-rules.md numbers its own categories A–J.

@@ -62,6 +62,15 @@ Eight checks in `scripts/evidence_audit.py`, run per slug against `dist/`. Budge
 - `no-unsourced-superlatives` (advisory) — "best / #1 / world's" etc. need a link to the source in the same sentence.
 
 ---
+id: faq-placement-intent-spread
+enforced: test
+family: COPY
+test: tests/py/test_faq_layout.py
+---
+
+- **FAQ placement is decided by intent spread (method A) on every new page (breeder q05, 2026-10-02)** — Whether a page carries three FAQ blocks (top, middle, bottom) or one bottom FAQ block is decided by method A, intent spread, never by page type alone. Three blocks are used only when the page's fact-backed questions (every question in `data/queries/<slug>.json` with a `fact_source`, picked or not) reach all three intent groups — buying, the dog, and living with it — with at least 2 questions in each group, AND the page's word target is 2,000 words or more. Otherwise the page carries one bottom FAQ block. The mechanical gate is `scripts/faq_layout.py` (`decide(..., method="A")`, shown on every board as block 4d), and its constants (`GROUP_MIN`, `MIN_WORDS`, `INTENT_GROUPS`) are the rule's numbers; a board whose outline disagrees with method A is flagged there. Method B (by page type) stays on the board for comparison only and decides nothing.
+
+---
 id: outline-provenance-gate
 enforced: test
 family: DUP

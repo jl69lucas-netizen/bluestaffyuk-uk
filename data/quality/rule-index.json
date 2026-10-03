@@ -607,6 +607,13 @@
    "enforced": "test",
    "test": "tests/py/test_outline_approval.py",
    "pack": "rules/gates.md"
+  },
+  {
+   "id": "faq-placement-intent-spread",
+   "family": "COPY",
+   "enforced": "test",
+   "test": "tests/py/test_faq_layout.py",
+   "pack": "rules/copy.md"
   }
  ]
 }

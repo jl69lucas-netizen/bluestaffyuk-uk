@@ -189,9 +189,11 @@ python3 scripts/query_augment.py <slug> --page-type <type> --keyword "<primary k
 The builder writes the page **from the file**, never from judgement:
 
 - **FAQ:** every picked question appears on the page, each an H3, in score order, and every
-  `must_answer` question is covered. **Location pages** carry three `Faq` blocks (top, middle,
-  bottom) with exactly each block's picks; the block split is a location-page rule. Comparison,
-  blog and puppy pages may render the picks in one `Faq` block, as their templates do. Pass
+  `must_answer` question is covered. **Three `Faq` blocks (top, middle, bottom) or one bottom
+  block is decided per page by method A, intent spread** — `rules/copy.md`
+  `faq-placement-intent-spread` (breeder q05, 2026-10-02), gated by `scripts/faq_layout.py` and
+  shown as board block 4d. Page type alone never decides it. A three-block page renders exactly
+  each block's picks; a one-block page renders its picks in one bottom `Faq` block. Pass
   the picks as `items` — `Faq` with no `items` renders the whole bank. Picks come only from the question file. To change a pick, change the data —
   add a bank row to `data/faq.json`, a settings key, or a real sourced question — and rebuild
   (Step 5). Never swap, add or drop a pick by hand.

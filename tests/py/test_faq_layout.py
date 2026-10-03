@@ -167,3 +167,19 @@ def test_null_questions_is_an_empty_list_not_not_fetched(tmp_path):
     out = FL.block(board, root=tmp_path)
     assert "NOT FETCHED" not in out
     assert "buying 0 · dog 0 · living 0; 200 words" in out
+
+
+def test_method_a_is_the_written_rule_and_the_ledger_row_names_this_file():
+    """Breeder q05, 2026-10-02: method A decides FAQ placement on every new page. The rule is
+    rules/copy.md `faq-placement-intent-spread`, and its numbers are this script's constants."""
+    root = pathlib.Path(__file__).resolve().parents[2]
+    pack = (root / "rules/copy.md").read_text(encoding="utf-8")
+    assert "id: faq-placement-intent-spread" in pack
+    body = pack[pack.index("id: faq-placement-intent-spread"):]
+    body = body[:body.index("\n---\n", body.index("---") + 3)]
+    assert "scripts/faq_layout.py" in body and "2,000" in body and "at least 2" in body
+    assert (FL.GROUP_MIN, FL.MIN_WORDS, FL.GROUPS) == (2, 2000, ("buying", "dog", "living"))
+    rows = json.loads((root / "data/quality/rule-index.json").read_text(encoding="utf-8"))["rules"]
+    row = next(r for r in rows if r["id"] == "faq-placement-intent-spread")
+    assert row == {"id": "faq-placement-intent-spread", "family": "COPY", "enforced": "test",
+                   "test": "tests/py/test_faq_layout.py", "pack": "rules/copy.md"}

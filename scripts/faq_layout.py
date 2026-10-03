@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Board block 4d: FAQ placement — three FAQ blocks (top, middle, bottom) or one bottom block.
 
-Two methods, shown side by side so the breeder can pick the rule:
+Two methods, shown side by side. The breeder picked A as the rule for every new page (answer
+board q05, 2026-10-02; rules/copy.md `faq-placement-intent-spread`); B stays for comparison:
 
   A · intent spread (Recommended): every fact-backed question for the page, picked or not
       (so the three-block pick cannot decide its own layout), is mapped topic -> intent group
