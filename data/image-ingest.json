@@ -1,1 +1,62 @@
-{}
+{
+  "blue-staffy-litter-prices-and-deposit-infographic": {
+    "h": 768,
+    "infographic_style": "IG-1",
+    "ingested": "2026-10-03",
+    "master": "data/boards/generated/blue-staffy-puppies-london/litter-prices-figures.webp",
+    "og_style": null,
+    "sib_w": 760,
+    "source": "generate",
+    "w": 1408
+  },
+  "blue-staffy-puppy-delivery-route-carlisle-to-london-infographic": {
+    "h": 768,
+    "infographic_style": "IG-5",
+    "ingested": "2026-10-03",
+    "master": "data/boards/generated/blue-staffy-puppies-london/delivery-route.webp",
+    "og_style": null,
+    "sib_w": 760,
+    "source": "generate",
+    "w": 1408
+  },
+  "blue-staffy-puppy-paperwork-folder-checklist-infographic": {
+    "h": 768,
+    "infographic_style": "IG-4",
+    "ingested": "2026-10-03",
+    "master": "data/boards/generated/blue-staffy-puppies-london/paperwork-checklist.webp",
+    "og_style": null,
+    "sib_w": 760,
+    "source": "generate",
+    "w": 1408
+  },
+  "four-steps-to-buy-a-blue-staffy-puppy-infographic": {
+    "h": 768,
+    "infographic_style": "IG-2",
+    "ingested": "2026-10-03",
+    "master": "data/boards/generated/blue-staffy-puppies-london/deposit-steps.webp",
+    "og_style": null,
+    "sib_w": 760,
+    "source": "generate",
+    "w": 1408
+  },
+  "staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic": {
+    "h": 768,
+    "infographic_style": "IG-3",
+    "ingested": "2026-10-03",
+    "master": "data/boards/generated/blue-staffy-puppies-london/breed-split.webp",
+    "og_style": null,
+    "sib_w": 760,
+    "source": "generate",
+    "w": 1408
+  },
+  "staffy-health-tests-to-ask-a-breeder-infographic": {
+    "h": 768,
+    "infographic_style": "IG-4",
+    "ingested": "2026-10-03",
+    "master": "data/boards/generated/blue-staffy-puppies-london/health-tests-checklist.webp",
+    "og_style": null,
+    "sib_w": 760,
+    "source": "generate",
+    "w": 1408
+  }
+}
