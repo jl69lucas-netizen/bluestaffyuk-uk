@@ -108,10 +108,11 @@
           "fetched": "2026-10-03"
         },
         {
-          "value": "Dogs must be on a lead in the Rose Garden (2025 policy; the 2023 leaflet listed the Rose Garden as dog-free, so the newer 2025 statement is used)",
+          "value": "Dogs must be on a lead in the Rose Garden",
           "quote": "| • The Rose Garden |",
           "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
-          "fetched": "2026-10-03"
+          "fetched": "2026-10-03",
+          "note": "2025 policy; the 2023 leaflet listed the Rose Garden as dog-free, so the newer 2025 statement is used"
         }
       ]
     },
