@@ -33,80 +33,6 @@ const PHASE_LABEL: Record<string, string> = {
   Close: 'Gates & close',
 }
 
-function esc(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-}
-
-// A tall, vertical line: one station per page-run row, its name beside it in reading size.
-// The markup is 880 wide so the pane scales it to its own width and the text stays large.
-const W = 880
-const LX = 92 // the line's x
-const ROW = 74
-const HEAD = 64
-
-function mark(r: Row, y: number): string {
-  const done = r.state === 'done'
-  const now = r.state === 'now'
-  if (r.stop) {
-    const fill = done || now ? BRASS : CARD
-    const stroke = done || now ? BRASS : TODO
-    return `<rect x="${LX - 17}" y="${y - 17}" width="34" height="34" rx="4" transform="rotate(45 ${LX} ${y})" fill="${fill}" stroke="${stroke}" stroke-width="3"/>
-<text x="${LX}" y="${y + 8}" font-size="22" font-weight="800" text-anchor="middle" fill="${done || now ? CARD : INK_3}">${r.stop}</text>`
-  }
-  if (now) {
-    return `<circle cx="${LX}" cy="${y}" r="26" fill="${BRASS}" opacity=".22"><animate attributeName="r" values="18;30;18" dur="1.8s" repeatCount="indefinite"/></circle>
-<circle cx="${LX}" cy="${y}" r="17" fill="${BRASS}"/><text x="${LX}" y="${y + 7}" font-size="18" font-weight="800" text-anchor="middle" fill="${CARD}">${r.row}</text>`
-  }
-  return `<circle cx="${LX}" cy="${y}" r="16" fill="${done ? DONE : CARD}" stroke="${done ? DONE : TODO}" stroke-width="4"/>
-<text x="${LX}" y="${y + 6}" font-size="15" font-weight="700" text-anchor="middle" fill="${done ? CARD : INK_3}">${r.row}</text>`
-}
-
-function svg(rt: Route): string {
-  let y = 150
-  let body = ''
-  let prevY: number | null = null
-  let prevLit = true
-  const lines: string[] = []
-  for (const phase of ['Research', 'Plan', 'Build', 'Close']) {
-    const rows = rt.rows.filter(r => r.phase === phase)
-    if (!rows.length) continue
-    const done = rows.filter(r => r.state === 'done').length
-    body += `<text x="${LX + 44}" y="${y}" font-size="17" font-weight="800" letter-spacing="2.5" fill="${INK_3}">${esc(PHASE_LABEL[phase].toUpperCase())}</text>
-<text x="${W - 40}" y="${y}" font-size="17" font-weight="700" text-anchor="end" fill="${done === rows.length ? DONE : INK_3}">${done}/${rows.length}</text>`
-    y += HEAD - 10
-    for (const r of rows) {
-      const lit = r.state !== 'todo'
-      if (prevY !== null) {
-        lines.push(lit && prevLit
-          ? `<line x1="${LX}" y1="${prevY}" x2="${LX}" y2="${y}" stroke="${DONE}" stroke-width="8" stroke-linecap="round"/>`
-          : `<line x1="${LX}" y1="${prevY}" x2="${LX}" y2="${y}" stroke="${TODO}" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 12"/>`)
-      }
-      const now = r.state === 'now'
-      if (now) body += `<rect x="24" y="${y - 32}" width="${W - 48}" height="64" rx="14" fill="${CARD_2}" stroke="${BRASS}" stroke-width="2"/>`
-      const name = `${r.stop ? 'STOP ' + r.stop + ' · ' : ''}${esc(r.name)}`
-      const right = r.state === 'done' ? (r.stop ? 'approved' : 'done') : now ? 'in progress' : ''
-      body += `<g><title>Row ${r.row} · ${esc(r.name)} · ${r.state} · ${esc(r.evidence)}</title>
-${mark(r, y)}
-<text x="${LX + 44}" y="${y + 9}" font-size="${now ? 28 : 25}" font-weight="${now || r.stop ? 750 : 500}" fill="${r.state === 'todo' ? INK_3 : INK}">${name}</text>
-<text x="${W - 44}" y="${y + 8}" font-size="18" font-weight="700" text-anchor="end" fill="${now ? BRASS : r.stop && r.state === 'done' ? BRASS : DONE}">${right}</text></g>`
-      prevY = y
-      prevLit = lit
-      y += ROW
-    }
-    y += 26
-  }
-  const H = y + 10
-  const pct = Math.round((rt.rows.filter(r => r.state === 'done').length / rt.rows.length) * 100)
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="system-ui, -apple-system, Segoe UI, sans-serif">
-<rect x="0" y="0" width="${W}" height="${H}" rx="20" fill="${CARD}"/>
-<text x="40" y="62" font-size="34" font-weight="800" fill="${INK}">${esc(rt.slug)}</text>
-<text x="40" y="100" font-size="20" fill="${INK_2}">STOP ${rt.stops_done}/4 · ${pct}% of the run proved · ${esc(rt.branch)}</text>
-<rect x="40" y="114" width="${W - 80}" height="8" rx="4" fill="${TODO}"/><rect x="40" y="114" width="${((W - 80) * pct) / 100}" height="8" rx="4" fill="${BRASS}"/>
-${lines.join('\n')}
-${body}
-</svg>`
-}
-
 function statusLine(rt: Route): string {
   const dots = [1, 2, 3, 4].map(n => (n <= rt.stops_done ? '●' : '○')).join('')
   const now = rt.now ? `row ${rt.now} ${rt.now_name}` : 'all rows proved'
@@ -158,31 +84,66 @@ export const register: Register = on => {
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const rt = await read($, route)
     const err = await read($, error)
-    const els = $.ui.resolve(e) as any
-    const { Box, Text, Link } = els
+    const { Box, Text, Link } = $.ui.resolve(e) as any
     if (!rt) return <Text dimColor>{err ? `No route: ${err}` : 'Reading the page run…'}</Text>
+    // Real text, not a picture: it fills the pane at reading size on every surface.
+    const proved = rt.rows.filter(r => r.state === 'done').length
+    const BAR = 28
+    const lit = Math.round((proved / rt.rows.length) * BAR)
     const board = PAGE_BOARDS[rt.slug]
+    const phases = ['Research', 'Plan', 'Build', 'Close']
     return (
-      <Box flexDirection="column">
-        {els.Svg ? (
-          <els.Svg source={svg(rt)} alt={statusLine(rt)} isInteractive />
-        ) : (
-          <Box flexDirection="column">
-            {rt.rows.map(r => (
-              <Text color={r.state === 'now' ? BRASS : undefined} dimColor={r.state === 'todo'}>
-                {r.state === 'done' ? '●' : r.state === 'now' ? '◉' : '○'} {String(r.row).padStart(2)} {r.stop ? `STOP ${r.stop} · ` : ''}{r.name}
-              </Text>
-            ))}
-          </Box>
-        )}
-        {rt.needs_you.map(n => (
-          <Text color={BRASS}>▲ {n}</Text>
-        ))}
-        <Text dimColor>{rt.commit}</Text>
-        <Box flexDirection="row" gap={2}>
+      <Box flexDirection="column" width="100%" gap={1}>
+        <Box flexDirection="column" width="100%" backgroundColor={CARD} borderStyle="round" borderColor={BRASS} paddingX={2} paddingY={1}>
+          <Text bold color={INK}>{rt.slug}</Text>
+          <Text color={INK_2}>
+            STOP {rt.stops_done}/4 · {proved} of {rt.rows.length} rows proved · {rt.branch}
+          </Text>
+          <Text>
+            <Text color={BRASS}>{'█'.repeat(lit)}</Text>
+            <Text color={TODO}>{'█'.repeat(BAR - lit)}</Text>
+          </Text>
+          {rt.needs_you.length > 0 ? (
+            rt.needs_you.map(n => (
+              <Text bold color={BRASS}>▲ Waiting on you: {n}</Text>
+            ))
+          ) : (
+            <Text color={DONE}>Nothing is waiting on you.</Text>
+          )}
+        </Box>
+        {phases.map(phase => {
+          const rows = rt.rows.filter(r => r.phase === phase)
+          const done = rows.filter(r => r.state === 'done').length
+          const complete = done === rows.length
+          return (
+            <Box flexDirection="column" width="100%" backgroundColor={CARD} borderStyle="round" borderColor={complete ? DONE : TODO} paddingX={2} paddingY={1}>
+              <Box flexDirection="row" justifyContent="space-between" width="100%">
+                <Text bold color={INK_3}>{PHASE_LABEL[phase].toUpperCase()}</Text>
+                <Text bold color={complete ? DONE : INK_3}>{done}/{rows.length}</Text>
+              </Box>
+              {rows.map(r => {
+                const now = r.state === 'now'
+                const isDone = r.state === 'done'
+                const glyph = r.stop ? (isDone || now ? '◆' : '◇') : now ? '◉' : isDone ? '●' : '○'
+                const status = isDone ? (r.stop ? 'approved' : 'done') : now ? 'in progress' : ''
+                return (
+                  <Box flexDirection="row" justifyContent="space-between" width="100%" backgroundColor={now ? CARD_2 : undefined}>
+                    <Text color={r.state === 'todo' ? INK_3 : INK} bold={now || !!r.stop}>
+                      <Text color={r.stop ? BRASS : now ? BRASS : isDone ? DONE : TODO}>{glyph} </Text>
+                      {String(r.row).padStart(2, ' ')}  {r.stop ? `STOP ${r.stop} · ` : ''}{r.name}
+                    </Text>
+                    <Text color={now || (r.stop && isDone) ? BRASS : DONE}>{status}</Text>
+                  </Box>
+                )
+              })}
+            </Box>
+          )
+        })}
+        <Box flexDirection="row" gap={3}>
           <Link href={rt.answer_board} label="Answer board" />
           {board ? <Link href={board} label="Page board" /> : null}
         </Box>
+        <Text dimColor>{rt.commit}</Text>
       </Box>
     )
   })
