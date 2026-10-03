@@ -1,0 +1,385 @@
+{
+  "slug": "blue-staffy-puppies-london",
+  "city": "London",
+  "fetched": "2026-10-03",
+  "method": "every entry quoted from the source page; nothing inferred",
+  "board_sections": [
+    "london-life (H4: Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?)",
+    "delivery"
+  ],
+  "search_volume_note": "Areas covered follow data/queries/raw/blue-staffy-puppies-london/neighbourhood_keywords.response.json: London-wide terms 320/month, Enfield 10, Sutton 10, others no measurable volume.",
+  "places": [
+    {
+      "name": "Hyde Park",
+      "kind": "park",
+      "area": "London: one of London's Royal Parks (borough not named on the source page)",
+      "managed_by": "The Royal Parks",
+      "facts": [
+        {
+          "value": "Dogs are not permitted at the Diana, Princess of Wales Memorial Fountain, the Lido swimming area, the Serpentine Lake, or the bowling green and tennis centre area",
+          "quote": "• Lido swimming area • The Serpentine Lake • Bowling green and tennis centre area",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Dogs must be on a lead in the Rose Garden and at the edge of the Serpentine Lake",
+          "quote": "• The Rose Garden • Edge of the Serpentine Lake",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        }
+      ]
+    },
+    {
+      "name": "Kensington Gardens",
+      "kind": "park",
+      "area": "London: one of London's Royal Parks (borough not named on the source page)",
+      "managed_by": "The Royal Parks",
+      "facts": [
+        {
+          "value": "Dogs are not permitted in the Long Water, the Round Pond or at the Peter Pan Statue",
+          "quote": "Kensington Gardens | • Long Water • Round Pond • Peter Pan Statue",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Dogs must be on a lead at the edge of the Round Pond and Long Water, around the Italian Fountains and on the South and North Flower Walks",
+          "quote": "• Edge of Round Pond & Long Water • Around the Italian Fountains • South Flower Walk • North Flower Walk",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        }
+      ]
+    },
+    {
+      "name": "The Regent's Park and Primrose Hill",
+      "kind": "park",
+      "area": "London: one of London's Royal Parks (borough not named on the source page)",
+      "managed_by": "The Royal Parks",
+      "facts": [
+        {
+          "value": "Dogs are not permitted in Avenue Gardens, English Gardens, Queen Mary's Gardens, the wildlife enclosures, St John's Lodge Gardens or the Boating Lake",
+          "quote": "• Avenue Gardens • English Gardens • Queen Mary's Gardens • Wildlife Enclosures • St John's Lodge Gardens • Boating Lake",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Dogs must be on a lead in areas next to the Boating Lake, the Winter Gardens and the Community Wildlife Garden",
+          "quote": "• Areas adjacent to the Boating Lake • The Winter Gardens • The Community Wildlife Garden",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        }
+      ]
+    },
+    {
+      "name": "Richmond Park",
+      "kind": "park",
+      "area": "London: one of London's Royal Parks (borough not named on the source page)",
+      "managed_by": "The Royal Parks",
+      "facts": [
+        {
+          "value": "Dogs must be on leads and away from the deer throughout the park from 1 May to 31 July (deer birthing season)",
+          "quote": "you must keep your dogs on leads and away from the deer at all times during the birthing season (1 May - 31 July)",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Dogs are not permitted in Pembroke Lodge and Gardens",
+          "quote": "Richmond Park | • Pembroke Lodge and Gardens",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Dogs must be on a short lead all year in the skylark protection zones (Lawn Field by Pen Ponds, Crown Field, the Bog)",
+          "quote": "Dogs to be kept on a short lead in skylark protection zones (Lawn Field by Pen Ponds, Crown Field",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        }
+      ]
+    },
+    {
+      "name": "Greenwich Park",
+      "kind": "park",
+      "area": "London: one of London's Royal Parks (borough not named on the source page)",
+      "managed_by": "The Royal Parks",
+      "facts": [
+        {
+          "value": "Dogs are not permitted in the Flower Garden, the Wilderness Deer Park or the Royal Observatory Garden",
+          "quote": "Greenwich Park | • Flower Garden • The Wilderness Deer Park • The Royal Observatory Garden",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Dogs must be on a lead in the Rose Garden (2025 policy; the 2023 leaflet listed the Rose Garden as dog-free, so the newer 2025 statement is used)",
+          "quote": "| • The Rose Garden |",
+          "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+          "fetched": "2026-10-03"
+        }
+      ]
+    },
+    {
+      "name": "Hampstead Heath",
+      "kind": "open-space",
+      "area": "North London (the City of London's own description)",
+      "managed_by": "City of London Corporation",
+      "facts": [
+        {
+          "value": "The City of London describes the Heath as one of North London's most popular dog-walking spots, with 800 acres",
+          "quote": "one of the most popular spots in North London for people and pooches alike, with 800 acres to explore together",
+          "source": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Dog Walking Code of Conduct: keep your dog under control at all times, and it must respond to recall when off the lead",
+          "quote": "keep your dog under control at all times - your dog must respond if you call it when it's off the lead",
+          "source": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Keep a collar and tag on your dog, and bag all dog poo for a bin or take it home",
+          "quote": "keep a collar and tag on your dog",
+          "source": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Owners can be fined if a dog is not under control and hurts, annoys or disturbs other Heath users",
+          "quote": "You can be fined if your dog isn't under control and either hurts, annoys or disturbs other Heath users",
+          "source": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Professional dog walkers need a licence and there is a cap of four dogs per person",
+          "quote": "Yes, there is a limit of four dogs per person.",
+          "source": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath",
+          "fetched": "2026-10-03"
+        }
+      ]
+    },
+    {
+      "name": "Epping Forest",
+      "kind": "open-space",
+      "area": "NOT FETCHED — the fetched City of London page does not name a borough or area for the Forest",
+      "managed_by": "City of London Corporation",
+      "facts": [
+        {
+          "value": "Epping Forest has a Dog Walking Code of Conduct: your dog must be under effective control",
+          "quote": "Epping Forest has a Code of Conduct for dog walkers.",
+          "source": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "A dog that does not respond to recall must be kept on a lead",
+          "quote": "if your dog does not respond to recall you must keep it on a lead",
+          "source": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Dogs must not disturb or chase wildlife, cattle, deer or horses; watch for ticks and harmful algae",
+          "quote": "dogs must not disturb or chase any wildlife, cattle, deer or horses",
+          "source": "https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest",
+          "fetched": "2026-10-03"
+        }
+      ]
+    },
+    {
+      "name": "Trent Country Park",
+      "kind": "park",
+      "area": "Enfield (Cockfosters ward)",
+      "managed_by": "Enfield Council",
+      "facts": [
+        {
+          "value": "Enfield lists Trent Park in Cockfosters ward among its parks with toilets",
+          "quote": "Trent Park | Cockfosters",
+          "source": "https://www.enfield.gov.uk/services/leisure-and-culture/parks",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Under Enfield PSPO 3 (from 23 October 2025) dogs must be on a lead at all times in the Trent Country Park Water Garden",
+          "quote": "Trent Country Park Water Garden",
+          "source": "https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Enfield publishes its own park byelaws for Trent Park",
+          "quote": "Park byelaws for Trent Park",
+          "source": "https://www.enfield.gov.uk/services/leisure-and-culture/parks",
+          "fetched": "2026-10-03"
+        }
+      ]
+    },
+    {
+      "name": "Oaks Park",
+      "kind": "park",
+      "area": "Carshalton, London Borough of Sutton",
+      "managed_by": "London Borough of Sutton",
+      "facts": [
+        {
+          "value": "A 33.57-hectare park of formal horticulture, chalk meadows, woodland and parkland",
+          "quote": "At 33.57 Hectares Oaks Park is a mixture of landscapes",
+          "source": "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "It has a dog-free picnic area with natural play features",
+          "quote": "dog-free picnic area with natural play features",
+          "source": "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "Address as published by Sutton Council",
+          "quote": "Oaks Park, Croydon Lane, Carshalton, Surrey SM7 3BA",
+          "source": "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park",
+          "fetched": "2026-10-03"
+        }
+      ]
+    },
+    {
+      "name": "Overton Park",
+      "kind": "park",
+      "area": "Sutton, London Borough of Sutton",
+      "managed_by": "London Borough of Sutton",
+      "facts": [
+        {
+          "value": "Dogs are not permitted in this recreation ground, except guide dogs (a park to avoid with a puppy)",
+          "quote": "Dogs are not permitted in this park, except guide dogs.",
+          "source": "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park",
+          "fetched": "2026-10-03"
+        },
+        {
+          "value": "An 8.52-hectare recreation ground",
+          "quote": "A recreation ground in Sutton, covering an area of 8.52 hectares.",
+          "source": "https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park",
+          "fetched": "2026-10-03"
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "topic": "Microchipping (UK law)",
+      "value": "Every dog in the UK must be microchipped and registered by 8 weeks old",
+      "quote": "All dogs in the UK must be microchipped and registered by the time they’re 8 weeks old.",
+      "source": "https://www.gov.uk/get-your-dog-cat-microchipped",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Microchipping penalty",
+      "value": "Up to £500 fine if a dog is not microchipped when it needs to be",
+      "quote": "You can be fined up to £500 if your dog or cat is not microchipped when they need to be.",
+      "source": "https://www.gov.uk/get-your-dog-cat-microchipped",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Collar and tag in public",
+      "value": "A microchipped dog must still wear a collar and tag with the owner's name and address in public",
+      "quote": "If you have a dog, it must still wear a collar and tag with your name and address when in a public place.",
+      "source": "https://www.gov.uk/get-your-dog-cat-microchipped",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Proof of microchip when buying",
+      "value": "Buyers should ask for proof a microchip has been fitted (certificate, vet records or pet passport)",
+      "quote": "You should ask for proof a microchip has been fitted before getting a dog or cat.",
+      "source": "https://www.gov.uk/get-your-dog-cat-microchipped",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Dog dangerously out of control (UK law)",
+      "value": "It is against the law to let any dog be dangerously out of control anywhere, including public places",
+      "quote": "It’s against the law to let a dog be dangerously out of control anywhere",
+      "source": "https://www.gov.uk/control-dog-public",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Royal Parks: dogs welcome",
+      "value": "Dogs are welcome in all the Royal Parks, with marked dog-free and dogs-on-leads places",
+      "quote": "Dogs are welcome in all the Royal Parks although there are some places where they are not allowed",
+      "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Royal Parks: everywhere",
+      "value": "In every Royal Park dogs are barred from children's playgrounds and toilets, and must be on a lead near roadways and water",
+      "quote": "In all Royal Parks | • Children's Playgrounds • Toilets | • Near roadways • Near water",
+      "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Royal Parks: dogs per walker",
+      "value": "As a rule of thumb, no one should be in charge of more than four dogs at once",
+      "quote": "as a rule of thumb no-one should be in charge of more than four dogs at any one time",
+      "source": "https://www.royalparks.org.uk/sites/default/files/2023-07/rp_dogsleafletweb.pdf",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Royal Parks: clearing up",
+      "value": "Failing to clean up after your dog breaks the law",
+      "quote": "keep your dog under control and to clean up after it: you are breaking the law if you do not do so.",
+      "source": "https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Enfield PSPO 3: dogs on leads at all times",
+      "value": "In the parks listed in its appendix (e.g. Broomfield Gardens, Forty Hall walled garden, Grovelands lake), a dog must be on a lead at all times; in force from 23 October 2025 for 3 years",
+      "quote": "A person in charge of a dog in the designated area must, at all times, keep the dog on a lead",
+      "source": "https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Enfield PSPO 6: maximum number of dogs",
+      "value": "No one may take more than six dogs at once into Enfield's designated parks without a council licence and insurance",
+      "quote": "A person must not take more than six (6) dogs at the same time into the designated area",
+      "source": "https://www.enfield.gov.uk/__data/assets/pdf_file/0017/105290/PSPO-6-Max-number-of-dogs-Community-safety.pdf",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Enfield PSPO penalty",
+      "value": "Breaching a PSPO can bring a £100 fixed penalty notice, or a fine of up to £1,000 at a Magistrates' Court",
+      "quote": "Breaching a PSPO is a criminal offence which may result in a fixed penalty notice (FPN) of £100.",
+      "source": "https://www.enfield.gov.uk/services/community-safety/public-spaces-protection-orders-pspo",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Enfield park dog control orders (older page)",
+      "value": "Enfield's general park page (last modified 20 December 2024) still states an £80 fixed penalty; the PSPO page (26 June 2026) states £100. Use the PSPO page's £100",
+      "quote": "Owners can receive an £80 fixed penalty notice if they do not follow these rules.",
+      "source": "https://www.enfield.gov.uk/services/leisure-and-culture/parks",
+      "fetched": "2026-10-03"
+    },
+    {
+      "topic": "Sutton PSPOs",
+      "value": "Sutton's published PSPOs cover alcohol-related anti-social behaviour in 64 areas; the page lists no dog-control PSPO",
+      "quote": "We use Public Space Protection Orders (PSPOs) to tackle alcohol-related anti-social behaviour in 64 specific areas across the borough.",
+      "source": "https://www.sutton.gov.uk/community-safety/public-space-protection-orders",
+      "fetched": "2026-10-03"
+    }
+  ],
+  "vets": {
+    "how": "Do not name a practice. Link the RCVS Find a Vet search (the official register of the Royal College of Veterinary Surgeons) so a London buyer finds practices by location and can check that a vet is registered, by name or RCVS number (the People search). The register does let you check registration. The page carried a 25 August 2026 notice that some Find a Vet information is temporarily unavailable during technical updates. findavet.rcvs.org.uk/find-a-vet/ now redirects to the URL below.",
+    "source": "https://www.rcvs.org.uk/animal-owners/find-a-vet",
+    "quote": "Use our Find a Vet search tool to locate veterinary professionals and practices.",
+    "fetched": "2026-10-03",
+    "register_check": {
+      "value": "Yes: the RCVS register can be searched to see if a vet is registered and to find their RCVS registration number",
+      "quote": "Check the RCVS register of veterinary surgeons & nurses to see if a vet is registered and to find their RCVS registration number",
+      "source": "https://www.rcvs.org.uk/animal-owners/find-a-vet/people",
+      "fetched": "2026-10-03",
+      "note": "quote is the page's own meta description; the search results load by script and were not fetched"
+    }
+  },
+  "not_fetched": [
+    "NOT FETCHED — handover points: needs the breeder (where London handovers actually happen). Never inferred from stations, car parks or services.",
+    "NOT FETCHED — first-hand London fact (q06): needs the breeder (a past London delivery, borough only, or a London owner's line). Not answered here.",
+    "NOT FETCHED — Royal Parks dog page: https://www.royalparks.org.uk/visit/dogs returned 404 on 2026-10-03; the park rules above come from the Royal Parks' own PDFs instead.",
+    "NOT FETCHED — borough for each Royal Park and for Epping Forest: the fetched owner pages do not name one, and it is not inferred.",
+    "NOT FETCHED — Royal Parks off-lead areas as a positive list: neither Royal Parks PDF lists where dogs may be off the lead; they list only dog-free and dogs-on-leads areas.",
+    "NOT FETCHED — Enfield PSPO 4 (put on lead if requested) and PSPO 5 (keep dogs out of designated areas): only their titles were read on the Enfield PSPO page; the PDFs were not opened.",
+    "NOT FETCHED — Sutton dog-control PSPO: the Sutton PSPO page lists alcohol orders only. A search excerpt from the Strategy and Resources Committee pack for 5 October 2026 mentions dog fouling and dogs out of control; the 212-page PDF was scraped but the quote extraction failed, so its proposal and status are unknown.",
+    "NOT FETCHED — Sutton park dog rules beyond Oaks Park and Overton Park: the Nonsuch Park and Beddington Park pages were fetched and state no dog rule.",
+    "NOT FETCHED — Highgate Wood dog rule: the City of London byelaws page says only to keep pets under control and clean up after them; Schedule 2 (dog-prohibited areas) is not printed on the page."
+  ],
+  "breeder_questions": [
+    "Where do London handovers actually happen when you deliver, or do London buyers collect in Carlisle? (Borough or general area only, no address.)",
+    "Have you delivered a puppy to London before? Which area (borough only)?",
+    "Do you know a London owner who'd share a line about their Staffy's park routine?",
+    "Is there a London vet practice you have used yourself or would name? If not, the page links only the RCVS Find a Vet search."
+  ]
+}
