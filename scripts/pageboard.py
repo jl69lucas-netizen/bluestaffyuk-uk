@@ -1462,7 +1462,10 @@ def section_fingerprint(section):
 # `og:<slot>`). The board (build_page_board.py), the approval
 # (board_approve.py) and the carry-forward (locked_picks) all read these from HERE, so what
 # the button waits for and what the server re-checks cannot drift apart.
-V2_PICKS = {"ig:": ("plate", "ruled", "card"), "og:": ("use", "swap", "skip")}
+#: The `ig:` values are infographic_plan.STYLES' ids (breeder q08, 2026-10-02: playful,
+#: cartoonish — sticker / chalk / comic replaced plate / ruled / card). An approval that
+#: picked a retired style is dropped by locked_picks and asked again.
+V2_PICKS = {"ig:": ("sticker", "chalk", "comic"), "og:": ("use", "swap", "skip")}
 V2_PICK_PREFIXES = tuple(V2_PICKS)
 #: Infographic slots whose content waits on a breeder answer: shown with their three styles,
 #: offered as an optional pick, and kept OUT of the required set. Keyed by (board slug, slot

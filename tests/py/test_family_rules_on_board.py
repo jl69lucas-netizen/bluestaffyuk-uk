@@ -331,18 +331,19 @@ def test_infographic_and_og_picks_are_accepted(monkeypatch):
     _slots(monkeypatch)
     b = _board()
     inbox = _inbox(b)
-    inbox["picks"].update({"ig:delivery-route": "ruled", "og:og-share": "skip"})
+    inbox["picks"].update({"ig:delivery-route": "chalk", "og:og-share": "skip"})
     out = BA.apply_approval(b, inbox, ONT, LEDGER)
-    assert out["board"]["approval"]["picks"]["ig:delivery-route"] == "ruled"
+    assert out["board"]["approval"]["picks"]["ig:delivery-route"] == "chalk"
     assert out["board"]["approval"]["picks"]["og:og-share"] == "skip"
 
 
-@pytest.mark.parametrize("sid,val", [("ig:delivery-route", "fancy"), ("og:og-share", "maybe")])
+@pytest.mark.parametrize("sid,val", [("ig:delivery-route", "fancy"), ("og:og-share", "maybe"),
+                                     ("ig:delivery-route", "plate")])   # a retired style
 def test_an_off_menu_infographic_or_og_pick_is_refused(monkeypatch, sid, val):
     _slots(monkeypatch)
     b = _board()
     inbox = _inbox(b)
-    inbox["picks"].update({"ig:delivery-route": "ruled", sid: val})
+    inbox["picks"].update({"ig:delivery-route": "chalk", sid: val})
     with pytest.raises(PB.BoardError, match=sid):
         BA.apply_approval(b, inbox, ONT, LEDGER)
 
@@ -355,12 +356,12 @@ def test_a_missing_required_infographic_pick_is_refused(monkeypatch):
         BA.apply_approval(b, _inbox(b), ONT, LEDGER)
 
 
-@pytest.mark.parametrize("sid,val", [("ig:no-such-slot", "plate")])
+@pytest.mark.parametrize("sid,val", [("ig:no-such-slot", "sticker")])
 def test_a_pick_for_an_unknown_slot_is_refused(monkeypatch, sid, val):
     _slots(monkeypatch)
     b = _board()
     inbox = _inbox(b)
-    inbox["picks"].update({"ig:delivery-route": "ruled", sid: val})
+    inbox["picks"].update({"ig:delivery-route": "chalk", sid: val})
     with pytest.raises(PB.BoardError, match=f"approval picks '{sid}', which is not in the record"):
         BA.apply_approval(b, inbox, ONT, LEDGER)
 
@@ -418,12 +419,31 @@ def test_an_unknown_infographic_style_is_a_board_error_from_render(monkeypatch):
 def test_a_re_board_carries_slot_picks_whose_slots_still_exist(monkeypatch):
     _slots(monkeypatch)
     b = _board()
-    b["approval_previous"] = {"picks": {"ig:delivery-route": "card",      # kept
-                                        "ig:gone-slot": "plate",          # slot gone
+    b["approval_previous"] = {"picks": {"ig:delivery-route": "comic",     # kept
+                                        "ig:gone-slot": "sticker",        # slot gone
                                         "ig:breed-split": "fancy",        # off the menu
                                         "og:og-share": "use",             # kept
                                         "og:og-gone": "skip"}}            # slot gone
-    assert PB.locked_picks(b) == {"ig:delivery-route": "card", "og:og-share": "use"}
+    assert PB.locked_picks(b) == {"ig:delivery-route": "comic", "og:og-share": "use"}
+
+
+def test_a_retired_infographic_style_pick_is_dropped_on_re_board(monkeypatch):
+    """plate / ruled / card were replaced by sticker / chalk / comic (breeder q08,
+    2026-10-02). An approval that picked a retired style is not carried: the slot is
+    asked again rather than pre-filled with a value board_approve.py would refuse."""
+    _slots(monkeypatch)
+    b = _board()
+    b["approval_previous"] = {"picks": {"ig:delivery-route": "plate",
+                                        "ig:breed-split": "card", "og:og-share": "use"}}
+    assert PB.locked_picks(b) == {"og:og-share": "use"}
+    for old in ("plate", "ruled", "card"):
+        assert old not in PB.V2_PICKS["ig:"]
+    assert PB.V2_PICKS["ig:"] == ("sticker", "chalk", "comic")
+
+
+def test_v2_ig_picks_are_the_infographic_styles():
+    import infographic_plan as IP
+    assert PB.V2_PICKS["ig:"] == tuple(s["id"] for s in IP.STYLES)
 
 
 def test_a_carried_slot_pick_is_pre_checked_on_the_board(monkeypatch):
@@ -431,9 +451,9 @@ def test_a_carried_slot_pick_is_pre_checked_on_the_board(monkeypatch):
     import infographic_plan as IP
     london = PB.load_board("blue-staffy-puppies-london")
     slot = IP.plan(london, root=None)[0]["slot"]
-    out = BPB.infographic_block(london, {f"ig:{slot}": "ruled"})
-    assert f'name="pick-ig:{slot}" value="ruled" checked>' in out
-    assert f'name="pick-ig:{slot}" value="plate">' in out
+    out = BPB.infographic_block(london, {f"ig:{slot}": "chalk"})
+    assert f'name="pick-ig:{slot}" value="chalk" checked>' in out
+    assert f'name="pick-ig:{slot}" value="sticker">' in out
     import original_slots as OS
     first = OS.propose(london, root=PB.ROOT)[0]["slot"]
     og = BPB.og_block(london, {f"og:{first}": "swap"})
@@ -449,7 +469,7 @@ def test_a_swap_note_names_an_offered_slot(monkeypatch):
     _slots(monkeypatch)
     b = _board()
     inbox = _inbox(b)
-    inbox["picks"].update({"ig:delivery-route": "ruled", "og:og-share": "swap"})
+    inbox["picks"].update({"ig:delivery-route": "chalk", "og:og-share": "swap"})
     inbox["notes"] = {"og:og-share": "the van photo instead"}
     out = BA.apply_approval(b, inbox, ONT, LEDGER)
     assert out["board"]["approval"]["notes"]["og:og-share"] == "the van photo instead"
@@ -463,7 +483,7 @@ def test_a_stale_og_pick_or_note_is_dropped_with_a_warning(monkeypatch):
     _slots(monkeypatch)
     b = _board()
     inbox = _inbox(b)
-    inbox["picks"].update({"ig:delivery-route": "ruled", "og:og-nowhere": "use",
+    inbox["picks"].update({"ig:delivery-route": "chalk", "og:og-nowhere": "use",
                            "og:og-share": "use"})
     inbox["notes"] = {"og:og-gone": "x"}
     out = BA.apply_approval(b, inbox, ONT, LEDGER)
@@ -482,6 +502,6 @@ def test_approve_clears_the_photo_cache(monkeypatch):
     assert OS._site_photos.cache_info().currsize >= 1
     b = _board()
     inbox = _inbox(b)
-    inbox["picks"].update({"ig:delivery-route": "ruled"})
+    inbox["picks"].update({"ig:delivery-route": "chalk"})
     BA.apply_approval(b, inbox, ONT, LEDGER)
     assert OS._site_photos.cache_info().currsize == 0

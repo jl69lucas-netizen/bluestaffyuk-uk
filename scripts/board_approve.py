@@ -393,6 +393,7 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
             continue                                  # an image pick, validated below
         # Board v2 blocks 7c and 7d (build_page_board.py): an infographic style and an
         # original-photo slot's use/swap/skip. They name a slot, not a section, and live only in approval.picks.
+        # The allowed values are PB.V2_PICKS (ig: sticker / chalk / comic since breeder q08).
         if sid.startswith(PB.V2_PICK_PREFIXES):
             prefix, slot = sid.split(":", 1)
             prefix += ":"

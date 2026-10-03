@@ -45,7 +45,7 @@ def _inbox(board):
                          for _, _, i in BA.IR.IC.iter_slots(board)
                          if i.get("source") == "infographic"},
                       # board v2 block 7c: every required infographic slot needs a style
-                      **{sid: "plate" for sid in PB.ig_slots_required(board)}}}
+                      **{sid: "sticker" for sid in PB.ig_slots_required(board)}}}
 
 
 def test_a_city_board_approves_with_its_city_tuple_intact(london):

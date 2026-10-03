@@ -48,9 +48,11 @@ from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 OUT = PB.ROOT / "docs" / "artifacts" / "boards"
 PREVIEWS = PB.ROOT / "data" / "boards" / "previews"
 
-#: Every style preview iframe is this tall, and scrolls inside. Measuring the real height
-#: would mean a Playwright pass per block; a fixed frame with `overflow:auto` shows the top
-#: of every arrangement at three widths, which is what the pick is actually made on.
+#: Every block 6 style preview iframe is this tall, and scrolls inside: a fixed frame with
+#: `overflow:auto` shows the top of every arrangement at three widths, which is what that
+#: pick is made on. Block 7c's infographic frames are NOT fixed: each is its document's
+#: measured height (heights.json, ig_frame_h), and PREVIEW_H is only their unmeasured
+#: fallback — a fixed frame clipped the v2 "Card" preview.
 PREVIEW_H = 520
 #: The three widths each style is shown at: desktop, tablet, phone.
 PREVIEW_W = (1280, 768, 375)
@@ -158,6 +160,10 @@ p.refresh b{color:var(--green);font-weight:600}
 .frame{flex:none;display:grid;gap:4px}
 .frame span{font-size:11px;color:var(--ink-3);letter-spacing:.04em}
 .frame iframe{border:1px solid var(--line);border-radius:6px;background:var(--paper);display:block}
+/* Block 7c: each frame is exactly its document's measured height (heights.json), its border
+   outside that height, and below 900px the three widths stack instead of sitting side by side. */
+.frames-ig iframe{box-sizing:content-box}
+@media (max-width:900px){.frames-ig{flex-direction:column;align-items:flex-start}}
 .noprev{font-size:13px;color:var(--warn);margin:6px 0 0}
 .lk{font-size:12px;font-weight:600;letter-spacing:.03em;white-space:nowrap}
 .lk-ok{color:var(--green)}
@@ -982,10 +988,19 @@ def infographic_docs(plan):
             for p in plan for st in p["styles"]}
 
 
+def ig_frame_h(heights, slot, style, width):
+    """(height, measured?) for one block 7c frame: the preview document's own height at that
+    width from heights.json (infographic_plan.measure_heights), so the frame never clips it
+    and never pads it. Unmeasured, the frame falls back to PREVIEW_H and scrolls."""
+    h = ((heights.get(slot) or {}).get(style) or {}).get(str(width))
+    return (int(h), True) if isinstance(h, (int, float)) and h > 0 else (PREVIEW_H, False)
+
+
 def infographic_block(board, carried=None, plan=None):
     """Block 7c: per planned slot, its heading, IG type and why, and the three styles as one
-    radio group `pick-ig:<slot>` (values plate / ruled / card), each style rendered at the
-    three PREVIEW_W widths in srcdoc frames filled from IG_DOCS by the board's script.
+    radio group `pick-ig:<slot>` (values sticker / chalk / comic — PB.V2_PICKS), each style
+    rendered at the three PREVIEW_W widths in srcdoc frames filled from IG_DOCS by the
+    board's script, each frame as tall as its measured document (ig_frame_h).
     `carried` (PB.locked_picks) pre-checks a style answered on an earlier approval; `plan`
     is the PB.ig_plan() render() already made."""
     carried = carried or {}
@@ -1003,22 +1018,25 @@ def infographic_block(board, carried=None, plan=None):
                        md(f"{p['ig']} {IP.IG_NAMES.get(p['ig'], '')}"), md(p["why"])]
                       for p in plan])
     out = [intro, table]
+    heights = IP.load_heights(board["meta"]["slug"], PB.ROOT)
     for p in plan:
         slot = p["slot"]
         pending = PB.ig_pending(board, slot)
         rows = []
         for st in p["styles"]:
             key = f"{slot}|{st['id']}"
-            frames = "".join(
-                f'<div class="frame"><span>{w}px</span>'
-                f'<iframe title="{esc(st["label"])} at {w} pixels wide" sandbox="allow-same-origin" '
-                f'loading="eager" scrolling="auto" data-ig="{esc(key)}" width="{w}" height="{PREVIEW_H}" '
-                f'style="width:{w}px;height:{PREVIEW_H}px"></iframe></div>' for w in PREVIEW_W)
+            frames = ""
+            for w in PREVIEW_W:
+                h, measured = ig_frame_h(heights, slot, st["id"], w)
+                frames += (f'<div class="frame"><span>{w}px</span>'
+                           f'<iframe title="{esc(st["label"])} at {w} pixels wide" sandbox="allow-same-origin" '
+                           f'loading="eager" scrolling="{"no" if measured else "auto"}" data-ig="{esc(key)}" '
+                           f'width="{w}" height="{h}" style="width:{w}px;height:{h}px"></iframe></div>')
             rows.append(f'<div class="style"><label><input type="radio" name="pick-ig:{esc(slot)}" '
                         f'value="{esc(st["id"])}"'
                         f'{" checked" if carried.get("ig:" + slot) == st["id"] else ""}> '
                         f'{esc(st["label"])}</label>'
-                        f'<div class="frames">{frames}</div></div>')
+                        f'<div class="frames frames-ig">{frames}</div></div>')
         legend = (f"Optional — {esc(slot)}" if pending else f"Pick one style for {esc(slot)}")
         out.append(f"### {md(slot)} · {md(p['ig'])} {md(IP.IG_NAMES.get(p['ig'], ''))}\n\n"
                    f"**Heading:** {md(p['node'])}  \n**Why:** {md(p['why'])}"

@@ -2653,7 +2653,7 @@ def test_7c_offers_three_styles_per_infographic_slot(london_html):
     slots = _ig_slots()
     assert "breed-split" in slots and len(slots) >= 2
     for slot in slots:
-        for style in ("plate", "ruled", "card"):
+        for style in ("sticker", "chalk", "comic"):
             assert f'name="pick-ig:{slot}" value="{style}"' in london_html, (slot, style)
     # breed-split is a required pick now its data is sourced (breeder q07, 2026-10-02).
     assert "Pick one style for breed-split" in london_html
@@ -2665,7 +2665,41 @@ def test_7c_offers_three_styles_per_infographic_slot(london_html):
 def test_7c_previews_render_at_three_widths(london_html):
     import build_page_board as BPB
     for w in BPB.PREVIEW_W:
-        assert f'data-ig="deposit-steps|plate" width="{w}"' in london_html
+        assert f'data-ig="deposit-steps|sticker" width="{w}"' in london_html
+
+
+def test_7c_widths_are_the_measured_widths():
+    import build_page_board as BPB
+    import infographic_plan as IP
+    assert tuple(BPB.PREVIEW_W) == tuple(IP.PREVIEW_WIDTHS)
+
+
+def test_7c_no_frame_is_shorter_than_its_measured_document(london_html):
+    """The v2 "Card" preview was clipped by a fixed 520px frame. Every 7c frame is now sized
+    from heights.json, so its height is at least the document's measured height at that
+    width, and a measured frame never scrolls."""
+    import infographic_plan as IP
+    stored = IP.load_heights(LONDON)
+    frames = _re.findall(r'<iframe [^>]*data-ig="([^"|]+)\|([^"]+)" width="(\d+)" height="(\d+)"'
+                         r' style="width:\d+px;height:(\d+)px"', london_html)
+    assert len(frames) == 3 * 3 * len(_ig_slots())
+    for slot, style, w, h, css_h in frames:
+        doc = stored[slot][style][w]
+        assert int(h) >= doc and int(css_h) >= doc, (slot, style, w, h, doc)
+    assert 'scrolling="auto" data-ig=' not in london_html
+
+
+def test_7c_frame_falls_back_to_a_scrolling_frame_when_unmeasured():
+    import build_page_board as BPB
+    assert BPB.ig_frame_h({}, "x", "sticker", 375) == (BPB.PREVIEW_H, False)
+    assert BPB.ig_frame_h({"x": {"sticker": {"375": 812}}}, "x", "sticker", 375) == (812, True)
+
+
+def test_7c_frames_stack_below_900px(london_html):
+    import build_page_board as BPB
+    assert "@media (max-width:900px){.frames-ig{flex-direction:column" in BPB.CSS
+    assert ".frames-ig iframe{box-sizing:content-box}" in BPB.CSS
+    assert 'class="frames frames-ig"' in london_html
 
 
 def test_7d_offers_use_swap_or_skip_per_original_photo_slot(london_html):
