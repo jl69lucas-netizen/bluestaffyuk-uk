@@ -98,6 +98,21 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
       grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2);
     }
     .pic li { position: relative; margin: 0; max-width: none; }
+    /* THE STRIP SETTLES IN ONCE ON LOAD (frontend-design D6, the breeder's yes, answer board
+       2026-10-03 london-design-pass q04): each photograph rises 8px into place as it fades in,
+       200ms (rules/design.md rule 6's ceiling, --dur-base), one after another 60ms apart.
+       Transform and opacity only, so nothing reflows and the hero's clamp is never measured
+       mid-move; `both` holds each frame at its start through its delay. Only for a reader who has
+       not asked for less motion: with `reduce` (or no support) the strip is simply there. */
+    @media (prefers-reduced-motion: no-preference) {
+      .pic li { animation: city-hero-settle var(--dur-base) var(--ease-out) both; }
+      .pic li:nth-child(2) { animation-delay: 60ms; }
+      .pic li:nth-child(3) { animation-delay: 120ms; }
+      .pic li:nth-child(4) { animation-delay: 180ms; }
+      .pic li:nth-child(5) { animation-delay: 240ms; }
+      .pic li:nth-child(6) { animation-delay: 300ms; }
+      @keyframes city-hero-settle { from { opacity: 0; transform: translateY(8px); } }
+    }
     .pic :global(img) {
       display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;
       border-radius: var(--radius-sm); background: var(--color-steel-700);
