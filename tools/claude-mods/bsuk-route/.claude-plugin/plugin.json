@@ -1,0 +1,1 @@
+{ "name": "bsuk-route", "version": "0.1.0", "description": "BSUK Route Map: every page-run row and the four STOPs for the page in progress, proved from disk", "types": "./types/index.d.ts" }

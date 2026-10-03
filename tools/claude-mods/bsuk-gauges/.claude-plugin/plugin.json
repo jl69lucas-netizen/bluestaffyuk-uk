@@ -1,0 +1,1 @@
+{ "name": "bsuk-gauges", "version": "0.1.0", "description": "BSUK session gauges: context fill, the 1-hour prompt cache, plan limits, cost and Gemini calls", "types": "./types/index.d.ts" }
