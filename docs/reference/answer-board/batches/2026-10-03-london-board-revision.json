@@ -1,0 +1,215 @@
+{
+  "askedAt": "2026-10-03T19:15:08Z",
+  "id": "2026-10-03-london-board-revision",
+  "intro": "The preview shows each piece in three styles at 1280, 768 and 375 wide, built only from our data files and your saved answers: https://claude.ai/artifact/1NCaKipdpYadM1zUyUV1Jn. Pick one style per piece. Once you send, the picks go onto the London page board for your approval, and then they're built.",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "Recommended: (a). Why: it's the smallest change to the hero you approved, one line under the H1, and no headshot (we have no real photo of Lisa on file, and Google warns against made-up author photos). Trade-off: it's the quietest, so the \"Read and approved by Lisa\" line is easy to miss.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "A · Signed rule"
+        },
+        {
+          "id": "b",
+          "label": "B · Ledger pair"
+        },
+        {
+          "id": "c",
+          "label": "C · Monogram seal"
+        }
+      ],
+      "question": "Byline under the H1: which style?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: each ticket links to that puppy's own page, and with no photos it doesn't repeat the six faces and alts the hero already shows. Trade-off: the coats can't be told apart at a glance.",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "A · Ticket strip"
+        },
+        {
+          "id": "b",
+          "label": "B · Coat swatch rail"
+        },
+        {
+          "id": "c",
+          "label": "C · Boys and girls tables"
+        }
+      ],
+      "question": "Puppy strip under the key takeaways: which style?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (b). Why: it splits the call into what you see on camera and what you hear us say, and on desktop it's half the height of A. Trade-off: on a phone the two panes stack, so it's slightly taller than one list.",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "A · Call sheet"
+        },
+        {
+          "id": "b",
+          "label": "B · Look and listen"
+        },
+        {
+          "id": "c",
+          "label": "C · Call window"
+        }
+      ],
+      "question": "Video-call checklist: which style?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (c). Why: each council or park owner is linked once, so 8 links instead of 12, and the buyer sees whose rules they are reading. Trade-off: finding one park means scanning four groups instead of an A–Z list.",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "options": [
+        {
+          "id": "a",
+          "label": "A · Rule cards"
+        },
+        {
+          "id": "b",
+          "label": "B · Rules table"
+        },
+        {
+          "id": "c",
+          "label": "C · Grouped by who sets the rules"
+        }
+      ],
+      "question": "London places under the parks H4: which style?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "The 21st is the rarity question you added. Recommended: (a). Why: only our own homepage FAQ asks \"Where can I find blue Staffy breeders in the UK?\" (no Google or Reddit signal), and someone reading this page has already found a breeder. Dropping it leaves 20 and keeps your rarity question. Trade-off: the top FAQ block goes from 6 questions to 5.",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "options": [
+        {
+          "id": "a",
+          "label": "Drop \"Where Can I Find Blue Staffy Breeders in the UK?\""
+        },
+        {
+          "id": "b",
+          "label": "Keep all 21, and record an exception to the rule for London"
+        }
+      ],
+      "question": "The board has 21 FAQ questions, and the rule for location pages is 15–20. What should we do?",
+      "section": 1,
+      "where": ""
+    },
+    {
+      "context": "Section 5 of the preview lists them: the byline to the About page, the six puppy pages, the official park and council pages, the RCVS vet search, and the privacy-policy link in the enquiry form, which is already on the page but missing from the board's list. Recommended: (a). Why: working rule 12 builds no link that isn't on the approved board. Trade-off: the two Enfield council links blocked our automated check today, although the places research did read them, so I'll check them again before the build.",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, add all of them"
+        },
+        {
+          "id": "b",
+          "label": "Only some (name them in the text box)"
+        }
+      ],
+      "question": "Add the new links to the London board's link list?",
+      "section": 1,
+      "where": "data/boards/blue-staffy-puppies-london.json, the links for each section"
+    },
+    {
+      "context": "Recommended: (a). Why: once there's a byline, the sign-off says the same thing twice. Trade-off: none that I can see.",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "options": [
+        {
+          "id": "a",
+          "label": "Drop the sign-off"
+        },
+        {
+          "id": "b",
+          "label": "Keep it"
+        }
+      ],
+      "question": "The hero paragraph ends \"Lisa Bright, BlueStaffyUK.\", which repeats the new byline. Drop that sign-off?",
+      "section": 1,
+      "where": ""
+    },
+    {
+      "context": "Name a borough or area only, never a street. Leave it blank if you'd rather the page doesn't say.",
+      "key": "q08",
+      "kind": "text",
+      "n": 8,
+      "options": [],
+      "question": "Where do London handovers happen, or do London buyers always collect in Carlisle or take home delivery?",
+      "section": 2,
+      "where": ""
+    },
+    {
+      "context": "If yes, name the borough only.",
+      "key": "q09",
+      "kind": "text",
+      "n": 9,
+      "options": [],
+      "question": "Have you delivered a puppy to London before, and may the page say so?",
+      "section": 2,
+      "where": ""
+    },
+    {
+      "context": "Give their first name and initial, and the line as they'd say it.",
+      "key": "q10",
+      "kind": "text",
+      "n": 10,
+      "options": [],
+      "question": "Do you know a London owner who would share a line about their Staffy's park routine?",
+      "section": 2,
+      "where": ""
+    },
+    {
+      "context": "If not, the page links only the RCVS Find a Vet search.",
+      "key": "q11",
+      "kind": "text",
+      "n": 11,
+      "options": [],
+      "question": "Is there a London vet you've used and would be happy to name?",
+      "section": 2,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Styles"
+    },
+    {
+      "lead": "",
+      "title": "Content"
+    },
+    {
+      "lead": "",
+      "title": "For Lisa: London first-hand facts (q06)"
+    }
+  ],
+  "status": "open",
+  "title": "London board revision · four new pieces, links and the FAQ count"
+}
