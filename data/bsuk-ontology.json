@@ -75,7 +75,7 @@
       "name": "Health guarantee",
       "aliases": [],
       "class": "Health",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "data/settings.json",
       "owner_page": null
     },
@@ -571,7 +571,7 @@
         "Maggie (dam)"
       ],
       "class": "Organism",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md",
       "owner_page": null
     },
@@ -583,7 +583,7 @@
         "Jones (sire)"
       ],
       "class": "Organism",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md",
       "owner_page": null
     },
@@ -606,7 +606,7 @@
         "the Puppy Culture programme"
       ],
       "class": "Method",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md",
       "owner_page": null
     },
@@ -618,7 +618,7 @@
         "early neurological stimulation (ENS)"
       ],
       "class": "Method",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "docs/reference/answer-board/answers/2026-09-24-questions-for-lisa-bright-followup-2026-09-27.md",
       "owner_page": null
     },
@@ -630,7 +630,7 @@
         "registration papers"
       ],
       "class": "Documentation",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "data/faq.json",
       "owner_page": null
     },
@@ -642,7 +642,7 @@
         "vaccination card"
       ],
       "class": "Documentation",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "data/faq.json",
       "owner_page": null
     },
@@ -654,7 +654,7 @@
         "purchase contract"
       ],
       "class": "Documentation",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "data/faq.json",
       "owner_page": null
     }

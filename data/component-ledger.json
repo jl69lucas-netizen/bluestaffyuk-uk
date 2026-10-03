@@ -181,6 +181,18 @@
         "takeaways-s2"
       ],
       "h6_prefixes": []
+    },
+    "blue-staffy-puppies-london": {
+      "hero": "city-hero-filmstrip",
+      "dial": "city-dial-photo-marker",
+      "rail": "",
+      "toc": "city-contents-photo-index",
+      "table": "city-roster",
+      "faq": "city-faq-ledger",
+      "takeaway": [
+        "city-takeaways-ledger"
+      ],
+      "h6_prefixes": []
     }
   }
 }
