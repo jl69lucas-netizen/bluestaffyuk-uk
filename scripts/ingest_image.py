@@ -6,6 +6,10 @@
            bytes the board shows for approval; prints their sha12 and the pick that approves
            (--sibling: an infographic's 760-wide phone layout, stored beside it as
            <slot>-760.webp)
+  phone    an infographic's phone layout (drawn at the width it paints at on a phone, at 2x:
+           infographic_plan.bake_infographic) -> data/boards/generated/<slug file>/<slot>-phone.webp,
+           a draft of its own beside the slot's box draft, which it never touches; prints its
+           sha12 and the pick that approves it, `img:<slot>-phone` = `ig:IG-<n>:<sha12>`
   publish  after the board approved THOSE bytes (pick `og:<style>:<sha12>` or
            `ig:IG-<n>:<sha12>`), copies them UNCHANGED into public/images/<stem>.webp, and the
            draft's own sibling, when it has one, unchanged as the -760 file
@@ -45,6 +49,7 @@ Usage:
   python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --og-style A
   python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --infographic IG-2
         [--sibling <760-wide phone bake>]
+  python3 scripts/ingest_image.py phone <phone master> --board <slug> --slot <slot> --infographic IG-2
   python3 scripts/ingest_image.py publish --board <slug> --slot <slot> --stem <seo-stem>
 """
 import argparse
@@ -75,6 +80,10 @@ MASTER_SUFFIXES = (".jpg", ".jpeg", ".png", ".webp")
 DRAFT_EXTS = (".webp", ".png", ".jpg")
 NATIVE_MAX_H = 1760
 FILL_MIN = 0.85
+# A phone layout is drawn at the CSS width it paints at on a phone (about 300-380px) at
+# 1.5-2x: 440-800 pixels wide. Its text is gated where it is drawn (infographic_plan.bake_infographic
+# measures it at the size it reaches the screen); this only refuses a file of the wrong kind.
+PHONE_W = (440, 800)
 
 # 3 to 10 lowercase words joined by single hyphens: what the pipeline's SEO filename
 # convention produces, and nothing a camera or a download names a file by default.
@@ -530,6 +539,74 @@ def draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root=
     return r
 
 
+#: A phone layout is flat colour and text: quantised to this many colours (most first, no
+#: dither) and stored lossless, its text stays crisper than lossy WebP and the file is smaller.
+#: The lossy quality walk is the fallback when no palette fits.
+PHONE_PALETTES = (64, 48)
+
+
+def _encode_phone(im, path, maxkb):
+    """Lossless on a PHONE_PALETTES palette first, then the lossy quality walk. Writes the
+    smallest tried when none fits. Returns (kb, encoding, ok)."""
+    import io
+    best = None
+    for n in PHONE_PALETTES:
+        buf = io.BytesIO()
+        im.quantize(n, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).save(
+            buf, "WEBP", lossless=True, quality=100, method=6)
+        size = buf.tell() / 1024                  # compared unrounded: 55.03 is over 55
+        if best is None or size < best[0]:
+            best = (size, "lossless %d colours" % n, buf.getvalue())
+        if size <= maxkb:
+            pathlib.Path(path).write_bytes(buf.getvalue())
+            return round(size, 1), best[1], True
+    kb, q, ok = reframe_og.save_webp(im, path, maxkb)
+    if ok or kb <= best[0]:
+        return kb, "lossy q%d" % q, ok
+    pathlib.Path(path).write_bytes(best[2])
+    return round(best[0], 1), best[1], False
+
+
+def phone_draft_path(slug, slot, root=ROOT):
+    return draft_path(slug, slot, root).with_name(slot + "-phone.webp")
+
+
+def phone_draft(master, slug, slot, infographic, root=ROOT):
+    """An infographic's phone layout (impeccable London D4, 2026-10-03) as a draft of its own:
+    flattened on bone, held to the sibling budget, written to `<slot>-phone.webp` beside the
+    slot's box draft, which is never touched (it may already be approved and published).
+    Returns the path, the sha12 of the bytes written, the pick key `img:<slot>-phone` and the
+    pick `ig:IG-<n>:<sha12>` that approves exactly those bytes."""
+    master, root = pathlib.Path(master), pathlib.Path(root)
+    problems = (_check_master(master) + _style_problems(None, infographic)
+                + _board_problems(slug, slot, root))
+    if not problems:
+        with Image.open(master) as raw:
+            w = raw.width
+        if not PHONE_W[0] <= w <= PHONE_W[1]:
+            problems.append("phone layout %s is %d wide; one drawn at a phone's width at 1.5-2x is "
+                            "%d-%d wide" % (master.name, w, PHONE_W[0], PHONE_W[1]))
+    _refuse(problems)
+    with Image.open(master) as raw:
+        im = reframe_og.flatten_on_bone(raw.convert("RGBA"))
+    out = phone_draft_path(slug, slot, root)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    stage = _Stage("phone draft %s" % out)
+    try:
+        kb, how, ok = _encode_phone(im, stage.temp_for(out), reframe_og.SIB_MAX_KB)
+        if not ok:
+            raise Refused("the phone layout is %s KB at its smallest encoding (%s), over its "
+                          "%s KB budget — bake it at a lower phone_scale; nothing written"
+                          % (kb, how, reframe_og.SIB_MAX_KB))
+        stage.commit()
+    finally:
+        stage.close()
+    sha = file_sha(out)
+    return {"path": out, "sha12": sha, "w": im.width, "h": im.height, "encoding": how,
+            "kb": round(out.stat().st_size / 1024, 1),
+            "pick_key": "img:%s-phone" % slot, "pick": "ig:%s:%s" % (infographic, sha)}
+
+
 def publish(slug, slot, stem, root=ROOT, today=None):
     """Copy an APPROVED draft's bytes unchanged into public/images/ and name it on the board."""
     root = pathlib.Path(root)
@@ -567,6 +644,11 @@ def main(argv=None):
     f = sub.add_parser("folder")
     d = sub.add_parser("draft")
     p = sub.add_parser("publish")
+    ph = sub.add_parser("phone")
+    ph.add_argument("master")
+    ph.add_argument("--board", required=True)
+    ph.add_argument("--slot", required=True)
+    ph.add_argument("--infographic", metavar="IG-n", required=True)
     for s in (f, d):
         s.add_argument("master")
         s.add_argument("--og-style", choices=sorted(set(BAKED) | NATIVE))
@@ -589,6 +671,11 @@ def main(argv=None):
                        dry_run=a.dry_run)
             print("%s /images/%s.webp  [%s]" % ("would ingest" if a.dry_run else "ingested",
                                                 r["stem"], a.og_style or a.infographic))
+        elif a.cmd == "phone":
+            r = phone_draft(a.master, a.board, a.slot, a.infographic)
+            print("phone draft %s  %dx%d  %s KB (%s)  sha12 %s\napprove on the board with "
+                  "pick: %s = %s" % (r["path"].relative_to(ROOT), r["w"], r["h"], r["kb"],
+                                     r["encoding"], r["sha12"], r["pick_key"], r["pick"]))
         elif a.cmd == "draft":
             r = draft(a.master, a.board, a.slot, a.og_style, a.infographic, a.mobcrop,
                       sibling=a.sibling)

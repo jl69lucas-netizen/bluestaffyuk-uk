@@ -571,3 +571,39 @@ def test_a_transparent_infographic_master_has_no_band_against_the_frame(repo, tm
     bed = reframe_og.gradient()
     for xy in ((50, 30), (1360, 30), (50, 740), (1360, 740), (30, 384)):
         assert max(abs(a - b) for a, b in zip(out.getpixel(xy), bed.getpixel(xy))) <= 3, xy
+
+
+# ── phone: an infographic's phone layout as a draft of its own (London D4, 2026-10-03) ───
+
+def _phone_layout(tmp_path, w=622, h=1200):
+    p = tmp_path / "phone.png"
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    im.paste((40, 60, 80, 255), (16, 16, w - 16, h - 16))
+    im.save(p)
+    return p
+
+
+def test_a_phone_draft_sits_beside_the_box_draft_and_never_touches_it(repo, master, tmp_path):
+    box = draft(master, SLUG, "garden-photo", infographic="IG-2", root=repo)
+    before = box["path"].read_bytes()
+    r = ingest_image.phone_draft(_phone_layout(tmp_path), SLUG, "garden-photo", "IG-2", root=repo)
+    out = repo / "data/boards/generated" / slug_file(SLUG) / "garden-photo-phone.webp"
+    assert r["path"] == out and Image.open(out).size == (622, 1200)
+    assert box["path"].read_bytes() == before, "the box draft (maybe approved) is untouched"
+    assert out.stat().st_size <= reframe_og.SIB_MAX_KB * 1024
+    assert r["sha12"] == file_sha(out)
+    assert r["pick_key"] == "img:garden-photo-phone" and PICK.fullmatch(r["pick"])
+    assert r["pick"] == "ig:IG-2:" + r["sha12"]
+    assert Image.open(out).convert("RGB").getpixel((3, 3)) != (0, 0, 0), "margin on bone"
+    assert not list((repo / "public/images").glob("*phone*")), "a draft is never published"
+
+
+def test_a_phone_draft_must_be_drawn_at_a_phone_width(repo, tmp_path):
+    with pytest.raises(Refused, match="phone layout"):
+        ingest_image.phone_draft(_phone_layout(tmp_path, w=1408, h=768), SLUG, "garden-photo",
+                                 "IG-2", root=repo)
+
+
+def test_a_phone_draft_needs_a_planned_slot(repo, tmp_path):
+    with pytest.raises(Refused, match="assets"):
+        ingest_image.phone_draft(_phone_layout(tmp_path), SLUG, "no-such-slot", "IG-2", root=repo)

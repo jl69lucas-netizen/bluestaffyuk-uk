@@ -93,10 +93,13 @@ get their own line, and a figure in a narrow card drops a type step.
 
 **Bake after the pick, one style per slot.**
 `infographic_plan.bake_infographic(slug, slot, style)` crops the PICKED style to its figure
-twice: once at the width that fills the 1408×768 box, once as the 760-wide phone layout. It
-writes the two lossless masters (`<slug>-<slot>-<style>.png` and `-760.png`) and refuses a box
-covered under 85% or phone text under 14px. Draft them together with
-`ingest_image.py draft <box> --infographic IG-n --sibling <phone>`; it runs at Task 9 or STOP 4.
+twice: once at the width that fills the 1408×768 box, once as the phone layout, drawn at the
+CSS width it paints at on a 375px phone (`PHONE_PAINT_W`) at 2x. It writes the two lossless
+masters (`<slug>-<slot>-<style>.png` and `-phone.png`) and refuses a box covered under 85% or
+a phone label under 14px ON SCREEN (font × scale × painted width ÷ file width — never the
+file's own pixels: London D4). Draft the box with `ingest_image.py draft <box> --infographic IG-n`
+and the phone layout with `ingest_image.py phone <phone> --board <slug> --slot <slot> --infographic IG-n`;
+it runs at Task 9 or STOP 4.
 Never bake the unpicked styles.
 
 ## IG-1 Stat Panel

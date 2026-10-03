@@ -3,6 +3,7 @@
 //   node scripts/ig_shots.mjs measure   < jobs.json   # {root, jobs:[{key, path, widths:[…]}]}
 //   node scripts/ig_shots.mjs shoot     < jobs.json   # {root, jobs:[{path, width, height, out}]}
 //   node scripts/ig_shots.mjs crop      < jobs.json   # {root, jobs:[{path, widths:[…], ratio?, margin?, out}]}
+//   node scripts/ig_shots.mjs paint     < spec.json   # {root, path, width}: infographic boxes on a built page
 //
 // `root` is served over a localhost static server, so a preview's relative font URL
 // (../../../../../public/fonts/…) resolves to the repo's own woff2 files and the fonts the
@@ -159,8 +160,27 @@ try {
       await page.close();
       out[job.out] = { width: best.width, w: b.w, h: b.h, tried, ...fonts };
     }
+  } else if (mode === 'paint') {
+    // The width an infographic actually paints at on a built page: {root: dist, path, width}
+    // prints {width, imgs: [{src, w, h, natural_w}]} for every <img> whose current source is
+    // an infographic. The phone bake is drawn at this CSS width (scripts/infographic_plan.py
+    // PHONE_PAINT_W), so its text is measured at the size it reaches the screen.
+    const page = await browser.newPage({ viewport: { width: spec.width, height: 812 } });
+    page.setDefaultTimeout(TIMEOUT);
+    await page.goto(base + spec.path, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    const imgs = await page.evaluate(async () => {
+      const all = [...document.querySelectorAll('img')].filter((i) => /infographic/.test(i.currentSrc || i.src));
+      for (const i of all) { i.loading = 'eager'; i.scrollIntoView(); if (!i.complete) await i.decode().catch(() => {}); }
+      return all.map((i) => ({ src: (i.currentSrc || i.src).replace(location.origin, ''),
+        w: +i.getBoundingClientRect().width.toFixed(2), h: +i.getBoundingClientRect().height.toFixed(2),
+        natural_w: i.naturalWidth }));
+    });
+    await page.close();
+    out.width = spec.width;
+    out.imgs = imgs;
   } else {
-    throw new Error(`unknown mode ${mode}; use measure, shoot or crop`);
+    throw new Error(`unknown mode ${mode}; use measure, shoot, crop or paint`);
   }
 } finally {
   // close() can hang on a wedged browser: give it 5s, then exit hard below. Playwright's own

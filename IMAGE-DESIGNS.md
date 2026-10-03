@@ -228,12 +228,21 @@ overflows its box or card or touches an icon.
 **Baking.** Only after the pick, one style per slot (Task 9 or STOP 4):
 `infographic_plan.bake_infographic()` writes two lossless masters, both cropped to the figure on
 a transparent ground: the box master, rendered at the width whose figure is shaped most like
-1408:768 (no exact figure may wrap there), and the reflowed phone layout, exactly 760 wide. It
-refuses a box covered under 85% of its binding side, and phone text under 14px. Then
-`python3 scripts/ingest_image.py draft <box master> --board <slug> --slot <slot> --infographic IG-<n> --sibling <phone master>`
+1408:768 (no exact figure may wrap there), and the phone layout, drawn at the CSS width the
+infographic paints at on a 375px phone (`PHONE_PAINT_W`, measured on the built page by
+`measure_phone_paint_width()`) at 2x device pixels (1.5x for a layout too long for the budget).
+It refuses a box covered under 85% of its binding side, and any phone label that reaches the
+SCREEN under 14px: font px × shot scale × painted width ÷ file width. Measured at the file's own
+pixels, the first London `-760` files passed at 14px and painted at about 6px (impeccable
+London D4, 2026-10-03). Then
+`python3 scripts/ingest_image.py draft <box master> --board <slug> --slot <slot> --infographic IG-<n>`
 frames the box master with Style A through its alpha (the margin is the frame's own bone, so no
-band), stores the phone master beside the draft as `<slot>-760.webp`, and `publish` serves that
-file as the `-760` sibling instead of shrinking the box.
+band), and
+`python3 scripts/ingest_image.py phone <phone master> --board <slug> --slot <slot> --infographic IG-<n>`
+drafts the phone layout on its own as `<slot>-phone.webp` (never touching the box draft), held
+to the 55 KB sibling budget (lossless on a 64- or 48-colour palette first, lossy as the
+fallback), approved by `img:<slot>-phone` = `ig:IG-<n>:<sha12>`. The older `--sibling` path
+(a 760-wide `-760` phone file) stays for the files already served, which are never replaced.
 
 ---
 

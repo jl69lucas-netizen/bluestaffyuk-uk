@@ -497,21 +497,22 @@ def _tiny_preview(tmp_path, extra_css=""):
 @needs_browser
 def test_bake_infographic_writes_two_cropped_masters(tmp_path):
     """The box master is cropped to the figure on a transparent ground, at twice the pixels,
-    and fills the framed box; the phone master is exactly 760 wide with no text under 14px."""
+    and fills the framed box; the phone master is drawn at the width it paints at on a phone,
+    at PHONE_SCALE pixels, and no label reaches the screen under 14px."""
     from PIL import Image
     import reframe_og
     slug, slot, style = _tiny_preview(tmp_path)
     out = tmp_path / "out"
     got = IP.bake_infographic(slug, slot, style, out, root=tmp_path)
-    full, sib = out / f"{slug}-{slot}-{style}.png", out / f"{slug}-{slot}-{style}-760.png"
-    assert got["full"] == str(full) and got["sib"] == str(sib)
-    with Image.open(full) as a, Image.open(sib) as b:
+    full, phone = out / f"{slug}-{slot}-{style}.png", out / f"{slug}-{slot}-{style}-phone.png"
+    assert got["full"] == str(full) and got["phone"] == str(phone)
+    with Image.open(full) as a, Image.open(phone) as b:
         assert a.mode == "RGBA" and a.getpixel((0, 0))[3] == 0, "no page bone in the master"
-        assert b.width == IP.BAKE_SIB_W
+        assert b.width <= IP.PHONE_SCALE * IP.PHONE_PAINT_W
         assert max(reframe_og.content_fill(reframe_og.contain_alpha(a))) >= IP.FILL_MIN
-    assert got["sib_min_font"] >= IP.SIB_MIN_FONT
+    assert got["phone_screen_px"] >= IP.SIB_MIN_FONT
     assert IP.BAKE_WIDTHS[0] <= got["width"] <= IP.BAKE_WIDTHS[-1]
-    assert sorted(x.name for x in out.iterdir()) == sorted([full.name, sib.name])
+    assert sorted(x.name for x in out.iterdir()) == sorted([full.name, phone.name])
 
 
 @needs_browser
@@ -529,6 +530,58 @@ def test_bake_refuses_phone_text_under_14px(tmp_path):
     slug, slot, style = _tiny_preview(tmp_path, ".n{font-size:12px !important}")
     with pytest.raises(IP.BakeDefect, match="under 14px"):
         IP.bake_infographic(slug, slot, style, tmp_path / "out", root=tmp_path)
+
+
+# ── D4 (impeccable London, 2026-10-03): phone text measured at the size it is SEEN ───────
+SERVED_760 = sorted((IP.ROOT / "public/images").glob("*-infographic-760.webp"))
+
+
+def test_the_check_reads_text_at_its_on_screen_size():
+    """14px in a 760-wide file painted 311 wide is 5.7px on screen; drawn at 311 CSS px and
+    shot at 2x it is 14px."""
+    assert IP.phone_text_px(14, 1, 760, 311) == pytest.approx(5.73, abs=0.01)
+    assert IP.phone_text_px(14, 2, 622, 311) == pytest.approx(14)
+    assert IP.phone_text_problems(14, 2, 622, 311) == []
+    assert IP.phone_text_problems(14, 2, 2 * 343, 311), "drawn wider than it paints: shrunk"
+
+
+def test_the_served_760_phone_files_fail_the_on_screen_check():
+    """The six -760 files the London page serves on phones were baked at 760 CSS px, 1x, with
+    no label under 14px there (test_no_text_below_14px pins every preview font >= 14px; the
+    largest label is far under 33px). The old check passed them at file pixels; measured
+    where they paint (PHONE_PAINT_W at 375) every one is illegible, and must fail."""
+    from PIL import Image
+    assert len(SERVED_760) >= 6, [f.name for f in SERVED_760]
+    css_min = min(float(px) for sid in IP.STYLES for px in re.findall(
+        r"font-size:\s*(\d+(?:\.\d+)?)px", IP.BASE_CSS + IP.STYLE_CSS[sid["id"]]))
+    assert css_min >= IP.SIB_MIN_FONT, "the old check passed these files"
+    for f in SERVED_760:
+        with Image.open(f) as im:
+            assert im.width == 760, f.name
+            bad = IP.phone_text_problems(css_min, 1, im.width, IP.PHONE_PAINT_W, f.name)
+        assert bad and "under 14px" in bad[0], f.name
+
+
+@needs_browser
+def test_a_phone_layout_drawn_at_760_is_refused(tmp_path):
+    """The bug itself, in a real browser: the old phone bake drew at 760 CSS px. Painted at
+    311 its 14px labels land at ~5.7px, so the corrected bake must refuse it."""
+    slug, slot, style = _tiny_preview(tmp_path)
+    with pytest.raises(IP.BakeDefect, match=r"on screen, under 14px"):
+        IP.bake_infographic(slug, slot, style, tmp_path / "out", root=tmp_path,
+                            phone_w=760, phone_only=True)
+    assert not list((tmp_path / "out").iterdir())
+
+
+@needs_browser
+@pytest.mark.skipif(not (IP.ROOT / "dist/uk-locations/blue-staffy-puppies-london/index.html").exists(),
+                    reason="the London page is not built")
+def test_phone_paint_width_matches_the_built_london_page():
+    """PHONE_PAINT_W is what the phone bake is drawn at: if the page's infographic box at 375
+    is narrower, the drafts' labels shrink under 14px on screen."""
+    got = IP.measure_phone_paint_width()
+    assert len(got["imgs"]) == 6, got
+    assert got["min"] >= IP.PHONE_PAINT_W - 0.5, got
 
 
 def test_every_caption_dog_draws_the_small_mouth():

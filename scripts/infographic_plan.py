@@ -40,8 +40,9 @@ Frame heights: measure_heights() renders every preview at the board's three widt
 Playwright (scripts/ig_shots.mjs, fonts served) and writes HEIGHTS_FILE; the board sizes each
 frame from it, so no frame is shorter than its document (the v2 "Card" clipping fix).
 Baking: bake_infographic() crops ONE picked style per slot to its figure, at the width that
-fits the 1408x768 box, plus a 760-wide phone sibling — the two masters
-`ingest_image.py draft --infographic IG-n --sibling` takes — only after the breeder picks
+fits the 1408x768 box, plus the phone layout drawn at the width it paints at on a phone (its
+text is measured at the size it reaches the screen) — the masters `ingest_image.py draft` and
+`ingest_image.py phone` take — only after the breeder picks
 (Task 9 / STOP 4), never all three styles.
 
 Fonts: previews load Fraunces and Source Sans 3 from the repo's public/fonts by a relative
@@ -929,11 +930,16 @@ body{background:var(--color-bone-100)}
 
 #: Appended after every style: a figure drops a type step when its card is narrow, so it
 #: keeps its own line and never runs under the card's icon or out of the card (the check in
-#: scripts/ig_shots.mjs fails the measurement if one does).
+#: scripts/ig_shots.mjs fails the measurement if one does). The route's stacked leg (below
+#: 768 only) does the same: on the 311px phone layout "£200–£350" wraps at the leg's full
+#: size, and at 375 and wider no leg is narrow enough for the rule to fire.
 FIT_CSS = """
 .it{container-type:inline-size}
 @container (max-width:250px){.it .fig{font-size:var(--text-2xl)}}
 @container (max-width:205px){.it .fig{font-size:var(--text-xl)}}
+@media (max-width:767px){.leg{container-type:inline-size}
+ @container (max-width:225px){.leg .fig{font-size:var(--text-2xl)}}
+ @container (max-width:180px){.leg .fig{font-size:var(--text-xl)}}}
 """
 
 
@@ -992,9 +998,8 @@ def write_previews(board: dict, root: Path = ROOT) -> list[str]:
 #: The widths the board shows every style at (build_page_board.PREVIEW_W pins the same three).
 PREVIEW_WIDTHS = (1280, 768, 375)
 SHOTS_JS = "scripts/ig_shots.mjs"
-#: The asset row size (scripts/bake_images.py BOX) and the guide sibling's width.
+#: The asset row size (scripts/bake_images.py BOX).
 BAKE_BOX = (1408, 768)
-BAKE_SIB_W = 760
 #: The render widths searched for the one whose figure is shaped like the box.
 BAKE_WIDTHS = tuple(range(760, 1409, 16))
 #: Transparent margin around the figure: wide enough for the hard shadows and the tilts.
@@ -1002,8 +1007,25 @@ BAKE_MARGIN = 16
 #: The framed box must be covered at least this far along its binding side
 #: (scripts/ingest_image.py FILL_MIN holds a draft to the same floor).
 FILL_MIN = 0.85
-#: The smallest text the phone sibling may carry, in px at 760 wide.
+#: The smallest text the phone layout may carry, in px ON SCREEN: its CSS font size times
+#: the factor the file is scaled by where it paints (phone_text_px). Measured at the file's
+#: own pixels the check passed the 760-wide -760 files, which paint at 311px on a 375 phone
+#: (0.41x), so their 14px labels reached the screen at about 5.7px (impeccable London D4,
+#: 2026-10-03). The floor is the same 14px; what it is measured at is not.
 SIB_MIN_FONT = 14
+#: The phone viewport the bake is measured for, and the narrowest width an infographic paints
+#: at there on the London page (dist/, all six boxes, scripts/ig_shots.mjs `paint`: 311px on
+#: 2026-10-03, 319px after the frontend-design pass widened the column). It is a floor: a box
+#: painted wider only enlarges the text. measure_phone_paint_width() re-measures it, and a test
+#: fails if the page ever paints the boxes narrower.
+PHONE_VIEWPORT = 375
+PHONE_PAINT_W = 311
+#: The phone layout is drawn at the CSS width it paints at, at this many device pixels per
+#: CSS pixel, so it lands on screen 1:1 in CSS px and stays sharp on a 2x phone.
+PHONE_SCALE = 2
+#: The phone crop's transparent margin: the hard shadows and tilts still fit, and at 311px
+#: wide a 16px margin would spend a tenth of the box on bone.
+PHONE_MARGIN = 8
 
 
 def heights_path(slug: str) -> str:
@@ -1114,27 +1136,71 @@ class BakeDefect(RuntimeError):
     """A bake that would ship a box mostly empty, or phone text below the readable floor."""
 
 
-def bake_infographic(slug: str, slot: str, style: str, out_dir=None, root: Path = ROOT) -> dict:
+def phone_text_px(font_px: float, scale: float, file_w: int, paint_w: float) -> float:
+    """The size a label reaches the screen at: its CSS font size, times the device pixels
+    it was shot at (`scale`), times the factor the `file_w`-wide file is scaled by where it
+    paints `paint_w` CSS px wide."""
+    return font_px * scale * paint_w / file_w
+
+
+def phone_text_problems(min_font: float, scale: float, file_w: int,
+                        paint_w: float = PHONE_PAINT_W, text: str = "") -> list[str]:
+    """[] when the smallest label lands on screen at SIB_MIN_FONT px or more, else one line."""
+    px = phone_text_px(min_font, scale, file_w, paint_w)
+    if px + 1e-6 >= SIB_MIN_FONT:
+        return []
+    return [f"phone text {text!r} is {min_font:g}px in a {file_w}px-wide file shot at "
+            f"{scale:g}x, which paints {paint_w:g}px wide at {PHONE_VIEWPORT}: {px:.1f}px on "
+            f"screen, under {SIB_MIN_FONT}px"]
+
+
+def measure_phone_paint_width(page: str = "uk-locations/blue-staffy-puppies-london/index.html",
+                              dist: Path | None = None) -> dict:
+    """The infographic boxes on a built page at PHONE_VIEWPORT, in a real browser:
+    {"min": narrowest painted width, "imgs": [{src, w, h, natural_w}]}."""
+    import subprocess
+    r = subprocess.run(["node", str(ROOT / SHOTS_JS), "paint"], cwd=str(ROOT),
+                       input=json.dumps({"root": str(dist or ROOT / "dist"), "path": page,
+                                         "width": PHONE_VIEWPORT}),
+                       capture_output=True, text=True, timeout=300)
+    if r.returncode:
+        raise RuntimeError(f"{SHOTS_JS} paint failed: {r.stderr.strip()[-800:]}")
+    got = json.loads(r.stdout)
+    widths = [i["w"] for i in got["imgs"]]
+    return {"min": min(widths) if widths else None, "imgs": got["imgs"]}
+
+
+def bake_infographic(slug: str, slot: str, style: str, out_dir=None, root: Path = ROOT,
+                     paint_w: float = PHONE_PAINT_W, phone_w: int | None = None,
+                     phone_only: bool = False, phone_scale: float = PHONE_SCALE) -> dict:
     """Bake ONE picked style of one slot into the two lossless masters the draft takes:
 
-      `<slug>-<slot>-<style>.png`      the figure for the 1408×768 box
-      `<slug>-<slot>-<style>-760.png`  the reflowed phone layout, exactly 760 wide
+      `<slug>-<slot>-<style>.png`        the figure for the 1408×768 box
+      `<slug>-<slot>-<style>-phone.png`  the phone layout, drawn at the CSS width it paints
+                                         at on a phone (`phone_w`, default `paint_w`), at
+                                         PHONE_SCALE device pixels: about 2 × 311 = 622 wide
 
     Both are cropped to the figure plus an even transparent margin (scripts/ig_shots.mjs
     `crop`), never the page's own bone, so Style A (reframe_og.contain_alpha) lays them on
     the frame's bone with no two-tone band. The box master is rendered at the width in
     BAKE_WIDTHS whose figure is closest in shape to the box (1408:768), at twice the pixels,
     so the framing shrinks it into the box (it never enlarges) and it fills it.
+    `phone_only` bakes the phone master alone (a slot whose box is already approved);
+    `phone_scale` lowers the device pixels for a layout too long to fit the sibling budget
+    at PHONE_SCALE (its text check uses the scale it was shot at).
 
     Refuses (BakeDefect, nothing kept) when the framed box would be covered under
     FILL_MIN of its width or height, whichever binds, or when any visible text in the phone
-    sibling renders under SIB_MIN_FONT px at 760 wide.
+    layout reaches the screen under SIB_MIN_FONT px where the file paints `paint_w` wide
+    (phone_text_px: the size it is SEEN at, never the file's own pixels).
 
     WHEN: only after the breeder picks, one style per slot — at Task 9 or the Asset Gate
     (STOP 4). Never bake all three styles: an unpicked style is a board preview, not an asset.
-    Then: `ingest_image.py draft <full> --infographic IG-n --sibling <sib>`.
+    Then: `ingest_image.py draft <full> --infographic IG-n` and
+    `ingest_image.py phone <phone> --board <slug> --slot <slot> --infographic IG-n`.
     `out_dir` defaults to a temp folder: masters are inputs to the draft, never served.
-    Returns {"full", "sib", "w", "h", "sib_w", "sib_h", "width", "fill", "sib_min_font"}."""
+    Returns {"full", "phone", "w", "h", "phone_w", "phone_h", "width", "fill",
+    "full_min_font", "phone_min_font", "phone_screen_px"} (box keys None when phone_only)."""
     import tempfile
     sys.path.insert(0, str(ROOT / "scripts"))
     from PIL import Image
@@ -1146,34 +1212,40 @@ def bake_infographic(slug: str, slot: str, style: str, out_dir=None, root: Path 
     if not (Path(root) / src).exists():
         raise FileNotFoundError(f"no preview to bake: {src}")
     stem = f"{slug}-{slot}-{style}"
-    full_p, sib_p = out_dir / f"{stem}.png", out_dir / f"{stem}-760.png"
-    got = _shots("crop", {"jobs": [
+    full_p, ph_p = out_dir / f"{stem}.png", out_dir / f"{stem}-phone.png"
+    render_w = int(round(phone_w if phone_w is not None else paint_w))
+    jobs = [] if phone_only else [
         {"path": src, "widths": list(BAKE_WIDTHS), "ratio": BAKE_BOX[0] / BAKE_BOX[1],
-         "margin": BAKE_MARGIN, "scale": 2, "out": str(full_p)},
-        {"path": src, "widths": [BAKE_SIB_W], "margin": BAKE_MARGIN, "out": str(sib_p)}]}, root)
-    full_m, sib_m = got[str(full_p)], got[str(sib_p)]
+         "margin": BAKE_MARGIN, "scale": 2, "out": str(full_p)}]
+    jobs.append({"path": src, "widths": [render_w], "margin": PHONE_MARGIN,
+                 "scale": phone_scale, "out": str(ph_p)})
+    got = _shots("crop", {"jobs": jobs}, root)
+    ph_m = got[str(ph_p)]
     problems = []
-    with Image.open(full_p) as im:
-        framed = reframe_og.contain_alpha(im)
-        w, h = im.size
-    fill = reframe_og.content_fill(framed)
-    if max(fill) < FILL_MIN:
-        problems.append(f"the framed box is covered {fill[0]:.0%} wide and {fill[1]:.0%} high, "
-                        f"under the {FILL_MIN:.0%} floor")
-    with Image.open(sib_p) as im:
-        sib_w, sib_h = im.size
-    if sib_w != BAKE_SIB_W:
-        problems.append(f"the phone sibling is {sib_w} wide, not {BAKE_SIB_W}")
-    if sib_m["min_font"] < SIB_MIN_FONT:
-        problems.append(f"phone sibling text {sib_m['min_font_text']!r} renders at "
-                        f"{sib_m['min_font']}px, under {SIB_MIN_FONT}px")
+    w = h = fill = full_m = None
+    if not phone_only:
+        full_m = got[str(full_p)]
+        with Image.open(full_p) as im:
+            framed = reframe_og.contain_alpha(im)
+            w, h = im.size
+        fill = reframe_og.content_fill(framed)
+        if max(fill) < FILL_MIN:
+            problems.append(f"the framed box is covered {fill[0]:.0%} wide and {fill[1]:.0%} "
+                            f"high, under the {FILL_MIN:.0%} floor")
+    with Image.open(ph_p) as im:
+        ph_w, ph_h = im.size
+    problems += phone_text_problems(ph_m["min_font"], phone_scale, ph_w, paint_w,
+                                    ph_m["min_font_text"])
     if problems:
         full_p.unlink(missing_ok=True)
-        sib_p.unlink(missing_ok=True)
+        ph_p.unlink(missing_ok=True)
         raise BakeDefect(f"{slot} ({style}): " + "; ".join(problems))
-    return {"full": str(full_p), "sib": str(sib_p), "w": w, "h": h, "sib_w": sib_w,
-            "sib_h": sib_h, "width": full_m["width"], "fill": fill,
-            "full_min_font": full_m["min_font"], "sib_min_font": sib_m["min_font"]}
+    return {"full": None if phone_only else str(full_p), "phone": str(ph_p), "w": w, "h": h,
+            "phone_w": ph_w, "phone_h": ph_h, "width": full_m and full_m["width"],
+            "fill": fill, "full_min_font": full_m and full_m["min_font"],
+            "phone_min_font": ph_m["min_font"],
+            "phone_screen_px": round(phone_text_px(ph_m["min_font"], phone_scale, ph_w,
+                                                   paint_w), 2)}
 
 
 def block(board: dict, root: Path | None = ROOT) -> str:
