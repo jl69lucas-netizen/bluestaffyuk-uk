@@ -238,14 +238,19 @@ CREDITS = (("royalkennelclub.com", "Royal Kennel Club"), ("akc.org", "AKC"),
            ("ukcdogs.com", "UKC"), ("gov.uk", "GOV.UK"))
 
 
-def _breed_key(subject: str) -> str:
-    """The data/breed-standards.json breed an outline subject names."""
+def _breed_key(subject: str):
+    """The data/breed-standards.json breed an outline subject names, or None when it names
+    none of the three (its column then renders NOT FETCHED, never another breed's figures)."""
     low = subject.lower()
-    if "pit" in low:
+    if low.startswith(NF):
+        return None
+    if re.search(r"\bpit ?bulls?\b", low):
         return "american-pit-bull-terrier"
-    if "american" in low:
+    if re.search(r"\bamerican staff|\bamstaff", low):
         return "american-staffordshire-terrier"
-    return "staffordshire-bull-terrier"
+    if re.search(r"\b(english )?staff(y|ies|ordshire bull terriers?)\b", low):
+        return "staffordshire-bull-terrier"
+    return None
 
 
 def _fact_value(field):
@@ -376,6 +381,15 @@ def facts_for(slot_plan: dict, root) -> dict:
                     "sources": {"subjects": "outline H3 heading",
                                 "rows": "none — data/breed-standards.json is missing"}}
         keys = [_breed_key(x) for x in subjects]
+        if None in keys:
+            row = {"attr": "Breed-standard figures"}
+            for side, k, x in zip("ab", keys, subjects):
+                row[side] = (_nf("breed-standards.json", f"breed for '{x}'") if k is None
+                             else _nf("breed-standards.json", "a comparable second breed"))
+            return {"title": title, "subjects": subjects, "rows": [row],
+                    "verdict": _nf("breed-standards.json", "comparison_verdict for these subjects"),
+                    "sources": {"subjects": "outline H3 heading",
+                                "rows": "none — a subject names no breed in data/breed-standards.json"}}
         breeds = [bs["breeds"].get(k) or {} for k in keys]
         rows, used = [], set()
         for field, attr in SPLIT_FIELDS:
@@ -396,7 +410,8 @@ def facts_for(slot_plan: dict, root) -> dict:
             used.add(c.get("source", ""))
         credit = [n for host, n in CREDITS if any(host in u for u in used)]
         return {"title": title, "subjects": subjects, "rows": rows, "verdict": verdict,
-                "credit": "Source: " + " / ".join(credit) if credit else "",
+                "credit": ("Source: " + " / ".join(credit) + " — figures as each standard states them")
+                          if credit else "",
                 "sources": {"subjects": "outline H3 heading",
                             "rows": "data/breed-standards.json breeds."
                                     + ", ".join(keys) + " (" + ", ".join(

@@ -1,6 +1,8 @@
 """Block 7c: which sections need an infographic, which IG type, three styles each."""
 import json
 import re
+
+import pytest
 import sys, pathlib
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
@@ -211,7 +213,8 @@ def test_breed_split_facts_come_from_the_breed_standards_file(tmp_path):
     assert [r["attr"] for r in f["rows"]] == ["Height", "Coat colours", "UK law"]
     assert f["rows"][0] == {"attr": "Height", "a": "31–37 cm", "b": "51 in"}
     assert f["verdict"] == "Two test breeds."
-    assert f["credit"] == "Source: Royal Kennel Club / AKC / GOV.UK"
+    assert f["credit"] == ("Source: Royal Kennel Club / AKC / GOV.UK — figures as each "
+                           "standard states them")
     for html in _render_all(p, root).values():
         assert "31–37 cm" in html and "Plaid" in html and "Source: Royal Kennel Club" in html
         # Weight is NOT FETCHED for one subject, so the row is left out, never half-shown.
@@ -220,7 +223,8 @@ def test_breed_split_facts_come_from_the_breed_standards_file(tmp_path):
 
 def _figure_text(html):
     fig = html[html.index("<figure"):html.index("</figure>")]
-    return re.sub(r"<[^>]+>", " ", fig)
+    import html as _html
+    return _html.unescape(re.sub(r"<[^>]+>", " ", fig))   # an entity's digits are not content
 
 
 def test_no_number_or_pound_amount_outside_the_file_renders(tmp_path):
@@ -239,9 +243,35 @@ def test_no_number_or_pound_amount_outside_the_file_renders(tmp_path):
     for sid, html in _render_all(real, IP.ROOT).items():
         text = _figure_text(html)
         assert "£" not in text and "NOT FETCHED" not in text, sid
-        assert "Source: Royal Kennel Club / AKC / GOV.UK" in text, sid
+        assert ("Source: Royal Kennel Club / AKC / GOV.UK — figures as each standard "
+                "states them") in text, sid
         for n in re.findall(r"\d+(?:\.\d+)?", text):
             assert n in allowed, (sid, n)
+
+
+@pytest.mark.parametrize("subject,key", [
+    ("English Staffy", "staffordshire-bull-terrier"),
+    ("Staffordshire Bull Terriers", "staffordshire-bull-terrier"),
+    ("American Staffy", "american-staffordshire-terrier"),
+    ("American Staffies", "american-staffordshire-terrier"),
+    ("Pit Bulls", "american-pit-bull-terrier"),
+    ("American Bully", None), ("French Bulldog", None), ("Boxer", None)])
+def test_breed_key_names_only_the_three_breeds(subject, key):
+    assert IP._breed_key(subject) == key
+
+
+def test_an_unknown_subject_renders_not_fetched_never_staffy_data(tmp_path):
+    sec = {**BREED_SEC, "heading": "Is a Blue Staffy a Boxer or a Bully?",
+           "tree": [{"level": 3, "heading": "English Staffy vs French Bulldog?", "children": []}]}
+    root, p = _breeds(tmp_path, TEST_STANDARDS)
+    p = {**p, "_sec": sec}
+    f = IP.facts_for(p, root)
+    assert f["subjects"][1] == "French Bulldog"
+    assert f["rows"][0]["b"].startswith("NOT FETCHED")
+    for html in _render_all(p, root).values():
+        assert "31–37 cm" not in html and "Teal or mauve" not in html
+        assert ("NOT FETCHED — data/breed-standards.json breed for 'French Bulldog'"
+                in _figure_text(html))
 
 
 def test_breed_split_without_the_file_renders_not_fetched(tmp_path):

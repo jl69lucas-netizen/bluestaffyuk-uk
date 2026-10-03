@@ -53,8 +53,10 @@
         "fetched": "2026-10-03"
       },
       "uk_legal_status": {
-        "value": "Not on the GOV.UK banned list; a banned type is judged by looks, not breed name",
-        "quote": "Whether your dog is a banned type depends on what it looks like, rather than its breed or name.",
+        "value": "Not on the GOV.UK banned-types list",
+        "quote": "These are the: Pit Bull Terrier, Japanese Tosa, Dogo Argentino, Fila Brasileiro, XL Bully",
+        "quote_note": "the page gives the five types as a bulleted list after \"These are the:\"; the items are joined here with commas",
+        "basis": "the list names five types; this breed is not among them",
         "source": "https://www.gov.uk/control-dog-public/banned-dogs",
         "fetched": "2026-10-03"
       }
@@ -77,8 +79,14 @@
         "value": "NOT FETCHED — the AKC standard (approved 1936) gives no weight figure, only that height and weight should be in proportion"
       },
       "colours": {
-        "value": "Any colour, solid, parti or patched; all white, over 80 per cent white, black and tan, and liver not encouraged",
+        "value": "Any colour, solid, parti or patched, is permissible",
         "quote": "Any color, solid, parti, or patched is permissible",
+        "source": "https://images.akc.org/pdf/breeds/standards/AmericanStaffordshireTerrier.pdf",
+        "fetched": "2026-10-03"
+      },
+      "colours_not_encouraged": {
+        "value": "All white, more than 80 per cent white, black and tan, and liver are not to be encouraged",
+        "quote": "but all white, more than 80 per cent white, black and tan, and liver not to be encouraged",
         "source": "https://images.akc.org/pdf/breeds/standards/AmericanStaffordshireTerrier.pdf",
         "fetched": "2026-10-03"
       },
@@ -92,8 +100,10 @@
         "fetched": "2026-10-03"
       },
       "uk_legal_status": {
-        "value": "Not on the GOV.UK banned list; a banned type is judged by looks, not breed name",
-        "quote": "Whether your dog is a banned type depends on what it looks like, rather than its breed or name.",
+        "value": "Not on the GOV.UK banned-types list",
+        "quote": "These are the: Pit Bull Terrier, Japanese Tosa, Dogo Argentino, Fila Brasileiro, XL Bully",
+        "quote_note": "the page gives the five types as a bulleted list after \"These are the:\"; the items are joined here with commas",
+        "basis": "the list names five types; this breed is not among them",
         "source": "https://www.gov.uk/control-dog-public/banned-dogs",
         "fetched": "2026-10-03"
       }
@@ -143,12 +153,13 @@
   },
   "uk_banned_types": {
     "value": "Pit Bull Terrier, Japanese Tosa, Dogo Argentino, Fila Brasileiro, XL Bully",
-    "quote": "In the UK, it’s against the law to own certain types of dog.",
+    "quote": "These are the: Pit Bull Terrier, Japanese Tosa, Dogo Argentino, Fila Brasileiro, XL Bully",
+    "quote_note": "the page gives the five types as a bulleted list after \"These are the:\"; the items are joined here with commas",
     "source": "https://www.gov.uk/control-dog-public/banned-dogs",
     "fetched": "2026-10-03"
   },
   "comparison_verdict": {
-    "value": "The Staffordshire Bull Terrier and the American Staffordshire Terrier have separate breed standards. The Staffordshire Bull Terrier is not one of the types banned in the UK; the Pit Bull Terrier type is.",
+    "value": "The Staffordshire Bull Terrier and the American Staffordshire Terrier have separate breed standards. The Staffordshire Bull Terrier is not on GOV.UK's list of banned types; the Pit Bull Terrier is.",
     "clauses": [
       {
         "text": "The Staffordshire Bull Terrier has its own Royal Kennel Club breed standard.",
@@ -159,14 +170,20 @@
         "source": "https://images.akc.org/pdf/breeds/standards/AmericanStaffordshireTerrier.pdf"
       },
       {
-        "text": "The Staffordshire Bull Terrier is not one of the types banned in the UK.",
+        "text": "The Staffordshire Bull Terrier is not on GOV.UK's list of banned types.",
         "source": "https://www.gov.uk/control-dog-public/banned-dogs"
       },
       {
-        "text": "The Pit Bull Terrier type is banned in the UK.",
+        "text": "The Pit Bull Terrier is on GOV.UK's list of banned types.",
         "source": "https://www.gov.uk/control-dog-public/banned-dogs"
       }
     ],
+    "fetched": "2026-10-03"
+  },
+  "uk_type_test": {
+    "value": "GOV.UK judges whether a dog is a banned type by what it looks like, not by its breed or name",
+    "quote": "Whether your dog is a banned type depends on what it looks like, rather than its breed or name.",
+    "source": "https://www.gov.uk/control-dog-public/banned-dogs",
     "fetched": "2026-10-03"
   }
 }

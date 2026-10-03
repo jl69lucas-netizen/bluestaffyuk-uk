@@ -25,6 +25,7 @@ def _fields():
             if isinstance(field, dict):
                 yield f"{breed}.{name}", field
     yield "uk_banned_types", DATA["uk_banned_types"]
+    yield "uk_type_test", DATA["uk_type_test"]
 
 
 FIELDS = dict(_fields())
@@ -51,9 +52,14 @@ def test_every_field_is_sourced_or_names_its_barrier(key):
     assert DATE.match(field.get("fetched", "")), key
     quote = field.get("quote", "")
     assert quote and len(quote.split()) <= 25, f"{key}: quote missing or over 25 words"
+    # Both ways: the value restates every quoted number, and every number in the value is
+    # in its quote (or in its `basis`, the stated reasoning from the quote).
     value_nums = set(NUM.findall(v))
     for n in NUM.findall(quote):
         assert n in value_nums, f"{key}: quoted number {n} is not in the value {v!r}"
+    covered = set(NUM.findall(quote)) | set(NUM.findall(field.get("basis", "")))
+    for n in value_nums:
+        assert n in covered, f"{key}: number {n} in the value is in neither quote nor basis"
 
 
 @pytest.mark.parametrize("breed", BREEDS)
@@ -80,3 +86,25 @@ def test_kc_staffy_figures_as_the_standard_states_them():
     assert "36-41 cms" in sbt["height"]["quote"]
     assert "13-17 kgs" in sbt["weight"]["quote"] and "11-15.4 kgs" in sbt["weight"]["quote"]
     assert "blue" in sbt["colours"]["quote"]
+
+
+def test_the_banned_list_quote_is_the_list_itself():
+    q = DATA["uk_banned_types"]["quote"]
+    for t in ("Pit Bull Terrier", "Japanese Tosa", "Dogo Argentino", "Fila Brasileiro",
+              "XL Bully"):
+        assert t in q and t in DATA["uk_banned_types"]["value"]
+
+
+@pytest.mark.parametrize("breed", ("staffordshire-bull-terrier", "american-staffordshire-terrier"))
+def test_not_banned_states_its_basis(breed):
+    st = DATA["breeds"][breed]["uk_legal_status"]
+    assert st["value"] == "Not on the GOV.UK banned-types list"
+    assert st["basis"] == "the list names five types; this breed is not among them"
+    assert DATA["breeds"][breed]["name"] not in st["quote"]
+
+
+def test_amstaff_colour_values_are_covered_by_their_quotes():
+    a = DATA["breeds"]["american-staffordshire-terrier"]
+    assert "not to be encouraged" in a["colours_not_encouraged"]["quote"]
+    assert "80 per cent" in a["colours_not_encouraged"]["quote"]
+    assert "encouraged" not in a["colours"]["value"]
