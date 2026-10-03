@@ -1,0 +1,123 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "A · Signed rule",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Byline under the H1: which style?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "A · Ticket strip",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Puppy strip under the key takeaways: which style?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "B · Look and listen",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Video-call checklist: which style?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "c",
+      "choiceLabel": "C · Grouped by who sets the rules",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "London places under the parks H4: which style?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Drop \"Where Can I Find Blue Staffy Breeders in the UK?\"",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "The board has 21 FAQ questions, and the rule for location pages is 15–20. What should we do?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, add all of them",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "Add the new links to the London board's link list?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Drop the sign-off",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "question": "The hero paragraph ends \"Lisa Bright, BlueStaffyUK.\", which repeats the new byline. Drop that sign-off?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "",
+      "choiceLabel": "",
+      "key": "q08",
+      "kind": "text",
+      "n": 8,
+      "question": "Where do London handovers happen, or do London buyers always collect in Carlisle or take home delivery?",
+      "status": "answered",
+      "text": "take home delivery and handovers are by request."
+    },
+    {
+      "choice": "",
+      "choiceLabel": "",
+      "key": "q09",
+      "kind": "text",
+      "n": 9,
+      "question": "Have you delivered a puppy to London before, and may the page say so?",
+      "status": "answered",
+      "text": "croydon, Edmonton and Ilford\n"
+    },
+    {
+      "choice": "",
+      "choiceLabel": "",
+      "key": "q10",
+      "kind": "text",
+      "n": 10,
+      "question": "Do you know a London owner who would share a line about their Staffy's park routine?",
+      "status": "answered",
+      "text": "Chadwell, Dartford"
+    },
+    {
+      "choice": "",
+      "choiceLabel": "",
+      "key": "q11",
+      "kind": "text",
+      "n": 11,
+      "question": "Is there a London vet you've used and would be happy to name?",
+      "status": "skip",
+      "text": "NO"
+    }
+  ],
+  "at": "2026-10-03T19:32:39.835Z",
+  "batchId": "2026-10-03-london-board-revision",
+  "counts": {
+    "answered": 10,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 1
+  },
+  "id": "s-2026-10-03T19-32-39-830Z"
+}
