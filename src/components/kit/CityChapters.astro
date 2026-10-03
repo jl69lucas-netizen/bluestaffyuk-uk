@@ -30,7 +30,7 @@ import { Image } from 'astro:assets';
 import BodyImage from '../BodyImage.astro';
 import { puppyImage } from '../../lib/puppyImages';
 import { focusClass, focusRow, servedPhoto } from '../../lib/imageFocus';
-import { citySizes, type CityFit } from '../../lib/cityKit';
+import { chapterWideSizes, citySizes, type CityFit } from '../../lib/cityKit';
 import type { BodyAsset } from '../BodyImage.astro';
 
 export interface Chapter {
@@ -64,11 +64,7 @@ const rich = await Promise.all(chapters.map((_, i) =>
 const full = await Promise.all(chapters.map((_, i) =>
   Astro.slots.has(`ch-${i + 1}-full`) ? Astro.slots.render(`ch-${i + 1}-full`) : Promise.resolve('')));
 // The tray, less its padding (16px; 48px from tablet): the H2 photo and a wide chapter's image.
-const WIDE_SIZES = citySizes(fit, {
-  phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
-  tablet: (B) => `min(760px, calc(min(${B}, 1124px) - 120px))`,
-  desktop: (B) => `min(760px, calc(min(${B}, 1124px) - 120px))`,
-});
+const WIDE_SIZES = chapterWideSizes(fit);
 // The tray is the box less 12px gutters, at most 1100px, less its padding (16px; 32px from tablet):
 // the photo is the tray on a phone, 1fr of 2.3fr beside the prose, 7fr of 21fr (at most 340px) on desktop.
 const SIZES = citySizes(fit, {
@@ -144,6 +140,9 @@ const SIZES = citySizes(fit, {
     .txt :global(p) { margin: 0 0 var(--space-3); color: var(--color-text); }
     .txt :global(p:last-child) { margin-bottom: 0; }
     .txt :global(:is(h4, h5, h6)) { margin: var(--space-4) 0 var(--space-2); }
+    /* H4-H6 sat on the body's 1.65 leading, so a two- or three-line question read as loose as
+       prose (harden pass 2026-10-03): a heading's own leading, and balanced lines. */
+    .ch :global(:is(h4, h5, h6)) { line-height: 1.3; text-wrap: balance; }
     /* The full-width slot: a row of its own under the chapter's grid, spanning every column. */
     .full { grid-column: 1 / -1; min-width: 0; color: var(--color-text); }
     .full > :global(p) { margin: 0 0 var(--space-3); color: var(--color-text); }

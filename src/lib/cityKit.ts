@@ -119,6 +119,32 @@ export function citySizes(fit: CityFit, at: { phone: (B: string) => string; tabl
   return list.join(', ');
 }
 
+/** The `sizes` of CityChapters' full-width images (the photo under the H2, a wide chapter's
+ *  infographic) and of anything in a wide chapter's text: the tray less its padding, at most 760px.
+ *  Measured in a painting browser (harden pass 2026-10-03): 319px at 375, 680px at 768, 568px at
+ *  1024 and 744px at 1280, which is the box less 56px on a phone and less 88px from a 640px box;
+ *  the old `- 120px` under-asked by 32px, so a 720w candidate would have painted upscaled. */
+export function chapterWideSizes(fit: CityFit = 'column'): string {
+  return citySizes(fit, {
+    phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
+    tablet: (B) => `min(760px, calc(min(${B}, 1124px) - 88px))`,
+    desktop: (B) => `min(760px, calc(min(${B}, 1124px) - 88px))`,
+  });
+}
+
+/** The `sizes` of a photograph in a CityChapters chapter's TEXT column (a slot's own image under
+ *  an H4), mirroring CityChapters.astro's grid: the tray less its padding on a phone, the 1.3fr of
+ *  2.3fr from a 640px box, and at most the 9fr of 21fr from an 800px box (the 8fr step from 1000px
+ *  paints narrower, which a larger `sizes` only over-serves by a little). Without it BodyImage's
+ *  uniform default (100vw to 800px, then 760px) served a 760-1024px file into a 260-370px column. */
+export function chapterTextSizes(fit: CityFit = 'column'): string {
+  return citySizes(fit, {
+    phone: (B) => `calc(min(${B}, 1124px) - 56px)`,
+    tablet: (B) => `calc((min(${B}, 1124px) - 112px) * 1.3 / 2.3)`,
+    desktop: (B) => `calc((min(${B}, 1124px) - 152px) * 9 / 21)`,
+  });
+}
+
 /** Words a full stop ends without ending the sentence (lower-cased, without the stop). */
 const ABBREVIATIONS = new Set(['mr', 'mrs', 'ms', 'dr', 'st', 'mt', 'no', 'vs', 'etc', 'e.g', 'i.e']);
 

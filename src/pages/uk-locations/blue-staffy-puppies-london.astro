@@ -63,7 +63,7 @@ import CityTicketStrip from '../../components/kit/CityTicketStrip.astro';
 import CityLookListenChecklist, { type CheckPane } from '../../components/kit/CityLookListenChecklist.astro';
 import CityPlacesByPublisher from '../../components/kit/CityPlacesByPublisher.astro';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
-import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, depositBrief, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
+import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, chapterTextSizes, chapterWideSizes, depositBrief, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
 import { guaranteePhraseOf, guaranteeWords, type GuaranteeSettings } from '../../lib/guarantee';
 import { numberWord } from '../../lib/recordText';
 
@@ -134,8 +134,16 @@ const photo = (slot: string): BodyAsset => {
  *  swap one, change its entry here. */
 const infographic = (slot: string, alt: string, phone: { w: number; h: number }): BodyAsset => {
   const a = asset(slot);
-  return { ...a, alt: a.alt || alt, phone: { src: a.file.replace(/\.webp$/, '-760.webp'), ...phone } };
+  // Each layout has a smaller bake beside it (harden pass 2026-10-03): the wide file a 720w one,
+  // for the 540-710px box it paints in from 640px; the tall phone file a 400w one, for the ~320px
+  // box on a phone. The served files stay as they are (working rule 11).
+  const tall = { ...a, slot: `${slot}-phone`, file: a.file.replace(/\.webp$/, '-760.webp'), ...phone };
+  return { ...a, alt: a.alt || alt, srcset: bakedSrcset(a, [720], inPublic),
+    phone: { src: tall.file, ...phone, srcset: bakedSrcset(tall, [400], inPublic) } };
 };
+// A photo in a chapter's text column, and one in a wide chapter's (full-width) text.
+const TEXT_SIZES = chapterTextSizes();
+const WIDE_TEXT_SIZES = chapterWideSizes();
 const IG = {
   'deposit-steps': infographic('deposit-steps', '', { w: 760, h: 1013 }),
   'delivery-route': infographic('delivery-route',
@@ -424,7 +432,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     <Fragment slot="ch-1">
       <p><a href="/blue-staffy-pup-sale-uk/">How our delivery price is set by distance</a> is on our sale page too.</p>
       <h4>{tree('delivery', 0, 0)}</h4>
-      <BodyImage asset={photo('delivery-defra')} srcset={photo('delivery-defra').srcset} box="uniform" />
+      <BodyImage asset={photo('delivery-defra')} srcset={photo('delivery-defra').srcset} box="uniform" sizes={TEXT_SIZES} />
       <p>Yes. Every delivery we book uses DEFRA-approved pet transport.</p>
       <h5>{tree('delivery', 0, 0, 0)}</h5>
       <p>By distance, inside that band. Ask us for London's figure when you enquire, or collect from {TOWN} instead.</p>
@@ -457,7 +465,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     <Fragment slot="ch-1">
       <p><a href="/blue-staffy-uk-breeders/">Maggie, Jones and the home they share with us</a> are on our breeders page.</p>
       <h4>{tree('litter-prices', 0, 0)}</h4>
-      <BodyImage asset={photo('litter-parents-dam')} srcset={photo('litter-parents-dam').srcset} box="uniform" />
+      <BodyImage asset={photo('litter-parents-dam')} srcset={photo('litter-parents-dam').srcset} box="uniform" sizes={TEXT_SIZES} />
       <p>Settled. We chose her for her temperament, as we choose every dog we breed from.</p>
       <h4>{tree('litter-prices', 0, 1)}</h4>
       <p>Half of what each puppy inherits. We chose him, like Maggie, for his settled temperament.</p>
@@ -472,7 +480,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <h4>{tree('litter-prices', 1, 0)}</h4>
       <p>On our available puppies list, linked at the top of this page, where each puppy has its own page.</p>
       <h4>{tree('litter-prices', 1, 1)}</h4>
-      <BodyImage asset={photo('litter-counter')} srcset={photo('litter-counter').srcset} box="uniform" />
+      <BodyImage asset={photo('litter-counter')} srcset={photo('litter-counter').srcset} box="uniform" sizes={WIDE_TEXT_SIZES} />
       <p>Because our price is the price: {BOY_PRICE} for a boy, {GIRL_PRICE} for a girl. It pays for named parents, a home-raised litter, the paperwork and our {GUARANTEE_LOWER}. A price far below that is a reason to ask more questions.</p>
     </Fragment>
     <p><a href="#enquiry">Ask about a puppy from this litter</a>, and say whether you would like delivery or collection.</p>

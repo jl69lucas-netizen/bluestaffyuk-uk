@@ -44,8 +44,11 @@ const p = servedPhoto(photo);
 // desktop it takes the 9fr of the card's 9fr / 16fr split (the card inside a 1000px measure, less
 // 32px gutters, 40px padding and a 40px gap). Nothing here is fitted to one photo.
 const sizes = citySizes(fit, {
-  phone: () => `${p.w}px`,
-  tablet: () => `${p.w}px`,
+  // Its own width, or the card's content box where that is narrower (harden pass 2026-10-03:
+  // `${p.w}px` alone served the 723px file into a 293px box on a phone): the box less the
+  // section's gutters and the card's padding (16 + 20 a side on a phone, 24 + 24 from 640px).
+  phone: (B) => `min(${p.w}px, calc(${B} - 72px))`,
+  tablet: (B) => `min(${p.w}px, calc(min(${B}, 1000px) - 96px))`,
   desktop: (B) => `min(${p.w}px, calc((min(${B}, 1000px) - 184px) * 9 / 25))`,
 });
 ---

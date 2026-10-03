@@ -34,7 +34,12 @@ import { BODY_SIZES, TALL_SIZES, UNIFORM_SIZES } from '../lib/assets';
 
 /** A phone-only art-directed file (an infographic's tall `-760` sibling): served below 640px
  *  through `<picture>`, at its own intrinsic size, and never cropped by the uniform box. */
-export interface PhoneSource { src: string; w: number; h: number }
+export interface PhoneSource {
+  src: string; w: number; h: number;
+  /** Its own candidate list (a smaller bake beside the -760 file), read against `sizes`. Omitted
+   *  renders the single file, as before. */
+  srcset?: string;
+}
 /** The row a page hands BodyImage and the city components: the baked row, its candidate list
  *  and, for an infographic, its phone layout. */
 export type BodyAsset = FilledAsset & { srcset?: string; phone?: PhoneSource };
@@ -72,7 +77,8 @@ const style = box !== 'natural' && focal && FOCAL.test(focal) ? `object-position
     a prop. */}
 {phone ? (
 <picture>
-  <source media="(max-width: 639px)" srcset={phone.src} width={phone.w} height={phone.h} />
+  <source media="(max-width: 639px)" srcset={phone.srcset ?? phone.src} sizes={phone.srcset ? sizes : undefined}
+    width={phone.w} height={phone.h} />
   <img class:list={cls} style={style} src={asset.file} alt={asset.alt} width={asset.w} height={asset.h}
     srcset={srcset} sizes={sizes} loading="lazy" decoding="async" />
 </picture>
