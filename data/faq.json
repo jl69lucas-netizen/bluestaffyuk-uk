@@ -512,7 +512,7 @@
   {
     "id": "breed-blue-rarity",
     "q": "How Rare Are Blue Staffies?",
-    "a": "Blue is one of the colours the Royal Kennel Club breed standard lists for the Staffordshire Bull Terrier, alone or with white, so a blue Staffy is a recognised colour of the breed rather than a separate type. No registry publishes a count of blue Staffies that we can cite, so we do not quote a figure for how many there are. What we can tell you is the colour of each puppy in our current litter.",
+    "a": "The Royal Kennel Club breed standard lists blue as a Staffordshire Bull Terrier colour, alone or with white. We give no rarity figure: the standard states none, and we will not guess one.",
     "source": "data/breed-standards.json"
   }
 ]

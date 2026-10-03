@@ -310,3 +310,16 @@ def test_the_own_components_rule_is_written_and_ledgered():
                    "test": "tests/py/test_rule16_gate.py", "pack": "rules/design.md"}
     run = (ROOT / "docs/reference/page-run.md").read_text(encoding="utf-8")
     assert "own-components-per-page" in run
+
+
+def test_approval_refuses_a_shared_section_component():
+    """Breeder q10: the approval itself refuses a component another new-family board uses,
+    so a shared component cannot become an approved record and wait for board_gate.py."""
+    import board_approve as BA
+    leeds = page("blue-staffy-puppies-leeds", "leeds-hero", "city-chapters")
+    york = page("blue-staffy-puppies-york", "york-hero", "city-chapters")
+    boards = {"blue-staffy-puppies-leeds": leeds, "blue-staffy-puppies-york": york}
+    msgs = BA.rule16_refusals(york, york, boards)
+    assert len(msgs) == 1 and "city-chapters is already used by blue-staffy-puppies-leeds" in msgs[0]
+    own = page("blue-staffy-puppies-york", "york-hero", "york-chapters")
+    assert BA.rule16_refusals(york, own, boards) == []

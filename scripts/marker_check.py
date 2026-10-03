@@ -61,6 +61,13 @@ def _present(marker, low):
     rx = PREFIX_ONLY.get(marker) or SPELLED.get(marker)
     return bool(rx.search(low)) if rx else marker in low
 
+
+def has_marker(text):
+    """True when `text` carries any marker, judged exactly as the gate judges a line (the
+    public entry point for other scripts, e.g. scripts/answer_board_save.py)."""
+    low = (text or "").lower()
+    return any(_present(m, low) for m in MARKERS)
+
 FIXED_ROOTS = (
     "CLAUDE.md", "rules", "docs/reference", "package.json", "tests/render",
     "scripts/dup_content_audit.py",

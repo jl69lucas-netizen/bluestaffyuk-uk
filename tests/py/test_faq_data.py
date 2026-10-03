@@ -404,6 +404,49 @@ def test_page_backed_answers_say_what_their_page_says():
     assert checked, "no page-backed row was verified — this test examined nothing"
 
 
+# ── a breed-standards-sourced answer states only what the standard's quotes say ──────────
+# Review of breeder q04 (2026-10-02): the first rarity answer made three claims the file does
+# not back ("no registry publishes…", "rather than a separate type", the litter's colours).
+# Each sentence of such an answer must either trace to a quote (its content words, minus
+# stop words, all in the quotes) or be a first-person statement of what we do or do not do.
+# Claim shapes that need a source of their own are refused outright, and the answer stays short.
+CLAIM_DENYLIST = ("no registry", "rather than", "rare", "%", "most ", "only ", "unusual",
+                  "uncommon", "popular", "percent")
+_STOP = set("""a an the and or of as is are be to in on for with by it its this that
+these those from at no none one any not but""".split())
+_FIRST_PERSON = re.compile(r"\b(we|our|us)\b", re.I)
+
+
+def test_breed_standard_answers_trace_every_fact_to_a_quote():
+    rows = [r for r in FAQ if r["source"] in DATA_QUOTE_SOURCES]
+    assert rows, "no row is sourced to a breed-standards file — this test examined nothing"
+    for r in rows:
+        quotes = _quote_text(r["source"])
+        qlow = quotes.lower()
+        a = r["a"]
+        assert len(a.split()) <= 40, (r["id"], len(a.split()))
+        low = a.lower()
+        for bad in CLAIM_DENYLIST:
+            assert bad not in low, (r["id"], bad)
+        quote_digits = set(re.findall(r"\d+", quotes))
+        for n in re.findall(r"\d+", a):
+            assert n in quote_digits, (r["id"], n)
+        qwords = set(re.findall(r"[a-z]+", qlow))
+        for sentence in re.split(r"(?<=[.!?])\s+", a.strip()):
+            if _FIRST_PERSON.search(sentence):
+                # a first-person statement of our own practice; it may name the standard only
+                # to say it is silent, so it carries no breed fact of its own
+                continue
+            # A fact sentence: every colour or breed word it uses is in the quotes, and the
+            # names it leans on are the file's own (the RKC page the quotes come from).
+            content = [w for w in re.findall(r"[a-z]+", sentence.lower()) if w not in _STOP]
+            missing = [w for w in content if w not in qwords
+                       and w not in ("royal", "kennel", "club", "breed", "standard", "lists",
+                                     "staffordshire", "bull", "terrier", "colour", "alone")]
+            assert not missing, (r["id"], sentence, missing)
+        src = json.loads((ROOT / r["source"]).read_text())
+        assert "royal-kennel-club" in src["sources"], r["id"]
+
 # ── a clear health-test result is a recorded, unproven claim (Known Issue 40) ──
 # Eleven rows say the parents are "certified clear" / "DNA tested clear" of L-2-HGA and
 # HC-HSF4, while rules/copy.md (`entity-4-move-loop`) keeps every health entity NOT FETCHED

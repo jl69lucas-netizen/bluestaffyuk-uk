@@ -518,9 +518,14 @@ def rule16_refusals(old_board, new_board, boards):
     exists to end, so re-picking it is a new share and is refused."""
     before = (set() if old_board.get("approval") is None
               else {(shape, pick) for shape, pick, _ in PB.rule16_shares(old_board, boards)})
-    return [PB.rule16_message(shape, pick, others)
-            for shape, pick, others in PB.rule16_shares(new_board, boards)
-            if (shape, pick) not in before]
+    return ([PB.rule16_message(shape, pick, others)
+             for shape, pick, others in PB.rule16_shares(new_board, boards)
+             if (shape, pick) not in before]
+            # rules/design.md own-components-per-page (breeder q10, 2026-10-02): a section
+            # component another new-family board already uses is refused at approval too, not
+            # only by board_gate.py afterwards. A component is part of the record, not of a
+            # pick, so every share is refused, already-there or not: re-boarding is the fix.
+            + [f["msg"] for f in PB.component_findings(new_board, boards)])
 
 
 # ── re-approval (a controller's post-approval wording fix) ─────────────────────────────────

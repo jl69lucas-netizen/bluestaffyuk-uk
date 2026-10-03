@@ -36,41 +36,59 @@ TERM_LABEL = "[sibling-site term]"
 NOTE = ("> {n} source-repo marker hit(s) were replaced with neutral labels so this file passes "
         "`check:markers`; the original text stays in the answer-board db.")
 
-# A token never crosses whitespace, a quote, a backslash or a bracket, so a JSON string's
-# syntax and its escapes are never part of a replacement.
+# A URL, with JSON's escaped `\/` slashes allowed inside it. It never crosses whitespace, a
+# quote, a bracket or any other backslash, so a JSON string's syntax is never consumed.
+URL = re.compile(r"""(?i)(?:https?:(?:\\?/){2}|www\.)(?:\\/|[^\s"'<>()\[\]{}\\])+""")
+# Any other word: never crosses whitespace, a quote, a backslash or a bracket.
 TOKEN = re.compile(r"""[^\s"'\\<>()\[\]{}]+""")
-URL = re.compile(r"(?i)^(?:https?://|www\.)")
 TRAIL = ".,;:!?"
 
 
 def _has_marker(text):
-    low = text.lower()
-    return any(MC._present(m, low) for m in MC.MARKERS)
+    return MC.has_marker(text.replace("\\/", "/"))
 
 
 def neutralise_text(text):
-    """(new text, replacements). Two-word markers first, then whole tokens."""
+    """(new text, replacements). URLs first, whole: a URL carrying a marker becomes one
+    PAGE_LABEL, so no fragment of it is left for the word rules to half-replace. Then, only
+    in the text outside URLs, the spelled two-word markers (marker_check.SPELLED, its own
+    flags plus re.I), then every other word that carries a marker."""
     count = 0
+    out = []
+    pos = 0
 
-    def sub_term(_m):
+    def words(seg):
         nonlocal count
-        count += 1
-        return TERM_LABEL
 
-    for rx in MC.SPELLED.values():
-        text = re.compile(rx.pattern, re.I).sub(sub_term, text)
+        def sub_term(_m):
+            nonlocal count
+            count += 1
+            return TERM_LABEL
+        for rx in MC.SPELLED.values():
+            seg = re.compile(rx.pattern, rx.flags | re.I).sub(sub_term, seg)
 
-    def sub_token(m):
-        nonlocal count
-        tok = m.group(0)
-        core = tok.rstrip(TRAIL)
-        if not _has_marker(core):
-            return tok
-        count += 1
-        return (PAGE_LABEL if URL.match(core) or "/" in core else TERM_LABEL) + tok[len(core):]
+        def sub_token(m):
+            nonlocal count
+            tok = m.group(0)
+            core = tok.rstrip(TRAIL)
+            if not _has_marker(core):
+                return tok
+            count += 1
+            return (PAGE_LABEL if "/" in core else TERM_LABEL) + tok[len(core):]
+        return TOKEN.sub(sub_token, seg)
 
-    text = TOKEN.sub(sub_token, text)
-    return text, count
+    for m in URL.finditer(text):
+        url = m.group(0)
+        core = url.rstrip(TRAIL)
+        out.append(words(text[pos:m.start()]))
+        if _has_marker(core):
+            count += 1
+            out.append(PAGE_LABEL + url[len(core):])
+        else:
+            out.append(url)
+        pos = m.end()
+    out.append(words(text[pos:]))
+    return "".join(out), count
 
 
 def neutralise_file(path):

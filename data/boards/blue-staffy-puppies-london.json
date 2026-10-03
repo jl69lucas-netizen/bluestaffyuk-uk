@@ -2483,7 +2483,7 @@
         {
           "level": 3,
           "heading": "breed-blue-rarity",
-          "intent": "Q: How Rare Are Blue Staffies? — data/faq.json row `breed-blue-rarity` (breeder q04, 2026-10-02), already written: blue is a colour the Royal Kennel Club standard lists (data/breed-standards.json), and no rarity figure is given because no registry publishes one we can cite. It answers the People Also Ask gap",
+          "intent": "Q: How Rare Are Blue Staffies? — data/faq.json row `breed-blue-rarity` (breeder q04, 2026-10-02), already written: the Royal Kennel Club standard lists blue as a colour (data/breed-standards.json); no rarity figure, because the standard states none. It answers the People Also Ask gap",
           "children": []
         }
       ],

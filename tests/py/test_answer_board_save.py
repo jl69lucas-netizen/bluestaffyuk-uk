@@ -94,3 +94,36 @@ def test_the_readme_names_the_step_without_copying_the_markers():
     assert "scripts/answer_board_save.py --neutralise" in readme
     assert "scripts/marker_check.py" in readme
     assert MC.hits_in(ROOT / "docs/reference/answer-board/README.md") == []
+
+
+# The reviewer's case: a URL whose path carries a spelled two-word marker. Built from
+# marker_check's own markers (the hyphenated spelled one, plus a plain one), never typed.
+SPELLED_HYPHEN = next(m for m in MC.SPELLED if "-" in m)
+PATH_URL = f"https://example.com/{SPELLED_HYPHEN}-{WORD}s/"
+
+
+def test_a_url_with_a_spelled_marker_in_its_path_is_one_whole_label():
+    text, n = ABS.neutralise_text(f"see {PATH_URL} please")
+    assert (text, n) == (f"see {ABS.PAGE_LABEL} please", 1)
+    assert text.count(ABS.PAGE_LABEL) == 1 and ABS.TERM_LABEL not in text
+    assert "example" not in text and "/" not in text
+
+
+def test_escaped_slashes_in_a_json_file_are_one_whole_label(tmp_path):
+    escaped = PATH_URL.replace("/", "\\/")
+    p = tmp_path / "a.json"
+    p.write_text('{"text": "see ' + escaped + ' please", "n": 1}', encoding="utf-8")
+    assert ABS.neutralise_file(p) == 1
+    out = p.read_text(encoding="utf-8")
+    assert out == '{"text": "see ' + ABS.PAGE_LABEL + ' please", "n": 1}'
+    assert json.loads(out)["text"] == f"see {ABS.PAGE_LABEL} please"
+    assert MC.hits_in(p) == []
+
+
+def test_a_clean_url_is_left_alone_even_beside_a_marker_word():
+    text, n = ABS.neutralise_text(f"https://example.com/staffy-guide/ and a {WORD}")
+    assert (text, n) == (f"https://example.com/staffy-guide/ and a {ABS.TERM_LABEL}", 1)
+
+
+def test_marker_check_has_a_public_helper():
+    assert MC.has_marker(PATH_URL) and not MC.has_marker("WCAG-AA staffy")
