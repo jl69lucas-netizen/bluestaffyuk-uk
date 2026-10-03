@@ -81,6 +81,26 @@ locked.
 | D3 | P3 | Site chrome targets under 44px: header brand 40×40, breadcrumb links 31px tall (the deliberate `.tap-24` class), footer "Home" / "Blog" / "X" 29–43px wide; all pass WCAG 2.5.8 AA (24px) | `SiteHeaderKit.astro`, `Breadcrumb.astro`, `SiteFooterKit.astro` | all | **deferred**: shared chrome on every built page; a change there repaints all of them and is previewed first (the precedent in hardening-log Plan 2 close, row 5). Preview (targets outlined): `D3-chrome-targets-375.png`, `D3-chrome-footer-targets-375.png` |
 | D4 | P2 | On a phone the six infographics paint their tall `-760` layout at 319px, about 0.42x, and the labels inside them shrink to roughly 5–7px; the prose beside each carries the same facts | the six approved infographic files | 375 | **deferred**: an asset change (a phone layout drawn at a larger type size), which goes back through the board's image slots and the Asset Gate. Preview: `D4-infographic-phone-375.png` |
 
+### Deferred: applied (2026-10-04)
+
+D1 (as the breeder directed), D2 and D3 were applied after the breeder's answers (answer board batch `2026-10-03-london-harden-decisions`; D4 went to the infographic pipeline separately), together with the six changes the frontend-design pass deferred (batch `2026-10-03-london-design-pass-decisions`, all (a)):
+
+| Change | Breeder's answer | Commit(s) | What shipped |
+|---|---|---|---|
+| D1 (impeccable) | harden q02: no to sticky; "the text or paragraphs go under the image/header ... no long/tall, empty space" | `0f5a10ad` | From a 640px box each chapter opens on one row, numeral and H3 beside the photo (centred on it), and the prose with its H4–H6 ladder runs the full chapter width UNDER that row at 65ch. Measured bay beside the prose: 761px / 983px at 768 / 1280 before, none after (the largest gap left is 47–53px between a centred heading and its photo's foot). Phones unchanged. |
+| D2 (impeccable) | harden q03: yes | `0f5a10ad` | The chapter ladder (the slots' own H4–H6) at 600 in `--color-brand`; F6's 1.3 leading kept. |
+| D3 (impeccable) | harden q04: yes, every page | `7bacef15`, fix `d1794e82` | Header brand link 44×44; every crumb link 44px tall and ≥44px wide (8px padding cancelled by an 8px negative margin, so the › keeps 8px each side: a plain `min-width` failed `nav-breadcrumb-separator-spaced` on six pages, caught by the full render gate and fixed); `SiteFooterKit` and the legacy `SiteFooter` links ≥44×44. Measured at 375 on London, health, the locations hub and /search/: 0 chrome links under 44. |
+| Site-wide link underline | design-pass q01: yes, every page | `cf3dabf8` | London's F1 rule moved from `city.css` to `global.css`: links in body p / li / dd / td / figcaption / blockquote in `<main>` (not nav, kit components or the city kit) are underlined; London unchanged, home 28 links, health 15, contact 9, the locations hub 28 newly underlined. |
+| D9 (frontend-design) | design-pass q02: yes | `7bacef15` (legal row), `cf3dabf8` (form link) | Footer legal row `align-items: center`; the contact form's privacy link takes the shared underline and hover. |
+| D5 (frontend-design) | design-pass q03: yes | `458007c9` | `SectionDivider hairline`: a 1px steel-300 rule on the six seams between two chapter bands; the seal stays at the twelve turns. |
+| D6 (frontend-design) | design-pass q04: yes | `1f056581` | The six filmstrip photos fade in and rise 8px once, 200ms each, 60ms stagger, transform and opacity only, inside `prefers-reduced-motion: no-preference`. |
+| D7 (frontend-design) | design-pass q05: yes, add the smaller copy | `458007c9`, fix `d8ef6e2b` | `-240` / `-400` siblings ADDED beside `kc-registered-staffy-puppies.webp` (master untouched); the tray's inset is 16px / 32px; the chapter `sizes` follow (311 / 640 / 704px at 375 / 768 / 1280). The portrait then takes the text's `sizes` instead of the tall box's 230vw (`img-srcset-within-2x` caught 2.77x at 375 and 768 in the full gate; fixed). |
+| D8 (frontend-design) | design-pass q06: yes | `458007c9` | The contact graphic (deposit chapter 1) and the breed comparison (breed H2) shown whole, `object-fit: contain` on bone-50, on London only. |
+
+Screens, before and after at 375 / 768 / 1280 (D6 as 0 / 150 / 300 / 500ms frames): `docs/reports/screens/harden-d1-d3/` (`302af9eb`).
+
+Verification, after `d8ef6e2b`, on a fresh build (63 built pages): `npm run -s test:render:pages` exit 0, 63 passed (21 pages × 375 / 768 / 1280; scorecards written, 218 advisory rows across 21 pages); `python3 -m pytest tests/py/test_london_page.py -q` 21 passed; `python3 scripts/board_gate.py blue-staffy-puppies-london` 0 FAIL, 31 WARN (22 sections, 93 headings, 35 assets examined); `npm run -s check:all` exit 0 (board gate --all 13 rebuilt pages, 0 failed). The city-kit spec (`tests/render/city-kit.config.ts`, not in the chain) fails the same 9 of 34 tests before and after on its pre-existing rows (section heights, `.tk-go` contrast, specimen sections missing); its chapter layout facts now follow the new layout and pass (the 45 chapter-layout rows it reported before are gone).
+
 ### Measured and dismissed (not counted)
 
 - `span.tk-go` arrows in the ticket strip at 4.39:1: `aria-hidden="true"` and decorative, so the 3:1
