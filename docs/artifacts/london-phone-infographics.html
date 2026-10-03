@@ -1,0 +1,162 @@
+<title>London Phone Infographics</title>
+<style>
+:root{--bg:#F4F1EA;--card:#FAF8F3;--ink:#1B2430;--muted:#46566B;--rule:#DAD6CC;--accent:#1F3A52;--brass:#A8861C;--band:#1F3A52;--band-ink:#F4F1EA;--bad:#9B2C2C;--good:#2F6B3A;--btn:#1F3A52;--btn-ink:#F4F1EA}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#14202B;--card:#1B2A38;--ink:#EEF1F4;--muted:#B6C2CC;--rule:#2C3A47;--accent:#8FA3B8;--brass:#C9A227;--band:#0E1720;--band-ink:#E4EAF1;--bad:#F2A3A3;--good:#9ED3A6;--btn:#8FA3B8;--btn-ink:#14202B}}
+:root[data-theme="dark"]{--bg:#14202B;--card:#1B2A38;--ink:#EEF1F4;--muted:#B6C2CC;--rule:#2C3A47;--accent:#8FA3B8;--brass:#C9A227;--band:#0E1720;--band-ink:#E4EAF1;--bad:#F2A3A3;--good:#9ED3A6;--btn:#8FA3B8;--btn-ink:#14202B}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{background:var(--band);color:var(--band-ink);border-bottom:3px solid var(--brass)}
+.top .in,main{max-width:860px;margin:0 auto;padding-left:16px;padding-right:16px}
+.top .in{padding-top:24px;padding-bottom:20px}
+h1{margin:0 0 8px;font:700 clamp(24px,5vw,32px)/1.2 Fraunces,Georgia,serif}
+.intro{margin:0 0 8px;max-width:68ch;opacity:.92}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+main{padding-top:24px;padding-bottom:64px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px;margin:0 0 24px;min-width:0}
+.hd{display:flex;gap:8px 12px;align-items:baseline;justify-content:space-between;flex-wrap:wrap}
+h2{margin:0 0 4px;font:700 20px/1.3 Fraunces,Georgia,serif;color:var(--accent)}
+.n{color:var(--brass);margin-right:6px}
+.key{margin:0 0 12px;color:var(--muted);font-size:14px;overflow-wrap:anywhere}
+code{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
+.two{display:grid;gap:16px;grid-template-columns:minmax(0,1fr);justify-items:start}
+@media (min-width:720px){.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+figure{margin:0;min-width:0;width:100%;max-width:319px}
+.lab{margin:0 0 6px;font-size:13px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+.bad{color:var(--bad)}.good{color:var(--good)}
+.two img{display:block;width:100%;max-width:319px;height:auto;border:1px solid var(--rule);border-radius:6px;background:#FAF8F3}
+.meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:16px 0 0;font-size:14px}
+.meta dt{font-weight:700;color:var(--muted)}.meta dd{margin:0;min-width:0}
+.btn{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:6px;border:1px solid var(--btn);background:var(--btn);color:var(--btn-ink);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink)}
+.top .btn{border-color:var(--band-ink);background:var(--band-ink);color:var(--band)}
+.note{font-size:14px;color:var(--muted);max-width:68ch}
+@media (max-width:400px){.card{padding:16px 11px}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<header class="top"><div class="in">
+<h1>London Phone Infographics</h1>
+<p class="intro">You said yes to D4: the six London infographics were unreadable on phones. Each one is shown below at the size it paints at on a 375px phone (the page draws them 319px wide today): on the left, the file phones get now; on the right, the new draft, drawn at phone width with every label at 15px or more on screen. Same facts, same picked style. These are drafts: nothing is on the site until you approve each one.</p>
+<p class="intro">To approve a draft, copy its pick into the answer board, or reply with the slot names you want.</p>
+<div class="tools"><button class="btn" type="button" id="copyall">Copy all as markdown</button><button class="btn" type="button" id="dl">Download .md</button></div>
+</div></header>
+<main>
+<section class="card" id="deposit-steps" data-md="## 1. Four steps to buy
+
+- Slot: `deposit-steps` (IG-2 Process Steps, sticker style)
+- Now served on phones: `/images/four-steps-to-buy-a-blue-staffy-puppy-infographic-760.webp`, 760x1013, 41.3 KB. Smallest label 15px in the file, about **6.3px on screen** in the 319px box.
+- New draft: `data/boards/generated/blue-staffy-puppies-london/deposit-steps-phone.webp`, 622x2436 (drawn 311px wide at 2x), 54.5 KB, sha12 `e0cec91357ef`. Smallest label **15.4px on screen** (15.0px at the 311px floor).
+- Pick that approves it: `img:deposit-steps-phone = ig:IG-2:e0cec91357ef`">
+<div class="hd"><h2><span class="n">1</span>Four steps to buy</h2><button class="btn copy" type="button">Copy section</button></div>
+<p class="key"><code>deposit-steps</code> · IG-2 Process Steps · sticker style</p>
+<div class="two">
+<figure><figcaption class="lab">Now on phones: 760×1013 · labels ≈ <b class="bad">6.3px</b> on screen</figcaption>
+<img src="img/old/deposit-steps-760.webp" width="760" height="1013" alt="The four steps to buy infographic as phones are served it today, the 760px-wide file shrunk into the phone box" loading="lazy" decoding="async"></figure>
+<figure><figcaption class="lab">New draft: 622×2436 · labels ≈ <b class="good">15.4px</b> on screen</figcaption>
+<img src="img/new/deposit-steps-phone.webp" width="622" height="2436" alt="The four steps to buy infographic re-drawn for phones, at the width it paints at" loading="lazy" decoding="async"></figure>
+</div>
+<dl class="meta"><dt>Draft</dt><dd><code>data/boards/generated/blue-staffy-puppies-london/deposit-steps-phone.webp</code> · 54.5 KB · drawn 311px wide at 2x</dd>
+<dt>sha12</dt><dd><code>e0cec91357ef</code></dd>
+<dt>Pick</dt><dd><code class="pick">img:deposit-steps-phone = ig:IG-2:e0cec91357ef</code> <button class="btn ghost copypick" type="button" data-pick="img:deposit-steps-phone = ig:IG-2:e0cec91357ef">Copy pick</button></dd></dl>
+</section>
+<section class="card" id="delivery-route" data-md="## 2. Delivery route, Carlisle to London
+
+- Slot: `delivery-route` (IG-5 Route Map, chalk style)
+- Now served on phones: `/images/blue-staffy-puppy-delivery-route-carlisle-to-london-infographic-760.webp`, 760x692, 40.3 KB. Smallest label 15px in the file, about **6.3px on screen** in the 319px box.
+- New draft: `data/boards/generated/blue-staffy-puppies-london/delivery-route-phone.webp`, 622x1644 (drawn 311px wide at 2x), 32.9 KB, sha12 `65f062070dc7`. Smallest label **15.4px on screen** (15.0px at the 311px floor).
+- Pick that approves it: `img:delivery-route-phone = ig:IG-5:65f062070dc7`">
+<div class="hd"><h2><span class="n">2</span>Delivery route, Carlisle to London</h2><button class="btn copy" type="button">Copy section</button></div>
+<p class="key"><code>delivery-route</code> · IG-5 Route Map · chalk style</p>
+<div class="two">
+<figure><figcaption class="lab">Now on phones: 760×692 · labels ≈ <b class="bad">6.3px</b> on screen</figcaption>
+<img src="img/old/delivery-route-760.webp" width="760" height="692" alt="The delivery route, carlisle to london infographic as phones are served it today, the 760px-wide file shrunk into the phone box" loading="lazy" decoding="async"></figure>
+<figure><figcaption class="lab">New draft: 622×1644 · labels ≈ <b class="good">15.4px</b> on screen</figcaption>
+<img src="img/new/delivery-route-phone.webp" width="622" height="1644" alt="The delivery route, carlisle to london infographic re-drawn for phones, at the width it paints at" loading="lazy" decoding="async"></figure>
+</div>
+<dl class="meta"><dt>Draft</dt><dd><code>data/boards/generated/blue-staffy-puppies-london/delivery-route-phone.webp</code> · 32.9 KB · drawn 311px wide at 2x</dd>
+<dt>sha12</dt><dd><code>65f062070dc7</code></dd>
+<dt>Pick</dt><dd><code class="pick">img:delivery-route-phone = ig:IG-5:65f062070dc7</code> <button class="btn ghost copypick" type="button" data-pick="img:delivery-route-phone = ig:IG-5:65f062070dc7">Copy pick</button></dd></dl>
+</section>
+<section class="card" id="litter-prices-figures" data-md="## 3. Litter prices and deposit
+
+- Slot: `litter-prices-figures` (IG-1 Stat Panel, sticker style)
+- Now served on phones: `/images/blue-staffy-litter-prices-and-deposit-infographic-760.webp`, 760x1062, 36.8 KB. Smallest label 15px in the file, about **6.3px on screen** in the 319px box.
+- New draft: `data/boards/generated/blue-staffy-puppies-london/litter-prices-figures-phone.webp`, 622x2282 (drawn 311px wide at 2x), 46.6 KB, sha12 `13da72792676`. Smallest label **15.4px on screen** (15.0px at the 311px floor).
+- Pick that approves it: `img:litter-prices-figures-phone = ig:IG-1:13da72792676`">
+<div class="hd"><h2><span class="n">3</span>Litter prices and deposit</h2><button class="btn copy" type="button">Copy section</button></div>
+<p class="key"><code>litter-prices-figures</code> · IG-1 Stat Panel · sticker style</p>
+<div class="two">
+<figure><figcaption class="lab">Now on phones: 760×1062 · labels ≈ <b class="bad">6.3px</b> on screen</figcaption>
+<img src="img/old/litter-prices-figures-760.webp" width="760" height="1062" alt="The litter prices and deposit infographic as phones are served it today, the 760px-wide file shrunk into the phone box" loading="lazy" decoding="async"></figure>
+<figure><figcaption class="lab">New draft: 622×2282 · labels ≈ <b class="good">15.4px</b> on screen</figcaption>
+<img src="img/new/litter-prices-figures-phone.webp" width="622" height="2282" alt="The litter prices and deposit infographic re-drawn for phones, at the width it paints at" loading="lazy" decoding="async"></figure>
+</div>
+<dl class="meta"><dt>Draft</dt><dd><code>data/boards/generated/blue-staffy-puppies-london/litter-prices-figures-phone.webp</code> · 46.6 KB · drawn 311px wide at 2x</dd>
+<dt>sha12</dt><dd><code>13da72792676</code></dd>
+<dt>Pick</dt><dd><code class="pick">img:litter-prices-figures-phone = ig:IG-1:13da72792676</code> <button class="btn ghost copypick" type="button" data-pick="img:litter-prices-figures-phone = ig:IG-1:13da72792676">Copy pick</button></dd></dl>
+</section>
+<section class="card" id="health-tests-checklist" data-md="## 4. Health tests to ask a breeder
+
+- Slot: `health-tests-checklist` (IG-4 Checklist Grid, comic style)
+- Now served on phones: `/images/staffy-health-tests-to-ask-a-breeder-infographic-760.webp`, 760x754, 46.0 KB. Smallest label 17px in the file, about **7.1px on screen** in the 319px box.
+- New draft: `data/boards/generated/blue-staffy-puppies-london/health-tests-checklist-phone.webp`, 622x2514 (drawn 311px wide at 2x), 37.8 KB, sha12 `f9487a2267d3`. Smallest label **17.4px on screen** (17.0px at the 311px floor).
+- Pick that approves it: `img:health-tests-checklist-phone = ig:IG-4:f9487a2267d3`">
+<div class="hd"><h2><span class="n">4</span>Health tests to ask a breeder</h2><button class="btn copy" type="button">Copy section</button></div>
+<p class="key"><code>health-tests-checklist</code> · IG-4 Checklist Grid · comic style</p>
+<div class="two">
+<figure><figcaption class="lab">Now on phones: 760×754 · labels ≈ <b class="bad">7.1px</b> on screen</figcaption>
+<img src="img/old/health-tests-checklist-760.webp" width="760" height="754" alt="The health tests to ask a breeder infographic as phones are served it today, the 760px-wide file shrunk into the phone box" loading="lazy" decoding="async"></figure>
+<figure><figcaption class="lab">New draft: 622×2514 · labels ≈ <b class="good">17.4px</b> on screen</figcaption>
+<img src="img/new/health-tests-checklist-phone.webp" width="622" height="2514" alt="The health tests to ask a breeder infographic re-drawn for phones, at the width it paints at" loading="lazy" decoding="async"></figure>
+</div>
+<dl class="meta"><dt>Draft</dt><dd><code>data/boards/generated/blue-staffy-puppies-london/health-tests-checklist-phone.webp</code> · 37.8 KB · drawn 311px wide at 2x</dd>
+<dt>sha12</dt><dd><code>f9487a2267d3</code></dd>
+<dt>Pick</dt><dd><code class="pick">img:health-tests-checklist-phone = ig:IG-4:f9487a2267d3</code> <button class="btn ghost copypick" type="button" data-pick="img:health-tests-checklist-phone = ig:IG-4:f9487a2267d3">Copy pick</button></dd></dl>
+</section>
+<section class="card" id="paperwork-checklist" data-md="## 5. Paperwork folder checklist
+
+- Slot: `paperwork-checklist` (IG-4 Checklist Grid, chalk style)
+- Now served on phones: `/images/blue-staffy-puppy-paperwork-folder-checklist-infographic-760.webp`, 760x458, 34.7 KB. Smallest label 17px in the file, about **7.1px on screen** in the 319px box.
+- New draft: `data/boards/generated/blue-staffy-puppies-london/paperwork-checklist-phone.webp`, 622x1320 (drawn 311px wide at 2x), 28.0 KB, sha12 `ab92b5718550`. Smallest label **17.4px on screen** (17.0px at the 311px floor).
+- Pick that approves it: `img:paperwork-checklist-phone = ig:IG-4:ab92b5718550`">
+<div class="hd"><h2><span class="n">5</span>Paperwork folder checklist</h2><button class="btn copy" type="button">Copy section</button></div>
+<p class="key"><code>paperwork-checklist</code> · IG-4 Checklist Grid · chalk style</p>
+<div class="two">
+<figure><figcaption class="lab">Now on phones: 760×458 · labels ≈ <b class="bad">7.1px</b> on screen</figcaption>
+<img src="img/old/paperwork-checklist-760.webp" width="760" height="458" alt="The paperwork folder checklist infographic as phones are served it today, the 760px-wide file shrunk into the phone box" loading="lazy" decoding="async"></figure>
+<figure><figcaption class="lab">New draft: 622×1320 · labels ≈ <b class="good">17.4px</b> on screen</figcaption>
+<img src="img/new/paperwork-checklist-phone.webp" width="622" height="1320" alt="The paperwork folder checklist infographic re-drawn for phones, at the width it paints at" loading="lazy" decoding="async"></figure>
+</div>
+<dl class="meta"><dt>Draft</dt><dd><code>data/boards/generated/blue-staffy-puppies-london/paperwork-checklist-phone.webp</code> · 28.0 KB · drawn 311px wide at 2x</dd>
+<dt>sha12</dt><dd><code>ab92b5718550</code></dd>
+<dt>Pick</dt><dd><code class="pick">img:paperwork-checklist-phone = ig:IG-4:ab92b5718550</code> <button class="btn ghost copypick" type="button" data-pick="img:paperwork-checklist-phone = ig:IG-4:ab92b5718550">Copy pick</button></dd></dl>
+</section>
+<section class="card" id="breed-split" data-md="## 6. Staffy vs AmStaff breed standards
+
+- Slot: `breed-split` (IG-3 Comparison Split, sticker style)
+- Now served on phones: `/images/staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic-760.webp`, 760x1187, 52.9 KB. Smallest label 15px in the file, about **6.3px on screen** in the 319px box.
+- New draft: `data/boards/generated/blue-staffy-puppies-london/breed-split-phone.webp`, 467x2636 (drawn 311px wide at 1.5x), 49.6 KB, sha12 `a774a934fdac`. Smallest label **15.4px on screen** (15.0px at the 311px floor).
+- Pick that approves it: `img:breed-split-phone = ig:IG-3:a774a934fdac`">
+<div class="hd"><h2><span class="n">6</span>Staffy vs AmStaff breed standards</h2><button class="btn copy" type="button">Copy section</button></div>
+<p class="key"><code>breed-split</code> · IG-3 Comparison Split · sticker style</p>
+<div class="two">
+<figure><figcaption class="lab">Now on phones: 760×1187 · labels ≈ <b class="bad">6.3px</b> on screen</figcaption>
+<img src="img/old/breed-split-760.webp" width="760" height="1187" alt="The staffy vs amstaff breed standards infographic as phones are served it today, the 760px-wide file shrunk into the phone box" loading="lazy" decoding="async"></figure>
+<figure><figcaption class="lab">New draft: 467×2636 · labels ≈ <b class="good">15.4px</b> on screen</figcaption>
+<img src="img/new/breed-split-phone.webp" width="467" height="2636" alt="The staffy vs amstaff breed standards infographic re-drawn for phones, at the width it paints at" loading="lazy" decoding="async"></figure>
+</div>
+<dl class="meta"><dt>Draft</dt><dd><code>data/boards/generated/blue-staffy-puppies-london/breed-split-phone.webp</code> · 49.6 KB · drawn 311px wide at 1.5x</dd>
+<dt>sha12</dt><dd><code>a774a934fdac</code></dd>
+<dt>Pick</dt><dd><code class="pick">img:breed-split-phone = ig:IG-3:a774a934fdac</code> <button class="btn ghost copypick" type="button" data-pick="img:breed-split-phone = ig:IG-3:a774a934fdac">Copy pick</button></dd></dl>
+</section>
+<p class="note">How the sizes are measured: label size on screen = the label's font size × the pixels per CSS pixel the file was drawn at × (painted width ÷ file width). The old files were drawn 760px wide at 1x, so a 15px label lands at about 6px in the 319px box. The new drafts are drawn 311px wide (the narrowest the page has painted them) at 2x, so a 15px label lands at 15px or a little more. The breed-standards draft is drawn at 1.5x to fit the 55 KB phone budget.</p>
+</main>
+<script>
+const MD = "# London Phone Infographics\n\nAsset Gate (STOP 4) for London D4: the six phone infographics re-drawn at the width they paint at on a phone. Drafts only, nothing published.\n\n## 1. Four steps to buy\n\n- Slot: `deposit-steps` (IG-2 Process Steps, sticker style)\n- Now served on phones: `/images/four-steps-to-buy-a-blue-staffy-puppy-infographic-760.webp`, 760x1013, 41.3 KB. Smallest label 15px in the file, about **6.3px on screen** in the 319px box.\n- New draft: `data/boards/generated/blue-staffy-puppies-london/deposit-steps-phone.webp`, 622x2436 (drawn 311px wide at 2x), 54.5 KB, sha12 `e0cec91357ef`. Smallest label **15.4px on screen** (15.0px at the 311px floor).\n- Pick that approves it: `img:deposit-steps-phone = ig:IG-2:e0cec91357ef`\n\n## 2. Delivery route, Carlisle to London\n\n- Slot: `delivery-route` (IG-5 Route Map, chalk style)\n- Now served on phones: `/images/blue-staffy-puppy-delivery-route-carlisle-to-london-infographic-760.webp`, 760x692, 40.3 KB. Smallest label 15px in the file, about **6.3px on screen** in the 319px box.\n- New draft: `data/boards/generated/blue-staffy-puppies-london/delivery-route-phone.webp`, 622x1644 (drawn 311px wide at 2x), 32.9 KB, sha12 `65f062070dc7`. Smallest label **15.4px on screen** (15.0px at the 311px floor).\n- Pick that approves it: `img:delivery-route-phone = ig:IG-5:65f062070dc7`\n\n## 3. Litter prices and deposit\n\n- Slot: `litter-prices-figures` (IG-1 Stat Panel, sticker style)\n- Now served on phones: `/images/blue-staffy-litter-prices-and-deposit-infographic-760.webp`, 760x1062, 36.8 KB. Smallest label 15px in the file, about **6.3px on screen** in the 319px box.\n- New draft: `data/boards/generated/blue-staffy-puppies-london/litter-prices-figures-phone.webp`, 622x2282 (drawn 311px wide at 2x), 46.6 KB, sha12 `13da72792676`. Smallest label **15.4px on screen** (15.0px at the 311px floor).\n- Pick that approves it: `img:litter-prices-figures-phone = ig:IG-1:13da72792676`\n\n## 4. Health tests to ask a breeder\n\n- Slot: `health-tests-checklist` (IG-4 Checklist Grid, comic style)\n- Now served on phones: `/images/staffy-health-tests-to-ask-a-breeder-infographic-760.webp`, 760x754, 46.0 KB. Smallest label 17px in the file, about **7.1px on screen** in the 319px box.\n- New draft: `data/boards/generated/blue-staffy-puppies-london/health-tests-checklist-phone.webp`, 622x2514 (drawn 311px wide at 2x), 37.8 KB, sha12 `f9487a2267d3`. Smallest label **17.4px on screen** (17.0px at the 311px floor).\n- Pick that approves it: `img:health-tests-checklist-phone = ig:IG-4:f9487a2267d3`\n\n## 5. Paperwork folder checklist\n\n- Slot: `paperwork-checklist` (IG-4 Checklist Grid, chalk style)\n- Now served on phones: `/images/blue-staffy-puppy-paperwork-folder-checklist-infographic-760.webp`, 760x458, 34.7 KB. Smallest label 17px in the file, about **7.1px on screen** in the 319px box.\n- New draft: `data/boards/generated/blue-staffy-puppies-london/paperwork-checklist-phone.webp`, 622x1320 (drawn 311px wide at 2x), 28.0 KB, sha12 `ab92b5718550`. Smallest label **17.4px on screen** (17.0px at the 311px floor).\n- Pick that approves it: `img:paperwork-checklist-phone = ig:IG-4:ab92b5718550`\n\n## 6. Staffy vs AmStaff breed standards\n\n- Slot: `breed-split` (IG-3 Comparison Split, sticker style)\n- Now served on phones: `/images/staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic-760.webp`, 760x1187, 52.9 KB. Smallest label 15px in the file, about **6.3px on screen** in the 319px box.\n- New draft: `data/boards/generated/blue-staffy-puppies-london/breed-split-phone.webp`, 467x2636 (drawn 311px wide at 1.5x), 49.6 KB, sha12 `a774a934fdac`. Smallest label **15.4px on screen** (15.0px at the 311px floor).\n- Pick that approves it: `img:breed-split-phone = ig:IG-3:a774a934fdac`\n";
+function copy(t, b){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(()=>{const o=b.textContent;b.textContent='Copied';setTimeout(()=>b.textContent=o,1200)}).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}); }
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',()=>copy(b.closest('section').dataset.md,b)));
+document.querySelectorAll('.copypick').forEach(b=>b.addEventListener('click',()=>copy(b.dataset.pick,b)));
+document.getElementById('copyall').addEventListener('click',e=>copy(MD,e.currentTarget));
+document.getElementById('dl').addEventListener('click',()=>{const u=URL.createObjectURL(new Blob([MD],{type:'text/markdown'}));const a=document.createElement('a');a.href=u;a.download='london-phone-infographics.md';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+</script>
