@@ -114,8 +114,15 @@ const SIZES = citySizes(fit, {
 <style>
   @layer components {
     /* A container (src/styles/city.css): its tiers read this section's own box. */
-    .city-chapters { background: var(--color-surface); padding: var(--space-6) 0; }
-    .tray { max-width: min(1100px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
+    /* THE BAND KEEPS THE SIBLINGS' VERTICAL RHYTHM (frontend-design pass, 2026-10-03): every other
+       city band (letter, newsletter, FAQ, contact) sets its panel in by the tier's --city-pad-y
+       (32 / 40 / 48) top and bottom; the tray sat a flat 32px down at every tier, so from a tablet
+       box the chapter bands ran tighter than the cards between them. The tray is the root's direct
+       child, so it reads the tier's value; flow-root keeps its margins inside the painted band.
+       (Its 12px side inset, against the siblings' 16 / 32px, is deferred: a narrower tray tips a
+       served 500px photo past 2x its box. docs/reports/frontend-design-london-2026-10-03.md D7.) */
+    .city-chapters { background: var(--color-surface); padding: 0; display: flow-root; }
+    .tray { max-width: min(1100px, calc(100% - 2 * var(--space-3))); margin: var(--city-pad-y) auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-lg); background: var(--color-brand-soft); }
     h2 { margin: 0 0 var(--space-2); }
     .lede { margin: 0 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); }
     .ch {
@@ -151,7 +158,9 @@ const SIZES = citySizes(fit, {
     .full > :global(:last-child) { margin-bottom: 0; }
     .txt :global(.bl-img) { margin: var(--space-2) 0 var(--space-3); }
     .txt :global(ul) { margin: 0 0 var(--space-3); padding-left: var(--space-5); }
-    .tray > :global(.h2-img) { margin: var(--space-2) auto var(--space-4); }
+    /* The H2 sat 8px over its photograph while every H3 in the same component sits --space-3 over
+       its own (the chapter's row gap): one heading-to-image distance in one component. */
+    .tray > :global(.h2-img) { margin: var(--space-3) auto var(--space-4); }
     .close { padding-top: var(--space-4); border-top: 1px solid var(--color-steel-300); }
     .close :global(p) { margin: 0; font-weight: 600; }
     @container (width >= 640px) {

@@ -106,7 +106,10 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
         display: inline; padding: 0; border: 0; font-size: var(--text-sm); line-height: 1.5; color: var(--color-ink-2);
       }
       /* The separator replaces .stack-table's "Label: " prefix (see the header). */
-      tbody td[data-label]::before { content: " · "; font-weight: 400; }
+      /* The space after the dot is a no-break space, so a wrapping slip carries the dot down with
+         the value it introduces ("· Available") instead of leaving it hanging at a line's end
+         ("blaze ·", Cheryl at 375; frontend-design pass, 2026-10-03). */
+      tbody td[data-label]::before { content: " ·\00a0"; font-weight: 400; }
       tbody td[data-label="Sex"]::before { content: none; }
       tbody td.num, tbody tr:last-child td.num { position: absolute; right: var(--space-4); top: var(--space-3); font-size: var(--text-lg); color: var(--color-text); }
       tbody td.num::before { content: none; }

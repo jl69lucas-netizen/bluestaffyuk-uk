@@ -58,6 +58,8 @@ if (reviewed) {
       color: var(--color-link); font-weight: 600; text-decoration: underline;
       text-decoration-color: color-mix(in srgb, currentColor 55%, transparent); text-underline-offset: 3px;
     }
+    /* The reading-text links' hover (src/styles/city.css; frontend-design pass, 2026-10-03). */
+    .by a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; }
     :global(.on-inverse) .by a { color: var(--color-link-on-inverse); }
     .by a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: 2px; }
     .read {

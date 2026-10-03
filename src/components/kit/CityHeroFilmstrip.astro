@@ -137,6 +137,9 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
          steel band is not a link (WCAG 1.4.1). Restated, as the approved frame painted it. */
       text-decoration: underline;
     }
+    /* The pill darkens under the pointer; the secondary link had no hover at all (frontend-design
+       pass, 2026-10-03): its underline thickens, the reading-text links' hover (city.css). */
+    .more:hover { text-decoration-thickness: 2px; }
     .cta:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     @media (width >= 640px) { .pic { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
     @media (width >= 1024px) {

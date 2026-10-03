@@ -71,6 +71,13 @@ const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const
     .owner li::before { content: "↗"; color: var(--color-brass-600); }
     /* Each source link is its own 44px row (a standalone link, not a word in a sentence). */
     .owner a { color: var(--color-link); overflow-wrap: anywhere; display: inline-flex; align-items: center; min-height: 44px; }
+    /* Underlined as the reading-text links are (src/styles/city.css), so a source reads as a link
+       before the pointer finds it; hover draws the line at full strength (frontend-design pass). */
+    .owner a {
+      text-decoration-line: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
+      text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
+    }
+    .owner a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; }
     .owner a:focus-visible, .vet a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: 2px; }
     .places { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); min-width: 0; }
     /* A whole hairline, not a 3px brass side stripe (impeccable absolute ban, harden pass 2026-10-03). */
