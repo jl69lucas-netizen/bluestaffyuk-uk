@@ -7,5 +7,22 @@
       "superpowers:writing-plans",
       "bsuk-location-page-builder"
     ]
+  },
+  "impeccable": {
+    "ran_on": "2026-10-03",
+    "widths": [
+      375,
+      768,
+      1280
+    ],
+    "findings": 13,
+    "fixed": 9,
+    "deferred": [
+      "D1 (P2 layout): chapter rows from 1024 leave tall empty bays beside the H4 ladder; sticky heading+photo is a layout change, preview docs/reports/impeccable-london/D1-chapter-bay-1280-preview.png (working rule 6)",
+      "D2 (P3 type): chapter H4-H6 at Fraunces 400 in body ink vs the site's 700/brand H4; weight and colour-role change, preview docs/reports/impeccable-london/D2-h4-weight-{375,1280}-preview.png",
+      "D3 (P3 a11y): site chrome targets under 44px (header brand 40x40, breadcrumb .tap-24, footer Home/Blog/X); shared by every built page, passes WCAG 2.5.8 AA; preview docs/reports/impeccable-london/D3-chrome-targets-375.png",
+      "D4 (P2 image): the six tall phone infographics paint at ~0.42x on a phone and their labels become illegible; needs a redrawn phone layout through the board's image slots and the Asset Gate; preview docs/reports/impeccable-london/D4-infographic-phone-375.png"
+    ],
+    "commit": "390a65a37eb6ba24988feb5f19fac8ff09b7f67e"
   }
 }
