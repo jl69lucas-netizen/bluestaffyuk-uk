@@ -12,9 +12,11 @@ Snapshot s-2026-10-02T23-46-23-960Z, 2026-10-02T23:46:23.968Z: answered 10, empt
 7. **Should the "Pit Bull or American Staffy?" comparison infographic stay?** — answered: (b) Keep it, and I'll supply a sourced breed-standard data file first
    - Text: or regenerate a new one with source data
 8. **Should an infographic sit beside the section's photo or replace it?** — empty: (no option picked)
-   - Text: Not beside, each infographics get its own H2 orr H3 headerrs, see how its done on CAGS see this page, https://congoafricangreys.com/congo-vs-timneh-african-grey/, check and see that H3 anD H3 headers has infographics. this, https://congoafricangreys.com/baby-african-grey-parrot-for-sale/, make nice playful cartoonish infoggraphics
+   - Text: Not beside, each infographics get its own H2 orr H3 headerrs, see how its done on the sibling site see this page, [sibling-site comparison page], check and see that H3 anD H3 headers has infographics. this, [sibling-site for-sale page], make nice playful cartoonish infoggraphics
 9. **Can the first generated test image close Known Issue 70?** — answered: (a) Close KI 70 on the generation proof
 10. **For every remaining page, should each section get a new or refreshed component, sized to that page's own sections and tools?** — answered: (a) Yes, on every remaining page
    - Text: What i meant is the board strructure, no page uses the same components, no duplicates, once we aare done with competitors researrch, that on new pages, we only build the new components based on each page data and from outline
 11. **Which Claude Code mod should we build first?** — answered: (a) Status line: branch · page · STOP number · last check:all result · Gemini calls today
 12. **What else should every page board carry?** — answered: (b) Add all four
+
+> Q8's two example URLs and the sibling site's name are replaced with neutral labels so the file passes `check:markers` (CLAUDE.md: no source-repo vocabulary). The original text is in the answer-board db, batches/2026-10-02-london-page-board-v2-decisions-before-you-approve/submissions/s-2026-10-02T23-46-23-960Z.
