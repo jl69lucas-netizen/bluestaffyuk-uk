@@ -113,8 +113,13 @@ def competitor_pages(slug, terms, root=ROOT, skipped=None, include_listings=Fals
     with its url, its rank (1-based, in keyword_metrics' order of the non-blocked pages),
     `of` (how many non-blocked pages were ranked) and `kind` ("listing" or "prose"). A
     listing page passed over on the way is appended to `skipped` (its url), when the caller
-    passes a list. With `include_listings` a listing page is kept instead, tagged
-    "listing", and counts toward the TOP cap in rank order like any other body."""
+    passes a list.
+
+    With `include_listings` ("count listings TOO", breeder q02, 2026-10-02 — in addition to
+    the prose pages, not instead of them) the fill rule is: every prose body first, in rank
+    order, then the remaining slots up to TOP filled with listing bodies in rank order; the
+    result is returned in rank order. On London that is ranks 1, 2, 3, 7, 9 (three listings,
+    two prose), where a plain rank-order cap would have counted five listings and no prose."""
     bare = KM._bare(slug)
     path = pathlib.Path(root) / "data/queries/raw" / bare / "competitors.json"
     try:
@@ -125,7 +130,7 @@ def competitor_pages(slug, terms, root=ROOT, skipped=None, include_listings=Fals
                     key=KM._rank)
     out = []
     for rank, (n, p) in enumerate(ranked, 1):
-        if len(out) >= TOP:
+        if len(out) >= TOP and not include_listings:
             break
         cached = pathlib.Path(root) / "data/queries/cache" / bare / f"{n}.html"
         if not cached.exists():
@@ -138,6 +143,10 @@ def competitor_pages(slug, terms, root=ROOT, skipped=None, include_listings=Fals
             continue
         out.append(dict(count_terms(html, terms), url=p.get("url", ""), rank=rank,
                         of=len(ranked), kind="listing" if listing else "prose"))
+    if include_listings:
+        prose = [d for d in out if d["kind"] == "prose"][:TOP]
+        fill = [d for d in out if d["kind"] == "listing"][:TOP - len(prose)]
+        out = sorted(prose + fill, key=lambda d: d["rank"])
     return out
 
 

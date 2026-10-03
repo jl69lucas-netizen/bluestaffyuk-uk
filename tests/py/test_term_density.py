@@ -180,11 +180,22 @@ def test_include_listings_defaults_to_false(tmp_path):
     assert [p["url"] for p in TD.competitor_pages(SLUG, ["x"], root=root)] == ["u2", "u3"]
 
 
-def test_include_listings_still_caps_at_top_in_rank_order(tmp_path, monkeypatch):
+def test_include_listings_keeps_prose_first_then_fills_with_listings(tmp_path, monkeypatch):
+    # "Count listings TOO": every prose body keeps its slot, listings fill what is left,
+    # and the result reads in rank order. A plain rank cap of 2 would give u1, u2.
+    monkeypatch.setattr(TD, "TOP", 3)
+    pages = [{"url": f"u{n}", "google_pos": n} for n in range(1, 6)]
+    root = _root(tmp_path, pages, {1: LISTING, 2: LISTING, 3: LISTING, 4: PAGE_A, 5: PAGE_B})
+    got = TD.competitor_pages(SLUG, ["x"], root=root, include_listings=True)
+    assert [(p["url"], p["kind"]) for p in got] == [
+        ("u1", "listing"), ("u4", "prose"), ("u5", "prose")]
+
+
+def test_include_listings_caps_prose_at_top_when_prose_alone_fills_it(tmp_path, monkeypatch):
     monkeypatch.setattr(TD, "TOP", 2)
     root = _pool_root(tmp_path)
     got = TD.competitor_pages(SLUG, ["x"], root=root, include_listings=True)
-    assert [p["url"] for p in got] == ["u1", "u2"]
+    assert [p["url"] for p in got] == ["u2", "u3"]
 
 
 def test_board_without_density_pool_is_the_prose_pool(tmp_path):
@@ -237,8 +248,9 @@ def test_london_board_counts_five_bodies_with_listings():
     assert board.get("density_pool") == "all"
     ont = json.loads((TD.ROOT / "data/bsuk-ontology.json").read_text())
     _, pages = TD.rows(board, ont)
-    assert len(pages) == 5
-    assert [p["rank"] for p in pages] == sorted(p["rank"] for p in pages)
+    assert [(p["rank"], p["kind"]) for p in pages] == [
+        (1, "listing"), (2, "listing"), (3, "listing"), (7, "prose"), (9, "prose")]
     first = TD.table(board, ont).splitlines()[0]
-    assert first.startswith("Counted on 5 competitor bodies (")
+    assert first.startswith("Counted on 5 competitor bodies (3 listing, 2 prose; "
+                            "ranks 1, 2, 3, 7, 9 of 9) — listing pages are counted")
     assert "Thin pool" not in TD.table(board, ont)
