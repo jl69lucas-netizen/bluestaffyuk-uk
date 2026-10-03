@@ -1,0 +1,1077 @@
+<title>London Board Revision</title>
+<!--
+  docs/artifacts/london-board-revision-preview.html — a PREVIEW, not site code (working rule 6:
+  preview before apply; rule 10: visual companion). Four components the breeder said yes to on the
+  answer board (2026-10-03, q01–q03 and q06), three styles each, painted at 1280 / 768 / 375 on the
+  site's own tokens (src/styles/tokens.css) and the city type scale (src/styles/city.css).
+  Nothing here is written to src/. Every fact is read from a data file or the breeder's answers;
+  each source is named in a comment beside it.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* ---------- tokens: the site's (src/styles/tokens.css), constant in both themes, because the frames show the real light site ---------- */
+:root {
+  --color-steel-900: #14202B; --color-steel-700: #1F3A52; --color-steel-500: #5B7C99;
+  --color-steel-300: #8FA3B8; --color-steel-100: #E4EAF1;
+  --color-brass-600: #A8861C; --color-brass-500: #C9A227; --color-brass-200: #EFE3B4;
+  --color-bone-100: #F4F1EA; --color-bone-50: #FAF8F3; --color-white: #FFFFFF;
+  --color-ink: #1B2430; --color-ink-2: #46566B; --color-ink-3: #5E6B7A; --color-rule: #DAD6CC;
+  --color-ok: #2F6B4F; --color-warn: #9A4A2A; --city-warn-on-inverse: #D9784F;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --shadow-card: 0 2px 8px rgba(20,32,43,.08), 0 8px 24px rgba(20,32,43,.06);
+
+  /* preview chrome (outside the frames) — these switch with the theme */
+  --pv-bg: #FAF8F3; --pv-surface: #FFFFFF; --pv-fg: #1B2430; --pv-muted: #5E6B7A;
+  --pv-rule: #DAD6CC; --pv-brand: #1F3A52; --pv-accent: #A8861C; --pv-accent-fill: #EFE3B4;
+  --pv-accent-ink: #14202B; --pv-frame-edge: #C9C4B8; --pv-code: #F1EEE6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --pv-bg: #0E161E; --pv-surface: #14202B; --pv-fg: #E4EAF1; --pv-muted: #9DB0C3;
+    --pv-rule: #2A3B4C; --pv-brand: #C9D6E3; --pv-accent: #EFE3B4; --pv-accent-fill: #3A3218;
+    --pv-accent-ink: #EFE3B4; --pv-frame-edge: #2F4254; --pv-code: #1B2a38;
+  }
+}
+:root[data-theme="dark"] {
+  --pv-bg: #0E161E; --pv-surface: #14202B; --pv-fg: #E4EAF1; --pv-muted: #9DB0C3;
+  --pv-rule: #2A3B4C; --pv-brand: #C9D6E3; --pv-accent: #EFE3B4; --pv-accent-fill: #3A3218;
+  --pv-accent-ink: #EFE3B4; --pv-frame-edge: #2F4254; --pv-code: #1B2a38;
+}
+
+/* ---------- preview chrome ---------- */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--pv-bg); color: var(--pv-fg); font-family: var(--font-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
+.pv { max-width: 1180px; margin: 0 auto; padding: 0 16px 80px; }
+.pv a { color: var(--pv-brand); text-underline-offset: 3px; }
+.pv-head { padding: 40px 0 24px; border-bottom: 1px solid var(--pv-rule); }
+.pv-kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--pv-accent); margin: 0 0 8px; }
+.pv-head h1 { font-family: var(--font-display); font-weight: 650; font-size: clamp(30px, 5vw, 46px); line-height: 1.05; margin: 0 0 12px; color: var(--pv-fg); letter-spacing: -.01em; }
+.pv-head .lede { max-width: 68ch; color: var(--pv-muted); margin: 0; font-size: 17px; }
+.pv-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
+.pv-meta li { font-size: 13px; padding: 4px 10px; border: 1px solid var(--pv-rule); border-radius: 50px; color: var(--pv-muted); }
+.pv-nav { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--pv-bg) 92%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--pv-rule); margin: 0 -16px; padding: 10px 16px; }
+.pv-nav ol { display: flex; gap: 6px 18px; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; font-size: 14px; font-weight: 600; }
+.pv-nav a { text-decoration: none; color: var(--pv-fg); }
+.pv-nav a span { color: var(--pv-accent); font-family: var(--font-display); margin-right: 4px; }
+
+.pv-sec { padding: 48px 0 8px; border-bottom: 1px solid var(--pv-rule); scroll-margin-top: 72px; }
+.pv-sec > header { display: grid; gap: 10px; margin-bottom: 18px; }
+.pv-sec h2 { font-family: var(--font-display); font-weight: 650; font-size: clamp(24px, 3.4vw, 32px); line-height: 1.1; margin: 0; }
+.pv-sec h2 .n { color: var(--pv-accent); margin-right: 8px; }
+.pv-facts { display: grid; gap: 6px 24px; grid-template-columns: 1fr; margin: 0; font-size: 15px; }
+@media (min-width: 760px) { .pv-facts { grid-template-columns: 150px 1fr; } }
+.pv-facts dt { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--pv-muted); padding-top: 3px; }
+.pv-facts dd { margin: 0 0 6px; max-width: 80ch; }
+.pv code { font-size: .88em; background: var(--pv-code); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+
+.pv-style { margin: 28px 0 36px; }
+.pv-style > h3 { font-family: var(--font-display); font-weight: 600; font-size: 21px; margin: 0 0 4px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; }
+.pv-style > h3 .lt { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--pv-brand); color: var(--pv-bg); font-size: 16px; }
+.rec { font-family: var(--font-body); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: var(--pv-accent-fill); color: var(--pv-accent-ink); padding: 3px 10px; border-radius: 50px; }
+.pv-style > p { margin: 0 0 4px; max-width: 82ch; color: var(--pv-muted); font-size: 15px; }
+.pv-style > p strong { color: var(--pv-fg); }
+
+/* the frame strip: 1280 full width, then 768 and 375 side by side; each frame is zoomed to fit its slot */
+.viewset { display: grid; gap: 14px; margin-top: 14px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .viewset { grid-template-columns: 768fr 375fr; } .viewset .vp:first-child { grid-column: 1 / -1; } }
+.vp { margin: 0; min-width: 0; }
+.vp figcaption { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--pv-muted); margin: 0 0 6px; display: flex; justify-content: space-between; }
+.fit { border: 1px solid var(--pv-frame-edge); border-radius: 10px; overflow-x: hidden; overflow-y: auto; max-height: max(440px, 82vh); background: var(--color-bone-100); }
+.frame { container: vp / inline-size; }
+
+/* copy buttons and rendered markdown */
+.md-wrap { position: relative; margin-top: 8px; }
+.copy { font: 600 13px var(--font-body); border: 1px solid var(--pv-rule); background: var(--pv-surface); color: var(--pv-fg); border-radius: 50px; padding: 6px 14px; cursor: pointer; }
+.copy:hover { border-color: var(--pv-brand); }
+.copy:focus-visible { outline: 2px solid var(--pv-brand); outline-offset: 2px; }
+.md-bar { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 8px; }
+.md h3 { font-family: var(--font-display); font-weight: 600; font-size: 19px; margin: 22px 0 6px; }
+.md p, .md li { max-width: 82ch; }
+.md table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--pv-surface); border: 1px solid var(--pv-rule); border-radius: 10px; overflow: hidden; }
+.md th { text-align: left; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--pv-muted); padding: 10px; border-bottom: 1.5px solid var(--pv-brand); }
+.md td { padding: 9px 10px; border-top: 1px solid var(--pv-rule); vertical-align: top; overflow-wrap: anywhere; }
+.md tr.drop td { background: color-mix(in srgb, var(--pv-accent-fill) 55%, transparent); }
+.md .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 1px 7px; border-radius: 50px; background: var(--pv-accent-fill); color: var(--pv-accent-ink); }
+@media (max-width: 639px) {
+  .md table, .md thead, .md tbody, .md tr, .md td { display: block; }
+  .md thead { position: absolute; left: -9999px; }
+  .md tr { padding: 8px 12px; border-top: 1px solid var(--pv-rule); }
+  .md td { border: 0; padding: 3px 0; }
+  .md td[data-label]::before { content: attr(data-label) ": "; font-weight: 700; color: var(--pv-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+}
+.blocks { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 900px) { .blocks { grid-template-columns: repeat(3, 1fr); } }
+
+/* =====================================================================================
+   THE SITE, inside each frame. Light only, on the site's own tokens.
+   ===================================================================================== */
+.site { font-family: var(--font-body); color: var(--color-ink); background: var(--color-bone-100); font-size: 16px; line-height: 1.6; }
+.site a { color: var(--color-steel-700); }
+.site :where(h1, h2, h3, h4, h5) { font-family: var(--font-display); color: var(--color-steel-700); font-weight: 700; line-height: 1.18; text-wrap: balance; }
+.pg { padding: 20px 16px 28px; }
+@container vp (width >= 640px) { .pg { padding: 28px 32px 36px; } }
+@container vp (width >= 1024px) { .pg--col { display: grid; grid-template-columns: 272px minmax(0, 1fr); gap: 48px; padding: 32px 64px 40px; } }
+.dial-ghost { display: none; }
+@container vp (width >= 1024px) {
+  .dial-ghost { display: block; align-self: start; background: var(--color-steel-100); border-radius: 20px; padding: 20px; color: var(--color-ink-3); font-size: 13px; }
+  .dial-ghost b { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
+  .dial-ghost i { display: block; height: 9px; border-radius: 5px; background: color-mix(in srgb, var(--color-steel-300) 55%, transparent); margin: 12px 0; font-style: normal; }
+}
+.ghost { border: 1.5px dashed var(--color-steel-300); border-radius: 14px; padding: 14px 16px; color: var(--color-ink-3); font-size: 13px; background: color-mix(in srgb, var(--color-white) 40%, transparent); }
+.ghost b { color: var(--color-steel-700); font-family: var(--font-display); font-size: 16px; display: block; }
+.state { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--color-ink-3); margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+.state::after { content: ""; flex: 1; height: 1px; background: var(--color-rule); }
+.state + * { margin-top: 0; }
+.slot { border: 1px dashed currentColor; border-radius: 4px; padding: 0 5px; white-space: nowrap; }
+
+/* the chapter tray the checklist and the places sit in (city-chapters, unchanged) */
+.tray { background: var(--color-steel-100); border-radius: 20px; padding: 22px 18px 24px; }
+@container vp (width >= 640px) { .tray { padding: 28px 28px 30px; } }
+.tray > .hd { font-size: 17px; margin: 0 0 8px; max-width: 34ch; }
+@container vp (width >= 640px) { .tray > .hd { font-size: 18px; } }
+.tray > .prose { margin: 0 0 18px; max-width: 62ch; font-size: 16px; color: var(--color-ink); }
+.tray > .hd small { display: block; font-family: var(--font-body); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-ink-3); font-weight: 700; margin-bottom: 4px; }
+
+/* ---------- the hero mock (city-hero-filmstrip, unchanged except the byline) ---------- */
+.hero { background: var(--color-steel-900); color: var(--color-bone-100); border-radius: 20px; padding: 18px 16px 20px; display: grid; gap: 16px; grid-template-areas: "film" "hcopy" "lead"; }
+.hero + .hero { margin-top: 18px; }
+@container vp (width >= 640px) { .hero { padding: 24px; } }
+@container vp (width >= 1024px) { .hero { padding: 32px; column-gap: 40px; grid-template-columns: 1fr 1fr; grid-template-areas: "hcopy lead" "film film"; } }
+.hero .hcopy { grid-area: hcopy; container-type: inline-size; min-width: 0; }
+.hero .lead { grid-area: lead; margin: 0; font-size: 16px; line-height: 1.6; color: color-mix(in srgb, var(--color-bone-100) 92%, transparent); }
+@container vp (width >= 640px) { .hero .lead { font-size: 17px; } }
+.hero .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--color-brass-200); margin: 0 0 8px; }
+.hero h1 { color: var(--color-bone-100); margin: 0; font-size: 26px; max-width: 22ch; }
+@container vp (width >= 640px) { .hero h1 { font-size: 30px; } }
+@container vp (width >= 1024px) { .hero h1 { font-size: 34px; } }
+.film { grid-area: film; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+@container vp (width >= 1024px) { .film { grid-template-columns: repeat(6, 1fr); gap: 8px; } }
+.film span { height: 46px; border-radius: 6px; background: linear-gradient(160deg, var(--color-steel-700), color-mix(in srgb, var(--color-steel-500) 70%, var(--color-steel-900))); display: flex; align-items: flex-end; padding: 0 6px 4px; font-size: 11px; font-weight: 700; color: var(--color-bone-100); }
+.film-note { grid-area: film; align-self: end; justify-self: end; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-steel-300); margin: 0 0 -16px; }
+
+/* BYLINE A — Signed rule */
+.by-a { margin: 14px 0 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 15px; color: color-mix(in srgb, var(--color-bone-100) 90%, transparent); }
+.by-a::before { content: ""; width: 28px; height: 2px; background: var(--color-brass-500); flex: none; }
+.by-a a, .by-b a, .by-c a { color: var(--color-brass-200); font-weight: 600; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--color-brass-200) 55%, transparent); text-underline-offset: 3px; }
+.by-a-read { margin: 6px 0 0 38px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-steel-300); }
+.by-a-read svg { flex: none; }
+
+/* BYLINE B — Ledger pair */
+.by-b { margin: 16px 0 0; display: grid; border-block: 1px solid color-mix(in srgb, var(--color-bone-100) 20%, transparent); }
+.by-b > div { padding: 9px 0; display: grid; gap: 1px; }
+.by-b > div + div { border-top: 1px solid color-mix(in srgb, var(--color-bone-100) 20%, transparent); }
+@container (width >= 430px) {
+  .by-b:has(> div + div) { grid-template-columns: auto 1fr; }
+  .by-b > div + div { border-top: 0; border-left: 1px solid color-mix(in srgb, var(--color-bone-100) 20%, transparent); padding-left: 16px; margin-left: 16px; }
+}
+.by-b dt { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--color-brass-200); }
+.by-b dd { margin: 0; font-size: 15px; color: var(--color-bone-100); }
+
+/* BYLINE C — Monogram seal */
+.by-c { margin: 16px 0 0; display: flex; gap: 12px; align-items: center; }
+.seal { width: 46px; height: 46px; flex: none; border-radius: 50%; border: 1.5px solid var(--color-brass-500); display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--color-brass-200); }
+.seal.is-read { background: var(--color-brass-500); color: var(--color-steel-900); }
+.by-c p { margin: 0; font-size: 15px; color: color-mix(in srgb, var(--color-bone-100) 92%, transparent); }
+.by-c p + p { font-size: 13px; color: var(--color-steel-300); margin-top: 2px; }
+
+/* ---------- PUPPY STRIP ---------- */
+.ps { container-type: inline-size; margin-top: 18px; }
+.ps-label { margin: 0 0 10px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--color-ink-3); }
+.ps ul { list-style: none; margin: 0; padding: 0; }
+
+/* A — Ticket strip */
+.ps-a ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@container (width >= 640px) { .ps-a ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container (width >= 800px) { .ps-a ul { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; } }
+.tk { height: 100%; display: flex; flex-direction: column; background: var(--color-white); border: 1px solid var(--color-rule); border-radius: 10px; text-decoration: none; color: var(--color-ink) !important; transition: border-color .2s, transform .2s; }
+.tk:hover { border-color: var(--color-steel-500); transform: translateY(-2px); }
+.tk:focus-visible { outline: 2px solid var(--color-steel-700); outline-offset: 2px; }
+.tk-body { padding: 12px 12px 10px; flex: 1; }
+.tk-name { display: block; font-family: var(--font-display); font-weight: 650; font-size: 18px; color: var(--color-steel-700); line-height: 1.1; }
+.tk-meta { display: block; margin-top: 4px; font-size: 13px; line-height: 1.35; color: var(--color-ink-2); }
+.tk-stub { position: relative; border-top: 1.5px dashed var(--color-rule); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+.tk-stub::before, .tk-stub::after { content: ""; position: absolute; top: -8px; width: 14px; height: 14px; border-radius: 50%; background: var(--color-bone-100); }
+.tk-stub::before { left: -8px; } .tk-stub::after { right: -8px; }
+.tk-price { font-family: var(--font-display); font-weight: 650; font-size: 17px; font-variant-numeric: tabular-nums lining-nums; }
+.tk-go { color: var(--color-steel-500); font-size: 15px; }
+
+/* B — Coat swatch rail */
+.ps-b ul { display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--color-rule); }
+.ps-b a { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 12px; padding: 10px 2px; border-bottom: 1px solid var(--color-rule); text-decoration: none; color: var(--color-ink) !important; }
+.ps-b a:hover .sw-name { text-decoration: underline; }
+.sw { width: 40px; height: 40px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(20,32,43,.2); }
+.sw--blue { background: var(--color-steel-500); }
+.sw--white { background: var(--color-bone-50); }
+.sw--bluewhite { background: linear-gradient(90deg, var(--color-steel-500) 50%, var(--color-bone-50) 50%); }
+.sw--blaze { background: linear-gradient(90deg, var(--color-steel-500) 40%, var(--color-bone-50) 40% 60%, var(--color-steel-500) 60%); }
+.sw-name { font-family: var(--font-display); font-weight: 650; font-size: 17px; color: var(--color-steel-700); display: block; line-height: 1.15; }
+.sw-meta { display: block; font-size: 13px; color: var(--color-ink-3); line-height: 1.35; }
+.sw-price { font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
+@container (width >= 640px) {
+  .ps-b ul { grid-template-columns: repeat(3, 1fr); border-top: 0; }
+  .ps-b li { border-left: 1px solid var(--color-rule); }
+  .ps-b li:nth-child(3n+1) { border-left: 0; }
+  .ps-b a { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 6px; border-bottom: 0; padding: 14px 8px; }
+}
+@container (width >= 800px) {
+  .ps-b ul { grid-template-columns: repeat(6, 1fr); }
+  .ps-b li:nth-child(3n+1) { border-left: 1px solid var(--color-rule); }
+  .ps-b li:first-child { border-left: 0; }
+}
+.ps-note { margin: 10px 0 0; font-size: 12.5px; color: var(--color-ink-3); }
+
+/* C — Boys | Girls ledger (two real tables, stacked below 640px — working rule 13) */
+.ps-c .pair { display: grid; gap: 16px; }
+@container (width >= 640px) { .ps-c .pair { grid-template-columns: 1fr 1fr; gap: 28px; } }
+.ps-c table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.ps-c caption { text-align: left; font-family: var(--font-display); font-weight: 650; font-size: 18px; color: var(--color-steel-700); padding-bottom: 6px; }
+.ps-c caption span { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--color-ink-3); margin-left: 6px; }
+.ps-c thead th { text-align: left; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-ink-3); font-weight: 700; padding: 6px 6px 6px 0; border-bottom: 2px solid var(--color-steel-700); }
+.ps-c th[scope=row], .ps-c td { padding: 10px 6px 10px 0; border-bottom: 1px solid var(--color-rule); text-align: left; font-weight: 400; }
+.ps-c th[scope=row] a { font-family: var(--font-display); font-weight: 650; font-size: 17px; text-decoration: none; }
+.ps-c th[scope=row] a::after { content: " →"; color: var(--color-steel-500); font-family: var(--font-body); }
+.ps-c .num { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+@container (width < 640px) {
+  .ps-c .stack-table, .ps-c .stack-table thead, .ps-c .stack-table tbody, .ps-c .stack-table tr, .ps-c .stack-table td, .ps-c .stack-table th, .ps-c .stack-table caption { display: block; }
+  .ps-c .stack-table thead { position: absolute; left: -9999px; }
+  .ps-c .stack-table tr { display: grid; grid-template-columns: 1fr auto; column-gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--color-rule); }
+  .ps-c .stack-table th, .ps-c .stack-table td { border: 0; padding: 2px 0; }
+  .ps-c .stack-table td.num { grid-column: 2; grid-row: 1; }
+  .ps-c .stack-table td[data-label]::before { content: attr(data-label) ": "; font-weight: 700; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-ink-3); }
+  .ps-c .stack-table td.num::before { content: none; }
+}
+
+/* ---------- VIDEO-CALL CHECKLIST (native checkbox + label, no script) ---------- */
+.ck { container-type: inline-size; }
+.ck ul { list-style: none; margin: 0; padding: 0; }
+.ck label { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; cursor: pointer; padding: 10px 0; }
+.ck input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--color-steel-700); cursor: pointer; }
+.ck input:focus-visible { outline: 2px solid var(--color-steel-700); outline-offset: 2px; }
+.ck .t { display: block; font-weight: 700; font-size: 16px; line-height: 1.35; }
+.ck .d { display: block; font-size: 15px; line-height: 1.5; color: var(--color-ink-2); margin-top: 2px; }
+.ck label:has(input:checked) .t { text-decoration: line-through; text-decoration-color: var(--color-brass-500); text-decoration-thickness: 2px; }
+.ck .grp { font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--color-ink-3); margin: 14px 0 0; }
+
+/* A — Call sheet */
+.ck-a .sheet { position: relative; background: var(--color-white); border-radius: 6px 6px 16px 16px; box-shadow: var(--shadow-card); padding: 30px 18px 14px; max-width: 660px; margin-top: 10px; }
+.ck-a .sheet::before { content: ""; position: absolute; top: -9px; left: 50%; translate: -50% 0; width: 84px; height: 18px; border-radius: 6px; background: var(--color-brass-500); box-shadow: inset 0 -3px 0 var(--color-brass-600); }
+.ck-a .sheet::after { content: ""; position: absolute; top: -3px; left: 50%; translate: -50% 0; width: 34px; height: 6px; border-radius: 3px; background: var(--color-steel-900); opacity: .55; }
+@container (width >= 640px) { .ck-a .sheet { padding: 34px 28px 16px; } }
+.ck-a .sheet-hd { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 2px solid var(--color-steel-700); padding-bottom: 8px; }
+.ck-a .sheet-hd b { font-family: var(--font-display); font-size: 19px; color: var(--color-steel-700); }
+.ck-a .sheet-hd span { font-size: 13px; color: var(--color-ink-3); }
+.ck-a li { border-bottom: 1px dotted var(--color-steel-300); }
+.ck-a .sheet-ft { margin: 12px -18px -14px; padding: 10px 18px 12px; border-top: 1.5px dashed var(--color-rule); font-size: 13px; color: var(--color-ink-3); background: var(--color-bone-50); border-radius: 0 0 16px 16px; }
+@container (width >= 640px) { .ck-a .sheet-ft { margin: 12px -28px -16px; padding: 10px 28px 12px; } }
+
+/* B — Look / Listen */
+.ck-b .panes { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@container (width >= 640px) { .ck-b .panes { grid-template-columns: 1fr 1fr; gap: 16px; } }
+.ck-b .pane { background: var(--color-white); border: 1px solid var(--color-rule); border-radius: 14px; overflow: hidden; }
+.ck-b .pane-hd { display: flex; align-items: center; gap: 10px; background: var(--color-steel-700); color: var(--color-bone-100); padding: 11px 16px; }
+.ck-b .pane-hd svg { flex: none; }
+.ck-b .pane-hd b { font-family: var(--font-display); font-weight: 650; font-size: 17px; line-height: 1.2; }
+.ck-b .pane-hd small { display: block; font-size: 12px; font-weight: 600; color: var(--color-brass-200); letter-spacing: .04em; }
+.ck-b ul { padding: 4px 16px 8px; }
+.ck-b li + li { border-top: 1px solid var(--color-rule); }
+
+/* C — Call window */
+.ck-c .win { background: var(--color-steel-900); color: var(--color-bone-100); border-radius: 16px; overflow: hidden; }
+.ck-c .bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 16px; background: color-mix(in srgb, var(--color-steel-700) 70%, var(--color-steel-900)); font-size: 13px; }
+.ck-c .live { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: .02em; }
+.ck-c .live::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--city-warn-on-inverse); box-shadow: 0 0 0 3px color-mix(in srgb, var(--city-warn-on-inverse) 30%, transparent); }
+.ck-c .bar span:last-child { color: var(--color-steel-300); }
+.ck-c .cols { display: grid; grid-template-columns: 1fr; gap: 0 28px; padding: 6px 16px 14px; }
+@container (width >= 640px) { .ck-c .cols { grid-template-columns: 1fr 1fr; padding: 8px 22px 16px; } }
+.ck-c .grp { color: var(--color-brass-200); }
+.ck-c li + li { border-top: 1px solid color-mix(in srgb, var(--color-bone-100) 14%, transparent); }
+.ck-c .t { color: var(--color-bone-100); }
+.ck-c .d { color: var(--color-steel-300); }
+.ck-c input { accent-color: var(--color-brass-500); }
+.ck-c input:focus-visible { outline-color: var(--color-brass-500); }
+
+/* ---------- LONDON PLACES ---------- */
+.pl { container-type: inline-size; }
+.chip { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 50px; white-space: nowrap; line-height: 1.5; }
+.k-no { background: color-mix(in srgb, var(--color-warn) 13%, var(--color-white)); color: var(--color-warn); }
+.k-lead { background: var(--color-steel-100); color: var(--color-steel-700); }
+.k-note { background: var(--color-bone-100); color: var(--color-ink-2); box-shadow: inset 0 0 0 1px var(--color-rule); }
+.facts { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+.facts li { display: grid; grid-template-columns: 104px 1fr; gap: 8px; align-items: start; font-size: 15px; line-height: 1.45; }
+.facts li .chip { justify-self: start; margin-top: 1px; }
+.src { margin: 10px 0 0; font-size: 13px; color: var(--color-ink-3); }
+.src a { overflow-wrap: anywhere; }
+.vet { margin: 18px 0 0; display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; font-size: 15px; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--color-steel-300) 60%, transparent); }
+.vet svg { margin-top: 1px; }
+.vet p { margin: 0; max-width: 64ch; }
+
+/* A — Rule cards */
+.pl-a .cards { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@container (width >= 640px) { .pl-a .cards { grid-template-columns: 1fr 1fr; } }
+.pl-a .card { background: var(--color-white); border: 1px solid var(--color-rule); border-radius: 14px; padding: 14px 16px 12px; display: flex; flex-direction: column; }
+.pl-a .card .nm { margin: 0; font-family: var(--font-display); font-size: 17px; color: var(--color-steel-700); font-weight: 650; }
+.pl-a .who { margin: 2px 0 0; font-size: 13px; color: var(--color-ink-3); }
+.pl-a .src { margin-top: auto; padding-top: 10px; }
+
+/* B — Rules table (stacks below 640px — working rule 13) */
+.pl-b table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--color-white); border-radius: 14px; overflow: hidden; }
+.pl-b caption { text-align: left; font-size: 13px; color: var(--color-ink-3); padding: 0 0 8px; }
+.pl-b thead th { text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-bone-100); background: var(--color-steel-700); font-weight: 700; padding: 9px 10px; }
+.pl-b th[scope=row] { text-align: left; vertical-align: top; padding: 10px; font-family: var(--font-display); font-weight: 650; font-size: 15px; color: var(--color-steel-700); line-height: 1.25; }
+.pl-b th[scope=row] small { display: block; font-family: var(--font-body); font-weight: 400; font-size: 12px; color: var(--color-ink-3); margin-top: 2px; }
+.pl-b td { vertical-align: top; padding: 10px; line-height: 1.45; }
+.pl-b tbody tr + tr > * { border-top: 1px solid var(--color-rule); }
+.pl-b td.none { color: var(--color-ink-3); }
+.pl-b td a { font-size: 13px; }
+@container (width < 640px) {
+  .pl-b .stack-table, .pl-b .stack-table thead, .pl-b .stack-table tbody, .pl-b .stack-table tr, .pl-b .stack-table td, .pl-b .stack-table th, .pl-b .stack-table caption { display: block; }
+  .pl-b .stack-table thead { position: absolute; left: -9999px; }
+  .pl-b .stack-table tr { padding: 12px 14px; }
+  .pl-b .stack-table th, .pl-b .stack-table td { border: 0 !important; padding: 3px 0; }
+  .pl-b .stack-table td[data-label]::before { content: attr(data-label) ": "; font-weight: 700; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-ink-3); }
+  .pl-b .stack-table td.none { display: none; }
+  .pl-b table { border-radius: 12px; }
+}
+
+/* C — By who sets the rules */
+.pl-c .grp-row { display: grid; gap: 10px 28px; grid-template-columns: 1fr; padding: 16px 0; border-top: 1px solid color-mix(in srgb, var(--color-steel-300) 60%, transparent); }
+.pl-c .grp-row:first-child { border-top: 0; padding-top: 4px; }
+@container (width >= 760px) { .pl-c .grp-row { grid-template-columns: 200px minmax(0, 1fr); } }
+.pl-c .owner small { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--color-ink-3); }
+.pl-c .owner b { display: block; font-family: var(--font-display); font-weight: 650; font-size: 19px; color: var(--color-steel-700); line-height: 1.2; margin: 2px 0 6px; }
+.pl-c .owner ul { list-style: none; margin: 0; padding: 0; font-size: 13px; display: grid; gap: 4px; }
+.pl-c .owner li::before { content: "↗ "; color: var(--color-brass-600); }
+.pl-c .places { display: grid; gap: 10px; grid-template-columns: 1fr; }
+@container (width >= 560px) { .pl-c .places { grid-template-columns: 1fr 1fr; } }
+.pl-c .place { background: var(--color-bone-50); border-radius: 12px; padding: 12px 14px; border-left: 3px solid var(--color-brass-500); }
+.pl-c .place .nm { margin: 0; font-family: var(--font-display); font-size: 16px; font-weight: 650; color: var(--color-steel-700); }
+.pl-c .place .who { margin: 1px 0 0; font-size: 12.5px; color: var(--color-ink-3); }
+.pl-c .facts li { display: block; font-size: 14.5px; }
+.pl-c .facts li .chip { margin-right: 6px; vertical-align: 1px; }
+</style>
+
+<main class="pv">
+  <header class="pv-head">
+    <p class="pv-kicker">Preview only · nothing written to the site · 3 October 2026</p>
+    <h1>London Board Revision</h1>
+    <p class="lede">Four new pieces for <code>/uk-locations/blue-staffy-puppies-london/</code>, each in three styles at 1280, 768 and 375 wide, on our own steel, bone and brass tokens. Pick one style per piece. Each frame is the real width, shrunk to fit; scroll inside a frame to see all of it, and tick the boxes in the checklist to try them.</p>
+    <ul class="pv-meta">
+      <li>Answer board 2026-10-03: q01, q02, q03, q06</li>
+      <li>Board: data/boards/blue-staffy-puppies-london.json</li>
+      <li>Working rules 1, 6, 9, 10, 11, 12, 13, 16</li>
+    </ul>
+  </header>
+
+  <nav class="pv-nav" aria-label="Sections">
+    <ol>
+      <li><a href="#byline"><span>1</span>Byline</a></li>
+      <li><a href="#puppies"><span>2</span>Puppy strip</a></li>
+      <li><a href="#checklist"><span>3</span>Video-call checklist</a></li>
+      <li><a href="#places"><span>4</span>London places</a></li>
+      <li><a href="#links"><span>5</span>New links</a></li>
+      <li><a href="#faq"><span>6</span>FAQ count</a></li>
+    </ol>
+  </nav>
+
+  <!-- ============================== 1. BYLINE ============================== -->
+  <section class="pv-sec" id="byline">
+    <header>
+      <h2><span class="n">1</span>Byline under the H1</h2>
+      <dl class="pv-facts">
+        <dt>Where</dt><dd>Inside the hero (<code>city-hero-filmstrip</code>), directly under the H1 "Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?".</dd>
+        <dt>Says</dt><dd>"Written by Lisa Bright, breeder, Carlisle", with her name linking to <code>/blue-staffy-uk-breeders/</code>. Once her read is recorded, a second line: "Read and approved by Lisa on &lt;date&gt;". Before that, the second line is not printed at all. Each frame shows both states.</dd>
+        <dt>No headshot</dt><dd>We have no real photo of Lisa on file, and Google's guidance warns against made-up author photos, so none of the three uses a picture.</dd>
+        <dt>Note</dt><dd>The hero's lead paragraph already ends "Lisa Bright, BlueStaffyUK." With a byline in place, that sign-off says the same thing twice. Dropping it would be a content change, so it is flagged here, not made.</dd>
+      </dl>
+    </header>
+
+    <article class="pv-style">
+      <h3><span class="lt">A</span>Signed rule <span class="rec">Recommended</span></h3>
+      <p><strong>Why:</strong> it is the smallest change to the approved hero: one line under the H1 with a short brass rule, no box, and the "read" line slots in under it without moving the lead or the filmstrip. <strong>Trade-off:</strong> it is the quietest of the three, so the "read and approved" line is easy to miss.</p>
+      <template>
+        <div class="site pg">
+          <p class="state">State 1 · before Lisa's read is recorded</p>
+          <section class="hero">
+            <div class="film"><span>Roman</span><span>Byrd</span><span>Ince</span><span>Vennie</span><span>Christa</span><span>Cheryl</span></div>
+            <div class="hcopy">
+              <p class="eyebrow">Six puppies · Carlisle to London</p>
+              <h1>Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?</h1>
+              <p class="by-a"><span>Written by <a href="/blue-staffy-uk-breeders/">Lisa Bright</a>, breeder, Carlisle</span></p>
+            </div>
+            <p class="lead">Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to us in Carlisle comes after that call. We raise every litter in our own home, and this one has six puppies: three boys at £1,500 and three girls at £1,700. Lisa Bright, BlueStaffyUK.</p>
+          </section>
+          <p class="state" style="margin-top:22px">State 2 · after her read</p>
+          <section class="hero">
+            <div class="film"><span>Roman</span><span>Byrd</span><span>Ince</span><span>Vennie</span><span>Christa</span><span>Cheryl</span></div>
+            <div class="hcopy">
+              <p class="eyebrow">Six puppies · Carlisle to London</p>
+              <h1>Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?</h1>
+              <p class="by-a"><span>Written by <a href="/blue-staffy-uk-breeders/">Lisa Bright</a>, breeder, Carlisle</span></p>
+              <!-- the date is recorded when Lisa reads the page; until then this line is not rendered -->
+              <p class="by-a-read"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6.25" fill="none" stroke="#C9A227" stroke-width="1.5"/><path d="M4.2 7.2l1.9 1.9 3.8-4" fill="none" stroke="#C9A227" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Read and approved by Lisa on <time class="slot">date of her read</time></p>
+            </div>
+            <p class="lead">Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to us in Carlisle comes after that call. We raise every litter in our own home, and this one has six puppies: three boys at £1,500 and three girls at £1,700. Lisa Bright, BlueStaffyUK.</p>
+          </section>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+
+    <article class="pv-style">
+      <h3><span class="lt">B</span>Ledger pair</h3>
+      <p>Two labelled cells between hairlines: "Written by" and, once recorded, "Read and approved". They sit side by side when the column is wide enough and stack when it is not. Clear labels, but it adds a ruled band to a hero that is already dense.</p>
+      <template>
+        <div class="site pg">
+          <p class="state">State 1 · before Lisa's read is recorded</p>
+          <section class="hero">
+            <div class="film"><span>Roman</span><span>Byrd</span><span>Ince</span><span>Vennie</span><span>Christa</span><span>Cheryl</span></div>
+            <div class="hcopy">
+              <p class="eyebrow">Six puppies · Carlisle to London</p>
+              <h1>Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?</h1>
+              <dl class="by-b"><div><dt>Written by</dt><dd><a href="/blue-staffy-uk-breeders/">Lisa Bright</a>, breeder, Carlisle</dd></div></dl>
+            </div>
+            <p class="lead">Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to us in Carlisle comes after that call. We raise every litter in our own home, and this one has six puppies: three boys at £1,500 and three girls at £1,700. Lisa Bright, BlueStaffyUK.</p>
+          </section>
+          <p class="state" style="margin-top:22px">State 2 · after her read</p>
+          <section class="hero">
+            <div class="film"><span>Roman</span><span>Byrd</span><span>Ince</span><span>Vennie</span><span>Christa</span><span>Cheryl</span></div>
+            <div class="hcopy">
+              <p class="eyebrow">Six puppies · Carlisle to London</p>
+              <h1>Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?</h1>
+              <dl class="by-b"><div><dt>Written by</dt><dd><a href="/blue-staffy-uk-breeders/">Lisa Bright</a>, breeder, Carlisle</dd></div><div><dt>Read and approved</dt><dd>by Lisa on <time class="slot">date of her read</time></dd></div></dl>
+            </div>
+            <p class="lead">Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to us in Carlisle comes after that call. We raise every litter in our own home, and this one has six puppies: three boys at £1,500 and three girls at £1,700. Lisa Bright, BlueStaffyUK.</p>
+          </section>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+
+    <article class="pv-style">
+      <h3><span class="lt">C</span>Monogram seal</h3>
+      <p>A lettered "LB" seal (type only, no photo) beside the byline; the seal fills brass once her read is recorded. It has the most presence, but a round mark where a face usually goes can read as a stand-in for a photo, which is the impression the no-headshot rule is there to avoid.</p>
+      <template>
+        <div class="site pg">
+          <p class="state">State 1 · before Lisa's read is recorded</p>
+          <section class="hero">
+            <div class="film"><span>Roman</span><span>Byrd</span><span>Ince</span><span>Vennie</span><span>Christa</span><span>Cheryl</span></div>
+            <div class="hcopy">
+              <p class="eyebrow">Six puppies · Carlisle to London</p>
+              <h1>Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?</h1>
+              <div class="by-c"><span class="seal" aria-hidden="true">LB</span><div><p>Written by <a href="/blue-staffy-uk-breeders/">Lisa Bright</a>, breeder, Carlisle</p></div></div>
+            </div>
+            <p class="lead">Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to us in Carlisle comes after that call. We raise every litter in our own home, and this one has six puppies: three boys at £1,500 and three girls at £1,700. Lisa Bright, BlueStaffyUK.</p>
+          </section>
+          <p class="state" style="margin-top:22px">State 2 · after her read</p>
+          <section class="hero">
+            <div class="film"><span>Roman</span><span>Byrd</span><span>Ince</span><span>Vennie</span><span>Christa</span><span>Cheryl</span></div>
+            <div class="hcopy">
+              <p class="eyebrow">Six puppies · Carlisle to London</p>
+              <h1>Can I See a Blue Staffy Puppy on Video From London Before Any Deposit?</h1>
+              <div class="by-c"><span class="seal is-read" aria-hidden="true">LB</span><div><p>Written by <a href="/blue-staffy-uk-breeders/">Lisa Bright</a>, breeder, Carlisle</p><p>Read and approved by Lisa on <time class="slot">date of her read</time></p></div></div>
+            </div>
+            <p class="lead">Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to us in Carlisle comes after that call. We raise every litter in our own home, and this one has six puppies: three boys at £1,500 and three girls at £1,700. Lisa Bright, BlueStaffyUK.</p>
+          </section>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+  </section>
+
+  <!-- ============================== 2. PUPPY STRIP ============================== -->
+  <section class="pv-sec" id="puppies">
+    <header>
+      <h2><span class="n">2</span>Puppy strip under the key takeaways</h2>
+      <dl class="pv-facts">
+        <dt>Where</dt><dd>Straight after the <code>city-takeaways-ledger</code> ("Key Takeaways for London Buyers"), in the content column beside the page dial. No new heading, so the approved outline does not change.</dd>
+        <dt>Data</dt><dd>The six puppies in <code>data/puppies.json</code>: name, sex, colour, <code>price_gbp</code>. Each links to <code>/available-puppies/&lt;slug&gt;/</code>, the route <code>src/pages/available-puppies/[slug].astro</code> builds (all six are in <code>dist/available-puppies/</code>). The build reads the prices from the data file. They are typed into this preview only so you can see them, and each one is marked in a comment as interpolated.</dd>
+        <dt>Refresh delta</dt><dd>The page already shows these six puppies three ways, all with photos: the hero filmstrip, the <code>city-puppy-sheet</code> prints and the <code>city-roster</code> table. None of the three strips below uses a photo.</dd>
+      </dl>
+    </header>
+
+    <article class="pv-style">
+      <h3><span class="lt">A</span>Ticket strip <span class="rec">Recommended</span></h3>
+      <p><strong>Why:</strong> each ticket is one link to that puppy's own page, and with no photo it does not repeat the six faces (and their alts, rule 11) that the hero filmstrip shows one screen up. On desktop it stays one row tall. <strong>Trade-off:</strong> without a picture or a colour key, the coats can't be told apart at a glance.</p>
+      <template>
+        <div class="site pg pg--col">
+          <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
+          <div>
+            <div class="ghost"><b>Key Takeaways for London Buyers</b>city-takeaways-ledger, unchanged: its last row, "Two-year health guarantee", ends here.</div>
+            <div class="ps ps-a">
+              <p class="ps-label">Our six puppies · each opens its own page</p>
+              <!-- data/puppies.json — name, sex, colour, price_gbp per row; prices INTERPOLATED at build, typed here for the preview only -->
+              <ul>
+                <li><a class="tk" href="/available-puppies/roman/"><span class="tk-body"><span class="tk-name">Roman</span><span class="tk-meta">Boy · Blue and white</span></span><span class="tk-stub"><span class="tk-price"><!-- interpolated: price_gbp -->£1,500</span><span class="tk-go" aria-hidden="true">→</span></span></a></li>
+                <li><a class="tk" href="/available-puppies/byrd/"><span class="tk-body"><span class="tk-name">Byrd</span><span class="tk-meta">Boy · White</span></span><span class="tk-stub"><span class="tk-price"><!-- interpolated: price_gbp -->£1,500</span><span class="tk-go" aria-hidden="true">→</span></span></a></li>
+                <li><a class="tk" href="/available-puppies/ince/"><span class="tk-body"><span class="tk-name">Ince</span><span class="tk-meta">Boy · Blue</span></span><span class="tk-stub"><span class="tk-price"><!-- interpolated: price_gbp -->£1,500</span><span class="tk-go" aria-hidden="true">→</span></span></a></li>
+                <li><a class="tk" href="/available-puppies/vennie/"><span class="tk-body"><span class="tk-name">Vennie</span><span class="tk-meta">Girl · Blue and white</span></span><span class="tk-stub"><span class="tk-price"><!-- interpolated: price_gbp -->£1,700</span><span class="tk-go" aria-hidden="true">→</span></span></a></li>
+                <li><a class="tk" href="/available-puppies/christa/"><span class="tk-body"><span class="tk-name">Christa</span><span class="tk-meta">Girl · Blue</span></span><span class="tk-stub"><span class="tk-price"><!-- interpolated: price_gbp -->£1,700</span><span class="tk-go" aria-hidden="true">→</span></span></a></li>
+                <li><a class="tk" href="/available-puppies/cheryl/"><span class="tk-body"><span class="tk-name">Cheryl</span><span class="tk-meta">Girl · Blue with white blaze</span></span><span class="tk-stub"><span class="tk-price"><!-- interpolated: price_gbp -->£1,700</span><span class="tk-go" aria-hidden="true">→</span></span></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+
+    <article class="pv-style">
+      <h3><span class="lt">B</span>Coat swatch rail</h3>
+      <p>Each puppy gets a round colour key painted from the colour on its listing (blue, white, blue and white, blue with a white blaze), using our own steel and bone. On desktop it is a ruled rail of six, on a phone a list. It is the quickest way to see the coats, but a flat swatch is not the dog, and a buyer could read it as a promise about the exact shade.</p>
+      <template>
+        <div class="site pg pg--col">
+          <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
+          <div>
+            <div class="ghost"><b>Key Takeaways for London Buyers</b>city-takeaways-ledger, unchanged: its last row, "Two-year health guarantee", ends here.</div>
+            <div class="ps ps-b">
+              <p class="ps-label">Our six puppies · each opens its own page</p>
+              <!-- data/puppies.json — swatch class keyed from `colour`; prices INTERPOLATED from price_gbp at build -->
+              <ul>
+                <li><a href="/available-puppies/roman/"><span class="sw sw--bluewhite" aria-hidden="true"></span><span><span class="sw-name">Roman</span><span class="sw-meta">Boy · Blue and white</span></span><span class="sw-price"><!-- interpolated -->£1,500</span></a></li>
+                <li><a href="/available-puppies/byrd/"><span class="sw sw--white" aria-hidden="true"></span><span><span class="sw-name">Byrd</span><span class="sw-meta">Boy · White</span></span><span class="sw-price"><!-- interpolated -->£1,500</span></a></li>
+                <li><a href="/available-puppies/ince/"><span class="sw sw--blue" aria-hidden="true"></span><span><span class="sw-name">Ince</span><span class="sw-meta">Boy · Blue</span></span><span class="sw-price"><!-- interpolated -->£1,500</span></a></li>
+                <li><a href="/available-puppies/vennie/"><span class="sw sw--bluewhite" aria-hidden="true"></span><span><span class="sw-name">Vennie</span><span class="sw-meta">Girl · Blue and white</span></span><span class="sw-price"><!-- interpolated -->£1,700</span></a></li>
+                <li><a href="/available-puppies/christa/"><span class="sw sw--blue" aria-hidden="true"></span><span><span class="sw-name">Christa</span><span class="sw-meta">Girl · Blue</span></span><span class="sw-price"><!-- interpolated -->£1,700</span></a></li>
+                <li><a href="/available-puppies/cheryl/"><span class="sw sw--blaze" aria-hidden="true"></span><span><span class="sw-name">Cheryl</span><span class="sw-meta">Girl · Blue with white blaze</span></span><span class="sw-price"><!-- interpolated -->£1,700</span></a></li>
+              </ul>
+              <p class="ps-note">Colour keys are drawn from each puppy's listed colour, not from a photo.</p>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+
+    <article class="pv-style">
+      <h3><span class="lt">C</span>Boys and girls ledger</h3>
+      <p>Two short tables, boys and girls, because that is how the price is set (<code>male_gbp</code> / <code>female_gbp</code>). They stack into labelled rows below 640px (<code>.stack-table</code>, rule 13). This shows the clearest reason for the price difference, but it repeats the boy/girl split the price scale and the roster already make.</p>
+      <template>
+        <div class="site pg pg--col">
+          <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
+          <div>
+            <div class="ghost"><b>Key Takeaways for London Buyers</b>city-takeaways-ledger, unchanged: its last row, "Two-year health guarantee", ends here.</div>
+            <div class="ps ps-c">
+              <p class="ps-label">Our six puppies · each opens its own page</p>
+              <!-- data/puppies.json split on `sex`; prices INTERPOLATED from price_gbp (= data/price-matrix.json male_gbp / female_gbp) -->
+              <div class="pair">
+                <table class="stack-table">
+                  <caption>Boys <span>3 available</span></caption>
+                  <thead><tr><th scope="col">Puppy</th><th scope="col">Colour</th><th scope="col" class="num">Price</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row"><a href="/available-puppies/roman/">Roman</a></th><td data-label="Colour">Blue and white</td><td data-label="Price" class="num"><!-- interpolated -->£1,500</td></tr>
+                    <tr><th scope="row"><a href="/available-puppies/byrd/">Byrd</a></th><td data-label="Colour">White</td><td data-label="Price" class="num"><!-- interpolated -->£1,500</td></tr>
+                    <tr><th scope="row"><a href="/available-puppies/ince/">Ince</a></th><td data-label="Colour">Blue</td><td data-label="Price" class="num"><!-- interpolated -->£1,500</td></tr>
+                  </tbody>
+                </table>
+                <table class="stack-table">
+                  <caption>Girls <span>3 available</span></caption>
+                  <thead><tr><th scope="col">Puppy</th><th scope="col">Colour</th><th scope="col" class="num">Price</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row"><a href="/available-puppies/vennie/">Vennie</a></th><td data-label="Colour">Blue and white</td><td data-label="Price" class="num"><!-- interpolated -->£1,700</td></tr>
+                    <tr><th scope="row"><a href="/available-puppies/christa/">Christa</a></th><td data-label="Colour">Blue</td><td data-label="Price" class="num"><!-- interpolated -->£1,700</td></tr>
+                    <tr><th scope="row"><a href="/available-puppies/cheryl/">Cheryl</a></th><td data-label="Colour">Blue with white blaze</td><td data-label="Price" class="num"><!-- interpolated -->£1,700</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+  </section>
+
+  <!-- ============================== 3. CHECKLIST ============================== -->
+  <section class="pv-sec" id="checklist">
+    <header>
+      <h2><span class="n">3</span>Video-call checklist</h2>
+      <dl class="pv-facts">
+        <dt>Where</dt><dd><code>deposit-viewing</code>, chapter 1, under the H5 "What Should I Ask to See While We Are on the Call?" and its paragraph. In <code>city-chapters</code> that prose column is only about 260px wide at 1280, so the checklist runs across the chapter's full width beneath the paragraph.</dd>
+        <dt>Items</dt><dd>Eight, each from a data file or one of Lisa's answers (named in an HTML comment on each item): Maggie on camera (q03), your puppy's markings against its listing (<code>puppies.json</code>), the paperwork and the contract on camera (<code>faq.json</code> <code>whyus-paperwork</code>, q05), the tests named only, with no results (q01), the parents' registration numbers, the deposit with <code>deposit_refund_clause</code> read out (q04 bank transfer), and the guarantee from <code>guarantee_label</code> / <code>guarantee_cover</code> / <code>guarantee_note</code>.</dd>
+        <dt>Mechanics</dt><dd>A native <code>&lt;input type="checkbox"&gt;</code> inside its <code>&lt;label&gt;</code>, with no JavaScript. A ticked item gets a brass strike-through through CSS <code>:has()</code>. Nothing is saved: the boxes are for use during the call.</dd>
+      </dl>
+    </header>
+
+    <article class="pv-style">
+      <h3><span class="lt">A</span>Call sheet</h3>
+      <p>One white sheet under a brass clip, with "On camera" and "Out loud" as small group labels and a torn-off foot. It reads like something to keep beside the phone. As a single column it is the tallest of the three on desktop.</p>
+      <template>
+        <div class="site pg pg--col">
+          <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
+          <div class="tray">
+            <h5 class="hd"><small>H5 · deposit-viewing, chapter 1</small>What Should I Ask to See While We Are on the Call?</h5>
+            <p class="prose">Ask to see the puppy move about, then Maggie with the litter. Put any question you have about the parents, the paperwork or the contract.</p>
+            <div class="ck ck-a">
+              <div class="sheet">
+                <div class="sheet-hd"><b>On the call with us</b><span>Tick as you go</span></div>
+                <p class="grp">On camera</p>
+                <ul>
+                  <!-- source: answers 2026-09-29 q03 (live video call with the puppy and its mother, on request); data/faq.json about-health-tests ("Maggie, our dam") -->
+                  <li><label><input type="checkbox"><span><span class="t">Maggie, with the litter</span><span class="d">Ask us to turn the camera to Maggie, our dam, with her puppies.</span></span></label></li>
+                  <!-- source: data/puppies.json `colour` (Cheryl: "Blue with white blaze") -->
+                  <li><label><input type="checkbox"><span><span class="t">Your puppy's own markings</span><span class="d">See your puppy up close and match its coat to the colour on its listing. Cheryl, for one, is listed as blue with a white blaze.</span></span></label></li>
+                  <!-- source: data/faq.json whyus-paperwork ("The Kennel Club registration paperwork, the vaccination records, the microchipping details") -->
+                  <li><label><input type="checkbox"><span><span class="t">The paperwork, held up to the camera</span><span class="d">The Kennel Club registration paperwork, the vaccination records and the microchipping details.</span></span></label></li>
+                  <!-- source: data/faq.json whyus-paperwork ("a written puppy purchase contract"); answers 2026-09-29 q05 (the take-back promise is in the written contract) -->
+                  <li><label><input type="checkbox"><span><span class="t">The written contract</span><span class="d">Our puppy purchase contract, with the take-back promise written into it.</span></span></label></li>
+                </ul>
+                <p class="grp">Out loud</p>
+                <ul>
+                  <!-- source: answers 2026-09-29 q01 (name the tests, never a result); data/faq.json about-health-tests -->
+                  <li><label><input type="checkbox"><span><span class="t">The health tests, by name</span><span class="d">Ask us to name each test both parents have had: L-2-HGA, HC-HSF4, eye screening and elbow screening.</span></span></label></li>
+                  <!-- source: data/faq.json whyus-paperwork ("the registration numbers of both parents, so you can check the pedigree yourself") -->
+                  <li><label><input type="checkbox"><span><span class="t">The parents' registration numbers</span><span class="d">Write them down so you can check the pedigree yourself.</span></span></label></li>
+                  <!-- source: data/settings.json deposit_gbp + deposit_refund_clause (both INTERPOLATED at build); answers 2026-09-29 q04 (bank transfer) -->
+                  <li><label><input type="checkbox"><span><span class="t">The deposit terms, read out</span><span class="d">£500, paid by bank transfer: up to 70% refundable if you change your mind up to 1 day before collection or delivery.</span></span></label></li>
+                  <!-- source: data/settings.json guarantee_label + guarantee_cover + guarantee_note (INTERPOLATED at build) -->
+                  <li><label><input type="checkbox"><span><span class="t">The Two-year health guarantee</span><span class="d">It covers health issues and birth defects for two years from the day your puppy comes home. Ask us for the full terms before you pay a deposit.</span></span></label></li>
+                </ul>
+                <p class="sheet-ft">Keep this open beside the call. Nothing you tick is saved or sent.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+
+    <article class="pv-style">
+      <h3><span class="lt">B</span>Look and listen <span class="rec">Recommended</span></h3>
+      <p><strong>Why:</strong> it splits the call into the two things a video call can prove: what you see on camera (Maggie, the puppy, the papers: q03, q05) and what you hear us say (the tests named, the deposit by bank transfer and its refund clause: q01, q04). The two panes sit side by side from 640px, so on desktop it is half the height of A. <strong>Trade-off:</strong> on a phone the two panes stack, so it ends up a little taller than one plain list.</p>
+      <template>
+        <div class="site pg pg--col">
+          <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
+          <div class="tray">
+            <h5 class="hd"><small>H5 · deposit-viewing, chapter 1</small>What Should I Ask to See While We Are on the Call?</h5>
+            <p class="prose">Ask to see the puppy move about, then Maggie with the litter. Put any question you have about the parents, the paperwork or the contract.</p>
+            <div class="ck ck-b">
+              <div class="panes">
+                <div class="pane">
+                  <div class="pane-hd"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#EFE3B4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span><b>Ask to see, on camera</b><small>Tick each one as we show it</small></span></div>
+                  <ul>
+                    <!-- source: answers 2026-09-29 q03; data/faq.json about-health-tests ("Maggie, our dam") -->
+                    <li><label><input type="checkbox"><span><span class="t">Maggie, with the litter</span><span class="d">Ask us to turn the camera to Maggie, our dam, with her puppies.</span></span></label></li>
+                    <!-- source: data/puppies.json `colour` -->
+                    <li><label><input type="checkbox"><span><span class="t">Your puppy's own markings</span><span class="d">See your puppy up close and match its coat to the colour on its listing. Cheryl, for one, is listed as blue with a white blaze.</span></span></label></li>
+                    <!-- source: data/faq.json whyus-paperwork -->
+                    <li><label><input type="checkbox"><span><span class="t">The paperwork</span><span class="d">The Kennel Club registration paperwork, the vaccination records and the microchipping details.</span></span></label></li>
+                    <!-- source: data/faq.json whyus-paperwork; answers 2026-09-29 q05 -->
+                    <li><label><input type="checkbox"><span><span class="t">The written contract</span><span class="d">Our puppy purchase contract, with the take-back promise written into it.</span></span></label></li>
+                  </ul>
+                </div>
+                <div class="pane">
+                  <div class="pane-hd"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#EFE3B4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H9l-5 4z"/><path d="M8 9.5h8M8 12h5"/></svg><span><b>Ask to hear, out loud</b><small>Tick each one as we answer it</small></span></div>
+                  <ul>
+                    <!-- source: answers 2026-09-29 q01 (tests named only); data/faq.json about-health-tests -->
+                    <li><label><input type="checkbox"><span><span class="t">The health tests, by name</span><span class="d">Ask us to name each test both parents have had: L-2-HGA, HC-HSF4, eye screening and elbow screening.</span></span></label></li>
+                    <!-- source: data/faq.json whyus-paperwork -->
+                    <li><label><input type="checkbox"><span><span class="t">The parents' registration numbers</span><span class="d">Write them down so you can check the pedigree yourself.</span></span></label></li>
+                    <!-- source: data/settings.json deposit_gbp + deposit_refund_clause (INTERPOLATED); answers 2026-09-29 q04 -->
+                    <li><label><input type="checkbox"><span><span class="t">The deposit terms</span><span class="d">£500, paid by bank transfer: up to 70% refundable if you change your mind up to 1 day before collection or delivery.</span></span></label></li>
+                    <!-- source: data/settings.json guarantee_label + guarantee_cover + guarantee_note (INTERPOLATED) -->
+                    <li><label><input type="checkbox"><span><span class="t">The Two-year health guarantee</span><span class="d">It covers health issues and birth defects for two years from the day your puppy comes home. Ask us for the full terms before you pay a deposit.</span></span></label></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+
+    <article class="pv-style">
+      <h3><span class="lt">C</span>Call window</h3>
+      <p>The checklist inside a dark video-call window, with a "Live call with Lisa" bar and two columns. It is the most memorable of the three and ties straight to the H1's promise. The cost: a fourth steel-900 block on a page that already has the hero and the dark bands, and dark text-heavy panels are harder to scan.</p>
+      <template>
+        <div class="site pg pg--col">
+          <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
+          <div class="tray">
+            <h5 class="hd"><small>H5 · deposit-viewing, chapter 1</small>What Should I Ask to See While We Are on the Call?</h5>
+            <p class="prose">Ask to see the puppy move about, then Maggie with the litter. Put any question you have about the parents, the paperwork or the contract.</p>
+            <div class="ck ck-c">
+              <div class="win">
+                <div class="bar"><span class="live">Live call with Lisa · Carlisle</span><span>Tick as you go</span></div>
+                <div class="cols">
+                  <ul>
+                    <li class="grp" aria-hidden="true">On camera</li>
+                    <!-- source: answers 2026-09-29 q03; data/faq.json about-health-tests -->
+                    <li><label><input type="checkbox"><span><span class="t">Maggie, with the litter</span><span class="d">Ask us to turn the camera to Maggie, our dam, with her puppies.</span></span></label></li>
+                    <!-- source: data/puppies.json `colour` -->
+                    <li><label><input type="checkbox"><span><span class="t">Your puppy's own markings</span><span class="d">Match its coat to the colour on its listing. Cheryl, for one, is listed as blue with a white blaze.</span></span></label></li>
+                    <!-- source: data/faq.json whyus-paperwork -->
+                    <li><label><input type="checkbox"><span><span class="t">The paperwork</span><span class="d">Kennel Club registration paperwork, vaccination records, microchipping details.</span></span></label></li>
+                    <!-- source: data/faq.json whyus-paperwork; answers 2026-09-29 q05 -->
+                    <li><label><input type="checkbox"><span><span class="t">The written contract</span><span class="d">Our puppy purchase contract, with the take-back promise in it.</span></span></label></li>
+                  </ul>
+                  <ul>
+                    <li class="grp" aria-hidden="true">Out loud</li>
+                    <!-- source: answers 2026-09-29 q01; data/faq.json about-health-tests -->
+                    <li><label><input type="checkbox"><span><span class="t">The health tests, by name</span><span class="d">L-2-HGA, HC-HSF4, eye screening and elbow screening, for both parents.</span></span></label></li>
+                    <!-- source: data/faq.json whyus-paperwork -->
+                    <li><label><input type="checkbox"><span><span class="t">The parents' registration numbers</span><span class="d">Write them down so you can check the pedigree yourself.</span></span></label></li>
+                    <!-- source: data/settings.json deposit_gbp + deposit_refund_clause (INTERPOLATED); answers 2026-09-29 q04 -->
+                    <li><label><input type="checkbox"><span><span class="t">The deposit terms</span><span class="d">£500, paid by bank transfer: up to 70% refundable if you change your mind up to 1 day before collection or delivery.</span></span></label></li>
+                    <!-- source: data/settings.json guarantee_label + guarantee_cover + guarantee_note (INTERPOLATED) -->
+                    <li><label><input type="checkbox"><span><span class="t">The Two-year health guarantee</span><span class="d">It covers health issues and birth defects for two years from the day your puppy comes home. Ask us for the full terms.</span></span></label></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+  </section>
+
+  <!-- ============================== 4. LONDON PLACES ============================== -->
+  <section class="pv-sec" id="places">
+    <header>
+      <h2><span class="n">4</span>London places under the parks H4</h2>
+      <dl class="pv-facts">
+        <dt>Where</dt><dd><code>london-life</code>, chapter 1, under the H4 "Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?" and its paragraph, across the chapter's full width.</dd>
+        <dt>Data</dt><dd><code>data/city-places/blue-staffy-puppies-london.json</code> (fetched 2026-10-03): ten places, their dog-rule facts as the file words them, and each fact's official source. Then one line linking the RCVS Find a Vet search (<code>vets.source</code>). Nothing else.</dd>
+        <dt>Left out on purpose</dt><dd>Facts in the file that are not about dogs: park sizes, Trent Park's toilets, Oaks Park's postal address. The file's general <code>rules</code> list (microchip law, the Royal Parks' rules for every park, Enfield's PSPO 6) is also left out, as the brief asked: places only. No borough is shown for the Royal Parks or Epping Forest, because the sources don't name one (marked NOT FETCHED in the file).</dd>
+        <dt>Chips</dt><dd>"No dogs", "On a lead" and "Good to know" sort each fact as its wording reads. The words themselves are the file's.</dd>
+      </dl>
+    </header>
+
+    <article class="pv-style">
+      <h3><span class="lt">A</span>Rule cards</h3>
+      <p>One white card per place, two across from 640px, each with its own source link at the foot. Easy to scan by park, but the Royal Parks PDF is linked five times with the same anchor, and ten cards make the tallest block of the three.</p>
+      <template>
+        <div class="site pg pg--col">
+          <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
+          <div class="tray">
+            <h4 class="hd"><small>H4 · london-life, chapter 1</small>Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?</h4>
+            <p class="prose">In whichever park is nearest you, on a lead until its recall is reliable. How much exercise a Staffy-sized dog needs is set out by the PDSA, and two good outings a day is what ours are used to.</p>
+            <div class="pl pl-a">
+              <!-- every fact: data/city-places/blue-staffy-puppies-london.json places[].facts[].value; links: its .source -->
+              <div class="cards">
+                <article class="card"><p class="nm">Hyde Park</p><p class="who">A Royal Park · The Royal Parks</p>
+                  <ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted at the Diana, Princess of Wales Memorial Fountain, the Lido swimming area, the Serpentine Lake, or the bowling green and tennis centre area</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a lead in the Rose Garden and at the edge of the Serpentine Lake</span></li></ul>
+                  <p class="src">Source: <a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></p></article>
+                <article class="card"><p class="nm">Kensington Gardens</p><p class="who">A Royal Park · The Royal Parks</p>
+                  <ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in the Long Water, the Round Pond or at the Peter Pan Statue</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a lead at the edge of the Round Pond and Long Water, around the Italian Fountains and on the South and North Flower Walks</span></li></ul>
+                  <p class="src">Source: <a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></p></article>
+                <article class="card"><p class="nm">The Regent's Park and Primrose Hill</p><p class="who">A Royal Park · The Royal Parks</p>
+                  <ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in Avenue Gardens, English Gardens, Queen Mary's Gardens, the wildlife enclosures, St John's Lodge Gardens or the Boating Lake</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a lead in areas next to the Boating Lake, the Winter Gardens and the Community Wildlife Garden</span></li></ul>
+                  <p class="src">Source: <a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></p></article>
+                <article class="card"><p class="nm">Richmond Park</p><p class="who">A Royal Park · The Royal Parks</p>
+                  <ul class="facts"><li><span class="chip k-lead">On a lead</span><span>Dogs must be on leads and away from the deer throughout the park from 1 May to 31 July (deer birthing season)</span></li><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in Pembroke Lodge and Gardens</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a short lead all year in the skylark protection zones (Lawn Field by Pen Ponds, Crown Field, the Bog)</span></li></ul>
+                  <p class="src">Source: <a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></p></article>
+                <article class="card"><p class="nm">Greenwich Park</p><p class="who">A Royal Park · The Royal Parks</p>
+                  <!-- the file's value adds "(2025 policy; the 2023 leaflet listed the Rose Garden as dog-free…)": a sourcing note, kept here and off the page -->
+                  <ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in the Flower Garden, the Wilderness Deer Park or the Royal Observatory Garden</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a lead in the Rose Garden</span></li></ul>
+                  <p class="src">Source: <a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></p></article>
+                <article class="card"><p class="nm">Hampstead Heath</p><p class="who">North London · City of London Corporation</p>
+                  <ul class="facts"><li><span class="chip k-note">Good to know</span><span>The City of London describes the Heath as one of North London's most popular dog-walking spots, with 800 acres</span></li><li><span class="chip k-note">Good to know</span><span>Keep your dog under control at all times, and it must respond to recall when off the lead</span></li><li><span class="chip k-note">Good to know</span><span>Keep a collar and tag on your dog, and bag all dog poo for a bin or take it home</span></li><li><span class="chip k-note">Good to know</span><span>Owners can be fined if a dog is not under control and hurts, annoys or disturbs other Heath users</span></li><li><span class="chip k-note">Good to know</span><span>Professional dog walkers need a licence and there is a cap of four dogs per person</span></li></ul>
+                  <p class="src">Source: <a href="https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath">Dog walking at Hampstead Heath</a></p></article>
+                <article class="card"><p class="nm">Epping Forest</p><p class="who">City of London Corporation</p>
+                  <ul class="facts"><li><span class="chip k-note">Good to know</span><span>Epping Forest has a Dog Walking Code of Conduct: your dog must be under effective control</span></li><li><span class="chip k-lead">On a lead</span><span>A dog that does not respond to recall must be kept on a lead</span></li><li><span class="chip k-note">Good to know</span><span>Dogs must not disturb or chase wildlife, cattle, deer or horses; watch for ticks and harmful algae</span></li></ul>
+                  <p class="src">Source: <a href="https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest">Dog walking in Epping Forest</a></p></article>
+                <article class="card"><p class="nm">Trent Country Park</p><p class="who">Enfield (Cockfosters ward) · Enfield Council</p>
+                  <ul class="facts"><li><span class="chip k-lead">On a lead</span><span>Under Enfield PSPO 3 (from 23 October 2025) dogs must be on a lead at all times in the Trent Country Park Water Garden</span></li><li><span class="chip k-note">Good to know</span><span>Enfield publishes its own park byelaws for Trent Park</span></li></ul>
+                  <p class="src">Sources: <a href="https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf">Enfield PSPO 3 (PDF)</a> · <a href="https://www.enfield.gov.uk/services/leisure-and-culture/parks">Enfield Council's parks page</a></p></article>
+                <article class="card"><p class="nm">Oaks Park</p><p class="who">Carshalton · London Borough of Sutton</p>
+                  <ul class="facts"><li><span class="chip k-no">No dogs</span><span>It has a dog-free picnic area with natural play features</span></li></ul>
+                  <p class="src">Source: <a href="https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park">Oaks Park, Sutton Council</a></p></article>
+                <article class="card"><p class="nm">Overton Park</p><p class="who">Sutton · London Borough of Sutton</p>
+                  <ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in this recreation ground, except guide dogs (a park to avoid with a puppy)</span></li></ul>
+                  <p class="src">Source: <a href="https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park">Overton Park, Sutton Council</a></p></article>
+              </div>
+              <!-- data/city-places vets.source + vets.how: link the search, name no practice -->
+              <div class="vet"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="7" fill="#1F3A52"/><path d="M13 7v12M7 13h12" stroke="#EFE3B4" stroke-width="2.6" stroke-linecap="round"/></svg><p><a href="https://www.rcvs.org.uk/animal-owners/find-a-vet">The RCVS Find a Vet search</a> finds registered vets near you in London, and the register lets you check that a vet is registered. We don't name a London practice ourselves.</p></div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+
+    <article class="pv-style">
+      <h3><span class="lt">B</span>Rules table</h3>
+      <p>One real table: place, no dogs, on a lead, good to know, source. It stacks into labelled rows below 640px (<code>.stack-table</code>, rule 13). It is the densest and easiest to compare across parks. The cells shorten the file's sentences into lists (the places themselves are kept word for word), and that shortening would have to be checked against each source.</p>
+      <template>
+        <div class="site pg pg--col">
+          <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
+          <div class="tray">
+            <h4 class="hd"><small>H4 · london-life, chapter 1</small>Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?</h4>
+            <p class="prose">In whichever park is nearest you, on a lead until its recall is reliable. How much exercise a Staffy-sized dog needs is set out by the PDSA, and two good outings a day is what ours are used to.</p>
+            <div class="pl pl-b">
+              <!-- cells: data/city-places/blue-staffy-puppies-london.json places[].facts[].value, shortened to the places they name -->
+              <table class="stack-table">
+                <caption>Dog rules in ten London green spaces, as each owner publishes them</caption>
+                <thead><tr><th scope="col">Place</th><th scope="col">No dogs</th><th scope="col">On a lead</th><th scope="col">Good to know</th><th scope="col">Source</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Hyde Park<small>The Royal Parks</small></th><td data-label="No dogs">Diana, Princess of Wales Memorial Fountain; Lido swimming area; Serpentine Lake; bowling green and tennis centre area</td><td data-label="On a lead">Rose Garden; edge of the Serpentine Lake</td><td class="none" data-label="Good to know">—</td><td data-label="Source"><a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></td></tr>
+                  <tr><th scope="row">Kensington Gardens<small>The Royal Parks</small></th><td data-label="No dogs">Long Water; Round Pond; Peter Pan Statue</td><td data-label="On a lead">Edge of Round Pond and Long Water; around the Italian Fountains; South and North Flower Walks</td><td class="none" data-label="Good to know">—</td><td data-label="Source"><a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></td></tr>
+                  <tr><th scope="row">The Regent's Park and Primrose Hill<small>The Royal Parks</small></th><td data-label="No dogs">Avenue Gardens; English Gardens; Queen Mary's Gardens; wildlife enclosures; St John's Lodge Gardens; Boating Lake</td><td data-label="On a lead">Areas next to the Boating Lake; Winter Gardens; Community Wildlife Garden</td><td class="none" data-label="Good to know">—</td><td data-label="Source"><a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></td></tr>
+                  <tr><th scope="row">Richmond Park<small>The Royal Parks</small></th><td data-label="No dogs">Pembroke Lodge and Gardens</td><td data-label="On a lead">The whole park, away from the deer, 1 May to 31 July (deer birthing season); a short lead all year in the skylark protection zones (Lawn Field by Pen Ponds, Crown Field, the Bog)</td><td class="none" data-label="Good to know">—</td><td data-label="Source"><a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></td></tr>
+                  <tr><th scope="row">Greenwich Park<small>The Royal Parks</small></th><td data-label="No dogs">Flower Garden; the Wilderness Deer Park; Royal Observatory Garden</td><td data-label="On a lead">Rose Garden</td><td class="none" data-label="Good to know">—</td><td data-label="Source"><a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></td></tr>
+                  <tr><th scope="row">Hampstead Heath<small>City of London Corporation</small></th><td class="none" data-label="No dogs">—</td><td class="none" data-label="On a lead">—</td><td data-label="Good to know">800 acres, one of North London's most popular dog-walking spots. Keep your dog under control; it must come back when called off the lead. Collar and tag on; bag the poo. Fines if an out-of-control dog hurts, annoys or disturbs others. Professional walkers need a licence; four dogs per person.</td><td data-label="Source"><a href="https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath">Dog walking at Hampstead Heath</a></td></tr>
+                  <tr><th scope="row">Epping Forest<small>City of London Corporation</small></th><td class="none" data-label="No dogs">—</td><td data-label="On a lead">Any dog that does not respond to recall</td><td data-label="Good to know">Dog Walking Code of Conduct: keep your dog under effective control; never let it disturb or chase wildlife, cattle, deer or horses; watch for ticks and harmful algae.</td><td data-label="Source"><a href="https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest">Dog walking in Epping Forest</a></td></tr>
+                  <tr><th scope="row">Trent Country Park<small>Enfield Council · Cockfosters</small></th><td class="none" data-label="No dogs">—</td><td data-label="On a lead">The Water Garden, at all times (Enfield PSPO 3, from 23 October 2025)</td><td data-label="Good to know">Enfield publishes its own park byelaws for Trent Park.</td><td data-label="Source"><a href="https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf">Enfield PSPO 3 (PDF)</a> · <a href="https://www.enfield.gov.uk/services/leisure-and-culture/parks">Enfield Council's parks page</a></td></tr>
+                  <tr><th scope="row">Oaks Park<small>Sutton · Carshalton</small></th><td data-label="No dogs">The picnic area (dog-free, with natural play features)</td><td class="none" data-label="On a lead">—</td><td class="none" data-label="Good to know">—</td><td data-label="Source"><a href="https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park">Oaks Park, Sutton Council</a></td></tr>
+                  <tr><th scope="row">Overton Park<small>Sutton</small></th><td data-label="No dogs">The whole recreation ground, except guide dogs: a park to avoid with a puppy</td><td class="none" data-label="On a lead">—</td><td class="none" data-label="Good to know">—</td><td data-label="Source"><a href="https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park">Overton Park, Sutton Council</a></td></tr>
+                </tbody>
+              </table>
+              <!-- data/city-places vets.source + vets.how -->
+              <div class="vet"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="7" fill="#1F3A52"/><path d="M13 7v12M7 13h12" stroke="#EFE3B4" stroke-width="2.6" stroke-linecap="round"/></svg><p><a href="https://www.rcvs.org.uk/animal-owners/find-a-vet">The RCVS Find a Vet search</a> finds registered vets near you in London, and the register lets you check that a vet is registered. We don't name a London practice ourselves.</p></div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+
+    <article class="pv-style">
+      <h3><span class="lt">C</span>Grouped by who sets the rules <span class="rec">Recommended</span></h3>
+      <p><strong>Why:</strong> each publisher's page is linked once, in the group's header, so the Royal Parks PDF covers its five parks in one link. That takes the block from 12 links to 8 on the board (rule 12), and a buyer can see whose rules they are reading. The file's full sentences stay as they are. <strong>Trade-off:</strong> someone hunting for one park has to scan four groups instead of an A–Z list.</p>
+      <template>
+        <div class="site pg pg--col">
+          <aside class="dial-ghost"><b>Page dial (unchanged)</b><i></i><i></i><i></i><i></i><i></i></aside>
+          <div class="tray">
+            <h4 class="hd"><small>H4 · london-life, chapter 1</small>Where Can a Flat-Dwelling Staffy Stretch Its Legs in London's Parks?</h4>
+            <p class="prose">In whichever park is nearest you, on a lead until its recall is reliable. How much exercise a Staffy-sized dog needs is set out by the PDSA, and two good outings a day is what ours are used to.</p>
+            <div class="pl pl-c">
+              <!-- grouped on places[].managed_by; every fact is places[].facts[].value; header links are the facts' .source URLs, each once -->
+              <div class="grp-row">
+                <div class="owner"><small>Rules set by</small><b>The Royal Parks</b><ul><li><a href="https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf">Dogs in the Royal Parks (PDF)</a></li></ul></div>
+                <div class="places">
+                  <article class="place"><p class="nm">Hyde Park</p><ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted at the Diana, Princess of Wales Memorial Fountain, the Lido swimming area, the Serpentine Lake, or the bowling green and tennis centre area</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a lead in the Rose Garden and at the edge of the Serpentine Lake</span></li></ul></article>
+                  <article class="place"><p class="nm">Kensington Gardens</p><ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in the Long Water, the Round Pond or at the Peter Pan Statue</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a lead at the edge of the Round Pond and Long Water, around the Italian Fountains and on the South and North Flower Walks</span></li></ul></article>
+                  <article class="place"><p class="nm">The Regent's Park and Primrose Hill</p><ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in Avenue Gardens, English Gardens, Queen Mary's Gardens, the wildlife enclosures, St John's Lodge Gardens or the Boating Lake</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a lead in areas next to the Boating Lake, the Winter Gardens and the Community Wildlife Garden</span></li></ul></article>
+                  <article class="place"><p class="nm">Richmond Park</p><ul class="facts"><li><span class="chip k-lead">On a lead</span><span>Dogs must be on leads and away from the deer throughout the park from 1 May to 31 July (deer birthing season)</span></li><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in Pembroke Lodge and Gardens</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a short lead all year in the skylark protection zones (Lawn Field by Pen Ponds, Crown Field, the Bog)</span></li></ul></article>
+                  <article class="place"><p class="nm">Greenwich Park</p><ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in the Flower Garden, the Wilderness Deer Park or the Royal Observatory Garden</span></li><li><span class="chip k-lead">On a lead</span><span>Dogs must be on a lead in the Rose Garden</span></li></ul></article>
+                </div>
+              </div>
+              <div class="grp-row">
+                <div class="owner"><small>Rules set by</small><b>City of London Corporation</b><ul><li><a href="https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath">Dog walking at Hampstead Heath</a></li><li><a href="https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest">Dog walking in Epping Forest</a></li></ul></div>
+                <div class="places">
+                  <article class="place"><p class="nm">Hampstead Heath</p><p class="who">North London</p><ul class="facts"><li><span class="chip k-note">Good to know</span><span>The City of London describes the Heath as one of North London's most popular dog-walking spots, with 800 acres</span></li><li><span class="chip k-note">Good to know</span><span>Keep your dog under control at all times, and it must respond to recall when off the lead</span></li><li><span class="chip k-note">Good to know</span><span>Keep a collar and tag on your dog, and bag all dog poo for a bin or take it home</span></li><li><span class="chip k-note">Good to know</span><span>Owners can be fined if a dog is not under control and hurts, annoys or disturbs other Heath users</span></li><li><span class="chip k-note">Good to know</span><span>Professional dog walkers need a licence and there is a cap of four dogs per person</span></li></ul></article>
+                  <article class="place"><p class="nm">Epping Forest</p><ul class="facts"><li><span class="chip k-note">Good to know</span><span>Epping Forest has a Dog Walking Code of Conduct: your dog must be under effective control</span></li><li><span class="chip k-lead">On a lead</span><span>A dog that does not respond to recall must be kept on a lead</span></li><li><span class="chip k-note">Good to know</span><span>Dogs must not disturb or chase wildlife, cattle, deer or horses; watch for ticks and harmful algae</span></li></ul></article>
+                </div>
+              </div>
+              <div class="grp-row">
+                <div class="owner"><small>Rules set by</small><b>Enfield Council</b><ul><li><a href="https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf">Enfield PSPO 3 (PDF)</a></li><li><a href="https://www.enfield.gov.uk/services/leisure-and-culture/parks">Enfield Council's parks page</a></li></ul></div>
+                <div class="places">
+                  <article class="place"><p class="nm">Trent Country Park</p><p class="who">Enfield, Cockfosters ward</p><ul class="facts"><li><span class="chip k-lead">On a lead</span><span>Under Enfield PSPO 3 (from 23 October 2025) dogs must be on a lead at all times in the Trent Country Park Water Garden</span></li><li><span class="chip k-note">Good to know</span><span>Enfield publishes its own park byelaws for Trent Park</span></li></ul></article>
+                </div>
+              </div>
+              <div class="grp-row">
+                <div class="owner"><small>Rules set by</small><b>London Borough of Sutton</b><ul><li><a href="https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park">Oaks Park, Sutton Council</a></li><li><a href="https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park">Overton Park, Sutton Council</a></li></ul></div>
+                <div class="places">
+                  <article class="place"><p class="nm">Oaks Park</p><p class="who">Carshalton</p><ul class="facts"><li><span class="chip k-no">No dogs</span><span>It has a dog-free picnic area with natural play features</span></li></ul></article>
+                  <article class="place"><p class="nm">Overton Park</p><p class="who">Sutton</p><ul class="facts"><li><span class="chip k-no">No dogs</span><span>Dogs are not permitted in this recreation ground, except guide dogs (a park to avoid with a puppy)</span></li></ul></article>
+                </div>
+              </div>
+              <!-- data/city-places vets.source + vets.how -->
+              <div class="vet"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="7" fill="#1F3A52"/><path d="M13 7v12M7 13h12" stroke="#EFE3B4" stroke-width="2.6" stroke-linecap="round"/></svg><p><a href="https://www.rcvs.org.uk/animal-owners/find-a-vet">The RCVS Find a Vet search</a> finds registered vets near you in London, and the register lets you check that a vet is registered. We don't name a London practice ourselves.</p></div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <div class="viewset"></div>
+    </article>
+  </section>
+
+  <!-- ============================== 5. NEW LINKS ============================== -->
+  <section class="pv-sec" id="links">
+    <header>
+      <h2><span class="n">5</span>New links for the board</h2>
+      <p style="margin:0;color:var(--pv-muted);max-width:80ch">Every link the four pieces add, plus one already on the page that the board's link list misses. Rule 12: a link that isn't on the approved board isn't built. Anchors are the ones the recommended styles use.</p>
+    </header>
+    <div class="md-wrap">
+      <div class="md-bar"><button class="copy" data-copy="md-links" type="button">Copy as markdown</button></div>
+      <div class="md" data-md="md-links"></div>
+    </div>
+<script type="text/markdown" id="md-links">
+### New links (London board revision, 2026-10-03)
+
+| # | Piece | Kind | Target | Anchor | Purpose | Resolves today |
+|---|---|---|---|---|---|---|
+| 1 | Byline | internal | `/blue-staffy-uk-breeders/` | Lisa Bright | Names the author; the About page tells her breeder story | Yes: `dist/blue-staffy-uk-breeders/` is built |
+| 2 | Puppy strip | internal | `/available-puppies/roman/` | Roman (the whole ticket: name, sex, colour, price) | One tap to Roman's own page | Yes: `dist/available-puppies/roman/` |
+| 3 | Puppy strip | internal | `/available-puppies/byrd/` | Byrd (the whole ticket) | One tap to Byrd's own page | Yes: `dist/available-puppies/byrd/` |
+| 4 | Puppy strip | internal | `/available-puppies/ince/` | Ince (the whole ticket) | One tap to Ince's own page | Yes: `dist/available-puppies/ince/` |
+| 5 | Puppy strip | internal | `/available-puppies/vennie/` | Vennie (the whole ticket) | One tap to Vennie's own page | Yes: `dist/available-puppies/vennie/` |
+| 6 | Puppy strip | internal | `/available-puppies/christa/` | Christa (the whole ticket) | One tap to Christa's own page | Yes: `dist/available-puppies/christa/` |
+| 7 | Puppy strip | internal | `/available-puppies/cheryl/` | Cheryl (the whole ticket) | One tap to Cheryl's own page | Yes: `dist/available-puppies/cheryl/` |
+| 8 | Enquiry form (already built) | internal | `/privacy-policy-uk/` | privacy policy | The form's privacy note: "See our privacy policy". On the built page today, missing from the board's link list | Yes: `dist/privacy-policy-uk/` |
+| 9 | London places | external, official | https://www.royalparks.org.uk/sites/default/files/2025-12/Dogs%20In%20The%20Royal%20Parks.pdf | Dogs in the Royal Parks (PDF) | Source for Hyde Park, Kensington Gardens, The Regent's Park and Primrose Hill, Richmond Park and Greenwich Park | Yes: HTTP 200, 2026-10-03 |
+| 10 | London places | external, official | https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath/activities-at-hampstead-heath/dog-walking-at-hampstead-heath | Dog walking at Hampstead Heath | Source for Hampstead Heath | Yes: HTTP 200, 2026-10-03 |
+| 11 | London places | external, official | https://www.cityoflondon.gov.uk/things-to-do/green-spaces/epping-forest/activities-in-epping-forest/dog-walking-in-epping-forest | Dog walking in Epping Forest | Source for Epping Forest | Yes: HTTP 200, 2026-10-03 |
+| 12 | London places | external, official | https://www.enfield.gov.uk/__data/assets/pdf_file/0017/110078/PSPO-3-Dog-control-on-lead-at-all-times-Community-safety.pdf | Enfield PSPO 3 (PDF) | Source for the Trent Country Park Water Garden lead rule | NOT CONFIRMED HERE: a scripted check got HTTP 403 (bot wall) on 2026-10-03; the places pass fetched it the same day |
+| 13 | London places | external, official | https://www.enfield.gov.uk/services/leisure-and-culture/parks | Enfield Council's parks page | Source for Trent Park's own byelaws | NOT CONFIRMED HERE: HTTP 403 (bot wall) on 2026-10-03; the places pass fetched it the same day |
+| 14 | London places | external, official | https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park | Oaks Park, Sutton Council | Source for Oaks Park | Yes: HTTP 200, 2026-10-03 |
+| 15 | London places | external, official | https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park | Overton Park, Sutton Council | Source for Overton Park | Yes: HTTP 200, 2026-10-03 |
+| 16 | London places | external, official register | https://www.rcvs.org.uk/animal-owners/find-a-vet | The RCVS Find a Vet search | Find a registered vet near you; check a vet's registration. No practice is named | Yes: HTTP 200, 2026-10-03 |
+
+The checklist adds no links. With style A or B for London places, row 9 repeats once per Royal Park (five times, one anchor) and rows 12–13 sit on the Trent card, so the places block carries 12 links. With style C (recommended) each publisher is linked once: 8 links.
+</script>
+  </section>
+
+  <!-- ============================== 6. FAQ COUNT ============================== -->
+  <section class="pv-sec" id="faq">
+    <header>
+      <h2><span class="n">6</span>The FAQ count: 21 against a house range of 15–20</h2>
+      <p style="margin:0;color:var(--pv-muted);max-width:80ch">The approved board carries 21 FAQ questions across its three FAQ blocks. The location-page rule is 15–20; the 21st is the rarity question Lisa added (q04, 2026-10-02). Scores and signals come from <code>data/queries/blue-staffy-puppies-london.json</code> (each question's <code>score</code> and <code>found_in</code>).</p>
+    </header>
+    <div class="md-wrap">
+      <div class="md-bar"><button class="copy" data-copy="md-faq" type="button">Copy as markdown</button></div>
+      <div class="md blocks-host" data-md="md-faq"></div>
+    </div>
+<script type="text/markdown" id="md-faq">
+### Top block: faq-top, "What Do London Buyers Ask Before They Reserve a Blue Staffy?" (6)
+
+| # | Question | Score | Signals |
+|---|---|---|---|
+| 1 | How Much Are Blue Staffy Puppies in the UK? | 5 | Google People Also Ask; site FAQ bank |
+| 2 | Can I Get a Blue Staffy Puppy Delivered to My Home in London? | 4 | site FAQ bank |
+| 3 | How Much Is the Deposit? | 3 | site FAQ bank |
+| 4 | How Do I Know a Puppy Is Still Available? | 3 | site FAQ bank |
+| 5 | How Do I Reserve One of Your Blue Staffy Puppies From London? | 3 | site FAQ bank |
+| 6 | Where Can I Find Blue Staffy Breeders in the UK? **SUGGESTED DROP** | 3 | site FAQ bank only (the homepage row `home-find-breeders`) |
+
+### Middle block: faq-middle, "What Do London Buyers Ask About Visiting, Health and Support?" (7)
+
+| # | Question | Score | Signals |
+|---|---|---|---|
+| 1 | Should I See the Puppy With Its Mother Before Any Money Changes Hands? | 5 | Reddit r/UK_Pets; site FAQ bank |
+| 2 | Are the Puppy's Parents Health Tested? | 4 | Reddit r/UK_Pets; site FAQ bank |
+| 3 | Will the Breeder Still Support Me After I Collect the Puppy? | 4 | Reddit r/UK_Pets; site FAQ bank |
+| 4 | Can I Visit You Before I Decide? | 3 | site FAQ bank |
+| 5 | Do You Offer Health Guarantees for Your Blue Staffy Puppies? | 2 | site FAQ bank |
+| 6 | What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK? | 2 | site FAQ bank |
+| 7 | What Makes BlueStaffyUK an Ethical Breeder for London Buyers? | 2 | site FAQ bank |
+
+### Bottom block: faq-bottom, "What Do London Buyers Ask About Living With a Staffy?" (8)
+
+| # | Question | Score | Signals |
+|---|---|---|---|
+| 1 | Are Blue Staffies Suitable for First-Time Dog Owners? | 4 | Reddit r/UK_Pets; site FAQ bank |
+| 2 | Is a Staffy a Good House Dog? | 4 | Google People Also Ask; site FAQ bank |
+| 3 | Is It Better to Get a Male or Female Staffy? | 4 | Google People Also Ask; site FAQ bank |
+| 4 | Are Blue Staffies Good Family Pets, Especially With Children? | 2 | site FAQ bank |
+| 5 | Are Staffies Hard to Train? | 2 | site FAQ bank |
+| 6 | Are the Puppies Raised in a Family Home or in Kennels? | 2 | site FAQ bank |
+| 7 | Can a Staffordshire Bull Terrier Live in a London Flat? | 2 | site FAQ bank |
+| 8 | How Rare Are Blue Staffies? (Lisa added it, q04) | 4 | Google People Also Ask; site FAQ bank |
+
+### Suggested drop
+
+**Where Can I Find Blue Staffy Breeders in the UK?** (top block). Reason: only our own homepage FAQ bank asks it (no People Also Ask or Reddit signal), the homepage already answers it, and someone reading this page has already found a breeder. Each score-2 question answers something a London buyer still needs to know; this one doesn't. Dropping it leaves 20 (top 5 · middle 7 · bottom 8), inside 15–20, and Lisa's rarity question stays.
+</script>
+  </section>
+</main>
+
+<script>
+(function () {
+  // 1. Paint each style's template into three frames: 1280, 768, 375.
+  var WIDTHS = [1280, 768, 375];
+  document.querySelectorAll('.pv-style').forEach(function (art) {
+    var tpl = art.querySelector('template');
+    var set = art.querySelector('.viewset');
+    if (!tpl || !set) return;
+    WIDTHS.forEach(function (w) {
+      var fig = document.createElement('figure');
+      fig.className = 'vp';
+      var cap = document.createElement('figcaption');
+      cap.innerHTML = '<span>' + w + ' px</span><span class="z"></span>';
+      var fit = document.createElement('div');
+      fit.className = 'fit';
+      var frame = document.createElement('div');
+      frame.className = 'frame';
+      frame.style.width = w + 'px';
+      frame.dataset.w = w;
+      frame.appendChild(tpl.content.cloneNode(true));
+      // links inside frames are previews: keep them from navigating away
+      frame.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); }); });
+      fit.appendChild(frame);
+      fig.appendChild(cap);
+      fig.appendChild(fit);
+      set.appendChild(fig);
+    });
+  });
+
+  // 2. Zoom each frame to fit its slot (the frame keeps its real width, so its container queries see 1280 / 768 / 375).
+  function fitAll() {
+    document.querySelectorAll('.fit').forEach(function (fit) {
+      var frame = fit.firstElementChild;
+      var w = +frame.dataset.w;
+      var z = Math.min(1, (fit.clientWidth) / w);
+      frame.style.zoom = z;
+      var lab = fit.parentNode.querySelector('.z');
+      if (lab) lab.textContent = z < 1 ? 'shown at ' + Math.round(z * 100) + '%' : 'actual size';
+    });
+  }
+  fitAll();
+  if ('ResizeObserver' in window) {
+    var ro = new ResizeObserver(fitAll);
+    document.querySelectorAll('.viewset').forEach(function (s) { ro.observe(s); });
+  } else { window.addEventListener('resize', fitAll); }
+
+  // 3. A small markdown renderer: headings, paragraphs, pipe tables, **bold**, `code`, [a](url).
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function inline(s) {
+    s = esc(s);
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2">$1</a>');
+    s = s.replace(/(^|[\s(])(https?:\/\/[^\s|<)]+)/g, '$1<a href="$2">$2</a>');
+    s = s.replace(/<strong>SUGGESTED DROP<\/strong>/, '<span class="tag">Suggested drop</span>');
+    return s;
+  }
+  function render(md) {
+    var lines = md.trim().split('\n'), out = [], i = 0;
+    while (i < lines.length) {
+      var l = lines[i];
+      if (/^###\s/.test(l)) { out.push('<h3>' + inline(l.replace(/^###\s/, '')) + '</h3>'); i++; continue; }
+      if (/^\|/.test(l)) {
+        var rows = [];
+        while (i < lines.length && /^\|/.test(lines[i])) { rows.push(lines[i]); i++; }
+        var cells = function (r) { return r.replace(/^\||\|$/g, '').split('|').map(function (c) { return c.trim(); }); };
+        var head = cells(rows[0]);
+        var h = '<table><thead><tr>' + head.map(function (c) { return '<th scope="col">' + inline(c) + '</th>'; }).join('') + '</tr></thead><tbody>';
+        rows.slice(2).forEach(function (r) {
+          var cs = cells(r);
+          var drop = /SUGGESTED DROP/.test(r) ? ' class="drop"' : '';
+          h += '<tr' + drop + '>' + cs.map(function (c, k) { return '<td data-label="' + esc(head[k] || '') + '">' + inline(c) + '</td>'; }).join('') + '</tr>';
+        });
+        out.push(h + '</tbody></table>');
+        continue;
+      }
+      if (l.trim() === '') { i++; continue; }
+      var para = [];
+      while (i < lines.length && lines[i].trim() !== '' && !/^(###\s|\|)/.test(lines[i])) { para.push(lines[i]); i++; }
+      out.push('<p>' + inline(para.join(' ')) + '</p>');
+    }
+    return out.join('\n');
+  }
+  document.querySelectorAll('[data-md]').forEach(function (host) {
+    var src = document.getElementById(host.dataset.md);
+    if (src) host.innerHTML = render(src.textContent);
+  });
+
+  // 4. Copy buttons: exact markdown, with a textarea fallback when the clipboard API is blocked.
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = document.getElementById(btn.dataset.copy).textContent.trim() + '\n';
+      var done = function () { var t = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = t; }, 1400); };
+      var fallback = function () {
+        var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, fallback); } else { fallback(); }
+    });
+  });
+})();
+</script>
