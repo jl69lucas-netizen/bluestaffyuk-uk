@@ -1,184 +1,150 @@
 <title>BSUK Pipeline Mods</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,650&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
 <style>
 :root{
-  --steel-900:#14202B;--steel-700:#1F3A52;--steel-500:#5B7C99;--steel-300:#8FA3B8;--steel-100:#E4EAF1;
-  --bone-50:#FAF8F3;--bone-100:#F4F1EA;--brass-500:#C9A227;--brass-200:#EFE3B4;--brass-600:#A8861C;
-  --ink:#1B2430;--ink-2:#46566B;--ink-3:#5E6B7A;--ok:#3E7C5A;--warn:#B5652A;
-  --bg:var(--bone-100);--panel:#fff;--panel-2:var(--bone-50);--rule:#DCD6C8;--fg:var(--ink);--fg-2:var(--ink-2);--fg-3:var(--ink-3);
-  --done:var(--steel-700);--todo:#CFC8B8;--now:var(--brass-500);--term:#0F1820;--term-fg:#D9E2EA;
+  --bg:#F4F1EA;--panel:#FFFFFF;--rule:#DCD6C8;--fg:#1B2430;--fg-2:#46566B;--fg-3:#5E6B7A;
+  --pane:#141414;--card:#14202B;--card-2:#1B2A38;--ink:#F4F1EA;--ink-2:#B9C6D3;--ink-3:#7F93A8;
+  --done:#8FB3D4;--brass:#C9A227;--todo:#3A4C5E;
+  --c-research:#8FB3D4;--c-read:#7F93A8;--c-write:#C9A227;--c-test:#7FC79B;--c-commit:#D98E5F;--c-wait:#4A5C6E;
   --display:"Fraunces",Georgia,serif;--body:"Source Sans 3",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#10181F;--panel:#16222D;--panel-2:#1B2935;--rule:#2A3B4B;--fg:#E7EDF2;--fg-2:#B7C4D0;--fg-3:#8FA3B8;
-  --done:#8FB3D4;--todo:#33465A;--now:#D9B43A;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#10181F;--panel:#16222D;--panel-2:#1B2935;--rule:#2A3B4B;--fg:#E7EDF2;--fg-2:#B7C4D0;--fg-3:#8FA3B8;
-  --done:#8FB3D4;--todo:#33465A;--now:#D9B43A;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10181F;--panel:#16222D;--rule:#2A3B4B;--fg:#E7EDF2;--fg-2:#B7C4D0;--fg-3:#8FA3B8;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10181F;--panel:#16222D;--rule:#2A3B4B;--fg:#E7EDF2;--fg-2:#B7C4D0;--fg-3:#8FA3B8;color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 var(--body)}
 .wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
 h1{font:650 clamp(26px,4vw,36px)/1.15 var(--display);margin:0 0 6px;text-wrap:balance}
 h2{font:650 22px/1.2 var(--display);margin:0;text-wrap:balance}
-.lede{color:var(--fg-2);max-width:68ch;margin:0 0 28px}
+.lede{color:var(--fg-2);max-width:70ch;margin:0 0 24px}
 .label{font:700 12px/1 var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:24px}
 .card{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .card header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
-.pill{font:700 12px/1 var(--body);padding:6px 10px;border-radius:99px;background:var(--brass-200);color:var(--steel-900)}
-.why{font-size:15px;color:var(--fg-2);margin:0}
-.why b{color:var(--fg)}
-.stage{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
-.frame{background:var(--panel-2);border:1px solid var(--rule);border-radius:10px;padding:14px;min-width:0;overflow:hidden}
-.frame .cap{font:600 11px/1 var(--mono);color:var(--fg-3);margin-bottom:10px;display:flex;justify-content:space-between}
-svg text{font-family:var(--body)}
-/* design B ledger */
-.ledger{display:flex;flex-direction:column;gap:8px}
-.phase{border:1px solid var(--rule);border-radius:9px;background:var(--panel);padding:10px 12px;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center}
-.phase.now{border-color:var(--now);box-shadow:0 0 0 2px color-mix(in srgb,var(--now) 30%,transparent)}
-.phase .t{font:600 15px/1.2 var(--body)}
-.phase .s{font-size:13px;color:var(--fg-3)}
-.stamp{font:700 11px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;padding:5px 7px;border-radius:5px;border:1.5px solid var(--done);color:var(--done);transform:rotate(-4deg);white-space:nowrap}
-.stamp.wait{border-color:var(--todo);color:var(--fg-3);transform:none}
-.rows{display:flex;gap:3px;margin-top:6px;flex-wrap:wrap}
-.rows i{width:14px;height:6px;border-radius:2px;background:var(--todo)}
-.rows i.d{background:var(--done)}.rows i.n{background:var(--now)}
-/* band */
-.band{background:var(--term);color:var(--term-fg);border-radius:8px;padding:10px 12px;font:13px/1.5 var(--mono);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
-.band .k{color:#8FA3B8}.band .g{color:#7FC79B}.band .y{color:#E3C25A}
-/* stats */
-.gauges{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.g1{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
-.g1 .v{font:650 20px/1 var(--display);font-variant-numeric:tabular-nums}
-.g1 .d{font-size:12.5px;color:var(--fg-3)}
-.bar{height:8px;border-radius:99px;background:var(--todo);overflow:hidden;width:100%}
-.bar span{display:block;height:100%;background:var(--done)}
-.bar.w span{background:var(--now)}
+.pill{font:700 12px/1 var(--body);padding:6px 10px;border-radius:99px;background:#EFE3B4;color:#14202B}
+.rec{background:#C9A227}
+.why{font-size:15px;color:var(--fg-2);margin:0}.why b{color:var(--fg)}
+/* the pane mock: dark, text cells, the way the mod actually renders */
+.pane{background:var(--pane);border-radius:12px;padding:12px;font:13.5px/1.55 var(--mono);color:var(--ink);display:flex;flex-direction:column;gap:10px;min-width:0;overflow:hidden}
+.pane .cap{display:flex;justify-content:space-between;color:#8a8a8a;font-size:12px}
+.box{background:var(--card);border:1.5px solid var(--todo);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.box.brass{border-color:var(--brass)}.box.done{border-color:var(--done)}
+.row{display:flex;justify-content:space-between;gap:10px;min-width:0}
+.row > :first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.b{font-weight:700}.i2{color:var(--ink-2)}.i3{color:var(--ink-3)}.br{color:var(--brass)}.dn{color:var(--done)}.ok{color:#7FC79B}
+.chip{display:inline-block;padding:0 7px;border-radius:5px;font-weight:700;font-size:12px;color:#14202B}
+.k-research{background:var(--c-research)}.k-read{background:var(--c-read)}.k-write{background:var(--c-write)}.k-test{background:var(--c-test)}.k-commit{background:var(--c-commit)}
+.spark span{display:inline-block;width:8px;height:12px;margin-right:2px;border-radius:2px;vertical-align:middle}
+.s-r{background:var(--c-research)}.s-d{background:var(--c-read)}.s-w{background:var(--c-write)}.s-t{background:var(--c-test)}.s-c{background:var(--c-commit)}.s-0{background:var(--c-wait)}
+.stack{display:flex;height:10px;border-radius:5px;overflow:hidden;margin-top:4px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+/* timeline */
+.tl{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+.lane .name{display:flex;justify-content:space-between;gap:8px}
+.ribbon{display:flex;height:14px;border-radius:4px;overflow:hidden;background:#0f1820}
+.ribbon span{height:100%}
+.axis{display:flex;justify-content:space-between;color:var(--ink-3);font-size:11px;border-top:1px dashed var(--todo);padding-top:4px}
+.band{background:#0F1820;color:#D9E2EA;border-radius:8px;padding:8px 12px;font:13px/1.5 var(--mono)}
+.note{font-size:14px;color:var(--fg-2);border-left:3px solid #C9A227;padding:4px 0 4px 12px;margin:0}
 table{border-collapse:collapse;width:100%;font-size:14px}
 td,th{padding:6px 8px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
 th{font:700 12px/1.2 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--fg-3)}
 .tablewrap{overflow-x:auto}
-.note{font-size:14px;color:var(--fg-2);border-left:3px solid var(--brass-500);padding:4px 0 4px 12px;margin:0}
 </style>
 
 <div class="wrap">
-  <p class="label">Claude Code mods · BlueStaffyUK · preview</p>
-  <h1>Two pipeline mods and one session-stats mod</h1>
-  <p class="lede">Each mockup uses London's real state today: STOPs 1–4 approved and row 12 (writing the page) running. Both pipeline designs read the same status file, written by a repo script from what's on disk. The mod draws it and never guesses. Pick A or B; the stats mod ships with either.</p>
+  <p class="label">Claude Code mods · BlueStaffyUK · agent tracker</p>
+  <h1>Watch every background agent, two ways</h1>
+  <p class="lede">Both designs are drawn the way the mod actually renders in the side pane: real text on dark steel cards, with no picture to shrink. The sample data is this session's real agents. Each agent's work type comes from the tools it is calling: <b>Research</b> for web fetches and searches, <b>Reading</b> for opening files, <b>Writing</b> for editing files, <b>Testing</b> for build, test and gate runs, and <b>Committing</b> for git. Pick one; the status line ships with either.</p>
 
   <div class="grid">
-    <!-- ============ DESIGN A ============ -->
+    <!-- ============ A: KENNEL CARDS ============ -->
     <section class="card" aria-labelledby="a-h">
-      <header><h2 id="a-h">A · The Route Map</h2><span class="pill">Docked pane + status line</span></header>
-      <p class="why"><b>A metro line through all 21 page-run rows.</b> Rows are stations, the four STOPs are brass diamonds, and the current station pulses. One glance tells you where London is and what is next. Clicking a STOP opens its board.</p>
-      <div class="stage">
-        <div class="frame">
-          <div class="cap"><span>pane · 380px · desktop</span><span>London</span></div>
-          <svg viewBox="0 0 360 318" width="100%" role="img" aria-label="Route map: rows 1 to 11 done, STOP 1 to 4 approved, row 12 in progress">
-            <rect x="0" y="0" width="360" height="318" rx="10" fill="var(--panel)"/>
-            <text x="16" y="28" font-size="15" font-weight="700" fill="var(--fg)">blue-staffy-puppies-london</text>
-            <text x="16" y="46" font-size="12" fill="var(--fg-3)">location · branch london-components</text>
-            <!-- line 1: research -->
-            <g font-size="10.5" fill="var(--fg-3)">
-              <text x="16" y="76" font-weight="700" letter-spacing=".08em">RESEARCH</text>
-              <text x="16" y="146" font-weight="700" letter-spacing=".08em">PLAN &amp; ASSETS</text>
-              <text x="16" y="216" font-weight="700" letter-spacing=".08em">BUILD &amp; HARDEN</text>
-              <text x="16" y="286" font-weight="700" letter-spacing=".08em">GATES &amp; CLOSE</text>
-            </g>
-            <!-- track 1 rows 1-7 + STOP1 -->
-            <line x1="24" y1="96" x2="336" y2="96" stroke="var(--done)" stroke-width="5" stroke-linecap="round"/>
-            <g fill="var(--panel)" stroke="var(--done)" stroke-width="3">
-              <circle cx="24" cy="96" r="7"/><circle cx="66" cy="96" r="7"/><circle cx="108" cy="96" r="7"/><circle cx="150" cy="96" r="7"/><circle cx="192" cy="96" r="7"/><circle cx="234" cy="96" r="7"/><circle cx="276" cy="96" r="7"/>
-            </g>
-            <g fill="var(--done)"><circle cx="24" cy="96" r="3"/><circle cx="66" cy="96" r="3"/><circle cx="108" cy="96" r="3"/><circle cx="150" cy="96" r="3"/><circle cx="192" cy="96" r="3"/><circle cx="234" cy="96" r="3"/><circle cx="276" cy="96" r="3"/></g>
-            <rect x="326" y="86" width="20" height="20" transform="rotate(45 336 96)" fill="var(--now)" stroke="var(--steel-900)" stroke-width="1.5"/>
-            <text x="336" y="100" font-size="10" font-weight="700" text-anchor="middle" fill="var(--steel-900)">1</text>
-            <g font-size="10" fill="var(--fg-3)" text-anchor="middle"><text x="24" y="118">1</text><text x="66" y="118">2</text><text x="108" y="118">3</text><text x="150" y="118">4</text><text x="192" y="118">5</text><text x="234" y="118">6</text><text x="276" y="118">7</text></g>
-            <!-- track 2 rows 8-11 STOP2 STOP3 STOP4 -->
-            <line x1="24" y1="166" x2="336" y2="166" stroke="var(--done)" stroke-width="5" stroke-linecap="round"/>
-            <g fill="var(--panel)" stroke="var(--done)" stroke-width="3"><circle cx="24" cy="166" r="7"/><circle cx="108" cy="166" r="7"/><circle cx="192" cy="166" r="7"/><circle cx="276" cy="166" r="7"/></g>
-            <g fill="var(--done)"><circle cx="24" cy="166" r="3"/><circle cx="108" cy="166" r="3"/><circle cx="192" cy="166" r="3"/><circle cx="276" cy="166" r="3"/></g>
-            <g stroke="var(--steel-900)" stroke-width="1.5" fill="var(--now)">
-              <rect x="56" y="156" width="20" height="20" transform="rotate(45 66 166)"/><rect x="140" y="156" width="20" height="20" transform="rotate(45 150 166)"/><rect x="224" y="156" width="20" height="20" transform="rotate(45 234 166)"/>
-            </g>
-            <g font-size="10" font-weight="700" text-anchor="middle" fill="var(--steel-900)"><text x="66" y="170">2</text><text x="150" y="170">3</text><text x="234" y="170">4</text></g>
-            <g font-size="10" fill="var(--fg-3)" text-anchor="middle"><text x="24" y="188">8</text><text x="108" y="188">9</text><text x="192" y="188">10</text><text x="276" y="188">11</text></g>
-            <text x="336" y="171" font-size="11" fill="var(--done)" text-anchor="end" font-weight="700">✓</text>
-            <!-- track 3 rows 12-16 -->
-            <line x1="24" y1="236" x2="80" y2="236" stroke="var(--done)" stroke-width="5" stroke-linecap="round"/>
-            <line x1="80" y1="236" x2="336" y2="236" stroke="var(--todo)" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 8"/>
-            <circle cx="80" cy="236" r="13" fill="var(--now)" opacity=".28"><animate attributeName="r" values="9;15;9" dur="1.8s" repeatCount="indefinite"/></circle>
-            <circle cx="80" cy="236" r="8" fill="var(--now)" stroke="var(--steel-900)" stroke-width="2"/>
-            <g fill="var(--panel)" stroke="var(--todo)" stroke-width="3"><circle cx="144" cy="236" r="7"/><circle cx="208" cy="236" r="7"/><circle cx="272" cy="236" r="7"/><circle cx="336" cy="236" r="7"/></g>
-            <g font-size="10" fill="var(--fg-3)" text-anchor="middle"><text x="80" y="260" font-weight="700" fill="var(--fg)">12 now</text><text x="144" y="260">13</text><text x="208" y="260">14</text><text x="272" y="260">15</text><text x="336" y="260">16</text></g>
-            <!-- track 4 rows 17-21 -->
-            <line x1="24" y1="300" x2="336" y2="300" stroke="var(--todo)" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 8"/>
-            <g fill="var(--panel)" stroke="var(--todo)" stroke-width="3"><circle cx="24" cy="300" r="7"/><circle cx="102" cy="300" r="7"/><circle cx="180" cy="300" r="7"/><circle cx="258" cy="300" r="7"/><circle cx="336" cy="300" r="7"/></g>
-          </svg>
-          <div style="display:grid;gap:6px;margin-top:10px;font-size:14px">
-            <div><span class="label">Now</span><br><b>Row 12 · Build from the outline</b>, writing the page from the approved board</div>
-            <div><span class="label">Next stop</span><br>Row 14 impeccable → 15 frontend-design → 18 verification</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" style="background:var(--steel-100)">check:all ✓ 17:58</span><span class="pill" style="background:var(--steel-100)">board ✓ 0 FAIL</span><span class="pill" style="background:var(--steel-100)">answers 0 open</span></div>
-          </div>
+      <header><h2 id="a-h">A · Agent Cards</h2><span class="pill rec">Recommended</span></header>
+      <p class="why"><b>One card per agent, running agents first.</b> Each card shows the job, the agent type and model, how long it has run, the number of tool calls, what it is doing now (with the exact last command), and a strip of its last 20 actions in work-type colours. The top card is the fleet: running, done and failed counts, plus one bar showing what the whole fleet is spending its effort on.</p>
+      <div class="pane">
+        <div class="cap"><span>Agents</span><span>⤢ ✕</span></div>
+        <div class="box brass">
+          <div class="row"><span class="b">Background agents</span><span class="br b">2 running</span></div>
+          <div class="i2">2 running · 9 done · 0 failed · 48 min</div>
+          <div class="stack"><span style="width:22%;background:var(--c-research)"></span><span style="width:18%;background:var(--c-read)"></span><span style="width:34%;background:var(--c-write)"></span><span style="width:20%;background:var(--c-test)"></span><span style="width:6%;background:var(--c-commit)"></span></div>
+          <div class="legend i3"><span><i style="background:var(--c-research)"></i>Research</span><span><i style="background:var(--c-read)"></i>Reading</span><span><i style="background:var(--c-write)"></i>Writing</span><span><i style="background:var(--c-test)"></i>Testing</span><span><i style="background:var(--c-commit)"></i>Committing</span></div>
         </div>
-        <div class="band"><span class="k">BSUK</span> London <span class="g">●●●●</span> STOP 4/4 <span class="k">·</span> <span class="y">row 12 build</span> <span class="k">·</span> check:all <span class="g">✓</span></div>
-        <p class="note">The status line (bottom) is always on; the route pane opens with <code>/bsuk-route</code> and docks beside the chat.</p>
+        <div class="box brass">
+          <div class="row"><span class="b">◉ London page build Tasks 26–27</span><span class="br">41m</span></div>
+          <div class="i3">general-purpose · opus · 214 tool calls</div>
+          <div><span class="chip k-write">Writing</span> <span class="i2">Edit · blue-staffy-puppies-london.astro</span></div>
+          <div class="spark"><span class="s-d"></span><span class="s-w"></span><span class="s-w"></span><span class="s-t"></span><span class="s-w"></span><span class="s-d"></span><span class="s-w"></span><span class="s-w"></span><span class="s-t"></span><span class="s-t"></span><span class="s-w"></span><span class="s-c"></span><span class="s-d"></span><span class="s-w"></span><span class="s-w"></span><span class="s-w"></span><span class="s-t"></span><span class="s-w"></span><span class="s-w"></span><span class="s-w"></span></div>
+        </div>
+        <div class="box brass">
+          <div class="row"><span class="b">◉ Add NLP keyword types block</span><span class="br">29m</span></div>
+          <div class="i3">general-purpose · opus · 97 tool calls</div>
+          <div><span class="chip k-test">Testing</span> <span class="i2">Bash · pytest tests/py/test_nlp_keywords.py</span></div>
+          <div class="spark"><span class="s-d"></span><span class="s-d"></span><span class="s-w"></span><span class="s-t"></span><span class="s-t"></span><span class="s-w"></span><span class="s-t"></span><span class="s-d"></span><span class="s-w"></span><span class="s-t"></span><span class="s-t"></span><span class="s-w"></span><span class="s-w"></span><span class="s-t"></span><span class="s-d"></span><span class="s-w"></span><span class="s-t"></span><span class="s-t"></span><span class="s-t"></span><span class="s-t"></span></div>
+        </div>
+        <div class="box done">
+          <div class="row"><span>● Research sourced London places</span><span class="dn">done 5m</span></div>
+          <div class="i3">general-purpose · 42 tool calls · committed 1ae92ce7</div>
+        </div>
+        <div class="box done">
+          <div class="row"><span>● Google helpful-content gap analysis</span><span class="dn">done 13m</span></div>
+          <div class="i3">general-purpose · 80 tool calls</div>
+        </div>
+        <div class="i3">+ 7 more done · show all</div>
       </div>
+      <div class="band"><span class="i3">agents</span> <span class="br">2 running</span> · 9 done · <span class="i3">longest</span> London page build 41m</div>
     </section>
 
-    <!-- ============ DESIGN B ============ -->
+    <!-- ============ B: TIMELINE ============ -->
     <section class="card" aria-labelledby="b-h">
-      <header><h2 id="b-h">B · The Breeder's Ledger</h2><span class="pill">Band above the prompt + pane</span></header>
-      <p class="why"><b>A stack of ledger cards, one per phase</b>, with a row-tick strip on each. A STOP shows an "Approved" stamp once you've signed it. The phase you're in gets a brass outline. It reads like a checklist rather than a map, and the band above the prompt says only what needs you.</p>
-      <div class="stage">
-        <div class="frame">
-          <div class="cap"><span>pane · 380px · desktop</span><span>London</span></div>
-          <div class="ledger">
-            <div class="phase"><svg viewBox="0 0 34 34" width="34" height="34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="var(--todo)" stroke-width="4"/><circle cx="17" cy="17" r="14" fill="none" stroke="var(--done)" stroke-width="4" stroke-dasharray="88 88" transform="rotate(-90 17 17)"/></svg>
-              <div><div class="t">Research · rows 1–7</div><div class="rows"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></div></div><span class="stamp">STOP 1 ✓</span></div>
-            <div class="phase"><svg viewBox="0 0 34 34" width="34" height="34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="var(--done)" stroke-width="4"/></svg>
-              <div><div class="t">Outline · rows 8–9</div><div class="rows"><i class="d"></i><i class="d"></i></div></div><span class="stamp">STOP 2 ✓</span></div>
-            <div class="phase"><svg viewBox="0 0 34 34" width="34" height="34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="var(--done)" stroke-width="4"/></svg>
-              <div><div class="t">Page board · row 10</div><div class="rows"><i class="d"></i></div></div><span class="stamp">STOP 3 ✓</span></div>
-            <div class="phase"><svg viewBox="0 0 34 34" width="34" height="34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="var(--done)" stroke-width="4"/></svg>
-              <div><div class="t">Images · row 11</div><div class="s">6 infographic drafts waiting</div></div><span class="stamp">STOP 4 ✓</span></div>
-            <div class="phase now"><svg viewBox="0 0 34 34" width="34" height="34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="var(--todo)" stroke-width="4"/><circle cx="17" cy="17" r="14" fill="none" stroke="var(--now)" stroke-width="4" stroke-dasharray="12 88" transform="rotate(-90 17 17)"/></svg>
-              <div><div class="t">Build &amp; Harden · rows 12–16</div><div class="s">Writing the page from the board</div><div class="rows"><i class="n"></i><i></i><i></i><i></i><i></i></div></div><span class="stamp wait">in progress</span></div>
-            <div class="phase"><svg viewBox="0 0 34 34" width="34" height="34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="var(--todo)" stroke-width="4"/></svg>
-              <div><div class="t">Gates &amp; close · rows 17–21</div><div class="rows"><i></i><i></i><i></i><i></i><i></i></div></div><span class="stamp wait">your OK</span></div>
+      <header><h2 id="b-h">B · Agent Timeline</h2><span class="pill">Gantt ribbons</span></header>
+      <p class="why"><b>One lane per agent on a shared clock.</b> Each lane is a ribbon coloured by what the agent was doing minute by minute, so you see when it started, how long it ran, and where its time went: research early, then writing, then testing. Finished lanes end in a ✓. It is better for "where did the time go" than "what is it doing now".</p>
+      <div class="pane">
+        <div class="cap"><span>Agents · timeline</span><span>⤢ ✕</span></div>
+        <div class="box brass">
+          <div class="row"><span class="b">Background agents</span><span class="br b">2 running · 9 done</span></div>
+          <div class="legend i3"><span><i style="background:var(--c-research)"></i>Research</span><span><i style="background:var(--c-read)"></i>Reading</span><span><i style="background:var(--c-write)"></i>Writing</span><span><i style="background:var(--c-test)"></i>Testing</span><span><i style="background:var(--c-commit)"></i>Commit</span></div>
+        </div>
+        <div class="box">
+          <div class="tl">
+            <div class="lane"><div class="name"><span class="b">London page build</span><span class="br">◉ 41m</span></div>
+              <div class="ribbon"><span style="width:6%;background:var(--c-read)"></span><span style="width:10%;background:var(--c-write)"></span><span style="width:6%;background:var(--c-test)"></span><span style="width:4%;background:var(--c-commit)"></span><span style="width:30%;background:var(--c-write)"></span><span style="width:8%;background:var(--c-test)"></span><span style="width:20%;background:var(--c-write)"></span><span style="width:16%;background:transparent"></span></div></div>
+            <div class="lane"><div class="name"><span>Google analysis</span><span class="dn">✓ 13m</span></div>
+              <div class="ribbon"><span style="width:2%;background:transparent"></span><span style="width:14%;background:var(--c-research)"></span><span style="width:8%;background:var(--c-read)"></span><span style="width:6%;background:var(--c-write)"></span><span style="width:70%;background:transparent"></span></div></div>
+            <div class="lane"><div class="name"><span class="b">NLP keywords block</span><span class="br">◉ 29m</span></div>
+              <div class="ribbon"><span style="width:30%;background:transparent"></span><span style="width:8%;background:var(--c-read)"></span><span style="width:10%;background:var(--c-test)"></span><span style="width:18%;background:var(--c-write)"></span><span style="width:18%;background:var(--c-test)"></span><span style="width:16%;background:transparent"></span></div></div>
+            <div class="lane"><div class="name"><span>London places</span><span class="dn">✓ 5m</span></div>
+              <div class="ribbon"><span style="width:44%;background:transparent"></span><span style="width:9%;background:var(--c-research)"></span><span style="width:2%;background:var(--c-commit)"></span><span style="width:45%;background:transparent"></span></div></div>
+            <div class="lane"><div class="name"><span>Skill tests ×4</span><span class="dn">✓ 1–2m</span></div>
+              <div class="ribbon"><span style="width:52%;background:transparent"></span><span style="width:3%;background:var(--c-read)"></span><span style="width:3%;background:var(--c-research)"></span><span style="width:42%;background:transparent"></span></div></div>
+            <div class="axis"><span>17:55</span><span>18:10</span><span>18:25</span><span>18:40 now</span></div>
           </div>
         </div>
-        <div class="band"><span class="y">▲ needs you:</span> nothing <span class="k">·</span> London row 12 <span class="k">·</span> check:all <span class="g">✓</span> <span class="k">·</span> answer board 0 open</div>
-        <p class="note">When a STOP or an answer-board batch is waiting, the band turns brass and names it, with a button that opens the board.</p>
+        <div class="box">
+          <div class="i3">Now:</div>
+          <div><span class="chip k-write">Writing</span> London page build · Edit blue-staffy-puppies-london.astro</div>
+          <div><span class="chip k-test">Testing</span> NLP keywords · pytest test_nlp_keywords.py</div>
+        </div>
       </div>
+      <div class="band"><span class="i3">agents</span> <span class="br">2 running</span> · 9 done · <span class="i3">longest</span> London page build 41m</div>
     </section>
   </div>
 
-  <!-- ============ STATS MOD ============ -->
-  <section class="card" style="margin-top:24px" aria-labelledby="s-h">
-    <header><h2 id="s-h">Session Gauges · context, the 1-hour cache and limits</h2><span class="pill">Ships with A or B</span></header>
-    <p class="why"><b>Shows what decides when to start a new chat or slow down.</b> It reads the engine's own figures (<code>$.session.usage()</code>) and our Gemini log. No figure is estimated by the mod.</p>
-    <div class="gauges">
-      <div class="g1"><svg viewBox="0 0 80 80" width="80" height="80" role="img" aria-label="Context 41 percent"><circle cx="40" cy="40" r="32" fill="none" stroke="var(--todo)" stroke-width="9"/><circle cx="40" cy="40" r="32" fill="none" stroke="var(--done)" stroke-width="9" stroke-dasharray="82 201" stroke-linecap="round" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" font-size="17" font-weight="700" fill="var(--fg)">41%</text></svg><div class="v">Context</div><div class="d">410k of 1M tokens · /compact at ~85%</div></div>
-      <div class="g1"><svg viewBox="0 0 80 80" width="80" height="80" role="img" aria-label="Cache warm, 47 minutes left"><circle cx="40" cy="40" r="32" fill="none" stroke="var(--todo)" stroke-width="9"/><circle cx="40" cy="40" r="32" fill="none" stroke="var(--now)" stroke-width="9" stroke-dasharray="157 201" stroke-linecap="round" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" font-size="16" font-weight="700" fill="var(--fg)">47m</text></svg><div class="v">1-hour cache</div><div class="d">warm until 18:57; a turn after that re-reads everything</div></div>
-      <div class="g1" style="align-items:stretch;text-align:left"><div class="v" style="text-align:center">Plan limits</div>
-        <div class="d">5-hour window · 62% · resets 21:00</div><div class="bar w"><span style="width:62%"></span></div>
-        <div class="d">7-day window · 38% · resets Mon</div><div class="bar"><span style="width:38%"></span></div></div>
-      <div class="g1"><div class="v">$4.12</div><div class="d">session cost (/cost)</div><div class="v" style="margin-top:6px">9 / 7</div><div class="d">Gemini calls today / succeeded (the log keeps no £ figure; see AI Studio for spend)</div></div>
-      <div class="g1"><div class="v">2h 14m</div><div class="d">session time</div><div class="v" style="margin-top:6px">3</div><div class="d">agents running</div></div>
-    </div>
-    <div class="band" style="margin-top:4px"><span class="k">ctx</span> 41% <span class="k">· cache</span> <span class="y">47m</span> <span class="k">· 5h</span> 62% <span class="k">· $</span>4.12 <span class="k">· gemini</span> 9 calls</div>
-    <p class="note">Example figures. The 5-hour and 7-day bars are the rate-limit windows the API reports; they show only when a reading exists. The cache gauge counts down 60 minutes from the last reply, which matches this session's 1-hour prompt cache.</p>
+  <section class="card" style="margin-top:24px">
+    <h2>My recommendation: A · Agent Cards</h2>
+    <p class="why">The side pane is tall and narrow (your screenshots), so cards stack down its full length and stay readable with 11 agents. The question you asked, "what type of work is each doing", is answered on every card in words and colour. B's timeline needs width to be useful: in a narrow pane its ribbons get thin and the clock labels collide, so it pays off only when the pane is expanded. <b>Trade-off:</b> A shows less history at a glance than B; the 20-action strip is A's compact version of it.</p>
+    <div class="tablewrap"><table>
+      <tr><th>Piece</th><th>Where its data comes from</th></tr>
+      <tr><td>Job, type, model</td><td>The engine's agent-launch event (description, agent type, model) and its live agent list</td></tr>
+      <tr><td>What it's doing now</td><td>Each tool call the agent makes, sorted into a work type by tool name; the last call's command or file is shown, cut to one line</td></tr>
+      <tr><td>Done or failed</td><td>The agent's own end-of-turn event, and its status in the agent list</td></tr>
+      <tr><td>Open it</td><td><code>/bsuk-agents</code> opens the pane; the status line shows "N running" with either design</td></tr>
+    </table></div>
+    <p class="note">The mod reads only what the engine reports. It never reads an agent's transcript, never sends anything anywhere, and keeps no key. Agents launched before the mod loads appear from the live list without their earlier tool history.</p>
   </section>
 
   <section class="card" style="margin-top:24px">
-    <h2>How it works, in either design</h2>
-    <div class="tablewrap"><table>
-      <tr><th>Piece</th><th>What it is</th><th>Where</th></tr>
-      <tr><td>Status reader</td><td>A repo script that reads each STOP's approval, the page-run record and the last gate result, then prints JSON. It is tested like every other script.</td><td><code>scripts/pipeline_status.py</code></td></tr>
-      <tr><td>Mod</td><td>Runs the script every 60 s and after each tool call that touches <code>data/</code>, then draws the result. It never writes to the repo.</td><td><code>~/.claude/dev-mods/…/bsuk-route</code></td></tr>
-      <tr><td>Stats mod</td><td>Reads <code>$.session.usage()</code> plus <code>docs/reports/gemini-usage.jsonl</code> (calls and status only, since the log records no cost). The Gemini key is never read.</td><td><code>…/bsuk-gauges</code></td></tr>
-      <tr><td>Removed</td><td>The old <code>bsuk-status</code> folder held only a config file and drew nothing.</td><td>deleted</td></tr>
-    </table></div>
+    <h2>Already built</h2>
+    <p class="why"><b>Route Map</b> (your pick, <code>/bsuk-route</code>), now drawn as text cards that fill the pane; and <b>Session gauges</b> (<code>/bsuk-gauges</code>), plus the status line for context, the 1-hour cache, plan limits, cost and Gemini calls.</p>
   </section>
 </div>
