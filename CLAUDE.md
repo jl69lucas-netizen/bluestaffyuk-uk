@@ -369,7 +369,7 @@ components are listed in `data/design/components.json`, and rebuilt pages render
 - `docs/reference/page-run.md` — the ordered per-page run for a project 5 page: each brief
   step, the command that does it, what it leaves on disk, the gate that fails and the stop
 - `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
-  A–J. That is a different count from `data/quality/rule-index.json`'s 86 (of which 9 are
+  A–J. That is a different count from `data/quality/rule-index.json`'s 87 (of which 9 are
   `enforced: judgment`, capped there): the ledger indexes the `rules/` packs, the
   render-harness checks and working rules 10–17; seo-rules.md numbers its own categories.
   `docs/reference/quick-start.md` states both, and all three files change together.

@@ -57,6 +57,12 @@ def judge(slug, stage, ont, ledger, live, boards):
     # Rule 16 is judged across records, so its count is records, not this record's sections.
     lines.append(f"rule 16: {len(judged)} records judged" if judged
                  else "rule 16: 0 records judged — examined nothing, not a pass")
+    if PB.component_judges(board):
+        # The own-components rule compares new-family boards with each other: with one judged,
+        # it compared nothing, which is said rather than read as a pass.
+        cj = PB.component_judged(boards, board)
+        lines.append(f"own components: {len(cj)} new-family records judged"
+                     + ("" if len(cj) > 1 else " — no other new-family board to compare, not a pass"))
     for x in f:
         lines.append(f"  {x['sev']:4s} {x['check']:24s} {x['msg']}")
     fails = [x for x in f if x["sev"] == "FAIL"]

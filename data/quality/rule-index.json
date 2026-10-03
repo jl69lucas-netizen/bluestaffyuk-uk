@@ -614,6 +614,13 @@
    "enforced": "test",
    "test": "tests/py/test_faq_layout.py",
    "pack": "rules/copy.md"
+  },
+  {
+   "id": "own-components-per-page",
+   "family": "LAYOUT",
+   "enforced": "test",
+   "test": "tests/py/test_rule16_gate.py",
+   "pack": "rules/design.md"
   }
  ]
 }

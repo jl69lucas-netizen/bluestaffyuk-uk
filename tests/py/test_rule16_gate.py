@@ -231,3 +231,82 @@ def test_approval_lets_the_utility_pages_share_with_each_other():
     boards[UTILITY[2]] = named(UTILITY[2], None, None, layout="interior-utility", status="draft")
     after = named(UTILITY[2], "H-UT1", "C-UT1", layout="interior-utility")
     assert BA.rule16_refusals(boards[UTILITY[2]], after, boards) == []
+
+
+# ── own components per page (breeder q10, 2026-10-02) ──────────────────────────────────────
+#
+# rules/design.md `own-components-per-page`: no two new-family boards (family_rules.applies —
+# a location, comparison or blog page outside the twelve built before the rule) share a
+# section `component`. The same rule-16 mechanism, widened from hero + counter to every
+# section, and narrowed to the new family.
+
+def page(slug, *components, page_type="location", status="boarded"):
+    return {"meta": {"slug": slug, "page_type": page_type, "layout_type": "city", "status": status},
+            "sections": [{"id": f"s{i}", "shape": "standard", "component": c}
+                         for i, c in enumerate(components)]}
+
+
+def test_two_new_family_boards_sharing_a_component_fail():
+    boards = {"blue-staffy-puppies-leeds": page("blue-staffy-puppies-leeds", "leeds-hero", "city-chapters"),
+              "blue-staffy-puppies-york": page("blue-staffy-puppies-york", "york-hero", "city-chapters")}
+    assert PB.shared_section_components(boards) == [
+        ("city-chapters", ["blue-staffy-puppies-leeds", "blue-staffy-puppies-york"])]
+    f = PB.component_findings(boards["blue-staffy-puppies-york"], boards)
+    assert [(x["check"], x["sev"]) for x in f] == [("component-shared", "FAIL")]
+    assert "city-chapters is already used by blue-staffy-puppies-leeds" in f[0]["msg"]
+    # and it reaches the board gate through rule16_findings
+    assert "component-shared" in [x["check"] for x in
+                                  PB.rule16_findings(boards["blue-staffy-puppies-york"], boards)]
+
+
+def test_a_comparison_and_a_blog_board_are_new_family_too():
+    boards = {"x-vs-y": page("x-vs-y", "cmp-table", page_type="comparison"),
+              "a-post": page("a-post", "cmp-table", page_type="blog")}
+    assert PB.shared_section_components(boards) == [("cmp-table", ["a-post", "x-vs-y"])]
+
+
+def test_one_board_may_reuse_its_own_component():
+    boards = {"blue-staffy-puppies-leeds": page("blue-staffy-puppies-leeds", "city-chapters",
+                                                "city-chapters", "city-chapters")}
+    assert PB.shared_section_components(boards) == []
+
+
+def test_pre_rule_utility_drafts_and_other_types_are_never_judged():
+    boards = {"blue-staffy-puppies-leeds": page("blue-staffy-puppies-leeds", "shared"),
+              # one of the twelve built before the rule (a guide), and a pre-rule location slug
+              "uk-blue-staffy-puppy-buying-guide": page("uk-blue-staffy-puppy-buying-guide", "shared",
+                                                        page_type="guide"),
+              "blue-staffy-health-uk": page("blue-staffy-health-uk", "shared", page_type="blog"),
+              # a rule-16 utility page, a draft, a fixture and a non-family type
+              UTILITY[0]: page(UTILITY[0], "shared", page_type="blog"),
+              "blue-staffy-puppies-york": page("blue-staffy-puppies-york", "shared", status="draft"),
+              "_demo": page("_demo", "shared"),
+              "some-puppy": page("some-puppy", "shared", page_type="puppy")}
+    assert PB.shared_section_components(boards) == []
+    assert PB.component_judged(boards) == ["blue-staffy-puppies-leeds"]
+
+
+def test_the_record_under_the_gate_stands_in_for_its_own_file_for_components():
+    boards = {"blue-staffy-puppies-leeds": page("blue-staffy-puppies-leeds", "leeds-a"),
+              "blue-staffy-puppies-york": page("blue-staffy-puppies-york", "york-a")}
+    gated = page("blue-staffy-puppies-york", "leeds-a")
+    assert [x["check"] for x in PB.component_findings(gated, boards)] == ["component-shared"]
+    assert PB.component_findings(boards["blue-staffy-puppies-york"], boards) == []
+
+
+def test_no_two_real_new_family_boards_share_a_component():
+    boards = PB.load_all_boards()
+    judged = PB.component_judged(boards)
+    assert "blue-staffy-puppies-london" in judged, judged
+    assert PB.shared_section_components(boards) == []
+
+
+def test_the_own_components_rule_is_written_and_ledgered():
+    pack = (ROOT / "rules/design.md").read_text(encoding="utf-8")
+    assert "id: own-components-per-page" in pack
+    row = next(r for r in json.loads((ROOT / "data/quality/rule-index.json").read_text(
+        encoding="utf-8"))["rules"] if r["id"] == "own-components-per-page")
+    assert row == {"id": "own-components-per-page", "family": "LAYOUT", "enforced": "test",
+                   "test": "tests/py/test_rule16_gate.py", "pack": "rules/design.md"}
+    run = (ROOT / "docs/reference/page-run.md").read_text(encoding="utf-8")
+    assert "own-components-per-page" in run

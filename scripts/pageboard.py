@@ -1664,7 +1664,61 @@ def rule16_findings(board, boards):
     `load_all_boards()`."""
     return ([{"check": "rule16-shared", "sev": "FAIL", "msg": rule16_message(shape, pick, others)}
              for shape, pick, others in rule16_shares(board, boards)]
-            + city_rule16_findings(board))
+            + city_rule16_findings(board)
+            + component_findings(board, boards))
+
+
+# ── own components per page: no two new-family pages share a section component ────────────
+#
+# Breeder q10, 2026-10-02 (rules/design.md `own-components-per-page`): once the competitor
+# research is done, every project 5 page builds its own section components from its own
+# outline and data. Working rule 16 already holds the hero and the counter apart; this holds
+# EVERY section's `component` apart, across the new-family boards only
+# (family_rules.applies: a location, comparison or blog page outside the twelve built before
+# the rule). The twelve, and the three utility pages rule 16 exempts by name (RULE16_EXEMPT,
+# all among the twelve), are never judged. One board may reuse its own component as often as
+# its outline needs; a draft is not judged, as under rule 16.
+def component_judges(board):
+    meta = board.get("meta") or {}
+    if meta.get("status") == "draft" or meta.get("slug") in RULE16_EXEMPT:
+        return False
+    try:
+        return FR.applies(board)
+    except (KeyError, TypeError):
+        return False
+
+
+def component_judged(boards, board=None):
+    """The slugs the own-components rule judges in `boards` (with `board` standing in for its
+    own file). Printed by the gate: a rule that judged one record has compared nothing."""
+    corpus = dict(boards)
+    if board is not None:
+        corpus[board["meta"]["slug"]] = board
+    return [slug for slug, b in sorted(corpus.items()) if component_judges(b)]
+
+
+def shared_section_components(boards):
+    """[(component, [slugs])] for every section component two new-family boards both carry."""
+    seen = {}
+    for slug, board in sorted(boards.items()):
+        if not component_judges(board):
+            continue
+        for comp in sorted({s.get("component") for s in board.get("sections", []) if s.get("component")}):
+            seen.setdefault(comp, []).append(slug)
+    return [(comp, slugs) for comp, slugs in sorted(seen.items()) if len(slugs) > 1]
+
+
+def component_findings(board, boards):
+    """One FAIL per section component `board` shares with another new-family board. The
+    record passed in stands in for its own file, as rule 16's does."""
+    slug = board["meta"]["slug"]
+    corpus = dict(boards)
+    corpus[slug] = board
+    return [{"check": "component-shared", "sev": "FAIL",
+             "msg": (f"section component {comp} is already used by "
+                     f"{', '.join(s for s in slugs if s != slug)}; build this page's own "
+                     "component from its outline (rules/design.md own-components-per-page)")}
+            for comp, slugs in shared_section_components(corpus) if slug in slugs]
 
 
 # ── working rule 16 for the city pages: the `city` family and the city pool ────────────────
