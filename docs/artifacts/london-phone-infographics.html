@@ -38,8 +38,8 @@ figure{margin:0;min-width:0;width:100%;max-width:319px}
 <header class="top"><div class="in">
 <h1>London Phone Infographics</h1>
 <p class="intro">You said yes to D4: the six London infographics were unreadable on phones. Each one is shown below at the size it paints at on a 375px phone (the page draws them 319px wide today): on the left, the file phones get now; on the right, the new draft, drawn at phone width with every label at 15px or more on screen. Same facts, same picked style. These are drafts: nothing is on the site until you approve each one.</p>
-<p class="intro">To approve a draft, copy its pick into the answer board, or reply with the slot names you want.</p>
-<div class="tools"><button class="btn" type="button" id="copyall">Copy all as markdown</button><button class="btn" type="button" id="dl">Download .md</button></div>
+<p class="intro">Approve them on the answer board: one question covers all six, with a text box for any you want changed.</p>
+<div class="tools"><button class="btn" type="button" id="copyall">Copy all as markdown</button></div>
 </div></header>
 <main>
 <section class="card" id="deposit-steps" data-md="## 1. Four steps to buy
@@ -158,5 +158,4 @@ function copy(t, b){ (navigator.clipboard ? navigator.clipboard.writeText(t) : P
 document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',()=>copy(b.closest('section').dataset.md,b)));
 document.querySelectorAll('.copypick').forEach(b=>b.addEventListener('click',()=>copy(b.dataset.pick,b)));
 document.getElementById('copyall').addEventListener('click',e=>copy(MD,e.currentTarget));
-document.getElementById('dl').addEventListener('click',()=>{const u=URL.createObjectURL(new Blob([MD],{type:'text/markdown'}));const a=document.createElement('a');a.href=u;a.download='london-phone-infographics.md';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
 </script>

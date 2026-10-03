@@ -1,0 +1,41 @@
+{
+  "askedAt": "2026-10-03T23:04:26Z",
+  "id": "2026-10-04-london-phone-infographics",
+  "intro": "The six London infographics, redrawn for phones. Labels are now 15–17px on screen, up from 6–7px. Same facts, same styles you picked. Old and new side by side at real phone size: https://claude.ai/artifact/TvC5Eirje6QbNdELhLBJVS",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "Recommended: (a). Why: every label can now be read on a phone, and each figure comes from the data files, as in the versions you approved before. Trade-off: each infographic is two to three times taller on a phone, and the breed comparison is about 1,750px tall.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "Approve all six"
+        },
+        {
+          "id": "b",
+          "label": "Approve some (name the slots in the text box)"
+        },
+        {
+          "id": "c",
+          "label": "Changes needed (say what in the text box)"
+        }
+      ],
+      "question": "Approve the six phone drafts as shown?",
+      "section": 0,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Images"
+    }
+  ],
+  "status": "open",
+  "title": "London Asset Gate · the six phone infographics"
+}
