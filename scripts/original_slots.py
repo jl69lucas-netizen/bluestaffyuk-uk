@@ -72,9 +72,14 @@ ALT (working rule 11). The first use of a photo on a page keeps its served alt; 
 carries a NEW alt, never a copy. A photo the page already shows under another heading is a
 repeat, so its alt reads NEW_ALT; a photo already at this same heading is that same use.
 
-HAND-OFF. `claimed_sections(board, root)` is the list of section ids these photos claim;
-infographic_plan.plan() reads it (plan Task 5) and skips those sections unless the breeder
-adds an infographic there.
+HAND-OFF. `claimed_sections(board, root)` is the list of section ids these photos claim. Since
+the breeder's ruling q08 (2026-10-02: each infographic gets its own H2 or H3 heading) a claim
+is a HEADING-level fact, not a section-level one: an infographic sits on a heading of its own
+whose only image is the graphic, so a section can carry an original photo on one heading and
+an infographic on another. infographic_plan.plan() therefore does NOT read claimed_sections
+(the controller kept all six London infographics, 2026-10-03); the picker below never offers
+a heading that carries an infographic (`carries_infographic`), which is what keeps the two
+kinds of image off one heading.
 
 The board (build_page_board.og_block) renders one radio group per slot, `pick-og:<slot>`,
 values use / swap / skip — "swap" asks for a different original photo, described in the
@@ -453,6 +458,12 @@ def eligible_sections(board):
     return [s for s in IR.body_sections(board) if s.get("id")]
 
 
+def carries_infographic(node):
+    """True when the heading's image slots include an infographic: that heading exists for the
+    graphic (breeder q08, 2026-10-02) and is never offered an original photo."""
+    return any(i.get("kind") == "infographic" for i in (node or {}).get("images") or [])
+
+
 def slot_id(section, node):
     if node is None:
         return "orig-%s" % section["id"]
@@ -491,7 +502,8 @@ def propose(board, n=N_DEFAULT, root=None):
     ctx = _context(board)
     pairs = []
     for order, sec in enumerate(eligible_sections(board)):
-        targets = [(sec, None)] + [(sec, h3) for h3 in IR.body_h3s(sec)]
+        targets = ([(sec, None)] if not carries_infographic(sec) else []) + [
+            (sec, h3) for h3 in IR.body_h3s(sec) if not carries_infographic(h3)]
         for k, (s, node) in enumerate(targets):
             tgt = node if node is not None else s
             for p in photos:
@@ -526,9 +538,9 @@ def share_slot(slots):
 
 
 def claimed_sections(board, root=None):
-    """The section ids block 7d's original photos claim. infographic_plan.plan() reads this
-    (plan Task 5) and leaves these sections without an infographic unless the breeder adds
-    one."""
+    """The section ids block 7d's original photos claim, each on one heading. Infographics sit
+    on headings of their own (q08), so these claims never displace one; infographic_plan does
+    not read this list."""
     return [s["section"] for s in propose(board, root=root)]
 
 
@@ -563,8 +575,9 @@ def block(board, root=None, n=N_DEFAULT):
         if sh["og_style"] == "C":
             out += [NO_WIDE, ""]
     claimed = ", ".join("`%s`" % s["section"] for s in slots) or "none"
-    out += ["**Sections these photos claim:** %s — the infographic plan skips these unless "
-            "the breeder adds one." % claimed, "",
+    out += ["**Sections these photos claim:** %s — each on one heading. The infographic plan "
+            "does not skip them: infographics sit on headings of their own (breeder q08, "
+            "2026-10-02), so a section can carry both and no heading carries both." % claimed, "",
             "Each slot below has a use / swap / skip choice (`pick-og:<slot>`; swap asks for "
             "a different original photo, named in its note). None is required for approval."]
     return "\n".join(out)

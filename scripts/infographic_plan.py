@@ -78,17 +78,27 @@ def _is_frame(sec: dict) -> bool:
             or "newsletter" in (sec.get("component") or ""))
 
 
+def _is_ig_node(n: dict) -> bool:
+    """True for a tree node that exists to carry an infographic (breeder q08, 2026-10-02:
+    each infographic gets its own heading, and that heading's only image is the graphic)."""
+    return any(img.get("kind") == "infographic" for img in n.get("images") or [])
+
+
 def _h2_h3(sec: dict) -> list[str]:
-    """The H2 heading, then every H3 (top-level tree node) heading."""
+    """The H2 heading, then every H3 (top-level tree node) heading. An infographic's own H3
+    is left out: it names the graphic, so it is never one of the graphic's subjects or
+    steps, and never the trigger that plans it."""
     out = [sec.get("heading", "")]
     for n in sec.get("tree") or []:
-        if n.get("level", 3) == 3:
+        if n.get("level", 3) == 3 and not _is_ig_node(n):
             out.append(n.get("heading") or n.get("text") or "")
     return out
 
 
 def _all_headings(sec: dict) -> list[str]:
-    out, stack = [], list(sec.get("tree") or [])
+    """Every tree heading, depth first, without the infographic's own H3 and its subtree —
+    an IG-4 checklist must not list its own title as a tick."""
+    out, stack = [], [n for n in sec.get("tree") or [] if not _is_ig_node(n)]
     while stack:
         n = stack.pop(0)
         out.append(n.get("heading") or n.get("text") or "")
@@ -107,19 +117,24 @@ def match(texts: list[str]):
 
 
 def _existing(sec: dict, board: dict) -> dict | None:
+    """The section's infographic slot already on the board, with the heading it sits on
+    (`_node`), that heading's level (`_level`) and its path in the section (`_path`: "h2" for
+    the section itself, else "tree[i].children[j]…" as the board's
+    outline_changes_since_stop2 rows name it)."""
     for img in sec.get("images") or []:
         if img.get("kind") == "infographic":
-            return {**img, "_node": sec.get("heading", "")}
-    stack = list(sec.get("tree") or [])
+            return {**img, "_node": sec.get("heading", ""), "_level": "H2", "_path": "h2"}
+    stack = [(n, f"tree[{i}]") for i, n in enumerate(sec.get("tree") or [])]
     while stack:
-        n = stack.pop(0)
+        n, path = stack.pop(0)
         for img in n.get("images") or []:
             if img.get("kind") == "infographic":
-                return {**img, "_node": n.get("heading") or n.get("text") or ""}
-        stack[:0] = n.get("children") or []
+                return {**img, "_node": n.get("heading") or n.get("text") or "",
+                        "_level": f"H{n.get('level', 3)}", "_path": path}
+        stack[:0] = [(c, f"{path}.children[{j}]") for j, c in enumerate(n.get("children") or [])]
     for a in board.get("assets") or []:
         if a.get("kind") == "infographic" and a.get("section") == sec.get("id"):
-            return {**a, "_node": sec.get("heading", "")}
+            return {**a, "_node": sec.get("heading", ""), "_level": "H2", "_path": "h2"}
     return None
 
 
@@ -140,9 +155,12 @@ def plan(board: dict, root: Path | None = ROOT) -> list[dict]:
         ex = _existing(sec, board)
         if ex:
             asset = assets.get(ex.get("slot"), {})
+            own = ex["_path"] != "h2"
             p = {"section": sec["id"], "slot": ex["slot"],
                  "ig": ex.get("infographic_style") or asset.get("infographic_style"),
-                 "node": ex["_node"], "why": "infographic slot already on the board",
+                 "node": ex["_node"], "node_level": ex["_level"], "node_path": ex["_path"],
+                 "why": (f"its own {ex['_level']} on the board (breeder q08, 2026-10-02)" if own
+                         else "infographic slot already on the board"),
                  "prompt": ex.get("prompt") or asset.get("prompt") or "",
                  "alt": asset.get("alt") or ex.get("alt") or ""}
             if p["ig"] not in IG_NAMES:
@@ -163,7 +181,10 @@ def plan(board: dict, root: Path | None = ROOT) -> list[dict]:
             slot = f"{sec['id']}-{SLOT_SUFFIX[ig]}"
             while slot in taken:
                 slot += "-ig"
+            # A proposal only: the slot sits on the heading that triggered it until the board
+            # gives it a heading of its own (outline_changes_since_stop2).
             p = {"section": sec["id"], "slot": slot, "ig": ig, "node": text,
+                 "node_level": level, "node_path": "h2" if level == "H2" else None,
                  "why": f'"{word}" in the {level} "{text}"', "prompt": "", "alt": ""}
         taken.add(p["slot"])
         p.update(heading=sec.get("heading", ""), page=_slug(board),
@@ -786,9 +807,10 @@ def block(board: dict, root: Path | None = ROOT) -> str:
     rows = plan(board, root)
     if not rows:
         return "No section needs an infographic: no heading matched an IG trigger.\n"
-    lines = ["| Section | Heading | IG type | Why it triggered |", "|---|---|---|---|"]
+    lines = ["| Section | Heading | IG type | Why it is here |", "|---|---|---|---|"]
     for p in rows:
-        cells = [p["section"], p["node"], f"{p['ig']} {IG_NAMES.get(p['ig'], '')}", p["why"]]
+        cells = [p["section"], f"{p.get('node_level') or ''} {p['node']}".strip(),
+                 f"{p['ig']} {IG_NAMES.get(p['ig'], '')}", p["why"]]
         lines.append("| " + " | ".join(str(c).replace("|", "\\|") for c in cells) + " |")
     for p in rows:
         lines += ["", f"**{p['slot']}** ({p['ig']} {IG_NAMES.get(p['ig'], '')}) — pick one: "
@@ -809,9 +831,10 @@ def main(argv: list[str]) -> int:
         return 2
     board = json.loads(f.read_text())
     rows = plan(board)
-    print(f"{'section':<18} {'slot':<26} {'IG':<5} why")
+    print(f"{'section':<18} {'slot':<26} {'IG':<5} {'node':<12} heading — why")
     for p in rows:
-        print(f"{p['section']:<18} {p['slot']:<26} {p['ig']:<5} {p['why']}")
+        node = f"{p.get('node_level') or ''} {p.get('node_path') or ''}".strip()
+        print(f"{p['section']:<18} {p['slot']:<26} {p['ig']:<5} {node:<12} {p['node']} — {p['why']}")
     if "--write" in argv:
         for rel in write_previews(board):
             print("wrote", rel)

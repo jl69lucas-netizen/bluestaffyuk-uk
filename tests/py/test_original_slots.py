@@ -381,3 +381,17 @@ def test_a_non_location_board_keeps_city_photos():
         assert glasgow in by and by[glasgow]["own_city"] is False
     assert OS.is_location_board({"meta": {"slug": "blue-staffy-puppies-london"}}, ROOT)
     assert OS.is_location_board({"meta": {"slug": "new-city", "page_type": "location"}}, ROOT)
+
+
+# ── breeder q08 (2026-10-02): an infographic's own heading is never offered a photo ─────────
+def test_infographic_headings_are_never_proposed(london):
+    ig = {n["heading"] for s in london["sections"] for n in s.get("tree") or []
+          if OS.carries_infographic(n)}
+    assert len(ig) == 6
+    assert not ig & {s["heading"] for s in OS.propose(london, root=ROOT)}
+
+
+def test_carries_infographic():
+    assert OS.carries_infographic({"images": [{"kind": "photo"}, {"kind": "infographic"}]})
+    assert not OS.carries_infographic({"images": [{"kind": "photo"}]})
+    assert not OS.carries_infographic({}) and not OS.carries_infographic(None)

@@ -134,6 +134,18 @@ def validate_board(board):
         dupes = sorted({v for v in values if values.count(v) > 1})
         if dupes:
             raise BoardError(f"duplicate section {label}: {', '.join(str(d) for d in dupes)}")
+    for c in board.get("outline_changes_since_stop2") or []:
+        node = outline_change_node(board, c)
+        if node is None:
+            raise BoardError(f"outline_changes_since_stop2: section {c['section']!r} has no node at "
+                             f"{c['node']}")
+        if node["heading"] != c["heading"] or ("level" in c and node["level"] != c["level"]):
+            raise BoardError(f"outline_changes_since_stop2: {c['section']} {c['node']} is "
+                             f"H{node['level']} {node['heading']!r}, not the row's "
+                             f"H{c.get('level', node['level'])} {c['heading']!r}")
+        if c.get("slot") and c["slot"] not in {i["slot"] for i in node.get("images") or []}:
+            raise BoardError(f"outline_changes_since_stop2: {c['section']} {c['node']} carries no "
+                             f"image slot {c['slot']!r}")
     nl = board["tuple"]["newsletter"]
     if bool(nl["after"]) != bool(nl["variant"]):
         raise BoardError("tuple.newsletter: `after` and `variant` are set together or not at all "
@@ -177,6 +189,26 @@ def validate_board(board):
                 if normalise_url(l["href"]) not in lib:
                     raise BoardError(f"section {sec['id']}: external href {l['href']} is not in "
                                      "docs/reference/external-link-library.md — add the row and verify 200 first")
+
+
+_CHANGE_STEP = re.compile(r"(?:^tree|\.children)\[(\d+)\]")
+
+
+def outline_change_node(board, change):
+    """The tree node an `outline_changes_since_stop2` row names (`section` + a `node` path such
+    as "tree[2]" or "tree[0].children[1]"), or None when the section or the path is not there."""
+    sec = next((s for s in board.get("sections") or [] if s.get("id") == change.get("section")), None)
+    path = change.get("node") or ""
+    steps = _CHANGE_STEP.findall(path)
+    if sec is None or not steps or "".join(m.group(0) for m in _CHANGE_STEP.finditer(path)) != path:
+        return None
+    nodes, node = sec.get("tree") or [], None
+    for i in map(int, steps):
+        if i >= len(nodes):
+            return None
+        node = nodes[i]
+        nodes = node.get("children") or []
+    return node
 
 
 def validate_ontology(ont):

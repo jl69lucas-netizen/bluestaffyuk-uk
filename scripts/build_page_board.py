@@ -282,6 +282,7 @@ def outline_block(board, hits):
     """The whole outline as one tree, H1 included — read from all_headings() so the board
     shows the same H1 the gate judged, whether it came from a pick or the recommendation."""
     hit_by = {h["heading"]: h for h in hits}
+    added = {(c["section"], c["heading"]) for c in board.get("outline_changes_since_stop2") or []}
     h1 = PB.all_headings(board)[0][1]
     lines = [f"H1  {esc(h1)}" + vtag(board.get("h1", {}).get("verbatim_heading")) + flag(h1, hit_by)]
     for s in board["sections"]:
@@ -293,7 +294,8 @@ def outline_block(board, hits):
 
         def walk(nodes, depth):
             for n in nodes:
-                lines.append("│   " * depth + f"├─ H{n['level']} {esc(n['heading'])}{vtag(n.get('verbatim_heading'))}" + flag(n["heading"], hit_by))
+                new = "   [added since STOP 2 — block 3e]" if (s["id"], n["heading"]) in added else ""
+                lines.append("│   " * depth + f"├─ H{n['level']} {esc(n['heading'])}{vtag(n.get('verbatim_heading'))}{new}" + flag(n["heading"], hit_by))
                 walk(n["children"], depth + 1)
         walk(s["tree"], 1)
         for i, q in enumerate(s.get("questions", []), 1):
@@ -431,6 +433,30 @@ def load_nav_previews():
         inner = re.sub(r"<h3[^>]*>.*?</h3>\s*", "", inner, count=1, flags=re.S)
         blocks[cid] = (sprite + inner) if (sprite and uses_sprite(inner)) else inner
     return {"css": page_css(html), "blocks": blocks}
+
+
+def changes_block(board):
+    """Block 3e: the headings this board adds to the outline approved at STOP 2. The outline
+    record is not edited (its approval hash covers all of it); the rows live on the board
+    record, inside its hash, so approving the board approves them."""
+    rows = board.get("outline_changes_since_stop2") or []
+    by_id = {s["id"]: s for s in board["sections"]}
+    table = []
+    for c in rows:
+        s = by_id.get(c["section"], {})
+        node = PB.outline_change_node(board, c) or {}
+        w = node.get("words") or {}
+        table.append([f"{s.get('n', 0):02d} {md(s.get('heading', c['section']))}",
+                      f"H{c.get('level', node.get('level', 3))} **{md(c['heading'])}**",
+                      md(c.get("keyword") or "—"),
+                      f"`{md(c['slot'])}`" if c.get("slot") else "—",
+                      f"{w['min']}–{w['max']}" if w else "—",
+                      md(c["reason"])])
+    return (f"**{len(rows)} heading(s) added since the outline was approved at STOP 2.** "
+            "The approved outline record is unchanged; these rows are part of this board, so "
+            "approving the board approves them. Each new heading's only image is the infographic "
+            "it names, and its words come out of its section's band (the page total is unchanged).\n\n"
+            + md_table(["Section", "New heading", "Keyword", "Image slot", "Words", "Why"], table))
 
 
 def navigation_block(board, nav):
@@ -1112,6 +1138,10 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     # Straight after the page's furniture, before the image plan; project 5 boards only.
     if new_family:
         parts.append(("3d. Neighbourhoods", NB.block(board)))
+    # Breeder q08 (2026-10-02): headings added after STOP 2 are shown as changes, not slipped
+    # into the tree. Only a board that records one shows the block.
+    if board.get("outline_changes_since_stop2"):
+        parts.append(("3e. Changed since STOP 2", changes_block(board)))
 
     parts.append(("3b. Image plan", image_plan_table(board)
                   + "\n\nEvery image slot the outline plans. Infographic prompts are the generation pack; "

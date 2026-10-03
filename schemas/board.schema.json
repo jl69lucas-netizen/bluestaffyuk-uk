@@ -54,12 +54,34 @@
     "images": {
      "comment": "An H3's own image slots, same shape as a section's (system-gaps build: every body H3 of a location, comparison or blog page carries one). Absent on every record built before it.",
      "$ref": "#/properties/sections/items/properties/images"
+    },
+    "words": {
+     "comment": "This node's own prose budget, CARVED OUT OF its section's `words` band (never added to it), so the page total is unchanged. Set on the infographic H3s added after STOP 2 (breeder q08, 2026-10-02: a one-sentence lead-in plus the graphic). Absent means the node shares its section's band.",
+     "$ref": "#/properties/sections/items/properties/words"
     }
    },
    "comment": "An H3–H6 of the outline. It carries the two rule-15 fields for the same reason a section does: eleven of the homepage's twenty-three keyword headings are H3s, and nine of the seventeen opening paragraphs belong to one. Without them the rule would be satisfiable only for H2s, and the set would lose the half of itself that sits a level down."
   }
  },
  "properties": {
+  "outline_changes_since_stop2": {
+   "description": "Headings this board adds to the outline approved at STOP 2 (data/outlines/<slug>.json), which is not edited: its approval hash covers the whole record, so the change is recorded here instead and is INSIDE this board's record hash — approving the board approves these changes. Board block 3e lists them. scripts/pageboard.py validate_board requires each row's node to exist in that section's tree with that heading at that level. First use: breeder q08, 2026-10-02 (each infographic gets its own heading).",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": ["section", "node", "heading", "reason"],
+    "additionalProperties": false,
+    "properties": {
+     "section": {"type": "string", "minLength": 1, "description": "the owning section's id"},
+     "node": {"type": "string", "pattern": "^tree\\[[0-9]+\\](\\.children\\[[0-9]+\\])*$", "description": "the node's path in that section's tree, e.g. tree[2]"},
+     "level": {"type": "integer", "minimum": 3, "maximum": 6},
+     "heading": {"type": "string", "minLength": 1},
+     "keyword": {"type": "string", "description": "the section keyword the heading carries (two-keyword header rule)"},
+     "slot": {"type": "string", "description": "the image slot the node carries, when the change exists for it"},
+     "reason": {"type": "string", "minLength": 1}
+    }
+   }
+  },
   "density_pool": {
    "enum": [
     "all",

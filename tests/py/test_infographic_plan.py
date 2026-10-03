@@ -162,7 +162,7 @@ def test_preview_has_aria_label_and_no_external_script():
 
 def test_block_markdown_lists_slots_and_previews():
     md = IP.block(BOARD)
-    assert "| Section | Heading | IG type | Why it triggered |" in md
+    assert "| Section | Heading | IG type | Why it is here |" in md
     assert "| delivery |" in md and "IG-5" in md
     for style in ("plate", "ruled", "card"):
         assert f"docs/artifacts/boards/ig/blue-staffy-puppies-london/delivery-route-{style}.html" in md
@@ -311,3 +311,54 @@ def test_block_escapes_pipes():
     sec = {"id": "x", "heading": "Cost | Price?", "tree": []}
     md = IP.block({"meta": {"slug": "s"}, "sections": [sec], "assets": []}, root=None)
     assert "Cost \\| Price?" in md
+
+
+# ── breeder q08 (2026-10-02): each infographic gets its own H3 ─────────────────────────────
+LONDON_IG = {"deposit-viewing": "deposit-steps", "delivery": "delivery-route",
+             "litter-prices": "litter-prices-figures", "health-tests": "health-tests-checklist",
+             "paperwork": "paperwork-checklist", "breed": "breed-split"}
+
+
+def _london():
+    return json.loads((IP.ROOT / "data/boards/blue-staffy-puppies-london.json").read_text())
+
+
+def test_london_keeps_all_six_slots_each_on_its_own_h3():
+    board = _london()
+    plan = {p["section"]: p for p in IP.plan(board)}
+    assert {s: p["slot"] for s, p in plan.items()} == LONDON_IG
+    changes = {c["section"]: c for c in board["outline_changes_since_stop2"]}
+    for sid, p in plan.items():
+        assert p["node_level"] == "H3" and p["node_path"].startswith("tree["), p
+        assert p["node"] == changes[sid]["heading"] and p["node_path"] == changes[sid]["node"]
+        assert p["node"] != p["heading"]                       # not the H2
+        assert "q08" in p["why"]
+
+
+def test_an_infographic_h3_carries_only_its_infographic():
+    board = _london()
+    for s in board["sections"]:
+        for n in s["tree"]:
+            if IP._is_ig_node(n):
+                assert [i["kind"] for i in n["images"]] == ["infographic"], n["heading"]
+                assert n["words"] == {"min": 40, "max": 60}
+
+
+def test_a_checklist_never_lists_its_own_heading():
+    board = _london()
+    for p in IP.plan(board):
+        if p["ig"] == "IG-4":
+            texts = [c["text"] for c in p["facts"]["checks"]]
+            assert p["node"] not in texts and texts, p["slot"]
+
+
+def test_an_infographic_h3_is_not_a_subject_or_trigger():
+    sec = {"id": "x", "heading": "About Our Litter", "tree": [
+        {"level": 3, "heading": "How Can I Tell an English Staffy From an American One?", "children": []},
+        {"level": 3, "heading": "Labrador or Poodle Figures Side by Side?", "children": [],
+         "images": [{"slot": "x-split", "kind": "infographic", "infographic_style": "IG-3",
+                     "prompt": ""}]}]}
+    assert IP._h2_h3(sec) == ["About Our Litter",
+                              "How Can I Tell an English Staffy From an American One?"]
+    p = IP.plan({"sections": [sec], "assets": []}, root=None)[0]
+    assert p["slot"] == "x-split" and p["node"] == "Labrador or Poodle Figures Side by Side?"

@@ -2906,3 +2906,61 @@ def test_3d_neighbourhoods_on_the_london_board_only(london_html):
         london_html.index('data-title="3d. Neighbourhoods"')
     old = BPB.render(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
     assert "3d. Neighbourhoods" not in old
+
+
+# ── outline changes since STOP 2 (breeder q08, 2026-10-02) ─────────────────────────────────
+def _with_change(**over):
+    b = json.loads(json.dumps(MIN_BOARD))
+    row = {"section": "puppies", "node": "tree[0].children[0]", "level": 4,
+           "heading": "What Does Each Cost?", "reason": "r"}
+    row.update(over)
+    b["outline_changes_since_stop2"] = [row]
+    return b
+
+
+def test_outline_change_node_resolves_paths():
+    b = _with_change()
+    assert PB.outline_change_node(b, b["outline_changes_since_stop2"][0])["heading"] == "What Does Each Cost?"
+    for bad in ("tree[3]", "tree[0].children[9]", "tree", "tree[0]x", "children[0]"):
+        assert PB.outline_change_node(b, {"section": "puppies", "node": bad}) is None, bad
+    assert PB.outline_change_node(b, {"section": "nope", "node": "tree[0]"}) is None
+
+
+def test_valid_outline_change_validates_and_moves_the_hash():
+    b = _with_change()
+    PB.validate_board(b)
+    assert PB.record_hash(b) != PB.record_hash(MIN_BOARD)     # approving the board approves it
+
+
+@pytest.mark.parametrize("over", [{"node": "tree[5]"}, {"heading": "Something Else"},
+                                  {"level": 3}, {"slot": "no-such-slot"}])
+def test_outline_change_that_does_not_match_the_tree_is_refused(over):
+    with pytest.raises(PB.BoardError):
+        PB.validate_board(_with_change(**over))
+
+
+def test_outline_change_schema_refuses_a_missing_reason():
+    b = _with_change()
+    del b["outline_changes_since_stop2"][0]["reason"]
+    with pytest.raises(PB.BoardError):
+        PB.validate_board(b)
+
+
+def test_board_html_shows_block_3e_only_when_changes_are_recorded():
+    import build_page_board as BPB
+    html = BPB.render(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
+    assert "3e. Changed since STOP 2" not in html
+    html = BPB.render(_approved(_with_change()), ONT_OK, LEDGER_EMPTY, live={}, thumbs={}, slug="x")
+    assert 'data-title="3e. Changed since STOP 2"' in html
+    assert "What Does Each Cost?" in html and "added since STOP 2" in html
+
+
+def test_london_records_six_changes_and_the_outline_record_is_still_approved(monkeypatch):
+    import outline_matrix as OM
+    monkeypatch.setattr(PB, "EXTERNAL_LIBRARY", PB.ROOT / "docs/reference/external-link-library.md")
+    b = json.loads((PB.ROOT / "data/boards/blue-staffy-puppies-london.json").read_text())
+    rows = b["outline_changes_since_stop2"]
+    assert len(rows) == 6 and all("q08" in r["reason"] for r in rows)
+    PB.validate_board(b)
+    o = json.loads((PB.ROOT / "data/outlines/blue-staffy-puppies-london.json").read_text())
+    assert OM.approval_state(o) == "approved" and o["approval"]["record_hash"] == "93a195fccb044bea"
