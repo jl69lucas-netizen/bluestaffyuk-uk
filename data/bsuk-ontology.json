@@ -657,6 +657,61 @@
       "authorization": "ASSERTED",
       "source": "data/faq.json",
       "owner_page": null
+    },
+    {
+      "id": "ont:city-of-london-corporation",
+      "name": "City of London Corporation",
+      "aliases": [
+        "City of London"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:enfield-council",
+      "name": "Enfield Council",
+      "aliases": [
+        "London Borough of Enfield"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:rcvs",
+      "name": "Royal College of Veterinary Surgeons",
+      "aliases": [
+        "RCVS"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:royal-parks",
+      "name": "The Royal Parks",
+      "aliases": [
+        "Royal Parks"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:sutton-council",
+      "name": "London Borough of Sutton",
+      "aliases": [
+        "Sutton Council"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
     }
   ]
 }

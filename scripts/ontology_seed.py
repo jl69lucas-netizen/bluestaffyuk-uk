@@ -78,6 +78,13 @@ HOST_ORG = {
     "cumberland.gov.uk": ("ont:cumberland-council", "Cumberland Council", []),
     "dogstrust.org.uk": ("ont:dogs-trust", "Dogs Trust", []),
     "paag.org.uk": ("ont:paag", "Pet Advertising Advisory Group", []),
+    # London places rows (data/city-places/blue-staffy-puppies-london.json, 2026-10-03): each
+    # park owner's own page, and the vets' register.
+    "royalparks.org.uk": ("ont:royal-parks", "The Royal Parks", ["Royal Parks"]),
+    "cityoflondon.gov.uk": ("ont:city-of-london-corporation", "City of London Corporation", ["City of London"]),
+    "enfield.gov.uk": ("ont:enfield-council", "Enfield Council", ["London Borough of Enfield"]),
+    "sutton.gov.uk": ("ont:sutton-council", "London Borough of Sutton", ["Sutton Council"]),
+    "rcvs.org.uk": ("ont:rcvs", "Royal College of Veterinary Surgeons", ["RCVS"]),
 }
 # Hosts that are in the library but are not an organisation a page is about.
 SKIP_HOSTS = {
