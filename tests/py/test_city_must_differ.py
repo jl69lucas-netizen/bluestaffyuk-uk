@@ -58,6 +58,14 @@ def test_every_built_pages_hero_and_counter_are_listed_as_worn():
             if not comp:
                 continue
             pick = PB.pick_in_force(b, sec["id"])
+            if pick is None and sec.get("component"):
+                # A project 5 page wears a city-kit component from its own canvas (London,
+                # 075355ba), not a boardStyles style, so it has no inventory row; check:canvas
+                # holds that variant to differ from every row. The kit file must exist.
+                kit = [c for c in (sec.get("options") or {}).get("candidates") or []]
+                assert kit and (ROOT / "src/components/kit" / f"{kit[0]}.astro").is_file(), \
+                    (slug, comp, sec["component"])
+                continue
             rows = [r for r in inv[comp] if r["id"] == pick]
             assert rows and slug in rows[0]["used_by"], (slug, comp, pick)
 

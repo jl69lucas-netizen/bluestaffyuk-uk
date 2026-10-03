@@ -111,7 +111,15 @@ def test_focal_is_validated_and_dropped_for_the_natural_box():
 
 
 def test_the_twelve_built_pages_keep_the_natural_box():
-    for slug in BUILT:
+    """London joined data/facts/rebuilt.json (075355ba) and is a project 5 page, which paints
+    the uniform box by design (rules/images.md), and is built at src/pages/uk-locations/. "The
+    twelve" are the rebuilt pages family_rules does not count as project 5 pages."""
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import family_rules as FR
+    twelve = [s for s in BUILT if not FR.is_new_page(s)]
+    assert len(twelve) == len(FR.BUILT_BEFORE_SYSTEM_GAPS), twelve
+    for slug in twelve:
         page = ROOT / "src/pages" / slug / "index.astro"
         if slug == "index":
             page = ROOT / "src/pages/index.astro"

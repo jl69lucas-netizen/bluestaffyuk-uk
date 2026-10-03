@@ -72,7 +72,11 @@ RESULT_WORD = re.compile(
     r"|facts-preserved|link\s+parity|the\s+form|every\s+gate|the\s+gate))"
     r"|\bunaffected\b|\bfree\s+(?:of|from)\b")
 # Denials and plain descriptions of what a test is are not results.
-DENIAL = re.compile(r"(?i)\b(?:no|never\s+a|not\s+a|not\s+any)\s+(?:(?:DNA|test|health)\s+)?(?:results?|certificates?)\b")
+# A coordinated denial ("never a result or a DNA certificate") is one denial: London's board
+# record (2026-10-03) read its second half as a certificate on offer (the gate cried wolf).
+_DENIED = r"(?:(?:DNA|test|health)\s+)?(?:results?|certificates?)"
+DENIAL = re.compile(r"(?i)\b(?:no|never\s+a|not\s+a|not\s+any)\s+" + _DENIED
+                    + r"(?:\s+(?:or|nor)\s+(?:an?\s+|any\s+)?" + _DENIED + r")?\b")
 SENTENCE = re.compile(r"[^.!?|“”\"]+")
 
 # Migrated pages, by name, with their EXACT hits pinned (review C4, 2026-09-29). Both are the old
@@ -256,7 +260,11 @@ REBUILT = json.loads((ROOT / "data/facts/rebuilt.json").read_text(encoding="utf-
 PLAN_EXCUSED = {("blue-staffy-pup-sale-uk", "/brief/done"):
                 "lists 'the DM clearance' among what the page may not restate (out of scope)",
                 ("buy-blue-staffy-puppies-uk", "/sections/10/options/note"):
-                "names the FAQ row id `listing-health-clearances`, an identifier; its question and answer are reworded"}
+                "names the FAQ row id `listing-health-clearances`, an identifier; its question and answer are reworded",
+                ("blue-staffy-puppies-london", "/sections/11/options/note"):
+                "names the evidence-ledger row id `parents-dna-clear`, an identifier, to say no certificate is held",
+                ("blue-staffy-puppies-london", "/sections/12/options/note"):
+                "quotes a seller's 'DNA clear' line with no certificate as the buyer warning the H5 carries"}
 
 
 def _strings(o, p):
@@ -315,6 +323,14 @@ def test_rebuilt_board_records_plan_no_result():
                 bad.append(f"{slug} {where}: …{hit[:120]}…")
     assert examined > 500, f"examined only {examined} plan strings"
     assert bad == [], "\n".join(bad)
+
+
+def test_a_coordinated_denial_is_not_a_result_and_an_offer_still_is():
+    """Known-broken case from London's board record (2026-10-03): the second half of a
+    coordinated denial was read as a certificate on offer."""
+    assert result_lines("Tests named, never a result or a DNA certificate (plan Ruling 4).") == []
+    assert result_lines("Tests named, and a DNA certificate is on file for both parents.")
+    assert result_lines("Never a result, but the DNA certificate is yours on request.")
 
 
 def test_the_plan_excusal_is_still_needed():
