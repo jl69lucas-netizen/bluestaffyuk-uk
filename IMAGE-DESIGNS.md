@@ -208,6 +208,27 @@ by DEFRA-approved transport) and the collection alternative in Carlisle; it neve
 mileage or a drive time nobody measured. Icons are line SVGs, never emoji (design rule 7).
 A baked infographic is framed with Style `A` so no baked text is ever cropped.
 
+**Board treatments (breeder q08, 2026-10-02: "nice, playful, cartoonish").** Each IG slot on
+a project 5 board is shown in three styles: **sticker**, **chalk** and **comic** (pick
+`ig:<slot>`).
+- **sticker:** die-cut cards with ink outlines and the doodle-dog mascot.
+- **chalk:** a sketchbook on bone graph paper with wobbly drawn lines, never wobbly text.
+- **comic:** panels, speech-bubble labels and halftone corners.
+
+All three are on the tokens only, and every figure is exact text.
+
+**Measuring the frames.** `python3 scripts/infographic_plan.py <slug> --write` (or
+`--heights`) needs node plus Playwright's Chromium. It measures every preview at 1280, 768 and
+375 into `docs/artifacts/boards/ig/<slug>/heights.json`, together with each preview's sha256,
+so a stale file fails a test. Without Chromium it deletes that file and exits 2.
+
+**The `.fig` gate.** The measurement also refuses any exact figure (`.fig`) whose text
+overflows its box or card or touches an icon.
+
+**Baking.** Only after the pick, one style per slot (Task 9 or STOP 4):
+`infographic_plan.bake_infographic()` writes `public/images/infographics/<slug>-<slot>-<style>.webp`
+and `-760.webp`.
+
 ---
 
 ## 9. Approval Before the Build

@@ -983,6 +983,34 @@ def heights_path(slug: str) -> str:
     return f"{OUT_DIR}/{slug}/heights.json"
 
 
+def preview_sha(root: Path, slug: str, slot: str, style: str) -> str:
+    """sha256 of the preview file as written: heights.json records it per slot and style, so
+    a preview re-written without re-measuring is caught as stale without a browser."""
+    import hashlib
+    return hashlib.sha256((Path(root) / preview_path(slug, slot, style)).read_bytes()).hexdigest()
+
+
+def stale_heights(board: dict, root: Path = ROOT) -> list[str]:
+    """`slot|style` for every planned preview whose current sha256 is not the one heights.json
+    recorded when it was measured (or that heights.json does not cover)."""
+    rows = plan(board, root)
+    if not rows:
+        return []
+    slug = rows[0]["page"]
+    try:
+        stored = json.loads((Path(root) / heights_path(slug)).read_text()).get("sha256") or {}
+    except (OSError, ValueError):
+        stored = {}
+    out = []
+    for p in rows:
+        for s in p["styles"]:
+            f = Path(root) / preview_path(slug, p["slot"], s["id"])
+            cur = preview_sha(root, slug, p["slot"], s["id"]) if f.exists() else None
+            if cur is None or (stored.get(p["slot"]) or {}).get(s["id"]) != cur:
+                out.append(f"{p['slot']}|{s['id']}")
+    return out
+
+
 def browser_available(root: Path = ROOT) -> bool:
     """True when node and the repo's Playwright (with its Chromium) can run here."""
     import shutil
@@ -1038,7 +1066,9 @@ def measure_heights(board: dict, root: Path = ROOT) -> dict:
             heights.setdefault(slot, {}).setdefault(style, {})[str(w)] = m["h"]
             if m["sw"] > int(w):
                 print(f"WARNING {key} overflows at {w}px: scroll width {m['sw']}", file=sys.stderr)
-    out = {"widths": list(PREVIEW_WIDTHS), "heights": heights}
+    out = {"widths": list(PREVIEW_WIDTHS), "heights": heights,
+           "sha256": {p["slot"]: {s["id"]: preview_sha(root, slug, p["slot"], s["id"])
+                                  for s in p["styles"]} for p in rows}}
     f = Path(root) / heights_path(slug)
     f.parent.mkdir(parents=True, exist_ok=True)
     f.write_text(json.dumps(out, indent=2, sort_keys=True) + "\n")
@@ -1114,20 +1144,29 @@ def main(argv: list[str]) -> int:
         print(f"no board: {f.relative_to(ROOT)}", file=sys.stderr)
         return 2
     board = json.loads(f.read_text())
-    rows = plan(board)
+    rows = plan(board, ROOT)
     print(f"{'section':<18} {'slot':<26} {'IG':<5} {'node':<12} heading — why")
     for p in rows:
         node = f"{p.get('node_level') or ''} {p.get('node_path') or ''}".strip()
         print(f"{p['section']:<18} {p['slot']:<26} {p['ig']:<5} {node:<12} {p['node']} — {p['why']}")
     if "--write" in argv:
-        for rel in write_previews(board):
+        for rel in write_previews(board, ROOT):
             print("wrote", rel)
     if "--write" in argv or "--heights" in argv:
-        if not browser_available():
-            print("heights NOT MEASURED — node or Playwright's Chromium is unavailable; "
-                  "the board falls back to a fixed scrolling frame", file=sys.stderr)
-            return 1 if "--heights" in argv else 0
-        measure_heights(board)
+        if not browser_available(ROOT):
+            # Never leave heights measured from older previews behind: without the file the
+            # board falls back to fixed scrolling frames, which can scroll but never clip.
+            stale = ROOT / heights_path(_slug(board))
+            removed = stale.exists()
+            stale.unlink(missing_ok=True)
+            print("heights NOT MEASURED — node or Playwright's Chromium is unavailable "
+                  "(run `npx playwright install chromium`). "
+                  + (f"Deleted {heights_path(_slug(board))}; " if removed else "")
+                  + "the board falls back to fixed scrolling frames until "
+                  f"`python3 scripts/infographic_plan.py {_slug(board)} --heights` runs.",
+                  file=sys.stderr)
+            return 2
+        measure_heights(board, ROOT)
         print("wrote", heights_path(_slug(board)))
     return 0
 

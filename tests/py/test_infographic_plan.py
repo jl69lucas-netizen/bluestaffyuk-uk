@@ -538,3 +538,44 @@ def test_measure_refuses_a_figure_under_an_icon(tmp_path):
              "widths": [1280]}]
     with pytest.raises(IP.FigureDefect, match="sits under an icon"):
         IP._shots("measure", {"jobs": jobs}, tmp_path)
+
+
+def test_heights_json_is_not_stale():
+    """Browser-free: every preview's bytes are the bytes heights.json was measured from."""
+    board = json.loads((IP.ROOT / f"data/boards/{LONDON}.json").read_text())
+    stale = IP.stale_heights(board)
+    assert not stale, (f"heights.json is stale — run infographic_plan.py {LONDON} --heights "
+                       f"({', '.join(stale)})")
+
+
+def test_stale_heights_names_a_rewritten_preview(tmp_path):
+    import shutil
+    board = json.loads((IP.ROOT / f"data/boards/{LONDON}.json").read_text())
+    shutil.copytree(IP.ROOT / IP.OUT_DIR / LONDON, tmp_path / IP.OUT_DIR / LONDON)
+    shutil.copytree(IP.ROOT / "data", tmp_path / "data")
+    assert IP.stale_heights(board, tmp_path) == []
+    f = tmp_path / IP.preview_path(LONDON, "delivery-route", "chalk")
+    f.write_text(f.read_text() + "<!-- edited -->")
+    assert IP.stale_heights(board, tmp_path) == ["delivery-route|chalk"]
+    (tmp_path / IP.heights_path(LONDON)).unlink()
+    assert len(IP.stale_heights(board, tmp_path)) == 3 * len(IP.plan(board, tmp_path))
+
+
+def test_write_without_chromium_exits_2_and_deletes_heights(tmp_path, monkeypatch, capsys):
+    """Never leave heights measured from older previews: without a browser `--write` deletes
+    heights.json (the board falls back to scrolling frames) and exits 2."""
+    import shutil
+    shutil.copytree(IP.ROOT / "data", tmp_path / "data")
+    shutil.copytree(IP.ROOT / "src/styles", tmp_path / "src/styles")
+    shutil.copytree(IP.ROOT / IP.OUT_DIR / LONDON, tmp_path / IP.OUT_DIR / LONDON)
+    monkeypatch.setattr(IP, "ROOT", tmp_path)
+    monkeypatch.setattr(IP, "browser_available", lambda root=None: False)
+    heights = tmp_path / IP.heights_path(LONDON)
+    assert heights.exists()
+    assert IP.main([LONDON, "--write"]) == 2
+    assert not heights.exists()
+    err = capsys.readouterr().err
+    assert "heights NOT MEASURED" in err and "--heights" in err
+    # the previews were still written, into the tmp root and not the repo
+    assert (tmp_path / IP.preview_path(LONDON, "deposit-steps", "sticker")).exists()
+    assert IP.main([LONDON, "--heights"]) == 2

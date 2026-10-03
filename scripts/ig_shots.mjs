@@ -21,7 +21,7 @@
 import { chromium } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { join, extname, resolve } from 'node:path';
+import { join, extname, resolve, sep } from 'node:path';
 
 const mode = process.argv[2];
 const spec = JSON.parse(readFileSync(0, 'utf8'));
@@ -30,21 +30,24 @@ const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.woff2
   '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp' };
 const srv = createServer((req, res) => {
   const p = join(root, decodeURIComponent(req.url.split('?')[0]));
-  if (!p.startsWith(root)) { res.writeHead(403); res.end(); return; }
+  if (p !== root && !p.startsWith(root + sep)) { res.writeHead(403); res.end(); return; }
   try { const b = readFileSync(p); res.writeHead(200, { 'content-type': types[extname(p)] ?? 'application/octet-stream' }); res.end(b); }
   catch { res.writeHead(404); res.end(); }
 }).listen(0, '127.0.0.1');
 await new Promise((r) => srv.once('listening', r));
 const base = `http://127.0.0.1:${srv.address().port}/`;
-const browser = await chromium.launch();
+const TIMEOUT = 30_000;   // per page action; a hung preview fails instead of hanging the run
 const out = {};
+let browser;
 try {
+  browser = await chromium.launch({ timeout: TIMEOUT });
   if (mode === 'measure') {
     for (const job of spec.jobs) {
       out[job.key] = {};
       for (const width of job.widths) {
         // A short viewport, so the scroll height is the content's and never the window's.
         const page = await browser.newPage({ viewport: { width, height: 120 } });
+        page.setDefaultTimeout(TIMEOUT);
         await page.goto(base + job.path, { waitUntil: 'load' });
         await page.evaluate(() => document.fonts.ready);
         out[job.key][width] = await page.evaluate(() => {
@@ -79,6 +82,7 @@ try {
   } else if (mode === 'shoot') {
     for (const job of spec.jobs) {
       const page = await browser.newPage({ viewport: { width: job.width, height: job.height } });
+      page.setDefaultTimeout(TIMEOUT);
       await page.goto(base + job.path, { waitUntil: 'load' });
       await page.evaluate(() => document.fonts.ready);
       await page.screenshot({ path: job.out, fullPage: true });
@@ -90,10 +94,12 @@ try {
     throw new Error(`unknown mode ${mode}; use measure or shoot`);
   }
 } finally {
-  await browser.close();
+  // close() can hang on a wedged browser: give it 5s, then exit hard below. Playwright's own
+  // process-exit hook SIGKILLs every browser it launched, so nothing is left running.
+  if (browser) await Promise.race([browser.close().catch(() => {}), new Promise((r) => setTimeout(r, 5000))]);
   srv.close();
 }
 process.stdout.write(JSON.stringify(out));
-if (mode === 'measure' && Object.values(out).some((per) => Object.values(per).some((m) => m.problems.length))) {
-  process.exitCode = 3;
-}
+const defect = mode === 'measure' &&
+  Object.values(out).some((per) => Object.values(per).some((m) => m.problems.length));
+process.stdout.write('', () => process.exit(defect ? 3 : 0));

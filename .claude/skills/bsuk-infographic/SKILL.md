@@ -54,6 +54,48 @@ and 767px for the 1100 wrapper.
   it is a generated image, so it goes through the draft, second board pass and publish of
   IMAGE-DESIGNS.md §9, framed with Style A so no baked text is cropped.
 
+## Board styles, frame heights and baking (`scripts/infographic_plan.py`)
+
+On a project 5 board, block 7c offers each infographic slot in three playful styles: the
+breeder's ruling q08 (2026-10-02) asked for "nice, playful, cartoonish". All three use the
+site tokens only (steel, bone, brass), and every figure is exact text, never drawn:
+
+- **sticker:** white die-cut cards with thick ink outlines and hard offset shadows, brass
+  number badges, and the doodle-dog mascot (a friendly Staffy with rose ears and no collar).
+- **chalk:** a sketchbook on bone graph paper, with wobbly hand-drawn outlines (the SVG filter
+  touches lines only, never text), wavy brass underlines and highlighter swipes.
+- **comic:** heavy-bordered panels, the dog saying the title in a speech bubble, brass
+  caption boxes, speech-bubble labels and halftone corners.
+
+The pick is `ig:<slot>` = `sticker` | `chalk` | `comic` (`pageboard.V2_PICKS`).
+
+**Commands. They need node plus Playwright's Chromium** (`npx playwright install chromium`):
+
+```bash
+python3 scripts/infographic_plan.py <slug> --write     # write the previews, then measure heights
+python3 scripts/infographic_plan.py <slug> --heights   # re-measure only
+python3 scripts/build_page_board.py <slug>              # board frames sized from heights.json
+```
+
+- **What the measuring writes.** `scripts/ig_shots.mjs` renders every preview at 1280, 768
+  and 375 with the fonts served. It writes
+  `docs/artifacts/boards/ig/<slug>/heights.json`, which holds each frame's height plus each
+  preview's sha256.
+- **Freshness.** A preview edited without re-measuring fails
+  `test_heights_json_is_not_stale`.
+- **Without Chromium.** `--write` deletes `heights.json` (the board falls back to scrolling
+  frames) and exits 2.
+
+**The `.fig` gate.** Every exact figure (a price, the band, a city) carries `class="fig"`. The
+measurement fails (`FigureDefect`, exit 3, nothing written) when any figure's text overflows
+its box or card, or touches an icon box, at any width. Icons get a reserved corner, figures
+get their own line, and a figure in a narrow card drops a type step.
+
+**Bake after the pick, one style per slot.**
+`infographic_plan.bake_infographic(slug, slot, style)` screenshots the PICKED style at
+1408×768 and 760 wide. It writes `public/images/infographics/<slug>-<slot>-<style>.webp` and
+`-760.webp`, and it runs at Task 9 or STOP 4. Never bake the unpicked styles.
+
 ## IG-1 Stat Panel
 
 ```html
