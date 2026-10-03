@@ -109,3 +109,10 @@ The breeder also pressed Approve on board v2 (db `boards/blue-staffy-puppies-lon
 - [ ] Build note: the eight faq-bottom answers must average 29 words or fewer to fit the approved 194–237 band.
 - [ ] Inbound links: London has 2 body links in. Add contextual links from `/uk-locations/` and the nearby city pages when they are rebuilt.
 - [ ] Several `-760` image siblings are no smaller than their originals; review the bake step's sibling sizing.
+- [ ] Layout B cleanup (review of bfdf53fc/aee0d298):
+  - Move the queue code (constants, queue_meta, queue_shell, QUEUE_JS, QUEUE_TAIL_JS, CSS) into `scripts/board_queue.py`, following board_entities/board_extras. Output stays byte-identical.
+  - Add a golden-hash test for pre-rule board byte identity.
+  - Always open on "Your decisions" unless a #hash is given; don't restore the last tab.
+  - Fix the "1 page' body copy" plural.
+  - Guard `fit[0]` when a board has no titles or descriptions.
+  - Add an escaping test with `"` and `<` in a summary.
