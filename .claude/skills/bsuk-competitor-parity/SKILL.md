@@ -1,6 +1,6 @@
 ---
 name: bsuk-competitor-parity
-description: Use when a BlueStaffyUK page must match or beat its competitors' keywords and entities — "how do we beat them", "match their keywords", "add more entities", "semantic keywords", "entity relationships", "competitor density" — or when reading board blocks 1b, 4c, 4d or 5c at page-run rows 6, 7 and 10. (BlueStaffyUK)
+description: Use when a BlueStaffyUK page must match or beat its competitors' keywords and entities — "how do we beat them", "match their keywords", "add more entities", "semantic keywords", "entity relationships", "competitor density", "NLP keywords" — or when reading board blocks 1b, 4c, 4d, 4e or 5c at page-run rows 6, 7 and 10. (BlueStaffyUK)
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -24,9 +24,9 @@ Page-run rows 6, 7 and 10 (`docs/reference/page-run.md`):
 
 | Row | What this skill does there |
 |---|---|
-| 6 — keyword deliverables | read block 4c (density) beside block 4b; pick the band on the decisions batch |
+| 6 — keyword deliverables | read block 4c (density) beside block 4b; pick the band on the decisions batch; read block 4e (NLP keywords) |
 | 7 — entities | read block 5c (gaps, entities, relations) before `bsuk-entity-incorporation-agent` runs Move 2 |
-| 10 — the page board | check 1b, 4c, 4d and 5c on the built board before STOP 3 |
+| 10 — the page board | check 1b, 4c, 4d, 4e and 5c on the built board before STOP 3 |
 
 Not for: ranking or traffic questions (NOT FETCHED until project 6), or writing the copy
 itself (`bsuk-seo-content-writer`, from the approved outline).
@@ -37,6 +37,7 @@ itself (`bsuk-seo-content-writer`, from the approved outline).
 python3 scripts/serp_reading.py <slug>    # block 1b — what page one of Google shows
 python3 scripts/term_density.py <slug>    # block 4c — per-term counts vs competitor prose
 python3 scripts/faq_layout.py <slug>      # block 4d — three FAQ blocks or one
+python3 scripts/nlp_keywords.py <slug>    # block 4e — NLP keywords: entities, concepts, attributes (--json: every row)
 python3 scripts/term_gap.py <slug>        # block 5c — what they say that we do not
 ```
 
@@ -48,6 +49,7 @@ Each reads `data/boards/<slug>.json` and the competitor cache under
 | 1b | the blocks on page one, who ranks with what kind of page, what the AI Overview cites, which of our sections answers each People Also Ask question, and the PAA no section answers |
 | 4c | for every board term and board entity name: min / median / mean / max on the top five prose bodies (listings skipped), and two targets scaled to OUR word target |
 | 4d | method A (intent spread, Recommended) and method B (page type) side by side: three FAQ blocks or one bottom block |
+| 4e | three NLP lenses — **named entities** (ontology entities typed Breed / Organisation / Place / Person / Condition / test / Product, plus capitalised names), **core concepts** (process and topic nouns, each with a buying / care / health / training / living intent) and **semantic attributes** (trait nouns such as coat, build, temperament, and adjectives before the breed) — each row on our page, a gap, or ours only |
 | 5c | **by type** (our terms of each keyword type that any competitor carries), **phrases** on 2+ domains that no board term covers, **entities** (ontology only) a competitor names and no section lists, **relations** (NOT FETCHED) |
 
 ## Reading the numbers
@@ -63,6 +65,24 @@ Each reads `data/boards/<slug>.json` and the competitor cache under
   skipped, never counted as zero.
 - A longer term's matches also count toward a shorter term it contains ("blue staffy
   puppies" inside "blue staffy") — do not add the two together.
+
+## NLP lens (block 4e)
+
+- **Every row is attested**: on 2+ competitor domains of block 4c's pool, or in our data
+  files (ontology, `data/faq.json`, `data/settings.json`, `data/puppies.json`,
+  `data/breed-standards.json`, the page's question file). The Sources column names them. The
+  lexicons in `scripts/nlp_keywords.py` only decide the lens; a lexicon word nobody wrote is
+  never a row.
+- **gap** = 2+ domains say it and our planned text does not. Use a gap only where a data file
+  backs the claim — a competitor's sire, a marketplace's "rehoming" or a phrase with no data
+  source behind it stays off the page (rule 9).
+- **ours only** = our data says it and fewer than two competitors do: a differentiator to
+  place, not a gap to close.
+- **on our page** with `0 (listed)` = a section lists the entity but no planned heading or
+  keyword names it yet; the copy must.
+- The counts are not targets: the median-band / ceiling caution of block 4c applies — never
+  repeat a term past the chosen band's upper bound, and read a thin pool (under three
+  domains) as hints.
 
 ## Beat them, in this order
 

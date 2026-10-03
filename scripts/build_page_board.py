@@ -38,6 +38,7 @@ import term_density as TD          # block 4c, per-term density against competit
 import faq_layout as FL            # block 4d, where the FAQs sit
 import neighbourhoods as NB         # block 3d, the city areas and their keywords
 import term_gap as TG              # block 5c, what competitors say that we do not
+import nlp_keywords as NLP         # block 4e, NLP keywords: entities, concepts, attributes
 import infographic_plan as IP      # block 7c, infographic style trios
 import original_slots as OS        # block 7d, the original-photo slots
 import board_extras as BX           # blocks 2b, 8a, 8b, 8c (breeder q12, 2026-10-02)
@@ -1105,7 +1106,8 @@ BLOCK_GROUP = {"0": "Start", "1": "Start", "1b": "Start",
                "3": "Outline", "3a": "Outline", "3b": "Outline", "3c": "Outline", "3d": "Outline",
                "3e": "Outline",
                "4": "Keywords and entities", "4b": "Keywords and entities", "4c": "Keywords and entities",
-               "4d": "Keywords and entities", "5": "Keywords and entities", "5c": "Keywords and entities",
+               "4d": "Keywords and entities", "4e": "Keywords and entities",
+               "5": "Keywords and entities", "5c": "Keywords and entities",
                "5b": "Components", "6": "Components",
                "7": "Images", "7b": "Images", "7c": "Images", "7d": "Images",
                "8": "Before you approve", "8a": "Before you approve", "8b": "Before you approve",
@@ -1121,6 +1123,7 @@ BLOCK_SUMMARY = {
     "3d": "Which areas of the city the page names, and the searches behind each.",
     "4c": "How often competitor pages use each of our terms, against what we plan.",
     "4d": "Where the FAQ blocks sit, from the questions' topics and the page's length.",
+    "4e": "Named entities, core concepts and attributes, each attested on competitors or in our data.",
     "5c": "Phrases and entities several competitor sites use that this board does not.",
     "8c": "Image bytes per section, the page total and the LCP candidate.",
     "8": "Records your H1, picks, notes and the record hash in the board database.",
@@ -1675,6 +1678,9 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                       + md_table(KM.COLUMNS, [[md(c) for c in KM.cells(r)] for r in kt["rows"]])))
         parts.append(("4c. Term density against competitors", TD.table(board, ont)))
         parts.append(("4d. FAQ placement", FL.block(board)))
+        # The breeder's NLP lens (2026-10-03): the entities, concepts and attributes a
+        # language model reads as the page's topic, attested only (working rule 9).
+        parts.append(("4e. NLP keywords: entities, concepts, attributes", NLP.block(board, ont)))
     ent_md = (BE.entities_html(BE.group_entities(board, ont))
               + (f"\n\n**BLOCKED referenced: {', '.join(md(e) for e in auth['blocked'])}.** The board cannot be approved." if auth["blocked"] else "")
               + (f"\n\nPROPOSED (need a source): {', '.join(md(e) for e in auth['proposed'])}." if auth["proposed"] else ""))
