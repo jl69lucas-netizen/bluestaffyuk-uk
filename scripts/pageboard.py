@@ -146,6 +146,13 @@ def validate_board(board):
         if c.get("slot") and c["slot"] not in {i["slot"] for i in node.get("images") or []}:
             raise BoardError(f"outline_changes_since_stop2: {c['section']} {c['node']} carries no "
                              f"image slot {c['slot']!r}")
+        imgs = node.get("images") or []
+        if any(i.get("kind") == "infographic" for i in imgs) and len(imgs) != 1:
+            raise BoardError(f"outline_changes_since_stop2: {c['section']} {c['node']} carries "
+                             f"{len(imgs)} images — an infographic's own heading carries the "
+                             "infographic only (breeder q08, 2026-10-02)")
+    validate_change_budgets(board)
+    validate_changes_are_new(board)
     nl = board["tuple"]["newsletter"]
     if bool(nl["after"]) != bool(nl["variant"]):
         raise BoardError("tuple.newsletter: `after` and `variant` are set together or not at all "
@@ -189,6 +196,65 @@ def validate_board(board):
                 if normalise_url(l["href"]) not in lib:
                     raise BoardError(f"section {sec['id']}: external href {l['href']} is not in "
                                      "docs/reference/external-link-library.md — add the row and verify 200 first")
+
+
+#: The approved outline records (STOP 2). A module attribute so the tests can repoint it.
+OUTLINE_RECORDS = ROOT / "data" / "outlines"
+
+
+def validate_change_budgets(board):
+    """A change node's words come OUT OF its section's band: each node's max is at most the
+    band's max, and the change nodes of one section together (their maxes summed) stay below
+    the band's min, so the section keeps prose of its own and the page total never moves."""
+    per = {}
+    for c in board.get("outline_changes_since_stop2") or []:
+        node = outline_change_node(board, c) or {}
+        w = node.get("words")
+        if not w:
+            continue
+        sec = next(s for s in board["sections"] if s["id"] == c["section"])
+        band = sec["words"]
+        if w["max"] > band["max"]:
+            raise BoardError(f"outline_changes_since_stop2: {c['section']} {c['node']} words.max "
+                             f"{w['max']} is over its section band's max {band['max']}")
+        per.setdefault(c["section"], [0, band])[0] += w["max"]
+    for sid, (total, band) in per.items():
+        if total >= band["min"]:
+            raise BoardError(f"outline_changes_since_stop2: section {sid}'s change nodes take up to "
+                             f"{total} words, not less than its band's min {band['min']}")
+
+
+def _outline_heading_keys(record):
+    keys = set()
+
+    def walk(nodes):
+        for n in nodes or []:
+            if isinstance(n, dict):
+                keys.add(_heading_key(n.get("text") or n.get("heading") or ""))
+                walk(n.get("children"))
+    for s in record.get("sections") or []:
+        walk(s.get("headings"))
+    if isinstance(record.get("h1"), str):
+        keys.add(_heading_key(record["h1"]))
+    return keys - {""}
+
+
+def _heading_key(text):
+    return " ".join(re.findall(r"[\w£$']+", (text or "").replace("’", "'").lower()))
+
+
+def validate_changes_are_new(board):
+    """A change row adds a heading: one the approved outline record (data/outlines/<slug>.json)
+    already carries is not a change since STOP 2. No outline record, nothing to compare."""
+    rows = board.get("outline_changes_since_stop2") or []
+    path = pathlib.Path(OUTLINE_RECORDS) / f"{(board.get('meta') or {}).get('slug')}.json"
+    if not rows or not path.is_file():
+        return
+    keys = _outline_heading_keys(_read_json(path))
+    for c in rows:
+        if _heading_key(c["heading"]) in keys:
+            raise BoardError(f"outline_changes_since_stop2: {c['heading']!r} is already in the "
+                             f"approved outline {path.name} — a change row adds a new heading")
 
 
 _CHANGE_STEP = re.compile(r"(?:^tree|\.children)\[(\d+)\]")

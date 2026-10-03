@@ -2964,3 +2964,63 @@ def test_london_records_six_changes_and_the_outline_record_is_still_approved(mon
     PB.validate_board(b)
     o = json.loads((PB.ROOT / "data/outlines/blue-staffy-puppies-london.json").read_text())
     assert OM.approval_state(o) == "approved" and o["approval"]["record_hash"] == "93a195fccb044bea"
+
+
+def _ig_change(words=None, images=None, section_words=None):
+    """MIN_BOARD with one infographic H3 added after STOP 2, recorded as a change row."""
+    b = json.loads(json.dumps(MIN_BOARD))
+    sec = b["sections"][0]
+    if section_words:
+        sec["words"] = section_words
+    node = {"level": 3, "heading": "Which Figures Sit on One Card?", "intent": "", "children": [],
+            "images": images if images is not None else [
+                {"slot": "puppies-card", "kind": "infographic", "required": True, "prompt": "p",
+                 "source": "infographic", "infographic_style": "IG-1"}],
+            "words": words or {"min": 40, "max": 60}}
+    sec["tree"].append(node)
+    b["outline_changes_since_stop2"] = [{"section": "puppies", "node": "tree[1]", "level": 3,
+                                         "heading": node["heading"], "slot": "puppies-card",
+                                         "reason": "r"}]
+    return b
+
+
+def test_change_node_budget_within_the_section_band():
+    PB.validate_board(_ig_change())                                     # 60 ≤ 600, 60 < 400
+    with pytest.raises(PB.BoardError, match="over its section band's max"):
+        PB.validate_board(_ig_change(words={"min": 40, "max": 700}))
+    with pytest.raises(PB.BoardError, match="not less than its band's min"):
+        PB.validate_board(_ig_change(section_words={"min": 60, "max": 600}))
+
+
+def test_change_nodes_of_one_section_are_summed_against_its_min():
+    b = _ig_change(section_words={"min": 100, "max": 600})
+    PB.validate_board(b)                                                # 60 < 100
+    sec = b["sections"][0]
+    sec["tree"].append(dict(sec["tree"][1], heading="Which Second Figures Sit on a Card?",
+                            images=[dict(sec["tree"][1]["images"][0], slot="puppies-card-2")]))
+    b["outline_changes_since_stop2"].append({"section": "puppies", "node": "tree[2]", "level": 3,
+                                             "heading": "Which Second Figures Sit on a Card?",
+                                             "reason": "r"})
+    with pytest.raises(PB.BoardError, match="take up to 120 words"):
+        PB.validate_board(b)
+
+
+def test_a_change_nodes_infographic_is_its_only_image():
+    two = [{"slot": "puppies-card", "kind": "infographic", "required": True, "prompt": "p",
+            "source": "infographic", "infographic_style": "IG-1"},
+           {"slot": "puppies-photo", "kind": "photo", "required": True, "prompt": "p"}]
+    with pytest.raises(PB.BoardError, match="infographic only"):
+        PB.validate_board(_ig_change(images=two))
+
+
+def test_a_change_row_must_be_new_against_the_approved_outline(tmp_path, monkeypatch):
+    b = _ig_change()
+    (tmp_path / "x.json").write_text(json.dumps({"sections": [{"headings": [
+        {"level": 2, "text": "Our Blue Staffy Puppies", "children": [
+            {"level": 3, "text": "Our Kennel Today", "children": []}]}]}]}))
+    monkeypatch.setattr(PB, "OUTLINE_RECORDS", tmp_path)
+    PB.validate_board(b)                                                # genuinely new
+    b["sections"][0]["tree"][1]["heading"] = "Our Kennel Today!"
+    b["outline_changes_since_stop2"][0]["heading"] = "Our Kennel Today!"
+    with pytest.raises(PB.BoardError, match="already in the approved outline"):
+        PB.validate_board(b)

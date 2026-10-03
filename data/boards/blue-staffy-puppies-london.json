@@ -168,7 +168,7 @@
       "section": "deposit-viewing",
       "node": "tree[2]",
       "level": 3,
-      "heading": "What Are the Four Steps With a Staffy Breeder, From Video Call to Going Home?",
+      "heading": "What Are the Four Steps to Buying From a Staffy Breeder?",
       "keyword": "staffy breeder",
       "slot": "deposit-steps",
       "reason": "breeder q08, 2026-10-02: each infographic gets its own heading"
@@ -177,7 +177,7 @@
       "section": "delivery",
       "node": "tree[2]",
       "level": 3,
-      "heading": "Which Route Brings My Staffordshire Puppy From Carlisle Down to London?",
+      "heading": "Which Way Does My Staffordshire Puppy Travel to London?",
       "keyword": "staffordshire puppy",
       "slot": "delivery-route",
       "reason": "breeder q08, 2026-10-02: each infographic gets its own heading"
@@ -186,7 +186,7 @@
       "section": "litter-prices",
       "node": "tree[2]",
       "level": 3,
-      "heading": "What Are the Prices, Deposit and Puppies Left for Our Blue Staffy Puppies?",
+      "heading": "How Many Blue Staffy Puppies Are Left, and What Deposit Holds One?",
       "keyword": "blue staffy puppies",
       "slot": "litter-prices-figures",
       "reason": "breeder q08, 2026-10-02: each infographic gets its own heading"
@@ -195,7 +195,7 @@
       "section": "health-tests",
       "node": "tree[2]",
       "level": 3,
-      "heading": "Which DNA, Eye, Elbow and Kennel Club Checks Go on My Checklist Before I Buy?",
+      "heading": "Which DNA and Kennel Club Health Checks Should I Ask to See?",
       "keyword": "kennel club",
       "slot": "health-tests-checklist",
       "reason": "breeder q08, 2026-10-02: each infographic gets its own heading"
@@ -204,8 +204,8 @@
       "section": "paperwork",
       "node": "tree[1]",
       "level": 3,
-      "heading": "Which Vaccination, Microchip, Contract and Guarantee Papers Go Home With My Blue Staffordshire Bull Terrier?",
-      "keyword": "vaccinations blue staffordshire bull terrier",
+      "heading": "What Goes in the Folder for My Blue Staffordshire Bull Terrier?",
+      "keyword": "blue staffordshire bull terrier",
       "slot": "paperwork-checklist",
       "reason": "breeder q08, 2026-10-02: each infographic gets its own heading"
     },
@@ -794,7 +794,7 @@
         },
         {
           "level": 3,
-          "heading": "What Are the Four Steps With a Staffy Breeder, From Video Call to Going Home?",
+          "heading": "What Are the Four Steps to Buying From a Staffy Breeder?",
           "intent": "infographic: the four steps in order — video call, deposit, viewing in Carlisle, collection or delivery",
           "children": [],
           "images": [
@@ -983,7 +983,7 @@
         },
         {
           "level": 3,
-          "heading": "Which Route Brings My Staffordshire Puppy From Carlisle Down to London?",
+          "heading": "Which Way Does My Staffordshire Puppy Travel to London?",
           "intent": "infographic: the route Carlisle → London with the delivery band from data/settings.json, and collection in Carlisle as the alternative",
           "children": [],
           "images": [
@@ -1213,7 +1213,7 @@
         },
         {
           "level": 3,
-          "heading": "What Are the Prices, Deposit and Puppies Left for Our Blue Staffy Puppies?",
+          "heading": "How Many Blue Staffy Puppies Are Left, and What Deposit Holds One?",
           "intent": "infographic: male and female prices (data/price-matrix.json), the deposit and its clause (data/settings.json), the count still available (data/puppies.json)",
           "children": [],
           "images": [
@@ -1611,7 +1611,7 @@
         },
         {
           "level": 3,
-          "heading": "Which DNA, Eye, Elbow and Kennel Club Checks Go on My Checklist Before I Buy?",
+          "heading": "Which DNA and Kennel Club Health Checks Should I Ask to See?",
           "intent": "infographic: the buyer's checklist — L-2-HGA and HC-HSF4 DNA tests, eye and elbow checks, warning signs, the BVA/KC scheme rules, Kennel Club registration and how to check it",
           "children": [],
           "images": [
@@ -1752,7 +1752,7 @@
         },
         {
           "level": 3,
-          "heading": "Which Vaccination, Microchip, Contract and Guarantee Papers Go Home With My Blue Staffordshire Bull Terrier?",
+          "heading": "What Goes in the Folder for My Blue Staffordshire Bull Terrier?",
           "intent": "infographic: the going-home checklist — microchip and vaccinations, the written contract and what to check in it, the guarantee terms and guarantee_label from data/settings.json",
           "children": [],
           "images": [
