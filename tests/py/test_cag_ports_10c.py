@@ -360,16 +360,23 @@ def test_the_take_back_is_the_ruling_and_sits_in_the_written_contract():
 def test_the_built_take_back_sentences_name_the_written_contract():
     """Where a built page already carries a take-back sentence of ours (the city FAQ answer and
     the city trust row), it says the promise is set out in our written contract (q05). No new
-    section is added anywhere."""
+    section is added anywhere.
+    The London page written from its approved board (9b00c855) words the promise "our promise to
+    take it back", as the answer to the H3 "What Does the Written Contract Cover?", where the
+    scaffold said "We take the puppy back ... written contract". So any take-back phrasing
+    counts, and the contract may be named in the sentence or in the question it answers just
+    before it."""
     f = ROOT / "dist/uk-locations/blue-staffy-puppies-london/index.html"
     if not f.exists():
         pytest.skip("run npm run -s build first")
     import html as _html
     text = re.sub(r"\s+", " ", _html.unescape(re.sub(r"<[^>]+>", " ", f.read_text(encoding="utf-8"))))
-    hits = [m.start() for m in re.finditer(r"We take (?:the|a) puppy back", text)]
+    hits = [m.start() for m in re.finditer(
+        r"(?i)\b(?:take|took|taking|taken)\b[^.?!]{0,30}\bback\b|\btake-back\b", text)]
     assert hits, "the London page carries its take-back sentences"
     for i in hits:
-        assert "written contract" in text[i:i + 220], text[i:i + 220]
+        around = text[max(0, i - 160):i + 220]
+        assert re.search(r"(?i)written contract", around), around
 
 
 def test_the_scam_agent_restores_safe_payment_and_the_cross_link_section():

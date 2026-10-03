@@ -913,7 +913,11 @@ def test_no_in_body_city_component_reads_the_viewport_width():
 def test_the_guarantee_prints_from_the_data_on_the_london_page():
     """Answer board q07 (2026-09-29): the guarantee is two years. On the London page the trust
     strip, the takeaways and the FAQ rail print it from data/settings.json, and no built page
-    of the twelve prints it (their copy is theirs until each is rebuilt)."""
+    of the twelve prints it (their copy is theirs until each is rebuilt).
+    London joined data/facts/rebuilt.json (075355ba), so "the twelve" is read as the rebuilt
+    pages family_rules does not count as project 5 pages; a project 5 page prints the
+    guarantee from the data by design, and London is held to that above."""
+    import family_rules as FR
     g = guarantee()
     page = ROOT / "dist/uk-locations/blue-staffy-puppies-london/index.html"
     if not page.exists():
@@ -923,7 +927,10 @@ def test_the_guarantee_prints_from_the_data_on_the_london_page():
         m = re.search(r'<section[^>]*class="city-kit %s[" ].*?</section>' % root, html, re.S)
         assert m, root
         assert g["guarantee_label"] in _text(m.group(0)), f"{root} does not print the guarantee"
-    for built in json.loads((ROOT / "data/facts/rebuilt.json").read_text()):
+    twelve = [b for b in json.loads((ROOT / "data/facts/rebuilt.json").read_text())
+              if not FR.is_new_page(b)]
+    assert len(twelve) == len(FR.BUILT_BEFORE_SYSTEM_GAPS), twelve
+    for built in twelve:
         f = ROOT / "dist/index.html" if built == "index" else ROOT / "dist" / built / "index.html"
         assert f.exists(), built
         assert g["guarantee_label"] not in f.read_text(encoding="utf-8"), built

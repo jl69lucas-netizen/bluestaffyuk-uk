@@ -280,10 +280,24 @@ def test_weight_rows_read_real_bytes_and_the_760_sibling(london):
 
 
 def test_unbaked_infographics_say_so(london):
+    """An infographic slot with no file says it is not baked, never a size.
+    London's six infographics were baked and published (2026-10-03), so the unbaked case is
+    now built from a copy of its board with every infographic file removed, and the real
+    board is held to the opposite: each baked infographic reports its file's real bytes."""
+    import copy
     rows = BX.weight_rows(london, ROOT)
     ig = [r for r in rows if r["kind"] == "infographic"]
-    assert ig and all(r["bytes"] is None for r in ig)
-    out = BX.weight_block(london, ROOT)
+    assert ig and all(r["bytes"] == (ROOT / "public" / r["file"].lstrip("/")).stat().st_size
+                      and r["note"] != BX.NOT_BAKED for r in ig)
+    unbaked = copy.deepcopy(london)
+    for _sec, _node, img in BX.IC.iter_slots(unbaked):
+        if img.get("kind") == "infographic":
+            img.pop("file", None)
+    unbaked["assets"] = [a for a in unbaked.get("assets", []) if a.get("kind") != "infographic"]
+    rows = BX.weight_rows(unbaked, ROOT)
+    ig = [r for r in rows if r["kind"] == "infographic"]
+    assert ig and all(r["bytes"] is None and r["note"] == BX.NOT_BAKED for r in ig)
+    out = BX.weight_block(unbaked, ROOT)
     assert "not baked — size after STOP 4" in out
 
 
