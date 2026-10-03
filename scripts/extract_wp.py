@@ -170,6 +170,11 @@ def clean_content_node(node):
         if dest is not None:
             a["href"] = dest
             links_rewritten += 1
+        # A same-page `#fragment` link that opens a new tab never moves the reader: the click
+        # loads a second copy of the page and the jump happens there, not here. WordPress
+        # button blocks set target="_blank" on two such links (the UK hub, Glasgow).
+        if a["href"].startswith("#") and a.get("target") == "_blank":
+            del a["target"]
     for t in node.select("[style]"):
         if t.name in ("p", "div", "span", "h1", "h2", "h3", "h4", "h5", "h6"): del t["style"]
     for t in node.find_all(True):

@@ -153,3 +153,24 @@ def test_rewrite_preserves_query_and_accepts_the_slash_less_form():
             == "/buy-blue-staffy-puppies-uk/")
     assert (rewrite_legacy_href("https://www.bluestaffyuk.com/category/puppy-buying-guide-uk")
             == "/blog/")
+
+
+def test_same_page_fragment_link_never_opens_a_new_tab():
+    # A WordPress button carried `target="_blank"` on an in-page `#fragment` link. Clicking it
+    # opened a second copy of the page and left the reader where they were, so the jump never
+    # happened (nav-jump-target-lands, Known Issues 31 and 81: `#Staffy-adoption` on the UK hub
+    # and `#Staffies-adoption` on Glasgow). A same-page link loses the target; a link that
+    # leaves the page keeps it.
+    from bs4 import BeautifulSoup
+    from extract_wp import clean_content_node
+    soup = BeautifulSoup(
+        '<div><a href="#Staffy-adoption" rel="follow noopener" role="button" target="_blank">Adopt</a>'
+        '<a href="https://www.gov.uk/" target="_blank" rel="noopener">GOV.UK</a>'
+        '<a href="/uk-locations/#list" target="_blank">Cities</a>'
+        '<span id="Staffy-adoption"></span></div>', "lxml")
+    node, _, _ = clean_content_node(soup.div)
+    jump, external, other_page = node.find_all("a")
+    assert "target" not in jump.attrs
+    assert jump["href"] == "#Staffy-adoption"        # the link itself is untouched otherwise
+    assert external["target"] == "_blank"
+    assert other_page["target"] == "_blank"
