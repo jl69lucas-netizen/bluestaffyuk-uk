@@ -3254,7 +3254,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "eb3f32f1751a059d46d3ddea50aee6c21dd485dd86e4a2054bd2ac56cfcb7dc2",
+    "record_hash": "d4a95648423f4ff3de6eb552227f4bfcd31214ebfaf8002a336c5e25117e0c1e",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3274,7 +3274,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-04T22:45:02Z",
+    "reapproved_at": "2026-10-04T23:46:42Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3362,6 +3362,18 @@
         "changed_paths": [
           "/assets/13/alt",
           "/sections/0/options/note"
+        ]
+      },
+      {
+        "at": "2026-10-04T23:46:42Z",
+        "reason": "The breeder's picks on the London final fixes, answer board 2026-10-05 q01-q06, all (a) (docs/reference/answer-board/answers/2026-10-05-london-final-fixes-2026-10-05.md): W2, P6, S1, M1 and N360 are layout only and logged in board_revisions; B1 (q06) adds a fifth trust-ledger line, 'Microchipped before home', whose words are read from data/settings.json puppy_trust_signs. No section, pick, menu or figure moved.",
+        "changed_paths": [
+          "/board_revisions/22",
+          "/board_revisions/23",
+          "/board_revisions/24",
+          "/board_revisions/25",
+          "/board_revisions/26",
+          "/board_revisions/27"
         ]
       }
     ]
@@ -3758,6 +3770,65 @@
         "temperament",
         "breed",
         "everyday-health"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-final-fixes q01",
+      "decision": "W2: tighten the video-call checklist's spacing (tick rows 10->8px, list padding 4/8->2/4px, pane header 11->9px, gap under it 24->16px).",
+      "record_change": "none: component CSS (CityLookListenChecklist, CityChapters)",
+      "sections": [
+        "deposit-viewing"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-final-fixes q02",
+      "decision": "P6: the price answer drops `wide`, so its photo sits beside the question; the H4 price photo sits beside its H4 and paragraph from a desktop box (just before its H4 in the source); the in-chapter roster's rows 12->8px.",
+      "record_change": "none: layout (page markup order of the litter-counter photo, CityChapters .beside, CityRoster bare rows); no word, link or image changed",
+      "sections": [
+        "litter-prices"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-final-fixes q03",
+      "decision": "S1: each publisher group of the London places list is a closed tap-to-open row (<details>/<summary>); every place, rule and link stays in the page.",
+      "record_change": "none: component markup and CSS (CityPlacesByPublisher); the eight place links stay on this section's link table",
+      "sections": [
+        "london-life"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-final-fixes q04",
+      "decision": "M1: on a phone, a display crop hides the AmStaff phone infographic's top 360px (a title band repeating the H3 word for word) and bottom 30px (blank); the file and its URL are untouched.",
+      "record_change": "none: display crop (BodyImage phone.crop, board-styles.css .art-crop); approval.picks img:breed-split-phone unchanged",
+      "sections": [
+        "breed"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-final-fixes q05",
+      "decision": "N360: phone infographics are held at 360px wide, centred on the bone-50 ground, between 431 and 639px.",
+      "record_change": "none: board-styles.css (.art-phone max-width, .art-pic ground)",
+      "sections": [
+        "deposit-viewing",
+        "delivery",
+        "litter-prices",
+        "health-tests",
+        "paperwork",
+        "breed"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-final-fixes q06",
+      "decision": "B1: a fifth trust-ledger line, 'Microchipped before home' / 'With first vaccinations, worming and flea treatment, on a vet-signed health card', its words read from data/settings.json puppy_trust_signs (the breeder's answer of 2026-10-04 q07: every puppy leaves with a vet-signed health card, first vaccinations, a microchip, worming and flea treatment). Closes final_page_audit cites_credentials_early.",
+      "record_change": "content: the trust section's ledger gains a fifth claim (page markup; CityTrustLedger takes 3-8); no pick, menu, figure or section id moved",
+      "sections": [
+        "trust"
       ]
     }
   ]

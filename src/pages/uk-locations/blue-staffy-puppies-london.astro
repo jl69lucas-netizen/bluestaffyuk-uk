@@ -127,6 +127,17 @@ if (!PIT_BULL || BANNED.some((t) => /staffordshire/i.test(t)) || !/^Not on\b/.te
   throw new Error('data/breed-standards.json no longer says the Pit Bull Terrier is banned and the AmStaff is not');
 }
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+// The trust ledger's fifth line (London final fixes B1, the breeder's yes, answer board 2026-10-05
+// q06 (a)): the microchip and the vet checks inside the first 300 words. Its words are the puppy
+// trust signs in data/settings.json (`puppy_trust_signs`), read and checked, never typed as fact.
+const SIGNS = settings.puppy_trust_signs as string[];
+const sign = (s: string) => {
+  if (!SIGNS.includes(s)) throw new Error(`data/settings.json puppy_trust_signs no longer lists "${s}"`);
+  return s;
+};
+sign('Wormed and flea treated');
+const chipClaim = { icon: 'chip' as const, claim: `${sign('Microchipped')} before home`,
+  detail: `With ${lower(sign('First vaccinations'))}, worming and flea treatment, on a ${lower(sign('Vet-signed health card'))}` };
 const bank = (id: string) => {
   const row = (faqBank as { id: string; q: string; a: string }[]).find((r) => r.id === id);
   if (!row) throw new Error(`data/faq.json has no row ${id}`);
@@ -387,6 +398,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
         { icon: 'dna', claim: 'The tests, named', detail: 'L-2-HGA, HC-HSF4, eye screening and elbow screening; no result quoted' },
         ...(guarantee ? [{ icon: 'shield' as const, claim: guarantee.t, detail: guarantee.d }] : []),
         { icon: 'delivery', claim: 'To your London door', detail: `DEFRA-approved transport, or collect in ${TOWN}` },
+        chipClaim,
       ]} />
   </Fragment>
 

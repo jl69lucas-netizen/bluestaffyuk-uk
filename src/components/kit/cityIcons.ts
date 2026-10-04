@@ -19,7 +19,7 @@ export const CITY_ICONS: Record<CityIcon, string> = {
 };
 
 /** The trust ledger's line icons (city component 3), on the same grid and stroke. */
-export type TrustIcon = 'dna' | 'eye' | 'shield' | 'heart' | 'return' | 'delivery';
+export type TrustIcon = 'dna' | 'eye' | 'shield' | 'heart' | 'return' | 'delivery' | 'chip';
 export const TRUST_ICONS: Record<TrustIcon, string> = {
   dna: 'M8 2c0 5 8 5 8 10s-8 5-8 10M16 2c0 5-8 5-8 10s8 5 8 10M9 6h6M9 18h6',
   eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM9 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0',
@@ -27,4 +27,6 @@ export const TRUST_ICONS: Record<TrustIcon, string> = {
   heart: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z',
   return: 'M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5',
   delivery: CITY_ICONS.delivery,
+  // A microchip: the die, its core and two pins a side (London final fixes B1, 2026-10-05).
+  chip: 'M7 7h10v10H7zM10 10h4v4h-4zM10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4',
 };
