@@ -234,7 +234,10 @@ const SIZES = citySizes(fit, {
         /* 7 : 5, not 1 : 1 (London previews 2026-10-04, FIX-a; the breeder's yes, answer board
            2026-10-04 q11 (a)): in the 656px column beside the dial and at 640-667px a long question
            took 4 lines in half the tray; seven-twelfths holds it to 3. */
-        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        /* Written as one fr track and a computed 5/12, not 7fr 5fr (London final fixes P6): two fr
+           tracks round down separately, so the text row under them (it spans both) came out
+           639.98px in a 640px box and a component in it (the roster) fell to its phone tier. */
+        grid-template-columns: minmax(0, 1fr) minmax(0, calc((100% - var(--space-5)) * 5 / 12));
         grid-template-rows: 1fr auto auto 1fr auto;
         grid-template-areas: ". img" "num img" "h3 img" ". img" "text text";
         column-gap: var(--space-5); row-gap: var(--space-3);
