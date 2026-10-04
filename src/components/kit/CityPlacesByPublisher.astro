@@ -10,6 +10,15 @@
 // `placeGroups`), so every fact is the file's `value`, worded as the file words it, and every
 // anchor is the board's. The component types no fact, no place and no URL. No heading: the place
 // names are labels, so the page's outline is unchanged. Conventions 2, 4, 6.
+//
+// EACH PUBLISHER IS A TAP-TO-OPEN ROW (London final fixes S1, the breeder's yes, answer board
+// 2026-10-05 q03 (a), docs/reference/answer-board/answers/2026-10-05-london-final-fixes-2026-10-05.md):
+// the list held 10 places and 24 dog-rule facts, 3,074px at 375, and put its answer at almost
+// twice the per-answer height cap. Each group is now a native `<details>`, closed, whose
+// `<summary>` names the publisher and how many places it covers; a tap, a click, Enter or Space
+// opens it. Every source link, place and fact is still in the page's HTML, only folded away
+// (Chromium's find-in-page opens a closed row on a match).
+// No script. The summary row is at least 44px tall and draws the kit's focus ring.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import type { PlaceGroup } from '../../lib/cityPlaces';
@@ -26,10 +35,14 @@ const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const
 ---
 <div {...rest} class:list={['city-kit', 'city-places-by-publisher', cls]} data-city-places>
   {groups.map((g) => (
-    <div class="grp" data-publisher={g.publisher}>
+    <details class="grp" data-publisher={g.publisher}>
+      <summary>
+        <span class="owner-n"><span class="owner-k">Rules set by</span> {g.publisher}</span>
+        <span class="count">{g.places.length} {g.places.length === 1 ? 'place' : 'places'}</span>
+        <svg class="pm" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v12M2 8h12" /></svg>
+      </summary>
+      <div class="grp-body">
       <div class="owner">
-        <p class="owner-k">Rules set by</p>
-        <p class="owner-n">{g.publisher}</p>
         <ul>
           {g.sources.map((s) => <li><a href={s.href} {...EXT}>{s.anchor}</a></li>)}
         </ul>
@@ -45,7 +58,8 @@ const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const
           </div>
         ))}
       </div>
-    </div>
+      </div>
+    </details>
   ))}
   {vet && (
     <div class="vet">
@@ -57,18 +71,36 @@ const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const
 <style>
   @layer components {
     .city-places-by-publisher { margin: var(--space-4) 0 0; }
-    .grp {
-      display: grid; gap: 10px var(--space-6); grid-template-columns: minmax(0, 1fr);
-      padding: var(--space-4) 0; border-top: 1px solid color-mix(in srgb, var(--color-steel-300) 60%, transparent);
+    .grp { border-top: 1px solid color-mix(in srgb, var(--color-steel-300) 60%, transparent); }
+    .grp:last-of-type { border-bottom: 1px solid color-mix(in srgb, var(--color-steel-300) 60%, transparent); }
+    /* THE ROW (S1): the publisher, its count and a brass plus, one line, at least 44px tall. The
+       marker is the plus, so the browser's own triangle is hidden. The plus turns to a cross when
+       the row is open (transform only, 0.15s, off under reduced motion: rules/design.md #6). */
+    summary {
+      display: flex; align-items: center; gap: var(--space-3); min-height: 48px; padding: var(--space-2) var(--space-1);
+      cursor: pointer; list-style: none; border-radius: var(--radius-sm);
     }
-    .grp:first-child { border-top: 0; padding-top: var(--space-1); }
-    /* Harden pass 2026-10-03: the label sat at 11px in --color-ink-3 on the steel-100 tray, 4.49:1
-       (under AA); it takes the kit's caption tier and --color-ink-2 (6.18:1, data/design/contrast.json). */
-    .owner-k { margin: 0; font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-2); }
+    summary::-webkit-details-marker { display: none; }
+    summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    summary:hover .owner-n { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .count { margin-left: auto; flex: none; font-size: var(--text-sm); font-weight: 600; color: var(--color-ink-2); white-space: nowrap; }
+    .pm { flex: none; fill: none; stroke: var(--color-brass-600); stroke-width: 2.4; stroke-linecap: round; transition: transform var(--dur-fast) var(--ease-out); }
+    .grp[open] .pm { transform: rotate(45deg); }
+    @media (prefers-reduced-motion: reduce) { .pm { transition: none; } }
+    .grp-body {
+      display: grid; gap: 10px var(--space-6); grid-template-columns: minmax(0, 1fr);
+      padding: var(--space-1) 0 var(--space-4);
+    }
+    /* "Rules set by" is read with the publisher's name (it names who sets the rules below), and
+       shown only to assistive technology: the row reads "The Royal Parks · 5 places". */
+    .owner-k {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
     /* The place and owner names are LABELS, not headings (no heading here, so the page's outline and
        its pinned heading counts are unchanged), and rules/design.md #2 sets labels in the body face:
        --font-body, not the display face (visual-intelligence audit 2026-10-04, rec 6). */
-    .owner-n { margin: 2px 0 6px; font-family: var(--font-body); font-weight: 650; font-size: 19px; line-height: 1.2; color: var(--color-brand); }
+    .owner-n { min-width: 0; font-family: var(--font-body); font-weight: 650; font-size: 19px; line-height: 1.2; color: var(--color-brand); }
     .owner ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
     .owner li { margin: 0; font-size: var(--text-sm); line-height: 1.4; display: flex; align-items: baseline; gap: 0.3em; }
     .owner li::before { content: "↗"; color: var(--color-brass-600); }
@@ -106,6 +138,6 @@ const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const
     /* The body line-height (1.6, src/styles/city.css), not 1.5 (visual-intelligence audit 2026-10-04, rec 6). */
     .vet p { margin: 0; font-size: 15px; line-height: 1.6; }
     @container (width >= 640px) { .places { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
-    @container (width >= 800px) { .grp { grid-template-columns: 200px minmax(0, 1fr); } }
+    @container (width >= 800px) { .grp-body { grid-template-columns: 200px minmax(0, 1fr); } }
   }
 </style>
