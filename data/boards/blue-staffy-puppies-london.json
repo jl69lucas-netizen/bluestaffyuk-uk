@@ -869,9 +869,9 @@
           "slot": "deposit-h2",
           "kind": "photo",
           "required": true,
-          "prompt": "H2: served file reused at its own path. Its served alt ends 'L-2-HGA clear', a DNA RESULT no file on disk holds (ledger parents-dna-clear: NOT FETCHED — none held; plan Ruling 4: tests named, never a result), so the alt is corrected under working rule 15 and recorded in verbatim.changed.",
+          "prompt": "H2: the breeder's own photograph, picked at the Asset Gate (answer board 2026-10-04 q06 (a) B1, docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md) in place of /images/breeder-sitting-blue-staffy-puppy-home.webp, which showed no face. Served as a NEW copy, /images/lisa-bright-blue-staffy-breeder-carlisle.webp, baked from /images/dedicated-blue-staffy-pup-care-glasgow.webp (style E), which stays served untouched (working rule 11); its alt names Lisa Bright.",
           "source": "existing",
-          "file": "/images/breeder-sitting-blue-staffy-puppy-home.webp"
+          "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp"
         }
       ],
       "links": {
@@ -991,9 +991,9 @@
                   "slot": "delivery-defra",
                   "kind": "photo",
                   "required": true,
-                  "prompt": "H4 image (outline h4_images, M9): served file reused at its own path; first use on this page keeps its served alt (working rule 11)",
+                  "prompt": "Swapped at the Asset Gate (answer board 2026-10-04 q02 (a) A2-1, docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md) for a real photograph in place of /images/blue-staffy-puppy-delivery-uk.webp, an AI image. Served file reused at its own path; first use on this page keeps its served alt (working rule 11).",
                   "source": "existing",
-                  "file": "/images/blue-staffy-puppy-delivery-uk.webp"
+                  "file": "/images/blue-staffy-pups-near-you.webp"
                 }
               ]
             }
@@ -1003,9 +1003,9 @@
               "slot": "delivery-cost",
               "kind": "photo",
               "required": true,
-              "prompt": "H3 delivery: served file reused at its own path; first use on this page keeps its served alt (working rule 11)",
+              "prompt": "Swapped at the Asset Gate (answer board 2026-10-04 q03 (b) A3-2, docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md) for a real photograph in place of /images/defra-pet-transport-process.webp, an AI image. Served file reused at its own path; first use on this page keeps its served alt (working rule 11).",
               "source": "existing",
-              "file": "/images/defra-pet-transport-process.webp"
+              "file": "/images/buy-staffordshire-bull-terrier-uk-now.webp"
             }
           ]
         },
@@ -1244,9 +1244,9 @@
                   "slot": "litter-counter",
                   "kind": "photo",
                   "required": true,
-                  "prompt": "H4 image (outline h4_images, M9, the counter-position H4): served file reused at its own path; first use on this page keeps its served alt (working rule 11)",
+                  "prompt": "Swapped at the Asset Gate (answer board 2026-10-04 q04 (b) A4-2, docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md) for a real photograph in place of /images/affordable-vs-premium-blue-staffy-breeders-comparison.webp, an AI image. Served file reused at its own path; first use on this page keeps its served alt (working rule 11), corrected under working rule 15 and recorded in verbatim.changed.",
                   "source": "existing",
-                  "file": "/images/affordable-vs-premium-blue-staffy-breeders-comparison.webp"
+                  "file": "/images/kc-staffy-puppies-for-rehoming-uk.webp"
                 }
               ]
             }
@@ -1642,9 +1642,9 @@
                   "slot": "health-kc-check",
                   "kind": "photo",
                   "required": true,
-                  "prompt": "H4 image (outline h4_images, M9): served file reused at its own path; first use on this page keeps its served alt (working rule 11)",
+                  "prompt": "Swapped at the Asset Gate (answer board 2026-10-04 q01 (b) A1-2, docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md) for a real photograph in place of /images/kc-registered-staffy-puppies.webp, an AI image. Served file reused at its own path; first use on this page keeps its served alt (working rule 11), corrected under working rule 15 and recorded in verbatim.changed.",
                   "source": "existing",
-                  "file": "/images/kc-registered-staffy-puppies.webp"
+                  "file": "/images/staffordshire-bull-terrier-for-sale-uk-ready.webp"
                 }
               ]
             }
@@ -2189,9 +2189,9 @@
           "slot": "temperament-h2",
           "kind": "photo",
           "required": true,
-          "prompt": "H2: served file reused at its own path; first use on this page keeps its served alt (working rule 11)",
+          "prompt": "Swapped at the Asset Gate (answer board 2026-10-04 q05 (a) A5-1, docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md) for a real photograph in place of /images/busting-common-staffy-myths-loving-family-dog.webp, an AI image. Served file reused at its own path; first use on this page keeps its served alt (working rule 11), corrected under working rule 15 and recorded in verbatim.changed.",
           "source": "existing",
-          "file": "/images/busting-common-staffy-myths-loving-family-dog.webp"
+          "file": "/images/trusted-uk-breeders-blue-staffy-family.webp"
         }
       ],
       "links": {
@@ -2699,12 +2699,12 @@
     {
       "slot": "deposit-h2",
       "kind": "photo",
-      "w": 640,
-      "h": 480,
+      "w": 1408,
+      "h": 768,
       "required": true,
       "status": "baked",
-      "file": "/images/breeder-sitting-blue-staffy-puppy-home.webp",
-      "alt": "A blue Staffy puppy with blue eyes held in a breeder's lap in a home environment — responsible breeders of blue Staffies."
+      "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+      "alt": "Lisa Bright, our blue Staffy breeder, smiling and holding up two young puppies, one fawn and one dark brindle"
     },
     {
       "slot": "deposit-video-call",
@@ -2749,22 +2749,22 @@
     {
       "slot": "delivery-cost",
       "kind": "photo",
-      "w": 512,
-      "h": 512,
+      "w": 918,
+      "h": 602,
       "required": true,
       "status": "baked",
-      "file": "/images/defra-pet-transport-process.webp",
-      "alt": "An infographic showing the step-by-step, circular process of safely transporting a Staffy puppy with DEFRA-approved partners."
+      "file": "/images/buy-staffordshire-bull-terrier-uk-now.webp",
+      "alt": "A confident blue Staffordshire Bull Terrier pups available to buy in the UK."
     },
     {
       "slot": "delivery-defra",
       "kind": "photo",
-      "w": 1024,
-      "h": 1024,
+      "w": 870,
+      "h": 1080,
       "required": true,
       "status": "baked",
-      "file": "/images/blue-staffy-puppy-delivery-uk.webp",
-      "alt": "Blue Staffy puppies inside a safe delivery van for UK nationwide transport."
+      "file": "/images/blue-staffy-pups-near-you.webp",
+      "alt": "A group of adorable blue Staffy puppies, suggesting availability and local options."
     },
     {
       "slot": "delivery-collect",
@@ -2809,12 +2809,12 @@
     {
       "slot": "litter-counter",
       "kind": "photo",
-      "w": 512,
-      "h": 468,
+      "w": 640,
+      "h": 427,
       "required": true,
       "status": "baked",
-      "file": "/images/affordable-vs-premium-blue-staffy-breeders-comparison.webp",
-      "alt": "A visual comparison illustrating the difference between affordable vs premium Blue Staffy breeders, highlighting health testing versus uncertain origins."
+      "file": "/images/kc-staffy-puppies-for-rehoming-uk.webp",
+      "alt": "Young blue and blue-pied Staffordshire Bull Terrier puppies exploring their whelping pen on a green rug"
     },
     {
       "slot": "litter-parents-dam",
@@ -2859,12 +2859,12 @@
     {
       "slot": "health-kc-check",
       "kind": "photo",
-      "w": 500,
-      "h": 750,
+      "w": 1080,
+      "h": 917,
       "required": true,
       "status": "baked",
-      "file": "/images/kc-registered-staffy-puppies.webp",
-      "alt": "A cute blue Staffy puppy sitting next to its official Kennel Club registration papers, symbolizing KC registered Staffy puppies."
+      "file": "/images/staffordshire-bull-terrier-for-sale-uk-ready.webp",
+      "alt": "Three blue Staffordshire Bull Terrier puppies wearing blue, yellow and pink collars, sitting on a grey sofa"
     },
     {
       "slot": "paperwork-h2",
@@ -2919,12 +2919,12 @@
     {
       "slot": "temperament-h2",
       "kind": "photo",
-      "w": 512,
-      "h": 469,
+      "w": 450,
+      "h": 450,
       "required": true,
       "status": "baked",
-      "file": "/images/busting-common-staffy-myths-loving-family-dog.webp",
-      "alt": "A friendly Staffy interacting gently with a child, used to debunk common Staffy myths about aggression."
+      "file": "/images/trusted-uk-breeders-blue-staffy-family.webp",
+      "alt": "A blue Staffy puppy with a white blaze resting its chin on a lap while a hand strokes its back"
     },
     {
       "slot": "temperament-behaviour",
@@ -3137,6 +3137,27 @@
         "old": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
         "new": "Read our Blue Staffy breeder reviews, featuring a healthy Staffy puppy for sale in the UK.",
         "reason": "'rated among the best Staffy breeders UK' ranks us above other breeders with no outside source (a BETTER_THAN the visual-intelligence audit flags, #28); the breeder said drop it (answer board 2026-10-04 q05 a, docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md). Only that clause is cut; the rest of the served alt is kept word for word. The review-middle letter passes this alt to CityLetter as photoAlt; data/image-focus.json keeps the served alt for every other use."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/staffordshire-bull-terrier-for-sale-uk-ready.webp",
+        "old": "KC-registered Staffordshire Bull Terrier puppy for sale UK — ready to reserve",
+        "new": "Three blue Staffordshire Bull Terrier puppies wearing blue, yellow and pink collars, sitting on a grey sofa",
+        "reason": "The served alt says one 'KC-registered' puppy: the photo shows three, and on London a puppy is never called KC registered, because it comes home with its Kennel Club registration application form and the buyer registers it (the page's own words; working rule 9). 'For sale UK — ready to reserve' says these three are on offer, which nothing shows. The three collared pups on the sofa are kept. Asset Gate swap, answer board 2026-10-04 q01 (b) A1-2 (docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md)."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/kc-staffy-puppies-for-rehoming-uk.webp",
+        "old": "KC registered Staffordshire Bull Terrier puppies ready for rehoming",
+        "new": "Young blue and blue-pied Staffordshire Bull Terrier puppies exploring their whelping pen on a green rug",
+        "reason": "The served alt calls the pups 'KC registered', a credential this page never gives a puppy (each comes home with its Kennel Club registration application form; working rule 9), and 'ready for rehoming', a rescue's word for a dog we sell. The photo shows young blue and blue-pied pups in a whelping pen, and that is what is kept. Asset Gate swap, answer board 2026-10-04 q04 (b) A4-2 (docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md)."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/trusted-uk-breeders-blue-staffy-family.webp",
+        "old": "ALT Text: A cheerful family, possibly with children, enjoying time with their healthy blue Staffy, representing trusted UK breeders.",
+        "new": "A blue Staffy puppy with a white blaze resting its chin on a lap while a hand strokes its back",
+        "reason": "The served alt describes a different picture: no family and no children are in the frame, only one pup on a lap and a hand stroking it, and it opens with a leftover 'ALT Text:' label. The healthy blue Staffy is kept as what the photo shows. Asset Gate swap, answer board 2026-10-04 q05 (a) A5-1 (docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md)."
       }
     ]
   },
@@ -3189,22 +3210,22 @@
       "img:breed-h2": "file:/images/staffordshire-bull-terrier-vs-american-bully-comparison.webp",
       "img:breed-split": "ig:IG-3:87378560580c",
       "img:delivery-collect": "file:/images/blue-staffy-puppy-preparation.webp",
-      "img:delivery-cost": "file:/images/defra-pet-transport-process.webp",
-      "img:delivery-defra": "file:/images/blue-staffy-puppy-delivery-uk.webp",
+      "img:delivery-cost": "file:/images/buy-staffordshire-bull-terrier-uk-now.webp",
+      "img:delivery-defra": "file:/images/blue-staffy-pups-near-you.webp",
       "img:delivery-h2": "file:/images/ethical-staffy-puppy-london-delivery.webp",
       "img:delivery-route": "ig:IG-5:ca3c23797d41",
       "img:deposit-choose": "file:/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
-      "img:deposit-h2": "file:/images/breeder-sitting-blue-staffy-puppy-home.webp",
+      "img:deposit-h2": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
       "img:deposit-steps": "ig:IG-2:fb08a70fe32a",
       "img:deposit-video-call": "file:/images/uk-blue-staffy-breeders-contact-form-support.webp",
       "img:everyday-health-h2": "file:/images/blue-staffy-health-prioritising-wellbeing.webp",
       "img:everyday-health-skin": "file:/images/blue-staffy-vet-check.webp",
       "img:health-h2": "file:/images/find-health-certified-staffy-breeders-uk.webp",
       "img:health-kc": "file:/images/kc-registered-blue-staffy-pups-london.webp",
-      "img:health-kc-check": "file:/images/kc-registered-staffy-puppies.webp",
+      "img:health-kc-check": "file:/images/staffordshire-bull-terrier-for-sale-uk-ready.webp",
       "img:health-tests-checklist": "ig:IG-4:4b33a1fb26f8",
       "img:health-tests-h3": "file:/images/what-health-tests-blue-staffies-need.webp",
-      "img:litter-counter": "file:/images/affordable-vs-premium-blue-staffy-breeders-comparison.webp",
+      "img:litter-counter": "file:/images/kc-staffy-puppies-for-rehoming-uk.webp",
       "img:litter-h2": "file:/images/blue-staffy-puppies-uk-litter1.webp",
       "img:litter-parents": "file:/images/jones-magnificent-blue-staffy-sire.webp",
       "img:litter-parents-dam": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
@@ -3219,7 +3240,7 @@
       "img:paperwork-h3": "file:/images/blue-staffy-puppy-vet-check-uk.webp",
       "img:temperament-behaviour": "file:/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
       "img:temperament-bond": "file:/images/1blue-staffy-family-breeder.webp",
-      "img:temperament-h2": "file:/images/busting-common-staffy-myths-loving-family-dog.webp",
+      "img:temperament-h2": "file:/images/trusted-uk-breeders-blue-staffy-family.webp",
       "img:deposit-steps-phone": "ig:IG-2:e0cec91357ef",
       "img:delivery-route-phone": "ig:IG-5:65f062070dc7",
       "img:litter-prices-figures-phone": "ig:IG-1:13da72792676",
@@ -3227,7 +3248,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "d95f2f8d03ffc3bca118f07a51ef5b78614193b976ce361b4a45eefd7b276b34",
+    "record_hash": "3338529cb0b199ccee0938f266138d3e20acd835a2f8cbe42add6308731d381b",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3247,7 +3268,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-04T20:49:03Z",
+    "reapproved_at": "2026-10-04T21:31:27Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3265,6 +3286,42 @@
           "/assets/22/alt",
           "/assets/24/alt",
           "/assets/27/alt"
+        ]
+      },
+      {
+        "at": "2026-10-04T21:31:27Z",
+        "reason": "Asset Gate swaps by the breeder's ruling, answer board 2026-10-04 q01 (b), q02 (a), q03 (b), q04 (b), q05 (a) and q06 (a) (docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md; candidates docs/reports/asset-gate-london/README.md): five AI images replaced by served photographs reused at their own paths, and the breeder's own photograph served as a new copy, /images/lisa-bright-blue-staffy-breeder-carlisle.webp, in the deposit chapter in place of the faceless photo. Each slot's file, size and alt (served alt kept on first use, or corrected under working rule 15 and recorded in verbatim.changed) follows its pick; no section, pick menu or figure moved.",
+        "changed_paths": [
+          "/assets/1/alt",
+          "/assets/1/h",
+          "/assets/1/w",
+          "/assets/6/alt",
+          "/assets/6/h",
+          "/assets/6/w",
+          "/assets/7/alt",
+          "/assets/7/h",
+          "/assets/7/w",
+          "/assets/12/alt",
+          "/assets/12/h",
+          "/assets/12/w",
+          "/assets/17/alt",
+          "/assets/17/h",
+          "/assets/17/w",
+          "/assets/23/alt",
+          "/assets/23/h",
+          "/assets/23/w",
+          "/sections/7/images/0/file",
+          "/sections/7/images/0/prompt",
+          "/sections/8/tree/0/children/0/images/0/file",
+          "/sections/8/tree/0/children/0/images/0/prompt",
+          "/sections/8/tree/0/images/0/file",
+          "/sections/8/tree/0/images/0/prompt",
+          "/sections/9/tree/1/children/1/images/0/file",
+          "/sections/9/tree/1/children/1/images/0/prompt",
+          "/sections/12/tree/1/children/0/images/0/file",
+          "/sections/12/tree/1/children/0/images/0/prompt",
+          "/sections/16/images/0/file",
+          "/sections/16/images/0/prompt"
         ]
       }
     ]

@@ -448,7 +448,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     image={photo('delivery-h2')}
     lede={`Our staffie puppies in London homes all start here in ${TOWN}, then travel to your door by DEFRA-approved transport, or you collect them from us.`}
     chapters={[
-      { place: 'Delivery', question: tree('delivery', 0), asset: photo('delivery-cost'),
+      { place: 'Delivery', question: tree('delivery', 0), asset: photo('delivery-cost'), focal: '50% 90%',
         text: `UK home delivery costs ${DELIVERY_BAND}, priced by distance, by DEFRA-approved transport.` },
       { place: 'Collection', question: tree('delivery', 1), asset: photo('delivery-collect'),
         text: `Yes. You can collect your Staffordshire puppy from us in ${TOWN}, ${REGION}, instead of paying for home delivery.` },
@@ -458,7 +458,10 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     <Fragment slot="ch-1">
       <p><a href="/blue-staffy-pup-sale-uk/">How our delivery price is set by distance</a> is on our sale page too.</p>
       <h4>{tree('delivery', 0, 0)}</h4>
-      <BodyImage asset={photo('delivery-defra')} srcset={photo('delivery-defra').srcset} box="uniform" sizes={TEXT_SIZES} />
+      {/* A portrait (870x1080, two pups asleep in a crate bed): the uniform box's cover crop would
+          cut one pup's head off, so it is shown whole on the bone-50 ground (the head-cutoff rule,
+          IMAGE-DESIGNS.md §7; the image-bleed rule). Asset Gate, answer board 2026-10-04 q02 (a). */}
+      <BodyImage asset={photo('delivery-defra')} srcset={photo('delivery-defra').srcset} box="uniform" sizes={TEXT_SIZES} class="fit-contain" />
       <p>Yes. Every delivery we book uses DEFRA-approved pet transport.</p>
       <h5>{tree('delivery', 0, 0, 0)}</h5>
       <p>By distance, inside that band. Ask us for London's figure when you enquire, or collect from {TOWN} instead.</p>
@@ -506,7 +509,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <h4>{tree('litter-prices', 1, 0)}</h4>
       <p>On our available puppies list, linked at the top of this page, where each puppy has its own page.</p>
       <h4>{tree('litter-prices', 1, 1)}</h4>
-      <BodyImage asset={photo('litter-counter')} srcset={photo('litter-counter').srcset} box="uniform" sizes={WIDE_TEXT_SIZES} />
+      <BodyImage asset={photo('litter-counter')} srcset={photo('litter-counter').srcset} box="uniform" sizes={WIDE_TEXT_SIZES} focal="50% 55%" />
       <p>Because our price is the price: {BOY_PRICE} for a boy, {GIRL_PRICE} for a girl. It pays for named parents, a home-raised litter, the paperwork and our {GUARANTEE_LOWER}. A price far below that is a reason to ask more questions.</p>
     </Fragment>
     <p><a href="#enquiry">Ask about a puppy from this litter</a>, and say whether you would like delivery or collection.</p>
@@ -549,11 +552,9 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     </Fragment>
     <Fragment slot="ch-2">
       <h4>{tree('health-tests', 1, 0)}</h4>
-      {/* A portrait master (500x750) in the tall box paints the text's width at every tier (it is
-          width-bound in 4:5 and in 16:9 alike), so its sizes are the text's, not TALL_SIZES' 230vw,
-          which is for a 16:9 file cropped to 4:5 and asked 2.8x once its -240/-400 siblings gave
-          it a srcset (frontend-design D7). */}
-      <BodyImage asset={photo('health-kc-check')} srcset={photo('health-kc-check').srcset} box="tall" sizes={TEXT_SIZES} />
+      {/* The Asset Gate's A1-2 (answer board 2026-10-04 q01 b): three collared pups on a sofa, a
+          1080x917 photograph in the uniform box, its crop held high so no head is cut. */}
+      <BodyImage asset={photo('health-kc-check')} srcset={photo('health-kc-check').srcset} box="uniform" sizes={TEXT_SIZES} focal="50% 15%" />
       <p>Ask us for both parents' registration numbers and check the pedigree with the Kennel Club.</p>
     </Fragment>
   </CityChapters>
@@ -615,7 +616,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <SectionDivider />
   <CityChapters id="temperament" data-section-label={H2('temperament')}
     heading={H2('temperament')}
-    image={photo('temperament-h2')}
+    image={photo('temperament-h2')} imageFocal="50% 95%"
     lede="Attached, not aggressive. A well-socialised Staffy is a devoted family dog, and the usual problems in young ones come from boredom and too little training."
     chapters={[
       { place: 'Growing up', question: tree('temperament', 0), asset: photo('temperament-behaviour'),

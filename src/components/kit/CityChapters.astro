@@ -49,6 +49,9 @@ export interface Chapter {
   /** Show the whole picture on the bone-50 ground instead of cropping it (a graphic with words
    *  baked into it: frontend-design D8). */
   contain?: boolean;
+  /** The crop's focal point for `asset` in the uniform box ("50% 30%"; BodyImage `focal`), so a
+   *  photograph that is not 16:9 keeps every head inside the box (Asset Gate, 2026-10-04). */
+  focal?: string;
 }
 type Props = HTMLAttributes<'section'> & {
   heading: string;
@@ -58,10 +61,12 @@ type Props = HTMLAttributes<'section'> & {
   image?: BodyAsset;
   /** Show the H2 photograph whole on the bone-50 ground (a graphic with lettering: D8). */
   imageContain?: boolean;
+  /** The H2 photograph's focal point in the uniform box (BodyImage `focal`). */
+  imageFocal?: string;
   /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
   fit?: CityFit;
 };
-const { heading, lede, chapters, image, imageContain = false, fit = 'column', class: cls, ...rest } = Astro.props;
+const { heading, lede, chapters, image, imageContain = false, imageFocal, fit = 'column', class: cls, ...rest } = Astro.props;
 if (chapters.length < 1 || chapters.length > 3) throw new Error('CityChapters: one to three chapters');
 const missing = chapters.filter((c) => !c.photo && !c.asset).map((c) => c.question);
 if (missing.length) throw new Error(`CityChapters: no photo for ${missing.join(' | ')}`);
@@ -88,7 +93,7 @@ const SIZES = citySizes(fit, {
 <section {...rest} class:list={['city-kit', 'city-chapters', cls]}>
   <div class="tray">
     <h2>{heading}</h2>
-    {image && <BodyImage asset={image} srcset={image.srcset} phone={image.phone} box="uniform" sizes={WIDE_SIZES} class={imageContain ? 'h2-img fit-contain' : 'h2-img'} />}
+    {image && <BodyImage asset={image} srcset={image.srcset} phone={image.phone} box="uniform" sizes={WIDE_SIZES} focal={imageFocal} class={imageContain ? 'h2-img fit-contain' : 'h2-img'} />}
     <p class="lede">{lede}</p>
     {chapters.map((c, i) => {
       if (c.asset) {
@@ -96,7 +101,7 @@ const SIZES = citySizes(fit, {
           <div class:list={['ch', { wide: c.wide }]}>
             <span class="num"><b aria-hidden="true">{i + 1}</b>{c.place}</span>
             <h3>{c.question}</h3>
-            <BodyImage asset={c.asset} srcset={c.asset.srcset} phone={c.asset.phone} box={c.box ?? 'uniform'}
+            <BodyImage asset={c.asset} srcset={c.asset.srcset} phone={c.asset.phone} box={c.box ?? 'uniform'} focal={c.focal}
               sizes={c.wide ? WIDE_SIZES : SIZES} class={c.contain ? 'media-u fit-contain' : 'media-u'} />
             <div class="txt"><p>{c.text}</p><Fragment set:html={rich[i]} /></div>
             {full[i] && <div class="full"><Fragment set:html={full[i]} /></div>}

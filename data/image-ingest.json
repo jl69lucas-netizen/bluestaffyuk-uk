@@ -75,6 +75,16 @@
     "source": "generate",
     "w": 1408
   },
+  "lisa-bright-blue-staffy-breeder-carlisle": {
+    "h": 768,
+    "infographic_style": null,
+    "ingested": "2026-10-04",
+    "master": "public/images/dedicated-blue-staffy-pup-care-glasgow.webp",
+    "og_style": "E",
+    "sib_w": 760,
+    "source": "assets-folder",
+    "w": 1408
+  },
   "staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic": {
     "h": 768,
     "infographic_style": "IG-3",
