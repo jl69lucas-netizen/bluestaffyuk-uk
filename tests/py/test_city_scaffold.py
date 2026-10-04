@@ -227,6 +227,42 @@ def test_each_served_photo_keeps_its_served_alt_first_and_a_new_alt_on_a_repeat(
     assert found
 
 
+def primary_keyword_alt_defects(main, primary_keyword, primary_alts):
+    """Rule 50b (rules/images.md image-keyword-distribution): the page's primary keyword goes in
+    the PRIMARY image's alt only; every other image rotates a different keyword type. The alts in
+    `main` (other than the primary image's own) that carry the keyword, compared on words alone
+    (case, punctuation and spacing ignored), so "Blue Staffy puppies London" is a hit and
+    "blue Staffy puppy ... in London" is not."""
+    def norm(s):
+        return " ".join(re.sub(r"[^a-z0-9]+", " ", s.lower()).split())
+    kw = norm(primary_keyword)
+    return [H.unescape(alt) for alt in re.findall(r'<img [^>]*alt="([^"]*)"', main)
+            if f" {kw} " in f" {norm(H.unescape(alt))} " and H.unescape(alt) not in primary_alts]
+
+
+def test_the_primary_keyword_check_finds_it_only_outside_the_primary_image():
+    kw = "blue staffy puppies london"
+    hit = '<img src="/images/a.webp" alt="Maggie, the dam behind our blue Staffy puppies London families meet">'
+    assert primary_keyword_alt_defects(hit, kw, set()) == [
+        "Maggie, the dam behind our blue Staffy puppies London families meet"]
+    assert primary_keyword_alt_defects(hit, kw, {"Maggie, the dam behind our blue Staffy puppies London families meet"}) == []
+    near = '<img src="/images/b.webp" alt="Mark with their healthy blue Staffy puppy from BlueStaffyUK.uk in London.">'
+    assert primary_keyword_alt_defects(near, kw, set()) == []
+
+
+def test_london_carries_its_primary_keyword_in_no_alt_but_the_primary_images():
+    """London's primary (hero) image is the Maggie photo's FIRST use, which keeps its served alt
+    (working rule 11), so the primary keyword sits in no alt; the repeat (slot litter-parents-dam)
+    carried it in the hero's place until 2026-10-04, which 50b's "only" forbids."""
+    board = json.loads((ROOT / "data/boards" / f"{SLUG}.json").read_text())
+    queries = json.loads((ROOT / "data/queries" / f"{SLUG}.json").read_text())
+    primary = {a["alt"] for a in board["assets"] if a.get("slot") == "london-hero"}
+    assert primary, "the board names its primary image"
+    main = built().split("<main", 1)[1].split("</main>", 1)[0]
+    assert re.search(r'<img [^>]*alt="', main), "the page's images are read"
+    assert primary_keyword_alt_defects(main, queries["primary_keyword"], primary) == []
+
+
 def test_london_keeps_the_date_its_url_was_first_published():
     """The URL has existed since the migration (2026-09-16); moving it from the template to its
     own file changes its source, not its publication (Plan 2 Task 8 spec review)."""

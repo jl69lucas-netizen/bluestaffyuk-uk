@@ -314,7 +314,7 @@
         ],
         "excluded": [],
         "pick": null,
-        "note": "Component: CityHeroFilmstrip — city pick london/hero/b. RULE 50b DEVIATION FOR STOP 3: the primary keyword 'blue staffy puppies london' is NOT in the hero alt. The hero is this photo's first use on the page, so it keeps its served alt word for word (working rule 11 wins; tests/py/test_served_alt_preserved.py). The keyword rides instead in the NEW alt of the same photo's repeat use (slot litter-parents-dam, row 10), and in no other alt. SectionDivider (M5, outline build_notes): a divider sits before this section on the built page. The London city kit has no divider component of its own (the fifteen picks carry none) and the board schema's `divider` shape would add a section the outline does not have, so it is carried as this note and built from the shared kit's src/components/kit/SectionDivider.astro; the seam-parity test (seams = sections) is Task 26. Outline row 1 · Hero and opening (title, H1, first paragraph) · Cat A · framework EEBP · 110 words. Outline note: First lines say only the video call comes before the deposit; the visit to Carlisle comes after it (angle A1 trade-off). Signed by Lisa Bright (S2). Image plan (outline): Hero: public/images/maggie-blue-staffy-dam-with-pups.webp (served; Maggie with her pups — the puppy and its mother the video call shows); alternate public/images/kc-registered-blue-staffy-pups-london.webp Entities (why): ont:london — (Recommended) Primary keyword 'blue staffy puppies london'; London is on 12/20 competitors (GAP city gaps). Trade-off: the city is named, never a London address or kennel we do not have.; ont:lisa-bright — The signed opener (S2); Person schema is missing from BSUK and on 5/20 competitors (GAP priority #1).; ont:carlisle — The video call comes before the deposit and the visit to Carlisle after it (angle A1); both ends of the distance are named.; ont:staffordshire-bull-terrier — KG parent term for the breed; secondary 'blue staffordshire bull terrier puppies'.; ont:maggie — The hero image is Maggie with her pups, the dam the video call shows (FU 'Which parents')."
+        "note": "Component: CityHeroFilmstrip — city pick london/hero/b. RULE 50b READ WITH WORKING RULE 11: the primary keyword 'blue staffy puppies london' is in NO image alt. The hero is this photo's first use on the page, so it keeps its served alt word for word (working rule 11 wins; tests/py/test_served_alt_preserved.py), and Rule 50b puts the primary keyword in the primary image's alt ONLY, so no other alt may carry it in its place. The photo's repeat use (slot litter-parents-dam, row 10) carries its own new alt on a different keyword type, the litter section's variation 'blue staffie puppies' (rules/images.md image-keyword-distribution; London final fixes, 2026-10-04). SectionDivider (M5, outline build_notes): a divider sits before this section on the built page. The London city kit has no divider component of its own (the fifteen picks carry none) and the board schema's `divider` shape would add a section the outline does not have, so it is carried as this note and built from the shared kit's src/components/kit/SectionDivider.astro; the seam-parity test (seams = sections) is Task 26. Outline row 1 · Hero and opening (title, H1, first paragraph) · Cat A · framework EEBP · 110 words. Outline note: First lines say only the video call comes before the deposit; the visit to Carlisle comes after it (angle A1 trade-off). Signed by Lisa Bright (S2). Image plan (outline): Hero: public/images/maggie-blue-staffy-dam-with-pups.webp (served; Maggie with her pups — the puppy and its mother the video call shows); alternate public/images/kc-registered-blue-staffy-pups-london.webp Entities (why): ont:london — (Recommended) Primary keyword 'blue staffy puppies london'; London is on 12/20 competitors (GAP city gaps). Trade-off: the city is named, never a London address or kennel we do not have.; ont:lisa-bright — The signed opener (S2); Person schema is missing from BSUK and on 5/20 competitors (GAP priority #1).; ont:carlisle — The video call comes before the deposit and the visit to Carlisle after it (angle A1); both ends of the distance are named.; ont:staffordshire-bull-terrier — KG parent term for the breed; secondary 'blue staffordshire bull terrier puppies'.; ont:maggie — The hero image is Maggie with her pups, the dam the video call shows (FU 'Which parents')."
       },
       "component": "city-hero-filmstrip"
     },
@@ -2824,7 +2824,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
-      "alt": "Maggie, the dam behind our blue Staffy puppies London families meet on video, lying with her litter"
+      "alt": "Maggie, the dam behind our blue Staffie puppies that families meet on video, lying with her litter"
     },
     {
       "slot": "health-h2",
@@ -3158,6 +3158,12 @@
         "old": "ALT Text: A cheerful family, possibly with children, enjoying time with their healthy blue Staffy, representing trusted UK breeders.",
         "new": "A blue Staffy puppy with a white blaze resting its chin on a lap while a hand strokes its back",
         "reason": "The served alt describes a different picture: no family and no children are in the frame, only one pup on a lap and a hand stroking it, and it opens with a leftover 'ALT Text:' label. The healthy blue Staffy is kept as what the photo shows. Asset Gate swap, answer board 2026-10-04 q05 (a) A5-1 (docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md)."
+      },
+      {
+        "kind": "alt",
+        "old": "Maggie, the dam behind our blue Staffy puppies London families meet on video, lying with her litter",
+        "new": "Maggie, the dam behind our blue Staffie puppies that families meet on video, lying with her litter",
+        "reason": "Slot litter-parents-dam (the repeat of the Maggie photo). Rule 50b (rules/images.md image-keyword-distribution) puts the page's primary keyword in the primary image's alt ONLY and has every other image rotate a different keyword type. The primary (hero) image is this photo's first use, which keeps its served alt under working rule 11, so the primary keyword can sit in no alt; this repeat alt carried 'blue staffy puppies London' in its place, which 50b's 'only' forbids. The repeat now carries the litter section's variation keyword 'blue staffie puppies' (its record keywords), used by no other alt on the page; the photo, the dam, the video call and the litter are described as before. Not a served alt: the row is keyed by `old`, never by `src`, so it cannot make this alt an accepted first use of the file (tests/py/test_served_alt_preserved.py)."
       }
     ]
   },
@@ -3248,7 +3254,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "a8d25e44a1b7a5c8ba889e243063870f4142ceb4a2a9fa2956d7b96060f0cde6",
+    "record_hash": "eb3f32f1751a059d46d3ddea50aee6c21dd485dd86e4a2054bd2ac56cfcb7dc2",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3268,7 +3274,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-04T21:50:27Z",
+    "reapproved_at": "2026-10-04T22:45:02Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3348,6 +3354,14 @@
           "/subcomponents/1/style/name",
           "/subcomponents/1/style/pick",
           "/subcomponents/1/style/preview"
+        ]
+      },
+      {
+        "at": "2026-10-04T22:45:02Z",
+        "reason": "Rule 50b (rules/images.md image-keyword-distribution): the primary keyword goes in the primary image's alt only; the hero's first use keeps its served alt (working rule 11), so the repeat Maggie alt (litter-parents-dam) must not carry 'blue staffy puppies london' in its place. It now carries the litter section's variation 'blue staffie puppies'. Alt wording only; no pick, menu, figure or section moved.",
+        "changed_paths": [
+          "/assets/13/alt",
+          "/sections/0/options/note"
         ]
       }
     ]
