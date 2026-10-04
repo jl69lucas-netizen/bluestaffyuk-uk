@@ -185,6 +185,28 @@ def test_the_former_home_is_a_claim_even_on_the_citys_own_pages():
     assert R.html_findings("<p>We are based in Carlisle, our home.</p>", LOCKED) == []
 
 
+def test_the_retired_byline_is_a_finding_on_every_page():
+    # Known Issue 12, reopened 2026-10-04: the old WordPress owner byline. The breeder is
+    # Lisa Bright (data/settings.json breeder_name); the breeder ruled that the migrated
+    # name appears NOWHERE on the rebuilt site. Unlike the former city, no page is exempt —
+    # not the former city's own page, not a link's anchor text, not an alt.
+    caption = ('<div class="wp-block-uagb-advanced-heading"><p class="uagb-heading-text">'
+               'Sharine Amelia</p><p class="uagb-desc-text">Owner</p></div>')
+    assert R.html_findings(caption, LOCKED) == [("byline", "sharine amelia")]
+    assert R.html_findings(caption, LOCKED, city_page=True) == [("byline", "sharine amelia")]
+    assert R.html_findings('<h2>Hi, I Am SHARINE AMELIA</h2>', LOCKED) == [
+        ("byline", "sharine amelia")]
+    assert R.html_findings('<img src="/a.webp" alt="Sharine with a pup">', LOCKED) == [
+        ("byline", "sharine")]
+    assert R.html_findings('<a href="/uk-locations/staffy-puppies-for-sale-glasgow/">'
+                           'Sharine Amelia</a>', LOCKED) == [("byline", "sharine amelia")]
+    assert R.text_findings("const owner = 'Sharine\nAmelia';", LOCKED) == [
+        ("byline", "sharine amelia")]
+    # The surname alone is a common first name (a puppy, a reviewer) and is not the byline.
+    assert R.html_findings("<p>Amelia from Leeds took Christa home.</p>", LOCKED) == []
+    assert R.html_findings("<p>We are Lisa Bright's kennel.</p>", LOCKED) == []
+
+
 def test_a_map_embed_of_the_former_home_is_a_home_claim():
     # The old-address Google Maps embed: its title is copy, its src names the district.
     embed = ('<iframe title="Map of Coltmuir, Glasgow G22" '
@@ -331,3 +353,29 @@ def test_the_repo_sweep_is_green_and_the_allowlist_is_exact():
     assert r["new"] == [], r["new"]
     assert r["stale"] == [], r["stale"]
     assert len(r["allowed"]) == len(_allow()["entries"])
+
+
+@pytest.mark.skipif(not (ROOT / "dist").exists(), reason="needs a build (npm run build)")
+def test_the_retired_byline_is_on_no_built_page_and_in_no_migrated_body():
+    # Known Issue 12 was closed on 2026-09-22 against two rebuilt pages' boards, and the name
+    # stayed on the UK location page — the migrated body in data/locations.json printed it
+    # as an "Owner" caption under a photo — because no gate read what SHIPS for it. Two
+    # independent reads, so neither can pass by being blind: the gate's own sweep, and a
+    # raw case-insensitive byte search of every built file and every migrated body.
+    r = R.run()
+    assert r["examined"]["dist"] > 0 and r["examined"]["data"] > 0, r["examined"]
+    hits = [k for k in r["new"] + r["allowed"] if ":byline:" in k]
+    assert hits == [], hits
+    pages = sorted((ROOT / "dist").glob("**/index.html"))
+    assert len(pages) >= 40, f"only {len(pages)} built pages — build first"
+    raw = [p.relative_to(ROOT).as_posix() for p in pages
+           if "sharine" in p.read_text(encoding="utf-8").lower()]
+    rows = json.loads((ROOT / "data/locations.json").read_text(encoding="utf-8"))
+    assert len(rows) == 28
+    raw += [f"data/locations.json/{row['slug']}/{field}" for row in rows
+            for field in R.LOCATION_FIELDS if "sharine" in (row.get(field) or "").lower()]
+    assert raw == [], raw
+
+
+def test_a_byline_is_never_allowlisted():
+    assert not [k for k in _allow()["entries"] if ":byline:" in k]

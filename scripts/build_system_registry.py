@@ -50,7 +50,7 @@ GATES = [
     ("scripts/outline_matrix.py", "STOP 2: a project 5 page's outline is a valid section matrix (census, Cat, grounded Why, keywords, images) approved on its own; refuses the page board until it is"),
     ("scripts/city_must_differ.py", "the city must-differ inventory matches boardStyles.ts and the built pages' picks (`--check`)"),
     ("scripts/check_city_canvas.py", "a city component canvas: fifteen components × three token-only, question-headed fragments that differ from every built page's arrangement (`npm run check:canvas`)"),
-    ("scripts/retired_facts_check.py", "no retired figure, retired wording or former-city claim on a built page, in rendered data or in src/ (Known Issue 65 allowlist only shrinks)"),
+    ("scripts/retired_facts_check.py", "no retired figure, retired wording, former-city claim or retired byline (Known Issue 12) on a built page, in rendered data or in src/ (Known Issue 65 allowlist only shrinks; a byline is never allowlisted)"),
     ("scripts/final_page_audit.py", "headings, six levels, the H5/H6 minimums"),
     ("scripts/schema_check.py", "structured data on every built page"),
     ("scripts/sitemap_check.py", "sitemap shards and what is excluded from them"),

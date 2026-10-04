@@ -35,6 +35,13 @@ LINK_REWRITES = {
     "/category/puppy-buying-guide-uk/": "/blog/",
 }
 OLD_HOST_RE = re.compile(r"^https?://(?:www\.)?bluestaffyuk\.com")
+# The old site's owner byline (Known Issue 12). The breeder is Lisa Bright (data/settings.json
+# breeder_name), and the breeder ruled on 2026-10-04 that the migrated name appears nowhere on
+# the rebuilt site. The UK hub captioned a photo with it ("<name> / Owner"); that caption block
+# is dropped at extraction and the photo kept (working rule 11). Each drop is recorded in the
+# page's refresh_flags as `retired-byline-dropped:<n>` (data/page-map.json), and
+# scripts/retired_facts_check.py fails any page, body or src file that still carries the name.
+RETIRED_BYLINES = {"sharine amelia"}
 
 
 @dataclasses.dataclass
@@ -187,6 +194,19 @@ def clean_content_node(node):
     return node, forms_removed, links_rewritten
 
 
+def drop_retired_bylines(node):
+    """Drop every caption block (name + role) whose heading IS a retired byline; returns the
+    count. Only an exact caption is dropped: a block that merely mentions the name is prose,
+    and prose is rewritten on its page, never deleted here."""
+    dropped = 0
+    for block in node.select(".wp-block-uagb-advanced-heading"):
+        head = block.select_one(".uagb-heading-text")
+        if head and " ".join(head.get_text(" ", strip=True).split()).lower() in RETIRED_BYLINES:
+            block.decompose()
+            dropped += 1
+    return dropped
+
+
 def extract_body(soup):
     """Return (node mutated in place, forms_removed, links_rewritten)."""
     node = soup.select_one(".entry-content") or soup.select_one("#primary") or soup.body
@@ -250,6 +270,9 @@ def parse_page(path: pathlib.Path, url_path: str) -> Page:
     h1_tag = soup.find("h1")
     h1 = h1_tag.get_text(" ", strip=True) if h1_tag else ""
     node, forms_removed, links_rewritten = extract_body(soup)
+    bylines = drop_retired_bylines(node)
+    if bylines:
+        flags.append("retired-byline-dropped:%d" % bylines)
     if forms_removed:
         flags.append("wp-form-removed")
     if links_rewritten:

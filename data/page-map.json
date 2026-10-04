@@ -2306,7 +2306,7 @@
       "kind": "location",
       "title": "Blue Staffy Puppies UK Delivered: Your Local Guide 2 Finding A Playful Staffy",
       "h1": "Your Local Guide: Finding Blue Staffy Puppies UK with Nationwide Delivery",
-      "word_count": 1767,
+      "word_count": 1764,
       "images": 11,
       "embeds": 0,
       "headings": [
@@ -2430,6 +2430,7 @@
       "defects": [],
       "phone_hits": 0,
       "refresh_flags": [
+        "retired-byline-dropped:1",
         "wp-form-removed",
         "legacy-links-rewritten:1",
         "old-pup-cards-removed:4",

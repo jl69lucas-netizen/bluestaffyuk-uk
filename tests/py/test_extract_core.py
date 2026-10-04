@@ -174,3 +174,36 @@ def test_same_page_fragment_link_never_opens_a_new_tab():
     assert jump["href"] == "#Staffy-adoption"        # the link itself is untouched otherwise
     assert external["target"] == "_blank"
     assert other_page["target"] == "_blank"
+
+
+def test_the_retired_byline_caption_is_dropped_and_its_photo_kept():
+    # Known Issue 12, reopened 2026-10-04: the UK hub's migrated body captioned a photo with
+    # the old WordPress owner byline and "Owner". The breeder is Lisa Bright, and the breeder
+    # ruled that the migrated name appears nowhere on the rebuilt site. The caption block goes
+    # (name AND role line); the photo above it stays at its served path (working rule 11).
+    from bs4 import BeautifulSoup
+    from extract_wp import drop_retired_bylines
+    soup = BeautifulSoup(
+        '<div><div class="wp-block-uagb-image"><figure><img alt="Dedicated care" '
+        'src="/images/dedicated-blue-staffy-pup-care-glasgow.webp"/></figure></div>\n'
+        '<div class="wp-block-uagb-advanced-heading uagb-block-9tjlfvbh">'
+        '<p class="uagb-heading-text">Sharine  Amelia</p><p class="uagb-desc-text">Owner</p></div>\n'
+        '<div class="wp-block-uagb-advanced-heading"><p class="uagb-heading-text">Our Puppies</p>'
+        '<p class="uagb-desc-text">Raised at home</p></div></div>', "lxml")
+    assert drop_retired_bylines(soup.div) == 1
+    out = str(soup.div)
+    assert "sharine" not in out.lower() and "Owner" not in out
+    assert 'src="/images/dedicated-blue-staffy-pup-care-glasgow.webp"' in out
+    assert "Our Puppies" in out and "Raised at home" in out      # other captions untouched
+    assert drop_retired_bylines(soup.div) == 0                    # idempotent
+
+
+def test_the_uk_hub_extracts_without_the_retired_byline():
+    if not (SITE / "uk-locations/blue-staffy-puppies-uk/index.html").exists():
+        pytest.skip("old export not present")
+    page = parse_page(SITE / "uk-locations/blue-staffy-puppies-uk/index.html",
+                      url_path="/uk-locations/blue-staffy-puppies-uk/")
+    assert "sharine" not in page.body_html.lower()
+    assert "retired-byline-dropped:1" in page.refresh_flags
+    # the photo stays (working rule 11); its src is rewritten to /images/*.webp later, in run()
+    assert any("dedicated-blue-staffy-pup-care-glasgow." in i["src"] for i in page.images)

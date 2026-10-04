@@ -34,6 +34,14 @@ and fails on
   home      a claim that the kennel is still in the former city — "based in / our / from our
             Glasgow (home)", the former district "Coltmuir", the postcode district "G22" —
             on EVERY page, the city's own two included: the business is in Carlisle
+  byline    the old WordPress owner byline (Known Issue 12) — "Sharine", alone or with
+            "Amelia" — on EVERY page, in every scope, link text and alt included: the breeder
+            is Lisa Bright (data/settings.json breeder_name), and the breeder ruled on
+            2026-10-04 that the migrated name appears nowhere on the rebuilt site. The
+            surname alone is not matched: "Amelia" is an ordinary first name. Added
+            2026-10-04, when the name was found on the built UK location page — Known Issue 12
+            had been closed against the two rebuilt pages' boards, and no gate read what
+            ships for it. A byline is never allowlisted
 
 WHAT IS NOT SCANNED, and why. data/boards/, data/facts/ and data/verbatim/ record retired
 wording ON PURPOSE (`dropped.prices` is the accounting of what a rebuild struck); a figure
@@ -68,6 +76,8 @@ FORMER_CITY_SLUGS = ("staffy-breeding-dogs-glasgow", "staffy-puppies-for-sale-gl
 FORMER_CITY_PAGE = "staffy-puppies-for-sale-glasgow"
 TERMS = re.compile(r"(?i)\bnon-refundable\b|\bcouncil[- ]licensed\b")
 HOME = re.compile(r"(?i)\b(?:based in|from our|our)\s+Glasgow(?:\s+home)?\b|\bColtmuir\b|\bG22\b")
+# Known Issue 12: the old site's owner byline. Not the surname alone (an ordinary first name).
+BYLINE = re.compile(r"(?i)\bSharine(?:\s+Amelia)?\b")
 NUMBER = r"\d[\d,]*(?<![,])"
 AMOUNT = r"£\s?" + NUMBER
 # A second figure joins by a dash (its £ may be dropped: "£200-350") or by " to " (its £ may
@@ -188,7 +198,12 @@ def text_findings(text, locked, city=True, city_text=None):
     found += [("term", m.group(0).lower().replace(" ", "-")) for m in TERMS.finditer(text)]
     if city and FORMER_CITY in (text if city_text is None else city_text):
         found.append(("city", FORMER_CITY))
-    return found + home_findings(text)
+    return found + home_findings(text) + byline_findings(text)
+
+
+def byline_findings(text):
+    """The retired byline, everywhere — no page, link or scope is exempt (Known Issue 12)."""
+    return [("byline", re.sub(r"\s+", " ", m.group(0)).lower()) for m in BYLINE.finditer(text)]
 
 
 def home_findings(text):

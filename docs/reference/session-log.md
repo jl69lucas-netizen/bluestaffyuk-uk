@@ -549,9 +549,30 @@ numbers.
     £1,500 / £1,700, persists in several migrated page bodies (see the project-2 gate
     report, open item 11, for the exact pages). The fact lint covers `.claude/agents` and
     `.claude/skills` only; page bodies are content. **Project 4.**
-12. **CLOSED 2026-09-22 (project 4).** The old byline is on no built page; it is in the
-    homepage's and breeders page's `dropped.names`. Was: **`Sharine Amelia` byline.** The migrated author byline persists on the homepage and the
-    breeders page. **Project 4.**
+12. **CLOSED 2026-10-04 (reopened the same day).** The old byline is on no built page, in no
+    migrated body and in no src file, and `npm run check:retired` now fails any that carries
+    it. **The 2026-09-22 closure was wrong.** It said "on no built page", but it was checked
+    against the two rebuilt pages' boards (the homepage's and breeders page's
+    `dropped.names`), not against what ships: the migrated UK hub
+    (`/uk-locations/blue-staffy-puppies-uk/`, from `data/locations.json`) still printed the
+    name with "Owner" as a caption under `dedicated-blue-staffy-pup-care-glasgow.webp`,
+    found by hand on 2026-10-04 when the breeder ruled that the name appears nowhere on the
+    rebuilt site (the breeder is Lisa Bright). **Why nothing caught it:**
+    `scripts/retired_facts_check.py` is the gate that reads every built page, the migrated
+    city bodies and src/ for retired facts, but it knew four kinds (figures, wording, the
+    former city, the former home) and not the byline, so it passed the page; and
+    `scripts/facts_preserved_check.py`'s `dropped` accounting only judges rebuilt pages. **Fixed at
+    the source:** `scripts/extract_wp.py` `drop_retired_bylines` drops a caption block whose
+    heading is the retired name (name and role line; the photo stays, working rule 11) and
+    records it in the page's `refresh_flags` as `retired-byline-dropped:1`
+    (`data/page-map.json`); `data/locations.json` is regenerated (only that block and the UK
+    word count, 1767 → 1764, change). **What gates it now:** the gate's new `byline` kind
+    (on every page, link text and alt included; never allowlistable), held by
+    `tests/py/test_retired_facts_check.py`, which also byte-searches every built page and
+    every migrated body independently of the gate's parser. `data/page-map.json` still
+    records the old homepage heading "Hi, I Am …" as an inventory of the migrated site; it
+    renders nowhere. Was: **`Sharine Amelia` byline.** The migrated author byline persists
+    on the homepage and the breeders page. **Project 4.**
 13. **`INDEXNOW_KEY` empty, `SITE_URL` still the placeholder.** IndexNow and pagefind are
     ported and guarded (`scripts/indexnow_submit.py` exits 2 without `BSUK_RELEASE=1` and again on
     the placeholder; `build:release` sits behind `scripts/release_guard.sh`). There is no
