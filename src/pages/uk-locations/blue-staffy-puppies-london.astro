@@ -42,6 +42,7 @@ import faqBank from '../../../data/faq.json';
 import queries from '../../../data/queries/blue-staffy-puppies-london.json';
 import cityPlaces from '../../../data/city-places/blue-staffy-puppies-london.json';
 import pageRun from '../../../data/page-runs/blue-staffy-puppies-london.json';
+import guideRecord from '../../../data/boards/uk-staffordshire-bull-terrier-guide.json';
 import type { LocationRow, PuppyRow } from '../../lib/site';
 import { SITE_URL } from '../../lib/site';
 import type { SectionRef } from '../../lib/sections';
@@ -69,7 +70,7 @@ import CityPlacesByPublisher from '../../components/kit/CityPlacesByPublisher.as
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
 import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, chapterBesideSizes, chapterTextSizes, chapterWideSizes, depositBrief, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
 import { guaranteePhraseOf, guaranteeWords, type GuaranteeSettings } from '../../lib/guarantee';
-import { numberWord } from '../../lib/recordText';
+import { breedFactsCell, numberWord } from '../../lib/recordText';
 
 const SLUG = 'blue-staffy-puppies-london';
 const loc = (locations as LocationRow[]).find((l) => l.slug === SLUG);
@@ -127,6 +128,12 @@ if (!PIT_BULL || BANNED.some((t) => /staffordshire/i.test(t)) || !/^Not on\b/.te
   throw new Error('data/breed-standards.json no longer says the Pit Bull Terrier is banned and the AmStaff is not');
 }
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+// THE LIFESPAN IS THE BREED GUIDE'S CELL, CITED AND NOT RETYPED (London final fixes B2, the
+// breeder's yes, answer board 2026-10-05 q07 (a)): the Everyday Health lede closes on it, read
+// through `breedFactsCell()` from data/boards/uk-staffordshire-bull-terrier-guide.json
+// `sections[breed-facts].table.rows` -> "Lifespan" (cited there to the Purina breed library),
+// as /blue-staffy-health-uk/ reads it. The day the guide's cell moves, this sentence moves with it.
+const LIFESPAN = breedFactsCell(guideRecord, 'Lifespan', SLUG).text;
 // The trust ledger's fifth line (London final fixes B1, the breeder's yes, answer board 2026-10-05
 // q06 (a)): the microchip and the vet checks inside the first 300 words. Its words are the puppy
 // trust signs in data/settings.json (`puppy_trust_signs`), read and checked, never typed as fact.
@@ -686,7 +693,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <CityChapters id="everyday-health" data-section-label={H2('everyday-health')}
     heading={H2('everyday-health')}
     image={photo('everyday-health-h2')}
-    lede="Skin problems, above all. Blue Staffies, like the breed as a whole, are prone to allergies and itchy skin, which good care and a vet can usually keep in hand. So watch the skin first."
+    lede={`Skin problems, above all. Blue Staffies, like the breed as a whole, are prone to allergies and itchy skin, which good care and a vet can usually keep in hand. So watch the skin first. A Staffy lives ${LIFESPAN}.`}
     chapters={[
       { place: 'Skin', question: tree('everyday-health', 0), asset: photo('everyday-health-skin'),
         text: 'Usually an allergy: the breed is prone to them, and the itch shows as scratching that keeps coming back.' },

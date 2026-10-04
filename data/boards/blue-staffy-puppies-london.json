@@ -3254,7 +3254,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "d4a95648423f4ff3de6eb552227f4bfcd31214ebfaf8002a336c5e25117e0c1e",
+    "record_hash": "ddc8fd9a10111040cb4e4b5ac966cb976885908fc2bbb72f9b4524de3962d0b5",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3274,7 +3274,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-04T23:46:42Z",
+    "reapproved_at": "2026-10-04T23:47:47Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3374,6 +3374,13 @@
           "/board_revisions/25",
           "/board_revisions/26",
           "/board_revisions/27"
+        ]
+      },
+      {
+        "at": "2026-10-04T23:47:47Z",
+        "reason": "The breeder's pick on the London final fixes, answer board 2026-10-05 q07 (a) (docs/reference/answer-board/answers/2026-10-05-london-final-fixes-2026-10-05.md): B2 adds one sentence to the end of the Everyday Health lede, 'A Staffy lives 12 to 14 years with good care and good genetics.', read through breedFactsCell() from the breed guide's approved Lifespan cell (cited to Purina), never typed; logged in board_revisions. No section, pick, menu or figure moved.",
+        "changed_paths": [
+          "/board_revisions/28"
         ]
       }
     ]
@@ -3829,6 +3836,15 @@
       "record_change": "content: the trust section's ledger gains a fifth claim (page markup; CityTrustLedger takes 3-8); no pick, menu, figure or section id moved",
       "sections": [
         "trust"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-final-fixes q07",
+      "decision": "B2: the Everyday Health lede closes on 'A Staffy lives 12 to 14 years with good care and good genetics.', the figure read through breedFactsCell() from the breed guide's approved Lifespan cell (data/boards/uk-staffordshire-bull-terrier-guide.json sections[breed-facts].table.rows, cited to the Purina breed library), as /blue-staffy-health-uk/ reads it, never typed. Closes final_page_audit lifespan_12_14.",
+      "record_change": "content: one sentence at the end of the everyday-health lede (page markup); no pick, menu, figure or section id moved",
+      "sections": [
+        "everyday-health"
       ]
     }
   ]
