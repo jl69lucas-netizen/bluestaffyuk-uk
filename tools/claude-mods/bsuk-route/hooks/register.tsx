@@ -33,12 +33,6 @@ const PHASE_LABEL: Record<string, string> = {
   Close: 'Gates & close',
 }
 
-function statusLine(rt: Route): string {
-  const dots = [1, 2, 3, 4].map(n => (n <= rt.stops_done ? '●' : '○')).join('')
-  const now = rt.now ? `row ${rt.now} ${rt.now_name}` : 'all rows proved'
-  const needs = rt.needs_you.length ? ` · ▲ ${rt.needs_you.length} waiting on you` : ''
-  return `BSUK ${rt.slug.replace(/^blue-staffy-puppies-/, '')} ${dots} STOP ${rt.stops_done}/4 · ${now}${needs}`
-}
 
 async function refresh($: any) {
   try {
@@ -51,7 +45,7 @@ async function refresh($: any) {
     const rt: Route = JSON.parse(r.stdout)
     await update($, route, () => rt)
     await update($, error, () => null)
-    $.ui.status(statusLine(rt))
+    $.ui.status(undefined) // the band above the prompt carries this; no status line below
   } catch (err) {
     // not a BSUK checkout (no script here): stay quiet rather than draw a guess
     await update($, error, () => String(err).slice(0, 300))

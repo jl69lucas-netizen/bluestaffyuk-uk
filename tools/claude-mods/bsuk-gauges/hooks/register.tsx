@@ -31,13 +31,6 @@ function cacheText(g: Gauges): string {
   return left === 0 ? 'cache cold' : `cache ${Math.ceil(left / 60000)}m`
 }
 
-function statusLine(g: Gauges): string {
-  const parts = [`ctx ${pct(g.ctxPercent)}`, cacheText(g)]
-  for (const l of g.limits) parts.push(`${label(l.kind)} ${Math.round(l.percentUsed)}%`)
-  if (g.usd !== null) parts.push(`$${g.usd.toFixed(2)}`)
-  parts.push(`gemini ${g.geminiToday}`)
-  return parts.join(' · ')
-}
 
 
 // The plan's session (5-hour) and weekly (7-day) limit windows, as the API reports them.
@@ -108,7 +101,7 @@ async function refresh($: any) {
     agentsRunning,
   }
   await update($, gauges, () => g)
-  $.ui.status(statusLine(g))
+  $.ui.status(undefined) // the band above the prompt carries this; no status line below
 }
 
 export const register: Register = on => {
