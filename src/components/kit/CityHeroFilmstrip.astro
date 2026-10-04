@@ -180,7 +180,9 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
       /* 1024-1199 (FIX-b): the H1 column is 432px at 1024; the desktop tier's own floor (31px) and a
          32px gutter hold it to 3 lines without stretching the lede past 6. */
       .copy { column-gap: var(--space-6); }
-      .title { font-size: 31px; }
+      /* The H1 only: the specimen mounts this hero with an H2 (`as`), which keeps the tier's own
+         H2 size and its 28px cap (city-type-fit). */
+      h1.title { font-size: 31px; }
     }
     /* THE H1 FITS THREE LINES ON A PHONE (London previews 2026-10-04, FIX-b; the breeder's yes,
        answer board 2026-10-04 q11 (a)): the panel sits 8px in from the screen with 8px of padding
@@ -189,7 +191,7 @@ const SIZES = '(min-width: 1280px) 188px, (min-width: 1024px) calc(16.667vw - 25
     @media (width < 640px) {
       .inner { max-width: calc(100% - 2 * var(--space-2)); padding: var(--space-2); }
       .copy { padding-inline: 0; }
-      .title { font-size: 24px; }
+      h1.title { font-size: 24px; }
     }
     /* rules/design.md rule 10, "on a phone the photo also PAINTS first": the strip is first in
        source and first in the grid at every width, so there is no `order` to undo here. */
