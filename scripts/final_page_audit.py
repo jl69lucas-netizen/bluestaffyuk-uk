@@ -548,7 +548,9 @@ def audit_html(slug, html, page_type="interior"):
     alts=[i.get("alt","") for i in imgs if i.get("alt","")]
     r["img_alt_unique"]=len(alts)==len(set(alts))
     # Judged per image, skipping only the verbatim alts named in IMG_ALT_EXEMPT for this slug.
-    r["img_alt_le190"]=all(len(i.get("alt",""))<=190 for i in imgs
+    # `or ""`: Astro writes a decorative image's empty alt as a bare `alt`, which HTMLParser
+    # reports as None, and len(None) crashed the audit on London (2026-10-04).
+    r["img_alt_le190"]=all(len(i.get("alt") or "")<=190 for i in imgs
                            if (slug, i.get("src","")) not in IMG_ALT_EXEMPT)
     # LCP-hero exemption: drop the header logo(s), then the FIRST remaining content
     # image is the eager LCP hero (correct). Every image after it must be lazy.

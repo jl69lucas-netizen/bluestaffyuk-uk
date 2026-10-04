@@ -89,6 +89,22 @@ def test_a_long_alt_is_exempt_only_for_its_own_slug_and_src():
     assert A.audit_html("some-unrebuilt-interior-page", page)["img_alt_le190"] is False
 
 
+def test_a_bare_alt_is_an_empty_alt_not_a_crash():
+    """Astro writes a decorative image's empty alt as a bare `alt`, and HTMLParser hands that
+    attribute over as None. `len(None)` crashed the audit at the image-alt row, so it could not
+    judge the London page at all (visual-intelligence audit 2026-10-04, rec 9). A bare alt is
+    the empty, decorative alt: present, not long, not a duplicate."""
+    page = ('<html><body><main><h1>X</h1>'
+            '<img src="/images/a.webp" alt width="1" height="1">'
+            '<img src="/images/b.webp" alt width="1" height="1">'
+            '<img src="/images/c.webp" alt="A blue Staffy puppy" width="1" height="1">'
+            '</main></body></html>')
+    r = A.audit_html("uk-locations/blue-staffy-puppies-london", page)
+    assert r["img_all_alt"] is True
+    assert r["img_alt_le190"] is True
+    assert r["img_alt_unique"] is True
+
+
 def test_the_phone_exemption_is_conditional_on_the_stand_in():
     phone = json.loads((A.ROOT / "data/settings.json").read_text())["phone"]
     assert A.PHONE_PENDING == ("PLACEHOLDER" in phone)
