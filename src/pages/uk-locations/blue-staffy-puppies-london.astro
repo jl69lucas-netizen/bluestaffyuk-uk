@@ -118,6 +118,14 @@ const GUARANTEE_LOWER = guaranteeWords(G, 'lower');
 const REGION = settings.address.region;
 const SBT = standards.breeds['staffordshire-bull-terrier'];
 const AMS = standards.breeds['american-staffordshire-terrier'];
+// The breed-split infographic's AmStaff facts as page text too (answer board 2026-10-04 q02 a):
+// the AKC standard and its date, its colour rule, and the UK banned list, each read from
+// data/breed-standards.json (fetched 2026-10-03, with quotes), never typed.
+const BANNED = standards.uk_banned_types.value.split(', ');
+const PIT_BULL = BANNED.find((t) => t === 'Pit Bull Terrier');
+if (!PIT_BULL || BANNED.some((t) => /staffordshire/i.test(t)) || !/^Not on\b/.test(AMS.uk_legal_status.value)) {
+  throw new Error('data/breed-standards.json no longer says the Pit Bull Terrier is banned and the AmStaff is not');
+}
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 const bank = (id: string) => {
   const row = (faqBank as { id: string; q: string; a: string }[]).find((r) => r.id === id);
@@ -276,7 +284,7 @@ const faqMiddle: CityFaqRow[] = [
     a: 'A veterinary health check, first vaccinations, a microchip, worming and flea treatment, the Kennel Club paperwork and a puppy pack.',
     more: { href: '#paperwork', label: 'The paperwork, item by item' } },
   { q: 'What Makes BlueStaffyUK an Ethical Breeder for London Buyers?',
-    a: 'Every litter grows up in our home with Puppy Culture and early neurological stimulation, we name the health tests to ask about, and you can see your puppy on a video call before you pay.' },
+    a: 'Every litter grows up in our home with Puppy Culture and early neurological stimulation. We name the health tests to ask about, and you can see your puppy on a video call before you pay.' },
 ];
 const rarity = bank('breed-blue-rarity');
 const faqBottom: CityFaqRow[] = [
@@ -403,7 +411,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       { place: 'Once you choose', question: tree('deposit-viewing', 1), asset: photo('deposit-choose'),
         text: `It holds that puppy for you. Your ${DEPOSIT} deposit books your viewing in ${TOWN} and takes the puppy off our list, so nobody else can reserve it.` },
       { place: 'In order', question: tree('deposit-viewing', 2), asset: IG['deposit-steps'], wide: true,
-        text: `Four steps, in this order: a video call with the puppy and its mother, then the deposit, then your visit to us in ${TOWN}, then collection here or delivery to your London door. Nothing is paid before the first step, and each one waits until you are ready.` },
+        text: `Four steps, in this order: a video call with the puppy and its mother, then the deposit. After that comes your visit to us in ${TOWN}, then collection here or delivery to your London door. Nothing is paid before the first step, and each one waits until you are ready.` },
     ]}>
     <Fragment slot="ch-1">
       <p><a href="/uk-blue-staffy-breeders-contact/">Booking a video call with us</a> takes one message: tell us which puppy you like and when you are free.</p>
@@ -529,7 +537,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <h4>{tree('health-tests', 0, 0)}</h4>
       <p>Ask about them too. Eye screening looks for inherited eye disease a DNA test misses, and elbow screening belongs on the same list.</p>
       <h5>{tree('health-tests', 0, 0, 0)}</h5>
-      <p>A seller who names a test but shows you nothing for it. Ask which tests each parent had, and walk away from a vague reply.</p>
+      <p>A seller who will not do a video call, will not let you see the parents, wants paying before you have seen the puppy, or offers no written contract. With us, a live video call with your puppy and Maggie comes first, Maggie and Jones live with us, nothing is paid before that call, and you sign our written contract.</p>
       <h6>{tree('health-tests', 0, 0, 0, 0)}</h6>
       <p><a href="https://www.bva.co.uk/canine-health-schemes/eye-scheme/" {...EXT}>A clinical eye examination by a veterinary specialist</a> is how the BVA describes its eye scheme test, and the scheme's rules are published there.</p>
     </Fragment>
@@ -639,6 +647,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     </Fragment>
     <Fragment slot="ch-2">
       <p><a href="https://www.gov.uk/control-dog-public/banned-dogs" {...EXT}>The government's list of banned dog types</a> does not include the Staffordshire Bull Terrier.</p>
+      <p>The American Staffordshire Terrier is not on that list either. It is judged against the {AMS.standard.value}, under which {lower(AMS.colours.value)}. The {PIT_BULL} is on the list.</p>
     </Fragment>
   </CityChapters>
 
