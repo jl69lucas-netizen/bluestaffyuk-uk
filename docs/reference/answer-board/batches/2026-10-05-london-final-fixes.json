@@ -1,0 +1,171 @@
+{
+  "askedAt": "2026-10-04T23:19:39Z",
+  "id": "2026-10-05-london-final-fixes",
+  "intro": "The previews: https://claude.ai/artifact/PJqqDhC5aeCXRcSUr7kTrs. Two fixes are already in without changing anything you see: the phone infographics now hold their space before they load (they used to make the page jump by up to 1,755px), and the main keyword is out of the second Maggie photo's alt, as the image rule requires. These seven change how the page looks or reads, so each waits for you. With all seven, every answer on the page fits its height limit.",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "Recommended: (a). Why: no words change; the gaps between the tick rows shrink a little, and the answer then fits with room to spare at both widths (2,064 to 2,012px on a phone). Trade-off: the checklist looks slightly denser.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, tighten the spacing"
+        },
+        {
+          "id": "b",
+          "label": "No, leave it over the limit"
+        }
+      ],
+      "question": "\"Can I Watch the Puppy and Its Mother on a Live Video Call?\" is 34px too tall on phones and 8px on desktop. Tighten the checklist spacing?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: today it's the only answer whose photo runs full width above the text; side by side, it fits (1,872 to 1,260px). The price table rows also get a little tighter. Trade-off: the photo is smaller on desktop. Phones don't change.",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, photo beside the question"
+        },
+        {
+          "id": "b",
+          "label": "No"
+        }
+      ],
+      "question": "\"How Much Is Each Blue Staffy Puppy in This Litter?\" is 592px too tall on desktop. Put its photo beside the question, like every other answer?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: it's the only fix that works. The four groups (Royal Parks, City of London, the councils, the RCVS) become rows you tap to open, and the answer drops from 3,753 to 1,001px on a phone. Every place, rule and link stays on the page. Trade-off: a reader has to tap to see a group's places. Tightening the list without hiding it still leaves it far over (b).",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, tap-to-open rows"
+        },
+        {
+          "id": "b",
+          "label": "Tighten the spacing only (still over the limit)"
+        },
+        {
+          "id": "c",
+          "label": "Give the places list its own question heading too (a content change, and it still needs (a))"
+        }
+      ],
+      "question": "\"How Do Staffies in London Cope With Stairs, Lifts and Neighbours?\" is almost twice its limit, because it holds the list of 10 parks and places. Show each group of places as a tap-to-open row?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: the heading right above it already says the same words, so nothing is lost, and the answer fits (2,252 to 1,992px). Trade-off: it's a crop in the page's styling, so the image file still carries the band. (b) makes a clean new file through the Asset Gate instead.",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, crop the repeated title band"
+        },
+        {
+          "id": "b",
+          "label": "Make a new phone file without the band (Asset Gate)"
+        },
+        {
+          "id": "c",
+          "label": "No"
+        }
+      ],
+      "question": "\"Blue Staffordshire Bull Terrier or AmStaff\" is 222px too tall on phones, because the phone infographic repeats the question word for word in a title band at its top. Crop that band off?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: no check measured those widths, so this slipped through. At 360px they read exactly as on a phone, and every infographic answer fits at 375, 414 and 600px. Trade-off: on those screens the infographic has some bone-coloured space beside it.",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, hold them at 360px"
+        },
+        {
+          "id": "b",
+          "label": "No"
+        }
+      ],
+      "question": "On a large phone or a small tablet (431–639px wide), the phone infographics stretch to fill the width, and three answers go over the limit. Hold them at a phone size (360px) there?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Proposed line: \"Microchipped before home: with first vaccinations, worming and flea treatment, on a vet-signed health card.\" Every word comes from your answers of 4 October. Recommended: (a). Why: these are what a buyer checks first, and the final page audit fails a buying page without them up top. Trade-off: the two-column panel gets an odd fifth line, adding about 95px on a phone.",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, add the line as written"
+        },
+        {
+          "id": "b",
+          "label": "Yes, with my wording (in the text box)"
+        },
+        {
+          "id": "c",
+          "label": "No"
+        }
+      ],
+      "question": "The page doesn't mention the microchip or the vet check in its first 300 words. Add a fifth line to the trust panel at the top?",
+      "section": 1,
+      "where": ""
+    },
+    {
+      "context": "Proposed: \"A Staffy lives 12 to 14 years with good care and good genetics.\" The figure comes from Purina, the same source the health page already cites. Recommended: (a). Why: it's one of the first things a family asks, and the final audit fails a buying page without it. Trade-off: one more sentence in a long page.",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, add the sentence"
+        },
+        {
+          "id": "b",
+          "label": "Yes, with my wording (in the text box)"
+        },
+        {
+          "id": "c",
+          "label": "No"
+        }
+      ],
+      "question": "The page never says how long a Staffy lives. Add one sentence to the Everyday Health answer?",
+      "section": 1,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Answers that are too tall"
+    },
+    {
+      "lead": "",
+      "title": "Two gaps for a buyer"
+    }
+  ],
+  "status": "open",
+  "title": "London final fixes · the last seven decisions"
+}
