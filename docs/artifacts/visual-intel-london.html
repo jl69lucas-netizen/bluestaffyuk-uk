@@ -1,0 +1,564 @@
+<title>London Visual Intelligence</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* BSUK brand tokens, from src/styles/tokens.css: steel 900/700/500/300/100, brass 600/500/200, bone 100/50, ink, rule */
+:root{--ground:#F4F1EA;--paper:#FAF8F3;--ink:#1B2430;--ink-2:#46566B;--ink-3:#5E6B7A;--line:#DAD6CC;--brand:#1F3A52;--brand-soft:#E4EAF1;--brand-mid:#5B7C99;--brass:#C9A227;--brass-soft:#EFE3B4;--brass-ink:#14202B;--code-bg:#ECE8DE;--ok:#2F6B4F;--warn:#9A4A2A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#14202B;--paper:#1A2734;--ink:#EDEFF2;--ink-2:#B9C4D0;--ink-3:#8FA3B8;--line:#2B3B4C;--brand:#8FA3B8;--brand-soft:#22313F;--brand-mid:#8FA3B8;--brass:#C9A227;--brass-soft:#3A3218;--brass-ink:#14202B;--code-bg:#101922;--ok:#7FC49F;--warn:#E39B7A}}
+:root[data-theme="dark"]{--ground:#14202B;--paper:#1A2734;--ink:#EDEFF2;--ink-2:#B9C4D0;--ink-3:#8FA3B8;--line:#2B3B4C;--brand:#8FA3B8;--brand-soft:#22313F;--brand-mid:#8FA3B8;--brass:#C9A227;--brass-soft:#3A3218;--brass-ink:#14202B;--code-bg:#101922;--ok:#7FC49F;--warn:#E39B7A}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ground);color:var(--ink)}
+body{font:16px/1.6 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 16px 96px}
+@media (min-width:700px){.wrap{padding:40px 28px 96px}}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--brand);margin-bottom:10px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-mid);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(26px,4.2vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.6}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.pill.verdict{background:var(--brass-soft);border-color:var(--brass);color:var(--ink)}
+.intro{color:var(--ink-2);max-width:78ch;margin:14px 0 4px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0 22px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;border:1px solid var(--brass);background:var(--brass);color:var(--brass-ink);cursor:pointer;min-height:36px}
+button.btn.ghost{background:transparent;color:var(--brand);border-color:var(--brand-mid);padding:5px 12px}
+button:focus-visible{outline:3px solid var(--brand-mid);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 24px}
+nav.toc a{color:var(--brand);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--brand)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--brand);border-radius:8px;padding:20px 24px 24px;margin:0 0 18px;scroll-margin-top:16px;min-width:0}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 8px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md{overflow-wrap:anywhere;min-width:0}
+.md p,.md li{max-width:78ch}
+.md h3{font-family:Fraunces,Georgia,serif;font-size:18px;font-weight:600;color:var(--brand);margin:22px 0 6px}
+.tw{overflow-x:auto;max-width:100%}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 16px}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--brass);padding:6px 8px}
+.md td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.md code{font:12.5px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.md strong{color:var(--ink)}
+.md a{color:var(--brand)}
+.status{font-size:12px;color:var(--ok);margin-right:8px}
+@media (min-width:641px){.md td,.md th{overflow-wrap:normal}.md td code{overflow-wrap:anywhere}.md table{min-width:640px}}
+@media (max-width:640px){
+  header.mast{grid-template-columns:1fr}.meta{text-align:left}
+  section.sec{padding:16px 14px 18px}
+  .md table,.md thead,.md tbody,.md tr,.md td{display:block;width:100%}
+  .md thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .md tr{border:1px solid var(--line);border-radius:6px;margin:0 0 10px;padding:4px 10px;background:var(--ground)}
+  .md td{border-bottom:1px dashed var(--line);padding:6px 0}
+  .md td:last-child{border-bottom:0}
+  .md td[data-label]::before{content:attr(data-label);display:block;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK · page-run row 16 · visual intelligence</p><h1 class="title">London Visual Intelligence</h1></div>
+<div class="meta"><span class="pill">2026-10-04</span> <span class="pill verdict">PASS-WITH-WARNINGS</span><br>/uk-locations/blue-staffy-puppies-london/<br>docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md</div></header>
+<p class="intro">Visual-intelligence audit of the built page /uk-locations/blue-staffy-puppies-london/, page-run row 16, 2026-10-04, branch london-components at f64ac2b2, run by following .claude/skills/bsuk-visual-intelligence/SKILL.md with .claude/skills/bsuk-gate-integrity/SKILL.md as its background. This audit routes findings and edits nothing: no page, component, image or data file was changed. Every score carries its class (measured, derived, judgment, report, gate) and its source. Measurements were taken in headless Chromium at 375, 768 and 1280 (device scale 1) against a fresh npm run -s build.</p>
+<div class="toolbar"><button class="btn" id="copy-all" type="button">Copy the whole report as Markdown</button><span class="status" id="all-status" role="status" aria-live="polite"></span><span>Each section has its own copy button, and each copy is the exact markdown the page renders. The .md file is in the repo at docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md.</span></div>
+<nav class="toc" id="toc" aria-label="Sections"></nav>
+<main id="doc"></main>
+</div>
+<script type="text/markdown" id="doc-intro">
+Visual-intelligence audit of the built page `/uk-locations/blue-staffy-puppies-london/`, page-run row 16, 2026-10-04, branch `london-components` at `f64ac2b2`, run by following `.claude/skills/bsuk-visual-intelligence/SKILL.md` with `.claude/skills/bsuk-gate-integrity/SKILL.md` as its background. This audit routes findings and edits nothing: no page, component, image or data file was changed. Every score carries its class (measured, derived, judgment, report, gate) and its source. Measurements were taken in headless Chromium at 375, 768 and 1280 (device scale 1) against a fresh `npm run -s build`.
+</script>
+<script type="text/markdown" data-title="Executive summary">
+**Verdict: PASS-WITH-WARNINGS.** Both gates pass. Function Coverage is 9 of 9 (100%). Predicate Authorization
+has no §5b hit: the tests are named with no result, and the prices, deposit, refund clause, delivery band and
+guarantee match their data.
+
+Three rows score below 6:
+
+- **Visual Conversion, 5.0.** 5,020 words separate the hero pill from the enquiry form, and no puppy card prints the delivery line.
+- **Visual Readability, 3.3.** A paragraph at 1.5 line-height, labels marked up as paragraphs, and a 76ch note.
+- **Visual AI Readiness, 3.3.** Four AmStaff facts exist only in pixels; two lead sentences are too long.
+
+The images are the largest risk: three carry garbled AI text, one pictures a "Certificate of Health", one shows a
+liveried van with phone digits, and 13 served alts describe something the file does not show. One health-test
+answer tells buyers to walk away from a breeder in our own position.
+</script>
+<script type="text/markdown" data-title="Scorecard">
+No average is given. The verdict is set by the two gates and the measured and derived rows. Judgment rows and
+report rows are listed but never change it.
+
+| # | Score | Class | Value | Source |
+|---|---|---|---|---|
+| 1 | Visual Hierarchy | measured | **10.0** (7 of 7) | Playwright probes at 375, 768 and 1280. Hero (judged at 1280 only): H1 at 206–326px, pill at 337–385px, both inside 800px. Dominant painted block is `#top` at every width; the next block is 0.434× its size at 1280 and 0.243× at 768, with nothing competing at 375. No H2 or H3 is at or below the body size (16/17px). No section paints out of DOM order. Five tall sections each have 10–21 internal breaks. No section has more than 3 child left edges. Spacing: 0 of 94–98 section values are off the token scale. |
+| 2 | Visual Consistency | measured | **8.0** (4 of 5) | Display font: 91 of 91 headings are Fraunces. **Body font fails:** 14 `<p>` labels are set in Fraunces (`CityPlacesByPublisher.astro` `.owner-n` at line 68, `.nm` at line 85; `rules/design.md` #2 gives labels the body font). Title Case passes (harness `sem-title-case-headings`, 272 examined, 0 defects). No hex outside tokens: 0 in the page, `CityShell`, `BodyImage` and 20 city-kit files. One CTA pill style: the hero `.cta` is the only pill (50px); the form buttons use `--btn-form-radius` by token. |
+| 3 | Visual Trust | measured | **10.0** (3 of 3) | Measured at 1280. The page is 34,325px tall, so half is 17,162px. Breeder named: Lisa Bright at 334px. Review from `data/reviews.json`: Mark J (London) at 2,534px. Paperwork list: deposit-viewing, 5,750–5,862px. |
+| 4 | Visual Information Gain | judgment | 2.7 | 13 of 49 non-decorative images teach something the prose does not (the six puppies, the parents, the litter, the home set-up, two breed comparisons). §3 table. |
+| 5 | Visual Communication | judgment | 3.3 | 2 × the mean of the §3 educational value (1.55/5) and search value (1.78/5). |
+| 6 | Visual Storytelling | judgment | 6 | The page runs question → evidence → decision. But the decision point comes once, after 21 bands. Three FAQ blocks and three letters cut into the evidence, and the litter and prices are the 3rd of nine chapters. |
+| 7 | Visual Conversion | measured | **5.0** (2 of 4) | Passes: CTA visible without scrolling at 1280. **Fails:** a CTA within every 700 words (parser walk: the pill is at word 93 and the contact form at word 5,113, a gap of 5,020 words). **Fails:** the delivery band on every puppy card. Passes: one enquiry form. |
+| 8 | Visual Accessibility | measured | **7.5** (3 of 4) | **Contrast fails:** `.tk-go` "→" measures 4.39:1 at all three widths (harness `a11y-text-contrast-aa`, 1,803 examined, confirmed painted). Passes: tap targets. Passes: no skipped heading level. Passes: alts, with 0 missing and 0 duplicated of 49 named. |
+| 9 | Visual Readability | measured | **3.3** (1 of 3) | **Fails:** a `<p>` wider than 75ch at 768 (the privacy note). **Fails:** body line-height (20 of 159 `<p>` fall outside 1.6–1.7). Passes: clamp, with 0 inversions across 90 headings. |
+| 10 | Visual AI Readiness | derived | **3.3** (1 of 3) | Passes: `npm run check:schema` has 0 blocking for this route (63 pages examined; 1 advisory). **Fails:** every infographic claim also present as page text. **Fails:** `aeo_audit` reports a BLUF WARN on 2 sections. |
+| 11 | Visual Verbalization | derived | **10.0** (49 of 49) | §3 table: all eight fields are filled for every non-decorative image. |
+| 12 | Visual Differentiation | measured | **10.0** (worst pair: 3 of 3 examined) | Compared against all 27 sibling slugs in `data/locations.json`, every one the `[slug].astro` scaffold, the national page included. Prose crossover 0. Header crossover 0. Same-role image reuse 0. Refresh deltas not examined: no sibling has a board. Worst pair named: `/uk-locations/blue-staffy-puppies-uk/` (4 shared files, none in the same role). |
+| 13 | Function Density | derived | **10** | 25 functions ÷ 5.228k words = 4.78 per 1,000 words, inside the 1.5–6 band. |
+| 14 | Function Diversity | report | 1.00 | 25 of 25 taxonomy functions are present or partial. |
+| 15 | **Function Coverage** | gate | **PASS**, 9/9 (100%) | §4a location row (5) plus the every-page row (4). |
+| 16 | Predicate Diversity | report | 0.93 | 27 of 29 predicate types are present. LICENSED_BY is absent, correctly, and SUPPORTS is absent. |
+| 17 | Predicate Density | report | 28.69 per 1,000 words | 150 instances across 43 distinct claims (§5 table). |
+| 18 | **Predicate Authorization** | gate | **PASS**, 0 §5b hits | Authorization ratio 0.6: 26 of 43 claims are ASSERTED. The rest are PROPOSED; see the §5 inventory and the ledger updates. |
+
+**Verdict rule applied:** both gates pass. Three measured or derived rows score under 6: rows 7, 9 and 10.
+That makes the verdict **PASS-WITH-WARNINGS**.
+
+**Every score under 6, confirmed on the rendered page (iron rule 0b):**
+
+- **Row 7.** The pill and the form are the only CTA elements in `<main>`. Probes at all three widths found 3 elements with the CTA background colour: the pill, the newsletter button and the form submit. The six ticket cards in key-takeaways read "Roman / Boy · Blue and white / £1,500 / →", with no delivery line.
+- **Row 9.** The `.vet` paragraph ("The RCVS Find a Vet search finds registered vets…") computes a line-height of 1.5. The privacy note ("We reply by email. Your details are used only to answer your enquiry…") paints 93 characters on one line at 768, in a box 76.3ch wide.
+- **Row 10.** The AmStaff card states "Any colour, solid, parti or patched, is permissible", "approved 10 June 1936" and "the Pit Bull Terrier is". None of these strings is in the page text.
+</script>
+<script type="text/markdown" data-title="How the audit was run (§1 machine half, then probes)">
+### Machine half: every command and its own examined count
+
+| Command | Result | Examined | Reading |
+|---|---|---|---|
+| `npm run -s build` | exit 0 | 63 pages | fresh `dist/` at 00:56 |
+| `python3 scripts/page_hardening_scan.py uk-locations/blue-staffy-puppies-london` | 0 ERROR, 1 WARN | 16 source files, 1 built page | The WARN (`opacity:.85` at `src/components/SiteFooter.astro:51`) is on a footer London does not render. London renders `SiteFooterKit`. The scanner cried wolf for this page; the WARN is real on the 27 scaffold pages. |
+| `python3 scripts/final_page_audit.py uk-locations/blue-staffy-puppies-london --type location` | **crashed** | 0 | `TypeError: object of type 'NoneType' has no len()` at line 551. Astro emits a bare `alt` for decorative images, and `HTMLParser` gives `None`. The gate cannot judge this page (gate-integrity direction 2). Re-run with a one-line in-memory patch (`i.get("alt") or ""`, the file untouched): **FAIL** on `img_alt_le190` (image #45, 322-character served alt; `IMG_ALT_EXEMPT` names that file only for the breed guide), `cites_credentials_early` and `lifespan_12_14`. The phone exemption applied (Known Issue 7). |
+| `python3 scripts/aeo_audit.py uk-locations/blue-staffy-puppies-london` | 0 problems, 4 WARN | 1 page | No binomial; pronoun-heavy; BLUF on 2 sections (lead sentences of 33 and 35 words, over the 32-word bound, though both lead with the answer); no stat-bearing header |
+| `python3 scripts/evidence_audit.py uk-locations/blue-staffy-puppies-london --type location` | 10 ERROR, 5 WARN | 1 page | 5 term-budget ERRORs (city ×60 vs ceiling 8, "blue staffy" ×32 vs 10, "staffy puppies" ×22 vs 8, "staffordshire bull terrier" ×9 vs 5, "uk" ×14 vs 8). 5 un-ledgered claim lines, all of which *name* tests, as ruling q01 allows; they need ledger rows, and none states a result. |
+| `python3 scripts/dup_content_audit.py --headers` and body | FAIL, 27 headers / 135 passages | 51 pages | London has **0** crossovers with any of the 27 city siblings. Its crossovers are with `/`, the buy pages, the breeders page and the contact page: FAQ questions from the verbatim set (rule 15), one review sentence, and footer chrome. |
+| `npm run test:render:meta` | exit 0 | 547 passed, 38 skipped | The checkers are trusted for this run |
+| `npm run test:render:pages` | exit 0 | 63 runs (21 pages × 3) | London scorecard `data/quality/scorecards/uk-locations__blue-staffy-puppies-london-2026-10-04.json`: 45 checks, 20 defect rows, 321 instances |
+| `npm run -s check:schema` | exit 0 | 63 pages | 0 blocking; 1 advisory: 2 LocalBusiness nodes on London |
+| `python3 scripts/board_gate.py blue-staffy-puppies-london` | 0 FAIL, 31 WARN | 22 sections, 93 headings, 35 assets | The page has 1,904 prose words against the board's 2,663–3,254 band. The gate also says: "no other new-family board to compare, not a pass". |
+| `python3 scripts/city_must_differ.py --check` | exit 0 | 15 components, 79 rows | 0 stale |
+
+### Render-harness rows on London (2026-10-04 scorecard)
+
+| Check | Widths | Instances | Confirmed on the page? |
+|---|---|---|---|
+| `img-not-upscaled` | 768, 1280 | 11 each | Yes. Reading each served file's pixel width against its painted width: 10 files paint 1.10–1.76× natural at 1280, and 9 at 768. All are legacy served files of 400–640px. |
+| `img-face-visible` | all | 2–3 | Yes. #17 shows 57% of the face, #7/#24 82%, #12 64–82% |
+| `a11y-text-contrast-aa` | all | 6 | Yes. `.tk-go` "→" is `--color-steel-500` on white at 4.39:1. It is `aria-hidden` (a decorative glyph), but counted |
+| `css-class-resolves` | all | 2 | `astro-qdhbmj3k` ×8 and `kit-faq` ×3 match no rule |
+| `css-no-dead-component-rule` | all | 87 | Legacy `.site-header` and `.site-footer` rules (BaseLayout) ship to a page that renders the kit chrome |
+| `css-component-color-not-overridden` | all | 1 | `.foot` wants `--color-ink-2`, but `.txt p` wins and gives rgb(27, 36, 48) |
+| `dup-no-sibling-crossover` | all | 1 | 12 words shared with `/`: "what is included when i buy a blue staffy puppy from bluestaffyuk", a FAQ question |
+
+### Probes written for this audit, and the three that lied (iron rule 0c)
+
+Every probe skipped nodes with no `offsetParent`, a zero rect, or a hidden ancestor, and printed its examined count.
+Three first drafts were wrong. Each was caught, replaced, and is recorded here:
+
+1. **Dominant element.** A leaf-text probe compared the counter's `<ol>` with the hero lede `<p>` and returned 0.807 at 1280, which would be a FAIL. The screenshot shows the dark hero band dominating. The painted-block probe (an element with its own background, or media) measures `#top` against `#counter` at 0.434.
+2. **wasteRatio.** `naturalWidth` on a `srcset` image is density-corrected, so it read about 1.0 everywhere. It was replaced by reading the served file's pixel width with PIL.
+3. **Bleed.** The first probe read the chapter tray's `--color-steel-100`. The `<img>` itself paints `--color-bone-50` behind both `contain` images, so the bleed rule passes.
+</script>
+<script type="text/markdown" data-title="Visual report (§2)">
+### 2a. Visual hierarchy
+
+All seven dimensions pass (row 1).
+
+- **Hero.** The hero is a dark steel band carrying the eyebrow, the H1 and the byline on the left; the lede and the brass pill on the right; and the six-puppy filmstrip beneath. At 1280 the claim and the pill both sit above the fold. At 375 the filmstrip comes first and the pill sits at 975px, below an 812px fold. The §2a hero condition is judged at 1280 only.
+- **Tall sections.** deposit-viewing, delivery, litter-prices, health-tests and london-life each run 2.5× the median section height or more. Each is broken by its numbered chapter rows, photos and H4–H6 ladder, so none reads as an unbroken wall.
+- **Heading sizes.** H4, H5 and H6 compute 17px at 768 and 1280, the same as body text. They are set apart by weight (600) and `--color-brand`. This is outside the H2/H3 rule, but at those widths size alone does not tell a heading from body text.
+
+### 2b. Typography
+
+- Fraunces is on all 91 headings, and Source Sans 3 on every `<li>` (73) and on 145 of 159 `<p>`.
+- The 14 exceptions are place and owner names in `CityPlacesByPublisher` (`.nm`, `.owner-n`). They are display-font paragraphs, so either the markup should be a heading or the font should be `--font-body`.
+- Line-height: the RCVS line (`.vet`) is set at 1.5 and the byline (`.by`) at 1.45. Name labels are at 1.2–1.25 and captions (`.who`) at 1.4.
+- Measure: every prose `<p>` is held at 65ch, except the contact form's privacy note (`max-width: none`), which is 76.3ch wide at 768 and 1280.
+- Clamp: no heading shrinks as the viewport grows (90 headings tracked across the three widths).
+
+### 2c. Colour
+
+There is no hex outside `tokens.css` in the page or its kit. The CTA brass pill owns the primary action.
+
+The one contrast failure is the ticket-strip arrow, `--color-steel-500` on white at 4.39:1, ×6. It is an `aria-hidden` glyph inside a card whose own text carries the meaning. WCAG 1.4.3 exempts pure decoration, and 1.4.11's 3:1 would pass, but row 8 counts it, so it is routed. The `city-kit` spec reports the same pair, as noted in the frontend-design report. No palette change is recommended.
+
+### 2d. Images: the hard gates
+
+| Gate | Result | Evidence |
+|---|---|---|
+| The box (uniform 1408:768, cover, ≤760px; `tall` for a portrait) | PASS | 34 of 34 in-body images. Chapter pairs paint at 340px in the 1408:768 box. `kc-registered-staffy-puppies` takes the 4:5 box below 900px. |
+| Bleed is a design colour | PASS | `<img>` background is bone-50 behind both `contain` images (#14, #44) |
+| Not upscaled | **FAIL** | 10 served files paint 1.10–1.76× their natural width at 1280: #13, #17, #26, #29, #32, #34, #37, #41, #44, #47. Christa's sheet image is also 1.17×. |
+| `sizes` / wasteRatio ≤ 1.5 | **FAIL** (2 files) | #15 and #23 serve their smallest candidate (760w) into a 308–340px pair slot: 2.24× at 1280 and 2.47× at 768. `sizes` itself is correct. At 375 (DPR 1) 13 files read ≥1.5; on a 2× phone they are at most 1.22, which is not a finding. |
+| Rule 50b | **FAIL** | The primary keyword "blue Staffy puppies London" is in #24's alt (litter-prices), not in the hero image (#1, "Roman, a blue and white Staffy boy"). No two non-empty alts match (0 of 49). |
+| An image under every body heading | PASS | board_gate: 0 FAIL on the rule 17 image rows (35 assets examined) |
+| Repeat keeps a new alt (rule 11) | PASS | #8, #9, #24, #40 carry new alts. Their first uses keep the served alt. |
+
+**Authenticity.** 18 of 49 non-decorative images are generated scenes or graphics, not photos of our dogs:
+#14, #16, #18–21, #26, #27, #29, #32, #33, #36, #41, #43, #44, #46–48. That count includes the six London
+infographics the breeder approved at the Asset Gate.
+
+**Images that contradict or undermine the copy:**
+
+- **#32** `kc-registered-staffy-puppies.webp` pictures papers headed "Certificate of Health" and "Kennel Club Pedigree". It sits beside the DNA-test chapter, while answer board q01 says the breeder holds no test certificates.
+- **#19** `blue-staffy-puppy-delivery-uk.webp` is a generated van in BlueStaffyUK.uk livery with phone digits painted on it. The copy says DEFRA-approved transport, and the phone is `PHONE_PLACEHOLDER` everywhere else.
+- **#18**, **#26** and **#41** carry generated text that is misspelt nonsense ("Heek Approvd- Pet abation", "Cope thrques", "Miscosesptions").
+- **#26** also asserts BlueStaffyUK over "Classified Ads", a BETTER_THAN with no source.
+- **#28**'s served alt says "rated among the best Staffy breeders UK".
+
+**Served alts that describe a different picture** (13): #13, #14, #15, #17, #22, #29, #30, #31, #35, #39, #41,
+#42, #45. Rule 15 lets a migrated alt change when it states a wrong fact, recorded in `verbatim.changed`.
+
+### 2e. Runtime probes
+
+- **Horizontal overflow at 375:** none (scrollWidth 375).
+- **Tap targets:** harness `layout-tap-target-size`, 244 examined, 0 defects. My probe flagged 20×20 checkboxes and a 1×1 input. The checkboxes sit inside labels 89–134px tall, and the 1×1 input is the `tabindex="-1"` honeypot, so neither is a real target.
+- **Contents anchors:** 10 anchors, all clicked at each width. Each lands with the target at 237px (375) or 251px (768) under the sticky jump stepper, and inside 140px at 1280. `scroll-behavior: auto`. The harness `nav-jump-target-lands` examined 33 with 0 defects.
+- **Breadcrumb (chrome, all pages):** the current crumb "London" paints at 85–108px. The 44px crumb links span 85–129px with their text centred, so "London" sits about 10px high at 375 and at 1280. It comes from D3 (`7bacef15`, `d1794e82`). `nav-breadcrumb-separator-spaced` checks spacing only, so it stayed quiet.
+</script>
+<script type="text/markdown" data-title="Verbalization table (§3)">
+There are 61 `<img>` in `<main>`. 12 have a decorative bare `alt` (correct markup, not a defect) and 49 have a named alt.
+Each named image gets one row below.
+
+- **Search value** is judged against `data/queries/blue-staffy-puppies-london.json`. Its queries carry no volume (`volume: null`), so the score rates the match to a query, not the traffic.
+- **§2d /10** is a reader's judgment. It is the sum of six 0–2 marks scaled to 10: uniqueness (the file is not on a city sibling), authenticity (a photo of our dogs), usefulness, trust, conversion and AI understanding.
+- **Educational value** averages 1.55/5 and **search value** 1.78/5. The mean §2d is 5.3/10.
+
+The verbalization is the alt spec. A description better than the shipped alt is a finding for `@bsuk-image-pipeline`
+and the `image-metadata` skill. Per Rule 50b the fix uses a different keyword type, never the primary again, and a served
+alt is never replaced on its first use unless rule 15's wrong-fact exception applies.
+
+| # | Section | File | Visual description | Primary entity | Supporting entities | Relationships shown | Edu /5 | Search /5 | AI cite /5 | A11y /5 | §2d /10 (judgment) | Finding |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | top | Roman2 (Astro asset) | A blue-and-white puppy with pale blue eyes lies on grass, a white blaze down its face. | Roman (data/puppies.json; no ontology id) | ont:blue-coat, ont:staffordshire-bull-terrier | HAS (coat), SOLD_BY | 3 | 2 | 3 | 3 | 9.2 | none |
+| 2 | top | Byrd1 (Astro asset) | An all-white puppy stands on decking, head turned to the camera. | Byrd (data/puppies.json) | ont:staffordshire-bull-terrier | HAS (coat), SOLD_BY | 3 | 2 | 3 | 3 | 9.2 | none |
+| 3 | top | Ince1 (Astro asset) | A solid dark-blue puppy stands on a sunny patio by a wooden fence. | Ince (data/puppies.json) | ont:blue-coat, ont:staffordshire-bull-terrier | HAS (coat), SOLD_BY | 3 | 2 | 3 | 3 | 9.2 | none |
+| 4 | top | Vennie (Astro asset) | A white puppy with a blue patch over one side lies on a sheepskin rug. | Vennie (data/puppies.json) | ont:blue-coat, ont:staffordshire-bull-terrier | HAS (coat), SOLD_BY | 3 | 2 | 3 | 3 | 9.2 | none |
+| 5 | top | Christa (Astro asset) | A blue puppy with a small white chest mark lies on a sheepskin rug. | Christa (data/puppies.json) | ont:blue-coat, ont:staffordshire-bull-terrier | HAS (coat), SOLD_BY | 3 | 2 | 3 | 3 | 9.2 | none |
+| 6 | top | Cheryl1 (Astro asset) | A blue puppy with a white blaze lies on a wooden floor beside a soft toy. | Cheryl (data/puppies.json) | ont:blue-coat, ont:staffordshire-bull-terrier | HAS (coat), SOLD_BY | 3 | 2 | 3 | 3 | 9.2 | none |
+| 7 | trust | maggie-blue-staffy-dam-with-pups.webp | An adult blue Staffy sits open-mouthed on a grey sofa with two blue puppies beside her. | ont:maggie | ont:blue-coat, ont:staffordshire-bull-terrier, ont:lisa-bright | IS_A (dam), RAISED_BY | 3 | 2 | 3 | 3 | 7.5 | served alt states an age ('2-year-old') no data file holds; face 82% painted in the cover crop (harness img-face-visible) |
+| 8 | contents | Vennie (repeat) | The same sheepskin-rug photo of Vennie, used as a contents-index thumbnail. | Vennie (data/puppies.json) | ont:blue-coat | HAS (coat) | 1 | 1 | 2 | 4 | 5.8 | none |
+| 9 | contents | Cheryl1 (repeat) | The same wooden-floor photo of Cheryl, used as a contents-index thumbnail. | Cheryl (data/puppies.json) | ont:blue-coat | HAS (coat) | 1 | 1 | 2 | 4 | 5.8 | none |
+| 10 | key-takeaways | jones-strong-staffy-sire-temperament.webp | A young-looking dark-blue Staffy sits on carpet in front of a plaid-covered crate. | ont:jones | ont:blue-coat, ont:staffordshire-bull-terrier | IS_A (sire) | 3 | 2 | 2 | 2 | 7.5 | served alt claims '3-year-old' and 'calm strength'; neither is in a data file; upscaled 1.11x at 768 |
+| 11 | review-top | mark-blue-staffy-london.webp | Close-up of a blue puppy's face resting on a person's forearm; no face of the owner is shown. | Mark J (data/reviews.json; no ontology id) | ont:london, ont:blue-coat | DELIVERED_TO | 1 | 1 | 2 | 2 | 5.8 | none |
+| 12 | faq-top | trusted-blue-staffy-breeder-reviews-satisfied-owners.webp | A woman in a lilac shirt kneels on a kitchen floor hugging a blue puppy. | unnamed owner (no source) | ont:blue-coat | RELATED_TO | 1 | 1 | 1 | 2 | 4.2 | served alt calls it 'a genuine photo of a satisfied owner' and ties it to reviews no data file links to it; face 64-82% painted |
+| 13 | deposit-viewing | breeder-sitting-blue-staffy-puppy-home.webp | A blue puppy is held against a dark sleeve on a sofa; the holder's face is out of frame. | unnamed person | ont:blue-coat | RELATED_TO | 1 | 1 | 1 | 1 | 4.2 | alt describes a smiling breeder; no face is in frame; upscaled 1.10x at 1280 |
+| 14 | deposit-viewing | uk-blue-staffy-breeders-contact-form-support.webp | A 'Contact Us' banner with the BlueStaffyUK lockup beside a sitting blue puppy. | ont:lisa-bright (by implication) | ont:blue-coat | PROVIDES (contact) | 1 | 1 | 1 | 1 | 3.3 | alt describes a breeder assisting a family; the file is a text banner |
+| 15 | deposit-viewing | buy-blue-staffy-puppy-uk-ethical-purchase.webp | An adult blue Staffy in a collar sits on a sofa beside a black cat. | ont:staffordshire-bull-terrier | ont:blue-coat | QUALIFIES (lives with a cat) | 1 | 1 | 1 | 2 | 3.3 | alt says 'puppy'; the dog is adult; also on /uk-locations/blue-staffy-puppies-uk/; served 760w into a 340px slot (waste 2.24x) |
+| 16 | deposit-viewing | four-steps-to-buy-a-blue-staffy-puppy-infographic.webp | Four numbered cards: a video call; the £500 deposit, up to 70% refundable to a day before; the viewing in Carlisle; collection or £200-£350 delivery. | ont:refundable-deposit | ont:defra-approved-transport, ont:carlisle, ont:london | PRICED_AT, DELIVERED_TO, REQUIRES | 2 | 3 | 4 | 4 | 7.5 | every claim is also page text (lines 121, 137) |
+| 17 | delivery | ethical-staffy-puppy-london-delivery.webp | A young person in a dark top hugs a blue puppy in a garden by a wooden fence. | unnamed owner (alt says 'Mark and Emma P.') | ont:london, ont:blue-coat | DELIVERED_TO | 1 | 2 | 1 | 2 | 3.3 | alt names 'Mark and Emma P.' where the letter on this page is from 'Mark J'; face 57% painted; upscaled 1.30x; also on the national page |
+| 18 | delivery | defra-pet-transport-process.webp | A generated circular diagram around a blue Staffy, titled 'Our Trusted DEFRA-Approved Pet Transport Partners', whose step labels are misspelt nonsense ('Heek Approvd- Pet abation'). | ont:defra-approved-transport | ont:staffordshire-bull-terrier | PROVIDES (unreadable) | 0 | 1 | 0 | 1 | 1.7 | garbled generated text; the alt promises a step-by-step process no reader can read |
+| 19 | delivery | blue-staffy-puppy-delivery-uk.webp | A generated van in 'BlueStaffyUK.uk' livery with part of a phone number painted on it, its rear open on crated blue puppies. | ont:defra-approved-transport | ont:blue-coat | DELIVERED_TO, PROVIDES | 1 | 2 | 0 | 2 | 0.8 | implies a BlueStaffyUK-owned, liveried van where the copy says DEFRA-approved transport; paints phone digits although the phone is PHONE_PLACEHOLDER; also on the national page |
+| 20 | delivery | blue-staffy-puppy-preparation.webp | A woman kneels in a bright living room setting a dog bed beside a wire crate, with bowls and toys around. | ont:staffordshire-bull-terrier | ont:london | REQUIRES (home set-up) | 3 | 2 | 2 | 4 | 6.7 | generated scene |
+| 21 | delivery | blue-staffy-puppy-delivery-route-carlisle-to-london-infographic.webp | A route card from Carlisle (collection) to London (home delivery) with the £200-£350 band by DEFRA-approved transport, priced by distance. | ont:defra-approved-transport | ont:carlisle, ont:london | DELIVERED_TO, LOCATED_IN | 2 | 3 | 4 | 4 | 7.5 | every claim is also page text |
+| 22 | litter-prices | blue-staffy-puppies-uk-litter1.webp | At least six blue puppies cluster on a dark rug among toys. | ont:blue-coat | ont:staffordshire-bull-terrier, ont:lisa-bright | RAISED_BY, HAS | 2 | 2 | 2 | 2 | 6.7 | served alt says '4 blue Staffy puppies'; the photo shows more |
+| 23 | litter-prices | jones-magnificent-blue-staffy-sire.webp | A dark-blue Staffy lies on carpet before a plaid crate, a basketball in the corner. | ont:jones | ont:blue-coat, ont:staffordshire-bull-terrier | IS_A (sire) | 2 | 2 | 2 | 3 | 6.7 | same dog and room as #10; served 760w into a 340px slot (waste 2.24x); also on the Glasgow breeding-dogs page |
+| 24 | litter-prices | maggie-blue-staffy-dam-with-pups.webp (repeat) | The trust band's sofa photo of Maggie with two puppies, shown again. | ont:maggie | ont:blue-coat, ont:london | IS_A (dam), RAISED_BY | 1 | 3 | 3 | 4 | 5.8 | repeat with a new alt (correct, rule 11); this alt carries the page's primary keyword, which Rule 50b reserves for the hero image |
+| 25 | litter-prices | ince-card-800.webp | Ince, a dark-blue puppy, standing on a sunny patio. | Ince (data/puppies.json) | ont:blue-coat | HAS (coat) | 2 | 2 | 3 | 4 | 8.3 | none |
+| 26 | litter-prices | affordable-vs-premium-blue-staffy-breeders-comparison.webp | A generated two-column chart 'Comparing BlueStaffyUK vs. Classified Ads' whose bullet text is misspelt nonsense ('Cope thrques', 'Lop Risky'). | ont:lisa-bright (BlueStaffyUK) | ont:staffordshire-bull-terrier | BETTER_THAN, SCREENED_FOR | 0 | 1 | 0 | 1 | 1.7 | garbled generated text; asserts BlueStaffyUK better than classified ads with no outside source (BETTER_THAN); upscaled 1.38x |
+| 27 | litter-prices | blue-staffy-litter-prices-and-deposit-infographic.webp | Four cards: £1,500 males (Roman, Byrd, Ince), £1,700 females (Vennie, Christa, Cheryl), the £500 deposit and its refund terms, and 6 available now. | ont:refundable-deposit | ont:blue-coat, ont:staffordshire-bull-terrier | PRICED_AT, HAS | 2 | 4 | 4 | 4 | 7.5 | every claim is also page text |
+| 28 | review-middle | best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp | A dark-blue puppy held up in a person's hands against a dark background. | unnamed puppy | ont:blue-coat | BETTER_THAN (alt) | 0 | 1 | 0 | 1 | 2.5 | served alt: 'rated among the best Staffy breeders UK' is a ranking no source supports (BETTER_THAN) |
+| 29 | health-tests | find-health-certified-staffy-breeders-uk.webp | A generated scene of a vet in blue scrubs injecting a blue puppy on a clinic table. | ont:staffordshire-bull-terrier | ont:blue-coat | PROVIDES (vaccination) | 1 | 1 | 0 | 1 | 2.5 | alt describes a buyer checking a list of 'health-certified' breeders; the image is a vet injecting; upscaled 1.28x |
+| 30 | health-tests | what-health-tests-blue-staffies-need.webp | A smiling vet in navy scrubs examines a blue puppy at a desk in a clinic. | ont:staffordshire-bull-terrier | ont:blue-coat | SCREENED_FOR (implied) | 1 | 1 | 1 | 1 | 4.2 | alt describes 'a graphic illustrating various diagnostic tools'; the file is a photo |
+| 31 | health-tests | kc-registered-blue-staffy-pups-london.webp | A heap of newborn blue and black puppies asleep on a cream blanket. | ont:kc-registration-paperwork (by alt) | ont:blue-coat, ont:london | REGISTERED_WITH (alt) | 1 | 1 | 0 | 1 | 3.3 | alt describes puppies cuddling a child in a London home; neither is in the photo; asserts KC registration |
+| 32 | health-tests | kc-registered-staffy-puppies.webp | A generated blue puppy sits beside papers headed 'Kennel Club Pedigree' and 'Certificate of Health'. | ont:kc-registration-paperwork | ont:staffordshire-bull-terrier, ont:blue-coat | REGISTERED_WITH, SCREENED_FOR (pictured certificate) | 0 | 2 | 0 | 2 | 1.7 | pictures a 'Certificate of Health' beside the DNA-test chapter while the breeder holds no test certificates (answer board q01); upscaled 1.41x |
+| 33 | health-tests | staffy-health-tests-to-ask-a-breeder-infographic.webp | Six checklist questions: the two DNA tests, eye and elbow checks, the warning signs, the BVA and Kennel Club scheme rules, what registration tells you and how to check it. | ont:l-2-hga-dna-test | ont:hc-hsf4-dna-test, ont:bva-kc-eye-scheme, ont:elbow-screening, ont:the-kennel-club | SCREENED_FOR, RECOMMENDS | 2 | 3 | 4 | 4 | 7.5 | every claim is also page text (H4s, lines 258-271) |
+| 34 | paperwork | puppy-vaccinations-uk.webp | A vet nurse, back to camera, holds a blue-and-white puppy over her shoulder in a clinic. | ont:vaccination-record | ont:staffordshire-bull-terrier | PROVIDES (vaccination) | 1 | 2 | 2 | 3 | 5.0 | upscaled 1.41x at 1280 |
+| 35 | paperwork | blue-staffy-puppy-vet-check-uk.webp | A vet in blue scrubs examines a fawn-and-white puppy on a clinic table. | ont:staffordshire-bull-terrier | none in the ontology | PROVIDES (vet check) | 1 | 1 | 1 | 1 | 4.2 | alt says 'a blue Staffy puppy'; the puppy is fawn and white |
+| 36 | paperwork | blue-staffy-puppy-paperwork-folder-checklist-infographic.webp | A folder checklist: microchip and vaccinations, the written contract, what to check before signing, when to ask for the guarantee terms, and the two-year health guarantee. | ont:puppy-purchase-contract | ont:vaccination-record, ont:health-guarantee | INCLUDES, GUARANTEED_FOR | 2 | 2 | 4 | 4 | 7.5 | every claim is also page text |
+| 37 | london-life | blue-staffy-testimonial-london-happy-owner.webp | A woman in a car hugs a blue puppy wearing a teal bandana. | unnamed owner | ont:london, ont:blue-coat | RELATED_TO | 1 | 2 | 1 | 2 | 4.2 | alt calls it a testimonial; no testimonial is quoted beside it; upscaled 1.60-1.76x |
+| 38 | london-life | blue-staffy-family-dog-uk.webp | A blue Staffy in a navy harness stands on a grass field. | ont:staffordshire-bull-terrier | ont:blue-coat | QUALIFIES | 2 | 2 | 2 | 2 | 5.8 | none |
+| 39 | london-life | playful-blue-staffy-lawn-uk.webp | Two adult blue Staffies lie on a lawn, one grinning at the camera. | ont:staffordshire-bull-terrier | ont:blue-coat | QUALIFIES | 1 | 1 | 1 | 1 | 3.3 | alt describes one puppy running; the photo shows two adults lying down; also on the Glasgow breeding-dogs page |
+| 40 | newsletter | Christa (repeat) | Christa sitting up on a sheepskin rug, looking at the camera. | Christa (data/puppies.json) | ont:blue-coat | HAS (coat) | 1 | 1 | 3 | 4 | 6.7 | none |
+| 41 | temperament | busting-common-staffy-myths-loving-family-dog.webp | A generated 'Staffy Myths vs. Facts' chart with misspellings ('Miscosesptions', 'agressive') listing myths and facts. | ont:staffordshire-bull-terrier | none in the ontology | EXPLAINS, RELATED_TO | 1 | 1 | 0 | 0 | 1.7 | alt describes a dog with a child, which the file does not show; its myth and fact lines exist only as pixels; garbled spelling; upscaled 1.38x |
+| 42 | temperament | avoid-staffordshire-bull-terrier-temperament-problems-blue-staffy-puppy-socialising-with-children.webp | A black dam curled in a whelping box with newborn puppies. | ont:staffordshire-bull-terrier | none in the ontology | RAISED_BY | 1 | 1 | 0 | 1 | 3.3 | alt describes a puppy socialising with children; the photo is a whelping box |
+| 43 | temperament | 1blue-staffy-family-breeder.webp | A generated scene: parents and two children kneel on a rug stroking a blue puppy while a woman watches. | ont:staffordshire-bull-terrier | ont:blue-coat | QUALIFIES (family dog) | 1 | 2 | 1 | 4 | 3.3 | generated scene |
+| 44 | breed | staffordshire-bull-terrier-vs-american-bully-comparison.webp | Two dogs side by side on grass, labelled 'Staffordshire Bull Terrier' (blue, lighter) and 'American Bully' (fawn, heavier). | ont:staffordshire-bull-terrier | ont:blue-coat | COMPARES_WITH | 4 | 4 | 3 | 4 | 6.7 | shown whole on bone-50 (D8); upscaled 1.41x |
+| 45 | breed | sbt-history-heritage-from-pit-to-pet.webp | A single fawn bull-type dog in a chain collar stands on a white background. | ont:staffordshire-bull-terrier | none in the ontology | IS_A (implied) | 0 | 1 | 0 | 0 | 2.5 | the 322-character served alt describes a historical montage that is not in the file; final_page_audit img_alt_le190 FAIL |
+| 46 | breed | staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic.webp | Two cards: the English Staffy (RKC standard, 36-41 cm, its colours, not banned) beside the American Staffy (AKC standard of 1936, 17-19 in, any colour, not banned), and a note that the Pit Bull Terrier is on the banned list. | ont:staffordshire-bull-terrier | ont:the-kennel-club, ont:dangerous-dogs-act-1991, ont:uk-government | COMPARES_WITH, IS_A | 4 | 4 | 2 | 2 | 6.7 | four claims exist only as pixels (AmStaff colours, the AKC 1936 date, AmStaff not banned, Pit Bull Terrier banned) |
+| 47 | everyday-health | blue-staffy-health-prioritising-wellbeing.webp | A generated blue Staffy in a teal harness sits in a vet room under a baked caption 'Blue Staffy Health: Prioritising Well-being'. | ont:staffordshire-bull-terrier | ont:blue-coat | RELATED_TO | 0 | 1 | 1 | 2 | 2.5 | baked-in caption; upscaled 1.38x |
+| 48 | everyday-health | blue-staffy-vet-check.webp | A generated vet in a white coat pets a blue Staffy on an examination table. | ont:staffordshire-bull-terrier | ont:blue-coat | PROVIDES (vet care) | 1 | 2 | 1 | 4 | 3.3 | none |
+| 49 | review-bottom | victoria-family-blue-staffy-manchester.webp | A young woman with long hair cuddles a blue-and-white puppy in a pink collar outdoors. | The Victoria Family (data/reviews.json) | ont:manchester, ont:blue-coat | DELIVERED_TO | 1 | 1 | 2 | 3 | 5.8 | none |
+
+**An infographic's second duty is to carry its claims as page text.** #16, #21, #27, #33 and #36 meet it.
+#46 does not: the AmStaff colours, the AKC's 1936 date, "AmStaff not banned" and "the Pit Bull Terrier is" are pixels only.
+#41's myth and fact lines are pixels only. #18 and #26 carry no readable claim at all.
+</script>
+<script type="text/markdown" data-title="Function inventory and the required set (§4)">
+Words in `<main>` come from the §1 parser (scripts, styles and SVG stripped; FAQ answers included): **5,228**.
+
+| Function | State | Evidence (section) | Owner |
+|---|---|---|---|
+| Inform | present | london-life (park rules, flats), delivery | @bsuk-seo-content-writer |
+| Teach | present | health-tests, breed, everyday-health | @bsuk-seo-content-writer |
+| Compare | present | breed: English vs American standard, the two comparison images | @bsuk-infographic-builder |
+| Recommend | partial | 'Take it to any breeder, us included' (health-tests); no 'choose X if' line | bsuk-cta-strategy |
+| Sell | present | litter-prices roster, takeaways ticket strip | bsuk-cta-strategy |
+| Convert | present | enquiry form (#enquiry) | bsuk-contact-form |
+| Build Trust | present | trust ledger, three letters, video-call-first | @bsuk-trust-signals-agent |
+| Answer Questions | present | faq-top, faq-middle, faq-bottom (20 questions), FAQPage | bsuk-aeo-pass |
+| Handle Objections | present | deposit-before-seeing, 'Are Blue Staffies Aggressive', pit bull question | @bsuk-seo-content-writer |
+| Cross-link | present | 4 city pages, 4 money pages, guides, health, breed guide | internal-link-agent |
+| Route Users | present | /available-puppies/ (hero pill) and /uk-blue-staffy-breeders-contact/ | internal-link-agent |
+| Qualify Buyers | present | london-life (flats, time alone), faq-bottom (first-time owners) | @bsuk-seo-content-writer |
+| Present Puppies | present | hero filmstrip, ticket strip, roster table | bsuk-cta-strategy |
+| Explain Pricing | present | counter strip, litter-prices, takeaways | bsuk-cta-strategy |
+| Present Reviews | present | review-top, review-middle, review-bottom (data/reviews.json) | @bsuk-trust-signals-agent |
+| Present Paperwork | present | paperwork section, deposit-viewing checklist | @bsuk-trust-signals-agent |
+| Reduce Uncertainty | present | video call before any deposit, deposit refund clause, four steps | @bsuk-trust-signals-agent |
+| Provide CTA | present | hero pill and enquiry form only (see row 7) | bsuk-cta-strategy |
+| Generate Enquiries | present | ContactFormKit, newsletter sign-up | bsuk-contact-form |
+| Build Authority | partial | cites RKC, BVA, RSPCA, PDSA, RCVS, VetCompass; no credential of our own can be shown | @bsuk-entity-incorporation-agent |
+| Support Snippets | present | question H2/H3s with answer-first sentences, one table, 32 lists | bsuk-aeo-pass |
+| Support AI Overviews | partial | FAQPage + entities; aeo: no binomial, no stat-bearing header, pixel-only infographic claims | bsuk-aeo-pass |
+| Support Voice Search | present | question H1 and H2s answered in the first sentence ('Yes. You can ask...') | bsuk-aeo-pass |
+| Support Internal Navigation | present | contents photo index, dial, jump stepper, breadcrumb; 10 anchors all land | bsuk-page-hardening |
+| Support Decision Making | present | on-camera checklist, roster table, four steps | bsuk-cta-strategy |
+
+**Metrics:** Density 4.78 per 1,000 words (score 10). Diversity 1.00 (25 of 25 present or partial).
+Coverage **9/9 = 100%, a PASS**.
+
+| Required (§4a) | State | Evidence |
+|---|---|---|
+| Route Users to /available-puppies/ and the contact page | satisfied | hero pill -> /available-puppies/; enquiry and FAQ links -> /uk-blue-staffy-breeders-contact/ |
+| Support Voice Search | satisfied | question H1, question H2s, answer-first sentences, FAQPage |
+| The city, its region and nearby cities from data/locations.json | satisfied | London named throughout; boroughs Enfield and Sutton; 4 nearby city pages (Essex, Oxford, Coventry, Leicester), all in data/locations.json. data/locations.json has no region field; for London the city is the region (see taxonomy note) |
+| Delivery band from data/settings.json, collection in Carlisle as the alternative | satisfied | £200-£350 by DEFRA-approved transport, priced by distance, or collect in Carlisle (counter, trust, takeaways, delivery) |
+| Answer Questions: the three FAQ blocks | satisfied | faq-top (01-05), faq-middle (06-12), faq-bottom (13-20) |
+| Build Trust | satisfied | trust ledger, letters, video call |
+| Support Internal Navigation | satisfied | contents index, jump stepper, breadcrumb |
+| Provide CTA | satisfied | hero pill above the fold; enquiry form |
+| No visible date (freshness schema-only) | satisfied | harness schema-no-visible-date 3 examined, 0 defects; the one date on the page is Enfield PSPO 3's commencement (a sourced regulation, not a freshness stamp) |
+
+**Functional redundancy** (a report, not a gate). The same facts are served three or more times with nothing new:
+
+- The guarantee sentence "It covers health issues and birth defects from the day your puppy comes home. Ask us for the full terms before you pay a deposit." appears word for word in four places: trust, key-takeaways, the band under review-top, and the deposit checklist.
+- "Books your viewing and reserves your puppy, and it comes off the price" appears four times: key-takeaways, the review-top band, faq-top 03, and under the roster.
+- The video-call-before-deposit line appears eight times.
+- The price pair appears in the hero, the counter, the takeaways, faq-top 01 and litter-prices.
+
+This is the hero, takeaways and counter-strip shape §4b names.
+
+**Taxonomy note (§0f).** §4a asks for "the city, its region and its nearby cities from `data/locations.json`", but that
+file has no region field. For London the city is the region, and the page names its boroughs (Enfield, Sutton). The
+requirement is recorded as satisfied, and a proposed skill edit (below) names where a region comes from.
+</script>
+<script type="text/markdown" data-title="Predicate inventory and authorization (§5)">
+These are the distinct claims the page asserts, with the sections they sit in and how many times each appears.
+Image-only claims are counted once. Authorization follows §5a: an ASSERTED ontology entity plus, for a health or
+credential claim, a ledger proof. Anything else is PROPOSED. A ruled claim the ledger or ontology does not hold yet
+stays PROPOSED until its update lands.
+
+| Claim | Predicate | Sections | Frequency | State | Why |
+|---|---|---|---|---|---|
+| Boys £1,500, girls £1,700 | PRICED_AT | top, counter, key-takeaways, faq-top, litter-prices, enquiry | 13 | ASSERTED | equals data/price-matrix.json and every price_gbp |
+| £500 deposit, taken off the price | PRICED_AT | counter, key-takeaways, review-top, faq-top, deposit-viewing, litter-prices | 8 | ASSERTED | settings deposit_gbp; ont:refundable-deposit |
+| Deposit up to 70% refundable up to 1 day before collection or delivery | PRICED_AT | deposit-viewing | 2 | ASSERTED | equals settings deposit_refund_clause; never 'refundable' alone |
+| UK home delivery £200-£350, priced by distance, DEFRA-approved transport; or collect in Carlisle | DELIVERED_TO | counter, trust, key-takeaways, review-top, faq-top, delivery, litter-prices | 12 | ASSERTED | settings delivery_min/max_gbp; ont:defra-approved-transport |
+| Two-year health guarantee covering health issues and birth defects from the day the puppy comes home | GUARANTEED_FOR | trust, key-takeaways, review-top, deposit-viewing, faq-middle, paperwork | 7 | ASSERTED | equals guarantee_label and guarantee_cover; ont:health-guarantee |
+| BlueStaffyUK is in Carlisle, Cumbria; written by Lisa Bright, breeder | LOCATED_IN / SOLD_BY | top, delivery, faq-middle | 3 | ASSERTED | settings; ont:carlisle, ont:lisa-bright |
+| Six puppies available, three boys and three girls, with their colours | HAS | top, counter, litter-prices | 5 | ASSERTED | data/puppies.json |
+| Maggie is our dam and Jones our sire | IS_A | trust, key-takeaways, litter-prices | 3 | ASSERTED | ont:maggie, ont:jones (answer board 2026-09-27 'Which parents') |
+| Litters follow Puppy Culture and early neurological stimulation | TRAINS | faq-middle | 1 | ASSERTED | ont:puppy-culture, ont:early-neurological-stimulation (Q16) |
+| Written contract with the take-back promise | PROVIDES | deposit-viewing, paperwork | 2 | ASSERTED | ont:puppy-purchase-contract; rulings q05 and Q6 |
+| Live video call with the puppy and Maggie before any deposit | PROVIDES | top, trust, key-takeaways, deposit-viewing, faq-middle, enquiry | 8 | PROPOSED | ruled (q03, 2026-09-29); no ontology entity or ledger row yet: ledger update |
+| Every litter raised in our home, never in kennels | RAISED_BY | top, faq-middle, faq-bottom | 3 | PROPOSED | data/faq.json text; no ontology entity or ledger row |
+| Delivered before to Croydon, Edmonton and Ilford | DELIVERED_TO | delivery | 1 | PROPOSED | ruled (q09, 2026-10-03, city-places first_hand); places not in the ontology: ledger update |
+| Tests named: L-2-HGA, HC-HSF4, eye and elbow screening, no result quoted | SCREENED_FOR | trust, key-takeaways, deposit-viewing, faq-middle, health-tests | 7 | PROPOSED | ruled (q01): name only; ont entities PROPOSED; evidence_audit asks for ledger rows. Not a result, so not a §5b hit |
+| A puppy is affected only if both parents pass the gene on | CAUSES | health-tests | 1 | PROPOSED | breed genetics; ont:l-2-hga-dna-test and ont:hc-hsf4-dna-test are PROPOSED |
+| Eye screening finds inherited eye disease a DNA test misses; BVA eye scheme description | EXPLAINS | health-tests | 2 | PROPOSED | ont:bva-kc-eye-scheme PROPOSED |
+| Maggie and Jones are both registered; KC registration paperwork comes home with every puppy | REGISTERED_WITH | deposit-viewing, faq-middle, health-tests, paperwork | 4 | PROPOSED | credential claim with no ledger proof; no ruling states it (Q10 was about names). Not a licence or a number, so not a §5b hit |
+| Vet health check, first vaccinations, microchip, worming and flea treatment, on a vet-signed health card | PROVIDES | faq-middle, paperwork | 2 | PROPOSED | health claim with no ledger row (Q12/Q13 answers are not in a 'What the pages do' column) |
+| Support after collection, from us not an agency | PROVIDES | faq-middle | 1 | PROPOSED | data/faq.json; no ledger row |
+| Parents' registration numbers given on request | PROVIDES | deposit-viewing, health-tests | 2 | PROPOSED | data/faq.json whyus-paperwork; credential |
+| RSPCA advises seeing the puppy with its mother in person | RECOMMENDS | deposit-viewing | 1 | ASSERTED | ont:rspca, external link library |
+| RKC standard: colours, 36-41 cm, 'Bold, fearless and totally reliable' | COMPARES_WITH / IS_A | litter-prices, temperament, breed, faq-bottom | 6 | ASSERTED | ont:the-kennel-club, external link library |
+| AmStaff about 18-19 in (males), 17-18 in (females); AKC writes its standard | COMPARES_WITH | breed | 2 | PROPOSED | American Kennel Club and AmStaff are not in the ontology (UNKNOWN): entity add |
+| The SBT is not on the government's banned list | IS_A | breed | 1 | ASSERTED | ont:dangerous-dogs-act-1991, gov.uk in the library |
+| Blue dilutes black; a colour the RKC lists | EXPLAINS | litter-prices, breed | 2 | ASSERTED | ont:blue-coat, RKC |
+| Skin problems and allergies recorded in the breed (2020 VetCompass study) | CAUSES | everyday-health | 3 | ASSERTED | PMC7510130 in the external link library |
+| At least an hour of exercise a day | MEASURES | london-life, temperament | 2 | ASSERTED | PDSA, external link library |
+| Park dog rules (Royal Parks, City of London, Enfield, Sutton); Hampstead Heath 800 acres | REQUIRES / LOCATED_IN / PART_OF | london-life | 21 | ASSERTED | ont:royal-parks, city-of-london-corporation, enfield-council, sutton-council; data/city-places |
+| Welfare in Transport guidance PB10308 | REQUIRES | delivery | 1 | ASSERTED | ont:welfare-in-transport-pb10308 |
+| RCVS Find a Vet checks a vet is registered | EXPLAINS | london-life | 1 | ASSERTED | ont:rcvs |
+| Staffies learn quickly; short sessions; time alone built slowly | LEARNS / TRAINS | london-life, temperament, faq-bottom | 6 | ASSERTED | breed entity, neutral breed facts (no health or credential claim) |
+| Suits first-time owners with time; good house dog; good with children when socialised | QUALIFIES | london-life, faq-bottom | 5 | ASSERTED | breed entity, neutral breed facts |
+| 'Its old nickname is the nanny dog' | RELATED_TO | faq-bottom | 1 | PROPOSED | unsourced folk claim (data/faq.json); no library source |
+| A London flat suits them better than a big garden left empty all day | BETTER_THAN | london-life | 1 | PROPOSED | BETTER_THAN, always flagged: no outside source makes the comparison |
+| 'Rated among the best Staffy breeders UK' (alt, image #28) | BETTER_THAN | image only | 1 | PROPOSED | BETTER_THAN about ourselves, no source: flagged |
+| BlueStaffyUK vs Classified Ads (pixels, image #26) | BETTER_THAN | image only | 1 | PROPOSED | BETTER_THAN in pixels, no source: flagged |
+| 'Certificate of Health' pictured beside the DNA tests (image #32) | SCREENED_FOR | image only | 1 | PROPOSED | visual credential the breeder does not hold for the tests (q01); not on §5b's closed list: UNCLASSIFIED |
+| BlueStaffyUK-liveried van with phone digits (image #19) | DELIVERED_TO / PROVIDES | image only | 1 | PROPOSED | implies own transport; contradicts 'DEFRA-approved transport' wording |
+| Male or female: 'Neither is better' | COMPARES_WITH | faq-bottom | 1 | ASSERTED | a refusal to rank, not BETTER_THAN |
+| Short training sessions sort out most behaviour issues | PREVENTS | temperament | 1 | ASSERTED | neutral breed advice |
+| A vet can find the cause and treat it | CAN | everyday-health | 2 | ASSERTED | neutral advice |
+| Video call reduces the risk RSPCA guidance names | REDUCES | deposit-viewing | 1 | ASSERTED | RSPCA in the library |
+| The folder includes microchip and vaccination records, contract, guarantee terms | INCLUDES | paperwork | 1 | ASSERTED | ont:vaccination-record, ont:puppy-purchase-contract, ont:health-guarantee |
+
+**Metrics:**
+
+- Inventory: 43 claims, 150 instances.
+- Diversity 0.93 (27 of 29).
+- Density 28.69 per 1,000 words.
+- Complexity: multi-hop chains are present. Puppy —RAISED_BY→ Lisa Bright —LOCATED_IN→ Carlisle —DELIVERED_TO→ London is stated in the hero lede and again in the delivery chapter.
+- Authorization ratio 0.6 (26 of 43).
+
+### §5b: no hit
+
+- No licence, registration number or statute is asserted as held.
+- No test result, grade or "clear" appears anywhere in the text or the alts. Every test mention is "named, no result quoted", per ruling q01.
+- The guarantee cover equals `guarantee_cover`.
+- Nothing implies an unweaned, dealer-sourced or imported puppy.
+- No house method is named. Puppy Culture and ENS are third-party programmes, ruled in Q16.
+
+### §5c fact predicates
+
+- **PRICED_AT** matches the data: £1,500 and £1,700 equal `male_gbp` and `female_gbp` and every `price_gbp`. The £500 deposit equals `deposit_gbp`, and the refund clause equals `deposit_refund_clause` word for word.
+- **GUARANTEED_FOR** matches: "Two-year health guarantee" equals `guarantee_label`, with the cover as `guarantee_cover` words it.
+- **DELIVERED_TO** matches: £200–£350, DEFRA-approved transport, priced by distance, with collection in Carlisle as the alternative.
+
+### Flagged
+
+BETTER_THAN is always flagged:
+
+- "a London flat suits them better than a big garden left empty all day" (london-life)
+- #28's alt, "rated among the best Staffy breeders UK"
+- #26's "BlueStaffyUK vs. Classified Ads"
+
+### Not a §5b hit, but a trust contradiction
+
+health-tests asks "Which Health-Test Warning Signs Should Make Me Walk Away From a Seller?" and answers "A seller
+who names a test but shows you nothing for it". The page's own position (q01) is to name the tests and show no
+certificate. As written, our advice tells a London buyer to walk away from us.
+
+### UNCLASSIFIED (§0f)
+
+Image #32 pictures a "Certificate of Health" beside the DNA-test chapter. §5b's closed list covers stated results,
+not a pictured credential, so it is not counted as a hit. Proposed §5b addition: *"an image that depicts a
+certificate, credential or result the breeder does not hold"*.
+
+### Ledger and ontology updates (route to `@bsuk-entity-incorporation-agent`)
+
+**Ruled, awaiting a row:**
+
+- the video call before any deposit (q03, 2026-09-29)
+- naming the four tests (q01): the five `evidence_audit` lines
+- past deliveries to Croydon, Edmonton and Ilford (q09, 2026-10-03)
+
+**Not ruled, so to the answer board first:**
+
+- "Maggie and Jones are both registered" and KC registration paperwork with every puppy
+- the vet-signed health card
+- home-raised, never in kennels (`data/faq.json` text)
+- support after collection
+- "Mark and Emma P." in #17's alt, against the letter from "Mark J"
+
+**Entities to add:** the American Kennel Club and the American Staffordshire Terrier.
+</script>
+<script type="text/markdown" data-title="Visual differentiation (§4c)">
+**What London was compared against.** London is the only rebuilt city page. It was compared pairwise with every
+other slug in `data/locations.json`: 27 pages, all rendered by the scaffold `src/pages/uk-locations/[slug].astro`
+from migrated WordPress body HTML. That includes the national `/uk-locations/blue-staffy-puppies-uk/`, which the
+§4c cluster rule includes because it is a row in `data/locations.json`.
+
+| Check | Result across 27 pairs | Evidence |
+|---|---|---|
+| Prose crossover (`dup_content_audit.py`) | 0 on every pair | London's 5 body crossovers are all with non-city pages |
+| Header crossover (chrome excluded) | 0 on every pair | The scaffold's shared template header ("{breed} uk bluestaffyuk — carlisle, cumbria") does not occur on London |
+| Same served image in the same role | 0 on every pair | The national page shares 4 files (#7/#24, #15, #17, #19) and the Glasgow breeding-dogs page shares 4 (#7/#24, #10, #23, #39). On the scaffold they are inline WordPress body images with no section id or board shape, so no role matches. |
+| ≥ 3 refresh deltas | not examined | No sibling has a board (`data/boards/` holds no other city), so there is no pick to differ from |
+| Section-type sequence | no overlap | London has 22 kit bands; the scaffold has one body column |
+
+**Score:** every pair passes 3 of 3 examined, so all 27 tie at 10.0. The worst pair named is the national page.
+
+**Red flag acknowledged:** "every sibling scoring identically". It is explained here, not hidden: 27 unboarded
+pages from one template cannot differ from each other. This row means little until a second city is rebuilt.
+
+Other differentiation evidence:
+
+- `board_gate.py` rule 16 judged 13 records (hero and counter unique site-wide) with 0 FAIL, but it says plainly: "no other new-family board to compare, not a pass".
+- `city_must_differ.py --check` is current.
+</script>
+<script type="text/markdown" data-title="Strengths">
+- **Data integrity.** Every price, the deposit, its refund clause, the delivery band and the guarantee wording are read from data files and match on sight (§5c). There is no licence claim and no test result anywhere.
+- **The hero.** It answers its own question in the first word ("Yes."), shows all six puppies as real photos, and puts the brass pill above the fold at 768 and 1280.
+- **Trust lands early.** The breeder, a London letter from `data/reviews.json` and the paperwork list all sit in the top fifth of the page (row 3 is 10).
+- **The London infographics are clean.** The six new infographics (#16, #21, #27, #33, #36, #46) are legible on phones and, apart from #46, every one repeats its claims as text.
+- **London-specific material.** The London park rules come from the councils' own pages, grouped by who sets them. No other city page carries anything like them.
+- **Structure and chrome.** The structure is machine-friendly: 20 question headers, three FAQ blocks, FAQPage, a stacked roster table, and 10 contents anchors that all land.
+- **No token drift.** There is no horizontal overflow, no off-scale spacing value, no hex outside the tokens and no clamp inversion.
+</script>
+<script type="text/markdown" data-title="Weaknesses">
+- **Weak conversion path.** One pill at the top and the form at the very end leave a 5,020-word stretch with no CTA. No puppy card carries the delivery line (`rules/puppies.md`).
+- **A self-defeating health-test answer.** The warning-sign answer tells buyers to walk away from a breeder who names tests without showing proof, which is our own position.
+- **Image honesty.** 13 alts describe pictures that are not there. Three generated graphics carry nonsense text. One pictures a health certificate. One invents a liveried van with phone digits. One alt ranks us "among the best".
+- **Pixel-only claims.** The AmStaff card and the myths chart say things the page text does not.
+- **Legacy files painted too large.** Ten served files paint up to 1.76× their natural width.
+- **Readability details.** One prose line is at 1.5 line-height, display-font labels are marked up as paragraphs, and the privacy note runs 76ch.
+- **Repetition.** The guarantee sentence and the deposit sentence appear word for word four times each.
+- **Gate gaps.** `final_page_audit.py` cannot read this page, and no check covers crumb alignment.
+</script>
+<script type="text/markdown" data-title="Prioritised recommendations with owners">
+Under working rule 6, any visual change is previewed and approved first. Under working rule 11, a served image file is never deleted or renamed; a page simply stops using it, or a replacement is added beside it.
+
+| # | Recommendation | Owner | Why first |
+|---|---|---|---|
+| 1 | Reword the health-tests answer "A seller who names a test but shows you nothing for it" so our own advice does not disqualify us. Ask the breeder how to frame "we hold no certificates" on the answer board. | `@bsuk-seo-content-writer`; `@bsuk-entity-incorporation-agent` with the answer board | The single sentence most likely to lose a London buyer. It is a copy-only change. |
+| 2 | Take the claim-making and garbled images off this page: #32 (Certificate of Health), #19 (liveried van with phone digits), #18 (DEFRA nonsense diagram), #26 (BlueStaffyUK vs Classified Ads), #41 (Myths chart). Refill each slot from the page's or site's served images, or from an approved new image. | `@bsuk-image-pipeline`, `@bsuk-infographic-builder` (the `bsuk-infographic` skill) | Each one either contradicts a breeder ruling or shows nonsense text beside our name |
+| 3 | Correct the 13 alts that describe a different picture (#13, #14, #15, #17, #22, #29, #30, #31, #35, #39, #41, #42, #45) under rule 15's wrong-fact exception, recorded in `verbatim.changed`. Move the primary keyword to the hero image (Rule 50b), drop the BETTER_THAN alt (#28), and shorten #45's 322 characters. | `@bsuk-image-pipeline`, the `image-metadata` skill | 13 wrong alts mislead screen readers and image search, and break Rule 50b |
+| 4 | Add a mid-page CTA so no stretch runs past 700 words (for example after litter-prices, paperwork and breed). Print the canonical delivery line on the ticket-strip and contact-lineup puppy cards. | the `bsuk-cta-strategy` skill; `bsuk-component-variations` for the card | Row 7 is 5.0, and `rules/puppies.md` says never ship a card without the delivery line |
+| 5 | Put #46's four pixel-only facts into the breed section's text, or take them out of the image. Split the two 33–35-word lead sentences (four steps; ethical breeder). | `bsuk-aeo-pass`, `@bsuk-infographic-builder` | Row 10 is 3.3, and an answer engine cannot quote pixels |
+| 6 | Set `.vet` to the 1.6 line-height and give the privacy note the 65ch measure. Either make the place and owner names headings or set them in `--font-body`. | `bsuk-page-hardening` | Row 9 is 3.3 and row 2 drops a point |
+| 7 | Raise `.tk-go` from steel-500 (4.39:1) to a token that passes, or record the decorative exemption with a known-broken fixture first | `bsuk-page-hardening`; `bsuk-gate-integrity` | Row 8 |
+| 8 | Align the current breadcrumb item with the 44px crumb links (a site-wide chrome regression from D3), and add a known-broken fixture so a check catches it | `bsuk-page-hardening`; `bsuk-gate-integrity` | Visible on every PageShell page |
+| 9 | Fix `final_page_audit.py:551` for a bare `alt`, then settle #45 (a new alt, or an `IMG_ALT_EXEMPT` row for London). Decide whether `cites_credentials_early` and `lifespan_12_14` stay FAIL on a project 5 location page. | `bsuk-gate-integrity` | The final audit cannot judge this page today |
+| 10 | Add ledger and ontology rows for the ruled claims, and send the unruled ones (KC registration of the parents, the vet-signed card, home-raised, "Mark and Emma P.") to the breeder | `@bsuk-entity-incorporation-agent`, the answer board | Authorization ratio is 0.60 |
+| 11 | Add larger replacements beside the 10 upscaled legacy files, and a 400w copy beside #15 and #23 (waste 2.24–2.47×) | `@bsuk-image-pipeline` | Soft or wasteful pictures on desktop |
+| 12 | Cut the four word-for-word repeats of the guarantee and deposit sentences down to one strong home each. Settle the `evidence_audit` term budgets (London ×60 against a stub-era ceiling of 8). Source or drop "the nanny dog". | `@bsuk-seo-content-writer`, the `anti-ai-writing` skill; `bsuk-gate-integrity` for the ceiling | Redundancy and over-optimisation |
+| 13 | AEO WARNs (no binomial, no stat-bearing header) and the schema advisory (2 LocalBusiness nodes) | `bsuk-aeo-pass` | Citation shape |
+| 14 | Stop shipping legacy `.site-header` and `.site-footer` CSS to kit pages (87 dead rules). Fix the `.foot` colour lost to `.txt p`. | `bsuk-page-hardening` | Token drift and bytes |
+</script>
+<script type="text/markdown" data-title="NOT MEASURED, and proposed skill edits">
+### NOT MEASURED
+
+- **Refresh deltas (row 12, check 3).** No city sibling has a board. Not examined; the other three checks carry the row.
+- **A second rebuilt city.** NOT AVAILABLE: none exists, so differentiation against a boarded sibling cannot be measured yet.
+- **CLS and Lighthouse.** Not run, so no claim is made. Five runs of `python3 scripts/perf_audit.py` are the rule for a CLS claim.
+- **Image search volume.** NOT FETCHED: `data/queries/blue-staffy-puppies-london.json` carries `volume: null` on its questions. The §3 search value rates the match to a query, not demand.
+- **wasteRatio on a real phone.** Measured at device scale 1 only. The ≥1.5 readings at 375 are not reported as findings.
+
+### Proposed edits to `.claude/skills/bsuk-visual-intelligence/SKILL.md` (§0f: the taxonomy grows by an edit)
+
+1. **§5b.** Add "an image that depicts a certificate, credential or result the breeder does not hold" (image #32 here).
+2. **§4a location row.** `data/locations.json` has no region field. Name the source (for example `data/city-places/<slug>.json`), or accept the city as its own region.
+3. **§2d "not upscaled".** The note that `img-not-upscaled` runs only on the city kit and the canvas is out of date. The London page scorecard runs it (180 examined).
+4. **§6 row 7.** Define "puppy card": the ticket strip and the contact lineup carry a name and a price, so are they cards?
+5. **§6 row 9.** A one-line name label marked up as `<p>` counts as body text under the current definition. Either exclude labels, or keep counting them and route the markup.
+6. **§1.** Note that `final_page_audit.py` crashes on Astro's bare `alt`, so the run must check its exit and read its traceback before trusting a verdict.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var DOC_TITLE="London Visual Intelligence: /uk-locations/blue-staffy-puppies-london/";
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function flash(el,msg){el.textContent=msg;setTimeout(function(){el.textContent='';},1800);}
+  function fallback(text,el){var t=document.createElement('textarea');t.value=text;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');flash(el,'Copied');}catch(e){flash(el,'Copy failed');}document.body.removeChild(t);}
+  function copy(text,el){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){flash(el,'Copied');},function(){fallback(text,el);});}else{fallback(text,el);}}
+  function labelTables(root){
+    root.querySelectorAll('table').forEach(function(tb){
+      var heads=[].map.call(tb.querySelectorAll('thead th'),function(th){return th.textContent.trim();});
+      tb.querySelectorAll('tbody tr').forEach(function(tr){[].forEach.call(tr.children,function(td,i){if(heads[i])td.setAttribute('data-label',heads[i]);});});
+      var w=document.createElement('div');w.className='tw';tb.parentNode.insertBefore(w,tb);w.appendChild(tb);
+    });
+  }
+  var intro=document.getElementById('doc-intro').textContent.replace(/^\n+|\s+$/g,'');
+  document.querySelectorAll('script[type="text/markdown"][data-title]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    var full='## '+title+'\n\n'+md;all.push(full);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;sec.setAttribute('aria-labelledby',id+'-h');
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.id=id+'-h';h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.className='status';st.setAttribute('aria-live','polite');
+    var btn=document.createElement('button');btn.className='btn ghost';btn.type='button';btn.textContent='Copy section';btn.setAttribute('aria-label','Copy section: '+title);
+    btn.addEventListener('click',function(){copy(full,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';
+    if(window.marked){body.innerHTML=marked.parse(md);}else{var pre=document.createElement('pre');pre.textContent=md;pre.style.whiteSpace='pre-wrap';body.appendChild(pre);}
+    labelTables(body);sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  var whole='# '+DOC_TITLE+'\n\n'+intro+'\n\n'+all.join('\n\n')+'\n';
+  document.getElementById('copy-all').addEventListener('click',function(){copy(whole,document.getElementById('all-status'));});
+})();
+</script>
