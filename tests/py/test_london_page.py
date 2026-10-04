@@ -256,15 +256,29 @@ def test_the_byline_sits_under_the_h1_and_claims_no_read_the_record_lacks():
 
 
 def test_the_ticket_strip_follows_the_takeaways_one_ticket_per_puppy():
+    """The puppy cards, CARD-3 "the steel pass" (answer board 2026-10-04 q08 (c)): their own band
+    straight after the takeaways section, not inside it; one card per available puppy, its name the
+    one link to its own page, with the price, the breeder's approved line (q07 (a)), the trust
+    signs and the guarantee label from data/settings.json, and the delivery band."""
+    from_settings = SETTINGS["puppy_trust_signs"] + [SETTINGS["guarantee_label"]]
     sec = labelled_sections(built())["key-takeaways"]
-    strip = sec[sec.index("data-ticket-strip"):]
     assert sec.index("data-takeaway") < sec.index("data-ticket-strip")
-    tickets = re.findall(r'<a class="tk"[^>]*href="/available-puppies/([a-z-]+)/"[^>]*>(.*?)</a>', strip, re.S)
-    assert [s for s, _ in tickets] == [p["slug"] for p in PUPPIES]
-    for (_, body), p in zip(tickets, PUPPIES):
+    ledger_end = sec.index("data-ticket-strip")
+    assert "</section>" in sec[:ledger_end], "the strip is its own band, after the takeaways section closes"
+    strip = sec[ledger_end:]
+    cards = re.findall(r'<article class="pc"[^>]*data-ticket="([a-z-]+)"[^>]*>(.*?)</article>', strip, re.S)
+    assert [s for s, _ in cards] == [p["slug"] for p in PUPPIES]
+    for (slug, body), p in zip(cards, PUPPIES):
+        links = re.findall(r'<a\b[^>]*href="([^"]+)"', body)
+        assert links == [f"/available-puppies/{slug}/"], links
         words = text(body)
         assert words.startswith(p["name"]) and p["colour"] in words and f"£{p['price_gbp']:,}" in words, words
-    assert "<img" not in strip.split("</ul>", 1)[0] and not re.search(r"<h[1-6]", strip.split("</ul>", 1)[0])
+        assert p["personality"] in H.unescape(words).replace("’", "'"), words
+        for sign in from_settings:
+            assert sign in words, (slug, sign)
+        assert f"£{SETTINGS['delivery_min_gbp']}–£{SETTINGS['delivery_max_gbp']}" in words and SETTINGS["address"]["city"] in words
+    body = strip.split('class="kit-divider', 1)[0]
+    assert "<img" not in body and not re.search(r"<h[1-6]", body)
 
 
 def test_the_call_checklist_is_eight_native_checkboxes_under_the_h5():

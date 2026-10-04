@@ -124,7 +124,8 @@ def test_london_records_the_four_pieces_in_their_picked_styles(london):
            for p in london["subcomponents"]}
     assert got == {
         "byline": ("top", "A", "Signed rule", f"{SRC} q01"),
-        "puppy-strip": ("key-takeaways", "A", "Ticket strip", f"{SRC} q02"),
+        # restyled as CARD-3, the steel pass (answer board 2026-10-04 q08 (c)); first picked q02
+        "puppy-strip": ("key-takeaways", "C", "The steel pass", f"{SRC} q02"),
         "video-call-checklist": ("deposit-viewing", "B", "Look and listen", f"{SRC} q03"),
         "london-places": ("london-life", "C", "Grouped by who sets the rules", f"{SRC} q04"),
     }

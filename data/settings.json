@@ -28,6 +28,8 @@
   "guarantee_source": "the breeder's answer, answer board q07, 2026-09-29",
   "guarantee_cover": "covers health issues and birth defects for two years from the day your puppy comes home",
   "guarantee_cover_source": "the breeder's answer, answer board q02, 2026-09-29: 'Against any heaalth issues and birth defects within two years of ownershipping', spelling corrected, and 'within two years of ownership' read as starting the day the owner takes the puppy. A clause, not a sentence: a page adds it only where a guarantee sentence already carries it, read through src/lib/site.ts guaranteeCover() or src/lib/cityKit.ts guaranteeRow().",
+  "puppy_trust_signs": ["Vet-signed health card", "First vaccinations", "Microchipped", "Wormed and flea treated", "KC registration application form", "Raised in our home", "Support after collection"],
+  "puppy_trust_signs_source": "the brief of 2026-10-04 for the London puppy cards (CARD-3, the steel pass, picked by the breeder, answer board 2026-10-04 q08 (c), docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md). Each sign restates what the London page already says every puppy has (a vet-signed health card, first vaccinations, a microchip, worming and flea treatment, the Kennel Club registration application form, a home-raised litter, support after collection). The guarantee is never typed here: a card appends guarantee_label at render time.",
   "age_weeks": 10,
   "age_weeks_note": "The litter's age as the breeder gave it (answer board q08, 2026-09-29): a page states it as '10 weeks old' from age_weeks, and no date of birth is known, so none is stated. An age goes stale; confirm it before a page prints it.",
   "socials": {

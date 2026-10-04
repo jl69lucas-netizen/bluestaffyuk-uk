@@ -24,5 +24,10 @@
   {"fg": "--color-focus",            "bg": "--color-surface",         "size": "nontext"},
   {"fg": "--color-focus",            "bg": "--color-surface-raised",  "size": "nontext"},
   {"fg": "--color-focus-on-inverse", "bg": "--color-surface-inverse", "size": "nontext"},
-  {"fg": "--color-focus-on-inverse", "bg": "--color-surface-deep",    "size": "nontext"}
+  {"fg": "--color-focus-on-inverse", "bg": "--color-surface-deep",    "size": "nontext"},
+
+  {"fg": "--color-ink-2",            "bg": "--color-bone-50",         "size": "normal"},
+  {"fg": "--color-brand",            "bg": "--color-bone-50",         "size": "normal"},
+  {"fg": "--color-text",             "bg": "--color-bone-50",         "size": "normal"},
+  {"fg": "--color-ok",               "bg": "--color-bone-50",         "size": "nontext"}
 ]

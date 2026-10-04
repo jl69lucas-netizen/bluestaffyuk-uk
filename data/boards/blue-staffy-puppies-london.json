@@ -3248,7 +3248,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "3338529cb0b199ccee0938f266138d3e20acd835a2f8cbe42add6308731d381b",
+    "record_hash": "a8d25e44a1b7a5c8ba889e243063870f4142ceb4a2a9fa2956d7b96060f0cde6",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3268,7 +3268,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-04T21:31:27Z",
+    "reapproved_at": "2026-10-04T21:50:27Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3323,6 +3323,32 @@
           "/sections/16/images/0/file",
           "/sections/16/images/0/prompt"
         ]
+      },
+      {
+        "at": "2026-10-04T21:50:27Z",
+        "reason": "The breeder's picks on the London previews, answer board 2026-10-04 q07 (a), q08 (c), q09 (a), q10 (a), q11 (a) (docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md): the puppy strip is restyled as CARD-3, the steel pass, and moved into its own band straight after the takeaways (subcomponents[puppy-strip] style, name, placement, data, note); the 2026-10-04 decisions q01-q11 are logged in board_revisions. No section, pick, menu or figure moved; the strip's source (q02, where it was first picked) is kept.",
+        "changed_paths": [
+          "/board_revisions/11",
+          "/board_revisions/12",
+          "/board_revisions/13",
+          "/board_revisions/14",
+          "/board_revisions/15",
+          "/board_revisions/16",
+          "/board_revisions/17",
+          "/board_revisions/18",
+          "/board_revisions/19",
+          "/board_revisions/20",
+          "/board_revisions/21",
+          "/subcomponents/1/data/0",
+          "/subcomponents/1/data/1",
+          "/subcomponents/1/data/2",
+          "/subcomponents/1/name",
+          "/subcomponents/1/note",
+          "/subcomponents/1/placement",
+          "/subcomponents/1/style/name",
+          "/subcomponents/1/style/pick",
+          "/subcomponents/1/style/preview"
+        ]
       }
     ]
   },
@@ -3351,16 +3377,18 @@
     {
       "id": "puppy-strip",
       "section": "key-takeaways",
-      "name": "Puppy strip",
-      "placement": "straight after the city-takeaways-ledger rows, in the content column beside the page dial; no new heading, so the outline is unchanged",
+      "name": "Puppy cards",
+      "placement": "its own band straight after the city-takeaways-ledger section (key-takeaways), before the first letter (review-top); no heading, no data-section-label and no divider of its own, so the outline, the nav set and seams = sections are unchanged",
       "style": {
-        "pick": "A",
-        "name": "Ticket strip",
-        "preview": "docs/artifacts/london-board-revision-preview.html (https://claude.ai/artifact/1NCaKipdpYadM1zUyUV1Jn)"
+        "pick": "C",
+        "name": "The steel pass",
+        "preview": "docs/reports/london-previews-2026-10-04/index.html (diff: docs/reports/london-previews-2026-10-04/diffs.md CARD-3)"
       },
       "source": "answer board 2026-10-03-london-board-revision q02",
       "data": [
-        "data/puppies.json name, sex, colour, price_gbp (price interpolated at build, never typed)"
+        "data/puppies.json name, sex, colour, price_gbp (price interpolated at build, never typed), personality (the breeder's approved lines, answer board 2026-10-04-london-asset-gate-and-previews q07)",
+        "data/settings.json puppy_trust_signs, then guarantee_label appended at render (never typed)",
+        "src/lib/cityKit.ts deliveryLine (data/settings.json delivery_min_gbp, delivery_max_gbp, address.city)"
       ],
       "links": [
         "/available-puppies/roman/",
@@ -3370,7 +3398,7 @@
         "/available-puppies/christa/",
         "/available-puppies/cheryl/"
       ],
-      "note": "Six tickets (Roman, Byrd, Ince, Vennie, Christa, Cheryl), no photo: the hero filmstrip already shows the six faces one screen up (working rule 11)."
+      "note": "Six tickets (Roman, Byrd, Ince, Vennie, Christa, Cheryl), no photo: the hero filmstrip already shows the six faces one screen up (working rule 11). Restyled 2026-10-04 by the breeder's pick, answer board 2026-10-04-london-asset-gate-and-previews q08 (c), CARD-3 'the steel pass' (docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md): one card per puppy on a steel panel, the name the card's one link (stretched over the card), the price as a brass chip, her personality line, the trust signs and the guarantee label, and the delivery band on a steel-100 stub; moved out of the takeaways ledger into its own band (mounted inside, every style pushed the takeaways past its height gate). Still no photo."
     },
     {
       "id": "video-call-checklist",
@@ -3612,6 +3640,111 @@
         "london-life"
       ],
       "record_change": "data/city-places/blue-staffy-puppies-london.json first_hand[3]; the vet breeder question marked answered; the page links the RCVS Find a Vet search only"
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q01",
+      "decision": "Asset Gate A1 (the 'Certificate of Health' AI image under 'How Do I Check a Registration Myself?'): A1-2, three collared pups on a sofa.",
+      "record_change": "approval.picks img:health-kc-check; assets[health-kc-check]; verbatim.changed (alt)",
+      "sections": [
+        "health-tests"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q02",
+      "decision": "Asset Gate A2 (the liveried van under 'Is the Transport DEFRA-Approved?'): A2-1, two pups asleep in a crate bed.",
+      "record_change": "approval.picks img:delivery-defra; assets[delivery-defra]",
+      "sections": [
+        "delivery"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q03",
+      "decision": "Asset Gate A3 (the 'DEFRA transport partners' diagram): A3-2, three pups in a bed beside bowls and toys.",
+      "record_change": "approval.picks img:delivery-cost; assets[delivery-cost]",
+      "sections": [
+        "delivery"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q04",
+      "decision": "Asset Gate A4 (the 'vs Classified Ads' chart): A4-2, young pups exploring their whelping pen.",
+      "record_change": "approval.picks img:litter-counter; assets[litter-counter]; verbatim.changed (alt)",
+      "sections": [
+        "litter-prices"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q05",
+      "decision": "Asset Gate A5 (the 'Myths vs Facts' chart): A5-1, a pup on a lap, being stroked.",
+      "record_change": "approval.picks img:temperament-h2; assets[temperament-h2]; verbatim.changed (alt)",
+      "sections": [
+        "temperament"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q06",
+      "decision": "The breeder's own photo goes in the deposit and viewing chapter, in place of the photo with no face; served as a new copy, /images/lisa-bright-blue-staffy-breeder-carlisle.webp, its alt naming Lisa Bright.",
+      "record_change": "approval.picks img:deposit-h2; assets[deposit-h2]; public/images/lisa-bright-blue-staffy-breeder-carlisle.webp (+ -760, -400, -240)",
+      "sections": [
+        "deposit-viewing"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q07",
+      "decision": "The six puppy personality lines approved as written.",
+      "record_change": "data/puppies.json personality (one per puppy; tests/py/test_data_files.py pins them)"
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q08",
+      "decision": "Puppy card design: CARD-3, the steel pass, in its own band after the takeaways.",
+      "record_change": "subcomponents[puppy-strip] style C, placement, data, note; data/settings.json puppy_trust_signs",
+      "sections": [
+        "key-takeaways"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q09",
+      "decision": "Mid-page call to action: CTA-1, the four existing #enquiry sentences become brass pills; no new words or links.",
+      "record_change": "none: styling of the approved closing sentences (src/components/kit/CityChapters.astro .close)",
+      "sections": [
+        "deposit-viewing",
+        "litter-prices",
+        "paperwork",
+        "temperament"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q10",
+      "decision": "Height is judged per H3 answer (and per puppy card), not per chapter.",
+      "record_change": "none: the city type-fit gate (tests/render/lib/cityTypeFit.ts)"
+    },
+    {
+      "date": "2026-10-04",
+      "source": "answer board 2026-10-04-london-asset-gate-and-previews q11",
+      "decision": "Apply FIX-a (tablet 7:5 chapter columns and photo sizes), FIX-b (H1 at 375 and 1024-1199) and FIX-c (hero strip thumbs 128px from 1200px).",
+      "record_change": "none: component CSS (CityChapters, CityHeroFilmstrip)",
+      "sections": [
+        "top",
+        "deposit-viewing",
+        "delivery",
+        "litter-prices",
+        "health-tests",
+        "paperwork",
+        "london-life",
+        "temperament",
+        "breed",
+        "everyday-health"
+      ]
     }
   ]
 }

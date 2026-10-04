@@ -388,9 +388,10 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     heading={H2('key-takeaways')}
     lede={`${cap(numberWord(takeaways.length))} short answers for anyone reading from London.`}
     photo="jones-strong-staffy-sire-temperament.webp" caption={`Jones, our sire, at home in ${TOWN}`}
-    rows={takeaways}>
-    <CityTicketStrip />
-  </CityTakeawaysLedger>
+    rows={takeaways} />
+  {/* The puppy cards, CARD-3 "the steel pass" (answer board 2026-10-04 q08 c): their own band
+      straight after the takeaways, no heading and no divider of their own (seams = sections). */}
+  <CityTicketStrip />
 
   <SectionDivider />
   <CityLetter id="review-top" data-section-label={H2('review-top')}
