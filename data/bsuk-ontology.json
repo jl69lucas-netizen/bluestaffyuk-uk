@@ -712,6 +712,68 @@
       "authorization": "ASSERTED",
       "source": "docs/reference/external-link-library.md",
       "owner_page": null
+    },
+    {
+      "id": "ont:croydon",
+      "name": "Croydon",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/city-places/blue-staffy-puppies-london.json",
+      "owner_page": null
+    },
+    {
+      "id": "ont:edmonton",
+      "name": "Edmonton",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/city-places/blue-staffy-puppies-london.json",
+      "owner_page": null
+    },
+    {
+      "id": "ont:ilford",
+      "name": "Ilford",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/city-places/blue-staffy-puppies-london.json",
+      "owner_page": null
+    },
+    {
+      "id": "ont:american-kennel-club",
+      "name": "American Kennel Club",
+      "aliases": [
+        "AKC"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "data/breed-standards.json",
+      "owner_page": null
+    },
+    {
+      "id": "ont:american-staffordshire-terrier",
+      "name": "American Staffordshire Terrier",
+      "aliases": [
+        "AmStaff",
+        "American Staffy"
+      ],
+      "class": "Organism",
+      "authorization": "ASSERTED",
+      "source": "data/breed-standards.json",
+      "owner_page": null
+    },
+    {
+      "id": "ont:video-call-before-deposit",
+      "name": "Live video call with the puppy and its mother before any deposit",
+      "aliases": [
+        "video call",
+        "live video call"
+      ],
+      "class": "Commerce",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md",
+      "owner_page": null
     }
   ]
 }
