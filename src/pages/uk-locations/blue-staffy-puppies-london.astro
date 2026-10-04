@@ -214,7 +214,7 @@ const callChecklist: CheckPane[] = [
     { label: 'Maggie, with the litter', detail: 'Ask us to turn the camera to Maggie, our dam, with her puppies.' },
     { label: "Your puppy's own markings",
       detail: `See your puppy up close and match its coat to the colour on its listing. ${blaze.name}, for one, is listed as ${blaze.colour.toLowerCase()}.` },
-    { label: 'The paperwork', detail: 'The Kennel Club registration paperwork, the vaccination records and the microchipping details.' },
+    { label: 'The paperwork', detail: 'The Kennel Club registration application form, the vaccination records and the microchipping details.' },
     { label: 'The written contract', detail: 'Our puppy purchase contract, with the take-back promise written into it.' },
   ] },
   { title: 'Ask to hear, out loud', hint: 'Tick each one as we answer it', icon: 'listen', items: [
@@ -286,7 +286,7 @@ const faqMiddle: CityFaqRow[] = [
   { q: 'Do You Offer Health Guarantees for Your Blue Staffy Puppies?',
     a: `Yes. Every puppy leaves with our written ${GUARANTEE_PHRASE} and we ask you to read the full terms before you pay a deposit.` },
   { q: 'What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK?',
-    a: 'A veterinary health check, first vaccinations, a microchip, worming and flea treatment, the Kennel Club paperwork and a puppy pack.',
+    a: 'A veterinary health check, first vaccinations, a microchip, worming and flea treatment, the Kennel Club registration application form so you can register your puppy yourself, and a puppy pack.',
     more: { href: '#paperwork', label: 'The paperwork, item by item' } },
   { q: 'What Makes BlueStaffyUK an Ethical Breeder for London Buyers?',
     a: 'Every litter grows up in our home with Puppy Culture and early neurological stimulation. We name the health tests to ask about, and you can see your puppy on a video call before you pay.' },
@@ -534,7 +534,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       { place: 'DNA tests', question: tree('health-tests', 0), asset: photo('health-tests-h3'),
         text: 'DNA tests for two inherited conditions: L-2-HGA, a neurological disorder, and HC-HSF4, an inherited cataract. A puppy is affected only if both parents pass the gene on.' },
       { place: 'Registration', question: tree('health-tests', 1), asset: photo('health-kc'),
-        text: 'Who the parents are, on the record. Registration paperwork comes home with every puppy, and Maggie and Jones are both registered.' },
+        text: 'Who the parents are, on the record. Maggie and Jones are both Kennel Club registered, and every puppy comes home with its Kennel Club registration application form so you can register it yourself.' },
       { place: 'Your checklist', question: tree('health-tests', 2), asset: IG['health-tests-checklist'], wide: true,
         text: 'Six things, one per line: the two DNA tests, eye and elbow checks, the warning signs, where the scheme rules live, what registration tells you and how to check it. Take it to any breeder, us included.' },
     ]}>
@@ -562,10 +562,10 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <CityChapters id="paperwork" data-section-label={H2('paperwork')}
     heading={H2('paperwork')}
     image={photo('paperwork-h2')}
-    lede="Kennel Club registration paperwork, the vaccination records, the microchip details and a written contract. They travel with your puppy on the day, whether you collect or we deliver."
+    lede="The Kennel Club registration application form, so you can register your puppy yourself, the vaccination records, the microchip details and a written contract. They travel with your puppy on the day, whether you collect or we deliver."
     chapters={[
       { place: 'Before it leaves', question: tree('paperwork', 0), asset: photo('paperwork-h3'),
-        text: 'Yes. Every puppy has a veterinary health check, its first vaccination, a microchip, and worming and flea treatment before it leaves, all on a vet-signed health card.' },
+        text: 'Yes. Every puppy has a veterinary health check, its first vaccinations, a microchip, and worming and flea treatment before it leaves, all on a vet-signed health card.' },
       { place: 'The folder', question: tree('paperwork', 1), asset: IG['paperwork-checklist'], wide: true,
         text: `The papers above, kept together: the microchip and vaccination records, the written contract and what to check in it, and the terms of our ${GUARANTEE_LOWER}. Keep the folder safe for your puppy's first vet visit.` },
     ]}>

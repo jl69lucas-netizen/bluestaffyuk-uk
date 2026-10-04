@@ -774,6 +774,53 @@
       "authorization": "ASSERTED",
       "source": "docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md",
       "owner_page": null
+    },
+    {
+      "id": "ont:kc-registration-application-form",
+      "name": "Kennel Club registration application form",
+      "aliases": [
+        "KC Reg application form",
+        "KC registration application form"
+      ],
+      "class": "Documentation",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:vet-signed-health-card",
+      "name": "Vet-signed health card",
+      "aliases": [
+        "health card"
+      ],
+      "class": "Documentation",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:home-raised-litter",
+      "name": "Litters raised in our home, never in kennels",
+      "aliases": [
+        "home-raised",
+        "never in kennels"
+      ],
+      "class": "Method",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:after-collection-support",
+      "name": "Support from the breeder after collection",
+      "aliases": [
+        "after-collection support",
+        "support buyers yourself after collection"
+      ],
+      "class": "Commerce",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md",
+      "owner_page": null
     }
   ]
 }
