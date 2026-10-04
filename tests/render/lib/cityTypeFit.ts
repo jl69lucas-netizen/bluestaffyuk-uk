@@ -28,6 +28,10 @@
  *      section with no painted answer, or a card band with no painted card, is judged whole, as
  *      every other section is. A city component nested inside another (the places list inside an
  *      answer) is no section: its height counts toward the answer that holds it.
+ *   4b. no laid-out image holds a 0px box while its file is pending: such a section measures
+ *      short before the file arrives and long after, so its height cannot be judged and the
+ *      image is reported instead (London final fixes, 2026-10-04: the six phone infographics;
+ *      fixture type-fit-broken.html `city-answer-unreserved`).
  * A heading's tier is its section's: the content box of its `.city-kit` root, against the edges
  * the caller passes (tests/render/lib/cityTiers.ts, read from src/lib/cityKit.ts TIER: phone
  * below 640px, tablet from 640, desktop from 800 — the edges src/styles/city.css switches type
@@ -127,6 +131,24 @@ export function cityTypeFit({ viewport, tier: edges, caps: CAP, fullWidthSpecime
       const n = lines(p);
       const max = viewport >= 1024 ? 6 : 8;
       if (n > max) defects.push(`${where}: a paragraph "${name(p)}" runs ${n} lines (${max} max at ${viewport}px)`);
+    }
+    // 4b. AN IMAGE WITH NO BOX UNTIL IT LOADS MAKES EVERY HEIGHT HERE A GUESS (London final fixes,
+    // 2026-10-04): London's six phone infographics sat at 0px until their lazy files arrived, so
+    // an answer measured 1,755px short unless an earlier probe had happened to scroll it into
+    // loading — a pass that depended on scroll order. Such an image is reported, never measured
+    // around. Each image is judged by the innermost city root that holds it, so a nested
+    // component's picture is reported once. Width but no height, laid out (an `offsetParent`),
+    // and no decoded file: a laid-out image whose file is pending yet whose box is reserved has
+    // its height already, and passes.
+    for (const img of Array.from(root.querySelectorAll('img'))) {
+      if (img.parentElement?.closest('.city-kit') !== root) continue;
+      const r = img.getBoundingClientRect();
+      if (r.width === 0 || r.height > 0 || img.offsetParent === null) continue;
+      if (img.complete && img.naturalWidth > 0) continue;
+      // Before a file is chosen `currentSrc` is empty, so a `<picture>` is named by its fallback.
+      const file = (img.currentSrc || img.getAttribute('src') || '').split('/').pop();
+      const pic = img.parentElement?.tagName === 'PICTURE' ? ' (in a <picture>)' : '';
+      defects.push(`${where}: an image "${file}"${pic} holds no box until it loads (0px tall), so the height judged here is not the height a reader gets`);
     }
     const tall = viewport < 768 ? 2.5 : viewport >= 1280 ? 1.6 : Infinity;
     const sheetFullWidth = fullWidthSpecimen && root.matches('.city-sheet');

@@ -249,9 +249,15 @@
   }
   /* An infographic with an art-directed phone file (BodyImage `phone`, a `<picture>` whose
      source below 640px is the tall `-760` layout): on a phone the box takes that file's own
-     ratio, from the source's width and height, so the stacked layout is never cropped. */
+     ratio, from the source's width and height, so the stacked layout is never cropped.
+     `revert-layer`, NOT `auto` (London final fixes, 2026-10-04): the source's width and height
+     reach the img as a presentational `aspect-ratio: auto <w> / <h>`, and an author `auto`
+     cancels it as surely as the 16:9 box does, so the box was 0px tall until the lazy file
+     arrived and then grew by up to 1,755px. Rolling back this layer's value leaves that hint,
+     so the box is the file's own size before it loads (tests/render/city-kit.spec.ts, "every
+     phone infographic reserves its own box"). */
   @media (max-width: 639px) {
-    .bl-img.sec-img.art-phone { aspect-ratio: auto; object-fit: contain; }
+    .bl-img.sec-img.art-phone { aspect-ratio: revert-layer; object-fit: contain; }
   }
 
   /* THE HERO'S OWN PHOTO. The kit Hero is a two-column grid whose photo is first in source

@@ -583,6 +583,9 @@ for (const kind of ['broken', 'good'] as const) {
         // Answer board q06 (2026-09-29): a layout column that stacks the H2 to three lines is a
         // defect too; the takeaways' 5fr head column is no longer excused.
         ['heading column', /^city-narrow-column .*H2 .*wraps to 3 lines.*heading column too narrow for its box/],
+        // London final fixes (2026-10-04): an image with no box until its file loads leaves the
+        // height it sits in unmeasurable, at every width; the check reports it.
+        ['unreserved image', /^city-chapters .*an image "pending-phone-infographic\.webp" holds no box until it loads/],
       ];
       // Section height is judged at a phone width and from 1280 only (the ruling's two caps).
       if (viewport < 768 || viewport >= 1280) kinds.push(['section height', /the section is \d+px tall/]);
@@ -782,4 +785,32 @@ test('the city-chapters probe takes a picture wrapping a .bl-img and still fails
   const r = await page.evaluate(cityChapterImageFirst);
   expect(r.examined).toBe(4);
   expect(r.bad).toEqual(['Prose First', 'Bare Picture']);
+});
+
+// A PHONE INFOGRAPHIC RESERVES ITS BOX BEFORE IT LOADS (London final fixes, 2026-10-04). Below
+// 640px an art-directed infographic paints its `<source>`'s tall phone file (BodyImage `phone`),
+// and src/styles/board-styles.css set `aspect-ratio: auto` on it so the box would take that file's
+// ratio. An author `auto` also cancels the ratio the source's width and height attributes give
+// the img, so until the lazy file arrived the box was 0px tall, and it then grew by up to 1,755px
+// (the AmStaff standards chart at 375): a layout shift under the reader, and an answer whose
+// measured height depended on whether an earlier probe had scrolled it into loading. The files are
+// held unloaded here, so the box the page reserves is all there is to measure.
+test('every phone infographic reserves its own box before its file loads', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp375', 'the phone layout paints below 640px');
+  await page.route('**/*-phone.webp', () => { /* never fulfilled: the box must stand without the file */ });
+  const res = await page.goto(LONDON, { waitUntil: 'domcontentloaded' });
+  expect(res?.status()).toBe(200);
+  const boxes = await page.evaluate(() => Array.from(document.querySelectorAll<HTMLImageElement>('picture > img.art-phone'))
+    .map((img) => {
+      const src = img.parentElement!.querySelector('source')!;
+      const r = img.getBoundingClientRect();
+      return { file: (src.getAttribute('srcset') ?? '').split(/[\s,]/)[0], loaded: img.complete && img.naturalWidth > 0,
+        w: r.width, h: r.height, want: r.width * Number(src.getAttribute('height')) / Number(src.getAttribute('width')) };
+    }));
+  console.log(`phone infographic boxes @ 375px: examined ${boxes.length}`);
+  expect(boxes.length, 'London carries its six art-directed infographics').toBe(6);
+  for (const b of boxes) {
+    expect(b.loaded, `${b.file} was held unloaded`).toBe(false);
+    expect(Math.abs(b.h - b.want), `${b.file}: ${Math.round(b.h)}px reserved, ${Math.round(b.want)}px once it loads`).toBeLessThanOrEqual(1);
+  }
 });
