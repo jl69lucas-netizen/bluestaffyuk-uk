@@ -111,7 +111,9 @@ def imports_of(astro_path, root="."):
 def page_source(slug, root="."):
     """The source file a built page is rendered from, or None.
 
-    A static page is `src/pages/<route>/index.astro` (`src/pages/index.astro` for the root).
+    A static page is `src/pages/<route>/index.astro` or `src/pages/<route>.astro`
+    (`src/pages/index.astro` for the root); a city with its own file is static and wins over
+    the scaffold, as it does in Astro's routing.
     Every other page is a DYNAMIC route: a city is `uk-locations/<city>` rendered by
     `src/pages/uk-locations/[slug].astro`, a puppy by `available-puppies/[slug].astro`, a
     blog post by `src/pages/[...post].astro`. Before 2026-09-26 only the static form was
@@ -125,9 +127,13 @@ def page_source(slug, root="."):
         return None
     if not route:
         return "src/pages/index.astro"
-    static = f"src/pages/{route}/index.astro"
-    if os.path.isfile(os.path.join(root, static)):
-        return static
+    # Astro's static forms, both ahead of a dynamic sibling: `<route>/index.astro` and
+    # `<route>.astro`. The second was missed until 2026-10-04, so a city with its own file
+    # (src/pages/uk-locations/blue-staffy-puppies-london.astro) scanned the [slug].astro
+    # scaffold, which does not render it (tests/py/test_page_hardening_scope.py).
+    for static in (f"src/pages/{route}/index.astro", f"src/pages/{route}.astro"):
+        if os.path.isfile(os.path.join(root, static)):
+            return static
     parent = os.path.dirname(route)
     folder = os.path.join(root, "src", "pages", parent)
     if not os.path.isdir(folder):
@@ -398,13 +404,164 @@ def check_clay_small_text(files):
 # 7. opacity dimming text on a coloured fill — silently drops contrast below AA.
 #    (`.k2-from{opacity:.9}` white on #c8472f measured 4.10 vs the 4.5 floor.)
 # ─────────────────────────────────────────────────────────────────────────────
+def _tokens():
+    """{--name: raw value} from src/styles/tokens.css (relative to the cwd), cached per cwd."""
+    key = os.getcwd()
+    cache = _tokens.__dict__.setdefault("_cache", {})
+    if key not in cache:
+        text = _strip_css_comments("\n".join(lines_of("src/styles/tokens.css")))
+        cache[key] = {m.group(1): m.group(2).strip()
+                      for m in re.finditer(r"(--[\w-]+)\s*:\s*([^;]+);", text)}
+    return cache[key]
+
+
+def _hex(value, depth=0):
+    """An (r, g, b) for a hex or a var(--token) chain that ends in one; None for anything else
+    (currentColor, color-mix(), inherit, a fallback form) — unresolvable is never 'safe'."""
+    v = value.strip()
+    m = re.fullmatch(r"#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})", v)
+    if m:
+        h = m.group(1)
+        h = "".join(c * 2 for c in h) if len(h) == 3 else h
+        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+    if v.lower() in ("#fff", "white"):
+        return (255, 255, 255)
+    m = re.fullmatch(r"var\(\s*(--[\w-]+)\s*\)", v)
+    if m and depth < 10 and m.group(1) in _tokens():
+        return _hex(_tokens()[m.group(1)], depth + 1)
+    return None
+
+
+def _contrast(a, b):
+    def lum(c):
+        c = [x / 255 for x in c]
+        c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+        return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+    hi, lo = sorted((lum(a), lum(b)), reverse=True)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+_VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source",
+         "track", "wbr"}
+
+
+def _element_tree(markup):
+    """[(tag, classes, parent index)] for a component's markup, from a tag-stack walk that
+    reads `class="…"` and the quoted tokens of `class:list={…}`. Astro expressions are not
+    evaluated; a component tag (`<Image />`) is an element like any other."""
+    from html.parser import HTMLParser
+    els, stack = [], []
+
+    class P(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            cls = set()
+            for k, v in attrs:
+                if k in ("class", "class:list") and v:
+                    cls |= set(re.findall(r"[A-Za-z][\w-]*", v)) if k == "class:list" else set(v.split())
+            els.append((tag.lower(), cls, stack[-1] if stack else None))
+            if tag.lower() not in _VOID:
+                stack.append(len(els) - 1)
+
+        def handle_startendtag(self, tag, attrs):
+            self.handle_starttag(tag, attrs)
+            if tag.lower() not in _VOID and stack:
+                stack.pop()
+
+        def handle_endtag(self, tag):
+            for j in range(len(stack) - 1, -1, -1):
+                if els[stack[j]][0] == tag.lower():
+                    del stack[j:]
+                    break
+
+    fm = re.match(r"\s*---\n.*?\n---", markup, re.S)
+    P().feed(markup[fm.end():] if fm else markup)
+    return els
+
+
+def _subject_matches(selector, el):
+    """Does a selector's SUBJECT (its last compound, pseudo-classes dropped) match `el`? Its
+    ancestor half is ignored, so this over-matches — the safe direction for a suppression."""
+    last = re.split(r"[\s>+~]+", selector.strip())[-1]
+    last = re.sub(r"::?[\w-]+(\([^)]*\))?", "", last)
+    tag = re.match(r"[a-zA-Z][\w-]*", last)
+    classes = set(re.findall(r"\.([\w-]+)", last))
+    if not tag and not classes:
+        return False
+    return (not tag or tag.group(0).lower() == el[0]) and classes <= el[1]
+
+
+def _opacity_clears_aa(text, offset, opacity):
+    """True only when the dimmed text provably clears 4.5:1 (2026-10-04, the kit footer:
+    bone-100 at .85 on steel-700 is 8.04:1). The block holding `offset` sets no colour or
+    background of its own; every element it styles is found in the component's markup; the
+    colours that reach the dimmed text are the nearest colour-setting ancestor's (the
+    component's root rule at the latest) and every colour a rule sets on the element or its
+    subtree, :hover included; blended at `opacity`, each must clear 4.5:1 over EVERY background
+    the file paints. Anything unresolved — no root colour, a value that is not a hex or a
+    token chain to one, an element not found — keeps the WARN."""
+    i = text.find("<style>")
+    if i == -1:
+        return False
+    css = text[i + len("<style>"):]
+    css = css[:css.find("</style>")] if "</style>" in css else css
+    offset -= i + len("<style>")
+    blocks = list(rule_blocks(css))
+    # the nearest selector before the declaration is its own block (blocks are yielded as
+    # they CLOSE, so an at-rule's children come out of document order)
+    own = max((b for b in blocks if b.start() <= offset), key=lambda b: b.start(), default=None)
+    if own is None or re.search(r"(?:^|[;\s])(?:color|background(?:-color)?)\s*:", own.group(2)):
+        return False
+
+    def decl(b, prop):
+        return [m.group(1).strip() for m in re.finditer(
+            rf"(?:^|[;\s{{]){prop}\s*:\s*([^;}}]+)", _strip_css_comments(b.group(2)))]
+
+    els = _element_tree(text[:i])
+    sels = [x for x in own.group(1).split(",") if x.strip()]
+    targets = [k for k, el in enumerate(els) if any(_subject_matches(x, el) for x in sels)]
+    if not targets:
+        return False
+    colour_rules = [(x, v) for b in blocks for v in decl(b, "color") if v != "inherit"
+                    for x in b.group(1).split(",") if x.strip()]
+
+    def colours_on(k):
+        return [v for x, v in colour_rules if _subject_matches(x, els[k])]
+
+    fgs = []
+    for k in targets:
+        anc = els[k][2]
+        inherited = []
+        while anc is not None and not inherited:
+            inherited = colours_on(anc)
+            anc = els[anc][2]
+        if not inherited:
+            return False                      # the colour comes from outside the component
+        fgs += inherited
+        sub = {k}
+        for j, el in enumerate(els):          # parents precede children in document order
+            if el[2] in sub:
+                sub.add(j)
+        for j in sub:
+            fgs += colours_on(j)
+    bgs = [v for b in blocks for v in decl(b, "background(?:-color)?")]
+    fg_rgb, bg_rgb = [_hex(v) for v in fgs], [_hex(v) for v in bgs]
+    if not bg_rgb or None in fg_rgb or None in bg_rgb:
+        return False
+    return all(_contrast(tuple(opacity * f + (1 - opacity) * g for f, g in zip(fc, bc)), bc) >= 4.5
+               for fc in fg_rgb for bc in bg_rgb)
+
+
 def check_opacity_text(files):
     for f in files:
-        for i, ln in enumerate(lines_of(f), 1):
+        lines = lines_of(f)
+        text = "\n".join(lines)
+        for i, ln in enumerate(lines, 1):
             m = re.search(r"opacity:\s*(0?\.\d+)", ln)
             if not m:
                 continue
-            if re.search(r"color:|font-size:|font-weight:", ln):
+            offset = sum(len(x) + 1 for x in lines[:i - 1]) + m.start()
+            if re.search(r"color:|font-size:|font-weight:", ln) and \
+                    not _opacity_clears_aa(text, offset, float(m.group(1))):
                 add("WARN", "opacity-dims-text-contrast", f, i,
                     f"opacity:{m.group(1)} applied to a text rule — dims the "
                     "foreground and can drop it under AA",
@@ -749,12 +906,20 @@ def check_form_overflow(sources):
         # engine for `[^{}]*form[^{}]*` — two unbounded stars around a literal backtrack
         # catastrophically over a long brace-free region, and BSUK's .astro files are
         # mostly markup. Same matches, linear time. (Re-base fix, Task 6.)
+        form_blocks = [m for m in rule_blocks(text) if re.search(r"form", m.group(1), re.I)]
         form_grid = next(
-            (m for m in rule_blocks(text)
-             if re.search(r"form", m.group(1), re.I)
-             and re.search(r"display:\s*grid", m.group(2), re.I)),
-            None)
-        if form_grid and "min-width:0" not in flat:
+            (m for m in form_blocks if re.search(r"display:\s*grid", m.group(2), re.I)), None)
+        # The banked defect is tracks SIDE BY SIDE with an auto minimum — `1fr` is
+        # minmax(auto, 1fr), so the children's min-content sums past the box. A form grid
+        # with no column template is one implicit column, and its children are as wide as
+        # the form: London's newsletter, measured on dist/ at 320-1280 with no overflow
+        # (2026-10-04). `minmax(0, …)` tracks are the fix, like a `min-width:0` child.
+        auto_min_cols = any(
+            re.search(r"\b(?:\d*\.?\d+fr|auto)\b",
+                      re.sub(r"minmax\(\s*0(?:px)?\s*,[^)]*\)", "", cols.group(1)))
+            for m in form_blocks
+            for cols in [re.search(r"grid-template-columns:\s*([^;]+)", m.group(2))] if cols)
+        if form_grid and auto_min_cols and "min-width:0" not in flat:
             line = text[: form_grid.start()].count("\n") + 1
             add("ERROR", "form-control-overflow", label, line,
                 f"`{form_grid.group(1).strip()}` is a grid but no child sets "
@@ -1082,7 +1247,59 @@ def _rendered_classes(markup):
         for q in _QUOTED.findall(body):
             harvested.update((q[0] or q[1]).split())
         harvested.update(re.findall(r"[{,]\s*([A-Za-z_][\w-]*)\s*:", body))
+        # An object's SHORTHAND key renders its own name: CityRoster's `{ bare }` (2026-10-04).
+        for obj in re.findall(r"\{([^{}]*)\}", body):
+            harvested.update(re.findall(r"(?:^|,)\s*([A-Za-z_][\w-]*)\s*(?=,|$)", obj))
+    # A class expression that names a frontmatter constant renders that constant's strings, to
+    # any depth: Button.astro's `class:list={classes}` with `classes = [base, byKind[kind], cls]`
+    # and `base = 'kit-btn …'` (2026-10-04, `kit-btn` reported on every kit page).
+    consts = _frontmatter_consts(markup)
+    if consts:
+        exprs = [m.group(1) for m in re.finditer(r"class(?:Name|:list)?=\{(.*?)\}(?=[\s/>])", markup, re.S)]
+        seen = set()
+        while exprs:
+            expr = exprs.pop()
+            for name in re.findall(r"(?<![\w$.'\"-])([A-Za-z_$][\w$]*)", _QUOTED.sub(" ", expr)):
+                if name in consts and name not in seen:
+                    seen.add(name)
+                    val = consts[name]
+                    for q in _QUOTED.findall(val):
+                        harvested.update((q[0] or q[1]).split())
+                    exprs.append(val)
     return harvested, literal
+
+
+_JS_NOISE = re.compile(r"//[^\n]*|/\*.*?\*/|\"(?:\\.|[^\"\\\n])*\"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`", re.S)
+
+
+def _frontmatter_consts(markup):
+    """{name: initialiser text} for every `const|let|var NAME = …;` in the `---` frontmatter.
+    The initialiser runs to the first `;` that ends a line (comments and strings masked), so a
+    multi-line object literal is one value."""
+    fm = re.match(r"\s*---\n(.*?)\n---", markup, re.S)
+    if not fm:
+        return {}
+    text = fm.group(1)
+    # One pass, leftmost wins: a `//` inside a string stays string, and an apostrophe in a
+    # `//` comment ("the button's") does not open a string (it did in _mask, which has no `//`).
+    masked = _JS_NOISE.sub(lambda m: "".join("\n" if c == "\n" else " " for c in m.group(0)), text)
+    out = {}
+    for m in re.finditer(r"\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*(?::[^=\n]+)?=", masked):
+        # no whitespace after `=` in the pattern: a masked string is whitespace too
+        end = re.compile(r";[ \t]*\n|;\s*$").search(masked, m.end())
+        out[m.group(1)] = text[m.end(): end.start() if end else len(text)].strip()
+    return out
+
+
+def _dynamic_prefixes(markup):
+    """Class-name prefixes a template literal builds at render time: `k-${f.kind}` can render
+    any `k-*` class (CityPlacesByPublisher's chips, 2026-10-04). Read from class expressions
+    only; over-collecting is the safe direction for the never-rendered half."""
+    out = set()
+    for m in re.finditer(r"class(?:Name|:list)?=\{(.*?)\}(?=[\s/>])", markup, re.S):
+        for t in re.findall(r"`([^`]*)`", m.group(1)):
+            out.update(re.findall(r"(?:^|\s)([A-Za-z][\w-]*-)\$\{", t))
+    return out
 
 
 def _kit_rendered(f):
@@ -1121,7 +1338,8 @@ def check_class_drift(src_pairs):
         used = used | _kit_rendered(f)
         defined = set(re.findall(r"^\s*\.([A-Za-z][\w-]*)", css, re.M))
 
-        unrendered = sorted(defined - used)
+        prefixes = _dynamic_prefixes(markup)
+        unrendered = sorted(c for c in defined - used if not c.startswith(tuple(prefixes) or ("\0",)))
         mandated = [c for c in unrendered if c in SPEC_MANDATED]
         dead = [c for c in unrendered if c not in SPEC_MANDATED]
         if mandated:

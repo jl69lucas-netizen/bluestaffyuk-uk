@@ -166,3 +166,99 @@ def test_data_and_script_files_are_not_css_checked():
     H.findings.clear()
     assert H.css_checked(["data/locations.json", "src/lib/site.ts", "a.js", "x.astro", "y.css"]) \
         == ["x.astro", "y.css"]
+
+
+def test_a_city_with_its_own_astro_file_scans_that_file_not_the_scaffold(tmp_path):
+    """Astro routes `src/pages/uk-locations/<city>.astro` ahead of `[slug].astro` (a static
+    route beats a dynamic one), so a city with its own file is built from it. page_source()
+    tried `<route>/index.astro` and then the `[slug].astro` scaffold, never `<route>.astro`:
+    London's scoped run scanned the scaffold, which does not render London, and passed a page
+    it never read. A city without its own file still resolves to the scaffold."""
+    (tmp_path / "src/pages/uk-locations").mkdir(parents=True)
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data/locations.json").write_text(json.dumps(
+        [{"slug": "blue-staffy-puppies-own"}, {"slug": "blue-staffy-puppies-plain"}]))
+    (tmp_path / "src/pages/uk-locations/[slug].astro").write_text("<p/>\n")
+    (tmp_path / "src/pages/uk-locations/blue-staffy-puppies-own.astro").write_text("<p/>\n")
+    for slug in ("blue-staffy-puppies-own", "uk-locations/blue-staffy-puppies-own"):
+        assert H.page_source(slug, root=str(tmp_path)) == \
+            "src/pages/uk-locations/blue-staffy-puppies-own.astro", slug
+        files = H.src_files([slug], root=str(tmp_path))
+        assert "src/pages/uk-locations/[slug].astro" not in files, slug
+    assert H.page_source("blue-staffy-puppies-plain", root=str(tmp_path)) == \
+        "src/pages/uk-locations/[slug].astro"
+
+
+def test_london_scans_its_own_source_in_the_real_tree():
+    files = H.src_files(["/uk-locations/blue-staffy-puppies-london/"], root=str(ROOT))
+    assert "src/pages/uk-locations/blue-staffy-puppies-london.astro" in files
+    assert "src/pages/uk-locations/[slug].astro" not in files
+
+
+# ── markup-css-drift: three ways a kit component renders a class the harvest missed ──────────
+# London's scan (2026-10-04, once it read the city's own source) reported kit-btn, k-lead, k-no,
+# k-note and bare as "styled but never rendered"; all five are in dist/'s London page (2, 8, 7,
+# 7 and 1 times). Reductions of the three components, verbatim in the class plumbing.
+BUTTON_CONST = """---
+// the button's job: an apostrophe in a line comment must not open a string
+const base = 'kit-btn inline-flex gap-2';
+const byKind: Record<string, string> = {
+  primary: 'rounded px-6',
+};
+const classes = [base, byKind[kind], cls];
+---
+<button class:list={classes}>{label}</button>
+<style>
+.kit-btn { min-height: 44px; }
+.kit-gone { color: red; }
+</style>
+"""
+
+PREFIX_TEMPLATE = """---
+const CHIP = { lead: 'Lead', no: 'No' };
+---
+<li><span class:list={['chip', `k-${f.kind}`]}>{CHIP[f.kind]}</span></li>
+<style>
+.chip { display: inline-flex; }
+.k-no { color: red; }
+.k-lead { color: grey; }
+.x-dead { color: blue; }
+</style>
+"""
+
+SHORTHAND_OBJECT = """---
+const { bare = false, class: cls } = Astro.props;
+---
+<div class:list={['city-kit', 'city-roster', { bare }, cls]}></div>
+<style>
+.city-roster.bare { padding: 0; }
+.bare .tray { max-width: none; margin: 0; }
+.unused { margin: 0; }
+</style>
+"""
+
+
+def _drift(src):
+    H.findings.clear()
+    H.check_class_drift([("src/components/kit/X.astro", src)])
+    out = [f["msg"] for f in H.findings if f["check"] == "markup-css-drift"]
+    H.findings.clear()
+    return " ".join(out)
+
+
+def test_a_class_in_a_frontmatter_constant_is_rendered():
+    msg = _drift(BUTTON_CONST)
+    assert "kit-btn" not in msg, msg
+    assert "kit-gone" in msg, msg              # still blind to nothing: a dead rule is reported
+
+
+def test_a_template_prefix_renders_every_class_it_can_build():
+    msg = _drift(PREFIX_TEMPLATE)
+    assert "k-no" not in msg and "k-lead" not in msg, msg
+    assert "x-dead" in msg, msg
+
+
+def test_an_object_shorthand_key_in_class_list_is_rendered():
+    msg = _drift(SHORTHAND_OBJECT)
+    assert "bare" not in msg, msg
+    assert "unused" in msg, msg

@@ -856,8 +856,10 @@ def test_icon_row_inside_a_media_query_is_caught():
 BRACES_IN_NOISE = """
 /* a stray } in a comment { */
 .note::after { content: "}"; display: flex; }
-form.row { display: grid; }
+form.row { display: grid; grid-template-columns: 1fr 1fr; }
 """
+# The form grid carries two `fr` columns (2026-10-04): form-control-overflow now fires only on
+# side-by-side auto-minimum tracks, and this fixture tests the tokenizer, not that scope.
 
 
 def test_braces_in_comments_and_strings_do_not_desynchronise_depth():
@@ -891,3 +893,113 @@ def test_json_report_lists_every_scanned_file_with_its_findings(tmp_path):
         "check": "form-control-overflow", "severity": "ERROR", "message": "msg"}
     assert by["b.astro"]["status"] == "WARN"
     assert by["c.astro"]["status"] == "OK" and by["c.astro"]["checks"] == []
+
+
+# ── form-control-overflow: a one-column form grid is not the banked defect ────
+# London's newsletter (src/components/kit/CityNewsletterNotice.astro) is `form{display:grid;
+# gap;max-width:440px}` with no column template — one implicit column — and was reported as
+# ERROR form-control-overflow on 2026-10-04 once the scan read the city's own source. Measured
+# on dist/ at 320 / 375 / 768 / 1280: form scrollWidth == clientWidth, every child's right edge
+# on the form's, no document overflow. The banked defect (the health-guarantee `.row`, and the
+# @media fixture above) is two or more `fr` tracks side by side: `1fr` is minmax(auto, 1fr), so
+# the children's min-content sums past the box. Only a column template with an auto-minimum
+# track is that defect; `minmax(0, …)` tracks or a `min-width:0` child are its fix.
+CITY_NEWSLETTER_FORM_CSS = """
+    .card { display: grid; overflow: hidden; }
+    form { display: grid; gap: var(--space-3); max-width: 440px; }
+    label { font-size: var(--text-sm); font-weight: 600; }
+    input[type='email'] { width: 100%; min-height: 48px; padding: 10px 14px; font: inherit; }
+    @container (width >= 640px) {
+      .card { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+    }
+"""
+
+SPLIT_FORM_GRID = """
+.form-main .row { display: grid; gap: .7rem; }
+@media (min-width: 40rem) { .form-main .row { grid-template-columns: 1fr 1fr; } }
+"""
+
+MINMAX_ZERO_FORM_GRID = """
+.form-main .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+"""
+
+
+def test_a_one_column_form_grid_is_not_form_overflow():
+    assert checks_named(run(H.check_form_overflow, [("n.astro", CITY_NEWSLETTER_FORM_CSS)]),
+                        "form-control-overflow") == []
+
+
+def test_fr_columns_set_in_another_rule_are_still_caught():
+    assert len(checks_named(run(H.check_form_overflow, [("s.astro", SPLIT_FORM_GRID)]),
+                            "form-control-overflow")) == 1
+
+
+def test_minmax_zero_columns_are_the_fix():
+    assert checks_named(run(H.check_form_overflow, [("z.astro", MINMAX_ZERO_FORM_GRID)]),
+                        "form-control-overflow") == []
+
+
+# ── opacity-dims-text-contrast: resolve the colours before warning ────────────
+# The banked defect: `.k2-from{opacity:.9}`, white on clay #c8472f, measured 4.10:1 — it must
+# still WARN. The kit footer (src/components/kit/SiteFooterKit.astro: .tag, .plain, .legal at
+# opacity .85) was reported on all thirteen rebuilt pages; bone-100 at .85 on steel-700
+# measures 8.04:1 (10.89:1 on the steel-900 band) and axe on dist/ London found 0 contrast
+# violations in the footer at 320-1280 (2026-10-04). The check now blends every colour the
+# component declares over every background it paints, worst pair first, and stays quiet only
+# when the component's own root rule sets both and every pair clears 4.5:1. Anything it cannot
+# resolve to a hex (currentColor, color-mix, a page-level colour) still WARNs.
+OPACITY_BANKED = """<div class="k2"><span class="k2-from">from</span></div>
+<style>
+.k2 { background: #c8472f; color: #fff; }
+.k2-from { font-size: 14px; opacity: .9; }
+</style>
+"""
+
+OPACITY_FOOTER = """<footer class:list={['kit-ftr', cls]}><p class="tag">t</p></footer>
+<style>
+  @layer components {
+    .kit-ftr {
+      background: var(--color-surface-inverse);
+      color: var(--color-text-on-inverse);
+    }
+    .tag { margin: 0; max-width: 32ch; font-size: var(--text-sm); opacity: .85; }
+    .cta-band { background: var(--color-surface-deep); }
+  }
+</style>
+"""
+
+OPACITY_NO_ROOT = """<div class="card"><p class="note">n</p></div>
+<style>
+.note { font-size: 14px; opacity: .85; }
+</style>
+"""
+
+TOKENS = """:root {
+  --color-steel-700: #1F3A52;
+  --color-steel-900: #14202B;
+  --color-bone-100: #F4F1EA;
+  --color-surface-inverse: var(--color-steel-700);
+  --color-surface-deep: var(--color-steel-900);
+  --color-text-on-inverse: var(--color-bone-100);
+}
+"""
+
+
+def _opacity(tmp_path, monkeypatch, src):
+    (tmp_path / "src/styles").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "src/styles/tokens.css").write_text(TOKENS)
+    (tmp_path / "c.astro").write_text(src)
+    monkeypatch.chdir(tmp_path)
+    return checks_named(run(H.check_opacity_text, ["c.astro"]), "opacity-dims-text-contrast")
+
+
+def test_opacity_banked_clay_defect_still_warns(tmp_path, monkeypatch):
+    assert len(_opacity(tmp_path, monkeypatch, OPACITY_BANKED)) == 1
+
+
+def test_opacity_on_a_resolved_surface_that_clears_aa_is_quiet(tmp_path, monkeypatch):
+    assert _opacity(tmp_path, monkeypatch, OPACITY_FOOTER) == []
+
+
+def test_opacity_with_no_resolvable_surface_still_warns(tmp_path, monkeypatch):
+    assert len(_opacity(tmp_path, monkeypatch, OPACITY_NO_ROOT)) == 1
