@@ -1,0 +1,99 @@
+{
+  "batchId": "2026-10-04-london-visual-intel-decisions",
+  "at": "2026-10-04",
+  "answers": [
+    {
+      "key": "q01",
+      "n": 1,
+      "kind": "choice",
+      "question": "One of our own answers tells buyers to walk away from us. Reword it?",
+      "choice": "a",
+      "choiceLabel": "Reword it around what a scam seller won't do (video call, parents, contract, paying first)",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "key": "q02",
+      "n": 2,
+      "kind": "choice",
+      "question": "Put the AmStaff card's facts into the page text, and split two over-long lead sentences?",
+      "choice": "a",
+      "choiceLabel": "Yes",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "key": "q03",
+      "n": 3,
+      "kind": "choice",
+      "question": "Add a call to action in the middle of the page, and the delivery line on each puppy ticket?",
+      "choice": "a",
+      "choiceLabel": "Yes, preview them for my approval",
+      "status": "answered",
+      "text": "And other trust signs on each puppy's cards and a one or two liner unique description of each pup with his or her own personalities, etc. make the componentd smooth, clean, modern and fluid."
+    },
+    {
+      "key": "q04",
+      "n": 4,
+      "kind": "choice",
+      "question": "Take five misleading or garbled pictures off the London page, and put real photos in their place?",
+      "choice": "a",
+      "choiceLabel": "Yes, swap them for real photos (I'll pick at an Asset Gate)",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "key": "q05",
+      "n": 5,
+      "kind": "choice",
+      "question": "Fix the 13 alt texts that describe a different picture?",
+      "choice": "a",
+      "choiceLabel": "Yes, fix all 13 and drop the \"among the best\" line",
+      "status": "answered",
+      "text": "But theres a read breederr image, check for any image titled Amelia or Shanice, Sharnice Amalia, etc or check the old about us page, the images there preview images with people or faces aand i will show you the breeder's image to use"
+    },
+    {
+      "key": "q06",
+      "n": 6,
+      "kind": "text",
+      "question": "Are Maggie and Jones both Kennel Club registered, and does KC registration paperwork go home with every puppy?",
+      "choice": "",
+      "choiceLabel": "",
+      "status": "answered",
+      "text": "Yes, both parents are registered. All pups come with their KC Reg application form so the new owner can register the pup themselves "
+    },
+    {
+      "key": "q07",
+      "n": 7,
+      "kind": "text",
+      "question": "Does every puppy leave with a vet-signed health card, plus first vaccinations, a microchip, worming and flea treatment?",
+      "choice": "",
+      "choiceLabel": "",
+      "status": "answered",
+      "text": "Yes and make sure these words are on the page and some on the pups cards, etc"
+    },
+    {
+      "key": "q08",
+      "n": 8,
+      "kind": "text",
+      "question": "Is every litter raised in your home, never in kennels, and do you support buyers yourself after collection?",
+      "choice": "",
+      "choiceLabel": "",
+      "status": "answered",
+      "text": "Yes"
+    },
+    {
+      "key": "q09",
+      "n": 9,
+      "kind": "text",
+      "question": "An old photo's alt names \"Mark and Emma P.\" in London, but the review on the page is from \"Mark J\". Who is in that photo?",
+      "choice": "",
+      "choiceLabel": "",
+      "status": "answered",
+      "text": "Mark and Emma "
+    }
+  ],
+  "counts": {
+    "answered": 9
+  }
+}
