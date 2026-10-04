@@ -193,8 +193,29 @@ const SIZES = citySizes(fit, {
     /* The H2 sat 8px over its photograph while every H3 in the same component sits --space-3 over
        its own (the chapter's row gap): one heading-to-image distance in one component. */
     .tray > :global(.h2-img) { margin: var(--space-3) auto var(--space-4); }
-    .close { padding-top: var(--space-4); border-top: 1px solid var(--color-steel-300); }
-    .close :global(p) { margin: 0; font-weight: 600; }
+    /* THE CHAPTER'S CLOSING LINE IS ITS CALL TO ACTION (London previews 2026-10-04, CTA-1, the
+       breeder's pick, answer board 2026-10-04 q09 (a)): the sentence's link, always its first child
+       (links-plan M2, sentence_start), is the brass pill (rules/design.md rule 3); the rest of the
+       sentence follows it, in ink-2 on a bone-50 card ruled in brass. Words and hrefs are the
+       board's, unchanged. Only transform and background move on hover; off under reduced motion. */
+    .close {
+      margin-top: var(--space-3); padding: var(--space-4); border-radius: var(--radius-md);
+      background: var(--color-bone-50); border-left: 3px solid var(--color-cta);
+    }
+    .close :global(p) { margin: 0; font-weight: 600; color: var(--color-ink-2); line-height: 1.5; }
+    .close :global(p > a:first-child) {
+      display: inline-flex; align-items: center; min-height: 44px; padding: var(--space-2) 22px;
+      margin: 0 6px 6px 0; border-radius: var(--btn-radius); background: var(--color-cta);
+      color: var(--color-cta-ink); font-weight: 700; line-height: 1.25; text-wrap: balance;
+      text-align: center; text-decoration: none; box-shadow: var(--shadow-card);
+      transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+    }
+    .close :global(p > a:first-child:hover) { background: var(--color-cta-hover); transform: translateY(-1px); }
+    .close :global(p > a:first-child:focus-visible) { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) {
+      .close :global(p > a:first-child) { transition: none; }
+      .close :global(p > a:first-child:hover) { transform: none; }
+    }
     /* FROM A 640px BOX: THE CHAPTER OPENS ON ONE ROW, THE PROSE RUNS UNDER IT (impeccable D1, the
        breeder's direction, 2026-10-03 q02). The numeral and the heading sit beside the photo,
        centred on it by the two empty 1fr rows above and below them (the photo spans all four),
