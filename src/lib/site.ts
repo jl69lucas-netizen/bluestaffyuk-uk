@@ -80,6 +80,9 @@ export interface PuppyRow {
   slug: string; name: string; sex: 'male' | 'female'; price_gbp: number;
   status: 'Available' | 'Reserved' | 'Sold'; colour: string;
   card_photo: string; gallery: string[];
+  /** The breeder's one-line description of the puppy (answer board 2026-10-04 q07 (a)); the
+   *  puppy cards print it (src/components/kit/CityTicketStrip.astro). */
+  personality: string;
 }
 
 /**

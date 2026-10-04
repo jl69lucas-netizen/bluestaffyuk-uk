@@ -64,3 +64,29 @@ def test_address_is_town_level_only():
     assert a == {"city": "Carlisle", "region": "Cumbria", "country": "GB"}, a
     for gone in ("street", "postcode", "lat", "lng"):
         assert gone not in a, gone
+
+
+#: The six personality lines the breeder approved word for word (answer board 2026-10-04 q07 (a),
+#: docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md).
+#: The puppy cards print them (src/components/kit/CityTicketStrip.astro throws on a missing one).
+APPROVED_PERSONALITY = {
+    "roman": "Our blue-and-white boy with a white blaze and bright blue eyes, happiest stretched out on the grass watching everything we do.",
+    "byrd": "Our solid white boy, sturdy and square-faced, first to trot over and see who's come in, then out for a nap on his blanket.",
+    "ince": "A solid blue boy with a white chest flash who goes about with his tail up, checking every corner of the garden fence.",
+    "vennie": "A white-faced blue-and-white girl with a blue patch over one eye, curled up soft and calm on the sheepskin rug.",
+    "christa": "A solid blue girl with a white star on her chest and a steady, thoughtful look, sitting up straight as if she knows she's being photographed.",
+    "cheryl": "A blue girl with a white blaze who lies flat out on the floor beside her toy and looks straight up for attention.",
+}
+
+
+def test_every_puppy_has_a_personality_line():
+    pups = load("puppies.json")
+    missing = [p["slug"] for p in pups if not (p.get("personality") or "").strip()]
+    assert missing == [], f"puppies with no personality line: {missing}"
+
+
+def test_the_personality_lines_are_the_ones_the_breeder_approved():
+    pups = load("puppies.json")
+    for p in pups:
+        if p["slug"] in APPROVED_PERSONALITY:
+            assert p["personality"] == APPROVED_PERSONALITY[p["slug"]], p["slug"]
