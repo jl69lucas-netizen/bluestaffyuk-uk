@@ -2704,7 +2704,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/breeder-sitting-blue-staffy-puppy-home.webp",
-      "alt": "A breeder holding a blue Staffy puppy, smiling, in a home environment — responsible breeders of blue Staffies."
+      "alt": "A blue Staffy puppy with blue eyes held in a breeder's lap in a home environment — responsible breeders of blue Staffies."
     },
     {
       "slot": "deposit-video-call",
@@ -2714,7 +2714,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/uk-blue-staffy-breeders-contact-form-support.webp",
-      "alt": "Staffy breeder in UK assisting a family with a blue puppy enquiry | UK Blue Staffy Breeders Contact"
+      "alt": "A BlueStaffyUK Contact Us card inviting questions about our puppies, beside a blue Staffy puppy lying down | UK Blue Staffy Breeders Contact"
     },
     {
       "slot": "deposit-choose",
@@ -2724,7 +2724,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
-      "alt": "A healthy and well-socialized blue Staffy puppy, reflecting the quality and care involved when you choose to buy a blue Staffy puppy in the UK."
+      "alt": "A well-socialised young blue Staffy sitting on a sofa beside a black cat, the settled nature to look for when you choose to buy a blue Staffy puppy in the UK."
     },
     {
       "slot": "deposit-steps",
@@ -2744,7 +2744,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/ethical-staffy-puppy-london-delivery.webp",
-      "alt": "An ethical blue Staffy puppy, delivered professionally by BlueStaffyUK, happily with its new owners Mark and Emma P. in London."
+      "alt": "An ethical blue Staffy puppy, delivered professionally by BlueStaffyUK, happily with its new owners Mark and Emma in London."
     },
     {
       "slot": "delivery-cost",
@@ -2784,7 +2784,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/blue-staffy-puppies-uk-litter1.webp",
-      "alt": "4 blue Staffy puppies looking for a new home in the UK."
+      "alt": "A litter of blue Staffy puppies in coloured collars, gathered on a dark mat and looking for a new home in the UK."
     },
     {
       "slot": "litter-parents",
@@ -2834,7 +2834,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/find-health-certified-staffy-breeders-uk.webp",
-      "alt": "UK buyer checking a list of health-certified Staffy breeders"
+      "alt": "A vet in blue scrubs giving an injection to a blue Staffy puppy with a white chest, on a clinic table"
     },
     {
       "slot": "health-tests-h3",
@@ -2844,7 +2844,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/what-health-tests-blue-staffies-need.webp",
-      "alt": "A graphic illustrating various diagnostic tools used to perform what health tests do blue Staffies need, including DNA and physical exams."
+      "alt": "A smiling vet in navy scrubs giving a blue Staffy puppy a physical exam at the clinic, one of the health checks blue Staffies need alongside DNA tests"
     },
     {
       "slot": "health-kc",
@@ -2854,7 +2854,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/kc-registered-blue-staffy-pups-london.webp",
-      "alt": "KC registered blue Staffy puppies cuddling with child in London home"
+      "alt": "Newborn blue and black Staffy puppies asleep together in a heap on a soft yellow blanket"
     },
     {
       "slot": "health-kc-check",
@@ -2884,7 +2884,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
-      "alt": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK."
+      "alt": "A fawn and white puppy receiving a gentle vet check on a clinic table, the check every one of our puppies has before it leaves us"
     },
     {
       "slot": "london-life-h2",
@@ -2914,7 +2914,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/playful-blue-staffy-lawn-uk.webp",
-      "alt": "Playful blue Staffordshire Bull Terrier puppy running across a green lawn in the UK"
+      "alt": "A grinning adult blue Staffordshire Bull Terrier lying on a green lawn in the UK beside a playful blue puppy"
     },
     {
       "slot": "temperament-h2",
@@ -2934,7 +2934,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
-      "alt": "How can I avoid common Staffordshire Bull Terrier temperament problems? Blue Staffy puppy socialising with children."
+      "alt": "A blue Staffy mother curled around her newborn puppies in a whelping box lined with white fleece"
     },
     {
       "slot": "temperament-bond",
@@ -2964,7 +2964,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/sbt-history-heritage-from-pit-to-pet.webp",
-      "alt": "A historical montage or illustration showing the evolution of the Staffordshire Bull Terrier. One side depicts a stylized 19th-century Bull and Terrier dog in an old fighting pit setting, while the other side shows a modern Staffy affectionately licking the face of a small child on a sofa, symbolizing its transformation."
+      "alt": "A red and white Staffordshire Bull Terrier type dog in a chain collar, standing on a plain white background"
     },
     {
       "slot": "everyday-health-h2",
@@ -3046,6 +3046,97 @@
         "old": "A breeder holding a blue Staffy puppy, smiling, in a home environment, Responsible breeders of blue Staffies L-2-HGA clear.",
         "new": "A breeder holding a blue Staffy puppy, smiling, in a home environment — responsible breeders of blue Staffies.",
         "reason": "The served alt asserts a DNA test result ('L-2-HGA clear') for our dogs that is unproven, not proven wrong: no certificate is on file (the evidence ledger's parents-dna-clear is NOT FETCHED — none held). Working rule 9 (no fabricated claims — never state a test result we cannot show) and plan Ruling 4 (tests are named, never a result) forbid carrying it, so the result clause is dropped and the rest kept. The breeders page still serves the old alt (session brief Open Flags, 2026-09-30)."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/breeder-sitting-blue-staffy-puppy-home.webp",
+        "old": "A breeder holding a blue Staffy puppy, smiling, in a home environment — responsible breeders of blue Staffies.",
+        "new": "A blue Staffy puppy with blue eyes held in a breeder's lap in a home environment — responsible breeders of blue Staffies.",
+        "reason": "No face is in the frame, so 'smiling' describes something the photo does not show; the puppy, the lap and the home are kept (audit #13). breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/uk-blue-staffy-breeders-contact-form-support.webp",
+        "old": "Staffy breeder in UK assisting a family with a blue puppy enquiry | UK Blue Staffy Breeders Contact",
+        "new": "A BlueStaffyUK Contact Us card inviting questions about our puppies, beside a blue Staffy puppy lying down | UK Blue Staffy Breeders Contact",
+        "reason": "The file is a Contact Us card with our lockup and a puppy; no breeder and no family are in it (audit #14). The 'UK Blue Staffy Breeders Contact' tail is kept. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+        "old": "A healthy and well-socialized blue Staffy puppy, reflecting the quality and care involved when you choose to buy a blue Staffy puppy in the UK.",
+        "new": "A well-socialised young blue Staffy sitting on a sofa beside a black cat, the settled nature to look for when you choose to buy a blue Staffy puppy in the UK.",
+        "reason": "The dog is a young adult, not a puppy, and sits beside a black cat; 'healthy' is dropped as a claim the photo cannot show, 'well-socialised' and the buy-a-puppy clause are kept (audit #15). breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/ethical-staffy-puppy-london-delivery.webp",
+        "old": "An ethical blue Staffy puppy, delivered professionally by BlueStaffyUK, happily with its new owners Mark and Emma P. in London.",
+        "new": "An ethical blue Staffy puppy, delivered professionally by BlueStaffyUK, happily with its new owners Mark and Emma in London.",
+        "reason": "The breeder names the people in this photo as 'Mark and Emma' (answer board 2026-10-04 q09, same rulings file); 'P.' is dropped and the rest of the served alt is kept word for word (audit #17)."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/blue-staffy-puppies-uk-litter1.webp",
+        "old": "4 blue Staffy puppies looking for a new home in the UK.",
+        "new": "A litter of blue Staffy puppies in coloured collars, gathered on a dark mat and looking for a new home in the UK.",
+        "reason": "The photo shows more than four puppies, so '4' is a wrong count; the count is dropped rather than replaced (audit #22). breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/find-health-certified-staffy-breeders-uk.webp",
+        "old": "UK buyer checking a list of health-certified Staffy breeders",
+        "new": "A vet in blue scrubs giving an injection to a blue Staffy puppy with a white chest, on a clinic table",
+        "reason": "The picture is a vet giving a puppy an injection, not a buyer checking a list; 'health-certified' also implied a certificate the breeder does not hold (answer board 2026-09-29 q01) (audit #29). breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/what-health-tests-blue-staffies-need.webp",
+        "old": "A graphic illustrating various diagnostic tools used to perform what health tests do blue Staffies need, including DNA and physical exams.",
+        "new": "A smiling vet in navy scrubs giving a blue Staffy puppy a physical exam at the clinic, one of the health checks blue Staffies need alongside DNA tests",
+        "reason": "The file is a photo of a vet examining a puppy, not a graphic of diagnostic tools (audit #30); the 'health tests blue Staffies need' keyword is kept. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/kc-registered-blue-staffy-pups-london.webp",
+        "old": "KC registered blue Staffy puppies cuddling with child in London home",
+        "new": "Newborn blue and black Staffy puppies asleep together in a heap on a soft yellow blanket",
+        "reason": "No child and no London home are in the photo, and newborn puppies are not KC registered: the owner registers a puppy with the KC registration application form that goes home with it (answer board 2026-10-04 q06) (audit #31). breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/blue-staffy-puppy-vet-check-uk.webp",
+        "old": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
+        "new": "A fawn and white puppy receiving a gentle vet check on a clinic table, the check every one of our puppies has before it leaves us",
+        "reason": "The puppy is fawn and white, not blue, so it is not one of ours; the vet check our puppies have is the breeder's answer (answer board 2026-10-04 q07) (audit #35). breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/playful-blue-staffy-lawn-uk.webp",
+        "old": "Playful blue Staffordshire Bull Terrier puppy running across a green lawn in the UK",
+        "new": "A grinning adult blue Staffordshire Bull Terrier lying on a green lawn in the UK beside a playful blue puppy",
+        "reason": "The photo shows an adult lying down beside a puppy; nothing is running (audit #39). 'Playful', the lawn and 'in the UK' are kept. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+        "old": "How can I avoid common Staffordshire Bull Terrier temperament problems? Blue Staffy puppy socialising with children.",
+        "new": "A blue Staffy mother curled around her newborn puppies in a whelping box lined with white fleece",
+        "reason": "No children are in the photo; it is a dam with her newborn puppies in a whelping box (audit #42). breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/sbt-history-heritage-from-pit-to-pet.webp",
+        "old": "A historical montage or illustration showing the evolution of the Staffordshire Bull Terrier. One side depicts a stylized 19th-century Bull and Terrier dog in an old fighting pit setting, while the other side shows a modern Staffy affectionately licking the face of a small child on a sofa, symbolizing its transformation.",
+        "new": "A red and white Staffordshire Bull Terrier type dog in a chain collar, standing on a plain white background",
+        "reason": "The served alt (322 characters, over the 190 ceiling) describes a historical montage with a fighting pit and a child that is not in the file; the file is one dog on a white background (audit #45). breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md; visual-intelligence audit docs/superpowers/sessions/2026-10-04-visual-intel-blue-staffy-puppies-london.md §2d)"
+      },
+      {
+        "kind": "alt",
+        "src": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+        "old": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+        "new": "Read our Blue Staffy breeder reviews, featuring a healthy Staffy puppy for sale in the UK.",
+        "reason": "'rated among the best Staffy breeders UK' ranks us above other breeders with no outside source (a BETTER_THAN the visual-intelligence audit flags, #28); the breeder said drop it (answer board 2026-10-04 q05 a, docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md). Only that clause is cut; the rest of the served alt is kept word for word. The review-middle letter passes this alt to CityLetter as photoAlt; data/image-focus.json keeps the served alt for every other use."
       }
     ]
   },
@@ -3136,7 +3227,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "a859cb3e664a0ab51f27964526040c6d5eeb9ea918062cd1cdd238f0f62035ff",
+    "record_hash": "d95f2f8d03ffc3bca118f07a51ef5b78614193b976ce361b4a45eefd7b276b34",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3155,7 +3246,28 @@
       "h6_prefixes": [
         "London Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-10-04T20:49:03Z",
+    "reapprovals": [
+      {
+        "at": "2026-10-04T20:49:03Z",
+        "reason": "Alt-text wording fix by the breeder's ruling, answer board 2026-10-04 q05 (a) and q09 (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md): twelve baked assets' alts described a different picture (visual-intelligence audit 2026-10-04 #13 #14 #15 #17 #22 #29 #30 #31 #35 #39 #42 #45) and are corrected under working rule 15's wrong-fact exception, each recorded in verbatim.changed. No pick, file, slot or section moves; #41 (the Myths vs Facts chart) is left for the Asset Gate.",
+        "changed_paths": [
+          "/assets/1/alt",
+          "/assets/2/alt",
+          "/assets/3/alt",
+          "/assets/5/alt",
+          "/assets/9/alt",
+          "/assets/14/alt",
+          "/assets/15/alt",
+          "/assets/16/alt",
+          "/assets/19/alt",
+          "/assets/22/alt",
+          "/assets/24/alt",
+          "/assets/27/alt"
+        ]
+      }
+    ]
   },
   "subcomponents": [
     {

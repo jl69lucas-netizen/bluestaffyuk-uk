@@ -22,10 +22,14 @@ type Props = HTMLAttributes<'section'> & {
   lede: string;
   name: string;
   photo: string;
+  /** An alt the page's board record changed under working rule 15 (`verbatim.changed`, a wrong
+   *  fact in the served alt): it replaces the served alt on this page only. Omitted, the served
+   *  alt from data/image-focus.json is used, as working rule 11 asks. */
+  photoAlt?: string;
   /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
   fit?: CityFit;
 };
-const { heading, lede, name, photo, fit = 'column', class: cls, ...rest } = Astro.props;
+const { heading, lede, name, photo, photoAlt, fit = 'column', class: cls, ...rest } = Astro.props;
 const all = reviewsJson as Review[];
 const index = all.findIndex((r) => r.name === name);
 if (index < 0) throw new Error(`CityLetter: data/reviews.json has no review by ${name}`);
@@ -38,7 +42,8 @@ const review = all[index];
 // in the 832px column) keeps a paragraph to 6 lines and 4 lines.
 const PARA_CHARS = 200;
 const paras = splitReview(review.quote, PARA_CHARS);
-const p = servedPhoto(photo);
+const served = servedPhoto(photo);
+const p = photoAlt ? { ...served, alt: photoAlt } : served;
 // The photograph paints at its OWN width (its width/height attributes, from data/image-focus.json
 // through servedPhoto()), never wider, and shrinks with the card; pinned beside the letter on
 // desktop it takes the 9fr of the card's 9fr / 16fr split (the card inside a 1000px measure, less

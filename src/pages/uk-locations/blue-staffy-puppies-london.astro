@@ -179,6 +179,11 @@ const IG = {
     'The English Staffy and American Staffordshire Terrier breed standards side by side: the standard, height, coat colours and UK law'),
 };
 
+/** A served photograph's alt as this page's board record changed it under working rule 15
+ *  (`verbatim.changed`, a wrong fact in the served alt), or undefined to keep the served alt. */
+const changedAlt = (file: string) => ((board as { verbatim?: { changed?: { kind: string; src?: string; new?: string }[] } })
+  .verbatim?.changed ?? []).filter((r) => r.kind === 'alt' && r.src === `/images/${file}` && r.new).at(-1)?.new;
+
 // ── links (the board's, Link-First) ────────────────────────────────────────────────────────
 const EXT = { target: '_blank', rel: 'noopener noreferrer' } as const;
 /** The board's anchor for a link a section lists: a link the board does not list is not built. */
@@ -511,7 +516,8 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <CityLetter id="review-middle" data-section-label={H2('review-middle')}
     heading={H2('review-middle')}
     lede="Rachel L., also in London, sent us these two sentences."
-    name="Rachel L." photo="best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp" />
+    name="Rachel L." photo="best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp"
+    photoAlt={changedAlt('best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp')} />
 
   <SectionDivider />
   <CityFaqLedger id="faq-middle" data-section-label={H2('faq-middle')} block="middle" start={faqTop.length + 1}
