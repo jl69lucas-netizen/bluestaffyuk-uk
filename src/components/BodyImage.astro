@@ -39,6 +39,11 @@ export interface PhoneSource {
   /** Its own candidate list (`w` descriptors), read against `sizes`. Omitted
    *  renders the single file, as before. */
   srcset?: string;
+  /** A display crop of the phone file, in the FILE's pixels: `top` and `bottom` rows hidden by
+   *  the box (London final fixes M1, answer board 2026-10-05 q04 (a): the AmStaff phone file's
+   *  title band repeats its H3 word for word). The file is untouched and keeps its URL (working
+   *  rule 11); the box takes the cropped ratio before and after the file loads. */
+  crop?: { top: number; bottom: number };
 }
 /** The row a page hands BodyImage and the city components: the baked row, its candidate list
  *  and, for an infographic, its phone layout. */
@@ -68,8 +73,19 @@ interface Props {
 const FOCAL = /^\d{1,3}% \d{1,3}%$/;
 const { asset, srcset, box = 'natural', focal, class: extra, phone } = Astro.props;
 const sizes = Astro.props.sizes ?? (box === 'tall' ? TALL_SIZES : box === 'uniform' ? UNIFORM_SIZES : BODY_SIZES);
-const cls = ['bl-img', box !== 'natural' && 'sec-img', box === 'tall' && 'og-tall', phone && 'art-phone', extra];
-const style = box !== 'natural' && focal && FOCAL.test(focal) ? `object-position: ${focal}` : undefined;
+const crop = phone?.crop;
+if (crop && (crop.top < 0 || crop.bottom < 0 || crop.top + crop.bottom >= phone!.h)) {
+  throw new Error(`BodyImage: ${phone!.src} crop ${crop.top}/${crop.bottom} leaves nothing of a ${phone!.h}px file`);
+}
+const cls = ['bl-img', box !== 'natural' && 'sec-img', box === 'tall' && 'og-tall', phone && 'art-phone', crop && 'art-crop', extra];
+// The crop is two custom properties, read only below 640px (board-styles.css `.art-crop`): the
+// box's ratio is the file less the cropped rows, and `object-position` puts the hidden rows'
+// split (top against bottom) where `object-fit: cover` cuts them.
+const cropStyle = crop
+  ? `--art-crop-ratio: ${phone!.w} / ${phone!.h - crop.top - crop.bottom}; --art-crop-y: ${+(100 * crop.top / (crop.top + crop.bottom || 1)).toFixed(4)}%`
+  : undefined;
+const style = [box !== 'natural' && focal && FOCAL.test(focal) ? `object-position: ${focal}` : undefined, cropStyle]
+  .filter(Boolean).join('; ') || undefined;
 ---
 {/* `loading="lazy"` and `decoding="async"` are right for every in-body photograph and wrong
     for a hero: the hero is the LCP element and is eager with `fetchpriority="high"`, which is
@@ -80,7 +96,8 @@ const style = box !== 'natural' && focal && FOCAL.test(focal) ? `object-position
   <source media="(max-width: 639px)" srcset={phone.srcset ?? phone.src} sizes={phone.srcset ? sizes : undefined}
     width={phone.w} height={phone.h} />
   <img class:list={cls} style={style} src={asset.file} alt={asset.alt} width={asset.w} height={asset.h}
-    srcset={srcset} sizes={sizes} loading="lazy" decoding="async" />
+    srcset={srcset} sizes={sizes} loading="lazy" decoding="async"
+    data-art-crop={crop ? `${phone.w}x${phone.h - crop.top - crop.bottom}` : undefined} />
 </picture>
 ) : (
 <img

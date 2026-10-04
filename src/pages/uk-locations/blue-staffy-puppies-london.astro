@@ -146,7 +146,7 @@ const MANIFEST = imageManifest as Record<string, { w: number; h: number; sib_w: 
   phone_w?: number; phone_h?: number }>;
 /** An approved infographic: the wide file, its phone layout and the alt it is read by. To swap
  *  one, change its entry here. */
-const infographic = (slot: string, alt: string): BodyAsset => {
+const infographic = (slot: string, alt: string, crop?: { top: number; bottom: number }): BodyAsset => {
   const a = asset(slot);
   // The wide file has a 720w bake beside it (harden pass 2026-10-03) for the 540-710px box it
   // paints in from 640px. The phone layout (`img:<slot>-phone`, published by
@@ -160,7 +160,7 @@ const infographic = (slot: string, alt: string): BodyAsset => {
   }
   const tall = { ...a, slot: `${slot}-phone`, file: `/images/${stem}-phone.webp`, w: row.phone_w, h: row.phone_h };
   return { ...a, alt: a.alt || alt, srcset: bakedSrcset(a, [720], inPublic),
-    phone: { src: tall.file, w: tall.w, h: tall.h, srcset: bakedSrcset(tall, [], inPublic) } };
+    phone: { src: tall.file, w: tall.w, h: tall.h, srcset: bakedSrcset(tall, [], inPublic), crop } };
 };
 // A photo in a chapter's text column, and one in a wide chapter's (full-width) text.
 const TEXT_SIZES = chapterTextSizes();
@@ -177,8 +177,13 @@ const IG = {
     'A checklist of six health questions to put to a Staffy breeder, from the two DNA tests to checking a Kennel Club registration'),
   'paperwork-checklist': infographic('paperwork-checklist',
     "A checklist for your puppy's folder: microchip and vaccinations, the written contract, what to check before signing, and the guarantee"),
+  // London final fixes M1 (the breeder's yes, answer board 2026-10-05 q04 (a)): on a phone the
+  // box hides the phone file's top 360px, a title band that repeats this answer's H3 word for
+  // word, and its bottom 30px, which are blank. A display crop: the file and its URL are
+  // untouched (working rule 11). The rows are this file's; a re-drawn file needs them re-read.
   'breed-split': infographic('breed-split',
-    'The English Staffy and American Staffordshire Terrier breed standards side by side: the standard, height, coat colours and UK law'),
+    'The English Staffy and American Staffordshire Terrier breed standards side by side: the standard, height, coat colours and UK law',
+    { top: 360, bottom: 30 }),
 };
 
 /** A served photograph's alt as this page's board record changed it under working rule 15

@@ -804,13 +804,50 @@ test('every phone infographic reserves its own box before its file loads', async
     .map((img) => {
       const src = img.parentElement!.querySelector('source')!;
       const r = img.getBoundingClientRect();
+      // A cropped phone file (BodyImage `phone.crop`, London final fixes M1) reserves the cropped
+      // box it paints, which its `data-art-crop` states as <w>x<h>; any other, the file's own.
+      const [cw, ch] = (img.dataset.artCrop ?? `${src.getAttribute('width')}x${src.getAttribute('height')}`).split('x').map(Number);
       return { file: (src.getAttribute('srcset') ?? '').split(/[\s,]/)[0], loaded: img.complete && img.naturalWidth > 0,
-        w: r.width, h: r.height, want: r.width * Number(src.getAttribute('height')) / Number(src.getAttribute('width')) };
+        w: r.width, h: r.height, want: r.width * ch / cw };
     }));
   console.log(`phone infographic boxes @ 375px: examined ${boxes.length}`);
   expect(boxes.length, 'London carries its six art-directed infographics').toBe(6);
   for (const b of boxes) {
     expect(b.loaded, `${b.file} was held unloaded`).toBe(false);
     expect(Math.abs(b.h - b.want), `${b.file}: ${Math.round(b.h)}px reserved, ${Math.round(b.want)}px once it loads`).toBeLessThanOrEqual(1);
+  }
+});
+
+// THE SAME BOX ONCE THE FILE HAS LOADED (London final fixes M1, answer board 2026-10-05 q04 (a)):
+// a cropped phone file's box is an explicit ratio, not the source's `auto <w> / <h>` hint, which a
+// loaded file would override and so grow the box back to the whole file. Every phone file is
+// loaded here and each box must still be the one reserved for it: the crop's for a cropped file,
+// the file's own for the rest.
+test('every phone infographic keeps its reserved box once its file loads', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp375', 'the phone layout paints below 640px');
+  for (const width of [375]) {
+    await page.setViewportSize({ width, height: 900 });
+    const res = await page.goto(LONDON, { waitUntil: 'domcontentloaded' });
+    expect(res?.status()).toBe(200);
+    const boxes = await page.evaluate(async () => {
+      const imgs = Array.from(document.querySelectorAll<HTMLImageElement>('picture > img.art-phone'));
+      imgs.forEach((i) => { i.loading = 'eager'; });
+      await Promise.all(imgs.map((i) => (i.complete && i.naturalWidth ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))));
+      return imgs.map((img) => {
+        const src = img.parentElement!.querySelector('source')!;
+        const r = img.getBoundingClientRect();
+        const [cw, ch] = (img.dataset.artCrop ?? `${src.getAttribute('width')}x${src.getAttribute('height')}`).split('x').map(Number);
+        return { file: img.currentSrc.split('/').pop(), loaded: img.complete && img.naturalWidth > 0, cropped: !!img.dataset.artCrop,
+          w: r.width, h: r.height, want: r.width * ch / cw };
+      });
+    });
+    console.log(`phone infographic boxes, loaded @ ${width}px: examined ${boxes.length}, cropped ${boxes.filter((b) => b.cropped).length}`);
+    expect(boxes.length, 'London carries its six art-directed infographics').toBe(6);
+    expect(boxes.filter((b) => b.cropped).length, 'the AmStaff phone file is cropped (M1)').toBe(1);
+    for (const b of boxes) {
+      expect(b.loaded, `${b.file} loaded`).toBe(true);
+      expect(b.file, 'below 640px the phone file paints').toMatch(/-phone\.webp$/);
+      expect(Math.abs(b.h - b.want), `${b.file}: ${Math.round(b.h)}px once loaded, ${Math.round(b.want)}px reserved`).toBeLessThanOrEqual(1);
+    }
   }
 });

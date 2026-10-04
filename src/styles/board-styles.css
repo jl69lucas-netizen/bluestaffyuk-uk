@@ -258,6 +258,15 @@
      phone infographic reserves its own box"). */
   @media (max-width: 639px) {
     .bl-img.sec-img.art-phone { aspect-ratio: revert-layer; object-fit: contain; }
+    /* A CROPPED phone file (BodyImage `phone.crop`; London final fixes M1, the breeder's yes,
+       answer board 2026-10-05 q04 (a)): the AmStaff file's top 360px repeat its H3 word for
+       word and its bottom 30px are blank. The box is the file less those rows, an EXPLICIT
+       ratio, so it is reserved before the file loads and does not grow back to the file's own
+       ratio once it has (the hint `revert-layer` keeps is `auto <w> / <h>`, which a loaded file
+       overrides); `cover` fills the width and `object-position` hides the rows. */
+    .bl-img.sec-img.art-phone.art-crop {
+      aspect-ratio: var(--art-crop-ratio); object-fit: cover; object-position: 50% var(--art-crop-y);
+    }
   }
 
   /* THE HERO'S OWN PHOTO. The kit Hero is a two-column grid whose photo is first in source
