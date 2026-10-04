@@ -73,7 +73,10 @@ const { label = `Our ${numberWord(pups.length)} puppies · each opens its own pa
     .tk-stub::before { left: -8px; }
     .tk-stub::after { right: -8px; }
     .tk-price { font-family: var(--font-display); font-weight: 650; font-size: 17px; font-feature-settings: "tnum", "lnum"; color: var(--color-text); }
-    .tk-go { color: var(--color-steel-500); font-size: 15px; }
+    /* --color-ink-2 on the white ticket, 7.49:1 (data/design/contrast.json), the meta line's own
+       ink: steel-500 measured 4.39:1, under AA (a11y-text-contrast-aa; visual-intelligence audit
+       2026-10-04, rec 7). A token swap inside the palette, not a new colour. */
+    .tk-go { color: var(--color-ink-2); font-size: 15px; }
     /* One row of six from a 640px box: beside the dial at 1280 the strip is about 780px wide,
        under the 800px tier, and the approved style is one row tall on desktop. */
     @container (width >= 640px) { ul { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; } .tk-body { padding: 10px 10px 8px; } .tk-stub { padding: 8px 10px; } }
