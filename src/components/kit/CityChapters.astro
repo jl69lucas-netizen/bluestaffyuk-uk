@@ -187,6 +187,9 @@ const SIZES = citySizes(fit, {
     .full > :global(p) { margin: 0 0 var(--space-3); color: var(--color-text); }
     .full > :global(:is(h4, h5, h6)) { margin: var(--space-2) 0 var(--space-2); }
     .full > :global(* + :is(h4, h5, h6)) { margin-top: var(--space-5); }
+    /* The checklist's own 16px gap is the gap under it (London final fixes W2, answer board
+       2026-10-05 q01 (a)): the 24px above a ladder heading would collapse over it and keep 24. */
+    .full > :global(.city-look-listen + :is(h4, h5, h6)) { margin-top: var(--space-4); }
     .full > :global(:last-child) { margin-bottom: 0; }
     .txt :global(.bl-img) { margin: var(--space-2) 0 var(--space-3); }
     .txt :global(ul) { margin: 0 0 var(--space-3); padding-left: var(--space-5); }
