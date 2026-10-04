@@ -20,7 +20,7 @@ import PageShell from './PageShell.astro';
 // The city kit's shared CSS (the dial token, the tiers, the type scale): shipped only where a
 // city layout or a city component is mounted, never on the twelve built pages.
 import '../styles/city.css';
-import type { BaseProps } from './BaseLayout.astro';
+import type { BaseProps } from './BaseDocument.astro';
 import type { CityNavSet, SectionRef } from '../lib/sections';
 
 interface Props extends BaseProps { sections: SectionRef[]; nav: CityNavSet }

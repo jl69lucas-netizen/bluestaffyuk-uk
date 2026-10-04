@@ -1,7 +1,7 @@
 ---
 // src/layouts/PageShell.astro — the kit shell every rebuilt page and every hub uses.
 //
-// It is BaseLayout (head, schema, sprite, breadcrumb, favicons, the measured header height)
+// It is BaseDocument (head, schema, sprite, breadcrumb, favicons, the measured header height)
 // with the two chrome slots filled by the kit: SiteHeaderKit above, SiteFooterKit below. The
 // head props pass straight through, so a page moving onto the kit changes its CHROME and
 // nothing else — the same title, description, canonical and schema it had before.
@@ -18,7 +18,7 @@
 // strip and the sheet are sticky furniture that follows the reader; the TOC is a list the
 // reader meets ONCE, below the hero, before deciding whether to read on — which is why it
 // mounts here rather than in the page body of three files, and why it sits after the
-// `hero` slot rather than above it. `crumbs={false}`: BaseLayout already renders the trail
+// `hero` slot rather than above it. `crumbs={false}`: BaseDocument already renders the trail
 // above `<main>`, and two breadcrumb landmarks on one page is one too many.
 //
 // A page puts its opening section in `slot="hero"`. Both slots are inside `.page-body`, so
@@ -30,7 +30,7 @@
 // above 1024px both go and the DIAL takes the column. All three mount on the same `nav`
 // threshold and from the same `sections` list, so no width and no page can show two of them
 // disagreeing about what the page's sections are.
-import BaseLayout, { type BaseProps } from './BaseLayout.astro';
+import BaseDocument, { type BaseProps } from './BaseDocument.astro';
 import SiteHeaderKit from '../components/kit/SiteHeaderKit.astro';
 import SiteFooterKit from '../components/kit/SiteFooterKit.astro';
 import PageDial from '../components/kit/PageDial.astro';
@@ -40,7 +40,7 @@ import PageNav from '../components/kit/PageNav.astro';
 import type { SectionRef } from '../lib/sections';
 import { globalCtaShown } from '../lib/globalCta';
 
-// Every head prop is BaseLayout's, forwarded untouched; `sections` is the shell's own. Extending
+// Every head prop is BaseDocument's, forwarded untouched; `sections` is the shell's own. Extending
 // rather than restating means a prop added to the layout reaches the shell.
 //
 // A PAGE MAY BRING ITS OWN NAV SET, through three named slots, and the shell names none of its
@@ -69,9 +69,9 @@ if (!own && sections.length > 0 && !nav) {
     + 'the dial and the section sheet need six. Rendering the page without them.');
 }
 ---
-<BaseLayout {...head}>
+<BaseDocument {...head}>
   {/* Both in the HEADER slot, so the strip sits OUTSIDE `<main id="main">`. It is chrome,
-      not content: BaseLayout's skip link points at `#main`, and a strip rendered inside it
+      not content: BaseDocument's skip link points at `#main`, and a strip rendered inside it
       would put 61px of sticky chrome above the very target the skip link jumps to — which
       is `nav-jump-target-lands` measuring a target it can never land clear of (it fired on
       `#main` at 768 for exactly this). Outside it, `#main` begins below the whole band. */}
@@ -97,7 +97,7 @@ if (!own && sections.length > 0 && !nav) {
   </div>
   {nav && <SectionSheet sections={sections} />}
   <SiteFooterKit slot="footer" cta={cta} />
-</BaseLayout>
+</BaseDocument>
 <style>
   @layer components {
     /* The shell adds NO width of its own until there is a dial to make room for. Every kit

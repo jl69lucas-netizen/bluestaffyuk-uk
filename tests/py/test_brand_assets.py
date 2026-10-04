@@ -82,6 +82,6 @@ def test_structured_data_and_og_point_at_the_raster():
     so `image`/`og:image` keep a PNG even though the visible logo is now vector."""
     site = (ROOT / "src/lib/site.ts").read_text(encoding="utf-8")
     assert "'/icon-512.png'" in site, "site.ts should export the raster logo path"
-    for f in ("src/components/Schema.astro", "src/layouts/BaseLayout.astro"):
+    for f in ("src/components/Schema.astro", "src/layouts/BaseDocument.astro", "src/layouts/BaseLayout.astro"):
         assert "SITE.logo" not in (ROOT / f).read_text(encoding="utf-8"), \
             f"{f} must use the raster export, not the SVG in settings.logo"

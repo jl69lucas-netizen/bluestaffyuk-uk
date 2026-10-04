@@ -112,8 +112,8 @@ def test_the_sprite_carries_both_marks_and_is_out_of_the_accessibility_tree():
 
 
 def test_the_layout_emits_the_sprite_once():
-    """Once per document, in BaseLayout — not once per <Mark />, which is the whole point."""
-    t = (ROOT / "src/layouts/BaseLayout.astro").read_text()
+    """Once per document, in BaseDocument — not once per <Mark />, which is the whole point."""
+    t = (ROOT / "src/layouts/BaseDocument.astro").read_text()
     assert "import MarkSprite from '../components/kit/MarkSprite.astro';" in t
     assert t.count("<MarkSprite />") == 1
 

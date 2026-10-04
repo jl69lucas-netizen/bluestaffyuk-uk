@@ -142,8 +142,8 @@ def src_files(slugs, root="."):
     """A scoped run examines the page's OWN source file plus the components
     it actually imports (one level, plus one more level for
     src/components/*.astro components — they commonly import a
-    sibling), plus src/layouts/BaseLayout.astro and src/styles/global.css
-    (every page is wrapped in BaseLayout). Earlier versions either
+    sibling), plus src/layouts/BaseDocument.astro and src/styles/global.css
+    (every page is wrapped in BaseDocument). Earlier versions either
     substring-matched "index" against every page (pre-2026-09-10) or, after
     that fix, unconditionally globbed in EVERY component/layout/style file
     for a scoped run — which changed a normal slug's verdict and attributed
@@ -156,7 +156,10 @@ def src_files(slugs, root="."):
     fixture tree; returned paths stay relative to `root`.
     See tests/test_audit_slug_resolution.py.
     """
-    always = {"src/layouts/BaseLayout.astro", "src/styles/global.css"}
+    # BaseDocument, not BaseLayout: every page is a BaseDocument, but only a page on the legacy
+    # chrome imports BaseLayout (and through it SiteHeader/SiteFooter), which the import closure
+    # below reaches on its own. Listing BaseLayout here blamed the legacy footer on kit pages.
+    always = {"src/layouts/BaseDocument.astro", "src/styles/global.css"}
     if not slugs:
         page_files = sorted(set(
             os.path.relpath(p, root).replace(os.sep, "/")
@@ -820,7 +823,7 @@ def check_font_families(head_html, theme_css):
     for fam in sorted(requested):
         if any(fam.lower() == r.lower() or fam.lower() in r.lower() for r in rendered):
             continue
-        add("ERROR", "font-family-loaded-unused", "src/layouts/BaseLayout.astro", 0,
+        add("ERROR", "font-family-loaded-unused", "src/layouts/BaseDocument.astro", 0,
             f"'{fam}' is downloaded on every page but nothing references it — not a "
             f"font-family rule and not a --font-* custom property. Confirm with a "
             f"runtime probe before deleting.",
@@ -1439,7 +1442,7 @@ def main(argv=None):
     check_class_drift(src_pairs)
     check_component_color_specificity(src_pairs)
 
-    base = "src/layouts/BaseLayout.astro"
+    base = "src/layouts/BaseDocument.astro"
     theme = "\n".join(lines_of("src/styles/direction-d.css") +
                       lines_of("src/styles/global.css"))
     # 2026-09-12: the theme's h1/h2 + p lead rule vs a page's own lead colour

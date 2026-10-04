@@ -21,7 +21,7 @@ MANIFEST = ROOT / "data" / "design" / "fonts.json"
 FONTS_CSS = ROOT / "src" / "styles" / "fonts.css"
 GLOBAL_CSS = ROOT / "src" / "styles" / "global.css"
 TOKENS = ROOT / "src" / "styles" / "tokens.css"
-BASE = ROOT / "src" / "layouts" / "BaseLayout.astro"
+BASE = ROOT / "src" / "layouts" / "BaseDocument.astro"
 DIST = ROOT / "dist"
 FACE = re.compile(r"@font-face\s*\{([^}]*)\}")
 
