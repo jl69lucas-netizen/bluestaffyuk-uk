@@ -1,0 +1,83 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, tighten the spacing",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "\"Can I Watch the Puppy and Its Mother on a Live Video Call?\" is 34px too tall on phones and 8px on desktop. Tighten the checklist spacing?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, photo beside the question",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "\"How Much Is Each Blue Staffy Puppy in This Litter?\" is 592px too tall on desktop. Put its photo beside the question, like every other answer?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, tap-to-open rows",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "\"How Do Staffies in London Cope With Stairs, Lifts and Neighbours?\" is almost twice its limit, because it holds the list of 10 parks and places. Show each group of places as a tap-to-open row?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, crop the repeated title band",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "\"Blue Staffordshire Bull Terrier or AmStaff\" is 222px too tall on phones, because the phone infographic repeats the question word for word in a title band at its top. Crop that band off?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, hold them at 360px",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "On a large phone or a small tablet (431–639px wide), the phone infographics stretch to fill the width, and three answers go over the limit. Hold them at a phone size (360px) there?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, add the line as written",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "The page doesn't mention the microchip or the vet check in its first 300 words. Add a fifth line to the trust panel at the top?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, add the sentence",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "question": "The page never says how long a Staffy lives. Add one sentence to the Everyday Health answer?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-04T23:34:27.464Z",
+  "batchId": "2026-10-05-london-final-fixes",
+  "counts": {
+    "answered": 7,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-04T23-34-27-463Z"
+}
