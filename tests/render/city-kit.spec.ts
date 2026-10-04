@@ -822,10 +822,11 @@ test('every phone infographic reserves its own box before its file loads', async
 // a cropped phone file's box is an explicit ratio, not the source's `auto <w> / <h>` hint, which a
 // loaded file would override and so grow the box back to the whole file. Every phone file is
 // loaded here and each box must still be the one reserved for it: the crop's for a cropped file,
-// the file's own for the rest.
+// the file's own for the rest, at 375 and in the 431-639px band (N360, q05 (a)), where the box is
+// held at 360px, centred.
 test('every phone infographic keeps its reserved box once its file loads', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'vp375', 'the phone layout paints below 640px');
-  for (const width of [375]) {
+  for (const width of [375, 600]) {
     await page.setViewportSize({ width, height: 900 });
     const res = await page.goto(LONDON, { waitUntil: 'domcontentloaded' });
     expect(res?.status()).toBe(200);
@@ -847,6 +848,7 @@ test('every phone infographic keeps its reserved box once its file loads', async
     for (const b of boxes) {
       expect(b.loaded, `${b.file} loaded`).toBe(true);
       expect(b.file, 'below 640px the phone file paints').toMatch(/-phone\.webp$/);
+      expect(b.w, `${b.file} is held at 360px or less (N360)`).toBeLessThanOrEqual(360.5);
       expect(Math.abs(b.h - b.want), `${b.file}: ${Math.round(b.h)}px once loaded, ${Math.round(b.want)}px reserved`).toBeLessThanOrEqual(1);
     }
   }

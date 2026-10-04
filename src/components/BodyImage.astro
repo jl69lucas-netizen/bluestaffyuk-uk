@@ -92,7 +92,7 @@ const style = [box !== 'natural' && focal && FOCAL.test(focal) ? `object-positio
     `Hero.astro`'s own business. This component is for the body only, which is why neither is
     a prop. */}
 {phone ? (
-<picture>
+<picture class="art-pic">
   <source media="(max-width: 639px)" srcset={phone.srcset ?? phone.src} sizes={phone.srcset ? sizes : undefined}
     width={phone.w} height={phone.h} />
   <img class:list={cls} style={style} src={asset.file} alt={asset.alt} width={asset.w} height={asset.h}

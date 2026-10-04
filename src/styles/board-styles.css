@@ -267,6 +267,13 @@
     .bl-img.sec-img.art-phone.art-crop {
       aspect-ratio: var(--art-crop-ratio); object-fit: cover; object-position: 50% var(--art-crop-y);
     }
+    /* HELD AT A PHONE'S SIZE (London final fixes N360, the breeder's yes, answer board 2026-10-05
+       q05 (a)): each phone file is drawn for a ~311px column, and from 431px to 639px it grew
+       with the column, its labels blown up as much as 1.7x and three answers over the height
+       cap at 600. It stops at 360px, centred, and the column either side of it is the bone-50
+       ground of its own <picture> (the image-bleed rule: a design colour, never grey or black). */
+    .bl-img.sec-img.art-phone { max-width: 360px; }
+    .art-pic { display: block; border-radius: var(--radius-md); background-color: var(--color-bone-50); }
   }
 
   /* THE HERO'S OWN PHOTO. The kit Hero is a two-column grid whose photo is first in source
