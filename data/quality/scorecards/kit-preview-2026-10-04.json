@@ -1,0 +1,201 @@
+{
+  "slug": "kit-preview",
+  "date": "2026-10-04",
+  "page_type": "preview",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 46
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1529,
+    "layout-tap-target-size": 321,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 3,
+    "layout-image-box-reserved": 0,
+    "layout-table-stacks-on-mobile": 3,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 18,
+    "layout-text-has-side-gutter": 1333,
+    "layout-boxed-h2-fits": 0,
+    "layout-kit-band-full-bleed": 0,
+    "layout-heading-size-order": 0,
+    "layout-heading-lines": 18,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 0,
+    "layout-body-heading-brand": 0,
+    "layout-body-text-shares-edge": 0,
+    "img-srcset-within-2x": 15,
+    "img-not-upscaled": 15,
+    "img-alt-present-and-unique": 15,
+    "img-sizes-matches-box": 3,
+    "img-face-visible": 12,
+    "nav-anchors-resolve": 69,
+    "nav-jump-target-lands": 33,
+    "nav-bottom-chrome-clear": 22,
+    "nav-breadcrumb-separator-spaced": 3,
+    "nav-breadcrumb-baseline-aligned": 9,
+    "sem-heading-order": 366,
+    "sem-all-six-levels": 366,
+    "sem-title-case-headings": 366,
+    "sem-section-opening-paragraph": 366,
+    "sem-statement-label-visible": 6,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1800,
+    "css-no-dead-component-rule": 2433,
+    "css-component-color-not-overridden": 79,
+    "dup-no-sibling-crossover": 153,
+    "a11y-text-contrast-aa": 1520,
+    "a11y-no-duplicate-ids": 123,
+    "a11y-hero-ledge-contrast": 12,
+    "form-inquiry-contract": 3
+  },
+  "defects": {
+    "IMG": 2,
+    "SEM": 9,
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "IMG": 4,
+    "SEM": 82,
+    "CSS": 1467,
+    "DUP": 66
+  },
+  "total": 20,
+  "total_instances": 1619,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "img-not-upscaled",
+      "count": 2,
+      "message": "2 upscaled image(s): Roman2.C-A0j1ry_1uH9rQ.webp file=400x400 painted=434x543 visible=434x543 cover 1.36x | Christa.DCD6hF9z_24FDMC.webp file=400x400 painted=434x543 visible=434x543 cover 1.36x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:6 H3:115 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 19,
+      "message": "19 heading(s) not in Title Case: H1 \"preview\" in \"Kit preview\" | H2 \"mark\" in \"0 · The mark\" | H3 \"header\" in \"1 · Site header + nav\" | H2 \"puppies\" in \"Blue Staffy puppies raised in a family home\" | H3 \"card\" in \"4 · Puppy card\" | H3 \"strip\" in \"5 · Trust strip\" | H3 \"counter\" in \"6 · Stat / counter strip\" | H3 \"info\" in \"7 · Content / info card\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 6,
+      "message": "6 heading(s) with no opening paragraph: H1→H2 \"Kit preview\" | H3→H3 \"4 · Puppy card\" | H3→H2 \"10 · Contact form\" | H3→H3 \"13 · Section divider\" | H3→H3 \"15 · Section sheet (mobile)\" | H3→H3 \"16 · Section strip (mobile)\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 1,
+      "message": "1 class(es) on rendered elements match no CSS rule: counter-wrap x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 488,
+      "message": "488 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 22,
+      "message": "22 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:6 H3:115 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 19,
+      "message": "19 heading(s) not in Title Case: H1 \"preview\" in \"Kit preview\" | H2 \"mark\" in \"0 · The mark\" | H3 \"header\" in \"1 · Site header + nav\" | H2 \"puppies\" in \"Blue Staffy puppies raised in a family home\" | H3 \"card\" in \"4 · Puppy card\" | H3 \"strip\" in \"5 · Trust strip\" | H3 \"counter\" in \"6 · Stat / counter strip\" | H3 \"info\" in \"7 · Content / info card\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 5,
+      "message": "5 heading(s) with no opening paragraph: H1→H2 \"Kit preview\" | H3→H3 \"4 · Puppy card\" | H3→H2 \"10 · Contact form\" | H3→H3 \"13 · Section divider\" | H3→H3 \"14 · Page dial (desktop)\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 1,
+      "message": "1 class(es) on rendered elements match no CSS rule: counter-wrap x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 488,
+      "message": "488 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 22,
+      "message": "22 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 2,
+      "message": "2 upscaled image(s): Roman2.C-A0j1ry_1uH9rQ.webp file=400x400 painted=434x543 visible=434x543 cover 1.36x | Christa.DCD6hF9z_24FDMC.webp file=400x400 painted=434x543 visible=434x543 cover 1.36x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 3,
+      "message": "heading level(s) absent: H4, H5, H6 — inventory H1:1 H2:6 H3:115 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 19,
+      "message": "19 heading(s) not in Title Case: H1 \"preview\" in \"Kit preview\" | H2 \"mark\" in \"0 · The mark\" | H3 \"header\" in \"1 · Site header + nav\" | H2 \"puppies\" in \"Blue Staffy puppies raised in a family home\" | H3 \"card\" in \"4 · Puppy card\" | H3 \"strip\" in \"5 · Trust strip\" | H3 \"counter\" in \"6 · Stat / counter strip\" | H3 \"info\" in \"7 · Content / info card\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 5,
+      "message": "5 heading(s) with no opening paragraph: H1→H2 \"Kit preview\" | H3→H3 \"4 · Puppy card\" | H3→H2 \"10 · Contact form\" | H3→H3 \"13 · Section divider\" | H3→H3 \"14 · Page dial (desktop)\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 1,
+      "message": "1 class(es) on rendered elements match no CSS rule: counter-wrap x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 488,
+      "message": "488 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 22,
+      "message": "22 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
+    }
+  ]
+}

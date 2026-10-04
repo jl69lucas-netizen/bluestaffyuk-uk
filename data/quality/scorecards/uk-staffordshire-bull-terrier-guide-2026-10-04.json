@@ -1,0 +1,145 @@
+{
+  "slug": "uk-staffordshire-bull-terrier-guide",
+  "date": "2026-10-04",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 46
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1257,
+    "layout-tap-target-size": 218,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 6,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 3,
+    "hero-aside-no-clip": 3,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 162,
+    "layout-text-has-side-gutter": 1082,
+    "layout-boxed-h2-fits": 24,
+    "layout-kit-band-full-bleed": 0,
+    "layout-heading-size-order": 153,
+    "layout-heading-lines": 162,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 2,
+    "layout-body-heading-brand": 204,
+    "layout-body-text-shares-edge": 231,
+    "img-srcset-within-2x": 51,
+    "img-not-upscaled": 51,
+    "img-alt-present-and-unique": 51,
+    "img-sizes-matches-box": 3,
+    "img-face-visible": 18,
+    "nav-anchors-resolve": 201,
+    "nav-jump-target-lands": 51,
+    "nav-bottom-chrome-clear": 34,
+    "nav-breadcrumb-separator-spaced": 3,
+    "nav-breadcrumb-baseline-aligned": 6,
+    "sem-heading-order": 324,
+    "sem-all-six-levels": 324,
+    "sem-title-case-headings": 324,
+    "sem-section-opening-paragraph": 324,
+    "sem-statement-label-visible": 12,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 21,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1557,
+    "css-no-dead-component-rule": 927,
+    "css-component-color-not-overridden": 76,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 1218,
+    "a11y-no-duplicate-ids": 72,
+    "a11y-hero-ledge-contrast": 3,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "LAYOUT": 3,
+    "IMG": 2,
+    "CSS": 6
+  },
+  "instances": {
+    "LAYOUT": 6,
+    "IMG": 21,
+    "CSS": 153
+  },
+  "total": 11,
+  "total_instances": 180,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "layout-h3-image-first",
+      "count": 2,
+      "message": "2 H3 block(s) put prose before their image: Staffy Myths vs. Facts: Dispelling Common Misconce | The True Cost of a Staffy: What to Expect Financia"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "img-not-upscaled",
+      "count": 10,
+      "message": "10 upscaled image(s): hqdefault.jpg file=480x360 painted=876x493 visible=876x493 cover 1.82x | comprehensive-uk-staffordshire-bull-terrier-guide-book.webp file=512x464 painted=874x792 visible=874x792 fill 1.71x | sbt-history-heritage-from-pit-to-pet.webp file=500x500 painted=876x876 visible=876x876 fill 1.75x | dedicated-blue-staffy-pup-care-glasgow.webp file=640x360 painted=876x493 visible=876x493 fill 1.37x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=876x585 visible=876x585 fill 1.59x | sbt-uk-legal-status-public-perception.webp file=436x540 painted=876x1085 visible=876x1085 fill 2.01x | busting-common-staffy-myths-loving-family-dog.webp file=512x469 painted=876x802 visible=876x802 fill 1.71x | staffordshire-bull-terrier-vs-american-bully-comparison.webp file=500x333 painted=876x583 visible=876x583 fill 1.75x | kc-registered-staffy-puppies.webp file=500x750 painted=876x1314 visible=876x1314 fill 1.75x | true-cost-of-a-staffy-lifetime-budget-planning.webp file=512x469 painted=876x802 visible=876x802 fill 1.71x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-cols-1 x7, bl-list-stack x7, bl-head-above x7, bl-chrome-ruled x7, bl-media-none x7, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 43,
+      "message": "43 page-scoped rule(s) match nothing on the page: .dot | [data-tiles=\"ring\"] .ring | .dot | [data-tiles=\"ring\"] .ring | .stack | .stack figure | .kit-quote-empty | .ctas | .chips | .chips li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "layout-h3-image-first",
+      "count": 2,
+      "message": "2 H3 block(s) put prose before their image: Staffy Myths vs. Facts: Dispelling Common Misconce | The True Cost of a Staffy: What to Expect Financia"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-cols-1 x7, bl-list-stack x7, bl-head-above x7, bl-chrome-ruled x7, bl-media-none x7, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 43,
+      "message": "43 page-scoped rule(s) match nothing on the page: .dot | [data-tiles=\"ring\"] .ring | .dot | [data-tiles=\"ring\"] .ring | .stack | .stack figure | .kit-quote-empty | .ctas | .chips | .chips li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "layout-h3-image-first",
+      "count": 2,
+      "message": "2 H3 block(s) put prose before their image: Staffy Myths vs. Facts: Dispelling Common Misconce | The True Cost of a Staffy: What to Expect Financia"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 11,
+      "message": "11 upscaled image(s): blue-staffy-puppy-for-sale-uk.webp file=612x612 painted=670x377 visible=670x377 cover 1.09x | hqdefault.jpg file=480x360 painted=720x405 visible=720x405 cover 1.50x | comprehensive-uk-staffordshire-bull-terrier-guide-book.webp file=512x464 painted=718x651 visible=718x651 fill 1.40x | sbt-history-heritage-from-pit-to-pet.webp file=500x500 painted=720x720 visible=720x720 fill 1.44x | dedicated-blue-staffy-pup-care-glasgow.webp file=640x360 painted=720x405 visible=720x405 fill 1.13x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=720x480 visible=720x480 fill 1.31x | sbt-uk-legal-status-public-perception.webp file=436x540 painted=720x892 visible=720x892 fill 1.65x | busting-common-staffy-myths-loving-family-dog.webp file=512x469 painted=720x660 visible=720x660 fill 1.41x | staffordshire-bull-terrier-vs-american-bully-comparison.webp file=500x333 painted=720x480 visible=720x480 fill 1.44x | kc-registered-staffy-puppies.webp file=500x750 painted=720x1080 visible=720x1080 fill 1.44x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-cols-1 x7, bl-list-stack x7, bl-head-above x7, bl-chrome-ruled x7, bl-media-none x7, counter-wrap x1, bl-head-eyebrow x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 43,
+      "message": "43 page-scoped rule(s) match nothing on the page: .dot | [data-tiles=\"ring\"] .ring | .dot | [data-tiles=\"ring\"] .ring | .stack | .stack figure | .kit-quote-empty | .ctas | .chips | .chips li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    }
+  ]
+}

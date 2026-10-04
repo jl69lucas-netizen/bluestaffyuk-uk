@@ -32,20 +32,20 @@ can carry both kinds. Everything between the generated markers below is produced
 baseline` fails if it drifts. Do not hand-edit it.
 
 <!-- generated:start -->
-Scorecard run 2026-09-29 — 20 page scorecards, 210 defect rows.
+Scorecard run 2026-10-04 — 21 page scorecards, 212 defect rows.
 
 | Family | Blocking rows | Advisory rows | Pages affected |
 |---|---|---|---|
 | A11Y | 0 | 0 | 0 |
-| CSS | 0 | 99 | 20 |
-| DUP | 0 | 36 | 12 |
+| CSS | 0 | 105 | 21 |
+| DUP | 0 | 30 | 10 |
 | FORM | 0 | 0 | 0 |
-| IMG | 0 | 24 | 14 |
+| IMG | 0 | 29 | 15 |
 | LAYOUT | 0 | 12 | 4 |
-| NAV | 3 | 0 | 1 |
+| NAV | 0 | 0 | 0 |
 | SCHEMA | 0 | 0 | 0 |
 | SEM | 0 | 36 | 8 |
-| **Total** | **3** | **207** | **20** |
+| **Total** | **0** | **212** | **21** |
 
-Rows by check: `css-no-dead-component-rule` 54, `css-class-resolves` 45, `dup-no-sibling-crossover` 36, `sem-all-six-levels` 24, `img-not-upscaled` 23, `layout-h3-image-first` 12, `sem-title-case-headings` 9, `nav-jump-target-lands` 3, `sem-section-opening-paragraph` 3, `img-face-visible` 1.
+Rows by check: `css-no-dead-component-rule` 57, `css-class-resolves` 48, `dup-no-sibling-crossover` 30, `img-not-upscaled` 25, `sem-all-six-levels` 24, `layout-h3-image-first` 12, `sem-title-case-headings` 9, `img-face-visible` 4, `sem-section-opening-paragraph` 3.
 <!-- generated:end -->

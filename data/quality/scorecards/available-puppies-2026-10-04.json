@@ -1,0 +1,121 @@
+{
+  "slug": "available-puppies",
+  "date": "2026-10-04",
+  "page_type": "hub",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 46
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 175,
+    "layout-tap-target-size": 94,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 12,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 0,
+    "layout-body-heading-above-body": 18,
+    "layout-text-has-side-gutter": 60,
+    "layout-boxed-h2-fits": 0,
+    "layout-kit-band-full-bleed": 0,
+    "layout-heading-size-order": 0,
+    "layout-heading-lines": 18,
+    "layout-hero-copy-fills-band": 0,
+    "layout-toc-aligns-with-container": 0,
+    "layout-body-heading-brand": 18,
+    "layout-body-text-shares-edge": 0,
+    "img-srcset-within-2x": 18,
+    "img-not-upscaled": 18,
+    "img-alt-present-and-unique": 18,
+    "img-sizes-matches-box": 0,
+    "img-face-visible": 18,
+    "nav-anchors-resolve": 3,
+    "nav-jump-target-lands": 3,
+    "nav-bottom-chrome-clear": 0,
+    "nav-breadcrumb-separator-spaced": 3,
+    "nav-breadcrumb-baseline-aligned": 6,
+    "sem-heading-order": 21,
+    "sem-all-six-levels": 21,
+    "sem-title-case-headings": 21,
+    "sem-section-opening-paragraph": 21,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 12,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 228,
+    "css-no-dead-component-rule": 303,
+    "css-component-color-not-overridden": 11,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 175,
+    "a11y-no-duplicate-ids": 24,
+    "a11y-hero-ledge-contrast": 0,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "SEM": 3,
+    "CSS": 3,
+    "IMG": 1
+  },
+  "instances": {
+    "SEM": 12,
+    "CSS": 165,
+    "IMG": 6
+  },
+  "total": 7,
+  "total_instances": 183,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:6 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 55,
+      "message": "55 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:6 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 55,
+      "message": "55 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 6,
+      "message": "6 upscaled image(s): Roman2.C-A0j1ry_2oY8o4.webp file=280x280 painted=348x348 visible=348x348 cover 1.24x | Byrd1.Dc5KZxb2_Z2rts2K.webp file=280x280 painted=348x348 visible=348x348 cover 1.24x | Ince1.CjowFAsd_Z1xNGHe.webp file=280x280 painted=348x348 visible=348x348 cover 1.24x | Vennie.ke5yj4Fb_24EeX6.webp file=280x280 painted=348x348 visible=348x348 cover 1.24x | Christa.DCD6hF9z_15fV8S.webp file=280x280 painted=348x348 visible=348x348 cover 1.24x | Cheryl1.BA5--lqv_1BX5wb.webp file=280x350 painted=348x348 visible=348x348 cover 1.24x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:6 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 55,
+      "message": "55 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    }
+  ]
+}
