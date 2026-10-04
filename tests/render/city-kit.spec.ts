@@ -565,6 +565,9 @@ for (const kind of ['broken', 'good'] as const) {
         ['heading cap', /is [\d.]+px, over the \w+ cap/],
         ['heading lines', /wraps to \d+ lines/],
         ['75ch measure', /ch wide \(75 max\)/],
+        // A form's text paragraph (the privacy note) is reading text; only a row holding a
+        // control is layout (visual-intelligence audit 2026-10-04, rec 6).
+        ['form note measure', /a paragraph "We reply by email[^"]*" is \d+ch wide \(75 max\)/],
         ['paragraph lines', /runs \d+ lines \(\d max/],
         ['heading measure', /^city-narrow-measure .*heading measure too narrow for its box/],
         // Answer board q06 (2026-09-29): a layout column that stacks the H2 to three lines is a

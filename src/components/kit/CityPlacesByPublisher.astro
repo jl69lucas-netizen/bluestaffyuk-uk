@@ -65,7 +65,10 @@ const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const
     /* Harden pass 2026-10-03: the label sat at 11px in --color-ink-3 on the steel-100 tray, 4.49:1
        (under AA); it takes the kit's caption tier and --color-ink-2 (6.18:1, data/design/contrast.json). */
     .owner-k { margin: 0; font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-2); }
-    .owner-n { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 650; font-size: 19px; line-height: 1.2; color: var(--color-brand); }
+    /* The place and owner names are LABELS, not headings (no heading here, so the page's outline and
+       its pinned heading counts are unchanged), and rules/design.md #2 sets labels in the body face:
+       --font-body, not the display face (visual-intelligence audit 2026-10-04, rec 6). */
+    .owner-n { margin: 2px 0 6px; font-family: var(--font-body); font-weight: 650; font-size: 19px; line-height: 1.2; color: var(--color-brand); }
     .owner ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
     .owner li { margin: 0; font-size: var(--text-sm); line-height: 1.4; display: flex; align-items: baseline; gap: 0.3em; }
     .owner li::before { content: "↗"; color: var(--color-brass-600); }
@@ -82,7 +85,7 @@ const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const
     .places { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); min-width: 0; }
     /* A whole hairline, not a 3px brass side stripe (impeccable absolute ban, harden pass 2026-10-03). */
     .place { background: var(--color-bone-50); border-radius: 12px; padding: 12px 14px; border: 1px solid var(--color-border); min-width: 0; }
-    .nm { margin: 0; font-family: var(--font-display); font-size: 16px; font-weight: 650; line-height: 1.25; color: var(--color-brand); }
+    .nm { margin: 0; font-family: var(--font-body); font-size: 16px; font-weight: 650; line-height: 1.25; color: var(--color-brand); }
     .who { margin: 1px 0 0; font-size: var(--text-xs); line-height: var(--text-xs--line-height); color: var(--color-ink-3); }
     .facts { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
     .facts li { margin: 0; font-size: var(--text-sm); line-height: 1.45; }
@@ -100,7 +103,8 @@ const CHIP = { no: 'No dogs', lead: 'On a lead', note: 'Good to know' } as const
     .vet svg { margin-top: 1px; }
     .vet rect { fill: var(--color-brand); }
     .vet path { fill: none; stroke: var(--color-brass-200); stroke-width: 2.6; stroke-linecap: round; }
-    .vet p { margin: 0; font-size: 15px; line-height: 1.5; }
+    /* The body line-height (1.6, src/styles/city.css), not 1.5 (visual-intelligence audit 2026-10-04, rec 6). */
+    .vet p { margin: 0; font-size: 15px; line-height: 1.6; }
     @container (width >= 640px) { .places { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
     @container (width >= 800px) { .grp { grid-template-columns: 200px minmax(0, 1fr); } }
   }

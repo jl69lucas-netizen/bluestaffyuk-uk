@@ -215,7 +215,10 @@ const EMAIL_ERR = { empty: 'Please give us your email address.', bad: 'That emai
        does not fill in. Never focusable — tabindex="-1" above. */
     .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
 
-    .note { margin: 0; font-size: var(--text-xs); color: var(--color-text-muted); }
+    /* The privacy note is reading text, so it keeps the 65ch measure every prose paragraph keeps:
+       on the grid layout it ran the full band, 76ch at 768 and 1280 on London
+       (visual-intelligence audit 2026-10-04, rec 6). The card layout is 560px, inside it already. */
+    .note { margin: 0; max-width: 65ch; font-size: var(--text-xs); color: var(--color-text-muted); }
 
     /* THE GRID LAYOUT (`layout="grid"`): flat on its caller's band, no card shell, three
        fields to a row from 1024px. Text colour comes from the band (`currentColor`), the

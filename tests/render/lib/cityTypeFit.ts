@@ -23,7 +23,9 @@
  * AND layout on). city-layout-follows-box reads the same box. Only painted elements are judged.
  *
  * EXEMPTIONS, each named with its reason, never by pattern:
- *   - a `form p`: a form's `p.field` rows are layout (label over control), not reading text.
+ *   - a form ROW: a `form p` that holds a control or its label (`p.field`, label over control)
+ *     is layout, not reading text. A form's TEXT paragraph (the privacy note) is NOT exempt: the
+ *     blanket `form p` skip hid it at 76ch on London (visual-intelligence audit 2026-10-04).
  *     A review is NOT exempt: CityLetter splits it into paragraphs at its sentence breaks, words
  *     and order untouched, so it is held to the same line caps as any other paragraph;
  *   - `[data-city-jump-stepper]` and `[data-city-dial-photo-marker]`: sticky nav furniture, whose
@@ -103,7 +105,10 @@ export function cityTypeFit({ viewport, tier: edges, caps: CAP, fullWidthSpecime
       }
     }
     for (const p of Array.from(root.querySelectorAll('p')).filter(painted)) {
-      if (p.closest('form')) continue;
+      // A form ROW (a paragraph that holds a control or its label) is layout; a form's TEXT
+      // paragraph, the privacy note, is reading text and keeps the measure. The old blanket
+      // `form p` skip hid the note at 76ch on London (visual-intelligence audit 2026-10-04).
+      if (p.closest('form') && p.querySelector('input, select, textarea, label, button')) continue;
       examined++;
       const ch = chOf(p);
       const pw = contentWidth(p);

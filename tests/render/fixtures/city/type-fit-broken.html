@@ -32,6 +32,10 @@
   <h3 class="tall-head">Which Puppy Will You Ask About First Today?</h3>
   <p class="wide">Short but set far wider than seventy-five characters.</p>
   <blockquote><p class="long">A review that is never split runs line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line after line.</p></blockquote>
+  <!-- A form's TEXT paragraph is reading text, not a field row: the contact form's privacy note
+       ran 76ch on London's grid layout at 768 and 1280 while the old `form p` exemption skipped it
+       (visual-intelligence audit 2026-10-04, rec 6). Only a row that holds a control is layout. -->
+  <form><div class="go"><p class="note wide">We reply by email. Your details are used only to answer your enquiry. See our privacy policy.</p></div></form>
   <div class="tall"></div>
 </section>
 </body></html>
