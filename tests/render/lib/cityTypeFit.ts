@@ -16,7 +16,18 @@
  *   2. no paragraph is wider than 75ch of its own font;
  *   3. no paragraph runs more than 8 lines below a 1024px viewport, or 6 from 1024;
  *   4. no section is taller than 2.5 viewports at a phone width (below 768) or 1.6 viewports
- *      from 1280.
+ *      from 1280. ON A CITY PAGE THE UNIT IS THE ANSWER, NOT THE CHAPTER (the breeder's ruling,
+ *      answer board 2026-10-04 q10 (a), "judge height per answer (and per puppy card), not per
+ *      chapter"; docs/reference/answer-board/answers/2026-10-04-london-asset-gate-and-previews-2026-10-04.md):
+ *      in a `.city-chapters` section each H3 answer (`.ch`: its question, photo, prose and ladder)
+ *      is held to the cap on its own, and so is the chapter's frame (everything that is not an
+ *      answer: the H2, its photo, the lede and the close); in the puppy cards
+ *      (`.city-ticket-strip`) each card (`.pc`) is held to it. A long chapter of answers that each
+ *      fit is not a defect; one answer over the cap still is (fixtures: type-fit-broken.html
+ *      `city-answer-tall` and `city-card-tall`; type-fit-good.html `city-answers-fit`). A chapter
+ *      section with no painted answer, or a card band with no painted card, is judged whole, as
+ *      every other section is. A city component nested inside another (the places list inside an
+ *      answer) is no section: its height counts toward the answer that holds it.
  * A heading's tier is its section's: the content box of its `.city-kit` root, against the edges
  * the caller passes (tests/render/lib/cityTiers.ts, read from src/lib/cityKit.ts TIER: phone
  * below 640px, tablet from 640, desktop from 800 — the edges src/styles/city.css switches type
@@ -119,11 +130,39 @@ export function cityTypeFit({ viewport, tier: edges, caps: CAP, fullWidthSpecime
     }
     const tall = viewport < 768 ? 2.5 : viewport >= 1280 ? 1.6 : Infinity;
     const sheetFullWidth = fullWidthSpecimen && root.matches('.city-sheet');
-    if (Number.isFinite(tall) && !sheetFullWidth) {
-      examined++;
-      const h = root.getBoundingClientRect().height;
-      if (h > tall * window.innerHeight) {
-        defects.push(`${where}: the section is ${Math.round(h)}px tall, over ${tall} viewports (${Math.round(tall * window.innerHeight)}px)`);
+    // A city component mounted INSIDE another one (the London places list and the video-call
+    // checklist, inside a chapter's answer) is a piece of that answer, not a section: its headings
+    // and paragraphs are judged above, and its height is part of the answer that holds it, which
+    // is judged (q10 (a), 2026-10-04). Judging it again as a "section" reported one tall answer twice.
+    const nested = !!root.parentElement?.closest('.city-kit');
+    if (Number.isFinite(tall) && !sheetFullWidth && !nested) {
+      const cap = tall * window.innerHeight;
+      const over = (h: number) => `${Math.round(h)}px tall, over ${tall} viewports (${Math.round(cap)}px)`;
+      // q10 (a), 2026-10-04: per answer and per card, not per chapter (see 4. above).
+      const answers = root.matches('.city-chapters') ? Array.from(root.querySelectorAll('.ch')).filter(painted) : [];
+      const cards = root.matches('.city-ticket-strip') ? Array.from(root.querySelectorAll('.pc')).filter(painted) : [];
+      if (answers.length) {
+        let inAnswers = 0;
+        for (const ch of answers) {
+          examined++;
+          const h = ch.getBoundingClientRect().height;
+          inAnswers += h;
+          const q = ch.querySelector('h3');
+          if (h > cap) defects.push(`${where}: the H3 answer "${q ? name(q) : name(ch)}" is ${over(h)}`);
+        }
+        examined++;
+        const frame = root.getBoundingClientRect().height - inAnswers;
+        if (frame > cap) defects.push(`${where}: the chapter's frame (heading, photo, lede, close) is ${over(frame)}`);
+      } else if (cards.length) {
+        for (const card of cards) {
+          examined++;
+          const h = card.getBoundingClientRect().height;
+          if (h > cap) defects.push(`${where}: a puppy card "${name(card)}" is ${over(h)}`);
+        }
+      } else {
+        examined++;
+        const h = root.getBoundingClientRect().height;
+        if (h > cap) defects.push(`${where}: the section is ${over(h)}`);
       }
     }
   }

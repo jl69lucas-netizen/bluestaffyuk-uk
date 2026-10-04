@@ -586,6 +586,15 @@ for (const kind of ['broken', 'good'] as const) {
 
 // The type check reads the tier from the section's own box at cityKit's edges (I4, M9): a 27px H2
 // in a 650px and in a 790px box is over the TABLET cap, at every viewport.
+      // q10 (a), 2026-10-04: one over-tall H3 answer, and one over-tall puppy card, still fail
+      // when height is judged per answer and per card rather than per chapter.
+      if (viewport < 768 || viewport >= 1280) {
+        kinds.push(['answer height', /^city-chapters .*the H3 answer "An Answer That Runs On" is \d+px tall/]);
+        kinds.push(['card height', /^city-ticket-strip .*a puppy card "Byrd" is \d+px tall/]);
+      }
+      // ...and the piece nested in that answer is not reported a second time as a section.
+      expect(r.defects.some((d) => /^city-places-by-publisher .*the section is/.test(d)),
+        `a nested component was judged as a section: ${r.defects.join(' | ')}`).toBe(false);
 test('city-type-fit reads the tier from the section box, at the TIER edges', async ({ page }, testInfo) => {
   const viewport = testInfo.project.use.viewport!.width;
   await page.setContent(readFileSync(new URL('./fixtures/city/type-fit-tier-broken.html', import.meta.url), 'utf8'));
