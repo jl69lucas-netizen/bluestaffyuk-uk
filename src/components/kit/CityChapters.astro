@@ -86,7 +86,7 @@ const WIDE_SIZES = chapterWideSizes(fit);
 // the heading (24px apart on a tablet, 32px from a desktop box, where it stops at 340px).
 const SIZES = citySizes(fit, {
   phone: (B) => `calc(min(${B}, 1132px) - 64px)`,
-  tablet: (B) => `calc((min(${B}, 1164px) - 152px) / 2)`,
+  tablet: (B) => `calc((min(${B}, 1164px) - 152px) * 5 / 12)`,
   desktop: (B) => `min(340px, calc((min(${B}, 1164px) - 160px) / 2))`,
 });
 ---
@@ -228,7 +228,10 @@ const SIZES = citySizes(fit, {
     @container (width >= 640px) {
       .tray { max-width: min(1100px, calc(100% - 2 * var(--space-6))); padding: var(--space-6) var(--space-6); }
       .ch {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        /* 7 : 5, not 1 : 1 (London previews 2026-10-04, FIX-a; the breeder's yes, answer board
+           2026-10-04 q11 (a)): in the 656px column beside the dial and at 640-667px a long question
+           took 4 lines in half the tray; seven-twelfths holds it to 3. */
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
         grid-template-rows: 1fr auto auto 1fr auto;
         grid-template-areas: ". img" "num img" "h3 img" ". img" "text text";
         column-gap: var(--space-5); row-gap: var(--space-3);
