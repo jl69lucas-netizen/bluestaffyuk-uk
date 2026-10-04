@@ -248,6 +248,16 @@ const SIZES = citySizes(fit, {
       .ch :global(.media) { max-width: 340px; }
       .ch:not(.wide) :global(.media-u) { max-width: 340px; }
     }
+    /* A PHOTO BESIDE ITS H4 AND PARAGRAPH (London final fixes P6, the breeder's yes, answer board
+       2026-10-05 q02 (a)): from a desktop box a text-slot photo with `class="beside"` floats right
+       at the 340px every chapter photo takes, and the H4 and paragraph after it wrap beside it;
+       below that it stays in the flow at the text's width. The text column holds its float. */
+    @container (width >= 800px) {
+      .txt { display: flow-root; }
+      .txt > :global(.bl-img.sec-img.beside) {
+        float: right; width: 340px; max-width: 340px; margin: var(--space-2) 0 var(--space-3) var(--space-6);
+      }
+    }
     /* A wide chapter (an infographic) keeps one column at every width: heading, image, prose. */
     .ch.wide { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "num" "h3" "img" "text"; }
     .ch.wide .txt { margin-top: 0; }

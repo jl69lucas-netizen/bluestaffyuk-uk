@@ -67,7 +67,7 @@ import CityTicketStrip from '../../components/kit/CityTicketStrip.astro';
 import CityLookListenChecklist, { type CheckPane } from '../../components/kit/CityLookListenChecklist.astro';
 import CityPlacesByPublisher from '../../components/kit/CityPlacesByPublisher.astro';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
-import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, chapterTextSizes, chapterWideSizes, depositBrief, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
+import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, chapterBesideSizes, chapterTextSizes, chapterWideSizes, depositBrief, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
 import { guaranteePhraseOf, guaranteeWords, type GuaranteeSettings } from '../../lib/guarantee';
 import { numberWord } from '../../lib/recordText';
 
@@ -165,6 +165,8 @@ const infographic = (slot: string, alt: string): BodyAsset => {
 // A photo in a chapter's text column, and one in a wide chapter's (full-width) text.
 const TEXT_SIZES = chapterTextSizes();
 const WIDE_TEXT_SIZES = chapterWideSizes();
+// A photo floated beside its H4 and paragraph from a desktop box (London final fixes P6).
+const BESIDE_SIZES = chapterBesideSizes();
 const IG = {
   'deposit-steps': infographic('deposit-steps', ''),
   'delivery-route': infographic('delivery-route',
@@ -487,7 +489,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     chapters={[
       { place: 'The parents', question: tree('litter-prices', 0), asset: photo('litter-parents'),
         text: 'Maggie is our dam and Jones our sire, both our own dogs.' },
-      { place: 'The prices', question: tree('litter-prices', 1), asset: photo('litter-prices-card'), wide: true,
+      { place: 'The prices', question: tree('litter-prices', 1), asset: photo('litter-prices-card'),
         text: "The table gives every puppy's sex, colour, price and status." },
       { place: 'At a glance', question: tree('litter-prices', 2), asset: IG['litter-prices-figures'], wide: true,
         text: `${cap(LITTER)} are left: ${BOYS} boys and ${GIRLS} girls. A ${DEPOSIT} deposit holds any one of them and comes off the price. The list changes as puppies are reserved, so tell us which one you like and we confirm it is still free.` },
@@ -509,8 +511,12 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <p><a href="/buy-blue-staffy-puppies-uk/">Buy Blue Staffy puppies in the UK</a> on our main buying page.</p>
       <h4>{tree('litter-prices', 1, 0)}</h4>
       <p>On our available puppies list, linked at the top of this page, where each puppy has its own page.</p>
+      {/* London final fixes P6 (the breeder's yes, answer board 2026-10-05 q02 (a)): this answer's
+          photo sits beside the question like every other photo answer (no `wide`), and this H4's
+          photo sits beside its H4 and paragraph from a desktop box, so it comes just before the
+          H4 in the source (CityChapters `.bl-img.beside`, floated right). */}
+      <BodyImage asset={photo('litter-counter')} srcset={photo('litter-counter').srcset} box="uniform" sizes={BESIDE_SIZES} focal="50% 55%" class="beside" />
       <h4>{tree('litter-prices', 1, 1)}</h4>
-      <BodyImage asset={photo('litter-counter')} srcset={photo('litter-counter').srcset} box="uniform" sizes={WIDE_TEXT_SIZES} focal="50% 55%" />
       <p>Because our price is the price: {BOY_PRICE} for a boy, {GIRL_PRICE} for a girl. It pays for named parents, a home-raised litter, the paperwork and our {GUARANTEE_LOWER}. A price far below that is a reason to ask more questions.</p>
     </Fragment>
     <p><a href="#enquiry">Ask about a puppy from this litter</a>, and say whether you would like delivery or collection.</p>

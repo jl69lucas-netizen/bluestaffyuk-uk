@@ -131,6 +131,12 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
       th, td { display: table-cell; }
       tbody td[data-label]::before { content: none; }
     }
+    /* In a chapter (bare), a table row takes 8px above and below, not 12 (London final fixes P6,
+       the breeder's yes, answer board 2026-10-05 q02 (a)): the answer it sits in ran over the
+       per-answer height cap at 1280. The stacked phone slips below a 640px box are unchanged. */
+    @container (width >= 640px) {
+      .bare tbody th, .bare tbody td { padding-block: var(--space-2); }
+    }
     @container (width >= 800px) {
       .tray { max-width: min(1000px, calc(100% - 2 * var(--space-5))); margin-block: var(--space-2); }
       .tray { padding: var(--space-6) var(--space-6) var(--space-5); }

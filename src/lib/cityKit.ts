@@ -148,6 +148,18 @@ export function chapterTextSizes(fit: CityFit = 'column'): string {
   });
 }
 
+/** The `sizes` of a photograph set BESIDE its H4 and paragraph in a chapter's text (CityChapters
+ *  `.bl-img.beside`; London final fixes P6, the breeder's yes, answer board 2026-10-05 q02 (a)):
+ *  the chapter text's width on a phone and a tablet box, where it stays in the flow, and from a
+ *  desktop box (800px) the 340px column every chapter photo takes, floated right of the prose. */
+export function chapterBesideSizes(fit: CityFit = 'column'): string {
+  return citySizes(fit, {
+    phone: (B) => `calc(min(${B}, 1132px) - 64px)`,
+    tablet: (B) => `min(760px, calc(min(${B}, 1164px) - 128px))`,
+    desktop: () => '340px',
+  });
+}
+
 /** Words a full stop ends without ending the sentence (lower-cased, without the stop). */
 const ABBREVIATIONS = new Set(['mr', 'mrs', 'ms', 'dr', 'st', 'mt', 'no', 'vs', 'etc', 'e.g', 'i.e']);
 
