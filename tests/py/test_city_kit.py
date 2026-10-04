@@ -233,8 +233,11 @@ def test_every_city_root_carries_the_city_type_base():
     css = CITY_CSS.read_text(encoding="utf-8")
     assert ".city-kit :where(h1, h2, h3) { font-weight: 700; color: var(--color-brand); }" in css
     for shared in (KIT_CSS, ROOT / "src/styles/global.css", ROOT / "src/styles/tokens.css"):
-        text = shared.read_text(encoding="utf-8")
-        assert ".city-kit" not in text and "--city-" not in text, shared.name
+        text = re.sub(r"/\*.*?\*/", "", shared.read_text(encoding="utf-8"), flags=re.S)
+        # global.css names `.city-kit` once, inside the reading-link rule's `:not()` exclusion,
+        # which leaves the city kit out (2026-10-04); no city RULE may live there.
+        assert ".city-kit" not in _city_rules_outside_exclusions(text, _board_styles_city_exclusions()), shared.name
+        assert "--city-" not in text, shared.name
 
 
 def _ts_const(name):
@@ -399,11 +402,16 @@ def _not_groups(css):
 
 
 def _board_styles_city_exclusions():
-    """The exact `:not()` groups src/styles/board-styles.css writes to leave city headings alone
-    (the body-heading scale and the gutter rule, Known Issue 97): each names `.city-kit` and is
-    an exclusion, not a city rule."""
-    src = re.sub(r"/\*.*?\*/", "", (ROOT / "src/styles/board-styles.css").read_text(encoding="utf-8"), flags=re.S)
-    return {_norm_selector(g) for g in _not_groups(src) if ".city-kit" in g and ":not(:not(" not in g}
+    """The exact `:not()` groups the site-wide sheets write to leave the city kit alone: in
+    src/styles/board-styles.css, the body-heading scale and the gutter rule (Known Issue 97); in
+    src/styles/global.css, the reading-link underline's general selector (answer board 2026-10-03
+    q01, whose city half lives in src/styles/city.css). Each names `.city-kit` and is an
+    exclusion, not a city rule."""
+    out = set()
+    for sheet in ("board-styles.css", "global.css"):
+        src = re.sub(r"/\*.*?\*/", "", (ROOT / "src/styles" / sheet).read_text(encoding="utf-8"), flags=re.S)
+        out |= {_norm_selector(g) for g in _not_groups(src) if ".city-kit" in g and ":not(:not(" not in g}
+    return out
 
 
 def _city_rules_outside_exclusions(css, exclusions):
@@ -439,10 +447,16 @@ def test_the_built_pages_ship_none_of_the_city_nav_css():
     """Task 7b review, item 5: with the picks out of PageShell, Astro bundles their CSS only
     where a page imports them. The twelve built pages carry no rule of the city nav set, and no
     rule or token of the city type scale either (the Task 7b quality review, I2)."""
+    from _slugs import resolve_page
     rebuilt = json.loads((ROOT / "data/facts/rebuilt.json").read_text())
     exclusions = _board_styles_city_exclusions()
-    for slug in rebuilt:
-        path = ROOT / "dist" / ("index.html" if slug == "index" else f"{slug}/index.html")
+    # A rebuilt CITY page (London, the thirteenth) mounts the city kit, so it ships city CSS by
+    # design. Its key is the bare slug and its route is uk-locations/<slug> (scripts/_slugs.py):
+    # read as dist/<key>/ it was never found, and the skip below hid every page after it.
+    pages = [(k, r) for k in rebuilt for r in [resolve_page(k, ROOT)[1]] if not r.startswith("uk-locations/")]
+    assert len(pages) >= 12, pages
+    for slug, route in pages:
+        path = ROOT / "dist" / (f"{route}/index.html" if route else "index.html")
         if not path.exists():
             pytest.skip("run npm run build first")
         css = " ".join(re.findall(r"<style[^>]*>(.*?)</style>", path.read_text(encoding="utf-8"), re.S))

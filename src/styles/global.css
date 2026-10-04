@@ -77,14 +77,14 @@
    NOT chrome: the header, the footer and the breadcrumb sit outside <main>; a <nav>, a kit
    component (its class begins `kit-`: buttons, cards, the section sheet, the contact card) and
    the city kit keep their own link treatment. The general selector is wrapped in :where(), so any
-   component rule that styles its own link still wins. The city kit's paragraphs keep the selector
-   (and the specificity) the London pass gave them in src/styles/city.css. */
+   component rule that styles its own link still wins. The city kit's paragraph links take the same
+   underline from src/styles/city.css, with the selector and specificity the London pass gave them:
+   a city rule ships only where a city component is mounted (tests/py/test_city_kit.py, I2), so
+   this file names `.city-kit` only inside the exclusion below. */
 @layer components {
-  :where(main :is(p:not(form *), li, dd, td, figcaption, blockquote) a:not(:is([class^="kit-"], [class*=" kit-"], .city-kit, nav) *)),
-  .city-kit :where(p:not(form *)) a {
+  :where(main :is(p:not(form *), li, dd, td, figcaption, blockquote) a:not(:is([class^="kit-"], [class*=" kit-"], .city-kit, nav) *)) {
     text-decoration-line: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
     text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
   }
-  :where(main :is(p:not(form *), li, dd, td, figcaption, blockquote) a:not(:is([class^="kit-"], [class*=" kit-"], .city-kit, nav) *)):hover,
-  .city-kit :where(p:not(form *)) a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; }
+  :where(main :is(p:not(form *), li, dd, td, figcaption, blockquote) a:not(:is([class^="kit-"], [class*=" kit-"], .city-kit, nav) *)):hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; }
 }
