@@ -1,0 +1,123 @@
+{
+  "answers": [
+    {
+      "choice": "b",
+      "choiceLabel": "A1-2 · Three pups in ID collars on a sofa",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "A1 · The \"Certificate of Health\" picture (Kennel Club registration check). Which photo?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "A2-1 · Two pups asleep in a crate bed",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "A2 · The van with phone digits (DEFRA-approved transport). Which photo?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "A3-2 · Three pups in a bed beside bowls and toys",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "A3 · The \"DEFRA transport partners\" diagram (delivery cost and what to bring). Which photo?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "A4-2 · Young pups exploring their whelping pen",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "A4 · The \"vs Classified Ads\" chart (why our price is our price). Which photo?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "A5-1 · A pup on a lap, being stroked",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "A5 · The \"Myths vs Facts\" chart (are Blue Staffies aggressive, or just attached to their people?). Which photo?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "In the deposit and viewing chapter, in place of the photo with no face",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "Where should your photo go on the London page?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Approve all six as written",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "question": "Approve the six puppy lines?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "c",
+      "choiceLabel": "CARD-3 · The steel pass",
+      "key": "q08",
+      "kind": "choice",
+      "n": 8,
+      "question": "Which puppy card design?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "CTA-1 · Turn the four existing enquire links into buttons",
+      "key": "q09",
+      "kind": "choice",
+      "n": 9,
+      "question": "Which mid-page call to action?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Judge height per answer (and per puppy card), not per chapter",
+      "key": "q10",
+      "kind": "choice",
+      "n": 10,
+      "question": "Long chapters are over the height limit, and CSS alone can't fix it. How should it be handled?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, apply all three",
+      "key": "q11",
+      "kind": "choice",
+      "n": 11,
+      "question": "Apply the three layout fixes (FIX-a, b, c on the previews page)?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-04T21:21:51.991Z",
+  "batchId": "2026-10-04-london-asset-gate-and-previews",
+  "counts": {
+    "answered": 11,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-04T21-21-51-990Z"
+}
