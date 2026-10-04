@@ -44,6 +44,24 @@ function untilReset(resetsAt: string | undefined, now: number): string {
   return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60}m`
 }
 
+
+// The work clock, the one line under the prompt: session time, commits today, time since the
+// last commit (rule 3: finished work is committed), and how many page-run items wait on the user.
+const ago = (ms: number) => {
+  const m = Math.max(0, Math.floor(ms / 60000))
+  return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}m`
+}
+function workClock(startedAt: number | undefined, now: number, commits: number[] | null, waiting: number | null): string {
+  const parts: string[] = []
+  if (startedAt) parts.push(`⏱ ${ago(now - startedAt)}`)
+  if (commits) {
+    parts.push(`commits today ${commits.length}`)
+    if (commits.length) parts.push(`last commit ${ago(now - commits[0])} ago`)
+  }
+  if (waiting) parts.push(`▲ ${waiting} waiting on you`)
+  return parts.join('  ·  ')
+}
+
 let lastReplyAt: number | null = null
 
 async function refresh($: any) {
@@ -69,6 +87,7 @@ async function refresh($: any) {
   let stop: number | null = null
   let row: number | null = null
   let rowName: string | null = null
+  let waiting: number | null = null
   try {
     const r = await $.process.run(['python3', 'scripts/pipeline_status.py'], { timeoutMs: 20_000 })
     if (r.exitCode === 0) {
@@ -76,9 +95,17 @@ async function refresh($: any) {
       stop = rt.stops_done
       row = rt.now
       rowName = rt.now_name
+      waiting = Array.isArray(rt.needs_you) ? rt.needs_you.length : null
     }
   } catch {
     // not a BSUK checkout: the band leaves the page run out
+  }
+  let commits: number[] | null = null
+  try {
+    const r = await $.process.run(['git', 'log', '--since=midnight', '--format=%ct'], { timeoutMs: 10_000 })
+    if (r.exitCode === 0) commits = r.stdout.split('\n').filter(Boolean).map((t: string) => Number(t) * 1000)
+  } catch {
+    // not a git checkout: the clock leaves commits out
   }
   let agentsRunning = 0
   try {
@@ -101,7 +128,7 @@ async function refresh($: any) {
     agentsRunning,
   }
   await update($, gauges, () => g)
-  $.ui.status(undefined) // the band above the prompt carries this; no status line below
+  $.ui.status(workClock(u.startedAt, now, commits, waiting) || undefined)
 }
 
 export const register: Register = on => {
