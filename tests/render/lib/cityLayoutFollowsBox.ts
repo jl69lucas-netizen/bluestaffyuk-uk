@@ -11,12 +11,21 @@
  * It cannot pass having examined nothing: it returns the number of facts it judged, the caller
  * treats zero at 768px and up as a defect, every SPEC key that matches no root on the page is a
  * defect, and a fact whose node is missing is a defect, never a skip. Runs INSIDE the page
- * (`page.evaluate(cityLayoutFollowsBox, { viewport, tier })`).
+ * (`page.evaluate(cityLayoutFollowsBox, { viewport, tier, absent })`).
+ *
+ * `absent` (2026-10-04): the SPEC keys the CALLER says this page does not carry, each with its
+ * reason. Every key was required on every route, which held while the London scaffold mounted all
+ * fifteen picks; the page written from its approved board (9b00c855) carries no puppy sheet and no
+ * video panel, so `.city-sheet` and `.city-video` were reported missing at every width on a page
+ * that is right. The caller derives the list from the page's board record (a key whose component
+ * the board does not mount; tests/render/city-kit.spec.ts `absentFor`), never by hand, so a key
+ * whose component IS on the board and matches nothing is still a defect, and a key declared absent
+ * that the page DOES carry is a defect too (a stale declaration).
  */
 export interface LayoutResult { examined: number; defects: string[] }
 
-export function cityLayoutFollowsBox({ viewport, tier: edges }:
-  { viewport: number; tier: { tablet: number; desktop: number } }): LayoutResult {
+export function cityLayoutFollowsBox({ viewport, tier: edges, absent = {} }:
+  { viewport: number; tier: { tablet: number; desktop: number }; absent?: Record<string, string> }): LayoutResult {
   type Fact = ['beside', string, string] | ['under', string, string] | ['row', string, number] | ['square', string] | ['fill', string, string];
   const SPEC: Record<string, { tablet: Fact[]; desktop: Fact[] }> = {
     '.city-takeaways-ledger': { tablet: [['beside', '.row dt', '.row dd']], desktop: [['beside', '.pic', 'dl']] },
@@ -52,6 +61,10 @@ export function cityLayoutFollowsBox({ viewport, tier: edges }:
   let examined = 0;
   for (const [sel, tiers] of Object.entries(SPEC)) {
     const roots = Array.from(document.querySelectorAll<HTMLElement>(sel));
+    if (sel in absent) {
+      if (roots.length) defects.push(`${sel} is declared absent (${absent[sel]}) but the page carries it`);
+      continue;
+    }
     if (!roots.length) { defects.push(`${sel} matches no section on the page`); continue; }
     for (const root of roots) {
       const w = contentWidth(root);
@@ -97,4 +110,31 @@ export function cityLayoutFollowsBox({ viewport, tier: edges }:
   }
   if (viewport >= 768 && examined === 0) defects.push(`examined no layout fact at ${viewport}px, where every section is tablet or desktop`);
   return { examined, defects };
+}
+
+/**
+ * The kit component each SPEC key above stands for (its id in src/components/kit/_registry.ts and
+ * in a board record's `sections[].component`). Node side only: the caller reads a page's board
+ * record and passes, as `absent`, every key whose component the board does not mount.
+ * tests/render/city-kit.spec.ts holds this list to the SPEC keys in the function's own source.
+ */
+export const SPEC_COMPONENT: Record<string, string> = {
+  '.city-takeaways-ledger': 'city-takeaways-ledger',
+  '.city-sheet': 'city-puppy-sheet',
+  '.city-roster': 'city-roster',
+  '.city-video': 'city-video-panel',
+  '.city-chapters:has(.ch:not(.wide))': 'city-chapters',
+  '.city-letter': 'city-letter',
+  '.city-faq.has-rail': 'city-faq-ledger',
+  '.city-newsletter-notice': 'city-newsletter-notice',
+  '.city-contact': 'city-contact-lineup',
+};
+
+/** `absent` for a page from its board record: each SPEC key whose component the board mounts on
+ *  no section, with the reason. A route with no board (the specimen routes) declares nothing. */
+export function absentFromBoard(board: { meta: { slug: string }; sections: { component?: string }[] } | null): Record<string, string> {
+  if (!board) return {};
+  const mounted = new Set(board.sections.map((s) => s.component));
+  return Object.fromEntries(Object.entries(SPEC_COMPONENT).filter(([, c]) => !mounted.has(c))
+    .map(([sel, c]) => [sel, `data/boards/${board.meta.slug}.json mounts no ${c}`]));
 }

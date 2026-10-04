@@ -7,7 +7,8 @@ import './checks/img.js';
 import './checks/nav.js';
 import { readFileSync } from 'node:fs';
 import { cityTypeFit } from './lib/cityTypeFit.js';
-import { cityLayoutFollowsBox } from './lib/cityLayoutFollowsBox.js';
+import { cityLayoutFollowsBox, absentFromBoard, SPEC_COMPONENT } from './lib/cityLayoutFollowsBox.js';
+import { cityChapterImageFirst } from './lib/cityChapterImageFirst.js';
 import { TIER, HEADING_CAPS } from './lib/cityTiers.js';
 
 /**
@@ -25,6 +26,15 @@ import { TIER, HEADING_CAPS } from './lib/cityTiers.js';
  * fixed in the component, never excused here.
  */
 const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/', '/uk-locations/blue-staffy-puppies-london/'];
+// A real city page's approved board says which city components it mounts; a SPEC key of
+// city-layout-follows-box whose component the board does not mount is declared absent, never
+// demanded (tests/render/lib/cityLayoutFollowsBox.ts `absent`, 2026-10-04). The specimen routes
+// carry every component and declare nothing.
+const LONDON = '/uk-locations/blue-staffy-puppies-london/';
+const BOARDS: Record<string, { meta: { slug: string }; sections: { component?: string }[] }> = {
+  [LONDON]: JSON.parse(readFileSync(new URL('../../data/boards/blue-staffy-puppies-london.json', import.meta.url), 'utf8')),
+};
+const absentFor = (route: string) => absentFromBoard(BOARDS[route] ?? null);
 const REUSED = [
   'layout-no-horizontal-overflow',
   'layout-min-font-size',
@@ -341,13 +351,12 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-chapters': {
     present: '.city-chapters',
     run: async (page) => {
-      const out: string[] = [];
-      const bad = await page.evaluate(() => Array.from(document.querySelectorAll('.city-chapters h3')).filter((h) => {
-        const next = h.nextElementSibling;
-        return !next || !next.matches('img.bl-img');
-      }).length);
-      if (bad) out.push(`${bad} chapter heading(s) not followed straight by their .bl-img photo (layout-h3-image-first)`);
-      return out;
+      // tests/render/lib/cityChapterImageFirst.ts: an `img.bl-img`, or a `<picture>` holding one.
+      const r = await page.evaluate(cityChapterImageFirst);
+      if (!r.examined) return ['the page has .city-chapters but no chapter H3 to examine'];
+      return r.bad.length
+        ? [`${r.bad.length} chapter heading(s) not followed straight by their .bl-img photo (layout-h3-image-first): ${r.bad.join(' | ')}`]
+        : [];
     },
   },
   'city-letter': {
@@ -421,8 +430,9 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-layout-follows-box': {
     present: '.city-kit',
     run: async (page, viewport) => {
-      const r = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER });
-      console.log(`city-layout-follows-box @ ${viewport}px: examined ${r.examined}`);
+      const absent = absentFor(new URL(page.url()).pathname);
+      const r = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER, absent });
+      console.log(`city-layout-follows-box @ ${viewport}px: examined ${r.examined}, declared absent ${Object.keys(absent).join(', ') || 'none'}`);
       return r.defects;
     },
   },
@@ -576,6 +586,15 @@ for (const kind of ['broken', 'good'] as const) {
       ];
       // Section height is judged at a phone width and from 1280 only (the ruling's two caps).
       if (viewport < 768 || viewport >= 1280) kinds.push(['section height', /the section is \d+px tall/]);
+      // q10 (a), 2026-10-04: one over-tall H3 answer, and one over-tall puppy card, still fail
+      // when height is judged per answer and per card rather than per chapter.
+      if (viewport < 768 || viewport >= 1280) {
+        kinds.push(['answer height', /^city-chapters .*the H3 answer "An Answer That Runs On" is \d+px tall/]);
+        kinds.push(['card height', /^city-ticket-strip .*a puppy card "Byrd" is \d+px tall/]);
+      }
+      // ...and the piece nested in that answer is not reported a second time as a section.
+      expect(r.defects.some((d) => /^city-places-by-publisher .*the section is/.test(d)),
+        `a nested component was judged as a section: ${r.defects.join(' | ')}`).toBe(false);
       for (const [what, re] of kinds) {
         expect(r.defects.some((d) => re.test(d)), `city-type-fit did not report the ${what} defect: ${r.defects.join(' | ')}`).toBe(true);
       }
@@ -586,15 +605,6 @@ for (const kind of ['broken', 'good'] as const) {
 
 // The type check reads the tier from the section's own box at cityKit's edges (I4, M9): a 27px H2
 // in a 650px and in a 790px box is over the TABLET cap, at every viewport.
-      // q10 (a), 2026-10-04: one over-tall H3 answer, and one over-tall puppy card, still fail
-      // when height is judged per answer and per card rather than per chapter.
-      if (viewport < 768 || viewport >= 1280) {
-        kinds.push(['answer height', /^city-chapters .*the H3 answer "An Answer That Runs On" is \d+px tall/]);
-        kinds.push(['card height', /^city-ticket-strip .*a puppy card "Byrd" is \d+px tall/]);
-      }
-      // ...and the piece nested in that answer is not reported a second time as a section.
-      expect(r.defects.some((d) => /^city-places-by-publisher .*the section is/.test(d)),
-        `a nested component was judged as a section: ${r.defects.join(' | ')}`).toBe(false);
 test('city-type-fit reads the tier from the section box, at the TIER edges', async ({ page }, testInfo) => {
   const viewport = testInfo.project.use.viewport!.width;
   await page.setContent(readFileSync(new URL('./fixtures/city/type-fit-tier-broken.html', import.meta.url), 'utf8'));
@@ -642,7 +652,7 @@ for (const route of ROUTES) {
       await page.evaluate(() => document.fonts.ready);
       const fullWidthSpecimen = route === '/kit-preview/city/';
       const t = await page.evaluate(cityTypeFit, { viewport: width, tier: TIER, caps: HEADING_CAPS, fullWidthSpecimen });
-      const l = await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER });
+      const l = await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER, absent: absentFor(route) });
       console.log(`${route} @ ${width}px: city-type-fit examined ${t.examined}, city-layout-follows-box examined ${l.examined}`);
       expect(t.examined).toBeGreaterThan(0);
       const scale = await priceScaleSpill(page);
@@ -730,4 +740,46 @@ test('a keyboard focus inside the band on a browser without :focus-visible throw
     null, { timeout: 10_000, polling: 'raf' }).catch(() => {});
   expect(await page.evaluate(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked')),
     'with the hold unknowable, scrolling down still tucks the band').toBe(true);
+});
+
+// city-layout-follows-box's `absent` (2026-10-04): London's approved board mounts no puppy sheet
+// and no video panel, and the check reported both "matches no section on the page" at every width.
+// A declared-absent key is not demanded; every other key still is; and a key declared absent that
+// the page carries is a defect (a stale declaration).
+test('city-layout-follows-box honours a declared-absent key, demands the rest, refuses a stale one', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp1280', 'run once');
+  await page.setContent('<main><p>No city section here.</p></main>');
+  const r = await page.evaluate(cityLayoutFollowsBox, { viewport: 1280, tier: TIER, absent: { '.city-sheet': 'not on this board' } });
+  expect(r.defects.some((d) => d.startsWith('.city-sheet ')), r.defects.join(' | ')).toBe(false);
+  expect(r.defects.some((d) => /^\.city-video matches no section on the page/.test(d)), r.defects.join(' | ')).toBe(true);
+  await page.setContent('<section class="city-sheet" style="width:900px"></section>');
+  const r2 = await page.evaluate(cityLayoutFollowsBox, { viewport: 1280, tier: TIER, absent: { '.city-sheet': 'not on this board' } });
+  expect(r2.defects.some((d) => /^\.city-sheet is declared absent .* but the page carries it/.test(d)), r2.defects.join(' | ')).toBe(true);
+});
+
+// The declaration is derived from the board, never typed: London's is exactly the two components
+// its board does not mount, and SPEC_COMPONENT names every SPEC key in the function's own source.
+test("London's declared-absent keys are the components its board does not mount", async ({}, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp1280', 'run once');
+  expect(Object.keys(absentFor(LONDON)).sort()).toEqual(['.city-sheet', '.city-video']);
+  const keys = [...cityLayoutFollowsBox.toString().matchAll(/["'](\.city[^"']*)["']:\s*\{\s*tablet/g)].map((m) => m[1]).sort();
+  expect(keys.length).toBeGreaterThan(5);
+  expect(Object.keys(SPEC_COMPONENT).sort()).toEqual(keys);
+});
+
+// The city-chapters probe (tests/render/lib/cityChapterImageFirst.ts) against its own cases: the
+// photo straight after the H3 as an `img.bl-img` or a `<picture>` holding one passes; prose first,
+// or a `<picture>` with no `.bl-img`, fails (2026-10-04: the probe had read the art-directed
+// infographics' `<picture>` as "no photo" on London at every width).
+test('the city-chapters probe takes a picture wrapping a .bl-img and still fails prose first', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp1280', 'run once');
+  await page.setContent(`<section class="city-chapters">
+    <div class="ch"><h3>Good Img</h3><img class="bl-img" alt="a"><p>Prose.</p></div>
+    <div class="ch"><h3>Good Picture</h3><picture><source media="(max-width: 639px)" srcset="x.webp"><img class="bl-img" alt="b"></picture><p>Prose.</p></div>
+    <div class="ch"><h3>Prose First</h3><p>Prose.</p><img class="bl-img" alt="c"></div>
+    <div class="ch"><h3>Bare Picture</h3><picture><img alt="d"></picture></div>
+  </section>`);
+  const r = await page.evaluate(cityChapterImageFirst);
+  expect(r.examined).toBe(4);
+  expect(r.bad).toEqual(['Prose First', 'Bare Picture']);
 });
