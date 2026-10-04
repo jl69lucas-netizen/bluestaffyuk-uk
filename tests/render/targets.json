@@ -169,6 +169,12 @@
       "cluster_cleared": "grandfathered: blocking before this record existed (2026-09-26); no advisory period is on record for it",
       "false_reports": 0
     },
+    "nav-breadcrumb-baseline-aligned": {
+      "scope": "all",
+      "since": "2026-10-04",
+      "cluster_cleared": "new 2026-10-04 (visual-intelligence audit rec 8) together with the baseline-aligned <ol> in src/components/Breadcrumb.astro that makes it pass: blocking on every page from its first run, because every routed page with a trail had its current crumb 10px above the 44px crumb links (D3); the first full run after the fix examined 144 crumb pairs over 21 pages x 3 widths with 0 defects, and the home page has no trail and examines nothing",
+      "false_reports": 0
+    },
     "nav-breadcrumb-separator-spaced": {
       "scope": "all",
       "since": "2026-09-30",
