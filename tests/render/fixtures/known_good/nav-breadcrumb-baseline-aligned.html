@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>every breadcrumb on one baseline</title>
+<!-- The same 44px crumb links, with the <ol> aligning its items on their baselines, so the current
+     crumb and its › sit on the line the crumb links' text does. The last crumb is long enough to
+     wrap at 375, where its continuation is a new line and is not compared with the row above. -->
+<style>body { margin: 0; font: 17px/1.65 Georgia, serif; } .container { padding-inline: 24px; }
+nav[aria-label="Breadcrumb"].container > ol { align-items: baseline; }
+nav[aria-label="Breadcrumb"].container > ol > li { display: flex; align-items: baseline; gap: 8px; }
+nav[aria-label="Breadcrumb"].container > ol > li > a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 8px; margin-inline: -8px; }</style>
+</head><body>
+<nav aria-label="Breadcrumb" class="container" style="font-size:14px;padding-top:12px"><ol style="display:flex;gap:8px;list-style:none;padding:0;margin:0;flex-wrap:wrap"><li><a href="/">Home</a></li><li><span aria-hidden="true">›</span> <a href="/uk-locations/">UK Locations</a></li><li><span aria-hidden="true">›</span> <span aria-current="page">How to Choose the Right Blue Staffy Puppy for Your Family in London</span></li></ol></nav>
+<main><h1>Blue Staffy Puppies London</h1></main>
+</body></html>

@@ -23,6 +23,13 @@ const trail = crumbs(path, title);
 </ol></nav>}
 <style is:global>
   @layer components {
+    /* ONE BASELINE FOR THE WHOLE TRAIL (visual-intelligence audit 2026-10-04, rec 8). D3's crumb
+       links are 44px boxes with their text centred; the current crumb is a <span>, and a stretched
+       <ol> left its <li>'s text at the top of the row, about 10px above the links' text. Aligning
+       the <ol>'s items on their baselines puts the current crumb and its › on the links' line; the
+       44px targets and the 8px either side of each › are untouched. Held by
+       tests/render/checks/nav.ts::nav-breadcrumb-baseline-aligned. */
+    nav[aria-label="Breadcrumb"].container > ol { align-items: baseline; }
     nav[aria-label="Breadcrumb"].container > ol > li { display: flex; align-items: baseline; gap: 8px; }
     /* EVERY CRUMB LINK IS A 44x44 TARGET (impeccable D3, the breeder's yes on every page,
        2026-10-03 q04). `.tap-24` gave a 31px line; the link is now a 44px-tall flex box, and it

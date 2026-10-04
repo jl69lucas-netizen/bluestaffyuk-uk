@@ -473,3 +473,69 @@ register({
     };
   },
 });
+
+/**
+ * EVERY BREADCRUMB ON ONE ROW SHARES ONE BASELINE (visual-intelligence audit 2026-10-04, rec 8).
+ *
+ * Impeccable D3 (2026-10-03) made each crumb LINK a 44px-tall inline-flex box with its text
+ * centred. The current crumb is a <span>, not a link, and the <ol> stretched its items, so the
+ * last <li> kept its text at the top of the 44px row: "London" painted about 10px above "Home"
+ * and "UK Locations" at 375 and 1280, on every page with a trail. nav-breadcrumb-separator-spaced
+ * measures horizontal spacing only, so it stayed quiet.
+ *
+ * THE UNIT is one pair of neighbouring painted tokens in reading order — each › separator and
+ * each crumb label (link or current-page span) — that sit on the same row: the later token's
+ * first glyph starts at or right of the earlier token's last glyph. A token that starts left of
+ * its predecessor has wrapped to a new row and is not compared. A pair fails when the bottoms of
+ * the two glyph boxes (same font, same size, so the same baseline offset) differ by more than 1px.
+ * A page with no breadcrumb has nothing to judge (the home page).
+ */
+register({
+  id: 'nav-breadcrumb-baseline-aligned',
+  family: 'NAV',
+  severity: 'blocking',
+  describe: 'every breadcrumb and › on one row shares one baseline',
+  minExamined: 2,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await page.evaluate(() => document.fonts.ready);
+    const r = await page.evaluate(() => {
+      const glyphs = (el: Element) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        return Array.from(range.getClientRects()).filter((x) => x.width > 0 && x.height > 0);
+      };
+      let examined = 0;
+      const bad: string[] = [];
+      for (const nav of Array.from(document.querySelectorAll('nav[aria-label="Breadcrumb" i]'))) {
+        const ol = nav.querySelector('ol, ul');
+        if (!ol || nav.getClientRects().length === 0) continue;
+        const tokens: { name: string; rects: DOMRect[] }[] = [];
+        for (const li of Array.from(ol.children).filter((c) => c.tagName === 'LI')) {
+          for (const child of Array.from(li.children)) {
+            const rects = glyphs(child);
+            if (!rects.length) continue;
+            const text = (child.textContent || '').trim();
+            tokens.push({ name: child.matches('[aria-hidden="true"]') ? `› before "${(li.textContent || '').replace('›', '').trim().slice(0, 30)}"` : `"${text.slice(0, 30)}"`, rects });
+          }
+        }
+        for (let i = 1; i < tokens.length; i++) {
+          const prev = tokens[i - 1].rects[tokens[i - 1].rects.length - 1];
+          const cur = tokens[i].rects[0];
+          if (cur.left < prev.right - 1) continue; // wrapped to a new row
+          examined++;
+          const drift = cur.bottom - prev.bottom;
+          if (Math.abs(drift) > 1) {
+            bad.push(`${tokens[i].name} sits ${Math.abs(Math.round(drift))}px ${drift < 0 ? 'above' : 'below'} ${tokens[i - 1].name}`);
+          }
+        }
+      }
+      return { examined, bad };
+    });
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{ checkId: 'nav-breadcrumb-baseline-aligned', family: 'NAV' as const, viewport, count: r.bad.length, message: r.bad.join(' | ') }]
+        : [],
+    };
+  },
+});

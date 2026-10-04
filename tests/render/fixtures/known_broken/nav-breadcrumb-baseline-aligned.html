@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>the current breadcrumb sitting above the crumb links</title>
+<!-- Today's markup and rules (src/components/Breadcrumb.astro after impeccable D3, 2026-10-03):
+     each crumb LINK is a 44px-tall inline-flex box with its text centred, and each <li> is a
+     baseline flex row. The <ol> is a plain flex row (align-items: stretch), so the last <li>, which
+     holds only the › and the current crumb's <span>, keeps its text at the top of the 44px row: the
+     current crumb "London" paints about 10px above "Home" and "UK Locations" (visual-intelligence
+     audit 2026-10-04, rec 8; nav-breadcrumb-separator-spaced checks spacing only and stayed quiet). -->
+<style>body { margin: 0; font: 17px/1.65 Georgia, serif; } .container { padding-inline: 24px; }
+nav[aria-label="Breadcrumb"].container > ol > li { display: flex; align-items: baseline; gap: 8px; }
+nav[aria-label="Breadcrumb"].container > ol > li > a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 8px; margin-inline: -8px; }</style>
+</head><body>
+<nav aria-label="Breadcrumb" class="container" style="font-size:14px;padding-top:12px"><ol style="display:flex;gap:8px;list-style:none;padding:0;margin:0;flex-wrap:wrap"><li><a href="/">Home</a></li><li><span aria-hidden="true">›</span> <a href="/uk-locations/">UK Locations</a></li><li><span aria-hidden="true">›</span> <span aria-current="page">London</span></li></ol></nav>
+<main><h1>Blue Staffy Puppies London</h1></main>
+</body></html>
