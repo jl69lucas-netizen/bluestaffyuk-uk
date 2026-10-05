@@ -153,6 +153,8 @@ def test_london_carries_every_new_link_and_the_faq_drop(london):
     assert len(hrefs("london-life", "external")) == 1 + 8      # the PDSA row, plus the eight new
     faq_top = [n["intent"] for n in by_id["faq-top"]["tree"]]
     assert len(faq_top) == 5 and not any("Find Blue Staffy Breeders" in i for i in faq_top)
-    assert sum(len(by_id[s]["tree"]) for s in ("faq-top", "faq-middle", "faq-bottom")) == 20
+    # 20 after the 2026-10-03 drop; 19 since the London close proposals dropped "Are Blue Staffies
+    # Good Family Pets, Especially With Children?" (answer board 2026-10-05 london-close-proposals q01 (a)).
+    assert sum(len(by_id[s]["tree"]) for s in ("faq-top", "faq-middle", "faq-bottom")) == 19
     srcs = {r["source"] for r in london["board_revisions"]}
     assert {f"{SRC} q{n:02d}" for n in range(1, 12)} <= srcs
