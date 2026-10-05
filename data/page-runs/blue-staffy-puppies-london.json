@@ -25,22 +25,19 @@
     "commit": "7b76daf883ab799b4866cfd03c1cc414aebaed7e"
   },
   "frontend_design": {
-    "ran_on": "2026-10-03",
+    "ran_on": "2026-10-05",
     "widths": [
       375,
       768,
       1280
     ],
-    "findings": 10,
-    "fixed": 5,
+    "findings": 4,
+    "fixed": 2,
     "deferred": [
-      "D5 (P3 motif): sixteen identical seal dividers at one 154px cadence; a hairline between chapter bands is a motif change, preview docs/reports/frontend-design-london/D5-divider-cadence-{375,1280}-preview.png (working rule 6)",
-      "D6 (P3 motion): no page-load moment; proposed filmstrip settle-in (opacity + 8px rise, 200ms, 60ms stagger, reduced-motion off) is a new motion moment, frames docs/reports/frontend-design-london/D6-hero-settle-{375,1280}-t*.png",
-      "D7 (P2 spacing): chapter tray 12px side inset vs siblings 16/32px; applying it pushed kc-registered-staffy-puppies.webp (500px, no siblings) to 2.05x at 1280 (img-srcset-within-2x), needs a width sibling at the image step first; preview docs/reports/frontend-design-london/D7-tray-gutter-{375,768,1280}-preview.png",
-      "D8 (P2 image): two crops cut baked lettering (Contact Us graphic, Staffordshire/American Bully labels); crop box and focus are the board's image slots (Asset Gate); preview docs/reports/frontend-design-london/D8-crop-*-preview.png",
-      "D9 (P3 chrome): footer legal row baselines 11-12px apart and the contact form kit's privacy link has no hover; shared by every page / four pages, previewed first; preview docs/reports/frontend-design-london/D9-footer-legal-{375,1280}-preview.png"
+      "D1 (P2 chrome): the phone header is two rows and 121px tall, sticky on every screen; one 73px row (brand, pill, menu icon, --hdr 72px below 640px) repaints every page and turns the visible 'Open menu' word into an icon, preview docs/reports/london-harden-2026-10-05/FD-D1-phone-header-375-preview.png (working rule 6)",
+      "D2 (P3 layout): the CARD-3 band sets six cards three across in the reading column at 1024-1280 (265/231px each: meta wraps, trust list one column, delivery stub three lines); two across from 1024 is a layout change to the breeder's CARD-3 pick (2026-10-04 q08 c), preview docs/reports/london-harden-2026-10-05/FD-D2-cards-1280-preview.png"
     ],
-    "commit": "e7181a6a912ad081aab78cfa4802c8621b453580"
+    "commit": "c0476543b659d03c0b1a72b2c94a5d92db793fc2"
   },
   "verification_before_completion": {
     "ran_on": "2026-10-05",
