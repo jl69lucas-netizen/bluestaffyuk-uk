@@ -57,6 +57,17 @@ lines: list rows and the rail's labels ending on a single word (F1, F2).
 | D1 | P2 | The phone header is two rows and 121px tall, sticky on every screen: the brand and the "Available puppies" pill fill the first row, so the menu button wraps to its own | `SiteHeaderKit.astro` (every page) | 375 | **deferred**: shared chrome on every page, and the menu's visible "Open menu" word would become an icon (its name stays in the visually hidden text). Preview: one 73px row, brand · pill · menu icon, `--hdr` 72px below 640px; 48px more reading on every screen: `FD-D1-phone-header-375-{before,preview}{,-scrolled}.png` |
 | D2 | P3 | On a desktop the CARD-3 band sets six cards three across in the reading column (231px each at 1280, 265px at 1024): meta wraps, the trust list falls to one column, the delivery stub runs three lines; at 768 the same cards two across read cleanly | `CityTicketStrip.astro` `.grid` | 1024 1280 | **deferred**: a layout change to the breeder's CARD-3 pick (answer board 2026-10-04 q08 (c)). Preview: two across from 1024 too; the band grows from two rows to three: `FD-D2-cards-1280-{before,preview}.png` |
 
+### Deferred: applied (2026-10-06)
+
+The breeder approved both deferred changes (answer board batch `2026-10-06-london-harden-calls`, rulings `docs/reference/answer-board/answers/2026-10-06-london-harden-calls-2026-10-06.md`). D2 is recorded as London board revision 40 (`d3b8ed40`); D1 is site chrome and is recorded here, as impeccable D3's chrome targets were on 2026-10-03:
+
+| Change | Breeder's answer | Commit | What shipped |
+|---|---|---|---|
+| D1 (site chrome, every kit page) | q04: (a) yes, one row on phones, **with her addition**: "let the 'Available puppies' be in the middle/center. That is logo left, 'Available puppies' and menu icon right on phone." | `f80bcad1` | `SiteHeaderKit` below 640px: one row, the logo at the left, the "Available puppies" pill centred (offset 0px at 320 / 360 / 375 / 639), the menu as its icon at the right, its "Open menu" / "Close menu" word visually hidden and still announced; the row's gap 8px, and under 360px the pill's side padding 16px so 320 fits. `global.css`: `--hdr` 72px at ≤640px on a page that mounts `.kit-hdr` (the legacy `SiteHeader` pages keep 120px). Header 121px → 73px on home, health, the locations hub, London, contact and `/available-puppies/` at 320 / 360 / 375; no overflow; brand, pill and menu at least 44px; the menu reached by Tab with a 3px ring, opened and closed by Enter. Gates: `test:render:meta` 559 passed; `test:render:pages` 63 passed, scorecard rows unchanged; `test:render:search` 18 passed. |
+| D2 | q05: (a) yes, two across | `37778c7e` | `CityTicketStrip`: the ≥800px three-column rule removed, so the cards are two across from the 640px tier edge up. At 1280, 231px → 353px cards, 431–449px → 317px tall, meta one line, delivery stub two lines; the band 1,070 → 1,154px. At 1024 the column is under 800px, so the cards were already two across (265px) and are unchanged: this report's "265px at 1024" for three across did not hold. |
+
+Screens: `docs/reports/screens/harden-calls-2026-10-06/header/` (`f80bcad1`) and `.../london/` (`45a824cd`).
+
 ### Measured and dismissed (not counted)
 
 - One-word last lines on the FAQ summaries at 1280 ("03", "07" … "19"): a probe artefact; each summary's

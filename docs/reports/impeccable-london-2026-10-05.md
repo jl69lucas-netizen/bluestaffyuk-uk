@@ -84,6 +84,18 @@ card's brass side rule, added with CTA-1.
 | D2 | P3 | The clause after each CTA pill opens with its comma: on a phone the pill fills the line, so the next line starts ", and tell us which puppy caught your eye."; from 768 the comma sits 6px after the pill, reading as a stray mark | `CityChapters.astro` `.close p` | 375 768 1280 | **deferred**: the fix changes what a reader sees of the board's sentence. Preview: the leading comma hidden (`aria-hidden`, so the sentence a screen reader hears is unchanged), the clause continuing "and tell us which puppy caught your eye." `IMP-D2-close-comma-{375,768,1280}-{before,preview}.png` |
 | D3 | P2 | Reading text under 14px on a phone: the statement note under each of the seven statement labels ("Lisa Bright's own statement: the tests are named only, and no result is claimed"), and in each of the six puppy cards the eight "comes home with" lines and the delivery line, all at `--text-xs` 13px | `StatementLine.astro` `.stmt-note`, `CityTicketStrip.astro` `.pc-trust li`, `.pc-del` | 375 | **deferred**: a type-size change to two approved kit pieces (statement labels q02, CARD-3 q08 (c)); each card grows by about two lines. Preview: 14px below 640px only. `IMP-D3-phone-notes-{stmt,card}-375-{before,preview}.png` |
 
+### Deferred: applied (2026-10-06)
+
+The breeder approved all three deferred changes (answer board batch `2026-10-06-london-harden-calls`, rulings `docs/reference/answer-board/answers/2026-10-06-london-harden-calls-2026-10-06.md`); each is recorded as a London board revision (37–39) and the board re-approved (`d3b8ed40`):
+
+| Change | Breeder's answer | Commit | What shipped |
+|---|---|---|---|
+| D1 | q01: (a) yes, thin outline | `4c7601b9` | `CityChapters` `.close`: a 1px `--color-steel-300` border all round in place of the 3px brass left rule; the pill is the card's one brass accent. Measured on the four closes at 375 / 768 / 1024 / 1280. |
+| D2 | q02: (a) yes, hide the comma | `37624f45` | `CityChapters` wraps the comma straight after a close paragraph's first-child link in `.lead-comma`, visually hidden by the clip pattern (not `aria-hidden`, which would have dropped it from what a screen reader hears): the page text and the accessible text keep the board's sentence word for word, the screen shows "and tell us which puppy caught your eye." The route file is untouched; `check:verbatim`, `check:links`, `check:facts`, `check:outline` and `check:parity` exit 0 on the built page. |
+| D3 | q03: (a) yes, 14px on phones | `6d8cf8be` | Below the 640px tier edge (`@container`): the seven statement notes and the six cards' 48 trust lines and 6 delivery lines at 14px (13px kept at 768 / 1024 / 1280). Each card 307/328px → 335/356px at 375, under the 2,030px per-card cap. |
+
+Screens, before and after: `docs/reports/screens/harden-calls-2026-10-06/london/` (`45a824cd`).
+
 ### Measured and dismissed (not counted)
 
 - The six puppy-card name links report no ring of their own: each link's `::before` stretches over its card
