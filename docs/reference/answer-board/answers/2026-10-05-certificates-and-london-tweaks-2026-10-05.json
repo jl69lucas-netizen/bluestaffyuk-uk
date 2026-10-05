@@ -1,0 +1,53 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, all ten as written",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Add the \"certificates on request\" sentence to the ten pages, as written on the page (table in Part A)?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, correct them all, plus the optional softer lines (homepage, buy page)",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Correct the lines that still say we hold no certificates?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "They name the lab and give grades or scores",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Do the parents' certificates name the testing laboratory, or give a patella grade or score?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, all four",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "Apply the four London tweaks as recommended?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-05T20:01:48.263Z",
+  "batchId": "2026-10-05-certificates-and-london-tweaks",
+  "counts": {
+    "answered": 4,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-05T20-01-48-259Z"
+}
