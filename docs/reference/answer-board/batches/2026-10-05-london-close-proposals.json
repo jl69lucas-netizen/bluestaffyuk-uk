@@ -1,0 +1,87 @@
+{
+  "askedAt": "2026-10-05T02:13:30Z",
+  "id": "2026-10-05-london-close-proposals",
+  "intro": "Everything is on one page, with before/after screenshots: https://claude.ai/artifact/DKEoYmE3AUtyXafHKesx8n. Already done from your last answers: London keeps its word counts as its own limit, the check accepts the named tests under your ruling, and the Canis lupus familiaris sentence is in. Tested together on a copy of the site, the three below clear every remaining check: 0 duplicate headings, 0 duplicate text, 0 AI-answer warnings, 0 evidence warnings.",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "As you asked, each replaces a duplicate with a question from London's own research (People Also Ask, Reddit, Quora, ChatGPT buyer questions) that no page on the site asks. Each answer uses only facts we hold, with sources listed on the page. One duplicate has no research question we can answer, so it's dropped, leaving 19 FAQs. The eight new questions: - As a First-Time Owner, Should I Get a Staffy Puppy or an Adult Rescue? (Reddit) - What Are Common Staffie Behavioural Issues? (People Also Ask) - What Socialisation Has the Puppy Received? (ChatGPT buyer question) - How Do I Find a Reputable, Health-Tested Staffy Breeder? (Reddit) - Will You Take the Dog Back If I Can No Longer Keep It? (ChatGPT buyer question) - Is There a Waiting List for a Well-Bred Staffy Puppy? (Reddit) - Can I Buy a Staffy for Under £500? (Google \"people also search for\") - What Has a Puppy Had Before It Comes Home? (London's own question file) Recommended: (a). Why: zero duplicates, every question comes from real searches, and the £500 question gives AI answers a figure to quote. Trade-off: the new answers are longer, so the FAQ blocks run over the word bands on the board (two already were).",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, use all eight and drop \"Are Blue Staffies Good Family Pets, Especially With Children?\""
+        },
+        {
+          "id": "b",
+          "label": "Yes, but swap in the alternates for slots 7 and 9 (on the page)"
+        },
+        {
+          "id": "c",
+          "label": "Yes, with my changes (in the text box)"
+        }
+      ],
+      "question": "Use these replacement FAQs?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "\"Observed here · Lisa Bright's own statement: the tests are named only, and no result is claimed\" on the trust panel, key points, deposit, middle FAQ and health tests. This is the same label the health page already uses. \"Fact · Breed taxonomy\" on the breed section (it now carries the scientific name), and \"Fact · Breed lifespan, 12 to 14 years · source: the Purina breed library\" on everyday health. Each is a small line of its own. Recommended: (a). Why: it's the site's existing label, and it says plainly we claim no result. Trade-off: seven small extra lines.",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, as shown"
+        },
+        {
+          "id": "b",
+          "label": "Yes, but the label word only, without the note"
+        },
+        {
+          "id": "c",
+          "label": "Yes, with my changes (in the text box)"
+        }
+      ],
+      "question": "Add these statement labels to seven sections?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "There are 17 sentences, numbered 1–17 on the page, so AI answers can tell who \"we\" is. Some now mix \"Lisa Bright\" and \"we\" in one sentence, for example #9: \"tell Lisa Bright which one you like and we confirm…\". #8 and #14 also read a little stiffly. Recommended: (a). Why: the AI-answer warning only clears when enough swaps go in alongside the new FAQs, and you can drop the ones that sound wrong. Trade-off: a few sentences sound less personal.",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, all 17"
+        },
+        {
+          "id": "b",
+          "label": "Yes, except the numbers I list in the text box"
+        },
+        {
+          "id": "c",
+          "label": "No swaps"
+        }
+      ],
+      "question": "Make the \"we/our\" swaps?",
+      "section": 0,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Your three decisions"
+    }
+  ],
+  "status": "open",
+  "title": "London close · new FAQs, labels and name swaps"
+}

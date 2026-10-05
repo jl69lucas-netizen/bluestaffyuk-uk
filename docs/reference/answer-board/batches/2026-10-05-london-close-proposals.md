@@ -2,6 +2,8 @@
 
 Everything is on one page, with before/after screenshots: https://claude.ai/artifact/DKEoYmE3AUtyXafHKesx8n. Already done from your last answers: London keeps its word counts as its own limit, the check accepts the named tests under your ruling, and the Canis lupus familiaris sentence is in. Tested together on a copy of the site, the three below clear every remaining check: 0 duplicate headings, 0 duplicate text, 0 AI-answer warnings, 0 evidence warnings.
 
+## Your three decisions
+
 1. **Use these replacement FAQs?** As you asked, each replaces a duplicate with a question from London's own research (People Also Ask, Reddit, Quora, ChatGPT buyer questions) that no page on the site asks. Each answer uses only facts we hold, with sources listed on the page. One duplicate has no research question we can answer, so it's dropped, leaving 19 FAQs. The eight new questions:
    - As a First-Time Owner, Should I Get a Staffy Puppy or an Adult Rescue? (Reddit)
    - What Are Common Staffie Behavioural Issues? (People Also Ask)
