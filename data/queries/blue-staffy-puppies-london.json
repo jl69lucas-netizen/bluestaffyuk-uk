@@ -217,13 +217,10 @@
       "topic": "family",
       "block": "bottom",
       "fact_source": "src/pages/index.astro",
-      "must_answer": true,
-      "faq": "bottom",
+      "must_answer": false,
+      "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "Are Blue Staffies Good Family Pets, Especially With Children?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-are-blue-staffy-suitable-for-first-time-d-e4e6aa",
@@ -238,13 +235,10 @@
       "topic": "temperament",
       "block": "bottom",
       "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
-      "must_answer": true,
-      "faq": "bottom",
+      "must_answer": false,
+      "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "Are Blue Staffies Suitable for First-Time Dog Owners?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-are-staffy-hard-to-train-a723a4",
@@ -256,13 +250,10 @@
       "topic": "training",
       "block": "bottom",
       "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
-      "must_answer": true,
-      "faq": "bottom",
+      "must_answer": false,
+      "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "Are Staffies Hard to Train?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-are-the-parents-of-your-blue-staffy-puppy-523777",
@@ -299,13 +290,10 @@
       "topic": "family",
       "block": "bottom",
       "fact_source": "src/pages/blue-staffy-uk-breeders/index.astro",
-      "must_answer": true,
-      "faq": "bottom",
+      "must_answer": false,
+      "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "Are the Puppies Raised in a Family Home or in Kennels?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-are-your-blue-staffy-puppy-kennel-club-re-edca46",
@@ -445,13 +433,10 @@
       "topic": "visit",
       "block": "middle",
       "fact_source": "src/pages/uk-blue-staffy-breeders-contact/index.astro",
-      "must_answer": true,
-      "faq": "middle",
+      "must_answer": false,
+      "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "Can I Visit You Before I Decide?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-can-you-deliver-a-blue-staffy-puppy-to-74fa14",
@@ -564,13 +549,10 @@
       "topic": "health",
       "block": "middle",
       "fact_source": "data/settings.json",
-      "must_answer": true,
-      "faq": "middle",
+      "must_answer": false,
+      "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "Do You Offer Health Guarantees for Your Blue Staffy Puppies?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-do-you-offer-support-after-i-take-my-d4ebe8",
@@ -727,11 +709,14 @@
       "score": 3,
       "topic": "health",
       "block": "middle",
-      "fact_source": null,
-      "must_answer": false,
-      "faq": null,
-      "blocked": "unverified fact",
-      "covered_by": null
+      "fact_source": "docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": {
+        "where": "faq",
+        "text": "How Do I Find a Reputable, Health-Tested Staffy Breeder?"
+      }
     },
     {
       "id": "q-how-do-i-follow-up-on-my-enquiry-9abed8",
@@ -758,13 +743,10 @@
       "topic": "reserve",
       "block": "top",
       "fact_source": "src/pages/buy-blue-staffy-puppies-uk/index.astro",
-      "must_answer": true,
-      "faq": "top",
+      "must_answer": false,
+      "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "How Do I Know a Puppy Is Still Available?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-how-do-i-know-im-buying-from-reputable-0472b8",
@@ -957,10 +939,7 @@
       "must_answer": false,
       "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "How Much Is the Deposit?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-how-often-do-you-add-a-new-guide-156016",
@@ -1102,11 +1081,14 @@
       "score": 4,
       "topic": "reserve",
       "block": "top",
-      "fact_source": null,
-      "must_answer": false,
-      "faq": null,
-      "blocked": "unverified fact",
-      "covered_by": null
+      "fact_source": "data/puppies.json",
+      "must_answer": true,
+      "faq": "top",
+      "blocked": null,
+      "covered_by": {
+        "where": "faq",
+        "text": "Is There a Waiting List for a Well-Bred Staffy Puppy?"
+      }
     },
     {
       "id": "q-should-i-adopt-a-rescue-dog-or-buy-4f3d8d",
@@ -1131,12 +1113,15 @@
       ],
       "score": 3,
       "topic": null,
-      "block": null,
-      "fact_source": null,
-      "must_answer": false,
-      "faq": null,
-      "blocked": "unverified fact",
-      "covered_by": null
+      "block": "bottom",
+      "fact_source": "data/faq.json",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": {
+        "where": "faq",
+        "text": "What Are Common Staffie Behavioural Issues?"
+      }
     },
     {
       "id": "q-what-are-staffy-prone-to-323dfd",
@@ -1244,10 +1229,13 @@
       "topic": "paperwork",
       "block": "middle",
       "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
-      "must_answer": false,
-      "faq": null,
+      "must_answer": true,
+      "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "What Has a Puppy Had Before It Comes Home?"
+      }
     },
     {
       "id": "q-what-health-checks-do-your-blue-staffy-pu-471e6e",
@@ -1275,13 +1263,10 @@
       "topic": "paperwork",
       "block": "middle",
       "fact_source": "src/pages/index.astro",
-      "must_answer": true,
-      "faq": "middle",
+      "must_answer": false,
+      "faq": null,
       "blocked": null,
-      "covered_by": {
-        "where": "faq",
-        "text": "What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK?"
-      }
+      "covered_by": null
     },
     {
       "id": "q-what-is-the-average-lifespan-of-a-blue-73b18f",
@@ -1607,6 +1592,78 @@
       "faq": null,
       "blocked": null,
       "covered_by": null
+    },
+    {
+      "id": "q-as-a-first-time-owner-should-i-get-0dde08",
+      "question": "As a first-time owner, should I get a Staffy puppy or an adult rescue?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/"
+      ],
+      "score": 3,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "data/faq.json",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": {
+        "where": "faq",
+        "text": "As a First-Time Owner, Should I Get a Staffy Puppy or an Adult Rescue?"
+      }
+    },
+    {
+      "id": "q-what-socialisation-has-the-puppy-received-a2f6c4",
+      "question": "What socialisation has the puppy received?",
+      "found_in": [
+        "ai_engines"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": "bottom",
+      "fact_source": "docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": {
+        "where": "faq",
+        "text": "What Socialisation Has the Puppy Received?"
+      }
+    },
+    {
+      "id": "q-will-you-take-the-dog-back-if-i-a12fba",
+      "question": "Will you take the dog back if I can no longer keep it?",
+      "found_in": [
+        "ai_engines"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": "middle",
+      "fact_source": "docs/reference/answer-board/answers/2026-09-29-lisa-bright-five-facts-before-the-london-page-2026-09-29.md",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": {
+        "where": "faq",
+        "text": "Will You Take the Dog Back If I Can No Longer Keep It?"
+      }
+    },
+    {
+      "id": "q-staffy-puppy-for-sale-london-under-500-4c1074",
+      "question": "Staffy puppies for sale London under 500",
+      "found_in": [
+        "aio_related:docs/research/london-page-run/aio-google-2026-09-30.md"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": "top",
+      "fact_source": "data/price-matrix.json",
+      "must_answer": true,
+      "faq": "top",
+      "blocked": null,
+      "covered_by": {
+        "where": "faq",
+        "text": "Can I Buy a Staffy for Under £500?"
+      }
     }
   ]
 }

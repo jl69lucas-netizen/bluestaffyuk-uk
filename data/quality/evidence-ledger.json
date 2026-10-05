@@ -41,12 +41,12 @@
     },
     {
       "id": "litters-home-raised-never-kennels",
-      "pattern": "\\bIn\\s+our\\s+home,\\s+never\\s+in\\s+kennels\\b",
+      "pattern": "\\bSocialising\\s+at\\s+home,\\s+never\\s+in\\s+kennels\\b",
       "proof": "/docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md",
       "anchor": "faq-bottom",
       "confirmed": "2026-10-04",
       "covers": [],
-      "basis": "The breeder's written answer, answer board 2026-10-04 q08 (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md): \"Yes\" to: every litter is raised in our home, never in kennels (the first half of q08). It names no vocabulary id, so it clears no claim-unledgered hit; it is the record. The proof is that rulings file in the repository, not a redacted document served on the site, so no page can link it; the pattern is scoped to the one London sentence that makes the claim, so claim-bound-to-proof (a claim made twice must link its proof) is not met by a second mention elsewhere. If a document is ever put on file, its site path replaces this proof."
+      "basis": "The breeder's written answer, answer board 2026-10-04 q08 (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md): \"Yes\" to: every litter is raised in our home, never in kennels (the first half of q08). It names no vocabulary id, so it clears no claim-unledgered hit; it is the record. The pattern moved on 2026-10-05 to the socialisation answer's opening (answer board 2026-10-05 london-close-proposals q01 (a), docs/reference/answer-board/answers/2026-10-05-london-close-proposals-2026-10-05.md): the FAQ that opened 'In our home, never in kennels' was a question other built pages carry and left the page. The proof is that rulings file in the repository, not a redacted document served on the site, so no page can link it; the pattern is scoped to the one London sentence that makes the claim, so claim-bound-to-proof (a claim made twice must link its proof) is not met by a second mention elsewhere. If a document is ever put on file, its site path replaces this proof."
     },
     {
       "id": "breeder-support-after-collection",

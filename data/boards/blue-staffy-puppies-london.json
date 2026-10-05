@@ -220,7 +220,7 @@
     },
     {
       "section": "faq-bottom",
-      "node": "tree[7]",
+      "node": "tree[6]",
       "level": 3,
       "heading": "breed-blue-rarity",
       "reason": "breeder q04, 2026-10-02: answer the PAA gap in the bottom FAQ"
@@ -691,13 +691,13 @@
         {
           "level": 3,
           "heading": "london-buy-3",
-          "intent": "Q: How Much Is the Deposit? — the London row of data/faq.json this block renders, written at build from the outline (the site already answers the same question as row `deposit`; this row carries the London wording and pointers)",
+          "intent": "Q: Can I Buy a Staffy for Under £500? — the London row this block renders, written at build from the approved close proposal (answer board 2026-10-05 london-close-proposals q01 (a); docs/reports/london-close-proposals-2026-10-05/); source: Google 'People also search for' under the AI Overview for 'blue staffy puppies london' ('Staffy puppies for sale London under 500'; docs/research/london-page-run/aio-google-2026-09-30.md); it replaces the duplicated 'How Much Is the Deposit?' and answers from the prices and the deposit in data",
           "children": []
         },
         {
           "level": 3,
           "heading": "london-buy-4",
-          "intent": "Q: How Do I Know a Puppy Is Still Available? — the London row of data/faq.json this block renders, written at build from the outline (the site already answers the same question as row `listing-availability`; this row carries the London wording and pointers)",
+          "intent": "Q: Is There a Waiting List for a Well-Bred Staffy Puppy? — the London row this block renders, written at build from the approved close proposal (answer board 2026-10-05 london-close-proposals q01 (a); docs/reports/london-close-proposals-2026-10-05/); source: Reddit r/UK_Pets thread 1sdvsvv (question-file row q-is-there-a-waiting-list-for-a-well-ae9f94); it replaces the duplicated 'How Do I Know a Puppy Is Still Available?'; the puppy count is read from data/puppies.json",
           "children": []
         },
         {
@@ -1500,19 +1500,19 @@
         {
           "level": 3,
           "heading": "london-trust-4",
-          "intent": "Q: Can I Visit You Before I Decide? — the London row of data/faq.json this block renders, written at build from the outline (the site already answers the same question as row `contact-visit`; this row carries the London wording and pointers)",
+          "intent": "Q: How Do I Find a Reputable, Health-Tested Staffy Breeder? — the London row this block renders, written at build from the approved close proposal (answer board 2026-10-05 london-close-proposals q01 (a); docs/reports/london-close-proposals-2026-10-05/); source: Reddit r/UK_Pets thread 1sdvsvv (question-file row q-how-do-i-find-a-reputable-health-tested-12d8a7, its closing 'in the UK' dropped for the UK term budget); it replaces the duplicated 'Can I Visit You Before I Decide?'; the tests are named, no result",
           "children": []
         },
         {
           "level": 3,
           "heading": "london-trust-5",
-          "intent": "Q: Do You Offer Health Guarantees for Your Blue Staffy Puppies? — the London row of data/faq.json this block renders, written at build from the outline (the site already answers the same question as row `home-health-guarantee`; this row carries the London wording and pointers)",
+          "intent": "Q: Will You Take the Dog Back If I Can No Longer Keep It? — the London row this block renders, written at build from the approved close proposal (answer board 2026-10-05 london-close-proposals q01 (a); docs/reports/london-close-proposals-2026-10-05/); source: ChatGPT's buyer question (data/queries/raw/blue-staffy-puppies-london/ai_engines.response.json, the rehoming half dropped: no fact on file); it replaces the duplicated 'Do You Offer Health Guarantees for Your Blue Staffy Puppies?'; the guarantee from guarantee_label, guarantee_cover and guarantee_note",
           "children": []
         },
         {
           "level": 3,
           "heading": "london-trust-6",
-          "intent": "Q: What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK? — the London row of data/faq.json this block renders, written at build from the outline",
+          "intent": "Q: What Has a Puppy Had Before It Comes Home? — the London row this block renders, written at build from the approved close proposal (answer board 2026-10-05 london-close-proposals q01 (a); docs/reports/london-close-proposals-2026-10-05/); source: question-file row q-what-has-a-puppy-had-before-it-comes-46de43 (data/faq.json bank row health-vaccinations, no built page's heading); it replaces the duplicated 'What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK?'",
           "children": []
         },
         {
@@ -2541,7 +2541,7 @@
         {
           "level": 3,
           "heading": "london-life-1",
-          "intent": "Q: Are Blue Staffies Suitable for First-Time Dog Owners? — the London row of data/faq.json this block renders, written at build from the outline (the site already answers the same question as row `listing-first-time-owners`; this row carries the London wording and pointers)",
+          "intent": "Q: As a First-Time Owner, Should I Get a Staffy Puppy or an Adult Rescue? — the London row this block renders, written at build from the approved close proposal (answer board 2026-10-05 london-close-proposals q01 (a); docs/reports/london-close-proposals-2026-10-05/); source: Reddit r/UK_Pets thread 1sdvsvv (data/queries/raw/blue-staffy-puppies-london/threads.json); it replaces the duplicated 'Are Blue Staffies Suitable for First-Time Dog Owners?'",
           "children": []
         },
         {
@@ -2558,20 +2558,14 @@
         },
         {
           "level": 3,
-          "heading": "london-life-4",
-          "intent": "Q: Are Blue Staffies Good Family Pets, Especially With Children? — the London row of data/faq.json this block renders, written at build from the outline (the site already answers the same question as row `home-family-children`; this row carries the London wording and pointers)",
-          "children": []
-        },
-        {
-          "level": 3,
           "heading": "london-life-5",
-          "intent": "Q: Are Staffies Hard to Train? — the London row of data/faq.json this block renders, written at build from the outline (the site already answers the same question as row `listing-training`; this row carries the London wording and pointers)",
+          "intent": "Q: What Are Common Staffie Behavioural Issues? — the London row this block renders, written at build from the approved close proposal (answer board 2026-10-05 london-close-proposals q01 (a); docs/reports/london-close-proposals-2026-10-05/); source: Google People Also Ask for 'blue staffy puppies london' (question-file row q-what-are-common-staffy-behavioral-issues-3c1190, UK spelling); it replaces the duplicated 'Are Staffies Hard to Train?'",
           "children": []
         },
         {
           "level": 3,
           "heading": "london-life-6",
-          "intent": "Q: Are the Puppies Raised in a Family Home or in Kennels? — the London row of data/faq.json this block renders, written at build from the outline (the site already answers the same question as row `about-home-raised`; this row carries the London wording and pointers)",
+          "intent": "Q: What Socialisation Has the Puppy Received? — the London row this block renders, written at build from the approved close proposal (answer board 2026-10-05 london-close-proposals q01 (a); docs/reports/london-close-proposals-2026-10-05/); source: ChatGPT's buyer question (data/queries/raw/blue-staffy-puppies-london/ai_engines.response.json, the socialisation half: no food fact is on file); it replaces the duplicated 'Are the Puppies Raised in a Family Home or in Kennels?'",
           "children": []
         },
         {
@@ -3254,7 +3248,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "b9ffc605ac3b3bd9ed916ed481d23b01f58a72c4f55f9bf0aa9ad0113bf73953",
+    "record_hash": "67f0a16982bffacc04000a3b3ec385f28ac0f62e26851f2833e4b8ca41a1bc20",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3274,7 +3268,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-05T01:29:43Z",
+    "reapproved_at": "2026-10-05T02:30:21Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3388,6 +3382,29 @@
         "reason": "The breeder's pick on the London gate findings, answer board 2026-10-05 q07 (a) (docs/reference/answer-board/answers/2026-10-05-london-gate-findings-2026-10-05.md): one neutral-register sentence in the breed section, 'The Staffordshire Bull Terrier is a breed of domestic dog, Canis lupus familiaris.', worded exactly as approved; logged in board_revisions. No section, pick, menu or figure moved.",
         "changed_paths": [
           "/board_revisions/29"
+        ]
+      },
+      {
+        "at": "2026-10-05T02:30:21Z",
+        "reason": "The breeder's pick on the London close proposals, answer board 2026-10-05 q01 (a) (docs/reference/answer-board/answers/2026-10-05-london-close-proposals-2026-10-05.md): the eight duplicated FAQ questions are replaced by the recommended questions from London's research and 'Are Blue Staffies Good Family Pets, Especially With Children?' is dropped (top 5, middle 7, bottom 7); logged in board_revisions. The rarity row's recorded node moves from tree[7] to tree[6] because the row above it left. No section, pick, menu or figure moved.",
+        "changed_paths": [
+          "/board_revisions/30",
+          "/outline_changes_since_stop2/6/node",
+          "/sections/6/tree/2/intent",
+          "/sections/6/tree/3/intent",
+          "/sections/11/tree/3/intent",
+          "/sections/11/tree/4/intent",
+          "/sections/11/tree/5/intent",
+          "/sections/20/tree/0/intent",
+          "/sections/20/tree/3/heading",
+          "/sections/20/tree/3/intent",
+          "/sections/20/tree/4/heading",
+          "/sections/20/tree/4/intent",
+          "/sections/20/tree/5/heading",
+          "/sections/20/tree/5/intent",
+          "/sections/20/tree/6/heading",
+          "/sections/20/tree/6/intent",
+          "/sections/20/tree/7"
         ]
       }
     ]
@@ -3861,6 +3878,17 @@
       "record_change": "content: one sentence opening chapter 1's slot in the breed section (page markup); no pick, menu, figure or section id moved",
       "sections": [
         "breed"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-close-proposals q01",
+      "decision": "The nine FAQ questions London shared with other built pages are gone: eight are replaced by the recommended questions from London's own research (People Also Ask, the Reddit threads, the ChatGPT buyer questions, Google's related searches and one data/faq.json bank question no built page shows), each answered from the data the proposal cites, and 'Are Blue Staffies Good Family Pets, Especially With Children?' is dropped because no research question on the topic is free of the site. Blocks: top 5, middle 7, bottom 7 (19 questions, inside 15–20). The proposal, its sources and its simulated gate effect: docs/reports/london-close-proposals-2026-10-05/. Rulings: docs/reference/answer-board/answers/2026-10-05-london-close-proposals-2026-10-05.md.",
+      "record_change": "content: the faq-top, faq-middle and faq-bottom tree intents (eight questions reworded, london-life-4 removed); the page's FAQ rows and FAQPage schema follow them; data/queries/blue-staffy-puppies-london.json covered_by follows them. No pick, menu, figure or section id moved",
+      "sections": [
+        "faq-top",
+        "faq-middle",
+        "faq-bottom"
       ]
     }
   ]

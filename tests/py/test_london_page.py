@@ -22,11 +22,11 @@ WHERE THIS DIFFERS FROM THE PLAN'S TASK 26 TEXT (written 2026-09-30; the approve
   - the FAQ questions are the board's, each in the wording the question file records for the
     page (`covered_by.text`); two differ from the board's words because those collided with
     headings on other live pages (2026-10-03, check:boards header-collision).
-  - the FAQ count is not hard-coded at 15-20. The board approved 21 questions (top 6, middle 7,
-    bottom 8, after the breeder added "How Rare Are Blue Staffies?" on 2026-10-02, q04), so the
-    expected set is read from the board's FAQ trees and must equal every FAQ `covered_by` text in
-    data/queries/blue-staffy-puppies-london.json; each block stays inside its own 5-7 / 5-7 /
-    7-10 band.
+  - the FAQ count is not hard-coded at 15-20. The expected set is read from the board's FAQ trees
+    and must equal every FAQ `covered_by` text in data/queries/blue-staffy-puppies-london.json;
+    each block stays inside its own 5-7 / 5-7 / 7-10 band. Since the London close proposals (answer
+    board 2026-10-05 london-close-proposals q01 (a)) the board carries 19: top 5, middle 7,
+    bottom 7, none of them a question another built page carries.
 """
 import html as H
 import json
@@ -178,10 +178,15 @@ def test_three_faq_blocks_holding_exactly_the_approved_questions():
 
 
 def test_the_bottom_faq_answers_stay_short():
+    """Every bottom answer is one short paragraph. The bound was an average of 29 words while
+    the block's answers were the old two-sentence set; the replacements the breeder approved
+    (answer board 2026-10-05 london-close-proposals q01 (a),
+    docs/reports/london-close-proposals-2026-10-05/) are written to the brief's 40-80 words, so
+    the bound is now the brief's ceiling on each answer."""
     secs = labelled_sections(built())
     answers = [text(a) for a in re.findall(r"</summary>\s*<p[^>]*>(.*?)</p>", secs["faq-bottom"], re.S)]
     assert len(answers) == len(board_faq_questions("faq-bottom"))
-    assert sum(len(a.split()) for a in answers) / len(answers) <= 29
+    assert max(len(a.split()) for a in answers) <= 80
 
 
 def test_at_least_three_enquiry_ctas():

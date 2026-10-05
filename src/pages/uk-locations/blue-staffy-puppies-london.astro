@@ -69,7 +69,7 @@ import CityLookListenChecklist, { type CheckPane } from '../../components/kit/Ci
 import CityPlacesByPublisher from '../../components/kit/CityPlacesByPublisher.astro';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
 import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, chapterBesideSizes, chapterTextSizes, chapterWideSizes, depositBrief, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
-import { guaranteePhraseOf, guaranteeWords, type GuaranteeSettings } from '../../lib/guarantee';
+import { guaranteeCoverWords, guaranteeWords, type GuaranteeSettings } from '../../lib/guarantee';
 import { breedFactsCell, numberWord } from '../../lib/recordText';
 
 const SLUG = 'blue-staffy-puppies-london';
@@ -114,9 +114,11 @@ const coats = (ps: PuppyRow[]) => andList(ps.map((p) => `${p.name} is ${p.colour
 const REFUND = settings.deposit_refund_clause;
 const G = settings as unknown as GuaranteeSettings;
 const guarantee = guaranteeRow();
-const GUARANTEE_PHRASE = guaranteePhraseOf(G);
+// The guarantee's cover clause, checked (src/lib/guarantee.ts): the take-back answer carries it.
+const GUARANTEE_COVER = guaranteeCoverWords(G);
 const GUARANTEE_LOWER = guaranteeWords(G, 'lower');
 const REGION = settings.address.region;
+const BREEDER = settings.breeder_name;
 const SBT = standards.breeds['staffordshire-bull-terrier'];
 const AMS = standards.breeds['american-staffordshire-terrier'];
 // The breed-split infographic's AmStaff facts as page text too (answer board 2026-10-04 q02 a):
@@ -128,6 +130,14 @@ if (!PIT_BULL || BANNED.some((t) => /staffordshire/i.test(t)) || !/^Not on\b/.te
   throw new Error('data/breed-standards.json no longer says the Pit Bull Terrier is banned and the AmStaff is not');
 }
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+// What the deposit does, in the user's ruling (src/lib/cityKit.ts `depositBrief`), its closing
+// "the price" swapped for the two prices by the under-the-deposit answer (London close proposals
+// q01 (a), answer board 2026-10-05).
+const DEPOSIT_DOES_TO = (() => {
+  const m = /^(.+) the price\.$/.exec(lower(depositBrief));
+  if (!m) throw new Error(`src/lib/cityKit.ts depositBrief no longer ends on "the price.": ${depositBrief}`);
+  return m[1];
+})();
 // THE LIFESPAN IS THE BREED GUIDE'S CELL, CITED AND NOT RETYPED (London final fixes B2, the
 // breeder's yes, answer board 2026-10-05 q07 (a)): the Everyday Health lede closes on it, read
 // through `breedFactsCell()` from data/boards/uk-staffordshire-bull-terrier-guide.json
@@ -283,6 +293,10 @@ const takeaways = [
 ];
 
 // ── the three FAQ blocks: the board's questions, each answered from its bank row or data key ──
+// The London close proposals (answer board 2026-10-05 london-close-proposals q01 (a),
+// docs/reports/london-close-proposals-2026-10-05/): no question another built page carries. Eight
+// came from London's own research, word for word as approved, and one was dropped; every price,
+// the deposit, the puppy count, the town, the guarantee and the puppy trust signs are read.
 const faqTop: CityFaqRow[] = [
   { q: 'How Much Do Blue Staffy Puppies Cost in the UK?',
     a: `Ours are ${BOY_PRICE} for a boy and ${GIRL_PRICE} for a girl, and a London buyer pays the same as anyone else.`,
@@ -290,10 +304,11 @@ const faqTop: CityFaqRow[] = [
   { q: 'Can I Get a Blue Staffy Puppy Delivered to My Home in London?',
     a: `Yes. We deliver to London homes by DEFRA-approved transport for ${DELIVERY_BAND}, priced by distance.`,
     more: { href: '#delivery', label: 'How delivery to London works' } },
-  { q: 'How Much Is the Deposit?', a: `${DEPOSIT}. ${depositBrief}`,
+  { q: `Can I Buy a Staffy for Under ${DEPOSIT}?`,
+    a: `Not from us. Ours are ${BOY_PRICE} for a boy and ${GIRL_PRICE} for a girl, wherever you live. ${DEPOSIT} is our deposit, not the price: you pay it by bank transfer after the video call, it ${DEPOSIT_DOES_TO} the ${BOY_PRICE} or ${GIRL_PRICE}.`,
     more: { href: '#deposit-viewing', label: 'What the deposit does, step by step' } },
-  { q: 'How Do I Know a Puppy Is Still Available?',
-    a: 'Our list is updated as puppies are reserved, so a puppy still on it is free, and we confirm the one you like before you pay anything.' },
+  { q: 'Is There a Waiting List for a Well-Bred Staffy Puppy?',
+    a: `Not for this litter: all ${LITTER} puppies on the list are still available, so you reserve straight from it. Tell us which one you like and we confirm it is still free before you pay anything. For the next litter, leave your email in the newsletter box for a note when it is on the way.` },
   { q: 'How Do I Reserve One of Your Blue Staffy Puppies From London?',
     a: "Send the enquiry form at the foot of this page with the puppy's name, and we reply by email with the next steps." },
 ];
@@ -306,31 +321,29 @@ const faqMiddle: CityFaqRow[] = [
     more: { href: '#health-tests', label: 'What each test is for' } },
   { q: 'Will the Breeder Still Support Me After I Collect the Puppy?',
     a: 'Yes. Write to us before or after your puppy is home and you get the same answer, from us rather than an agency.' },
-  { q: 'Can I Visit You Before I Decide?',
-    a: `Yes, by appointment. Our dogs live in our family home in ${TOWN}, so we arrange a visit once we have talked through your enquiry.` },
-  { q: 'Do You Offer Health Guarantees for Your Blue Staffy Puppies?',
-    a: `Yes. Every puppy leaves with our written ${GUARANTEE_PHRASE} and we ask you to read the full terms before you pay a deposit.` },
-  { q: 'What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK?',
-    a: 'A veterinary health check, first vaccinations, a microchip, worming and flea treatment, the Kennel Club registration application form so you can register your puppy yourself, and a puppy pack.',
+  { q: 'How Do I Find a Reputable, Health-Tested Staffy Breeder?',
+    a: `Start with two asks: which tests the parents have had, and a look at the puppy with its mother before you pay. Ask ${BREEDER} and she names four for Maggie and Jones: L-2-HGA, HC-HSF4, eye screening and elbow screening, with no result quoted. Then visit by appointment at the family home in ${TOWN} where Maggie and Jones live.` },
+  { q: 'Will You Take the Dog Back If I Can No Longer Keep It?',
+    a: `Yes. If you can no longer care for your puppy, or the fault is the breeder's, ${BREEDER} takes it back, and that promise is written into the sale contract you sign. Your puppy also comes home with our written ${GUARANTEE_LOWER}, which ${GUARANTEE_COVER}. ${settings.guarantee_note}` },
+  { q: 'What Has a Puppy Had Before It Comes Home?',
+    a: `Ours have had a veterinary health check, ${lower(sign('First vaccinations'))}, a microchip, worming and flea treatment, each recorded on a ${lower(sign('Vet-signed health card'))} that travels with the puppy. The Kennel Club registration application form comes too, so you register your puppy in your own name, with a puppy pack to help it settle.`,
     more: { href: '#paperwork', label: 'The paperwork, item by item' } },
   { q: 'What Makes BlueStaffyUK an Ethical Breeder for London Buyers?',
     a: 'Every litter grows up in our home with Puppy Culture and early neurological stimulation. We name the health tests to ask about, and you can see your puppy on a video call before you pay.' },
 ];
 const rarity = bank('breed-blue-rarity');
 const faqBottom: CityFaqRow[] = [
-  { q: 'Are Blue Staffies Suitable for First-Time Dog Owners?',
-    a: 'Yes, for a household with time to give. Early socialising, steady reward-based training and company matter more than experience.' },
+  { q: 'As a First-Time Owner, Should I Get a Staffy Puppy or an Adult Rescue?',
+    a: `That choice is yours; ${BREEDER} breeds puppies, so this answer speaks for that side only. A puppy suits a first-time owner if your household has the time to give: early socialising, steady reward-based training and company matter more than experience. Each litter here starts that socialising indoors at home in ${TOWN} before it leaves.` },
   { q: 'Is a Staffy a Good House Dog?',
     a: 'Yes. It is a medium-sized, people-focused dog that is happiest indoors with its family, and its old nickname is the nanny dog.',
     more: { href: '#london-life', label: 'A Staffy in a London home' } },
   { q: 'Is It Better to Get a Male or Female Staffy?',
     a: "Neither is better. Boys can be more boisterous and girls a little more independent, but training and the puppy's own character count for more." },
-  { q: 'Are Blue Staffies Good Family Pets, Especially With Children?',
-    a: 'Yes, when well socialised. Ours hear the noise of an ordinary family house before they leave, and any dog with children still needs supervising.' },
-  { q: 'Are Staffies Hard to Train?',
-    a: 'No, though they are strong-willed. They learn quickly, so short, regular sessions work better than long ones.' },
-  { q: 'Are the Puppies Raised in a Family Home or in Kennels?',
-    a: 'In our home, never in kennels. Every litter grows up indoors with us, among the everyday sights and sounds of a house.' },
+  { q: 'What Are Common Staffie Behavioural Issues?',
+    a: 'Most are the flip side of a strong, people-focused dog. Staffies are strong-willed, so they need consistent training from a young age; some have a prey drive, so early socialising with other animals matters; and they do not cope with being left alone for long stretches. Short, regular training sessions work better than long ones.' },
+  { q: 'What Socialisation Has the Puppy Received?',
+    a: `Socialising at home, never in kennels. Every litter grows up indoors with us in our family home in ${TOWN}, among the everyday sights and sounds of a house, and follows both Puppy Culture and early neurological stimulation.` },
   { q: 'Can a Staffordshire Bull Terrier Live in a London Flat?',
     a: 'Yes, with daily walks and something to think about. The breed is medium-sized and people-focused, so a garden matters less than regular exercise.' },
   { q: rarity.q, a: rarity.a },
