@@ -102,6 +102,21 @@ GENERAL_ADVICE = {
     ],
 }
 
+# A sentence the breeder ruled on word for word, by page, with the ruling that allows it. The
+# breeder's chat ruling of 2026-10-05 (docs/reference/answer-board/answers/
+# chat-2026-10-05-certificates-on-request.md) corrects q01 of 2026-09-29: the certificates and DNA
+# results exist and are shared on request, kept off the website. So this one sentence, which says
+# so and states no result, is excused by its exact text; the patterns are unchanged, so "results
+# on request" or a sentence that adds a result anywhere else still fails. Its ledger row is
+# data/quality/evidence-ledger.json `certificates-on-request`.
+RULED = {
+    "uk-locations/blue-staffy-puppies-london/index.html": [
+        ("We share the parents' health certificates and DNA test results with you directly when "
+         "you get in touch.",
+         "docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md"),
+    ],
+}
+
 ATTR = re.compile(r'\b(?:content|alt|aria-label|title)="([^"]*)"')
 
 
@@ -143,6 +158,10 @@ def test_no_built_page_states_a_dna_or_health_test_result():
         text = visible(p.read_text(errors="ignore"))
         for sentence in GENERAL_ADVICE.get(rel, []):
             assert sentence in text, f"{rel}: the excused sentence is gone, drop it: {sentence}"
+            text = text.replace(sentence, " ")
+        for sentence, ruling in RULED.get(rel, []):
+            assert (ROOT / ruling).is_file(), f"{rel}: the ruling {ruling} is not in the repository"
+            assert sentence in text, f"{rel}: the ruled sentence is gone, drop it: {sentence}"
             text = text.replace(sentence, " ")
         bad += [f"{rel}: …{l}…" for l in result_lines(text)]
     assert bad == [], "\n".join(bad)
@@ -361,3 +380,14 @@ def test_the_follow_up_minor_lines():
         assert calls, rel
         for i in calls:
             assert "before the deposit" in text[max(0, i - 80):i + 80], (rel, text[max(0, i - 80):i + 80])
+
+
+def test_the_ruled_sentence_is_excused_by_its_text_only():
+    """The excuse is the exact sentence: the same words with a result added, or "results on
+    request", still fail."""
+    (sentence, _), = RULED["uk-locations/blue-staffy-puppies-london/index.html"]
+    assert result_lines(sentence), "without the excuse the patterns still catch it"
+    for worse in (sentence.replace("DNA test results", "clear DNA test results"),
+                  "We share the parents' DNA results on request.",
+                  sentence.replace("health certificates", "clear certificates")):
+        assert worse != sentence and result_lines(worse), worse
