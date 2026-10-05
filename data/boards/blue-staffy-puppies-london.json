@@ -3254,7 +3254,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "ddc8fd9a10111040cb4e4b5ac966cb976885908fc2bbb72f9b4524de3962d0b5",
+    "record_hash": "b9ffc605ac3b3bd9ed916ed481d23b01f58a72c4f55f9bf0aa9ad0113bf73953",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3274,7 +3274,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-04T23:47:47Z",
+    "reapproved_at": "2026-10-05T01:29:43Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3381,6 +3381,13 @@
         "reason": "The breeder's pick on the London final fixes, answer board 2026-10-05 q07 (a) (docs/reference/answer-board/answers/2026-10-05-london-final-fixes-2026-10-05.md): B2 adds one sentence to the end of the Everyday Health lede, 'A Staffy lives 12 to 14 years with good care and good genetics.', read through breedFactsCell() from the breed guide's approved Lifespan cell (cited to Purina), never typed; logged in board_revisions. No section, pick, menu or figure moved.",
         "changed_paths": [
           "/board_revisions/28"
+        ]
+      },
+      {
+        "at": "2026-10-05T01:29:43Z",
+        "reason": "The breeder's pick on the London gate findings, answer board 2026-10-05 q07 (a) (docs/reference/answer-board/answers/2026-10-05-london-gate-findings-2026-10-05.md): one neutral-register sentence in the breed section, 'The Staffordshire Bull Terrier is a breed of domestic dog, Canis lupus familiaris.', worded exactly as approved; logged in board_revisions. No section, pick, menu or figure moved.",
+        "changed_paths": [
+          "/board_revisions/29"
         ]
       }
     ]
@@ -3845,6 +3852,15 @@
       "record_change": "content: one sentence at the end of the everyday-health lede (page markup); no pick, menu, figure or section id moved",
       "sections": [
         "everyday-health"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-gate-findings q07",
+      "decision": "The breed section states the breed's taxonomy in one neutral-register sentence, worded exactly as the breeder approved it: 'The Staffordshire Bull Terrier is a breed of domestic dog, Canis lupus familiaris.' (binomial in italics). rules/copy.md first-person-brand-voice allows the neutral register for species and taxonomy statements. Closes aeo_audit 'no binomial'. Rulings: docs/reference/answer-board/answers/2026-10-05-london-gate-findings-2026-10-05.md.",
+      "record_change": "content: one sentence opening chapter 1's slot in the breed section (page markup); no pick, menu, figure or section id moved",
+      "sections": [
+        "breed"
       ]
     }
   ]
