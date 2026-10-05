@@ -47,9 +47,11 @@ if (!STATEMENT_KINDS.includes(kind)) throw new Error(`StatementLine: "${kind}" i
 <style>
   @layer components {
     .kit-stmt-line {
-      display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; max-width: none;
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; max-inline-size: 65ch;
       margin: 0; font-size: var(--text-xs); line-height: 1.4; color: inherit;
     }
+    /* A label line is reading text, so it keeps the reading measure in its own 13px type
+       (city-type-fit's 75ch): as a full-width flex row it measured 79-109ch in a chapters tray. */
     .kit-stmt-line[data-space='below'] { margin-block: 0 10px; }
     .kit-stmt-line[data-space='above'] { margin-block: 6px 0; }
     .stmt-label {
