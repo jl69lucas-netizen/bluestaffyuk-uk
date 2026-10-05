@@ -1,0 +1,214 @@
+<meta charset="utf-8">
+<title>London Harden Proposals</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<style>
+  :root {
+    --bone: #F4F1EA; --steel: #1F3A52; --brass: #C9A227;
+    --bg: var(--bone); --surface: #FBFAF6; --ink: #1B2A38; --ink-2: #4A5A6A; --rule: #D5DCE3;
+    --head: var(--steel); --accent: var(--brass); --chip-ink: #1B2A38; --pick-bg: #F3E9C6;
+    --btn-bg: var(--steel); --btn-ink: #F4F1EA; --shot-bg: #E9E4D8;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121C26; --surface: #182634; --ink: #E8E4DA; --ink-2: #A9B6C3; --rule: #2C3E50;
+      --head: #E8E4DA; --accent: var(--brass); --chip-ink: #1B2A38; --pick-bg: #3A3220;
+      --btn-bg: var(--brass); --btn-ink: #1B2A38; --shot-bg: #0E161E; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121C26; --surface: #182634; --ink: #E8E4DA; --ink-2: #A9B6C3; --rule: #2C3E50;
+    --head: #E8E4DA; --accent: var(--brass); --chip-ink: #1B2A38; --pick-bg: #3A3220;
+    --btn-bg: var(--brass); --btn-ink: #1B2A38; --shot-bg: #0E161E; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 "Source Sans 3", system-ui, sans-serif; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+  header.top { border-bottom: 3px solid var(--head); padding-bottom: 20px; margin-bottom: 28px; }
+  .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; color: var(--head); line-height: 1.2; text-wrap: balance; }
+  h1 { font-size: clamp(28px, 5vw, 40px); margin: 0 0 12px; }
+  .lede { color: var(--ink-2); max-width: 70ch; margin: 0 0 16px; }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; }
+  button { font: 600 14px/1 "Source Sans 3", sans-serif; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 0; background: var(--btn-bg); color: var(--btn-ink); cursor: pointer; }
+  button.ghost { background: transparent; color: var(--head); border: 1px solid var(--rule); }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 24px; margin: 0 0 24px; }
+  .card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; margin-bottom: 8px; }
+  .tag { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+  .md h2 { font-size: clamp(22px, 3.4vw, 28px); margin: 4px 0 12px; }
+  .md h3 { font-size: 18px; margin: 20px 0 8px; }
+  .md p, .md li { max-width: 75ch; }
+  .md strong { color: var(--head); }
+  .md ul { padding-left: 20px; }
+  .md p:has(> img) { max-width: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; align-items: start; }
+  .md img { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--rule); background: var(--shot-bg); }
+  .md em { color: var(--ink-2); font-style: normal; font-size: 14px; }
+  .md table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  .md th, .md td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .md mark { background: var(--pick-bg); color: inherit; padding: 0 4px; border-radius: 4px; font-weight: 700; }
+  .copied { font-size: 13px; color: var(--ink-2); }
+  code { font-size: .86em; overflow-wrap: anywhere; }
+  @media (max-width: 640px) {
+    .card { padding: 16px; }
+    .md table, .md thead, .md tbody, .md tr, .md th, .md td { display: block; }
+    .md thead { display: none; }
+    .md td { border: 0; padding: 4px 0; }
+    .md tr { border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">BlueStaffyUK · London city page · Harden sprint, 2026-10-05</p>
+    <h1>London Harden Proposals</h1>
+    <p class="lede">The impeccable and frontend-design passes found five changes that would visibly alter an approved design or a reader-facing word, so none is applied. Each card shows the page as built beside a preview, why the change is proposed, its trade-off, and one recommended pick. Fixes that changed nothing approved are already committed (reports: <code>docs/reports/impeccable-london-2026-10-05.md</code>, <code>docs/reports/frontend-design-london-2026-10-05.md</code>).</p>
+    <div class="tools">
+      <button type="button" id="copy-all">Copy all as Markdown</button>
+      <button type="button" class="ghost" id="dl-md">Download .md</button>
+      <span class="copied" id="status" aria-live="polite"></span>
+    </div>
+  </header>
+
+  <section class="card" data-id="IMP-D1">
+<script type="text/markdown">
+## IMP-D1 · The CTA close card's brass side rule
+
+*impeccable · P3 anti-pattern · `CityChapters.astro` `.close` · four chapter closes (deposit, litter, paperwork, temperament)*
+
+**What we found.** Each chapter's closing CTA card carries a 3px brass rule down its left edge on a 12px-radius card. The impeccable detector flags it four times (`side-tab`, rows 1–4): a side stripe on a rounded card is one of its absolute bans, the most recognisable "template" tell. The card arrived with CTA-1, the breeder's pick (answer board 2026-10-04 q09 (a)), so it is not changed without a yes.
+
+![Built page, 375px: brass side rule](IMP-D1-close-rule-375-before.png) ![Preview, 375px: 1px steel hairline all round](IMP-D1-close-rule-375-preview.png)
+
+![Built page, 1280px](IMP-D1-close-rule-1280-before.png) ![Preview, 1280px](IMP-D1-close-rule-1280-preview.png)
+
+*Left: as built. Right: preview.*
+
+### Options
+
+- <mark>(a) Recommended</mark> A 1px steel-300 hairline all round the card; the brass pill stays the card's one brass accent. **Why:** the pill already says "act here" in brass; the stripe repeats it and is the one AI tell the detector finds on the page. **Trade-off:** the card reads quieter, and the brass echo between the closes and the statement labels' small tick goes.
+- (b) Keep the brass side rule as approved.
+</script>
+  </section>
+
+  <section class="card" data-id="IMP-D2">
+<script type="text/markdown">
+## IMP-D2 · The comma that opens the clause after each pill
+
+*impeccable · P3 typography · `CityChapters.astro` `.close p` · 375 / 768 / 1280*
+
+**What we found.** Each close sentence starts with its link, now the brass pill, and the rest of the sentence follows: ", and tell us which puppy caught your eye." On a phone the pill fills the line, so the next line opens with a bare comma. From 768 the comma sits 6px after the pill and reads as a stray mark. The words are the board's, so a visible change needs the breeder.
+
+![Built page, 375px: line starts with a comma](IMP-D2-close-comma-375-before.png) ![Preview, 375px: comma hidden](IMP-D2-close-comma-375-preview.png)
+
+![Built page, 768px](IMP-D2-close-comma-768-before.png) ![Preview, 768px](IMP-D2-close-comma-768-preview.png)
+
+![Built page, 1280px](IMP-D2-close-comma-1280-before.png) ![Preview, 1280px](IMP-D2-close-comma-1280-preview.png)
+
+*Left: as built. Right: preview.*
+
+### Options
+
+- <mark>(a) Recommended</mark> Hide the leading comma on screen (`aria-hidden`, so a screen reader still hears the board's sentence word for word); the clause reads "and tell us which puppy caught your eye." **Why:** the pill now works as a button and the clause as its note, and no line starts with punctuation. **Trade-off:** what a reader sees differs from the board's sentence by one comma, on four closes.
+- (b) Reword the four closes on the board so the clause stands as its own sentence. Cleanest typography, but it changes approved words.
+- (c) Keep as built.
+</script>
+  </section>
+
+  <section class="card" data-id="IMP-D3">
+<script type="text/markdown">
+## IMP-D3 · 13px reading text on a phone
+
+*impeccable · P2 readability · `StatementLine.astro` `.stmt-note`, `CityTicketStrip.astro` `.pc-trust li`, `.pc-del` · 375*
+
+**What we found.** Three kinds of reading text sit at the 13px label size (`--text-xs`) on a phone: the note under each of the seven statement labels ("Lisa Bright's own statement: the tests are named only, and no result is claimed"), and, in each of the six puppy cards, the eight "comes home with" lines and the delivery line. Caps labels at 13px are fine; sentences and lists a buyer reads are under the 14px floor for phone reading text. Both pieces are breeder picks (statement labels q02, CARD-3 q08 (c)).
+
+![Built page, 375px: statement note at 13px](IMP-D3-phone-notes-stmt-375-before.png) ![Preview, 375px: 14px](IMP-D3-phone-notes-stmt-375-preview.png)
+
+![Built page, 375px: puppy card at 13px](IMP-D3-phone-notes-card-375-before.png) ![Preview, 375px: 14px](IMP-D3-phone-notes-card-375-preview.png)
+
+*Left: as built. Right: preview.*
+
+### Options
+
+- <mark>(a) Recommended</mark> 14px below 640px only; tablet and desktop unchanged. **Why:** these lines are what a buyer checks before enquiring, and on a phone they are the smallest text on the page. **Trade-off:** each puppy card grows about 28px (the band about 170px on a phone) and each statement note may take one more line.
+- (b) Keep 13px.
+</script>
+  </section>
+
+  <section class="card" data-id="FD-D1">
+<script type="text/markdown">
+## FD-D1 · A one-row phone header
+
+*frontend-design · P2 chrome · `SiteHeaderKit.astro` · every page · 375*
+
+**What we found.** On a phone the sticky header is two rows and 121px tall: the brand and the "Available puppies" pill fill the first row, so the menu wraps to a second. That is 15% of an 812px screen on every screen; London is 45,743px tall at 375, about 56 screens of scrolling.
+
+![Built page, 375px, top](FD-D1-phone-header-375-before.png) ![Preview, 375px, top: one 73px row](FD-D1-phone-header-375-preview.png)
+
+![Built page, 375px, scrolled](FD-D1-phone-header-375-before-scrolled.png) ![Preview, 375px, scrolled](FD-D1-phone-header-375-preview-scrolled.png)
+
+*Left: as built. Right: preview.*
+
+### Options
+
+- <mark>(a) Recommended</mark> One 73px row below 640px: brand, pill, then the menu as its icon (its name stays in visually hidden text, so it is still announced "Open menu"); the scroll offset `--hdr` follows to 72px. **Why:** 48px more reading on every phone screen, on every page, with the buy button kept in view. **Trade-off:** the visible word "Open menu" becomes an icon, a little less obvious to a buyer who is unsure of hamburger icons, and the change repaints every page's header.
+- (b) Keep the two-row header.
+</script>
+  </section>
+
+  <section class="card" data-id="FD-D2">
+<script type="text/markdown">
+## FD-D2 · The puppy cards two across on a desktop
+
+*frontend-design · P3 layout · `CityTicketStrip.astro` `.grid` · 1024 / 1280*
+
+**What we found.** The CARD-3 band sets its six cards three across in the reading column beside the rail, so each card is 231px wide at 1280 (265px at 1024), against 321px two across at 768. At 1280 the meta wraps ("Boy · Blue / and white"), the "comes home with" list falls to one column and the delivery stub runs three lines.
+
+![Built page, 1280px: three across](FD-D2-cards-1280-before.png) ![Preview, 1280px: two across](FD-D2-cards-1280-preview.png)
+
+*Left: as built. Right: preview.*
+
+### Options
+
+- <mark>(a) Recommended</mark> Two across from 1024 up, the same as tablet. **Why:** each card gets the width it was designed at, the meta and the delivery line sit on one or two lines, and the list keeps two columns. **Trade-off:** three rows instead of two; the band grows from 975px to 1,059px at 1280, so the letters below start 84px lower.
+- (b) Keep three across.
+</script>
+  </section>
+</div>
+
+<script>
+  const cards = [...document.querySelectorAll('.card')];
+  const mdOf = (c) => c.querySelector('script[type="text/markdown"]').textContent.trim();
+  const status = document.getElementById('status');
+  const say = (t) => { status.textContent = t; setTimeout(() => { status.textContent = ''; }, 2500); };
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch {} ta.remove(); return ok; }
+  }
+  const header = '# London Harden Proposals\n\nBlueStaffyUK · London city page · Harden sprint, 2026-10-05\n\n';
+  const allMd = () => header + cards.map(mdOf).join('\n\n---\n\n') + '\n';
+  for (const c of cards) {
+    const md = mdOf(c);
+    const head = document.createElement('div'); head.className = 'card-head';
+    head.innerHTML = `<span class="tag">${c.dataset.id}</span>`;
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'ghost'; btn.textContent = 'Copy as Markdown';
+    btn.addEventListener('click', async () => say((await copy(md)) ? `${c.dataset.id} copied` : 'Copy failed'));
+    head.appendChild(btn);
+    const body = document.createElement('div'); body.className = 'md';
+    body.innerHTML = window.marked ? marked.parse(md) : `<pre>${md.replace(/[&<]/g, (ch) => ({ '&': '&amp;', '<': '&lt;' }[ch]))}</pre>`;
+    body.querySelectorAll('img').forEach((im) => { im.loading = 'lazy'; im.decoding = 'async'; });
+    c.prepend(head); c.appendChild(body);
+  }
+  document.getElementById('copy-all').addEventListener('click', async () => say((await copy(allMd())) ? 'All five copied' : 'Copy failed'));
+  document.getElementById('dl-md').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([allMd()], { type: 'text/markdown' }));
+    a.download = 'london-harden-proposals-2026-10-05.md'; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+</script>
