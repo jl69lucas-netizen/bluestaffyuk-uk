@@ -107,6 +107,9 @@
      contact form's full-width message field to 549px (the Task 7b design pass). */
   .city-kit :where(p:not(form *), li, dd) { font-size: var(--city-body); line-height: 1.6; }
   .city-kit :where(p:not(form *)) { text-wrap: pretty; max-inline-size: 65ch; }
+  /* A run that never breaks inside: the delivery band and the "· or" after it (cityKit
+     `deliveryLineRuns`, impeccable Harden pass 2026-10-05 F1). */
+  .city-kit :where(.keep) { white-space: nowrap; }
   /* A LINK IN READING TEXT IS UNDERLINED: the site-wide rule in src/styles/global.css ("A LINK IN
      READING TEXT IS UNDERLINED", answer board 2026-10-03 q01) leaves the city kit out of its
      general selector, and the city kit's paragraphs take it here, where the London pass first set

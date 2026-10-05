@@ -24,7 +24,7 @@ import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
 import { puppyImage } from '../../lib/puppyImages';
 import { focusClass } from '../../lib/imageFocus';
-import { availablePuppies, deliveryLine, depositLine, money, sexWord } from '../../lib/cityKit';
+import { availablePuppies, deliveryLineRuns, depositLine, money, sexWord } from '../../lib/cityKit';
 
 // `bare` (London's page run, row 12): the table and its foot alone, in a `div`, for a page whose
 // approved outline sets the fact table under an H3 rather than as a section of its own. It
@@ -63,7 +63,7 @@ const cols = ['Puppy', 'Sex', 'Colour', 'Price', 'Status'];
         ))}
       </tbody>
     </table>
-    <p class="foot">{deliveryLine}. {depositLine}</p>
+    <p class="foot">{deliveryLineRuns.map((r) => (r.keep ? <span class="keep">{r.text}</span> : r.text))}. {depositLine}</p>
   </div>
 </Root>
 <style>

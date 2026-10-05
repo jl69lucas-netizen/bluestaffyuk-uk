@@ -240,8 +240,13 @@ const here = Astro.url.pathname;
     .brand { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-3); min-width: 44px; min-height: 44px; text-decoration: none; color: inherit; }
     .brand:focus-visible, .nav a:focus-visible, .drawer summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     .nav ul { display: flex; gap: var(--space-5); list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
-    .nav a { color: inherit; text-decoration: none; font-weight: 600; font-size: var(--text-sm); padding: var(--space-3) 0; display: inline-block; min-height: 44px; line-height: 20px; }
-    .nav a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--color-cta); }
+    /* Every link at least 44px wide as well as tall (impeccable D3's chrome target, the breeder's yes
+       on every page, 2026-10-03 q04; "Blog" was 29px, "Home" 38px, "Health" 43px; the London Harden
+       pass 2026-10-05, F2): 8px of padding each side, cancelled by an 8px negative margin, so no
+       word moves. The current-page rule is drawn as a 2px background band sized to the old box
+       (100% less the 16px of padding), so it does not widen either. */
+    .nav a { color: inherit; text-decoration: none; font-weight: 600; font-size: var(--text-sm); padding: var(--space-3) 8px; margin-inline: -8px; display: inline-block; min-height: 44px; line-height: 20px; }
+    .nav a[aria-current="page"] { background: linear-gradient(var(--color-cta), var(--color-cta)) center bottom / calc(100% - 16px) 2px no-repeat; }
 
     /* Visually hidden, still announced: the search field's own label, the button's name,
        the hint and the status line. Scoped here rather than in kit.css because search is

@@ -19,7 +19,8 @@
 // EVERY WORD IS DATA (working rule 9): name, sex, colour, price (cityKit `money(price_gbp)`) and
 // the personality line from data/puppies.json (the breeder's approved lines, q07 (a)); the trust
 // signs from data/settings.json `puppy_trust_signs`, then `guarantee_label` appended, never typed;
-// the delivery line is cityKit `deliveryLine` (rules/puppies.md `delivery-band-on-every-card`).
+// the delivery line is cityKit `deliveryLine` (rules/puppies.md `delivery-band-on-every-card`), set
+// from its `deliveryLineRuns` so the band and the "· or" never break inside.
 // A puppy with no personality line stops the build.
 //
 // THE WHOLE CARD IS ONE TAP TARGET: the name link's ::before is stretched over the card. Hover
@@ -29,7 +30,7 @@
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import settings from '../../../data/settings.json';
-import { availablePuppies, deliveryLine, money, sexWord } from '../../lib/cityKit';
+import { availablePuppies, deliveryLineRuns, money, sexWord } from '../../lib/cityKit';
 import { numberWord } from '../../lib/recordText';
 
 type Props = HTMLAttributes<'div'> & {
@@ -66,7 +67,7 @@ const CHECK = 'M5 12.5l4.5 4.5L19 7.5';
               ))}
             </ul>
             <div class="pc-stub">
-              <p class="pc-del">{deliveryLine}</p>
+              <p class="pc-del">{deliveryLineRuns.map((r) => (r.keep ? <span class="keep">{r.text}</span> : r.text))}</p>
               <span class="pc-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
             </div>
           </article>

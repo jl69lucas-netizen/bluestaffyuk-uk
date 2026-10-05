@@ -36,6 +36,23 @@ export const TOWN = settings.address.city;
 /** rules/puppies.md `delivery-band-on-every-card`, in the pack's canonical words. */
 export const deliveryLine = `UK home delivery ${DELIVERY_BAND} by distance · or collect in ${TOWN}`;
 
+/** deliveryLine as runs for a renderer: `keep` runs never break inside (`.city-kit .keep`). The band
+ *  stays on one line and the "·" travels with the word after it, so a narrow card never splits
+ *  "£200–" from "£350" or leaves the dot hanging at a line end (impeccable Harden pass 2026-10-05,
+ *  F1). Split from deliveryLine itself, so the words stay the one source's. */
+export const deliveryLineRuns: { text: string; keep?: true }[] = (() => {
+  const [pre, post] = deliveryLine.split(DELIVERY_BAND);
+  const dot = post.indexOf(' · ');
+  const after = post.slice(dot + 3);
+  const sp = after.indexOf(' ');
+  const runs: { text: string; keep?: true }[] = [
+    { text: pre }, { text: DELIVERY_BAND, keep: true }, { text: post.slice(0, dot + 1) },
+    { text: `· ${after.slice(0, sp)}`, keep: true }, { text: after.slice(sp) },
+  ];
+  if (runs.map((r) => r.text).join('') !== deliveryLine) throw new Error('cityKit: deliveryLineRuns no longer spells deliveryLine');
+  return runs;
+})();
+
 /** What the deposit does, in the user's ruling (2026-09-27). No refund wording: see the header. */
 const DEPOSIT_DOES = 'books your viewing and reserves your puppy, and it comes off the price';
 const sentence = (s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}.`;
