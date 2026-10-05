@@ -131,6 +131,11 @@ const CHECK = 'M5 12.5l4.5 4.5L19 7.5';
     .pc-del { font-size: var(--text-xs); line-height: 1.4; color: var(--color-text); font-weight: 600; }
     .pc-go { color: var(--color-brand); display: inline-flex; transition: transform var(--dur-base) var(--ease-out); }
     .pc:hover .pc-go { transform: translateX(3px); }
+    /* 14px ON A PHONE (impeccable IMP-D3 on London, the breeder's yes, answer board
+       2026-10-06-london-harden-calls q03 (a)): the "comes home with" lines and the delivery line are
+       what a buyer checks before enquiring, and at 13px they were the smallest reading text on the
+       page. Below the 640px tier edge only; tablet and desktop keep 13px. */
+    @container (width < 640px) { .pc-trust li, .pc-del { font-size: 14px; } }
     /* The kit's two tier edges (cityKit TIER): two cards to a row from a tablet box, three from a
        desktop box (the 832px column beside the dial at 1280). */
     @container (width >= 640px) {

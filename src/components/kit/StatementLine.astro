@@ -61,5 +61,11 @@ if (!STATEMENT_KINDS.includes(kind)) throw new Error(`StatementLine: "${kind}" i
     /* A flex item's floor is its longest word by default; a note in a narrow ledger column may
        shrink to the column and wrap instead of pushing past it. */
     .stmt-note { min-width: 0; }
+    /* 14px ON A PHONE (impeccable IMP-D3 on London, the breeder's yes, answer board
+       2026-10-06-london-harden-calls q03 (a)): the note is a sentence a buyer reads, and at 13px it
+       was the smallest reading text on the page. Below the kit's 640px tier edge (the city root's
+       box, src/styles/city.css THE TIERS) only; the caps label keeps 13px, and tablet and desktop
+       are unchanged. */
+    @container (width < 640px) { .stmt-note { font-size: 14px; } }
   }
 </style>
