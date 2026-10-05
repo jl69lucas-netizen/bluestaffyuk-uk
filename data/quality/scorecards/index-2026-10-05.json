@@ -71,10 +71,10 @@
     "LAYOUT": 3,
     "IMG": 17,
     "CSS": 150,
-    "DUP": 18
+    "DUP": 15
   },
   "total": 15,
-  "total_instances": 188,
+  "total_instances": 185,
   "overrides": [],
   "details": [
     {
@@ -110,8 +110,8 @@
     {
       "viewport": 1280,
       "checkId": "dup-no-sibling-crossover",
-      "count": 6,
-      "message": "6 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 12w vs /blue-staffy-pup-sale-uk/ \"is the heart of our family the victoria family manchester uk mj\""
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 12w vs /blue-staffy-pup-sale-uk/ \"is the heart of our family the victoria family manchester uk mj\""
     },
     {
       "viewport": 375,
@@ -134,8 +134,8 @@
     {
       "viewport": 375,
       "checkId": "dup-no-sibling-crossover",
-      "count": 6,
-      "message": "6 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 12w vs /blue-staffy-pup-sale-uk/ \"is the heart of our family the victoria family manchester uk mj\""
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 12w vs /blue-staffy-pup-sale-uk/ \"is the heart of our family the victoria family manchester uk mj\""
     },
     {
       "viewport": 768,
@@ -164,8 +164,8 @@
     {
       "viewport": 768,
       "checkId": "dup-no-sibling-crossover",
-      "count": 6,
-      "message": "6 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 12w vs /blue-staffy-pup-sale-uk/ \"is the heart of our family the victoria family manchester uk mj\""
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 13w vs /blue-staffy-health-uk/ \"the health and well being of our blue staffordshire bull terrier puppies are\" | 13w vs /blue-staffy-uk-breeders/ \"passion for the staffordshire bull terrier breed drives every aspect of our work\" | 12w vs /blue-staffy-pup-sale-uk/ \"is the heart of our family the victoria family manchester uk mj\""
     }
   ]
 }

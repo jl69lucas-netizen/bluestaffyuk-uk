@@ -15,7 +15,7 @@
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
-    "layout-min-font-size": 2013,
+    "layout-min-font-size": 2055,
     "layout-tap-target-size": 256,
     "layout-hero-counter-separation": 3,
     "layout-h3-image-first": 63,
@@ -24,7 +24,7 @@
     "hero-aside-no-clip": 0,
     "layout-hero-image-first-mobile": 3,
     "layout-body-heading-above-body": 0,
-    "layout-text-has-side-gutter": 1853,
+    "layout-text-has-side-gutter": 1895,
     "layout-boxed-h2-fits": 0,
     "layout-kit-band-full-bleed": 3,
     "layout-heading-size-order": 0,
@@ -43,36 +43,34 @@
     "nav-bottom-chrome-clear": 0,
     "nav-breadcrumb-separator-spaced": 6,
     "nav-breadcrumb-baseline-aligned": 12,
-    "sem-heading-order": 272,
-    "sem-all-six-levels": 272,
-    "sem-title-case-headings": 272,
-    "sem-section-opening-paragraph": 272,
-    "sem-statement-label-visible": 0,
+    "sem-heading-order": 269,
+    "sem-all-six-levels": 269,
+    "sem-title-case-headings": 269,
+    "sem-section-opening-paragraph": 269,
+    "sem-statement-label-visible": 21,
     "schema-single-product-offer": 0,
     "schema-sold-not-instock": 0,
     "schema-date-modified-present": 18,
     "schema-no-visible-date": 3,
-    "css-class-resolves": 3078,
-    "css-no-dead-component-rule": 1647,
-    "css-component-color-not-overridden": 188,
+    "css-class-resolves": 3138,
+    "css-no-dead-component-rule": 1665,
+    "css-component-color-not-overridden": 191,
     "dup-no-sibling-crossover": 150,
-    "a11y-text-contrast-aa": 1986,
+    "a11y-text-contrast-aa": 2025,
     "a11y-no-duplicate-ids": 138,
     "a11y-hero-ledge-contrast": 0,
     "form-inquiry-contract": 6
   },
   "defects": {
     "IMG": 5,
-    "CSS": 6,
-    "DUP": 3
+    "CSS": 6
   },
   "instances": {
     "IMG": 25,
-    "CSS": 225,
-    "DUP": 3
+    "CSS": 225
   },
-  "total": 14,
-  "total_instances": 253,
+  "total": 11,
+  "total_instances": 250,
   "overrides": [],
   "details": [
     {
@@ -100,12 +98,6 @@
       "message": "73 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
-      "viewport": 1280,
-      "checkId": "dup-no-sibling-crossover",
-      "count": 1,
-      "message": "1 passage(s) shared with a sibling: 12w vs /index/ \"what is included when i buy a blue staffy puppy from bluestaffyuk\""
-    },
-    {
       "viewport": 375,
       "checkId": "img-face-visible",
       "count": 3,
@@ -122,12 +114,6 @@
       "checkId": "css-no-dead-component-rule",
       "count": 73,
       "message": "73 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
-    },
-    {
-      "viewport": 375,
-      "checkId": "dup-no-sibling-crossover",
-      "count": 1,
-      "message": "1 passage(s) shared with a sibling: 12w vs /index/ \"what is included when i buy a blue staffy puppy from bluestaffyuk\""
     },
     {
       "viewport": 768,
@@ -152,12 +138,6 @@
       "checkId": "css-no-dead-component-rule",
       "count": 73,
       "message": "73 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
-    },
-    {
-      "viewport": 768,
-      "checkId": "dup-no-sibling-crossover",
-      "count": 1,
-      "message": "1 passage(s) shared with a sibling: 12w vs /index/ \"what is included when i buy a blue staffy puppy from bluestaffyuk\""
     }
   ]
 }

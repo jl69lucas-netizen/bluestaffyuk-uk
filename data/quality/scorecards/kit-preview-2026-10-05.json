@@ -53,7 +53,7 @@
     "schema-date-modified-present": 12,
     "schema-no-visible-date": 3,
     "css-class-resolves": 1800,
-    "css-no-dead-component-rule": 2514,
+    "css-no-dead-component-rule": 2532,
     "css-component-color-not-overridden": 79,
     "dup-no-sibling-crossover": 153,
     "a11y-text-contrast-aa": 1520,
@@ -70,11 +70,11 @@
   "instances": {
     "IMG": 4,
     "SEM": 82,
-    "CSS": 1545,
-    "DUP": 66
+    "CSS": 1563,
+    "DUP": 63
   },
   "total": 20,
-  "total_instances": 1697,
+  "total_instances": 1712,
   "overrides": [],
   "details": [
     {
@@ -110,14 +110,14 @@
     {
       "viewport": 1280,
       "checkId": "css-no-dead-component-rule",
-      "count": 514,
-      "message": "514 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "count": 520,
+      "message": "520 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 1280,
       "checkId": "dup-no-sibling-crossover",
-      "count": 22,
-      "message": "22 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
+      "count": 21,
+      "message": "21 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
     },
     {
       "viewport": 375,
@@ -146,14 +146,14 @@
     {
       "viewport": 375,
       "checkId": "css-no-dead-component-rule",
-      "count": 514,
-      "message": "514 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "count": 520,
+      "message": "520 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 375,
       "checkId": "dup-no-sibling-crossover",
-      "count": 22,
-      "message": "22 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
+      "count": 21,
+      "message": "21 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
     },
     {
       "viewport": 768,
@@ -188,14 +188,14 @@
     {
       "viewport": 768,
       "checkId": "css-no-dead-component-rule",
-      "count": 514,
-      "message": "514 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "count": 520,
+      "message": "520 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 768,
       "checkId": "dup-no-sibling-crossover",
-      "count": 22,
-      "message": "22 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
+      "count": 21,
+      "message": "21 passage(s) shared with a sibling: 17w vs /buy-staffy-puppies-for-sale-uk/ \"why should families choose bluestaffyuk as their trusted breeding partner for staffordshir\" | 16w vs /buy-staffy-puppies-for-sale-uk/ \"who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding progra\" | 14w vs /buy-staffy-puppies-for-sale-uk/ \"how can i tell if my puppy is an american or an english staffy\""
     }
   ]
 }
