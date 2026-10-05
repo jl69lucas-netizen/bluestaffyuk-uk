@@ -50,6 +50,8 @@ import { bakedAssets, bakedSrcset, inPublic } from '../../lib/assets';
 import type { BodyAsset } from '../../components/BodyImage.astro';
 import BodyImage from '../../components/BodyImage.astro';
 import SectionDivider from '../../components/kit/SectionDivider.astro';
+import StatementLine from '../../components/kit/StatementLine.astro';
+import type { Statement } from '../../lib/statement';
 import CityHeroFilmstrip from '../../components/kit/CityHeroFilmstrip.astro';
 import CityPriceScale from '../../components/kit/CityPriceScale.astro';
 import CityTrustLedger from '../../components/kit/CityTrustLedger.astro';
@@ -143,7 +145,21 @@ const DEPOSIT_DOES_TO = (() => {
 // through `breedFactsCell()` from data/boards/uk-staffordshire-bull-terrier-guide.json
 // `sections[breed-facts].table.rows` -> "Lifespan" (cited there to the Purina breed library),
 // as /blue-staffy-health-uk/ reads it. The day the guide's cell moves, this sentence moves with it.
-const LIFESPAN = breedFactsCell(guideRecord, 'Lifespan', SLUG).text;
+const LIFESPAN_CELL = breedFactsCell(guideRecord, 'Lifespan', SLUG);
+const LIFESPAN = LIFESPAN_CELL.text;
+// THE STATEMENT LABELS (the breeder's pick, answer board 2026-10-05 london-close-proposals q02
+// (a), docs/reports/london-close-proposals-2026-10-05/): seven, each on its own line through
+// src/components/kit/StatementLine.astro, worded exactly as shown. "Observed here" on the five
+// sections that name the tests (no result is claimed: plan Ruling 4), "Fact" on the breed's
+// taxonomy and on its lifespan, whose figure is the guide's Lifespan cell read above and whose
+// source is the one that cell is cited to.
+const TESTS_NAMED: Statement = { kind: 'observed',
+  note: `${settings.breeder_name}’s own statement: the tests are named only, and no result is claimed` };
+if (!JSON.stringify(guideRecord).includes('purina.co.uk')) {
+  throw new Error('data/boards/uk-staffordshire-bull-terrier-guide.json no longer cites the Purina breed library');
+}
+const LIFESPAN_FACT: Statement = { kind: 'fact',
+  note: `Breed lifespan, ${LIFESPAN_CELL.clause} · source: the Purina breed library` };
 // The trust ledger's fifth line (London final fixes B1, the breeder's yes, answer board 2026-10-05
 // q06 (a)): the microchip and the vet checks inside the first 300 words. Its words are the puppy
 // trust signs in data/settings.json (`puppy_trust_signs`), read and checked, never typed as fact.
@@ -253,7 +269,7 @@ const callChecklist: CheckPane[] = [
     { label: 'The written contract', detail: 'Our puppy purchase contract, with the take-back promise written into it.' },
   ] },
   { title: 'Ask to hear, out loud', hint: 'Tick each one as we answer it', icon: 'listen', items: [
-    { label: 'The health tests, by name', detail: 'Ask us about each of these tests by name: L-2-HGA, HC-HSF4, eye screening and elbow screening.' },
+    { label: 'The health tests, by name', detail: 'Ask us about each of these tests by name: L-2-HGA, HC-HSF4, eye screening and elbow screening.', stmt: TESTS_NAMED },
     { label: "The parents' registration numbers", detail: 'Write them down so you can check the pedigree yourself.' },
     { label: 'The deposit terms', detail: `${DEPOSIT}, paid by bank transfer: ${REFUND}.` },
     // The guarantee row's own wording (src/lib/guarantee.ts guaranteeRowParts): the label states the
@@ -288,7 +304,7 @@ const takeaways = [
   { label: 'The deposit', text: depositLine },
   { label: 'The prices', text: `${BOY_PRICE} for a boy and ${GIRL_PRICE} for a girl, the same wherever you live.` },
   { label: 'Getting home', text: `UK home delivery for ${DELIVERY_BAND}, priced by distance, or collection in ${TOWN}.` },
-  { label: 'The tests', text: 'Ask any breeder, us included, about L-2-HGA, HC-HSF4, eye screening and elbow screening.' },
+  { label: 'The tests', text: 'Ask any breeder, us included, about L-2-HGA, HC-HSF4, eye screening and elbow screening.', stmt: TESTS_NAMED },
   ...(guarantee ? [{ label: guarantee.t, text: guarantee.d }] : []),
 ];
 
@@ -318,6 +334,7 @@ const faqMiddle: CityFaqRow[] = [
     more: { href: '#deposit-viewing', label: 'The video call and the deposit' } },
   { q: "Are the Puppy's Parents Health Tested?",
     a: 'Ask us about L-2-HGA, HC-HSF4, eye screening and elbow screening for Maggie and Jones. We hold no certificates, so we name the tests and quote no result.',
+    stmt: TESTS_NAMED,
     more: { href: '#health-tests', label: 'What each test is for' } },
   { q: 'Will the Breeder Still Support Me After I Collect the Puppy?',
     a: 'Yes. Write to us before or after your puppy is home and you get the same answer, from us rather than an agency.' },
@@ -415,7 +432,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       photo="maggie-blue-staffy-dam-with-pups.webp" caption="Maggie, our dam, with her puppies"
       items={[
         { icon: 'eye', claim: 'A video call first', detail: 'With your puppy and Maggie, on request, before any deposit' },
-        { icon: 'dna', claim: 'The tests, named', detail: 'L-2-HGA, HC-HSF4, eye screening and elbow screening; no result quoted' },
+        { icon: 'dna', claim: 'The tests, named', detail: 'L-2-HGA, HC-HSF4, eye screening and elbow screening; no result quoted', stmt: TESTS_NAMED },
         ...(guarantee ? [{ icon: 'shield' as const, claim: guarantee.t, detail: guarantee.d }] : []),
         { icon: 'delivery', claim: 'To your London door', detail: `DEFRA-approved transport, or collect in ${TOWN}` },
         chipClaim,
@@ -576,6 +593,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <CityChapters id="health-tests" data-section-label={H2('health-tests')}
     heading={H2('health-tests')}
     image={photo('health-h2')}
+    ledeLabel={{ ...TESTS_NAMED, where: 'before' }}
     lede="A health tested Staffy breeder names each parent's tests: L-2-HGA, HC-HSF4, eye screening and elbow screening."
     chapters={[
       { place: 'DNA tests', question: tree('health-tests', 0), asset: photo('health-tests-h3'),
@@ -695,6 +713,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       {/* The breed's taxonomy, in the neutral register rules/copy.md allows for species facts (the
           breeder's yes, answer board 2026-10-05 london-gate-findings q07 (a)): the entity anchor an AI
           answer looks for, worded exactly as she approved it, the binomial in italics. */}
+      <StatementLine kind="fact" note="Breed taxonomy" />
       <p>The Staffordshire Bull Terrier is a breed of domestic dog, <i lang="la">Canis lupus familiaris</i>.</p>
       <p><a href="/uk-staffordshire-bull-terrier-guide/">What sets the English Staffy apart</a> is covered at length in our breed guide.</p>
       <h4>{tree('breed', 0, 0)}</h4>
@@ -710,6 +729,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <CityChapters id="everyday-health" data-section-label={H2('everyday-health')}
     heading={H2('everyday-health')}
     image={photo('everyday-health-h2')}
+    ledeLabel={{ ...LIFESPAN_FACT, where: 'after' }}
     lede={`Skin problems, above all. Blue Staffies, like the breed as a whole, are prone to allergies and itchy skin, which good care and a vet can usually keep in hand. So watch the skin first. A Staffy lives ${LIFESPAN}.`}
     chapters={[
       { place: 'Skin', question: tree('everyday-health', 0), asset: photo('everyday-health-skin'),

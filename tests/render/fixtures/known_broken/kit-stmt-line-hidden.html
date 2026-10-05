@@ -1,0 +1,41 @@
+<!doctype html><meta charset=utf-8><title>known-broken: kit StatementLine labels hidden, unkinded and mis-kinded</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  The known_good half with three edits, one per way the check fails a label: the trust claim's
+  label is display:none (painted), the takeaways row's label has lost its data-kind (kinded), and
+  the checklist item's label carries a kind src/lib/statement.ts does not have ("note"). The
+  other two are unchanged, so five labels are still examined and exactly three are reported.
+-->
+<style>
+  body { margin:0; background:#F4F1EA; color:#22303C; font:16px/1.5 system-ui; padding:16px; }
+  .kit-stmt-line { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; margin:0; font-size:13px; line-height:1.4; color:inherit; }
+  .kit-stmt-line[data-space=below] { margin-block:0 10px; }
+  .kit-stmt-line[data-space=above] { margin-block:6px 0; }
+  .stmt-label { font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding-left:8px; border-left:3px solid #C9A227; }
+  .card { background:#fff; border:1px solid #DAD6CC; border-radius:12px; padding:16px; margin-bottom:16px; }
+  .t { display:block; font-weight:700; } .d { display:block; font-size:15px; color:#4A5866; }
+  dl { margin:0; } dd { margin:0; }
+  .band { background:#16212C; color:#F4F1EA; padding:16px; margin-bottom:16px; }
+  .band .stmt, .band p.a { padding-left:48px; }
+  .tray { background:#E3E9EF; padding:16px; border-radius:16px; }
+  .lede { margin:0 0 24px; }
+</style>
+<main>
+  <ul class="card" style="list-style:none">
+    <li><span><span class="t">The tests, named</span><span class="d">L-2-HGA, HC-HSF4, eye screening and elbow screening; no result quoted</span><span class="kit-stmt-line" data-space="above"><span class="stmt-label" data-kind="observed" style="display:none">Observed here</span><span class="stmt-note">Lisa Bright’s own statement: the tests are named only, and no result is claimed</span></span></span></li>
+  </ul>
+  <dl class="card"><div><dt>The tests</dt><dd>Ask any breeder about L-2-HGA and HC-HSF4.<span class="kit-stmt-line" data-space="above"><span class="stmt-label">Observed here</span><span class="stmt-note">Named only</span></span></dd></div></dl>
+  <ul class="card" style="list-style:none">
+    <li><label><input type="checkbox"> <span><span class="t">The written contract</span><span class="d">Ask to read it before you pay.</span><span class="kit-stmt-line" data-space="above"><span class="stmt-label" data-kind="note">Our recommendation</span></span></span></label></li>
+  </ul>
+  <div class="band">
+    <details open><summary><h3>Are the Puppy's Parents Health Tested?</h3></summary>
+      <div class="stmt"><p class="kit-stmt-line" data-space="below"><span class="stmt-label" data-kind="observed">Observed here</span><span class="stmt-note">Named only, no result claimed</span></p></div>
+      <p class="a">Ask about L-2-HGA and HC-HSF4 for both parents.</p>
+    </details>
+  </div>
+  <div class="tray">
+    <p class="kit-stmt-line" data-space="below"><span class="stmt-label" data-kind="fact">Fact</span><span class="stmt-note">Breed taxonomy</span></p>
+    <p class="lede">The Staffordshire Bull Terrier is a breed of domestic dog.</p>
+  </div>
+</main>

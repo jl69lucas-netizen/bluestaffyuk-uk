@@ -3248,7 +3248,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "67f0a16982bffacc04000a3b3ec385f28ac0f62e26851f2833e4b8ca41a1bc20",
+    "record_hash": "9aae592ca6cdd1559ad81cfbc70e88d819be88d5ad7d8a5a8a48a028fe118ff5",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3268,7 +3268,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-05T02:30:21Z",
+    "reapproved_at": "2026-10-05T02:35:39Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3405,6 +3405,13 @@
           "/sections/20/tree/6/heading",
           "/sections/20/tree/6/intent",
           "/sections/20/tree/7"
+        ]
+      },
+      {
+        "at": "2026-10-05T02:35:39Z",
+        "reason": "The breeder's pick on the London close proposals, answer board 2026-10-05 q02 (a) (docs/reference/answer-board/answers/2026-10-05-london-close-proposals-2026-10-05.md): seven statement labels as shown (five 'Observed here' on the test-naming sections, 'Fact' on the breed taxonomy and on the breed lifespan), through the new kit piece StatementLine.astro; logged in board_revisions. No section, pick, menu or figure moved.",
+        "changed_paths": [
+          "/board_revisions/31"
         ]
       }
     ]
@@ -3889,6 +3896,21 @@
         "faq-top",
         "faq-middle",
         "faq-bottom"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-close-proposals q02",
+      "decision": "Seven statement labels, each on its own line, worded exactly as shown in docs/reports/london-close-proposals-2026-10-05/: 'Observed here' with the note 'Lisa Bright’s own statement: the tests are named only, and no result is claimed' on #trust, #key-takeaways, #deposit-viewing, #faq-middle and #health-tests (the sections that name L-2-HGA, HC-HSF4, eye and elbow screening); 'Fact' with 'Breed taxonomy' on #breed (the binomial sentence); 'Fact' with 'Breed lifespan, 12 to 14 years · source: the Purina breed library' on #everyday-health, the figure read from the breed guide's Lifespan cell as the lede's sentence reads it. Rendered by the new kit piece src/components/kit/StatementLine.astro (words from src/lib/statement.ts; ink is the surface's text colour, measured 12.9–15.7:1), pinned by the fixture pair tests/render/fixtures/{known_good,known_broken}/kit-stmt-line*.html. Rulings: docs/reference/answer-board/answers/2026-10-05-london-close-proposals-2026-10-05.md.",
+      "record_change": "content: seven label lines in page markup and an optional statement-label prop on five city components (CityTrustLedger, CityTakeawaysLedger, CityLookListenChecklist, CityFaqLedger, CityChapters); no pick, menu, figure, heading or section id moved",
+      "sections": [
+        "trust",
+        "key-takeaways",
+        "deposit-viewing",
+        "faq-middle",
+        "health-tests",
+        "breed",
+        "everyday-health"
       ]
     }
   ]

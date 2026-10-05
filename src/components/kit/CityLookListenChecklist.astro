@@ -16,10 +16,15 @@
 // checklist].items), with every figure, clause and guarantee wording interpolated by the caller
 // from data/settings.json and data/puppies.json. The component types no fact. It adds no link and
 // no heading: the pane titles are labels, so the page's outline is unchanged. Conventions 2, 4, 6.
+//
+// A STATEMENT LABEL (London close proposals q02 (a), answer board 2026-10-05): an item may carry
+// `stmt`, a kind and a note, set on its own line under the item's text by StatementLine.astro.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
+import StatementLine from './StatementLine.astro';
+import type { Statement } from '../../lib/statement';
 
-export interface CheckItem { label: string; detail: string }
+export interface CheckItem { label: string; detail: string; stmt?: Statement }
 export interface CheckPane { title: string; hint: string; icon: 'look' | 'listen'; items: CheckItem[] }
 type Props = HTMLAttributes<'div'> & { panes: CheckPane[] };
 const { panes, class: cls, ...rest } = Astro.props;
@@ -42,7 +47,7 @@ if (empty.length) throw new Error(`CityLookListenChecklist: no items under ${emp
             <li>
               <label>
                 <input type="checkbox" />
-                <span><span class="t">{it.label}</span><span class="d">{it.detail}</span></span>
+                <span><span class="t">{it.label}</span><span class="d">{it.detail}</span>{it.stmt && <StatementLine as="span" space="above" kind={it.stmt.kind} note={it.stmt.note} />}</span>
               </label>
             </li>
           ))}

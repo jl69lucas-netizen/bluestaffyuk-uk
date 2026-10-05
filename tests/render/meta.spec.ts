@@ -1767,6 +1767,39 @@ test.describe('sem-statement-label-visible [kit InfoCard]', () => {
   });
 });
 
+test.describe('sem-statement-label-visible [kit StatementLine]', () => {
+  const check = () => registry.find((c) => c.id === 'sem-statement-label-visible')!;
+
+  // src/components/kit/StatementLine.astro, the label line the city components set under a
+  // claim, a takeaways row or a checklist item, at an FAQ answer's indent, and beside a lede
+  // (London close proposals q02 (a), answer board 2026-10-05). A state check, so convention 10
+  // applies: the fixture pair is the coverage, and it pins the piece's own markup.
+  test('is silent on the label line in the five places the city kit puts one', async ({
+    page,
+  }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_good/kit-stmt-line.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'claim, row, checklist, FAQ answer and lede labels').toBe(5);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires on a hidden label, an unkinded one and a mis-kinded one', async ({ page }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_broken/kit-stmt-line-hidden.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(5);
+    expect(r.defects[0].count).toBe(3);
+    expect(r.defects[0].message).toMatch(/hidden/);
+    expect(r.defects[0].message).toMatch(/kind ""/);
+    expect(r.defects[0].message).toMatch(/kind "note"/);
+  });
+});
+
 test.describe('a11y-text-contrast-aa [kit Hero aside]', () => {
   const check = () => registry.find((c) => c.id === 'a11y-text-contrast-aa')!;
 

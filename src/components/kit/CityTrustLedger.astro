@@ -12,12 +12,17 @@
 // 1024px the photo STRETCHES to the ledger's height (object-fit: cover), so `sizes` asks for the
 // 760 sibling there: the 400 would paint upscaled 1.5-1.9x (img-not-upscaled, measured).
 // Conventions 4 and 6; tokens only.
+//
+// A STATEMENT LABEL (London close proposals q02 (a), answer board 2026-10-05): an item may carry
+// `stmt`, a kind and a note, set on its own line under the item's text by StatementLine.astro.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
 import { TRUST_ICONS, type TrustIcon } from './cityIcons';
+import StatementLine from './StatementLine.astro';
+import type { Statement } from '../../lib/statement';
 
-export interface TrustClaim { icon: TrustIcon; claim: string; detail: string }
+export interface TrustClaim { icon: TrustIcon; claim: string; detail: string; stmt?: Statement }
 type Props = HTMLAttributes<'section'> & {
   heading: string;
   intro: string;
@@ -44,7 +49,7 @@ const p = servedPhoto(photo);
         {items.map((it) => (
           <li data-trust-item>
             <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={TRUST_ICONS[it.icon]} /></svg></span>
-            <span><span class="t">{it.claim}</span><span class="d">{it.detail}</span></span>
+            <span><span class="t">{it.claim}</span><span class="d">{it.detail}</span>{it.stmt && <StatementLine as="span" space="above" kind={it.stmt.kind} note={it.stmt.note} />}</span>
           </li>
         ))}
       </ul>

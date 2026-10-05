@@ -12,12 +12,17 @@
 //
 // THE DEFAULT SLOT renders straight after the rows, across the ledger's full width, with no
 // heading of its own (London board revision q02: the puppy strip, CityTicketStrip).
+//
+// A STATEMENT LABEL (London close proposals q02 (a), answer board 2026-10-05): a row may carry
+// `stmt`, a kind and a note, set on its own line under the row's text by StatementLine.astro.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
 import { citySizes, type CityFit } from '../../lib/cityKit';
+import StatementLine from './StatementLine.astro';
+import type { Statement } from '../../lib/statement';
 
-export interface Takeaway { label: string; text: string }
+export interface Takeaway { label: string; text: string; stmt?: Statement }
 type Props = HTMLAttributes<'section'> & {
   heading: string;
   lede: string;
@@ -50,7 +55,7 @@ const sizes = citySizes(fit, {
         <p class="lede">{lede}</p>
       </div>
       <dl>
-        {rows.map((r) => <div class="row" data-takeaway><dt>{r.label}</dt><dd>{r.text}</dd></div>)}
+        {rows.map((r) => <div class="row" data-takeaway><dt>{r.label}</dt><dd>{r.text}{r.stmt && <StatementLine as="span" space="above" kind={r.stmt.kind} note={r.stmt.note} />}</dd></div>)}
       </dl>
     </div>
     {Astro.slots.has('default') && <div class="after"><slot /></div>}

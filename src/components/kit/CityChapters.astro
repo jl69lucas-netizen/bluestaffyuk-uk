@@ -29,6 +29,10 @@
 // chapter n after its opening paragraph; and the default slot closes the tray (a section's
 // call to action). The opening paragraph is still the chapter's `text`, the first prose after
 // its photo.
+//
+// A STATEMENT LABEL ON THE LEDE (London close proposals q02 (a), answer board 2026-10-05):
+// `ledeLabel` sets StatementLine.astro on its own line just before the lede (`where: 'before'`)
+// or just after it (`'after'`), for a section whose lede names a health or species fact.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
@@ -37,6 +41,8 @@ import { puppyImage } from '../../lib/puppyImages';
 import { focusClass, focusRow, servedPhoto } from '../../lib/imageFocus';
 import { chapterWideSizes, citySizes, type CityFit } from '../../lib/cityKit';
 import type { BodyAsset } from '../BodyImage.astro';
+import StatementLine from './StatementLine.astro';
+import type { Statement } from '../../lib/statement';
 
 export interface Chapter {
   place: string; question: string; text: string;
@@ -65,8 +71,10 @@ type Props = HTMLAttributes<'section'> & {
   imageFocal?: string;
   /** Where the section sits from 1024px, for its images' `sizes` (src/lib/cityKit.ts `CityFit`). */
   fit?: CityFit;
+  /** A statement label on its own line before or after the lede. */
+  ledeLabel?: Statement & { where: 'before' | 'after' };
 };
-const { heading, lede, chapters, image, imageContain = false, imageFocal, fit = 'column', class: cls, ...rest } = Astro.props;
+const { heading, lede, chapters, image, imageContain = false, imageFocal, fit = 'column', ledeLabel, class: cls, ...rest } = Astro.props;
 if (chapters.length < 1 || chapters.length > 3) throw new Error('CityChapters: one to three chapters');
 const missing = chapters.filter((c) => !c.photo && !c.asset).map((c) => c.question);
 if (missing.length) throw new Error(`CityChapters: no photo for ${missing.join(' | ')}`);
@@ -94,7 +102,9 @@ const SIZES = citySizes(fit, {
   <div class="tray">
     <h2>{heading}</h2>
     {image && <BodyImage asset={image} srcset={image.srcset} phone={image.phone} box="uniform" sizes={WIDE_SIZES} focal={imageFocal} class={imageContain ? 'h2-img fit-contain' : 'h2-img'} />}
+    {ledeLabel?.where === 'before' && <StatementLine kind={ledeLabel.kind} note={ledeLabel.note} />}
     <p class="lede">{lede}</p>
+    {ledeLabel?.where === 'after' && <StatementLine kind={ledeLabel.kind} note={ledeLabel.note} />}
     {chapters.map((c, i) => {
       if (c.asset) {
         return (

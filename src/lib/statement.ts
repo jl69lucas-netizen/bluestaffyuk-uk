@@ -17,3 +17,10 @@ export const LABELS: Record<StatementKind, string> = {
   observed: 'Observed here',
   recommendation: 'Our recommendation',
 };
+
+/** A statement label a city component sets on its own line beside the text it labels
+ *  (src/components/kit/StatementLine.astro): the kind, and a few words on what it rests on. */
+export interface Statement {
+  kind: StatementKind;
+  note?: string;
+}

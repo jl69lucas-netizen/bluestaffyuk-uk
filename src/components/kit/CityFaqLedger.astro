@@ -17,16 +17,22 @@
 // data/settings.json `delivery_note`). The guarantee row is `guaranteeRow()`, printed only when
 // data/settings.json carries its length, label and note (`guarantee_days`, `guarantee_label`,
 // `guarantee_note`): two years, the breeder's answer (answer board q07, 2026-09-29; rule 9). Conventions 2 (`.on-inverse` sets the ring), 4, 6.
+//
+// A STATEMENT LABEL (London close proposals q02 (a), answer board 2026-10-05): a row may carry
+// `stmt`, set by StatementLine.astro on its own line between the question and the answer, at the
+// answer's indent. It is never part of `a`, so the FAQPage node's text is unchanged.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { titleCase } from '../../lib/headings';
 import { focusClass, servedPhoto } from '../../lib/imageFocus';
 import { citySizes, DELIVERY_BAND, DEPOSIT, depositBrief, guaranteeRow, transportLine, type CityFit } from '../../lib/cityKit';
+import StatementLine from './StatementLine.astro';
+import type { Statement } from '../../lib/statement';
 
 /** One question. `more` is an in-page pointer to the section that answers it at length, set in
  *  its own paragraph after the answer: the answer itself carries no link, because it is the
  *  FAQPage node's text word for word. */
-export interface CityFaqRow { q: string; a: string; more?: { href: string; label: string } }
+export interface CityFaqRow { q: string; a: string; more?: { href: string; label: string }; stmt?: Statement }
 type Props = HTMLAttributes<'section'> & {
   heading: string;
   lede: string;
@@ -76,6 +82,7 @@ const brief = [
         {items.map((it, i) => (
           <details>
             <summary><span class="n" aria-hidden="true">{pad(start + i)}</span><span class="pm" aria-hidden="true"></span><h3 data-faq-q>{titleCase(it.q)}</h3></summary>
+            {it.stmt && <div class="stmt"><StatementLine kind={it.stmt.kind} note={it.stmt.note} /></div>}
             <p>{it.a}</p>
             {it.more && <p class="more"><a href={it.more.href}>{it.more.label}</a></p>}
           </details>
@@ -124,6 +131,8 @@ const brief = [
       display: inline-block; padding-block: 10px; margin-block: -10px;
     }
     details > p { margin: 0; padding: 0 var(--space-1) var(--space-5) calc(2.2em * 15 / 17 + var(--space-3) + var(--space-1)); max-width: 64ch; color: var(--color-steel-100); }
+    /* The label sits at the answer's indent, in the band's own text colour (StatementLine). */
+    details > .stmt { padding: 0 var(--space-1) 0 calc(2.2em * 15 / 17 + var(--space-3) + var(--space-1)); max-width: 64ch; }
     @container (width >= 640px) {
       .in { padding: var(--city-pad-y) var(--space-6); }
       .rail img { aspect-ratio: 21 / 9; }

@@ -1,0 +1,63 @@
+---
+// src/components/kit/StatementLine.astro — one statement label on a line of its own: the kind's
+// word (Fact / Observed here / Our recommendation) behind a brass rule, then an optional short
+// note saying what the label rests on. The city components that carry a health or species fact
+// (trust ledger, takeaways ledger, video-call checklist, FAQ ledger, chapters) mount it where a
+// page asks for one; a page may also set it straight into a slot.
+//
+// WHY IT EXISTS (the breeder's pick, answer board 2026-10-05 london-close-proposals q02 (a),
+// docs/reports/london-close-proposals-2026-10-05/): scripts/evidence_audit.py
+// `statement-labels-present` wants a `.stmt-label` in every section whose text names a health or
+// species fact, and no city component printed one. The words are never the caller's: `kind`
+// picks one of the three in src/lib/statement.ts, the vocabulary
+// tests/render/checks/sem.ts::sem-statement-label-visible accepts, so a label can only say what
+// the check knows. The note is the caller's copy (working rule 9 applies to it like any copy).
+//
+// ITS OWN LINE, NEVER INSIDE A SENTENCE. A label set beside a test-naming sentence would put the
+// note's "result" in the same sentence and read as a result claim to the q04 evidence check; as a
+// block of its own it is a separate line in every reading of the page.
+//
+// THE INK IS THE SURFACE'S (`color: inherit`). The kit's muted ink measured 3.0:1 on the dark FAQ
+// band and 4.49:1 on the steel tint in the proposal's preview, below the 4.5:1 floor; the text
+// colour of each surface it sits on measured 12.9:1 (steel tint), 13.9:1 (bone), 15.7:1 (white)
+// and 14.6:1 (the dark FAQ band). Brass is the rule only, a fill and never the text (2.1:1 on
+// bone). Its spacing is set by where it sits (`space`), never by the caller's own CSS.
+// Conventions 3, 4 and 6; tokens only. Its fixture pair is
+// tests/render/fixtures/{known_good,known_broken}/kit-stmt-line*.html.
+import type { HTMLAttributes } from 'astro/types';
+import { LABELS, STATEMENT_KINDS, type StatementKind } from '../../lib/statement';
+
+type Props = HTMLAttributes<'p'> & {
+  kind: StatementKind;
+  /** What the label rests on, in a few words ("Breed taxonomy"). */
+  note?: string;
+  /** `span` inside an inline parent (a ledger item's text, a checklist label); `p` elsewhere. */
+  as?: 'p' | 'span';
+  /** `above` under the text it labels, inside an item; `below` before the text it labels. */
+  space?: 'above' | 'below';
+};
+const { kind, note, as = 'p', space = 'below', class: cls, ...rest } = Astro.props;
+if (!STATEMENT_KINDS.includes(kind)) throw new Error(`StatementLine: "${kind}" is not a statement kind (src/lib/statement.ts)`);
+// Two literal tags, not a dynamic `<Tag>`: Astro scopes a component's styles only onto elements
+// it can see at compile time, so a dynamic root would ship without its own rules.
+---
+{as === 'span'
+  ? <span {...rest} class:list={['kit-stmt-line', cls]} data-space={space}><span class="stmt-label" data-kind={kind}>{LABELS[kind]}</span>{note && <span class="stmt-note">{note}</span>}</span>
+  : <p {...rest} class:list={['kit-stmt-line', cls]} data-space={space}><span class="stmt-label" data-kind={kind}>{LABELS[kind]}</span>{note && <span class="stmt-note">{note}</span>}</p>}
+<style>
+  @layer components {
+    .kit-stmt-line {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; max-width: none;
+      margin: 0; font-size: var(--text-xs); line-height: 1.4; color: inherit;
+    }
+    .kit-stmt-line[data-space='below'] { margin-block: 0 10px; }
+    .kit-stmt-line[data-space='above'] { margin-block: 6px 0; }
+    .stmt-label {
+      font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding-left: 8px; border-left: 3px solid var(--color-cta);
+    }
+    /* A flex item's floor is its longest word by default; a note in a narrow ledger column may
+       shrink to the column and wrap instead of pushing past it. */
+    .stmt-note { min-width: 0; }
+  }
+</style>
