@@ -3248,7 +3248,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "e69790eb16154970b9676ef5a126cfa5c6004613b717581b350a2854e08e4b0b",
+    "record_hash": "8e520e4178c0b664935d54e37f96ac0febc2cb75e72718acf31c3b2b1ac205d1",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3268,7 +3268,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-05T02:38:38Z",
+    "reapproved_at": "2026-10-05T03:15:07Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3419,6 +3419,13 @@
         "reason": "The breeder's pick on the London close proposals, answer board 2026-10-05 q03 (a) (docs/reference/answer-board/answers/2026-10-05-london-close-proposals-2026-10-05.md): all 17 we/our/us swaps as listed; logged in board_revisions. No section, pick, menu, figure, heading or anchor moved.",
         "changed_paths": [
           "/board_revisions/32"
+        ]
+      },
+      {
+        "at": "2026-10-05T03:15:07Z",
+        "reason": "The breeder's chat ruling of 2026-10-05 (docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md): two sentences after the health-tests lede's naming sentence, word for word, saying the parents' certificates and DNA results are shared on request and kept off the website; no result stated; logged in board_revisions. No section, pick, menu or figure moved.",
+        "changed_paths": [
+          "/board_revisions/33"
         ]
       }
     ]
@@ -3939,6 +3946,15 @@
         "newsletter",
         "breed",
         "enquiry"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-chat-certificates-on-request q01",
+      "decision": "The health-tests lede follows its test-naming sentence with the breeder's two sentences, word for word: \"We share the parents' health certificates and DNA test results with you directly when you get in touch. We keep them off the website so they can't be copied or passed off as someone else's.\" No result is stated; data/quality/evidence-ledger.json certificates-on-request (proof: the rulings file, confirmed 2026-10-05, pattern scoped to the first sentence, covers dna-test and health-tested, never dna-clear) is its row, and the tests-named-no-result naming-only exemption still holds (tests/py/test_evidence_certificates_on_request.py). The 'Observed here' label stays as approved. The ruling corrects the 2026-09-29 q01 answer that no certificates are held. A chat ruling, not a board batch: the source names it in the board-revision schema's shape (one ruling, q01) and the file is the record. Rulings: docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md.",
+      "record_change": "content: two sentences at the end of the health-tests lede (page markup); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "health-tests"
       ]
     }
   ]

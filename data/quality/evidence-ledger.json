@@ -22,6 +22,18 @@
       "barrier": "none held, and none is claimed: this row records NAMING the tests, never a result. The breeder holds no DNA certificates for Maggie and Jones and ruled that the pages name the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a result (answer board 2026-09-29-lisa-bright-five-facts-before-the-london-page q01; Known Issue 98). The pattern matches only the London page's naming sentences and refuses any of them that carries a result word (clear, passed, negative, normal, unaffected, came back, result), and it covers dna-test and health-tested only, never dna-clear (visual-intelligence audit 2026-10-04, rec 10)."
     },
     {
+      "id": "certificates-on-request",
+      "pattern": "\\bWe\\s+share\\s+the\\s+parents\\W{0,2}\\s+health\\s+certificates\\s+and\\s+DNA\\s+test\\s+results\\s+with\\s+you\\s+directly\\s+when\\s+you\\s+get\\s+in\\s+touch\\b",
+      "proof": "/docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md",
+      "anchor": "health-tests",
+      "confirmed": "2026-10-05",
+      "covers": [
+        "dna-test",
+        "health-tested"
+      ],
+      "basis": "The breeder's ruling in the build session's chat, 2026-10-05 (docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md): \"All certificates and DNA test results are provided upon request when you contact us inorder not for our docs to be cloned or coppied.\" It corrects the 2026-09-29 q01 answer that no certificates are held. The row records that the documents EXIST and are SHARED ON REQUEST, never what they say: the pattern is scoped to the one London sentence that makes the claim, word for word, so a sentence that adds a result (\"clear\", a grade, a pass) is not matched and stays an unledgered claim. It covers dna-test and health-tested, never dna-clear. The proof is that rulings file in the repository, not a document served on the site, so no page can link it; if the certificates are ever put on file, their site path replaces this proof."
+    },
+    {
       "id": "parents-kc-registered-application-form",
       "pattern": "\\bMaggie\\s+and\\s+Jones\\s+are\\s+both\\s+Kennel\\s+Club\\s+registered\\b",
       "proof": "/docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md",

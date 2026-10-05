@@ -158,6 +158,11 @@ const TESTS_NAMED: Statement = { kind: 'observed',
 if (!JSON.stringify(guideRecord).includes('purina.co.uk')) {
   throw new Error('data/boards/uk-staffordshire-bull-terrier-guide.json no longer cites the Purina breed library');
 }
+// THE CERTIFICATES SENTENCES (the breeder's chat ruling of 2026-10-05, word for word,
+// docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md): the health-tests
+// lede follows its naming sentence with them. The certificates and DNA results are shared on
+// request and kept off the site; no result is stated, and data/quality/evidence-ledger.json
+// `certificates-on-request` is their row. The "Observed here" label stays as approved.
 const LIFESPAN_FACT: Statement = { kind: 'fact',
   note: `Breed lifespan, ${LIFESPAN_CELL.clause} · source: the Purina breed library` };
 // The trust ledger's fifth line (London final fixes B1, the breeder's yes, answer board 2026-10-05
@@ -594,7 +599,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     heading={H2('health-tests')}
     image={photo('health-h2')}
     ledeLabel={{ ...TESTS_NAMED, where: 'before' }}
-    lede="A health tested Staffy breeder names each parent's tests: L-2-HGA, HC-HSF4, eye screening and elbow screening."
+    lede="A health tested Staffy breeder names each parent's tests: L-2-HGA, HC-HSF4, eye screening and elbow screening. We share the parents' health certificates and DNA test results with you directly when you get in touch. We keep them off the website so they can't be copied or passed off as someone else's."
     chapters={[
       { place: 'DNA tests', question: tree('health-tests', 0), asset: photo('health-tests-h3'),
         text: 'DNA tests for two inherited conditions: L-2-HGA, a neurological disorder, and HC-HSF4, an inherited cataract. A puppy is affected only if both parents pass the gene on.' },
