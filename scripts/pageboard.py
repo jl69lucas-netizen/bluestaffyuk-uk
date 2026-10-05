@@ -1952,11 +1952,36 @@ def header_hits(board, live):
                      and all(_head_term_shingle(w, pk) for w in h["shingles"]))]
 
 
+# A three-block FAQ's question: tree node intent `Q: <question> — <note>` (project 5 boards).
+_FAQ_NODE_Q = re.compile(r"^Q:\s*(.+?)\s+—")
+
+
+def faq_block_questions(board):
+    """Every FAQ question the record plans: the legacy single block's `questions`
+    (faq_questions()), then each other FAQ block's — a section of shape `faq` or carrying
+    `questions` — its `questions` and the `Q: <question> — …` intents of its tree nodes, in
+    record order, each once. A project 5 page's three blocks (faq-top, faq-middle, faq-bottom)
+    were invisible to faq_hits() until London gate:page (2026-10-05). Like faq_questions(),
+    never a heading."""
+    out = list(faq_questions(board))
+    for s in board["sections"]:
+        if s["id"] == "faq" and s["shape"] == "standard":
+            continue
+        if not (s.get("shape") == "faq" or s.get("questions")):
+            continue
+        found = list(s.get("questions", []))
+        found += [m.group(1) for n in s.get("tree", [])
+                  for m in [_FAQ_NODE_Q.match(n.get("intent") or "")] if m]
+        out += [q for q in found if q not in out]
+    return out
+
+
 def faq_hits(board, live):
     """FAQ questions that collide with a live heading. Same three kinds and whitelist as
     header_hits(), minus the head-term exemption: a question is a whole sentence, not a
     keyword-bearing heading, so a shared five-token run is worth a look every time."""
-    return [h for h in header_precheck(faq_questions(board), live, exclude_page=own_live_key(board))
+    return [h for h in header_precheck(faq_block_questions(board), live,
+                                       exclude_page=own_live_key(board))
             if not _whitelisted(h["heading"])]
 
 

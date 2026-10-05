@@ -3364,3 +3364,37 @@ def test_queue_london_look_tab_is_only_real_findings(london_full):
     assert tabs["7b"] != "look" and tabs["3b"] != "look"
     if PB.DIST.exists():
         assert sorted(k for k, v in tabs.items() if v == "look") == ["2b", "8b"]
+
+
+# ── a three-block FAQ is pre-checked too (London gate:page, 2026-10-05) ──────────────────────
+# faq_questions() reads only the legacy single block (id `faq`, shape `standard`, a `questions`
+# list). A project 5 location page carries three blocks, `faq-top` / `faq-middle` / `faq-bottom`,
+# shape `faq`, one tree node per question written `Q: <question> — <note>`. faq_hits() never saw
+# them, so London's board was approved with no faq-collision WARN while eight of its questions
+# were word for word on live pages — the dup gate found them only after the build.
+
+def _three_block_faq(questions):
+    b = json.loads(json.dumps(MIN_BOARD))
+    sec = json.loads(json.dumps(b["sections"][0]))
+    sec.update({"id": "faq-bottom", "n": 2, "heading": "What Do London Buyers Ask About the Breed?",
+                "shape": "faq", "images": [],
+                "tree": [{"level": 3, "heading": f"london-life-{i}", "children": [],
+                          "intent": f"Q: {q} — the London row of data/faq.json this block renders"}
+                         for i, q in enumerate(questions, 1)]})
+    b["sections"].append(sec)
+    return b
+
+
+def test_faq_hits_reads_the_questions_of_a_three_block_faq():
+    b = _three_block_faq(["Are Staffies Hard to Train?", "Which Way Does a Puppy Travel South?"])
+    assert PB.faq_block_questions(b) == ["Are Staffies Hard to Train?",
+                                         "Which Way Does a Puppy Travel South?"]
+    hits = PB.faq_hits(b, {"/buy-blue-staffy-puppies-uk/": ["Are Staffies Hard to Train?"]})
+    assert [(h["heading"], h["kind"]) for h in hits] == [("Are Staffies Hard to Train?", "exact")]
+
+
+def test_faq_block_questions_keeps_the_legacy_block_and_adds_no_heading():
+    b = _with_faq(EIGHT)
+    assert PB.faq_block_questions(b) == EIGHT == PB.faq_questions(b)
+    three = _three_block_faq(["Are Staffies Hard to Train?"])
+    assert "Are Staffies Hard to Train?" not in [t for _, t in PB.all_headings(three)]

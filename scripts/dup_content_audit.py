@@ -33,7 +33,7 @@ repeats (nav, footer, the canonical delivery band, the £500 deposit line,
 the puppy-grid card data, site-standard section headers) is whitelisted below,
 and every whitelist entry was measured on dist/ rather than guessed.
 """
-import argparse, html as _h, itertools, json, re, sys
+import argparse, itertools, json, re, sys
 from pathlib import Path
 from html.parser import HTMLParser
 from _slugs import page_key
@@ -101,6 +101,14 @@ WHITELIST_SNIPPETS = [
     # printed by src/lib/guarantee.ts coverSentenceOf() under every heading that names the
     # guarantee and in the city guarantee row. One data field, not prose (review I7).
     "covers health issues and birth defects from the day your puppy comes home",
+    # ...and the SAME field as a guarantee SENTENCE prints it, length and all: src/lib/guarantee.ts
+    # guaranteeCoverWords(), carried by the homepage FAQ row `home-health-guarantee` and the London
+    # guarantee answer. CLAUDE.md says a page states the cover only as guarantee_cover words it, so the
+    # clause is mandated identical wherever it renders; with only the spelling above listed, the
+    # clause itself was reported between the two (London gate:page, 2026-10-05). Measured on dist/
+    # that day: 4 pages counting the specimens (tests/py/test_dup_whitelist_measured.py).
+    # tests/py/test_dup_content_audit.py holds this entry equal to the data field.
+    "covers health issues and birth defects for two years from the day your puppy comes home",
 
     # trust strip under the hero
     "family raised puppies lifetime support available blue staffy puppies delivery options",
@@ -214,6 +222,15 @@ CHROME_RE = re.compile(r"jump|toc|rail|msp-|crumb|review|testimonial|read-c|quot
 # blob before the chrome test rather than the chrome test being loosened.
 BL_CLASS_RE = re.compile(r"\bbl-[a-z0-9-]+")
 
+# A `has-<x>` STATE CLASS IS NOT A CHROME MARKER EITHER (London gate:page, 2026-10-05). It says
+# the element HAS an x, not that it IS one: src/components/kit/CityFaqLedger.astro writes
+# `has-rail` on the FAQ <section> when the block carries a photo rail, and the substring "rail"
+# read the whole block — H2, lede, questions and answers — as chrome, so the body gate never
+# compared London's top FAQ and pageboard counted it as 0 prose words. The rail itself is the
+# child `<div class="rail">`, which still matches CHROME_RE and is still skipped. Token-anchored
+# (start of the value or after a space), so `crumb-has-x` keeps its own chrome reading.
+HAS_CLASS_RE = re.compile(r"(?<![\w-])has-[a-z0-9-]+")
+
 # A BOARD SECTION'S OWN ID IS A NAME FOR CONTENT, NOT A CHROME MARKER (project 4, 2026-09-21).
 # CHROME_RE is a substring test over class, id and aria-label, and the ids the BOARD gives a
 # page's sections are chosen by the breeder to say what a section is ABOUT: `paperwork-review`
@@ -244,7 +261,7 @@ class Text(HTMLParser):
             a = dict(attrs)
             keys = ("class","aria-label") if _is_board_section(t, a) else ("class","id","aria-label")
             blob = " ".join(v for k,v in attrs if v and k in keys)
-            blob = BL_CLASS_RE.sub(" ", blob)
+            blob = HAS_CLASS_RE.sub(" ", BL_CLASS_RE.sub(" ", blob))
             skipping = t in SKIP_TAGS or bool(CHROME_RE.search(blob))
         self.stack.append((t, skipping))
     def handle_endtag(self,t):
@@ -372,15 +389,63 @@ def _norm_heading(text):
     return re.sub(r"\s+", " ", text).strip().lower()
 
 
+# Headers mode skips the same STRUCTURAL chrome the body path does (SKIP_TAGS: <header>,
+# <footer>, <nav>, <form>, script/style/noscript) and nothing else. It used to run one regex over
+# the whole file, so the kit footer's column headings (Explore, Contact, Follow — inside a real
+# <footer>) were reported on every page that mounts it (London gate:page, 2026-10-05).
+# Deliberately NOT the body path's CHROME_RE class-name test: a class name is a guess about what
+# an element is, and a heading the reader sees in <main> is page content whatever its wrapper is
+# called — that test read London's whole top FAQ block (`has-rail`) as chrome.
+HEADING_TAGS = frozenset(("h1", "h2", "h3", "h4", "h5", "h6"))
+
+
+class _Headings(HTMLParser):
+    """The text of every h1-h6 outside SKIP_TAGS, as the old regex read it: inner tags dropped
+    without a space, entities decoded (convert_charrefs)."""
+
+    def __init__(self):
+        super().__init__()
+        self.stack, self.headings, self._buf = [], [], None
+
+    def _skipping(self):
+        return any(t in SKIP_TAGS for t in self.stack)
+
+    def handle_starttag(self, t, attrs):
+        if t in VOID_TAGS:
+            return
+        self.stack.append(t)
+        if t in HEADING_TAGS and self._buf is None and not self._skipping():
+            self._buf = []
+
+    def handle_endtag(self, t):
+        if t in HEADING_TAGS and self._buf is not None:
+            self.headings.append("".join(self._buf))
+            self._buf = None
+        for i in range(len(self.stack) - 1, -1, -1):
+            if self.stack[i] == t:
+                del self.stack[i:]
+                break
+
+    def handle_data(self, data):
+        if self._buf is not None:
+            self._buf.append(data)
+
+
+def page_headings(html):
+    """The headings `--headers` compares on one page: h1-h6 outside the structural chrome."""
+    p = _Headings()
+    p.feed(html)
+    p.close()
+    return p.headings
+
+
 def headers_mode(pages):
     """Flag exact + templated H1-H6 crossovers between pages. Returns the findings list."""
-    hpat = re.compile(r"<h([1-6])[^>]*>(.*?)</h\1>", re.S | re.I)
-    strip = re.compile(r"<[^>]+>")
     exact, templ = {}, {}
     for slug, p in pages.items():
         html = p.read_text(errors="ignore")
-        for lvl, raw in hpat.findall(html):
-            text = _norm_heading(_h.unescape(strip.sub("", raw)))
+        for raw in page_headings(html):
+            text = _norm_heading(raw)
             if not text or text in HEADER_WHITELIST or text in PUPPY_CARD_HEADINGS:
                 continue
             exact.setdefault(text, set()).add(slug)

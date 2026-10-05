@@ -319,3 +319,103 @@ def test_a_section_id_is_still_chrome_when_it_is_not_a_board_section():
     it this is an ordinary element and its id is read as it always was."""
     assert _chrome("section", [("id", "paperwork-review")]) is True
     assert _chrome("div", [("id", "jump-list")]) is True
+
+
+# ── headers mode reads the page, not the site chrome (London gate:page, 2026-10-05) ──────────
+# The body path has always skipped <header>, <footer>, <nav> and <form> (SKIP_TAGS); headers
+# mode ran one regex over the whole file. The kit footer (src/components/kit/SiteFooterKit.astro)
+# renders three <h2> column headings — Explore, Contact, Follow — on every page that mounts it,
+# so `--headers` reported all three on 23 pages, and gate:page failed every rebuilt page on
+# chrome. HEADER_WHITELIST carries the OLD footer's headings for that reason ("site chrome not
+# wrapped in <footer>"); the kit footer IS wrapped in <footer>, so the fix is structural.
+
+KIT_FOOTER = ('<footer class="kit-footer"><h2>Explore</h2><h2>Contact</h2><h2>Follow</h2>'
+              '</footer>')
+
+
+def _pages(tmp_path, bodies):
+    out = {}
+    for slug, html in bodies.items():
+        f = tmp_path / slug
+        f.mkdir(parents=True, exist_ok=True)
+        (f / "index.html").write_text(html, encoding="utf-8")
+        out[slug] = f / "index.html"
+    return out
+
+
+def test_headers_mode_ignores_headings_inside_the_footer(tmp_path):
+    page = f"<main><h2>{{}}</h2></main>{KIT_FOOTER}"
+    pages = _pages(tmp_path, {"a": page.format("Where Our Litters Grow Up"),
+                              "b": page.format("How the Deposit Works for You")})
+    assert d.headers_mode(pages) == []
+
+
+def test_headers_mode_ignores_header_nav_and_form_headings(tmp_path):
+    chrome = ("<header><h2>Site Menu Heading</h2></header><nav><h2>Jump To</h2></nav>"
+              "<form><h2>Enquire About a Puppy</h2></form>")
+    pages = _pages(tmp_path, {"a": chrome + "<main><h2>One</h2></main>",
+                              "b": chrome + "<main><h2>Two</h2></main>"})
+    assert d.headers_mode(pages) == []
+
+
+def test_a_real_body_duplicate_still_fails_beside_the_footer(tmp_path):
+    """The known-broken case: same footer AND the same FAQ question in <main> on both pages.
+    Only the body heading is reported — the chrome exclusion is not a hole for page content."""
+    page = ('<main><section class="city-faq has-rail"><details><summary>'
+            '<h3 data-faq-q>Are Staffies Hard to Train?</h3></summary></details></section>'
+            f'</main>{KIT_FOOTER}')
+    pages = _pages(tmp_path, {"a": page, "b": page})
+    texts = [(f["kind"], f["text"]) for f in d.headers_mode(pages)]
+    assert texts == [("exact", "are staffies hard to train?"),
+                     ("template", "are {breed} hard to train?")]
+
+
+def test_headers_mode_keeps_the_heading_text_as_the_regex_read_it(tmp_path):
+    """Entities decoded, inner tags dropped without a space, as before the walker."""
+    page = "<main><h3><span>Q</span>uestions &amp; Answers on <em>Blue</em> Staffies</h3></main>"
+    pages = _pages(tmp_path, {"a": page, "b": page})
+    assert [f["text"] for f in d.headers_mode(pages)][0] == "questions & answers on blue staffies"
+
+
+# ── a `has-*` state class is not a chrome marker (London gate:page, 2026-10-05) ──────────────
+# CHROME_RE is a substring test, and CityFaqLedger writes `has-rail` on the FAQ SECTION when it
+# carries a photo rail. The whole top FAQ block of /uk-locations/blue-staffy-puppies-london/ —
+# its H2, lede, questions and answers — was read as site chrome: the body gate never compared
+# it, and pageboard counted "faq-top: 0 prose words". `has-rail` says the section HAS a rail;
+# the rail itself is the child `<div class="rail">`, which is still chrome.
+
+def test_a_has_rail_section_is_compared_but_its_rail_child_is_not():
+    p = d.Text()
+    p.feed('<section class="city-faq has-rail"><div class="rail">rail caption words</div>'
+           '<div class="blk"><h2>FAQ heading words</h2><p>answer prose words</p></div></section>')
+    text = " ".join(p.parts)
+    assert "FAQ heading words" in text and "answer prose words" in text
+    assert "rail caption words" not in text
+
+
+def test_a_has_class_never_hides_a_real_chrome_token_beside_it():
+    p = d.Text()
+    p.feed('<div class="has-rail toc">jump links</div><p>kept</p>')
+    assert " ".join(p.parts).split() == ["kept"]
+
+
+# ── the guarantee cover is one data field with two spellings (London gate:page, 2026-10-05) ──
+# data/settings.json `guarantee_cover` is mandated wording: CLAUDE.md "a page states that only as
+# guarantee_cover words it". The whitelist carried only the spelling printed under a heading that
+# already names the length (no "for two years"); the full clause, printed by a guarantee
+# sentence (the homepage FAQ row home-health-guarantee and London's FAQ), was reported as a
+# crossover — so no wording of a guarantee answer could ever pass the gate.
+
+def test_the_full_guarantee_cover_clause_is_whitelisted_as_data():
+    cover = json.loads((REPO / "data/settings.json").read_text(encoding="utf-8"))["guarantee_cover"]
+    assert re.findall(r"[a-z0-9$']+", cover.lower()) in d.WHITELIST_STEMS
+
+
+def test_the_guarantee_clause_is_cut_and_the_shared_question_beside_it_still_fails():
+    cover = json.loads((REPO / "data/settings.json").read_text(encoding="utf-8"))["guarantee_cover"]
+    shared = _toks("do you offer health guarantees for your blue staffy puppies yes every puppy "
+                   "leaves with our written health guarantee which")
+    wa = _toks("alpha bravo") + shared + _toks(cover) + _toks("charlie delta echo")
+    wb = _toks("foxtrot golf") + shared + _toks(cover) + _toks("hotel india juliet")
+    found = d.crossovers(wa, d.shingles(wa), d.shingles(wb))
+    assert found == [shared]

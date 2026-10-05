@@ -52,7 +52,12 @@ LABELED_METHODS = []
 
 BINOMIAL = re.compile(r"Canis\s+(?:lupus\s+)?familiaris", re.I)
 BREEDER = re.compile(r"Lisa\s+Bright|Bright['’]s", re.I)
-PLACE = re.compile(r"Glasgow|Scotland", re.I)
+# The breeder's place: data/settings.json `address` (town and region), read, never typed. It was
+# `Glasgow|Scotland` from the 2026-09-16 port until London gate:page (2026-10-05) — the FORMER
+# city (scripts/retired_facts_check.py FORMER_CITY), so every page naming Carlisle scored place=0.
+_ADDRESS = json.loads((ROOT / "data" / "settings.json").read_text(encoding="utf-8"))["address"]
+PLACE = re.compile(r"\b(?:" + "|".join(re.escape(_ADDRESS[k]) for k in ("city", "region")) + r")\b",
+                   re.I)
 # Claims about registration or health screening are the breeder's to make; this regex only
 # measures whether such an entity is NAMED on the page, never that it is true.
 CREDENTIAL = re.compile(r"KC[- ]registered|DEFRA|microchipp?ed|vet[- ]checked|BVA|Kennel Club", re.I)
@@ -66,8 +71,12 @@ VISIBLE_DATE = re.compile(
     r"|(?:last\s+)?updated\s*:?\s*\d{1,2}[/-]\d{1,2}[/-]\d{2,4}"
     r"|posted\s+on\s+\w+\s+\d", re.I)
 
+# A currency figure counts wherever it sits in the heading (`[£$€]` then a digit): ported from a
+# dollar site as a leading `$` only, it missed every pound figure, including three of the four
+# examples bsuk-aeo-pass Part 5 gives (London gate:page, 2026-10-05).
 STAT_HEADER = re.compile(r"\b\d[\d,\.]*\s*\+?\s*(?:%|years?|yrs?|word|puppies?|pups?|"
-                         r"regions?|cities?|hours?|days?|weeks?|months?|\$)|^\$?\d", re.I)
+                         r"regions?|cities?|hours?|days?|weeks?|months?|\$)|^\$?\d|[£$€]\s?\d",
+                         re.I)
 
 HEDGE_OPENERS = ("before we", "in this", "there are many", "it is worth", "when it comes",
                  "as you may", "one of the", "over the years", "let us", "let's",

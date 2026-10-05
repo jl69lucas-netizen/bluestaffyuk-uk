@@ -37,7 +37,7 @@ def test_bluf_ignores_headings_with_no_following_prose():
 
 def test_entity_audit_counts_the_binomial_and_the_breeder():
     r = A.entity_report("<p>Canis lupus familiaris pups from Lisa Bright "
-                        "in Glasgow are KC-registered.</p>")
+                        "in Carlisle are KC-registered.</p>")
     assert r["binomial"] == 1
     assert r["breeder"] == 1
     assert r["place"] == 1
@@ -165,3 +165,36 @@ def test_json_ld_extraction_matches_schema_checks_pattern():
     them, and the freshness check must not silently disagree with it."""
     assert A.has_freshness("<script data-x type='application/ld+json'>"
                            '{"dateModified":"2026-09-16"}</script>') is True
+
+
+# ── the place entity is the breeder's place, read from data/settings.json ────────────────────
+# PLACE was ported as `Glasgow|Scotland` on 2026-09-16 and never moved with the breeder: Glasgow
+# is the FORMER city (scripts/retired_facts_check.py FORMER_CITY; Known Issue 16), and the
+# breeder is in Carlisle, Cumbria (data/settings.json `address`). Every BSUK page that names its
+# breeder's place scored place=0, which also fed pronoun_heavy() a count short by every
+# "Carlisle" on the page (London gate:page, 2026-10-05: 26 Carlisle + 3 Cumbria, counted 0).
+
+def test_place_is_the_breeders_town_and_region_from_settings():
+    addr = json.loads((pathlib.Path(__file__).resolve().parents[2] / "data/settings.json")
+                      .read_text(encoding="utf-8"))["address"]
+    page = f"<p>Raised in {addr['city']}, {addr['region']}, and raised in {addr['city']} again.</p>"
+    assert A.entity_report(page)["place"] == 3
+
+
+def test_the_former_city_is_not_the_breeders_place():
+    assert A.entity_report("<p>We used to breed in Glasgow, Scotland.</p>")["place"] == 0
+
+
+# ── a figure in pounds is a figure (London gate:page, 2026-10-05) ────────────────────────────
+# STAT_HEADER was ported from a dollar site: a currency figure counted only as a leading `$`.
+# Three of the four BSUK examples .claude/skills/bsuk-aeo-pass/SKILL.md Part 5 gives were never
+# recognised, so a page following the skill to the letter still WARNed "no stat-bearing header".
+
+def test_the_skills_own_pound_examples_are_stat_bearing():
+    for h in ("£500 Deposit to Reserve a Puppy", "£1,500–£1,700 for a Puppy From Our Litter",
+              "£200–£350 UK Home Delivery", "What Does the £500 Deposit Cover?"):
+        assert A.stat_headers(f"<h2>{h}</h2>") == [h], h
+
+
+def test_a_pound_sign_without_a_figure_is_not_a_stat():
+    assert A.stat_headers("<h2>Paying in £ or by Bank Transfer</h2>") == []
