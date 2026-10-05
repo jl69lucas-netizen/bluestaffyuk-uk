@@ -1696,7 +1696,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "a6776c8750d2014018001da382ae8d631c87ead3c65477283d6d733620008324",
+    "record_hash": "923311e56706825a2e701f72aab5758f13c977b8b425fd33ce6b92670d1b6a19",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1716,7 +1716,7 @@
         "Step Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T17:55:16Z",
+    "reapproved_at": "2026-10-05T20:22:33Z",
     "reapprovals": [
       {
         "at": "2026-09-21T01:47:41Z",
@@ -1749,6 +1749,13 @@
           "/sections/4/intent",
           "/sections/4/links/internal/0/anchor",
           "/sections/4/tree/1/intent"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:22:33Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q01 (a)/q02 (a): the certificates-on-request sentence and the corrected lines, recorded as a board_revisions row (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions"
         ]
       }
     ]
@@ -1932,5 +1939,16 @@
         "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). A clearance is a clear result, so the question asks what health checks come with a puppy instead."
       }
     ]
-  }
+  },
+  "board_revisions": [
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q01",
+      "decision": "#parents, H3 \"The Two DNA Tests Maggie and Jones Have Had\": after \"…screened against, L-2-HGA and HC-HSF4.\" the page adds, word for word: \"Their test papers are for buyers rather than browsers. Ask, and both dogs' papers come to you; we hold them offline so another seller cannot pass them off as theirs.\" No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: one sentence pair added in #parents (page markup)",
+      "sections": [
+        "parents"
+      ]
+    }
+  ]
 }

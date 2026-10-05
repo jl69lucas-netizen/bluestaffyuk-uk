@@ -911,7 +911,7 @@
       "takeaways": "S3",
       "top": "H-BL3"
     },
-    "record_hash": "16a34def9e49f59fa12ddf516633dbe55c0ebdfa10948d17294849164dbd0738",
+    "record_hash": "73e0d5760b491ed78c1d20f87f714c06dabec023705e65f126f4ccc4e9703057",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -929,7 +929,7 @@
         "Guide Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T13:36:57Z",
+    "reapproved_at": "2026-10-05T20:22:38Z",
     "reapprovals": [
       {
         "at": "2026-09-21T12:55:58Z",
@@ -945,6 +945,13 @@
         "changed_paths": [
           "/sections/5/words/max",
           "/sections/5/words/min"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:22:38Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q01 (a)/q02 (a): the certificates-on-request sentence and the corrected lines, recorded as a board_revisions row (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions"
         ]
       }
     ]
@@ -964,5 +971,16 @@
         "reason": "collides with another page's heading: 'uk blue staffy puppy buying' is shared with the live /uk-blue-staffy-puppy-buying-guide/ H1 'The Complete UK Blue Staffy Puppy Buying Guide…', which is also the H1 that page's own record carries as variants[0] under this same rule, and board_gate.py fails it. Like the entry above it, this is an archive link title for the page it collides with, so it identifies no page of its own. Every nearer wording collides too — 'Blue Staffy Puppy Buying Guide' in any arrangement shares a run with that H1 — so what is kept is the category label the migrated archive itself printed above both entries and which is the opening paragraph of both: 'Puppy Buying Guide UK'. The run-on 'Guideinformation', which is the markdown archive's link text colliding with the following word rather than anything a writer typed, goes with it."
       }
     ]
-  }
+  },
+  "board_revisions": [
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q01",
+      "decision": "#start-here, H3 \"The Health Page\": after \"…and what the breed's life expectancy is.\" the page adds, word for word: \"No guide here carries the certificates themselves: they come to you after you write, which keeps them out of reach of anyone who would copy them.\" No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: one sentence added in #start-here (page markup)",
+      "sections": [
+        "start-here"
+      ]
+    }
+  ]
 }

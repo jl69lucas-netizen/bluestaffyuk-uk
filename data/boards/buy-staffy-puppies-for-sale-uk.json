@@ -2090,7 +2090,7 @@
       "top": "H-FS2",
       "video-why-us": "S3"
     },
-    "record_hash": "3ed6584859787ff89dd9477b9fa18ce1e9501b22c860c5325f22e263e407839d",
+    "record_hash": "d734ef1d89ad022c850e1fc056bbee6b165510413c1261931238b32a3b6deb42",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2110,7 +2110,7 @@
         "Reason Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T17:55:19Z",
+    "reapproved_at": "2026-10-05T20:23:12Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:12:30Z",
@@ -2201,6 +2201,13 @@
           "/sections/13/keywords/conversational/4",
           "/sections/13/options/note",
           "/sections/13/questions/3"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:23:12Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q01 (a) and q02 (a): the certificates-on-request sentence and the corrected lines, recorded as board_revisions rows (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions"
         ]
       }
     ]
@@ -2588,5 +2595,27 @@
         "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). The photograph stays at its served path; only the clause promising a clear result moves."
       }
     ]
-  }
+  },
+  "board_revisions": [
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q01",
+      "decision": "#questions, FAQ \"Which Health Tests Have Both Parents Had?\" (data/faq.json whyus-evidence, also the page's FAQPage JSON-LD): \"We hold no DNA certificates, so we name the tests and quote no result.\" is replaced by, word for word: \"Their certificates reach you after you make contact. This page holds them back so nobody can copy them, and it states no result.\" No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: the certificates-on-request sentence added (page markup, data/faq.json whyus-evidence); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "questions"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q02",
+      "decision": "#compared (required): \"…the tests named, and three papers you can read, rather than four descriptions.\" becomes \"…the tests named and every paper open to you, rather than four descriptions.\" #reasons (optional): \"…or the test we name and answer questions about.\" becomes \"…or the test whose paperwork follows once you ask.\" FAQ \"Why Should Families Choose…\" (data/faq.json whyus-partner, optional): \"…which we name and answer questions about.\" becomes \"…which we name and will evidence privately.\" The FAQ question (verbatim) is unchanged. Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: lines that said no file or certificate is held reworded, as Part A words them (page markup and data/faq.json whyus-partner); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "compared",
+        "reasons",
+        "questions"
+      ]
+    }
+  ]
 }

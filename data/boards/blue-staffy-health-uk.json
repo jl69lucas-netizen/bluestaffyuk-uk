@@ -1827,7 +1827,7 @@
       "takeaways": "S2",
       "top": "H-GD1"
     },
-    "record_hash": "7d59d39b68a6fe2ed72dad77b86a1fddf9eaf35cec2852c943a719b89760b97c",
+    "record_hash": "28d2e1b7d818850c7dfef2ab9a5a38a31ecd0f142c842ec67a501710abeb2a0c",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1847,7 +1847,7 @@
         "Health Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T17:55:22Z",
+    "reapproved_at": "2026-10-05T20:23:10Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:41:18Z",
@@ -1895,6 +1895,13 @@
           "/sections/3/why",
           "/sections/4/why",
           "/sections/13/questions/2"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:23:10Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q01 (a) and q02 (a): the certificates-on-request sentence and the corrected lines, recorded as board_revisions rows (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions"
         ]
       }
     ]
@@ -2126,5 +2133,25 @@
       "questions": "14e22b76d9b40a8e6f1f711c725fe8ea0ea7b825312d9f158d3e3014db333293",
       "talk-to-us": "2f2127871d8c44528a3e6e378098af9fca06b68d57cf247851198b771a830147"
     }
-  }
+  },
+  "board_revisions": [
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q01",
+      "decision": "#dna-tests, H5 \"A Test Belongs to A Dog, Not to A Kennel\": after \"…reporting something no one can check against a dog.\" the page adds, word for word: \"The DNA results behind that table are Maggie's and Jones's own, and we hand them to you privately once you have contacted us. They are never published, so no other breeder can borrow them as proof for a dog of theirs.\" No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: the certificates-on-request sentence added (page markup); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "dna-tests"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q02",
+      "decision": "#screening, patella grading (required, q02 (a)): \"We state that we do it and print no grade, because a grade is a number and no file we keep holds one.\" becomes \"We state that we do it and print no grade here.\" The first sentence carries an exact-sentence RULED entry in tests/py/test_no_health_result_stated.py. Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: lines that said no file or certificate is held reworded, as Part A words them (page markup); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "screening"
+      ]
+    }
+  ]
 }

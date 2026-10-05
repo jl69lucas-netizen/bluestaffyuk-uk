@@ -2023,7 +2023,7 @@
       "top": "H-GD3",
       "video-breed-guide": "S3"
     },
-    "record_hash": "a0effe5b371ccdc8298c3c84931e598bf648f677437e3d4529247b9c3b58c72f",
+    "record_hash": "5a9feef97b8031f70d0ea8ba3442009ddc397c8a92e932606e8806868c14eb1a",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2043,7 +2043,7 @@
         "Breed Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T17:55:24Z",
+    "reapproved_at": "2026-10-05T20:23:16Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:41:27Z",
@@ -2067,6 +2067,13 @@
           "/sections/8/why",
           "/sections/11/intent",
           "/sections/11/keywords/lsi/1"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:23:16Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q01 (a) and q02 (a): the certificates-on-request sentence and the corrected lines, recorded as board_revisions rows (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions"
         ]
       }
     ]
@@ -2261,5 +2268,25 @@
       "questions": "3e0096df1cdcd9372aeee604073da72fc0afb2c3dc1600a382a15ad1a956d929",
       "talk-to-us": "68b11eb5c41c12c9e5b8f06ceb68439bc387f7b48890c4c68b22812d496ae57d"
     }
-  }
+  },
+  "board_revisions": [
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q01",
+      "decision": "#choosing-breeder, H3 \"They Name Both Tests on Both Parents\": after \"Our two tests are on the health page, named against the dogs they belong to.\" the page adds, word for word: \"The paper itself is what we hold back from the internet: contact us and you can read it, but a certificate published online can be copied onto any dog.\" No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: the certificates-on-request sentence added (page markup); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "choosing-breeder"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q02",
+      "decision": "#health, eyes and knees (required, q02 (a)): \"Neither prints a score, there or here, because a score is a number and no file we keep holds one.\" becomes \"Neither prints a score, there or here.\" Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: lines that said no file or certificate is held reworded, as Part A words them (page markup); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "health"
+      ]
+    }
+  ]
 }

@@ -1502,7 +1502,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "9c4b685aa789dd8bacfe09d7b869cf9ec91fdf43e2ccf4813b886ef2d1d2da50",
+    "record_hash": "a7a389056ceee22ecc07a658868d1c692982209981b208b733a10c3d55f8e79a",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1520,7 +1520,7 @@
         "Price Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T17:55:14Z",
+    "reapproved_at": "2026-10-05T20:22:35Z",
     "reapprovals": [
       {
         "at": "2026-09-21T01:55:06Z",
@@ -1562,6 +1562,13 @@
         "reason": "Review follow-up (2026-09-29): plan text that would steer a rebuild back to stating DNA results (brief goal/done/angles, intents, whys, link anchors, questions, keywords) now names the tests or the vet records, never a result or a certificate we don't hold (answer board q01). Anchors now match what the built page already prints; no verbatim or dropped entry moves.",
         "changed_paths": [
           "/sections/2/links/external/0/why"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:22:35Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q01 (a)/q02 (a): the certificates-on-request sentence and the corrected lines, recorded as a board_revisions row (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions"
         ]
       }
     ]
@@ -1692,5 +1699,16 @@
         "reason": "'lifetime support from our team of ethical Blue Staffy breeders' is a support commitment with no end date and no file behind it (dropped.creds, working rule 9); the page states the email address and the hours from data/settings.json instead. The clause is excised and the health check, the microchip, the vaccinations and the puppy pack are carried word for word."
       }
     ]
-  }
+  },
+  "board_revisions": [
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q01",
+      "decision": "#why-choose, H3 \"Ethical Breeding Standards\": after \"Each puppy is microchipped and vet checked.\" the page adds, word for word: \"Seeing their DNA paperwork costs nothing: ask once you are in contact with us and we hand it over, though never on this page, where a stranger could copy it.\" No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: one sentence added in #why-choose (page markup)",
+      "sections": [
+        "why-choose"
+      ]
+    }
+  ]
 }

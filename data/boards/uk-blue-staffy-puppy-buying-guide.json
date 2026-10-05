@@ -2535,7 +2535,7 @@
       "top": "H-GD2",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "042b0d4f29349cd7d07fb2885a097f6d5775651be9b28e7dfc6a3e309877ddd7",
+    "record_hash": "a01bae4107645a04507d3ababf19f3e5ae8d8d216559ab68b1dabb0075f1977f",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2555,7 +2555,7 @@
         "Buyer Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T18:02:07Z",
+    "reapproved_at": "2026-10-05T20:23:14Z",
     "reapprovals": [
       {
         "at": "2026-09-29T14:41:26Z",
@@ -2592,6 +2592,13 @@
         "reason": "Review follow-up minor 3 (2026-09-29): the opening 'Beyond health certificates' pointed at certificates the breeder does not hold (answer board q01); it reads 'Beyond the health tests', recorded in verbatim.changed.",
         "changed_paths": [
           "/sections/8/tree/2/verbatim_opening"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:23:14Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q01 (a) and q02 (a): the certificates-on-request sentence and the corrected lines, recorded as board_revisions rows (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions"
         ]
       }
     ]
@@ -3008,5 +3015,25 @@
       "talk-to-us": "a6a5603f248b13f2986a5bb458ec35e2b35029edff1bb7ff2f8d87f7e55f9fc2",
       "video-what-to-expect": "c18274a4bbd31c2d05997e9faa65d71b9911dda59d95194b22f94bf2f5077939"
     }
-  }
+  },
+  "board_revisions": [
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q01",
+      "decision": "#health-checks, H3 \"What Our Own Two Are Tested For\": after \"Both ours are DNA tested for both.\" the page adds, word for word: \"Their certificates are yours to see in private after you write, and never on this guide, since anything posted here could be pinned to some other litter.\" No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: the certificates-on-request sentence added (page markup); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "health-checks"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q02",
+      "decision": "Required corrections (q02 (a)): \"That is the only sentence here about our own dogs.\" becomes \"Nothing else here is about our own dogs.\", and \"No laboratory is named there or here: no file we keep records one.\" becomes \"No laboratory is named there or here.\" The #takeaways advice line is unchanged (it agrees with the ruling). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: lines that said no file or certificate is held reworded, as Part A words them (page markup); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "health-checks"
+      ]
+    }
+  ]
 }

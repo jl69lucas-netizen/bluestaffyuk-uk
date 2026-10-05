@@ -1029,7 +1029,7 @@
       "top": "H-UT1",
       "why-write": "S1"
     },
-    "record_hash": "d4cde210c216cd0a1c4571818a1e58b2c92da92eb0fedf70f24773cb332c1416",
+    "record_hash": "c6525d0a366fd1d327f3ffd049f24cbe9c890f4c9f47eba3f3edb6b60d130df9",
     "tuple_before": {
       "hero": "",
       "dial": "dial-s2",
@@ -1047,7 +1047,7 @@
         "What to send:"
       ]
     },
-    "reapproved_at": "2026-09-25T01:12:13Z",
+    "reapproved_at": "2026-10-05T20:22:40Z",
     "reapprovals": [
       {
         "at": "2026-09-25T00:54:51Z",
@@ -1062,6 +1062,13 @@
         "changed_paths": [
           "/sections/0/refresh/note",
           "/sections/1/refresh/note"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:22:40Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q01 (a)/q02 (a): the certificates-on-request sentence and the corrected lines, recorded as a board_revisions row (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions"
         ]
       }
     ]
@@ -1127,5 +1134,16 @@
         "What to send:"
       ]
     }
-  }
+  },
+  "board_revisions": [
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q01",
+      "decision": "#what-to-tell-us, H3 \"Your Message\": after \"…left you wondering.\" the page adds, word for word: \"Ask in your message to read the parents' DNA and health certificates and we will pass them on; none of them is posted here, which stops anyone cloning them.\" The kit trust strip is not touched. The sentence carries an exact-sentence RULED entry in tests/py/test_no_health_result_stated.py. No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: one sentence added in #what-to-tell-us (page markup)",
+      "sections": [
+        "what-to-tell-us"
+      ]
+    }
+  ]
 }

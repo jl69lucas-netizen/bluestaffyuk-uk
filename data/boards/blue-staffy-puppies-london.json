@@ -3248,7 +3248,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "8e520e4178c0b664935d54e37f96ac0febc2cb75e72718acf31c3b2b1ac205d1",
+    "record_hash": "6aaaccd74c87d6d728eb96491905d6bb21b3a7323ee8ad9ca541a20031cdeb5e",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3268,7 +3268,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-05T03:15:07Z",
+    "reapproved_at": "2026-10-05T20:23:18Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3426,6 +3426,14 @@
         "reason": "The breeder's chat ruling of 2026-10-05 (docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md): two sentences after the health-tests lede's naming sentence, word for word, saying the parents' certificates and DNA results are shared on request and kept off the website; no result stated; logged in board_revisions. No section, pick, menu or figure moved.",
         "changed_paths": [
           "/board_revisions/33"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:23:18Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q02 (a) and q04 (a): 'We hold no certificates' dropped twice, and the four render tweaks, recorded as board revisions 35 and 36 (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions/34",
+          "/board_revisions/35"
         ]
       }
     ]
@@ -3955,6 +3963,28 @@
       "record_change": "content: two sentences at the end of the health-tests lede (page markup); no pick, menu, figure, heading, anchor or section id moved",
       "sections": [
         "health-tests"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q02",
+      "decision": "q02 (a): \"We hold no certificates, so we name the tests and quote no result.\" becomes \"We name the tests and quote no result.\" in both places (FAQ \"Are the Puppy's Parents Health Tested?\" in #faq-middle, and chapter 1 of #health-tests). No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: one sentence shortened in two places, #faq-middle and #health-tests (page markup); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "faq-middle",
+        "health-tests"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q04",
+      "decision": "q04 (a), the four tweaks as recommended: (1) #deposit-viewing: the \"Observed here\" statement label leaves the listen pane's \"The health tests, by name\" item and sits in the chapter frame after the lede (CityChapters ledeLabel, where 'after'; option B), words unchanged; (2) the take-back answer becomes T3: \"Yes. If you can no longer care for your puppy, or the fault is the breeder's, Lisa Bright takes it back, and that promise is written into the sale contract you sign. Our written two-year health guarantee covers health issues and birth defects from the day your puppy comes home.\", the second sentence read through src/lib/guarantee.ts coverSentenceOf() (label from guarantee_label, cover from guarantee_cover), the breeder's name from breeder_name; (3) the hero lede becomes L3: \"Yes. Ask to see your puppy and Maggie, its mother, on a live video call before any deposit, then visit Lisa Bright in Carlisle. Here at BlueStaffyUK, every litter is raised…\" with the rest unchanged and its counts and prices still read from data; (4) the #faq-bottom intro becomes \"First dogs, house life, boy or girl, behaviour, socialising, flats and coat colour.\" Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: the hero lede, one FAQ answer and the bottom FAQ intro reworded, one statement label moved within #deposit-viewing (page markup); no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "top",
+        "deposit-viewing",
+        "faq-middle",
+        "faq-bottom"
       ]
     }
   ]

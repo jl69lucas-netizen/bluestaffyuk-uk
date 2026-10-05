@@ -1497,7 +1497,7 @@
       "top": "H-AB1",
       "video-our-home": "S1"
     },
-    "record_hash": "9e240beb5407ba95ca9befc01bdcd59253ba7049761b020cb5dbd899682f5d25",
+    "record_hash": "1993c0cfa7ac2815a1223515d221316d7f66954a1be9694d9b94558bbbc3a627",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1515,7 +1515,7 @@
         "Breeder Note:"
       ]
     },
-    "reapproved_at": "2026-09-29T17:55:21Z",
+    "reapproved_at": "2026-10-05T20:22:31Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:50:51Z",
@@ -1606,6 +1606,13 @@
           "/brief/done",
           "/sections/2/intent",
           "/sections/10/questions/2"
+        ]
+      },
+      {
+        "at": "2026-10-05T20:22:31Z",
+        "reason": "answer board 2026-10-05 certificates-and-london-tweaks q01 (a)/q02 (a): the certificates-on-request sentence and the corrected lines, recorded as a board_revisions row (docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md)",
+        "changed_paths": [
+          "/board_revisions"
         ]
       }
     ]
@@ -1812,5 +1819,16 @@
         "reason": "wrong fact per the breeder's answer 2026-09-29 (answer board q01: she holds no DNA certificates for Maggie and Jones, so a page names the tests — L-2-HGA, HC-HSF4, eye and elbow screening — and never states a result). The photograph stays at its served path; only the clause stating a result moves (working rule 11 keeps the file, rule 15 lets a wrong fact in an alt change)."
       }
     ]
-  }
+  },
+  "board_revisions": [
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-certificates-and-london-tweaks q01",
+      "decision": "#health-testing, H5 \"Two Tests Named, and No Third\": after \"…nowhere in our files, would be worth nothing to you.\" the page adds, word for word: \"The real two are written up in each parent's own certificates, which every family receives after its first message and which we leave off this site so they cannot be reused.\" No result is stated. Ledger: data/quality/evidence-ledger.json certificates-on-request (one row for all eleven sentences, each spelled to its full stop behind a guard that refuses a clause in front; covers dna-test and health-tested, never dna-clear). Rulings: docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md (and docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md).",
+      "record_change": "content: one sentence added in #health-testing (page markup)",
+      "sections": [
+        "health-testing"
+      ]
+    }
+  ]
 }
