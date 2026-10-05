@@ -53,10 +53,10 @@
     "schema-date-modified-present": 18,
     "schema-no-visible-date": 3,
     "css-class-resolves": 801,
-    "css-no-dead-component-rule": 954,
+    "css-no-dead-component-rule": 963,
     "css-component-color-not-overridden": 66,
     "dup-no-sibling-crossover": 150,
-    "a11y-text-contrast-aa": 568,
+    "a11y-text-contrast-aa": 566,
     "a11y-no-duplicate-ids": 69,
     "a11y-hero-ledge-contrast": 0,
     "form-inquiry-contract": 3

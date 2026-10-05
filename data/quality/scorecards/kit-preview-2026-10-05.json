@@ -24,7 +24,7 @@
     "hero-aside-no-clip": 0,
     "layout-hero-image-first-mobile": 3,
     "layout-body-heading-above-body": 18,
-    "layout-text-has-side-gutter": 1333,
+    "layout-text-has-side-gutter": 1332,
     "layout-boxed-h2-fits": 0,
     "layout-kit-band-full-bleed": 0,
     "layout-heading-size-order": 0,
@@ -53,7 +53,7 @@
     "schema-date-modified-present": 12,
     "schema-no-visible-date": 3,
     "css-class-resolves": 1800,
-    "css-no-dead-component-rule": 2532,
+    "css-no-dead-component-rule": 2547,
     "css-component-color-not-overridden": 79,
     "dup-no-sibling-crossover": 153,
     "a11y-text-contrast-aa": 1520,
@@ -70,11 +70,11 @@
   "instances": {
     "IMG": 4,
     "SEM": 82,
-    "CSS": 1563,
+    "CSS": 1569,
     "DUP": 63
   },
   "total": 20,
-  "total_instances": 1712,
+  "total_instances": 1718,
   "overrides": [],
   "details": [
     {
@@ -110,8 +110,8 @@
     {
       "viewport": 1280,
       "checkId": "css-no-dead-component-rule",
-      "count": 520,
-      "message": "520 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "count": 522,
+      "message": "522 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 1280,
@@ -146,8 +146,8 @@
     {
       "viewport": 375,
       "checkId": "css-no-dead-component-rule",
-      "count": 520,
-      "message": "520 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "count": 522,
+      "message": "522 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 375,
@@ -188,8 +188,8 @@
     {
       "viewport": 768,
       "checkId": "css-no-dead-component-rule",
-      "count": 520,
-      "message": "520 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "count": 522,
+      "message": "522 page-scoped rule(s) match nothing on the page: .kit-divider.hairline | .hairline .rule | .results .group | .results a | .results [role=\"option\"][aria-selected=\"true\"] > a | .ticks | .ticks li | .tick | .hstats | .hstats li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 768,

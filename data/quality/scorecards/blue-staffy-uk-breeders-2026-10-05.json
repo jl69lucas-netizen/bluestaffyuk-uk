@@ -53,7 +53,7 @@
     "schema-date-modified-present": 21,
     "schema-no-visible-date": 3,
     "css-class-resolves": 1401,
-    "css-no-dead-component-rule": 873,
+    "css-no-dead-component-rule": 882,
     "css-component-color-not-overridden": 61,
     "dup-no-sibling-crossover": 150,
     "a11y-text-contrast-aa": 900,
