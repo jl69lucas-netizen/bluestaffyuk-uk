@@ -209,11 +209,15 @@ const SIZES = citySizes(fit, {
     /* THE CHAPTER'S CLOSING LINE IS ITS CALL TO ACTION (London previews 2026-10-04, CTA-1, the
        breeder's pick, answer board 2026-10-04 q09 (a)): the sentence's link, always its first child
        (links-plan M2, sentence_start), is the brass pill (rules/design.md rule 3); the rest of the
-       sentence follows it, in ink-2 on a bone-50 card ruled in brass. Words and hrefs are the
-       board's, unchanged. Only transform and background move on hover; off under reduced motion. */
+       sentence follows it, in ink-2 on a bone-50 card. Words and hrefs are the board's, unchanged.
+       Only transform and background move on hover; off under reduced motion.
+       THE CARD IS RULED BY A 1px STEEL HAIRLINE ALL ROUND, NOT A BRASS SIDE STRIPE (impeccable
+       IMP-D1 on London, the breeder's yes, answer board 2026-10-06-london-harden-calls q01 (a)):
+       the pill is the card's one brass accent; the 3px brass left rule on a 12px-radius card was
+       the side-stripe ban the detector flagged four times. */
     .close {
       margin-top: var(--space-3); padding: var(--space-4); border-radius: var(--radius-md);
-      background: var(--color-bone-50); border-left: 3px solid var(--color-cta);
+      background: var(--color-bone-50); border: 1px solid var(--color-steel-300);
     }
     .close :global(p) { margin: 0; font-weight: 600; color: var(--color-ink-2); line-height: 1.5; }
     .close :global(p > a:first-child) {
