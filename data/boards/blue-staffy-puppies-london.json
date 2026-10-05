@@ -3248,7 +3248,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "6aaaccd74c87d6d728eb96491905d6bb21b3a7323ee8ad9ca541a20031cdeb5e",
+    "record_hash": "f01f58953b2b263c00d25a0d7f6a604a7eaa4aa07abb8872b271445627fdb5fe",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3268,7 +3268,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-05T20:23:18Z",
+    "reapproved_at": "2026-10-05T23:01:25Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3434,6 +3434,16 @@
         "changed_paths": [
           "/board_revisions/34",
           "/board_revisions/35"
+        ]
+      },
+      {
+        "at": "2026-10-05T23:01:25Z",
+        "reason": "answer board 2026-10-06-london-harden-calls q01 (a), q02 (a), q03 (a) and q05 (a): the four Harden design calls on London (IMP-D1 close card hairline, IMP-D2 comma hidden on screen, IMP-D3 14px phone notes, FD-D2 cards two across), recorded as board revisions 37 to 40 (docs/reference/answer-board/answers/2026-10-06-london-harden-calls-2026-10-06.md); q04 (FD-D1, the phone header) is site chrome, recorded in docs/reports/frontend-design-london-2026-10-05.md",
+        "changed_paths": [
+          "/board_revisions/36",
+          "/board_revisions/37",
+          "/board_revisions/38",
+          "/board_revisions/39"
         ]
       }
     ]
@@ -3985,6 +3995,54 @@
         "deposit-viewing",
         "faq-middle",
         "faq-bottom"
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "source": "answer board 2026-10-06-london-harden-calls q01",
+      "decision": "q01 (a), impeccable IMP-D1: the four chapter closes' CTA card (CTA-1, 2026-10-04 q09 (a)) loses its 3px brass left rule and takes a 1px --color-steel-300 hairline all round; the brass pill stays the card's one brass accent. Words, links and order unchanged. Rulings: docs/reference/answer-board/answers/2026-10-06-london-harden-calls-2026-10-06.md; proposal docs/reports/london-harden-2026-10-05/ (IMP-D1).",
+      "record_change": "none: component CSS (src/components/kit/CityChapters.astro .close)",
+      "sections": [
+        "deposit-viewing",
+        "litter-prices",
+        "paperwork",
+        "temperament"
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "source": "answer board 2026-10-06-london-harden-calls q02",
+      "decision": "q02 (a), impeccable IMP-D2: the comma straight after each close's pill is hidden on screen only (visually hidden span, never aria-hidden or display:none), so the board's sentence stays word for word in the page text and in what a screen reader hears; on screen the clause reads 'and tell us which puppy caught your eye.' The four close sentences in the page markup are unchanged. Rulings: docs/reference/answer-board/answers/2026-10-06-london-harden-calls-2026-10-06.md; proposal docs/reports/london-harden-2026-10-05/ (IMP-D2).",
+      "record_change": "none: component markup and CSS (src/components/kit/CityChapters.astro wraps the leading comma in .lead-comma); no word, link or order changed",
+      "sections": [
+        "deposit-viewing",
+        "litter-prices",
+        "paperwork",
+        "temperament"
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "source": "answer board 2026-10-06-london-harden-calls q03",
+      "decision": "q03 (a), impeccable IMP-D3: below the kit's 640px tier edge only, the seven statement-label notes (StatementLine .stmt-note) and, in the six puppy cards, the 'comes home with' lines and the delivery line (CityTicketStrip .pc-trust li, .pc-del) go from 13px to 14px; the caps labels keep 13px; tablet and desktop unchanged. Each card grows 28px at 375 (307/328 -> 335/356px), under the per-card cap (2.5 viewports). Rulings: docs/reference/answer-board/answers/2026-10-06-london-harden-calls-2026-10-06.md; proposal docs/reports/london-harden-2026-10-05/ (IMP-D3).",
+      "record_change": "none: component CSS (src/components/kit/StatementLine.astro, src/components/kit/CityTicketStrip.astro)",
+      "sections": [
+        "trust",
+        "key-takeaways",
+        "deposit-viewing",
+        "faq-middle",
+        "health-tests",
+        "breed",
+        "everyday-health"
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "source": "answer board 2026-10-06-london-harden-calls q05",
+      "decision": "q05 (a), frontend-design FD-D2: the puppy strip's six cards (CARD-3, 2026-10-04 q08 (c)) stay two across from a desktop box, as on a tablet: at 1280 three across at 231px becomes two across at 353px (meta one line, delivery stub two lines, the band 1070 -> 1154px). Rulings: docs/reference/answer-board/answers/2026-10-06-london-harden-calls-2026-10-06.md; proposal docs/reports/london-harden-2026-10-05/ (FD-D2).",
+      "record_change": "none: component CSS (src/components/kit/CityTicketStrip.astro .grid, the >=800px three-column rule removed)",
+      "sections": [
+        "key-takeaways"
       ]
     }
   ]
