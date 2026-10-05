@@ -1,9 +1,11 @@
-"""The breeder's answer (answer board q01, 2026-09-29): she holds no DNA certificates for Maggie
-and Jones, so a page may NAME the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never
-state a RESULT. "Tested clear", "certified clear", "clear for", "clear DNA results", "results on
+"""The breeder's answer (answer board q01, 2026-09-29) was that she holds no DNA certificates for
+Maggie and Jones; her chat ruling of 2026-10-05 corrects it (the certificates exist and are shared
+with a buyer on request, kept off the website, and none is in the repository). Either way a page
+may NAME the tests (L-2-HGA, HC-HSF4, eye and elbow screening) and never state a RESULT. "Tested clear", "certified clear", "clear for", "clear DNA results", "results on
 request", "a clear pair", "will not be genetically affected" and every other stated result are
 gone from the built site (Known Issue 98). The evidence ledger's `parents-dna-clear` row stays at
-proof NOT FETCHED, and now records why: the breeder confirms none is held.
+proof NOT FETCHED, and its barrier records why: the certificates are held but not on file in the
+repository, so a result has no proof.
 
 This holds every built file in dist/ (HTML text, meta and alt attributes, JSON-LD, llms.txt,
 sitemaps) and the FAQ data to it. Board previews render the approved board records, which stay
@@ -109,11 +111,27 @@ GENERAL_ADVICE = {
 # so and states no result, is excused by its exact text; the patterns are unchanged, so "results
 # on request" or a sentence that adds a result anywhere else still fails. Its ledger row is
 # data/quality/evidence-ledger.json `certificates-on-request`.
+#
+# The breeder approved the same two facts, in fresh words, on ten more pages (answer board
+# 2026-10-05 certificates-and-london-tweaks q01 (a)). Two of those ten use a word the health
+# context reads as a result ("DNA results", "DNA and health certificates"); each is excused by its
+# exact sentence, like London's, and by nothing wider.
+TWEAKS_RULING = "docs/reference/answer-board/answers/2026-10-05-certificates-and-london-tweaks-2026-10-05.md"
 RULED = {
     "uk-locations/blue-staffy-puppies-london/index.html": [
         ("We share the parents' health certificates and DNA test results with you directly when "
          "you get in touch.",
          "docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md"),
+    ],
+    "blue-staffy-health-uk/index.html": [
+        ("The DNA results behind that table are Maggie's and Jones's own, and we hand them to you "
+         "privately once you have contacted us.",
+         TWEAKS_RULING),
+    ],
+    "uk-blue-staffy-breeders-contact/index.html": [
+        ("Ask in your message to read the parents' DNA and health certificates and we will pass "
+         "them on; none of them is posted here, which stops anyone cloning them.",
+         TWEAKS_RULING),
     ],
 }
 
@@ -245,15 +263,22 @@ def test_the_patterns_fire_on_the_old_lines_and_spare_the_test_names():
         assert result_lines(named) == [], named
 
 
-def test_the_ledger_row_records_that_no_certificate_is_held():
+def test_the_ledger_row_records_that_the_certificates_are_held_but_not_on_file():
     """The evidence ledger's schema (tests/py/test_rules_index.py) allows a proof that is a site
-    path or the literal NOT FETCHED, and a NOT FETCHED row has no `confirmed` date. "No proof;
-    the breeder confirms none is held" is therefore NOT FETCHED with `confirmed` null, and the
-    row's `barrier` says why, so nobody goes looking for a certificate that does not exist."""
+    path or the literal NOT FETCHED, and a NOT FETCHED row has no `confirmed` date. The breeder's
+    chat ruling of 2026-10-05 corrects answer board q01 (2026-09-29): the certificates exist and
+    are shared with a buyer on request, but none is in the repository, so a RESULT still has no
+    proof. The row therefore stays NOT FETCHED with `confirmed` null, and its `barrier` says why:
+    held, shared on request, not on file. It no longer says none is held, which is not true."""
     ledger = json.loads((ROOT / "data/quality/evidence-ledger.json").read_text(encoding="utf-8"))
     row = next(c for c in ledger["claims"] if c["id"] == "parents-dna-clear")
     assert row["proof"] == "NOT FETCHED" and row["confirmed"] is None, row
-    assert "answer board q01" in row["barrier"] and "no DNA certificates" in row["barrier"], row
+    barrier = row["barrier"]
+    assert "held but not on file in the repository" in barrier, row
+    assert "shared with a buyer on request" in barrier, row
+    assert "chat-2026-10-05-certificates-on-request.md" in barrier and "answer board q01" in barrier, row
+    assert (ROOT / "docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md").is_file()
+    assert "no DNA certificates" not in barrier and "none held" not in barrier, "the ruling overtook it"
 
 
 def test_the_review_m6_lines_are_reworded():
@@ -391,3 +416,18 @@ def test_the_ruled_sentence_is_excused_by_its_text_only():
                   "We share the parents' DNA results on request.",
                   sentence.replace("health certificates", "clear certificates")):
         assert worse != sentence and result_lines(worse), worse
+
+
+def test_the_two_new_ruled_sentences_are_excused_by_their_text_only():
+    """The health and contact sentences (q01 of the 2026-10-05 certificates batch): each is caught
+    without its excuse, cites a ruling file in the repository, and a result folded into it is a
+    different sentence, so the exact-text excuse cannot reach it."""
+    for rel in ("blue-staffy-health-uk/index.html", "uk-blue-staffy-breeders-contact/index.html"):
+        (sentence, ruling), = RULED[rel]
+        assert (ROOT / ruling).is_file(), ruling
+        assert result_lines(sentence), f"{rel}: without the excuse the patterns still catch it"
+        for worse in (sentence.replace("DNA", "clear DNA", 1),
+                      sentence.rstrip(".") + ", and both came back clear.",
+                      sentence.rstrip(".") + ", all of them passed."):
+            assert worse != sentence and sentence not in worse, worse
+            assert result_lines(worse.replace(sentence, " ")), (rel, worse)

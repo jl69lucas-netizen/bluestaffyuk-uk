@@ -15,8 +15,9 @@
 //
 // THE STRATEGY IS "THE EVIDENCE TABLE" (`brief.strategy`). Of the four breeder pages scanned,
 // three explain the two DNA tests well and not one states a result for its own dogs. Ours name
-// the tests and state no result either (answer board q01, 2026-09-29: the breeder holds no DNA
-// certificates), so the table goes high and the ordinary care that keeps a Staffy well follows it.
+// the tests and state no result either (answer board q01, 2026-09-29; the breeder's chat ruling of
+// 2026-10-05 corrects it: the certificates exist and are shared with a buyer on request, kept off
+// the website and not in the repo, so a result still has no proof), so the table goes high and the ordinary care that keeps a Staffy well follows it.
 //
 // WHAT THIS PAGE MAY NOT SAY, and none of it is an oversight (`brief.out_of_scope`):
 // no hand-typed guarantee length (it is data/settings.json `guarantee_label`, read through
@@ -456,6 +457,9 @@ const pageSchema = [
       <p>
         The table names Maggie and Jones because a DNA test is taken by one dog. A breeder who
         reports testing as a house policy is reporting something no one can check against a dog.
+        The DNA results behind that table are Maggie's and Jones's own, and we hand them to you
+        privately once you have contacted us. They are never published, so no other breeder can
+        borrow them as proof for a dog of theirs.
       </p>
       <h6>{T('Health Note: Ask which tests, not just whether')}</h6>
       <p>Ask any breeder which tests each parent has had, and ask to see the vet records behind the rest.</p>
@@ -495,8 +499,7 @@ const pageSchema = [
 
     <h3>{T(node('screening', 1).heading)}</h3>
     <p>
-      Knee health is assessed before any mating. We state that we do it and print no grade,
-      because a grade is a number and no file we keep holds one.
+      Knee health is assessed before any mating. We state that we do it and print no grade here.
     </p>
 
     <h3>{T(node('screening', 2).heading)}</h3>
