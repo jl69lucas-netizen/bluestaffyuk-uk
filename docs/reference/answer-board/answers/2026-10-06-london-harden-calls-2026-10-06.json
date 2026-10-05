@@ -1,0 +1,63 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, thin outline",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "The new enquire buttons sit on cards with a thick brass stripe down the left edge. Swap it for a thin steel outline all round?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, hide the comma",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "On a phone, the line after each enquire button starts with a stray comma (\", and tell us which puppy…\"). Hide that comma on screen?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, 14px on phones",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "On a phone, the statement-label notes and the puppy cards' \"comes home with\" and delivery lines are 13px, the smallest text on the page. Make them 14px on phones?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, one row on phones",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "On a phone, the site header is two rows and 121px tall on every screen. Make it one 73px row, with the menu as an icon?",
+      "status": "answered",
+      "text": " and let the \"Available puppies\"  be in the middle/center. that is logo left, \"Available puppies\"  and menu icon right on phone."
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, two across",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "On a desktop, the six puppy cards sit three across and are cramped (the colour and delivery lines wrap awkwardly). Show them two across, as on a tablet?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-05T22:36:35.973Z",
+  "batchId": "2026-10-06-london-harden-calls",
+  "counts": {
+    "answered": 5,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-05T22-36-35-971Z"
+}
