@@ -1,0 +1,93 @@
+{
+  "answers": [
+    {
+      "choice": "b",
+      "choiceLabel": "Use versions that name London instead (e.g. \"Are Staffies Hard to Train in a London Home?\")",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Nine of London's FAQ questions are word for word the same as on other pages (homepage, buy pages, contact). Google sees that as duplicate content, and our rule 8 forbids it. Reword them?",
+      "status": "answered",
+      "text": "No duplicate FAQs, only use FAQ based on the London page research, other FAQs that are not on the website or PAA or Reddit/Quora long-form queries, useful, high-ranking ones that are not on the website, etc., or only use the non-duplicate ones on the London page"
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, use these three",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Three answers also open with the same words as other pages. Use these openings instead?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Keep London as approved: record its counts as its own limit, then tune the location limits before the next city",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "The checker says key words appear too often: \"blue staffy\" 32 times (limit 10), \"London\" 60 (limit 8), \"UK\" 20 (limit 8), and two more. Most are in the headings you approved, and \"UK\" includes the delivery line every puppy card must carry. How should we handle it?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, the check accepts the repeats under your ruling",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "The checker warns that we name the health tests (DNA tests, eyes, elbows) four times on the page, with no certificate behind them. You ruled we name the tests and never state a result. Should the check stop counting the repeats for that ruling?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "No, add labels to all five sections",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "The checker wants a \"statement label\" on five sections because it mistakes the test name \"HC\" (in HC-HSF4) for a proven health claim. Fix the check so it skips sentences that only name a test?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, preview it for my approval",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "The new lifespan sentence (\"A Staffy lives 12 to 14 years…\") is a breed fact with no statement label. Add the site's existing statement label (a small \"Breed fact · source: Purina\" line)?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, add it",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "question": "AI answer engines look for the breed's scientific name, and the page has none. Add one neutral sentence to the breed section: \"The Staffordshire Bull Terrier is a breed of domestic dog, Canis lupus familiaris.\"?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, show me the 21 swaps first",
+      "key": "q08",
+      "kind": "choice",
+      "n": 8,
+      "question": "The page says \"we/our/us\" 141 times against 65 named people, places and things, so an AI reading it often can't tell who \"we\" is. Swap about 21 of them for \"Lisa Bright\" or \"here at BlueStaffyUK\"?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-05T01:26:19.183Z",
+  "batchId": "2026-10-05-london-gate-findings",
+  "counts": {
+    "answered": 8,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-05T01-26-19-182Z"
+}
