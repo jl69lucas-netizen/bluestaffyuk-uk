@@ -1,0 +1,119 @@
+{
+  "slug": "uk-blue-staffy-breeders-contact",
+  "date": "2026-10-05",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 46
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 595,
+    "layout-tap-target-size": 145,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 0,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 51,
+    "layout-text-has-side-gutter": 454,
+    "layout-boxed-h2-fits": 15,
+    "layout-kit-band-full-bleed": 0,
+    "layout-heading-size-order": 42,
+    "layout-heading-lines": 51,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 2,
+    "layout-body-heading-brand": 66,
+    "layout-body-text-shares-edge": 48,
+    "img-srcset-within-2x": 3,
+    "img-not-upscaled": 3,
+    "img-alt-present-and-unique": 3,
+    "img-sizes-matches-box": 0,
+    "img-face-visible": 0,
+    "nav-anchors-resolve": 99,
+    "nav-jump-target-lands": 27,
+    "nav-bottom-chrome-clear": 18,
+    "nav-breadcrumb-separator-spaced": 3,
+    "nav-breadcrumb-baseline-aligned": 6,
+    "sem-heading-order": 117,
+    "sem-all-six-levels": 117,
+    "sem-title-case-headings": 117,
+    "sem-section-opening-paragraph": 117,
+    "sem-statement-label-visible": 3,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 18,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 801,
+    "css-no-dead-component-rule": 954,
+    "css-component-color-not-overridden": 66,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 568,
+    "a11y-no-duplicate-ids": 69,
+    "a11y-hero-ledge-contrast": 0,
+    "form-inquiry-contract": 3
+  },
+  "defects": {
+    "CSS": 6,
+    "IMG": 1
+  },
+  "instances": {
+    "CSS": 213,
+    "IMG": 1
+  },
+  "total": 7,
+  "total_instances": 214,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-list-stack x6, bl-head-above x6, bl-chrome-ruled x6, bl-media-none x5, bl-cols-1 x3, counter-wrap x1, bl-aside-infocard x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 63,
+      "message": "63 page-scoped rule(s) match nothing on the page: [data-tiles=\"ring\"] .ring | [data-tiles=\"ring\"] .ring | .grid | .kit-quote-empty | .ctas | .chips | .chips li | .ticks | .ticks li | .tick — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-list-stack x6, bl-head-above x6, bl-chrome-ruled x6, bl-media-none x5, bl-cols-1 x3, counter-wrap x1, bl-aside-infocard x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 63,
+      "message": "63 page-scoped rule(s) match nothing on the page: [data-tiles=\"ring\"] .ring | [data-tiles=\"ring\"] .ring | .grid | .kit-quote-empty | .ctas | .chips | .chips li | .ticks | .ticks li | .tick — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 1,
+      "message": "1 upscaled image(s): uk-blue-staffy-breeders-contact-form-support.webp file=500x500 painted=670x447 visible=670x447 cover 1.34x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 8,
+      "message": "8 class(es) on rendered elements match no CSS rule: bl-list-stack x6, bl-head-above x6, bl-chrome-ruled x6, bl-media-none x5, bl-cols-1 x3, counter-wrap x1, bl-aside-infocard x1, bl-aside-jump x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 63,
+      "message": "63 page-scoped rule(s) match nothing on the page: [data-tiles=\"ring\"] .ring | [data-tiles=\"ring\"] .ring | .grid | .kit-quote-empty | .ctas | .chips | .chips li | .ticks | .ticks li | .tick — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    }
+  ]
+}

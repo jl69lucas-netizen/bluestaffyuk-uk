@@ -23,13 +23,12 @@ and expected must keep at least 60% of raw's words. Pages listed in
 | /uk-locations/blue-staffy-puppies-for-sale-leeds/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/blue-staffy-puppies-hull/ | 470→437→437 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
 | /uk-locations/blue-staffy-puppies-inverness/ | 469→436→436 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
-| /uk-locations/blue-staffy-puppies-london/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/blue-staffy-puppies-manchester-uk/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/blue-staffy-puppies-middlesbrough/ | 449→416→416 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
 | /uk-locations/blue-staffy-puppies-oxford/ | 473→440→440 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
 | /uk-locations/blue-staffy-puppies-south-yorkshire/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/blue-staffy-puppies-sunderland/ | 464→431→431 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
-| /uk-locations/blue-staffy-puppies-uk/ | 2112→1767→1767 | 29→29 | 11→11 | 0→0 | 4 | PASS |
+| /uk-locations/blue-staffy-puppies-uk/ | 2112→1764→1764 | 29→29 | 11→11 | 0→0 | 4 | PASS |
 | /uk-locations/blue-staffy-puppies-york/ | 474→441→441 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
 | /uk-locations/buy-blue-staffy-puppy-coventry-area/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/staffy-breeding-dogs-glasgow/ | 1853→1508→1508 | 19→19 | 4→4 | 1→1 | 4 | PASS |
@@ -42,4 +41,4 @@ and expected must keep at least 60% of raw's words. Pages listed in
 | /uk-locations/staffy-puppies-wolverhampton/ | 3→3→3 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/uk-staffordshire-bull-terrier-breeder/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 
-examined 28 pages, 0 failing, skipped 12 rebuilt
+examined 27 pages, 0 failing, skipped 13 rebuilt
