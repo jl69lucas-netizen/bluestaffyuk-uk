@@ -1,0 +1,182 @@
+{
+  "askedAt": "2026-10-05T01:10:20Z",
+  "id": "2026-10-05-london-gate-findings",
+  "intro": "The last gate run, every check run twice on the finished page, found issues no earlier check did. Five were faults in the checks themselves, and those are fixed with tests: the footer's \"Contact / Explore / Follow\" counted as page headings, the top FAQ block never compared at all, and the wrong city in one check. What's left is real, and each needs your call. Nothing on the page changes until you answer.",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "Recommended: (a). Why: it clears both duplicate checks (tested on a copy of the site), and it doesn't add more \"London\" to a page that already uses it 60 times (see question 3). Trade-off: the questions read a little less local, but the block headings and answers stay local. The nine, old → new (a): - Are Blue Staffies Good Family Pets, Especially With Children? → Are Blue Staffies Good Family Pets in a House With Young Children? - Are Blue Staffies Suitable for First-Time Dog Owners? → Are Blue Staffies Suitable for a First-Time Dog Owner? - Are Staffies Hard to Train? → How Hard Are Staffies to Train? - Are the Puppies Raised in a Family Home or in Kennels? → Is Your Puppy Raised in a Family Home or in Kennels? - Can I Visit You Before I Decide? → Can I Visit You in Carlisle Before I Decide? - Do You Offer Health Guarantees for Your Blue Staffy Puppies? → Does My Blue Staffy Puppy Come With a Health Guarantee? - How Do I Know a Puppy Is Still Available? → How Do I Know a Puppy Is Still Available to Reserve? - How Much Is the Deposit? → What Does the £500 Deposit Cover? - What Is Included When I Buy a Blue Staffy Puppy From BlueStaffyUK? → What Is Included With a Blue Staffy Puppy When It Comes Home?",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, use these nine"
+        },
+        {
+          "id": "b",
+          "label": "Use versions that name London instead (e.g. \"Are Staffies Hard to Train in a London Home?\")"
+        },
+        {
+          "id": "c",
+          "label": "Yes, with my changes (in the text box)"
+        }
+      ],
+      "question": "Nine of London's FAQ questions are word for word the same as on other pages (homepage, buy pages, contact). Google sees that as duplicate content, and our rule 8 forbids it. Reword them?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Each is written only from facts already in our files. Recommended: (a). Trade-off: none beyond the new wording. - First-time owners: \"Yes, if your household has the time to give. Early socialising, steady reward-based training and company matter more than experience.\" - Raised at home: \"In our family home in Carlisle, never in kennels. Every litter grows up indoors with us, among the everyday sights and sounds of a house.\" - Health guarantee: \"Yes. Your puppy comes home with our written two-year health guarantee (it covers health issues and birth defects for two years from the day your puppy comes home), and we ask you to read the full terms before you pay a deposit.\"",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, use these three"
+        },
+        {
+          "id": "b",
+          "label": "Yes, with my changes (in the text box)"
+        }
+      ],
+      "question": "Three answers also open with the same words as other pages. Use these openings instead?",
+      "section": 0,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: the limits were set before London was built and were never tuned against a real page. London's approved board aimed above them too, and no small edit gets London under them. Trade-off: London goes live at a density the untested limit calls heavy, until we tune the limits on the next city.",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "Keep London as approved: record its counts as its own limit, then tune the location limits before the next city"
+        },
+        {
+          "id": "b",
+          "label": "Rewrite London to fit the limits (about 20 approved headings and roughly 50 \"London\"s change; a re-board)"
+        }
+      ],
+      "question": "The checker says key words appear too often: \"blue staffy\" 32 times (limit 10), \"London\" 60 (limit 8), \"UK\" 20 (limit 8), and two more. Most are in the headings you approved, and \"UK\" includes the delivery line every puppy card must carry. How should we handle it?",
+      "section": 1,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: naming a test isn't a claim that needs proof; the warning is built for claims we can't prove, and repeating it in the trust strip, the takeaways and the FAQ is how buyers find it. Trade-off: the tests stay named in four places.",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, the check accepts the repeats under your ruling"
+        },
+        {
+          "id": "b",
+          "label": "No, name them once in the health section and link to it from the other three places"
+        }
+      ],
+      "question": "The checker warns that we name the health tests (DNA tests, eyes, elbows) four times on the page, with no certificate behind them. You ruled we name the tests and never state a result. Should the check stop counting the repeats for that ruling?",
+      "section": 2,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: those sentences state no result, so there's nothing to label. Trade-off: none on the page.",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, fix the check"
+        },
+        {
+          "id": "b",
+          "label": "No, add labels to all five sections"
+        }
+      ],
+      "question": "The checker wants a \"statement label\" on five sections because it mistakes the test name \"HC\" (in HC-HSF4) for a proven health claim. Fix the check so it skips sentences that only name a test?",
+      "section": 2,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: a cited figure is what an AI answer can quote, and the label shows where it comes from. Trade-off: one small extra line. I'll show you a preview before it goes on.",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, preview it for my approval"
+        },
+        {
+          "id": "b",
+          "label": "No"
+        }
+      ],
+      "question": "The new lifespan sentence (\"A Staffy lives 12 to 14 years…\") is a breed fact with no statement label. Add the site's existing statement label (a small \"Breed fact · source: Purina\" line)?",
+      "section": 2,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: it's the entity anchor the AI-answer check looks for, and our copy rules allow a neutral voice for taxonomy. Trade-off: one sentence that sounds less like you.",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, add it"
+        },
+        {
+          "id": "b",
+          "label": "No"
+        }
+      ],
+      "question": "AI answer engines look for the breed's scientific name, and the page has none. Add one neutral sentence to the breed section: \"The Staffordshire Bull Terrier is a breed of domestic dog, Canis lupus familiaris.\"?",
+      "section": 2,
+      "where": ""
+    },
+    {
+      "context": "Recommended: (a). Why: our voice rule already lists \"here at BlueStaffyUK\", so it stays first-person, and AI answers can then name us. Trade-off: about 21 small wording changes. You'll see the list before they go on.",
+      "key": "q08",
+      "kind": "choice",
+      "n": 8,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, show me the 21 swaps first"
+        },
+        {
+          "id": "b",
+          "label": "No, keep every we/our as it is"
+        }
+      ],
+      "question": "The page says \"we/our/us\" 141 times against 65 named people, places and things, so an AI reading it often can't tell who \"we\" is. Swap about 21 of them for \"Lisa Bright\" or \"here at BlueStaffyUK\"?",
+      "section": 2,
+      "where": ""
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "FAQ questions copied from other pages"
+    },
+    {
+      "lead": "",
+      "title": "How often key words appear"
+    },
+    {
+      "lead": "",
+      "title": "Evidence and AI-answer checks"
+    }
+  ],
+  "status": "open",
+  "title": "London close · what the final gates found"
+}
