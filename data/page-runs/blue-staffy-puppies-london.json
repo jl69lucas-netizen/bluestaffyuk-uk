@@ -42,5 +42,29 @@
       "D9 (P3 chrome): footer legal row baselines 11-12px apart and the contact form kit's privacy link has no hover; shared by every page / four pages, previewed first; preview docs/reports/frontend-design-london/D9-footer-legal-{375,1280}-preview.png"
     ],
     "commit": "e7181a6a912ad081aab78cfa4802c8621b453580"
+  },
+  "verification_before_completion": {
+    "ran_on": "2026-10-05",
+    "commit": "37f2598e5a0576f51ab06fe4bdc54e831fefee41",
+    "commands": [
+      {
+        "cmd": "npm run -s build",
+        "exit": 0,
+        "examined": null
+      },
+      {
+        "cmd": "npm run -s check:all",
+        "exit": 0,
+        "examined": 27
+      },
+      {
+        "cmd": "npm run gate:page -- blue-staffy-puppies-london --skip-record",
+        "exit": 0,
+        "examined": null
+      }
+    ],
+    "claims_verified": [
+      "London is ready for the breeder's final approval: built, every check:all gate green, and every gate:page step passes twice with identical runs on the committed page"
+    ]
   }
 }
