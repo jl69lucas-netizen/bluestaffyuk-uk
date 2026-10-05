@@ -71,7 +71,7 @@ import CityLookListenChecklist, { type CheckPane } from '../../components/kit/Ci
 import CityPlacesByPublisher from '../../components/kit/CityPlacesByPublisher.astro';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
 import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, chapterBesideSizes, chapterTextSizes, chapterWideSizes, depositBrief, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
-import { guaranteeCoverWords, guaranteeWords, type GuaranteeSettings } from '../../lib/guarantee';
+import { coverSentenceOf, guaranteeWords, type GuaranteeSettings } from '../../lib/guarantee';
 import { breedFactsCell, numberWord } from '../../lib/recordText';
 
 const SLUG = 'blue-staffy-puppies-london';
@@ -116,9 +116,11 @@ const coats = (ps: PuppyRow[]) => andList(ps.map((p) => `${p.name} is ${p.colour
 const REFUND = settings.deposit_refund_clause;
 const G = settings as unknown as GuaranteeSettings;
 const guarantee = guaranteeRow();
-// The guarantee's cover clause, checked (src/lib/guarantee.ts): the take-back answer carries it.
-const GUARANTEE_COVER = guaranteeCoverWords(G);
 const GUARANTEE_LOWER = guaranteeWords(G, 'lower');
+// The take-back answer's guarantee sentence (answer board 2026-10-05 certificates-and-london-tweaks
+// q04 (a), T3): the label from `guarantee_label`, the cover from `guarantee_cover` with its length
+// taken out, through src/lib/guarantee.ts coverSentenceOf(), so the length is said once.
+const GUARANTEE_SENTENCE = coverSentenceOf(G, `Our written ${GUARANTEE_LOWER}`);
 const REGION = settings.address.region;
 const BREEDER = settings.breeder_name;
 const SBT = standards.breeds['staffordshire-bull-terrier'];
@@ -274,7 +276,7 @@ const callChecklist: CheckPane[] = [
     { label: 'The written contract', detail: 'Our puppy purchase contract, with the take-back promise written into it.' },
   ] },
   { title: 'Ask to hear, out loud', hint: 'Tick each one as we answer it', icon: 'listen', items: [
-    { label: 'The health tests, by name', detail: 'Ask us about each of these tests by name: L-2-HGA, HC-HSF4, eye screening and elbow screening.', stmt: TESTS_NAMED },
+    { label: 'The health tests, by name', detail: 'Ask us about each of these tests by name: L-2-HGA, HC-HSF4, eye screening and elbow screening.' },
     { label: "The parents' registration numbers", detail: 'Write them down so you can check the pedigree yourself.' },
     { label: 'The deposit terms', detail: `${DEPOSIT}, paid by bank transfer: ${REFUND}.` },
     // The guarantee row's own wording (src/lib/guarantee.ts guaranteeRowParts): the label states the
@@ -338,7 +340,7 @@ const faqMiddle: CityFaqRow[] = [
     a: 'Yes. You can ask for a live video call with your puppy and Maggie before any deposit, then meet them in person when you visit.',
     more: { href: '#deposit-viewing', label: 'The video call and the deposit' } },
   { q: "Are the Puppy's Parents Health Tested?",
-    a: `Ask ${BREEDER} about L-2-HGA, HC-HSF4, eye screening and elbow screening for Maggie and Jones. We hold no certificates, so we name the tests and quote no result.`,
+    a: `Ask ${BREEDER} about L-2-HGA, HC-HSF4, eye screening and elbow screening for Maggie and Jones. We name the tests and quote no result.`,
     stmt: TESTS_NAMED,
     more: { href: '#health-tests', label: 'What each test is for' } },
   { q: 'Will the Breeder Still Support Me After I Collect the Puppy?',
@@ -346,7 +348,7 @@ const faqMiddle: CityFaqRow[] = [
   { q: 'How Do I Find a Reputable, Health-Tested Staffy Breeder?',
     a: `Start with two asks: which tests the parents have had, and a look at the puppy with its mother before you pay. Ask ${BREEDER} and she names four for Maggie and Jones: L-2-HGA, HC-HSF4, eye screening and elbow screening, with no result quoted. Then visit by appointment at the family home in ${TOWN} where Maggie and Jones live.` },
   { q: 'Will You Take the Dog Back If I Can No Longer Keep It?',
-    a: `Yes. If you can no longer care for your puppy, or the fault is the breeder's, ${BREEDER} takes it back, and that promise is written into the sale contract you sign. Your puppy also comes home with our written ${GUARANTEE_LOWER}, which ${GUARANTEE_COVER}. ${settings.guarantee_note}` },
+    a: `Yes. If you can no longer care for your puppy, or the fault is the breeder's, ${BREEDER} takes it back, and that promise is written into the sale contract you sign. ${GUARANTEE_SENTENCE}` },
   { q: 'What Has a Puppy Had Before It Comes Home?',
     a: `Ours have had a veterinary health check, ${lower(sign('First vaccinations'))}, a microchip, worming and flea treatment, each recorded on a ${lower(sign('Vet-signed health card'))} that travels with the puppy. The Kennel Club registration application form comes too, so you register your puppy in your own name, with a puppy pack to help it settle.`,
     more: { href: '#paperwork', label: 'The paperwork, item by item' } },
@@ -419,7 +421,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     <CityHeroFilmstrip id="top" data-section-label={H2('top')}
       eyebrow={`${cap(LITTER)} puppies · ${TOWN} to London`}
       title={H1}
-      lede={`Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to ${BREEDER} in ${TOWN} comes after that call. Here at BlueStaffyUK, every litter is raised in our own home, and our blue Staffy puppies for London homes come from this one: ${LITTER} puppies, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}.`}
+      lede={`Yes. Ask to see your puppy and Maggie, its mother, on a live video call before any deposit, then visit ${BREEDER} in ${TOWN}. Here at BlueStaffyUK, every litter is raised in our own home, and our blue Staffy puppies for London homes come from this one: ${LITTER} puppies, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}.`}
       cta={{ label: 'Blue Staffy puppies available now', href: '/available-puppies/' }}
       more={{ label: 'BlueStaffyUK', href: '/' }}
     >
@@ -471,6 +473,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <CityChapters id="deposit-viewing" data-section-label={H2('deposit-viewing')}
     heading={H2('deposit-viewing')}
     image={photo('deposit-h2')}
+    ledeLabel={{ ...TESTS_NAMED, where: 'after' }}
     lede={`No. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. After that call, your deposit books a visit to us in ${TOWN} and reserves the puppy you chose.`}
     chapters={[
       { place: 'Before you pay', question: tree('deposit-viewing', 0), asset: photo('deposit-video-call'), contain: true,
@@ -609,7 +612,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
         text: 'Six things, one per line: the two DNA tests, eye and elbow checks, the warning signs, where the scheme rules live, what registration tells you and how to check it. Take it to any breeder, us included.' },
     ]}>
     <Fragment slot="ch-1">
-      <p><a href="/blue-staffy-health-uk/">Blue Staffy health in the UK</a> explains what each test covers. We hold no certificates, so we name the tests and quote no result.</p>
+      <p><a href="/blue-staffy-health-uk/">Blue Staffy health in the UK</a> explains what each test covers. We name the tests and quote no result.</p>
       <h4>{tree('health-tests', 0, 0)}</h4>
       <p>Ask about them too. Eye screening looks for inherited eye disease a DNA test misses, and elbow screening belongs on the same list.</p>
       <h5>{tree('health-tests', 0, 0, 0)}</h5>
@@ -757,7 +760,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <SectionDivider />
   <CityFaqLedger id="faq-bottom" data-section-label={H2('faq-bottom')} block="bottom" start={faqTop.length + faqMiddle.length + 1}
     heading={H2('faq-bottom')}
-    lede="Flats, first dogs, children, training and coat colour."
+    lede="First dogs, house life, boy or girl, behaviour, socialising, flats and coat colour."
     items={faqBottom} />
 
   <SectionDivider />
