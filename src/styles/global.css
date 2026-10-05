@@ -27,6 +27,13 @@
    and the harness reported the identical 29 rows on the next run — the rule parsed, applied
    to nothing, and looked like a fix. */
 @media (max-width: 640px) { :root { --hdr: 120px; } }
+/* THE KIT HEADER IS ONE ROW ON A PHONE (frontend-design FD-D1 on London, the breeder's yes with
+   her addition, answer board 2026-10-06-london-harden-calls q04 (a): "logo left, 'Available
+   puppies' and menu icon right on phone", the pill centred). Below 640px SiteHeaderKit sets the
+   brand, the pill and the menu icon on one 73px row (72px bar + its 1px rule), so --hdr follows it
+   on every page that mounts the kit header. The legacy SiteHeader (the un-rebuilt city pages and
+   /search/) still wraps to two rows and keeps the 120px above. Unlayered for the reason above. */
+@media (max-width: 640px) { :root:has(.kit-hdr) { --hdr: 72px; } }
 
 @utility container { max-width: var(--container); margin-inline: auto; padding-inline: 24px; }
 @utility container-text { max-width: var(--text-max); margin-inline: auto; }

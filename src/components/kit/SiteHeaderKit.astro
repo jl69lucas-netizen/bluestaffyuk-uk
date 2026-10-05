@@ -304,6 +304,20 @@ const here = Astro.url.pathname;
     .drawer:not([open]) .when-open, .drawer[open] .when-shut { display: none; }
     .drawer summary { list-style: none; cursor: pointer; display: inline-flex; gap: var(--space-2); padding: 10px; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
     .drawer summary::-webkit-details-marker { display: none; }
+    /* ONE ROW ON A PHONE (frontend-design FD-D1 on London, the breeder's yes with her addition,
+       answer board 2026-10-06-london-harden-calls q04 (a): "logo left, 'Available puppies' and menu
+       icon right on phone"). Below 640px the summary's "Open menu" / "Close menu" word is visually
+       hidden, never removed: the shown span is still the summary's text, so it is announced "Open
+       menu" (and "Close menu" when open) and the icon stays a 44x44 target. The brand link and the
+       summary are both 44px wide, so space-between sets the pill in the exact centre of the row.
+       The bar is --hdr tall (72px below 640px on a kit page, global.css). Under 360px the row is
+       too narrow for the pill's 24px side padding plus the two gaps (320px: 272px of row for
+       297px), so below 640px the row's gap is 8px, and under 360px the pill's padding is 16px
+       (the unlayered rule at the end, which the Tailwind px-6 utility would otherwise beat). */
+    @media (width < 640px) {
+      .bar { gap: var(--space-2); }
+      .drawer summary .lbl { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    }
     /* The open panel is its own dark band, so it names the on-inverse text and ring rather
        than inheriting the bone bar's near-black `color` onto a steel background. */
     .drawer[open] .panel { position: absolute; right: 0; top: 100%; min-width: 280px; background: var(--color-surface-inverse); color: var(--color-text-on-inverse); --kit-ring: var(--color-focus-on-inverse); padding: var(--space-5); border-radius: 0 0 var(--card-radius) var(--card-radius); box-shadow: var(--shadow-lift); display: grid; gap: var(--space-4); }
@@ -311,5 +325,10 @@ const here = Astro.url.pathname;
     .drawer nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
     .drawer nav a { color: inherit; text-decoration: none; font-weight: 600; display: block; padding: var(--space-2) 0; min-height: 44px; }
     .drawer nav a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--color-cta); }
+  }
+  /* Unlayered on purpose: the pill's side padding is the Tailwind px-6 utility, and the utilities
+     layer beats @layer components. Under 360px only (FD-D1, see the phone-row note above). */
+  @media (width < 360px) {
+    .bar > :global(.kit-btn) { padding-inline: var(--space-4); }
   }
 </style>
