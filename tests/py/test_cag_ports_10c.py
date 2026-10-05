@@ -357,6 +357,9 @@ def test_the_take_back_is_the_ruling_and_sits_in_the_written_contract():
                    for l in lines), lines
 
 
+WRITTEN_CONTRACT = re.compile(r"(?i)written contract|written into the (?:sale )?contract")
+
+
 def test_the_built_take_back_sentences_name_the_written_contract():
     """Where a built page already carries a take-back sentence of ours (the city FAQ answer and
     the city trust row), it says the promise is set out in our written contract (q05). No new
@@ -365,7 +368,12 @@ def test_the_built_take_back_sentences_name_the_written_contract():
     take it back", as the answer to the H3 "What Does the Written Contract Cover?", where the
     scaffold said "We take the puppy back ... written contract". So any take-back phrasing
     counts, and the contract may be named in the sentence or in the question it answers just
-    before it."""
+    before it.
+    The London close proposals (answer board 2026-10-05 london-close-proposals q01 (a)) added the
+    FAQ "Will You Take the Dog Back If I Can No Longer Keep It?", answered as approved: "that
+    promise is written into the sale contract you sign". That names the written contract in other
+    words, so "written into the (sale) contract" counts, and the window reaches the end of a
+    71-word answer after its question."""
     f = ROOT / "dist/uk-locations/blue-staffy-puppies-london/index.html"
     if not f.exists():
         pytest.skip("run npm run -s build first")
@@ -375,8 +383,8 @@ def test_the_built_take_back_sentences_name_the_written_contract():
         r"(?i)\b(?:take|took|taking|taken)\b[^.?!]{0,30}\bback\b|\btake-back\b", text)]
     assert hits, "the London page carries its take-back sentences"
     for i in hits:
-        around = text[max(0, i - 160):i + 220]
-        assert re.search(r"(?i)written contract", around), around
+        around = text[max(0, i - 160):i + 260]
+        assert WRITTEN_CONTRACT.search(around), around
 
 
 def test_the_scam_agent_restores_safe_payment_and_the_cross_link_section():
