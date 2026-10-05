@@ -1,0 +1,60 @@
+/* CityMapFacade preview — tokens only (src/styles/tokens.css). Injected into a COPY of dist. */
+.city-map { margin: var(--space-4) 0 var(--space-4); min-width: 0; container-type: inline-size; }
+.city-map .cm-stage {
+  position: relative; display: grid; place-items: center; align-content: center; gap: var(--space-3);
+  width: 100%; aspect-ratio: 4 / 3; max-height: 300px; overflow: hidden; border-radius: var(--radius-md);
+  isolation: isolate;
+}
+@container (width >= 560px) { .city-map .cm-stage { aspect-ratio: 16 / 9; } }
+.city-map .cm-art { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+.city-map .cm-pin { width: 40px; height: 52px; display: block; }
+.city-map .cm-pin .body { fill: var(--color-brass-500); }
+.city-map .cm-place { display: block; margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--text-xl); line-height: 1.1; letter-spacing: 0.01em; }
+.city-map .cm-load {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  min-height: 44px; padding: var(--space-2) 22px; border: 0; border-radius: var(--btn-radius);
+  background: var(--color-cta); color: var(--color-cta-ink); font: inherit; font-weight: 700; line-height: 1.25;
+  box-shadow: var(--shadow-card); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out);
+}
+.city-map .cm-load:hover { background: var(--color-cta-hover); }
+.city-map .cm-load:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+.city-map .cm-load svg { width: 18px; height: 18px; flex: none; }
+figure.city-map p.cm-cap { margin: var(--space-3) 0 0; font-size: var(--text-sm); line-height: 1.5; color: var(--color-ink-2); }
+figure.city-map p.cm-note { margin: var(--space-1) 0 0; font-size: var(--text-xs); line-height: 1.4; color: var(--color-ink-2); }
+.city-map .cm-frame { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0; }
+.city-map .cm-stage.cm-live { background: var(--color-bone-50); }
+@media (prefers-reduced-motion: reduce) { .city-map .cm-load { transition: none; } }
+
+/* S1 — steel panel, brass pin */
+.cm-s1 .cm-stage { background: var(--color-steel-700); color: var(--color-bone-100); box-shadow: var(--shadow-card); }
+.cm-s1 .cm-place { color: var(--color-text-on-inverse); }
+.cm-s1 .cm-art { color: var(--color-steel-500); }
+.cm-s1 .cm-pin .dot { fill: var(--color-steel-700); }
+.cm-s1 .cm-load:focus-visible { outline-color: var(--color-focus-on-inverse); }
+
+/* S2 — bone card, steel line-map motif */
+.cm-s2 .cm-stage { background: var(--color-bone-50); color: var(--color-steel-700); border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--shadow-card); }
+.cm-s2 .cm-place { color: var(--color-brand); }
+.cm-s2 .cm-art { color: var(--color-steel-300); }
+.cm-s2 .cm-pin .body { stroke: var(--color-steel-700); stroke-width: 1.5; }
+.cm-s2 .cm-pin .dot { fill: var(--color-bone-50); }
+
+/* S3 — compact strip: pin, "London on Google Maps", button on one row */
+.cm-s3 .cm-strip {
+  display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-3);
+  background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--radius-md); box-shadow: var(--shadow-card);
+}
+.cm-s3 .cm-disc { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--color-brass-200); color: var(--color-steel-700); }
+.cm-s3 .cm-disc svg { width: 22px; height: 22px; }
+.cm-s3 .cm-strip-t { flex: 1 1 0; min-width: 0; display: grid; line-height: 1.2; }
+.cm-s3 .cm-strip-city { font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); color: var(--color-brand); }
+.cm-s3 .cm-strip-sub { font-size: var(--text-xs); color: var(--color-ink-2); }
+.cm-s3 .cm-load { flex: none; }
+.cm-s3[data-loaded] .cm-stage { margin-top: var(--space-3); max-height: 260px; }
+@container (width < 400px) {
+  .cm-s3 .cm-strip { gap: var(--space-2); padding: var(--space-2) var(--space-3); }
+  .cm-s3 .cm-disc { width: 32px; height: 32px; }
+  .cm-s3 .cm-disc svg { width: 18px; height: 18px; }
+  .cm-s3 .cm-load { padding-inline: 16px; }
+  .cm-s3 .cm-load svg { display: none; }
+}
