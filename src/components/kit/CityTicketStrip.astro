@@ -136,14 +136,17 @@ const CHECK = 'M5 12.5l4.5 4.5L19 7.5';
        what a buyer checks before enquiring, and at 13px they were the smallest reading text on the
        page. Below the 640px tier edge only; tablet and desktop keep 13px. */
     @container (width < 640px) { .pc-trust li, .pc-del { font-size: 14px; } }
-    /* The kit's two tier edges (cityKit TIER): two cards to a row from a tablet box, three from a
-       desktop box (the 832px column beside the dial at 1280). */
+    /* The kit's tier edge (cityKit TIER): two cards to a row from a tablet box, and still two from
+       a desktop box (frontend-design FD-D2 on London, the breeder's yes, answer board
+       2026-10-06-london-harden-calls q05 (a)): three across in the 832px column beside the dial
+       made each card 231px wide at 1280, so the meta wrapped, the trust list fell
+       to one column and the delivery stub ran three lines; two across, each card keeps the width
+       it was designed at. */
     @container (width >= 640px) {
       .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
       .in { max-width: min(1100px, calc(100% - 2 * var(--space-6))); padding: var(--space-5); margin-block: var(--city-pad-y); }
       .pc { padding: 14px 16px; gap: 10px; }
     }
-    @container (width >= 800px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     @media (prefers-reduced-motion: reduce) {
       .pc, .pc::after, .pc-go { transition: none; }
       .pc:hover, .pc:hover .pc-go { transform: none; }
