@@ -107,6 +107,10 @@
      contact form's full-width message field to 549px (the Task 7b design pass). */
   .city-kit :where(p:not(form *), li, dd) { font-size: var(--city-body); line-height: 1.6; }
   .city-kit :where(p:not(form *)) { text-wrap: pretty; max-inline-size: 65ch; }
+  /* List rows and ledger values wrap like paragraphs: no row ends on one word on its own line
+     ("Carlisle", "deposit.", "blaze." in the trust ledger, the call checklists, the places rows
+     and the takeaways; frontend-design Harden pass 2026-10-05, F1). */
+  .city-kit :where(li, dd) { text-wrap: pretty; }
   /* A run that never breaks inside: the delivery band and the "· or" after it (cityKit
      `deliveryLineRuns`, impeccable Harden pass 2026-10-05 F1). */
   .city-kit :where(.keep) { white-space: nowrap; }
