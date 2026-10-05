@@ -3248,7 +3248,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "9aae592ca6cdd1559ad81cfbc70e88d819be88d5ad7d8a5a8a48a028fe118ff5",
+    "record_hash": "e69790eb16154970b9676ef5a126cfa5c6004613b717581b350a2854e08e4b0b",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3268,7 +3268,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-05T02:35:39Z",
+    "reapproved_at": "2026-10-05T02:38:38Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3412,6 +3412,13 @@
         "reason": "The breeder's pick on the London close proposals, answer board 2026-10-05 q02 (a) (docs/reference/answer-board/answers/2026-10-05-london-close-proposals-2026-10-05.md): seven statement labels as shown (five 'Observed here' on the test-naming sections, 'Fact' on the breed taxonomy and on the breed lifespan), through the new kit piece StatementLine.astro; logged in board_revisions. No section, pick, menu or figure moved.",
         "changed_paths": [
           "/board_revisions/31"
+        ]
+      },
+      {
+        "at": "2026-10-05T02:38:38Z",
+        "reason": "The breeder's pick on the London close proposals, answer board 2026-10-05 q03 (a) (docs/reference/answer-board/answers/2026-10-05-london-close-proposals-2026-10-05.md): all 17 we/our/us swaps as listed; logged in board_revisions. No section, pick, menu, figure, heading or anchor moved.",
+        "changed_paths": [
+          "/board_revisions/32"
         ]
       }
     ]
@@ -3911,6 +3918,27 @@
         "health-tests",
         "breed",
         "everyday-health"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "source": "answer board 2026-10-05-london-close-proposals q03",
+      "decision": "All 17 we/our/us swaps, exactly as listed in docs/reports/london-close-proposals-2026-10-05/ (21 pronouns in 17 sentences): Lisa Bright's name where a reader is told to ask, write or visit, 'Here at BlueStaffyUK' twice and 'BlueStaffyUK' twice. London's own prose only: no heading, link anchor, review, puppy card or shared settings line changed. The breeder's name is read from data/settings.json breeder_name. Rulings: docs/reference/answer-board/answers/2026-10-05-london-close-proposals-2026-10-05.md.",
+      "record_change": "content: wording in 17 page-markup sentences; no pick, menu, figure, heading, anchor or section id moved",
+      "sections": [
+        "top",
+        "trust",
+        "key-takeaways",
+        "deposit-viewing",
+        "delivery",
+        "litter-prices",
+        "faq-middle",
+        "health-tests",
+        "paperwork",
+        "london-life",
+        "newsletter",
+        "breed",
+        "enquiry"
       ]
     }
   ]

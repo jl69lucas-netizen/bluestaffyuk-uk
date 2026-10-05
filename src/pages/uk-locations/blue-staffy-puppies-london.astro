@@ -304,7 +304,7 @@ const takeaways = [
   { label: 'The deposit', text: depositLine },
   { label: 'The prices', text: `${BOY_PRICE} for a boy and ${GIRL_PRICE} for a girl, the same wherever you live.` },
   { label: 'Getting home', text: `UK home delivery for ${DELIVERY_BAND}, priced by distance, or collection in ${TOWN}.` },
-  { label: 'The tests', text: 'Ask any breeder, us included, about L-2-HGA, HC-HSF4, eye screening and elbow screening.', stmt: TESTS_NAMED },
+  { label: 'The tests', text: 'Ask any breeder, BlueStaffyUK included, about L-2-HGA, HC-HSF4, eye screening and elbow screening.', stmt: TESTS_NAMED },
   ...(guarantee ? [{ label: guarantee.t, text: guarantee.d }] : []),
 ];
 
@@ -333,11 +333,11 @@ const faqMiddle: CityFaqRow[] = [
     a: 'Yes. You can ask for a live video call with your puppy and Maggie before any deposit, then meet them in person when you visit.',
     more: { href: '#deposit-viewing', label: 'The video call and the deposit' } },
   { q: "Are the Puppy's Parents Health Tested?",
-    a: 'Ask us about L-2-HGA, HC-HSF4, eye screening and elbow screening for Maggie and Jones. We hold no certificates, so we name the tests and quote no result.',
+    a: `Ask ${BREEDER} about L-2-HGA, HC-HSF4, eye screening and elbow screening for Maggie and Jones. We hold no certificates, so we name the tests and quote no result.`,
     stmt: TESTS_NAMED,
     more: { href: '#health-tests', label: 'What each test is for' } },
   { q: 'Will the Breeder Still Support Me After I Collect the Puppy?',
-    a: 'Yes. Write to us before or after your puppy is home and you get the same answer, from us rather than an agency.' },
+    a: `Yes. Write to ${BREEDER} before or after your puppy is home and you get the same answer, from us rather than an agency.` },
   { q: 'How Do I Find a Reputable, Health-Tested Staffy Breeder?',
     a: `Start with two asks: which tests the parents have had, and a look at the puppy with its mother before you pay. Ask ${BREEDER} and she names four for Maggie and Jones: L-2-HGA, HC-HSF4, eye screening and elbow screening, with no result quoted. Then visit by appointment at the family home in ${TOWN} where Maggie and Jones live.` },
   { q: 'Will You Take the Dog Back If I Can No Longer Keep It?',
@@ -414,7 +414,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     <CityHeroFilmstrip id="top" data-section-label={H2('top')}
       eyebrow={`${cap(LITTER)} puppies · ${TOWN} to London`}
       title={H1}
-      lede={`Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to us in ${TOWN} comes after that call. We raise every litter in our own home, and our blue Staffy puppies for London homes come from this one: ${LITTER} puppies, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}.`}
+      lede={`Yes. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. Your visit to ${BREEDER} in ${TOWN} comes after that call. Here at BlueStaffyUK, every litter is raised in our own home, and our blue Staffy puppies for London homes come from this one: ${LITTER} puppies, ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}.`}
       cta={{ label: 'Blue Staffy puppies available now', href: '/available-puppies/' }}
       more={{ label: 'BlueStaffyUK', href: '/' }}
     >
@@ -428,7 +428,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     }} />
     <CityTrustLedger id="trust" data-section-label={H2('trust')}
       heading={H2('trust')}
-      intro="Each line is something you can check with us before you pay."
+      intro={`Each line is something you can check with ${BREEDER} before you pay.`}
       photo="maggie-blue-staffy-dam-with-pups.webp" caption="Maggie, our dam, with her puppies"
       items={[
         { icon: 'eye', claim: 'A video call first', detail: 'With your puppy and Maggie, on request, before any deposit' },
@@ -469,7 +469,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     lede={`No. You can ask for a live video call with your puppy and Maggie, its mother, before any deposit. After that call, your deposit books a visit to us in ${TOWN} and reserves the puppy you chose.`}
     chapters={[
       { place: 'Before you pay', question: tree('deposit-viewing', 0), asset: photo('deposit-video-call'), contain: true,
-        text: 'Yes. Ask us for a live video call and we show you your puppy and Maggie together, at home, before you decide anything.' },
+        text: `Yes. Ask ${BREEDER} for a live video call and she shows you your puppy and Maggie together, at home, before you decide anything.` },
       { place: 'Once you choose', question: tree('deposit-viewing', 1), asset: photo('deposit-choose'),
         text: `It holds that puppy for you. Your ${DEPOSIT} deposit books your viewing in ${TOWN} and takes the puppy off our list, so nobody else can reserve it.` },
       { place: 'In order', question: tree('deposit-viewing', 2), asset: IG['deposit-steps'], wide: true,
@@ -503,7 +503,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <CityChapters id="delivery" data-section-label={H2('delivery')}
     heading={H2('delivery')}
     image={photo('delivery-h2')}
-    lede={`Our staffie puppies in London homes all start here in ${TOWN}, then travel to your door by DEFRA-approved transport, or you collect them from us.`}
+    lede={`BlueStaffyUK's staffie puppies in London homes all start here in ${TOWN}, then travel to your door by DEFRA-approved transport, or you collect them from ${BREEDER}.`}
     chapters={[
       { place: 'Delivery', question: tree('delivery', 0), asset: photo('delivery-cost'), focal: '50% 90%',
         text: `UK home delivery costs ${DELIVERY_BAND}, priced by distance, by DEFRA-approved transport.` },
@@ -530,7 +530,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <p>A secure carrier or crate, a blanket, water and a towel, and time for short stops on the way.</p>
     </Fragment>
     <Fragment slot="ch-3">
-      <p>We have delivered to {PAST_DELIVERIES} before. London buyers take home delivery, and handovers are by request, so ask us when you enquire.</p>
+      <p>Puppies from {BREEDER} have gone to {PAST_DELIVERIES} before. London buyers take home delivery, and handovers are by request, so ask us when you enquire.</p>
       <p><a href="/uk-locations/staffy-puppies-for-sale-essex/">Buyers in Essex</a> have their own page. <a href="/uk-locations/blue-staffy-puppies-oxford/">Our page for Oxford families</a> is another. <a href="/uk-locations/buy-blue-staffy-puppy-coventry-area/">Coventry and the surrounding area</a> has one. <a href="/uk-locations/blue-staffy-puppies-for-sale-in-leicester/">Leicester readers</a> do too. <a href="/uk-locations/">The other UK cities we have written about</a> are listed together.</p>
     </Fragment>
   </CityChapters>
@@ -542,11 +542,11 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
     lede={`${cap(LITTER)} puppies are available now from Maggie and Jones: ${BOYS} boys at ${BOY_PRICE} and ${GIRLS} girls at ${GIRL_PRICE}. That is our blue Staffy puppies London price; it is the same wherever you live.`}
     chapters={[
       { place: 'The parents', question: tree('litter-prices', 0), asset: photo('litter-parents'),
-        text: 'Maggie is our dam and Jones our sire, both our own dogs.' },
+        text: `Maggie is ${BREEDER}'s dam and Jones her sire, both our own dogs.` },
       { place: 'The prices', question: tree('litter-prices', 1), asset: photo('litter-prices-card'),
         text: "The table gives every puppy's sex, colour, price and status." },
       { place: 'At a glance', question: tree('litter-prices', 2), asset: IG['litter-prices-figures'], wide: true,
-        text: `${cap(LITTER)} are left: ${BOYS} boys and ${GIRLS} girls. A ${DEPOSIT} deposit holds any one of them and comes off the price. The list changes as puppies are reserved, so tell us which one you like and we confirm it is still free.` },
+        text: `${cap(LITTER)} are left: ${BOYS} boys and ${GIRLS} girls. A ${DEPOSIT} deposit holds any one of them and comes off the price. The list changes as puppies are reserved, so tell ${BREEDER} which one you like and we confirm it is still free.` },
     ]}>
     <Fragment slot="ch-1">
       <p><a href="/blue-staffy-uk-breeders/">Maggie, Jones and the home they share with us</a> are on our breeders page.</p>
@@ -608,7 +608,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <h4>{tree('health-tests', 0, 0)}</h4>
       <p>Ask about them too. Eye screening looks for inherited eye disease a DNA test misses, and elbow screening belongs on the same list.</p>
       <h5>{tree('health-tests', 0, 0, 0)}</h5>
-      <p>A seller who will not do a video call, will not let you see the parents, wants paying before you have seen the puppy, or offers no written contract. With us, a live video call with your puppy and Maggie comes first, Maggie and Jones live with us, nothing is paid before that call, and you sign our written contract.</p>
+      <p>A seller who will not do a video call, will not let you see the parents, wants paying before you have seen the puppy, or offers no written contract. Here at BlueStaffyUK, a live video call with your puppy and Maggie comes first, Maggie and Jones live with {BREEDER}, nothing is paid before that call, and you sign our written contract.</p>
       <h6>{tree('health-tests', 0, 0, 0, 0)}</h6>
       <p><a href="https://www.bva.co.uk/canine-health-schemes/eye-scheme/" {...EXT}>A clinical eye examination by a veterinary specialist</a> is how the BVA describes its eye scheme test, and the scheme's rules are published there.</p>
     </Fragment>
@@ -633,7 +633,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
         text: `The papers above, kept together: the microchip and vaccination records, the written contract and what to check in it, and the terms of our ${GUARANTEE_LOWER}. Keep the folder safe for your puppy's first vet visit.` },
     ]}>
     <Fragment slot="ch-1">
-      <p><a href="/buy-staffy-puppies-for-sale-uk/">Staffy puppies for sale with their paperwork in order</a> is how we sell every litter.</p>
+      <p><a href="/buy-staffy-puppies-for-sale-uk/">Staffy puppies for sale with their paperwork in order</a> is how {BREEDER} sells every litter.</p>
       <h4>{tree('paperwork', 0, 0)}</h4>
       <p>The sale of your puppy, and our promise to take it back if you can no longer keep it.</p>
       <h5>{tree('paperwork', 0, 0, 0)}</h5>
@@ -659,7 +659,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <h4>{tree('london-life', 0, 0)}</h4>
       <p>In whichever park is nearest you, on a lead until its recall is reliable. <a href="https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/how-much-exercise-does-your-dog-need" {...EXT}>How much exercise a Staffy-sized dog needs</a> is set out by the PDSA. The rules differ from park to park. Here are the dog rules a few of them publish, grouped by who sets them.</p>
       <CityPlacesByPublisher groups={PLACE_GROUPS}
-        vet={{ href: VET, anchor: anchorOf('london-life', VET), rest: "finds registered vets near you in London, and the register lets you check that a vet is registered. We don't name a London practice ourselves." }} />
+        vet={{ href: VET, anchor: anchorOf('london-life', VET), rest: `finds registered vets near you in London, and the register lets you check that a vet is registered. ${BREEDER} names no London practice herself.` }} />
     </Fragment>
     <Fragment slot="ch-2">
       <p><a href="/blue-staffy-blog-guides/">Settling a new puppy into a flat or a busy home</a> is one of the subjects in our guides.</p>
@@ -672,7 +672,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <CityNewsletterNotice id="newsletter" data-section-label={H2('newsletter')}
     eyebrow="Litter notes"
     heading={H2('newsletter')}
-    lede="Leave your email and we write when our next litter is on the way. One short note per litter, nothing else."
+    lede={`Leave your email and ${BREEDER} writes when our next litter is on the way. One short note per litter, nothing else.`}
     photo="Christa.jpeg" photoAlt="Christa, a blue Staffy girl, sitting up on a sheepskin rug and looking at the camera" />
 
   <SectionDivider />
@@ -715,7 +715,7 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
           answer looks for, worded exactly as she approved it, the binomial in italics. */}
       <StatementLine kind="fact" note="Breed taxonomy" />
       <p>The Staffordshire Bull Terrier is a breed of domestic dog, <i lang="la">Canis lupus familiaris</i>.</p>
-      <p><a href="/uk-staffordshire-bull-terrier-guide/">What sets the English Staffy apart</a> is covered at length in our breed guide.</p>
+      <p><a href="/uk-staffordshire-bull-terrier-guide/">What sets the English Staffy apart</a> is covered at length in {BREEDER}'s breed guide.</p>
       <h4>{tree('breed', 0, 0)}</h4>
       <p>A dilute gene that lightens black to blue-grey, a colour the Royal Kennel Club standard lists for the breed.</p>
     </Fragment>
@@ -758,5 +758,5 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
   <SectionDivider />
   <CityContactLineup id="enquiry" data-section-label={H2('enquiry')}
     heading={H2('enquiry')}
-    lede="Choose a puppy, tell us where in London you live and ask anything. We reply by email, and you can ask for the video call before any deposit." />
+    lede={`Choose a puppy, tell us where in London you live and ask anything. ${BREEDER} replies by email, and you can ask for the video call before any deposit.`} />
 </CityShell>
