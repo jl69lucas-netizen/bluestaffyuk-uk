@@ -10,11 +10,13 @@ export type Route = {
   stops_done: number
   page_written: boolean
   needs_you: string[]
+  recent?: { hash: string; ts: string; subject: string }[]
+  dirty?: number
   answer_board: string
 }
 
 declare module 'claude-code' {
   interface PluginState {
-    'bsuk-route': { route: Route | null; error: string | null }
+    'bsuk-route': { route: Route | null; error: string | null; now: number }
   }
 }

@@ -68,7 +68,19 @@ def evidence(slug, root=ROOT):
     rebuilt = _json(d / "facts" / "rebuilt.json") or []
     raw = d / "queries" / "raw" / slug
     answers = root / "docs" / "reference" / "answer-board" / "answers"
-    scorecards = list((d / "quality" / "scorecards").glob(f"{slug}-*.json"))
+    # A scorecard is named by route ("uk-locations__<slug>-<date>.json") or by slug for a root page.
+    scorecards = [p for p in (d / "quality" / "scorecards").glob("*.json")
+                  if p.stem.rsplit("-", 3)[0].split("__")[-1] == slug]
+    gate = _json(root / "docs" / "reports" / "gate-page" / f"{slug}.json") or {}
+    steps = {s.get("step"): s for s in gate.get("steps", [])}
+    head = _git(root, "rev-parse", "HEAD")
+    at_head = bool(head) and gate.get("head") == head
+    ledger = _json(root / "docs" / "reports" / "p5-ledger.json") or {}
+    final_ok = any(answers.glob(f"final-approval-{slug}-*.md"))
+
+    def _step(name):
+        st = steps.get(name)
+        return bool(st) and all(st.get("ok") or [False])
     src = next(iter(sorted((root / "src" / "pages").rglob(f"{slug}.astro"))), None)
     if src is None:
         idx = root / "src" / "pages" / slug / "index.astro"
@@ -90,15 +102,16 @@ def evidence(slug, root=ROOT):
         10: (_approved(board, "approved_at"), "page board approval"),
         11: (asset_gate, "Asset Gate answers saved"),
         12: (built and slug in rebuilt, "page source rebuilt and registered"),
-        13: (bool(scorecards), "render scorecard"),
-        14: ("impeccable" in run, "page-run record impeccable"),
-        15: ("frontend-design" in run or "frontend_design" in run, "page-run record frontend-design"),
-        16: (False, "not recorded on disk yet: run page_hardening_scan.py"),
-        17: ("verification" in run, "page-run record verification"),
-        18: ("verification" in run, "page-run record verification"),
-        19: (False, "not recorded on disk yet: measurement ledger"),
-        20: (False, "not recorded on disk yet: aeo audit"),
-        21: (False, "the user approves the page"),
+        13: (bool(scorecards), f"render scorecard ({len(scorecards)} on disk)" if scorecards else "no render scorecard yet"),
+        14: ("impeccable" in run, "page-run record: impeccable"),
+        15: ("frontend-design" in run or "frontend_design" in run, "page-run record: frontend-design"),
+        16: (_step("hardening"), "static scan clean in the gate report" if _step("hardening") else "static scan not yet clean in a gate report"),
+        17: (gate.get("verdict") == "PASS" and bool(gate.get("identical")) and at_head,
+             f"gate:page {gate.get('verdict', 'not run')}, runs identical {bool(gate.get('identical'))}, at {str(gate.get('head', ''))[:8]}{'' if at_head else ' (not HEAD)'}"),
+        18: ("verification_before_completion" in run, "page-run record: verification before completion"),
+        19: (bool(ledger) and slug in json.dumps(ledger), "measurement ledger docs/reports/p5-ledger.json" if ledger else "measurement ledger not written yet"),
+        20: (_step("aeo"), "AEO audit clean, both gate runs" if _step("aeo") else "AEO audit not yet clean in a gate report"),
+        21: (final_ok, "the breeder approved the page" if final_ok else "waiting on the breeder's final approval"),
     }, {"page_written": built}
 
 
@@ -118,6 +131,9 @@ def status(slug, root=ROOT):
         "slug": slug,
         "branch": _git(root, "rev-parse", "--abbrev-ref", "HEAD"),
         "commit": _git(root, "log", "-1", "--format=%h %s"),
+        "recent": [dict(zip(("hash", "ts", "subject"), line.split("\t", 2)))
+                   for line in _git(root, "log", "-6", "--format=%h%x09%ct%x09%s").splitlines() if line.count("\t") == 2],
+        "dirty": len([l for l in _git(root, "status", "--porcelain").splitlines() if l.strip()]),
         "rows": rows,
         "now": now,
         "now_name": next((r["name"] for r in rows if r["row"] == now), None),

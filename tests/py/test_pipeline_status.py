@@ -53,3 +53,54 @@ def test_a_posted_batch_without_answers_needs_you(tmp_path):
     _tree(tmp_path, 4)
     _write(tmp_path, "docs/reference/answer-board/batches/2026-10-03-q.json", {})
     assert PS.status(SLUG, tmp_path)["needs_you"] == ["answer board: 2026-10-03-q"]
+
+
+def _built(tmp_path):
+    """A tree proved through row 12: every stop approved and the page written and registered."""
+    _tree(tmp_path, 4)
+    _write(tmp_path, "data/facts/rebuilt.json", [SLUG])
+    _write(tmp_path, f"src/pages/x/{SLUG}.astro", "<main>built</main>")
+
+
+def test_a_scorecard_named_by_route_proves_the_render_row(tmp_path):
+    _built(tmp_path)
+    assert PS.status(SLUG, tmp_path)["now"] == 13
+    _write(tmp_path, f"data/quality/scorecards/uk-locations__{SLUG}-2026-10-05.json", {})
+    assert PS.status(SLUG, tmp_path)["now"] == 14
+
+
+def test_a_scorecard_for_another_slug_does_not(tmp_path):
+    _built(tmp_path)
+    _write(tmp_path, f"data/quality/scorecards/uk-locations__{SLUG}-north-2026-10-05.json", {})
+    assert PS.status(SLUG, tmp_path)["now"] == 13
+
+
+def test_the_close_rows_read_the_gate_report_and_the_verification_key(tmp_path, monkeypatch):
+    _built(tmp_path)
+    _write(tmp_path, f"data/quality/scorecards/uk-locations__{SLUG}-2026-10-05.json", {})
+    run = {"session_open": {}, "impeccable": {}, "frontend_design": {}}
+    _write(tmp_path, f"data/page-runs/{SLUG}.json", run)
+    steps = [{"step": "hardening", "ok": [True, True]}, {"step": "aeo", "ok": [True, True]}]
+    _write(tmp_path, f"docs/reports/gate-page/{SLUG}.json",
+           {"verdict": "PASS", "identical": True, "head": "abc", "steps": steps})
+    monkeypatch.setattr(PS, "_git", lambda root, *a: "abc" if a[:1] == ("rev-parse",) else "")
+    assert PS.status(SLUG, tmp_path)["now"] == 18          # the old "verification" key never matched
+    _write(tmp_path, f"data/page-runs/{SLUG}.json", {**run, "verification_before_completion": {}})
+    assert PS.status(SLUG, tmp_path)["now"] == 19
+    _write(tmp_path, "docs/reports/p5-ledger.json", {"pages": [SLUG]})
+    assert PS.status(SLUG, tmp_path)["now"] == 21
+    _write(tmp_path, f"docs/reference/answer-board/answers/final-approval-{SLUG}-2026-10-06.md", "yes")
+    assert PS.status(SLUG, tmp_path)["now"] is None
+
+
+def test_a_gate_report_from_an_older_commit_does_not_prove_the_gates(tmp_path, monkeypatch):
+    _built(tmp_path)
+    _write(tmp_path, f"data/quality/scorecards/uk-locations__{SLUG}-2026-10-05.json", {})
+    _write(tmp_path, f"data/page-runs/{SLUG}.json", {"session_open": {}, "impeccable": {}, "frontend_design": {}})
+    steps = [{"step": "hardening", "ok": [True, True]}, {"step": "aeo", "ok": [True, True]}]
+    _write(tmp_path, f"docs/reports/gate-page/{SLUG}.json",
+           {"verdict": "PASS", "identical": True, "head": "old", "steps": steps})
+    monkeypatch.setattr(PS, "_git", lambda root, *a: "new" if a[:1] == ("rev-parse",) else "")
+    s = PS.status(SLUG, tmp_path)
+    assert s["now"] == 17
+    assert "(not HEAD)" in s["rows"][16]["evidence"]

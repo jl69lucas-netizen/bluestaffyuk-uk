@@ -9,6 +9,9 @@ import type { Route, Row } from '../types'
 const PANE = 'bsuk-route'
 const route = atom({ plugin: 'bsuk-route', key: 'route' } as const, null)
 const error = atom({ plugin: 'bsuk-route', key: 'error' } as const, null)
+// The agent cards the bsuk-agents mod keeps (read only): who is working right now, on what.
+const agentCards = atom({ plugin: 'bsuk-agents', key: 'cards' } as const, {})
+const clockNow = atom({ plugin: 'bsuk-route', key: 'now' } as const, 0)
 
 // Page boards by slug, for the links under the map. A slug not listed gets only the answer board.
 const PAGE_BOARDS: Record<string, string> = {
@@ -25,6 +28,19 @@ const INK_3 = '#7F93A8'
 const DONE = '#8FB3D4'
 const BRASS = '#C9A227'
 const TODO = '#3A4C5E'
+
+const KIND_LABEL: Record<string, string> = {
+  read: 'reading', search: 'searching', edit: 'editing', write: 'writing', run: 'running a command',
+  test: 'testing', build: 'building', web: 'on the web', browser: 'in the browser', think: 'thinking',
+}
+const ago = (ms: number) => {
+  const m = Math.max(0, Math.floor(ms / 60000))
+  return m < 1 ? 'just now' : m < 60 ? `${m}m ago` : `${Math.floor(m / 60)}h ${m % 60}m ago`
+}
+const took = (ms: number) => {
+  const m = Math.max(0, Math.floor(ms / 60000))
+  return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60}m`
+}
 
 const PHASE_LABEL: Record<string, string> = {
   Research: 'Research',
@@ -45,6 +61,8 @@ async function refresh($: any) {
     const rt: Route = JSON.parse(r.stdout)
     await update($, route, () => rt)
     await update($, error, () => null)
+    const now = await $.clock.now()
+    await update($, clockNow, () => now)
     $.ui.status(undefined) // the band above the prompt carries this; no status line below
   } catch (err) {
     // not a BSUK checkout (no script here): stay quiet rather than draw a guess
@@ -57,7 +75,7 @@ export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({ name: 'bsuk-route', description: 'Open the BSUK Route Map for the page in progress' })
     await refresh($)
-    $.clock.every(60_000, () => {
+    $.clock.every(15_000, () => {
       void refresh($)
     })
     return next(e)
@@ -78,6 +96,13 @@ export const register: Register = on => {
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const rt = await read($, route)
     const err = await read($, error)
+    const now = (await read($, clockNow)) || Date.now()
+    let working: any[] = []
+    try {
+      working = Object.values((await read($, agentCards)) || {}).filter((c: any) => c.status === 'running')
+    } catch {
+      // the agents mod is not installed: the live card shows commits only
+    }
     const { Box, Text, Link } = $.ui.resolve(e) as any
     if (!rt) return <Text dimColor>{err ? `No route: ${err}` : 'Reading the page run…'}</Text>
     // Real text, not a picture: it fills the pane at reading size on every surface.
@@ -124,18 +149,41 @@ export const register: Register = on => {
                 const glyph = r.stop ? (isDone || now ? '◆' : '◇') : now ? '◉' : isDone ? '●' : '○'
                 const status = isDone ? (r.stop ? 'approved' : 'done') : now ? 'in progress' : ''
                 return (
-                  <Box flexDirection="row" justifyContent="space-between" width="100%" backgroundColor={now ? CARD_2 : undefined}>
+                  <Box flexDirection="column" width="100%" backgroundColor={now ? CARD_2 : undefined}>
+                  <Box flexDirection="row" justifyContent="space-between" width="100%">
                     <Text color={r.state === 'todo' ? INK_3 : INK} bold={now || !!r.stop}>
                       <Text color={r.stop ? BRASS : now ? BRASS : isDone ? DONE : TODO}>{glyph} </Text>
                       {String(r.row).padStart(2, ' ')}  {r.stop ? `STOP ${r.stop} · ` : ''}{r.name}
                     </Text>
                     <Text color={now || (r.stop && isDone) ? BRASS : DONE}>{status}</Text>
                   </Box>
+                  {now ? <Text color={INK_2}>     ↳ {r.evidence}</Text> : null}
+                  </Box>
                 )
               })}
             </Box>
           )
         })}
+        <Box flexDirection="column" width="100%" backgroundColor={CARD} borderStyle="round" borderColor={working.length ? BRASS : TODO} paddingX={2} paddingY={1}>
+          <Box flexDirection="row" justifyContent="space-between" width="100%">
+            <Text bold color={INK_3}>LIVE</Text>
+            <Text bold backgroundColor={working.length ? BRASS : TODO} color={working.length ? CARD : INK}> {working.length ? `${working.length} working` : 'idle'} </Text>
+          </Box>
+          {working.map((c: any) => (
+            <Text color={INK}>
+              <Text color={BRASS}>◉ </Text>
+              {String(c.description).slice(0, 48)}
+              <Text color={INK_2}>  {c.lastKind ? KIND_LABEL[c.lastKind] || c.lastKind : 'starting'} · {took(now - c.startedAt)} · {c.calls} steps</Text>
+            </Text>
+          ))}
+          {(rt.recent || []).slice(0, 4).map((c: any) => (
+            <Text color={INK_2}>
+              <Text color={DONE}>● </Text>
+              <Text color={INK_3}>{ago(now - Number(c.ts) * 1000).padEnd(9, ' ')}</Text> {String(c.subject).slice(0, 64)}
+            </Text>
+          ))}
+          {rt.dirty ? <Text color={BRASS}>{rt.dirty} file{rt.dirty === 1 ? '' : 's'} changed, not yet committed</Text> : null}
+        </Box>
         <Box flexDirection="row" gap={3}>
           <Link href={rt.answer_board} label="Answer board" />
           {board ? <Link href={board} label="Page board" /> : null}
