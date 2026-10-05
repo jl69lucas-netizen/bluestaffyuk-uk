@@ -1,0 +1,43 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, use all eight and drop \"Are Blue Staffies Good Family Pets, Especially With Children?\"",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Use these replacement FAQs?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, as shown",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Add these statement labels to seven sections?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Yes, all 17",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Make the \"we/our\" swaps?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-05T02:22:25.142Z",
+  "batchId": "2026-10-05-london-close-proposals",
+  "counts": {
+    "answered": 3,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-05T02-22-25-140Z"
+}
