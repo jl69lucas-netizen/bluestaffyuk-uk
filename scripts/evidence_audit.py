@@ -12,6 +12,8 @@ Checks (ids are the rule-index ids):
   review-attribution-unique   the same review text credited to two different names on one page
   claim-bound-to-proof        a ledger claim made 2+ times must link its proof object (ERROR);
                               a claim whose proof is NOT FETCHED is a WARN, never silently a pass
+                              — except a `naming_only` row under a breeder `repeat_ruling`, whose
+                              repeats are no finding while no repeating sentence states a result
   claim-unledgered            a sentence using the ledger's health/credential `vocabulary` that no
                               ledger claim matches (ERROR on a new location, comparison or blog
                               page — rebuilt, outside family_rules' frozen twelve; WARN elsewhere)
@@ -217,18 +219,63 @@ def review_attribution(html):
 
 
 # ── claim-bound-to-proof ────────────────────────────────────────────────────
+# A result word in a sentence makes it a RESULT claim, whatever else it does: the words the
+# `tests-named-no-result` pattern's own lookahead refuses, plus "certified/certificate" and
+# "free of", read over the WHOLE sentence (the pattern's lookahead only reads after its match).
+RESULT_WORDS = re.compile(r"\b(?:clear|cleared|clears|passed|negative|normal|unaffected|came\s+back"
+                          r"|results?|certified|certificates?|free\s+of)\b", re.I)
+
+
+def accepted_repeat_rulings(claim, root=ROOT):
+    """The rulings that let a NAMING-ONLY ledger row repeat with no proof object, or [].
+
+    A row earns it only with `naming_only: true` AND a non-empty `repeat_ruling` list whose
+    every entry is a rulings file in the repository (`path` or `path#qNN`). The breeder's
+    rulings for `tests-named-no-result`: answer board 2026-09-29 q01 (name the tests, never
+    state a result) and 2026-10-05 london-gate-findings q04 (a) (the check accepts the
+    repeats). A ruling path that does not exist voids the acceptance: a typo must not
+    silently switch a check off."""
+    rulings = claim.get("repeat_ruling") or []
+    if claim.get("naming_only") is not True or not rulings:
+        return []
+    for r in rulings:
+        if not (pathlib.Path(root) / r.split("#", 1)[0]).is_file():
+            print(f"WARN evidence-ledger row {claim.get('id')!r}: repeat_ruling {r!r} is not a "
+                  "file in the repository — the repeat is NOT accepted", file=sys.stderr)
+            return []
+    return list(rulings)
+
+
+def _states_result(sentence, ledger):
+    dna_clear = (ledger.get("vocabulary") or {}).get("dna-clear")
+    return bool(RESULT_WORDS.search(sentence)
+                or (dna_clear and re.search(dna_clear, sentence, flags=re.I)))
+
+
 def claim_binding(html, ledger):
     """[(claim_id, mentions, proof)] for ledger claims made 2+ times whose proof is not linked.
 
     proof == "NOT FETCHED" rows are returned so the caller can WARN; a linked proof clears the row.
     "Linked" is a substring test on the <main> HTML, not href-only: the proof path appearing in an
     href, src, or data attribute all count.
+
+    A NAMING-ONLY row under a breeder ruling (`accepted_repeat_rulings`) is not a finding when
+    every sentence that repeats it only names the tests: naming a test is not a claim that has
+    a proof object, by her ruling. The moment one of those sentences states a result (a result
+    word anywhere in it, or the ledger's `dna-clear` vocabulary), the acceptance is void and the
+    row is judged like any other: a repeated unproven RESULT claim still warns. A row with no
+    such ruling, `parents-dna-clear` included, is never excused.
     """
     body = main_html(html)
     text = text_of(body)
     out = []
     for c in ledger["claims"]:
         n = len(re.findall(c["pattern"], text, flags=re.I))
+        if accepted_repeat_rulings(c):
+            hits = [s for s in sentences(html) for _ in re.finditer(c["pattern"], s, flags=re.I)]
+            n = max(n, len(hits))
+            if not any(_states_result(s, ledger) for s in hits):
+                continue
         if n < 2:
             continue
         proof = c.get("proof") or "NOT FETCHED"
