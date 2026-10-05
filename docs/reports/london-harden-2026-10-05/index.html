@@ -67,7 +67,6 @@
     <p class="lede">The impeccable and frontend-design passes found five changes that would visibly alter an approved design or a reader-facing word, so none is applied. Each card shows the page as built beside a preview, why the change is proposed, its trade-off, and one recommended pick. Fixes that changed nothing approved are already committed (reports: <code>docs/reports/impeccable-london-2026-10-05.md</code>, <code>docs/reports/frontend-design-london-2026-10-05.md</code>).</p>
     <div class="tools">
       <button type="button" id="copy-all">Copy all as Markdown</button>
-      <button type="button" class="ghost" id="dl-md">Download .md</button>
       <span class="copied" id="status" aria-live="polite"></span>
     </div>
   </header>
@@ -203,10 +202,4 @@
     c.prepend(head); c.appendChild(body);
   }
   document.getElementById('copy-all').addEventListener('click', async () => say((await copy(allMd())) ? 'All five copied' : 'Copy failed'));
-  document.getElementById('dl-md').addEventListener('click', () => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([allMd()], { type: 'text/markdown' }));
-    a.download = 'london-harden-proposals-2026-10-05.md'; a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  });
 </script>
