@@ -32,7 +32,7 @@ can carry both kinds. Everything between the generated markers below is produced
 baseline` fails if it drifts. Do not hand-edit it.
 
 <!-- generated:start -->
-Scorecard run 2026-10-04 — 21 page scorecards, 212 defect rows.
+Scorecard run 2026-10-05 — 21 page scorecards, 212 defect rows.
 
 | Family | Blocking rows | Advisory rows | Pages affected |
 |---|---|---|---|
