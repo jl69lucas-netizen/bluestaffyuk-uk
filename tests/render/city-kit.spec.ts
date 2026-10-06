@@ -828,6 +828,49 @@ for (const route of ['/kit-preview/city-page/', LONDON]) {
   });
 }
 
+// THE DIAL SHOWS THE ROW IT MARKS (impeccable Harden pass, 2026-10-06b, F1). The dial is sticky and
+// scrolls inside its own box (`max-height: 100vh - header`, `overflow-y: auto`). On a laptop-height
+// screen its last rows sit below that box's edge, so in the last sections (everyday health, the
+// enquiry at 1280x800; the breed section too at 1024x768) "Where you are on the page" showed no
+// current row at all. Every row, once current, must be inside the dial's visible box.
+for (const route of ['/kit-preview/city-page/', LONDON]) {
+  test(`the dial keeps its current row in view on ${route}`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'vp1280', 'the dial shows from 1024');
+    const hidden: string[] = [];
+    let examined = 0;
+    for (const vp of [{ width: 1280, height: 800 }, { width: 1024, height: 720 }]) {
+      await page.setViewportSize(vp);
+      const res = await page.goto(route);
+      expect(res?.status()).toBe(200);
+      await page.evaluate(() => document.fonts.ready);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      const ids = await page.evaluate(() => Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-city-dial-photo-marker] [data-spy]')).map((a) => a.dataset.spy!));
+      for (const id of ids) {
+        // The section's top at 30%: it fills the reading band (or, for the last one, the page ends).
+        const y = await page.evaluate((i) => Math.round(document.getElementById(i)!.getBoundingClientRect().top + scrollY - innerHeight * 0.3), id);
+        await scrollSettled(page, y);
+        const ok = await page.waitForFunction((i) => {
+          const d = document.querySelector<HTMLElement>('[data-city-dial-photo-marker]')!;
+          const cur = d.querySelector<HTMLAnchorElement>('[aria-current="location"]');
+          if (!cur || cur.dataset.spy !== i) return false;
+          const a = d.getBoundingClientRect(), r = cur.getBoundingClientRect();
+          return r.top >= a.top - 1 && r.bottom <= a.bottom + 1;
+        }, id, { timeout: 5_000, polling: 'raf' }).then(() => true, () => false);
+        examined++;
+        if (!ok) hidden.push(await page.evaluate((i) => {
+          const d = document.querySelector<HTMLElement>('[data-city-dial-photo-marker]')!;
+          const cur = d.querySelector<HTMLAnchorElement>('[aria-current="location"]');
+          const a = d.getBoundingClientRect(), r = cur?.getBoundingClientRect();
+          return `${innerWidth}x${innerHeight} ${i}: current [${cur?.dataset.spy}] at ${r ? `${Math.round(r.top)}-${Math.round(r.bottom)}` : '-'}, dial shows ${Math.round(a.top)}-${Math.round(a.bottom)}`;
+        }, id));
+      }
+    }
+    console.log(`dial row in view on ${route}: examined ${examined} row(s)`);
+    expect(examined).toBeGreaterThan(5);
+    expect(hidden).toEqual([]);
+  });
+}
+
 // city-layout-follows-box's `absent` (2026-10-04): London's approved board mounts no puppy sheet
 // and no video panel, and the check reported both "matches no section on the page" at every width.
 // A declared-absent key is not demanded; every other key still is; and a key declared absent that

@@ -47,7 +47,20 @@ const { sections, title = 'Where you are on the page', photo, photoAlt, class: c
   if (dial) {
     const rows = spyRows(dial);
     const links = rows.map((r) => r.link);
-    watchSections(rows.map((r) => r.target), (i) => markCurrent(links, i));
+    // THE DIAL SHOWS THE ROW IT MARKS (impeccable Harden pass 2026-10-06b, F1). The dial scrolls
+    // inside its own box, and on a laptop-height screen its last rows sit below that box's edge, so
+    // the last sections were marked on a row nobody could see. The dial's own box is scrolled (never
+    // the page, so no scrollIntoView), instantly, and only when the row is outside it.
+    const keepInView = (i: number) => {
+      const a = links[i];
+      if (!a || dial.scrollHeight <= dial.clientHeight) return;
+      if (i === 0) { dial.scrollTop = 0; return; } // back at the top, the photo shows again
+      const box = dial.getBoundingClientRect(), row = a.getBoundingClientRect();
+      const pad = 16;
+      if (row.bottom > box.bottom) dial.scrollTop += row.bottom - box.bottom + pad;
+      else if (row.top < box.top) dial.scrollTop -= box.top - row.top + pad;
+    };
+    watchSections(rows.map((r) => r.target), (i) => { markCurrent(links, i); keepInView(i); });
   }
 </script>
 <style>
