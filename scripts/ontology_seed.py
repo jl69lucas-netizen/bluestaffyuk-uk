@@ -90,6 +90,7 @@ HOST_ORG = {
 SKIP_HOSTS = {
     "crufts.org.uk": "a dog show (an event), not an organisation; its organiser is already The Kennel Club",
     "pmc.ncbi.nlm.nih.gov": "PubMed Central, the archive that hosts a study; the study, not the archive, is the source",
+    "maps.google.com": "a map embed the reader loads on a tap (the London map, 2026-10-06), not a cited source; no fact on a page is quoted from it",
 }
 
 # normalised URL -> (id, name, aliases). Only rows whose own text names a law or official rule.

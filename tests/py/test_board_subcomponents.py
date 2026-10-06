@@ -128,6 +128,8 @@ def test_london_records_the_four_pieces_in_their_picked_styles(london):
         "puppy-strip": ("key-takeaways", "C", "The steel pass", f"{SRC} q02"),
         "video-call-checklist": ("deposit-viewing", "B", "Look and listen", f"{SRC} q03"),
         "london-places": ("london-life", "C", "Grouped by who sets the rules", f"{SRC} q04"),
+        # the London map: placement P1 (q01 (a)) in the steel-panel facade S1 (q02 (a))
+        "london-map": ("delivery", "A", "S1 · Steel panel, brass pin", "answer board 2026-10-06-london-map q01"),
     }
     checklist = next(p for p in london["subcomponents"] if p["id"] == "video-call-checklist")
     assert len(checklist["items"]) == 8

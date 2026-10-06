@@ -73,6 +73,7 @@ header name, so a row without a type is reported by `tests/py/test_link_diversit
 | https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/oaks-park | sutton.gov.uk | The London Borough of Sutton's Oaks Park page — its dog-free picnic area | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 | local |
 | https://www.sutton.gov.uk/libraries-museums-parks-and-leisure/parks-trees-and-open-spaces/parks-and-facilities/overton-park | sutton.gov.uk | The London Borough of Sutton's Overton Park page — a recreation ground where dogs are not permitted, guide dogs excepted | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 | local |
 | https://www.rcvs.org.uk/animal-owners/find-a-vet | rcvs.org.uk | The Royal College of Veterinary Surgeons' Find a Vet search — the official register a buyer uses to find a registered vet near them and check that a vet is registered; we name no practice | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-03 · 200 | vet-charity |
+| https://maps.google.com/maps?q=London%2C%20UK&z=10&hl=en&t=m&output=embed&iwloc=near | maps.google.com | Google Maps, the London city centre at zoom 10, as a tap-to-load embed (an iframe, not a citation): it shows where the buyer is, never where we are | `/uk-locations/blue-staffy-puppies-london/` | 2026-10-06 · 301 → 200 (www.google.com/maps/embed) | other |
 
 ## Provenance
 
@@ -128,6 +129,8 @@ headless browser instead and returned 200 at the same URL; that is the only row 
 whose check needed one until the London rows below.
 
 The eight added on 2026-10-03 for `/uk-locations/blue-staffy-puppies-london/` are the London places block and its vet line (answer board 2026-10-03-london-board-revision q04, q06), each the source a fact in `data/city-places/blue-staffy-puppies-london.json` is quoted from. Six returned 200 to `curl` that day. Enfield Council's two answer a plain `curl` with 403, the site's bot filter, so they were checked through a headless fetch instead and returned 200 at the same URLs.
+
+The one added on 2026-10-06 for `/uk-locations/blue-staffy-puppies-london/` is the London map (answer board 2026-10-06-london-map q01, q02): a Google Maps embed of the city centre, built from `data/locations.json` `city`, which the page loads only when the reader taps "Show the map" (`src/components/kit/CityMapFacade.astro`). It is an embed, not a citation, so it is typed `other`. `curl` returned 301 to `www.google.com/maps/embed` and then 200 that day.
 
 That board adds no other row. Every other outside URL the migrated body carried is logged in
 the record's `dropped.links`: an encyclopaedia entry, two image libraries, a North American

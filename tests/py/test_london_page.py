@@ -216,8 +216,15 @@ def test_every_board_link_is_on_the_page_and_no_other_external_link():
     anchors = {(H.unescape(h), text(a)) for h, a in re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', html, re.S)}
     listed = [l for s in BOARD["sections"] for kind in ("internal", "external")
               for l in s.get("links", {}).get(kind, [])]
+    # An EMBED row (the London map, answer board 2026-10-06-london-map q01-q02) is not a body
+    # link: its anchor is the iframe's title, which the tap-to-load facade carries as data-title
+    # beside the URL in data-src (CityMapFacade). Its <noscript> fallback link is the same href.
+    embeds = {(H.unescape(h), H.unescape(t)) for h, t in
+              re.findall(r'<figure\b[^>]*data-city-map[^>]*data-src="([^"]+)"[^>]*data-title="([^"]+)"', html)}
+    assert len(embeds) == 1, embeds
     missing = [(l["href"], l["anchor"]) for l in listed
-               if not any(h == l["href"] and a.startswith(l["anchor"]) for h, a in anchors)]
+               if not any(h == l["href"] and a.startswith(l["anchor"]) for h, a in anchors)
+               and not (l["why"].startswith("EMBED") and (l["href"], l["anchor"]) in embeds)]
     assert missing == []
     external = {h for h, _ in anchors if h.startswith("http")}
     assert external <= {l["href"] for l in listed}, sorted(external)

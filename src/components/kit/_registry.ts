@@ -79,6 +79,8 @@ import CitySignedByline from './CitySignedByline.astro';
 import CityTicketStrip from './CityTicketStrip.astro';
 import CityLookListenChecklist from './CityLookListenChecklist.astro';
 import CityPlacesByPublisher from './CityPlacesByPublisher.astro';
+import CityMapFacade from './CityMapFacade.astro';
+import locationRows from '../../../data/locations.json';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
 import londonPlaces from '../../../data/city-places/blue-staffy-puppies-london.json';
 import londonBoard from '../../../data/boards/blue-staffy-puppies-london.json';
@@ -104,7 +106,9 @@ export type ComponentId =
   | 'city-chapters' | 'city-letter' | 'city-faq-ledger' | 'city-newsletter-notice' | 'city-contact-lineup'
   // The pieces inside a city section (a board's `subcomponents`): London's board revision of
   // 2026-10-03 (answer board 2026-10-03-london-board-revision q01-q04).
-  | 'city-signed-byline' | 'city-ticket-strip' | 'city-look-listen-checklist' | 'city-places-by-publisher';
+  | 'city-signed-byline' | 'city-ticket-strip' | 'city-look-listen-checklist' | 'city-places-by-publisher'
+  // And the London map (answer board 2026-10-06-london-map q01-q02).
+  | 'city-map-facade';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -687,6 +691,15 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
         if (!hit) throw new Error(`the London board lists no link to ${href}`);
         return hit.anchor;
       }, (value) => /\blicen[cs]e\b/i.test(value)),
+    }],
+  },
+  // The map's place is a city row's own `city` (data/locations.json), so the specimen is London's,
+  // with the caption the London page builds from data/settings.json. Nothing loads until a tap.
+  'city-map-facade': {
+    C: CityMapFacade,
+    demo: [{
+      city: (locationRows as { slug: string; city: string }[]).find((r) => r.slug === 'blue-staffy-puppies-london')!.city,
+      caption: `We deliver from ${TOWN} for ${DELIVERY_BAND}, priced by distance, by DEFRA-approved transport, or you collect your puppy from us in ${TOWN}.`,
     }],
   },
 };

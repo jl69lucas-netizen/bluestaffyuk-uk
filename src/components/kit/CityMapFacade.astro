@@ -1,0 +1,131 @@
+---
+// src/components/kit/CityMapFacade.astro: city component 20, the map (London pick: map S1,
+// "Steel panel, brass pin"; answer board 2026-10-06-london-map q02 (a), placed by q01 (a) P1). A
+// click-to-load Google Maps embed of the CITY CENTRE (.claude/skills/bsuk-google-map/SKILL.md,
+// "Template: a UK city page"). The target is the row's `city` from data/locations.json, passed in
+// by the page and never typed. It is never a street, a postcode or coordinates. The map shows where
+// the BUYER is. The caption says where we are (Carlisle) and how the puppy gets there: the delivery
+// band by distance, by DEFRA-approved transport, or collection. No drive time, no mileage, no route
+// line.
+//
+// NOTHING IS REQUESTED FROM GOOGLE UNTIL THE READER TAPS. The panel is drawn from tokens (an
+// abstract contour motif and a brass pin, inline SVG), never a Static Maps image, so the page makes
+// no third-party request and sets no third-party cookie at load (the Known Issue 38 trade-off, met
+// here the way working rule 14 meets it for video). On a tap the iframe takes the panel's reserved
+// box, so nothing below it moves. The button is a real <button> (44px, keyboard, focus ring), and
+// focus moves into the map once it is in place. tests/render/city-kit.spec.ts holds all of it.
+import type { HTMLAttributes } from 'astro/types';
+import { TOWN } from '../../lib/cityKit';
+import '../../styles/city.css';
+
+type Props = HTMLAttributes<'figure'> & {
+  /** data/locations.json `city` for this page's row. */
+  city: string;
+  /** The delivery caption, built by the page from data/settings.json. */
+  caption: string;
+  /** Google's zoom: 10 shows a whole city. */
+  zoom?: number;
+};
+const { city, caption, zoom = 10, class: cls, ...rest } = Astro.props;
+// The two hub rows are city "UK" and never carry a city map (the skill's rule).
+if (!city || city === 'UK') throw new Error('CityMapFacade: a hub row ("UK") never carries a city map');
+const src = `https://maps.google.com/maps?q=${encodeURIComponent(`${city}, UK`)}&z=${zoom}&hl=en&t=m&output=embed&iwloc=near`;
+const title = `${city} — delivery from BlueStaffyUK in ${TOWN}`;
+const noteId = `map-note-${city.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+---
+<figure {...rest} class:list={['city-kit', 'city-map', cls]} data-city-map data-src={src} data-title={title}>
+  <div class="stage">
+    <svg class="art" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor">
+        <path d="M-20 168C50 132 104 190 168 160S262 98 324 132 396 156 430 124" stroke-width="14" opacity=".45" stroke-linecap="round" />
+        <g stroke-width="1.2" opacity=".75">
+          <ellipse cx="200" cy="112" rx="60" ry="44" /><ellipse cx="200" cy="112" rx="112" ry="80" />
+          <ellipse cx="200" cy="112" rx="170" ry="118" /><ellipse cx="200" cy="112" rx="232" ry="160" />
+        </g>
+      </g>
+    </svg>
+    <svg class="pin" viewBox="0 0 32 42" aria-hidden="true" focusable="false">
+      <path class="body" d="M16 1.5C8 1.5 1.5 7.9 1.5 15.8 1.5 26.6 16 40.5 16 40.5s14.5-13.9 14.5-24.7C30.5 7.9 24 1.5 16 1.5z" />
+      <circle class="dot" cx="16" cy="15.6" r="5.4" />
+    </svg>
+    <span class="place">{city}</span>
+    <button type="button" class="load" data-city-map-load aria-describedby={noteId}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z" /><path d="M8 2v16M16 6v16" /></svg>
+      Show the map
+    </button>
+  </div>
+  <figcaption>
+    <p class="cap">{caption}</p>
+    <p class="note" id={noteId}>Nothing loads from Google until you tap. Showing the map loads Google Maps, which sets its own cookies.</p>
+  </figcaption>
+  <noscript><p class="note"><a href={src} target="_blank" rel="noopener noreferrer">Open the map of {city} on Google Maps</a></p></noscript>
+</figure>
+
+<script>
+  // ONE DELEGATED LISTENER for the document (VideoEmbed's pattern): the map's iframe is made
+  // only here, on a tap, so Google is never asked for anything at load.
+  document.addEventListener('click', (event) => {
+    const button = (event.target as Element | null)?.closest?.('[data-city-map-load]');
+    if (!button) return;
+    const fig = button.closest('[data-city-map]') as HTMLElement | null;
+    const stage = fig?.querySelector('.stage');
+    if (!fig || !stage) return;
+    const frame = document.createElement('iframe');
+    frame.src = fig.dataset.src ?? '';
+    frame.title = fig.dataset.title ?? 'Map';
+    frame.loading = 'lazy';
+    frame.referrerPolicy = 'no-referrer-when-downgrade';
+    frame.allowFullscreen = true;
+    stage.classList.add('live');
+    stage.replaceChildren(frame);
+    fig.toggleAttribute('data-loaded', true);
+    // The button that had focus has gone; without this the reader is returned to the top.
+    frame.focus();
+  });
+</script>
+
+<style>
+  @layer components {
+    /* Inside CityChapters' text column, whose `.txt p` rule is (0,2,1): every rule here carries
+       the figure's class, so the scoped selectors win without !important. The root is a city-kit
+       root, so src/styles/city.css makes it the box its tier edges read. */
+    .city-map { margin: var(--space-4) 0; min-width: 0; }
+    /* THE RESERVED BOX: 4:3 in a narrow column, 16:9 from the kit's tablet edge, never taller than
+       300px (the 1280 answer cap: at 360px the delivery answer had 21px left under 1.6 viewports;
+       at 300px it has 81px, measured 2026-10-06). From a 400px box the cap decides the height at
+       either ratio, so the preview's 560px switch and the kit's 640px tier edge paint the same box.
+       The iframe takes this same box on a tap. */
+    .city-map .stage {
+      position: relative; isolation: isolate; display: grid; place-items: center; align-content: center;
+      gap: var(--space-3); width: 100%; aspect-ratio: 4 / 3; max-height: 300px; overflow: hidden;
+      border-radius: var(--radius-md); background: var(--color-surface-inverse); color: var(--color-text-on-inverse);
+      box-shadow: var(--shadow-card);
+    }
+    @container (width >= 640px) { .city-map .stage { aspect-ratio: 16 / 9; } }
+    .city-map .art { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; color: var(--color-brand-mid); }
+    .city-map .pin { display: block; width: 40px; height: 52px; }
+    .city-map .pin .body { fill: var(--color-cta); }
+    .city-map .pin .dot { fill: var(--color-surface-inverse); }
+    .city-map .place {
+      display: block; font-family: var(--font-display); font-weight: 600; font-size: var(--text-xl);
+      line-height: 1.1; letter-spacing: 0.01em; color: var(--color-text-on-inverse);
+    }
+    /* rules/design.md rule 3: the CTA pill. */
+    .city-map .load {
+      display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+      min-height: 44px; padding: var(--space-2) 22px; border: 0; border-radius: var(--btn-radius);
+      background: var(--color-cta); color: var(--color-cta-ink); font: inherit; font-weight: 700; line-height: 1.25;
+      box-shadow: var(--shadow-card); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    .city-map .load svg { width: 18px; height: 18px; flex: none; }
+    .city-map .load:hover { background: var(--color-cta-hover); }
+    /* On the steel panel the ring is brass (tokens.css: steel on steel would disappear). */
+    .city-map .load:focus-visible { outline: 3px solid var(--color-focus-on-inverse); outline-offset: 3px; }
+    .city-map .stage.live { background: var(--color-bone-50); }
+    /* The iframe is made by the script, so it has no scope attribute: :global. */
+    .city-map .stage :global(iframe) { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0; }
+    .city-map .cap { margin: var(--space-3) 0 0; font-size: var(--text-sm); line-height: 1.5; color: var(--color-ink-2); }
+    .city-map .note { margin: var(--space-1) 0 0; font-size: var(--text-xs); line-height: 1.4; color: var(--color-ink-2); }
+    @media (prefers-reduced-motion: reduce) { .city-map .load { transition: none; } }
+  }
+</style>

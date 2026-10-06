@@ -69,6 +69,7 @@ import CitySignedByline from '../../components/kit/CitySignedByline.astro';
 import CityTicketStrip from '../../components/kit/CityTicketStrip.astro';
 import CityLookListenChecklist, { type CheckPane } from '../../components/kit/CityLookListenChecklist.astro';
 import CityPlacesByPublisher from '../../components/kit/CityPlacesByPublisher.astro';
+import CityMapFacade from '../../components/kit/CityMapFacade.astro';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
 import { BOY_PRICE, DELIVERY_BAND, DEPOSIT, GIRL_PRICE, TOWN, availablePuppies, chapterBesideSizes, chapterTextSizes, chapterWideSizes, depositBrief, depositLine, faqPageNode, guaranteeRow } from '../../lib/cityKit';
 import { coverSentenceOf, guaranteeWords, type GuaranteeSettings } from '../../lib/guarantee';
@@ -538,6 +539,11 @@ const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
       <p>A secure carrier or crate, a blanket, water and a towel, and time for short stops on the way.</p>
     </Fragment>
     <Fragment slot="ch-3">
+      {/* The London map (answer board 2026-10-06-london-map q01 (a) P1, q02 (a) S1; subcomponent
+          london-map): the city centre from the row's `city`, a tap-to-load facade, the delivery
+          caption from data/settings.json. */}
+      <CityMapFacade city={loc.city}
+        caption={`We deliver from ${TOWN} for ${DELIVERY_BAND}, priced by distance, by DEFRA-approved transport, or you collect your puppy from us in ${TOWN}.`} />
       <p>Puppies from {BREEDER} have gone to {PAST_DELIVERIES} before. London buyers take home delivery, and handovers are by request, so ask us when you enquire.</p>
       <p><a href="/uk-locations/staffy-puppies-for-sale-essex/">Buyers in Essex</a> have their own page. <a href="/uk-locations/blue-staffy-puppies-oxford/">Our page for Oxford families</a> is another. <a href="/uk-locations/buy-blue-staffy-puppy-coventry-area/">Coventry and the surrounding area</a> has one. <a href="/uk-locations/blue-staffy-puppies-for-sale-in-leicester/">Leicester readers</a> do too. <a href="/uk-locations/">The other UK cities we have written about</a> are listed together.</p>
     </Fragment>

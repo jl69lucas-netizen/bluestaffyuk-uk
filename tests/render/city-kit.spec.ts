@@ -853,3 +853,55 @@ test('every phone infographic keeps its reserved box once its file loads', async
     }
   }
 });
+
+// THE LONDON MAP (answer board 2026-10-06-london-map q01 (a) P1, q02 (a) S1; CityMapFacade, C20):
+// a tap-to-load facade. Nothing is asked of any host but the site's own before the tap (the Known
+// Issue 38 trade-off, met as working rule 14 meets it for video); the button is a real 44px
+// control a keyboard reaches; and the tap puts the city-centre iframe into the reserved box, with
+// its title, loading=lazy and referrerpolicy, without moving the answer that holds it. The query
+// and the title are read from data/locations.json and data/settings.json, never typed here.
+const LONDON_ROW = (JSON.parse(readFileSync(new URL('../../data/locations.json', import.meta.url), 'utf8')) as { slug: string; city: string }[])
+  .find((r) => r.slug === 'blue-staffy-puppies-london')!;
+const TOWN_NAME = (JSON.parse(readFileSync(new URL('../../data/settings.json', import.meta.url), 'utf8')) as { address: { city: string } }).address.city;
+test('the London map asks nothing of Google until a tap, then loads the city centre in its own box', async ({ page, baseURL }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp375' && testInfo.project.name !== 'vp1280', 'a phone and a desktop width');
+  const site = new URL(baseURL!).host;
+  const offsite: string[] = [];
+  page.on('request', (r) => { const u = new URL(r.url()); if (/^https?:$/.test(u.protocol) && u.host !== site) offsite.push(r.url()); });
+  // The tap's request is answered here, so the test never depends on Google being reachable.
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>map</title>' }));
+  const res = await page.goto(LONDON, { waitUntil: 'load' });
+  expect(res?.status()).toBe(200);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForLoadState('networkidle');
+  expect(offsite, 'a request left the site before the tap').toEqual([]);
+  const offsiteAtLoad = offsite.length;
+  const fig = page.locator('[data-city-map]');
+  expect(await fig.count(), 'London carries one map').toBe(1);
+  expect(await fig.evaluate((el) => !!el.closest('#delivery')), 'the map sits in the delivery section (P1)').toBe(true);
+  const btn = fig.locator('[data-city-map-load]');
+  await btn.scrollIntoViewIfNeeded();
+  const box = await btn.boundingBox();
+  expect(box && box.height >= 44, `the button is ${box?.height}px tall (44 min)`).toBe(true);
+  expect(await btn.evaluate((b) => b.tagName === 'BUTTON' && (b as HTMLButtonElement).tabIndex >= 0 && !(b as HTMLButtonElement).disabled)).toBe(true);
+  await btn.focus();
+  expect(await btn.evaluate((b) => document.activeElement === b), 'a keyboard reaches the button').toBe(true);
+  const stage = fig.locator('.stage');
+  const answer = fig.locator('xpath=ancestor::*[contains(concat(" ", normalize-space(@class), " "), " ch ")][1]');
+  const before = { stage: (await stage.boundingBox())!.height, answer: (await answer.boundingBox())!.height };
+  expect(before.stage, 'the reserved box is at most 300px tall').toBeLessThanOrEqual(300.5);
+  await btn.click();
+  const frame = fig.locator('.stage iframe');
+  await expect(frame).toHaveCount(1);
+  const attrs = await frame.evaluate((f) => ({ src: f.getAttribute('src'), title: f.getAttribute('title'),
+    loading: f.getAttribute('loading'), ref: f.getAttribute('referrerpolicy'), focused: document.activeElement === f }));
+  console.log(`london map @ ${testInfo.project.name}: offsite before tap ${offsiteAtLoad}, after ${offsite.length}, button ${box?.height}px, box ${before.stage}px, after tap ${JSON.stringify(attrs)}`);
+  expect(attrs.src).toBe(`https://maps.google.com/maps?q=${encodeURIComponent(`${LONDON_ROW.city}, UK`)}&z=10&hl=en&t=m&output=embed&iwloc=near`);
+  expect(attrs.title).toBe(`${LONDON_ROW.city} — delivery from BlueStaffyUK in ${TOWN_NAME}`);
+  expect(attrs.loading).toBe('lazy');
+  expect(attrs.ref).toBe('no-referrer-when-downgrade');
+  expect(attrs.focused, 'focus moves into the map').toBe(true);
+  const after = { stage: (await stage.boundingBox())!.height, answer: (await answer.boundingBox())!.height };
+  expect(Math.abs(after.stage - before.stage), 'the iframe takes the reserved box').toBeLessThanOrEqual(1);
+  expect(Math.abs(after.answer - before.answer), 'nothing below the map moves').toBeLessThanOrEqual(1);
+});

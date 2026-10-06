@@ -27,7 +27,9 @@ CITY_IDS = ["city-hero-filmstrip", "city-price-scale", "city-trust-ledger", "cit
             "city-chapters", "city-letter", "city-faq-ledger", "city-newsletter-notice", "city-contact-lineup",
             # The pieces INSIDE a city section (a board's `subcomponents`, block 6b), after the
             # fifteen picks: London's board revision of 2026-10-03, answer board q01-q04.
-            "city-signed-byline", "city-ticket-strip", "city-look-listen-checklist", "city-places-by-publisher"]
+            "city-signed-byline", "city-ticket-strip", "city-look-listen-checklist", "city-places-by-publisher",
+            # And the London map, answer board 2026-10-06-london-map q01-q02.
+            "city-map-facade"]
 
 
 def load():

@@ -1108,7 +1108,15 @@
             "why": "docs/research/london-page-run/links-plan.md: Row 9 · nearby line · hub link for any reader outside London. Resolves today: yes — src/pages/uk-locations/index.astro"
           }
         ],
-        "external": []
+        "external": [
+          {
+            "href": "https://maps.google.com/maps?q=London%2C%20UK&z=10&hl=en&t=m&output=embed&iwloc=near",
+            "anchor": "London — delivery from BlueStaffyUK in Carlisle",
+            "anchor_type": "branded",
+            "library_row": "https://maps.google.com/maps?q=London%2C%20UK&z=10&hl=en&t=m&output=embed&iwloc=near",
+            "why": "EMBED, not a body link. The London map (subcomponent london-map): an iframe whose title is the anchor, loaded only when the reader taps 'Show the map' (no request to Google before the tap). The without-JavaScript fallback is a <noscript> link to the same URL, worded 'Open the map of London on Google Maps'. Purpose: shows where the buyer is (London city centre, zoom 10, from data/locations.json city). It never implies BlueStaffyUK is in London; the caption names Carlisle. No route, mileage or drive time. Resolves today: yes. Checked 2026-10-06: 301 to www.google.com/maps/embed, then 200, and the map painted in the preview at 375 and 1280 (docs/reports/london-map-preview-2026-10-06/)."
+          }
+        ]
       },
       "options": {
         "candidates": [
@@ -3248,7 +3256,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "f01f58953b2b263c00d25a0d7f6a604a7eaa4aa07abb8872b271445627fdb5fe",
+    "record_hash": "c81e1759c080a424e21ab8d02907cf9bfb261c5ff7749ea7889973596473969f",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3268,7 +3276,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-05T23:01:25Z",
+    "reapproved_at": "2026-10-06T00:05:47Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3444,6 +3452,16 @@
           "/board_revisions/37",
           "/board_revisions/38",
           "/board_revisions/39"
+        ]
+      },
+      {
+        "at": "2026-10-06T00:05:47Z",
+        "reason": "London map added on the breeder's picks (answer board 2026-10-06-london-map q01 (a) placement P1, q02 (a) facade S1): subcomponents[london-map], one delivery external link (the Google Maps embed, library row type other), two board_revisions rows. No pick, menu, figure or section id changes.",
+        "changed_paths": [
+          "/board_revisions/40",
+          "/board_revisions/41",
+          "/sections/8/links/external/0",
+          "/subcomponents/4"
         ]
       }
     ]
@@ -3627,6 +3645,28 @@
         "https://www.rcvs.org.uk/animal-owners/find-a-vet"
       ],
       "note": "Left out on purpose: facts that are not about dogs (park sizes, toilets, a postal address), the file's general rules list, and any borough the sources do not name. Each publisher is linked once in its group header (8 links, not 12)."
+    },
+    {
+      "id": "london-map",
+      "section": "delivery",
+      "node": "tree[2]",
+      "heading": "Which Way Does My Staffordshire Puppy Travel to London?",
+      "name": "London map (tap to load)",
+      "placement": "in answer 3, after its opening paragraph (…from Enfield in the north to Sutton in the south.) and before the past-deliveries paragraph, at the text column's width",
+      "style": {
+        "pick": "A",
+        "name": "S1 · Steel panel, brass pin",
+        "preview": "docs/reports/london-map-preview-2026-10-06/index.html"
+      },
+      "source": "answer board 2026-10-06-london-map q01",
+      "data": [
+        "data/locations.json row blue-staffy-puppies-london `city` (the map query 'London, UK', zoom 10)",
+        "data/settings.json address.city, delivery_min_gbp, delivery_max_gbp (the caption, via src/lib/cityKit.ts TOWN and DELIVERY_BAND)"
+      ],
+      "condition": "the facade always renders; the iframe exists only after a tap. No Static Maps image, no street, postcode or coordinates, no route line, no drive time or mileage.",
+      "links": [
+        "https://maps.google.com/maps?q=London%2C%20UK&z=10&hl=en&t=m&output=embed&iwloc=near"
+      ]
     }
   ],
   "board_revisions": [
@@ -4043,6 +4083,24 @@
       "record_change": "none: component CSS (src/components/kit/CityTicketStrip.astro .grid, the >=800px three-column rule removed)",
       "sections": [
         "key-takeaways"
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "source": "answer board 2026-10-06-london-map q01",
+      "decision": "q01 (a), placement P1: the London map goes in the delivery chapter, answer 3, after its opening paragraph (…from Enfield in the north to Sutton in the south.) and before the past-deliveries paragraph. Click-to-load. Rulings: docs/reference/answer-board/answers/2026-10-06-london-map-2026-10-06.md; proposal docs/reports/london-map-preview-2026-10-06/.",
+      "record_change": "subcomponents[london-map]; delivery.links.external + one library row (Google Maps embed, type other); component C20 city-map-facade",
+      "sections": [
+        "delivery"
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "source": "answer board 2026-10-06-london-map q02",
+      "decision": "q02 (a), facade S1: the map before a tap is a steel panel with a brass pin and the city's name (style A of three in the preview), drawn from tokens with no Static Maps image, so nothing loads from Google until the reader taps. Rulings: docs/reference/answer-board/answers/2026-10-06-london-map-2026-10-06.md; proposal docs/reports/london-map-preview-2026-10-06/.",
+      "record_change": "subcomponents[london-map].style (pick A, S1 · Steel panel, brass pin); component CSS src/components/kit/CityMapFacade.astro",
+      "sections": [
+        "delivery"
       ]
     }
   ]

@@ -53,6 +53,7 @@ record beside it.
 Exit: 0 clean, 1 any page out of parity, 2 cannot run (no dist/, no record).
 """
 import argparse
+import html as _html
 import json
 import pathlib
 import re
@@ -127,8 +128,10 @@ def _strip_chrome(html):
 
 
 def _hrefs(html):
-    """Every destination href in a fragment. Same-page jumps are not destinations."""
-    return [h for h in (a.strip() for a in ANCHOR.findall(html))
+    """Every destination href in a fragment. Same-page jumps are not destinations. An attribute
+    value is HTML, so `&amp;` is unescaped to the `&` the URL carries (the London map's query
+    string, 2026-10-06): read raw, one link was reported as an extra AND as a missing one."""
+    return [h for h in (_html.unescape(a.strip()) for a in ANCHOR.findall(html))
             if h and not h.startswith("#")]
 
 

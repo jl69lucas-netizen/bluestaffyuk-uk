@@ -57,6 +57,15 @@ def test_mailto_is_a_link_and_is_not_exempt():
     assert L.page_links(page) == ["mailto:x@example.com"]
 
 
+def test_an_href_is_read_as_the_url_it_encodes_not_its_html_escaping():
+    """An attribute value is HTML: `&amp;` in an href IS `&` in the URL. The London map's
+    <noscript> link (CityMapFacade, 2026-10-06) is a query string with four `&`s, which Astro
+    writes `&amp;`; read raw, the page's link and the record's link were two different strings,
+    and the gate reported the one link twice, as an extra and as a missing one."""
+    page = '<main><p><a href="https://maps.google.com/maps?q=London%2C%20UK&amp;z=10&amp;t=m">x</a></p></main>'
+    assert L.page_links(page) == ["https://maps.google.com/maps?q=London%2C%20UK&z=10&t=m"]
+
+
 def test_dropped_links_are_read_off_the_front_of_the_line():
     rec = {"dropped": {"links": [
         '/uk-locations/staffy-breeding-dogs-glasgow/ ("meet our breeders") — the outreach '

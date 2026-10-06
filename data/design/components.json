@@ -35,5 +35,6 @@
   {"id": "city-signed-byline", "file": "CitySignedByline.astro", "title": "C16 · City byline (signed rule)", "board_width": 640, "project": 5, "subcomponent": "byline"},
   {"id": "city-ticket-strip", "file": "CityTicketStrip.astro", "title": "C17 · City puppy strip (ticket strip)", "board_width": 1280, "project": 5, "subcomponent": "puppy-strip"},
   {"id": "city-look-listen-checklist", "file": "CityLookListenChecklist.astro", "title": "C18 · City video-call checklist (look and listen)", "board_width": 1280, "project": 5, "subcomponent": "video-call-checklist"},
-  {"id": "city-places-by-publisher", "file": "CityPlacesByPublisher.astro", "title": "C19 · City places (grouped by who sets the rules)", "board_width": 1280, "project": 5, "subcomponent": "london-places"}
+  {"id": "city-places-by-publisher", "file": "CityPlacesByPublisher.astro", "title": "C19 · City places (grouped by who sets the rules)", "board_width": 1280, "project": 5, "subcomponent": "london-places"},
+  {"id": "city-map-facade", "file": "CityMapFacade.astro", "title": "C20 · City map (tap to load)", "board_width": 1280, "project": 5, "subcomponent": "london-map"}
 ]

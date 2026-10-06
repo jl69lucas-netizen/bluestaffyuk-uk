@@ -15,9 +15,12 @@ allowed-tools: [Read, Write, Bash]
 ## When a page carries a map
 
 A map is an outside embed, so it is on the page's approved board or it is not built
-(`CLAUDE.md` rule 12). No rebuilt page carries one today, and the location frame in
-`docs/reference/location-page-template.md` has none: a city page gets a map only when its
-board adds it as a body section. The homepage's migrated map encoded the former street
+(`CLAUDE.md` rule 12). One rebuilt page carries one: London
+(`/uk-locations/blue-staffy-puppies-london/`), whose delivery answer 3 mounts
+`src/components/kit/CityMapFacade.astro` (C20 `city-map-facade`, board subcomponent `london-map`,
+answer board 2026-10-06-london-map q01-q02), a tap-to-load facade that asks nothing of Google
+until the reader taps. The location frame in `docs/reference/location-page-template.md` has none:
+a city page gets a map only when its board adds it, as a body section or a piece inside one. The homepage's migrated map encoded the former street
 address and was dropped (Known Issue 16); the same address is still in the migrated body of
 `/uk-locations/staffy-breeding-dogs-glasgow/` (Known Issue 55) and is never carried into
 its rebuild.
