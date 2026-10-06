@@ -1,0 +1,40 @@
+{
+ "fetched": "2026-10-07",
+ "slug": "blue-staffy-puppies-manchester-uk",
+ "tool": "Firecrawl MCP firecrawl_search, sources web, 4 calls (2 credits each; the account reported low credits)",
+ "ledger": "python3 scripts/thread_ledger.py --known: all 8 threads in data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json are 'reuse' (read 2026-09-23); the 11 new candidates below are 'fetch' (not in the ledger)",
+ "status": "search results only; NOT FETCHED — no new thread could be opened: www.reddit.com answered the Playwright MCP browser with HTTP 403 'You've been blocked by network security' (js_challenge URL) on https://www.reddit.com/r/manchester/comments/1irizjb/does_someone_recommend_a_good_bulldog_breeder/, and curl with a desktop-browser user agent got Reddit's JavaScript challenge page (www) and a 302 (old.reddit.com); Firecrawl scrape refuses reddit.com (skill Step B). The challenge was not solved or bypassed. threads.json is unchanged.",
+ "queries": [
+  {
+   "query": "site:reddit.com blue staffy puppy manchester",
+   "candidates": [
+    "https://www.reddit.com/r/manchester/comments/9cpwm9/some_pictures_of_my_blue_staffordshire_bull/",
+    "https://www.reddit.com/r/StaffordBullTerriers/comments/1hq4v71/honest_truth/",
+    "https://www.reddit.com/r/manchester/comments/1nmn5rv/dog_adoption/"
+   ]
+  },
+  {
+   "query": "site:reddit.com staffy puppy breeder manchester OR salford OR stockport OR bolton",
+   "candidates": [
+    "https://www.reddit.com/r/StaffordBullTerriers/comments/1efaa7k/scam_alert_charming_staffordshire_is_a_scam/"
+   ]
+  },
+  {
+   "query": "site:reddit.com/r/manchester puppy breeder OR \"buying a puppy\" OR staffy",
+   "candidates": [
+    "https://www.reddit.com/r/manchester/comments/ttv2wz/dog_breeders_manchester/",
+    "https://www.reddit.com/r/manchester/comments/h8cnx3/where_to_find_unwanted_puppies/",
+    "https://www.reddit.com/r/manchester/comments/ctzotk/ethical_places_to_adoptbuy_a_puppy_in_manchester/",
+    "https://www.reddit.com/r/manchester/comments/1irizjb/does_someone_recommend_a_good_bulldog_breeder/",
+    "https://www.reddit.com/r/manchester/comments/xbgsfa/abandoned_dog_queens_park_harpurhey/",
+    "https://www.reddit.com/r/manchester/comments/ydwiuw/do_not_buy_from_manchester_pets_and_aquatics/",
+    "https://www.reddit.com/r/manchester/comments/1e80tyx/so_many_xl_bullies_have_made_me_scared_of_running/"
+   ]
+  },
+  {
+   "query": "staffy puppy breeder deposit viewing advice forum UK \"Manchester\" -reddit",
+   "candidates": [],
+   "note": "no UK dog-forum thread on topic; the one buyer post found is in a Facebook group (https://www.facebook.com/groups/1522879984620018/posts/3837343166507010/): NOT FETCHED — Facebook groups are unreachable by every rung (skill Step B)"
+  }
+ ]
+}
