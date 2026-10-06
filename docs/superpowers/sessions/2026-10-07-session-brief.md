@@ -1,0 +1,79 @@
+# Session Brief — 2026-10-07
+
+> **Status:** READY — interview complete (grill-me `--brief`: the user's chat message of 2026-10-07 is the brief; the repo answered the rest, so no question was left to ask).
+> **Last updated:** 2026-10-07
+
+## Q&A Log (Verbatim)
+
+**Brief (user, chat, 2026-10-07):** "We work on the Next page, invoke all the skills and agents needed for these job, i want to see them and add them visually to the BSUK route mod, and will all the BSUK mods from the other sessions work here. START WITH SPRINT 0 RESEARCH PRIMARY, secondary KEYWORDS, all categories, Fan-out-, INTENT SLIT, strategies, give SAME DELIVERABLEs on the boards. Check the workflow, boards, gates/stop, skills/agents and make sure all of them are fine for the next page, etc"
+
+**Q1 — Outcome (from the brief):** Sprint 0 research for the next city, with the same deliverables London's research board carried, ending at STOP 1 (the research board).
+**Q2/Q3 — Traffic / worst performer:** NOT FETCHED — GSC property unverified (domain expired); no exports on disk (Known Issue 14, `data/page-map.json`). The page comes from the approved build order instead.
+**Q5 — Constraints:** the standing rules only (CLAUDE.md working rules 1–17; never push; locked facts from `data/settings.json`, `data/puppies.json`, `data/price-matrix.json`).
+**Q6 — Target (from the repo):** `/uk-locations/blue-staffy-puppies-manchester-uk/` — row 2 of Strategy A's build order (`docs/superpowers/sessions/2026-09-25-location-pages-strategy.md`, Concrete Artifact), after London. Keyword-gap 10 (3+2+3+2) high; matrix city 11/20.
+**Q7 — Done (this session):** the Manchester research board published as an Artifact with copy buttons and `.md`, its picks posted as one answer-board batch (STOP 1). The run stops there until the user picks.
+**Q8 — Reader:** the ranked buyer fears (scam / deposit, licensing, puppy farm, sick puppy, support, cost), for a Greater Manchester buyer 120 miles from Carlisle.
+**Q9 — Benchmark:** London, our own closed page (`/uk-locations/blue-staffy-puppies-london/`, gate PASS 88a80f39) — its research board is the deliverable to match.
+**Q10–Q12 — Framework, AIO, visuals:** not asked here — they are research-board picks (row 8) and outline rows (row 9), chosen by the user at STOP 1 and STOP 2.
+**Q13 — Repeat / avoid (from the 2026-09-30 brief's What's Next and `docs/reference/lessons.md`):** run Known Issue 99 (calibrate `budgets.location`) before Manchester's STOP 3, from Manchester's and London's top-5 competitor pages; run `python3 scripts/dup_content_audit.py --headers` straight after the first build (lessons 18); read every image with words as copy (lessons 7); check every alt against its image at the Asset Gate (lessons 8); check buyer advice against our own facts before the outline (lessons 9); own components per page (London's fifteen are London's).
+**Q14 — Urgency:** none stated.
+
+## Decisions Log
+
+- Next page is Manchester (Strategy A row 2). Branch `manchester-page`, cut from `foundation` at 15236191, in the main checkout.
+- grill-me run in `--brief` mode from the chat message; framework, AIO and visual choices go to the research board and outline as picks.
+- Manchester's question file (`data/queries/blue-staffy-puppies-manchester-uk.json`) is from 2026-09-23, before London's format: it has no `word_target`, no keyword volumes, no neighbourhood terms and no backlinks. Row 5 refreshes it through the spend guard (counted $0.51 of the $1.00 total cap; London's refresh cost $0.22).
+- The route mod (`tools/claude-mods/bsuk-route`) now shows each row's skills and agents from page-run.md, ticked as they run (5e99d0ea); the three mods were copied into this session's dev-mods folder.
+
+## Open Flags
+
+- **Workflow check — grill-me's description says "Run AFTER Sprint 0 intelligence is complete"**, while page-run row 1 runs it first at session open. The run follows page-run.md; the skill's description should say so.
+- **Workflow check — row 11 (Asset Gate) names no image skill** (`bsuk-image-generation`, `bsuk-photo-ingest`, `image-metadata`), so the route map shows none there.
+- **Known Issue 99** blocks Manchester's gate:page; it is calibrated after row 5 fetches Manchester's competitor pages, before STOP 3.
+- **Audit:** the page is a 5-word noindex stub, so `@bsuk-content-audit-agent` adds little (as London); the research board covers intent and gaps.
+- **LLM visibility:** not cited — chatgpt, 2026-09-25 (`docs/research/llm-intel/blue-staffy-puppies-manchester-uk-2026-09-25.json`, provisional: question-file source). Refreshed at row 5.
+- **Hub:** `/uk-locations/` is built (Known Issue 86: its body does not link the indexable city pages).
+
+---
+<!-- Synthesized fields below are filled in at finalization, from the Q&A Log above. -->
+
+## Business Focus
+Turn the second most contested city stub into a real one-breeder Manchester page, beating the marketplace town pages (Pets4Homes, Staffie Owners, Gumtree, Freeads, Puppies.co.uk) that hold the SERP today.
+
+## SESSION CONTEXT
+- Page Type: location
+- Target Keyword: blue staffy puppies manchester (the question file's primary; the strategy row's target is "staffordshire bull terrier puppies for sale in manchester greater manchester")
+- Framework: research-board pick (STOP 1)
+- Framework Reason: research-board pick (STOP 1)
+- AIO / GEO Approach: research-board pick (STOP 1)
+- AIO Notes: not cited by chatgpt (2026-09-25); refreshed at row 5
+- Component Style: own components per page (`rules/design.md` `own-components-per-page`), chosen after STOP 2
+- Visual Plan: outline rows (STOP 2), then the Asset Gate (STOP 4)
+- Audit Status: not needed — stub (see Open Flags)
+- LLM Visibility: not cited — chatgpt, 2026-09-25
+- Structure.json Entry: city spoke → `/uk-locations/`, listing, buying guide (strategy row)
+- Hub Page: /uk-locations/
+- Internal Links Needed: TBD at the outline (row 9) and the board (rule 12)
+
+## Today's Target
+- Page: /uk-locations/blue-staffy-puppies-manchester-uk/
+- Goal: Sprint 0 research and the research board (STOP 1)
+- Reader: a Greater Manchester buyer afraid of a deposit scam and a farmed or sick puppy
+- Benchmark: London's research board
+
+## Constraints
+- **CONSTRAINT:** never push (working rule 3); commit after every task.
+- **CONSTRAINT:** no fabricated figures — anything not fetched is `NOT FETCHED — <barrier>` (working rule 9).
+- **CONSTRAINT:** paid fetches only through the spend guard (`scripts/query_augment.py`).
+
+## Repeat / Avoid
+- Repeat: London's research-board deliverable, section for section; every visual choice previewed.
+- Avoid: London's escapes in `docs/reference/lessons.md` (entries 7, 8, 9, 18, 19 above all).
+
+## Urgency
+None stated.
+
+## Recommended Next Steps
+`superpowers:writing-plans` (Manchester's plan) → `bsuk-location-page-builder` → `python3 scripts/page_run_record.py blue-staffy-puppies-manchester-uk session-open --builder bsuk-location-page-builder` → page-run rows 2–8.
+
+## What's Next
