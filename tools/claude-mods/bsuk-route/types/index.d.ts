@@ -1,4 +1,6 @@
-export type Row = { row: number; name: string; phase: string; state: 'done' | 'now' | 'todo'; stop: number | null; evidence: string }
+export type Tools = { skills: string[]; agents: string[]; scripts: string[]; npm: string[] }
+
+export type Row = { row: number; name: string; phase: string; state: 'done' | 'now' | 'todo'; stop: number | null; evidence: string; tools?: Tools }
 
 export type Route = {
   slug: string
@@ -17,6 +19,6 @@ export type Route = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'bsuk-route': { route: Route | null; error: string | null; now: number }
+    'bsuk-route': { route: Route | null; error: string | null; now: number; skillsUsed: Record<string, number> }
   }
 }

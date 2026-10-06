@@ -11,6 +11,7 @@ nothing else, so the mod never decides anything itself.
   python3 scripts/pipeline_status.py                                   # the newest page board
 """
 import json
+import re
 import pathlib
 import subprocess
 import sys
@@ -120,8 +121,94 @@ def evidence(slug, root=ROOT):
     }, {"page_written": built}
 
 
+PLUGIN_SKILL = re.compile(r"`((?:superpowers|impeccable|frontend-design|compound-engineering):[a-z0-9-]+)`")
+BACKTICK = re.compile(r"`@?([a-z][a-z0-9-]*[a-z0-9])(\*)?`")
+BSUK_NAME = re.compile(r"(?<![\w./-])@?(bsuk-[a-z0-9_-]*[a-z0-9])(?![\w-])(?!\.\w|/)")
+SCRIPT_PATH = re.compile(r"(?<![\w./-])scripts/([\w.-]+\.(?:py|mjs|sh|js))")
+NPM_NAME = re.compile(r"\bnpm run (?:(?:-s|--silent) )?([\w:-]+)")
+
+
+def row_tools(root=ROOT):
+    """{row: {skills, agents, scripts, npm}} read from docs/reference/page-run.md.
+
+    A row's text is its table line plus its "### Row N steps" section, so the map shows what
+    the run doc names and nothing else; check:workflow already proves each name exists."""
+    doc = root / "docs" / "reference" / "page-run.md"
+    try:
+        lines = doc.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return {}
+    agents = {p.stem for p in (root / ".claude" / "agents").glob("*.md")}
+    skills = {p.name for p in (root / ".claude" / "skills").iterdir() if (p / "SKILL.md").is_file()} \
+        if (root / ".claude" / "skills").is_dir() else set()
+    text = {n: [] for n, _, _ in ROWS}
+    section = None
+    for line in lines:
+        m = re.match(r"\| (\d+) \|", line)
+        if m and int(m.group(1)) in text:
+            text[int(m.group(1))].append(line)
+            continue
+        h = re.match(r"### Row (\d+) steps", line)
+        if h:
+            section = int(h.group(1))
+            continue
+        if line.startswith("## ") or line.startswith("### "):
+            section = None
+        elif section in text:
+            text[section].append(line)
+    out = {}
+    for n, chunk in text.items():
+        body = "\n".join(chunk)
+        found_skills, found_agents = [], []
+
+        def add(lst, name):
+            if name not in lst:
+                lst.append(name)
+        for name in PLUGIN_SKILL.findall(body):
+            add(found_skills, name)
+        names = [b + ("*" if star else "") for b, star in BACKTICK.findall(body)] + BSUK_NAME.findall(body)
+        names += [stem + "*" for stem in re.findall(r"`([a-z][a-z0-9-]*-)\*`", body)]
+        for name in names:
+            if name in agents:
+                add(found_agents, name)
+            elif name in skills:
+                add(found_skills, name)
+            elif name.endswith("*") and any(s.startswith(name[:-1]) for s in skills):
+                add(found_skills, name)
+        out[n] = {
+            "skills": found_skills,
+            "agents": found_agents,
+            "scripts": list(dict.fromkeys(SCRIPT_PATH.findall(body))),
+            "npm": list(dict.fromkeys(NPM_NAME.findall(body))),
+        }
+    return out
+
+
+BUILDERS = {"location": "bsuk-location-page-builder", "comparison": "bsuk-comparison-page-builder",
+            "blog": "bsuk-blog-post"}
+
+
+def page_type(slug, root=ROOT):
+    """location, blog or comparison, from the data that knows the slug (page-run.md's builder table)."""
+    locs = _json(root / "data" / "locations.json") or []
+    if any(isinstance(x, dict) and x.get("slug") == slug for x in locs):
+        return "location"
+    if (root / "src" / "content" / "blog" / f"{slug}.md").exists():
+        return "blog"
+    return "comparison"
+
+
 def status(slug, root=ROOT):
     ev, extra = evidence(slug, root)
+    tools = row_tools(root)
+    # Rows 1 and 12 name "the builder skill from the table above": show this page's one.
+    builder = BUILDERS[page_type(slug, root)]
+    for n in (1, 12):
+        if n in tools:
+            others = set(BUILDERS.values()) - {builder}
+            tools[n]["skills"] = [s for s in tools[n]["skills"] if s not in others]
+            if builder not in tools[n]["skills"]:
+                tools[n]["skills"].append(builder)
     rows, now = [], None
     for n, name, phase in ROWS:
         proved, why = ev[n]
@@ -129,7 +216,8 @@ def status(slug, root=ROOT):
         if state == "now":
             now = n
         rows.append({"row": n, "name": name, "phase": phase, "state": state,
-                     "stop": STOPS.get(n), "evidence": why})
+                     "stop": STOPS.get(n), "evidence": why,
+                     "tools": tools.get(n, {"skills": [], "agents": [], "scripts": [], "npm": []})})
     stops_done = sum(1 for r in rows if r["stop"] and r["state"] == "done")
     open_batches = _open_batches(root)
     return {
@@ -169,8 +257,14 @@ def _git(root, *args):
 
 
 def newest_board(root=ROOT):
-    boards = [p for p in (root / "data" / "boards").glob("*.json") if not p.stem.startswith("_")]
-    return max(boards, key=lambda p: p.stat().st_mtime).stem if boards else None
+    """The page in progress: the newest page-run record, research board, outline or page board.
+
+    A page-run record is written at row 1 (session open), so a new page takes the map over from
+    its first row, before it has a board."""
+    found = []
+    for sub in ("page-runs", "research-boards", "outlines", "boards"):
+        found += [p for p in (root / "data" / sub).glob("*.json") if not p.stem.startswith("_")]
+    return max(found, key=lambda p: p.stat().st_mtime).stem if found else None
 
 
 def main(argv):

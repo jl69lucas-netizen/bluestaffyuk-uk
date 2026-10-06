@@ -12,6 +12,8 @@ const error = atom({ plugin: 'bsuk-route', key: 'error' } as const, null)
 // The agent cards the bsuk-agents mod keeps (read only): who is working right now, on what.
 const agentCards = atom({ plugin: 'bsuk-agents', key: 'cards' } as const, {})
 const clockNow = atom({ plugin: 'bsuk-route', key: 'now' } as const, 0)
+// Every skill the engine expanded this session (Skill tool, /name, or preloaded into a subagent).
+const skillsUsed = atom({ plugin: 'bsuk-route', key: 'skillsUsed' } as const, {})
 
 // Page boards by slug, for the links under the map. A slug not listed gets only the answer board.
 const PAGE_BOARDS: Record<string, string> = {
@@ -81,6 +83,12 @@ export const register: Register = on => {
     return next(e)
   })
 
+  on('skill.prompt', async ($, e, next) => {
+    const now = await $.clock.now()
+    await update($, skillsUsed, (m: Record<string, number>) => ({ ...(m || {}), [e.skill]: now }))
+    return next(e)
+  })
+
   on('command.run', { command: 'bsuk-route' }, async $ => {
     await refresh($)
     await $.ui.open({ id: PANE, title: 'Route map' })
@@ -98,8 +106,11 @@ export const register: Register = on => {
     const err = await read($, error)
     const now = (await read($, clockNow)) || Date.now()
     let working: any[] = []
+    let cards: any[] = []
+    const used: Record<string, number> = ((await read($, skillsUsed)) as any) || {}
     try {
-      working = Object.values((await read($, agentCards)) || {}).filter((c: any) => c.status === 'running')
+      cards = Object.values((await read($, agentCards)) || {})
+      working = cards.filter((c: any) => c.status === 'running')
     } catch {
       // the agents mod is not installed: the live card shows commits only
     }
@@ -111,6 +122,45 @@ export const register: Register = on => {
     const lit = Math.round((proved / rt.rows.length) * BAR)
     const board = PAGE_BOARDS[rt.slug]
     const phases = ['Research', 'Plan', 'Build', 'Close']
+    // A skill counts as run when its name (or its plugin-less tail) was expanded this session;
+    // a framework-* pattern when any framework skill was.
+    const skillRan = (s: string) =>
+      s.endsWith('*')
+        ? Object.keys(used).some(k => k.replace(/^.*:/, '').startsWith(s.slice(0, -1)))
+        : Object.keys(used).some(k => k === s || k.replace(/^.*:/, '') === s.replace(/^.*:/, ''))
+    const agentState = (a: string) =>
+      cards.some((c: any) => c.type === a && c.status === 'running') ? 'live'
+        : cards.some((c: any) => c.type === a) ? 'ran' : ''
+    const short = (s: string) => s.replace(/^bsuk-/, '').replace(/^superpowers:/, 'sp:')
+    const chips = (r: any, isNow: boolean) => {
+      const t = r.tools
+      if (!t || (!t.skills.length && !t.agents.length && !(isNow && (t.npm.length || t.scripts.length)))) return null
+      const dim = r.state === 'done' ? INK_3 : INK_2
+      return (
+        <Box flexDirection="column" width="100%">
+          {t.skills.length || t.agents.length ? (
+            <Text>
+              <Text color={dim}>     </Text>
+              {t.skills.map((s: string) => {
+                const ran = skillRan(s)
+                return <Text color={ran ? DONE : dim}>{ran ? '✓' : '✦'} {short(s)}   </Text>
+              })}
+              {t.agents.map((a: string) => {
+                const st = agentState(a)
+                return (
+                  <Text color={st === 'live' ? BRASS : st === 'ran' ? DONE : dim} bold={st === 'live'}>
+                    {st === 'live' ? '◉' : st === 'ran' ? '✓' : '@'} {short(a)}{'   '}
+                  </Text>
+                )
+              })}
+            </Text>
+          ) : null}
+          {isNow && (t.npm.length || t.scripts.length) ? (
+            <Text color={INK_3}>     gates: {t.npm.slice(0, 5).join(' · ') || '—'}{t.scripts.length ? `  ·  ${t.scripts.length} script${t.scripts.length === 1 ? '' : 's'}` : ''}</Text>
+          ) : null}
+        </Box>
+      )
+    }
     return (
       <Box flexDirection="column" width="100%" gap={1}>
         <Box flexDirection="column" width="100%" backgroundColor={CARD} borderStyle="round" borderColor={BRASS} paddingX={2} paddingY={1}>
@@ -158,6 +208,7 @@ export const register: Register = on => {
                     <Text color={now || (r.stop && isDone) ? BRASS : DONE}>{status}</Text>
                   </Box>
                   {now ? <Text color={INK_2}>     ↳ {r.evidence}</Text> : null}
+                  {chips(r, now)}
                   </Box>
                 )
               })}

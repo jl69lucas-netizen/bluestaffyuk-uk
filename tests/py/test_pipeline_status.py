@@ -140,3 +140,30 @@ def test_a_page_change_after_gating_makes_the_gate_stale(tmp_path, monkeypatch):
 def test_a_gate_from_another_branch_is_never_current(tmp_path, monkeypatch):
     s = _gated_tree(tmp_path, monkeypatch, base="elsewhere", changed=["docs/a.md"])
     assert s["now"] == 17
+
+
+def test_each_row_names_its_skills_and_agents_from_the_real_page_run():
+    root = pathlib.Path(__file__).resolve().parents[2]
+    tools = PS.row_tools(root)
+    assert set(tools) == {n for n, _, _ in PS.ROWS}
+    assert "grill-me" in tools[1]["skills"] and "superpowers:writing-plans" in tools[1]["skills"]
+    assert "bsuk-llm-keyword-intel" in tools[5]["agents"]
+    assert "bsuk-angle-agent" in tools[8]["agents"] and "framework-*" in tools[8]["skills"]
+    assert tools[14]["skills"] == ["impeccable:impeccable"]
+    assert "superpowers:verification-before-completion" in tools[18]["skills"]
+
+
+def test_rows_1_and_12_carry_only_this_page_types_builder():
+    root = pathlib.Path(__file__).resolve().parents[2]
+    rows = {r["row"]: r for r in PS.status("blue-staffy-puppies-manchester-uk", root)["rows"]}
+    for n in (1, 12):
+        assert "bsuk-location-page-builder" in rows[n]["tools"]["skills"]
+        assert "bsuk-blog-post" not in rows[n]["tools"]["skills"]
+
+
+def test_a_new_page_takes_the_map_at_its_session_open(tmp_path):
+    _write(tmp_path, "data/boards/old-city.json", {})
+    import os, time
+    os.utime(tmp_path / "data/boards/old-city.json", (time.time() - 100, time.time() - 100))
+    _write(tmp_path, "data/page-runs/new-city.json", {"session_open": {}})
+    assert PS.newest_board(tmp_path) == "new-city"
