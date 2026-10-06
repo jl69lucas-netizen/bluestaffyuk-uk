@@ -34,7 +34,7 @@
   },
   "verification_before_completion": {
     "ran_on": "2026-10-06",
-    "commit": "914c61db7f8d21a2d6f576c45791f2fd68a85c90",
+    "commit": "dbc05a46c80fbb7843f733fcddb05e68b543f970",
     "commands": [
       {
         "cmd": "npm run -s build",
@@ -53,7 +53,7 @@
       }
     ],
     "claims_verified": [
-      "London is ready for the breeder's final approval: built, every check:all gate green, and every gate:page step passes twice with identical runs on the committed page"
+      "London, approved by the breeder and indexable: built, every check:all gate green, and every gate:page step passes twice with identical runs on the committed page"
     ]
   }
 }
