@@ -933,3 +933,33 @@ test('a keyboard tap on the London map leaves a visible ring on the live map, a 
   const mouse = await ring();
   expect(mouse.style === 'none' || mouse.width === 0, `a mouse tap draws no ring: ${JSON.stringify(mouse)}`).toBe(true);
 });
+
+// THE COUNTER'S LABEL NEVER ENDS ON ONE WORD (frontend-design Harden pass 2026-10-06, F1): from an
+// 840px viewport the count stands in a 14ch column beside the line, and "puppies available now"
+// broke as "puppies available" / "now". Balanced, it reads "puppies" / "available now".
+test("the price scale's count label ends on more than one word", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp1024' && testInfo.project.name !== 'vp1280', 'the count stands beside the line from 840px');
+  await page.goto(LONDON, { waitUntil: 'load' });
+  const r = await page.locator('.city-scale .count .l').first().evaluate((el) => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const rects = Array.from(range.getClientRects()).filter((x) => x.width > 0);
+    const last = Math.max(...rects.map((x) => Math.round(x.bottom)));
+    const lastText = (() => {
+      const words = (el.textContent ?? '').trim().split(/\s+/);
+      let n = 0;
+      for (let i = words.length - 1; i >= 0; i--) {
+        const sub = document.createRange();
+        const t = el.firstChild as Text;
+        const start = (el.textContent ?? '').lastIndexOf(words[i]);
+        sub.setStart(t, start); sub.setEnd(t, start + words[i].length);
+        if (Math.round(sub.getBoundingClientRect().bottom) !== last) break;
+        n++;
+      }
+      return n;
+    })();
+    return { lines: new Set(rects.map((x) => Math.round(x.bottom))).size, wordsOnLast: lastText };
+  });
+  console.log(`count label @ ${testInfo.project.name}: ${JSON.stringify(r)}`);
+  expect(r.lines === 1 || r.wordsOnLast >= 2, `the count label's last line holds ${r.wordsOnLast} word(s)`).toBe(true);
+});

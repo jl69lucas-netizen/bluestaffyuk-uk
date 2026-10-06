@@ -56,7 +56,9 @@ const count = availablePuppies().length;
     .panel { max-width: min(1200px, calc(100% - 2 * var(--space-3))); margin: 0 auto; padding: var(--space-5) var(--space-4); border-radius: var(--radius-md); background: var(--color-brand-soft); }
     .count { display: flex; align-items: baseline; gap: var(--space-3); margin: 0 0 var(--space-4); }
     .count .n { font-size: var(--city-num); line-height: 1; }
-    .count .l { font-weight: 600; }
+    /* Balanced, so the 14ch column beside the line never leaves "now" alone on the last line
+       (frontend-design Harden pass 2026-10-06, F1): "puppies" / "available now". */
+    .count .l { font-weight: 600; text-wrap: balance; }
     ol { list-style: none; margin: 0; padding: 0 0 0 var(--space-5); position: relative; display: grid; gap: var(--space-4); }
     ol::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--color-brand); }
     li { position: relative; margin: 0; max-width: none; }
