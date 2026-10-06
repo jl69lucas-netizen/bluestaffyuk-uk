@@ -37,12 +37,22 @@ Before the first generation in a session:
    installing it; it is not in `requirements.txt`.
 3. Every generation is a paid API call. Say how many images the run will make and ask before
    the first one. Regenerating a rejected image is a new call and is asked the same way.
-4. Use the **cheapest** image model, `gemini-3.1-flash-lite-image` ($0.0336 per 1K image on the
-   Standard tier, Google's pricing page, read 2026-10-02), unless the breeder names another. Never use
-   a pro image model (`gemini-3-pro-image*`, 4× the price) unless the breeder asks for it
-   (breeder's instruction, 2026-10-02: "you must use the cheap model so we don't waste all credits").
+4. Pick the model by what the image carries (breeder's ruling, answer board 2026-10-06 q02 (b)):
+   - **A photo, or any image with no words in it:** the cheapest image model,
+     `gemini-3.1-flash-lite-image` (Nano Banana 2 Lite, $0.0336 per 1K image on the Standard
+     tier, Google's pricing page, read 2026-10-02). Breeder's instruction, 2026-10-02: "you must
+     use the cheap model so we don't waste all credits".
+   - **An image with words in it** (an infographic, a labelled diagram, a sign or caption drawn
+     into the picture): `gemini-nano-banana-2.1` (Nano Banana 2.1, confirmed on the models list
+     2026-10-06). Its price is `NOT FETCHED — the pricing page's tables did not name their
+     models when read on 2026-10-06`. Read it from the pricing page and state it in the ask
+     (step 3) before the first call. The text it draws is still copy: read every word against
+     rule 9 before the image goes on a board (`docs/reference/lessons.md`, entry 7).
+   - Never use a pro image model (`gemini-3-pro-image*`, 4× the price) unless the breeder asks
+     for it.
    Generate one image at a time, only for slots picked on a board. Model names change, so list
-   the available models first; if this one is gone, take the cheapest listed on the pricing page.
+   the available models first. If a named model is gone, take the cheapest one listed on the
+   pricing page that does the same job, and say so.
 
 ## Every call is logged
 
@@ -61,7 +71,7 @@ from google.genai import types
 
 client = genai.Client()  # reads GEMINI_API_KEY from the environment; never pass it inline.
 # Keep `client` in a variable: a temporary Client() is closed before the request is sent.
-model, slot = "gemini-3.1-flash-lite-image", "og-delivery"
+model, slot = "gemini-3.1-flash-lite-image", "og-delivery"  # a photo; an image with words uses "gemini-nano-banana-2.1"
 try:
     resp = client.models.generate_content(
         model=model, contents=prompt,
