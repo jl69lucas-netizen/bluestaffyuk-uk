@@ -905,3 +905,31 @@ test('the London map asks nothing of Google until a tap, then loads the city cen
   expect(Math.abs(after.stage - before.stage), 'the iframe takes the reserved box').toBeLessThanOrEqual(1);
   expect(Math.abs(after.answer - before.answer), 'nothing below the map moves').toBeLessThanOrEqual(1);
 });
+
+// THE MAP KEEPS A VISIBLE FOCUS AFTER A KEYBOARD TAP (impeccable Harden pass 2026-10-06, F1): the
+// facade moves focus into the iframe it makes, and Chrome draws no ring on a programmatically
+// focused iframe, so a keyboard reader lost sight of where they were (WCAG 2.4.7). A keyboard
+// activation (a click with `detail` 0) marks the figure, and the live box draws the ring while the
+// map holds focus. A mouse tap draws none.
+test('a keyboard tap on the London map leaves a visible ring on the live map, a mouse tap none', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp375' && testInfo.project.name !== 'vp1280', 'a phone and a desktop width');
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>map</title>' }));
+  const ring = () => page.evaluate(() => {
+    const s = getComputedStyle(document.querySelector('[data-city-map] .stage')!);
+    return { focused: document.activeElement?.tagName, style: s.outlineStyle, width: parseFloat(s.outlineWidth) };
+  });
+  await page.goto(LONDON, { waitUntil: 'load' });
+  await page.locator('[data-city-map-load]').scrollIntoViewIfNeeded();
+  await page.keyboard.press('Shift');
+  await page.locator('[data-city-map-load]').focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('[data-city-map] .stage iframe')).toHaveCount(1);
+  const kbd = await ring();
+  expect(kbd.focused).toBe('IFRAME');
+  expect(kbd.style !== 'none' && kbd.width >= 2, `after a keyboard tap the map draws a ring: ${JSON.stringify(kbd)}`).toBe(true);
+  await page.goto(LONDON, { waitUntil: 'load' });
+  await page.locator('[data-city-map-load]').click();
+  await expect(page.locator('[data-city-map] .stage iframe')).toHaveCount(1);
+  const mouse = await ring();
+  expect(mouse.style === 'none' || mouse.width === 0, `a mouse tap draws no ring: ${JSON.stringify(mouse)}`).toBe(true);
+});

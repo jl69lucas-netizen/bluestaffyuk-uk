@@ -79,6 +79,9 @@ const noteId = `map-note-${city.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
     stage.classList.add('live');
     stage.replaceChildren(frame);
     fig.toggleAttribute('data-loaded', true);
+    // A keyboard activation is a click with no pointer (`detail` 0). Chrome draws no ring on an
+    // iframe focused from script, so the live box draws it (impeccable Harden pass 2026-10-06, F1).
+    fig.toggleAttribute('data-kbd', (event as MouseEvent).detail === 0);
     // The button that had focus has gone; without this the reader is returned to the top.
     frame.focus();
   });
@@ -122,6 +125,9 @@ const noteId = `map-note-${city.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
     /* On the steel panel the ring is brass (tokens.css: steel on steel would disappear). */
     .city-map .load:focus-visible { outline: 3px solid var(--color-focus-on-inverse); outline-offset: 3px; }
     .city-map .stage.live { background: var(--color-bone-50); }
+    /* After a KEYBOARD tap the focus is inside the map, where no ring shows (WCAG 2.4.7): the live
+       box takes the light-ground ring while the map holds focus. A mouse tap draws none. */
+    .city-map[data-kbd] .stage.live:focus-within { outline: 3px solid var(--color-focus); outline-offset: 3px; }
     /* The iframe is made by the script, so it has no scope attribute: :global. */
     .city-map .stage :global(iframe) { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0; }
     .city-map .cap { margin: var(--space-3) 0 0; font-size: var(--text-sm); line-height: 1.5; color: var(--color-ink-2); }
