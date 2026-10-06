@@ -1,0 +1,143 @@
+{
+  "slug": "uk-locations/blue-staffy-puppies-london",
+  "date": "2026-10-06",
+  "page_type": "location",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 46
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 2163,
+    "layout-tap-target-size": 259,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 63,
+    "layout-image-box-reserved": 18,
+    "layout-table-stacks-on-mobile": 3,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 0,
+    "layout-text-has-side-gutter": 1991,
+    "layout-boxed-h2-fits": 0,
+    "layout-kit-band-full-bleed": 3,
+    "layout-heading-size-order": 0,
+    "layout-heading-lines": 0,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 0,
+    "layout-body-heading-brand": 0,
+    "layout-body-text-shares-edge": 0,
+    "img-srcset-within-2x": 180,
+    "img-not-upscaled": 180,
+    "img-alt-present-and-unique": 180,
+    "img-sizes-matches-box": 18,
+    "img-face-visible": 90,
+    "nav-anchors-resolve": 159,
+    "nav-jump-target-lands": 33,
+    "nav-bottom-chrome-clear": 0,
+    "nav-breadcrumb-separator-spaced": 6,
+    "nav-breadcrumb-baseline-aligned": 12,
+    "sem-heading-order": 269,
+    "sem-all-six-levels": 269,
+    "sem-title-case-headings": 269,
+    "sem-section-opening-paragraph": 269,
+    "sem-statement-label-visible": 21,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 18,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 3225,
+    "css-no-dead-component-rule": 1725,
+    "css-component-color-not-overridden": 191,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 2091,
+    "a11y-no-duplicate-ids": 141,
+    "a11y-hero-ledge-contrast": 0,
+    "form-inquiry-contract": 6
+  },
+  "defects": {
+    "IMG": 5,
+    "CSS": 6
+  },
+  "instances": {
+    "IMG": 25,
+    "CSS": 231
+  },
+  "total": 11,
+  "total_instances": 256,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "img-not-upscaled",
+      "count": 8,
+      "message": "8 upscaled image(s): ethical-staffy-puppy-london-delivery.webp file=540x664 painted=704x384 visible=704x384 cover 1.30x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=704x384 visible=704x384 cover 1.28x | puppy-vaccinations-uk.webp file=500x430 painted=704x384 visible=704x384 cover 1.41x | blue-staffy-testimonial-london-happy-owner.webp file=400x437 painted=704x384 visible=704x384 cover 1.76x | Christa.DCD6hF9z_24FDMC.webp file=400x400 painted=319x469 visible=319x469 cover 1.17x | trusted-uk-breeders-blue-staffy-family.webp file=450x450 painted=704x384 visible=704x384 cover 1.56x | staffordshire-bull-terrier-vs-american-bully-comparison.webp file=500x333 painted=704x384 visible=704x384 contain 1.15x | blue-staffy-health-prioritising-wellbeing.webp file=512x768 painted=704x384 visible=704x384 cover 1.38x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "img-face-visible",
+      "count": 2,
+      "message": "2 face(s) cropped or covered: ethical-staffy-puppy-london-delivery face 1: 57% painted in a 704x384 cover crop | maggie-blue-staffy-dam-with-pups face 1: 82% painted in a 704x384 cover crop"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: astro-qdhbmj3k x8, kit-faq x3"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 75,
+      "message": "75 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "img-face-visible",
+      "count": 3,
+      "message": "3 face(s) cropped or covered: trusted-blue-staffy-breeder-reviews-satisfied-owners face 1: 82% painted in a 343x193 cover crop | ethical-staffy-puppy-london-delivery face 1: 57% painted in a 311x170 cover crop | maggie-blue-staffy-dam-with-pups face 1: 82% painted in a 311x170 cover crop"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: astro-qdhbmj3k x8, kit-faq x3"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 75,
+      "message": "75 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 9,
+      "message": "9 upscaled image(s): jones-strong-staffy-sire-temperament.webp file=663x660 painted=736x315 visible=736x315 cover 1.11x | trusted-blue-staffy-breeder-reviews-satisfied-owners.webp file=500x375 painted=704x302 visible=704x302 cover 1.41x | ethical-staffy-puppy-london-delivery.webp file=540x664 painted=640x349 visible=640x349 cover 1.19x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=640x349 visible=640x349 cover 1.16x | puppy-vaccinations-uk.webp file=500x430 painted=640x349 visible=640x349 cover 1.28x | blue-staffy-testimonial-london-happy-owner.webp file=400x437 painted=640x349 visible=640x349 cover 1.60x | Christa.DCD6hF9z_24FDMC.webp file=400x400 painted=293x462 visible=293x462 cover 1.15x | trusted-uk-breeders-blue-staffy-family.webp file=450x450 painted=640x349 visible=640x349 cover 1.42x | blue-staffy-health-prioritising-wellbeing.webp file=512x768 painted=640x349 visible=640x349 cover 1.25x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-face-visible",
+      "count": 3,
+      "message": "3 face(s) cropped or covered: trusted-blue-staffy-breeder-reviews-satisfied-owners face 1: 64% painted in a 704x302 cover crop | ethical-staffy-puppy-london-delivery face 1: 57% painted in a 640x349 cover crop | maggie-blue-staffy-dam-with-pups face 1: 82% painted in a 640x349 cover crop"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 2,
+      "message": "2 class(es) on rendered elements match no CSS rule: astro-qdhbmj3k x8, kit-faq x3"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 75,
+      "message": "75 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    }
+  ]
+}

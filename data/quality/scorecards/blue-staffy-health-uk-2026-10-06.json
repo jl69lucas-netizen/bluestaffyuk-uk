@@ -1,0 +1,145 @@
+{
+  "slug": "blue-staffy-health-uk",
+  "date": "2026-10-06",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 46
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1081,
+    "layout-tap-target-size": 156,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "layout-table-stacks-on-mobile": 3,
+    "hero-aside-no-clip": 3,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 147,
+    "layout-text-has-side-gutter": 909,
+    "layout-boxed-h2-fits": 18,
+    "layout-kit-band-full-bleed": 0,
+    "layout-heading-size-order": 132,
+    "layout-heading-lines": 147,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 2,
+    "layout-body-heading-brand": 180,
+    "layout-body-text-shares-edge": 228,
+    "img-srcset-within-2x": 24,
+    "img-not-upscaled": 24,
+    "img-alt-present-and-unique": 24,
+    "img-sizes-matches-box": 3,
+    "img-face-visible": 3,
+    "nav-anchors-resolve": 183,
+    "nav-jump-target-lands": 48,
+    "nav-bottom-chrome-clear": 32,
+    "nav-breadcrumb-separator-spaced": 3,
+    "nav-breadcrumb-baseline-aligned": 6,
+    "sem-heading-order": 294,
+    "sem-all-six-levels": 294,
+    "sem-title-case-headings": 294,
+    "sem-section-opening-paragraph": 294,
+    "sem-statement-label-visible": 18,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 15,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 990,
+    "css-no-dead-component-rule": 885,
+    "css-component-color-not-overridden": 64,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 1046,
+    "a11y-no-duplicate-ids": 69,
+    "a11y-hero-ledge-contrast": 0,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "IMG": 2,
+    "CSS": 6,
+    "DUP": 3
+  },
+  "instances": {
+    "IMG": 12,
+    "CSS": 153,
+    "DUP": 3
+  },
+  "total": 11,
+  "total_instances": 168,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "img-not-upscaled",
+      "count": 7,
+      "message": "7 upscaled image(s): what-health-tests-blue-staffies-need.webp file=500x495 painted=874x865 visible=874x865 fill 1.75x | maggie-blue-staffy-dam-with-pups-760.webp file=760x570 painted=876x657 visible=876x657 fill 1.15x | puppy-vaccinations-uk.webp file=500x430 painted=876x753 visible=876x753 fill 1.75x | blue-staffy-puppy-vet-check-uk-760.webp file=760x760 painted=876x876 visible=876x876 fill 1.15x | what-to-feed-new-blue-staffy-puppy.webp file=500x707 painted=876x1239 visible=876x1239 fill 1.75x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=876x585 visible=876x585 fill 1.59x | kc-registered-staffy-puppies.webp file=500x750 painted=876x1314 visible=876x1314 fill 1.75x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-list-stack x5, bl-chrome-ruled x5, bl-media-none x5, bl-cols-1 x4, bl-head-above x4, bl-head-eyebrow x1, counter-wrap x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 44,
+      "message": "44 page-scoped rule(s) match nothing on the page: .dot | [data-tiles=\"ring\"] .ring | .dot | [data-tiles=\"ring\"] .ring | .stack | .stack figure | .kit-quote-empty | .ctas | .chips | .chips li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 13w vs /index/ \"the health and well being of our blue staffordshire bull terrier puppies are\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-list-stack x5, bl-chrome-ruled x5, bl-media-none x5, bl-cols-1 x4, bl-head-above x4, bl-head-eyebrow x1, counter-wrap x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 44,
+      "message": "44 page-scoped rule(s) match nothing on the page: .dot | [data-tiles=\"ring\"] .ring | .dot | [data-tiles=\"ring\"] .ring | .stack | .stack figure | .kit-quote-empty | .ctas | .chips | .chips li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 13w vs /index/ \"the health and well being of our blue staffordshire bull terrier puppies are\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 5,
+      "message": "5 upscaled image(s): what-health-tests-blue-staffies-need.webp file=500x495 painted=718x711 visible=718x711 fill 1.44x | puppy-vaccinations-uk.webp file=500x430 painted=720x619 visible=720x619 fill 1.44x | what-to-feed-new-blue-staffy-puppy.webp file=500x707 painted=720x1018 visible=720x1018 fill 1.44x | find-health-certified-staffy-breeders-uk.webp file=550x367 painted=720x480 visible=720x480 fill 1.31x | kc-registered-staffy-puppies.webp file=500x750 painted=720x1080 visible=720x1080 fill 1.44x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 7,
+      "message": "7 class(es) on rendered elements match no CSS rule: bl-list-stack x5, bl-chrome-ruled x5, bl-media-none x5, bl-cols-1 x4, bl-head-above x4, bl-head-eyebrow x1, counter-wrap x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 44,
+      "message": "44 page-scoped rule(s) match nothing on the page: .dot | [data-tiles=\"ring\"] .ring | .dot | [data-tiles=\"ring\"] .ring | .stack | .stack figure | .kit-quote-empty | .ctas | .chips | .chips li — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 1,
+      "message": "1 passage(s) shared with a sibling: 13w vs /index/ \"the health and well being of our blue staffordshire bull terrier puppies are\""
+    }
+  ]
+}
