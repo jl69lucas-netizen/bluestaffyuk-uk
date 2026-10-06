@@ -1,0 +1,28 @@
+{
+ "slug": "blue-staffy-puppies-manchester-uk",
+ "date": "2026-10-07",
+ "command": "python3 scripts/nlp_keywords.py blue-staffy-puppies-manchester-uk --json",
+ "exit": 2,
+ "stderr": "usage: python3 scripts/nlp_keywords.py <slug> [--json] — no board at data/boards/blue-staffy-puppies-manchester-uk.json",
+ "status": "NOT FETCHED — scripts/nlp_keywords.py reads the page board data/boards/blue-staffy-puppies-manchester-uk.json, which does not exist yet (it is built at page-run rows 10–11, after the research board STOP 1 and the outline STOP 2); the script exited 2 before reading any cache. No input was faked.",
+ "what_the_script_needs": {
+  "board_file": "data/boards/blue-staffy-puppies-manchester-uk.json (main(): path = data/boards/<_bare(slug)>.json; exit 2 when missing)",
+  "board_fields_read": [
+   "meta.slug — the cache folder (data/queries/raw/<slug>/competitors.json, data/queries/cache/<slug>/<n>.html) and the research board data/research-boards/<slug>.json",
+   "meta.page_type — 'location' drops every other city of data/locations.json and every county or region from the rows",
+   "density_pool — 'prose' (default) or 'all' (count listing pages too, breeder q02 2026-10-02); picks the competitor pool through term_density.competitor_pages()",
+   "the picked H1 and the meta title/description pick (pageboard.picked_h1, pageboard.meta_pick)",
+   "sections[].heading, sections[].tree[] (heading, intent, children), sections[].keywords{}, sections[].entities[]",
+   "assets[].alt"
+  ],
+  "other_inputs_already_on_disk": [
+   "data/bsuk-ontology.json (79 entities; ontology_seed --check exit 0)",
+   "data/queries/raw/blue-staffy-puppies-manchester-uk/competitors.json (8 pages, page 3 freeads blocked)",
+   "data/queries/cache/blue-staffy-puppies-manchester-uk/1.html … 8.html",
+   "data/faq.json, data/settings.json, data/puppies.json, data/breed-standards.json, data/queries/blue-staffy-puppies-manchester-uk.json questions"
+  ],
+  "optional": "data/research-boards/blue-staffy-puppies-manchester-uk.json `entities[].id` (plan Task 11) — read by _research_entity_ids(); absent today"
+ },
+ "when_to_rerun": "After the page board exists (page-run row 10/11): python3 scripts/nlp_keywords.py blue-staffy-puppies-manchester-uk --json > docs/research/manchester-page-run/nlp-keywords.json. The block is derived from the board (block 4e) and is not part of the approved record.",
+ "interim_attestation": "Until then the attested named entities are listed in docs/research/manchester-page-run/entities.md, each with the competitor domains (word-boundary counts over the cached pages) or the data file that attests it."
+}

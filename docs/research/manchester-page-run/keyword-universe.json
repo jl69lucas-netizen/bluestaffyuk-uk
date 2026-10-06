@@ -1,0 +1,1970 @@
+{
+ "slug": "blue-staffy-puppies-manchester-uk",
+ "date": "2026-10-07",
+ "status": "DRAFT — page-run row 6 (plan Task 8 step 3). Placements are proposals for the outline (STOP 2), not decisions.",
+ "volumes": "PENDING — Task 5 paid keyword_volume call: the controller fills each row's volume from the Task 5 DataForSEO keyword_volume response, or, where that call returns none, the barrier that stopped it in the not-fetched form working rule 9 sets.",
+ "groups": [
+  "hero, title, H1 and first 100 words",
+  "G1 deposit and viewing",
+  "G2 litter and prices",
+  "G3 delivery to Greater Manchester",
+  "G4 health and raising",
+  "G5 life in Manchester",
+  "G6 FAQ"
+ ],
+ "method": "Every keyword is attested in a file on disk (working rule 9): the question file, the Strategy A Manchester row, the cached Google/Bing SERPs (this slug and the registry SERP for 'staffy puppies for sale manchester'), scripts/keyword_variants.py's four buckets, and Greater Manchester place names counted on word boundaries in the cached competitor pages. A neighbourhood term needs 2+ competitor domains, or a SERP title. Didsbury is on one domain only (gumtree.com, a single listing) and is left out. 'Ince' is also a town in the staffie-owners index (Ince-in-Makerfield) and one of our puppies' names (data/puppies.json); it is never used as a place.",
+ "placement_statuses": {
+  "placed (proposed)": "the outline should carry it in the named group",
+  "conditional": "the question file marks it blocked (unverified fact); it goes on only where a data file answers it",
+  "parked": "not on this page, with the reason"
+ },
+ "universe": [
+  {
+   "keyword": "blue staffy puppies manchester",
+   "intent": "transactional",
+   "type": "primary",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "the question file's primary_keyword (data/queries/blue-staffy-puppies-manchester-uk.json); the Google SERP request keyword (data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.response.json, 2026-09-23)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words"
+   }
+  },
+  {
+   "keyword": "staffordshire bull terrier puppies for sale in manchester greater manchester",
+   "intent": "transactional",
+   "type": "secondary",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Strategy A Manchester row, docs/superpowers/sessions/2026-09-25-location-pages-strategy.md line 118 (keyword-gap high row, 10 (3+2+3+2)); the row prints it run together as \"for salein manchester\", split here into \"for sale in\" — the row's own spelling is kept in the strategy file",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "staffies in manchester",
+   "intent": "local",
+   "type": "secondary",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Strategy A Manchester row, docs/superpowers/sessions/2026-09-25-location-pages-strategy.md line 118 (matrix keyword gap 1/19, low); docs/research/gap-matrix-2026-09-25.md line 109",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "blue staffy puppies manchester uk",
+   "intent": "transactional",
+   "type": "secondary",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "the stub's own title and H1 in data/locations.json (slug blue-staffy-puppies-manchester-uk) — the old H1 is in the verbatim set (working rule 15)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words"
+   }
+  },
+  {
+   "keyword": "blue staffy",
+   "intent": "informational",
+   "type": "variation",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (variation; sources serp_google_paa; df 36)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; spread across G2 litter and prices, G4 health and raising, G6 FAQ"
+   }
+  },
+  {
+   "keyword": "blue staffy puppy",
+   "intent": "commercial",
+   "type": "variation",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (variation; sources serp_google_paa; df 12)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; spread across G2 litter and prices, G4 health and raising, G6 FAQ"
+   }
+  },
+  {
+   "keyword": "blue staffies",
+   "intent": "informational",
+   "type": "variation",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (variation; sources serp_google_paa; df 10)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; spread across G2 litter and prices, G4 health and raising, G6 FAQ"
+   }
+  },
+  {
+   "keyword": "blue staffy puppies",
+   "intent": "commercial",
+   "type": "variation",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (variation; sources organic_snippet; df 9)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; spread across G2 litter and prices, G4 health and raising, G6 FAQ"
+   }
+  },
+  {
+   "keyword": "blue staffordshire bull terrier",
+   "intent": "informational",
+   "type": "variation",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (variation; sources serp_google_paa; df 7)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; spread across G2 litter and prices, G4 health and raising, G6 FAQ"
+   }
+  },
+  {
+   "keyword": "blue staffordshire bull terrier puppies",
+   "intent": "commercial",
+   "type": "variation",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (variation; sources serp_google_paa; df 7)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; spread across G2 litter and prices, G4 health and raising, G6 FAQ"
+   }
+  },
+  {
+   "keyword": "blue staffie",
+   "intent": "informational",
+   "type": "variation",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (variation; sources organic_snippet; df 4)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; spread across G2 litter and prices, G4 health and raising, G6 FAQ"
+   }
+  },
+  {
+   "keyword": "blue staffie puppies",
+   "intent": "commercial",
+   "type": "variation",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (variation; sources organic_snippet; df 4)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; spread across G2 litter and prices, G4 health and raising, G6 FAQ"
+   }
+  },
+  {
+   "keyword": "blue staffy puppies manchester kennel club",
+   "intent": "commercial",
+   "type": "related",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (related; sources serp_google_related; df 2)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale near salford",
+   "intent": "local",
+   "type": "related",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (related; sources serp_google_related; df 2)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale manchester kennel club",
+   "intent": "commercial",
+   "type": "related",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (related; sources serp_google_related; df 1)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "blue staffy puppies for sale manchester",
+   "intent": "transactional",
+   "type": "related",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (related; sources serp_google_related; df 1)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words"
+   }
+  },
+  {
+   "keyword": "both parents",
+   "intent": "commercial",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources ai_question, thread_question, question_file; df 7)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "staffy breeder",
+   "intent": "commercial",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources ai_question, thread_question, question_file; df 7)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "staffy dogs",
+   "intent": "informational",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources organic_title, organic_snippet; df 7)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "dogs puppy",
+   "intent": "informational",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources organic_title; df 6)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "a fragment of marketplace titles (\"Dogs & Puppies\"), not a phrase a sentence carries"
+   }
+  },
+  {
+   "keyword": "staffy breeders",
+   "intent": "commercial",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources organic_title, organic_snippet, thread_title, question_file; df 6)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "l-2-hga",
+   "intent": "informational",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources ai_question, ai_answer, thread_question, question_file; df 6)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising",
+    "reason": "named as a test only; no result is stated (data/quality/evidence-ledger.json parents-dna-clear is NOT FETCHED — none held)"
+   }
+  },
+  {
+   "keyword": "sale in salford",
+   "intent": "local",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources organic_title, organic_snippet, competitor_h2; df 5)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "a fragment of \"for sale in Salford\"; carried by the neighbourhood term salford and the related search \"staffy puppies for sale near salford\""
+   }
+  },
+  {
+   "keyword": "kennel club",
+   "intent": "commercial",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources ai_question, ai_answer, question_file; df 5)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices",
+    "reason": "as \"Kennel Club registration paperwork\" (data/faq.json whyus-paperwork), never \"KC registered\""
+   }
+  },
+  {
+   "keyword": "puppy available",
+   "intent": "transactional",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources serp_google_paa, organic_snippet, paa, question_file; df 5)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "a fragment; the availability question (q-how-do-i-know-a-puppy-is-still-cdf916) carries the idea"
+   }
+  },
+  {
+   "keyword": "health-tested",
+   "intent": "commercial",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources thread_question, question_file; df 5)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising",
+    "reason": "never as a claim about our parents; the evidence ledger holds no proof — only in a buyer's question, or parked"
+   }
+  },
+  {
+   "keyword": "available for sale",
+   "intent": "transactional",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources serp_google_paa, paa, question_file; df 4)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "a fragment of the PAA question \"Are there blue Staffordshire Bull Terrier puppies available for sale in Manchester?\", which is carried whole"
+   }
+  },
+  {
+   "keyword": "blue staffy good",
+   "intent": "informational",
+   "type": "cooccurring",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (cooccurring; sources serp_google_paa, paa, question_file; df 4)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "a fragment of \"Are blue staffies good pets?\", which is carried whole"
+   }
+  },
+  {
+   "keyword": "staffordshire bull terrier puppies for sale in manchester",
+   "intent": "transactional",
+   "type": "similar",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (similar; sources organic_title, competitor_h2; df 3)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words"
+   }
+  },
+  {
+   "keyword": "staffordshire bull terrier puppies for sale in salford",
+   "intent": "local",
+   "type": "similar",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (similar; sources organic_title; df 2)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "staffordshire bull terrier dogs & puppies for sale",
+   "intent": "transactional",
+   "type": "similar",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (similar; sources organic_title; df 2)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "Gumtree's own listing title; marketplace furniture, not a breeder's phrase"
+   }
+  },
+  {
+   "keyword": "staffordshire bull terrier puppies for sale near me",
+   "intent": "transactional",
+   "type": "similar",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (similar; sources organic_title; df 2)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "a \"near me\" title from puppies.co.uk; the page answers it through the Manchester and Greater Manchester terms, never by writing \"near me\""
+   }
+  },
+  {
+   "keyword": "blue staffordshire bull terrier puppies for sale in bolton",
+   "intent": "local",
+   "type": "similar",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (similar; sources organic_title; df 2)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "all staffordshire bull terrier breeders near manchester",
+   "intent": "commercial",
+   "type": "similar",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (similar; sources organic_title; df 2)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "Champdogs' directory title (a listed marketplace/directory in data/competitors.json); a breeder page does not borrow it"
+   }
+  },
+  {
+   "keyword": "staffordshire bull terrier puppies for sale",
+   "intent": "transactional",
+   "type": "similar",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (similar; sources organic_title; df 1)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "staffie puppies for sale in salford, manchester",
+   "intent": "local",
+   "type": "similar",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "keyword variants, docs/research/manchester-page-run/keyword-variants.json (similar; sources competitor_h2; df 1)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "blue staffy puppies manchester cheap",
+   "intent": "transactional",
+   "type": "related",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Google related searches, data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json (2026-09-23)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "BRAND_CLASH in scripts/keyword_variants.py (cheap / under £N / free to good homes / a marketplace named in data/competitors.json): a health-tested breeder's page does not write it"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale manchester under 500",
+   "intent": "transactional",
+   "type": "related",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Google related searches, data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json and data/queries/raw/registry-staffy-puppies-for-sale-manchester/serp_google.response.json (2026-09-23)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "BRAND_CLASH in scripts/keyword_variants.py (cheap / under £N / free to good homes / a marketplace named in data/competitors.json): a health-tested breeder's page does not write it"
+   }
+  },
+  {
+   "keyword": "free staffy puppies to good homes manchester",
+   "intent": "transactional",
+   "type": "related",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Google related searches, data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json and data/queries/raw/registry-staffy-puppies-for-sale-manchester/serp_google.response.json (2026-09-23)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "BRAND_CLASH in scripts/keyword_variants.py (cheap / under £N / free to good homes / a marketplace named in data/competitors.json): a health-tested breeder's page does not write it"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale manchester gumtree",
+   "intent": "transactional",
+   "type": "related",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Google related searches, data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json and data/queries/raw/registry-staffy-puppies-for-sale-manchester/serp_google.response.json (2026-09-23)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "BRAND_CLASH in scripts/keyword_variants.py (cheap / under £N / free to good homes / a marketplace named in data/competitors.json): a health-tested breeder's page does not write it"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale manchester cheap",
+   "intent": "transactional",
+   "type": "related",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Google related searches, data/queries/raw/registry-staffy-puppies-for-sale-manchester/serp_google.response.json (2026-09-23)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "BRAND_CLASH in scripts/keyword_variants.py (cheap / under £N / free to good homes / a marketplace named in data/competitors.json): a health-tested breeder's page does not write it"
+   }
+  },
+  {
+   "keyword": "is blue staffy aggressive",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-blue-staffy-aggressive-55b447; found in: Google People Also Ask (data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json, 2026-09-23); question bank row listing-aggressive",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "are blue staffies good family pets, especially with children",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-blue-staffy-good-family-pets-especial-7e3356; found in: question bank row home-family-children",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "are blue staffies more common than other colours in the uk",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-blue-staffy-more-common-than-other-co-93f69c; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G6 FAQ",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "are blue staffies more prone to skin problems than other colours",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-blue-staffy-more-prone-to-skin-proble-9468a4; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "are blue staffies suitable for first-time dog owners",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-blue-staffy-suitable-for-first-time-d-e4e6aa; found in: question bank row listing-first-time-owners; question bank row guide-first-time-dog-owners; question bank row guide-first-time-owners; Reddit thread https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "are staffies hard to train",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-staffy-hard-to-train-a723a4; found in: question bank row listing-training",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "are the parents of your blue staffy puppies health-tested",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-the-parents-of-your-blue-staffy-puppy-523777; found in: question bank row about-health-tests; question bank row health-genetic-tested; question bank row home-parents-health-tested; question bank row about-health-tested; question bank row home-health-tests; ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25); Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising",
+    "reason": "the answer names the tests (tests-named-no-result in data/quality/evidence-ledger.json); no result is stated: the DNA certificates for Maggie and Jones are held by the breeder and shared with a buyer on request (data/quality/evidence-ledger.json certificates-on-request; docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md), not on file in the repository, so data/quality/evidence-ledger.json parents-dna-clear stays NOT FETCHED"
+   }
+  },
+  {
+   "keyword": "are the puppies raised in a family home or in kennels",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-the-puppy-raised-in-a-family-home-c93ef5; found in: question bank row about-home-raised",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "are there blue staffordshire bull terrier puppies available for sale in manchester",
+   "intent": "local",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-there-blue-staffy-puppy-available-for-5241fd; found in: Google People Also Ask (data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json, 2026-09-23)",
+   "placement": {
+    "status": "conditional",
+    "group": "G2 litter and prices",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "are your blue staffy puppies kennel club registered and health-checked",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-are-your-blue-staffy-puppy-kennel-club-re-edca46; found in: question bank row sale-kc-health-checked",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices",
+    "reason": "'KC registered' / 'Kennel Club registered' is ledger vocabulary kc-registered; a page writes it only in the ledger row parents-kc-registered-application-form's wording (the parents are registered; the puppy goes home with its KC registration application form)"
+   }
+  },
+  {
+   "keyword": "can a blue staffy puppy come from parents that are not both blue",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-can-a-blue-staffy-puppy-come-from-parents-4e444c; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G6 FAQ",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "can a staffordshire bull terrier breed club point me to breeders with planned litters",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-can-a-staffy-breed-club-point-me-to-bbf945; found in: Reddit thread https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G1 deposit and viewing",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "can a staffordshire bull terrier live in a flat",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-can-a-staffy-live-in-a-flat-310055; found in: question bank row guide-flat-living; question bank row guide-flats-uk",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "can i get a blue staffy puppy delivered to my home",
+   "intent": "transactional",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-can-i-get-a-blue-staffy-puppy-delivered-ad16e3; found in: question bank row about-delivery-home",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "can i go to a dog show to meet breeders if i have never owned a dog",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-can-i-go-to-a-dog-show-to-584dc7; found in: Reddit thread https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "a dog-show question from a thread; no data file answers it and it is not a Manchester buyer step"
+   }
+  },
+  {
+   "keyword": "can i see the puppy with its mother where the litter was raised",
+   "intent": "transactional",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-can-i-see-the-puppy-with-its-mother-dda928; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25)",
+   "placement": {
+    "status": "conditional",
+    "group": "G1 deposit and viewing",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "can i visit you before i decide",
+   "intent": "transactional",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-can-i-visit-you-before-i-decide-4fc075; found in: question bank row contact-visit",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "can a staffy be left alone for hours",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-can-staffy-be-left-alone-for-8-hours-858e97; found in: Google People Also Ask (data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json, 2026-09-23); question bank row guide-left-alone-8h; question bank row listing-left-alone",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "can you deliver a blue staffy puppy to my location in the uk",
+   "intent": "local",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-can-you-deliver-a-blue-staffy-puppy-to-74fa14; found in: question bank row sale-delivery-uk",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "are blue staffies good pets",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-do-blue-staffy-suit-a-family-home-d39c23; found in: Google People Also Ask (data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json, 2026-09-23); question bank row listing-family-dog",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "do kc registered staffies have fewer health risks",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-do-kc-registered-staffy-have-fewer-health-b37f61; found in: question bank row health-kc-fewer-risks",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices",
+    "reason": "'KC registered' / 'Kennel Club registered' is ledger vocabulary kc-registered; a page writes it only in the ledger row parents-kc-registered-application-form's wording (the parents are registered; the puppy goes home with its KC registration application form)"
+   }
+  },
+  {
+   "keyword": "do staffies get along with children and other pets",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-do-staffy-get-along-with-children-and-oth-e9aa5f; found in: question bank row guide-children-pets",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "do staffies get attached to one person",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-do-staffy-get-attached-to-one-person-6d9e29; found in: question bank row guide-attached-one-person",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "do you deliver across the uk",
+   "intent": "transactional",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-do-you-deliver-across-the-uk-fb0c4a; found in: question bank row delivery; question bank row home-safe-delivery",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "do you give a written contract and a return-to-breeder policy",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-do-you-give-a-written-contract-and-a-f01711; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25)",
+   "placement": {
+    "status": "conditional",
+    "group": "G2 litter and prices",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "do you offer health guarantees for your blue staffy puppies",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-do-you-offer-health-guarantees-for-your-b-04ef4b; found in: question bank row home-health-guarantee",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "can i contact you for advice for the dog's whole life",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-do-you-offer-support-after-i-take-my-d4ebe8; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25); question bank row home-after-support",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "do your puppies come with vet records and a health certificate",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-do-your-puppy-come-with-vet-records-and-30768c; found in: question bank row health-vet-records",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising",
+    "reason": "the heading or answer must not echo 'health certificate' / 'health-checked' (ledger vocabulary health-tested / vet-checked); the answer is the vet-signed health card (ledger row puppy-vet-signed-health-card)"
+   }
+  },
+  {
+   "keyword": "does this website use cookies",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-does-this-website-use-cookies-548566; found in: question bank row privacy-cookies",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /privacy-policy-uk/"
+   }
+  },
+  {
+   "keyword": "have both parents been tested for l-2-hga and hereditary cataracts",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-have-both-parents-been-tested-for-l-2-c365ea; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25)",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline; the answer names the tests (tests-named-no-result in data/quality/evidence-ledger.json); no result is stated: the DNA certificates for Maggie and Jones are held by the breeder and shared with a buyer on request (data/quality/evidence-ledger.json certificates-on-request; docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md), not on file in the repository, so data/quality/evidence-ledger.json parents-dna-clear stays NOT FETCHED"
+   }
+  },
+  {
+   "keyword": "have the parents had eye examinations and elbow screening",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-have-the-parents-had-eye-examinations-and-6c1484; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25)",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "should i see the puppy with its mother before any money changes hands",
+   "intent": "transactional",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-can-i-avoid-buying-from-a-puppy-5e9d7e; found in: Reddit thread https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json); question bank row health-avoid-puppy-farm",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "how can i confirm that a puppy has been examined by a vet",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-can-i-confirm-that-a-puppy-has-661d01; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "how can i tell if my puppy is an american or an english staffy",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-can-i-tell-if-my-puppy-is-c8ea81; found in: question bank row whyus-american-english",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ"
+   }
+  },
+  {
+   "keyword": "how can i tell whether a puppy advert on a uk classifieds site is genuine",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-can-i-tell-whether-a-puppy-advert-20b0e5; found in: Reddit thread https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G1 deposit and viewing",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "how do i ask for my data to be deleted",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-do-i-ask-for-my-data-to-6bfbd2; found in: question bank row privacy-delete-data",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /privacy-policy-uk/"
+   }
+  },
+  {
+   "keyword": "how do i ask something the guides do not answer",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-do-i-ask-something-the-guides-do-e24404; found in: question bank row blog-ask-a-question",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /blue-staffy-blog-guides/"
+   }
+  },
+  {
+   "keyword": "how do i find a reputable, health-tested staffy breeder in the uk",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-do-i-find-a-reputable-health-tested-12d8a7; found in: Reddit thread https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "how do i follow up on my enquiry",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-do-i-follow-up-on-my-enquiry-9abed8; found in: question bank row enquiry-follow-up",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /uk-blue-staffy-breeders-contact/ and /thank-you-blue-staffy-puppies-journey/"
+   }
+  },
+  {
+   "keyword": "how do i know a puppy is still available",
+   "intent": "transactional",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-do-i-know-a-puppy-is-still-cdf916; found in: question bank row listing-availability",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "how do i know i'm buying from reputable blue staffy breeders",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-do-i-know-im-buying-from-reputable-0472b8; found in: question bank row listing-reputable-breeders",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "how do i reserve one of your blue staffy puppies",
+   "intent": "transactional",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-do-i-reserve-one-of-your-blue-309feb; found in: question bank row sale-reserve",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "how do i tell a responsible blue staffy breeder from a backyard breeder",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-do-i-tell-a-responsible-blue-staffy-7f23e4; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G1 deposit and viewing",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "how do i spot a bad staffy breeder",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-do-i-tell-an-ethical-breeder-from-414f97; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25); question bank row buying-puppy-farm",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "how long do staffies sleep at night",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-long-do-staffy-sleep-at-night-c49bb1; found in: question bank row listing-sleep",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "how long does a staffordshire bull terrier live",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-long-does-a-staffy-live-8757a1; found in: question bank row health-lifespan",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ"
+   }
+  },
+  {
+   "keyword": "how long will you take to reply to my enquiry",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-long-will-you-take-to-reply-to-53b0c1; found in: question bank row enquiry-reply-time",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /uk-blue-staffy-breeders-contact/ and /thank-you-blue-staffy-puppies-journey/"
+   }
+  },
+  {
+   "keyword": "how much does a blue staffy puppy cost",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-much-does-a-blue-staffy-cost-uk-4051c2; found in: Google People Also Ask (data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json, 2026-09-23); question bank row listing-cost",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "how much exercise does a staffordshire bull terrier need daily",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-much-exercise-does-a-staffy-need-dail-0d2427; found in: question bank row guide-exercise-daily",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "how much exercise does a staffordshire bull terrier need each day",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-much-exercise-does-a-staffy-need-each-bd9421; found in: question bank row guide-exercise",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "how much is the deposit",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-much-is-the-deposit-2cce23; found in: question bank row deposit",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "how often do you add a new guide",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-often-do-you-add-a-new-guide-156016; found in: question bank row blog-updates",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /blue-staffy-blog-guides/"
+   }
+  },
+  {
+   "keyword": "how old should a blue staffy puppy be before it comes home",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-old-should-a-blue-staffy-puppy-be-b72e0e; found in: question bank row buying-best-age",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ"
+   }
+  },
+  {
+   "keyword": "how rare are blue staffies",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-how-rare-are-blue-staffy-c63acb; found in: question bank row breed-blue-rarity",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ",
+    "reason": "answered only from its fact_source data/breed-standards.json; the ChatGPT answer (ai_engines.response.json) warns buyers against \"rare blue\" marketing, so the answer never sells the colour as rare"
+   }
+  },
+  {
+   "keyword": "i'm looking into getting a staffy puppy. where should i start",
+   "intent": "transactional",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-im-looking-into-getting-a-staffy-puppy-wh-99b3ab; found in: question bank row whyus-start",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "is a blue staffy healthier than other colours",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-is-a-blue-staffy-healthier-than-other-col-ea555a; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25)",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "is it better to get a male or female staffy",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-is-a-male-or-female-staffy-better-d4eed7; found in: Google People Also Ask (data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json, 2026-09-23); question bank row guide-male-female",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "is a staffy a pitbull",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-is-a-staffy-a-pitbull-e881f1; found in: question bank row listing-pitbull",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ"
+   }
+  },
+  {
+   "keyword": "is it safe to pay a deposit to a seller i found through an online advert",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-is-it-safe-to-pay-a-deposit-to-6c495b; found in: Reddit thread https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G1 deposit and viewing",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "is the staffordshire bull terrier a banned breed in the uk",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-is-the-staffy-a-banned-breed-in-the-954365; found in: question bank row guide-banned-breed",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "should a staffy puppy have had its first vaccination before i collect it",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-should-a-staffy-puppy-have-had-its-first-f0d071; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G2 litter and prices",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "should i choose a staffy puppy for its colour or for health and temperament",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-should-i-choose-a-staffy-puppy-for-its-ce1348; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "should i pay a deposit before i have seen the puppy",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-should-i-pay-a-deposit-before-i-have-c724f9; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25)",
+   "placement": {
+    "status": "conditional",
+    "group": "G1 deposit and viewing",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "should the purchase contract give me time to have my own vet check the puppy",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-should-the-purchase-contract-give-me-time-3991cc; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G2 litter and prices",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "what are staffies prone to",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-are-staffy-prone-to-323dfd; found in: question bank row whyus-prone-to",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "what are the downsides of staffies",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-are-the-downsides-of-staffy-c63e95; found in: question bank row guide-downsides; also Google People Also Ask, data/queries/raw/registry-staffy-puppies-for-sale-manchester/serp_google.response.json (2026-09-23)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "what are the parents' kennel club registered names",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-are-the-parents-kennel-club-register-19d6c1; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25)",
+   "placement": {
+    "status": "conditional",
+    "group": "G2 litter and prices",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline; 'KC registered' / 'Kennel Club registered' is ledger vocabulary kc-registered; a page writes it only in the ledger row parents-kc-registered-application-form's wording (the parents are registered; the puppy goes home with its KC registration application form)"
+   }
+  },
+  {
+   "keyword": "what can i read while i wait for your reply",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-can-i-read-while-i-wait-for-815768; found in: question bank row enquiry-while-you-wait",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /thank-you-blue-staffy-puppies-journey/"
+   }
+  },
+  {
+   "keyword": "has the puppy been microchipped and vet checked",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-comes-with-a-puppy-ccf7f1; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25); question bank row puppy-package",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "what do your blue staffy guides cover",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-do-your-blue-staffy-guides-cover-e3dc8c; found in: question bank row blog-what-we-cover",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /blue-staffy-blog-guides/"
+   }
+  },
+  {
+   "keyword": "what does l-2-hga testing mean for my puppy's health",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-does-l-2-hga-testing-mean-for-27d9f9; found in: question bank row health-l2hga-meaning",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "what vaccinations, worming and flea treatments has the puppy had",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-has-a-puppy-had-before-it-comes-46de43; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25); question bank row health-vaccinations",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "what health checks do your blue staffy puppies come with",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-health-checks-do-your-blue-staffy-pu-471e6e; found in: question bank row listing-health-clearances",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising",
+    "reason": "the bank row is listing-health-clearances; the answer is the vet-signed health card (ledger row puppy-vet-signed-health-card) and names the parents' tests with no result, never 'clearances'"
+   }
+  },
+  {
+   "keyword": "what is included when i buy a blue staffy puppy from bluestaffyuk.uk",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-is-included-when-i-buy-a-blue-9734a9; found in: question bank row home-whats-included; question bank row sale-whats-included",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "what is the average lifespan of a blue staffy",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-is-the-average-lifespan-of-a-blue-73b18f; found in: question bank row health-average-lifespan",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ"
+   }
+  },
+  {
+   "keyword": "what is the difference between a staffy and a pit bull",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-is-the-difference-between-a-staffy-a-3ff151; found in: question bank row whyus-pit-bull",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ"
+   }
+  },
+  {
+   "keyword": "what is the difference between a vet-checked puppy and one from health-tested parents",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-is-the-difference-between-a-vet-chec-9af1e0; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "what is the difference between an amstaff and a staffordshire terrier (english)",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-is-the-difference-between-an-amstaff-0fd204; found in: question bank row whyus-amstaff",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ"
+   }
+  },
+  {
+   "keyword": "what is the life expectancy of a blue staffy",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-is-the-life-expectancy-of-a-blue-3737ad; found in: question bank row listing-life-expectancy",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ"
+   }
+  },
+  {
+   "keyword": "what is the parents' coefficient of inbreeding",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-is-the-parents-coefficient-of-inbree-131772; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "no coefficient of inbreeding is held in any data file (working rule 9); stating one would be invented"
+   }
+  },
+  {
+   "keyword": "what is the typical price range for a blue staffy puppy from bluestaffyuk.uk",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-is-the-typical-price-range-for-a-9f4fdd; found in: question bank row home-price-range",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "what is the typical temperament of our puppies",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-is-the-typical-temperament-of-our-pu-c20d74; found in: question bank row about-temperament",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "what makes bluestaffyuk an ethical breeder",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-makes-bluestaffyuk-an-ethical-breede-65923a; found in: question bank row home-ethical-breeder; question bank row about-ethical",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "what paperwork should a puppy advertised as kc registered come with",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-paperwork-comes-with-a-puppy-7f78f0; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json); question bank row whyus-paperwork",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices",
+    "reason": "'KC registered' / 'Kennel Club registered' is ledger vocabulary kc-registered; a page writes it only in the ledger row parents-kc-registered-application-form's wording (the parents are registered; the puppy goes home with its KC registration application form)"
+   }
+  },
+  {
+   "keyword": "what personal information does bluestaffyuk collect",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-personal-information-does-bluestaffy-9e259c; found in: question bank row privacy-data-collected",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /privacy-policy-uk/"
+   }
+  },
+  {
+   "keyword": "what should a first-time dog owner know before getting a blue staffy",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-should-a-first-time-dog-owner-know-0cf517; found in: question bank row about-first-time",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "what should i ask a blue staffy breeder before i buy",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-should-i-ask-a-blue-staffy-breeder-432d61; found in: question bank row buying-what-to-ask",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "what should i do if a puppy i have viewed has mites",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-should-i-do-if-a-puppy-i-caa8e4; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "an owner's after-viewing problem (mites) from a thread, outside a Manchester buying page; no data file answers it"
+   }
+  },
+  {
+   "keyword": "what food is the puppy eating now",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-should-i-feed-my-new-staffy-puppy-018b55; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25); question bank row health-puppy-diet",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "what should i put in my message",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-should-i-put-in-my-message-516b4b; found in: question bank row contact-what-to-say",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "site chrome, not a buyer query for this page; it belongs to /uk-blue-staffy-breeders-contact/"
+   }
+  },
+  {
+   "keyword": "what socialisation has the puppy had",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-socialisation-has-the-puppy-had-06a259; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25)",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question file marks it blocked: unverified fact; it goes on the page only where a data file answers it (working rule 9), else it is parked at the outline"
+   }
+  },
+  {
+   "keyword": "what two breeds make a staffy",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-two-breeds-make-a-staffy-2ef527; found in: question bank row about-two-breeds",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G6 FAQ"
+   }
+  },
+  {
+   "keyword": "what vaccinations do your puppies have before i take them home",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-what-vaccinations-do-your-puppy-have-befo-cfc6a9; found in: question bank row health-vaccinations-before-home",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "where can i buy a blue staffy puppy near manchester",
+   "intent": "local",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-where-can-i-find-blue-staffy-breeders-in-fbecea; found in: ChatGPT answer (data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json, 2026-09-25); question bank row home-find-breeders",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; G1 deposit and viewing"
+   }
+  },
+  {
+   "keyword": "are both parents dna tested clear for l-2-hga and hc-hsf4",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-which-genetic-tests-have-the-parents-had-19da02; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json); question bank row health-dna-tests",
+   "placement": {
+    "status": "conditional",
+    "group": "G4 health and raising",
+    "reason": "the question carries the ledger vocabulary dna-clear / 'clearances for'; the answer names the tests only and no result is stated: the DNA certificates for Maggie and Jones are held by the breeder and shared with a buyer on request (data/quality/evidence-ledger.json certificates-on-request; docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md), not on file in the repository, so data/quality/evidence-ledger.json parents-dna-clear stays NOT FETCHED"
+   }
+  },
+  {
+   "keyword": "can i see the genetic test results for both parents before i commit",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-which-health-tests-have-both-parents-had-e08a30; found in: Reddit thread https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json); question bank row whyus-evidence",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising",
+    "reason": "answered only in the certificates-on-request wording of data/quality/evidence-ledger.json (the certificates are shared on request); no result is stated: the DNA certificates for Maggie and Jones are held by the breeder and shared with a buyer on request (data/quality/evidence-ledger.json certificates-on-request; docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md), not on file in the repository, so data/quality/evidence-ledger.json parents-dna-clear stays NOT FETCHED"
+   }
+  },
+  {
+   "keyword": "who are the bluestaffyuk stud dogs and how do we ensure temperament in our breeding program",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-who-are-the-bluestaffyuk-stud-dogs-and-ho-54449c; found in: question bank row whyus-stud-dogs",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "why do staffies scratch so much",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-why-do-staffy-scratch-so-much-5ca7a6; found in: question bank row listing-scratching",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "why should families choose bluestaffyuk as their trusted breeding partner for staffordshire bull terriers in the uk",
+   "intent": "navigational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-why-should-families-choose-bluestaffyuk-a-6d3355; found in: question bank row whyus-partner",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "a migrated homepage FAQ heading, not a Manchester buyer query; the homepage and /blue-staffy-uk-breeders/ own it"
+   }
+  },
+  {
+   "keyword": "why weren't staffordshire bull terriers banned in the uk",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "question file data/queries/blue-staffy-puppies-manchester-uk.json q-why-werent-staffy-banned-in-the-uk-9c6951; found in: question bank row whyus-not-banned",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester"
+   }
+  },
+  {
+   "keyword": "how much would a staffy puppy cost",
+   "intent": "commercial",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Google People Also Ask, data/queries/raw/registry-staffy-puppies-for-sale-manchester/serp_google.response.json (2026-09-23)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G2 litter and prices"
+   }
+  },
+  {
+   "keyword": "are there staffordshire bull terrier puppies available for sale in manchester",
+   "intent": "local",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Google People Also Ask, data/queries/raw/registry-staffy-puppies-for-sale-manchester/serp_google.response.json (2026-09-23)",
+   "placement": {
+    "status": "conditional",
+    "group": "G2 litter and prices",
+    "reason": "the question file blocks its blue twin (q-are-there-blue-staffy-puppy-available-for-5241fd: unverified fact); availability is answered only from data/puppies.json status, and our puppies are in Carlisle, not Manchester"
+   }
+  },
+  {
+   "keyword": "as a first-time owner, should i get a staffy puppy or an adult rescue",
+   "intent": "informational",
+   "type": "question",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "Reddit thread https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/ (data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "\"rescue\" is a BRAND_CLASH term in scripts/keyword_variants.py; the first-time-owner question (q-are-blue-staffy-suitable-for-first-time-d-e4e6aa) carries the buyer's need"
+   }
+  },
+  {
+   "keyword": "greater manchester",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{1,5,8}.html (2 domains: pets4homes.co.uk, puppies.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note); the strategy row's keyword (\"…manchester greater manchester\"); Bing result urls under /greater-manchester/ (serp_bing.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words; G3 delivery to Greater Manchester",
+    "reason": "a town name says where we deliver (UK home delivery by DEFRA-approved transport, priced by distance, data/settings.json delivery_note); never a mileage or a drive time"
+   }
+  },
+  {
+   "keyword": "salford",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,3,5,6,7}.html (3 domains: freeads.co.uk, puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note); Google related search \"Staffy puppies for sale near Salford\" and the rank-2 organic title (serp_google.response.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester",
+    "reason": "a town name says where we deliver (UK home delivery by DEFRA-approved transport, priced by distance, data/settings.json delivery_note); never a mileage or a drive time"
+   }
+  },
+  {
+   "keyword": "stockport",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{1,2,3,5,6,7}.html (4 domains: freeads.co.uk, pets4homes.co.uk, puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester",
+    "reason": "a town name says where we deliver (UK home delivery by DEFRA-approved transport, priced by distance, data/settings.json delivery_note); never a mileage or a drive time"
+   }
+  },
+  {
+   "keyword": "bolton",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,6,7}.html (1 domains: staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note); the rank-7 organic title \"Blue Staffordshire Bull Terrier Puppies For Sale In Bolton\" (serp_google.response.json); the ChatGPT answer names Bolton only as a competitor business's town (ai_engines.response.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester",
+    "reason": "a town name says where we deliver (UK home delivery by DEFRA-approved transport, priced by distance, data/settings.json delivery_note); never a mileage or a drive time"
+   }
+  },
+  {
+   "keyword": "wigan",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{1,2,3,5,6,7}.html (4 domains: freeads.co.uk, pets4homes.co.uk, puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester",
+    "reason": "a town name says where we deliver (UK home delivery by DEFRA-approved transport, priced by distance, data/settings.json delivery_note); never a mileage or a drive time"
+   }
+  },
+  {
+   "keyword": "rochdale",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{1,2,6,7}.html (2 domains: pets4homes.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester",
+    "reason": "a town name says where we deliver (UK home delivery by DEFRA-approved transport, priced by distance, data/settings.json delivery_note); never a mileage or a drive time"
+   }
+  },
+  {
+   "keyword": "middleton",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "stretford",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "eccles",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "swinton",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "urmston",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "sale",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "whitefield",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "denton",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "droylsden",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "failsworth",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "radcliffe",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "dukinfield",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7,3}.html (3 domains: freeads.co.uk, puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "chadderton",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "ashton-under-lyne",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "cheadle",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "gatley",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "worsley",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "kearsley",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,5,6,7}.html (2 domains: puppies.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested only as an entry in a marketplace town index (staffie-owners.co.uk's town list; puppies.co.uk's \"Nearest towns and cities\"); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "oldham",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "PENDING — Task 5 paid keyword_volume call",
+   "source": "cached competitor pages data/queries/cache/blue-staffy-puppies-manchester-uk/{2,3,6,7}.html (2 domains: freeads.co.uk, staffie-owners.co.uk; pages 1-2 and 4-8 fetched 2026-09-23, page 3 (freeads) saved 2026-10-07 per competitors.json note)",
+   "placement": {
+    "status": "parked",
+    "group": null,
+    "reason": "attested as a staffie-owners town-index entry and as one freeads listing's location (another breed); parked unless the outline gives the delivery section a towns line"
+   }
+  }
+ ]
+}

@@ -1,0 +1,267 @@
+{
+  "slug": "blue-staffy-puppies-manchester-uk",
+  "primary": "blue staffy puppies manchester",
+  "buckets": {
+    "variation": [
+      {
+        "term": "blue staffy",
+        "sources": [
+          "serp_google_paa"
+        ],
+        "df": 36
+      },
+      {
+        "term": "blue staffy puppy",
+        "sources": [
+          "serp_google_paa"
+        ],
+        "df": 12
+      },
+      {
+        "term": "blue staffies",
+        "sources": [
+          "serp_google_paa"
+        ],
+        "df": 10
+      },
+      {
+        "term": "blue staffy puppies",
+        "sources": [
+          "organic_snippet"
+        ],
+        "df": 9
+      },
+      {
+        "term": "blue staffordshire bull terrier",
+        "sources": [
+          "serp_google_paa"
+        ],
+        "df": 7
+      },
+      {
+        "term": "blue staffordshire bull terrier puppies",
+        "sources": [
+          "serp_google_paa"
+        ],
+        "df": 7
+      },
+      {
+        "term": "blue staffie",
+        "sources": [
+          "organic_snippet"
+        ],
+        "df": 4
+      },
+      {
+        "term": "blue staffie puppies",
+        "sources": [
+          "organic_snippet"
+        ],
+        "df": 4
+      }
+    ],
+    "related": [
+      {
+        "term": "blue staffy puppies manchester kennel club",
+        "sources": [
+          "serp_google_related"
+        ],
+        "df": 2
+      },
+      {
+        "term": "staffy puppies for sale near salford",
+        "sources": [
+          "serp_google_related"
+        ],
+        "df": 2
+      },
+      {
+        "term": "staffy puppies for sale manchester kennel club",
+        "sources": [
+          "serp_google_related"
+        ],
+        "df": 1
+      },
+      {
+        "term": "blue staffy puppies for sale manchester",
+        "sources": [
+          "serp_google_related"
+        ],
+        "df": 1
+      }
+    ],
+    "cooccurring": [
+      {
+        "term": "both parents",
+        "sources": [
+          "ai_question",
+          "thread_question",
+          "question_file"
+        ],
+        "df": 7
+      },
+      {
+        "term": "staffy breeder",
+        "sources": [
+          "ai_question",
+          "thread_question",
+          "question_file"
+        ],
+        "df": 7
+      },
+      {
+        "term": "staffy dogs",
+        "sources": [
+          "organic_title",
+          "organic_snippet"
+        ],
+        "df": 7
+      },
+      {
+        "term": "dogs puppy",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 6
+      },
+      {
+        "term": "staffy breeders",
+        "sources": [
+          "organic_title",
+          "organic_snippet",
+          "thread_title",
+          "question_file"
+        ],
+        "df": 6
+      },
+      {
+        "term": "l-2-hga",
+        "sources": [
+          "ai_question",
+          "ai_answer",
+          "thread_question",
+          "question_file"
+        ],
+        "df": 6
+      },
+      {
+        "term": "sale in salford",
+        "sources": [
+          "organic_title",
+          "organic_snippet",
+          "competitor_h2"
+        ],
+        "df": 5
+      },
+      {
+        "term": "kennel club",
+        "sources": [
+          "ai_question",
+          "ai_answer",
+          "question_file"
+        ],
+        "df": 5
+      },
+      {
+        "term": "puppy available",
+        "sources": [
+          "serp_google_paa",
+          "organic_snippet",
+          "paa",
+          "question_file"
+        ],
+        "df": 5
+      },
+      {
+        "term": "health-tested",
+        "sources": [
+          "thread_question",
+          "question_file"
+        ],
+        "df": 5
+      },
+      {
+        "term": "available for sale",
+        "sources": [
+          "serp_google_paa",
+          "paa",
+          "question_file"
+        ],
+        "df": 4
+      },
+      {
+        "term": "blue staffy good",
+        "sources": [
+          "serp_google_paa",
+          "paa",
+          "question_file"
+        ],
+        "df": 4
+      }
+    ],
+    "similar": [
+      {
+        "term": "staffordshire bull terrier puppies for sale in manchester",
+        "sources": [
+          "organic_title",
+          "competitor_h2"
+        ],
+        "df": 3
+      },
+      {
+        "term": "staffordshire bull terrier puppies for sale in salford",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 2
+      },
+      {
+        "term": "staffordshire bull terrier dogs & puppies for sale",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 2
+      },
+      {
+        "term": "staffordshire bull terrier puppies for sale near me",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 2
+      },
+      {
+        "term": "blue staffordshire bull terrier puppies for sale in bolton",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 2
+      },
+      {
+        "term": "all staffordshire bull terrier breeders near manchester",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 2
+      },
+      {
+        "term": "staffordshire bull terrier puppies for sale",
+        "sources": [
+          "organic_title"
+        ],
+        "df": 1
+      },
+      {
+        "term": "staffie puppies for sale in salford, manchester",
+        "sources": [
+          "competitor_h2"
+        ],
+        "df": 1
+      }
+    ]
+  },
+  "examined": {
+    "documents": 225,
+    "titles": 36,
+    "related": 18
+  }
+}
