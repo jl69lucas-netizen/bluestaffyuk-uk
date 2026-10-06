@@ -27,6 +27,9 @@
 
 ## Open Flags
 
+- **Question file — a health-result FAQ pick got through (Task 4, 2026-10-07):** the rebuilt `data/queries/blue-staffy-puppies-manchester-uk.json` picks "Are both parents DNA tested clear for L-2-HGA and HC-HSF4?" (middle block, `bank:health-dna-tests`) in place of "Can I see the genetic test results…". Its wording assumes a result we never state (working rule 9; lessons 9; Known Issue 98). The builder skill says `scripts/query_augment.py` blocks a question only a `parents-dna-clear` row could answer, and it did not block this one — charge it to the harness (a known-broken fixture, then the fix), decided before STOP 2.
+- **Live SERP drift (Task 4):** the live Google read of 2026-10-07 has Staffie Owners' Bolton blue facet at #3 (#6 in the banked 2026-09-23 SERP). The pool stays the banked SERP; adding Bolton is a free curl and a rebuild if the user wants it.
+- **Word target:** `NOT FETCHED — fewer than two prose competitor pages (1 used)`, as London — the word band is the user's pick on the research board.
 - **Workflow check — grill-me's description says "Run AFTER Sprint 0 intelligence is complete"**, while page-run row 1 runs it first at session open. The run follows page-run.md; the skill's description should say so.
 - **Workflow check — row 11 (Asset Gate) names no image skill** (`bsuk-image-generation`, `bsuk-photo-ingest`, `image-metadata`), so the route map shows none there.
 - **Known Issue 99** blocks Manchester's gate:page; it is calibrated after row 5 fetches Manchester's competitor pages, before STOP 3.

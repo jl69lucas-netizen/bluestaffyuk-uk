@@ -1,6 +1,7 @@
 {
   "status": "ok",
   "fetched": "2026-09-23",
+  "note": "Pool: Google top 5 organic (DataForSEO, 2026-09-23) merged with Bing top 5 (read in the browser, 2026-09-23), de-duplicated by URL. Pages 1-2 and 4-8 are the pilot's saves of 2026-09-23, unchanged. Page 3 (freeads) returned a Cloudflare 'Just a moment' page on 2026-09-23 and was recorded blocked; on 2026-10-07 curl got the same page again (HTTP 403), and a Playwright capture with the repo's Chromium, headless and then headed, held at the same Cloudflare interstitial for 30-41 s with no interaction (the check was never clicked or worked around). It was then saved from one Firecrawl scrape (rawHtml, basic proxy, live fetch, HTTP 200, 1 credit) on 2026-10-07, and its h2, h2_all and blocked were copied from python3 scripts/query_augment.py --extract-h2 on that file.",
   "pages": [
     {
       "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-manchester/manchester/",
@@ -104,23 +105,69 @@
       "url": "https://www.freeads.co.uk/manchester/buy-sell/pets/dogs/staffordshire-bull-terrier/",
       "google_pos": 3,
       "bing_pos": 3,
-      "h2": [],
-      "h2_all": 0,
-      "blocked": true,
+      "h2": [
+        "Refine your results",
+        "You might also like near Manchester",
+        "Latest featured ads in Staffordshire Bull Terrier",
+        "Buyer's Advice"
+      ],
+      "h2_all": 14,
+      "blocked": false,
       "metrics": {
-        "title": "Just a moment...",
-        "meta_description": null,
-        "word_count": 0,
-        "intro_words": 0,
-        "sections": [],
-        "h3_count": 0,
-        "images": 0,
-        "videos": 0,
+        "title": "Staffordshire Bull Terrier Puppies and Dogs for sale in Manchester | Freeads Pets",
+        "meta_description": "Find 234 Staffordshire Bull Terrier for sale on Freeads Pets in Manchester. Give a puppy a forever home or rehome a rescue. Create new dog alerts. Advertise a dog for FREE.",
+        "word_count": 3922,
+        "intro_words": 42,
+        "sections": [
+          {
+            "h2": "Refine your results",
+            "words": 886,
+            "h3_count": 5,
+            "h3": [
+              "Category",
+              "Location",
+              "Miles",
+              "Distance",
+              "Price Range (£)"
+            ]
+          },
+          {
+            "h2": "You might also like near Manchester",
+            "words": 103,
+            "h3_count": 0,
+            "h3": []
+          },
+          {
+            "h2": "Latest featured ads in Staffordshire Bull Terrier",
+            "words": 2788,
+            "h3_count": 3,
+            "h3": [
+              "Which size of breed are you looking for?",
+              "Popular Mixed Breeds",
+              "Which type of dog are you looking for?"
+            ]
+          },
+          {
+            "h2": "Buyer's Advice",
+            "words": 34,
+            "h3_count": 0,
+            "h3": []
+          }
+        ],
+        "h3_count": 8,
+        "images": 222,
+        "videos": 4,
         "tables": 0,
-        "schema_types": [],
-        "scope": "main",
+        "schema_types": [
+          "BreadcrumbList",
+          "ImageObject",
+          "ListItem",
+          "Organization",
+          "WebSite"
+        ],
+        "scope": "body",
         "grid_share": 0,
-        "section_share": 0,
+        "section_share": 98,
         "listing": null,
         "scrubbed": 0
       }

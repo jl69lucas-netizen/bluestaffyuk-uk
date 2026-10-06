@@ -3,8 +3,8 @@
   "page_type": "location",
   "primary_keyword": "blue staffy puppies manchester",
   "route": "/uk-locations/blue-staffy-puppies-manchester-uk/",
-  "fetched": "2026-09-23",
-  "spend_usd": 0.2,
+  "fetched": "2026-10-06",
+  "spend_usd": 0.21,
   "sources": {
     "serp_google": "ok",
     "serp_bing": "ok",
@@ -21,7 +21,8 @@
       "h2_raw": 1,
       "h2_clean": 0,
       "outlier": false,
-      "blocked": false
+      "blocked": false,
+      "words": 1783
     },
     {
       "url": "https://www.staffie-owners.co.uk/staffies-for-sale/salford-manchester",
@@ -30,16 +31,18 @@
       "h2_raw": 22,
       "h2_clean": 0,
       "outlier": false,
-      "blocked": false
+      "blocked": false,
+      "words": 2155
     },
     {
       "url": "https://www.freeads.co.uk/manchester/buy-sell/pets/dogs/staffordshire-bull-terrier/",
       "google_pos": 3,
       "bing_pos": 3,
-      "h2_raw": 0,
-      "h2_clean": 0,
+      "h2_raw": 14,
+      "h2_clean": 1,
       "outlier": false,
-      "blocked": true
+      "blocked": false,
+      "words": 3922
     },
     {
       "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/manchester",
@@ -48,7 +51,8 @@
       "h2_raw": 15,
       "h2_clean": 0,
       "outlier": false,
-      "blocked": false
+      "blocked": false,
+      "words": 386
     },
     {
       "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/manchester",
@@ -57,7 +61,8 @@
       "h2_raw": 3,
       "h2_clean": 0,
       "outlier": false,
-      "blocked": false
+      "blocked": false,
+      "words": 1349
     },
     {
       "url": "https://www.staffie-owners.co.uk/staffies-for-sale/manchester?colour=blue",
@@ -66,7 +71,8 @@
       "h2_raw": 22,
       "h2_clean": 0,
       "outlier": false,
-      "blocked": false
+      "blocked": false,
+      "words": 2216
     },
     {
       "url": "https://www.staffie-owners.co.uk/staffies-for-sale/manchester",
@@ -75,7 +81,8 @@
       "h2_raw": 22,
       "h2_clean": 0,
       "outlier": false,
-      "blocked": false
+      "blocked": false,
+      "words": 2144
     },
     {
       "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=blue+staf",
@@ -84,7 +91,8 @@
       "h2_raw": 1,
       "h2_clean": 0,
       "outlier": false,
-      "blocked": false
+      "blocked": false,
+      "words": 1799
     }
   ],
   "section_target": {
@@ -93,6 +101,46 @@
     "extra": 3,
     "floor": 9,
     "total": 9
+  },
+  "word_target": {
+    "median": null,
+    "from": 1,
+    "of": 8,
+    "used": [
+      "https://www.freeads.co.uk/manchester/buy-sell/pets/dogs/staffordshire-bull-terrier/"
+    ],
+    "excluded": [
+      {
+        "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-manchester/manchester/",
+        "reason": "listing: card grid holds 100% of the prose"
+      },
+      {
+        "url": "https://www.staffie-owners.co.uk/staffies-for-sale/salford-manchester",
+        "reason": "listing: card grid holds 81% of the prose"
+      },
+      {
+        "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/manchester",
+        "reason": "listing: card grid holds 76% of the prose"
+      },
+      {
+        "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/manchester",
+        "reason": "listing: JSON-LD ItemList, only 12% of the prose sits in content sections"
+      },
+      {
+        "url": "https://www.staffie-owners.co.uk/staffies-for-sale/manchester?colour=blue",
+        "reason": "listing: card grid holds 82% of the prose"
+      },
+      {
+        "url": "https://www.staffie-owners.co.uk/staffies-for-sale/manchester",
+        "reason": "listing: card grid holds 82% of the prose"
+      },
+      {
+        "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=blue+staf",
+        "reason": "listing: card grid holds 100% of the prose"
+      }
+    ],
+    "notes": [],
+    "status": "NOT FETCHED — fewer than two prose competitor pages (1 used)"
   },
   "extra_sections": [
     {
@@ -119,7 +167,7 @@
       "topic": "health",
       "uncovered": true,
       "question_ids": [
-        "q-which-genetic-tests-are-the-parents-clear-c94eed",
+        "q-which-health-tests-have-both-parents-had-e08a30",
         "q-do-you-offer-health-guarantees-for-your-b-04ef4b",
         "q-what-are-staffy-prone-to-323dfd"
       ],
@@ -394,22 +442,6 @@
       "covered_by": null
     },
     {
-      "id": "q-can-i-see-the-health-test-results-for-212d56",
-      "question": "Can I see the genetic test results for both parents before I commit?",
-      "found_in": [
-        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/",
-        "bank:whyus-evidence"
-      ],
-      "score": 4,
-      "topic": "health",
-      "block": "middle",
-      "fact_source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
-      "must_answer": true,
-      "faq": "middle",
-      "blocked": null,
-      "covered_by": null
-    },
-    {
       "id": "q-can-i-see-the-puppy-with-its-mother-dda928",
       "question": "Can I see the puppy with its mother where the litter was raised?",
       "found_in": [
@@ -572,7 +604,7 @@
       "score": 2,
       "topic": "health",
       "block": "middle",
-      "fact_source": "src/pages/index.astro",
+      "fact_source": "data/settings.json",
       "must_answer": true,
       "faq": null,
       "blocked": null,
@@ -1003,6 +1035,21 @@
       "covered_by": null
     },
     {
+      "id": "q-how-rare-are-blue-staffy-c63acb",
+      "question": "How Rare Are Blue Staffies?",
+      "found_in": [
+        "bank:breed-blue-rarity"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "data/breed-standards.json",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
       "id": "q-im-looking-into-getting-a-staffy-puppy-wh-99b3ab",
       "question": "I’m looking into getting a Staffy puppy. Where should I start?",
       "found_in": [
@@ -1321,8 +1368,8 @@
       "covered_by": null
     },
     {
-      "id": "q-what-health-clearances-do-your-blue-staff-68eec7",
-      "question": "What health clearances do your blue Staffy puppies come with?",
+      "id": "q-what-health-checks-do-your-blue-staffy-pu-471e6e",
+      "question": "What health checks do your blue Staffy puppies come with?",
       "found_in": [
         "bank:listing-health-clearances"
       ],
@@ -1656,7 +1703,7 @@
       "covered_by": null
     },
     {
-      "id": "q-which-genetic-tests-are-the-parents-clear-c94eed",
+      "id": "q-which-genetic-tests-have-the-parents-had-19da02",
       "question": "Are both parents DNA tested clear for L-2-HGA and HC-HSF4?",
       "found_in": [
         "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/",
@@ -1666,6 +1713,22 @@
       "topic": "health",
       "block": "middle",
       "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-which-health-tests-have-both-parents-had-e08a30",
+      "question": "Can I see the genetic test results for both parents before I commit?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/",
+        "bank:whyus-evidence"
+      ],
+      "score": 4,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
       "must_answer": true,
       "faq": null,
       "blocked": null,
