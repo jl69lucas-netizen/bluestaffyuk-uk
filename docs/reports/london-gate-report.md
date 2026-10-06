@@ -45,7 +45,7 @@ Session open, impeccable (2026-10-06: 1 finding, 1 fixed), frontend-design (2026
 - `npm run test:render:city`: London 0 failures in every run. The specimen page `/kit-preview/city-page/` failed one timing probe in 3 of 6 parallel runs and passed when run alone (lessons, entry 20).
 - `npm run check:sitemaps`: 63 built pages, 0 problems.
 
-## Open, and recorded
+## Open items
 
 - The delivery section is 210 prose words against its 171–209 band (a board WARN), because the map's caption and note added words.
 - Known Issue 99: tune the location word-count ceilings before the next city.
