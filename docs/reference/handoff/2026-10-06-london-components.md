@@ -6,11 +6,14 @@ Continue this project in a new chat. Everything below was read from the repo by 
 
 - Worktree: `/Users/apple/Downloads/BSUK/BSUK-london`
 - Branch: `london-components`
-- HEAD: `c9a8b0b0`
-- git status: dirty (1 changed paths)
+- HEAD: `cb3f5bcd`
+- git status: clean
 
 ## Last 10 commits
 
+- cb3f5bcd fix(route): the route map's status poll takes no git index lock (--no-optional-locks), so it can't block a commit
+- 02b38990 docs(artifacts): session handoff page (copy whole or per section)
+- cfa47826 docs(handoff): the 2026-10-06 handoff for the next chat (London closed and merged)
 - c9a8b0b0 docs(session): mark the London brief's open flags as history and the board-v3 plan as complete, for the handoff
 - c32968a3 docs(session): fill What's Next in the London run brief at the close (session-closer)
 - 88a80f39 fix(route): a gate run stays current across docs-only commits; the gate report page regenerated at the final close
@@ -18,9 +21,6 @@ Continue this project in a new chat. Everything below was read from the repo by 
 - 5b20b9cc docs(page-run): record London's verification before completion (build, check:all, gate:page --skip-record, all exit 0; check:all examined 27)
 - dbc05a46 docs(page-run): record London's frontend-design Harden pass, fourth run (0 findings; 375/768/1280)
 - 069ed826 docs(harden): London's frontend-design pass, fourth run (0 findings; 375/768/1280)
-- ad2c9c40 docs(page-run): record London's impeccable Harden pass, fourth run (1 finding, 1 fixed; 375/768/1280)
-- f0d155b1 fix(dial): the dial scrolls its own box to show the row it marks (impeccable Harden pass 2026-10-06b, F1)
-- fab1d951 docs(known-issues): 100 London's puppy cards without photos (deferred to project 6); 101 PageDial's batch-only scroll spy
 
 ## Newest session brief
 
