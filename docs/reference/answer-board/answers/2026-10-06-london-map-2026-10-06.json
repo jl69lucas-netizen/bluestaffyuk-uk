@@ -1,0 +1,33 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "In the delivery chapter, after \"…from Enfield in the north to Sutton in the south.\"",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Where should the map go?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "S1 · Steel panel with a brass pin",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Which style before it's tapped?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-06T00:00:50.529Z",
+  "batchId": "2026-10-06-london-map",
+  "counts": {
+    "answered": 2,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-06T00-00-50-527Z"
+}
