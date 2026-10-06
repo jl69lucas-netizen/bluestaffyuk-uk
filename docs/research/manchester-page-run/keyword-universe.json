@@ -2,7 +2,7 @@
  "slug": "blue-staffy-puppies-manchester-uk",
  "date": "2026-10-07",
  "status": "DRAFT — page-run row 6 (plan Task 8 step 3). Placements are proposals for the outline (STOP 2), not decisions.",
- "volumes": "Filled 2026-10-07 from free sources (the user's instruction, DataForSEO balance $0.25): Google Keyword Planner ranges where the planner returned the phrase; otherwise NOT FETCHED with its barrier, noting where Google autocomplete attests the phrase. Ranges are never narrowed and never converted.",
+ "volumes": "Filled 2026-10-07 from free sources on the user's instruction (DataForSEO balance $0.25): a Google Keyword Planner range where the planner returned the phrase; every other row names in its own volume field why no figure was read, and whether Google autocomplete attests the phrase. Ranges are never narrowed and never converted. Planner phrases missing from the first draft were added as rows.",
  "groups": [
   "hero, title, H1 and first 100 words",
   "G1 deposit and viewing",
@@ -1972,6 +1972,413 @@
     "status": "parked",
     "group": null,
     "reason": "attested as a staffie-owners town-index entry and as one freeads listing's location (another breed); parked unless the outline gives the delivery section a towns line"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale manchester",
+   "intent": "transactional",
+   "type": "secondary",
+   "volume": "100 – 1K / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words",
+    "why": "the highest planner band for Manchester (100–1K)"
+   }
+  },
+  {
+   "keyword": "staffies for sale manchester",
+   "intent": "transactional",
+   "type": "secondary",
+   "volume": "100 – 1K / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words",
+    "why": "the highest planner band for Manchester (100–1K)"
+   }
+  },
+  {
+   "keyword": "staffordshire bull terrier for sale manchester",
+   "intent": "transactional",
+   "type": "secondary",
+   "volume": "100 – 1K / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words",
+    "why": "the highest planner band for Manchester (100–1K)"
+   }
+  },
+  {
+   "keyword": "staffordshire bull terrier puppies manchester",
+   "intent": "transactional",
+   "type": "variation",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "-90%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words"
+   }
+  },
+  {
+   "keyword": "blue staffy manchester",
+   "intent": "transactional",
+   "type": "variation",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words"
+   }
+  },
+  {
+   "keyword": "staffy puppies manchester",
+   "intent": "transactional",
+   "type": "variation",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "-90%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words"
+   }
+  },
+  {
+   "keyword": "staffy rescue manchester",
+   "intent": "informational",
+   "type": "related",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "-90%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G5 life in Manchester",
+    "why": "rescue-or-breeder passage (live related searches and the Dogs Trust Manchester result, fanout.md §4)"
+   }
+  },
+  {
+   "keyword": "blue staff puppies for sale manchester",
+   "intent": "transactional",
+   "type": "variation",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words"
+   }
+  },
+  {
+   "keyword": "blue staffies for sale manchester",
+   "intent": "transactional",
+   "type": "variation",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "hero, title, H1 and first 100 words"
+   }
+  },
+  {
+   "keyword": "staffy breeder manchester",
+   "intent": "commercial",
+   "type": "similar",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G4 health and raising"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale wigan",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "staffy puppies salford",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies bolton",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies stockport",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies oldham",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies rochdale",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies wigan",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies bury",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies trafford",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies tameside",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies altrincham",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale bolton",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale stockport",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale oldham",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale rochdale",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "10 – 100 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "0%",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "placed (proposed)",
+    "group": "G3 delivery to Greater Manchester"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale salford",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale bury",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale trafford",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale tameside",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy puppies for sale altrincham",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
+   }
+  },
+  {
+   "keyword": "staffy for sale bolton",
+   "intent": "local",
+   "type": "neighbourhood",
+   "volume": "0 – 10 / month (range)",
+   "volume_source": "Google Keyword Planner, UK, en, Sep 2025–Aug 2026, read 2026-10-07 in the user's Chrome (docs/research/manchester-page-run/free-keyword-signals.json); a bucketed range, the account runs no campaign",
+   "volume_yoy": "—",
+   "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
+   "placement": {
+    "status": "parked",
+    "why": "0–10 a month in the planner; the borough is named in the delivery section only if the outline lists it"
    }
   }
  ]
