@@ -104,3 +104,39 @@ def test_a_gate_report_from_an_older_commit_does_not_prove_the_gates(tmp_path, m
     s = PS.status(SLUG, tmp_path)
     assert s["now"] == 17
     assert "(not HEAD)" in s["rows"][16]["evidence"]
+
+
+def _gated_tree(tmp_path, monkeypatch, *, base, changed):
+    _built(tmp_path)
+    _write(tmp_path, f"data/quality/scorecards/uk-locations__{SLUG}-2026-10-05.json", {})
+    _write(tmp_path, f"data/page-runs/{SLUG}.json", {"session_open": {}, "impeccable": {}, "frontend_design": {}})
+    steps = [{"step": "hardening", "ok": [True, True]}, {"step": "aeo", "ok": [True, True]}]
+    _write(tmp_path, f"docs/reports/gate-page/{SLUG}.json",
+           {"verdict": "PASS", "identical": True, "head": "old", "steps": steps})
+
+    def git(root, *a):
+        if a[:1] == ("rev-parse",):
+            return "new"
+        if a[:1] == ("merge-base",):
+            return base
+        if a[:1] == ("diff",):
+            return "\n".join(changed)
+        return ""
+    monkeypatch.setattr(PS, "_git", git)
+    return PS.status(SLUG, tmp_path)
+
+
+def test_a_docs_only_commit_after_gating_keeps_the_gate_current(tmp_path, monkeypatch):
+    s = _gated_tree(tmp_path, monkeypatch, base="old", changed=["docs/reports/london-gate-report.md"])
+    assert s["rows"][16]["state"] == "done"
+
+
+def test_a_page_change_after_gating_makes_the_gate_stale(tmp_path, monkeypatch):
+    s = _gated_tree(tmp_path, monkeypatch, base="old",
+                    changed=["docs/reports/x.md", "src/pages/uk-locations/demo-city.astro"])
+    assert s["now"] == 17
+
+
+def test_a_gate_from_another_branch_is_never_current(tmp_path, monkeypatch):
+    s = _gated_tree(tmp_path, monkeypatch, base="elsewhere", changed=["docs/a.md"])
+    assert s["now"] == 17

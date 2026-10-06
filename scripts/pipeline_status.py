@@ -74,7 +74,12 @@ def evidence(slug, root=ROOT):
     gate = _json(root / "docs" / "reports" / "gate-page" / f"{slug}.json") or {}
     steps = {s.get("step"): s for s in gate.get("steps", [])}
     head = _git(root, "rev-parse", "HEAD")
-    at_head = bool(head) and gate.get("head") == head
+    gated = gate.get("head") or ""
+    # A gate run stays current while only reports and docs changed after it (lessons, entry 21):
+    # committing the gate report itself must not make the gate look stale.
+    since = _git(root, "diff", "--name-only", gated, "HEAD") if gated and head and gated != head else ""
+    at_head = bool(head) and (gated == head or (bool(gated) and _git(root, "merge-base", gated, "HEAD") == gated
+                                                 and all(f.startswith("docs/") for f in since.splitlines() if f.strip())))
     ledger = _json(root / "docs" / "reports" / "p5-ledger.json") or {}
     final_ok = any(answers.glob(f"final-approval-{slug}-*.md"))
 
