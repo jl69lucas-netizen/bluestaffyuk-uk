@@ -365,6 +365,8 @@ components are listed in `data/design/components.json`, and rebuilt pages render
 - `docs/reference/system-registry.md` — every agent, skill, script and data file
 - `docs/reference/quick-start.md` — task → entry point, and the reference-doc index
 - `docs/reference/session-log.md` — build history and **Known Issues**
+- `docs/reference/lessons.md` — what went wrong on each page, why, and the gate that now holds it
+  (or "not gated"); read at page-run row 1, extended at row 21 by the `bsuk-learning-loop` skill
 - `docs/reference/WORKFLOW.md` — the sprint model
 - `docs/reference/page-run.md` — the ordered per-page run for a project 5 page: each brief
   step, the command that does it, what it leaves on disk, the gate that fails and the stop
