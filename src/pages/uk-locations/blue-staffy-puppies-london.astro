@@ -20,7 +20,9 @@
 // breeder's answers on the answer board (2026-09-27 and 2026-09-29). The tests are named and no
 // result is stated (plan Ruling 4). Nothing on the page is about a licence (Ruling 5).
 //
-// KEPT OUT OF THE INDEX until the user approves the page (`noindex, follow`, Task 37 flips it).
+// INDEXABLE: the breeder approved the page on 2026-10-06 (docs/reference/answer-board/answers/
+// final-approval-blue-staffy-puppies-london-2026-10-06.md), so Task 37 took `noindex, follow` off
+// and the page renders the layout default, `index, follow`.
 //
 // THE SIX INFOGRAPHICS (approved on the answer board, 2026-10-03 q02 a) are art-directed: the wide
 // file in the uniform box, and below 640px its phone layout (`<box stem>-phone.webp`, drawn at the
@@ -405,7 +407,7 @@ const business = {
 const schema = [faqPageNode([...faqTop, ...faqMiddle, ...faqBottom]), business];
 ---
 <CityShell title={TITLE} description={DESCRIPTION} canonical={`/uk-locations/${SLUG}/`}
-  robots="noindex, follow" ogType="article" schema={schema} crumbTitle="London" sections={sections}
+  ogType="article" schema={schema} crumbTitle="London" sections={sections}
   nav={{
     bar: { component: CityJumpStepper },
     dial: { component: CityDialPhotoMarker, props: {

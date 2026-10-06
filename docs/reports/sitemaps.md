@@ -16,12 +16,12 @@ None.
 
 | shard | urls |
 | --- | --- |
-| location-sitemap.xml | 11 |
+| location-sitemap.xml | 12 |
 | page-sitemap.xml | 13 |
 | post-sitemap.xml | 1 |
 | puppy-sitemap.xml | 6 |
 | video-sitemap.xml | 5 |
 
-31 of 63 built pages are indexable; each must appear in exactly one URL shard.
+32 of 63 built pages are indexable; each must appear in exactly one URL shard.
 
-examined 63 built pages, 5 shards, 36 sitemap urls; 0 problems
+examined 63 built pages, 5 shards, 37 sitemap urls; 0 problems

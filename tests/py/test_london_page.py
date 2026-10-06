@@ -8,8 +8,10 @@ What must hold once the scaffold is replaced:
   - the deposit is never called plainly "refundable": the word appears only inside the refund
     clause data/settings.json `deposit_refund_clause` carries (the user's rulings, 2026-09-27
     and 2026-09-30);
-  - three FAQ blocks holding exactly the approved questions, and the page stays noindex until
-    the user approves it;
+  - three FAQ blocks holding exactly the approved questions, and, since the breeder approved the
+    page on 2026-10-06 (docs/reference/answer-board/answers/
+    final-approval-blue-staffy-puppies-london-2026-10-06.md), the page is indexable and listed in
+    the sitemap;
   - at least three in-page enquiry CTAs (outline planned_tests, M2), a divider before every
     section of the main column (outline build_notes, M5: seams = sections), and every link the
     board lists, with no external link the board does not list (working rule 12).
@@ -256,8 +258,17 @@ def test_the_schema_names_london_and_carries_no_telephone():
     assert not [n for n in local if "telephone" in n]
 
 
-def test_noindex_until_the_user_approves_the_page():
-    assert re.search(r'<meta name="robots" content="noindex[^"]*"', built())
+def test_indexable_and_in_the_sitemap_since_the_breeder_approved_it():
+    """The breeder approved the page on 2026-10-06 (docs/reference/answer-board/answers/
+    final-approval-blue-staffy-puppies-london-2026-10-06.md), so `noindex, follow` came off: the
+    page prints the layout default, one robots meta, and a page sitemap shard lists its URL."""
+    html = built()
+    robots = re.findall(r'<meta name="robots" content="([^"]*)"', html)
+    assert robots == ["index, follow"], robots
+    shards = [s.read_text(encoding="utf-8") for s in (ROOT / "dist").glob("*sitemap*.xml")]
+    assert shards, "no sitemap shard in dist/"
+    route = f"/uk-locations/{SLUG}/<"
+    assert [s for s in shards if route in s], "London is in no sitemap shard"
 
 
 # --------------------------------------------------------------------------- the board revision

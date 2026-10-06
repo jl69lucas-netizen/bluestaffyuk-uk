@@ -3256,7 +3256,7 @@
       "img:paperwork-checklist-phone": "ig:IG-4:ab92b5718550",
       "img:breed-split-phone": "ig:IG-3:a774a934fdac"
     },
-    "record_hash": "f17b5f527489a49e1317ac6e459e5eafa692f5be7e804f5f154e608dab91671a",
+    "record_hash": "089aba471a09409f9e5a0f789b1e38fe174a6e9419dc14e66769f688c120054d",
     "tuple_before": {
       "hero": "city-hero-filmstrip",
       "dial": "city-dial-photo-marker",
@@ -3276,7 +3276,7 @@
         "London Note:"
       ]
     },
-    "reapproved_at": "2026-10-06T01:53:01Z",
+    "reapproved_at": "2026-10-06T03:34:31Z",
     "reapprovals": [
       {
         "at": "2026-10-04T20:49:03Z",
@@ -3469,6 +3469,13 @@
         "reason": "The user's chat instruction of 2026-10-06, \"fix the still open\" (docs/reference/answer-board/answers/chat-2026-10-06-fix-the-still-open.md): the delivery section's board WARN (210 prose words against its 171-209 band, after the London map facade added its caption and note). The facade's note is trimmed by two words (\"which sets its own cookies\" -> \"which sets cookies\"), keeping both disclosures; delivery measures 208. Component copy only, recorded as board revision 43. No pick, menu, figure, section id or record wording moved.",
         "changed_paths": [
           "/board_revisions/42"
+        ]
+      },
+      {
+        "at": "2026-10-06T03:34:31Z",
+        "reason": "The breeder's final approval of 2026-10-06 (docs/reference/answer-board/answers/final-approval-blue-staffy-puppies-london-2026-10-06.md): the page is approved as built, noindex comes off (page robots only; the board carries no robots field), and the puppy-card photos are deferred to project 6 as a Known Issue. Recorded as board revision 44. No pick, menu, figure, section id or record wording moved.",
+        "changed_paths": [
+          "/board_revisions/43"
         ]
       }
     ]
@@ -4117,6 +4124,15 @@
       "record_change": "none: component copy (src/components/kit/CityMapFacade.astro .note)",
       "sections": [
         "delivery"
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "source": "answer board 2026-10-06-final-approval-blue-staffy-puppies-london q01",
+      "decision": "The breeder's final approval of 2026-10-06 (docs/reference/answer-board/answers/final-approval-blue-staffy-puppies-london-2026-10-06.md), given in the build session's chat after viewing the built page: the London page is approved as built (gated at f7d88055, docs/reports/london-gate-report.md). Two consequences, neither a change to this record: (1) `noindex, follow` comes off the page (page-run row 21, Task 37), so it renders the layout default `index, follow` and is listed in location-sitemap.xml; the board carries no robots field. (2) Each puppy card showing that pup's photo is deferred to the post-launch refinement (project 6) and logged as a Known Issue; the cards keep the approved name, price, line, trust signs and delivery line.",
+      "record_change": "none: page robots (src/pages/uk-locations/blue-staffy-puppies-london.astro drops `robots=\"noindex, follow\"`); the puppy-card photos are deferred, not built",
+      "sections": [
+        "litter-prices"
       ]
     }
   ]

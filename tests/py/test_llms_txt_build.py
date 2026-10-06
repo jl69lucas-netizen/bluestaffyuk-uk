@@ -5,7 +5,11 @@ def test_llms_txt_content(tmp_path):
     out = build_llms_txt.main(tmp_path / "llms.txt")
     text = out.read_text(encoding="utf-8")
     assert "PHONE_PLACEHOLDER" not in text
-    assert "/uk-locations/blue-staffy-puppies-london/" not in text, "stub-noindexed page leaked"
+    # London's migrated row is a stub, but the rebuilt page replaced it and the breeder approved
+    # it for the index on 2026-10-06: listed, without the stub's 4-word count. A stub no page
+    # has replaced stays out.
+    assert "- [Blue Staffy Puppies London](/uk-locations/blue-staffy-puppies-london/)\n" in text
+    assert "/uk-locations/blue-staffy-puppies-for-sale-leeds/" not in text, "stub-noindexed page leaked"
     assert "/thank-you-blue-staffy-puppies-journey/" not in text
     assert "](/): " in text, "homepage missing"
     assert text.startswith("# Blue Staffy UK: ")
@@ -33,11 +37,12 @@ def test_listed_page_count_matches_indexable_rows(tmp_path):
     import json, pathlib
     root = pathlib.Path(build_llms_txt.__file__).resolve().parents[1]
     pages = json.loads((root / "data/page-map.json").read_text(encoding="utf-8"))["pages"]
-    expected = sum(1 for p in pages if build_llms_txt.indexable(p))
+    rebuilt = set(json.loads((root / "data/facts/rebuilt.json").read_text(encoding="utf-8")))
+    expected = sum(1 for p in pages if build_llms_txt.indexable(p, rebuilt))
     text = build_llms_txt.main(tmp_path / "llms.txt").read_text(encoding="utf-8")
     section = text.split("## Pages\n\n", 1)[1].split("\n\n", 1)[0]
     listed = [l for l in section.splitlines() if l.startswith("- [")]
-    assert len(listed) == expected == 22
+    assert len(listed) == expected == 23
 
 
 def test_zero_word_rows_are_listed_without_a_word_count(tmp_path):
