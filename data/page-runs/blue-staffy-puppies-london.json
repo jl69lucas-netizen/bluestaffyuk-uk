@@ -18,7 +18,7 @@
     "findings": 1,
     "fixed": 1,
     "deferred": [],
-    "commit": "b34a9c04ee028302490e77a879522df9111ae648"
+    "commit": "f0d155b196a11bcd3c02cbab7fde511534a8dba2"
   },
   "frontend_design": {
     "ran_on": "2026-10-06",
