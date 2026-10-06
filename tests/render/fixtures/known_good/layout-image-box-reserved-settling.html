@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>image box reserved, under a hero that is still settling in</title>
+<style>
+body{margin:0;font:16px/1.5 system-ui}
+.hero{display:grid;grid-template-columns:minmax(0,1fr);padding:0 16px}
+/* width:100% keeps the field full-width before the photo loads */
+.field{display:grid;gap:8px;max-width:520px;width:100%;margin-left:auto;min-width:0}
+.field img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover}
+.chips{display:flex;gap:6px}.chips a{padding:4px 8px;border:1px solid #999}
+/* THE HERO IS STILL SETTLING IN WHEN THE CHECK STARTS (lessons entry 20, 2026-10-06): a 4s entrance
+   animation on the copy, transform only, as the London filmstrip's settle-in is. It moves ~300px a
+   second, so two frames read mid-animation always differ by more than the 4px tolerance. The check
+   must wait it out and judge only what the images move. */
+.copy{animation:settle 4s linear both}
+@keyframes settle{from{transform:translateY(-1200px)}}
+</style></head><body>
+<section class="hero">
+  <div class="field">
+    <figure style="margin:0"><img src="../assets/wide-1600.png" width="1600" height="800" alt="Blue Staffy puppy on a rug in a family living room"></figure>
+    <nav class="chips"><a href="#a">AZ</a><a href="#b">CA</a><a href="#c">TX</a></nav>
+  </div>
+  <div class="copy"><h1>Blue Staffies Near You</h1><p>Hero copy that must not move when the photo arrives.</p></div>
+</section>
+</body></html>

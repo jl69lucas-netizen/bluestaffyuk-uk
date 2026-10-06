@@ -131,6 +131,40 @@ for (const check of registry) {
 }
 
 /**
+ * AN ANIMATION IS NOT AN IMAGE-LOAD SHIFT (lessons entry 20, 2026-10-06). layout-image-box-reserved
+ * reads every first-viewport box, swaps the images for clones that never load, and reads again; a
+ * transform animation still running between the two reads was reported as CLS on correct pages
+ * (the London hero's settle-in, `li Δy-8 | span.tag Δy-8`, a different route and width each run on
+ * four workers). Both fixtures carry a 4s entrance animation on the hero copy, so a read taken
+ * mid-animation always moves by more than the tolerance: the reserved page must stay silent (the
+ * check waits the animation out), and the unreserved page must still fire on what the image moves.
+ */
+test.describe('layout-image-box-reserved under a hero that is still settling in', () => {
+  const check = () => registry.find((c) => c.id === 'layout-image-box-reserved')!;
+  const settling = (kind: 'known_good' | 'known_broken') =>
+    fixtureUrl(kind, 'layout-image-box-reserved-settling');
+
+  test('waits the animation out and stays silent on reserved boxes', async ({ page }, testInfo) => {
+    const res = await page.goto(settling('known_good'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const moving = await page.evaluate(() => document.getAnimations().filter((a) => a.playState === 'running').length);
+    expect(moving, 'the fixture must still be animating when the check starts, or it proves nothing').toBeGreaterThan(0);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'the hero photo must be examined').toBeGreaterThan(0);
+    expect(r.defects.map((d) => d.message), 'the animation was reported as an image-load shift').toEqual([]);
+  });
+
+  test('still fires on an unreserved box under the same animation', async ({ page }, testInfo) => {
+    const res = await page.goto(settling('known_broken'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBeGreaterThan(0);
+    expect(r.defects.length, 'waiting for the animation hid a real shift').toBe(1);
+    expect(r.defects[0].message).toMatch(/changes when its images load/);
+  });
+});
+
+/**
  * The DUP whitelist exempts LINES, not the runs they happen to sit inside.
  *
  * Found 2026-09-11: shingle growth fuses a whitelisted line and any shared passage that

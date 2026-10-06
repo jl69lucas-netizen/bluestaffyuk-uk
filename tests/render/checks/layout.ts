@@ -408,6 +408,20 @@ register({
  * Layout is compared with the loaded state, then the originals are put back.
  *
  * Judged unit: each above-the-fold image. Elements that move are named, not counted as units.
+ *
+ * ONLY THE IMAGES MAY MOVE ANYTHING BETWEEN THE TWO READS (lessons entry 20, 2026-10-06). A
+ * getBoundingClientRect includes transforms, so an entrance animation still running when the
+ * first read is taken is measured as a shift the images caused. The London hero's settle-in
+ * (CityHeroFilmstrip, frontend-design D6: each photo rises 8px over 200ms, staggered to 300ms,
+ * `both` holding the first frame through the delay) did exactly that: on four workers the first
+ * frame could land after this check began, and `li Δy-8 | span.tag Δy-8` (or -6, -7, part-way
+ * through) was reported on correct pages, a different route and width each run. So every finite
+ * animation and transition in the document is awaited to its end before the first read and
+ * again before the second (a swap that restarts one would otherwise race it the same way), with
+ * a 10s ceiling; a page still animating at the ceiling is reported as unmeasurable, never passed.
+ * Infinite and paused animations never end and are not awaited. The tolerance is untouched.
+ * tests/render/meta.spec.ts holds both directions with a 3s animated hero: reserved boxes stay
+ * silent, an unreserved box still fires.
  */
 register({
   id: 'layout-image-box-reserved',
@@ -422,6 +436,26 @@ register({
     try {
       const r = await page.evaluate(async () => {
         window.scrollTo(0, 0);
+        // Await every finite animation and transition, re-reading the list until none is left
+        // running (one ending may start another), within a 10s ceiling. False: still moving.
+        const settle = async (): Promise<boolean> => {
+          const deadline = performance.now() + 10_000;
+          for (;;) {
+            const moving = document.getAnimations().filter((a) => {
+              if (a.playState === 'paused' || a.playState === 'finished' || a.playState === 'idle') return false;
+              const end = Number(a.effect?.getComputedTiming().endTime);
+              return Number.isFinite(end);
+            });
+            if (!moving.length) return true;
+            const left = deadline - performance.now();
+            if (left <= 0) return false;
+            await Promise.race([
+              Promise.all(moving.map((a) => a.finished.catch(() => null))),
+              new Promise((res) => setTimeout(res, left)),
+            ]);
+          }
+        };
+        if (!(await settle())) return { examined: 0, movers: [] as string[], unsettled: true };
         const vh = window.innerHeight;
         const label = (el: Element) => {
           const c = typeof (el as HTMLElement).className === 'string' ? (el as HTMLElement).className.trim() : '';
@@ -431,7 +465,7 @@ register({
           const b = im.getBoundingClientRect();
           return b.width > 0 && b.height > 0 && b.top < vh && im.currentSrc;
         });
-        if (!imgs.length) return { examined: 0, movers: [] as string[] };
+        if (!imgs.length) return { examined: 0, movers: [] as string[], unsettled: false };
         const watched = Array.from(document.body.querySelectorAll<HTMLElement>('body *')).filter((el) => {
           if (el.tagName === 'IMG' || el.closest('svg')) return false;
           const b = el.getBoundingClientRect();
@@ -453,6 +487,7 @@ register({
         });
         document.body.offsetHeight;
         await new Promise((res) => requestAnimationFrame(() => requestAnimationFrame(res)));
+        const settledAfter = await settle();
         const movers: string[] = [];
         watched.forEach((el, i) => {
           if (!el.isConnected) return;
@@ -463,8 +498,22 @@ register({
           if (Math.abs(dy) > 4 || Math.abs(dh) > 4) movers.push(`${label(el)} Δy${dy} Δh${dh}`);
         });
         swaps.forEach(([host, clone]) => clone.replaceWith(host));
-        return { examined: imgs.length, movers };
+        return { examined: imgs.length, movers, unsettled: !settledAfter };
       });
+      if (r.unsettled) {
+        return {
+          examined: r.examined,
+          defects: [
+            {
+              checkId: 'layout-image-box-reserved',
+              family: 'LAYOUT' as const,
+              viewport,
+              count: 1,
+              message: 'the first viewport was still animating after 10s, so an image-load shift could not be told from the animation; nothing was judged',
+            },
+          ],
+        };
+      }
       return {
         examined: r.examined,
         defects: r.movers.length
