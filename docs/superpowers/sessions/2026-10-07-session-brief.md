@@ -27,6 +27,7 @@
 
 ## Open Flags
 
+- **LLM intel date (Task 7):** `docs/research/llm-intel/blue-staffy-puppies-manchester-uk-2026-10-07.json` records `fetched_on: 2026-09-23`, but the banked ChatGPT answer was bought 2026-09-25 (its `_saved_note`). On an unpaid run the intel script takes the date from `data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.json` (an older condensed save, still 09-23). The research board states 2026-09-25 from the saved note; fixing the condensed file belongs to bsuk-query-augmentation.
 - **Question file — a health-result FAQ pick got through (Task 4, 2026-10-07):** the rebuilt `data/queries/blue-staffy-puppies-manchester-uk.json` picks "Are both parents DNA tested clear for L-2-HGA and HC-HSF4?" (middle block, `bank:health-dna-tests`) in place of "Can I see the genetic test results…". Its wording assumes a result we never state (working rule 9; lessons 9; Known Issue 98). The builder skill says `scripts/query_augment.py` blocks a question only a `parents-dna-clear` row could answer, and it did not block this one — charge it to the harness (a known-broken fixture, then the fix), decided before STOP 2.
 - **Live SERP drift (Task 4):** the live Google read of 2026-10-07 has Staffie Owners' Bolton blue facet at #3 (#6 in the banked 2026-09-23 SERP). The pool stays the banked SERP; adding Bolton is a free curl and a rebuild if the user wants it.
 - **Word target:** `NOT FETCHED — fewer than two prose competitor pages (1 used)`, as London — the word band is the user's pick on the research board.
