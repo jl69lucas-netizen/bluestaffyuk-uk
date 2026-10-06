@@ -58,6 +58,18 @@ const CTX = { pageType: 'location', slug: 'city-kit', siblings: async () => [] }
 
 type Probe = (page: Page, viewport: number) => Promise<string[]>;
 
+/** Scroll to `y` and return once the page has painted a frame at it (lessons entry 20,
+ *  2026-10-06). A page's scroll handlers read the position once per frame (the jump band's tuck
+ *  compares it with the last frame's), so two scrolls that land in the same frame are one scroll
+ *  to the page: on four workers the reset to the top before a probe and the jump band probe's
+ *  first scroll down (0, then 900) were read as 1200 -> 900, a scroll UP, and the band stayed
+ *  on screen. Two animation frames: the first runs after the scroll event and the handler's own
+ *  frame callback are queued, the second after they have run. A condition, never a clock. */
+const scrollSettled = (page: Page, y: number) => page.evaluate((v) => new Promise((r) => {
+  window.scrollTo(0, v);
+  requestAnimationFrame(() => requestAnimationFrame(() => r(null)));
+}), y);
+
 /** Every element carrying `attr` is painted (a box of at least 1×1 and not visibility:hidden). */
 async function allVisible(page: Page, attr: string): Promise<string[]> {
   const hidden = await page.evaluate((a) => Array.from(document.querySelectorAll(`[${a}]`))
@@ -219,17 +231,17 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
           const m = `reducedMotion=${motion}:`;
           const dur = await band.evaluate((el) => getComputedStyle(el).transitionDuration);
           if (motion === 'reduce' && dur.split(',').some((d) => parseFloat(d) > 0)) out.push(`${m} the band still animates (${dur})`);
-          await page.evaluate(() => window.scrollTo(0, 900));
+          await scrollSettled(page, 900);
           if (!(await offScreen())) out.push(`${m} after scrolling down 900px the band is still on screen (${JSON.stringify(await where())})`);
-          await page.evaluate(() => window.scrollTo(0, 600));
+          await scrollSettled(page, 600);
           if (!(await back())) out.push(`${m} after scrolling back up the band is not back under the header (${JSON.stringify(await where())})`);
           // Focus inside keeps it shown: hide it, then move a keyboard focus into the rail.
-          await page.evaluate(() => window.scrollTo(0, 1400));
+          await scrollSettled(page, 1400);
           if (!(await offScreen())) out.push(`${m} after scrolling down again the band is still on screen`);
           await page.keyboard.press('Shift');
           await band.locator('.rail a').first().focus();
           if (!(await back())) out.push(`${m} a keyboard focus inside the band does not bring it back`);
-          await page.evaluate(() => window.scrollTo(0, 2200));
+          await scrollSettled(page, 2200);
           // One frame for the scroll handler, then it must still be where focus holds it.
           await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
           if (!(await back())) out.push(`${m} the band hides while focus is inside it`);
@@ -237,23 +249,23 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
           // An open sheet holds it too: open it from the shown band with a tap on its key, as a
           // reader does, and scroll down behind it. (A sheet opened by script has no opener, so
           // its focus would have nowhere to return to when it shuts.)
-          await page.evaluate(() => window.scrollTo(0, 1000));
+          await scrollSettled(page, 1000);
           await back();
           await band.locator('[data-jump-open]').click();
-          await page.evaluate(() => window.scrollTo(0, 2600));
+          await scrollSettled(page, 2600);
           await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
           if (!(await back())) out.push(`${m} the band hides while its sheet is open`);
           await band.locator('[data-jump-close]').click();
           if (!(await page.waitForFunction(() => !document.querySelector<HTMLDialogElement>('[data-city-jump-stepper] [data-jump-sheet]')!.open,
             null, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false))) out.push(`${m} the sheet's Close button does not shut it`);
           // At the top of the page it shows, whatever the last direction was.
-          await page.evaluate(() => window.scrollTo(0, 3200));
+          await scrollSettled(page, 3200);
           if (!(await offScreen())) out.push(`${m} after the sheet shuts, scrolling down does not hide the band`);
-          await page.evaluate(() => window.scrollTo(0, 0));
+          await scrollSettled(page, 0);
           if (!(await back())) out.push(`${m} at the top of the page the band is not shown`);
         }
         await page.emulateMedia({ reducedMotion: null });
-        await page.evaluate(() => window.scrollTo(0, 0));
+        await scrollSettled(page, 0);
       }
       const opener = band.locator('[data-jump-open]');
       const box = await opener.boundingBox();
@@ -303,7 +315,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       }).length);
       if (small) out.push(`${small} print(s) whose photo does not hand the tap to its Ask link`);
       // M6: a keyboard focus on an Ask link rings its whole print, through the link's own ::after.
-      await page.evaluate(() => window.scrollTo(0, 0));
+      await scrollSettled(page, 0);
       const ask = page.locator('.city-pup .ask').first();
       await ask.focus();
       await page.keyboard.press('Shift+Tab');
@@ -551,7 +563,7 @@ for (const route of ROUTES) {
     }
     let probed = 0;
     for (const [id, probe] of Object.entries(PROBES)) {
-      await page.evaluate(() => window.scrollTo(0, 0));
+      await scrollSettled(page, 0);
       if (!(await page.locator(probe.present).count())) continue;
       probed++;
       failures.push(...(await probe.run(page, viewport)).map((m) => `${id}: ${m}`));
@@ -744,6 +756,77 @@ test('a keyboard focus inside the band on a browser without :focus-visible throw
   expect(await page.evaluate(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked')),
     'with the hold unknowable, scrolling down still tucks the band').toBe(true);
 });
+
+// WHY THE PROBES SCROLL WITH scrollSettled (lessons entry 20, 2026-10-06). The jump band reads the
+// scroll position once per frame and tucks on the way down from the last frame's reading, so two
+// scrolls in one frame are one scroll to it. From 1200, the reset to the top and the probe's first
+// scroll down (0, then 900) in one frame read as 1200 -> 900, a scroll up, and the band stayed on
+// screen: the jump band probe's flake at 375. Both halves are held: the same-frame pair is still one
+// scroll (if this ever changes, the helper is no longer what makes the probe deterministic), and
+// with each scroll settled the band tucks.
+test('two scrolls in one frame are one scroll to the jump band; settled, each is read', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'vp375', 'the band navigates below 1024px');
+  const res = await page.goto('/kit-preview/city-page/');
+  expect(res?.status()).toBe(200);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const tucked = () => page.evaluate(() => document.querySelector('[data-city-jump-stepper]')!.hasAttribute('data-tucked'));
+  await scrollSettled(page, 600);
+  await scrollSettled(page, 1200);
+  expect(await tucked(), 'scrolling down to 1200 tucks the band').toBe(true);
+  await page.evaluate(() => { window.scrollTo(0, 0); window.scrollTo(0, 900); });
+  await scrollSettled(page, 900);
+  expect(await tucked(), 'two scrolls in one frame were read as two').toBe(false);
+  await scrollSettled(page, 1200);
+  await scrollSettled(page, 0);
+  await scrollSettled(page, 900);
+  expect(await tucked(), 'with each scroll settled, 0 then 900 is a scroll down and tucks the band').toBe(true);
+});
+
+// THE CURRENT SECTION FOLLOWS THE READER AFTER A JUMP THAT LANDS A BOUNDARY IN THE BAND (lessons
+// entry 20, 2026-10-06). src/lib/scrollSpy.ts read the current section from the observer's last
+// batch, which holds only the targets whose state changed: a jump putting the boundary between two
+// sections inside the reading band (40-45%) reports both entering and the upper one wins; the next
+// scroll, which fills the band with the lower one, reports only the upper one leaving, so the row
+// stayed on the section the reader had left. city-nav-current-section met it only when an earlier
+// probe happened to leave the page at such a boundary and no frame was painted at the top between
+// (one run in several on four workers: "section pg-city-video-panel in the reading band, current is
+// [pg-city-takeaways-ledger]"). Here it is met on purpose, for every pair of touching sections, on
+// the dial (1280) and on the band's rail (375). Each read waits on the state it judges.
+for (const route of ['/kit-preview/city-page/', LONDON]) {
+  test(`the current section follows a jump that lands a boundary in the band on ${route}`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'vp375' && testInfo.project.name !== 'vp1280', 'the rail at a phone width, the dial at a desktop one');
+    const scope = testInfo.project.name === 'vp1280' ? '[data-city-dial-photo-marker]' : '[data-city-jump-stepper] .rail';
+    const res = await page.goto(route);
+    expect(res?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    const pairs = await page.evaluate((s) => {
+      const rows = Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [data-spy]`))
+        .map((a) => { const r = document.getElementById(a.dataset.spy!)!.getBoundingClientRect(); return { id: a.dataset.spy!, top: r.top + scrollY, bottom: r.bottom + scrollY }; });
+      // Touching sections, the lower one tall enough to fill the band from 30% of the viewport.
+      return rows.slice(1).map((b, i) => ({ a: rows[i].id, b: b.id, boundary: b.top, fits: rows[i].bottom >= b.top - 2 && b.bottom - b.top >= innerHeight * 0.2 }))
+        .filter((x) => x.fits);
+    }, scope);
+    console.log(`spy after a boundary jump on ${route} @ ${testInfo.project.name}: examined ${pairs.length} pair(s)`);
+    expect(pairs.length, 'no two touching sections to jump between').toBeGreaterThan(1);
+    const vh = page.viewportSize()!.height;
+    const current = () => page.evaluate((s) => Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [aria-current="location"]`)).map((a) => a.dataset.spy), scope);
+    const becomes = (want: string) => page.waitForFunction(({ s, w }) => {
+      const cur = Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [aria-current="location"]`));
+      return cur.length === 1 && cur[0].dataset.spy === w;
+    }, { s: scope, w: want }, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false);
+    const stuck: string[] = [];
+    for (const { a, b, boundary } of pairs) {
+      // The boundary at 42.5%, inside the band: both sections are in it, the upper one is current.
+      await scrollSettled(page, Math.round(boundary - vh * 0.425));
+      if (!(await becomes(a))) stuck.push(`${a}|${b}: with the boundary in the band, current is [${await current()}], not ${a}`);
+      // The lower section's top at 30%: only it is in the band, and it must become current.
+      await scrollSettled(page, Math.round(boundary - vh * 0.3));
+      if (!(await becomes(b))) stuck.push(`${a}|${b}: with ${b} filling the band, current is [${await current()}]`);
+    }
+    expect(stuck).toEqual([]);
+  });
+}
 
 // city-layout-follows-box's `absent` (2026-10-04): London's approved board mounts no puppy sheet
 // and no video panel, and the check reported both "matches no section on the page" at every width.

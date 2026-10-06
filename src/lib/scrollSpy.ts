@@ -49,14 +49,25 @@ export function watchSections(targets: HTMLElement[], onChange: (i: number) => v
       onChange(i);
     }
   };
+  // THE BAND'S WHOLE STATE, NOT THE LAST BATCH (lessons entry 20, 2026-10-06). An observer batch
+  // holds only the targets whose state CHANGED. Reading the current section from the batch alone
+  // stuck on the wrong row after a jump: a jump that lands a boundary in the band reports both
+  // sections entering (the upper one wins), and the next scroll, which takes the upper one out,
+  // reports only it leaving. The lower one never changed, so it was never in a batch, and the
+  // row stayed on the section the reader had left (measured on /kit-preview/city-page/: takeaways
+  // still current with the puppy sheet filling the band). So every target in the band is kept,
+  // and the topmost of them is current; an empty band (a gap between sections) keeps the last.
+  const inBand = new Set<number>();
   const io = new IntersectionObserver(
     (entries) => {
-      const visible = entries
-        .filter((e) => e.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-      if (!visible[0]) return;
-      const i = targets.indexOf(visible[0].target as HTMLElement);
-      if (i >= 0) fromObserver = i;
+      for (const e of entries) {
+        const i = targets.indexOf(e.target as HTMLElement);
+        if (i < 0) continue;
+        if (e.isIntersecting) inBand.add(i);
+        else inBand.delete(i);
+      }
+      // Targets are in document order, so the lowest index in the band is the topmost.
+      if (inBand.size) fromObserver = Math.min(...inBand);
       apply();
     },
     { rootMargin: '-40% 0px -55% 0px' },
