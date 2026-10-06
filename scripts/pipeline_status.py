@@ -138,7 +138,7 @@ def status(slug, root=ROOT):
         "commit": _git(root, "log", "-1", "--format=%h %s"),
         "recent": [dict(zip(("hash", "ts", "subject"), line.split("\t", 2)))
                    for line in _git(root, "log", "-6", "--format=%h%x09%ct%x09%s").splitlines() if line.count("\t") == 2],
-        "dirty": len([l for l in _git(root, "status", "--porcelain").splitlines() if l.strip()]),
+        "dirty": len([l for l in _git(root, "--no-optional-locks", "status", "--porcelain").splitlines() if l.strip()]),
         "rows": rows,
         "now": now,
         "now_name": next((r["name"] for r in rows if r["row"] == now), None),
