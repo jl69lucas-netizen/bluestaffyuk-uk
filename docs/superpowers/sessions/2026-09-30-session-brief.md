@@ -111,3 +111,22 @@ No deadline. Every step, gate and stop comes first, then an impeccable refinemen
 - **Row 8:** the research board, which is STOP 1. The user picks the angles, strategy, frameworks and keywords.
 
 ## What's Next
+
+_Filled by session-closer, 2026-10-06. London closed: approved, indexable, gate PASS at 88a80f39; `london-components` fast-forwarded into `foundation` (local only, no push until project 6)._
+
+1. **The next project 5 city page.** Walk `docs/reference/page-run.md` from row 1. Row 1 now reads `docs/reference/lessons.md` first. Before its research board, run Known Issue 99: tune the location word-count ceilings in `data/quality/evidence-budgets.json` against London's real counts. Also run the duplicate-content gate straight after the first build (lessons, entry 18), not first at the close.
+2. **Known Issue 101:** port the scroll-spy fix (`src/lib/scrollSpy.ts`, 9010e4f4) to `src/components/kit/PageDial.astro` on the twelve pre-project-5 pages, with its test.
+3. **Lessons marked "not gated"** (`docs/reference/lessons.md`): turn the cheapest into tests. Candidates: text inside generated images read as copy before the board (entry 7); alts checked against their image at the Asset Gate (entry 8); a fact-correction sweep (entry 19).
+
+## Unfinished
+- Known Issue 100: puppy-card photos on London. Deferred by the breeder to the post-launch refinement (project 6).
+- The certificates sentence is on 11 pages. The certificates themselves (lab, grades) are not in the repo, so no page may state a result until they are supplied.
+- The Glasgow migrated page still carries a coordinate map (Known Issue 55). The breeder said to leave it for its rebuild.
+- `GEMINI_API_KEY` is still in `.env`. The breeder deletes it when image work is done.
+
+## Discovered This Session
+- `scripts/pipeline_status.py` misread rows 13 and 16–21 (scorecards named by route, the `verification_before_completion` key, hard-coded rows). Fixed with tests; a gate run stays current across docs-only commits.
+- `test:render:city` flakes had three causes: an animation mid-measure, scroll timing, and a real scroll-spy defect. All are fixed; the stress run was 500/0.
+- "Sharine Amelia" (the old owner name) shipped on the UK hub until 2026-10-04. `check:retired` now gates it site-wide (Known Issue 12, reopened and closed).
+- Breeder facts confirmed 2026-10-04/05: KC registration application form; vet-signed health card, first vaccinations, microchip, worming and flea treatment; home-raised; support after collection; certificates on request; puppy personality lines in `data/puppies.json`.
+- Mods: the route map has a live card and real per-row proof; the gauges band has a work clock under the prompt.
