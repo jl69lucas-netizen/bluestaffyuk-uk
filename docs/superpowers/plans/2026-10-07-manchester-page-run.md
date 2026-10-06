@@ -78,7 +78,7 @@ Guard read 2026-10-07 (`python3 scripts/query_augment.py --budget <source>`): $0
 
 ### Task 3: Research inventory (row 4)
 
-- [ ] **Step 1:** Write `docs/research/manchester-page-run/inventory.md` as London's (one row per item: on disk, status, what fetches it), from the preflights above: SERP + PAA banked 2026-09-23 (exit 3); ChatGPT answer banked 2026-09-25 (exit 3); 8 competitor pages under `data/queries/cache/blue-staffy-puppies-manchester-uk/`; threads banked (`data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json`, 5); keyword volumes, neighbourhood terms and backlinks missing (exit 0, Task 5); Search Console `NOT FETCHED — GSC property unverified (domain expired); no exports on disk`; LLM mentions `NOT FETCHED — llm_mentions only once BSUK's domain is live (project 6)`.
+- [ ] **Step 1:** Write `docs/research/manchester-page-run/inventory.md` as London's (one row per item: on disk, status, what fetches it), from the preflights above: SERP + PAA banked 2026-09-23 (exit 3); ChatGPT answer banked 2026-09-25 (exit 3); 8 competitor pages under `data/queries/cache/blue-staffy-puppies-manchester-uk/`; threads banked (`data/queries/raw/blue-staffy-puppies-manchester-uk/threads.json`, 8 threads, 21 questions); keyword volumes, neighbourhood terms and backlinks missing (exit 0, Task 5); Search Console `NOT FETCHED — GSC property unverified (domain expired); no exports on disk`; LLM mentions `NOT FETCHED — llm_mentions only once BSUK's domain is live (project 6)`.
 - [ ] **Step 2:** `npm run -s check:barriers`. Expected: exit 0.
 - [ ] **Step 3:** Commit `docs(manchester): research inventory before any fetch (row 4)`.
 

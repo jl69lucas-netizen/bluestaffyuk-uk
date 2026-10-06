@@ -1,0 +1,16 @@
+intake for /uk-locations/blue-staffy-puppies-manchester-uk/
+  Mode                               stub
+  Page type                          location
+  Route                              /uk-locations/blue-staffy-puppies-manchester-uk/
+  Robots                             noindex, follow
+  Built page                         dist/uk-locations/blue-staffy-puppies-manchester-uk/index.html — 75331 bytes, fresh
+  Sitemap entry                      not listed
+  H1 (migrated row)                  Blue Staffy Puppies Manchester UK
+  Verbatim set                       stub — no verbatim set (Known Issue 79)
+  Rule 15 applies                    no
+  Question file                      data/queries/blue-staffy-puppies-manchester-uk.json
+  LLM intel                          docs/research/llm-intel/blue-staffy-puppies-manchester-uk-2026-09-25.json (ok)
+  Board                              none
+  Search Console baseline            NOT FETCHED — GSC property unverified (domain expired); no exports on disk (data/page-map.json)
+  Inbound links (other pages' main)  2
+  Retired-term hits                  none
