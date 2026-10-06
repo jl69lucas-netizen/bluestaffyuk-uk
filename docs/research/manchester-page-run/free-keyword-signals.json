@@ -1,0 +1,1145 @@
+{
+ "slug": "blue-staffy-puppies-manchester-uk",
+ "written": "2026-10-07",
+ "replaces": "plan Task 5 (paid DataForSEO keyword_volume, neighbourhood terms and backlinks calls), on the user's instruction 2026-10-07 (DataForSEO balance $0.25; use the browser). No DataForSEO and no Firecrawl call was made.",
+ "autocomplete": {
+  "source": "Google autocomplete, google.co.uk, hl=en-GB, gl=uk — the suggest endpoint the search box itself calls (https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=<seed>), fetched without cookies so no personal search history is mixed in; spot-checked against the search box typed in the user's Chrome for 'blue staffy puppies manchester', 'staffy puppies stockport' and 'staffy puppies tameside' — the lists matched",
+  "read_at": "2026-10-07",
+  "label": "autocomplete-attested: people search the phrase; says nothing about how many",
+  "seeds": [
+   {
+    "seed": "blue staffy puppies manchester",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=blue+staffy+puppies+manchester",
+    "read_at": "2026-10-07T00:19:03",
+    "suggestions": [
+     "blue staffy puppies for sale manchester",
+     "how much are blue staffy puppies uk",
+     "where can i buy a blue staffy puppy",
+     "blue staffy puppy price",
+     "blue staff puppies manchester",
+     "blue staffy pups manchester",
+     "blue staffy manchester"
+    ],
+    "label": "autocomplete-attested",
+    "count": 7
+   },
+   {
+    "seed": "staffy puppies for sale manchester",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+for+sale+manchester",
+    "read_at": "2026-10-07T00:19:04",
+    "suggestions": [
+     "staffy puppies for sale manchester under 500 near me",
+     "staffy puppies for sale manchester under 500",
+     "staffy puppies for sale manchester gumtree",
+     "staffordshire bull terrier puppies for sale manchester",
+     "staffy dogs for sale manchester",
+     "blue staffy puppies for sale manchester",
+     "staffy puppies for sale near manchester",
+     "staffy puppies for sale near swinton manchester",
+     "staffy puppies for sale near wythenshawe manchester"
+    ],
+    "label": "autocomplete-attested",
+    "count": 9
+   },
+   {
+    "seed": "staffordshire bull terrier puppies manchester",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffordshire+bull+terrier+puppies+manchester",
+    "read_at": "2026-10-07T00:19:05",
+    "suggestions": [
+     "staffordshire bull terrier for sale manchester",
+     "staffordshire bull terrier puppies for sale manchester",
+     "skin rash on staffordshire bull terrier",
+     "staffordshire bull terrier manchester",
+     "staffordshire bull terrier puppies cheshire"
+    ],
+    "label": "autocomplete-attested",
+    "count": 5
+   },
+   {
+    "seed": "blue staffy manchester",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=blue+staffy+manchester",
+    "read_at": "2026-10-07T00:19:07",
+    "suggestions": [
+     "blue staff manchester",
+     "blue staffy puppies manchester",
+     "blue staffy for sale manchester",
+     "blue staffy puppies for sale manchester",
+     "how much is a blue staffy",
+     "what is a blue staffy",
+     "how do you get a blue staffy",
+     "where can i get a blue staffy",
+     "blue staff puppies manchester"
+    ],
+    "label": "autocomplete-attested",
+    "count": 9
+   },
+   {
+    "seed": "staffy breeder manchester",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+breeder+manchester",
+    "read_at": "2026-10-07T00:19:08",
+    "suggestions": [
+     "staffy puppies manchester",
+     "staffy bull terrier breeders near me",
+     "staffy breed info",
+     "staffy breeder uk",
+     "staffy manchester",
+     "staffordshire bull terrier breeders manchester"
+    ],
+    "label": "autocomplete-attested",
+    "count": 6
+   },
+   {
+    "seed": "staffy puppies salford",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+salford",
+    "read_at": "2026-10-07T00:19:10",
+    "suggestions": [
+     "staffy puppies for sale near salford",
+     "staffy puppy timeline",
+     "staffy puppies for sale manchester",
+     "staffy puppies for sale stockport",
+     "staffy puppy for sale in salford manchester",
+     "staffy puppies sale",
+     "staffy puppies for sale manchester cheap"
+    ],
+    "label": "autocomplete-attested",
+    "count": 7
+   },
+   {
+    "seed": "staffy puppies bolton",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+bolton",
+    "read_at": "2026-10-07T00:19:11",
+    "suggestions": [
+     "staffy puppies for sale bolton",
+     "staffy puppy timeline",
+     "staff puppies for sale bolton",
+     "staffy rescue bolton",
+     "staffy puppies blackpool",
+     "staffy for sale bolton"
+    ],
+    "label": "autocomplete-attested",
+    "count": 6
+   },
+   {
+    "seed": "staffy puppies stockport",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+stockport",
+    "read_at": "2026-10-07T00:19:12",
+    "suggestions": [
+     "staffy puppies for sale stockport",
+     "staffy puppy timeline",
+     "staffy puppies for sale manchester",
+     "staffy puppies for sale rochdale",
+     "staffy puppies for sale stoke",
+     "staffy puppies shelter"
+    ],
+    "label": "autocomplete-attested",
+    "count": 6
+   },
+   {
+    "seed": "staffy puppies oldham",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+oldham",
+    "read_at": "2026-10-07T00:19:14",
+    "suggestions": [
+     "staffy puppies for sale oldham",
+     "what to look for when buying a staffy puppy",
+     "staffy puppy timeline",
+     "staffy puppies for sale rochdale",
+     "staffy x old tyme",
+     "staffy puppies for sale open now"
+    ],
+    "label": "autocomplete-attested",
+    "count": 6
+   },
+   {
+    "seed": "staffy puppies rochdale",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+rochdale",
+    "read_at": "2026-10-07T00:19:15",
+    "suggestions": [
+     "staffy puppies for sale rochdale",
+     "do staffy puppies bite a lot",
+     "staffy puppies for sale rochester",
+     "staffy puppies for sale rotherham",
+     "staffy puppies rehoming"
+    ],
+    "label": "autocomplete-attested",
+    "count": 5
+   },
+   {
+    "seed": "staffy puppies wigan",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+wigan",
+    "read_at": "2026-10-07T00:19:16",
+    "suggestions": [
+     "staffy puppies for sale wigan",
+     "staffy puppies for sale wigan under 500",
+     "staffy dog information",
+     "are staffy puppies easy to train",
+     "staff puppies for sale wigan",
+     "staffy puppies wirral"
+    ],
+    "label": "autocomplete-attested",
+    "count": 6
+   },
+   {
+    "seed": "staffy puppies bury",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+bury",
+    "read_at": "2026-10-07T00:19:18",
+    "suggestions": [
+     "staffy puppies for sale near bury",
+     "staffy puppy timeline",
+     "staffy puppies for sale near bury st edmunds bury saint edmunds",
+     "staffy puppies for sale burnley",
+     "staffy puppies for sale burton",
+     "staffy puppies bedfordshire"
+    ],
+    "label": "autocomplete-attested",
+    "count": 6
+   },
+   {
+    "seed": "staffy puppies trafford",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+trafford",
+    "read_at": "2026-10-07T00:19:19",
+    "suggestions": [
+     "staffy puppies manchester",
+     "staffy puppies training",
+     "staffy puppies for sale manchester",
+     "staffy puppies to adopt",
+     "staffy puppies to rehome"
+    ],
+    "label": "autocomplete-attested",
+    "count": 5
+   },
+   {
+    "seed": "staffy puppies tameside",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+tameside",
+    "read_at": "2026-10-07T00:19:21",
+    "suggestions": [],
+    "label": "autocomplete-attested",
+    "count": 0,
+    "note": "Google returned no phrase suggestion for this seed (cookieless endpoint and the user's Chrome search box agree: the box offered only word completions of 'tameside' — area, uk, for sale)."
+   },
+   {
+    "seed": "staffy puppies altrincham",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+altrincham",
+    "read_at": "2026-10-07T00:19:22",
+    "suggestions": [
+     "staffy puppies for sale aldershot",
+     "staffy puppies for sale stockport",
+     "staffy puppies manchester",
+     "staffy puppies for sale near wythenshawe manchester",
+     "staffy puppies for sale manchester"
+    ],
+    "label": "autocomplete-attested",
+    "count": 5
+   },
+   {
+    "seed": "staffy puppies sale",
+    "url": "https://www.google.co.uk/complete/search?client=chrome&hl=en-GB&gl=uk&q=staffy+puppies+sale",
+    "read_at": "2026-10-07T00:19:23",
+    "suggestions": [
+     "staffy puppies sale near me",
+     "staffy for sale birmingham",
+     "staffy for sale wolverhampton",
+     "staffy for sale",
+     "staffy for sale near me",
+     "staffy for sale uk",
+     "staffy for sale scotland",
+     "staffy for sale perth",
+     "staffy for sale victoria",
+     "staffy for sale brisbane",
+     "staffy for sale nz",
+     "staffy for sale ireland",
+     "staffy for sale london",
+     "staffy for sale bristol",
+     "staffy for sale northern ireland"
+    ],
+    "label": "autocomplete-attested",
+    "count": 15,
+    "note": "Ambiguous seed: Google reads 'sale' as the word, not the town of Sale (Trafford). Every suggestion is 'for sale' intent across other places; none is attested for Sale the town. Not usable as a Sale neighbourhood signal."
+   }
+  ]
+ },
+ "trends": {
+  "source": "Google Trends, read in the user's Chrome (trends.google.com explore page and the same page's own widget data), geo GB, past 12 months (today 12-m), all categories, web search",
+  "read_at": "2026-10-07",
+  "label": "relative interest 0-100 (Google Trends index); NOT a search volume and never converted to one",
+  "terms": {
+   "blue staffy": {
+    "url": "https://trends.google.com/trends/explore?date=today%2012-m&geo=GB&q=blue%20staffy&hl=en-GB",
+    "interest_by_subregion_GB": {
+     "Wales": 100,
+     "England": 96,
+     "Scotland": 93,
+     "Northern Ireland": 80
+    },
+    "interest_by_city_GB": "NOT FETCHED — Google Trends holds no city-level data for this term in GB for the past 12 months: the City resolution returned 200 places, every one with hasData false and value 0 (below Trends' volume threshold), so Manchester has no score; the explore page itself offers only the Sub-region resolution",
+    "interest_by_city_England": "NOT FETCHED — geo GB-ENG at City resolution returned no place with data for this term (below Trends' volume threshold)",
+    "manchester_or_north_west_appears": false,
+    "weekly_interest_gb": {
+     "first_week": "5 Oct 2025",
+     "last_week": "4 Oct 2026 (partial week)",
+     "values": [
+      75,
+      92,
+      62,
+      80,
+      80,
+      69,
+      59,
+      70,
+      57,
+      55,
+      60,
+      100,
+      81,
+      62,
+      68,
+      63,
+      46,
+      71,
+      67,
+      46,
+      51,
+      59,
+      66,
+      91,
+      72,
+      79,
+      69,
+      60,
+      75,
+      78,
+      82,
+      56,
+      53,
+      61,
+      53,
+      57,
+      52,
+      59,
+      49,
+      40,
+      43,
+      68,
+      60,
+      67,
+      58,
+      51,
+      68,
+      65,
+      58,
+      50,
+      59,
+      67,
+      64
+     ],
+     "peak_100_week": "21 Dec 2025",
+     "low_week": "5 Jul 2026 (40)"
+    },
+    "related_queries_top": [
+     [
+      "staffy for sale",
+      100
+     ],
+     [
+      "blue staffy for sale",
+      99
+     ],
+     [
+      "staffy puppy",
+      67
+     ],
+     [
+      "staffy puppies",
+      64
+     ],
+     [
+      "puppies for sale",
+      52
+     ],
+     [
+      "blue staffy puppies for sale",
+      51
+     ],
+     [
+      "staffy puppies for sale",
+      51
+     ],
+     [
+      "staffy dog",
+      41
+     ],
+     [
+      "dogs",
+      20
+     ],
+     [
+      "blue staffy puppy for sale",
+      14
+     ],
+     [
+      "blue staffy pups",
+      14
+     ],
+     [
+      "blue cross",
+      14
+     ],
+     [
+      "bull terrier",
+      12
+     ],
+     [
+      "blue staff",
+      11
+     ],
+     [
+      "blue staffy for sale near me",
+      10
+     ],
+     [
+      "blue staffy pups for sale",
+      9
+     ],
+     [
+      "blue staffordshire bull terrier",
+      9
+     ],
+     [
+      "staffordshire bull terrier",
+      8
+     ],
+     [
+      "white staffy",
+      8
+     ],
+     [
+      "pitbull",
+      7
+     ],
+     [
+      "blue pitbull",
+      6
+     ],
+     [
+      "dogs for sale",
+      6
+     ],
+     [
+      "blue staffy rescue",
+      6
+     ],
+     [
+      "black staffy",
+      6
+     ],
+     [
+      "dog breeds",
+      6
+     ]
+    ],
+    "related_queries_rising": [
+     [
+      "cane corso puppies",
+      "+190%"
+     ],
+     [
+      "cocker spaniel",
+      "+170%"
+     ],
+     [
+      "poodle",
+      "+100%"
+     ],
+     [
+      "puppies for sale",
+      "+100%"
+     ],
+     [
+      "staffy puppies for sale",
+      "+100%"
+     ],
+     [
+      "blue staffy puppies for sale",
+      "+100%"
+     ],
+     [
+      "blue staffy puppies for sale uk",
+      "+90%"
+     ],
+     [
+      "doberman",
+      "+80%"
+     ],
+     [
+      "blue staff puppies",
+      "+60%"
+     ],
+     [
+      "staffy puppies",
+      "+60%"
+     ],
+     [
+      "red staffy",
+      "+60%"
+     ],
+     [
+      "blue staffy puppies for sale near me",
+      "+60%"
+     ]
+    ],
+    "related_topics_rising": [
+     [
+      "Animal shelter - Topic",
+      "Breakout"
+     ],
+     [
+      "Maltese dog - Dog breed",
+      "Breakout"
+     ],
+     [
+      "Adoption - Topic",
+      "+40%"
+     ]
+    ]
+   },
+   "staffy puppies": {
+    "url": "https://trends.google.com/trends/explore?date=today%2012-m&geo=GB&q=staffy%20puppies&hl=en-GB",
+    "interest_by_subregion_GB": {
+     "Wales": 100,
+     "England": 72,
+     "Scotland": 70,
+     "Northern Ireland": 47
+    },
+    "interest_by_city_GB": "NOT FETCHED — Google Trends holds no city-level data for this term in GB for the past 12 months: the City resolution returned 200 places, every one with hasData false and value 0 (below Trends' volume threshold), so Manchester has no score",
+    "interest_by_city_England": "NOT FETCHED — geo GB-ENG at City resolution returned no place with data for this term (below Trends' volume threshold)",
+    "manchester_or_north_west_appears": "only as a related query: 'staffy puppies for sale manchester' (top 1, rising +40%); not as a place",
+    "weekly_interest_gb": {
+     "first_week": "5 Oct 2025",
+     "last_week": "4 Oct 2026 (partial week)",
+     "values": [
+      75,
+      90,
+      84,
+      84,
+      95,
+      78,
+      81,
+      90,
+      83,
+      62,
+      100,
+      96,
+      97,
+      81,
+      73,
+      85,
+      58,
+      74,
+      61,
+      56,
+      61,
+      70,
+      74,
+      79,
+      83,
+      60,
+      60,
+      72,
+      80,
+      68,
+      86,
+      80,
+      81,
+      62,
+      85,
+      87,
+      75,
+      60,
+      65,
+      70,
+      59,
+      91,
+      71,
+      68,
+      77,
+      82,
+      70,
+      59,
+      64,
+      68,
+      74,
+      87,
+      84
+     ],
+     "peak_100_week": "14 Dec 2025"
+    },
+    "related_queries_top": [
+     [
+      "staffy puppies for sale",
+      100
+     ],
+     [
+      "blue staffy",
+      21
+     ],
+     [
+      "blue staffy puppies",
+      21
+     ],
+     [
+      "blue staffy puppies for sale",
+      17
+     ],
+     [
+      "staffy puppies near me",
+      14
+     ],
+     [
+      "staffy puppies for sale near me",
+      12
+     ],
+     [
+      "staffy puppies for sale uk",
+      6
+     ],
+     [
+      "staffy puppies for adoption",
+      2
+     ],
+     [
+      "staffy puppies for sale manchester",
+      1
+     ],
+     [
+      "staffy puppies free to a good home",
+      1
+     ],
+     [
+      "staffy puppies for sale west midlands",
+      0
+     ]
+    ],
+    "related_queries_rising": [
+     [
+      "staffy puppies for sale west midlands",
+      "Breakout"
+     ],
+     [
+      "blue staffy puppies for sale",
+      "+60%"
+     ],
+     [
+      "staffy puppies for adoption",
+      "+50%"
+     ],
+     [
+      "staffy puppies free to a good home",
+      "+40%"
+     ],
+     [
+      "staffy puppies for sale manchester",
+      "+40%"
+     ]
+    ]
+   }
+  }
+ },
+ "keyword_planner": {
+  "source": "Google Keyword Planner, Discover new keywords, read in the user's Chrome (Google Ads account already signed in; the planner opened with no setup, sign-in or accept step). Location United Kingdom, language English, network Google, period Sep 2025 – Aug 2026. The account runs no campaign, so Google shows bucketed RANGES, not exact figures; a range is recorded as shown, never narrowed. No plan was saved (the planner's 'Plans created by you' list read 1 of 1 before and after). Top-of-page bids are Google's own range, in GBP.",
+  "url": "https://ads.google.com/aw/keywordplanner/ideas/new",
+  "read_at": "2026-10-07",
+  "label": "Google Ads average monthly searches, range bucket",
+  "runs": [
+   {
+    "seeds": [
+     "blue staffy puppies manchester",
+     "staffy puppies for sale manchester",
+     "staffordshire bull terrier puppies manchester",
+     "blue staffy manchester",
+     "staffy breeder manchester",
+     "blue staffy puppies for sale manchester",
+     "staffy puppies manchester"
+    ],
+    "rows": [
+     {
+      "keyword": "staffy puppies for sale manchester",
+      "avg_monthly_searches_range": "100 – 1K",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "£0.01",
+      "top_of_page_bid_high": "£1.00",
+      "seed": true
+     },
+     {
+      "keyword": "staffies for sale manchester",
+      "avg_monthly_searches_range": "100 – 1K",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "£0.01",
+      "top_of_page_bid_high": "£1.00",
+      "seed": false
+     },
+     {
+      "keyword": "staffordshire bull terrier for sale manchester",
+      "avg_monthly_searches_range": "100 – 1K",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "£0.01",
+      "top_of_page_bid_high": "£1.00",
+      "seed": false
+     },
+     {
+      "keyword": "blue staffy puppies manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffordshire bull terrier puppies manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "-90%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "blue staffy manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "blue staffy puppies for sale manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "-90%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "free staffy puppies to good homes manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": false
+     },
+     {
+      "keyword": "staffy rescue manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "-90%",
+      "competition": "Low",
+      "top_of_page_bid_low": "£0.99",
+      "top_of_page_bid_high": "£1.60",
+      "seed": false
+     },
+     {
+      "keyword": "blue staff puppies for sale manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": false
+     },
+     {
+      "keyword": "blue staffies for sale manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": false
+     },
+     {
+      "keyword": "staffordshire bull terrier puppies for sale in manchester",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": false
+     },
+     {
+      "keyword": "staffy breeder manchester",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     }
+    ],
+    "broaden_suggestions": [
+     "staffordshire bull terrier puppies",
+     "puppies for sale manchester",
+     "staffordshire bull terrier",
+     "blue staffy",
+     "blue staffy puppies for sale",
+     "terrier puppies",
+     "terrier"
+    ]
+   },
+   {
+    "seeds": [
+     "staffy puppies salford",
+     "staffy puppies bolton",
+     "staffy puppies stockport",
+     "staffy puppies oldham",
+     "staffy puppies rochdale",
+     "staffy puppies wigan",
+     "staffy puppies bury",
+     "staffy puppies trafford",
+     "staffy puppies tameside",
+     "staffy puppies altrincham"
+    ],
+    "rows": [
+     {
+      "keyword": "staffy puppies for sale wigan",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": false
+     },
+     {
+      "keyword": "staffy puppies salford",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies bolton",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies stockport",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies oldham",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies rochdale",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies wigan",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies bury",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies trafford",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies tameside",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies altrincham",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     }
+    ]
+   },
+   {
+    "seeds": [
+     "staffy puppies for sale salford",
+     "staffy puppies for sale bolton",
+     "staffy puppies for sale stockport",
+     "staffy puppies for sale oldham",
+     "staffy puppies for sale rochdale",
+     "staffy puppies for sale bury",
+     "staffy puppies for sale trafford",
+     "staffy puppies for sale tameside",
+     "staffy puppies for sale altrincham",
+     "staffy for sale bolton"
+    ],
+    "rows": [
+     {
+      "keyword": "staffy puppies for sale bolton",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies for sale stockport",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies for sale oldham",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies for sale rochdale",
+      "avg_monthly_searches_range": "10 – 100",
+      "three_month_change": "0%",
+      "yoy_change": "0%",
+      "competition": "Low",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies for sale salford",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies for sale bury",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies for sale trafford",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies for sale tameside",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy puppies for sale altrincham",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     },
+     {
+      "keyword": "staffy for sale bolton",
+      "avg_monthly_searches_range": "0 – 10",
+      "three_month_change": "—",
+      "yoy_change": "—",
+      "competition": "—",
+      "top_of_page_bid_low": "—",
+      "top_of_page_bid_high": "—",
+      "seed": true
+     }
+    ]
+   }
+  ],
+  "not_run": {
+   "staffy puppies sale (Sale, Trafford)": "NOT FETCHED — the phrase cannot be told apart from 'staffy puppies for sale' in the planner (Google matches the word 'sale', not the town), so no Sale-town volume can be read from it"
+  }
+ },
+ "backlinks": {
+  "fresh": {
+   "source": "Ahrefs free Website Authority Checker (no login), read in the user's Chrome",
+   "read_at": "2026-10-07",
+   "label": "Ahrefs Domain Rating 0-100, backlinks and linking websites (Ahrefs' own index; rounded as Ahrefs shows them)",
+   "domains": [
+    {
+     "domain": "pets4homes.co.uk",
+     "dr": 69,
+     "backlinks": "528K",
+     "backlinks_dofollow": "98%",
+     "linking_websites": "4.1K",
+     "linking_websites_dofollow": "56%",
+     "url": "https://ahrefs.com/website-authority-checker/?input=pets4homes.co.uk"
+    },
+    {
+     "domain": "staffie-owners.co.uk",
+     "dr": 0,
+     "backlinks": "742",
+     "backlinks_dofollow": "92%",
+     "linking_websites": "61",
+     "linking_websites_dofollow": "67%",
+     "url": "https://ahrefs.com/website-authority-checker/?input=staffie-owners.co.uk"
+    },
+    {
+     "domain": "gumtree.com",
+     "dr": 78,
+     "backlinks": "448K",
+     "backlinks_dofollow": "60%",
+     "linking_websites": "17K",
+     "linking_websites_dofollow": "72%",
+     "url": "https://ahrefs.com/website-authority-checker/?input=gumtree.com"
+    },
+    {
+     "domain": "puppies.co.uk",
+     "dr": 28,
+     "backlinks": "3.6K",
+     "backlinks_dofollow": "55%",
+     "linking_websites": "1.3K",
+     "linking_websites_dofollow": "34%",
+     "url": "https://ahrefs.com/website-authority-checker/?input=puppies.co.uk"
+    },
+    {
+     "domain": "freeads.co.uk",
+     "dr": 46,
+     "backlinks": "27K",
+     "backlinks_dofollow": "38%",
+     "linking_websites": "2.7K",
+     "linking_websites_dofollow": "48%",
+     "url": "https://ahrefs.com/website-authority-checker/?input=freeads.co.uk"
+    }
+   ],
+   "note": "URL Rating is not shown without the Ahrefs toolbar and an account; not taken. staffie-owners.co.uk reads DR 0 with 61 linking websites, as Ahrefs showed it."
+  },
+  "banked_london": {
+   "source": "DataForSEO Backlinks (paid, bought for the London page), data/queries/raw/blue-staffy-puppies-london/backlinks.response.json",
+   "read_at": "2026-09-30 (as banked; reused 2026-10-07, no new call)",
+   "label": "DataForSEO backlinks rank (rank_scale one_hundred) and referring domains — a different index and scale from Ahrefs DR; never compared number for number",
+   "domains": [
+    {
+     "domain": "staffie-owners.co.uk",
+     "rank": 14,
+     "referring_domains": 51,
+     "referring_main_domains": 47
+    },
+    {
+     "domain": "pets4homes.co.uk",
+     "rank": 59,
+     "referring_domains": 17047,
+     "referring_main_domains": 16622
+    },
+    {
+     "domain": "freeads.co.uk",
+     "rank": 51,
+     "referring_domains": 3517,
+     "referring_main_domains": 2987
+    }
+   ],
+   "not_in_banked_file": {
+    "gumtree.com": "NOT FETCHED — London's banked backlinks call did not include gumtree.com; only the free Ahrefs figure above exists",
+    "puppies.co.uk": "NOT FETCHED — London's banked backlinks call did not include puppies.co.uk; only the free Ahrefs figure above exists"
+   }
+  }
+ }
+}
