@@ -9,20 +9,16 @@
     ]
   },
   "impeccable": {
-    "ran_on": "2026-10-05",
+    "ran_on": "2026-10-06",
     "widths": [
       375,
       768,
       1280
     ],
-    "findings": 5,
-    "fixed": 2,
-    "deferred": [
-      "D1 (P3 anti-pattern): CityChapters .close CTA card carries a 3px brass side rule (detector side-tab rows 1-4); CTA-1 is the breeder's pick (2026-10-04 q09 a), so a 1px steel-300 hairline is a preview, docs/reports/london-harden-2026-10-05/IMP-D1-close-rule-{375,1280}-preview.png (working rule 6)",
-      "D2 (P3 type): the clause after each CTA pill opens with its comma (a line starting ', and' on a phone, a stray mark after the pill from 768); hiding it changes what a reader sees of the board's sentence, preview docs/reports/london-harden-2026-10-05/IMP-D2-close-comma-{375,768,1280}-preview.png",
-      "D3 (P2 type): reading text at 13px on a phone (seven statement notes, the puppy cards' trust lines and delivery line); 14px below 640px is a type-size change to approved kit pieces (q02, CARD-3), preview docs/reports/london-harden-2026-10-05/IMP-D3-phone-notes-{stmt,card}-375-preview.png"
-    ],
-    "commit": "7b76daf883ab799b4866cfd03c1cc414aebaed7e"
+    "findings": 1,
+    "fixed": 1,
+    "deferred": [],
+    "commit": "b34a9c04ee028302490e77a879522df9111ae648"
   },
   "frontend_design": {
     "ran_on": "2026-10-05",
