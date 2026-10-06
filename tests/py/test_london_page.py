@@ -230,6 +230,20 @@ def test_every_board_link_is_on_the_page_and_no_other_external_link():
     assert external <= {l["href"] for l in listed}, sorted(external)
 
 
+def test_the_map_note_keeps_both_disclosures_in_its_trimmed_wording():
+    """The facade's note (CityMapFacade) was trimmed by two words on 2026-10-06 ("which sets its
+    own cookies" -> "which sets cookies") to bring the delivery section back inside its 171-209
+    band (the user's chat instruction, "fix the still open"; board revision 43). It is component UI
+    copy, counted as the section's prose because the board gate excludes no widget text. What the
+    trim must never lose: nothing is asked of Google before the tap, and the map sets cookies."""
+    html = main_html(built())
+    notes = re.findall(r'<p class="note" id="map-note-[^"]*"[^>]*>(.*?)</p>', html, re.S)
+    assert len(notes) == 1, notes
+    note = text(notes[0])
+    assert "Nothing loads from Google until you tap" in note
+    assert re.search(r"Google Maps, which sets cookies\.", note), note
+
+
 def test_the_schema_names_london_and_carries_no_telephone():
     html = built()
     blocks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]

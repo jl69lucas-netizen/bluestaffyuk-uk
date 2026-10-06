@@ -56,7 +56,7 @@ const noteId = `map-note-${city.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   </div>
   <figcaption>
     <p class="cap">{caption}</p>
-    <p class="note" id={noteId}>Nothing loads from Google until you tap. Showing the map loads Google Maps, which sets its own cookies.</p>
+    <p class="note" id={noteId}>Nothing loads from Google until you tap. Showing the map loads Google Maps, which sets cookies.</p>
   </figcaption>
   <noscript><p class="note"><a href={src} target="_blank" rel="noopener noreferrer">Open the map of {city} on Google Maps</a></p></noscript>
 </figure>
