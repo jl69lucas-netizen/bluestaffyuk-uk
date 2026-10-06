@@ -21,19 +21,16 @@
     "commit": "b34a9c04ee028302490e77a879522df9111ae648"
   },
   "frontend_design": {
-    "ran_on": "2026-10-05",
+    "ran_on": "2026-10-06",
     "widths": [
       375,
       768,
       1280
     ],
-    "findings": 4,
-    "fixed": 2,
-    "deferred": [
-      "D1 (P2 chrome): the phone header is two rows and 121px tall, sticky on every screen; one 73px row (brand, pill, menu icon, --hdr 72px below 640px) repaints every page and turns the visible 'Open menu' word into an icon, preview docs/reports/london-harden-2026-10-05/FD-D1-phone-header-375-preview.png (working rule 6)",
-      "D2 (P3 layout): the CARD-3 band sets six cards three across in the reading column at 1024-1280 (265/231px each: meta wraps, trust list one column, delivery stub three lines); two across from 1024 is a layout change to the breeder's CARD-3 pick (2026-10-04 q08 c), preview docs/reports/london-harden-2026-10-05/FD-D2-cards-1280-preview.png"
-    ],
-    "commit": "c0476543b659d03c0b1a72b2c94a5d92db793fc2"
+    "findings": 1,
+    "fixed": 1,
+    "deferred": [],
+    "commit": "62a5c9793ccfc100c57224d2a55b54f79ebc7f2a"
   },
   "verification_before_completion": {
     "ran_on": "2026-10-05",
