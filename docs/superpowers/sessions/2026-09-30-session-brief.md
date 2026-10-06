@@ -54,6 +54,8 @@ _(The user's exact answer to each question is appended here as the interview pro
 - The London component kit (15 picks, confirmed 2026-09-29) is the menu; the outline decides the sections.
 
 ## Open Flags
+
+- **Closed 2026-10-06 (session-closer):** London is done, approved and merged into `foundation`. Every flag below is London history, kept as the record, and none blocks the next page. The newest plan, `docs/superpowers/plans/2026-10-03-london-board-v3.md`, is complete: STOP 3 was approved at f27ab66, and its unticked boxes are lag, not open work. The next session starts from What's Next below, with a new plan for the next city.
 - **Research on hand:** a gap matrix exists (2026-09-23 and 2026-09-25), and so does the LLM-intel file for London (2026-09-25). `data/queries/` has no London query file, so competitor research and fan-out (page-run rows 4–7) are still to run.
 - **Board:** London has no approved page board. That is expected; it comes at STOP 3.
 - **Audit:** London has not been through `@bsuk-content-audit-agent`. It is a stub with 4 words, so an audit adds little; the research board covers the intent and gaps.
