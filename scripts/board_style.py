@@ -106,6 +106,7 @@ CSS = (
 details.full{border-top:1px dashed var(--line);padding-top:12px;min-width:0}
 details.full>summary{cursor:pointer;font-weight:700;color:var(--blue,var(--green));min-height:32px}
 details.full[open]>summary{margin-bottom:8px}
+.summed:not(.md)>details.full>:not(summary){margin-top:12px}
 @media (max-width:640px){.fcard,.lablist>li{padding:14px}}
 """)
 

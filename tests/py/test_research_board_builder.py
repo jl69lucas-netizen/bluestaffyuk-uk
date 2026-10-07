@@ -163,3 +163,128 @@ def test_the_cli_exits_1_on_an_incomplete_record_and_writes_nothing(tmp_path, ca
     assert code == 1
     assert "FAIL" in capsys.readouterr().out
     assert not (tmp_path / "out").exists()
+
+
+# --- readability (plan 2026-10-07-board-readability.md, Task 3) ---------------------------
+# Layout A and paragraph Option 2: the board embeds scripts/board_style.py, and the record's
+# `summaries` (plain bullets per section title, per record path) render above the original,
+# which folds into <details class="full">. The markdown, and so every copy button, is unchanged.
+
+import re  # noqa: E402
+
+import board_style as BS  # noqa: E402
+import _board_harness as BH  # noqa: E402
+
+STATUS_BULLETS = ["The research was read on two dates, from free and paid tools.",
+                  "Three competitor pages were saved and measured."]
+
+
+def _summed():
+    rec = _record()
+    rec["summaries"] = {
+        "sections": {"Status": {"bullets": STATUS_BULLETS,
+                                "care": ["One read is not proof of every searcher's view."]}},
+        "items": {"serp.results[0]": {"bullets": ["Ranks on a strong domain."]},
+                  "angles[1]": {"bullets": ["Lead with the scam fear."]}},
+    }
+    return rec
+
+
+def _md_blocks(page):
+    return re.findall(r'<script type="text/markdown" data-title="[^"]*">\n(.*?)\n</script>', page, re.S)
+
+
+def test_summaries_are_keyed_by_the_titles_the_board_renders():
+    assert [t for t, _ in RB.sections(_record(), _queries())] == list(RB.SECTION_TITLES)
+
+
+def test_the_board_embeds_the_shared_style_layer(tmp_path):
+    page = RB.build(_record(), _queries(), tmp_path)[0].read_text(encoding="utf-8")
+    assert BS.CSS in page and BS.SCRIPT in page and BS.READING_CSS in page
+
+
+def test_a_missing_summaries_key_renders_as_today(tmp_path):
+    rec = _record()
+    assert "summaries" not in rec
+    html_path, md_path = RB.build(rec, _queries(), tmp_path)
+    page = html_path.read_text(encoding="utf-8")
+    assert 'id="board-summaries"' not in page
+    assert md_path.read_text(encoding="utf-8") == RB.MA.markdown(
+        f"Research board — {rec['route']}", RB.sections(rec, _queries()))
+
+
+def test_summaries_ride_beside_the_markdown_and_never_in_it(tmp_path):
+    # The summaries are part of the record, so they are in its hash: an approval does not
+    # survive adding them. Compare both unapproved, so only the summaries differ.
+    plain, summed = _record(), _summed()
+    plain["approval"] = summed["approval"] = None
+    plain_html, plain_md = RB.build(plain, _queries(), tmp_path / "a")
+    summed_html, summed_md = RB.build(summed, _queries(), tmp_path / "b")
+    # the copy buttons copy these blocks and the .md download is this file: both unchanged
+    assert summed_md.read_text(encoding="utf-8") == plain_md.read_text(encoding="utf-8")
+    page = summed_html.read_text(encoding="utf-8")
+    assert _md_blocks(page) == _md_blocks(plain_html.read_text(encoding="utf-8"))
+    for b in STATUS_BULLETS:
+        assert b not in "".join(_md_blocks(page))
+    data = json.loads(re.search(r'<script type="application/json" id="board-summaries">(.*?)</script>',
+                                page, re.S).group(1))
+    assert data["sections"]["Status"]["bullets"] == STATUS_BULLETS
+    assert {"section": "1. SERP Snapshot", "kind": "row", "index": 0,
+            "bullets": ["Ranks on a strong domain."]} in data["items"]
+    assert {"section": "10. Angles", "kind": "li", "index": 1,
+            "bullets": ["Lead with the scam fear."]} in data["items"]
+    # the data sits before the script that renders it
+    assert page.index('id="board-summaries"') < page.index(BS.SCRIPT)
+
+
+def test_in_a_browser_the_bullets_come_first_and_the_original_folds_under_them(tmp_path):
+    rec = _summed()
+    html_path, _ = RB.build(rec, _queries(), tmp_path)
+    res = BH.run(html_path)
+    assert res["errors"] == [], res["errors"]
+    status = next(b for b in res["blocks"] if b["title"] == "Status")
+    assert status["plain"] == STATUS_BULLETS and status["plainFirst"], status
+    assert status["care"] == rec["summaries"]["sections"]["Status"]["care"]
+    assert status["fullOpen"] is False and "Research method:" in status["fullText"], status
+    other = next(b for b in res["blocks"] if b["title"] == "6. Why Competitors Rank")
+    assert other["plain"] is None
+    assert res["legend"] == 1
+    # every copy button copies its section's markdown exactly, summaries or not
+    want = [f"## {t}\n\n{b.strip()}" for t, b in RB.sections(rec, _queries())]
+    assert res["copied"] == want
+
+
+def test_the_validator_holds_the_summaries_to_their_shape():
+    assert RB.validate(_summed(), _queries()) == []
+    long = " ".join(["word"] * 26)
+    for why, bullets in (("over 25 words", [long]),
+                         ("more than 6", ["Short plain line."] * 7),
+                         ("a file path", ["It was read from docs/research/x.md first."]),
+                         ("a backticked field", ["The `deposit_gbp` field sets it."])):
+        rec = _summed()
+        rec["summaries"]["sections"]["Status"]["bullets"] = bullets
+        assert any("summaries" in p for p in RB.validate(rec, _queries())), why
+    rec = _summed()
+    rec["summaries"]["sections"]["No Such Section"] = {"bullets": ["x y"]}
+    assert any("No Such Section" in p for p in RB.validate(rec, _queries()))
+    rec = _summed()
+    rec["summaries"]["items"]["angles[7]"] = {"bullets": ["x y"]}
+    assert any("angles[7]" in p for p in RB.validate(rec, _queries()))
+
+
+def test_section_15_prints_the_session_note_and_implication():
+    rec = _record()
+    rec["ai_overview"] = {"present": False, "fetched": "2026-10-07",
+                          "evidence": rec["ai_overview"]["evidence"],
+                          "session": "Signed out, placed in another city.",
+                          "note": "One session is not proof.",
+                          "implication": "Build the page to be quotable anyway."}
+    aio = dict(RB.sections(rec, _queries()))["15. AI Overview"]
+    assert aio.startswith("No AI Overview is shown for this query.")
+    for label, text in (("**Session:**", "Signed out, placed in another city."),
+                        ("**Note:**", "One session is not proof."),
+                        ("**GEO implication:**", "Build the page to be quotable anyway.")):
+        assert f"{label} {text}" in aio, label
+    assert aio.index("**Session:**") < aio.index("**Note:**") < aio.index("**GEO implication:**")
+    present = dict(RB.sections(_record(), _queries()))["15. AI Overview"]
+    assert "**Session:**" not in present and "**GEO implication:**" in present

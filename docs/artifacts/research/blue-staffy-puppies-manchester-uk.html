@@ -38,18 +38,87 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 .md strong{color:var(--ink)}
 .md a{color:var(--blue);overflow-wrap:anywhere}
 .copied{color:var(--ok);font-size:12px}
+.warn{color:var(--warn);font-size:12px}
+[hidden]{display:none!important}
 @media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 14px 20px}
 .md table,.md thead,.md tbody,.md tr,.md th,.md td{display:block}.md thead{position:absolute;left:-9999px}
 .md tr{border:1px solid var(--line);border-radius:6px;margin:0 0 10px;padding:6px 0}.md td{border:0;padding:4px 12px}
 .md td::before{content:attr(data-label);display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}}
 @media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+:root{--rec-bg:#F6EBC4;--rec-line:#C9A227;--rec-ink:#6E5408;--why:#1F5A85;--why-bg:#E3EEF7;--wedge:#2F6B4F;--wedge-bg:#E2F0E8;--trade:#9A3B1E;--trade-bg:#F7E4DC;--nf:#5E4A86;--nf-bg:#EEE8F6;--cost:#2D6A4F;--cost-bg:#DCEFE4}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--rec-bg:#3A3218;--rec-line:#D8B23A;--rec-ink:#E9CF7A;--why:#8FC1EA;--why-bg:#17324A;--wedge:#8FD1AE;--wedge-bg:#163428;--trade:#F0A58A;--trade-bg:#3E2219;--nf:#C9B4EC;--nf-bg:#2B2340;--cost:#7CC9A0;--cost-bg:#1D3A2C}}
+:root[data-theme="dark"]{--rec-bg:#3A3218;--rec-line:#D8B23A;--rec-ink:#E9CF7A;--why:#8FC1EA;--why-bg:#17324A;--wedge:#8FD1AE;--wedge-bg:#163428;--trade:#F0A58A;--trade-bg:#3E2219;--nf:#C9B4EC;--nf-bg:#2B2340;--cost:#7CC9A0;--cost-bg:#1D3A2C}
+
+.recmark{background:var(--rec-line);color:#1B2430;font-weight:700;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.nf{color:var(--nf);background:var(--nf-bg);border:1px dashed var(--nf);border-radius:5px;padding:0 5px;font-weight:600;white-space:nowrap}
+.legend{display:flex;gap:8px;flex-wrap:wrap;font:600 13px/1 "Source Sans 3",system-ui,sans-serif;margin:0 0 20px}
+.legend span{border-radius:99px;padding:6px 10px;border:1px solid var(--line)}
+.legend .l-rec{background:var(--rec-line);color:#1B2430;border-color:var(--rec-line)}
+.legend .l-why{color:var(--why);background:var(--why-bg)}
+.legend .l-wedge{color:var(--wedge);background:var(--wedge-bg)}
+.legend .l-trade{color:var(--trade);background:var(--trade-bg)}
+.legend .l-nf{color:var(--nf);background:var(--nf-bg);border-style:dashed}
+.fcards{display:grid;gap:14px;margin:12px 0 6px}
+.fcard{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:var(--ground);display:grid;gap:12px;min-width:0}
+.fcard .fct{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.fcard h3.fcardh{font:600 20px/1.3 Fraunces,Georgia,serif;color:var(--blue,var(--green));margin:0;overflow-wrap:anywhere;text-transform:none;letter-spacing:0}
+.fcard h3.fcardh a{color:inherit}
+.fchips{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{font:600 13px/1 "Source Sans 3",system-ui,sans-serif;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);padding:6px 9px;border-radius:99px;font-variant-numeric:tabular-nums}
+.fchip.rec{background:var(--rec-line);border-color:var(--rec-line);color:#1B2430}
+.fld{display:grid;gap:4px;max-width:72ch;border-left:3px solid var(--line);padding-left:12px;min-width:0}
+.fld>.lab,.subfld>.lab{font:700 12px/1.2 "Source Sans 3",system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.fld.why{border-left-color:var(--why)} .fld.why>.lab{color:var(--why)}
+.fld.wedge{border-left-color:var(--wedge)} .fld.wedge>.lab{color:var(--wedge)}
+.fld.trade{border-left-color:var(--trade)} .fld.trade>.lab{color:var(--trade)}
+.fld .lead{font-weight:600;margin:0}
+.fld .v{overflow-wrap:anywhere}
+.fld details{margin-top:2px}
+.fld summary{cursor:pointer;color:var(--blue,var(--green));font-weight:600;font-size:15px}
+.fld details p{margin:6px 0 0;color:var(--ink-2)}
+.fld.ev{border-left:0;padding-left:0;font:13px/1.45 "JetBrains Mono",ui-monospace,Menlo,monospace;color:var(--ink-3);overflow-wrap:anywhere}
+.fcard.isrec,.lablist>li.isrec{border:2px solid var(--rec-line);background:var(--rec-bg)}
+.lablist{padding-left:0}
+.lablist>li{list-style:none;margin:0 0 14px;border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--ground);display:grid;gap:8px;max-width:none}
+.lablist>li>.lead2{display:block;font:600 19px/1.35 Fraunces,Georgia,serif;color:var(--blue,var(--green))}
+.lablist>li>.fchip.rec{justify-self:start}
+.subfld{display:grid;gap:3px;margin:2px 0 0;padding-left:14px;border-left:2px solid var(--line)}
+.subfld.trade{border-left-color:var(--trade)} .subfld.trade>.lab{color:var(--trade)}
+.subfld.why{border-left-color:var(--why)} .subfld.why>.lab{color:var(--why)}
+.subfld p{margin:0}
+.md td .clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.md tr.open td .clamp{-webkit-line-clamp:unset;display:block}
+.md tr.open td{background:var(--why-bg)}
+.hint{font-size:14px;color:var(--ink-3);margin:0 0 8px}
+.plain{display:grid;gap:14px;margin:0 0 14px}
+.plain ul{margin:0;padding-left:0;list-style:none;display:grid;gap:8px}
+.plain li{position:relative;padding-left:22px;max-width:64ch}
+.plain li::before{content:"";position:absolute;left:4px;top:.68em;width:8px;height:8px;border-radius:50%;background:var(--why)}
+.plain .box{border-radius:10px;padding:12px 16px;border-left:4px solid}
+.plain .box h4{margin:0 0 6px;font:700 13px/1.2 "Source Sans 3",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.plain .box.cost{background:var(--cost-bg);border-color:var(--cost)} .plain .box.cost h4{color:var(--cost)} .plain .box.cost li::before{background:var(--cost)}
+.plain .box.care{background:var(--trade-bg);border-color:var(--trade)} .plain .box.care h4{color:var(--trade)} .plain .box.care li::before{background:var(--trade)}
+details.full{border-top:1px dashed var(--line);padding-top:12px;min-width:0}
+details.full>summary{cursor:pointer;font-weight:700;color:var(--blue,var(--green));min-height:32px}
+details.full[open]>summary{margin-bottom:8px}
+.summed:not(.md)>details.full>:not(summary){margin-top:12px}
+@media (max-width:640px){.fcard,.lablist>li{padding:14px}}
+
+body{font-size:17px;line-height:1.65}
+.md p,.md li{max-width:70ch}
+section.sec{padding:26px 28px 30px;border-radius:12px}
+section.sec h2{font-size:26px}
+.md h3{font:600 19px/1.3 Fraunces,Georgia,serif;text-transform:none;letter-spacing:0;color:var(--blue);margin:22px 0 8px}
+.md table{font-size:15px}
+.md td,.md th{padding:9px 12px}
+@media (max-width:640px){section.sec{padding:18px 14px 22px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="mast"><div><p class="eyebrow">BlueStaffyUK · project 5 · STOP 1</p><h1 class="title">Research board — /uk-locations/blue-staffy-puppies-manchester-uk/</h1></div>
 <div class="meta"><span class="pill">approved</span> <span class="pill">2026-10-07</span><br>data/research-boards/blue-staffy-puppies-manchester-uk.json</div></header>
-<div class="toolbar"><button class="btn" id="copy-all">Copy all as Markdown</button><button class="btn ghost" id="dl-md">Download .md</button><span id="all-status"></span><span>Every section has its own copy button; the copy is the exact markdown.</span></div>
+<div class="toolbar"><button class="btn" id="copy-all">Copy all as Markdown</button><button class="btn ghost" id="dl-md" hidden>Download .md</button><span id="all-status"></span><span>Every section has its own copy button; the copy is the exact markdown.</span></div>
 <nav class="toc" id="toc" aria-label="Sections"></nav>
 <main id="doc"></main>
 </div>
@@ -485,6 +554,12 @@ Nobody on page one ranks on depth, and on Google nobody ranks on the colour. Goo
 </script>
 <script type="text/markdown" data-title="15. AI Overview">
 No AI Overview is shown for this query.
+
+**Session:** google.co.uk read in the Playwright MCP browser, headless and signed out, two loads a few seconds apart; Google placed the session in Birmingham (B24, from the IP address), not Greater Manchester; neither load showed an AI Overview block (only the AI Mode tab). The banked DataForSEO response of 2026-09-23 lists no ai_overview item either
+
+**Note:** A fact about this session, not proof that Manchester searchers never get one. London's AI Overview (docs/research/london-page-run/aio-google-2026-09-30.md) was read in the user's own Chrome; this read was headless and signed out.
+
+**GEO implication:** **No overview to be cited in, today, in this session.** Whether Google shows an AI Overview for this query depends on the session. We should build the page to be extractable as if one will appear. London's overview had the same marketplace-led page one, and it cited only marketplaces and the Royal Kennel Club. Expect the same pool here: pets4homes, staffie-owners, gumtree and royalkennelclub.com, which bought the ad slot on the second load. **Price:** the snippets show third-party listing ranges (£75–£2,800, £50–£1,500, £50–£2,800). An overview built from them would quote a range like London's. Our prices come from `data/puppies.json` only, stated plainly, so an answer engine can lift a single sourced figure instead of a marketplace range. **Health testing:** London's overview told buyers to ask for clear DNA results from both parents. We hold no DNA certificates on the site. The Manchester page has to meet that question head-on in extractable prose: name the tests and say honestly what we can and cannot show. It must never imply a result. **Viewing:** overviews in this space tell buyers to visit in person and see the puppy with its mother before paying. With us, the deposit books the viewing. The page has to explain that order and the deposit terms (`deposit_gbp` and `deposit_refund_clause` in `data/settings.json`) in a quotable passage. It must never echo advice our own process would fail. **Local:** we are in Carlisle, not Greater Manchester. "Available in Manchester" (PAA 2) is answered by UK home delivery by DEFRA-approved transport, priced by distance (`delivery_min_gbp`–`delivery_max_gbp`, `delivery_note`), or by collection in Carlisle. It is never answered by a Manchester address we do not have. **Rescue alternative:** with Dogs Trust Manchester and the rescue and adoption searches on page one, a short, honest "rescue or breeder" passage is citable. Today no listing page on page one answers that question.
 </script>
 <script type="text/markdown" data-title="16. Heading-Type Analysis">
 | Source | Heading style |
@@ -743,6 +818,7 @@ No AI Overview is shown for this query.
 | authority[9].referring_domains | London's banked backlinks call (2026-09-30) did not include puppies.co.uk, and the user replaced the paid calls with free reads on 2026-10-07 | `mcp__…__backlinks_summary` through the spend guard |
 | authority[9].authority | London's banked backlinks call (2026-09-30) did not include puppies.co.uk, and the user replaced the paid calls with free reads on 2026-10-07 | `mcp__…__backlinks_summary` through the spend guard, per competitor domain |
 </script>
+<script type="application/json" id="board-summaries">{"sections": {"Status": {"bullets": ["Google's results and People Also Ask were bought once on 23 Sept. Bing was read free that day, and Google again on 7 Oct.", "Eight competitor pages were saved. Seven date from 23 Sept and measured the same again on 7 Oct.", "Freeads' security check stopped our usual tools, so its page came from one Firecrawl scrape on 7 Oct.", "Reddit: 8 threads reused from earlier reads. 11 new ones were found, but none could be opened.", "ChatGPT's answer is the one bought on 25 Sept, re-read against the new question list. No new call.", "Search volumes and place names come from free tools; competitor strength pairs Ahrefs' free checker with London's earlier paid backlinks data."], "cost": ["No paid DataForSEO call this run. Freeads cost 1 Firecrawl credit.", "DataForSEO spend so far is $0.749 of the $1.00 cap, leaving a $0.25 balance."], "care": ["No AI Overview showed, but the browser was signed out and Google placed it in Birmingham. That doesn't prove Manchester buyers never see one.", "Keyword Planner gives ranges only. Each range is kept exactly as shown, never narrowed.", "Competitor strength from DataForSEO is London's saved file of 30 Sept, not a new Manchester call.", "Ahrefs and DataForSEO figures are each quoted on their own scale and never compared."]}, "1. SERP Snapshot": {"bullets": ["Page one is marketplaces on both Google and Bing. On Google, the colour is not what ranks.", "Google's top five are five different marketplaces, and none says \"blue\" in its title or H1.", "Bing carries the colour: Staffie Owners' blue Manchester page is #1 and Pets4Homes' \"blue staf\" search is #5.", "Domain strength doesn't set Google's order. Gumtree (Ahrefs 78) sits #4; Staffie Owners (Ahrefs 0) sits #2.", "On every page \"Manchester\" is a search filter. Between none and 9 of 24 cards are actually in Greater Manchester.", "That leaves room for one breeder page that says the puppies are in Carlisle, prices them and answers Manchester's questions."], "care": ["The 7 Oct live read was signed out and placed in Birmingham, so its different order is not a Manchester searcher's view.", "Staffie Owners' Bolton blue page ranks on Google but sits outside the eight saved pages and was not read.", "All eight pages are advert feeds, so they give no median word count to aim for."]}, "2. Search Intent": {"bullets": ["The main intent is buying. The live read's top eight results are all marketplace or classifieds pages.", "Price comes next, then suitability: male or female, good pets, aggression, being left alone.", "Rescue and adoption is a new strand on the live page, with Dogs Trust Manchester at #9.", "Underneath sits fear of a scam or a farmed puppy, with health close behind.", "Buyers think in boroughs like Salford and Bolton. Our local answer is home delivery or collection in Carlisle.", "Our deposit books the viewing, so the page explains that order and never repeats a \"see before you pay\" rule."], "care": ["The session brief puts Manchester about 120 miles from Carlisle, but the page itself states no mileage or drive time.", "The top-scored question is whether the parents are health-tested. The page names the tests, never a result.", "Any Kennel Club registration statement stays a placeholder, not a claim."]}, "3. Competitor Reverse Engineering": {"bullets": ["None of the eight pages has an author, a table or a question heading in its body.", "Deposits appear only inside sellers' adverts and one platform badge. No page states an amount, a refund or what it secures.", "No page says how a puppy reaches a Manchester home or what that costs, and every one pads with puppies from elsewhere.", "No page offers a video call before a deposit, and none is a single breeder with prices.", "No page explains what makes a Staffy blue, names health tests or paperwork in its own voice, or offers aftercare.", "None of the eight pages answers four of Google's six People Also Ask questions: male or female, good pets, aggression, left alone."], "care": ["Heading counts include menus, filters, advert cards and footers, so they are not counts of content headings.", "Prices on these pages are the marketplaces' own figures, such as Staffie Owners' blue £1,150–£1,750 from its own analysis."]}, "4. Owner Language": {"bullets": ["We have no owners' own words this round: no Reddit thread could be opened on 7 Oct.", "Every tool we tried was blocked by Reddit or refused it, and the last fallback tool is not installed.", "The user parked this pass on 7 Oct.", "The 8 reused threads give 21 buyer questions, paraphrased, not quoted.", "9 search-result snippets are kept, labelled as excerpts from threads nobody opened."], "care": ["Read the 21 questions as paraphrases, not owners' exact words."]}, "5. Query Fan-Out": {"bullets": ["People Also Ask: cost, availability in Manchester, male or female, good pets, aggression and being left alone.", "Related searches: Kennel Club, cheap, under 500, free to good homes, Gumtree, near Salford. The live read adds rescue and adoption.", "Reddit: buyer questions paraphrased from earlier reads, on colour, health tests, vet checks, paperwork, finding a good breeder and deposits.", "9 search-result excerpts give tone: puppy-farm fear, marketplace distrust, deposit scams, bull-breed worry and local pride.", "ChatGPT's answer cites the Royal Kennel Club, PDSA and bonosue.co.uk, not us. Its key points, microchip and vaccinations, aren't on our page yet.", "The question file holds 106 questions, 29 of them must-answer."], "care": ["11 new Reddit threads and one Facebook group post could not be opened. Every tool we could use was blocked or refused.", "Excerpts are search-result snippets from threads nobody opened: tone only, never a fact or a quote.", "The ChatGPT answer was bought on 25 Sept, but its file records an older date, 23 Sept. That is an open flag."]}, "6. Why Competitors Rank": {"bullets": ["Nobody wins on depth. Every page is a feed of other people's adverts; none is a breeder answering in its own voice.", "On Google the colour doesn't rank. All five top results name the breed and Manchester; none says \"blue\" in its title or H1.", "Authority alone doesn't set Google's order. Gumtree is strongest on Ahrefs (78) but Google #4; Staffie Owners is weakest (0) but #2.", "Staffie Owners wins on page build: an exact breed-and-place title, a live count and price as its snippet, rich markup, 58 local links.", "Pets4Homes holds Google #1 and Bing #2. Freeads is #3 on both.", "\"Blue\" ranks only on Bing: Staffie Owners' blue Manchester page at #1 and Pets4Homes' \"blue staf\" search at #5."], "care": ["DataForSEO covers only three of the five domains. It ranks those three in the same order Ahrefs does."]}, "7. How We Win": {"bullets": ["Say the puppies are with us in Carlisle, then how one reaches Manchester: delivery by DEFRA-approved transport at £200–£350 by distance, or collection.", "State our deposit: £500 books the viewing, reserves the puppy and comes off the price, with the refund wording read from our data.", "Offer a live video call with the puppy and Maggie, its mother, on request, before any deposit.", "Answer colour without a premium. Our price follows the sex, not the coat, and the Kennel Club puts health and temperament first.", "Name what comes home: the vet-signed health card, the KC registration application form, the written contract and the guarantee.", "Sign the page as Lisa Bright, answer buyers under question headings, add aftercare, a full FAQ and a table that stacks on phones."], "care": ["Health tests (L-2-HGA, HC-HSF4, eye and elbow screening) are named with certificates on request, never with a result."]}, "8. Content Gap (build list)": {"bullets": ["Where to buy near Manchester, answered honestly: the puppies are in Carlisle, with delivery or collection. Boroughs are named once.", "Deposit and viewing: a video call on request before any deposit, then £500 books the viewing. Payment is by bank transfer.", "Delivery to Greater Manchester with our price band, paired with the video call.", "The litter at one price per sex, whatever the coat, and what comes with each puppy, including support after collection.", "The parents, Maggie and Jones, with their tests named and certificates on request. The life-in-Manchester questions. A signed byline.", "FAQ blocks from 20 picked questions with FAQ markup, and a price or delivery table that stacks on phones."], "care": ["No test result and no \"clear\" is stated anywhere.", "The rescue-or-breeder question waits until its brand-clash conflict is settled.", "One FAQ pick, \"DNA tested clear\", must be reworded before STOP 2."]}, "9. Entities": {"bullets": ["The things the page should name: the breed, Maggie and Jones, health tests, paperwork, laws, places, our methods and organisations.", "The vet-signed health card is the recommended one to build the page around."], "care": ["Greater Manchester and Salford are proposed new entries, not yet in our entity list."]}, "15. AI Overview": {"bullets": ["No AI Overview appeared on 7 Oct in two signed-out loads, and the 23 Sept data lists none either.", "Build the page as if one will appear, so its answers can be lifted.", "Expect overviews to cite marketplaces and the Royal Kennel Club, as London's did.", "Price: state our own prices plainly, so an engine can quote one sourced figure instead of a marketplace range.", "Viewing: explain that our deposit books the viewing, and never echo advice our own process would fail.", "A short, honest rescue-or-breeder passage could be cited. No listing page on page one answers that today."], "care": ["Google placed that session in Birmingham, not Greater Manchester. One session doesn't prove Manchester searchers never get an overview.", "London's overview asked for clear DNA results. We hold no DNA certificates on the site, so we name the tests, never a result."]}, "16. Heading-Type Analysis": {"bullets": ["On Google a breed-and-place statement wins. All five top H1s name the breed and Manchester and say \"for sale\".", "None of Google's top five says \"blue\". The colour wins only on Bing.", "Under the H1 sit counts, advert titles or menu labels, never a real topic section.", "Question headings appear only in FAQs. Question H2s: 0 of 8.", "Google asks six buyer questions, and four get no answer on any of the eight pages.", "Our shape: keep \"blue Staffy puppies\" and Manchester in the title and H1, with question H2s over a real FAQ."]}, "18. Authority and Links": {"bullets": ["Two separate scales: Ahrefs Domain Rating (0–100), read free on 7 Oct, and DataForSEO rank, from London's saved file of 30 Sept.", "Never compare the two number for number. Each is its own index.", "Ahrefs: Gumtree 78, Pets4Homes 69, Freeads 46, puppies.co.uk 28, Staffie Owners 0.", "DataForSEO: Pets4Homes 59 (17,047 referring domains), Freeads 51 (3,517), Staffie Owners 14 (51).", "Ahrefs' \"linking websites\" is not the same thing as a referring-domain count."], "care": ["Gumtree and puppies.co.uk have no DataForSEO figures: London's saved call did not include them.", "An exact referring-domain count would need a paid backlinks call, which the user replaced with free reads on 7 Oct."]}, "19. What Is NOT FETCHED and How to Fetch It": {"bullets": ["Word target: the script read only one competitor page (Freeads) as prose, so the word band is the breeder's pick on this board.", "Owners' words and 11 new Reddit threads: Reddit challenged our browser and curl, and the other tools refuse reddit.com. A Facebook post was unreachable too.", "Search volumes: Keyword Planner showed only a range, or didn't return the phrase, and the paid volume call wasn't bought.", "Each gap names the step or tool that would fill it later."]}}, "items": [{"section": "1. SERP Snapshot", "kind": "row", "index": 0, "bullets": ["Ranks: Google #1 and Bing #2, on a strong domain and an exact Manchester URL naming the breed and the place.", "Weakness: no colour in the title. Only 9 of 24 cards are in Greater Manchester, and it answers 1 of 5 FAQs.", "Our wedge: one named breeder, six named puppies at printed prices, a £500 deposit, and delivery at £200–£350 by distance."], "care": ["The saved copy carries a noindex tag yet ranks #1. Whether Google's crawler sees the same tag was not tested."]}, {"section": "1. SERP Snapshot", "kind": "row", "index": 1, "bullets": ["Ranks: Google #2 on an exact breed-and-Salford title, with list and FAQ markup and 58 Greater Manchester links. Not domain strength.", "Weakness: all 20 cards are private sellers. Only 3 matches are in Greater Manchester, and none in Salford itself.", "Our wedge: one named breeder, open about being in Carlisle, with printed prices, deposit terms, the paperwork named and delivery."]}, {"section": "1. SERP Snapshot", "kind": "row", "index": 2, "bullets": ["Ranks: #3 on Google and Bing, on its domain authority (Ahrefs 46) and a big Manchester Staffy hub with videos.", "Weakness: 45 cards up to 99 miles away, mixed with grown dogs and crosses. No FAQ and no price guidance.", "Our wedge: one litter, one place, one set of terms, including the Two-year health guarantee, instead of a 99-mile feed."], "care": ["The 7 Oct copy carries a noindex tag. What crawlers were served on 23 Sept was not tested."]}, {"section": "1. SERP Snapshot", "kind": "row", "index": 3, "bullets": ["Ranks: Google #4 on an exact breed-and-Manchester URL. Not on authority alone: strongest in the pool on Ahrefs (78), still only #4.", "Weakness: one advert, in Didsbury. The other 13 come from outside the area, with no breed text, FAQ or price guidance.", "Our wedge: a page with the answers a buyer needs, not one advert and thirteen from elsewhere."], "care": ["Its DataForSEO figures are not available: London's saved call did not include Gumtree."]}, {"section": "1. SERP Snapshot", "kind": "row", "index": 4, "bullets": ["Ranks: Google #5 on an exact breed-and-place URL with a \"near me\" title, a puppy count and product markup.", "Weakness: no Manchester puppy and no blue one. Its 3 adverts are in Bolsover and Bradley, and every offer is marked sold out.", "Our wedge: puppies a Manchester buyer can actually have, at prices printed on the page."], "care": ["The saved copy shows 3 adverts against a headline of 26. Whether the live page loads more was not tested."]}, {"section": "1. SERP Snapshot", "kind": "row", "index": 5, "bullets": ["Ranks: Bing #1, the cleanest exact match in the pool, with the only blue-specific FAQ. Not domain strength.", "Weakness: none of its 7 blue matches is in Greater Manchester. Six for-sale adverts sit 30 to 68 miles away; one wanted advert, 19.", "Our wedge: honest that our blue puppies are in Carlisle and priced to reach Manchester, at £1,500 a boy and £1,700 a girl."], "care": ["Its blue price (£1,150–£1,750) and \"61% higher\" claim come from its own internal marketplace analysis."]}, {"section": "1. SERP Snapshot", "kind": "row", "index": 6, "bullets": ["Ranks: Bing #4 on the template's plain Manchester page, with the same markup and 58 local links. Not domain strength.", "Weakness: 3 of 20 cards are in Greater Manchester, 13 never mention blue, and every card is a private seller.", "Our wedge: one named breeder with printed prices, the paperwork named document by document, and delivery or collection."]}, {"section": "1. SERP Snapshot", "kind": "row", "index": 7, "bullets": ["Ranks: Bing #5 on a strong domain, with \"blue staf\" pasted into the title and H1 from a truncated search.", "Weakness: a UK-wide page. Only 3 of 24 cards are in Greater Manchester, and its breed text leaves blue out.", "Our wedge: a page that answers how a puppy from our home in Carlisle reaches Manchester, and for how much."], "care": ["The saved copy carries a noindex tag."]}, {"section": "10. Angles", "kind": "li", "index": 0, "bullets": ["The idea: choose colour last. The Kennel Club puts health and temperament first, and colour doesn't move our prices.", "Why: Google reads this as a Staffy search, not a colour one, and it agrees with the Kennel Club line ChatGPT uses.", "Trade-off: the headline carries neither the deposit-scam fear nor the delivery warning, so section 2 has to carry both."], "care": ["\"Colour doesn't move our price\" describes this litter only. Promising it for every litter needs the breeder's yes."]}, {"section": "10. Angles", "kind": "li", "index": 1, "bullets": ["The idea: meet the \"don't take a delivered puppy\" warning with the order of events: video first, then deposit, transport last.", "Why: it fronts the first-ranked fear, a deposit scam, and four must-answer questions.", "Trade-off: London's headline already leads with the pre-deposit video call, so two city pages would open the same way."], "care": ["The video call is on request, and the visit to Carlisle comes after the deposit. The first lines must say so."]}, {"section": "10. Angles", "kind": "li", "index": 2, "bullets": ["The idea: page one stops at the advert. Our written take-back promise, guarantee and support carry on after collection.", "Why: no page-one page offers anything after the sale, and every promise is a breeder answer on file.", "Trade-off: it answers a question searchers haven't asked yet, so deposit and delivery wait for sections 2 and 3."], "care": ["The take-back is conditional: the fault is ours, or you can no longer care for the puppy. No hook may say \"any dog\"."]}, {"section": "11. Strategy Directions", "kind": "li", "index": 0, "bullets": ["The idea: follow the city plan's Manchester row as written, targeting the full breed name \"for sale in Manchester\".", "Why: it is already set for the whole city cluster, and it targets the second most contested city.", "Trade-off: it predates Manchester's own research, drops the colour, and doesn't answer the deposit, delivery or location gaps."], "care": ["Its two outbound links fall short of the external-link rule. The page board must fill that whichever direction runs."]}, {"section": "11. Strategy Directions", "kind": "li", "index": 1, "bullets": ["The idea: blue in the H1, \"for sale\" in the title, and one named breeder answering the Greater Manchester buyer.", "Why: every page in the pool is an advert feed, and none states deposit terms or how a puppy reaches Manchester.", "Trade-off: it gives up Google's \"for sale\" H1, gives each borough one line, and is the most writing."], "care": ["Its lead answer, delivery, argues with ChatGPT's warning, so the answer on seeing the puppy before any deposit must sit beside it."]}, {"section": "11. Strategy Directions", "kind": "li", "index": 2, "bullets": ["The idea: copy page one's shape. \"For sale\" leads the title and H1, then a price table and a section per borough.", "Why: it matches Google's results, and autocomplete suggests for-sale searches for seven Greater Manchester towns.", "Trade-off: it drops blue from the H1, and every borough section would repeat the same delivery answer."], "care": ["One litter can't match far bigger advert feeds, and the table empties as puppies go home."]}, {"section": "12. Frameworks per Section Group", "kind": "row", "index": 0, "bullets": ["The idea: one opening sentence naming the breeder, the town, six puppies at printed prices, the deposit and the delivery band.", "Why: on page one \"Manchester\" is a filter, not where sellers are. Buyers need who, where, and how the puppy arrives.", "Trade-off: naming Carlisle first tells a Manchester searcher at once the puppies aren't local. An AIDA hook would hold them longer."]}, {"section": "12. Frameworks per Section Group", "kind": "row", "index": 1, "bullets": ["The idea: Pain, Depth, Brief. Name the deposit fear, show why it is rational from independent guidance and page one, then give our facts.", "Why: \"see the puppy with its mother before any money changes hands\" scores 5, and two more deposit questions score 4.", "Trade-off: it is the longest of the three shapes, and the Brief must come from our own process, never general advice."]}, {"section": "12. Frameworks per Section Group", "kind": "row", "index": 2, "bullets": ["The idea: Feature, Advantage, Benefit, so a price never ships as a bare number. Each inclusion gets its Advantage and Benefit.", "Why: three of the six related searches hunt a price floor, and page-one snippets quote other sellers' ranges up to £2,800.", "Trade-off: the price-floor words (cheap, under £N, free to good homes) are parked, so we answer that reader without using them."]}, {"section": "12. Frameworks per Section Group", "kind": "row", "index": 3, "bullets": ["The idea: weigh both routes honestly: delivery by DEFRA-approved transport at £200–£350 by distance, or collection in Carlisle.", "Why: ChatGPT warns against a delivered puppy. The pre-deposit video call answers that, and no page covers delivery at all.", "Trade-off: no Greater Manchester price, mileage or journey time can be stated, and honest weighing will send some buyers driving to Carlisle."]}, {"section": "12. Frameworks per Section Group", "kind": "row", "index": 4, "bullets": ["The idea: entity and evidence rows: the vet-signed health card, the parents' named tests, and certificates on request.", "Why: ChatGPT's two key entities, microchip and vaccinations, are both on that card, and neither is on the page yet.", "Trade-off: rows read like a spec sheet and flatten the home-raising story. No result, grade or \"clear\" can be shown."]}, {"section": "12. Frameworks per Section Group", "kind": "row", "index": 5, "bullets": ["The idea: answer life questions as questions: male or female, exercise, a flat, time alone, the reputation worry, the banned-breed line, buying or rescuing.", "Why: four of Google's six People Also Ask are life questions, and none of the eight ranking pages answers any of them.", "Trade-off: the FAQ already holds seven life questions that headings can't repeat, and a run of these can read like a second FAQ."], "care": ["\"Rescue\" is a brand-clash word. Answer the buyer's question without targeting it, and never talk down rescue."]}, {"section": "12. Frameworks per Section Group", "kind": "row", "index": 6, "bullets": ["The idea: fully answered FAQ blocks with FAQ markup, from 20 picked questions: 6 top, 7 middle, 7 bottom.", "Why: the FAQ is page one's weakest spot. Pets4Homes answers 1 of its 5 questions, with no FAQ markup.", "Trade-off: one pick assumes a \"DNA tested clear\" result we never state, and must be fixed before STOP 2."]}, {"section": "12. Frameworks per Section Group", "kind": "row", "index": 7, "bullets": ["The idea: AIDA's Action stage only. One call to action, what happens next, the last objection, honest urgency.", "Why: the objection is \"you never hear from them again\". We answer every enquiry within 24 to 48 business hours.", "Trade-off: the label promises more arc than the section carries, and until project 6 there's no phone and the form posts nowhere."], "care": ["The litter's age goes stale. It is confirmed before it is printed and never used as a deadline."]}]}</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 <script>
@@ -750,7 +826,11 @@ No AI Overview is shown for this query.
   var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
   function un(t){return t.replace(/<\\\//g,'</');}
   var head=un(document.getElementById('md-head').textContent.trim()),name=un(document.getElementById('md-name').textContent.trim());
-  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  function say(el,msg,cls){el.textContent=msg;el.className=cls||'copied';setTimeout(function(){if(el.textContent===msg)el.textContent='';},cls?6000:1800);}
+  function copy(text,el){
+    function legacy(){var t=document.createElement('textarea'),ok=false;t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';
+      document.body.appendChild(t);t.select();try{ok=document.execCommand('copy');}catch(e){}t.remove();say(el,ok?'Copied':'Copying is blocked here',ok?'':'warn');}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){say(el,'Copied');},legacy);else legacy();}
   function labels(root){root.querySelectorAll('table').forEach(function(t){var hs=[].map.call(t.querySelectorAll('th'),function(h){return h.textContent;});
     t.querySelectorAll('tbody tr').forEach(function(r){[].forEach.call(r.children,function(c,i){c.setAttribute('data-label',hs[i]||'');});});});}
   document.querySelectorAll('script[type="text/markdown"][data-title]').forEach(function(b,i){
@@ -763,7 +843,7 @@ No AI Overview is shown for this query.
     var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
     btn.addEventListener('click',function(){copy(full,st);});
     right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
-    var body=document.createElement('div');body.className='md';
+    var body=document.createElement('div');body.className='md';body.setAttribute('data-title',title);
     if(window.marked&&window.DOMPurify){body.innerHTML=DOMPurify.sanitize(marked.parse(md));labels(body);}
     else{body.style.whiteSpace='pre-wrap';body.textContent=md;}
     sec.appendChild(body);doc.appendChild(sec);
@@ -771,9 +851,150 @@ No AI Overview is shown for this query.
   });
   var whole='# '+head+'\n\n'+all.join('\n\n')+'\n';
   document.getElementById('copy-all').addEventListener('click',function(){copy(whole,document.getElementById('all-status'));});
-  document.getElementById('dl-md').addEventListener('click',function(){
-    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([whole],{type:'text/markdown'}));a.download=name;
-    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},0);});
+  // The .md download: only through the viewer's downloads capability (a link does nothing there).
+  var dl=document.getElementById('dl-md'),st=document.getElementById('all-status'),downloads=null,KEEP=['bad_request','request_unknown','transform_error'];
+  dl.addEventListener('click',function(){if(!downloads)return;
+    downloads.save({filename:name,data:whole}).then(function(r){say(st,r&&r.status==='delivered'?'Sent':'Downloaded');},function(e){var c=(e&&e.code)||'error';
+      if(c==='declined')say(st,'Download cancelled','warn');
+      else if(c==='rate_limited')say(st,'A download prompt is already open','warn');
+      else if(c==='too_large')say(st,'This file is too large to download here. Use Copy all as Markdown.','warn');
+      else if(KEEP.indexOf(c)>=0)say(st,"Download didn't happen ("+c+'). Use Copy all as Markdown.','warn');
+      // unavailable, not_granted, capability_* and any unknown code: this view cannot save.
+      else{downloads=null;dl.hidden=true;say(st,'Download is unavailable here ('+c+'). Use Copy all as Markdown.','warn');}});});
+  var use=window.claude&&window.claude.use;
+  if(typeof use==='function')use.call(window.claude,"downloads").then(function(ns){if(ns){downloads=ns;dl.hidden=false;}},function(){});
+})();
+</script>
+<script>
+(function(){
+  var doc=document.getElementById('doc');if(!doc)return;
+  var S={sections:{},items:[]};
+  var sj=document.getElementById('board-summaries');
+  if(sj){try{var d=JSON.parse(sj.textContent);S.sections=d.sections||{};S.items=d.items||[];}catch(e){}}
+  function el(tag,cls){var e=document.createElement(tag);if(cls)e.className=cls;return e;}
+  function bodies(){return [].slice.call(doc.querySelectorAll('.md[data-title]'));}
+  function bodyOf(title){var b=bodies();for(var i=0;i<b.length;i++)if(b[i].getAttribute('data-title')===title)return b[i];return null;}
+  function role(label){return /weak|wedge/i.test(label)?'wedge':/trade|risk/i.test(label)?'trade':/why/i.test(label)?'why':'';}
+  function rich(cell){return [].some.call(cell.childNodes,function(n){return n.nodeType===1;});}
+  function split(t){
+    var m=t.match(/^(.{20,220}?[.!?])(\s|$)/);if(m)return [m[1],t.slice(m[1].length).trim()];
+    if(t.length>200){var c=t.lastIndexOf(' ',200);if(c<80)c=200;return [t.slice(0,c)+' …',t.slice(c).trim()];}
+    return [t,''];}
+  function readRest(host,lead,rest){
+    if(rest.length>40){host.appendChild(lead);var det=el('details');var s=el('summary');s.textContent='Read the rest';det.appendChild(s);
+      var p=el('p');p.textContent=rest;det.appendChild(p);host.appendChild(det);return true;}
+    return false;}
+  function fld(label,cell,cls){
+    var d=el('div','fld'+(cls?' '+cls:''));var l=el('span','lab');l.textContent=label;d.appendChild(l);
+    if(typeof cell!=='string'&&rich(cell)){var v=el('div','v');while(cell.firstChild)v.appendChild(cell.firstChild);d.appendChild(v);return d;}
+    var t=(typeof cell==='string'?cell:cell.textContent).trim(),sp=split(t),p=el('p','lead');
+    p.textContent=sp[0];if(!readRest(d,p,sp[1])){p.textContent=t;d.appendChild(p);}
+    return d;}
+
+  // 1. Where each item summary lands: the i-th body row of a block's first table, or the i-th
+  //    item of its first top-level list. Marked before any transform moves the rows.
+  S.items.forEach(function(it,n){
+    var b=bodyOf(it.section),x=null;if(!b)return;
+    if(it.kind==='row'){var t=b.querySelector('table');if(t)x=t.querySelectorAll('tbody tr')[it.index];}
+    else{var l=b.querySelector(':scope > ul, :scope > ol');if(l)x=l.children[it.index];}
+    if(x)x.setAttribute('data-item',String(n));});
+
+  // 2. Field cards. A table holding a control, an image, a fold or an anchor id is left as it
+  //    is: the page board's pickers are found by those, and a card is rebuilt from text.
+  var KEEP='input,select,textarea,button,iframe,img,details,[id]';
+  [].slice.call(doc.querySelectorAll('.md table')).forEach(function(t){
+    if(t.querySelector(KEEP))return;
+    var hs=[].map.call(t.querySelectorAll('thead th'),function(h){return h.textContent.trim();});
+    var rows=[].slice.call(t.querySelectorAll('tbody tr'));if(!rows.length||!hs.length)return;
+    var marked=rows.some(function(r){return r.hasAttribute('data-item');});
+    var b=t.closest('.md'),title=(b&&b.getAttribute('data-title'))||'';
+    if(!marked&&/Keyword Universe|Keyword Distribution|NOT FETCHED/.test(title)){
+      // long lists stay compact tables, two lines per cell; a tap opens the row
+      t.querySelectorAll('tbody td').forEach(function(td){if(td.textContent.length>90){var w=el('div','clamp');while(td.firstChild)w.appendChild(td.firstChild);td.appendChild(w);}});
+      rows.forEach(function(tr){tr.addEventListener('click',function(e){if(e.target.closest('a'))return;tr.classList.toggle('open');});});
+      var hint=el('p','hint');hint.textContent='Tap a row to open its full text.';t.parentNode.insertBefore(hint,t);return;}
+    var long=[].concat.apply([],rows.map(function(r){return [].slice.call(r.children);}))
+      .filter(function(c){return c.textContent.length>140;}).length;
+    if(!marked&&long<rows.length*0.5)return;           // short tables stay tables
+    var ti=hs.findIndex(function(h){return /result|competitor|section|page|source|keyword|entity|angle/i.test(h);});if(ti<0)ti=0;
+    var recCol=/recommended/i.test(hs.join(' ')),wrap=el('div','fcards');
+    rows.forEach(function(r){
+      var c=[].slice.call(r.children),card=el('article','fcard'),isrec=!recCol&&/Recommended/.test(r.textContent);
+      if(r.hasAttribute('data-item'))card.setAttribute('data-item',r.getAttribute('data-item'));
+      var top=el('div','fct'),h=el('h3','fcardh'),tc=c[ti],a=tc&&tc.querySelector('a[href]');
+      var tt=(tc?tc.textContent.trim():'').replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,'');
+      if(a){var link=el('a');link.href=a.getAttribute('href');link.textContent=tt;h.appendChild(link);}else h.textContent=tt;
+      top.appendChild(h);var chips=el('div','fchips');top.appendChild(chips);card.appendChild(top);
+      c.forEach(function(cell,i){if(i===ti)return;var v=cell.textContent.trim();if(!v||v==='—')return;
+        var lab=hs[i]||'';
+        if(/evidence|source/i.test(lab)){var e=el('div','fld ev');e.appendChild(document.createTextNode(lab+': '));
+          while(cell.firstChild)e.appendChild(cell.firstChild);card.appendChild(e);return;}
+        if(v.length<=40&&!rich(cell)){var ch=el('span','fchip'+(/recommended/i.test(lab)?' rec':''));
+          ch.textContent=/recommended/i.test(lab)?'Recommended: '+v:(/^#$/.test(lab)?'#':lab+' ')+v;chips.appendChild(ch);return;}
+        card.appendChild(fld(lab,cell,role(lab)));});
+      if(isrec||card.querySelector('.fchip.rec'))card.classList.add('isrec');
+      wrap.appendChild(card);});
+    t.replaceWith(wrap);});
+
+  // 3. Labelled lists: "- **X** — idea" items whose children say "Why:" or "Trade-off:".
+  var LABEL=/^(Angle|Why|Trade-off|Why it could win)\s*:\s*([\s\S]*)$/;
+  [].slice.call(doc.querySelectorAll('.md > ul, .md > ol')).forEach(function(ul){
+    var lis=[].slice.call(ul.children);
+    if(!lis.some(function(li){var s=li.querySelector(':scope > ul');
+      return s&&[].some.call(s.children,function(x){return LABEL.test(x.textContent.trim());});}))return;
+    ul.classList.add('lablist');
+    lis.forEach(function(li){
+      var sub=li.querySelector(':scope > ul'),ht=el('div','lhead');
+      [].slice.call(li.childNodes).forEach(function(n){if(n!==sub)ht.appendChild(n);});
+      var txt=ht.textContent.trim(),rec=/\(Recommended\)/.test(txt),m=txt.match(/^(\S+)\s+—\s+([\s\S]*)$/);
+      if(m){
+        var rest=m[2].replace(/\s*\(Recommended\)\s*/,' ').trim(),name='',idea=rest,k=rest.indexOf(': ');
+        if(k>0&&k<=60&&rest.slice(0,k).indexOf('. ')<0){name=rest.slice(0,k);idea=rest.slice(k+2);}
+        var lead=el('span','lead2');lead.textContent=m[1]+(name?' · '+name:'');li.appendChild(lead);
+        if(rec){var chip=el('span','fchip rec');chip.textContent='Recommended';li.appendChild(chip);}
+        li.appendChild(fld('The idea',idea));
+      }else li.appendChild(ht);
+      if(rec)li.classList.add('isrec');
+      if(sub){var keep=el('ul');
+        [].slice.call(sub.children).forEach(function(s){var mm=s.textContent.trim().match(LABEL);
+          if(!mm){keep.appendChild(s);return;}
+          var d=el('div','subfld'+(/trade/i.test(mm[1])?' trade':/why/i.test(mm[1])?' why':''));
+          var l=el('span','lab');l.textContent=mm[1]==='Angle'?'Hook, intro and section order':mm[1];d.appendChild(l);
+          var sp=split(mm[2]),p=el('p');p.textContent=sp[0];if(!readRest(d,p,sp[1])){p.textContent=mm[2];d.appendChild(p);}
+          li.appendChild(d);});
+        sub.remove();if(keep.children.length)li.appendChild(keep);}
+    });});
+
+  // 4. Plain summaries first; the original folds underneath, unchanged.
+  function bullets(list){var u=el('ul');list.forEach(function(t){var li=el('li');li.textContent=t;u.appendChild(li);});return u;}
+  function plain(sum){var w=el('div','plain');
+    if(sum.bullets&&sum.bullets.length)w.appendChild(bullets(sum.bullets));
+    [['cost','What it cost'],['care','Read with care']].forEach(function(k){
+      if(sum[k[0]]&&sum[k[0]].length){var b=el('div','box '+k[0]);var h=el('h4');h.textContent=k[1];b.appendChild(h);b.appendChild(bullets(sum[k[0]]));w.appendChild(b);}});
+    return w;}
+  function fold(label){var d=el('details','full');var s=el('summary');s.textContent=label;d.appendChild(s);return d;}
+  [].slice.call(doc.querySelectorAll('[data-item]')).forEach(function(x){
+    var it=S.items[+x.getAttribute('data-item')];if(!it||x.tagName==='TR')return;
+    var keep=[].slice.call(x.children).filter(function(n){return n.classList.contains('fct')||n.classList.contains('lead2')||(n.classList.contains('fchip')&&n.classList.contains('rec'));});
+    var det=fold('The full text');
+    [].slice.call(x.childNodes).forEach(function(n){if(keep.indexOf(n)<0)det.appendChild(n);});
+    x.appendChild(plain(it));x.appendChild(det);x.classList.add('summed');});
+  bodies().forEach(function(b){
+    var sum=S.sections[b.getAttribute('data-title')]||S.sections[b.getAttribute('data-id')||'\u0000'];if(!sum)return;
+    var det=fold('Full text, with every source and file path');
+    while(b.firstChild)det.appendChild(b.firstChild);
+    b.appendChild(plain(sum));b.appendChild(det);b.classList.add('summed');});
+
+  // 5. The legend, and the two marks every board carries in its text.
+  var legend=el('div','legend');legend.innerHTML='<span class="l-rec">Recommended</span><span class="l-why">Why / why it ranks</span><span class="l-wedge">Weakness · our wedge</span><span class="l-trade">Trade-off · risk</span><span class="l-nf">NOT FETCHED</span>';
+  doc.parentNode.insertBefore(legend,doc);
+  var w=document.createTreeWalker(doc,NodeFilter.SHOW_TEXT,null),hits=[];
+  while(w.nextNode()){var n=w.currentNode;
+    if(/NOT FETCHED|\(Recommended\)/.test(n.nodeValue)&&!n.parentNode.closest('.nf,.recmark,button,summary,textarea,script,style,option,label'))hits.push(n);}
+  hits.forEach(function(n){var f=document.createDocumentFragment();n.nodeValue.split(/(NOT FETCHED|\(Recommended\))/).forEach(function(part){
+    if(part==='NOT FETCHED'){var a=el('span','nf');a.textContent=part;f.appendChild(a);}
+    else if(part==='(Recommended)'){var r=el('span','recmark');r.textContent='Recommended';f.appendChild(r);}
+    else if(part)f.appendChild(document.createTextNode(part));});n.parentNode.replaceChild(f,n);});
 })();
 </script>
 </body>
