@@ -1,0 +1,59 @@
+{
+  "at": "2026-10-07T12:03:32.731Z",
+  "id": "s-2026-10-07T12-03-32-730Z",
+  "notes": "",
+  "picks": {
+    "contact-form": {
+      "note": "",
+      "pick": "b"
+    },
+    "contents-list": {
+      "note": "",
+      "pick": "b"
+    },
+    "counter-strip": {
+      "note": "",
+      "pick": "b"
+    },
+    "desktop-dial": {
+      "note": "",
+      "pick": "a"
+    },
+    "faq-blocks": {
+      "note": "",
+      "pick": "b"
+    },
+    "hero": {
+      "note": "This \"Raised in our home, Support after collection, Two-year health guarantee\" should be four; add one more. Make it a one-liner on desktop and stack on mobile, with two on the left and two on the right, and make it look polished.",
+      "pick": "c"
+    },
+    "image-text": {
+      "note": "",
+      "pick": "c"
+    },
+    "jump-links": {
+      "note": "",
+      "pick": "b"
+    },
+    "key-takeaways": {
+      "note": "",
+      "pick": "c"
+    },
+    "newsletter": {
+      "note": "",
+      "pick": "b"
+    },
+    "reviews": {
+      "note": "",
+      "pick": "c"
+    },
+    "tables": {
+      "note": "",
+      "pick": "a"
+    },
+    "trust-strip": {
+      "note": "On the B, change this text since we already have it on the selected hero above. ADD new related page-specific terms \"Raised in our home\nSupport after collection\nTwo-year health guarantee\"",
+      "pick": "b"
+    }
+  }
+}

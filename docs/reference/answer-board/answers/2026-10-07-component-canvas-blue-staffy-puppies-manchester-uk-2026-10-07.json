@@ -1,0 +1,33 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Picked and sent on the canvas",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Have you picked A, B or C for each of the thirteen components on the Manchester canvas?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "No video",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Should Manchester's page carry one of our YouTube videos?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-07T12:04:42.219Z",
+  "batchId": "2026-10-07-component-canvas-blue-staffy-puppies-manchester-uk",
+  "counts": {
+    "answered": 2,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-07T12-04-42-218Z"
+}
