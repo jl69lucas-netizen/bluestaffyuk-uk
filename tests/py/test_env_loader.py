@@ -1,97 +1,65 @@
-"""`tests/render/lib/env.mjs` is the one place a `.env` line is parsed for the harness.
+"""scripts/env_loader.py: every script and agent finds the repo's .env keys without being told
+(the breeder, 2026-10-07: "make so all future agents can see and use the API key").
 
-`tests/render/checks/form.ts` throws without `PUBLIC_FORMSPREE_ID`, so the Playwright config
-loads `.env` itself rather than making every caller `set -a; . ./.env`. That parse is small
-and therefore easy to get subtly wrong: quoted values keep their quotes, `export KEY=` lines
-are skipped, an already-set variable gets clobbered. Each of those produces a harness that
-runs with the wrong value rather than failing, so the parser is a plain `.mjs` module and
-this test runs the REAL module under node — the simplest honest option, and the reason the
-loader is not TypeScript: no compiler step stands between the test and the shipped code.
-
-No value is asserted from the real `.env`; every fixture here is invented.
+The loader fills os.environ from the checkout's own .env, then from the main checkout's .env
+(a worktree has no .env of its own: it is gitignored). A key already in the environment wins,
+and nothing is ever printed.
 """
-import json
 import pathlib
-import shutil
 import subprocess
-
-import pytest
+import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-MODULE = ROOT / "tests/render/lib/env.mjs"
-
-pytestmark = pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
-
-FIXTURE = "\n".join([
-    "# a comment",
-    "",
-    "PLAIN=abc",
-    'QUOTED="dq"',
-    "SQUOTED='sq'",
-    "export EXPORTED=xyz",
-    "  SPACED=pad  ",
-    "ALREADY=fromfile",
-    "HALF=\"mismatched'",
-    "lowercase=ignored",
-    "NOEQUALS",
-])
+sys.path.insert(0, str(ROOT / "scripts"))
+import env_loader as EL  # noqa: E402
 
 
-def _run(tmp_path, preset):
-    (tmp_path / ".env").write_text(FIXTURE, encoding="utf-8")
-    src = (
-        f"import {{ loadEnv }} from {json.dumps(str(MODULE))};"
-        f"const env = {json.dumps(preset)};"
-        f"loadEnv({json.dumps(str(tmp_path / '.env'))}, env);"
-        "console.log(JSON.stringify(env));"
-    )
-    r = subprocess.run(["node", "--input-type=module", "-e", src],
-                       capture_output=True, text=True, cwd=ROOT)
-    assert r.returncode == 0, r.stderr
-    return json.loads(r.stdout)
+def test_fills_a_missing_key_from_the_checkouts_env(tmp_path, monkeypatch):
+    (tmp_path / ".env").write_text("GEMINI_API_KEY=abc123\nOTHER='x y'\n")
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("OTHER", raising=False)
+    env = {}
+    loaded = EL.load_env(roots=[tmp_path], environ=env)
+    assert env["GEMINI_API_KEY"] == "abc123" and env["OTHER"] == "x y"
+    assert loaded == ["GEMINI_API_KEY", "OTHER"]
 
 
-def test_it_parses_the_shapes_a_hand_written_env_actually_has(tmp_path):
-    env = _run(tmp_path, {})
-    assert env["PLAIN"] == "abc"
-    assert env["QUOTED"] == "dq", "one matching pair of quotes is stripped"
-    assert env["SQUOTED"] == "sq"
-    assert env["EXPORTED"] == "xyz", "`export KEY=value` is a valid .env line"
-    assert env["SPACED"] == "pad"
-    assert env["HALF"] == "\"mismatched'", "mismatched quotes are not a pair — left alone"
+def test_a_key_already_set_wins(tmp_path):
+    (tmp_path / ".env").write_text("GEMINI_API_KEY=from-file\n")
+    env = {"GEMINI_API_KEY": "from-shell"}
+    assert EL.load_env(roots=[tmp_path], environ=env) == []
+    assert env["GEMINI_API_KEY"] == "from-shell"
 
 
-def test_it_skips_comments_blanks_and_non_keys(tmp_path):
-    env = _run(tmp_path, {})
-    for absent in ("lowercase", "NOEQUALS", "#"):
-        assert absent not in env
+def test_the_first_root_that_holds_a_key_wins(tmp_path):
+    a, b = tmp_path / "worktree", tmp_path / "main"
+    a.mkdir(), b.mkdir()
+    (b / ".env").write_text("GEMINI_API_KEY=main\nSITE_URL=s\n")
+    env = {}
+    EL.load_env(roots=[a, b], environ=env)          # the worktree has no .env
+    assert env == {"GEMINI_API_KEY": "main", "SITE_URL": "s"}
+    (a / ".env").write_text("GEMINI_API_KEY=wt\n")
+    env = {}
+    EL.load_env(roots=[a, b], environ=env)
+    assert env["GEMINI_API_KEY"] == "wt" and env["SITE_URL"] == "s"
 
 
-def test_an_existing_variable_is_never_overridden(tmp_path):
-    env = _run(tmp_path, {"ALREADY": "fromshell"})
-    assert env["ALREADY"] == "fromshell", (
-        "an explicit `FOO=bar npm run ...` must win over .env, or debugging is impossible")
+def test_default_roots_are_this_checkout_then_the_main_checkout():
+    roots = EL.default_roots()
+    assert roots[0] == ROOT
+    common = subprocess.run(["git", "rev-parse", "--path-format=absolute", "--git-common-dir"],
+                            cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    assert pathlib.Path(common).parent in roots
 
 
-def test_a_missing_env_file_is_not_an_error(tmp_path):
-    src = (
-        f"import {{ loadEnv }} from {json.dumps(str(MODULE))};"
-        "const env = {};"
-        f"loadEnv({json.dumps(str(tmp_path / 'nope.env'))}, env);"
-        "console.log(JSON.stringify(env));"
-    )
-    r = subprocess.run(["node", "--input-type=module", "-e", src],
-                       capture_output=True, text=True, cwd=ROOT)
-    assert r.returncode == 0, r.stderr
-    assert json.loads(r.stdout) == {}
+def test_it_never_prints(tmp_path, capsys):
+    (tmp_path / ".env").write_text("GEMINI_API_KEY=secret-value\n")
+    EL.load_env(roots=[tmp_path], environ={})
+    out = capsys.readouterr()
+    assert "secret-value" not in out.out + out.err
 
 
-def test_the_loader_never_prints_a_value(tmp_path):
-    assert "console." not in MODULE.read_text(encoding="utf-8"), (
-        "the loader handles secrets; it must not log, not even on failure")
-
-
-def test_the_playwright_config_uses_this_module_and_does_not_reimplement_it():
-    cfg = (ROOT / "tests/render/playwright.config.ts").read_text(encoding="utf-8")
-    assert "./lib/env.mjs" in cfg
-    assert "readFileSync" not in cfg, "one parser, not two"
+def test_the_image_paths_load_it():
+    """The Gemini call sites load the .env themselves, so no agent has to export a key."""
+    for f in ("scripts/gemini_log.py", "scripts/gen_manchester_stop4.py"):
+        assert "env_loader" in (ROOT / f).read_text(), f

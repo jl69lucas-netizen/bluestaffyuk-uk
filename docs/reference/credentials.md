@@ -33,7 +33,7 @@ greps every named file, so neither side can drift.
 
 Twelve keys. Nine of them are populated by Task 18; `SITE_URL` waits for the domain project 6
 registers, and `INDEXNOW_KEY` is generated against that domain in the same project.
-`GEMINI_API_KEY` is set by the user before the first generated image.
+`GEMINI_API_KEY` is set by the user before the first generated image, in the main checkout's `.env`. `scripts/env_loader.py` (run by `scripts/gemini_log.py`, which every Gemini call site imports) loads it into the environment for every script and agent, worktrees included, and never prints it (breeder, 2026-10-07).
 
 ## The retired MCP server
 

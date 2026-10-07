@@ -25,6 +25,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# Every Gemini call site imports this module, so loading the repo .env here means no agent has
+# to export GEMINI_API_KEY by hand (breeder, 2026-10-07). Names only; no value is printed.
+sys.path.insert(0, str(ROOT / "scripts"))
+import env_loader  # noqa: E402
+env_loader.load_env()
 LOG = ROOT / "docs/reports/gemini-usage.jsonl"
 KEY_PATTERN = re.compile(r"\bAQ\.\S+|\bAIza\S+")
 REDACTED = "[redacted]"

@@ -29,10 +29,13 @@ An infographic is never generated here; it is built by the `bsuk-infographic` sk
 
 Before the first generation in a session:
 
-1. Check the key is set without printing it: `test -n "$GEMINI_API_KEY" && echo set`.
-   The breeder supplied a key in `.env` (2026-10-02) and will delete it when image work is
-   done; if it is missing, stop and ask the breeder to export one. Never echo, paste or commit
-   a key.
+1. The key loads itself: `scripts/gemini_log.py` (imported by every call site) runs
+   `scripts/env_loader.py`, which fills the environment from this checkout's `.env` and then
+   the main checkout's (a worktree has none; breeder, 2026-10-07: "make so all future agents
+   can see and use the API key"). Check it without printing it:
+   `python3 -c "import sys;sys.path.insert(0,'scripts');import gemini_log,os;print('set' if os.environ.get('GEMINI_API_KEY') else 'missing')"`.
+   If it is missing, ask the breeder to add `GEMINI_API_KEY=` to the main checkout's `.env`
+   themselves. Never echo, paste, copy between files or commit a key.
 2. Check the package: `python3 -c "import google.genai"`. If it is missing, ask before
    installing it; it is not in `requirements.txt`.
 3. Every generation is a paid API call. Say how many images the run will make and ask before
