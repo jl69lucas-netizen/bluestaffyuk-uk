@@ -10,6 +10,8 @@
 //
 // THE ROWS ARE THE CALLER'S, never this file's: Manchester's are src/lib/manchesterFaq.ts (the
 // approved outline's questions word for word, each answered from data/faq.json and the data keys).
+// The rows' list carries `kit-faq`, the FAQ-block hook every gate reads (scripts/query_coverage_check.py:
+// a block is a div.kit-faq whose direct <details> children are its questions), as London's ledger does.
 // Each question is an `<h3>` inside its `<summary>`; the answer is one paragraph and the FAQPage
 // node's text word for word (src/lib/cityKit.ts `faqPageNode`, fed the same rows), so it carries no
 // link. A price, a band or a hard-hyphen word ("L-2-HGA", "DEFRA-approved") never breaks inside. A
@@ -100,7 +102,7 @@ const id = `city-faq-${block}`;
               alt={alt} width={served!.w} height={served!.h} class={crop} loading="lazy" decoding="async" />}
         <figcaption>{caption}</figcaption>
       </figure>
-      <div class="rows">
+      <div class="rows kit-faq">
         {items.map((r) => (
           <details class="row">
             <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>{keepRuns(r.q, keep).map((x) => (x.keep ? <span class="keep">{x.text}</span> : x.text))}</h3></summary>

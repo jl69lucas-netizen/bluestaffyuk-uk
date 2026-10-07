@@ -187,13 +187,13 @@ const enquiry = label('enquiry');
   {/* ── G1 · the deposit and the visit (outline row 8) ── */}
   <section id="deposit" data-section-label={label('deposit')} class="mx-chapter">
     <CityOffsetSheet heading={label('deposit')} asset={photo('deposit-h2')} rows={depositTerms()}>
-      <Fragment slot="lede">Because the {DEPOSIT} deposit books your viewing here in {TOWN}, holds your puppy for you and comes off the price. Paying someone you found online is a fair worry, so here is what you can check first.</Fragment>
+      <Fragment slot="lede">Because the {DEPOSIT} deposit books your viewing here in {TOWN}, holds your puppy for you and comes off the price. Paying someone you found online is a fair worry, so below is what you can check before any money moves, and what you see before you commit to a puppy.</Fragment>
     </CityOffsetSheet>
     <div class="mx-answers">
       <div class="mx-a">
         <h3>{head('deposit', 3, 0)}</h3>
         <BodyImage asset={photo('deposit-settle')} srcset={photo('deposit-settle').srcset} box="uniform" focal="50% 30%" />
-        <p>It takes the puppy you chose off our list and fixes the date of your visit, so nobody else can reserve that puppy.</p>
+        <p>It takes the puppy you chose off our list and fixes the date of your visit, so nobody else can reserve that puppy while you plan the trip. It is a booking, not a sale: you have not committed to the puppy until you have met it, its mother and its papers.</p>
         <h4>{head('deposit', 4, 0, 0)}</h4>
         <p>By bank transfer, once we have confirmed the puppy is still free, and all of it comes off the price of {BOY_PRICE} for a boy or {GIRL_PRICE} for a girl.</p>
         <h5>{head('deposit', 5, 0, 0, 0)}</h5>
@@ -204,7 +204,7 @@ const enquiry = label('enquiry');
       <div class="mx-a">
         <h3>{head('deposit', 3, 1)}</h3>
         <BodyImage asset={photo('deposit-questions')} srcset={photo('deposit-questions').srcset} box="uniform" focal="50% 40%" />
-        <p>Whether the puppy is still free, who the parents are and what our guarantee covers. <a href="/uk-blue-staffy-puppy-buying-guide/">The UK Blue Staffy puppy buying guide</a> lists everything else worth asking.</p>
+        <p>Whether the puppy is still free, who the parents are, what each parent has been tested for and what our guarantee covers: you can check all four before your deposit leaves your account. <a href="/uk-blue-staffy-puppy-buying-guide/">The UK Blue Staffy puppy buying guide</a> lists everything else worth asking a breeder, from the contract to support after collection.</p>
         <h4>{head('deposit', 4, 1, 0)}</h4>
         <p>Yes. Tell us which puppy you like and we confirm that nobody has reserved it before you pay anything.</p>
         <h4>{head('deposit', 4, 1, 1)}</h4>
@@ -217,7 +217,7 @@ const enquiry = label('enquiry');
       <div class="mx-a">
         <h3>{head('deposit', 3, 2)}</h3>
         <BodyImage asset={photo('deposit-visit')} srcset={photo('deposit-visit').srcset} box="tall" />
-        <p>Maggie with her litter, in the home where they were raised, by appointment. <a href="https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy">Advice on buying a puppy from a breeder</a> from the RSPCA says to see the mother and her puppies together.</p>
+        <p>Maggie with her litter, in the home where they were raised, by appointment, and you can ask us anything while you are here. <a href="https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy">Advice on buying a puppy from a breeder</a> from the RSPCA says to see the mother and her puppies together, and the visit is where you do exactly that.</p>
         <h4>{head('deposit', 4, 2, 0)}</h4>
         <p>At the visit, once you have met both parents and looked through their papers and the vet records. <a href="#enquiry">Tell us which puppy you would like to visit</a>, and we will find a time.</p>
       </div>
@@ -232,13 +232,14 @@ const enquiry = label('enquiry');
         { t: 'The parents', d: 'Maggie, our dam, and Jones, our sire.' },
         { t: 'Where the litter grew up', d: `${sign('Raised in our home')} in ${TOWN}.` },
       ]}>
-      <Fragment slot="lede">Maggie and Jones both had the {TEST_A} and {TEST_B} tests, and eye and elbow screening, before this litter. Their papers come to you privately once you write; this page prints none of them.</Fragment>
+      <Fragment slot="lede">Maggie and Jones both had the {TEST_A} and {TEST_B} tests, and eye and elbow screening, before this litter was planned. Their papers come to you privately once you write; this page prints none of them.</Fragment>
     </CityOffsetSheet>
     <div class="mx-answers">
       <div class="mx-a">
         <h3>{head('health-tests', 3, 0)}</h3>
         <BodyImage asset={photo('health-tests-dna')} srcset={photo('health-tests-dna').srcset} box="uniform" focal="50% 40%" />
-        <p>Because the condition is recessive, a puppy can only develop it by inheriting the faulty gene from its mother and its father alike, which is why both parents are tested. <a href="/blue-staffy-health-uk/">How L-2-HGA and HC-HSF4 pass from parent to puppy</a> is on our health page.</p>
+        <p>Because the condition is recessive, a puppy can only develop it by inheriting the faulty gene from its mother and its father alike, which is why both parents are tested before a litter is planned rather than after it.</p>
+        <p>L-2-HGA is a neurological disorder affecting metabolism; HC-HSF4 is an inherited cataract. <a href="/blue-staffy-health-uk/">How L-2-HGA and HC-HSF4 pass from parent to puppy</a> is on our health page.</p>
         <h4>{head('health-tests', 4, 0, 0)}</h4>
         <p>Eye screening for hereditary cataracts and other inherited eye disease, and elbow screening, on both parents. <a href="https://www.bva.co.uk/canine-health-schemes/eye-scheme/">Hereditary eye disease screening by veterinary ophthalmologists</a> is what the BVA's eye scheme explains.</p>
         <h5>{head('health-tests', 5, 0, 0, 0)}</h5>
@@ -249,7 +250,8 @@ const enquiry = label('enquiry');
       <div class="mx-a">
         <h3>{head('health-tests', 3, 1)}</h3>
         <BodyImage asset={photo('health-tests-home')} srcset={photo('health-tests-home').srcset} box="uniform" />
-        <p>Indoors with us, never in kennels, among the people, cats and everyday noise of a busy family house. <a href="/blue-staffy-uk-breeders/">The home our puppies grow up in</a> is described on our breeder page.</p>
+        <p>Indoors with us, never in kennels, among the people, cats and everyday noise of a busy family house.</p>
+        <p>They meet household sounds, visitors and our cats long before they meet yours, with constant company and early socialisation from people of every age. By the time they leave, each one is used to car journeys, other dogs and being picked up and looked over. <a href="/blue-staffy-uk-breeders/">The home our puppies grow up in</a> is described on our breeder page.</p>
         <h4>{head('health-tests', 4, 1, 0)}</h4>
         <p>We follow both with every litter: short, gentle handling and a steady run of new sights, sounds and people through the first weeks.</p>
         <h4>{head('health-tests', 4, 1, 1)}</h4>
@@ -266,13 +268,14 @@ const enquiry = label('enquiry');
         { t: `Each of our ${GIRLS} girls`, d: `${GIRL_PRICE}.` },
         { t: 'The coats in this litter', d: `${list(COATS).charAt(0).toUpperCase()}${list(COATS).slice(1)}.` },
       ]}>
-      <Fragment slot="lede">This litter is {LITTER} Staffordshire Bull Terrier puppies for sale, {BOYS} boys and {GIRLS} girls, and any of them can come home to {AREA}. The price follows the sex and carries our {GUARANTEE}.</Fragment>
+      <Fragment slot="lede">This litter is {LITTER} Staffordshire Bull Terrier puppies for sale, {BOYS} boys and {GIRLS} girls, and any of them can come home to {AREA}. The price follows the sex alone, and it carries the parents' papers, the puppy's own folder of records and our {GUARANTEE}.</Fragment>
     </CityOffsetSheet>
     <div class="mx-answers">
       <div class="mx-a">
         <h3>{head('litter', 3, 0)}</h3>
         <BodyImage asset={photo('litter-prices')} srcset={photo('litter-prices').srcset} box="uniform" focal="50% 35%" />
-        <p>Because in this litter we set one figure for a boy and one for a girl, and the coat changes neither. Each puppy's price sits beside its photo below.</p>
+        <p>Because in this litter we set one figure for a boy and one for a girl, and the coat changes neither.</p>
+        <p>A white or part-white puppy costs what a solid blue one does, so you can choose on health, character and how the puppy fits your home rather than on its colour. Each puppy's price sits beside its photo below, and the table lists only the puppies nobody has reserved, so a row that has gone is a puppy that has found its home.</p>
         <CityPhotoShelf heading={head('litter', 4, 0, 0)} as="h4" caption={(outline.sections.find((s) => s.table) as { table: { caption: string } }).table.caption}
           city={MANCHESTER} shownAbove={pups.map((p) => p.name)} />
         <p>Our regularly updated listing shows the same puppies; one still showing there is unreserved.</p>
@@ -286,6 +289,7 @@ const enquiry = label('enquiry');
         <h3>{head('litter', 3, 1)}</h3>
         <BodyImage asset={photo('litter-parents')} srcset={photo('litter-parents').srcset} box="uniform" focal="50% 50%" />
         <p>Maggie, our dam, and Jones, our sire, are the parents of all {LITTER}, and you meet them both at your visit.</p>
+        <p>Seeing the parents tells you more about a puppy's likely build and nature than any photograph can, which is why both of them are here for you to see. Ask to look through their registration papers while you are with us, as every buyer should.</p>
         <h4>{head('litter', 4, 1, 0)}</h4>
         <p>Yes. Maggie and Jones are both Kennel Club registered, and we give you both registration numbers to check the pedigree.</p>
       </div>
@@ -317,6 +321,7 @@ const enquiry = label('enquiry');
         <h3>{head('travel', 3, 0)}</h3>
         <BodyImage asset={photo('travel-priced')} srcset={photo('travel-priced').srcset} box="uniform" focal="50% 40%" />
         <p>By distance, as anywhere in the UK: Salford, Stockport, Bolton, Wigan and Rochdale all sit inside the {DELIVERY_BAND} band, and your figure depends on how far you are from {TOWN}.</p>
+        <p>The band covers the whole of the UK, so no home in {AREA} pays outside it, whichever borough you live in, and every route is by {transportName}.</p>
         <h4>{head('travel', 4, 0, 0)}</h4>
         <p>{transportName.charAt(0).toUpperCase()}{transportName.slice(1)} carries your puppy, working to the government's rules for moving animals rather than rules of our own.</p>
         <h5>{head('travel', 5, 0, 0, 0)}</h5>
@@ -327,7 +332,8 @@ const enquiry = label('enquiry');
       <div class="mx-a">
         <h3>{head('travel', 3, 1)}</h3>
         <BodyImage asset={photo('travel-collect')} srcset={photo('travel-collect').srcset} box="uniform" />
-        <p>Neither suits every family: collecting means you carry your puppy home after meeting us, and delivery saves you the drive. Collection is from our home in {TOWN}.</p>
+        <p>Neither suits every family. Collecting means your puppy spends its first miles beside you after you have met us, while delivery saves you the drive north and back and brings the puppy to your own front door.</p>
+        <p>Either way the puppy has been seen by you first, and collection is from our home in {TOWN}. If you collect, plan the day so that you have time with the puppy before the drive home.</p>
         <h4>{head('travel', 4, 1, 0)}</h4>
         <p>Yes. Visits here are by appointment only, so collection day is booked with you just as the viewing is.</p>
         <p><a href="/uk-locations/staffy-puppies-for-sale-liverpool/">Liverpool buyers</a> choose between the same two routes. <a href="/uk-locations/blue-staffy-puppies-south-yorkshire/">Our South Yorkshire page</a> covers the county to the east. <a href="/uk-locations/blue-staffies-newcastle-under-lyme/">Readers in Newcastle-under-Lyme</a> have a page of their own. <a href="/uk-locations/blue-staffy-puppies-for-sale-leeds/">Families in Leeds</a> do too. <a href="/uk-locations/blue-staffy-puppies-york/">York households</a> pay within the same band. <a href="/uk-locations/">Every other UK city on our list</a> is one click away.</p>
@@ -343,7 +349,7 @@ const enquiry = label('enquiry');
         { t: 'In the folder', d: `${list(PAPERS.map((p, i) => (i ? lcFirst(p) : p)))}.` },
         { t: 'Also in writing', d: "A puppy purchase contract, and both parents' registration numbers." },
       ]}>
-      <Fragment slot="lede">Each of our puppies leaves with a folder of its own records, the papers that show where it came from and what has been done for it so far.</Fragment>
+      <Fragment slot="lede">Each of our puppies leaves with a folder of its own records, the papers that show where it came from and what has been done for it so far. Below is what to expect in that folder, and what to ask any seller for.</Fragment>
     </CityOffsetSheet>
     <div class="mx-answers">
       <div class="mx-a">
@@ -351,6 +357,7 @@ const enquiry = label('enquiry');
         <BodyImage asset={photo('papers-checklist')} srcset={photo('papers-checklist').srcset} box="uniform"
           phone={{ src: '/images/blue-staffy-puppy-papers-checklist-manchester-phone.webp', w: 622, h: 1644 }} />
         <p>Whoever you buy from, ask for both parents' registration numbers, the Kennel Club registration application form, the vaccination record, the microchip details and a written contract. Ours come with all five.</p>
+        <p>Be wary of an advert that calls a puppy registered but cannot show you the parents' numbers: the numbers let you look up the pedigree yourself, and the application form lets you register the puppy in your name once it is home. The vaccination record matters too: it is the first thing your own vet will want to see.</p>
         <h4>{head('papers', 4, 0, 0)}</h4>
         <p>Because registering the puppy is your step to take: the form travels home with it so the registration is made in your name.</p>
         <h5>{head('papers', 5, 0, 0, 0)}</h5>
@@ -381,7 +388,7 @@ const enquiry = label('enquiry');
       <div class="mx-a">
         <h3>{head('guarantee', 3, 1)}</h3>
         <BodyImage asset={photo('guarantee-cover')} srcset={photo('guarantee-cover').srcset} box="tall" />
-        <p>Every puppy comes with it in writing. {guaranteeFact()}</p>
+        <p>Every puppy in this litter comes with it in writing. {guaranteeFact()}</p>
         <h4>{head('guarantee', 4, 1, 0)}</h4>
         <p>Yes, and we would like you to: the full terms go to anyone who asks, before any deposit is paid.</p>
       </div>
@@ -404,7 +411,7 @@ const enquiry = label('enquiry');
       <div class="mx-a">
         <h3>{head('busy-household', 3, 0)}</h3>
         <BodyImage asset={photo('household-rented')} srcset={photo('household-rented').srcset} box="uniform" focal="50% 35%" />
-        <p>It means the breed is not the obstacle. <a href="https://www.gov.uk/control-dog-public/banned-dogs">The dog types it is against the law to own in the UK</a> are listed by the government, and the Staffordshire Bull Terrier is not on that list.</p>
+        <p>It means the breed is not the obstacle. <a href="https://www.gov.uk/control-dog-public/banned-dogs">The dog types it is against the law to own in the UK</a> are listed by the government, and the Staffordshire Bull Terrier is not on that list. The list judges a dog by how it looks rather than by its breed name, so pedigree papers make the plainest case to a landlord.</p>
         <h4>{head('busy-household', 4, 0, 0)}</h4>
         <p>Yes, before you sign. A letting agent or housing association can still restrict a breed, and a written policy settles it.</p>
       </div>
@@ -412,6 +419,7 @@ const enquiry = label('enquiry');
         <h3>{head('busy-household', 3, 1)}</h3>
         <BodyImage asset={photo('household-downsides')} srcset={photo('household-downsides').srcset} box="uniform" focal="50% 70%" />
         <p>A Staffy can be strong-willed and needs steady training, may chase small animals it did not meet young, and wants its people around for much of the day.</p>
+        <p>None of those rules the breed out, but each asks something of a household: time to train, early introductions to the cat, and a routine that does not leave the dog alone for long stretches.</p>
         <h4>{head('busy-household', 4, 1, 0)}</h4>
         <p>Yes. Every litter grows up indoors with us and meets children, cats and older people before it leaves.</p>
       </div>
@@ -431,7 +439,8 @@ const enquiry = label('enquiry');
       <div class="mx-a">
         <h3>{head('favourite-person', 3, 0)}</h3>
         <BodyImage asset={photo('favourite-boisterous')} srcset={photo('favourite-boisterous').srcset} box="uniform" focal="50% 60%" />
-        <p>Some are: boys can be more boisterous, girls a touch more independent, but upbringing and character count for more than sex. <a href="#enquiry">Tell us whether you would like a boy or a girl</a>, and we will tell you which puppy fits.</p>
+        <p>Some are: boys can be more boisterous, girls a touch more independent, but upbringing and each puppy's own character count for more than sex, so meet the puppy rather than choose by the label alone.</p>
+        <p>Every puppy in this litter has been raised the same way, in our home, so the difference you notice will be personality more than sex. <a href="#enquiry">Tell us whether you would like a boy or a girl</a>, and we will tell you which puppy fits.</p>
         <h4>{head('favourite-person', 4, 0, 0)}</h4>
         <p><a href="https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier">Staffordshire Bull Terrier exercise and care advice</a> from the PDSA puts an adult at an hour or more a day, ideally in two outings.</p>
       </div>
