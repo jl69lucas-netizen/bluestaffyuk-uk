@@ -28,6 +28,7 @@
 - grill-me run in `--brief` mode from the chat message; framework, AIO and visual choices go to the research board and outline as picks.
 - Manchester's question file (`data/queries/blue-staffy-puppies-manchester-uk.json`) is from 2026-09-23, before London's format: it has no `word_target`, no keyword volumes, no neighbourhood terms and no backlinks. Row 5 refreshes it through the spend guard (counted $0.51 of the $1.00 total cap; London's refresh cost $0.22).
 - The route mod (`tools/claude-mods/bsuk-route`) now shows each row's skills and agents from page-run.md, ticked as they run (5e99d0ea); the three mods were copied into this session's dev-mods folder.
+- 2026-10-07 18:20 — Task 34 extended: six more FAQ questions (price, home delivery, mother, aggressive, good pets, flat) were near-copies; three options each in faq-rewordings.md §§4–9 (f71bb56a). The board carries the Recommended wording of all nine; the user judges them at STOP 3. Readability layer (layout A + Option 2) built in a worktree in parallel with the Manchester board record (Task 35).
 
 ## Open Flags
 
