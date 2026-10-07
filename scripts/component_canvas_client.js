@@ -8,6 +8,7 @@
   "use strict";
   var FRAMES = JSON.parse(document.getElementById("frames").textContent);
   var FINAL = document.body.getAttribute("data-final") === "true";
+  var CITY = document.body.getAttribute("data-city") || "City";   // set by the builder's --city
   var DRAFT_KEY = "component-canvas:v1";
   var PICKS = ["a", "b", "c", "redesign"];
   var db = null, comments = null, sending = false;
@@ -178,7 +179,7 @@
     }, function () { /* the picks listener reports */ });
   }
   function picksMarkdown() {
-    var lines = ["# London component picks", ""];
+    var lines = ["# " + CITY + " component picks", ""];
     ids().forEach(function (cid, i) {
       var r = row(cid);
       lines.push((i + 1) + ". " + nameOf(cid) + " — " + (r.pick ? (r.pick === "redesign" ? "none, redesign" : r.pick.toUpperCase()) : "not picked") +
@@ -210,7 +211,7 @@
     var sid = snapshotId(), all = ids();
     var picked = all.filter(function (cid) { return PICKS.indexOf(row(cid).pick) >= 0; });
     var redo = all.filter(function (cid) { return row(cid).pick === "redesign"; });
-    var note = "London canvas picks — " + picked.length + " of " + all.length + " picked, " + redo.length +
+    var note = CITY + " canvas picks — " + picked.length + " of " + all.length + " picked, " + redo.length +
       " to redesign. Read db submissions/" + sid + ".";
     // The send starts inside the click (it needs the viewer's gesture), beside the save.
     var sendingP = (!comments ? Promise.resolve("off") : comments.anchorFor($("send")).then(function (anchor) {

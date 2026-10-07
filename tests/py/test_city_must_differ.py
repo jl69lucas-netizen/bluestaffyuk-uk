@@ -1,4 +1,5 @@
 """scripts/city_must_differ.py — the must-differ inventory (Plan 1, Task 2)."""
+import json
 import pathlib
 import sys
 
@@ -42,7 +43,7 @@ def test_worn_by_uses_the_pick_in_force():
 def test_the_inventory_covers_the_fifteen_in_order():
     inv = M.inventory()
     assert list(inv) == list(COMPONENT_IDS)
-    counts = {k: len(v) for k, v in inv.items()}
+    counts = {k: len([r for r in v if r["shape"] != "city"]) for k, v in inv.items()}
     assert counts["hero"] == 21 and counts["counter-strip"] == 21
     assert counts["jump-links"] == 6 and counts["contents-list"] == 1 and counts["newsletter"] == 0
     assert inv["contents-list"][0]["id"] == "PageNav"
@@ -73,3 +74,34 @@ def test_every_built_pages_hero_and_counter_are_listed_as_worn():
 def test_the_committed_files_are_current(capsys):
     assert M.main(["--check"]) == 0, capsys.readouterr().out
     assert "15 components" in capsys.readouterr().out
+
+
+# ---- Task 18 (Manchester plan, Phase F, gap G2): every city's picks join the table ----
+
+LONDON = "blue-staffy-puppies-london"
+
+
+def test_every_london_pick_is_a_city_row():
+    """G2: a Manchester variant one axis from London's pick passed the canvas and failed only
+    at the gate, after the user had picked it. London's fifteen picks are rows of their own."""
+    inv = M.inventory()
+    picks = PB.load_city_picks()[LONDON]["picks"]
+    for comp, key in picks.items():
+        rows = [r for r in inv[comp] if r["shape"] == "city"]
+        city, cid, v = key.split("/")
+        meta = json.loads((ROOT / "design/city-canvas" / city / cid / "meta.json").read_text(encoding="utf-8"))
+        assert rows == [{"shape": "city", "id": key, "name": meta["variants"][v]["name"],
+                         "axes": PB.canvas_axes(key), "used_by": [LONDON]}], (comp, rows)
+    assert sum(1 for rows in inv.values() for r in rows if r["shape"] == "city") == len(picks) == 15
+
+
+def test_a_city_row_is_left_to_city_pick_too_close():
+    """The gate's city-pick-too-close already compares one city's picks with another's, so
+    PB.city_pick_findings skips `shape: "city"` rows; London is never refused for its own picks."""
+    picks = PB.load_city_picks()
+    assert PB.city_pick_findings(LONDON, picks, M.inventory(), PB.canvas_axes) == []
+
+
+def test_the_designers_copy_is_titled_for_every_city():
+    first = M.render_md(M.inventory()).split("\n", 1)[0]
+    assert first == "# Must Differ — the City Component Design Passes", first

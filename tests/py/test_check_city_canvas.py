@@ -316,3 +316,114 @@ def test_a_decorative_image_may_carry_an_empty_alt(marks):
 def test_an_empty_alt_not_marked_decorative_is_still_refused():
     bad = HERO.replace("<a href", f"{DECOR}><a href")
     assert any("no alt text" in x for x in probs("hero", "a", bad))
+
+
+# ---- Task 18 (Manchester plan, Phase F, gap G1): the canvas tools take any city ----
+
+SHEETS = "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/"
+MAN_HERO = HERO.replace("London", "Manchester")
+
+
+def test_the_copy_rule_names_the_canvas_city_not_london():
+    """G1: the copy rule read the word "London" into every canvas, so no other city could pass."""
+    c = ctx(city="manchester")
+    assert probs("hero", "a", MAN_HERO, c) == []
+    out = probs("hero", "a", MAN_HERO.replace("Manchester", "Leeds"), c)
+    assert any(x.startswith("copy: no mention of Manchester") for x in out), out
+    # a London canvas keeps its own rule and its own message
+    assert any(x.startswith("copy: no mention of London")
+               for x in probs("hero", "a", MAN_HERO, ctx(city="london")))
+
+
+def test_the_ideas_index_is_per_city():
+    assert C.ideas_index("manchester") == ROOT / "docs/research/manchester-components/ideas-index.md"
+    assert C.ideas_index("london") == ROOT / "docs/research/london-components/ideas-index.md"
+
+
+def _sheet_meta(component, src):
+    m = _meta()
+    m["component"] = component
+    for v in "abc":
+        m["variants"][v]["idea_sources"] = [src]
+    return m
+
+
+@pytest.mark.parametrize("component", ["hero", "counter-strip"])
+def test_a_hero_or_counter_cites_a_breeder_idea_sheet(component):
+    """Working rule 16 / Phase F ruling 3: each hero and counter variant takes its idea from at
+    least one sheet in Assets/Components-Ideas/. London's counters cited none of them."""
+    ref = "/Users/apple/Downloads/BSUK/BSUK-refs/manchester/hero/ref-1280-01.png"
+    ideas = {component: f"- `{ref}` — a reference\n- `{SHEETS}hero-idea-3.png` — a sheet"}
+    c = ctx(city="manchester", ideas=ideas)
+    out = C.validate_meta(component, _sheet_meta(component, ref), c)[0]
+    assert "meta a: hero/counter cite a breeder idea sheet (working rule 16)" in out, out
+    ok = C.validate_meta(component, _sheet_meta(component, f"{SHEETS}hero-idea-3.png"), c)[0]
+    assert not [x for x in ok if "idea sheet" in x], ok
+
+
+def test_the_idea_sheet_rule_binds_only_hero_and_counter():
+    ref = "/Users/apple/Downloads/BSUK/BSUK-refs/manchester/trust/ref-1280-01.png"
+    c = ctx(city="manchester", ideas={"trust-strip": f"- `{ref}` — a reference"})
+    out = C.validate_meta("trust-strip", _sheet_meta("trust-strip", ref), c)[0]
+    assert not [x for x in out if "idea sheet" in x], out
+
+
+def test_a_manchester_variant_one_axis_from_londons_pick_is_refused():
+    """G2: London's picks are rows of the must-differ table, so a Manchester variant one axis
+    from london/hero/b fails on the canvas, not at the gate after the user picked it."""
+    import pageboard as PB
+    md = json.loads(C.MUST_DIFFER.read_text(encoding="utf-8"))["components"]
+    m = _meta()
+    m["variants"]["a"]["axes"] = dict(PB.canvas_axes("london/hero/b"))
+    out = C.validate_meta("hero", m, ctx(city="manchester", ideas=IDEAS, must_differ=md))[0]
+    assert any("within one axis of existing style london/hero/b" in x for x in out), out
+
+
+def test_a_london_variant_is_never_compared_with_londons_own_picks():
+    m = _meta()
+    row = {"shape": "city", "id": "london/hero/a", "name": "Its own pick",
+           "axes": dict(m["variants"]["a"]["axes"]), "used_by": ["blue-staffy-puppies-london"]}
+    out = C.validate_meta("hero", m, ctx(city="london", ideas=IDEAS, must_differ={"hero": [row]}))[0]
+    assert not [x for x in out if "london/hero/a" in x], out
+    out = C.validate_meta("hero", m, ctx(city="manchester", ideas=IDEAS, must_differ={"hero": [row]}))[0]
+    assert any("london/hero/a" in x for x in out), out
+
+
+def test_with_no_arguments_every_city_with_a_picks_record_is_validated(tmp_path, monkeypatch, capsys):
+    """G1: `check:canvas` in check:all validated London only. With no arguments it walks
+    data/design/city-picks/ and judges each city's canvas against its non-`none` picks."""
+    canvases, picks = tmp_path / "canvas", tmp_path / "picks"
+    canvases.mkdir()
+    picks.mkdir()
+    (canvases / "london").symlink_to(C.CANVAS_ROOT / "london")
+    served = ("An ethical blue Staffy puppy, delivered professionally by BlueStaffyUK, happily "
+              "with its new owners Mark and Emma P. in London.")   # working rule 11 keeps it
+    texts = {v: MAN_HERO.replace("Manchester", "Testville")
+             .replace("A blue Staffy puppy ready for a Testville home", served)
+             .replace('data-variant="a"', f'data-variant="{v}"') for v in "abc"}
+    meta = _meta()
+    for v in "abc":
+        meta["variants"][v]["idea_sources"] = [f"{SHEETS}hero-idea-5.png"]
+    _write_component(canvases / "testville", "hero", texts, meta)
+    (tmp_path / "ideas.md").write_text(f"## hero — Hero\n\n- `{SHEETS}hero-idea-5.png` — a sheet\n",
+                                       encoding="utf-8")
+    real = json.loads((C.PICKS_DIR / "blue-staffy-puppies-london.json").read_text(encoding="utf-8"))
+    (picks / "blue-staffy-puppies-london.json").write_text(json.dumps(real), encoding="utf-8")
+    rec = {"slug": "blue-staffy-puppies-testville", "canvas": "testville",
+           "picks": {c: ("testville/hero/a" if c == "hero" else "none") for c in COMPONENT_IDS}}
+    (picks / "blue-staffy-puppies-testville.json").write_text(json.dumps(rec), encoding="utf-8")
+    real_index = C.ideas_index
+    monkeypatch.setattr(C, "CANVAS_ROOT", canvases)
+    monkeypatch.setattr(C, "PICKS_DIR", picks)
+    monkeypatch.setattr(C, "ideas_index",
+                        lambda city: tmp_path / "ideas.md" if city == "testville" else real_index(city))
+    assert C.main([]) == 0, capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert "check-city-canvas london: examined 45 fragments, 15 meta files; 0 problems" in out, out
+    assert "check-city-canvas testville: examined 3 fragments, 1 meta files; 0 problems" in out, out
+
+
+def test_the_real_no_argument_run_judges_london_and_passes(capsys):
+    assert C.main([]) == 0, capsys.readouterr().out
+    assert "check-city-canvas london: examined 45 fragments, 15 meta files; 0 problems" \
+        in capsys.readouterr().out

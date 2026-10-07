@@ -12,6 +12,9 @@ canvas's own db; "Send picks to Claude" posts a comment the way the answer board
     python3 scripts/build_component_canvas.py [--city london] [--out PATH] [--files-map PATH]
         [--inline-images] [--allow-partial] [--final] [--emit-frames DIR]
 
+--city names the canvas folder and the page: its title, eyebrow and lede, and the body's
+data-city, which the client's copied and sent text read ("Manchester component picks").
+
 --files-map writes the {published path: source path} map of every image a fragment uses, for
 the Artifact publish's `files` (a srcdoc frame resolves relative URLs against the page).
 --inline-images embeds every image as a data: URI instead — the fallback if the published
@@ -30,11 +33,15 @@ import re
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from check_city_canvas import city_name  # noqa: E402
 from city_components import CANVAS_ROOT, COMPONENTS, ROOT, VARIANT_IDS  # noqa: E402
 
 CLIENT_JS = ROOT / "scripts" / "component_canvas_client.js"
 TOKENS = ROOT / "src" / "styles" / "tokens.css"
-TITLE = "London Component Canvas"
+TITLE = "{city} Component Canvas"
+#: The lede's count, spelled out ("Fifteen components of the London page").
+COUNT_WORDS = ("No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+               "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen")
 WIDTHS = (375, 768, 1280)
 #: Components whose point is how they behave while the page scrolls (a sticky strip, a fixed
 #: dial). Their frame is held to a device's height, so it scrolls inside itself, instead of
@@ -227,7 +234,11 @@ def _section(n, cid, name, variants, meta, final):
             f'</fieldset></section>')
 
 
-def render_page(frags, metas, tokens, final=False, inline=False):
+def render_page(frags, metas, tokens, final=False, inline=False, city="london"):
+    """The canvas page. `city` (the canvas key) names the title, eyebrow and lede, and the body
+    carries it as data-city, which the client's copy and send text read."""
+    name = city_name(city)
+    title = TITLE.format(city=name)
     frames = {f"{cid}/{v}": (frame_document(inline_images(text), None, tokens) if inline
                              else frame_document(text, CANVAS_ASSETS, tokens))
               for cid, variants in frags.items() for v, text in variants.items()}
@@ -242,17 +253,17 @@ def render_page(frags, metas, tokens, final=False, inline=False):
     dis = " disabled" if final else ""
     return f"""<!doctype html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{html.escape(TITLE)}</title>
+<title>{html.escape(title)}</title>
 <link rel="stylesheet" href="{FONTS_HREF}">
-<style>{CSS}</style></head><body data-final="{str(final).lower()}">
+<style>{CSS}</style></head><body data-final="{str(final).lower()}" data-city="{html.escape(name)}">
 <div class="wrap">
-<header><p class="eyebrow">BlueStaffyUK · project 5 · the London page</p>
-<h1 class="title">{html.escape(TITLE)}</h1>
-<p class="lede">Fifteen components of the London page, three new designs each, on the real
+<header><p class="eyebrow">BlueStaffyUK · project 5 · the {html.escape(name)} page</p>
+<h1 class="title">{html.escape(title)}</h1>
+<p class="lede">{COUNT_WORDS[len(names)]} components of the {html.escape(name)} page, three new designs each, on the real
 BlueStaffyUK tokens. Pick A, B or C for each one, or "None — redesign" with a note, then send
 your picks. Previews start at phone width; switch any section, or all of them, to tablet or
 desktop. The dial and the jump links scroll inside their own frames, so you can see them stick.
-Copy in the previews is placeholder London copy; reviews are marked placeholders.</p>
+Copy in the previews is placeholder {html.escape(name)} copy; reviews are marked placeholders.</p>
 {banner}</header>
 <div class="bar" role="region" aria-label="Progress and preview width">
 <p class="count"><b id="picked">0</b> / <b id="total">{len(names)}</b><span> picked</span></p>
@@ -331,7 +342,7 @@ def main(argv=None):
               file=sys.stderr)
         return 1
     out = pathlib.Path(a.out or ROOT / "docs" / "artifacts" / f"bsuk-{a.city}-component-canvas.html")
-    page = render_page(frags, metas, tokens, final=a.final, inline=a.inline_images)
+    page = render_page(frags, metas, tokens, final=a.final, inline=a.inline_images, city=a.city)
     if len(page.encode("utf-8")) > MAX_PAGE_BYTES:
         print(f"the page would be {len(page.encode('utf-8'))} bytes, over the 15 MB budget; "
               "publish with --files-map instead of --inline-images", file=sys.stderr)

@@ -1858,6 +1858,8 @@ def city_pick_findings(slug, picks, must_differ, axes_of):
             if oaxes and axis_distance(axes, oaxes) < 2:
                 fail("city-pick-too-close", f"{comp} {key} is within one axis of {other}'s {okey}")
         for row in must_differ.get(comp, []):
+            if row.get("shape") == "city":
+                continue    # another city's pick: city-pick-too-close above judges it (G2)
             if row.get("used_by") and axis_distance(axes, row["axes"]) < 2:
                 fail("city-pick-matches-built",
                      f"{comp} {key} is within one axis of {row['id']} ({row['name']}), worn by "

@@ -238,3 +238,90 @@ def test_emitted_frames_carry_the_declared_axes(tmp_path):
             {"layout": v, "media": "none", "density": "airy", "framing": "plain"} for v in "abc"]
     finally:
         shutil.rmtree(out, ignore_errors=True)
+
+
+# ---- Task 18 (Manchester plan, Phase F, gap G3): the page and its client name the city ----
+
+def _city_canvas(tmp_path, city="manchester", name="Manchester", n=15):
+    root = _canvas(tmp_path / city, n=n)
+    for f in root.rglob("*.html"):
+        f.write_text(f.read_text(encoding="utf-8").replace("London", name), encoding="utf-8")
+    return root
+
+
+def test_a_manchester_canvas_names_manchester_and_never_london(tmp_path):
+    frags, metas = B.load_canvas(_city_canvas(tmp_path))
+    html = B.render_page(frags, metas, B.frame_tokens(), city="manchester")
+    assert "<title>Manchester Component Canvas</title>" in html
+    assert 'data-city="Manchester"' in html
+    assert "BlueStaffyUK · project 5 · the Manchester page" in html
+    assert "London" not in html, [m.start() for m in re.finditer("London", html)][:5]
+
+
+def test_the_london_canvas_keeps_its_title_and_carries_its_city(tmp_path):
+    html = page(tmp_path)
+    assert "<title>London Component Canvas</title>" in html and 'data-city="London"' in html
+    assert "Fifteen components of the London page" in html
+
+
+def test_the_cli_city_flag_names_the_page(tmp_path, monkeypatch):
+    root = _city_canvas(tmp_path)
+    root.rename(root.parent / "manchester")             # CANVAS_ROOT / "manchester"
+    monkeypatch.setattr(B, "CANVAS_ROOT", root.parent)
+    out = tmp_path / "m.html"
+    assert B.main(["--city", "manchester", "--out", str(out)]) == 0
+    assert "<title>Manchester Component Canvas</title>" in out.read_text(encoding="utf-8")
+
+
+CLIENT_PROBE = r"""
+let chromium;
+try { ({ chromium } = require("playwright")); } catch (e) { console.log("SKIP no playwright"); process.exit(0); }
+(async () => {
+  let browser;
+  try { browser = await chromium.launch(); } catch (e) { console.log("SKIP no browser"); process.exit(0); }
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(String(e)));
+  await page.addInitScript(() => {
+    window.__copied = [];
+    Object.defineProperty(navigator, "clipboard", { configurable: true,
+      value: { writeText: (t) => { window.__copied.push(t); return Promise.resolve(); } } });
+    window.__seed = {}; window.__withComments = true; window.__can = "ok";
+  });
+  await page.addInitScript({ path: process.argv[3] });
+  await page.goto("file://" + process.argv[2]);
+  await page.waitForTimeout(300);
+  await page.click("#copy-picks");
+  await page.click("#send-picks");
+  await page.waitForTimeout(800);
+  const out = { errors, copied: await page.evaluate(() => window.__copied),
+                sent: await page.evaluate(() => window.__sent) };
+  await browser.close();
+  console.log("RESULT " + JSON.stringify(out));
+})().catch((e) => { console.error(e); process.exit(1); });
+"""
+
+
+def test_the_client_copy_and_send_name_the_city_the_page_carries(tmp_path):
+    if shutil.which("node") is None:
+        pytest.skip("node not installed")
+    env = dict(os.environ, NODE_PATH=_node_path())
+    probe = subprocess.run(["node", "-e", "require('playwright')"], cwd=ROOT, env=env,
+                           capture_output=True, text=True)
+    if probe.returncode != 0:
+        pytest.skip("playwright is not installed (node_modules here or in the main checkout)")
+    frags, metas = B.load_canvas(_city_canvas(tmp_path))
+    target = tmp_path / "canvas.html"
+    target.write_text(B.render_page(frags, metas, B.frame_tokens(), city="manchester"), encoding="utf-8")
+    script = tmp_path / "probe.cjs"
+    script.write_text(CLIENT_PROBE, encoding="utf-8")
+    run = subprocess.run(["node", str(script), str(target), str(FAKE)], cwd=ROOT, env=env,
+                         capture_output=True, text=True, timeout=180)
+    if run.stdout.startswith("SKIP"):
+        pytest.skip(run.stdout.strip())
+    assert run.returncode == 0, run.stderr
+    res = json.loads(run.stdout.split("RESULT ", 1)[1])
+    assert res["errors"] == [], res
+    assert res["copied"] and res["copied"][0].startswith("# Manchester component picks\n"), res
+    assert res["sent"] and res["sent"][0].startswith("Manchester canvas picks — "), res

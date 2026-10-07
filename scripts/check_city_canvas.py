@@ -26,7 +26,7 @@ What is refused, per fragment:
                layout shift);
                a served /images/ file keeps an alt it was served with, word for word
                (working rule 11; served_alts())
-  copy       — the word "London" appears; every £ amount is a price, the deposit or a
+  copy       — the canvas's city, title-cased ("London", "Manchester"), appears; every £ amount is a price, the deposit or a
                delivery bound from data/; a parent is named only as data/faq.json names them;
                no unconfirmed audience or promise claim (UNCONFIRMED_CLAIMS); no phone
                number (PHONE_PLACEHOLDER only); no
@@ -39,14 +39,19 @@ What is refused, per fragment:
                blocks of 15–20 questions, …); every form field has a <label for> or
                aria-label; a <form action> is absent or "#…"
 and per component meta.json: name, one-line description, idea_sources cited in the ideas
-index under that component, the four canonical axes (scripts/city_components.py AXES/VOCAB),
-a differs_from note; siblings differ on >= 2 axes; each variant differs on >= 2 axes from
-every row of data/design/city-must-differ.json for its component.
+index under that component (docs/research/<city>-components/ideas-index.md), the four
+canonical axes (scripts/city_components.py AXES/VOCAB), a differs_from note; a hero or counter
+variant cites at least one sheet from the breeder's Assets/Components-Ideas/ folder (working
+rule 16; London, frozen before the check, is exempt); siblings differ on >= 2 axes; each
+variant differs on >= 2 axes from every row of data/design/city-must-differ.json for its
+component, its own city's picks (`<city>/…` rows) skipped.
 
     python3 scripts/check_city_canvas.py [--city london] [--only hero,counter-strip]
 
-Without --only, all fifteen components must be present with exactly three variants each.
-Exit 1 on any problem, 2 on a usage error. Prints its examined counts.
+With --city and without --only, all fifteen components must be present with exactly three
+variants each. With no arguments, every city that has a picks record in data/design/city-picks/
+is judged, against its non-`none` picks. Exit 1 on any problem, 2 on a usage error. Prints its
+examined counts, one line per city.
 """
 import argparse
 import dataclasses
@@ -63,8 +68,14 @@ from city_components import (AXES, CANVAS_ROOT, COMPONENT_IDS, ROOT, VARIANT_IDS
                              VOCAB, axis_distance)
 
 SOURCES_DOC = ROOT / "docs" / "research" / "2026-09-27-location-component-design-sources.md"
-IDEAS_INDEX = ROOT / "docs" / "research" / "london-components" / "ideas-index.md"
 MUST_DIFFER = ROOT / "data" / "design" / "city-must-differ.json"
+PICKS_DIR = ROOT / "data" / "design" / "city-picks"
+#: The breeder's idea sheets (working rule 16); a hero or counter variant cites one of them.
+IDEA_SHEETS = "/Assets/Components-Ideas/"
+IDEA_SHEET_COMPONENTS = ("hero", "counter-strip")
+#: Canvases frozen before the idea-sheet check existed: London's counters cited none of the
+#: breeder's sheets (Manchester plan, Phase F ruling 3), and its picks are built.
+IDEA_SHEET_EXEMPT = frozenset({"london"})
 IMAGE_ROOTS = {"/images/": ROOT / "public" / "images", "/puppies/": ROOT / "src" / "assets" / "puppies"}
 
 BANNED_TAGS = {"script", "link", "iframe", "object", "embed", "video", "audio"}
@@ -116,6 +127,17 @@ class Context:
     image_roots: dict = dataclasses.field(default_factory=lambda: dict(IMAGE_ROOTS))
     served_alts: dict = dataclasses.field(default_factory=dict)
     parents: frozenset = frozenset()
+    city: str = "london"
+
+
+def city_name(city):
+    """The canvas key as the copy writes it: `manchester` → "Manchester"."""
+    return city.replace("-", " ").title()
+
+
+def ideas_index(city):
+    """The ideas index a city's canvas cites its idea sources from."""
+    return ROOT / "docs" / "research" / f"{city}-components" / "ideas-index.md"
 
 
 def banned_words(sources_doc=SOURCES_DOC):
@@ -239,12 +261,13 @@ def ideas_sections(text):
     return out
 
 
-def default_context():
+def default_context(city="london"):
     md = json.loads(MUST_DIFFER.read_text(encoding="utf-8"))["components"] if MUST_DIFFER.exists() else {}
-    ideas = ideas_sections(IDEAS_INDEX.read_text(encoding="utf-8")) if IDEAS_INDEX.exists() else {}
+    index = ideas_index(city)
+    ideas = ideas_sections(index.read_text(encoding="utf-8")) if index.exists() else {}
     return Context(banned_words=banned_words(), allowed_pounds=allowed_pounds(),
                    must_differ=md, ideas=ideas, reviews=real_reviews(), served_alts=served_alts(),
-                   parents=parent_names())
+                   parents=parent_names(), city=city)
 
 
 class _Walk(html.parser.HTMLParser):
@@ -425,8 +448,9 @@ def validate_fragment(component, variant, text, ctx):
             p.append(f"asset: CSS {why}")
     # copy
     body = " ".join(_text(events).split())
-    if "london" not in body.lower():
-        p.append("copy: no mention of London — the placeholder copy is London-flavoured")
+    name = city_name(ctx.city)
+    if name.lower() not in body.lower():
+        p.append(f"copy: no mention of {name} — the placeholder copy is {name}-flavoured")
     for m in POUNDS.finditer(body):
         n = int(m.group(1).replace(",", ""))
         if n not in ctx.allowed_pounds:
@@ -491,6 +515,9 @@ def validate_meta(component, meta, ctx):
                 if not isinstance(s, str) or s not in cited:
                     p.append(f"meta {v}: idea source {s!r} is not cited under ## {component} "
                              "in the ideas index")
+            if (component in IDEA_SHEET_COMPONENTS and ctx.city not in IDEA_SHEET_EXEMPT
+                    and not any(isinstance(s, str) and IDEA_SHEETS in s for s in srcs)):
+                p.append(f"meta {v}: hero/counter cite a breeder idea sheet (working rule 16)")
         diff = row.get("differs_from", "")
         if not (isinstance(diff, str) and len(diff.strip()) >= 20):
             p.append(f"meta {v}: differs_from says how it differs (20+ characters)")
@@ -510,6 +537,8 @@ def validate_meta(component, meta, ctx):
                 p.append(f"axes: siblings {a} and {b} differ on fewer than 2 axes")
     for v, ax in axes.items():
         for row in ctx.must_differ.get(component, []):
+            if row["id"].startswith(f"{ctx.city}/"):
+                continue    # this city's own picks: its siblings rule already judges them
             if axis_distance(ax, row["axes"]) < 2:
                 p.append(f"axes: {v} is within one axis of existing style {row['id']} "
                          f"({row['name']}) — see docs/research/london-components/must-differ.md")
@@ -554,24 +583,47 @@ def validate_canvas(root, ctx, only=None):
     return problems, n_frag, n_meta
 
 
-def main(argv=None):
-    ap = argparse.ArgumentParser(description="Validate a city component canvas.")
-    ap.add_argument("--city", default="london")
-    ap.add_argument("--only", help="comma-separated component ids")
-    a = ap.parse_args(argv)
-    only = [c.strip() for c in a.only.split(",")] if a.only else None
-    if only and set(only) - set(COMPONENT_IDS):
-        ap.error(f"unknown component(s): {sorted(set(only) - set(COMPONENT_IDS))}")
-    root = CANVAS_ROOT / a.city
-    problems, n_frag, n_meta = validate_canvas(root, default_context(), only)
+def picked_cities(folder=None):
+    """[(canvas key, components picked)] for every data/design/city-picks/*.json, in file order;
+    a `none` pick (a component the page does not use) is not judged."""
+    folder = PICKS_DIR if folder is None else pathlib.Path(folder)
+    out = []
+    for f in sorted(folder.glob("*.json")) if folder.is_dir() else []:
+        doc = json.loads(f.read_text(encoding="utf-8"))
+        out.append((doc["canvas"], [c for c in COMPONENT_IDS if doc["picks"].get(c, "none") != "none"]))
+    return out
+
+
+def _judge(city, only):
+    problems, n_frag, n_meta = validate_canvas(CANVAS_ROOT / city, default_context(city), only)
     for x in problems:
         print(f"  FAIL {x}")
-    print(f"check-city-canvas {a.city}: examined {n_frag} fragments, {n_meta} meta files; "
+    print(f"check-city-canvas {city}: examined {n_frag} fragments, {n_meta} meta files; "
           f"{len(problems)} problems")
     if n_frag == 0:
         print("examined 0 fragments — not a pass")
         return 1
     return 1 if problems else 0
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Validate a city component canvas.")
+    ap.add_argument("--city", help="one canvas; without it, every city with a picks record")
+    ap.add_argument("--only", help="comma-separated component ids")
+    a = ap.parse_args(argv)
+    only = [c.strip() for c in a.only.split(",")] if a.only else None
+    if only and set(only) - set(COMPONENT_IDS):
+        ap.error(f"unknown component(s): {sorted(set(only) - set(COMPONENT_IDS))}")
+    if a.city or only:
+        return _judge(a.city or "london", only)
+    cities = picked_cities()
+    if not cities:
+        print("check-city-canvas: no picks record in data/design/city-picks/ — examined 0 "
+              "fragments — not a pass")
+        return 1
+    # A full set of picks keeps the full walk (a stray component is still refused).
+    codes = [_judge(city, None if comps == list(COMPONENT_IDS) else comps) for city, comps in cities]
+    return max(codes)
 
 
 if __name__ == "__main__":

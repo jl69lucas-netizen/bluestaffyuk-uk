@@ -44,6 +44,20 @@
     "used_by": [
      "buy-blue-staffy-puppies-uk"
     ]
+   },
+   {
+    "axes": {
+     "density": "compact",
+     "framing": "band",
+     "layout": "lineup",
+     "media": "grid"
+    },
+    "id": "london/contact-form/b",
+    "name": "Litter line-up",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
   "contents-list": [
@@ -59,6 +73,20 @@
     "shape": "kit",
     "used_by": [
      "every rebuilt page (PageShell mounts it)"
+    ]
+   },
+   {
+    "axes": {
+     "density": "airy",
+     "framing": "inset",
+     "layout": "photo-index",
+     "media": "left"
+    },
+    "id": "london/contents-list/c",
+    "name": "Photo index",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
     ]
    }
   ],
@@ -335,6 +363,20 @@
     "name": "Ring tiles on a steel band, beside the heading, labels beside",
     "shape": "stats",
     "used_by": []
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "inset",
+     "layout": "scale",
+     "media": "none"
+    },
+    "id": "london/counter-strip/c",
+    "name": "Price scale",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
   "desktop-dial": [
@@ -375,6 +417,20 @@
     "name": "Progress ring above labels only",
     "shape": "dial",
     "used_by": []
+   },
+   {
+    "axes": {
+     "density": "airy",
+     "framing": "inset",
+     "layout": "photo-track",
+     "media": "top"
+    },
+    "id": "london/desktop-dial/c",
+    "name": "Photo marker",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
   "faq-blocks": [
@@ -427,6 +483,20 @@
      "thank-you-blue-staffy-puppies-journey",
      "uk-blue-staffy-breeders-contact",
      "uk-staffordshire-bull-terrier-guide"
+    ]
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "band",
+     "layout": "photo-rail",
+     "media": "left"
+    },
+    "id": "london/faq-blocks/a",
+    "name": "Steel ledger",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
     ]
    }
   ],
@@ -704,6 +774,20 @@
     "used_by": [
      "blue-staffy-blog-guides"
     ]
+   },
+   {
+    "axes": {
+     "density": "compact",
+     "framing": "inset",
+     "layout": "filmstrip",
+     "media": "bottom"
+    },
+    "id": "london/hero/b",
+    "name": "Litter filmstrip",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
   "image-text": [
@@ -754,6 +838,20 @@
     "name": "Band with an InfoCard aside",
     "shape": "standard",
     "used_by": []
+   },
+   {
+    "axes": {
+     "density": "compact",
+     "framing": "inset",
+     "layout": "chapters",
+     "media": "inline"
+    },
+    "id": "london/image-text/c",
+    "name": "Two chapters",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
   "jump-links": [
@@ -832,6 +930,20 @@
     "name": "Floating round Sections button, bottom right",
     "shape": "sheet",
     "used_by": []
+   },
+   {
+    "axes": {
+     "density": "compact",
+     "framing": "band",
+     "layout": "stepper",
+     "media": "none"
+    },
+    "id": "london/jump-links/a",
+    "name": "Stepper band",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
   "key-takeaways": [
@@ -881,9 +993,38 @@
      "index",
      "thank-you-blue-staffy-puppies-journey"
     ]
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "rule",
+     "layout": "ledger",
+     "media": "left"
+    },
+    "id": "london/key-takeaways/a",
+    "name": "Answer ledger",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
-  "newsletter": [],
+  "newsletter": [
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "card",
+     "layout": "split",
+     "media": "left"
+    },
+    "id": "london/newsletter/a",
+    "name": "Litter notice",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
+   }
+  ],
   "puppy-cards": [
    {
     "axes": {
@@ -930,6 +1071,20 @@
      "buy-staffy-puppies-for-sale-uk",
      "index",
      "thank-you-blue-staffy-puppies-journey"
+    ]
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "inset",
+     "layout": "grid-3",
+     "media": "left"
+    },
+    "id": "london/puppy-cards/b",
+    "name": "Family sheet",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
     ]
    }
   ],
@@ -983,6 +1138,20 @@
      "buy-staffy-puppies-for-sale-uk",
      "thank-you-blue-staffy-puppies-journey"
     ]
+   },
+   {
+    "axes": {
+     "density": "airy",
+     "framing": "card",
+     "layout": "letter",
+     "media": "left"
+    },
+    "id": "london/reviews/a",
+    "name": "Owner's letter",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
   "tables": [
@@ -1031,6 +1200,20 @@
     "used_by": [
      "uk-blue-staffy-puppy-buying-guide"
     ]
+   },
+   {
+    "axes": {
+     "density": "compact",
+     "framing": "inset",
+     "layout": "roster",
+     "media": "inline"
+    },
+    "id": "london/tables/a",
+    "name": "Litter roster",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
   "trust-strip": [
@@ -1074,6 +1257,20 @@
     "name": "Trust strip beside the heading",
     "shape": "trust",
     "used_by": []
+   },
+   {
+    "axes": {
+     "density": "airy",
+     "framing": "card",
+     "layout": "photo-ledger",
+     "media": "left"
+    },
+    "id": "london/trust-strip/c",
+    "name": "Photo ledger",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
+    ]
    }
   ],
   "video": [
@@ -1119,6 +1316,20 @@
      "buy-staffy-puppies-for-sale-uk",
      "index",
      "uk-staffordshire-bull-terrier-guide"
+    ]
+   },
+   {
+    "axes": {
+     "density": "compact",
+     "framing": "inset",
+     "layout": "side-panel",
+     "media": "right"
+    },
+    "id": "london/video/c",
+    "name": "Side panel",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-london"
     ]
    }
   ]
