@@ -186,13 +186,6 @@ def built_files():
                   and "board-preview" not in p.parts]
 
 
-# The outline's middle FAQ question (STOP 2 q03 (b)) is reworded in Phase F Task 34; until then its
-# "Tested Clear for" reads as a stated result on Manchester's two routes. It is NOT excused: the
-# main test leaves it to the one strict xfail below, which turns red (XPASS) the moment Task 34's
-# wording lands, so this entry has to go with it.
-PENDING_REWORD = "Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?"
-
-
 def test_no_built_page_states_a_dna_or_health_test_result():
     dist, files = built_files()
     assert len(files) > 50, "examined too few built files to be a pass"
@@ -209,18 +202,8 @@ def test_no_built_page_states_a_dna_or_health_test_result():
             assert (ROOT / ruling).is_file(), f"{rel}: the ruling {ruling} is not in the repository"
             assert sentence in text, f"{rel}: the ruled sentence is gone, drop it: {sentence}"
             text = text.replace(sentence, " ")
-        if rel in MANCHESTER_ROUTES:
-            text = text.replace(PENDING_REWORD, " ")   # held by the xfail below, not excused
         bad += [f"{rel}: …{l}…" for l in result_lines(text)]
     assert bad == [], "\n".join(bad)
-
-
-@pytest.mark.xfail(strict=True, reason="reworded in Phase F Task 34 (STOP 2 q03 b)")
-@pytest.mark.parametrize("rel", MANCHESTER_ROUTES)
-def test_manchesters_dna_faq_heading_states_no_result(rel):
-    dist, _ = built_files()
-    text = visible((dist / rel).read_text(errors="ignore"))
-    assert [l for l in result_lines(text) if "Tested Clear for" in l] == []
 
 
 def test_the_migrated_pages_state_exactly_their_pinned_hits():

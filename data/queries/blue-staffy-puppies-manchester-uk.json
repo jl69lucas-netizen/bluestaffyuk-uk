@@ -151,7 +151,7 @@
         "q-do-staffy-get-attached-to-one-person-6d9e29",
         "q-how-much-exercise-does-a-staffy-need-dail-0d2427"
       ],
-      "heading": null
+      "heading": "Do Staffy Dogs Pick a Favourite Person, or Love the Whole Family?"
     },
     {
       "topic": "paperwork",
@@ -161,7 +161,7 @@
         "q-what-is-included-when-i-buy-a-blue-9734a9",
         "q-are-your-blue-staffy-puppy-kennel-club-re-edca46"
       ],
-      "heading": null
+      "heading": "Which Papers and Records Travel Home With Each Blue Staffy Puppy?"
     },
     {
       "topic": "health",
@@ -171,7 +171,7 @@
         "q-do-you-offer-health-guarantees-for-your-b-04ef4b",
         "q-what-are-staffy-prone-to-323dfd"
       ],
-      "heading": null
+      "heading": "Which Health Problems Can Staffy Dogs Develop, and What Will We Stand Behind?"
     }
   ],
   "questions": [
@@ -189,7 +189,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Is a Blue Staffy an Aggressive Dog by Nature?"
+      }
     },
     {
       "id": "q-are-blue-staffy-good-family-pets-especial-7e3356",
@@ -204,7 +207,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Do Blue Staffies Make Good Family Pets for Homes With Children?"
+      }
     },
     {
       "id": "q-are-blue-staffy-more-common-than-other-co-93f69c",
@@ -252,7 +258,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Do Blue Staffies Suit First-Time Dog Owners?"
+      }
     },
     {
       "id": "q-are-staffy-hard-to-train-a723a4",
@@ -288,7 +297,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Are the Parents of Every Blue Staffy Puppy You Breed Health-Tested?"
+      }
     },
     {
       "id": "q-are-the-puppy-raised-in-a-family-home-c93ef5",
@@ -333,7 +345,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Is Each Puppy Already on the Kennel Club Register When It Leaves?"
+      }
     },
     {
       "id": "q-blue-staffy-puppy-manchester-cheap-8bdb8b",
@@ -409,7 +424,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Will a Staffordshire Bull Terrier Be Happy Living in a Flat?"
+      }
     },
     {
       "id": "q-can-i-get-a-blue-staffy-puppy-delivered-ad16e3",
@@ -424,7 +442,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Is Home Delivery an Option for My Blue Staffy Puppy?"
+      }
     },
     {
       "id": "q-can-i-go-to-a-dog-show-to-584dc7",
@@ -486,7 +507,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Can a Staffy Be Left Alone for Hours?"
+      }
     },
     {
       "id": "q-can-you-deliver-a-blue-staffy-puppy-to-74fa14",
@@ -517,7 +541,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Are Blue Staffies Good Pets for an Ordinary Household?"
+      }
     },
     {
       "id": "q-do-kc-registered-staffy-have-fewer-health-b37f61",
@@ -562,7 +589,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Do Staffy Dogs Pick a Favourite Person, or Love the Whole Family?"
+      }
     },
     {
       "id": "q-do-you-deliver-across-the-uk-fb0c4a",
@@ -578,7 +608,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Which Parts of the UK Do You Deliver Puppies To?"
+      }
     },
     {
       "id": "q-do-you-give-a-written-contract-and-a-f01711",
@@ -608,7 +641,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "What Does the Written Guarantee on a Blue Staffy Puppy Cover?"
+      }
     },
     {
       "id": "q-do-you-offer-support-after-i-take-my-d4ebe8",
@@ -624,7 +660,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Can I Contact You for Advice for the Dog's Whole Life?"
+      }
     },
     {
       "id": "q-do-your-puppy-come-with-vet-records-and-30768c",
@@ -715,7 +754,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Is It Wise to See the Mother and Puppy Together Before Money Changes Hands?"
+      }
     },
     {
       "id": "q-how-can-i-confirm-that-a-puppy-has-661d01",
@@ -835,7 +877,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Do I Know Which Puppies Are Still Available?"
+      }
     },
     {
       "id": "q-how-do-i-know-im-buying-from-reputable-0472b8",
@@ -896,7 +941,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Do I Spot a Bad Staffy Breeder?"
+      }
     },
     {
       "id": "q-how-long-do-staffy-sleep-at-night-c49bb1",
@@ -957,7 +1005,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Much Will the Blue Staffy Puppy I Choose Cost?"
+      }
     },
     {
       "id": "q-how-much-exercise-does-a-staffy-need-dail-0d2427",
@@ -972,7 +1023,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "How Long Should a Grown Staffy's Daily Walks and Play Last?"
+      }
     },
     {
       "id": "q-how-much-exercise-does-a-staffy-need-each-bd9421",
@@ -1002,7 +1056,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "How Much Deposit Reserves One of Your Puppies?"
+      }
     },
     {
       "id": "q-how-often-do-you-add-a-new-guide-156016",
@@ -1093,7 +1150,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Are Boy Staffy Dogs More Boisterous Than Girls?"
+      }
     },
     {
       "id": "q-is-a-staffy-a-pitbull-e881f1",
@@ -1258,7 +1318,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Which Health Problems Can Staffy Dogs Develop, and What Will We Stand Behind?"
+      }
     },
     {
       "id": "q-what-are-the-downsides-of-staffy-c63e95",
@@ -1319,7 +1382,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Has the Puppy Been Microchipped and Vet Checked?"
+      }
     },
     {
       "id": "q-what-do-your-blue-staffy-guides-cover-e3dc8c",
@@ -1365,7 +1431,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "What Vaccinations, Worming and Flea Treatments Has the Puppy Had?"
+      }
     },
     {
       "id": "q-what-health-checks-do-your-blue-staffy-pu-471e6e",
@@ -1396,7 +1465,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Which Papers and Records Travel Home With Each Blue Staffy Puppy?"
+      }
     },
     {
       "id": "q-what-is-the-average-lifespan-of-a-blue-73b18f",
@@ -1548,7 +1620,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "What Paperwork Should a Puppy Advertised as KC Registered Come With?"
+      }
     },
     {
       "id": "q-what-personal-information-does-bluestaffy-9e259c",
@@ -1624,7 +1699,10 @@
       "must_answer": true,
       "faq": "bottom",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "What Food Is the Puppy Eating Now?"
+      }
     },
     {
       "id": "q-what-should-i-put-in-my-message-516b4b",
@@ -1700,7 +1778,10 @@
       "must_answer": true,
       "faq": "top",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Where Do I Find Blue Staffy Puppies to Buy Near Manchester?"
+      }
     },
     {
       "id": "q-which-genetic-tests-have-the-parents-had-19da02",
@@ -1716,7 +1797,10 @@
       "must_answer": true,
       "faq": "middle",
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "faq",
+        "text": "Was Each Parent DNA Tested for L-2-HGA as Well as HC-HSF4?"
+      }
     },
     {
       "id": "q-which-health-tests-have-both-parents-had-e08a30",
@@ -1732,7 +1816,10 @@
       "must_answer": true,
       "faq": null,
       "blocked": null,
-      "covered_by": null
+      "covered_by": {
+        "where": "heading",
+        "text": "Can I Read Both Parents' Certificates Before I Reserve?"
+      }
     },
     {
       "id": "q-who-are-the-bluestaffyuk-stud-dogs-and-ho-54449c",

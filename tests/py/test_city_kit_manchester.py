@@ -32,6 +32,10 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 from city_components import KIT_OF_VARIANT  # noqa: E402
 from check_city_canvas import served_alts  # noqa: E402
+from test_manchester_board import REWORDED  # noqa: E402
+
+#: The nine FAQ wordings the breeder adopted at STOP 3, outline wording -> adopted wording.
+ADOPTED = {old: new for old, (new, _) in REWORDED.items()}
 
 SLUG = "blue-staffy-puppies-manchester-uk"
 PICKS = json.loads((ROOT / f"data/design/city-picks/{SLUG}.json").read_text())["picks"]
@@ -750,7 +754,7 @@ def test_three_plates_alternate_the_photo_side_and_credit_every_parent_photo():
     assert alts[1] in served_alt_of(MAGGIE) and alts[2] in served_alt_of(JONES)
 
 
-# ---- FAQ B, "Rows beside a photo": three mounts, the outline's questions, answers from the bank and the data
+# ---- FAQ B, "Rows beside a photo": three mounts, the board's questions (the outline's, nine reworded at STOP 3), answers from the bank and the data
 
 def faq_blocks():
     return mounts(KIT_ID["faq-blocks"])
@@ -773,7 +777,7 @@ def test_faq_blocks_are_the_outlines_three_blocks_word_for_word():
         h2 = sec["headings"][0]
         assert re.search(r"<h2\b[^>]*>\s*" + re.escape(h2["text"]) + r"\s*</h2>", block), h2["text"]
         qs = [q for q, _ in faq_rows(block)]
-        assert qs == [c["text"] for c in h2["children"]], qs
+        assert qs == [ADOPTED.get(c["text"], c["text"]) for c in h2["children"]], qs
         total += len(qs)
         assert block.count("<details") == len(qs) and block.count("<summary") == len(qs)
     assert total == 20, "6 + 7 + 7 questions (Phase F ruling 2)"
@@ -782,19 +786,20 @@ def test_faq_blocks_are_the_outlines_three_blocks_word_for_word():
 def test_faq_answers_come_from_the_bank_and_the_data_never_typed():
     rows = dict(r for b in faq_blocks() for r in faq_rows(b))
     for q, bank in VERBATIM.items():
-        assert rows[q] == BANK[bank]["a"], (q, bank)
+        assert rows[ADOPTED.get(q, q)] == BANK[bank]["a"], (q, bank)
     boys = [p["name"] for p in PUPPIES if p["sex"] == "male"]
     girls = [p["name"] for p in PUPPIES if p["sex"] == "female"]
-    cost = rows["How Much Does Each Blue Staffy Puppy Cost?"]
+    cost = rows[ADOPTED["How Much Does Each Blue Staffy Puppy Cost?"]]
     assert gbp(PRICES["male_gbp"]) in cost and gbp(PRICES["female_gbp"]) in cost
     assert all(n in cost for n in boys + girls), cost
-    deposit = rows["How Much Is Your Deposit?"]
+    deposit = rows[ADOPTED["How Much Is Your Deposit?"]]
     assert deposit.startswith(DEPOSIT) and CLAUSE in deposit, deposit
-    assert rows["Should I See the Mother With Her Puppy Before Money Changes Hands?"] == MOTHER_ANSWER
-    across = rows["Do You Deliver Puppies Across the UK?"]
+    assert rows[ADOPTED["Should I See the Mother With Her Puppy Before Money Changes Hands?"]] == MOTHER_ANSWER
+    across = rows[ADOPTED["Do You Deliver Puppies Across the UK?"]]
+    assert across.startswith("Wherever you are in the UK"), across
     assert BAND.replace("–", " to ") in across or (gbp(SETTINGS["delivery_min_gbp"]) in across and gbp(SETTINGS["delivery_max_gbp"]) in across)
     assert SETTINGS["delivery_note"] in across and TOWN in across
-    dna = rows[next(q for q in rows if q.startswith("Are Both Parents DNA Tested"))]
+    dna = rows[ADOPTED["Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?"]]
     assert all(t in dna for t in DNA) and "certificates on request" in dna, dna
     for word in ("clear", "result", "negative", "passed", "free of"):
         assert word not in dna.lower(), (word, dna)
@@ -804,7 +809,7 @@ def test_faq_answers_come_from_the_bank_and_the_data_never_typed():
         assert "—" not in a, (q, "no em dash in our copy")
         assert "refundable" not in a.replace(CLAUSE, ""), (q, "never plainly refundable")
     lib = (ROOT / "src/lib/manchesterFaq.ts").read_text(encoding="utf-8")
-    assert "loadFaq" in lib and "outlines/blue-staffy-puppies-manchester-uk.json" in lib, "bank rows and the outline's questions"
+    assert "loadFaq" in lib and "boards/blue-staffy-puppies-manchester-uk.json" in lib, "bank rows and the board's questions"
     assert "£" not in code_of(lib) and not re.search(r"(?<![\w.-])(500|1,500|1,700|200|350)(?![\w%])", code_of(lib))
 
 

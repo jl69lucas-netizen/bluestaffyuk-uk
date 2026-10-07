@@ -1,11 +1,14 @@
 // src/lib/manchesterFaq.ts — Manchester's three FAQ blocks (outline rows 7, 12 and 21), as rows a
 // FAQ component and the page's FAQPage node read alike (src/lib/cityKit.ts `faqPageNode`).
 //
-// THE QUESTIONS ARE THE APPROVED OUTLINE'S, word for word: each block is an outline section that
-// carries `faq`, its H2 the block's heading and its H3s the questions in order (the page wordings of
-// `faq_rewordings`, STOP 2, 2026-10-07). An answer is keyed by its question, so a question that moves
-// in the outline (the three thin wordings Task 34 re-proposes at STOP 3) stops the build here until
-// its answer is keyed to the new words: never a stale pairing.
+// THE QUESTIONS ARE THE APPROVED BOARD'S, word for word: each block is a board FAQ section
+// (data/boards/blue-staffy-puppies-manchester-uk.json `faq-top`, `faq-middle`, `faq-bottom`), its
+// heading the block's H2 (the outline's, unchanged) and each tree node's `Q: <question> —` intent a
+// question, in order. Those are the outline's twenty with the nine wordings the breeder adopted at
+// STOP 3 (answer board 2026-10-07-page-board q2-q10, each recorded as an `outline_changes_since_stop2`
+// row); the approved outline itself stays frozen as STOP 2 approved it. An answer is keyed by its
+// question, so a question that moves on the board stops the build here until its answer is keyed to
+// the new words: never a stale pairing.
 //
 // THE ANSWERS ARE THE FAQ BANK AND THE DATA (rule 9). Each names its `source`: a data/faq.json row
 // read through src/lib/faq.ts `loadFaq` (tokens resolved), used word for word wherever the row
@@ -15,7 +18,7 @@
 // clause of the deposit sentence (Phase F ruling 10), and the bank's `{deposit_terms}` rows are not
 // used. No em dash in our copy, no result for a DNA test (the tests are named and the certificates are
 // shared on request; ledger parents-dna-clear holds no proof of a result).
-import outline from '../../data/outlines/blue-staffy-puppies-manchester-uk.json';
+import board from '../../data/boards/blue-staffy-puppies-manchester-uk.json';
 import { loadFaq } from './faq';
 import { BOY_PRICE, DEPOSIT, DEPOSIT_HOLDS, GIRL_PRICE, PARENT_DNA_TESTS, TOWN, availablePuppies, refundClause } from './cityKit';
 
@@ -54,10 +57,14 @@ const priced = (sex: 'male' | 'female', price: string, word: string) => {
 const litterPrices = [priced('male', BOY_PRICE, 'boy'), priced('female', GIRL_PRICE, 'girl')].filter(Boolean).join(', and ');
 const [TEST_A, TEST_B] = PARENT_DNA_TESTS;
 
-/** Every answer, keyed by its outline question. */
+// The across-the-UK answer leads with the reach in the about-delivery-home row's own words (STOP 3 q3).
+const REACH = 'Wherever you are in the UK';
+if (!bank('about-delivery-home').includes(lcFirst(REACH))) throw new Error('manchesterFaq: data/faq.json about-delivery-home no longer says "wherever you are in the UK"');
+
+/** Every answer, keyed by its board question. */
 const ANSWERS: Record<string, { a: string; source: string }> = {
   // ── top (outline row 7) ──
-  'How Much Does Each Blue Staffy Puppy Cost?': {
+  'How Much Will the Blue Staffy Puppy I Choose Cost?': {
     // listing-cost's first sentence (its second carries `{deposit_terms}`, plainly "refundable"),
     // then the litter's prices by sex from data/price-matrix.json and the names from data/puppies.json.
     a: `${edit(sentence('listing-cost', 0), 'Every puppy is listed with its own price on its card, so', 'Each puppy is listed with its own price, so').replace(/\.$/, '')}: in this litter ${litterPrices}.`,
@@ -67,21 +74,23 @@ const ANSWERS: Record<string, { a: string; source: string }> = {
     a: `Here. ${sentence('home-find-breeders', 1)}`,
     source: 'data/faq.json home-find-breeders',
   },
-  'Can My Blue Staffy Puppy Be Delivered to My Home?': {
+  'Is Home Delivery an Option for My Blue Staffy Puppy?': {
     // about-delivery-home's two sentences as one, its "safe and reliable" and "services" left out
     // (a claim beyond the delivery note; answer board q06 is fixing the bank rows that over-reach).
     a: `Yes. ${edit(edit(sentence('about-delivery-home', 0), 'safe and reliable ', ''), ' services.', ',')} so ${lcFirst(
       edit(edit(sentence('about-delivery-home', 1), 'This means wherever you are in the UK, ', 'wherever you are in the UK '), 'new de-wormed Staffy pup', 'de-wormed puppy'))}`,
     source: 'data/faq.json about-delivery-home',
   },
-  'Do You Deliver Puppies Across the UK?': {
-    // The `delivery` row (delivery_note and the band), then collection in the town (home-safe-delivery:
-    // "you can collect in person instead").
-    a: `${bank('delivery').replace(/\.$/, '')}, and you can collect your puppy from us in ${TOWN} instead.`,
-    source: 'data/faq.json delivery, home-safe-delivery; data/settings.json delivery_note, delivery_min_gbp, delivery_max_gbp, address.city',
+  'Which Parts of the UK Do You Deliver Puppies To?': {
+    // The `delivery` row opens "Yes.", which does not answer a "which" question; the reach is the
+    // about-delivery-home row's own words (faq-rewordings.md §2 (a), STOP 3 q3). Then the `delivery`
+    // row (delivery_note and the band), then collection in the town (home-safe-delivery: "you can
+    // collect in person instead").
+    a: `${REACH}: ${edit(bank('delivery'), 'Yes. ', '').replace(/\.$/, '')}, and you can collect your puppy from us in ${TOWN} instead.`,
+    source: 'data/faq.json about-delivery-home, delivery, home-safe-delivery; data/settings.json delivery_note, delivery_min_gbp, delivery_max_gbp, address.city',
   },
   'How Do I Know Which Puppies Are Still Available?': { a: bank('listing-availability'), source: 'data/faq.json listing-availability' },
-  'How Much Is Your Deposit?': {
+  'How Much Deposit Reserves One of Your Puppies?': {
     a: `${DEPOSIT}, which ${DEPOSIT_HOLDS}. It comes off the price, and it is ${refundClause()}.`,
     source: 'data/settings.json deposit_gbp, deposit_refund_clause (the deposit ruling, src/lib/cityKit.ts)',
   },
@@ -92,7 +101,7 @@ const ANSWERS: Record<string, { a: string; source: string }> = {
     a: `Yes. Maggie, our dam, and Jones, our sire, are both Kennel Club registered and fully vaccinated, and both have had DNA tests for ${TEST_A} and ${TEST_B} and eye and elbow screening.`,
     source: 'data/faq.json about-health-tests; data/bsuk-ontology.json (the two test names)',
   },
-  'Should I See the Mother With Her Puppy Before Money Changes Hands?': {
+  'Is It Wise to See the Mother and Puppy Together Before Money Changes Hands?': {
     // The answer board's q04 (a), 2026-10-07, as approved, every figure read: the deposit ruling and
     // deposit_refund_clause, then whyus-evidence's last sentence ("You can see both parents …").
     a: `See them together before you commit to a puppy. With us the ${DEPOSIT} deposit comes first: it ${DEPOSIT_HOLDS}, it comes off the price, and it is ${refundClause()}. At the viewing ${edit(
@@ -113,17 +122,17 @@ const ANSWERS: Record<string, { a: string; source: string }> = {
     source: 'data/faq.json puppy-package',
   },
   'What Vaccinations, Worming and Flea Treatments Has the Puppy Had?': { a: bank('health-vaccinations'), source: 'data/faq.json health-vaccinations' },
-  'Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?': {
+  'Was Each Parent DNA Tested for L-2-HGA as Well as HC-HSF4?': {
     // health-dna-tests' first sentence (the tests and what each is), then the certificates on request
     // (the breeder's rulings, answer board 2026-09-29 q01 and chat 2026-10-05). Never a result.
     a: `${edit(sentence('health-dna-tests', 0), 'Both parents are', 'Maggie and Jones are both').replace(/\.$/, '')}, and we share their certificates on request.`,
     source: 'data/faq.json health-dna-tests; the certificates-on-request ruling',
   },
   // ── bottom (outline row 21) ──
-  'Is Blue Staffy Aggressive?': { a: bank('listing-aggressive'), source: 'data/faq.json listing-aggressive' },
+  'Is a Blue Staffy an Aggressive Dog by Nature?': { a: bank('listing-aggressive'), source: 'data/faq.json listing-aggressive' },
   'Do Blue Staffies Suit First-Time Dog Owners?': { a: bank('listing-first-time-owners'), source: 'data/faq.json listing-first-time-owners' },
   'Can a Staffy Be Left Alone for Hours?': { a: bank('listing-left-alone'), source: 'data/faq.json listing-left-alone' },
-  'Are Blue Staffies Good Pets?': {
+  'Are Blue Staffies Good Pets for an Ordinary Household?': {
     a: edit(bank('listing-family-dog'), 'Yes — the', 'Yes. The'),
     source: 'data/faq.json listing-family-dog (its dash a full stop)',
   },
@@ -132,28 +141,36 @@ const ANSWERS: Record<string, { a: string; source: string }> = {
     source: 'data/faq.json health-puppy-diet',
   },
   'Do Blue Staffies Make Good Family Pets for Homes With Children?': { a: bank('home-family-children'), source: 'data/faq.json home-family-children' },
-  'Is a Staffordshire Bull Terrier Able to Live in a Flat?': { a: bank('guide-flat-living'), source: 'data/faq.json guide-flat-living' },
+  'Will a Staffordshire Bull Terrier Be Happy Living in a Flat?': { a: bank('guide-flat-living'), source: 'data/faq.json guide-flat-living' },
 };
 // The food answer is the bank row's facts in plain words; hold it to them.
 for (const w of ['high-quality puppy food', 'raised on', 'starter pack', 'vet']) {
   if (!bank('health-puppy-diet').includes(w)) throw new Error(`manchesterFaq: data/faq.json health-puppy-diet no longer says "${w}"`);
 }
 
-type Heading = { level: number; text: string; children?: Heading[] };
-const SECTIONS = (outline as unknown as { sections: { faq?: boolean; headings: Heading[] }[] }).sections.filter((s) => s.faq);
-const KEYS = ['first', 'health', 'life'] as const;
-if (SECTIONS.length !== KEYS.length) throw new Error(`manchesterFaq: the outline has ${SECTIONS.length} FAQ blocks, not ${KEYS.length}`);
-
-/** The three blocks, in page order: the outline's H2 and H3s, each answered from ANSWERS. */
-export const MANCHESTER_FAQ: CityFaqBlock[] = SECTIONS.map((sec, i) => {
-  const h2 = sec.headings.find((h) => h.level === 2)!;
-  return {
-    key: KEYS[i],
-    heading: h2.text,
-    items: (h2.children ?? []).filter((h) => h.level === 3).map((h) => {
-      const hit = ANSWERS[h.text];
-      if (!hit) throw new Error(`manchesterFaq: no answer keyed to the outline question "${h.text}"`);
-      return { q: h.text, ...hit };
-    }),
-  };
+type Node = { intent?: string };
+type Sec = { id: string; heading: string; tree: Node[] };
+/** The board's three FAQ blocks, in page order (STOP 3: the nine wordings the breeder picked are
+ *  the nodes' `Q: <question> —` intents; the approved outline stays as STOP 2 approved it). */
+const FAQ_IDS = ['faq-top', 'faq-middle', 'faq-bottom'] as const;
+const NODE_Q = /^Q:\s*(.+?)\s+—/;
+const SECTIONS = FAQ_IDS.map((id) => {
+  const s = (board as unknown as { sections: Sec[] }).sections.find((x) => x.id === id);
+  if (!s) throw new Error(`manchesterFaq: the board has no section ${id}`);
+  return s;
 });
+const KEYS = ['first', 'health', 'life'] as const;
+if (SECTIONS.length !== KEYS.length) throw new Error(`manchesterFaq: the board has ${SECTIONS.length} FAQ blocks, not ${KEYS.length}`);
+
+/** The three blocks, in page order: the board's heading and questions, each answered from ANSWERS. */
+export const MANCHESTER_FAQ: CityFaqBlock[] = SECTIONS.map((sec, i) => ({
+  key: KEYS[i],
+  heading: sec.heading,
+  items: sec.tree.map((n) => {
+    const q = NODE_Q.exec(n.intent ?? '')?.[1];
+    if (!q) throw new Error(`manchesterFaq: ${sec.id} has a node with no "Q: <question> —" intent`);
+    const hit = ANSWERS[q];
+    if (!hit) throw new Error(`manchesterFaq: no answer keyed to the board question "${q}"`);
+    return { q, ...hit };
+  }),
+}));
