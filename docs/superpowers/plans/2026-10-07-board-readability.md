@@ -25,7 +25,8 @@
   - a record with `summaries.sections["Status"]` renders the bullets before the original, and the original sits inside `<details class="full">`;
   - a section's copy button still copies the unchanged markdown;
   - the validator refuses a bullet over 25 words, more than 6 bullets, or a bullet with a file path (`/` followed by a word plus an extension) or a backticked field;
-  - a missing `summaries` key renders exactly as today.
+  - a missing `summaries` key renders exactly as today;
+  - section 15 prints the record's `ai_overview` `session`, `note` and `implication` when they are present. That way its summary has visible source text under it (summary writer's flag, 2026-10-07).
 
   Run them and see them fail.
 - [ ] Implement it in `scripts/research_board.py`: render `summaries` and validate it. Embed `board_style` in the page. Run the tests to green, then `npm run -s check:workflow`.
