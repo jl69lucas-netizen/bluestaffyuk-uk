@@ -1,0 +1,35 @@
+{
+  "slug": "blue-staffy-puppies-manchester-uk",
+  "about": "The new alts for the four served photos the page's frame (reviews, newsletter, enquiry form) shows again after a body slot already used them. The frame sections plan no image slot and no assets[] row, so these alts have no home in the board record; Task 44 (the page build) reads each one from here by section and passes it as the component's photoAlt. Working rule 11 (user, 2026-09-29): a photo keeps its served alt on its first use and each repeat carries a new alt, never a copy. Each alt was written from the picture and approved by the breeder.",
+  "source": "docs/reference/answer-board/answers/2026-10-07-asset-gate-blue-staffy-puppies-manchester-uk-2026-10-07.md q08 (a) Approve all four, 2026-10-07",
+  "rows": [
+    {
+      "section": "review-middle",
+      "component": "CityThreePlates",
+      "file": "/images/jones-strong-staffy-sire-temperament.webp",
+      "first_use": "slot litter-parents, under its served alt",
+      "alt": "Jones, our sire, sitting up on the carpet in front of his tartan-covered crate"
+    },
+    {
+      "section": "review-bottom",
+      "component": "CityThreePlates",
+      "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+      "first_use": "slot deposit-questions, under its served alt",
+      "alt": "Maggie, our blue dam, grinning up from the sofa with two of her pups in front of her"
+    },
+    {
+      "section": "newsletter",
+      "component": "CityPostmarkedNote",
+      "file": "/images/puppies/vennie-vennie.webp",
+      "first_use": "the hero's Vennie card under servedPuppyAlt; second use slot litter-h2",
+      "alt": "Vennie, one of our blue and white girls, lying on a sheepskin rug, one blue eye ringed in a dark patch"
+    },
+    {
+      "section": "enquiry",
+      "component": "CityPhotoAtTheEdge",
+      "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+      "first_use": "slot deposit-h2; second use slot travel-collect",
+      "alt": "Lisa Bright, who answers your enquiry, smiling down at the fawn puppy in her right arm"
+    }
+  ]
+}

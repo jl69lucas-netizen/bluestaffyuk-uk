@@ -300,7 +300,12 @@ def test_the_hero_and_every_body_h2_and_h3_have_a_filled_slot_and_an_asset_row(b
     assert len(slots) == len(rows) == 27
     for sec, node, img in slots:
         a = rows[img["slot"]]
-        assert img["source"] in ("existing", "assets-folder", "infographic"), img["slot"]
+        assert img["source"] in ("existing", "assets-folder", "generate", "infographic"), img["slot"]
+        if img["source"] == "generate":
+            # STOP 4 q02/q03: a generated photo is drafted, never served before its bytes are approved.
+            assert img["og_style"] == "A" and img["prompt"].strip(), img["slot"]
+            assert "file" not in img and a["kind"] == "photo", img["slot"]
+            assert a["file"] is None or a["status"] == "baked", img["slot"]
         if img["source"] == "existing":
             # The row serves the breeder's STOP 3 pick where one names a file, else the record's
             # own file (Task 39: assets[].file is lifecycle, outside the hash, and follows the pick).
@@ -363,7 +368,9 @@ def _picked(board, slot):
 
 def test_every_photo_row_serves_the_file_the_breeder_picked_at_stop_3(board):
     """Ten STOP 3 picks named a file other than the record's (block 7, 2026-10-07): the row
-    the build reads serves the pick, so its alt is written for the picture that ships."""
+    the build reads serves the pick, so its alt is written for the picture that ships. At STOP 4
+    (2026-10-07) q04 and q05 moved two file picks (Jones, Cheryl) and q02/q03 replaced two with
+    generated photos, so 24 of the 26 photo slots name a file and the other two a style."""
     rows = {a["slot"]: a for a in board["assets"]}
     examined = 0
     for sec, node, img in IC.iter_slots(board):
@@ -372,7 +379,88 @@ def test_every_photo_row_serves_the_file_the_breeder_picked_at_stop_3(board):
             continue
         examined += 1
         assert rows[img["slot"]]["file"] == f, img["slot"]
-    assert examined == 26
+    assert examined == 24
+
+
+#: The STOP 4 answers (docs/reference/answer-board/answers/2026-10-07-asset-gate-blue-staffy-
+#: puppies-manchester-uk-2026-10-07.md): q04 (a) Jones on the health-tests H2, q05 Cheryl on the
+#: guarantee H3 with coat-years kept, q06 (a) the dam with newborns kept on the itching H3.
+STOP4_FILES = {
+    "health-tests-h2": "/images/jones-magnificent-blue-staffy-sire.webp",
+    "guarantee-cover": "/images/puppies/cheryl-cheryl1.webp",
+    "coat-years": "/images/premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp",
+    "guarantee-itch": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+}
+#: q02 and q03: the van and the misspelt banner are replaced by generated photos (Nano Banana 2.1).
+STOP4_GENERATED = ("travel-h2", "guarantee-h2")
+#: Words that would make the van ours: we run no branded van (delivery is by DEFRA-approved
+#: transport, data/settings.json delivery_note).
+OWN_VAN = re.compile(r"(?i)\b(?:our|BlueStaffyUK(?:\.uk)?|branded|liveried|logo)\b[^.]*\bvan\b|\bvan\b[^.]*\b(?:our|branded|logo)\b")
+
+
+def test_the_stop_4_photo_answers_are_the_files_the_rows_serve(board):
+    rows = {a["slot"]: a for a in board["assets"]}
+    for slot, f in STOP4_FILES.items():
+        assert rows[slot]["file"] == f and rows[slot]["status"] == "baked", slot
+        assert board["approval"]["picks"]["img:" + slot] == "file:" + f, slot
+
+
+def test_the_two_replaced_photos_are_generated_drafts_awaiting_their_byte_approval(board):
+    """The old picks leave the record (they stay served elsewhere, working rule 11); each slot
+    is a style-A draft under data/boards/generated, and its pick names the style until the
+    board approves the draft's exact bytes (IMAGE-DESIGNS.md §9)."""
+    rows = {a["slot"]: a for a in board["assets"]}
+    files = {a["file"] for a in board["assets"]}
+    for old in ("/images/bluestaffyuk-nationwide-delivery.webp",
+                "/images/blue-staffy-health-prioritising-wellbeing.webp",
+                "/images/blue-staffy-puppy-vet-check-uk.webp",
+                "/images/buy-staffy-health-guarantee-uk.webp"):
+        assert old not in files, old
+        assert (ROOT / "public" / old.lstrip("/")).is_file(), f"{old} stays served (rule 11)"
+        assert all(r.get("src") != old for r in board["verbatim"]["changed"]), old
+    import image_rules as IR
+    for slot in STOP4_GENERATED:
+        draft = ROOT / "data/boards/generated" / IC.slug_file(SLUG) / f"{slot}.webp"
+        assert draft.is_file(), f"no {slot} draft: run ingest_image.py draft (STOP 4 q02/q03)"
+        pick = board["approval"]["picks"]["img:" + slot]
+        assert pick in ("og:A", f"og:A:{IR.file_sha(draft)}"), (slot, pick)
+        a = rows[slot]
+        assert (a["w"], a["h"]) == (1408, 768) and a["alt"], slot
+        assert not OWN_VAN.search(a["alt"]), (slot, a["alt"])
+        assert re.search(r"\b(?:we|our|us)\b", a["alt"]), f"{slot}: first-person brand voice"
+
+
+def test_the_papers_checklist_slot_is_routed_to_its_own_draft_not_londons(board):
+    import image_rules as IR
+    draft = ROOT / "data/boards/generated" / IC.slug_file(SLUG) / "papers-checklist.webp"
+    pick = board["approval"]["picks"]["img:papers-checklist"]
+    assert pick == f"ig:IG-4:{IR.file_sha(draft)}", pick      # STOP 4 q01 (a): use the draft
+    assert "london" not in pick and "paperwork-folder" not in pick
+
+
+FRAME_ALTS = ROOT / "data/boards/frame-alts" / f"{SLUG}.json"
+
+
+def test_the_frame_repeat_alts_are_recorded_new_and_after_a_first_use(board):
+    """STOP 4 q08 (a): the four frame repeats (two reviews, the newsletter, the enquiry form)
+    carry the approved new alts, read by Task 44 from data/boards/frame-alts/. Each photo is
+    already shown by a body slot first, and no alt copies the served one or a board alt."""
+    rec = json.loads(FRAME_ALTS.read_text(encoding="utf-8"))
+    assert rec["slug"] == SLUG and len(rec["rows"]) == 4
+    served = C.served_alts()
+    ids = {s["id"] for s in board["sections"]}
+    by_file = defaultdict(set)
+    for a in board["assets"]:
+        if a["file"]:
+            by_file[_photo(a["file"])].add(" ".join(PB.tokens(a["alt"])))
+    alts = [r["alt"] for r in rec["rows"]]
+    assert len(set(alts)) == 4
+    for r in rec["rows"]:
+        assert r["section"] in ids, r["section"]
+        assert by_file[_photo(r["file"])], f"{r['file']}: no body slot shows it first"
+        assert r["alt"] not in served.get(r["file"][len("/images/"):], ()), r["section"]
+        assert " ".join(PB.tokens(r["alt"])) not in by_file[_photo(r["file"])], r["section"]
+        assert not CLAIM.search(r["alt"]), r["section"]
 
 
 def _photo(file):
@@ -524,8 +612,10 @@ def test_photo_covered_infographic_slots_are_recommended_skip(board):
         assert plan[slot]["recommended"] == "skip", slot
         heading, img = photos[photo_slot]
         assert heading == plan[slot]["node"], (slot, heading)
-        assert img["kind"] == "photo" and img["source"] == "existing", photo_slot
-        assert img["file"].rsplit("/", 1)[-1] in plan[slot]["recommended_why"], slot
+        assert img["kind"] == "photo" and img["source"] in ("existing", "generate"), photo_slot
+        # A served photo is named by its file; a generated one (STOP 4 q02) by its slot's draft.
+        named = img["file"].rsplit("/", 1)[-1] if img["source"] == "existing" else f"{photo_slot} draft"
+        assert named in plan[slot]["recommended_why"], slot
     assert plan["papers-checklist"]["recommended"] is None
     # A recommendation is a proposal: every slot is still asked at STOP 3.
     assert set(PB.ig_slots_required(board)) == {f"ig:{s}" for s in plan}
