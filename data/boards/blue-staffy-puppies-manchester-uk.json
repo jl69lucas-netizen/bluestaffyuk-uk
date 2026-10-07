@@ -1534,6 +1534,13 @@
       "sentence_start": true,
       "anchor_type": "natural",
       "why": "docs/research/manchester-page-run/links-plan.md: Row 10 · §10 G2 · H5 'Does a White or Part-White Coat Change the Figure?' · the H5's worked example: Byrd's coat is White and he costs the boys' price (male_gbp); said of this litter only (q09). Re-pick at STOP 3 if Byrd's status changes. Resolves today: yes: dist/available-puppies/byrd/, index"
+     },
+     {
+      "href": "#enquiry",
+      "anchor": "Ask us which puppy suits your home",
+      "nav": true,
+      "anchor_type": "natural",
+      "why": "Nav furniture: the call to action under the litter table (Task 37: closes the ~745-word CTA gap from health-tests to faq-middle). Resolves today: in-page"
      }
     ],
     "external": []
@@ -1551,7 +1558,8 @@
    "refresh": {
     "axis": "container",
     "note": "the litter as a shelf of portraits over a stacked table under its H4 (Manchester tables a), where London sets a roster; the H2 itself wears the offset sheet"
-   }
+   },
+   "cta": 1
   },
   {
    "id": "review-middle",
