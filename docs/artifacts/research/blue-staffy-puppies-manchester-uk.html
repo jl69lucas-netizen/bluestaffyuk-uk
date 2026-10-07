@@ -86,6 +86,9 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 .subfld.trade{border-left-color:var(--trade)} .subfld.trade>.lab{color:var(--trade)}
 .subfld.why{border-left-color:var(--why)} .subfld.why>.lab{color:var(--why)}
 .subfld p{margin:0}
+.md li.rl-why,.md li.rl-trade{list-style:none;border-left:3px solid var(--why);padding-left:10px;margin:4px 0}
+.md li.rl-trade{border-left-color:var(--trade)}
+.rl-why>.rl-lab{color:var(--why);font-weight:700} .rl-trade>.rl-lab{color:var(--trade);font-weight:700}
 .md td .clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .md tr.open td .clamp{-webkit-line-clamp:unset;display:block}
 .md tr.open td{background:var(--why-bg)}
@@ -937,9 +940,11 @@ No AI Overview is shown for this query.
     t.replaceWith(wrap);});
 
   // 3. Labelled lists: "- **X** — idea" items whose children say "Why:" or "Trade-off:".
-  var LABEL=/^(Angle|Why|Trade-off|Why it could win)\s*:\s*([\s\S]*)$/;
-  [].slice.call(doc.querySelectorAll('.md > ul, .md > ol')).forEach(function(ul){
+  var LABEL=/^(Angle|Why|Trade-off|Why it could win)\s*:\s*([\s\S]*)$/,HEAD=/^(\S+)\s+—\s+/;
+  function own(li){var t='';[].forEach.call(li.childNodes,function(n){if(n.nodeName!=='UL'&&n.nodeName!=='OL')t+=n.textContent;});return t.trim();}
+  [].slice.call(doc.querySelectorAll('.md > ul')).forEach(function(ul){
     var lis=[].slice.call(ul.children);
+    if(!lis.every(function(li){return HEAD.test(own(li));}))return;
     if(!lis.some(function(li){var s=li.querySelector(':scope > ul');
       return s&&[].some.call(s.children,function(x){return LABEL.test(x.textContent.trim());});}))return;
     ul.classList.add('lablist');
@@ -964,6 +969,16 @@ No AI Overview is shown for this query.
           li.appendChild(d);});
         sub.remove();if(keep.children.length)li.appendChild(keep);}
     });});
+  // Any other nested "Why:" / "Trade-off:" line keeps its place and wears its role colour.
+  [].slice.call(doc.querySelectorAll('.md li > ul > li, .md li > ol > li')).forEach(function(li){
+    if(li.closest('.lablist'))return;
+    var m=own(li).match(/^(Why|Trade-off)\s*:/);if(!m)return;
+    li.classList.add(/trade/i.test(m[1])?'rl-trade':'rl-why');
+    var t=li.firstChild;
+    if(t&&t.nodeType===3){var i=t.nodeValue.indexOf(m[0]);
+      if(i>=0&&!t.nodeValue.slice(0,i).trim()){var mid=t.splitText(i);mid.splitText(m[0].length);
+        var lab=el('span','rl-lab');li.replaceChild(lab,mid);lab.appendChild(mid);}}
+  });
 
   // 4. Plain summaries first; the original folds underneath, unchanged.
   function bullets(list){var u=el('ul');list.forEach(function(t){var li=el('li');li.textContent=t;u.appendChild(li);});return u;}

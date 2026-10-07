@@ -161,3 +161,78 @@ def test_optional_variants_fear_cta_and_page_level_fields_render_in_the_md(tmp_p
     assert "## Parked Keywords — Your Decision" in md and "NEEDS YOUR DECISION" in md
     assert "## Heading Crossover" in md and "proposed_headings: 9" in md and "**Hits:** 0" in md
     assert "## Planned Tests" in md and "- a planned test" in md
+
+
+# --- readability (plan 2026-10-07-board-readability.md, Task 4) ---------------------------
+# The outline wears scripts/board_style.py too: field cards with a colour per role, and the
+# record's optional `summaries` — `sections` by block title, `items` by record path
+# (`sections[i]`, the row's own block) — render above the original, folded into
+# <details class="full">. The markdown, and so every copy button, is unchanged.
+
+import re  # noqa: E402
+
+import board_style as BS  # noqa: E402
+import _board_harness as BH  # noqa: E402
+
+TARGET_BULLETS = ["Five sections, about 1,100 words in all.", "Every heading level is used once or more."]
+
+
+def _summed():
+    rec = _load("good.json")
+    rec["summaries"] = {"sections": {"Status and Target": {"bullets": TARGET_BULLETS}},
+                        "items": {"sections[2]": {"bullets": ["How the puppy reaches the buyer."],
+                                                  "care": ["Delivery is priced by distance."]}}}
+    return rec
+
+
+def _md_blocks(page):
+    return re.findall(r'<script type="text/markdown" data-title="[^"]*">\n(.*?)\n</script>', page, re.S)
+
+
+def test_the_outline_embeds_the_shared_style_layer(tmp_path):
+    page = OM.build(_load("good.json"), _research(), tmp_path)[0].read_text(encoding="utf-8")
+    assert BS.CSS in page and BS.SCRIPT in page and BS.READING_CSS in page
+    assert 'id="board-summaries"' not in page          # no summaries: rendered as before
+
+
+def test_outline_summaries_ride_beside_the_markdown_and_never_in_it(tmp_path):
+    plain_html, plain_md = OM.build(_load("good.json"), _research(), tmp_path / "a")
+    summed_html, summed_md = OM.build(_summed(), _research(), tmp_path / "b")
+    assert summed_md.read_text(encoding="utf-8") == plain_md.read_text(encoding="utf-8")
+    page = summed_html.read_text(encoding="utf-8")
+    assert _md_blocks(page) == _md_blocks(plain_html.read_text(encoding="utf-8"))
+    data = json.loads(re.search(r'<script type="application/json" id="board-summaries">(.*?)</script>',
+                                page, re.S).group(1))
+    assert data["sections"]["Status and Target"]["bullets"] == TARGET_BULLETS
+    # a row's item summary leads that row's own block
+    assert data["sections"]["§3 Delivery"]["care"] == ["Delivery is priced by distance."]
+
+
+def test_in_a_browser_the_outline_summary_comes_first_and_copies_stay_exact(tmp_path):
+    rec = _summed()
+    html_path, _ = OM.build(rec, _research(), tmp_path)
+    res = BH.run(html_path)
+    assert res["errors"] == [], res["errors"]
+    head = next(b for b in res["blocks"] if b["title"] == "Status and Target")
+    assert head["plain"] == TARGET_BULLETS and head["plainFirst"] and head["fullOpen"] is False
+    assert "**Target:**" in head["fullText"]
+    row = next(b for b in res["blocks"] if b["title"] == "§3 Delivery")
+    assert row["plain"] == ["How the puppy reaches the buyer."] and row["plainFirst"]
+    assert res["copied"] == [f"## {t}\n\n{b.strip()}" for t, b in OM.sections(rec, _research())]
+
+
+def test_the_outline_validator_holds_the_summaries_to_their_shape():
+    assert OM.validate(_summed(), _research()) == []
+    for why, bullets in (("over 25 words", [" ".join(["word"] * 26)]),
+                         ("more than 6", ["Short plain line."] * 7),
+                         ("a file path", ["Read data/puppies.json for the prices."]),
+                         ("a backticked field", ["The `price_gbp` field."])):
+        rec = _summed()
+        rec["summaries"]["sections"]["Status and Target"]["bullets"] = bullets
+        assert any("summaries" in p for p in OM.validate(rec, _research())), why
+    rec = _summed()
+    rec["summaries"]["items"]["sections[9]"] = {"bullets": ["x y"]}
+    assert any("sections[9]" in p for p in OM.validate(rec, _research()))
+    rec = _summed()
+    rec["summaries"]["sections"]["§3 Delivery"] = {"bullets": ["x y"]}
+    assert any("§3 Delivery" in p and "twice" in p for p in OM.validate(rec, _research()))
