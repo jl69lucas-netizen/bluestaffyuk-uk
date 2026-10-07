@@ -143,13 +143,15 @@ def _faq_q(intent):
 
 def section_texts(sec):
     """(text, is_heading) for a section's H2 and every node of its tree (any depth). An FAQ
-    row's heading is a row id, so its question is read from the node's intent instead."""
+    row's heading is a row id, so its question is read from the node's intent instead; it
+    counts as a heading, since the built page renders it as a question heading answered in
+    its first sentence (Manchester Task 37). A plain H3 does not."""
     out = [(sec.get("heading") or "", True)]
 
     def walk(nodes):
         for n in nodes or []:
             q = _faq_q(n.get("intent"))
-            out.append((q or n.get("heading") or "", False))
+            out.append((q, True) if q else (n.get("heading") or "", False))
             walk(n.get("children"))
     walk(sec.get("tree"))
     return [(t, h) for t, h in out if t.strip()]

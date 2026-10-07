@@ -1095,8 +1095,9 @@ def infographic_block(board, carried=None, plan=None):
     # What the record itself proposes (recommended_picks) is pre-checked where no pick is
     # carried or live, the way block 2 pre-checks the recommended H1 and meta pair.
     shown = {**PB.ig_recommended(plan), **carried}
-    intro = ("Each infographic sits **beside the H2's existing photo**, never instead of it "
-             "(working rule 11: every served image keeps its place, file and alt). Pick one "
+    intro = ("Each infographic gets **its own H2 or H3**, never placed beside or instead of a "
+             "section's photo (breeder q08, 2026-10-02; working rule 11: every served image keeps "
+             "its place, file and alt). Pick one "
              "style per slot; the same content is set three ways on the same tokens. "
              "Or pick **Skip** where a real photo already says it: a skipped slot builds "
              "nothing (breeder q06, 2026-10-02: original photos first). "

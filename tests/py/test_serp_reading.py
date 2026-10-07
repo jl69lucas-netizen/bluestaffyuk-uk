@@ -271,3 +271,23 @@ def test_block_on_another_board_keeps_manchester_as_a_content_word(tmp_path):
     out = SR.block(_board("blue-staffy-puppies-london", MAN_SECS), root=tmp_path)
     paa = [ln for ln in out.splitlines() if MAN_Q in ln]
     assert paa and "**none — gap**" not in paa[0]
+
+
+# ── Task 37 (Manchester): an FAQ question is a question heading on the built page ──────────
+# Block 1b read "How much does a blue Staffy puppy cost?" as a gap although the board's FAQ
+# asks "How Much Will the Blue Staffy Puppy I Choose Cost?": one shared concept scored 2, and
+# only a section H2 earned the heading bonus. An FAQ row is rendered as a question heading
+# answered in its first sentence, so it earns the bonus too. A plain H3 still does not.
+FAQ_SECS = [{"id": "faq-top", "heading": "Which Questions Come First?",
+             "tree": [{"level": 3, "heading": "row-1",
+                       "intent": "Q: How Much Will the Blue Staffy Puppy I Choose Cost? — row"}]}]
+
+
+def test_an_faq_question_sharing_one_concept_answers_the_paa():
+    assert SR.answered_by("How much does a blue Staffy puppy cost?", FAQ_SECS) == "faq-top"
+
+
+def test_a_plain_h3_sharing_one_concept_still_does_not():
+    secs = [{"id": "s", "heading": "About Us",
+             "tree": [{"level": 3, "heading": "What Will It Cost Me?"}]}]
+    assert SR.answered_by("How much does a blue Staffy puppy cost?", secs) is None

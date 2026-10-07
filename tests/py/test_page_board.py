@@ -2670,7 +2670,9 @@ def test_7c_offers_three_styles_per_infographic_slot(london_html):
     assert "Pick one style for breed-split" in london_html
     assert "Optional — breed-split" not in london_html
     assert "Pending your answer on the decisions batch" not in london_html
-    assert "beside the H2" in london_html
+    # Breeder q08 (2026-10-02): not beside the photo; each infographic has its own heading.
+    assert "its own H2 or H3" in london_html
+    assert "beside the H2" not in london_html
 
 
 def test_7c_previews_render_at_three_widths(london_html):
