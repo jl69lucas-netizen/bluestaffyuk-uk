@@ -1,0 +1,197 @@
+---
+// src/components/kit/CityQuestionBar.astro — Manchester's jump links (pick:
+// manchester/jump-links/b, "Question bar"; frozen 355d5e43). Below 1024px a slim bar sticks under
+// the site header, ruled off from the page by a hairline and a row of ticks, one per section, the
+// current tick in brass so the reader sees how far down the page they are. In the bar: a small
+// decorative puppy, the current section by number and name, and a Questions key that raises a
+// sheet listing the page's questions word for word, the current one marked. Hidden from 1024px,
+// where CityNumeralRail navigates. Built from design/city-canvas/manchester/jump-links/b.html as
+// the visual spec only; it imports no London component (rules/design.md own-components-per-page).
+//
+// THE SHEET IS A NATIVE `<dialog>`, opened with `showModal()`, never the canvas's `:target` (which
+// pushes a history entry per open and close and traps no focus): Escape closes it, focus is
+// trapped, the page behind is inert, and the key's `aria-expanded` follows the dialog's own
+// `close` event, so Escape and a backdrop tap cannot leave it stuck on "true". A browser without
+// the dialog API gets the sheet as a plain open panel.
+//
+// THE CURRENT SECTION is marked by src/lib/scrollSpy.ts (the kit's reading band, no motion): the
+// sheet row takes `aria-current="location"`, the tick `data-on`, and the readout names it.
+//
+// IT IS TOP CHROME (src/lib/jumpBar.ts): the bar's measured height is `--strip-h`, which the one
+// `[id] { scroll-margin-top }` expression below adds to every jump, with a no-JS floor; and it
+// slides away on the way down and back on the way up (the user's ruling, answer board q03,
+// 2026-09-29), held shown while its sheet is open or a keyboard focus is inside. `data-strip`
+// marks a bar that IS the document's chrome; `chrome={false}` (the preview) renders a static
+// picture that moves no anchors. `data-city-nav` is every city's nav-furniture hook (gap G12).
+//
+// THE PUPPY IS DECORATIVE (alt="", aria-hidden; the canvas review of Task 23: announced on every
+// page it said nothing), and a 40px derivative, never the 1080px master.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import type { SectionRef } from '../../lib/sections';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass } from '../../lib/imageFocus';
+
+type Props = HTMLAttributes<'div'> & {
+  sections: SectionRef[];
+  /** The page's city, from data/locations.json `city`. */
+  city: string;
+  /** A puppy photo file in src/assets/puppies (named in data/image-focus.json). */
+  photo: string;
+  chrome?: boolean;
+};
+const { sections, city, photo, chrome = true, class: cls, ...rest } = Astro.props;
+const N = sections.length;
+if (!N) throw new Error('CityQuestionBar: no sections to list');
+const first = sections[0];
+---
+<div {...rest} class:list={['city-kit', 'city-question-bar', cls]} data-city-nav="bar" data-strip={chrome ? true : undefined}>
+  <div class="bar">
+    <Image src={puppyImage(photo)} alt="" aria-hidden="true" widths={[40, 80]} sizes="40px"
+      class={focusClass(photo)} loading="lazy" decoding="async" />
+    <p class="where"><small>{city} page, {N} sections</small><span class="now" data-now>1 of {N}: {first.label}</span></p>
+    <button type="button" class="open" aria-haspopup="dialog" aria-expanded="false" data-jump-open>Questions<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6" /></svg></button>
+  </div>
+  <div class="ticks" aria-hidden="true">{sections.map((s, i) => <i data-tick={s.id} data-on={i === 0 ? '' : undefined}></i>)}</div>
+  <dialog class="sheet" aria-labelledby="city-question-bar-title" data-jump-sheet>
+    <div class="top">
+      <p class="st" id="city-question-bar-title">The {N} questions on this page</p>
+      <button type="button" class="close" data-jump-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>Close</button>
+    </div>
+    <ol>
+      {sections.map((s, i) => (
+        <li><a href={`#${s.id}`} data-spy={s.id} data-label={s.label} aria-current={i === 0 ? 'location' : undefined}>{s.question ?? s.label}</a></li>
+      ))}
+    </ol>
+  </dialog>
+</div>
+<script>
+  import { markCurrent, spyRows, watchSections } from '../../lib/scrollSpy';
+  import { keyboardFocusInside, publishStripHeight, tuckOnScroll } from '../../lib/jumpBar';
+  // Singleton by design: a page mounts one bar, as it mounts one site header.
+  const bar = document.querySelector<HTMLElement>('.city-question-bar');
+  if (bar) {
+    const dlg = bar.querySelector<HTMLDialogElement>('[data-jump-sheet]')!;
+    const opener = bar.querySelector<HTMLButtonElement>('[data-jump-open]')!;
+    // --- top chrome: the jump offset, and the slide away and back (answer board q03) ----------
+    if (bar.hasAttribute('data-strip')) {
+      publishStripHeight(bar);
+      const held = () => dlg.open || keyboardFocusInside(bar);
+      const tuck = tuckOnScroll(bar, held);
+      bar.addEventListener('focusin', () => { if (held()) tuck(false); });
+    }
+    // --- the sheet ------------------------------------------------------------------------------
+    opener.addEventListener('click', () => {
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open', '');
+      opener.setAttribute('aria-expanded', 'true');
+      // Focus lands on the question being read, not on Close: a keyboard reader moves on from
+      // where they are, and a long sheet opens scrolled to it (impeccable harden, Task 29).
+      dlg.querySelector<HTMLElement>('[aria-current="location"]')?.focus();
+    });
+    bar.querySelector('[data-jump-close]')?.addEventListener('click', () => dlg.close());
+    // A tap on the backdrop shuts the sheet; a tap on the sheet's own padding does not. Both have
+    // the dialog as their target, so the point is read against the sheet's box (impeccable
+    // harden, Task 29: a tap between two rows used to shut it).
+    dlg.addEventListener('click', (e) => {
+      if (e.target !== dlg) return;
+      const r = dlg.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+    });
+    dlg.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => dlg.close()));
+    dlg.addEventListener('close', () => opener.setAttribute('aria-expanded', 'false'));
+    // --- the current section: the sheet row, its tick and the readout ---------------------------
+    const rows = spyRows(dlg);
+    const ticks = new Map([...bar.querySelectorAll<HTMLElement>('[data-tick]')].map((t) => [t.dataset.tick!, t]));
+    const now = bar.querySelector<HTMLElement>('[data-now]')!;
+    const total = ticks.size;
+    watchSections(rows.map((r) => r.target), (i) => {
+      markCurrent(rows.map((r) => r.link), i);
+      const id = rows[i].link.dataset.spy!;
+      ticks.forEach((t, key) => t.toggleAttribute('data-on', key === id));
+      const n = [...ticks.keys()].indexOf(id) + 1;
+      now.textContent = `${n} of ${total}: ${rows[i].link.dataset.label ?? ''}`;
+    });
+  }
+</script>
+<style is:global>
+  /* Global, and it reaches `[id]`: the jump offset every target needs while the bar is chrome (the
+     expression SectionStrip and London's band write, so a page carrying any of them clears it). The
+     no-JS FLOOR (the bar's 64px) is scoped with :has() to a document whose bar is chrome, below
+     1024px where it shows. */
+  @layer components {
+    [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + var(--strip-h, 0px) + 16px); }
+    @media (width < 1024px) {
+      :root:has(.city-question-bar[data-strip]) { --strip-h: 64px; }
+    }
+  }
+</style>
+<style>
+  @layer components {
+    .city-question-bar {
+      position: sticky; top: var(--hdr-measured, var(--hdr)); z-index: 30;
+      background: var(--color-surface-raised); border-bottom: 1px solid var(--color-border);
+      transition: transform var(--dur-base) var(--ease-out);
+    }
+    .city-question-bar:not([data-strip]) { position: static; }
+    /* Tucked (answer board q03): up by its own height and the header's, behind the header (z 50
+       over the bar's 30) and out of the viewport. `transform` only, so it never moves layout. */
+    .city-question-bar[data-tucked] { transform: translateY(calc(-100% - var(--hdr-measured, var(--hdr)))); }
+    .bar { display: flex; align-items: center; gap: var(--space-3); max-width: 720px; margin: 0 auto; padding: 6px var(--space-3); }
+    .bar :global(img) {
+      flex: none; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--color-surface);
+    }
+    .where { flex: 1; min-width: 0; margin: 0; max-width: none; line-height: 1.2; }
+    .where small { display: block; font-size: var(--text-xs); line-height: 1.3; color: var(--color-ink-2); }
+    .now {
+      display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+      font-size: var(--text-sm); font-weight: 700; line-height: 1.3; color: var(--color-brand);
+    }
+    .open {
+      flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 var(--space-4);
+      border: 1.5px solid var(--color-brand); border-radius: var(--btn-radius); background: none;
+      color: var(--color-brand); font: 700 var(--text-sm) var(--font-body); cursor: pointer;
+    }
+    .open:hover { background: var(--color-brand-soft); }
+    .open svg { width: 16px; height: 16px; }
+    .ticks { display: flex; gap: 2px; max-width: 720px; margin: 0 auto; padding: 0 var(--space-3) 4px; }
+    .ticks i { flex: 1; height: 3px; border-radius: 2px; background: var(--color-steel-300); transition: background-color var(--dur-fast) var(--ease-out); }
+    .ticks i[data-on] { background: var(--color-cta); }
+    .open:focus-visible, .close:focus-visible, .sheet a:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+    /* `max-width: 100%` beats the UA dialog's `calc(100% - 2em - 6px)`, so on a phone the sheet
+       meets both edges; from 600px it is a centred 600px sheet. */
+    .sheet {
+      width: min(100%, 600px); max-width: 100%; max-height: 85vh; margin: auto auto 0; border: 0;
+      padding: var(--space-4) var(--space-4) var(--space-6); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      background: var(--color-surface-raised); color: var(--color-text); box-shadow: var(--shadow-lift);
+      overflow-y: auto; overscroll-behavior: contain;
+    }
+    .sheet::backdrop { background: color-mix(in srgb, var(--color-steel-900) 55%, transparent); }
+    .sheet[open] { animation: city-question-up var(--dur-base) var(--ease-out); }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-3); }
+    .st { margin: 0; font-weight: 700; line-height: 1.3; color: var(--color-ink); }
+    .close {
+      flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 var(--space-3);
+      border: 1px solid var(--color-border); border-radius: var(--btn-radius); background: none;
+      color: var(--color-brand); font: 600 var(--text-sm) var(--font-body); cursor: pointer;
+    }
+    .close svg { width: 16px; height: 16px; }
+    .sheet ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-border); }
+    .sheet li { margin: 0; border-bottom: 1px solid var(--color-border); }
+    .sheet a {
+      display: block; padding: var(--space-3);
+      font-family: var(--font-display); font-weight: 500; font-size: var(--text-base); line-height: 1.35;
+      color: var(--color-ink); text-decoration: none; text-wrap: pretty;
+    }
+    .sheet a:hover { color: var(--color-brand); text-decoration: underline; text-underline-offset: 3px; }
+    .sheet a[aria-current='location'] { background: var(--color-brand-soft); font-weight: 700; }
+    @keyframes city-question-up { from { transform: translateY(16px); opacity: 0.6; } to { transform: none; opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) {
+      .city-question-bar, .ticks i { transition: none; }
+      .sheet[open] { animation: none; }
+    }
+    @media (width >= 1024px) { .city-question-bar { display: none; } }
+    @media print { .city-question-bar { display: none; } }
+  }
+</style>

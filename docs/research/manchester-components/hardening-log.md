@@ -447,3 +447,67 @@ Gates after the fixes: `npm run -s build` exit 0; `python3 -m pytest -q tests/py
 tests/py/test_city_kit.py tests/py/test_design_components.py` 130 passed, 1 skipped (the skip
 pre-dates this task); `npm run test:render:city` 57 passed, 55 skipped, 0 failed, with London's
 three routes unchanged and no advisory on the Manchester route.
+
+## Built — Task 29
+
+Contents B, dial A and jump links B built into the kit from the frozen picks (355d5e43) as
+`CityIconRows`, `CityNumeralRail` and `CityQuestionBar` (`data/design/components.json` rows M4-M6,
+each with `canvas_variant` and `root_selector`), the `CityNavSet` a Manchester page passes to
+`src/layouts/CityShell.astro` (`bar`, `dial`, `contents`). No London component is imported or copied;
+shared are tokens, `city.css`, `cityIcons.ts` (four new line icons: papers, guarantee, family, coat;
+`CityIcon` widened to match), `src/lib/sections.ts` (`SectionRef.row`, the contents row's fuller
+name) and `src/lib/scrollSpy.ts`, reused for the current section (lessons entry 20: the whole band,
+topmost wins), plus its new `keepRowInBox()`. The bar's top-chrome rules (the `--strip-h` jump
+offset, the slide away on the way down and back on the way up from answer board q03, the holds) are
+in a new `src/lib/jumpBar.ts`, so no city has to copy London's band to keep them. The preview's
+nav demo is the outline's own H2s, word for word, with the canvas's short names, row names and
+icons (`MANCHESTER_NAV` in `_registry.ts`), pointed at the preview's own Manchester anchors.
+
+Gap G12: every city's bar and dial carry the shared `data-city-nav` hook (`"bar"` / `"dial"`).
+London's `CityJumpStepper` and `CityDialPhotoMarker` gained the attribute and nothing else.
+`tests/render/lib/cityTypeFit.ts` `skipRoot` and `src/styles/city.css`'s container rule now read
+`[data-city-nav]` only, and the known-good fixture holds a bar and a dial of both cities.
+
+Two rulings carried from London, by their own words: the contents list hides from 1024px, where the
+dial is the contents ("Hide it from 1024px, as the other pages do", answer board q05, 2026-09-29), so
+the canvas's 1024 card is not built; and the bar slides away on the way down (answer board q03). The
+contents photo is the old site's `reputable-blue-staffy-breeder-manchester-pup.webp` at its served
+path with its served alt, word for word; its row in `data/image-focus.json` records the puppy's face
+only (the photo's subject and its alt's), so the 2:1 phone crop sits on the puppy, as the canvas's
+did, rather than half a downturned head.
+
+`frontend-design:frontend-design` and then `impeccable:impeccable` were invoked with the Skill tool
+on the built components, read from `CITY_SHOTS=…/BSUK-refs/manchester/_build-shots npm run
+test:render:city` at 375 / 768 / 1024 / 1280 and from per-component shots (`task29-*.png`, the
+sheet open at 375 and 768, the dial marking a later section at 1024 and 1280). The impeccable loader
+again reported `hasProduct: false`; the brand context came from `rules/design.md` and the tokens.
+The render gate first failed on the contents photo at 768 (`img-srcset-within-2x`: the canvas's
+220px column painted the 540px served file at 2.45x, and on the six-row preview the cover crop
+really was about 2x oversized).
+
+| Component | frontend-design found | impeccable found (critique, harden) | Fixed | Widths |
+|---|---|---|---|---|
+| contents (icon rows) | The 220px photo column decoded the served file at 2.45x its painted width at 768 (blocking gate). Two row columns from 640 leave about 136px of text per row at 640. | Critique: one list, rows in page order down the columns, icon before name; nothing repeated. Harden: an opened phone list (13 rows, one column) would stretch the photo to about 830px, a 1.5x upscale. | The photo column is `clamp(272px, 34%, 340px)` from 640px (1.99x at most); the rows take two columns from 768px and the phone cut holds to 767px; the photo stops at 560px tall, bone below. Two-line rows at 768 are kept: balanced, inside the 56px row. | 375 · 768 (hidden at 1024 · 1280) |
+| desktop dial (numeral rail) | The rail sat on its column's edge, so the current row's soft steel met the gutter (flush to the viewport on the full-width preview). | Critique: brass square on one numeral, labels in ink, no stripe (the Task 23 fix carried). Harden: 13 rows overflow a laptop-height column, so the marked row is kept in view inside the rail (`keepRowInBox`); RTL-safe hairline (`border-inline-end`); hidden in print. | Left inset `--space-3`, as the canvas's own padding; logical properties throughout. | 1024 · 1280 (hidden at 375 · 768) |
+| jump links (question bar) | The current sheet row's bold question ran into the row's right edge (8px). | Harden: a tap on the sheet's own padding shut it (the dialog is the click target for its padding as for the backdrop); opening focused Close, not the question being read; the sheet relied on the UA's `:modal` overflow. | The backdrop tap is read against the sheet's box; opening focuses the current question; explicit `overflow-y: auto`, `overscroll-behavior: contain`; even row padding. The probe now holds both behaviours (it failed on the old handler, passes on the new). | 375 · 768 (hidden at 1024 · 1280) |
+
+Behaviour proven outside the gates: the bar mounted as chrome (by an init script on the preview)
+published `--strip-h: 64px`, tucked on a settled scroll down, came back on the way up, held while its
+sheet was open, showed at the top, and had no transition under reduced motion. Its probe runs
+wherever a bar carries `data-strip`, which the noindex scaffold (Task 32) will. Both new current-
+section probes were mutation-checked: with `markCurrent` removed they fail under both motion
+preferences.
+
+Gates after the fixes: `npm run -s build` exit 0; `python3 -m pytest -q tests/py/test_city_kit_manchester.py
+tests/py/test_city_kit.py tests/py/test_design_components.py` 161 passed, 1 skipped (the skip pre-dates
+Task 28); `npm run test:render:city` 57 passed, 55 skipped, 0 failed, London's three routes unchanged
+and no advisory on the Manchester route.
+
+One full `npm run test:render:city` after the last fix failed once, at vp375 on the Manchester route
+only: every question-bar behaviour at once (sheet, focus, spy), with the test running 47s. The
+server log shows the bar's script chunk was never served during that test (its first request comes
+40s later, from the next test), so the page ran without it. Reproduced on purpose and not met
+again: the route alone at `--repeat-each=12 --workers=4` (12 passed), the whole vp375 project at
+`--repeat-each=4 --workers=4` (68 passed), then a full run (57 passed, 0 failed). Not gated: a
+static-server stall on a cold first load is a harness fact, and is recorded here rather than excused
+in the probe.

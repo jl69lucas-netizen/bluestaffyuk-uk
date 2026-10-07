@@ -171,6 +171,72 @@ async function rangeSheetSpill(page: Page): Promise<string[]> {
   });
 }
 
+/** The current-section marker follows the reader (learning loop 2026-09-27, L8), under BOTH motion
+ *  preferences: scroll the fourth tall-enough section named in `scope` to the reading band and
+ *  read which `[data-spy]` row in `scope` is current. Every city's nav set is held to it: London's
+ *  dial and band rail, Manchester's numeral rail and question bar. Returns the defects. */
+async function navCurrentSection(page: Page, scope: string): Promise<string[]> {
+  const out: string[] = [];
+  // A sheet an earlier probe left open would make the page inert: this probe judges the
+  // spy, not the sheet, so it starts from a shut sheet (Task 8b, M-new-1).
+  await page.evaluate(() => document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => d.close()));
+  if (!(await page.locator(scope).first().isVisible())) return out;
+  for (const motion of ['reduce', 'no-preference'] as const) {
+    await page.emulateMedia({ reducedMotion: motion });
+    const want = await page.evaluate((s) => {
+      // Only a section tall enough to fill the reading band can be asked to be current: on the
+      // specimen route the contents list's wrapper is a one-line caption from 1024px, where
+      // the list itself is hidden (answer board q05), so the band reads the section after it.
+      const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [data-spy]`))
+        .filter((a) => document.getElementById(a.dataset.spy!)!.getBoundingClientRect().height >= window.innerHeight * 0.2);
+      const link = links[Math.min(3, links.length - 1)];
+      const target = document.getElementById(link.dataset.spy!)!;
+      // The target's top at 30% of the viewport: above the reading band (40–45%), so the
+      // section before it has left the band and this one fills it.
+      window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.3);
+      return link.dataset.spy!;
+    }, scope);
+    // Wait on the SPY, not on a clock: an IntersectionObserver reports on a rendering
+    // opportunity after the scroll, and with four workers painting at once that took up to
+    // ~230ms here (measured: the dial still named the previous section 0–2 frames after
+    // the scroll, then settled), so a fixed 300ms read raced it about one run in three.
+    // The component is right when the named section becomes current; if it never does
+    // within 10s (a ceiling; Task 8b) the read below reports what it shows instead.
+    await page.waitForFunction(({ s, w }) => {
+      const cur = Array.from(document.querySelectorAll(`${s} [aria-current="location"]`));
+      return cur.length === 1 && (cur[0] as HTMLAnchorElement).dataset.spy === w;
+    }, { s: scope, w: want }, { timeout: 10_000, polling: 'raf' }).catch(() => {});
+    const got = await page.evaluate((s) => Array.from(document.querySelectorAll(`${s} [aria-current="location"]`))
+      .map((a) => (a as HTMLAnchorElement).dataset.spy), scope);
+    if (got.length !== 1 || got[0] !== want) {
+      out.push(`reducedMotion=${motion}: section ${want} in the reading band, current is [${got.join(', ')}]`);
+    }
+  }
+  await page.emulateMedia({ reducedMotion: null });
+  return out;
+}
+
+/** A jump sheet that is a native `<dialog>` opened by a key (`[data-jump-open]`): the key opens
+ *  it and reports aria-expanded, Escape shuts it and the key follows. Every read waits on the
+ *  state it judges (Task 8b, M-new-1), and the page is always left with the sheet shut. */
+async function jumpSheetOpensAndShuts(page: Page, root: string): Promise<string[]> {
+  const out: string[] = [];
+  const opener = page.locator(`${root} [data-jump-open]`);
+  const box = await opener.boundingBox();
+  if (!box || box.height < 44) out.push('the sheet key is under 44px tall');
+  const sheetState = (want: { open: boolean; expanded: string }) => page.waitForFunction(({ r, w }) => {
+    const d = document.querySelector<HTMLDialogElement>(`${r} [data-jump-sheet]`);
+    const k = document.querySelector(`${r} [data-jump-open]`);
+    return !!d && !!k && d.open === w.open && k.getAttribute('aria-expanded') === w.expanded;
+  }, { r: root, w: want }, { timeout: 10_000, polling: 'raf' }).then(() => true, () => false);
+  await opener.click();
+  if (!(await sheetState({ open: true, expanded: 'true' }))) out.push('pressing the key does not open the sheet and report aria-expanded="true"');
+  await page.keyboard.press('Escape');
+  if (!(await sheetState({ open: false, expanded: 'false' }))) out.push('Escape does not shut the sheet and reset the key');
+  await page.locator(`${root} [data-jump-sheet]`).evaluate((d) => (d as HTMLDialogElement).close());
+  return out;
+}
+
 /** Each probe: the selector that says its component is on the page, and what it measures. */
 const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-hero-filmstrip': {
@@ -248,6 +314,110 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
         } else if (!(intro.bottom <= tab.top + 1 && folder.bottom <= steps.top + 1)) bad.push(`the intro, folder and steps do not stack at ${vp}px`);
         return bad;
       }, viewport));
+      return out;
+    },
+  },
+  // ── Manchester's nav set (Phase F Task 29): contents B, dial A, jump links B ────────────────
+  'city-icon-rows': {
+    present: '.city-icon-rows',
+    run: async (page, viewport) => {
+      const root = page.locator('.city-icon-rows');
+      const painted = await root.isVisible();
+      // From 1024px the dial is the contents (answer board q05, 2026-09-29, "as the other pages do").
+      if (viewport >= 1024) return painted ? [`the contents card is painted at ${viewport}px, where the dial navigates`] : [];
+      if (!painted) return [`the contents card is not painted at ${viewport}px`];
+      const out = await allVisible(page, 'data-contents');
+      const photo = await page.evaluate(() => {
+        const i = document.querySelector<HTMLImageElement>('.city-icon-rows img')!;
+        const b = i.getBoundingClientRect();
+        return { w: b.width, h: b.height, list: document.querySelector('.city-icon-rows nav')!.getBoundingClientRect().left - b.left };
+      });
+      if (photo.w < 100 || photo.h < 80) out.push(`the photo paints at ${Math.round(photo.w)}x${Math.round(photo.h)}`);
+      // The pick's media axis: the photo is the card's right column from 640px.
+      if (viewport >= 640 && photo.list >= 0) out.push('the photo is not the right-hand column from 640px');
+      const rest = page.locator('.city-icon-rows [data-rest]');
+      if (!(await rest.count())) return out;
+      const shown = async () => rest.first().isVisible();
+      if (viewport < 768) {
+        if (await shown()) out.push('rows after the phone cut are painted before the disclosure is opened');
+        const more = page.locator('.city-icon-rows [data-more]');
+        await more.click();
+        if (!(await shown())) out.push('opening the disclosure does not paint the rest of the rows');
+        if ((await more.getAttribute('aria-expanded')) !== 'true') out.push('the disclosure does not report aria-expanded="true"');
+        await more.click();
+      } else if (!(await shown())) out.push(`rows after the phone cut are hidden at ${viewport}px`);
+      return out;
+    },
+  },
+  'city-numeral-rail': {
+    present: '.city-numeral-rail',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const shown = await page.locator('.city-numeral-rail').isVisible();
+      if (viewport >= 1024 && !shown) out.push('the dial is not painted at a desktop width');
+      if (viewport < 1024 && shown) out.push('the dial is painted below 1024px, where the question bar navigates');
+      const current = await page.locator('.city-numeral-rail [aria-current="location"]').count();
+      if (current !== 1) out.push(`${current} dial rows are marked current; exactly one must be`);
+      if (!shown) return out;
+      // The current numeral sits in a brass square (the pick, after impeccable's side-stripe ban).
+      const sq = await page.evaluate(() => {
+        const n = document.querySelector('.city-numeral-rail [aria-current="location"] .n')!;
+        const idle = document.querySelector('.city-numeral-rail a:not([aria-current]) .n')!;
+        return [getComputedStyle(n).backgroundColor, getComputedStyle(idle).backgroundColor];
+      });
+      if (sq[0] === sq[1]) out.push('the current numeral is painted like an idle one');
+      out.push(...await navCurrentSection(page, '.city-numeral-rail'));
+      return out;
+    },
+  },
+  'city-question-bar': {
+    present: '.city-question-bar',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const bar = page.locator('.city-question-bar');
+      const shown = await bar.isVisible();
+      if (viewport >= 1024) return shown ? ['the question bar is painted at a desktop width, where the dial navigates'] : [];
+      if (!shown) return ['the question bar is not painted below 1024px'];
+      // One tick per section, one of them on, and it is the sheet's current row; the readout names it.
+      const r = await page.evaluate(() => {
+        const root = document.querySelector('.city-question-bar')!;
+        const ticks = Array.from(root.querySelectorAll('.ticks i'));
+        const rows = Array.from(root.querySelectorAll<HTMLAnchorElement>('[data-jump-sheet] [data-spy]'));
+        const tickWidths = ticks.map((t) => t.getBoundingClientRect().width);
+        return {
+          ticks: ticks.length, rows: rows.length,
+          on: ticks.findIndex((t) => t.hasAttribute('data-on')),
+          cur: rows.findIndex((a) => a.getAttribute('aria-current') === 'location'),
+          now: (root.querySelector('[data-now]')?.textContent ?? '').trim(),
+          narrowest: Math.min(...tickWidths),
+          bar: Math.round(root.getBoundingClientRect().height),
+        };
+      });
+      if (r.ticks !== r.rows) out.push(`${r.ticks} ticks for ${r.rows} sections`);
+      if (r.on < 0 || r.on !== r.cur) out.push(`the lit tick (${r.on}) is not the current section (${r.cur})`);
+      if (!r.now.startsWith(`${r.cur + 1} of ${r.rows}:`)) out.push(`the readout "${r.now}" does not name section ${r.cur + 1} of ${r.rows}`);
+      if (r.narrowest < 4) out.push(`a tick paints ${r.narrowest}px wide`);
+      // Slim: the bar and its ticks under 72px, so the header and the bar cover far less of a
+      // phone than London's 27% (answer board q03).
+      if (r.bar > 72) out.push(`the bar is ${r.bar}px tall`);
+      out.push(...await jumpSheetOpensAndShuts(page, '.city-question-bar'));
+      // Harden (Task 29): opening focuses the question being read, and a tap on the sheet's own
+      // padding (the dialog is its target, as a backdrop tap's is) leaves it open.
+      await page.locator('.city-question-bar [data-jump-open]').click();
+      const sheetOpen = () => page.evaluate(() => document.querySelector<HTMLDialogElement>('.city-question-bar [data-jump-sheet]')!.open);
+      await page.waitForFunction(() => document.querySelector<HTMLDialogElement>('.city-question-bar [data-jump-sheet]')!.open,
+        null, { timeout: 10_000, polling: 'raf' }).catch(() => {});
+      const focusOk = await page.evaluate(() => document.activeElement?.getAttribute('aria-current') === 'location'
+        && !!document.activeElement.closest('.city-question-bar [data-jump-sheet]'));
+      if (!focusOk) out.push('opening the sheet does not focus the current question');
+      const sheetBox = await page.locator('.city-question-bar [data-jump-sheet]').boundingBox();
+      if (sheetBox) await page.mouse.click(sheetBox.x + 4, sheetBox.y + sheetBox.height - 4);
+      if (!(await sheetOpen())) out.push('a tap on the sheet\'s own padding shuts it');
+      await page.mouse.click(4, 4);
+      if (await page.waitForFunction(() => !document.querySelector<HTMLDialogElement>('.city-question-bar [data-jump-sheet]')!.open,
+        null, { timeout: 10_000, polling: 'raf' }).then(() => false, () => true)) out.push('a tap on the backdrop does not shut the sheet');
+      await page.locator('.city-question-bar [data-jump-sheet]').evaluate((d) => (d as HTMLDialogElement).close());
+      out.push(...await navCurrentSection(page, '.city-question-bar'));
       return out;
     },
   },
@@ -564,47 +734,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   // a desktop width and on the band's rail below it.
   'city-nav-current-section': {
     present: '[data-city-dial-photo-marker], [data-city-jump-stepper]',
-    run: async (page, viewport) => {
-      const out: string[] = [];
-      const scope = viewport >= 1024 ? '[data-city-dial-photo-marker]' : '[data-city-jump-stepper] .rail';
-      // A sheet an earlier probe left open would make the page inert: this probe judges the
-      // spy, not the sheet, so it starts from a shut sheet (Task 8b, M-new-1).
-      await page.evaluate(() => document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => d.close()));
-      if (!(await page.locator(scope).isVisible())) return out;
-      for (const motion of ['reduce', 'no-preference'] as const) {
-        await page.emulateMedia({ reducedMotion: motion });
-        const want = await page.evaluate((s) => {
-          // Only a section tall enough to fill the reading band can be asked to be current: on the
-          // specimen route the contents list's wrapper is a one-line caption from 1024px, where
-          // the list itself is hidden (answer board q05), so the band reads the section after it.
-          const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(`${s} [data-spy]`))
-            .filter((a) => document.getElementById(a.dataset.spy!)!.getBoundingClientRect().height >= window.innerHeight * 0.2);
-          const link = links[Math.min(3, links.length - 1)];
-          const target = document.getElementById(link.dataset.spy!)!;
-          // The target's top at 30% of the viewport: above the reading band (40–45%), so the
-          // section before it has left the band and this one fills it.
-          window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.3);
-          return link.dataset.spy!;
-        }, scope);
-        // Wait on the SPY, not on a clock: an IntersectionObserver reports on a rendering
-        // opportunity after the scroll, and with four workers painting at once that took up to
-        // ~230ms here (measured: the dial still named the previous section 0–2 frames after
-        // the scroll, then settled), so a fixed 300ms read raced it about one run in three.
-        // The component is right when the named section becomes current; if it never does
-        // within 10s (a ceiling; Task 8b) the read below reports what it shows instead.
-        await page.waitForFunction(({ s, w }) => {
-          const cur = Array.from(document.querySelectorAll(`${s} [aria-current="location"]`));
-          return cur.length === 1 && (cur[0] as HTMLAnchorElement).dataset.spy === w;
-        }, { s: scope, w: want }, { timeout: 10_000, polling: 'raf' }).catch(() => {});
-        const got = await page.evaluate((s) => Array.from(document.querySelectorAll(`${s} [aria-current="location"]`))
-          .map((a) => (a as HTMLAnchorElement).dataset.spy), scope);
-        if (got.length !== 1 || got[0] !== want) {
-          out.push(`reducedMotion=${motion}: section ${want} in the reading band, current is [${got.join(', ')}]`);
-        }
-      }
-      await page.emulateMedia({ reducedMotion: null });
-      return out;
-    },
+    run: (page, viewport) => navCurrentSection(page, viewport >= 1024 ? '[data-city-dial-photo-marker]' : '[data-city-jump-stepper] .rail'),
   },
 };
 

@@ -1,4 +1,4 @@
-// src/components/kit/cityIcons.ts — the line icons a city page's jump band draws.
+// src/components/kit/cityIcons.ts — the line icons a city page's nav set draws.
 //
 // One path each on the same 24 grid, stroked in `currentColor` at 2px, so they read as one set
 // (the icons the London canvas's stepper band used, jump-links A). Kept in the kit folder beside
@@ -16,6 +16,12 @@ export const CITY_ICONS: Record<CityIcon, string> = {
   play: 'M4 5h16v14H4zM10 9v6l5-3z',
   faq: 'M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01',
   enquire: 'M3 5h18v14H3zM3 6l9 7 9-7',
+  // Manchester's contents rows (contents-list B, "Icon rows"; Phase F Task 29), on the same grid:
+  // a ruled paper, a heart, two people and a drop for the coat.
+  papers: 'M14 3H6v18h12V7zM14 3v4h4M9 12h6M9 16h6',
+  guarantee: 'M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1L12 21.5l8.8-8.8a5 5 0 0 0 0-7.1z',
+  family: 'M6 8a3 3 0 1 0 6 0 3 3 0 1 0-6 0M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M14.5 9a2.5 2.5 0 1 0 5 0 2.5 2.5 0 1 0-5 0M15.5 14.2A5 5 0 0 1 21 19',
+  coat: 'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z',
 };
 
 /** The trust ledger's line icons (city component 3), on the same grid and stroke. */

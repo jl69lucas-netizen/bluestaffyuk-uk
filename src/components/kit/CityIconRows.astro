@@ -1,0 +1,156 @@
+---
+// src/components/kit/CityIconRows.astro — Manchester's contents list (pick:
+// manchester/contents-list/b, "Icon rows"; frozen 355d5e43). One raised card: the page's sections
+// as line-icon rows divided by full-width rules, two columns from 640px, and Manchester's own
+// served puppy photograph filling the card's right column from 640px (above the list on a phone).
+// The icon says what kind of section a row is before its name is read: a question mark for each
+// of the three question blocks. Built from design/city-canvas/manchester/contents-list/b.html as
+// the visual spec only; it imports no London component (rules/design.md own-components-per-page).
+//
+// ONE LIST (London Plan 2 execution note 13, plan2-notes). The canvas carried rows 7-13 twice, a
+// desktop copy and a phone `<details>` copy, which is two of every link in the tab order and to a
+// screen reader. Here the list is rendered once: below 768px the rows after `phoneRows` hide
+// behind one "N more sections" button (`aria-expanded`, `aria-controls`), and a reader with no
+// scripting gets every row (the `<noscript>` rule). The rows are the page's own `sections`
+// (src/lib/sections.ts), the list src/layouts/CityShell.astro hands the dial and the bar too.
+//
+// Mounted by CityShell in PageShell's `nav-contents` slot, once, after the hero. Shown below
+// 1024px only: from 1024px the dial is the contents (the user's ruling, answer board q05,
+// 2026-09-29: "Hide it from 1024px, as the other pages do").
+//
+// THE PHOTO is a served file (working rule 11): its original path and its served alt, word for
+// word (src/lib/imageFocus.ts servedPhoto), cropped on the puppy's face (data/image-focus.json).
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+import { focusClass, servedPhoto } from '../../lib/imageFocus';
+import { CITY_ICONS } from './cityIcons';
+
+type Props = HTMLAttributes<'section'> & {
+  sections: SectionRef[];
+  /** The page's city, from data/locations.json `city`. */
+  city: string;
+  /** A served /images/ file named in data/image-focus.json (it brings its served alt). */
+  photo: string;
+  /** Rows shown on a phone before the disclosure. */
+  phoneRows?: number;
+};
+const { sections, city, photo, phoneRows = 6, class: cls, ...rest } = Astro.props;
+const p = servedPhoto(photo);
+const more = Math.max(0, sections.length - phoneRows);
+const LIST_ID = 'city-icon-rows-list';
+// The <noscript> rule, as a string: Astro would otherwise hoist it into the page stylesheet,
+// where it would show the hidden rows to everybody.
+const NOSCRIPT_CSS = '.city-icon-rows [data-rest]{display:block!important}.city-icon-rows .more{display:none!important}';
+// A phone's card is the viewport less the 16px gutters; from 640px the photo is a 272-340px column.
+const sizes = '(min-width: 640px) 340px, calc(100vw - 32px)';
+---
+<section {...rest} class:list={['city-kit', 'city-icon-rows', cls]}>
+  <div class="card">
+    <figure>
+      <img src={p.file} srcset={p.srcset} sizes={p.srcset ? sizes : undefined}
+        alt={p.alt} width={p.w} height={p.h} class={focusClass(photo)} loading="lazy" decoding="async" />
+    </figure>
+    <div class="body">
+      <nav aria-labelledby="city-icon-rows-title" data-contents>
+        <p class="t" id="city-icon-rows-title">Go straight to any part of this {city} page</p>
+        <ul id={LIST_ID}>
+          {sections.map((s, i) => (
+            <li data-rest={i >= phoneRows ? '' : undefined}>
+              <a href={`#${s.id}`}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={CITY_ICONS[s.icon ?? 'list']} /></svg>
+                <span>{s.row ?? s.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        {more > 0 && (
+          <button type="button" class="more" aria-expanded="false" aria-controls={LIST_ID} data-more>
+            <span data-more-label>{more} more {more === 1 ? 'section' : 'sections'}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+        )}
+        <noscript><style is:inline set:html={NOSCRIPT_CSS}></style></noscript>
+      </nav>
+    </div>
+  </div>
+</section>
+<script>
+  // Singleton: a page mounts one contents list. The button paints below 768px only; from 768px
+  // every row is shown by CSS.
+  const root = document.querySelector<HTMLElement>('.city-icon-rows');
+  const btn = root?.querySelector<HTMLButtonElement>('[data-more]');
+  if (root && btn) {
+    const label = btn.querySelector<HTMLElement>('[data-more-label]')!;
+    const shut = label.textContent ?? '';
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open));
+      root.toggleAttribute('data-open', open);
+      label.textContent = open ? 'Fewer sections' : shut;
+    });
+  }
+</script>
+<style>
+  @layer components {
+    /* A full-width strip, the viewport wide (src/styles/city.css): the root carries no inline
+       padding; the card's own margin is its gutter, so the root's content box is its box. */
+    .city-icon-rows { background: var(--color-surface); padding: var(--space-6) 0; }
+    .card {
+      max-width: min(1200px, calc(100% - 2 * var(--space-4))); margin: 0 auto; display: grid; overflow: hidden;
+      background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--card-radius);
+      box-shadow: var(--shadow-card);
+    }
+    figure { margin: 0; background: var(--color-surface); }
+    img { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; }
+    .body { padding: var(--space-5) var(--space-4) var(--space-4); }
+    .t {
+      margin: 0 0 var(--space-4); font-family: var(--font-display); font-weight: 600;
+      font-size: var(--text-lg); line-height: 1.3; color: var(--color-brand); text-wrap: balance;
+    }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li { border-top: 1px solid var(--color-border); break-inside: avoid; }
+    a {
+      display: flex; align-items: center; gap: var(--space-3); min-height: 52px; padding: var(--space-2) var(--space-1);
+      border-radius: var(--radius-sm); color: var(--color-ink); font-weight: 600; line-height: 1.3; text-decoration: none;
+    }
+    a svg { flex: none; width: 22px; height: 22px; color: var(--color-brand); }
+    a:hover { background: var(--color-brand-soft); }
+    a:hover span { text-decoration: underline; text-underline-offset: 3px; }
+    a:focus-visible, .more:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -3px; }
+    .more {
+      display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 52px;
+      padding: 0 var(--space-1); border: 0; border-top: 1px solid var(--color-border); border-radius: 0;
+      background: none; font: inherit; font-weight: 700; color: var(--color-brand); cursor: pointer;
+    }
+    .more svg { width: 20px; height: 20px; transition: transform var(--dur-fast) var(--ease-out); }
+    .more[aria-expanded='true'] svg { transform: rotate(180deg); }
+    /* The phone cut holds to 767px: below 768 the rows are one column, and thirteen of them
+       would run the card to about 830px. */
+    @media (width < 768px) {
+      [data-rest] { display: none; }
+      .city-icon-rows[data-open] [data-rest] { display: block; }
+    }
+    /* From 640px the photo is the card's right column, filling its height (the canvas's fix for
+       the 1.36x upscale of a 3:1 banner at 768). The column is never under 272px: the served file
+       is 540px wide, and a narrower column decodes it at more than twice the width it paints
+       (img-srcset-within-2x, Task 29 harden pass; the canvas's 220px painted it at 2.45x). An
+       opened phone list cannot stretch it past its own height: bone shows below instead. */
+    @media (width >= 640px) {
+      .card { grid-template-columns: minmax(0, 1fr) clamp(272px, 34%, 340px); }
+      figure { order: 2; }
+      img { height: 100%; max-height: 560px; aspect-ratio: auto; }
+      .body { order: 1; padding: var(--space-6) var(--space-5) var(--space-5); }
+      a { min-height: 56px; line-height: 1.25; }
+    }
+    /* From 768px the rows flow DOWN two columns (a multi-column list, so the reading order is the
+       page's order, never a Z) and every row shows. */
+    @media (width >= 768px) {
+      ul { columns: 2; column-gap: var(--space-6); }
+      .more { display: none; }
+    }
+    /* From 1024px the dial (CityNumeralRail) is the page's contents (answer board q05). */
+    @media (width >= 1024px) { .city-icon-rows { display: none; } }
+    @media (prefers-reduced-motion: reduce) { .more svg { transition: none; } }
+  }
+</style>

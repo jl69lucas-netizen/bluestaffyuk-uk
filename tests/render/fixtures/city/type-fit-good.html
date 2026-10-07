@@ -20,10 +20,13 @@ blockquote{margin:0}</style></head>
 <section class="city-kit city-wide-measure" style="width:900px;padding:0">
   <h2 style="font-size:26px;line-height:1.18;max-width:34ch;text-wrap:balance">What Did a London Family Say After Their Puppy Came Home?</h2>
 </section>
-<!-- The nav furniture is exempt by name (tests/render/lib/cityTypeFit.ts): its chrome is the page's
-     section list, never reading text. A chunky heading and a tall box here must stay silent. -->
-<div class="city-kit city-jump-stepper" data-city-jump-stepper><h2 style="font-size:40px">All Nine Sections of This Page Listed</h2><div style="height:4000px"></div></div>
-<aside class="city-kit city-dial-photo-marker" data-city-dial-photo-marker><h2 style="font-size:40px">Where You Are on the Page Right Now</h2><div style="height:4000px"></div></aside>
+<!-- The nav furniture is exempt by its shared hook, `data-city-nav` (tests/render/lib/cityTypeFit.ts;
+     the Manchester page run, gap G12): its chrome is the page's section list, never reading text,
+     whichever city it belongs to. A chunky heading and a tall box here must stay silent. -->
+<div class="city-kit city-jump-stepper" data-city-jump-stepper data-city-nav="bar"><h2 style="font-size:40px">All Nine Sections of This Page Listed</h2><div style="height:4000px"></div></div>
+<aside class="city-kit city-dial-photo-marker" data-city-dial-photo-marker data-city-nav="dial"><h2 style="font-size:40px">Where You Are on the Page Right Now</h2><div style="height:4000px"></div></aside>
+<div class="city-kit city-question-bar" data-city-nav="bar"><p style="max-width:none">This bar's readout is a long line of chrome that would be far over the seventy-five character measure if it were reading text, and it is not.</p><div style="height:4000px"></div></div>
+<aside class="city-kit city-numeral-rail" data-city-nav="dial"><h2 style="font-size:40px">Thirteen Sections of This Page in Order</h2><div style="height:4000px"></div></aside>
 <!-- A long chapter of answers that each fit (the breeder's ruling, answer board 2026-10-04 q10 (a)):
      three 700px answers make a section over both caps (2030px at 375, 1280px at 1280), and none of
      them is over the cap alone, so nothing fires. The same for six 300px puppy cards in one column. -->

@@ -39,5 +39,8 @@
   {"id": "city-map-facade", "file": "CityMapFacade.astro", "title": "C20 · City map (tap to load)", "board_width": 1280, "project": 5, "subcomponent": "london-map"},
   {"id": "city-feature-and-three", "file": "CityFeatureAndThree.astro", "title": "M1 · Manchester hero (feature and three)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/hero/c", "root_selector": ".city-feature-and-three"},
   {"id": "city-range-sheet", "file": "CityRangeSheet.astro", "title": "M2 · Manchester counter strip (range sheet)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/counter-strip/b", "root_selector": ".city-range-sheet"},
-  {"id": "city-puppy-folder", "file": "CityPuppyFolder.astro", "title": "M3 · Manchester trust strip (puppy folder)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/trust-strip/b", "root_selector": ".city-puppy-folder"}
+  {"id": "city-puppy-folder", "file": "CityPuppyFolder.astro", "title": "M3 · Manchester trust strip (puppy folder)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/trust-strip/b", "root_selector": ".city-puppy-folder"},
+  {"id": "city-icon-rows", "file": "CityIconRows.astro", "title": "M4 · Manchester contents list (icon rows)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/contents-list/b", "root_selector": ".city-icon-rows"},
+  {"id": "city-numeral-rail", "file": "CityNumeralRail.astro", "title": "M5 · Manchester desktop dial (numeral rail)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/desktop-dial/a", "root_selector": ".city-numeral-rail"},
+  {"id": "city-question-bar", "file": "CityQuestionBar.astro", "title": "M6 · Manchester jump links (question bar)", "board_width": 640, "project": 5, "canvas_variant": "manchester/jump-links/b", "root_selector": ".city-question-bar"}
 ]

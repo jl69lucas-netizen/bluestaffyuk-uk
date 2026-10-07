@@ -48,7 +48,7 @@ stepperStops(sections);
 const pad = (i: number) => String(i + 1).padStart(2, '0');
 const first = sections[0];
 ---
-<div {...rest} class:list={['city-kit', 'city-jump-stepper', 'on-inverse', cls]} data-city-jump-stepper data-strip={chrome ? true : undefined}>
+<div {...rest} class:list={['city-kit', 'city-jump-stepper', 'on-inverse', cls]} data-city-jump-stepper data-city-nav="bar" data-strip={chrome ? true : undefined}>
   <nav class="rail" aria-label="Jump to a section">
     <ol>
       {sections.map((s, i) => (

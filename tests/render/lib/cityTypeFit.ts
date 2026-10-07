@@ -43,8 +43,11 @@
  *     blanket `form p` skip hid it at 76ch on London (visual-intelligence audit 2026-10-04).
  *     A review is NOT exempt: CityLetter splits it into paragraphs at its sentence breaks, words
  *     and order untouched, so it is held to the same line caps as any other paragraph;
- *   - `[data-city-jump-stepper]` and `[data-city-dial-photo-marker]`: sticky nav furniture, whose
- *     height is the page's section list, not reading text (the sheet is a closed dialog);
+ *   - `[data-city-nav]`: every city's sticky nav furniture (the bar and the dial: London's
+ *     CityJumpStepper and CityDialPhotoMarker, Manchester's CityQuestionBar and CityNumeralRail),
+ *     whose height is the page's section list, not reading text (the sheet is a closed dialog).
+ *     One shared hook (the Manchester page run, gap G12): this skip used to name London's two own
+ *     hooks, so the next city's bar and dial would have been judged as reading text;
  *   - the puppy sheet's HEIGHT only, and only on the full-width specimen route /kit-preview/city/
  *     (the caller says so: `fullWidthSpecimen`), which no city page reproduces — a city page's
  *     body column is 832px at most. There the six prints are three to a row at about 360px each,
@@ -92,7 +95,7 @@ export function cityTypeFit({ viewport, tier: edges, caps: CAP, fullWidthSpecime
     return w;
   };
   const name = (el: Element) => (el.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 40);
-  const skipRoot = (root: Element) => root.matches('[data-city-jump-stepper], [data-city-dial-photo-marker]');
+  const skipRoot = (root: Element) => root.matches('[data-city-nav]');
   const roots = Array.from(document.querySelectorAll('.city-kit')).filter((r) => painted(r) && !skipRoot(r));
   for (const root of roots) {
     const w = contentWidth(root);

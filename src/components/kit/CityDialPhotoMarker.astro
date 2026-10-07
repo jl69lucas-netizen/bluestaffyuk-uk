@@ -29,7 +29,7 @@ type Props = HTMLAttributes<'aside'> & {
 };
 const { sections, title = 'Where you are on the page', photo, photoAlt, class: cls, ...rest } = Astro.props;
 ---
-<aside {...rest} class:list={['city-kit', 'city-dial-photo-marker', cls]} data-city-dial-photo-marker>
+<aside {...rest} class:list={['city-kit', 'city-dial-photo-marker', cls]} data-city-dial-photo-marker data-city-nav="dial">
   <Image src={puppyImage(photo)} alt={photoAlt} widths={[280, 560]} sizes={`${DIAL_W}px`}
     class={focusClass(photo)} loading="lazy" decoding="async" />
   <nav aria-labelledby="city-dial-title">

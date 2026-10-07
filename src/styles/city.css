@@ -36,11 +36,12 @@
      desktop  width >= 800px
    These mirror src/lib/cityKit.ts TIER ({ tablet: 640, desktop: 800 }); a test holds the two
    equal. A full-width strip (the hero, the price scale, the trust ledger, the contents panel) is
-   the viewport wide, so its `@media` edges read the same box. The nav furniture (the jump stepper
-   and the dial) is no container: its fixed-size chrome takes the phone tier's type always, which
-   it only uses for labels. */
+   the viewport wide, so its `@media` edges read the same box. The nav furniture (every city's bar
+   and dial, which carry the shared `data-city-nav` hook; the Manchester page run, gap G12) is no
+   container: its fixed-size chrome takes the phone tier's type always, which it only uses for
+   labels. */
 @layer components {
-  .city-kit:not([data-city-jump-stepper], [data-city-dial-photo-marker]) { container-type: inline-size; }
+  .city-kit:not([data-city-nav]) { container-type: inline-size; }
 }
 
 /* THE CITY TYPE SCALE (Task 7b item 10; the user's ruling, 2026-09-28: "all font/text, headers,

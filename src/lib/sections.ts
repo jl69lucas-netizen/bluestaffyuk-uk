@@ -19,11 +19,16 @@ export interface SectionRef {
   icon?: CityIcon;
   /** The one-word name under the city stepper's stop ("Puppies"); `label` when absent. */
   stop?: string;
+  /** The contents row's fuller name ("The deposit and your visit", where the dial's `label` is
+   *  "Deposit and visit"): Manchester's icon rows (CityIconRows); `label` when absent. */
+  row?: string;
 }
 
-/** The line icons a city page's jump band draws, by name (src/components/kit/cityIcons.ts). */
+/** The line icons a city page's nav set draws, by name (src/components/kit/cityIcons.ts). The
+ *  last four are Manchester's contents rows' (the Manchester page run, Phase F Task 29). */
 export type CityIcon = 'list' | 'puppies' | 'prices' | 'deposit' | 'delivery' | 'health'
-  | 'home' | 'play' | 'faq' | 'enquire';
+  | 'home' | 'play' | 'faq' | 'enquire'
+  | 'papers' | 'guarantee' | 'family' | 'coat';
 
 /** A board record's sections, narrowed to what the two nav components need.
  *  Typed structurally so `scripts/build_page_board.py`'s JSON can be handed over as-is. */

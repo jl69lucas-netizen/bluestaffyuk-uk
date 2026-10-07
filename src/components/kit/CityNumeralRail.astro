@@ -1,0 +1,94 @@
+---
+// src/components/kit/CityNumeralRail.astro — Manchester's desktop dial (pick:
+// manchester/desktop-dial/a, "Numeral rail"; frozen 355d5e43). From 1024px a quiet column on the
+// bone page itself, divided from the reading column by one steel hairline: the page's sections in
+// order, each a thin display numeral beside a short name. The section being read sets its numeral
+// in a brass square on a soft steel row. No card, no band, no photo. Hidden below 1024px, where
+// CityQuestionBar navigates. Built from design/city-canvas/manchester/desktop-dial/a.html as the
+// visual spec only; it imports no London component (rules/design.md own-components-per-page).
+//
+// THE CURRENT SECTION IS MARKED BY SCRIPT, through src/lib/scrollSpy.ts (the kit's reading band
+// and its whole-band state, lessons entry 20), with `aria-current="location"`: never by the
+// canvas's `:target` or its scroll-driven animations, which a reader asking for reduced motion saw
+// stuck on section one (London Plan 2 execution note 13; learning loop L8). The first row is
+// current at render. The rail scrolls inside its own box on a short screen, and the marked row is
+// kept in view (scrollSpy.ts keepRowInBox).
+//
+// Mounted by src/layouts/CityShell.astro in PageShell's `nav-dial` slot; its width is the dial
+// column's (--city-dial-w, src/styles/city.css). `data-city-nav` is every city's nav-furniture
+// hook (gap G12): tests/render/lib/cityTypeFit.ts skips it, and city.css makes it no container.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+
+type Props = HTMLAttributes<'aside'> & {
+  sections: SectionRef[];
+  /** The page's city, from data/locations.json `city`. */
+  city: string;
+};
+const { sections, city, class: cls, ...rest } = Astro.props;
+const pad = (i: number) => String(i + 1).padStart(2, '0');
+---
+<aside {...rest} class:list={['city-kit', 'city-numeral-rail', cls]} data-city-nav="dial">
+  <nav aria-labelledby="city-numeral-rail-title">
+    <p class="t" id="city-numeral-rail-title">This {city} page</p>
+    <p class="k">{sections.length} sections, in page order</p>
+    <ol>
+      {sections.map((s, i) => (
+        <li>
+          <a href={`#${s.id}`} data-spy={s.id} aria-current={i === 0 ? 'location' : undefined}>
+            <span class="n" aria-hidden="true">{pad(i)}</span><span class="l">{s.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+</aside>
+<script>
+  import { keepRowInBox, markCurrent, spyRows, watchSections } from '../../lib/scrollSpy';
+  // Singleton by design: a page mounts one dial.
+  const rail = document.querySelector<HTMLElement>('.city-numeral-rail');
+  if (rail) {
+    const rows = spyRows(rail);
+    const links = rows.map((r) => r.link);
+    watchSections(rows.map((r) => r.target), (i) => {
+      markCurrent(links, i);
+      keepRowInBox(rail, links[i], i === 0);
+    });
+  }
+</script>
+<style>
+  @layer components {
+    .city-numeral-rail { display: none; }
+    @media (width >= 1024px) {
+      .city-numeral-rail {
+        display: block; position: sticky; top: var(--hdr-measured, var(--hdr));
+        width: var(--city-dial-w); max-height: calc(100vh - var(--hdr-measured, var(--hdr)));
+        overflow-y: auto; overscroll-behavior: contain;
+        /* Its own inset on the left as the canvas's: the rail never meets the column's edge, and
+           the current row's soft steel never touches the page gutter (frontend-design, Task 29). */
+        padding-block: var(--space-5); padding-inline: var(--space-3) var(--space-4);
+        border-inline-end: 1px solid var(--color-steel-300);
+      }
+      .t { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); line-height: 1.3; color: var(--color-brand); }
+      .k { margin: 0 0 var(--space-3); font-size: var(--text-xs); line-height: 1.4; color: var(--color-ink-2); }
+      ol { list-style: none; margin: 0; padding: 0; }
+      li { margin: 0; }
+      a {
+        display: grid; grid-template-columns: 46px minmax(0, 1fr); align-items: center; min-height: 44px;
+        padding: 0 var(--space-2) 0 4px; border-radius: var(--radius-sm); color: var(--color-ink-2); text-decoration: none;
+      }
+      .n {
+        display: inline-grid; place-items: center; width: 38px; height: 32px; border-radius: var(--radius-sm);
+        font-family: var(--font-display); font-weight: 300; font-size: var(--text-lg); line-height: 1;
+        color: var(--color-ink-3); font-feature-settings: "tnum" 1, "lnum" 1;
+      }
+      .l { font-size: var(--text-sm); font-weight: 600; line-height: 1.25; color: var(--color-ink); text-wrap: balance; }
+      a:hover .l { text-decoration: underline; text-underline-offset: 3px; }
+      a[aria-current='location'] { background: var(--color-brand-soft); }
+      a[aria-current='location'] .n { background: var(--color-cta); color: var(--color-cta-ink); font-weight: 500; }
+      a:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -3px; }
+    }
+    @media print { .city-numeral-rail { display: none; } }
+  }
+</style>

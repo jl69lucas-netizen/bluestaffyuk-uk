@@ -78,3 +78,17 @@ export function watchSections(targets: HTMLElement[], onChange: (i: number) => v
   if (fromHash >= 0) fromObserver = fromHash;
   apply();
 }
+
+/** Keep the marked row visible inside a nav box that scrolls on its own (a sticky dial taller than
+ *  a laptop-height viewport): the box is scrolled, never the page (so no scrollIntoView), at once,
+ *  and only when the row is outside it. Row 0 takes the box back to its top. CityDialPhotoMarker
+ *  carries the same rule inline (Harden pass 2026-10-06b, F1); later cities' dials call this. */
+export function keepRowInBox(box: HTMLElement, row: HTMLElement | undefined, first: boolean): void {
+  if (!row || box.scrollHeight <= box.clientHeight) return;
+  if (first) { box.scrollTop = 0; return; }
+  const b = box.getBoundingClientRect();
+  const r = row.getBoundingClientRect();
+  const pad = 16;
+  if (r.bottom > b.bottom) box.scrollTop += r.bottom - b.bottom + pad;
+  else if (r.top < b.top) box.scrollTop -= b.top - r.top + pad;
+}

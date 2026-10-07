@@ -83,6 +83,10 @@ import CityMapFacade from './CityMapFacade.astro';
 import CityFeatureAndThree from './CityFeatureAndThree.astro';
 import CityRangeSheet from './CityRangeSheet.astro';
 import CityPuppyFolder from './CityPuppyFolder.astro';
+import CityIconRows from './CityIconRows.astro';
+import CityNumeralRail from './CityNumeralRail.astro';
+import CityQuestionBar from './CityQuestionBar.astro';
+import componentsJson from '../../../data/design/components.json';
 import locationRows from '../../../data/locations.json';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
 import londonPlaces from '../../../data/city-places/blue-staffy-puppies-london.json';
@@ -92,7 +96,7 @@ import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, 
 import { numberWord } from '../../lib/recordText';
 /** The guarantee, from data/settings.json (answer board q07, 2026-09-29); null if the data loses it. */
 const GUARANTEE = guaranteeRow();
-import type { SectionRef } from '../../lib/sections';
+import type { CityIcon, SectionRef } from '../../lib/sections';
 
 /** The counter specimen's availability figure, counted the way every page counts it. */
 const availableNow = (puppies as PuppyRow[]).filter((p) => p.status === 'Available').length;
@@ -115,7 +119,8 @@ export type ComponentId =
   | 'city-map-facade'
   // Manchester's own picks (the Manchester page run, Phase F Tasks 28-31), previewed on
   // /kit-preview/city-manchester/ and never on London's /kit-preview/city/.
-  | 'city-feature-and-three' | 'city-range-sheet' | 'city-puppy-folder';
+  | 'city-feature-and-three' | 'city-range-sheet' | 'city-puppy-folder'
+  | 'city-icon-rows' | 'city-numeral-rail' | 'city-question-bar';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -251,6 +256,43 @@ const FAQ_LIFE: CityFaqRow[] = [
  *  picked canvas variant's, feature first; src/lib/cityKit.ts pickAvailable passes over a sold one). */
 const MANCHESTER = (locationRows as { slug: string; city: string }[]).find((r) => r.slug === manchesterOutline.slug)!.city;
 const MANCHESTER_HERO_PUPS = pickAvailable(['Roman', 'Cheryl', 'Ince', 'Vennie'], 4).map((p) => p.name);
+
+/** The questions Manchester's nav set lists: every H2 of its approved outline, word for word, in
+ *  page order (thirteen; data/outlines/, approved at STOP 2). */
+const MANCHESTER_H2: string[] = (manchesterOutline as { sections: { headings: { level: number; text: string }[] }[] }).sections
+  .flatMap((sec) => sec.headings.filter((h) => h.level === 2).map((h) => h.text));
+/** The short name (the dial and the bar's readout), the contents row's fuller name and its icon for
+ *  each of those thirteen sections, in the same order: the picked canvas variants' own words
+ *  (design/city-canvas/manchester/{contents-list/b,desktop-dial/a,jump-links/b}.html). The page
+ *  (Phase F Task 32) gives each its section's anchor; the preview gives each one of its own. */
+export const MANCHESTER_NAV: { label: string; row: string; icon: CityIcon }[] = [
+  { label: 'Asked first', row: 'First questions answered', icon: 'faq' },
+  { label: 'Deposit and visit', row: 'The deposit and your visit', icon: 'deposit' },
+  { label: 'Parents\' tests', row: "The parents' health tests", icon: 'health' },
+  { label: 'The litter', row: 'The litter and its prices', icon: 'puppies' },
+  { label: 'Health and viewing', row: 'Health and viewing questions', icon: 'faq' },
+  { label: 'Travel', row: `Travel to Greater ${MANCHESTER}`, icon: 'delivery' },
+  { label: 'Papers', row: 'Papers that come home', icon: 'papers' },
+  { label: 'Health and guarantee', row: 'Health and the guarantee', icon: 'guarantee' },
+  { label: 'Busy household', row: 'Life in a busy home', icon: 'home' },
+  { label: 'Favourite person', row: 'One person or the whole family', icon: 'family' },
+  { label: 'Coat comes last', row: 'Why the coat comes last', icon: 'coat' },
+  { label: 'Everyday life', row: 'Everyday questions', icon: 'faq' },
+  { label: 'Ask about a puppy', row: 'Ask about a puppy', icon: 'enquire' },
+];
+if (MANCHESTER_NAV.length !== MANCHESTER_H2.length) {
+  throw new Error(`_registry.ts: MANCHESTER_NAV names ${MANCHESTER_NAV.length} sections; the outline has ${MANCHESTER_H2.length} H2s`);
+}
+/** The nav set's demo sections on /kit-preview/city-manchester/: the preview's OWN Manchester
+ *  anchors (`kit-<component id>`, in file order, so every link resolves and the spy has real
+ *  sections to observe), each carrying the outline's question and the canvas's names in order. The
+ *  list grows as Tasks 30-31 add rows, up to the outline's thirteen. */
+const MANCHESTER_DEMO_SECTIONS: SectionRef[] = (componentsJson as ComponentRow[])
+  .filter((r) => r.project === 5 && cityOf(r) === 'manchester')
+  .slice(0, MANCHESTER_H2.length)
+  .map((r, i) => ({ id: `kit-${r.id}`, question: MANCHESTER_H2[i], ...MANCHESTER_NAV[i] }));
+/** The question bar's small decorative puppy: Christa while she is available (pickAvailable). */
+const MANCHESTER_BAR_PUP = pickAvailable(['Christa'], 1)[0].card_photo;
 
 export const REGISTRY: Record<ComponentId, KitEntry> = {
   // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
@@ -742,4 +784,16 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   },
   'city-range-sheet': { C: CityRangeSheet, demo: [{ city: MANCHESTER, shownAbove: MANCHESTER_HERO_PUPS }] },
   'city-puppy-folder': { C: CityPuppyFolder, demo: [{ city: MANCHESTER }] },
+  // Manchester's nav set (Task 29) shares MANCHESTER_DEMO_SECTIONS, as London's shares
+  // CITY_DEMO_SECTIONS. On the page src/layouts/CityShell.astro mounts them in PageShell's nav
+  // slots; here the bar is a picture (`chrome: false`), so it moves no anchor.
+  'city-icon-rows': {
+    C: CityIconRows,
+    demo: [{ sections: MANCHESTER_DEMO_SECTIONS, city: MANCHESTER, photo: 'reputable-blue-staffy-breeder-manchester-pup.webp' }],
+  },
+  'city-numeral-rail': { C: CityNumeralRail, demo: [{ sections: MANCHESTER_DEMO_SECTIONS, city: MANCHESTER }] },
+  'city-question-bar': {
+    C: CityQuestionBar,
+    demo: [{ sections: MANCHESTER_DEMO_SECTIONS, city: MANCHESTER, photo: MANCHESTER_BAR_PUP, chrome: false }],
+  },
 };
