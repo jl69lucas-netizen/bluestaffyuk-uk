@@ -1525,7 +1525,12 @@
   ],
   "schema": "LocalBusiness (areaServed Greater Manchester; no telephone while PHONE_PLACEHOLDER) + FAQPage (exactly the 20 visible questions) + BreadcrumbList + Person (Lisa Bright, the byline, how_we_win[5]) + Product only where a puppy card shows (one offer each); no VideoObject unless a youtube_embeds id is placed at STOP 3",
   "components": "Chosen at STOP 3 (the page board), after this outline is approved, and designed for Manchester at row 10 on the board's three styles at 1280 / 768 / 375.",
-  "approval": null,
+  "approval": {
+    "approved_on": "2026-10-07",
+    "answers": "docs/reference/answer-board/answers/2026-10-07-outline-blue-staffy-puppies-manchester-uk-2026-10-07.json",
+    "record_hash": "593992436b4531ab",
+    "research_hash": "3583bdc08a7bd609"
+  },
   "build_notes": [
     "Nine body sections (section_target.total 9): M1's five (deposit and viewing, health and raising, litter and prices, delivery to Greater Manchester, life in Manchester) in M1's order, the question file's three extra_sections (paperwork, health, temperament), and a ninth, 'Colour last', the controller's open pick for STOP 2: M1's hook made the last body question, carrying the ten G6 breed and lifespan questions that are not FAQ picks (how_we_win[3], universal_gaps[6]).",
     "Split across the builder's three gaps 3 / 3 / 3: after FAQ top (G1, G4, G2), after FAQ middle (G3, paperwork, health), after the newsletter (G5, temperament, colour last).",

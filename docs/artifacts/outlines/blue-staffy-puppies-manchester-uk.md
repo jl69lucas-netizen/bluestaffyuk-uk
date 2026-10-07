@@ -2,7 +2,7 @@
 
 ## Status and Target
 
-Status: **AWAITING APPROVAL — STOP 2** (no component is selected and no page board is built until this outline is approved)
+Status: **APPROVED 2026-10-07** (STOP 2 cleared — the outline gate) — answers: `docs/reference/answer-board/answers/2026-10-07-outline-blue-staffy-puppies-manchester-uk-2026-10-07.json`
 
 **H1:** Should Colour Decide Which Blue Staffy Puppy Comes Home to Manchester?
 

@@ -1,0 +1,83 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Approve as shown",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Approve the Manchester outline as shown?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Keep it",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "Keep the ninth section, \"Are Blue Staffies Rare, and Why Should the Coat Be the Last Thing You Choose?\"",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "Reword them properly; Claude proposes new wordings on the page board",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Three of the reworded FAQ questions differ from other pages by one word:",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Approve this answer",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "Approve this answer for \"Should I See the Mother With Her Puppy Before Money Changes Hands?\"",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Correct both pages first, as a separate task",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "Two built pages put the visit before the deposit.",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Fix the FAQ bank and every page that shows these lines, as a separate task",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "Some site FAQ answers say more than our facts allow.",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Rename it to \"£500 reservation deposit\"",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "question": "Rename the \"£500 refundable deposit\" entity.",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-07T02:48:50.566Z",
+  "batchId": "2026-10-07-outline-blue-staffy-puppies-manchester-uk",
+  "counts": {
+    "answered": 7,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-07T02-48-50-565Z"
+}

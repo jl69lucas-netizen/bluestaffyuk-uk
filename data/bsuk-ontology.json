@@ -49,7 +49,7 @@
     },
     {
       "id": "ont:refundable-deposit",
-      "name": "£500 refundable deposit",
+      "name": "£500 reservation deposit",
       "aliases": [
         "deposit"
       ],
