@@ -39,6 +39,12 @@
    "alt": "A genuine photo of a satisfied owner with their healthy puppy, reflecting positive Blue Staffy breeder reviews for BlueStaffyUK.",
    "faces": [[165, 10, 115, 130], [200, 160, 90, 95]]},
   "lisa-bright-blue-staffy-breeder-carlisle.webp": {"src": "images", "published": "data/boards/blue-staffy-puppies-london.json", "w": 1408, "h": 768, "widths": [240, 400, 760],
-   "faces": [[730, 170, 210, 230], [524, 330, 192, 140], [880, 390, 180, 140]]}
+   "faces": [[730, 170, 210, 230], [524, 330, 192, 140], [880, 390, 180, 140]]},
+  "blue-staffy-family-dog-uk.webp": {"src": "images", "w": 600, "h": 450, "widths": [240, 400],
+   "alt": "Blue Staffordshire Bull Terrier: A beloved family dog in the UK.",
+   "faces": [[222, 128, 123, 107]]},
+  "blue-staffy-puppy-preparation.webp": {"src": "images", "w": 512, "h": 475, "widths": [240, 400],
+   "alt": "A person kneeling in a clean living room, arranging a new dog bed next to a crate, with food bowls and puppy toys nearby.",
+   "faces": [[205, 262, 57, 50]]}
  }
 }

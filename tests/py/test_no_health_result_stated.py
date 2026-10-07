@@ -70,7 +70,7 @@ HEALTH_CONTEXT = re.compile(
     r"|\beyes?\b|\belbows?\b|\bgenetic\w*|\bhereditary\b|\binherited\b")
 RESULT_WORD = re.compile(
     r"(?i)\bclear(?:ed)?\b(?!\s+(?:eyes|overview))|\bnegative\b|\bresults?\b|\bcertificates?\b|\bcertified\b"
-    r"|(?<!one )\bpass(?:ed|es)?\b(?!\s+(?:the\s+gene|it\s+on|either|that\s+condition|them\s+on|on\b|down\b"
+    r"|(?<!one )\bpass(?:ed|es)?\b(?!\s+(?:the\s+gene|it\s+on|either|that\s+condition|them\s+on|on\b|down\b|from\s+parent"
     r"|facts-preserved|link\s+parity|the\s+form|every\s+gate|the\s+gate))"
     r"|\bunaffected\b|\bfree\s+(?:of|from)\b")
 # Denials and plain descriptions of what a test is are not results.
@@ -273,6 +273,8 @@ def test_the_patterns_fire_on_the_old_lines_and_spare_the_test_names():
                   "We quote no score or grade.",
                   "A puppy needs two copies of the gene to be affected.",
                   "Neither condition shows in a puppy unless both parents pass the gene on, which is why both are tested.",
+                  # inheritance, not a result: Manchester's board anchor (links-plan row 6, STOP 3)
+                  "How L-2-HGA and HC-HSF4 pass from parent to puppy is set out on our health page.",
                   # review C3: false positives the first version fired on
                   "We hold no DNA certificates, so we name the tests and quote no result.",
                   "Keep both clear of the road", "Make the rules clear for both",

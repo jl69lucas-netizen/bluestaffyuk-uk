@@ -26,6 +26,12 @@ export function focusRow(file: string): FocusRow {
   return row;
 }
 
+/** Whether data/image-focus.json records a file's faces (a board-row photo with no row there is
+ *  cropped about its centre rather than stopping the build: CityOffsetSheet `asset`). */
+export function hasFocusRow(file: string): boolean {
+  return Object.prototype.hasOwnProperty.call(ROWS, file);
+}
+
 const step = (n: number) => Math.min(100, Math.max(0, Math.round(n / 5) * 5));
 
 /** The centre of the union of a file's faces, as whole percentages on the 5% grid. */

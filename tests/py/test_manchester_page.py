@@ -160,14 +160,23 @@ def test_every_enquiry_cta_points_at_the_board_id():
     assert main_html(html).count('href="#enquiry"') >= 3
 
 
+def _anchors(fragment):
+    return {(H.unescape(h), text(a)) for h, a in re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', fragment, re.S)}
+
+
 def test_every_board_link_is_on_the_page_but_the_held_two_and_no_other_external_link():
-    main = main_html(built())
-    anchors = {(H.unescape(h), text(a)) for h, a in re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', main, re.S)}
+    html = built()
+    main = main_html(html)
+    anchors = _anchors(main)
+    # Nav furniture the board records from the shell (the breadcrumb's "UK Locations", which
+    # src/layouts/BaseDocument.astro renders between the header and <main>) is looked for on the
+    # whole page; every in-copy link, and every held one, is looked for in <main>.
+    page = _anchors(html.split("<footer", 1)[0])
     rows = board_links()
     held = [l for _, _, l in rows if HELD in l["why"]]
     assert sorted(l["href"] for l in held) == ["/blue-staffy-pup-sale-uk/", "/buy-blue-staffy-puppies-uk/"]
     missing = [(l["href"], l["anchor"]) for _, _, l in rows if HELD not in l["why"]
-               and not any(h == l["href"] and a.startswith(l["anchor"]) for h, a in anchors)]
+               and not any(h == l["href"] and a.startswith(l["anchor"]) for h, a in (page if l.get("nav") else anchors))]
     assert missing == []
     assert not [l["href"] for l in held if any(h == l["href"] for h, _ in anchors)], "a held link was built"
     external = {h for h, _ in anchors if h.startswith("http")}

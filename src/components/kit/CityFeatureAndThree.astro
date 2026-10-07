@@ -46,8 +46,16 @@ type Props = HTMLAttributes<'section'> & {
   more?: HeroLink;
   /** The four puppies to show, by name, the feature first. */
   photos?: string[];
+  /** The feature photo's alt where the page's board approves its own (the hero slot's
+   *  `assets[]` alt, the one alt that carries the page's primary keyword). Omitted: the alt the
+   *  site serves for the puppy's card photo. The three beside it always keep theirs. */
+  featureAlt?: string;
 };
-const { as: H = 'h1', title, lede, cta, more, photos = [], class: cls, ...rest } = Astro.props;
+// Two optional slots, for a page whose opener carries links (working rule 12, Link-First):
+// `lede` replaces the plain-text `lede` prop, and `byline` sets the author's credit under the
+// heading. Neither is typed here: the page passes its own words.
+const { as: H = 'h1', title, lede, cta, more, photos = [], featureAlt, class: cls, ...rest } = Astro.props;
+if (featureAlt !== undefined && !featureAlt.trim()) throw new Error('CityFeatureAndThree: an empty featureAlt is no alt');
 
 const shown = pickAvailable(photos, 4);
 if (!shown.length) throw new Error('CityFeatureAndThree: data/puppies.json has no available puppy to show');
@@ -76,7 +84,7 @@ const TICK = 'M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0M7.5 12.5l3 3 6-6.5';
         <figure class={i === 0 ? 'feature' : 'thumb'}>
           <Image
             src={puppyImage(p.card_photo)}
-            alt={servedPuppyAlt(p)}
+            alt={i === 0 && featureAlt ? featureAlt : servedPuppyAlt(p)}
             widths={i === 0 ? [400, 640, 960] : [160, 240, 400]}
             sizes={i === 0 ? FEATURE_SIZES : THUMB_SIZES}
             class={focusClass(p.card_photo)}
@@ -90,7 +98,8 @@ const TICK = 'M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0M7.5 12.5l3 3 6-6.5';
     </div>
     <div class="copy">
       <H class="title">{title}</H>
-      {lede && <p class="lede">{lede}</p>}
+      {Astro.slots.has('byline') && <p class="by"><slot name="byline" /></p>}
+      {Astro.slots.has('lede') ? <p class="lede"><slot name="lede" /></p> : lede && <p class="lede">{lede}</p>}
       <div class="row">
         <a class="cta" href={cta.href}>{cta.label}</a>
         {more && <a class="more" href={more.href}>{more.label}</a>}
@@ -144,6 +153,9 @@ const TICK = 'M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0M7.5 12.5l3 3 6-6.5';
     h1.title { font-size: 24px; }
     @media (width >= 640px) { h1.title { font-size: 30px; } }
     .lede { margin: 0 0 var(--space-4); font-size: var(--city-lead); color: var(--color-ink-2); max-width: 48ch; }
+    .by { margin: 0 0 var(--space-3); font-size: var(--text-sm); color: var(--color-text-muted); }
+    .by :global(a), .lede :global(a) { color: var(--color-link); text-decoration: underline; text-underline-offset: 3px; }
+    .by :global(a):focus-visible, .lede :global(a):focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
     .cta {
       display: inline-flex; align-items: center; min-height: 48px; padding: var(--space-2) var(--space-6);

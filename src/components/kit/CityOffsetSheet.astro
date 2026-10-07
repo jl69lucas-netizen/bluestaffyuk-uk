@@ -30,16 +30,24 @@
 // default slot renders after the sheet, for the section's deeper headings on the page.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
-import { focusClassFor, servedPhoto } from '../../lib/imageFocus';
+import { focusClassFor, hasFocusRow, servedPhoto } from '../../lib/imageFocus';
+import type { FilledAsset } from '../../lib/assets';
 import { citySizes, keepRuns, BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, type CityFit } from '../../lib/cityKit';
 
 type Props = HTMLAttributes<'section'> & {
   /** The outline's H2, word for word. */
   heading: string;
-  /** Its answer, one paragraph. */
-  lede: string;
+  /** Its answer, one paragraph. A page whose answer carries a link passes it in the `lede`
+   *  slot instead (Link-First, working rule 12); the slot wins over this prop. */
+  lede?: string;
   /** A served /images/ file named in data/image-focus.json. */
-  photo: string;
+  photo?: string;
+  /** The section's photo as its board record's baked `assets[]` row (file, alt, size, and the
+   *  baked siblings' `srcset`), in place of `photo`: a page built from an approved board reads
+   *  every image from the record by slot (the Manchester page run, Phase H ruling 5). The alt is
+   *  the record's, approved at the Asset Gate; the crop is solved from data/image-focus.json
+   *  where the file has a row there, and centred otherwise. */
+  asset?: FilledAsset & { srcset?: string };
   /** A new alt for a photo the page already showed above (working rule 11). Omitted: the served alt. */
   photoAlt?: string;
   /** The sheet: two to four label-and-value cells. */
@@ -49,12 +57,20 @@ type Props = HTMLAttributes<'section'> & {
   /** Where the section sits from 1024px, for its photo's `sizes` (src/lib/cityKit.ts `CityFit`). */
   fit?: CityFit;
 };
-const { heading, lede, photo, photoAlt, rows, cta, fit = 'column', class: cls, ...rest } = Astro.props;
+const { heading, lede, photo, photoAlt, asset, rows, cta, fit = 'column', class: cls, ...rest } = Astro.props;
 if (rows.length < 2 || rows.length > 4) throw new Error(`CityOffsetSheet: ${rows.length} cells; the sheet holds 2 to 4`);
-const p = servedPhoto(photo);
+if (!photo === !asset) throw new Error('CityOffsetSheet: pass exactly one of `photo` (a served file) and `asset` (a board row)');
+if (!lede && !Astro.slots.has('lede')) throw new Error(`CityOffsetSheet: "${heading}" has no answer under it`);
+if (asset && (!asset.alt.trim() || photoAlt !== undefined)) {
+  throw new Error(`CityOffsetSheet: a board row brings its own approved alt (${asset.file}); it takes no photoAlt and no empty alt`);
+}
+const p = asset ?? servedPhoto(photo!);
 if (photoAlt !== undefined && (!photoAlt.trim() || photoAlt === p.alt)) {
   throw new Error(`CityOffsetSheet: a repeated ${photo} needs a new alt of its own, never the served one (working rule 11)`);
 }
+/** The file's name under /images/, the key data/image-focus.json records it by. */
+const focusKey = p.file.replace(/^\/images\//, '');
+const crop = hasFocusRow(focusKey) ? focusClassFor(focusKey, 1) : undefined;
 const keep = [BOY_PRICE, GIRL_PRICE, DEPOSIT, DELIVERY_BAND];
 // The photo: the box less its 16px gutters, at most 400px; from a desktop box (800px) the media
 // column's two fifths of the inner row (less its 24px pads and the 48px gap), less its 24px inset.
@@ -68,11 +84,11 @@ const sizes = citySizes(fit, {
   <div class="in">
     <figure class="media" data-media>
       <img src={p.file} srcset={p.srcset} sizes={p.srcset ? sizes : undefined}
-        alt={photoAlt ?? p.alt} width={p.w} height={p.h} class={focusClassFor(photo, 1)} loading="lazy" decoding="async" />
+        alt={photoAlt ?? p.alt} width={p.w} height={p.h} class={crop} loading="lazy" decoding="async" />
     </figure>
     <div class="head">
       <h2>{heading}</h2>
-      <p class="lede">{lede}</p>
+      {Astro.slots.has('lede') ? <p class="lede"><slot name="lede" /></p> : <p class="lede">{lede}</p>}
     </div>
     <div class="sheet">
       <dl>

@@ -251,10 +251,17 @@ def test_the_page_types_no_figure_and_imports_no_london_component():
 
 
 def scaffold_alt_defects(main, served):
-    """The first use of a served photo keeps its served alt (working rule 11); each repeat takes
-    a new alt, never a copy (answer board q02, 2026-09-29). As tests/py/test_city_scaffold.py's."""
+    """The first use of a served photo keeps its served alt (working rule 11), or the alt the
+    board records in `verbatim.changed` for it (working rule 15: the Asset Gate replaced eight
+    served alts that described another picture, STOP 4 q07); each repeat takes a new alt, never a
+    copy (answer board q02, 2026-09-29). As tests/py/test_city_scaffold.py's."""
     from test_city_scaffold import scaffold_alt_defects as check
-    return check(main, served)
+    board = json.loads((ROOT / "data/boards" / f"{SLUG}.json").read_text())
+    changed = {}
+    for r in board.get("verbatim", {}).get("changed", []):
+        if r.get("kind") == "alt" and r.get("src", "").startswith("/images/"):
+            changed.setdefault(r["src"][len("/images/"):], set()).add(r["new"])
+    return check(main, served, changed)
 
 
 def test_each_served_photo_keeps_its_served_alt_first_and_a_new_alt_on_a_repeat():

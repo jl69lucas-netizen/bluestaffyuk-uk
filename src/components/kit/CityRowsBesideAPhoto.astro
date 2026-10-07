@@ -109,6 +109,7 @@ const id = `city-faq-${block}`;
         ))}
       </div>
     </div>
+    {Astro.slots.has('default') && <div class="after"><slot /></div>}
   </div></div>
 </section>
 <style>
@@ -129,6 +130,10 @@ const id = `city-faq-${block}`;
     }
     .pic figcaption { margin-top: var(--space-2); font-size: var(--text-sm); line-height: 1.4; color: var(--color-text-muted); }
     .rows { border-top: 1px solid var(--color-border); }
+    /* A pointer paragraph after the rows (the default slot): it sits OUTSIDE the questions, so a
+       link in it never enters an answer or the FAQPage node's text. */
+    .after { margin-top: var(--space-5); }
+    .after :global(p) { margin: 0; }
     .row { border-bottom: 1px solid var(--color-border); }
     summary {
       display: flex; align-items: center; gap: var(--space-4); min-height: 56px; padding: var(--space-3) 0;
