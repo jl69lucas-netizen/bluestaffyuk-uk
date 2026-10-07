@@ -1,0 +1,49 @@
+{
+ "component": "counter-strip",
+ "variants": {
+  "a": {
+   "name": "Tally box",
+   "description": "Four litter figures in one hairline-ruled box on the counter bed, serif figure over a plain label; a 2x2 on phones.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-3.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea77.png"
+   ],
+   "differs_from": "A box drawn in hairline rules with no fill or shadow, where built strips are plain, banded or carded and London's pick is a number line in an inset panel.",
+   "axes": {
+    "layout": "tally-box",
+    "media": "none",
+    "density": "compact",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Range sheet",
+   "description": "A white sheet of labelled cells, the six puppies' faces inline, and the delivery band drawn as a £200 to £350 range bar.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea-modern.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea.png"
+   ],
+   "differs_from": "The only strip with photos inline beside a figure and a range bar for the delivery band; built strips are photo-free tiles, and London's pick is a number line.",
+   "axes": {
+    "layout": "range-sheet",
+    "media": "inline",
+    "density": "regular",
+    "framing": "card"
+   }
+  },
+  "c": {
+   "name": "Stat block and rows",
+   "description": "The six puppies set large on a steel block bled to the screen edge; prices and delivery follow as ruled price-list rows.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea44.png"
+   ],
+   "differs_from": "One figure leads on a block that bleeds off the page edge and the rest are ruled rows; no built strip bleeds, and London's pick is an inset number line.",
+   "axes": {
+    "layout": "stat-rows",
+    "media": "none",
+    "density": "airy",
+    "framing": "bleed"
+   }
+  }
+ }
+}

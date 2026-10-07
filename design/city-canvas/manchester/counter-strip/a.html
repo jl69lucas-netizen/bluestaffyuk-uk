@@ -1,0 +1,35 @@
+<style>
+/* Counter A — Tally box. Four of this litter's figures in one hairline-ruled box on the
+   counter bed, cells divided by rules, each a serif figure over a plain sentence-case label.
+   No fill, no shadow: the box is drawn, not carded. A 2px steel rule and a tone shift part it
+   from the hero above (rules/design.md hero-counter separation). A 2x2 on phones, four across
+   from 800px; one line under the box names the other way home. */
+.mcA{background:var(--counter-bed);border-top:2px solid var(--color-brand)}
+.mcA .in{max-width:1200px;margin:0 auto;padding:var(--space-5) var(--space-4)}
+.mcA .box{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--color-border);border-radius:var(--radius-md)}
+.mcA .box li{margin:0;max-width:none;padding:var(--space-3) var(--space-4)}
+.mcA .box li:nth-child(odd){border-right:1px solid var(--color-border)}
+.mcA .box li:nth-child(-n+2){border-bottom:1px solid var(--color-border)}
+.mcA .fig{display:block;font-family:var(--font-display);font-weight:600;font-size:var(--text-xl);line-height:1.15;color:var(--color-brand);white-space:nowrap;font-variant-numeric:lining-nums}
+.mcA .lab{display:block;margin-top:var(--space-1);font-size:var(--text-sm);line-height:1.4;color:var(--color-ink-2)}
+.mcA .note{margin:var(--space-3) 0 0;font-size:var(--text-sm);color:var(--color-ink-2)}
+@media (min-width:800px){
+  .mcA .in{padding:var(--space-6) var(--space-5)}
+  .mcA .box{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .mcA .box li{padding:var(--space-4) var(--space-5);border-bottom:0}
+  .mcA .box li:nth-child(-n+2){border-bottom:0}
+  .mcA .box li:not(:last-child){border-right:1px solid var(--color-border)}
+  .mcA .fig{font-size:var(--text-2xl)}
+}
+</style>
+<section data-component="counter-strip" data-variant="a" class="mcA">
+  <div class="in">
+    <ul class="box" aria-label="This litter in figures">
+      <li data-figure><span class="fig">6</span><span class="lab">puppies available now</span></li>
+      <li data-figure><span class="fig">£1,500</span><span class="lab">each of our three boys</span></li>
+      <li data-figure><span class="fig">£1,700</span><span class="lab">each of our three girls</span></li>
+      <li data-figure><span class="fig">£200–£350</span><span class="lab">delivery to Manchester, priced by distance</span></li>
+    </ul>
+    <p class="note">UK home delivery by DEFRA-approved transport, or collect your puppy from us in Carlisle.</p>
+  </div>
+</section>

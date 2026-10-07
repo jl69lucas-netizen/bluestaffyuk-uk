@@ -1,0 +1,61 @@
+<style>
+/* Hero A — Print board. Four prints of the litter, each a different coat, pinned in two
+   offset columns with a slight tilt and a written caption: the coats are laid out like
+   snapshots on a table, so the question in the H1 is asked over the puppies themselves.
+   The prints are first in source and paint first on phones (a 2x2, then a row of four);
+   from 1024px they sit right of the copy on the bone page, no band and no card. */
+.mhA{background:var(--color-surface)}
+.mhA .inner{max-width:1200px;margin:0 auto;padding:var(--space-5) var(--space-4) var(--space-6);display:grid;gap:var(--space-5)}
+.mhA .prints{list-style:none;margin:0;padding:var(--space-1) var(--space-2);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4) var(--space-4)}
+.mhA .prints li{margin:0;max-width:none}
+.mhA figure{margin:0;background:var(--color-surface-raised);padding:var(--space-2) var(--space-2) 0;border-radius:var(--radius-sm);box-shadow:var(--shadow-card);transform:rotate(var(--tilt,0deg))}
+.mhA .prints li:nth-child(1){--tilt:-2deg}
+.mhA .prints li:nth-child(2){--tilt:1.5deg}
+.mhA .prints li:nth-child(3){--tilt:1deg}
+.mhA .prints li:nth-child(4){--tilt:-1.5deg}
+.mhA figure img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:2px;background:var(--color-brand-soft)}
+.mhA figcaption{display:grid;justify-items:center;padding:var(--space-2) var(--space-1);text-align:center;line-height:1.25}
+.mhA figcaption .n{font-family:var(--font-display);font-style:italic;font-size:var(--text-sm);color:var(--color-brand)}
+.mhA figcaption .c{font-size:var(--text-xs);color:var(--color-ink-2)}
+.mhA .roman{object-position:50% 28%}
+.mhA h1{font-size:var(--text-xl);line-height:var(--text-xl--line-height);margin:0 0 var(--space-3);max-width:22ch;text-wrap:balance}
+.mhA .lede{margin:0 0 var(--space-4);color:var(--color-ink-2);max-width:52ch}
+.mhA .row{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3) var(--space-5)}
+.mhA .cta{display:inline-flex;align-items:center;min-height:48px;padding:0 var(--space-6);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
+.mhA .cta:hover{background:var(--color-cta-hover)}
+.mhA .more{display:inline-flex;align-items:center;min-height:44px;color:var(--color-link);font-weight:600;text-underline-offset:4px}
+@media (min-width:640px){
+  .mhA .prints{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .mhA h1{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height)}
+}
+@media (min-width:1024px){
+  .mhA{max-height:450px}
+  .mhA .inner{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"copy pic";align-items:center;column-gap:var(--space-8);min-height:390px;padding:var(--space-4) var(--space-5)}
+  .mhA .pic{grid-area:pic;justify-self:center;width:100%;max-width:440px}
+  .mhA .copy{grid-area:copy}
+  .mhA .prints{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4) var(--space-5)}
+  .mhA .prints li:nth-child(even){margin-top:var(--space-5)}
+  .mhA .prints li:nth-child(n+3){margin-top:calc(-1 * var(--space-2))}
+  .mhA .prints li:nth-child(4){margin-top:var(--space-3)}
+}
+</style>
+<section data-component="hero" data-variant="a" class="mhA">
+  <div class="inner">
+    <div class="pic">
+      <ul class="prints" aria-label="Four of the six puppies, four coats">
+        <li><figure><img src="/puppies/Ince1.jpg" alt="Ince, a blue Staffy boy from our Carlisle litter, standing by a fence" width="1080" height="1079" fetchpriority="high"><figcaption><span class="n">Ince</span><span class="c">blue</span></figcaption></figure></li>
+        <li><figure><img src="/puppies/Roman1.jpg" alt="Roman, a blue and white Staffy boy from our Carlisle litter, resting on the lawn" width="1080" height="1081" class="roman"><figcaption><span class="n">Roman</span><span class="c">blue and white</span></figcaption></figure></li>
+        <li><figure><img src="/puppies/Christa.jpeg" alt="Christa, a blue Staffy girl from our Carlisle litter, sitting on a fleece" width="1080" height="1080"><figcaption><span class="n">Christa</span><span class="c">blue</span></figcaption></figure></li>
+        <li><figure><img src="/puppies/Byrd1.jpg" alt="Byrd, a white Staffy boy from our Carlisle litter, standing on decking" width="1080" height="1080"><figcaption><span class="n">Byrd</span><span class="c">white</span></figcaption></figure></li>
+      </ul>
+    </div>
+    <div class="copy">
+      <h1>Should Colour Decide Which Blue Staffy Puppy Comes Home to Manchester?</h1>
+      <p class="lede">Not on its own. In our Carlisle litter every boy is £1,500 and every girl £1,700, whatever the coat, and each one can come to Manchester.</p>
+      <div class="row">
+        <a class="cta" href="#enquire">Ask about a puppy</a>
+        <a class="more" href="#litter">See all six puppies</a>
+      </div>
+    </div>
+  </div>
+</section>

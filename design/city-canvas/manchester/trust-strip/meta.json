@@ -1,0 +1,51 @@
+{
+ "component": "trust-strip",
+ "variants": {
+  "a": {
+   "name": "Tick run",
+   "description": "The eight trust items as one wrapping run of ticked words under a serif lead, ruled above and below on the bone page.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-5.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png"
+   ],
+   "differs_from": "A running ticked line between two rules, with no photo, tiles or card; London's pick is a carded photo ledger and the built strips are plain or carded columns.",
+   "axes": {
+    "layout": "tick-run",
+    "media": "none",
+    "density": "regular",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Puppy folder",
+   "description": "The five papers as slips in a tabbed brass folder, and what stays with us beside it, inset in one soft steel panel.",
+   "idea_sources": [
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Trust-ComponentDesign.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png"
+   ],
+   "differs_from": "The papers are drawn as a folder of slips inside an inset panel, split from the three promises beside it; London's pick is a carded two-column ledger with a photo.",
+   "axes": {
+    "layout": "folder-tabs",
+    "media": "none",
+    "density": "airy",
+    "framing": "inset"
+   }
+  },
+  "c": {
+   "name": "Seal sheet",
+   "description": "Eight brass-ringed seals in a 4x2 sheet beside a kicker column on a full-width steel band; London's seal band, re-laid.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-1.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Trust-ComponentDesign.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's centred kicker over one six-across row becomes a kicker column beside a 4x2 sheet of eight seals. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "seal-sheet",
+    "media": "none",
+    "density": "compact",
+    "framing": "band"
+   },
+   "from_pool": "london/trust-strip/b"
+  }
+ }
+}

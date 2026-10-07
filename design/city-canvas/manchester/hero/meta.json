@@ -1,0 +1,48 @@
+{
+ "component": "hero",
+ "variants": {
+  "a": {
+   "name": "Print board",
+   "description": "Four tilted prints of the litter, four coats, captioned by hand in two offset columns right of the copy on the bone page.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea66.png"
+   ],
+   "differs_from": "The photos are a pinned grid of tilted prints, a media position (grid) no built hero and no London pick uses; London's pick is a filmstrip along the foot of an inset panel.",
+   "axes": {
+    "layout": "print-board",
+    "media": "grid",
+    "density": "regular",
+    "framing": "plain"
+   }
+  },
+  "b": {
+   "name": "Coat pair",
+   "description": "Two girls of one litter, blue and blue and white, at staggered heights with an 'or' badge; one line says both are £1,700.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/comparison-hero-idea1.png"
+   ],
+   "differs_from": "Framed by hairline rules alone, not a band, card or inset panel, and the photos are a two-up comparison right of the copy; London's pick runs six photos along the foot.",
+   "axes": {
+    "layout": "coat-pair",
+    "media": "right",
+    "density": "airy",
+    "framing": "rule"
+   }
+  },
+  "c": {
+   "name": "Feature and three",
+   "description": "One puppy large, bled to the screen's left edge with a caption pill, three more stacked beside it; copy right with a tick row.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea77.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea-5.png"
+   ],
+   "differs_from": "The photo column bleeds off the page edge with no card or band round it, a framing no built hero uses; London's pick keeps its photos inside an inset panel below the copy.",
+   "axes": {
+    "layout": "feature-thumbs",
+    "media": "left",
+    "density": "compact",
+    "framing": "bleed"
+   }
+  }
+ }
+}

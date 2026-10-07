@@ -1,0 +1,30 @@
+<style>
+/* Counter C — Stat block and rows. One figure leads, set large on a steel block that bleeds
+   to the left edge of the screen: the six puppies available. The other three figures follow
+   as ruled rows on the counter bed, label left and figure right, read like the lines of a
+   price list. Airy. On phones the block runs edge to edge above the rows. */
+.mcC{background:var(--counter-bed);border-top:1px solid var(--color-border);display:grid}
+.mcC .block{background:var(--color-surface-inverse);color:var(--color-text-on-inverse);padding:var(--space-6) var(--space-4);display:flex;align-items:center;gap:var(--space-4)}
+.mcC .block .fig{font-family:var(--font-display);font-weight:600;font-size:var(--text-4xl);line-height:1;color:var(--color-text-on-inverse);font-variant-numeric:lining-nums}
+.mcC .block .lab{font-size:var(--text-base);line-height:1.4;max-width:22ch;color:var(--color-text-on-inverse)}
+.mcC .rows{list-style:none;margin:0;padding:var(--space-4) var(--space-4) var(--space-6)}
+.mcC .rows li{margin:0;max-width:none;display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-4);padding:var(--space-4) 0;border-bottom:1px solid var(--color-border)}
+.mcC .rows .lab{font-size:var(--text-base);line-height:1.4;color:var(--color-text)}
+.mcC .rows .fig{font-family:var(--font-display);font-weight:600;font-size:var(--text-xl);line-height:1.2;color:var(--color-brand);white-space:nowrap;font-variant-numeric:lining-nums}
+@media (min-width:800px){
+  .mcC{grid-template-columns:minmax(300px,36%) minmax(0,1fr)}
+  .mcC .block{padding:var(--space-8) var(--space-6) var(--space-8) max(var(--space-5),calc((100vw - 1200px) / 2))}
+  .mcC .rows{align-self:center;padding:var(--space-6) max(var(--space-5),calc((100vw - 1200px) / 2)) var(--space-6) var(--space-8)}
+  .mcC .rows li:first-child{padding-top:0}
+  .mcC .rows li:last-child{border-bottom:0;padding-bottom:0}
+  .mcC .block .fig{font-size:56px}
+}
+</style>
+<section data-component="counter-strip" data-variant="c" class="mcC">
+  <div class="block" data-figure><span class="fig">6</span><span class="lab">puppies available now, three boys and three girls</span></div>
+  <ul class="rows" aria-label="Prices and delivery for this litter">
+    <li data-figure><span class="lab">Each of our three boys</span><span class="fig">£1,500</span></li>
+    <li data-figure><span class="lab">Each of our three girls</span><span class="fig">£1,700</span></li>
+    <li data-figure><span class="lab">UK home delivery to Manchester, priced by distance</span><span class="fig">£200–£350</span></li>
+  </ul>
+</section>

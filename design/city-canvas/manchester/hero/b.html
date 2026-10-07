@@ -1,0 +1,64 @@
+<style>
+/* Hero B — Coat pair. The H1's question answered in a picture: two girls from the same
+   litter, one blue and one pied, side by side at staggered heights with a round
+   "or" between them, and one line beneath that both are £1,700. The coat changes; the price
+   does not. Airy, framed only by a hairline above and below on the bone page. The pair is
+   first in source and paints first on phones; from 1024px it sits right of the copy. */
+.mhB{background:var(--color-surface);border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}
+.mhB .inner{max-width:1200px;margin:0 auto;padding:var(--space-6) var(--space-4) var(--space-7);display:grid;gap:var(--space-6)}
+.mhB .pic{width:100%;max-width:440px;margin:0 auto}
+.mhB .pair{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-5);align-items:start}
+.mhB .card{position:relative;margin:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-card);background:var(--color-brand-soft)}
+.mhB .card img{display:block;width:100%;height:auto;object-fit:cover}
+.mhB .card.low{margin-top:var(--space-6)}
+.mhB .card.low img{aspect-ratio:3/4}
+.mhB .card.high img{aspect-ratio:4/5}
+.mhB .cap{position:absolute;left:var(--space-2);right:var(--space-2);bottom:var(--space-2);display:flex;justify-content:center}
+.mhB .cap span{background:var(--color-surface-raised);color:var(--color-text);font-size:var(--text-xs);line-height:1.3;font-weight:600;padding:var(--space-1) var(--space-3);border-radius:var(--radius-pill);text-align:center}
+.mhB .or{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:1;display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--color-surface-inverse);color:var(--color-text-on-inverse);border:3px solid var(--color-surface);font-family:var(--font-display);font-style:italic;font-size:var(--text-lg);line-height:1}
+.mhB .same{margin:var(--space-4) 0 0;text-align:center;text-wrap:balance;font-family:var(--font-display);font-size:var(--text-base);color:var(--color-brand)}
+.mhB h1{font-size:var(--text-xl);line-height:var(--text-xl--line-height);margin:0 0 var(--space-3);max-width:22ch;text-wrap:balance}
+.mhB .lede{margin:0 0 var(--space-5);color:var(--color-ink-2);max-width:50ch}
+.mhB .row{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3) var(--space-5)}
+.mhB .cta{display:inline-flex;align-items:center;min-height:48px;padding:0 var(--space-6);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
+.mhB .cta:hover{background:var(--color-cta-hover)}
+.mhB .ghost{display:inline-flex;align-items:center;min-height:48px;padding:0 var(--space-5);border-radius:var(--btn-radius);border:2px solid var(--color-brand);color:var(--color-brand);font-weight:700;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
+.mhB .ghost:hover{background:var(--color-brand-soft)}
+@media (max-width:639px){
+  .mhB .card{overflow:visible;background:none;box-shadow:none}
+  .mhB .card img{border-radius:var(--radius-lg);box-shadow:var(--shadow-card);background:var(--color-brand-soft)}
+  .mhB .cap{position:static;margin-top:var(--space-2)}
+  .mhB .cap span{background:none;padding:0}
+}
+@media (min-width:640px) and (max-width:1023px){.mhB .pic{margin:0}}
+@media (min-width:640px){
+  .mhB h1{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height)}
+}
+@media (min-width:1024px){
+  .mhB{max-height:450px}
+  .mhB .inner{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);grid-template-areas:"copy pic";align-items:center;column-gap:var(--space-10);min-height:390px;padding:var(--space-6) var(--space-5)}
+  .mhB .pic{grid-area:pic;max-width:420px;margin:0 0 0 auto}
+  .mhB .copy{grid-area:copy}
+  .mhB .same{margin-top:var(--space-3)}
+}
+</style>
+<section data-component="hero" data-variant="b" class="mhB">
+  <div class="inner">
+    <div class="pic">
+      <div class="pair">
+        <figure class="card low"><img src="/puppies/Christa.jpeg" alt="Christa, a blue Staffy girl from our Carlisle litter, on a sheepskin rug" width="1080" height="1080" fetchpriority="high"><figcaption class="cap"><span>Christa, blue</span></figcaption></figure>
+        <span class="or" aria-hidden="true">or</span>
+        <figure class="card high"><img src="/puppies/Vennie.jpeg" alt="Vennie, a blue and white Staffy girl from our Carlisle litter, curled on a fleece" width="1080" height="1080"><figcaption class="cap"><span>Vennie, blue and white</span></figcaption></figure>
+      </div>
+      <p class="same">Two coats, the same litter, both girls £1,700.</p>
+    </div>
+    <div class="copy">
+      <h1>Should Colour Decide Which Blue Staffy Puppy Comes Home to Manchester?</h1>
+      <p class="lede">Not on its own. In our Carlisle litter the price follows boy or girl, never the coat, so start with the puppy and let the colour come last.</p>
+      <div class="row">
+        <a class="cta" href="#enquire">Ask about a puppy</a>
+        <a class="ghost" href="#litter">Meet the six</a>
+      </div>
+    </div>
+  </div>
+</section>
