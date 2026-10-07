@@ -38,6 +38,8 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 .md strong{color:var(--ink)}
 .md a{color:var(--blue);overflow-wrap:anywhere}
 .copied{color:var(--ok);font-size:12px}
+.warn{color:var(--warn);font-size:12px}
+[hidden]{display:none!important}
 @media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 14px 20px}
 .md table,.md thead,.md tbody,.md tr,.md th,.md td{display:block}.md thead{position:absolute;left:-9999px}
 .md tr{border:1px solid var(--line);border-radius:6px;margin:0 0 10px;padding:6px 0}.md td{border:0;padding:4px 12px}
@@ -49,7 +51,7 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 <div class="wrap">
 <header class="mast"><div><p class="eyebrow">BlueStaffyUK · project 5 · STOP 2</p><h1 class="title">Section matrix and H1–H6 outline — /uk-locations/blue-staffy-puppies-london/</h1></div>
 <div class="meta"><span class="pill">approved</span> <span class="pill">2026-09-30</span><br>data/outlines/blue-staffy-puppies-london.json</div></header>
-<div class="toolbar"><button class="btn" id="copy-all">Copy all as Markdown</button><button class="btn ghost" id="dl-md">Download .md</button><span id="all-status"></span><span>Every section has its own copy button; the copy is the exact markdown.</span></div>
+<div class="toolbar"><button class="btn" id="copy-all">Copy all as Markdown</button><button class="btn ghost" id="dl-md" hidden>Download .md</button><span id="all-status"></span><span>Every section has its own copy button; the copy is the exact markdown.</span></div>
 <nav class="toc" id="toc" aria-label="Sections"></nav>
 <main id="doc"></main>
 </div>
@@ -525,7 +527,11 @@ M1 (CAG for-sale, answer board 2026-09-30 q01 (a)): every H2–H6 opener answers
   var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
   function un(t){return t.replace(/<\\\//g,'</');}
   var head=un(document.getElementById('md-head').textContent.trim()),name=un(document.getElementById('md-name').textContent.trim());
-  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  function say(el,msg,cls){el.textContent=msg;el.className=cls||'copied';setTimeout(function(){if(el.textContent===msg)el.textContent='';},cls?6000:1800);}
+  function copy(text,el){
+    function legacy(){var t=document.createElement('textarea'),ok=false;t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';
+      document.body.appendChild(t);t.select();try{ok=document.execCommand('copy');}catch(e){}t.remove();say(el,ok?'Copied':'Copying is blocked here',ok?'':'warn');}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){say(el,'Copied');},legacy);else legacy();}
   function labels(root){root.querySelectorAll('table').forEach(function(t){var hs=[].map.call(t.querySelectorAll('th'),function(h){return h.textContent;});
     t.querySelectorAll('tbody tr').forEach(function(r){[].forEach.call(r.children,function(c,i){c.setAttribute('data-label',hs[i]||'');});});});}
   document.querySelectorAll('script[type="text/markdown"][data-title]').forEach(function(b,i){
@@ -546,9 +552,15 @@ M1 (CAG for-sale, answer board 2026-09-30 q01 (a)): every H2–H6 opener answers
   });
   var whole='# '+head+'\n\n'+all.join('\n\n')+'\n';
   document.getElementById('copy-all').addEventListener('click',function(){copy(whole,document.getElementById('all-status'));});
-  document.getElementById('dl-md').addEventListener('click',function(){
-    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([whole],{type:'text/markdown'}));a.download=name;
-    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},0);});
+  // The .md download: only through the viewer's downloads capability (a link does nothing there).
+  var dl=document.getElementById('dl-md'),st=document.getElementById('all-status'),downloads=null;
+  dl.addEventListener('click',function(){if(!downloads)return;
+    downloads.save({filename:name,data:whole}).then(function(r){say(st,r&&r.status==='saved'?'Downloaded':'');},function(e){var c=(e&&e.code)||'error';
+      if(c==='declined')say(st,'Download cancelled','warn');
+      else if(c==='rate_limited')say(st,'A download prompt is already open','warn');
+      else{downloads=null;dl.hidden=true;say(st,'Download is unavailable here ('+c+'). Use Copy all as Markdown.','warn');}});});
+  var use=window.claude&&window.claude.use;
+  if(typeof use==='function')use.call(window.claude,"downloads").then(function(ns){if(ns){downloads=ns;dl.hidden=false;}},function(){});
 })();
 </script>
 </body>
