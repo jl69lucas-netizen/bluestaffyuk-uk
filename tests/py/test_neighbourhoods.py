@@ -300,3 +300,206 @@ def test_cli_usage_exits_2(capsys):
     assert NB.main([]) == 2
     assert "usage" in capsys.readouterr().err
     assert NB.main(["no-such-board-slug"]) == 2
+
+
+# ── Task 20 (G6): one gazetteer per city, chosen by the board's own city ──────────────────
+import hashlib  # noqa: E402
+import re  # noqa: E402
+
+REPO = pathlib.Path(__file__).resolve().parents[2]
+MAN_SLUG = "blue-staffy-puppies-manchester-uk"
+SIGNALS = REPO / "docs/research/manchester-page-run/free-keyword-signals.json"
+MAN = "Manchester"
+
+
+def _man_board():
+    return {"meta": {"slug": MAN_SLUG, "page_type": "location", "sources": [
+        {"path": "docs/research/manchester-page-run/keyword-variants.json", "fetched": "2026-10-07"}]}}
+
+
+def _planner_ranges():
+    doc = json.loads(SIGNALS.read_text(encoding="utf-8"))
+    return {r["keyword"]: r["avg_monthly_searches_range"]
+            for run in doc["keyword_planner"]["runs"] for r in run["rows"]}
+
+
+def test_greater_manchester_gazetteer_holds_the_ten_boroughs():
+    gm = NB.GAZETTEERS[MAN]
+    assert set(gm.boroughs) == {"Bolton", "Bury", "Oldham", "Rochdale", "Salford", "Stockport",
+                                "Tameside", "Trafford", "Wigan"}
+    assert gm.city_area == "City of Manchester"
+    assert len(gm.boroughs) + 1 == 10
+    assert gm.region == "Greater Manchester"
+    assert NB.lookup("staffy puppies city of manchester", MAN) == [
+        ("City of Manchester", "City of Manchester")]
+    assert NB.lookup("staffy puppies manchester city centre", MAN) == [
+        ("Manchester City Centre", "City of Manchester")]
+
+
+def test_gazetteers_hold_names_only_never_volumes():
+    for gaz in NB.GAZETTEERS.values():
+        for name, (area, borough) in gaz.names.items():
+            assert isinstance(name, str) and isinstance(area, str) and isinstance(borough, str)
+            assert not re.search(r"\d", name + area + borough), (name, area, borough)
+
+
+def test_bare_manchester_is_never_an_area():
+    for kw in ("staffy puppies manchester", "staffy puppies for sale manchester",
+               "staffy puppies for sale greater manchester", "blue staffy manchester uk"):
+        assert NB.lookup(kw, MAN) == [], kw
+
+
+def test_sale_is_the_town_only_after_a_location_word():
+    assert NB.lookup("staffy puppies for sale manchester", MAN) == []
+    assert NB.lookup("staffy puppies for sale", MAN) == []
+    assert NB.lookup("staffy puppies sale near me", MAN) == []
+    for kw in ("staffy puppies for sale in sale", "staffy puppies near sale",
+               "staffy pups around sale", "staffy puppies delivered to sale"):
+        assert NB.lookup(kw, MAN) == [("Sale", "Trafford")], kw
+
+
+def test_bury_is_a_place_only_after_a_location_word_or_beside_manchester():
+    for kw in ("staffy puppies for sale near bury", "staffy puppies in bury",
+               "staffy puppies bury manchester", "staffy puppies bury greater manchester",
+               "staffy puppies manchester bury"):
+        assert NB.lookup(kw, MAN) == [("Bury", "Bury")], kw
+    for kw in ("staffy puppies bury", "staffy puppies for sale bury", "staffy puppies bury a bone",
+               "staffy puppies for sale near bury st edmunds bury saint edmunds"):
+        assert NB.lookup(kw, MAN) == [], kw
+    assert "Suffolk" in NB.exclusion_reason(
+        "staffy puppies for sale near bury st edmunds bury saint edmunds", MAN)
+    assert NB.exclusion_reason("staffy puppies bury", MAN) == NB.GAZETTEERS[MAN].reasons["bury"]
+
+
+def test_leigh_on_sea_is_outside_greater_manchester():
+    assert NB.lookup("staffy puppies for sale leigh-on-sea", MAN) == []
+    assert "Essex" in NB.exclusion_reason("staffy puppies for sale leigh-on-sea", MAN)
+    assert NB.lookup("staffy puppies for sale in leigh", MAN) == [("Leigh", "Wigan")]
+
+
+@pytest.mark.parametrize("district,borough", [
+    ("altrincham", "Trafford"), ("sale", "Trafford"), ("stretford", "Trafford"),
+    ("stalybridge", "Tameside"), ("ashton-under-lyne", "Tameside"), ("cheadle", "Stockport"),
+    ("eccles", "Salford"), ("wythenshawe", "City of Manchester"),
+    ("didsbury", "City of Manchester"), ("leigh", "Wigan"), ("prestwich", "Bury"),
+])
+def test_greater_manchester_districts_map_to_their_borough(district, borough):
+    hits = NB.lookup(f"staffy puppies for sale in {district}", MAN)
+    assert len(hits) == 1 and hits[0][1] == borough, hits
+
+
+def test_the_district_map_is_pinned():
+    assert NB.GAZETTEERS[MAN].districts == {
+        "Altrincham": "Trafford", "Sale": "Trafford", "Stretford": "Trafford",
+        "Stalybridge": "Tameside", "Ashton-under-Lyne": "Tameside", "Cheadle": "Stockport",
+        "Eccles": "Salford", "Swinton": "Salford", "Wythenshawe": "City of Manchester",
+        "Didsbury": "City of Manchester", "Leigh": "Wigan", "Prestwich": "Bury"}
+
+
+def test_swinton_needs_manchester_or_salford_in_the_phrase():
+    assert NB.lookup("staffy puppies for sale near swinton manchester", MAN) == [
+        ("Swinton", "Salford")]
+    assert NB.lookup("staffy puppies for sale swinton", MAN) == []
+
+
+def test_compass_areas_of_manchester():
+    assert NB.lookup("staffy pups south manchester", MAN) == [("South Manchester", NB.COMPASS_BOROUGH)]
+    assert NB.lookup("staffy pups north manchester", MAN) == [("North Manchester", NB.COMPASS_BOROUGH)]
+
+
+def test_the_two_gazetteers_do_not_leak():
+    assert NB.lookup("staffy puppies for sale in wigan") == []          # London is the default
+    assert NB.lookup("staffy puppies for sale in croydon", MAN) == []
+
+
+def test_the_gazetteer_is_chosen_by_the_boards_own_city():
+    assert NB.gazetteer_for(_man_board()) is NB.GAZETTEERS[MAN]
+    london = json.loads((REPO / "data/boards/blue-staffy-puppies-london.json").read_text(encoding="utf-8"))
+    assert NB.gazetteer_for(london) is NB.GAZETTEERS["London"]
+    assert NB.gazetteer_for(_board()) is NB.GAZETTEERS["London"]          # no locations row
+    glasgow = {"meta": {"slug": "staffy-puppies-for-sale-glasgow", "page_type": "location"}}
+    assert NB.gazetteer_for(glasgow) is None
+
+
+def test_a_city_with_no_gazetteer_shows_no_other_citys_areas():
+    out = NB.block({"meta": {"slug": "staffy-puppies-for-sale-glasgow", "page_type": "location"}})
+    assert "NOT FETCHED" in out and "Glasgow" in out
+    assert "London" not in out and "borough" not in out
+
+
+# ── Task 20 (G6): Planner ranges and autocomplete ─────────────────────────────────────────
+
+@pytest.mark.parametrize("rng,low,use", [("100 – 1K", 100, "h3"), ("10 – 100", 10, "faq"),
+                                         ("0 – 10", 0, "line"), ("1K – 10K", 1000, "h3")])
+def test_a_planner_range_is_kept_as_recorded_and_the_use_rule_reads_its_lower_bound(rng, low, use):
+    r = NB.Range(rng)
+    assert str(r) == rng and r.low == low
+    assert NB.use_of(r) == use
+
+
+def test_manchester_volumes_come_from_the_planner_rows_as_recorded():
+    kd = NB.keyword_data(_man_board())
+    planner = _planner_ranges()
+    got = {kw: v for kw, v in kd["rows"] if isinstance(v, NB.Range)}
+    assert got == {kw.lower(): rng for kw, rng in planner.items()}
+    assert kd["fetched"] == "2026-10-07"
+    ac = {kw for kw, v in kd["rows"] if v == NB.ATTESTED}
+    assert "staffy puppies for sale near wythenshawe manchester" in ac
+    assert not ac & set(got)                     # a Planner row is never re-listed as autocomplete
+
+
+def test_manchester_block_shows_ranges_never_narrowed():
+    out = NB.block(_man_board())
+    recorded = set(_planner_ranges().values())
+    shown = set(re.findall(r"\b\d+K? – \d+K?\b", out))
+    assert shown and shown <= recorded
+    assert "| staffy puppies for sale manchester | 100 – 1K |" in out
+    wigan = [ln for ln in out.splitlines() if ln.startswith("| Wigan |")][0]
+    assert "staffy puppies for sale wigan (10 – 100)" in wigan
+    assert "| 10 – 100 |" in wigan and "Delivery copy + one FAQ answer" in wigan
+    salford = [ln for ln in out.splitlines() if ln.startswith("| Salford |")][0]
+    assert "staffy puppies salford (0 – 10)" in salford and "if at all" in salford
+    assert "lower bound" in out
+
+
+def test_manchester_autocomplete_is_attested_with_no_volume():
+    out = NB.block(_man_board())
+    wy = [ln for ln in out.splitlines() if ln.startswith("| Wythenshawe |")][0]
+    assert "staffy puppies for sale near wythenshawe manchester (attested, no volume)" in wy
+    assert "City of Manchester" in wy and "autocomplete" in wy
+    assert "attested, no volume" in out
+
+
+def test_manchester_block_names_greater_manchester_never_london():
+    out = NB.block(_man_board())
+    assert "Greater Manchester" in out
+    assert "London" not in out
+    assert "**Manchester as a whole**" in out
+    assert "We deliver across Greater Manchester, including" in out
+    assert "Sale, Trafford" in out and "NOT FETCHED" in out     # the planner's recorded not_run
+
+
+def test_manchester_not_shown_lists_bury_and_the_word_sale():
+    out = NB.block(_man_board())
+    ns = [ln for ln in out.splitlines() if ln.startswith("**Not shown")][0]
+    assert "“staffy puppies bury”" in ns
+    assert "Bury St Edmunds" in ns
+    assert "“staffy puppies sale near me”" in ns
+    assert "“staffy puppies for sale manchester”" not in ns     # "for sale" is never the town
+
+
+# ── Task 20 (G6): London renders byte-for-byte as before ─────────────────────────────────
+
+LONDON_GOLDEN = "12024635c85d197f3c67a9514574af4fc41bc65d79ec0413e4633f6c4845f4cb"
+FIXTURE_GOLDEN = "6a046d9c0b5db4beb3e159c0c92b639ecca82ee1a0d23a53afd8988c6dba9e3f"
+
+
+def test_london_board_block_is_byte_for_byte_unchanged():
+    board = json.loads((REPO / "data/boards/blue-staffy-puppies-london.json").read_text(encoding="utf-8"))
+    out = NB.block(board)
+    assert hashlib.sha256(out.encode("utf-8")).hexdigest() == LONDON_GOLDEN
+
+
+def test_fixture_block_is_byte_for_byte_unchanged(root):
+    out = NB.block(_board(), root)
+    assert hashlib.sha256(out.encode("utf-8")).hexdigest() == FIXTURE_GOLDEN

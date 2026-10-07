@@ -120,11 +120,19 @@ def concepts(text):
     return {c for c, pats in INTENT_SYNONYMS.items() if any(re.search(p, low) for p in pats)}
 
 
-def content_words(text):
+def _generic(city=None):
+    """GENERIC plus the board's own city, lower-cased (Task 20, G7): on Manchester's board
+    "manchester" says no more about a section than "london" does on London's."""
+    return GENERIC | {city.lower()} if city else GENERIC
+
+
+def content_words(text, city=None):
     """Normalised words that say what a text is about. A word that is itself a synonym-table
-    term ("price", "deposit") is left to concepts(), so one shared word never scores twice."""
+    term ("price", "deposit") is left to concepts(), so one shared word never scores twice.
+    `city` (the board's own city) is dropped as a generic word."""
+    generic = _generic(city)
     return {w for w in QA.normalise(text).split()
-            if w not in KM.STOP and w not in GENERIC and not concepts(w)}
+            if w not in KM.STOP and w not in generic and not concepts(w)}
 
 
 def _faq_q(intent):
@@ -147,23 +155,24 @@ def section_texts(sec):
     return [(t, h) for t, h in out if t.strip()]
 
 
-def _score(q, text, is_heading):
+def _score(q, text, is_heading, city=None):
     """EXACT when the normalised texts are equal; else CONCEPT per shared intent concept plus
     WORD per shared content word, plus HEADING_BONUS when a scoring text is the section H2."""
     if QA.normalise(q) == QA.normalise(text):
         return EXACT
-    s = CONCEPT * len(concepts(q) & concepts(text)) + WORD * len(content_words(q) & content_words(text))
+    s = (CONCEPT * len(concepts(q) & concepts(text))
+         + WORD * len(content_words(q, city) & content_words(text, city)))
     return s + HEADING_BONUS if s and is_heading else s
 
 
-def answered_by(q, sections):
+def answered_by(q, sections, city=None):
     """The id of the section that best answers `q`, or None when no text reaches THRESHOLD
     (an exact question scores EXACT, which is above it). One shared concept alone (2) is not
     enough: it needs a shared word or the section's own H2 behind it.
     Ties go to the section that comes first on the page."""
     best, best_id = 0, None
     for sec in sections or []:
-        s = max((_score(q, t, h) for t, h in section_texts(sec)), default=0)
+        s = max((_score(q, t, h, city) for t, h in section_texts(sec)), default=0)
         if s > best:
             best, best_id = s, sec.get("id")
     return best_id if best >= THRESHOLD else None
@@ -280,16 +289,16 @@ def aio(items):
     return None, "NOT FETCHED — the saved AI Overview item carries no references"
 
 
-def read(resp, serp, sections, competitors=None):
+def read(resp, serp, sections, competitors=None, city=None):
     items = items_of(resp)
     feats = features(items)
     cites, note = aio(items)
     return {
         "features": feats,
         "expect": expectations(feats),
-        "paa": [{"q": q, "answered_by": answered_by(q, sections)}
+        "paa": [{"q": q, "answered_by": answered_by(q, sections, city)}
                 for q in _questions(serp, items, "serp_google_paa", "people_also_ask")],
-        "related": [{"q": q, "answered_by": answered_by(q, sections)}
+        "related": [{"q": q, "answered_by": answered_by(q, sections, city)}
                     for q in _questions(serp, items, "serp_google_related", "related_searches")],
         "ranking": ranking(items, competitors),
         "aio_cites": cites,
@@ -422,7 +431,8 @@ def block(board, root=ROOT):
     comp_p = d / "competitors.json"
     comp = _load(comp_p) if comp_p.is_file() else None
     sections = board.get("sections") or []
-    r = read(_load(raw), serp, sections, competitors=comp)
+    import original_slots as OS  # lazy: only block() needs the board's own city
+    r = read(_load(raw), serp, sections, competitors=comp, city=OS.own_city(board, root))
     return render(r, _query(board), serp.get("fetched") or "an unrecorded date", sections)
 
 

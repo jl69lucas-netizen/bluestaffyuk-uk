@@ -40,6 +40,11 @@ yet, else second, right after the served copy that is current. Every candidate c
 `missing: true|false`; only a current file can be missing (not a regular file inside
 public/images under root), and the board then labels it and leaves it unticked.
 
+CITIES (Task 20, G8). On a location board the own and served pools drop any photo whose
+filename stem or any alt it is shown with names a city other than the board's own
+(`other_city_filter`, through original_slots.cities_named): a Manchester board is never
+offered London's or Glasgow's photos. Every other board keeps city-named photos.
+
 Every served candidate carries `used_on`: the other built pages that already show it, so
 reuse across pages is visible on the board rather than discovered after the build.
 
@@ -427,16 +432,35 @@ def folder_choice(img, words, alts, used, route, assets_dir, root, current):
     return c
 
 
+def other_city_filter(board, root, alts):
+    """A keep(item) test for the own and served pools: on a LOCATION board it drops a photo
+    whose filename stem or any alt it is shown with names a city other than the board's own
+    (original_slots.cities_named, data/locations.json's cities). Every other board keeps all.
+    original_slots imports this module, so it is imported here, lazily (Task 20, G8)."""
+    import original_slots as OS
+    if not OS.is_location_board(board, root):
+        return lambda item: True
+    names, home = OS.cities(root), OS.own_city(board, root)
+
+    def keep(item):
+        f = item["file"]
+        text = " ".join([pathlib.PurePosixPath(f).stem.replace("-", " "), item.get("alt") or ""]
+                        + alts.get(f, []))
+        return not set(OS.cities_named(text, names)) - {home}
+    return keep
+
+
 def candidates(board, root=None, assets_dir=None, per_pool=3):
     """The whole candidate report for one record. Pure: reads files, writes nothing."""
     root = pathlib.Path(root) if root is not None else ROOT
     slug = board["meta"]["slug"]
-    own = own_images(board, root)
+    used, alts = usage_and_alts(root)
+    keep = other_city_filter(board, root, alts)
+    own = [o for o in own_images(board, root) if keep(o)]
     own_files = {o["file"] for o in own}
-    served = [s for s in served_images(root) if s["file"] not in own_files]
+    served = [s for s in served_images(root) if s["file"] not in own_files and keep(s)]
     fresh, already = asset_images(assets_dir, root)
     pools = {"own": own, "served": served, "assets": fresh}
-    used, alts = usage_and_alts(root)
     route = page_route(slug, root)
     slots, taken = [], set()
     for section, node, img in iter_slots(board):

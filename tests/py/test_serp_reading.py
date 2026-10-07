@@ -227,3 +227,47 @@ def test_one_shared_concept_alone_is_not_an_answer():
              "tree": [{"level": 3, "heading": "Can I Reserve One?"}]}]
     assert SR.answered_by("How much is the deposit?", secs) is None
     assert SR.answered_by("Can I reserve one?", secs) == "deposit"
+
+
+# ── Task 20 (G7): the board's own city is a generic word on its own board ──────────────────
+MAN_Q = "Where are the Staffy breeders in Manchester?"
+MAN_SECS = [{"id": "breeders", "heading": "Manchester Breeders Near Me"}]
+
+
+def test_the_own_city_is_not_a_content_word_on_its_own_board():
+    assert "manchester" in SR.content_words(MAN_Q)
+    assert "manchester" not in SR.content_words(MAN_Q, city="Manchester")
+    assert "london" not in SR.content_words("Staffy breeders in London")
+
+
+def test_the_own_city_no_longer_inflates_heading_overlap():
+    # Without the city, "manchester" + "breeders" + the H2 bonus reach THRESHOLD on one real word.
+    assert SR.answered_by(MAN_Q, MAN_SECS) == "breeders"
+    assert SR.answered_by(MAN_Q, MAN_SECS, city="Manchester") is None
+
+
+def _man_tree(tmp_path, slug="blue-staffy-puppies-manchester-uk"):
+    (tmp_path / "data").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "data/locations.json").write_text(json.dumps([
+        {"slug": "blue-staffy-puppies-manchester-uk", "city": "Manchester"},
+        {"slug": "blue-staffy-puppies-london", "city": "London"}]))
+    d = tmp_path / "data/queries/raw" / slug
+    d.mkdir(parents=True)
+    (d / "serp_google.response.json").write_text(json.dumps({"items": [{"type": "people_also_ask"}]}))
+    (d / "serp_google.json").write_text(json.dumps({
+        "fetched": "2026-10-07", "status": "ok",
+        "questions": [{"text": MAN_Q, "detail": "serp_google_paa"}]}))
+
+
+def test_block_on_manchesters_board_treats_manchester_as_generic(tmp_path):
+    _man_tree(tmp_path)
+    out = SR.block(_board("uk-locations/blue-staffy-puppies-manchester-uk", MAN_SECS), root=tmp_path)
+    paa = [ln for ln in out.splitlines() if MAN_Q in ln]
+    assert paa and "**none — gap**" in paa[0]
+
+
+def test_block_on_another_board_keeps_manchester_as_a_content_word(tmp_path):
+    _man_tree(tmp_path, slug="blue-staffy-puppies-london")
+    out = SR.block(_board("blue-staffy-puppies-london", MAN_SECS), root=tmp_path)
+    paa = [ln for ln in out.splitlines() if MAN_Q in ln]
+    assert paa and "**none — gap**" not in paa[0]

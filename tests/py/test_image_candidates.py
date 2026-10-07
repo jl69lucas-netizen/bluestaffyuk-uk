@@ -304,3 +304,76 @@ def test_the_real_glasgow_board_slug_resolves_like_its_route():
     bare = IC.own_images(b, ROOT)
     b["meta"]["slug"] = "uk-locations/staffy-breeding-dogs-glasgow"
     assert bare and bare == IC.own_images(b, ROOT)
+
+
+# ── Task 20 (G8): a location board is never offered another city's photo ───────────────────
+MAN_SLUG = "blue-staffy-puppies-manchester-uk"
+
+
+def _cities_tree(tmp_path):
+    root, assets = _tree(tmp_path)
+    (root / "data" / "locations.json").write_text(json.dumps([
+        {"slug": MAN_SLUG, "city": "Manchester"}, {"slug": "blue-staffy-puppies-london", "city": "London"},
+        {"slug": "staffy-breeding-dogs-glasgow", "city": "Glasgow (breeding dogs)"},
+        {"slug": "blue-staffy-puppies-for-sale-leeds", "city": "Leeds"},
+        {"slug": "blue-staffy-puppies-uk", "city": "UK"}]))
+    imgs = root / "public" / "images"
+    manifest = json.loads((root / "data" / "image-manifest.json").read_text())
+    for stem in ("victoria-family-blue-staffy-manchester", "mark-family-blue-staffy-london",
+                 "family-friendly-blue-staffy-glasgow", "family-sofa-cuddle"):
+        (imgs / f"{stem}.webp").write_bytes(b"x")
+        manifest[stem] = {"w": 1, "h": 1, "sib_w": None}
+    (root / "data" / "image-manifest.json").write_text(json.dumps(manifest))
+    # family-sofa-cuddle names no city in its stem, but the site shows it with a London alt.
+    (root / "dist" / "blue-staffy-health-uk" / "index.html").write_text(_page([
+        ("/images/puppy-vaccinations-uk.webp", "Vaccinations"),
+        ("/images/family-sofa-cuddle.webp", "A family in London cuddling their puppy")]))
+    page = root / "dist" / "uk-locations" / MAN_SLUG
+    page.mkdir(parents=True)
+    # The migrated Manchester page itself served a Glasgow photo: an own photo is dropped too.
+    (page / "index.html").write_text(_page([
+        ("/images/family-friendly-blue-staffy-glasgow.webp", "A family with their blue staffy")]))
+    return root, assets
+
+
+def _family_board(slug=MAN_SLUG, page_type="location"):
+    b = _board(images_by_section=[{"slot": "family-photo", "kind": "photo", "required": True,
+                                   "prompt": "a family with their puppy at home"}], node_images=[])
+    b["meta"] = {"slug": slug, "page_type": page_type}
+    return b
+
+
+def _offered(report):
+    return {c["file"] for s in report["slots"] for c in s["candidates"] if c["file"]}
+
+
+def test_a_location_board_is_offered_no_other_citys_photo(tmp_path):
+    root, assets = _cities_tree(tmp_path)
+    got = _offered(IC.candidates(_family_board(), root, assets, per_pool=10))
+    assert "/images/victoria-family-blue-staffy-manchester.webp" in got
+    for f in ("/images/mark-family-blue-staffy-london.webp",
+              "/images/family-friendly-blue-staffy-glasgow.webp",   # own photo, Glasgow stem
+              "/images/family-sofa-cuddle.webp",                    # London named in its alt
+              "/images/leeds-delivery-van.webp"):                   # Leeds stem
+        assert f not in got, f
+
+
+def test_a_non_location_board_keeps_city_named_photos(tmp_path):
+    root, assets = _cities_tree(tmp_path)
+    got = _offered(IC.candidates(_family_board("blue-staffy-blog-guides", "hub"), root, assets,
+                                 per_pool=10))
+    assert "/images/mark-family-blue-staffy-london.webp" in got
+    assert "/images/family-sofa-cuddle.webp" in got
+
+
+def test_the_real_manchester_board_is_offered_no_other_citys_photo():
+    import original_slots as OS
+    board = _family_board()
+    report = IC.candidates(board, ROOT, ROOT / "no-assets-folder", per_pool=50)
+    _used, alts = IC.usage_and_alts(ROOT)
+    names = OS.cities(ROOT)
+    files = _offered(report)
+    assert "/images/victoria-family-blue-staffy-manchester.webp" in files
+    for f in files:
+        text = " ".join([pathlib.PurePosixPath(f).stem.replace("-", " ")] + alts.get(f, []))
+        assert set(OS.cities_named(text, names)) <= {"Manchester"}, (f, OS.cities_named(text, names))
