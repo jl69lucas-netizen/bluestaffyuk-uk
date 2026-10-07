@@ -991,6 +991,18 @@ def rules_block(findings):
     return RULES_CSS + f'<div class="rules">{"".join(rows)}</div>', refused
 
 
+#: Gap G17: an `img:<slot>` pick on a record infographic slot is not open once block 7c's
+#: `ig:<slot>` is answered skip — a skipped slot builds nothing, so it needs no image. The
+#: approval (board_approve.py) never required img: picks; image_rules.declined() is the same
+#: test on the build side. `ig:<slot>` itself stays required: skip is how it is answered.
+SKIP_JS = """  function skippedImg(id){
+    if(id.indexOf('img:')!==0)return false;
+    var r=document.querySelector('input[name="pick-ig:'+id.slice(4).replace(/-phone$/,'')+'"]:checked');
+    return !!r&&r.value==='skip';
+  }
+"""
+
+
 def signature_sections(board, ledger=None, slug=None, ig_plan=None):
     """Every pick id the approve button refuses to leave empty: the sections, the image
     slots, and (project 5 boards) the infographic styles, from PB.ig_slots_required — the
@@ -1080,9 +1092,14 @@ def infographic_block(board, carried=None, plan=None):
     is the PB.ig_plan() render() already made."""
     carried = carried or {}
     plan = PB.ig_plan(board) if plan is None else plan
+    # What the record itself proposes (recommended_picks) is pre-checked where no pick is
+    # carried or live, the way block 2 pre-checks the recommended H1 and meta pair.
+    shown = {**PB.ig_recommended(plan), **carried}
     intro = ("Each infographic sits **beside the H2's existing photo**, never instead of it "
              "(working rule 11: every served image keeps its place, file and alt). Pick one "
              "style per slot; the same content is set three ways on the same tokens. "
+             "Or pick **Skip** where a real photo already says it: a skipped slot builds "
+             "nothing (breeder q06, 2026-10-02: original photos first). "
              "A style you picked before stays selected; check it if the infographic's type "
              "changed. `python3 scripts/infographic_plan.py " + md(PB.slug_file(board["meta"]["slug"]))
              + "` prints the same plan.")
@@ -1107,14 +1124,22 @@ def infographic_block(board, carried=None, plan=None):
                            f'<iframe title="{esc(st["label"])} at {w} pixels wide" sandbox="allow-same-origin" '
                            f'loading="eager" scrolling="{"no" if measured else "auto"}" data-ig="{esc(key)}" '
                            f'width="{w}" height="{h}" style="width:{w}px;height:{h}px"></iframe></div>')
+            rec = " (Recommended)" if p.get("recommended") == st["id"] else ""
             rows.append(f'<div class="style"><label><input type="radio" name="pick-ig:{esc(slot)}" '
                         f'value="{esc(st["id"])}"'
-                        f'{" checked" if carried.get("ig:" + slot) == st["id"] else ""}> '
-                        f'{esc(st["label"])}</label>'
+                        f'{" checked" if shown.get("ig:" + slot) == st["id"] else ""}> '
+                        f'{esc(st["label"])}{rec}</label>'
                         f'<div class="frames frames-ig">{frames}</div></div>')
-        legend = (f"Optional — {esc(slot)}" if pending else f"Pick one style for {esc(slot)}")
+        # Gap G17: the fourth answer. No frames: a skipped slot has nothing to show.
+        rec = " (Recommended)" if p.get("recommended") == IP.SKIP else ""
+        rows.append(f'<div class="style skip"><label><input type="radio" name="pick-ig:{esc(slot)}" '
+                    f'value="{IP.SKIP}"{" checked" if shown.get("ig:" + slot) == IP.SKIP else ""}> '
+                    f'Skip{rec}: build no infographic here</label></div>')
+        legend = (f"Optional — {esc(slot)}" if pending else f"Pick one style for {esc(slot)}, or skip it")
         out.append(f"### {md(slot)} · {md(p['ig'])} {md(IP.IG_NAMES.get(p['ig'], ''))}\n\n"
                    f"**Heading:** {md(p['node'])}  \n**Why:** {md(p['why'])}"
+                   + (f"  \n**Recommended:** {md('skip' if p['recommended'] == IP.SKIP else p['recommended'])}"
+                      f" — {md(p.get('recommended_why') or '')}" if p.get("recommended") else "")
                    + (f'\n\n<p class="rules-refused">{esc(pending)}</p>' if pending else "")
                    + f'\n\n<fieldset class="styles" id="{esc(pick_anchor("ig:" + slot))}"><legend>{legend}</legend>{"".join(rows)}</fieldset>')
     return "\n\n".join(out)
@@ -1357,8 +1382,10 @@ def block_summary(bid, board, slug, ig_plan, facts, picks):
         return (f"{f} FAIL, {w} WARN at approval."
                 + (f" {_n(build, 'build-stage check')} run after images are made." if build else ""))
     if bid == "7c":
+        skips = sum(p.get("recommended") == IP.SKIP for p in ig_plan)
         return (f"{_n(len(ig_plan), 'infographic')}, each on its own heading. "
-                "Pick sticker, chalk or comic for each.")
+                "Pick sticker, chalk or comic for each, or skip it"
+                + (f" ({skips} recommended to skip: a photo already fills the heading)." if skips else "."))
     if bid == "7d":
         n = len(OS.propose(board, root=PB.ROOT))
         return f"{_n(n, 'real site photo')} proposed on the best-fit headings. Use, swap or skip each (optional)."
@@ -1945,6 +1972,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
              "    var d=IG_DOCS[f.getAttribute('data-ig')];\n"
              "    if(d!==undefined)f.srcdoc=d;\n"
              "  });\n") if new_family else ""
+    # Gap G17, project 5 boards only (a pre-rule board's script stays byte for byte).
+    skip_js, skip_test = (SKIP_JS, "!skippedImg(id)&&") if new_family else ("", "")
     masthead = "" if queue else (
         f'<header class="masthead"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/{esc(slug)}/</h1></div>\n'
         f'<div class="meta"><span class="pill">status: {esc(m["status"])}</span> <span class="pill">research as of {esc(m["research_as_of"])}</span><br>record <code>{record_hash[:12]}</code></div></header>\n')
@@ -2017,10 +2046,10 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
   function fieldOf(id){{return SIGNATURE_LABELS[id]&&SIGNATURE_LABELS[id].n==='2'?id:'pick-'+id;}}
   // Every pick still open, in the order the breeder meets them: block 2 first, then the
   // signature in its own (section) order.
-  function missingPicks(){{
+{skip_js}  function missingPicks(){{
     var ids=['h1','meta-title','meta-description'].concat(SIGNATURE_SECTIONS);
     return ids.filter(function(id){{
-      return !document.querySelector('input[name="'+fieldOf(id)+'"]:checked');
+      return {skip_test}!document.querySelector('input[name="'+fieldOf(id)+'"]:checked');
     }});
   }}
   // One line per open pick — "§08 <section> — infographic style (ig:<slot>)" — each a link
@@ -2170,8 +2199,10 @@ def main():
         plan = PB.ig_plan(board)
         n_ig = len(plan)
         files = {IG_FONT_BASE + f: f"public/fonts/{f}" for f in IG_FONT_FILES}
-        print("  infographics: %d slot(s), %d previews inline; approval waits on %d"
-              % (n_ig, 3 * n_ig, len(PB.ig_slots_required(board, plan))))
+        skips = sum(p.get("recommended") == IP.SKIP for p in plan)
+        print("  infographics: %d slot(s), %d previews inline; approval waits on %d%s"
+              % (n_ig, 3 * n_ig, len(PB.ig_slots_required(board, plan)),
+                 " (%d recommended skip)" % skips if skips else ""))
         print("  publish with capabilities={\"db\": {}} and files=%s" % json.dumps(files))
 
 

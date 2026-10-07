@@ -58,6 +58,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import image_candidates as IC  # noqa: E402
+import infographic_plan as IP  # noqa: E402  (imports nothing of the repo's: no cycle)
 import page_sections as PS  # noqa: E402  (one definition of frame, FAQ block and body)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -149,6 +150,12 @@ def picks(board):
     return (board.get("approval") or {}).get("picks") or {}
 
 
+def declined(board):
+    """The infographic slots the approval answers `skip` (`ig:<slot>`, gap G17): they build
+    nothing, so no image pick, baked file or phone layout is owed for them."""
+    return IP.declined(picks(board))
+
+
 def _new_page(board):
     """True for a page built from project 5 on (family_rules.is_new_page, the one helper)."""
     import family_rules  # noqa: E402  (lazy: family_rules imports this module)
@@ -203,8 +210,10 @@ def slot_findings(board):
             out.append(("image-slot-duplicate", "FAIL",
                         f"slot {slot} is planned {count} times — a pick is keyed by slot, so each is unique"))
     if status in APPROVED_STATUSES:
-        chosen = picks(board)
+        chosen, skipped = picks(board), declined(board)
         for s, n, img in IC.iter_slots(board):
+            if img["slot"] in skipped:
+                continue                               # skipped: builds nothing (G17)
             if img.get("source") in ("generate", "infographic") and PICK_PREFIX + img["slot"] not in chosen:
                 out.append(("image-pick-missing", "FAIL",
                             f"slot {img['slot']} (source {img['source']}): the approval names no "
@@ -378,12 +387,15 @@ def phone_pick_problems(board, img, value, chosen, root=None):
 def phone_build_findings(board, slots, chosen, root):
     """The build gate for phone picks: the approved bytes are served beside the box image."""
     out = []
+    skipped = IP.declined(chosen)
     for key, raw in sorted(chosen.items()):
         if not key.startswith(PICK_PREFIX):
             continue
         base = phone_base(slots, key[len(PICK_PREFIX):])
         if base is None or slots[base]["kind"] != "infographic":
             continue                                   # the approval refuses these
+        if base in skipped:
+            continue                                   # skipped: builds nothing (G17)
         slot = base + PHONE_SUFFIX
         p = parse_pick(raw)
         if p is None or p["kind"] != "ig" or p["sha"] is None:
@@ -408,9 +420,11 @@ def build_findings(board, root=None):
         return []
     root = pathlib.Path(root or ROOT)
     out = []
-    chosen = picks(board)
+    chosen, skipped = picks(board), declined(board)
     for s, n, img in IC.iter_slots(board):
         slot = img["slot"]
+        if slot in skipped:
+            continue                                   # skipped: builds nothing (G17)
         raw = chosen.get(PICK_PREFIX + slot)
         if raw is not None and parse_pick(raw) is None:
             out.append((PICK_INVALID, "FAIL", f"slot {slot}: pick {raw!r} is not a known image pick"))

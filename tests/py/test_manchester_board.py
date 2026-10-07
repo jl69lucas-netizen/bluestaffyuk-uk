@@ -376,3 +376,34 @@ def test_block_7_offers_no_other_city_photo(html):
         for src in srcs:
             assert not OS.cities_named(src.replace("-", " "), others), (bid, src)
     assert seen, "block 7 shows no image at all: the check examined nothing"
+
+
+# ── block 7c: photos first, an infographic only where none fits (gap G17) ──────────────────
+#: The four proposed infographic slots whose heading an original photo already fills, and the
+#: image slot that fills it. papers-checklist stays an infographic: no truthful photo of a
+#: puppy's papers exists (kc-registered-staffy-puppies.webp is lessons 7's false image).
+SKIP_RECOMMENDED = {"deposit-steps": "deposit-h2", "health-tests-checklist": "health-tests-h2",
+                    "litter-figures": "litter-prices", "travel-route": "travel-h2"}
+
+
+def test_photo_covered_infographic_slots_are_recommended_skip(board):
+    plan = {p["slot"]: p for p in PB.ig_plan(board)}
+    assert set(plan) == set(SKIP_RECOMMENDED) | {"papers-checklist"}
+    photos = {img["slot"]: ((node or sec).get("heading"), img) for sec, node, img in IC.iter_slots(board)}
+    for slot, photo_slot in SKIP_RECOMMENDED.items():
+        assert plan[slot]["recommended"] == "skip", slot
+        heading, img = photos[photo_slot]
+        assert heading == plan[slot]["node"], (slot, heading)
+        assert img["kind"] == "photo" and img["source"] == "existing", photo_slot
+        assert img["file"].rsplit("/", 1)[-1] in plan[slot]["recommended_why"], slot
+    assert plan["papers-checklist"]["recommended"] is None
+    # A recommendation is a proposal: every slot is still asked at STOP 3.
+    assert set(PB.ig_slots_required(board)) == {f"ig:{s}" for s in plan}
+
+
+def test_block_7c_pre_checks_skip_on_the_four_photo_covered_slots(html):
+    block = _block(html, "7c")
+    for slot in SKIP_RECOMMENDED:
+        assert f'name="pick-ig:{slot}" value="skip" checked>' in block, slot
+    assert 'name="pick-ig:papers-checklist" value="skip">' in block
+    assert not re.search(r'name="pick-ig:papers-checklist" value="[a-z]+" checked>', block)

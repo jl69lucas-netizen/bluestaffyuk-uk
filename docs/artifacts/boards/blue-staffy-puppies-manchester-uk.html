@@ -191,8 +191,74 @@ div.q-bar{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--pap
 @media (max-width:560px){header.top{position:static}.card>summary{grid-template-columns:34px minmax(0,1fr)}.card>summary .chip{grid-column:2;justify-self:start}.card>.in{padding:14px 12px}
 .tabs [role="tab"]{padding:8px 8px;font-size:14px}.wrap.q{padding-bottom:200px}
 #approve.q-in .left{font-size:12.5px}#approve.q-in .btn{padding:8px 16px}#approve.q-in .status{flex-basis:100%;text-align:center;font-size:12px}#approve.q-in .status:has(ul.missing){text-align:left}}
+
+.blk-copy{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:0 0 6px}
+.card>.blk-copy{margin:0;padding:10px 16px 0}
+.blk-copy button.btn{font-size:12px;padding:5px 12px;background:transparent;color:var(--green);border-color:var(--line)}
+.blk-copy .copied{font-size:12px;color:var(--ink-3)}
+:root{--rec-bg:#F6EBC4;--rec-line:#C9A227;--rec-ink:#6E5408;--why:#1F5A85;--why-bg:#E3EEF7;--wedge:#2F6B4F;--wedge-bg:#E2F0E8;--trade:#9A3B1E;--trade-bg:#F7E4DC;--nf:#5E4A86;--nf-bg:#EEE8F6;--cost:#2D6A4F;--cost-bg:#DCEFE4}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--rec-bg:#3A3218;--rec-line:#D8B23A;--rec-ink:#E9CF7A;--why:#8FC1EA;--why-bg:#17324A;--wedge:#8FD1AE;--wedge-bg:#163428;--trade:#F0A58A;--trade-bg:#3E2219;--nf:#C9B4EC;--nf-bg:#2B2340;--cost:#7CC9A0;--cost-bg:#1D3A2C}}
+:root[data-theme="dark"]{--rec-bg:#3A3218;--rec-line:#D8B23A;--rec-ink:#E9CF7A;--why:#8FC1EA;--why-bg:#17324A;--wedge:#8FD1AE;--wedge-bg:#163428;--trade:#F0A58A;--trade-bg:#3E2219;--nf:#C9B4EC;--nf-bg:#2B2340;--cost:#7CC9A0;--cost-bg:#1D3A2C}
+
+.recmark{background:var(--rec-line);color:#1B2430;font-weight:700;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.nf{color:var(--nf);background:var(--nf-bg);border:1px dashed var(--nf);border-radius:5px;padding:0 5px;font-weight:600;white-space:nowrap}
+.legend{display:flex;gap:8px;flex-wrap:wrap;font:600 13px/1 "Source Sans 3",system-ui,sans-serif;margin:0 0 20px}
+.legend span{border-radius:99px;padding:6px 10px;border:1px solid var(--line)}
+.legend .l-rec{background:var(--rec-line);color:#1B2430;border-color:var(--rec-line)}
+.legend .l-why{color:var(--why);background:var(--why-bg)}
+.legend .l-wedge{color:var(--wedge);background:var(--wedge-bg)}
+.legend .l-trade{color:var(--trade);background:var(--trade-bg)}
+.legend .l-nf{color:var(--nf);background:var(--nf-bg);border-style:dashed}
+.fcards{display:grid;gap:14px;margin:12px 0 6px}
+.fcard{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:var(--ground);display:grid;gap:12px;min-width:0}
+.fcard .fct{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.fcard h3.fcardh{font:600 20px/1.3 Fraunces,Georgia,serif;color:var(--blue,var(--green));margin:0;overflow-wrap:anywhere;text-transform:none;letter-spacing:0}
+.fcard h3.fcardh a{color:inherit}
+.fchips{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{font:600 13px/1 "Source Sans 3",system-ui,sans-serif;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);padding:6px 9px;border-radius:99px;font-variant-numeric:tabular-nums}
+.fchip.rec{background:var(--rec-line);border-color:var(--rec-line);color:#1B2430}
+.fld{display:grid;gap:4px;max-width:72ch;border-left:3px solid var(--line);padding-left:12px;min-width:0}
+.fld>.lab,.subfld>.lab{font:700 12px/1.2 "Source Sans 3",system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.fld.why{border-left-color:var(--why)} .fld.why>.lab{color:var(--why)}
+.fld.wedge{border-left-color:var(--wedge)} .fld.wedge>.lab{color:var(--wedge)}
+.fld.trade{border-left-color:var(--trade)} .fld.trade>.lab{color:var(--trade)}
+.fld .lead{font-weight:600;margin:0}
+.fld .v{overflow-wrap:anywhere}
+.fld details{margin-top:2px}
+.fld summary{cursor:pointer;color:var(--blue,var(--green));font-weight:600;font-size:15px}
+.fld details p{margin:6px 0 0;color:var(--ink-2)}
+.fld.ev{border-left:0;padding-left:0;font:13px/1.45 "JetBrains Mono",ui-monospace,Menlo,monospace;color:var(--ink-3);overflow-wrap:anywhere}
+.fcard.isrec,.lablist>li.isrec{border:2px solid var(--rec-line);background:var(--rec-bg)}
+.lablist{padding-left:0}
+.lablist>li{list-style:none;margin:0 0 14px;border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--ground);display:grid;gap:8px;max-width:none}
+.lablist>li>.lead2{display:block;font:600 19px/1.35 Fraunces,Georgia,serif;color:var(--blue,var(--green))}
+.lablist>li>.fchip.rec{justify-self:start}
+.subfld{display:grid;gap:3px;margin:2px 0 0;padding-left:14px;border-left:2px solid var(--line)}
+.subfld.trade{border-left-color:var(--trade)} .subfld.trade>.lab{color:var(--trade)}
+.subfld.why{border-left-color:var(--why)} .subfld.why>.lab{color:var(--why)}
+.subfld p{margin:0}
+.md li.rl-why,.md li.rl-trade{list-style:none;border-left:3px solid var(--why);padding-left:10px;margin:4px 0}
+.md li.rl-trade{border-left-color:var(--trade)}
+.rl-why>.rl-lab{color:var(--why);font-weight:700} .rl-trade>.rl-lab{color:var(--trade);font-weight:700}
+.md td .clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.md tr.open td .clamp{-webkit-line-clamp:unset;display:block}
+.md tr.open td{background:var(--why-bg)}
+.hint{font-size:14px;color:var(--ink-3);margin:0 0 8px}
+.plain{display:grid;gap:14px;margin:0 0 14px}
+.plain ul{margin:0;padding-left:0;list-style:none;display:grid;gap:8px}
+.plain li{position:relative;padding-left:22px;max-width:64ch}
+.plain li::before{content:"";position:absolute;left:4px;top:.68em;width:8px;height:8px;border-radius:50%;background:var(--why)}
+.plain .box{border-radius:10px;padding:12px 16px;border-left:4px solid}
+.plain .box h4{margin:0 0 6px;font:700 13px/1.2 "Source Sans 3",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.plain .box.cost{background:var(--cost-bg);border-color:var(--cost)} .plain .box.cost h4{color:var(--cost)} .plain .box.cost li::before{background:var(--cost)}
+.plain .box.care{background:var(--trade-bg);border-color:var(--trade)} .plain .box.care h4{color:var(--trade)} .plain .box.care li::before{background:var(--trade)}
+details.full{border-top:1px dashed var(--line);padding-top:12px;min-width:0}
+details.full>summary{cursor:pointer;font-weight:700;color:var(--blue,var(--green));min-height:32px}
+details.full[open]>summary{margin-bottom:8px}
+.summed:not(.md)>details.full>:not(summary){margin-top:12px}
+@media (max-width:640px){.fcard,.lablist>li{padding:14px}}
 </style>
-<header class="top"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/blue-staffy-puppies-manchester-uk/</h1><div class="route"><span class="pill">status: boarded</span> <span class="pill">research as of 2026-10-07</span> record <code>4e7ab7f4189d</code></div></div><div class="prog"><span id="prog-text">0 of 9 picks made</span><span class="pbar" id="prog-bar" role="progressbar" aria-label="Picks made" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"><i></i></span></div></header>
+<header class="top"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/blue-staffy-puppies-manchester-uk/</h1><div class="route"><span class="pill">status: boarded</span> <span class="pill">research as of 2026-10-07</span> record <code>cab72a7e05ff</code></div></div><div class="prog"><span id="prog-text">0 of 9 picks made</span><span class="pbar" id="prog-bar" role="progressbar" aria-label="Picks made" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"><i></i></span></div></header>
 <div class="wrap q">
 <p class="howto"><b>How to approve.</b> Work through <b>Your decisions</b> one card at a time, read <b>Look before approving</b>, then press Approve in the bar at the foot of the board. Everything else is under <b>Reference</b>, closed until you open it. Leave a note anywhere you want something changed.</p>
 <div id="doc"><div class="tabs" role="tablist" aria-label="Board blocks"><button type="button" role="tab" id="tab-decide" aria-controls="panel-decide" data-tab="decide" aria-selected="true" tabindex="0">Your decisions<span class="count">6</span></button><button type="button" role="tab" id="tab-look" aria-controls="panel-look" data-tab="look" aria-selected="false" tabindex="-1">Look before approving<span class="count">2</span></button><button type="button" role="tab" id="tab-ref" aria-controls="panel-ref" data-tab="ref" aria-selected="false" tabindex="-1">Reference<span class="count">20</span></button></div><div role="tabpanel" id="panel-decide" aria-labelledby="tab-decide" data-panel="decide"><p class="stagehead">Make these picks, then approve</p><div data-host="decide"></div></div><div role="tabpanel" id="panel-look" aria-labelledby="tab-look" data-panel="look" hidden><p class="stagehead">Findings to read before you approve</p><div data-host="look"></div></div><div role="tabpanel" id="panel-ref" aria-labelledby="tab-ref" data-panel="ref" hidden><p class="stagehead">Start</p><div data-host="ref:Start"></div><p class="stagehead">Outline</p><div data-host="ref:Outline"></div><p class="stagehead">Keywords and entities</p><div data-host="ref:Keywords and entities"></div><p class="stagehead">Components</p><div data-host="ref:Components"></div><p class="stagehead">Images</p><div data-host="ref:Images"></div><p class="stagehead">Before you approve</p><div data-host="ref:Before you approve"></div></div></div>
@@ -1408,8 +1474,8 @@ The page-level tuple, for reading. Picks happen in block 6; a shell that is wron
 <script type="text/markdown" data-title="7b. Rules for new pages" data-id="7b" data-tab="ref" data-group="Images" data-chip="ok" data-chip-text="passes" data-summary="0 FAIL, 0 WARN at approval. 1 build-stage check run after images are made." data-picks="">
 <style>.rules{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin:4px 0 10px}.rules .rule{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:14px;min-width:0}.rules .rule code{font-size:13px;overflow-wrap:anywhere}.rules .rule .msg{flex:1 1 20ch;min-width:0;overflow-wrap:anywhere}.rules .pill.fail{color:var(--warn);border-color:var(--warn);font-weight:700}.rules .pill.warn{color:var(--ink-2)}.rules .later{font-size:12px;color:var(--ink-3)}.rules-refused{color:var(--warn);font-weight:600;font-size:14px}</style><div class="rules"><div class="rule"><span class="pill fail">FAIL</span><code>image-generated-unapproved</code><span class="msg">slot papers-checklist: style IG-4 is chosen, but no generated image has been approved on the board — generate it, re-board, and approve the image <span class="later">checked at build, after the image is approved</span></span></div></div>
 </script>
-<script type="text/markdown" data-title="7c. Infographics" data-id="7c" data-tab="decide" data-group="Images" data-chip="need" data-chip-text="5 to pick" data-summary="5 infographics, each on its own heading. Pick sticker, chalk or comic for each." data-picks="ig:deposit-steps ig:health-tests-checklist ig:litter-figures ig:travel-route ig:papers-checklist">
-Each infographic sits **beside the H2's existing photo**, never instead of it (working rule 11: every served image keeps its place, file and alt). Pick one style per slot; the same content is set three ways on the same tokens. A style you picked before stays selected; check it if the infographic's type changed. `python3 scripts/infographic_plan.py blue-staffy-puppies-manchester-uk` prints the same plan.
+<script type="text/markdown" data-title="7c. Infographics" data-id="7c" data-tab="decide" data-group="Images" data-chip="need" data-chip-text="5 to pick" data-summary="5 infographics, each on its own heading. Pick sticker, chalk or comic for each, or skip it (4 recommended to skip: a photo already fills the heading)." data-picks="ig:deposit-steps ig:health-tests-checklist ig:litter-figures ig:travel-route ig:papers-checklist">
+Each infographic sits **beside the H2's existing photo**, never instead of it (working rule 11: every served image keeps its place, file and alt). Pick one style per slot; the same content is set three ways on the same tokens. Or pick **Skip** where a real photo already says it: a skipped slot builds nothing (breeder q06, 2026-10-02: original photos first). A style you picked before stays selected; check it if the infographic's type changed. `python3 scripts/infographic_plan.py blue-staffy-puppies-manchester-uk` prints the same plan.
 
 | Section | Heading | IG type | Why it triggered |
 |---|---|---|---|
@@ -1422,37 +1488,41 @@ Each infographic sits **beside the H2's existing photo**, never instead of it (w
 ### deposit-steps · IG-2 Process Steps
 
 **Heading:** Why Does This Staffy Breeder Take the Deposit Before You Visit?  
-**Why:** &quot;deposit&quot; in the H2 &quot;Why Does This Staffy Breeder Take the Deposit Before You Visit?&quot;
+**Why:** &quot;deposit&quot; in the H2 &quot;Why Does This Staffy Breeder Take the Deposit Before You Visit?&quot;  
+**Recommended:** skip — The H2 already carries an original photo, Lisa Bright holding two young puppies (lisa-bright-blue-staffy-breeder-carlisle.webp), and its three H3s each carry one too. Original photos come first, and an infographic goes only where no truthful photo fits (breeder q06, 2026-10-02). Recommended skip; pick a style instead to keep the infographic.
 
-<fieldset class="styles" id="ig-deposit-steps"><legend>Pick one style for deposit-steps</legend><div class="style"><label><input type="radio" name="pick-ig:deposit-steps" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:deposit-steps" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:deposit-steps" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div></fieldset>
+<fieldset class="styles" id="ig-deposit-steps"><legend>Pick one style for deposit-steps, or skip it</legend><div class="style"><label><input type="radio" name="pick-ig:deposit-steps" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:deposit-steps" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:deposit-steps" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="deposit-steps|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style skip"><label><input type="radio" name="pick-ig:deposit-steps" value="skip" checked> Skip (Recommended): build no infographic here</label></div></fieldset>
 
 ### health-tests-checklist · IG-4 Checklist Grid
 
 **Heading:** Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?  
-**Why:** &quot;health test&quot; in the H2 &quot;Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?&quot;
+**Why:** &quot;health test&quot; in the H2 &quot;Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?&quot;  
+**Recommended:** skip — The H2 already carries an original photo of Jones, the litter&#x27;s sire (jones-magnificent-blue-staffy-sire.webp), and both H3s carry photos too. Original photos come first, and an infographic goes only where no truthful photo fits (breeder q06, 2026-10-02). Recommended skip; pick a style instead to keep the infographic.
 
-<fieldset class="styles" id="ig-health-tests-checklist"><legend>Pick one style for health-tests-checklist</legend><div class="style"><label><input type="radio" name="pick-ig:health-tests-checklist" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:health-tests-checklist" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:health-tests-checklist" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div></fieldset>
+<fieldset class="styles" id="ig-health-tests-checklist"><legend>Pick one style for health-tests-checklist, or skip it</legend><div class="style"><label><input type="radio" name="pick-ig:health-tests-checklist" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:health-tests-checklist" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:health-tests-checklist" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="health-tests-checklist|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style skip"><label><input type="radio" name="pick-ig:health-tests-checklist" value="skip" checked> Skip (Recommended): build no infographic here</label></div></fieldset>
 
 ### litter-figures · IG-1 Stat Panel
 
 **Heading:** Why Do Our Blue Staffy Puppy Prices Follow the Sex, Not the Coat, in This Litter?  
-**Why:** &quot;price&quot; in the H3 &quot;Why Do Our Blue Staffy Puppy Prices Follow the Sex, Not the Coat, in This Litter?&quot;
+**Why:** &quot;price&quot; in the H3 &quot;Why Do Our Blue Staffy Puppy Prices Follow the Sex, Not the Coat, in This Litter?&quot;  
+**Recommended:** skip — The H3 already carries an original photo of Byrd from this litter (byrd-card-800.webp), and the section&#x27;s table states both prices. Original photos come first, and an infographic goes only where no truthful photo fits (breeder q06, 2026-10-02). Recommended skip; pick a style instead to keep the infographic.
 
-<fieldset class="styles" id="ig-litter-figures"><legend>Pick one style for litter-figures</legend><div class="style"><label><input type="radio" name="pick-ig:litter-figures" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:litter-figures" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:litter-figures" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div></fieldset>
+<fieldset class="styles" id="ig-litter-figures"><legend>Pick one style for litter-figures, or skip it</legend><div class="style"><label><input type="radio" name="pick-ig:litter-figures" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:litter-figures" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:litter-figures" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="litter-figures|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style skip"><label><input type="radio" name="pick-ig:litter-figures" value="skip" checked> Skip (Recommended): build no infographic here</label></div></fieldset>
 
 ### travel-route · IG-5 Route Map
 
 **Heading:** How Will Your Blue Staffy Puppy Travel to Greater Manchester?  
-**Why:** &quot;travel&quot; in the H2 &quot;How Will Your Blue Staffy Puppy Travel to Greater Manchester?&quot;
+**Why:** &quot;travel&quot; in the H2 &quot;How Will Your Blue Staffy Puppy Travel to Greater Manchester?&quot;  
+**Recommended:** skip — The H2 already carries an original photo of a bed and crate set up for a new puppy (blue-staffy-puppy-preparation.webp), and both H3s carry photos too. Original photos come first, and an infographic goes only where no truthful photo fits (breeder q06, 2026-10-02). Recommended skip; pick a style instead to keep the infographic.
 
-<fieldset class="styles" id="ig-travel-route"><legend>Pick one style for travel-route</legend><div class="style"><label><input type="radio" name="pick-ig:travel-route" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:travel-route" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:travel-route" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div></fieldset>
+<fieldset class="styles" id="ig-travel-route"><legend>Pick one style for travel-route, or skip it</legend><div class="style"><label><input type="radio" name="pick-ig:travel-route" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:travel-route" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:travel-route" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="travel-route|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style skip"><label><input type="radio" name="pick-ig:travel-route" value="skip" checked> Skip (Recommended): build no infographic here</label></div></fieldset>
 
 ### papers-checklist · IG-4 Checklist Grid
 
 **Heading:** What Paperwork Should a Puppy Advertised as KC Registered Come With?  
 **Why:** its own H3 on the board (breeder q08, 2026-10-02)
 
-<fieldset class="styles" id="ig-papers-checklist"><legend>Pick one style for papers-checklist</legend><div class="style"><label><input type="radio" name="pick-ig:papers-checklist" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:papers-checklist" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:papers-checklist" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div></fieldset>
+<fieldset class="styles" id="ig-papers-checklist"><legend>Pick one style for papers-checklist, or skip it</legend><div class="style"><label><input type="radio" name="pick-ig:papers-checklist" value="sticker"> Sticker</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Sticker at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|sticker" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Sticker at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|sticker" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Sticker at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|sticker" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:papers-checklist" value="chalk"> Chalk</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Chalk at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|chalk" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Chalk at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|chalk" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Chalk at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|chalk" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style"><label><input type="radio" name="pick-ig:papers-checklist" value="comic"> Comic</label><div class="frames frames-ig"><div class="frame"><span>1280px</span><iframe title="Comic at 1280 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|comic" width="1280" height="520" style="width:1280px;height:520px"></iframe></div><div class="frame"><span>768px</span><iframe title="Comic at 768 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|comic" width="768" height="520" style="width:768px;height:520px"></iframe></div><div class="frame"><span>375px</span><iframe title="Comic at 375 pixels wide" sandbox="allow-same-origin" loading="eager" scrolling="auto" data-ig="papers-checklist|comic" width="375" height="520" style="width:375px;height:520px"></iframe></div></div></div><div class="style skip"><label><input type="radio" name="pick-ig:papers-checklist" value="skip"> Skip: build no infographic here</label></div></fieldset>
 </script>
 <script type="text/markdown" data-title="7d. Original photos" data-id="7d" data-tab="decide" data-group="Images" data-chip="info" data-chip-text="info" data-summary="5 real site photos proposed on the best-fit headings. Use, swap or skip each (optional)." data-picks="">
 The breeder's ruling (answer board q06, 2026-10-02): OG means ORIGINAL image — not AI-generated and not an infographic. These are 4–5 of the site's own real photos, placed on the H2 and H3 headings they suit best, chosen BEFORE any section is given an infographic or a generated image. A photo keeps its filename, path and served alt on its first use on this page; a repeat use needs a NEW alt, never a copy (working rule 11).
@@ -1853,6 +1923,20 @@ Writes your H1 choice, picks, notes and the record hash to the board database. B
 <script>
 (function(){
   var doc=document.getElementById('doc');
+  function copyMd(text,st){
+    function done(ok){st.textContent=ok?'Copied':'Copying is blocked here';setTimeout(function(){st.textContent='';},1800);}
+    function legacy(){var t=document.createElement('textarea'),ok=false;t.value=text;t.setAttribute('readonly','');
+      t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
+      try{ok=document.execCommand('copy');}catch(e){}t.remove();done(ok);}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){done(true);},legacy);else legacy();
+  }
+  function copyBar(title,md){
+    var bar=document.createElement('div');bar.className='blk-copy';
+    var st=document.createElement('span');st.className='copied';st.setAttribute('role','status');
+    var btn=document.createElement('button');btn.type='button';btn.className='btn';btn.textContent='Copy block';
+    btn.addEventListener('click',function(){copyMd('## '+title+'\n\n'+md,st);});
+    bar.appendChild(st);bar.appendChild(btn);return bar;
+  }
   // Decision queue (breeder pick B, 2026-10-03): one <details> card per block, dealt into
   // its tab's host by the data attributes build_page_board.py computed.
   var TABS=['decide','look','ref'],TAB_KEY='board-tab:'+"blue-staffy-puppies-manchester-uk";
@@ -1872,8 +1956,11 @@ Writes your H1 choice, picks, notes and the record hash to the board database. B
     sum.appendChild(mid);
     var chip=document.createElement('span');chip.className='chip '+chipCls;chip.textContent=b.getAttribute('data-chip-text');
     sum.appendChild(chip);card.appendChild(sum);
+    var md=b.textContent.replace(/^\n+|\s+$/g,'');
+    card.appendChild(copyBar(title,md));
     var body=document.createElement('div');body.className='in md';
-    body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\n+|\s+$/g,'')):b.textContent;
+    body.setAttribute('data-title',title);body.setAttribute('data-id',bid);
+    body.innerHTML=window.marked?marked.parse(md):b.textContent;
     card.appendChild(body);
     var host=document.querySelector('[data-host="'+(tab==='ref'?'ref:'+grp:tab)+'"]');
     (host||doc).appendChild(card);
@@ -1983,7 +2070,7 @@ document.querySelectorAll('.kv').forEach(function(root){
     var d=IG_DOCS[f.getAttribute('data-ig')];
     if(d!==undefined)f.srcdoc=d;
   });
-  var RECORD_HASH="4e7ab7f4189d36ee50ab9ba6979cd1b489f02a5c234f6682bddd49f8dd993384";var BOARD_DOC="boards/blue-staffy-puppies-manchester-uk";
+  var RECORD_HASH="cab72a7e05ff12b34f7b443660d088874b708402a0c0a14b2f91e00b91f2637d";var BOARD_DOC="boards/blue-staffy-puppies-manchester-uk";
   var SIGNATURE_SECTIONS=["img:papers-checklist", "ig:deposit-steps", "ig:health-tests-checklist", "ig:litter-figures", "ig:travel-route", "ig:papers-checklist"];
   var SIGNATURE_LABELS={"img:papers-checklist": {"n": "14", "section": "Which Papers and Records Travel Home With Each Blue Staffy Puppy?", "label": "image (img:papers-checklist)", "anchor": "img-papers-checklist"}, "ig:deposit-steps": {"n": "08", "section": "Why Does This Staffy Breeder Take the Deposit Before You Visit?", "label": "infographic style (ig:deposit-steps)", "anchor": "ig-deposit-steps"}, "ig:health-tests-checklist": {"n": "09", "section": "Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?", "label": "infographic style (ig:health-tests-checklist)", "anchor": "ig-health-tests-checklist"}, "ig:litter-figures": {"n": "10", "section": "Which Staffordshire Bull Terrier Puppies for Sale Are in Our Litter Now?", "label": "infographic style (ig:litter-figures)", "anchor": "ig-litter-figures"}, "ig:travel-route": {"n": "13", "section": "How Will Your Blue Staffy Puppy Travel to Greater Manchester?", "label": "infographic style (ig:travel-route)", "anchor": "ig-travel-route"}, "ig:papers-checklist": {"n": "14", "section": "Which Papers and Records Travel Home With Each Blue Staffy Puppy?", "label": "infographic style (ig:papers-checklist)", "anchor": "ig-papers-checklist"}, "h1": {"n": "2", "section": "H1 and meta", "label": "H1", "anchor": "choose-h1"}, "meta-title": {"n": "2", "section": "H1 and meta", "label": "title tag", "anchor": "choose-meta-title"}, "meta-description": {"n": "2", "section": "H1 and meta", "label": "meta description", "anchor": "choose-meta-description"}};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
@@ -1999,10 +2086,15 @@ document.querySelectorAll('.kv').forEach(function(root){
   function fieldOf(id){return SIGNATURE_LABELS[id]&&SIGNATURE_LABELS[id].n==='2'?id:'pick-'+id;}
   // Every pick still open, in the order the breeder meets them: block 2 first, then the
   // signature in its own (section) order.
+  function skippedImg(id){
+    if(id.indexOf('img:')!==0)return false;
+    var r=document.querySelector('input[name="pick-ig:'+id.slice(4).replace(/-phone$/,'')+'"]:checked');
+    return !!r&&r.value==='skip';
+  }
   function missingPicks(){
     var ids=['h1','meta-title','meta-description'].concat(SIGNATURE_SECTIONS);
     return ids.filter(function(id){
-      return !document.querySelector('input[name="'+fieldOf(id)+'"]:checked');
+      return !skippedImg(id)&&!document.querySelector('input[name="'+fieldOf(id)+'"]:checked');
     });
   }
   // One line per open pick — "§08 <section> — infographic style (ig:<slot>)" — each a link
@@ -2119,5 +2211,150 @@ document.querySelectorAll('.kv').forEach(function(root){
     btn.disabled=false;
     if(!APPROVED)say('Ready.');
   }).catch(function(e){dbState='none';say('Board database unavailable: '+(e&&e.code?e.code:'error')+'. Approve in chat.');});
+})();
+</script>
+<script>
+(function(){
+  var doc=document.getElementById('doc');if(!doc)return;
+  var S={sections:{},items:[]};
+  var sj=document.getElementById('board-summaries');
+  if(sj){try{var d=JSON.parse(sj.textContent);S.sections=d.sections||{};S.items=d.items||[];}catch(e){}}
+  function el(tag,cls){var e=document.createElement(tag);if(cls)e.className=cls;return e;}
+  function bodies(){return [].slice.call(doc.querySelectorAll('.md[data-title]'));}
+  function bodyOf(title){var b=bodies();for(var i=0;i<b.length;i++)if(b[i].getAttribute('data-title')===title)return b[i];return null;}
+  function role(label){return /weak|wedge/i.test(label)?'wedge':/trade|risk/i.test(label)?'trade':/why/i.test(label)?'why':'';}
+  function rich(cell){return [].some.call(cell.childNodes,function(n){return n.nodeType===1;});}
+  function split(t){
+    var m=t.match(/^(.{20,220}?[.!?])(\s|$)/);if(m)return [m[1],t.slice(m[1].length).trim()];
+    if(t.length>200){var c=t.lastIndexOf(' ',200);if(c<80)c=200;return [t.slice(0,c)+' …',t.slice(c).trim()];}
+    return [t,''];}
+  function readRest(host,lead,rest){
+    if(rest.length>40){host.appendChild(lead);var det=el('details');var s=el('summary');s.textContent='Read the rest';det.appendChild(s);
+      var p=el('p');p.textContent=rest;det.appendChild(p);host.appendChild(det);return true;}
+    return false;}
+  function fld(label,cell,cls){
+    var d=el('div','fld'+(cls?' '+cls:''));var l=el('span','lab');l.textContent=label;d.appendChild(l);
+    if(typeof cell!=='string'&&rich(cell)){var v=el('div','v');while(cell.firstChild)v.appendChild(cell.firstChild);d.appendChild(v);return d;}
+    var t=(typeof cell==='string'?cell:cell.textContent).trim(),sp=split(t),p=el('p','lead');
+    p.textContent=sp[0];if(!readRest(d,p,sp[1])){p.textContent=t;d.appendChild(p);}
+    return d;}
+
+  // 1. Where each item summary lands: the i-th body row of a block's first table, or the i-th
+  //    item of its first top-level list. Marked before any transform moves the rows.
+  S.items.forEach(function(it,n){
+    var b=bodyOf(it.section),x=null;if(!b)return;
+    if(it.kind==='row'){var t=b.querySelector('table');if(t)x=t.querySelectorAll('tbody tr')[it.index];}
+    else{var l=b.querySelector(':scope > ul, :scope > ol');if(l)x=l.children[it.index];}
+    if(x)x.setAttribute('data-item',String(n));});
+
+  // 2. Field cards. A table holding a control, an image, a fold, an anchor id or anything a
+  //    board script marked up for itself (a class, a data-id: the page board's pickers and its
+  //    keyword filter) is left as it is — a card is rebuilt from the table's text and cells.
+  var KEEP='input,select,textarea,button,iframe,img,details,[id],[class],[data-id]';
+  [].slice.call(doc.querySelectorAll('.md table')).forEach(function(t){
+    if(t.hasAttribute('class')||t.hasAttribute('id')||t.closest('.kv,.mx-wrap')||t.querySelector(KEEP))return;
+    var hs=[].map.call(t.querySelectorAll('thead th'),function(h){return h.textContent.trim();});
+    var rows=[].slice.call(t.querySelectorAll('tbody tr'));if(!rows.length||!hs.length)return;
+    var marked=rows.some(function(r){return r.hasAttribute('data-item');});
+    var b=t.closest('.md'),title=(b&&b.getAttribute('data-title'))||'';
+    if(!marked&&/Keyword Universe|Keyword Distribution|NOT FETCHED/.test(title)){
+      // long lists stay compact tables, two lines per cell; a tap opens the row
+      t.querySelectorAll('tbody td').forEach(function(td){if(td.textContent.length>90){var w=el('div','clamp');while(td.firstChild)w.appendChild(td.firstChild);td.appendChild(w);}});
+      rows.forEach(function(tr){tr.addEventListener('click',function(e){if(e.target.closest('a'))return;tr.classList.toggle('open');});});
+      var hint=el('p','hint');hint.textContent='Tap a row to open its full text.';t.parentNode.insertBefore(hint,t);return;}
+    var long=[].concat.apply([],rows.map(function(r){return [].slice.call(r.children);}))
+      .filter(function(c){return c.textContent.length>140;}).length;
+    if(!marked&&long<rows.length*0.5)return;           // short tables stay tables
+    var ti=hs.findIndex(function(h){return /result|competitor|section|page|source|keyword|entity|angle/i.test(h);});if(ti<0)ti=0;
+    var recCol=/recommended/i.test(hs.join(' ')),wrap=el('div','fcards');
+    rows.forEach(function(r){
+      var c=[].slice.call(r.children),card=el('article','fcard'),isrec=!recCol&&/Recommended/.test(r.textContent);
+      if(r.hasAttribute('data-item'))card.setAttribute('data-item',r.getAttribute('data-item'));
+      var top=el('div','fct'),h=el('h3','fcardh'),tc=c[ti],a=tc&&tc.querySelector('a[href]');
+      var tt=(tc?tc.textContent.trim():'').replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,'');
+      if(a){var link=el('a');link.href=a.getAttribute('href');link.textContent=tt;h.appendChild(link);}else h.textContent=tt;
+      top.appendChild(h);var chips=el('div','fchips');top.appendChild(chips);card.appendChild(top);
+      c.forEach(function(cell,i){if(i===ti)return;var v=cell.textContent.trim();if(!v||v==='—')return;
+        var lab=hs[i]||'';
+        if(/evidence|source/i.test(lab)){var e=el('div','fld ev');e.appendChild(document.createTextNode(lab+': '));
+          while(cell.firstChild)e.appendChild(cell.firstChild);card.appendChild(e);return;}
+        if(v.length<=40&&!rich(cell)){var ch=el('span','fchip'+(/recommended/i.test(lab)?' rec':''));
+          ch.textContent=/recommended/i.test(lab)?'Recommended: '+v:(/^#$/.test(lab)?'#':lab+' ')+v;chips.appendChild(ch);return;}
+        card.appendChild(fld(lab,cell,role(lab)));});
+      if(isrec||card.querySelector('.fchip.rec'))card.classList.add('isrec');
+      wrap.appendChild(card);});
+    t.replaceWith(wrap);});
+
+  // 3. Labelled lists: "- **X** — idea" items whose children carry a LABEL (why, trade-off).
+  var LABEL=/^(Angle|Why|Trade-off|Why it could win)\s*:\s*([\s\S]*)$/,HEAD=/^(\S+)\s+—\s+/;
+  function own(li){var t='';[].forEach.call(li.childNodes,function(n){if(n.nodeName!=='UL'&&n.nodeName!=='OL')t+=n.textContent;});return t.trim();}
+  [].slice.call(doc.querySelectorAll('.md > ul')).forEach(function(ul){
+    var lis=[].slice.call(ul.children);
+    if(!lis.every(function(li){return HEAD.test(own(li));}))return;
+    if(!lis.some(function(li){var s=li.querySelector(':scope > ul');
+      return s&&[].some.call(s.children,function(x){return LABEL.test(x.textContent.trim());});}))return;
+    ul.classList.add('lablist');
+    lis.forEach(function(li){
+      var sub=li.querySelector(':scope > ul'),ht=el('div','lhead');
+      [].slice.call(li.childNodes).forEach(function(n){if(n!==sub)ht.appendChild(n);});
+      var txt=ht.textContent.trim(),rec=/\(Recommended\)/.test(txt),m=txt.match(/^(\S+)\s+—\s+([\s\S]*)$/);
+      if(m){
+        var rest=m[2].replace(/\s*\(Recommended\)\s*/,' ').trim(),name='',idea=rest,k=rest.indexOf(': ');
+        if(k>0&&k<=60&&rest.slice(0,k).indexOf('. ')<0){name=rest.slice(0,k);idea=rest.slice(k+2);}
+        var lead=el('span','lead2');lead.textContent=m[1]+(name?' · '+name:'');li.appendChild(lead);
+        if(rec){var chip=el('span','fchip rec');chip.textContent='Recommended';li.appendChild(chip);}
+        li.appendChild(fld('The idea',idea));
+      }else li.appendChild(ht);
+      if(rec)li.classList.add('isrec');
+      if(sub){var keep=el('ul');
+        [].slice.call(sub.children).forEach(function(s){var mm=s.textContent.trim().match(LABEL);
+          if(!mm){keep.appendChild(s);return;}
+          var d=el('div','subfld'+(/trade/i.test(mm[1])?' trade':/why/i.test(mm[1])?' why':''));
+          var l=el('span','lab');l.textContent=mm[1]==='Angle'?'Hook, intro and section order':mm[1];d.appendChild(l);
+          var sp=split(mm[2]),p=el('p');p.textContent=sp[0];if(!readRest(d,p,sp[1])){p.textContent=mm[2];d.appendChild(p);}
+          li.appendChild(d);});
+        sub.remove();if(keep.children.length)li.appendChild(keep);}
+    });});
+  // Any other nested why or trade-off line keeps its place and wears its role colour.
+  [].slice.call(doc.querySelectorAll('.md li > ul > li, .md li > ol > li')).forEach(function(li){
+    if(li.closest('.lablist'))return;
+    var m=own(li).match(/^(Why|Trade-off)\s*:/);if(!m)return;
+    li.classList.add(/trade/i.test(m[1])?'rl-trade':'rl-why');
+    var t=li.firstChild;
+    if(t&&t.nodeType===3){var i=t.nodeValue.indexOf(m[0]);
+      if(i>=0&&!t.nodeValue.slice(0,i).trim()){var mid=t.splitText(i);mid.splitText(m[0].length);
+        var lab=el('span','rl-lab');li.replaceChild(lab,mid);lab.appendChild(mid);}}
+  });
+
+  // 4. Plain summaries first; the original folds underneath, unchanged.
+  function bullets(list){var u=el('ul');list.forEach(function(t){var li=el('li');li.textContent=t;u.appendChild(li);});return u;}
+  function plain(sum){var w=el('div','plain');
+    if(sum.bullets&&sum.bullets.length)w.appendChild(bullets(sum.bullets));
+    [['cost','What it cost'],['care','Read with care']].forEach(function(k){
+      if(sum[k[0]]&&sum[k[0]].length){var b=el('div','box '+k[0]);var h=el('h4');h.textContent=k[1];b.appendChild(h);b.appendChild(bullets(sum[k[0]]));w.appendChild(b);}});
+    return w;}
+  function fold(label){var d=el('details','full');var s=el('summary');s.textContent=label;d.appendChild(s);return d;}
+  [].slice.call(doc.querySelectorAll('[data-item]')).forEach(function(x){
+    var it=S.items[+x.getAttribute('data-item')];if(!it||x.tagName==='TR')return;
+    var keep=[].slice.call(x.children).filter(function(n){return n.classList.contains('fct')||n.classList.contains('lead2')||(n.classList.contains('fchip')&&n.classList.contains('rec'));});
+    var det=fold('The full text');
+    [].slice.call(x.childNodes).forEach(function(n){if(keep.indexOf(n)<0)det.appendChild(n);});
+    x.appendChild(plain(it));x.appendChild(det);x.classList.add('summed');});
+  bodies().forEach(function(b){
+    var sum=S.sections[b.getAttribute('data-title')]||S.sections[b.getAttribute('data-id')||'\u0000'];if(!sum)return;
+    var det=fold('Full text, with every source and file path');
+    while(b.firstChild)det.appendChild(b.firstChild);
+    b.appendChild(plain(sum));b.appendChild(det);b.classList.add('summed');});
+
+  // 5. The legend, and the two marks every board carries in its text.
+  var legend=el('div','legend');legend.innerHTML='<span class="l-rec">Recommended</span><span class="l-why">Why / why it ranks</span><span class="l-wedge">Weakness · our wedge</span><span class="l-trade">Trade-off · risk</span><span class="l-nf">NOT FETCHED</span>';
+  doc.parentNode.insertBefore(legend,doc);
+  var w=document.createTreeWalker(doc,NodeFilter.SHOW_TEXT,null),hits=[];
+  while(w.nextNode()){var n=w.currentNode;
+    if(/NOT FETCHED|\(Recommended\)/.test(n.nodeValue)&&!n.parentNode.closest('.nf,.recmark,button,summary,textarea,script,style,option,label'))hits.push(n);}
+  hits.forEach(function(n){var f=document.createDocumentFragment();n.nodeValue.split(/(NOT FETCHED|\(Recommended\))/).forEach(function(part){
+    if(part==='NOT FETCHED'){var a=el('span','nf');a.textContent=part;f.appendChild(a);}
+    else if(part==='(Recommended)'){var r=el('span','recmark');r.textContent='Recommended';f.appendChild(r);}
+    else if(part)f.appendChild(document.createTextNode(part));});n.parentNode.replaceChild(f,n);});
 })();
 </script>

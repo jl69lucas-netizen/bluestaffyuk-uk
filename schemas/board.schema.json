@@ -264,6 +264,20 @@
     }
    }
   },
+  "recommended_picks": {
+   "description": "Answers the record itself PROPOSES for picks the board asks, keyed exactly as approval.picks keys them. Today only block 7c's infographic slots (`ig:<slot>`): a style from the menu or `skip` (gap G17, Manchester page run 2026-10-07: no infographic where a truthful original photo already fills the heading; breeder q06, 2026-10-02: photos first). The board pre-checks the value as the Recommended option and shows `why`; the breeder may override it, and only approval.picks is what the build reads. Inside the record hash: the proposal is part of what the breeder approves. A key naming a slot block 7c does not offer is refused (scripts/infographic_plan.py plan()). Optional, so a record without it keeps its hash and its board byte for byte.",
+   "type": "object",
+   "propertyNames": {"pattern": "^ig:[a-z][a-z0-9-]*$"},
+   "additionalProperties": {
+    "type": "object",
+    "required": ["pick", "why"],
+    "additionalProperties": false,
+    "properties": {
+     "pick": {"enum": ["sticker", "chalk", "comic", "skip"]},
+     "why": {"type": "string", "minLength": 1, "description": "the reason in the breeder's terms: which photo already fills the heading"}
+    }
+   }
+  },
   "density_pool": {
    "enum": [
     "all",

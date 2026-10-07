@@ -52,7 +52,10 @@ until then a published preview falls back to the token stacks (Georgia, system-u
 
 Previews are standalone HTML at docs/artifacts/boards/ig/<slug>/<slot>-<style>.html. Board
 Task 7 embeds them as iframes with one radio group per slot named `pick-ig:<slot>` (the pick
-signature is `ig:<slot>`), so approval waits until every slot's style is chosen.
+signature is `ig:<slot>`), so approval waits until every slot is answered: a style, or `skip`
+(SKIP, gap G17) where a truthful photo already fills the heading. A record proposes an answer
+in `recommended_picks` (`{"ig:<slot>": {"pick", "why"}}`); the board pre-checks it as the
+Recommended option.
 """
 from __future__ import annotations
 
@@ -77,6 +80,13 @@ SLOT_SUFFIX = {"IG-1": "figures", "IG-2": "steps", "IG-3": "split", "IG-4": "che
                "IG-5": "route"}
 STYLES = [{"id": "sticker", "label": "Sticker"}, {"id": "chalk", "label": "Chalk"},
           {"id": "comic", "label": "Comic"}]
+#: The fourth answer to a slot (gap G17, Manchester page run, 2026-10-07): no infographic
+#: here. The breeder's ruling (q06, 2026-10-02) puts the site's original photos first, so a
+#: proposed slot on a heading a truthful photo already fills is declined, not styled. A
+#: skipped slot builds nothing (bake_infographic refuses it), never fails approval, and is
+#: recorded in `approval.picks` as `ig:<slot>: "skip"` like any other pick.
+SKIP = "skip"
+PICK_VALUES = tuple(s["id"] for s in STYLES) + (SKIP,)
 FRAME_SHAPES = {"hero", "stats", "trust", "dial", "takeaways", "reviews", "faq", "form"}
 FRAME_IDS = {"top", "hero", "counter", "trust", "contents", "key-takeaways", "takeaways",
              "newsletter", "enquiry", "form"}
@@ -161,6 +171,19 @@ def _slug(board: dict) -> str:
     return (board.get("meta") or {}).get("slug") or board.get("slug") or "page"
 
 
+def declined(picks) -> set:
+    """The slots a set of picks answers `skip` (`ig:<slot>: "skip"`): they build nothing."""
+    return {k[3:] for k, v in (picks or {}).items() if k.startswith("ig:") and v == SKIP}
+
+
+def recommendations(board: dict) -> dict:
+    """{slot: {"pick", "why"}} — the record's own proposed answers for block 7c, from its
+    `recommended_picks` (keyed like the approval's picks, `ig:<slot>`). A proposal only: the
+    board pre-checks it as the Recommended option and the breeder may override it."""
+    return {k[3:]: v for k, v in (board.get("recommended_picks") or {}).items()
+            if k.startswith("ig:")}
+
+
 def plan(board: dict, root: Path | None = ROOT) -> list[dict]:
     """[{section, slot, ig, heading, node, why, styles, facts, alt, prompt, page}].
 
@@ -168,6 +191,7 @@ def plan(board: dict, root: Path | None = ROOT) -> list[dict]:
     out = []
     assets = {a.get("slot"): a for a in board.get("assets") or []}
     taken = set(assets)
+    recs = recommendations(board)
     for sec in board.get("sections") or []:
         if _is_frame(sec):
             continue
@@ -212,7 +236,16 @@ def plan(board: dict, root: Path | None = ROOT) -> list[dict]:
         if not p["alt"]:
             p["alt"] = _alt(p)
         p.pop("_sec")
+        rec = recs.get(p["slot"]) or {}
+        p["recommended"], p["recommended_why"] = rec.get("pick"), rec.get("why")
         out.append(p)
+    stray = sorted(set(recs) - {p["slot"] for p in out})
+    if stray:
+        # A proposal for a slot the plan does not offer would never be shown: a record fault,
+        # refused like an unknown infographic_style, never silently dropped.
+        raise ValueError("recommended_picks names "
+                         + ", ".join(f"ig:{s}" for s in stray)
+                         + ", which block 7c does not offer")
     return out
 
 
@@ -1201,6 +1234,8 @@ def bake_infographic(slug: str, slot: str, style: str, out_dir=None, root: Path 
     `out_dir` defaults to a temp folder: masters are inputs to the draft, never served.
     Returns {"full", "phone", "w", "h", "phone_w", "phone_h", "width", "fill",
     "full_min_font", "phone_min_font", "phone_screen_px"} (box keys None when phone_only)."""
+    if style == SKIP:
+        raise ValueError(f"{slot}: the breeder picked skip, so this slot builds nothing")
     import tempfile
     sys.path.insert(0, str(ROOT / "scripts"))
     from PIL import Image
@@ -1262,7 +1297,11 @@ def block(board: dict, root: Path | None = ROOT) -> str:
         lines += ["", f"**{p['slot']}** ({p['ig']} {IG_NAMES.get(p['ig'], '')}) — pick one: "
                   f"radio `pick-ig:{p['slot']}`"]
         for s in p["styles"]:
-            lines.append(f"- {s['label']}: `{preview_path(p['page'], p['slot'], s['id'])}`")
+            rec = " (Recommended)" if p.get("recommended") == s["id"] else ""
+            lines.append(f"- {s['label']}{rec}: `{preview_path(p['page'], p['slot'], s['id'])}`")
+        rec = " (Recommended)" if p.get("recommended") == SKIP else ""
+        why = f" — {p['recommended_why']}" if p.get("recommended_why") else ""
+        lines.append(f"- Skip{rec}: build no infographic here{why}")
     return "\n".join(lines) + "\n"
 
 

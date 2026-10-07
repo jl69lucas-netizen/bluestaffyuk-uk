@@ -398,15 +398,17 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
             continue                                  # an image pick, validated below
         # Board v2 blocks 7c and 7d (build_page_board.py): an infographic style and an
         # original-photo slot's use/swap/skip. They name a slot, not a section, and live only in approval.picks.
-        # The allowed values are PB.V2_PICKS (ig: sticker / chalk / comic since breeder q08).
+        # The allowed values are PB.V2_VALUES: ig: sticker / chalk / comic (breeder q08) or
+        # skip (gap G17, 2026-10-07: no infographic where a truthful photo fills the heading),
+        # og: use / swap / skip. A skip is a pick like any other and is kept in approval.picks.
         if sid.startswith(PB.V2_PICK_PREFIXES):
             prefix, slot = sid.split(":", 1)
             prefix += ":"
             slots = PB.v2_slots(b) if slots is None else slots
             if slot not in slots[prefix]:
                 raise PB.BoardError(f"approval picks {sid!r}, which is not in the record")
-            if pick not in PB.V2_PICKS[prefix]:
-                raise PB.BoardError(f"pick {sid}: {pick!r} is not one of {list(PB.V2_PICKS[prefix])}")
+            if pick not in PB.V2_VALUES[prefix]:
+                raise PB.BoardError(f"pick {sid}: {pick!r} is not one of {list(PB.V2_VALUES[prefix])}")
             continue
         if sid not in by_id:
             raise PB.BoardError(f"approval picks section {sid!r}, which is not in the record")

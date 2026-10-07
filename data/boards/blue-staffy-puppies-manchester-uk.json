@@ -266,6 +266,24 @@
    "reason": "FAQ rewording proposed for STOP 3, not yet picked by the breeder: old wording \"Is a Staffordshire Bull Terrier Able to Live in a Flat?\" (approved outline data/outlines/blue-staffy-puppies-manchester-uk.json, hash 593992436b4531ab) becomes the Recommended \"Will a Staffordshire Bull Terrier Be Happy Living in a Flat?\" (docs/research/manchester-components/faq-rewordings.md §9). Source: Task 34 near-copy check, 2026-10-07. Checked 2026-10-07: PB.near_copy_hits, PB.header_precheck and PB.faq_hits all [] over the 20 questions with the nine Recommended wordings in place. The answer stays word for word; src/lib/manchesterFaq.ts is re-keyed at build (page-run row 12)."
   }
  ],
+ "recommended_picks": {
+  "ig:deposit-steps": {
+   "pick": "skip",
+   "why": "The H2 already carries an original photo, Lisa Bright holding two young puppies (lisa-bright-blue-staffy-breeder-carlisle.webp), and its three H3s each carry one too. Original photos come first, and an infographic goes only where no truthful photo fits (breeder q06, 2026-10-02). Recommended skip; pick a style instead to keep the infographic."
+  },
+  "ig:health-tests-checklist": {
+   "pick": "skip",
+   "why": "The H2 already carries an original photo of Jones, the litter's sire (jones-magnificent-blue-staffy-sire.webp), and both H3s carry photos too. Original photos come first, and an infographic goes only where no truthful photo fits (breeder q06, 2026-10-02). Recommended skip; pick a style instead to keep the infographic."
+  },
+  "ig:litter-figures": {
+   "pick": "skip",
+   "why": "The H3 already carries an original photo of Byrd from this litter (byrd-card-800.webp), and the section's table states both prices. Original photos come first, and an infographic goes only where no truthful photo fits (breeder q06, 2026-10-02). Recommended skip; pick a style instead to keep the infographic."
+  },
+  "ig:travel-route": {
+   "pick": "skip",
+   "why": "The H2 already carries an original photo of a bed and crate set up for a new puppy (blue-staffy-puppy-preparation.webp), and both H3s carry photos too. Original photos come first, and an infographic goes only where no truthful photo fits (breeder q06, 2026-10-02). Recommended skip; pick a style instead to keep the infographic."
+  }
+ },
  "sections": [
   {
    "id": "top",

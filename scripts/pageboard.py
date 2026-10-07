@@ -1506,6 +1506,15 @@ def section_fingerprint(section):
 #: picked a retired style is dropped by locked_picks and asked again.
 V2_PICKS = {"ig:": ("sticker", "chalk", "comic"), "og:": ("use", "swap", "skip")}
 V2_PICK_PREFIXES = tuple(V2_PICKS)
+#: Gap G17 (2026-10-07): an `ig:` slot may also be answered `skip` — no infographic on that
+#: heading, because a truthful original photo already fills it (breeder q06, 2026-10-02:
+#: photos first). infographic_plan.SKIP is the same value (tests/py/test_infographic_skip.py).
+#: V2_PICKS stays the style menu the frames render; V2_VALUES is every answer approval
+#: accepts. A skip answers the slot (it stays in ig_slots_required), builds nothing
+#: (infographic_plan.bake_infographic refuses it, image_rules never waits on it) and is
+#: recorded in approval.picks like any other pick.
+IG_SKIP = "skip"
+V2_VALUES = {"ig:": V2_PICKS["ig:"] + (IG_SKIP,), "og:": V2_PICKS["og:"]}
 #: Infographic slots whose content waits on a breeder answer: shown with their three styles,
 #: offered as an optional pick, and kept OUT of the required set. Keyed by (board slug, slot
 #: id), so one page's pending answer never exempts another page's slot of the same name.
@@ -1584,7 +1593,7 @@ def locked_picks(board):
         if sid.startswith(V2_PICK_PREFIXES):
             slots = v2_slots(board) if slots is None else slots
             prefix, slot = sid.split(":", 1)
-            if slot in slots[prefix + ":"] and pick in V2_PICKS[prefix + ":"]:
+            if slot in slots[prefix + ":"] and pick in V2_VALUES[prefix + ":"]:
                 out[sid] = pick
             continue
         s = by_id.get(sid)
@@ -1614,9 +1623,16 @@ def slot_picks_shown(board, locked=None, plan=None):
         slots = v2_slots(board, plan)
         for sid, pick in live.items():
             prefix, slot = sid.split(":", 1)
-            if slot in slots[prefix + ":"] and pick in V2_PICKS[prefix + ":"]:
+            if slot in slots[prefix + ":"] and pick in V2_VALUES[prefix + ":"]:
                 out[sid] = pick
     return out
+
+
+def ig_recommended(plan):
+    """{`ig:<slot>`: value} the record proposes for block 7c (`recommended_picks`, carried on
+    each ig_plan() row as `recommended`). The board pre-checks these as the Recommended
+    option where no pick is carried or live; the breeder may override any of them."""
+    return {f"ig:{p['slot']}": p["recommended"] for p in plan if p.get("recommended")}
 
 
 # ── working rule 16: no two pages share a hero or a counter ────────────────────────────────
