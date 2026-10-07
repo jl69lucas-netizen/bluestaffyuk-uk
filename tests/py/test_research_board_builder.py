@@ -126,7 +126,8 @@ def test_the_board_renders_every_section_with_copy_buttons_and_a_md_download(tmp
     assert "**Structural read:**" in md and "**(Recommended)**" in md
     assert "Status: **APPROVED" in md
     page = html_path.read_text(encoding="utf-8")
-    assert "Copy section" in page and 'id="dl-md"' in page and "text/markdown" in page
+    assert "Copy section" in page and 'id="dl-md" hidden' in page and "text/markdown" in page
+    assert "downloads.save(" in page and "createObjectURL" not in page   # viewer-only download
     assert page.count('type="text/markdown" data-title=') == 20
 
 

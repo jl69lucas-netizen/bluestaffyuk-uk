@@ -112,7 +112,8 @@ def test_the_matrix_renders_every_column_with_copy_buttons_and_a_md_download(tmp
     for n in range(1, 6):
         assert f"\n## §{n} " in md, n
     page = html_path.read_text(encoding="utf-8")
-    assert "Copy section" in page and 'id="dl-md"' in page
+    assert "Copy section" in page and 'id="dl-md" hidden' in page
+    assert "downloads.save(" in page and "createObjectURL" not in page   # viewer-only download
     assert page.count('type="text/markdown" data-title=') == 1 + 1 + 5 + 1
 
 

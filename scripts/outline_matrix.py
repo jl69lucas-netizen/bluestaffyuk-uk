@@ -59,7 +59,8 @@ Usage:
   python3 scripts/outline_matrix.py <slug> --check         validate only
   python3 scripts/outline_matrix.py <slug> --approve --answers <answers.json>
   options: --record PATH  --out DIR                        (a fixture, or a scratch run)
-Writes docs/artifacts/outlines/<slug>.html and .md; publish the .html as an Artifact.
+Writes docs/artifacts/outlines/<slug>.html and .md; publish the .html as an Artifact with
+capabilities={"downloads": true} (scripts/_md_artifact.py: the .md download needs it).
 Exit 0 clean · 1 the outline breaks a rule or is malformed (every problem printed) · 2 no
 record, no approved research board, a bad call or a refused approval.
 """
@@ -793,6 +794,7 @@ def main(argv=None):
         return 0
     html_path, md_path = build(record, research, pathlib.Path(a.out) if a.out else ROOT / OUT)
     print(f"wrote {html_path} and {md_path} — state: {approval_state(record)}")
+    print("  " + MA.publish_hint(html_path))
     return 0
 
 
