@@ -48,6 +48,7 @@
 - **Audit:** the page is a 5-word noindex stub, so `@bsuk-content-audit-agent` adds little (as London); the research board covers intent and gaps.
 - **LLM visibility:** not cited — chatgpt, 2026-09-25 (`docs/research/llm-intel/blue-staffy-puppies-manchester-uk-2026-09-25.json`, provisional: question-file source). Refreshed at row 5.
 - **Hub:** `/uk-locations/` is built (Known Issue 86: its body does not link the indexable city pages).
+- 2026-10-07 (STOP 3 posted): open for after STOP 3 — six PROPOSED entities on the board (greater-manchester, salford, l-2-hga-dna-test, hc-hsf4-dna-test, bva-kc-eye-scheme, elbow-screening) need a source before they are asserted; hero puppies repeat in the body (Roman, Cheryl, Ince, Vennie) and the middle review's Jones photo need new alts at STOP 4; G18 (loose infographic trigger words) not fixed, worked round by an explicit IG-4 slot; PAA gaps left on 1b: buying in Manchester, male versus female.
 
 ---
 <!-- Synthesized fields below are filled in at finalization, from the Q&A Log above. -->
