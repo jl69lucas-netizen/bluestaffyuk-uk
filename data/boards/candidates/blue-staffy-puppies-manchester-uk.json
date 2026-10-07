@@ -1,0 +1,4909 @@
+{
+ "slug": "blue-staffy-puppies-manchester-uk",
+ "method": "token overlap: slot words (section heading, section keywords, H3 heading, prompt) against image words (filename stem, alts); shared site-wide words dropped; score = distinct shared words; pools own > served > assets, score orders within a pool",
+ "assets_dir": null,
+ "pools": {
+  "own": 24,
+  "served": 68,
+  "assets": 2,
+  "assets_already_served": 36
+ },
+ "slots": [
+  {
+   "slot": "manchester-hero",
+   "section": "top",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "alone",
+    "can",
+    "card",
+    "carlisle",
+    "carry",
+    "coat",
+    "colour",
+    "come",
+    "data",
+    "decide",
+    "exempt",
+    "greater",
+    "hero",
+    "json",
+    "keyword",
+    "litter",
+    "m1",
+    "manchester",
+    "no",
+    "one",
+    "only",
+    "outline",
+    "own",
+    "per",
+    "primary",
+    "read",
+    "replaced",
+    "row",
+    "secondary",
+    "served",
+    "should",
+    "so",
+    "staff",
+    "where",
+    "which",
+    "written"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/puppies/roman-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "",
+     "used_on": [],
+     "pick": "file:/images/puppies/roman-card-800.webp",
+     "current": true,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "card"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "carlisle",
+      "one"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/byrd-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Byrd, the solid white boy in this litter, standing on wooden decking",
+     "used_on": [],
+     "pick": "file:/images/puppies/byrd-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "card",
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "card",
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/puppies/ince-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Ince, a blue male puppy from Maggie and Jones's litter",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/puppies/ince-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "card",
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "The English Staffy and American Staffordshire Terrier breed standards side by side: the standard, height, coat colours and UK law",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "coat",
+      "colour"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/puppies/roman-card-800.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "",
+    "used_on": [],
+    "pick": "file:/images/puppies/roman-card-800.webp",
+    "current": true,
+    "missing": false,
+    "score": 1,
+    "matched": [
+     "card"
+    ]
+   }
+  },
+  {
+   "slot": "deposit-h2",
+   "section": "deposit",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "any",
+    "ask",
+    "asset",
+    "bad",
+    "baked",
+    "before",
+    "bright",
+    "buying",
+    "can",
+    "carry",
+    "change",
+    "decide",
+    "deposit",
+    "ethical",
+    "first",
+    "gate",
+    "getting",
+    "h2",
+    "hand",
+    "has",
+    "know",
+    "lisa",
+    "london",
+    "looking",
+    "make",
+    "manchester",
+    "money",
+    "mother",
+    "no",
+    "one",
+    "outline",
+    "q06",
+    "record",
+    "reputable",
+    "reserve",
+    "row",
+    "see",
+    "serve",
+    "served",
+    "should",
+    "so",
+    "spot",
+    "start",
+    "still",
+    "take",
+    "use",
+    "visit",
+    "was",
+    "where"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, our blue Staffy breeder, smiling and holding up two young puppies, one fawn and one dark brindle",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": true,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "bright",
+      "lisa",
+      "one"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/1blue-staffy-family-breeder.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/1blue-staffy-family-breeder.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "ethical",
+      "mother"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "hand",
+      "see"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-vet-check-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "before",
+      "has",
+      "one"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "How can I avoid common Staffordshire Bull Terrier temperament problems? Blue Staffy puppy socialising with children.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "can",
+      "mother"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-research.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A person viewing a \"Blue Staffordshire Bull Terrier Buying Guide\" webpage on a tablet with a cup of coffee nearby, representing the research phase of getting a new puppy.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/blue-staffy-research.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "buying",
+      "getting"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "Lisa Bright, our blue Staffy breeder, smiling and holding up two young puppies, one fawn and one dark brindle",
+    "used_on": [
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+    "current": true,
+    "missing": false,
+    "score": 3,
+    "matched": [
+     "bright",
+     "lisa",
+     "one"
+    ]
+   }
+  },
+  {
+   "slot": "deposit-settle",
+   "section": "deposit",
+   "node": "What Does the Deposit Settle Between You and Us as Staffy Breeders?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "before",
+    "between",
+    "coat",
+    "data",
+    "deposit",
+    "exempt",
+    "first",
+    "h3",
+    "json",
+    "lesson",
+    "moment",
+    "no",
+    "per",
+    "plain",
+    "read",
+    "reservation",
+    "served",
+    "settle",
+    "take",
+    "visit",
+    "written"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/puppies/christa-christa.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "",
+     "used_on": [],
+     "pick": "file:/images/puppies/christa-christa.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "read"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A checklist for your puppy's folder: microchip and vaccinations, the written contract, what to check before signing, and the guarantee",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "before",
+      "written"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/affordable-vs-premium-blue-staffy-breeders-comparison.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A visual comparison illustrating the difference between affordable vs premium Blue Staffy breeders, highlighting health testing versus uncertain origins.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/affordable-vs-premium-blue-staffy-breeders-comparison.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "between"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-bully-puppies-for-sale-uk-kc-certified.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Exceptionally structured blue staffy bully puppies for sale, displaying the classic muscular build and deep blue coat.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/blue-staffy-bully-puppies-for-sale-uk-kc-certified.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "coat"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/puppies/christa-christa.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "",
+    "used_on": [],
+    "pick": "file:/images/puppies/christa-christa.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "deposit-questions",
+   "section": "deposit",
+   "node": "Which Questions Should a Staffy Breeder Answer Before Any Money Moves?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "answer",
+    "any",
+    "ask",
+    "before",
+    "buyer",
+    "deposit",
+    "first",
+    "h3",
+    "kept",
+    "litter",
+    "maggie",
+    "meet",
+    "money",
+    "move",
+    "own",
+    "parent",
+    "question",
+    "served",
+    "should",
+    "take",
+    "use",
+    "visit",
+    "which",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": true,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "litter",
+      "maggie",
+      "meet"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "answer"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/byrd-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Byrd, the solid white boy in this litter, standing on wooden decking",
+     "used_on": [],
+     "pick": "file:/images/puppies/byrd-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "deposit",
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/how-to-buy-blue-staffy-puppy-uk-steps1.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy looking inquisitively at an open book, symbolizing the process of learning and following the right steps to buy a puppy. The dog's curious expression reflects a buyer's initial questions. | UK Blue Staffy Puppy Buying Guide",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/how-to-buy-blue-staffy-puppy-uk-steps1.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "buyer",
+      "question"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/puppies/ince-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Ince, a blue male puppy from Maggie and Jones's litter",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/puppies/ince-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "litter",
+      "maggie"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+    "used_on": [
+     "/",
+     "/blue-staffy-health-uk/",
+     "/blue-staffy-pup-sale-uk/",
+     "/uk-locations/blue-staffy-puppies-london/",
+     "/uk-locations/blue-staffy-puppies-uk/",
+     "/uk-locations/staffy-breeding-dogs-glasgow/"
+    ],
+    "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+    "current": true,
+    "missing": false,
+    "score": 3,
+    "matched": [
+     "litter",
+     "maggie",
+     "meet"
+    ]
+   }
+  },
+  {
+   "slot": "deposit-visit",
+   "section": "deposit",
+   "node": "What Will I See When I Visit a Staffy Breeder's Home in Carlisle?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "asleep",
+    "bed",
+    "before",
+    "carlisle",
+    "deposit",
+    "first",
+    "h3",
+    "indoor",
+    "kept",
+    "litter",
+    "location",
+    "manchester",
+    "never",
+    "own",
+    "raised",
+    "round",
+    "see",
+    "served",
+    "setting",
+    "take",
+    "two",
+    "use",
+    "visit",
+    "where",
+    "will",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/blue-staffy-pups-near-you.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Blue Staffy puppies available near you in the UK",
+     "used_on": [
+      "/buy-blue-staffy-puppies-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-pups-near-you.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/roman-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Roman, one of our blue Staffy puppies for Manchester homes, raised in Carlisle: a blue and white boy with blue eyes, lying on the grass",
+     "used_on": [],
+     "pick": "file:/images/puppies/roman-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "carlisle",
+      "manchester",
+      "raised"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "carlisle",
+      "two"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "litter",
+      "two"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "deposit",
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppies-uk-litter1.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "4 blue Staffy puppies looking for a new home in the UK.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppies-uk-litter1.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Adorable litter of blue Staffy puppies for sale in the UK.",
+     "used_on": [
+      "/",
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "litter"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/blue-staffy-pups-near-you.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "Blue Staffy puppies available near you in the UK",
+    "used_on": [
+     "/buy-blue-staffy-puppies-uk/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/blue-staffy-pups-near-you.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "health-tests-h2",
+   "section": "health-tests",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "advice",
+    "been",
+    "before",
+    "both",
+    "can",
+    "certificate",
+    "check",
+    "checked",
+    "come",
+    "commit",
+    "contact",
+    "dam",
+    "did",
+    "eating",
+    "family",
+    "first",
+    "flea",
+    "food",
+    "genetic",
+    "guarantee",
+    "h2",
+    "had",
+    "has",
+    "have",
+    "health",
+    "hga",
+    "jone",
+    "kennel",
+    "kept",
+    "life",
+    "litter",
+    "maggie",
+    "manchester",
+    "mean",
+    "microchipped",
+    "much",
+    "my",
+    "offer",
+    "own",
+    "parent",
+    "prone",
+    "raised",
+    "record",
+    "result",
+    "scratch",
+    "see",
+    "served",
+    "sire",
+    "so",
+    "take",
+    "temperament",
+    "test",
+    "tested",
+    "testing",
+    "treatment",
+    "typical",
+    "use",
+    "vaccination",
+    "vet",
+    "which",
+    "whole",
+    "word",
+    "worming"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/jones-magnificent-blue-staffy-sire.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/jones-magnificent-blue-staffy-sire.webp",
+     "current": true,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "jone",
+      "sire"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "dam",
+      "family",
+      "litter",
+      "maggie"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/jones-strong-staffy-sire-temperament.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/jones-strong-staffy-sire-temperament.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "jone",
+      "sire",
+      "temperament"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/blue-staffy-vet-check.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy and healthy blue Staffordshire Bull Terrier dog sitting on an examination table while a smiling UK veterinarian gently pets its head during a check-up.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-vet-check.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "check",
+      "vet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "current": false,
+     "missing": false,
+     "score": 8,
+     "matched": [
+      "before",
+      "checked",
+      "guarantee",
+      "health",
+      "hga",
+      "test",
+      "testing",
+      "vet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-vet-check-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 5,
+     "matched": [
+      "before",
+      "check",
+      "has",
+      "health",
+      "vet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A checklist for your puppy's folder: microchip and vaccinations, the written contract, what to check before signing, and the guarantee",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "before",
+      "check",
+      "guarantee",
+      "vaccination"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/jones-magnificent-blue-staffy-sire.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.",
+    "used_on": [
+     "/uk-locations/blue-staffy-puppies-london/",
+     "/uk-locations/staffy-breeding-dogs-glasgow/"
+    ],
+    "pick": "file:/images/jones-magnificent-blue-staffy-sire.webp",
+    "current": true,
+    "missing": false,
+    "score": 2,
+    "matched": [
+     "jone",
+     "sire"
+    ]
+   }
+  },
+  {
+   "slot": "health-tests-dna",
+   "section": "health-tests",
+   "node": "Why Does an L-2-HGA Test on Both Parents Matter to My Puppy?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "adult",
+    "before",
+    "both",
+    "calm",
+    "certificate",
+    "check",
+    "did",
+    "first",
+    "h3",
+    "have",
+    "health",
+    "hga",
+    "kept",
+    "lesson",
+    "litter",
+    "matter",
+    "my",
+    "no",
+    "own",
+    "parent",
+    "prop",
+    "served",
+    "table",
+    "test",
+    "use",
+    "vet",
+    "which",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/blue-staffy-vet-check.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy and healthy blue Staffordshire Bull Terrier dog sitting on an examination table while a smiling UK veterinarian gently pets its head during a check-up.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-vet-check.webp",
+     "current": true,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "check",
+      "table",
+      "vet"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/jones-strong-staffy-sire-temperament.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/jones-strong-staffy-sire-temperament.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "calm"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "current": false,
+     "missing": false,
+     "score": 6,
+     "matched": [
+      "before",
+      "health",
+      "hga",
+      "matter",
+      "test",
+      "vet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-vet-check-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 5,
+     "matched": [
+      "before",
+      "check",
+      "health",
+      "table",
+      "vet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/what-health-tests-blue-staffies-need.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A graphic illustrating various diagnostic tools used to perform what health tests do blue Staffies need, including DNA and physical exams.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/what-health-tests-blue-staffies-need.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "check",
+      "health",
+      "test",
+      "vet"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/blue-staffy-vet-check.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A happy and healthy blue Staffordshire Bull Terrier dog sitting on an examination table while a smiling UK veterinarian gently pets its head during a check-up.",
+    "used_on": [
+     "/uk-blue-staffy-puppy-buying-guide/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/blue-staffy-vet-check.webp",
+    "current": true,
+    "missing": false,
+    "score": 3,
+    "matched": [
+     "check",
+     "table",
+     "vet"
+    ]
+   }
+  },
+  {
+   "slot": "health-tests-home",
+   "section": "health-tests",
+   "node": "Where Does Each Blue Staffy Puppy Spend Its First Weeks in Our Carlisle Home?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "among",
+    "bed",
+    "before",
+    "both",
+    "bowl",
+    "carlisle",
+    "did",
+    "each",
+    "family",
+    "first",
+    "food",
+    "h3",
+    "have",
+    "health",
+    "indoor",
+    "kept",
+    "litter",
+    "own",
+    "parent",
+    "raised",
+    "raising",
+    "served",
+    "spend",
+    "test",
+    "toy",
+    "two",
+    "use",
+    "week",
+    "where",
+    "which",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/buy-staffordshire-bull-terrier-uk-now.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A confident blue Staffordshire Bull Terrier pups available to buy in the UK. | Blue Staffy Pup Sale UK",
+     "used_on": [
+      "/blue-staffy-pup-sale-uk/",
+      "/buy-blue-staffy-puppies-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/buy-staffordshire-bull-terrier-uk-now.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/blue-staffy-puppy-preparation.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A person kneeling in a clean living room, arranging a new dog bed next to a crate, with food bowls and puppy toys nearby.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-preparation.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "bed",
+      "bowl",
+      "food",
+      "toy"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "family",
+      "litter",
+      "two"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/1blue-staffy-family-breeder.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/1blue-staffy-family-breeder.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "family",
+      "two"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/ready-to-welcome-blue-staffy-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "An infographic showing a Blue Staffy puppy surrounded by icons of essential supplies like food bowls, a bed, toys, a leash, and a vet checklist.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/ready-to-welcome-blue-staffy-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "bed",
+      "bowl",
+      "food",
+      "toy"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/staffy-health-tests-to-ask-a-breeder-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A checklist of six health questions to put to a Staffy breeder, from the two DNA tests to checking a Kennel Club registration",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/staffy-health-tests-to-ask-a-breeder-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "health",
+      "test",
+      "two"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "before",
+      "health",
+      "test"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/buy-staffordshire-bull-terrier-uk-now.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A confident blue Staffordshire Bull Terrier pups available to buy in the UK. | Blue Staffy Pup Sale UK",
+    "used_on": [
+     "/blue-staffy-pup-sale-uk/",
+     "/buy-blue-staffy-puppies-uk/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/buy-staffordshire-bull-terrier-uk-now.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "litter-h2",
+   "section": "litter",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "advertised",
+    "better",
+    "breeding",
+    "checked",
+    "club",
+    "coat",
+    "come",
+    "cost",
+    "data",
+    "deposit",
+    "ensure",
+    "exempt",
+    "female",
+    "fewer",
+    "first",
+    "get",
+    "greater",
+    "h2",
+    "have",
+    "health",
+    "included",
+    "json",
+    "kc",
+    "kennel",
+    "lead",
+    "litter",
+    "male",
+    "manchester",
+    "much",
+    "no",
+    "one",
+    "paperwork",
+    "per",
+    "price",
+    "program",
+    "range",
+    "read",
+    "registered",
+    "risk",
+    "served",
+    "should",
+    "show",
+    "six",
+    "so",
+    "stud",
+    "temperament",
+    "together",
+    "typical",
+    "which",
+    "who",
+    "whole",
+    "would",
+    "written"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/puppies/vennie-vennie.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "",
+     "used_on": [],
+     "pick": "file:/images/puppies/vennie-vennie.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "one",
+      "who"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/roman-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Roman, one of our blue Staffy puppies for Manchester homes, raised in Carlisle: a blue and white boy with blue eyes, lying on the grass",
+     "used_on": [],
+     "pick": "file:/images/puppies/roman-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "manchester",
+      "one"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A settled blue Staffy puppy at home in Manchester, a testament to BlueStaffyUK's excellent communication and reputable breeding.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "breeding",
+      "manchester"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A breeder holding a KC-registered Staffy puppy, illustrating what Kennel Club registration records about a litter and what it does not.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp",
+     "current": false,
+     "missing": false,
+     "score": 5,
+     "matched": [
+      "club",
+      "kc",
+      "kennel",
+      "litter",
+      "registered"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/kc-registered-staffy-puppies.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A cute blue Staffy puppy sitting next to its official Kennel Club registration papers, symbolizing KC registered Staffy puppies.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/kc-registered-staffy-puppies.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "club",
+      "kc",
+      "kennel",
+      "registered"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/staffy-health-tests-to-ask-a-breeder-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A checklist of six health questions to put to a Staffy breeder, from the two DNA tests to checking a Kennel Club registration",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/staffy-health-tests-to-ask-a-breeder-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "club",
+      "health",
+      "kennel",
+      "six"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/puppies/vennie-vennie.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "",
+    "used_on": [],
+    "pick": "file:/images/puppies/vennie-vennie.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "litter-prices",
+   "section": "litter",
+   "node": "Why Do Our Blue Staffy Puppy Prices Follow the Sex, Not the Coat, in This Litter?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "boy",
+    "byrd",
+    "card",
+    "coat",
+    "data",
+    "example",
+    "exempt",
+    "follow",
+    "h3",
+    "h5",
+    "json",
+    "litter",
+    "never",
+    "no",
+    "not",
+    "one",
+    "painted",
+    "per",
+    "price",
+    "read",
+    "served",
+    "sex",
+    "which",
+    "white",
+    "worked",
+    "written"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/puppies/byrd-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "",
+     "used_on": [],
+     "pick": "file:/images/puppies/byrd-card-800.webp",
+     "current": true,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "byrd",
+      "card"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/roman-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Roman, one of our blue Staffy puppies for Manchester homes, raised in Carlisle: a blue and white boy with blue eyes, lying on the grass",
+     "used_on": [],
+     "pick": "file:/images/puppies/roman-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "boy",
+      "card",
+      "one",
+      "white"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/roman-roman1.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Roman, a blue and white boy with blue eyes, lying in long grass",
+     "used_on": [],
+     "pick": "file:/images/puppies/roman-roman1.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "boy",
+      "white"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "boy",
+      "card",
+      "litter",
+      "price"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-vet-check-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "one",
+      "white"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A breeder holding a KC-registered Staffy puppy, illustrating what Kennel Club registration records about a litter and what it does not.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "litter",
+      "not"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/puppies/byrd-card-800.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "",
+    "used_on": [],
+    "pick": "file:/images/puppies/byrd-card-800.webp",
+    "current": true,
+    "missing": false,
+    "score": 2,
+    "matched": [
+     "byrd",
+     "card"
+    ]
+   }
+  },
+  {
+   "slot": "litter-parents",
+   "section": "litter",
+   "node": "Who Are Maggie and Jones, the Parents Behind Our Blue Staffies?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "behind",
+    "carry",
+    "first",
+    "h3",
+    "jone",
+    "kept",
+    "litter",
+    "maggie",
+    "own",
+    "parent",
+    "repeat",
+    "served",
+    "use",
+    "which",
+    "who",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/jones-strong-staffy-sire-temperament.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/jones-strong-staffy-sire-temperament.webp",
+     "current": true,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "jone"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "behind",
+      "litter",
+      "maggie"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/jones-magnificent-blue-staffy-sire.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/jones-magnificent-blue-staffy-sire.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "behind",
+      "jone"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/puppies/ince-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Ince, a blue male puppy from Maggie and Jones's litter",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/puppies/ince-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "jone",
+      "litter",
+      "maggie"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppies-uk-litter1.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "4 blue Staffy puppies looking for a new home in the UK.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppies-uk-litter1.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "litter"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/jones-strong-staffy-sire-temperament.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament.",
+    "used_on": [
+     "/uk-locations/blue-staffy-puppies-london/",
+     "/uk-locations/staffy-breeding-dogs-glasgow/"
+    ],
+    "pick": "file:/images/jones-strong-staffy-sire-temperament.webp",
+    "current": true,
+    "missing": false,
+    "score": 1,
+    "matched": [
+     "jone"
+    ]
+   }
+  },
+  {
+   "slot": "travel-h2",
+   "section": "travel",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "across",
+    "bed",
+    "bolton",
+    "can",
+    "crate",
+    "deliver",
+    "delivered",
+    "delivery",
+    "digit",
+    "first",
+    "get",
+    "greater",
+    "h2",
+    "kept",
+    "lesson",
+    "lettering",
+    "location",
+    "made",
+    "manchester",
+    "my",
+    "no",
+    "oldham",
+    "own",
+    "phone",
+    "ready",
+    "rochdale",
+    "salford",
+    "served",
+    "settled",
+    "stockport",
+    "travel",
+    "use",
+    "van",
+    "wigan",
+    "will",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/blue-staffy-puppy-preparation.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A person kneeling in a clean living room, arranging a new dog bed next to a crate, with food bowls and puppy toys nearby.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-preparation.webp",
+     "current": true,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "bed",
+      "crate"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A settled blue Staffy puppy at home in Manchester, a testament to BlueStaffyUK's excellent communication and reputable breeding.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "manchester",
+      "settled"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A healthy and well-socialized blue Staffy puppy, reflecting the quality and care involved when you choose to buy a blue Staffy puppy in the UK.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "settled"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-delivery-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy ready for UK home delivery",
+     "used_on": [
+      "/",
+      "/buy-blue-staffy-puppies-uk/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-delivery-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "delivery",
+      "ready",
+      "van"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/bluestaffyuk-nationwide-delivery.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "BlueStaffyUK.uk branded van delivering blue Staffy puppies nationwide across the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-pup-sale-uk/",
+      "/blue-staffy-uk-breeders/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/bluestaffyuk-nationwide-delivery.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "across",
+      "delivery",
+      "van"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppies-near-me-uk-available.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "An alert and playful blue Staffy puppy ready to explore, representing blue Staffy puppies available near me for families across the UK.",
+     "used_on": [
+      "/blue-staffy-blog-guides/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/blue-staffy-puppies-near-me-uk-available.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "across",
+      "ready"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/blue-staffy-puppy-preparation.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A person kneeling in a clean living room, arranging a new dog bed next to a crate, with food bowls and puppy toys nearby.",
+    "used_on": [
+     "/uk-blue-staffy-puppy-buying-guide/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/blue-staffy-puppy-preparation.webp",
+    "current": true,
+    "missing": false,
+    "score": 2,
+    "matched": [
+     "bed",
+     "crate"
+    ]
+   }
+  },
+  {
+   "slot": "travel-priced",
+   "section": "travel",
+   "node": "How Is Home Delivery to Salford, Stockport, Bolton or Wigan Priced?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "any",
+    "band",
+    "bolton",
+    "coat",
+    "copy",
+    "data",
+    "delivery",
+    "exempt",
+    "greater",
+    "h3",
+    "json",
+    "lesson",
+    "manchester",
+    "no",
+    "none",
+    "per",
+    "plain",
+    "price",
+    "priced",
+    "read",
+    "salford",
+    "served",
+    "stated",
+    "stockport",
+    "travel",
+    "wigan",
+    "will",
+    "word",
+    "written"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/puppies/ince-ince1.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "",
+     "used_on": [],
+     "pick": "file:/images/puppies/ince-ince1.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "read"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/roman-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Roman, one of our blue Staffy puppies for Manchester homes, raised in Carlisle: a blue and white boy with blue eyes, lying on the grass",
+     "used_on": [],
+     "pick": "file:/images/puppies/roman-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "manchester"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A settled blue Staffy puppy at home in Manchester, a testament to BlueStaffyUK's excellent communication and reputable breeding.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "manchester"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-bully-puppies-for-sale-uk-kc-certified.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Exceptionally structured blue staffy bully puppies for sale, displaying the classic muscular build and deep blue coat.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/blue-staffy-bully-puppies-for-sale-uk-kc-certified.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "coat"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "price"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-delivery-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy ready for UK home delivery",
+     "used_on": [
+      "/",
+      "/buy-blue-staffy-puppies-uk/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-delivery-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "delivery"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/puppies/ince-ince1.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "",
+    "used_on": [],
+    "pick": "file:/images/puppies/ince-ince1.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "travel-collect",
+   "section": "travel",
+   "node": "Is Collection in Carlisle Better Than Delivery for Greater Manchester Homes?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "against",
+    "answer",
+    "better",
+    "board",
+    "carlisle",
+    "checked",
+    "collection",
+    "delivery",
+    "first",
+    "greater",
+    "h3",
+    "handing",
+    "lisa",
+    "manchester",
+    "over",
+    "q02",
+    "repeat",
+    "served",
+    "than",
+    "travel",
+    "under",
+    "will"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, our blue Staffy breeder, smiling and holding up two young puppies, one fawn and one dark brindle",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": true,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "answer",
+      "carlisle",
+      "lisa"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/roman-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Roman, one of our blue Staffy puppies for Manchester homes, raised in Carlisle: a blue and white boy with blue eyes, lying on the grass",
+     "used_on": [],
+     "pick": "file:/images/puppies/roman-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "carlisle",
+      "manchester"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A settled blue Staffy puppy at home in Manchester, a testament to BlueStaffyUK's excellent communication and reputable breeding.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "manchester"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/breeder-sitting-blue-staffy-puppy-home.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright sitting with a blue Staffy puppy at home in Carlisle",
+     "used_on": [
+      "/blue-staffy-uk-breeders/"
+     ],
+     "pick": "file:/images/breeder-sitting-blue-staffy-puppy-home.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "carlisle",
+      "lisa"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-delivery-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy ready for UK home delivery",
+     "used_on": [
+      "/",
+      "/buy-blue-staffy-puppies-uk/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-delivery-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "delivery"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/bluestaffyuk-nationwide-delivery.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "BlueStaffyUK.uk branded van delivering blue Staffy puppies nationwide across the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-pup-sale-uk/",
+      "/blue-staffy-uk-breeders/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/bluestaffyuk-nationwide-delivery.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "delivery"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "Lisa Bright, our blue Staffy breeder, smiling and holding up two young puppies, one fawn and one dark brindle",
+    "used_on": [
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+    "current": true,
+    "missing": false,
+    "score": 3,
+    "matched": [
+     "answer",
+     "carlisle",
+     "lisa"
+    ]
+   }
+  },
+  {
+   "slot": "papers-h2",
+   "section": "papers",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "advertised",
+    "beside",
+    "checked",
+    "club",
+    "come",
+    "copy",
+    "each",
+    "every",
+    "first",
+    "h2",
+    "health",
+    "included",
+    "kc",
+    "kennel",
+    "kept",
+    "lesson",
+    "one",
+    "own",
+    "paper",
+    "paperwork",
+    "read",
+    "record",
+    "registered",
+    "served",
+    "should",
+    "travel",
+    "use",
+    "vaccination",
+    "which",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/puppy-vaccinations-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy blue Staffy puppy engaging with a vet after receiving its puppy vaccinations UK.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/puppy-vaccinations-uk.webp",
+     "current": true,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "vaccination"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "read"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A healthy and well-socialized blue Staffy puppy, reflecting the quality and care involved when you choose to buy a blue Staffy puppy in the UK.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "beside"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "one"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/kc-registered-staffy-puppies.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A cute blue Staffy puppy sitting next to its official Kennel Club registration papers, symbolizing KC registered Staffy puppies.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/kc-registered-staffy-puppies.webp",
+     "current": false,
+     "missing": false,
+     "score": 5,
+     "matched": [
+      "club",
+      "kc",
+      "kennel",
+      "paper",
+      "registered"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A breeder holding a KC-registered Staffy puppy, illustrating what Kennel Club registration records about a litter and what it does not.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp",
+     "current": false,
+     "missing": false,
+     "score": 5,
+     "matched": [
+      "club",
+      "kc",
+      "kennel",
+      "record",
+      "registered"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-vet-check-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "every",
+      "health",
+      "one"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/puppy-vaccinations-uk.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A happy blue Staffy puppy engaging with a vet after receiving its puppy vaccinations UK.",
+    "used_on": [
+     "/blue-staffy-health-uk/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/puppy-vaccinations-uk.webp",
+    "current": true,
+    "missing": false,
+    "score": 1,
+    "matched": [
+     "vaccination"
+    ]
+   }
+  },
+  {
+   "slot": "papers-checklist",
+   "section": "papers",
+   "node": "What Paperwork Should a Puppy Advertised as KC Registered Come With?",
+   "kind": "infographic",
+   "source": "infographic",
+   "context": [
+    "advertised",
+    "before",
+    "board",
+    "bsuk",
+    "call",
+    "carry",
+    "certificate",
+    "checklist",
+    "come",
+    "copy",
+    "data",
+    "each",
+    "every",
+    "first",
+    "fit",
+    "folder",
+    "graphic",
+    "grid",
+    "h3",
+    "has",
+    "heading",
+    "health",
+    "html",
+    "ig",
+    "infographic",
+    "json",
+    "kc",
+    "lesson",
+    "line",
+    "london",
+    "no",
+    "none",
+    "only",
+    "option",
+    "order",
+    "outline",
+    "paper",
+    "paperwork",
+    "plain",
+    "prop",
+    "q06",
+    "q08",
+    "read",
+    "record",
+    "registered",
+    "served",
+    "setting",
+    "should",
+    "show",
+    "sign",
+    "so",
+    "token",
+    "travel",
+    "trust",
+    "truthful",
+    "truthfully",
+    "where",
+    "which"
+   ],
+   "candidates": [
+    {
+     "pool": "own",
+     "file": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "read"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/blue-staffy-pups-near-you.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A group of adorable blue Staffy puppies, suggesting availability and local options.",
+     "used_on": [
+      "/buy-blue-staffy-puppies-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-pups-near-you.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "option"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A checklist for your puppy's folder: microchip and vaccinations, the written contract, what to check before signing, and the guarantee",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 5,
+     "matched": [
+      "before",
+      "checklist",
+      "folder",
+      "infographic",
+      "paperwork"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-vet-check-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "before",
+      "every",
+      "has",
+      "health"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/kc-registered-staffy-puppies.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A cute blue Staffy puppy sitting next to its official Kennel Club registration papers, symbolizing KC registered Staffy puppies.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/kc-registered-staffy-puppies.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "kc",
+      "paper",
+      "registered"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "own",
+    "file": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+    "used_on": [
+     "/buy-staffy-puppies-for-sale-uk/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+    "current": false,
+    "missing": false,
+    "score": 1,
+    "matched": [
+     "read"
+    ]
+   }
+  },
+  {
+   "slot": "guarantee-h2",
+   "section": "guarantee",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "adult",
+    "before",
+    "behind",
+    "both",
+    "can",
+    "commit",
+    "develop",
+    "first",
+    "genetic",
+    "guarantee",
+    "h2",
+    "health",
+    "healthy",
+    "kept",
+    "much",
+    "offer",
+    "outdoor",
+    "own",
+    "parent",
+    "problem",
+    "prone",
+    "result",
+    "scratch",
+    "see",
+    "served",
+    "so",
+    "stand",
+    "test",
+    "use",
+    "wellbeing",
+    "which",
+    "will",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/blue-staffy-family-dog-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Blue Staffordshire Bull Terrier: A beloved family dog in the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-uk-breeders/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-family-dog-uk.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "healthy",
+      "see"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/blue-staffy-vet-check.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy and healthy blue Staffordshire Bull Terrier dog sitting on an examination table while a smiling UK veterinarian gently pets its head during a check-up.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-vet-check.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "healthy"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A healthy and well-socialized blue Staffy puppy, reflecting the quality and care involved when you choose to buy a blue Staffy puppy in the UK.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "healthy"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "before",
+      "guarantee",
+      "health",
+      "test"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "How can I avoid common Staffordshire Bull Terrier temperament problems? Blue Staffy puppy socialising with children.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "can",
+      "problem"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-health-prioritising-wellbeing.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Blue Staffy dog sitting in a clean, peaceful home environment representing health and care.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-health-prioritising-wellbeing.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "health",
+      "wellbeing"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/blue-staffy-family-dog-uk.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "Blue Staffordshire Bull Terrier: A beloved family dog in the UK.",
+    "used_on": [
+     "/",
+     "/blue-staffy-uk-breeders/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/blue-staffy-family-dog-uk.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "guarantee-itch",
+   "section": "guarantee",
+   "node": "Why Do Staffy Dogs Itch, and When Is It Time for the Vet?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "against",
+    "answer",
+    "behind",
+    "board",
+    "can",
+    "check",
+    "checked",
+    "develop",
+    "h3",
+    "health",
+    "itch",
+    "itching",
+    "no",
+    "problem",
+    "q02",
+    "repeat",
+    "stand",
+    "time",
+    "under",
+    "vet",
+    "which",
+    "will"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/blue-staffy-vet-check.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy and healthy blue Staffordshire Bull Terrier dog sitting on an examination table while a smiling UK veterinarian gently pets its head during a check-up.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-vet-check.webp",
+     "current": true,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "check",
+      "vet"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/jones-magnificent-blue-staffy-sire.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/jones-magnificent-blue-staffy-sire.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "behind"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "answer"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-vet-check-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "check",
+      "health",
+      "vet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "checked",
+      "health",
+      "vet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/what-health-tests-blue-staffies-need.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A graphic illustrating various diagnostic tools used to perform what health tests do blue Staffies need, including DNA and physical exams.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/what-health-tests-blue-staffies-need.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "check",
+      "health",
+      "vet"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/blue-staffy-vet-check.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A happy and healthy blue Staffordshire Bull Terrier dog sitting on an examination table while a smiling UK veterinarian gently pets its head during a check-up.",
+    "used_on": [
+     "/uk-blue-staffy-puppy-buying-guide/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/blue-staffy-vet-check.webp",
+    "current": true,
+    "missing": false,
+    "score": 2,
+    "matched": [
+     "check",
+     "vet"
+    ]
+   }
+  },
+  {
+   "slot": "guarantee-cover",
+   "section": "guarantee",
+   "node": "What Does the Written Guarantee on a Blue Staffy Puppy Cover?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "behind",
+    "can",
+    "coat",
+    "copy",
+    "cover",
+    "data",
+    "develop",
+    "exempt",
+    "guarantee",
+    "h3",
+    "health",
+    "json",
+    "label",
+    "length",
+    "never",
+    "painted",
+    "per",
+    "plain",
+    "problem",
+    "read",
+    "served",
+    "stand",
+    "which",
+    "will",
+    "written"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/puppies/cheryl-cheryl1.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "",
+     "used_on": [],
+     "pick": "file:/images/puppies/cheryl-cheryl1.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "read"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/jones-magnificent-blue-staffy-sire.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/jones-magnificent-blue-staffy-sire.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "behind"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "behind"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "How can I avoid common Staffordshire Bull Terrier temperament problems? Blue Staffy puppy socialising with children.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "can",
+      "problem"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A checklist for your puppy's folder: microchip and vaccinations, the written contract, what to check before signing, and the guarantee",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "guarantee",
+      "written"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/buy-staffy-health-guarantee-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Blue Staffy puppy health guarantee UK — BlueStaffyUK breeder assurance",
+     "used_on": [
+      "/"
+     ],
+     "pick": "file:/images/buy-staffy-health-guarantee-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "guarantee",
+      "health"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/puppies/cheryl-cheryl1.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "",
+    "used_on": [],
+    "pick": "file:/images/puppies/cheryl-cheryl1.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "household-h2",
+   "section": "busy-household",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "aggressive",
+    "alone",
+    "along",
+    "attached",
+    "banned",
+    "before",
+    "breed",
+    "busy",
+    "can",
+    "children",
+    "daily",
+    "day",
+    "downside",
+    "each",
+    "especially",
+    "exercise",
+    "family",
+    "first",
+    "fit",
+    "flat",
+    "get",
+    "getting",
+    "good",
+    "h2",
+    "hard",
+    "hour",
+    "household",
+    "indoor",
+    "kept",
+    "know",
+    "left",
+    "live",
+    "long",
+    "manchester",
+    "much",
+    "need",
+    "night",
+    "one",
+    "other",
+    "own",
+    "owner",
+    "person",
+    "pet",
+    "relaxed",
+    "served",
+    "should",
+    "sleep",
+    "suitable",
+    "time",
+    "train",
+    "use",
+    "weren",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/uk-family-blue-staffy.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A joyful family with two children and a Blue Staffy dog standing in front of a stylized map of the United Kingdom.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/uk-family-blue-staffy.webp",
+     "current": true,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "children",
+      "family"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/victoria-family-blue-staffy-manchester.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Victoria family with their happy blue Staffy puppy from BlueStaffyUK.uk in Manchester.",
+     "used_on": [
+      "/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/victoria-family-blue-staffy-manchester.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "family",
+      "manchester",
+      "owner"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/1blue-staffy-family-breeder.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/1blue-staffy-family-breeder.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "children",
+      "family"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "one",
+      "other"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/sbt-history-heritage-from-pit-to-pet.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A red and white Staffordshire Bull Terrier type dog in a chain collar, standing on a plain white background",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/sbt-history-heritage-from-pit-to-pet.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "one",
+      "other",
+      "pet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/trusted-uk-breeders-blue-staffy-family.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A cheerful family, possibly with children, enjoying time with their healthy blue Staffy, representing trusted UK breeders.",
+     "used_on": [
+      "/blue-staffy-uk-breeders/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/trusted-uk-breeders-blue-staffy-family.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "children",
+      "family",
+      "time"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "How can I avoid common Staffordshire Bull Terrier temperament problems? Blue Staffy puppy socialising with children.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "can",
+      "children"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/uk-family-blue-staffy.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A joyful family with two children and a Blue Staffy dog standing in front of a stylized map of the United Kingdom.",
+    "used_on": [
+     "/uk-blue-staffy-puppy-buying-guide/"
+    ],
+    "pick": "file:/images/uk-family-blue-staffy.webp",
+    "current": true,
+    "missing": false,
+    "score": 2,
+    "matched": [
+     "children",
+     "family"
+    ]
+   }
+  },
+  {
+   "slot": "household-rented",
+   "section": "busy-household",
+   "node": "What Does the Banned-Breed Line Mean for Staffy Dogs in a Rented Manchester Home?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "banned",
+    "beside",
+    "breed",
+    "busy",
+    "calm",
+    "cat",
+    "claimed",
+    "first",
+    "fit",
+    "h3",
+    "household",
+    "identifiable",
+    "kept",
+    "landmark",
+    "lead",
+    "line",
+    "manchester",
+    "mean",
+    "no",
+    "own",
+    "rented",
+    "served",
+    "settled",
+    "sofa",
+    "use",
+    "word",
+    "young"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A well-socialised young blue Staffy sitting on a sofa beside a black cat, the settled nature to look for when you choose to buy a blue Staffy puppy in the UK.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "current": true,
+     "missing": false,
+     "score": 5,
+     "matched": [
+      "beside",
+      "cat",
+      "settled",
+      "sofa",
+      "young"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "beside",
+      "sofa"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A settled blue Staffy puppy at home in Manchester, a testament to BlueStaffyUK's excellent communication and reputable breeding.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/reputable-blue-staffy-breeder-manchester-pup.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "manchester",
+      "settled"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/sbt-uk-legal-status-public-perception.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\"",
+     "used_on": [
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/sbt-uk-legal-status-public-perception.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "banned",
+      "breed",
+      "lead"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/bluestaffyuk-nationwide-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A clean infographic of a UK map with icons of families and puppies connected by lines, representing nationwide delivery.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/bluestaffyuk-nationwide-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "line"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/healthy-staffy-breed-guide-1.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Healthy Blue Staffy breed guide — Staffordshire Bull Terrier care tips UK",
+     "used_on": [
+      "/"
+     ],
+     "pick": "file:/images/healthy-staffy-breed-guide-1.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "breed"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A well-socialised young blue Staffy sitting on a sofa beside a black cat, the settled nature to look for when you choose to buy a blue Staffy puppy in the UK.",
+    "used_on": [
+     "/uk-locations/blue-staffy-puppies-london/",
+     "/uk-locations/blue-staffy-puppies-uk/"
+    ],
+    "pick": "file:/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+    "current": true,
+    "missing": false,
+    "score": 5,
+    "matched": [
+     "beside",
+     "cat",
+     "settled",
+     "sofa",
+     "young"
+    ]
+   }
+  },
+  {
+   "slot": "household-downsides",
+   "section": "busy-household",
+   "node": "Which Downsides Should a Manchester Family Weigh Before Choosing Staffy Dogs?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "before",
+    "busy",
+    "cat",
+    "children",
+    "choosing",
+    "downside",
+    "early",
+    "family",
+    "first",
+    "fit",
+    "h3",
+    "h4",
+    "household",
+    "kept",
+    "manchester",
+    "meeting",
+    "own",
+    "served",
+    "should",
+    "socialisation",
+    "use",
+    "weigh",
+    "which",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/1blue-staffy-family-breeder.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/1blue-staffy-family-breeder.webp",
+     "current": true,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "children",
+      "family"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/uk-family-blue-staffy.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A joyful family with two children and a Blue Staffy dog standing in front of a stylized map of the United Kingdom.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/uk-family-blue-staffy.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "children",
+      "family"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/victoria-family-blue-staffy-manchester.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Victoria family with their happy blue Staffy puppy from BlueStaffyUK.uk in Manchester.",
+     "used_on": [
+      "/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/victoria-family-blue-staffy-manchester.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "family",
+      "manchester"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/trusted-uk-breeders-blue-staffy-family.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A cheerful family, possibly with children, enjoying time with their healthy blue Staffy, representing trusted UK breeders.",
+     "used_on": [
+      "/blue-staffy-uk-breeders/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/trusted-uk-breeders-blue-staffy-family.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "children",
+      "family"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/1blue-staffy-socialisation-checklist.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "An infographic-style image of a happy Blue Staffy puppy surrounded by icons of a person, another dog, and a park, representing a socialisation checklist.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/1blue-staffy-socialisation-checklist.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "socialisation"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "How can I avoid common Staffordshire Bull Terrier temperament problems? Blue Staffy puppy socialising with children.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "children"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/1blue-staffy-family-breeder.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background.",
+    "used_on": [
+     "/uk-blue-staffy-puppy-buying-guide/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/1blue-staffy-family-breeder.webp",
+    "current": true,
+    "missing": false,
+    "score": 2,
+    "matched": [
+     "children",
+     "family"
+    ]
+   }
+  },
+  {
+   "slot": "favourite-h2",
+   "section": "favourite-person",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "attached",
+    "better",
+    "bonding",
+    "close",
+    "daily",
+    "exercise",
+    "family",
+    "favourite",
+    "female",
+    "first",
+    "get",
+    "h2",
+    "her",
+    "holding",
+    "kept",
+    "leaning",
+    "love",
+    "male",
+    "much",
+    "need",
+    "one",
+    "own",
+    "owner",
+    "person",
+    "pick",
+    "served",
+    "use",
+    "whole",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/trusted-blue-staffy-breeder-reviews-satisfied-owners.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A genuine photo of a satisfied owner with their healthy puppy, reflecting positive Blue Staffy breeder reviews for BlueStaffyUK.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/trusted-blue-staffy-breeder-reviews-satisfied-owners.webp",
+     "current": true,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "owner"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/victoria-family-blue-staffy-manchester.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Victoria family with their happy blue Staffy puppy from BlueStaffyUK.uk in Manchester.",
+     "used_on": [
+      "/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/victoria-family-blue-staffy-manchester.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "family",
+      "her",
+      "holding",
+      "owner"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "holding",
+      "one"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "family",
+      "her"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-uk-reviews-owner-testimonials.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy family with their puppy, reflecting excellent blue staffy uk reviews and owner satisfaction with BlueStaffyUK.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/blue-staffy-uk-reviews-owner-testimonials.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "family",
+      "owner"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/what-health-tests-blue-staffies-need.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A graphic illustrating various diagnostic tools used to perform what health tests do blue Staffies need, including DNA and physical exams.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/what-health-tests-blue-staffies-need.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "need",
+      "one"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/1blue-staffy-socialisation-checklist.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "An infographic-style image of a happy Blue Staffy puppy surrounded by icons of a person, another dog, and a park, representing a socialisation checklist.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/1blue-staffy-socialisation-checklist.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "person"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/trusted-blue-staffy-breeder-reviews-satisfied-owners.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A genuine photo of a satisfied owner with their healthy puppy, reflecting positive Blue Staffy breeder reviews for BlueStaffyUK.",
+    "used_on": [
+     "/buy-staffy-puppies-for-sale-uk/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/trusted-blue-staffy-breeder-reviews-satisfied-owners.webp",
+    "current": true,
+    "missing": false,
+    "score": 1,
+    "matched": [
+     "owner"
+    ]
+   }
+  },
+  {
+   "slot": "favourite-boisterous",
+   "section": "favourite-person",
+   "node": "Are Boy Staffy Dogs More Boisterous Than Girls?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "against",
+    "answer",
+    "beside",
+    "board",
+    "boisterous",
+    "boy",
+    "calm",
+    "checked",
+    "family",
+    "favourite",
+    "first",
+    "girl",
+    "grown",
+    "h3",
+    "litter",
+    "love",
+    "more",
+    "person",
+    "pick",
+    "q02",
+    "question",
+    "repeat",
+    "served",
+    "than",
+    "together",
+    "under",
+    "whole"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/jones-magnificent-blue-staffy-sire.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/jones-magnificent-blue-staffy-sire.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "beside",
+      "family",
+      "litter"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/byrd-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Byrd, the solid white boy in this litter, standing on wooden decking",
+     "used_on": [],
+     "pick": "file:/images/puppies/byrd-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "boy",
+      "litter"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/cheryl-cheryl1.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Cheryl, a blue girl with a white blaze, lying on a wooden floor beside a soft toy",
+     "used_on": [],
+     "pick": "file:/images/puppies/cheryl-cheryl1.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "beside",
+      "girl"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "boy",
+      "girl",
+      "litter"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/uk-blue-staffy-breeders-contact-form-support.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Staffy breeder in UK assisting a family with a blue puppy enquiry | UK Blue Staffy Breeders Contact",
+     "used_on": [
+      "/uk-blue-staffy-breeders-contact/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/uk-blue-staffy-breeders-contact-form-support.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "beside",
+      "family",
+      "question"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/1blue-staffy-socialisation-checklist.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "An infographic-style image of a happy Blue Staffy puppy surrounded by icons of a person, another dog, and a park, representing a socialisation checklist.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/1blue-staffy-socialisation-checklist.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "person"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/jones-magnificent-blue-staffy-sire.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.",
+    "used_on": [
+     "/uk-locations/blue-staffy-puppies-london/",
+     "/uk-locations/staffy-breeding-dogs-glasgow/"
+    ],
+    "pick": "file:/images/jones-magnificent-blue-staffy-sire.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "coat-h2",
+   "section": "coat",
+   "node": null,
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "american",
+    "amstaff",
+    "average",
+    "between",
+    "breed",
+    "can",
+    "choose",
+    "coat",
+    "data",
+    "difference",
+    "english",
+    "exempt",
+    "expectancy",
+    "first",
+    "h2",
+    "if",
+    "json",
+    "last",
+    "life",
+    "lifespan",
+    "litter",
+    "live",
+    "long",
+    "make",
+    "my",
+    "named",
+    "naming",
+    "per",
+    "pit",
+    "pitbull",
+    "ranking",
+    "rare",
+    "read",
+    "served",
+    "should",
+    "side",
+    "tell",
+    "thing",
+    "two",
+    "white",
+    "without",
+    "written"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/puppies/roman-roman1.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "",
+     "used_on": [],
+     "pick": "file:/images/puppies/roman-roman1.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "litter",
+      "two"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/puppies/byrd-card-800.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Byrd, the solid white boy in this litter, standing on wooden decking",
+     "used_on": [],
+     "pick": "file:/images/puppies/byrd-card-800.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "litter",
+      "white"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "The English Staffy and American Staffordshire Terrier breed standards side by side: the standard, height, coat colours and UK law",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 6,
+     "matched": [
+      "american",
+      "amstaff",
+      "breed",
+      "coat",
+      "english",
+      "side"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/sbt-history-heritage-from-pit-to-pet.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A red and white Staffordshire Bull Terrier type dog in a chain collar, standing on a plain white background",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/sbt-history-heritage-from-pit-to-pet.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "pit",
+      "side",
+      "white"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/staffordshire-bull-terrier-vs-american-bully-comparison.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Side-by-side comparison of a Staffordshire Bull Terrier and an American Bully showing physical differences.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/staffordshire-bull-terrier-vs-american-bully-comparison.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "american",
+      "difference",
+      "side"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/puppies/roman-roman1.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "",
+    "used_on": [],
+    "pick": "file:/images/puppies/roman-roman1.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "coat-breed",
+   "section": "coat",
+   "node": "Are Blue Staffies a Breed of Their Own, Apart From Pit Bulls and AmStaffs?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "against",
+    "amstaff",
+    "answer",
+    "apart",
+    "board",
+    "breed",
+    "chart",
+    "checked",
+    "choose",
+    "coat",
+    "comparison",
+    "copy",
+    "h3",
+    "last",
+    "lesson",
+    "no",
+    "own",
+    "pit",
+    "profile",
+    "q02",
+    "rare",
+    "read",
+    "repeat",
+    "separate",
+    "served",
+    "should",
+    "side",
+    "thing",
+    "under",
+    "unless",
+    "word"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/jones-strong-staffy-sire-temperament.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/jones-strong-staffy-sire-temperament.webp",
+     "current": true,
+     "missing": false,
+     "score": 0,
+     "matched": []
+    },
+    {
+     "pool": "own",
+     "file": "/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Read our Blue Staffy breeder reviews to see why we are rated among the best Staffy breeders UK, featuring a healthy Staffy puppy for sale in the UK.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "read"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A healthy and well-socialized blue Staffy puppy, reflecting the quality and care involved when you choose to buy a blue Staffy puppy in the UK.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "choose"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "answer"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "The English Staffy and American Staffordshire Terrier breed standards side by side: the standard, height, coat colours and UK law",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/staffordshire-bull-terrier-vs-amstaff-breed-standard-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "amstaff",
+      "breed",
+      "coat",
+      "side"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/sbt-history-heritage-from-pit-to-pet.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A red and white Staffordshire Bull Terrier type dog in a chain collar, standing on a plain white background",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/sbt-history-heritage-from-pit-to-pet.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "pit",
+      "side"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/sbt-uk-legal-status-public-perception.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\"",
+     "used_on": [
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/sbt-uk-legal-status-public-perception.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "breed",
+      "under"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/jones-strong-staffy-sire-temperament.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament.",
+    "used_on": [
+     "/uk-locations/blue-staffy-puppies-london/",
+     "/uk-locations/staffy-breeding-dogs-glasgow/"
+    ],
+    "pick": "file:/images/jones-strong-staffy-sire-temperament.webp",
+    "current": true,
+    "missing": false,
+    "score": 0,
+    "matched": []
+   }
+  },
+  {
+   "slot": "coat-years",
+   "section": "coat",
+   "node": "How Many Years Will a Blue Staffy Share With My Family?",
+   "kind": "photo",
+   "source": "existing",
+   "context": [
+    "against",
+    "answer",
+    "board",
+    "checked",
+    "choose",
+    "coat",
+    "family",
+    "first",
+    "h3",
+    "healthy",
+    "last",
+    "lifespan",
+    "many",
+    "my",
+    "older",
+    "q02",
+    "rare",
+    "repeat",
+    "served",
+    "share",
+    "should",
+    "thing",
+    "under",
+    "will",
+    "year"
+   ],
+   "candidates": [
+    {
+     "pool": "current",
+     "file": "/images/blue-staffy-family-dog-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Blue Staffordshire Bull Terrier: A beloved family dog in the UK.",
+     "used_on": [
+      "/",
+      "/blue-staffy-uk-breeders/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-family-dog-uk.webp",
+     "current": true,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "family"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A healthy and well-socialized blue Staffy puppy, reflecting the quality and care involved when you choose to buy a blue Staffy puppy in the UK.",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/"
+     ],
+     "pick": "file:/images/buy-blue-staffy-puppy-uk-ethical-purchase.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "choose",
+      "healthy"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.",
+     "used_on": [
+      "/",
+      "/blue-staffy-health-uk/",
+      "/blue-staffy-pup-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-locations/blue-staffy-puppies-uk/",
+      "/uk-locations/staffy-breeding-dogs-glasgow/"
+     ],
+     "pick": "file:/images/maggie-blue-staffy-dam-with-pups.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "family",
+      "year"
+     ]
+    },
+    {
+     "pool": "own",
+     "file": "/images/1blue-staffy-family-breeder.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/1blue-staffy-family-breeder.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "family"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/healthy-staffy-puppy-for-sale-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A vibrant, healthy Staffy puppy for sale in the UK, showcasing a glossy coat and playful stance | Are Staffordshire Bull Terrier Health Checks Essential for Avoiding Hip and Elbow Dysplasia, and What is the British Veterinary Association’s Role?",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/healthy-staffy-puppy-for-sale-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "coat",
+      "healthy"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Beautiful and healthy Staffy puppy for sale in the UK, featuring an alert expression and glossy coat, available for immediate collection.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "coat",
+      "healthy"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/trusted-uk-breeders-blue-staffy-family.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A cheerful family, possibly with children, enjoying time with their healthy blue Staffy, representing trusted UK breeders.",
+     "used_on": [
+      "/blue-staffy-uk-breeders/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/trusted-uk-breeders-blue-staffy-family.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "family",
+      "healthy"
+     ]
+    }
+   ],
+   "suggested": {
+    "pool": "current",
+    "file": "/images/blue-staffy-family-dog-uk.webp",
+    "asset": null,
+    "ingest_as": null,
+    "alt": "Blue Staffordshire Bull Terrier: A beloved family dog in the UK.",
+    "used_on": [
+     "/",
+     "/blue-staffy-uk-breeders/",
+     "/uk-locations/blue-staffy-puppies-london/"
+    ],
+    "pick": "file:/images/blue-staffy-family-dog-uk.webp",
+    "current": true,
+    "missing": false,
+    "score": 1,
+    "matched": [
+     "family"
+    ]
+   }
+  }
+ ]
+}
