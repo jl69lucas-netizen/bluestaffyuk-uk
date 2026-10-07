@@ -26,7 +26,8 @@ export interface LayoutResult { examined: number; defects: string[] }
 
 export function cityLayoutFollowsBox({ viewport, tier: edges, absent = {} }:
   { viewport: number; tier: { tablet: number; desktop: number }; absent?: Record<string, string> }): LayoutResult {
-  type Fact = ['beside', string, string] | ['under', string, string] | ['row', string, number] | ['square', string] | ['fill', string, string];
+  type Fact = ['beside', string, string] | ['under', string, string] | ['row', string, number] | ['square', string] | ['fill', string, string]
+    | ['overlaps', string, string];
   const SPEC: Record<string, { tablet: Fact[]; desktop: Fact[] }> = {
     '.city-takeaways-ledger': { tablet: [['beside', '.row dt', '.row dd']], desktop: [['beside', '.pic', 'dl']] },
     '.city-sheet': { tablet: [['row', '.city-pup', 3]], desktop: [['row', '.city-pup', 3], ['square', '.city-pup img']] },
@@ -70,6 +71,22 @@ export function cityLayoutFollowsBox({ viewport, tier: edges, absent = {} }:
       tablet: [['row', '.cell', 2]],
       desktop: [['row', '.cell', 2], ['beside', '.media', '.copy']],
     },
+    // Task 31. The review plates: from a desktop box the photo takes the slot's own side and its
+    // plate sits beside it, set over the photo's inner edge (`overlaps`: the two meet, the second's
+    // centre to the right of the first's); below that the plate rises over the photo's foot.
+    '.city-three-plates[data-side=start]': { tablet: [], desktop: [['overlaps', '.ph', '.plate']] },
+    '.city-three-plates[data-side=end]': { tablet: [], desktop: [['overlaps', '.plate', '.ph']] },
+    // The FAQ rows beside their block's photo from a 640px box, the photo on the block's side.
+    '.city-rows-beside-a-photo[data-side=start]': { tablet: [['beside', '.pic', '.rows']], desktop: [['beside', '.pic', '.rows']] },
+    '.city-rows-beside-a-photo[data-side=end]': { tablet: [['beside', '.rows', '.pic']], desktop: [['beside', '.rows', '.pic']] },
+    // The postmarked note: the postmark beside the note from a 640px box.
+    '.city-postmarked-note': { tablet: [['beside', '.note', '.pm']], desktop: [['beside', '.note', '.pm']] },
+    // The enquiry form: two fields to a row and the message the form's width from a 640px box;
+    // from a desktop box Lisa's photo beside the form, and three short fields to a row.
+    '.city-photo-at-the-edge': {
+      tablet: [['row', '.field.sm', 2], ['fill', '.field.wide', 'form']],
+      desktop: [['beside', '.ph', '.main'], ['row', '.field.sm', 3], ['fill', '.field.wide', 'form']],
+    },
   };
   const contentWidth = (el: Element) => {
     const s = getComputedStyle(el);
@@ -109,6 +126,14 @@ export function cityLayoutFollowsBox({ viewport, tier: edges, absent = {} }:
           const top = els[0].getBoundingClientRect().top;
           const n = els.filter((e) => Math.abs(e.getBoundingClientRect().top - top) < 2).length;
           if (n !== f[2]) defects.push(`${at}: ${n} ${f[1]} to the first row, not ${f[2]}`);
+        } else if (f[0] === 'overlaps') {
+          // a then b on one line, b set over a's right edge: the boxes meet and b's centre is
+          // right of a's (the review plate over its photo's inner edge, Manchester Task 31).
+          const a = root.querySelector(f[1]); const b = root.querySelector(f[2]);
+          if (!a || !b) { defects.push(`${at}: ${f[1]} or ${f[2]} missing`); continue; }
+          const ra = a.getBoundingClientRect(); const rb = b.getBoundingClientRect();
+          const meet = rb.left < ra.right - 1 && ra.left < rb.right - 1 && ra.top < rb.bottom && rb.top < ra.bottom;
+          if (!(meet && rb.left + rb.width / 2 > ra.left + ra.width / 2 && rb.right > ra.right)) defects.push(`${at}: ${f[2]} is not set over the right edge of ${f[1]}`);
         } else if (f[0] === 'fill') {
           // A full-width row really runs the width of its box (the 65ch paragraph measure once
           // caught the message field, a <p>, at 549px: the Task 7b design pass).
@@ -149,6 +174,12 @@ export const SPEC_COMPONENT: Record<string, string> = {
   '.city-tick-card': 'city-tick-card',
   '.city-photo-shelf': 'city-photo-shelf',
   '.city-offset-sheet': 'city-offset-sheet',
+  '.city-three-plates[data-side=start]': 'city-three-plates',
+  '.city-three-plates[data-side=end]': 'city-three-plates',
+  '.city-rows-beside-a-photo[data-side=start]': 'city-rows-beside-a-photo',
+  '.city-rows-beside-a-photo[data-side=end]': 'city-rows-beside-a-photo',
+  '.city-postmarked-note': 'city-postmarked-note',
+  '.city-photo-at-the-edge': 'city-photo-at-the-edge',
 };
 
 /** `absent` for a page from its board record: each SPEC key whose component the board mounts on

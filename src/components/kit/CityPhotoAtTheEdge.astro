@@ -1,0 +1,113 @@
+---
+// src/components/kit/CityPhotoAtTheEdge.astro — Manchester's enquiry form (pick:
+// manchester/contact-form/b, "Photo at the edge"; frozen 355d5e43). The breeder's own photograph
+// runs from the section's edge to about two fifths of it, full height and unframed; beside it, on
+// the bone page, the section's question, its answer and a compact form that opens on a two-key
+// collect-or-delivery switch. On a phone the photo is a strip across the top, edge to edge, then the
+// form. Compact density, no card and no shadow. Built from
+// design/city-canvas/manchester/contact-form/b.html as the visual spec only; it imports no London
+// component (rules/design.md own-components-per-page).
+//
+// THE FORM IS ContactFormKit, `layout="compact"`: the six named controls, the `_gotcha` honeypot,
+// the hidden `_next` and `_subject`, `method="POST"` and the one endpoint, plus the handover switch
+// and the any-boy / any-girl choices beside the waiting list (all read from the data there).
+// scripts/form_contract_audit.py passes it as it passes the site form. This component adds only the
+// script that ties each required control to its error line (src/lib/formErrors.ts), so the pages
+// that mount the stepped form ship nothing new. No phone number: PHONE_PLACEHOLDER is the only
+// representation the repo allows, so the form is the one route (outline row 22).
+//
+// THE PHOTO is a file this rebuild published (data/image-focus.json `published`: Lisa Bright's photo,
+// approved at the London board's Asset Gate), so it has no served alt to keep and the caller passes
+// the alt the page's board approves (`photoAlt`); its crop is solved from the faces.
+//
+// AN IN-BODY COMPONENT FOLLOWS ITS OWN BOX (src/styles/city.css): the strip on top below a desktop
+// box (16:9 on a phone, 5:2 from 640px), edge to edge; from a desktop box (800px) the question and
+// its answer run the whole width above, and under them the photo bleeds from the box's edge beside
+// the form, as tall as the form, whose fields run six columns (ContactFormKit). The heading takes the
+// whole width because the outline's question is long: in the canvas's 40% / 60% split it ran to three
+// lines in the 544px copy column at 1024 (the type ruling, answer board q06: a 3-line H2 is a defect).
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import ContactFormKit from './ContactFormKit.astro';
+import { focusClassFor, publishedPhoto } from '../../lib/imageFocus';
+import { citySizes, type CityFit } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  /** The outline's H2, word for word. */
+  heading: string;
+  /** Its answer: what to send and what happens next. */
+  lede: string;
+  /** A published /images/ file named in data/image-focus.json. */
+  photo: string;
+  /** The alt the page's board approves for it. */
+  photoAlt: string;
+  /** Where the section sits from 1024px, for its photo's `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, photo, photoAlt, fit = 'column', class: cls, ...rest } = Astro.props;
+const p = publishedPhoto(photo, photoAlt);
+// The photo: the box wide below a desktop box; from one, 38% of the tray (max 1160px) plus the bleed
+// to the box's edge.
+const sizes = citySizes(fit, {
+  phone: (B) => B,
+  tablet: (B) => B,
+  desktop: (B) => `calc(min(${B}, 1160px) * 0.38 + max(0px, (${B} - 1160px) / 2))`,
+});
+// The deepest crop the photo paints in: the column beside the form on a city page (about 2:3).
+const crop = focusClassFor(photo, 2 / 3);
+---
+<section {...rest} class:list={['city-kit', 'city-photo-at-the-edge', cls]}>
+  <div class="in">
+    <figure class="ph">
+      <img src={p.file} srcset={p.srcset} sizes={p.srcset ? sizes : undefined}
+        alt={p.alt} width={p.w} height={p.h} class={crop} loading="lazy" decoding="async" />
+    </figure>
+    <div class="head">
+      <h2 id="city-edge-h">{heading}</h2>
+      <p class="lede">{lede}</p>
+    </div>
+    <div class="main">
+      <ContactFormKit layout="compact" idPrefix="city-edge" labelledBy="city-edge-h" data-contact-form />
+    </div>
+  </div>
+</section>
+<script>
+  import { wireFieldErrors } from '../../lib/formErrors';
+  document.querySelectorAll<HTMLFormElement>('.city-photo-at-the-edge form[data-layout="compact"]').forEach(wireFieldErrors);
+</script>
+<style>
+  @layer components {
+    /* An in-body container (src/styles/city.css): no inline padding on the root. */
+    .city-photo-at-the-edge { background: var(--color-surface); overflow: hidden; }
+    .in { max-width: 1160px; margin: 0 auto; padding: 0 var(--space-4) var(--space-7); }
+    /* The photo runs edge to edge across the box on a phone and a tablet (past the tray's gutters). */
+    .ph { margin: 0 calc(-1 * var(--space-4)); }
+    .ph img {
+      display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
+      background: var(--color-bone-50);
+    }
+    .head { margin-top: var(--space-6); }
+    h2 { margin: 0; }
+    .lede { margin: var(--space-2) 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); max-inline-size: 56ch; }
+    .main { max-width: 640px; }
+    @container (width >= 640px) {
+      .in { padding-inline: var(--space-6); }
+      .ph { margin-inline: calc(-1 * var(--space-6)); }
+      .ph img { aspect-ratio: 5 / 2; }
+    }
+    /* From a desktop box: the question across the top; under it the photo from the box's edge
+       (`--bleed`: the box less the 1160px tray, halved), as tall as the form beside it. */
+    @container (width >= 800px) {
+      .in {
+        --bleed: max(0px, (100cqw - 1160px) / 2);
+        display: grid; grid-template-columns: minmax(0, 38%) minmax(0, 1fr); grid-template-areas: 'head head' 'ph main';
+        column-gap: var(--space-7); padding-block: var(--space-7);
+      }
+      .head { grid-area: head; margin-top: 0; }
+      h2 { max-inline-size: none; }
+      .ph { grid-area: ph; margin: 0; margin-inline-start: calc(-1 * (var(--space-6) + var(--bleed))); }
+      .ph img { height: 100%; aspect-ratio: auto; }
+      .main { grid-area: main; max-width: none; }
+    }
+  }
+</style>

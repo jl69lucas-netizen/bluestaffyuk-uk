@@ -34,7 +34,8 @@ CITY_IDS = ["city-hero-filmstrip", "city-price-scale", "city-trust-ledger", "cit
             # carrying `canvas_variant` and `root_selector`; previewed on /kit-preview/city-manchester/.
             "city-feature-and-three", "city-range-sheet", "city-puppy-folder",
             "city-icon-rows", "city-numeral-rail", "city-question-bar",
-            "city-tick-card", "city-photo-shelf", "city-offset-sheet"]
+            "city-tick-card", "city-photo-shelf", "city-offset-sheet",
+            "city-three-plates", "city-rows-beside-a-photo", "city-postmarked-note", "city-photo-at-the-edge"]
 
 
 def load():

@@ -16,7 +16,7 @@ import type { FilledAsset } from './assets';
 import { bakedSrcset, inPublic } from './assets';
 
 type Box = [number, number, number, number];
-interface FocusRow { src: 'puppies' | 'images'; w: number; h: number; faces: Box[]; scene?: string; alt?: string; widths?: number[] }
+interface FocusRow { src: 'puppies' | 'images'; w: number; h: number; faces: Box[]; scene?: string; alt?: string; widths?: number[]; published?: string }
 const ROWS = (focusJson as { images: Record<string, FocusRow> }).images;
 
 /** The recorded row for one file, or a build error naming it. */
@@ -71,6 +71,22 @@ export function servedPhoto(file: string): FilledAsset & { srcset?: string } {
     throw new Error(`${file} is not a served /images/ file with a recorded alt`);
   }
   const asset: FilledAsset = { slot: file, file: `/images/${file}`, w: row.w, h: row.h, alt: row.alt };
+  const widths = row.widths ?? [];
+  return widths.length ? { ...asset, srcset: bakedSrcset(asset, widths, inPublic) } : asset;
+}
+
+/** A file this rebuild PUBLISHED rather than the old site served (its focus row carries
+ *  `published`, the record whose Asset Gate approved it: Lisa Bright's photo, London's board). It
+ *  has no served alt to keep, so the page that shows it passes the alt its own board approves; the
+ *  path, the size and the baked siblings are the file's, as servedPhoto gives them (working rule 11:
+ *  the URL never moves). A served file, or an empty alt, stops the build. */
+export function publishedPhoto(file: string, alt: string): FilledAsset & { srcset?: string } {
+  const row = focusRow(file);
+  if (row.src !== 'images' || !row.published || row.alt) {
+    throw new Error(`${file} is not a published /images/ file (data/image-focus.json \`published\`, no served alt)`);
+  }
+  if (!alt.trim()) throw new Error(`${file}: a published photo takes the alt its page's board approves, never an empty one`);
+  const asset: FilledAsset = { slot: file, file: `/images/${file}`, w: row.w, h: row.h, alt };
   const widths = row.widths ?? [];
   return widths.length ? { ...asset, srcset: bakedSrcset(asset, widths, inPublic) } : asset;
 }

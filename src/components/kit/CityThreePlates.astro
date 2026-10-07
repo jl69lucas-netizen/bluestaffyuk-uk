@@ -1,0 +1,141 @@
+---
+// src/components/kit/CityThreePlates.astro — Manchester's reviews (pick: manchester/reviews/c,
+// "Three plates"; frozen 355d5e43; a pool copy of London's kennel wall, refreshed on LAYOUT). ONE
+// review on one plate: a served photograph that runs to the page's edge on its slot's side, and a
+// bone plate set over it holding the review word for word and its name. A Manchester page mounts it
+// THREE times, at outline rows 6, 11 and 20 (no heading on any), the photo changing sides slot by
+// slot (`side`: start, end, start). Built from design/city-canvas/manchester/reviews/c.html as the
+// visual spec only; it imports no London component (rules/design.md own-components-per-page).
+//
+// THE REVIEW IS data/reviews.json, SELECTED BY NAME: the quote, the name and the place exactly as
+// the file holds them, never retyped and never re-attributed. No stars, no score and no rating in
+// any schema (seo-rules Rule 33: no AggregateRating). A long review is set in paragraphs at its own
+// sentence breaks (src/lib/cityKit.ts `splitReview`: words and order untouched), so no paragraph runs
+// past the type-fit line caps; a short one is set larger, in the display face.
+//
+// THE PHOTO: a served /images/ file named in data/image-focus.json, its crop solved from the faces
+// (no crop typed beside it). A first use keeps its served alt; a photo the page already showed takes
+// a new alt (`photoAlt`, working rule 11, 2026-09-29: "same photo use new alt"), never the served one.
+// A parent's photo beside an owner's words carries a credit (`credit`), so a parent never reads as
+// the reviewer's own dog.
+//
+// AN IN-BODY COMPONENT FOLLOWS ITS OWN BOX (src/styles/city.css): on a phone and a tablet box the
+// photo runs on top and the plate rises over its foot; from a desktop box (800px) the photo takes
+// its side of the slot, bled past the box edge (clipped by the root), and the plate sits beside it
+// over the photo's inner edge.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import reviewsJson from '../../../data/reviews.json';
+import { focusClassFor, servedPhoto } from '../../lib/imageFocus';
+import { citySizes, splitReview, type CityFit } from '../../lib/cityKit';
+
+interface Review { quote: string; name: string; place: string; source: string }
+type Props = HTMLAttributes<'section'> & {
+  /** The reviewer's name as data/reviews.json holds it. */
+  name: string;
+  /** A served /images/ file named in data/image-focus.json. */
+  photo: string;
+  /** A new alt for a photo the page already showed above (working rule 11). Omitted: the served alt. */
+  photoAlt?: string;
+  /** "Photo: …": who is in the photo, where it is not the reviewer's own. */
+  credit?: string;
+  /** The side the photo takes from a desktop box; slots alternate start, end, start. */
+  side?: 'start' | 'end';
+  /** Where the section sits from 1024px, for its photo's `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { name, photo, photoAlt, credit, side = 'start', fit = 'column', class: cls, ...rest } = Astro.props;
+const review = (reviewsJson as Review[]).find((r) => r.name === name);
+if (!review) throw new Error(`CityThreePlates: data/reviews.json has no review by ${name}`);
+if (review.quote === 'REVIEW_PLACEHOLDER') throw new Error(`CityThreePlates: ${name}'s review is a placeholder`);
+const p = servedPhoto(photo);
+if (photoAlt !== undefined && (!photoAlt.trim() || photoAlt === p.alt)) {
+  throw new Error(`CityThreePlates: a repeated ${photo} needs a new alt of its own, never the served one (working rule 11)`);
+}
+// A review short enough to read as one breath is set in the display face (the canvas's `short`).
+const SHORT = 180;
+const short = review.quote.length <= SHORT;
+// About four lines of the plate's measure at a phone width; the type-fit gate caps a paragraph at 8.
+const paras = splitReview(review.quote, 240);
+// The photo: the box wide on a phone; at most 720px on a tablet box; from a desktop box its 52% of
+// the slot (max 1160px) plus the bleed past the box edge, which `sizes` takes as the half viewport.
+const sizes = citySizes(fit, {
+  phone: (B) => B,
+  tablet: (B) => `min(720px, ${B})`,
+  desktop: (B) => `calc(min(${B}, 1160px) * 0.52 + max(0px, (${B} - 1160px) / 2))`,
+});
+---
+<section {...rest} class:list={['city-kit', 'city-three-plates', { short }, cls]} data-side={side}>
+  <figure class="slot" data-review-slot>
+    <div class="ph">
+      <img src={p.file} srcset={p.srcset} sizes={p.srcset ? sizes : undefined}
+        alt={photoAlt ?? p.alt} width={p.w} height={p.h} class={focusClassFor(photo, 16 / 9)} loading="lazy" decoding="async" />
+      {credit && <span class="cr">{credit}</span>}
+    </div>
+    <div class="plate">
+      <blockquote data-review>
+        {paras.map((t) => <p>{t}</p>)}
+      </blockquote>
+      <figcaption class="sig"><cite>{review.name}</cite>, {review.place}</figcaption>
+    </div>
+  </figure>
+</section>
+<style>
+  @layer components {
+    /* An in-body container (src/styles/city.css): no inline padding on the root, which clips the
+       desktop bleed to its own box. */
+    .city-three-plates { background: var(--color-surface); overflow: hidden; }
+    .slot { position: relative; margin: 0; padding-block: var(--city-pad-y); }
+    .ph { position: relative; margin: 0; }
+    .ph img {
+      display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover;
+      background: var(--color-bone-50);
+    }
+    /* The credit pill: inside the photo, top on a phone and a tablet, at the foot from desktop. */
+    .cr {
+      position: absolute; inset-inline-start: var(--space-3); top: var(--space-3); max-width: 55%;
+      padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill);
+      background: var(--color-surface-deep); color: var(--color-text-on-inverse); font-size: var(--text-sm); line-height: 1.4;
+    }
+    .plate {
+      position: relative; margin: calc(-1 * var(--space-8)) var(--space-3) 0; padding: var(--space-5) var(--space-4);
+      background: var(--color-bone-50); box-shadow: inset 0 0 0 1px var(--color-border); border-radius: var(--radius-md);
+    }
+    blockquote { margin: 0; }
+    /* A long word in a review (a web address) wraps inside the plate (impeccable harden). */
+    blockquote p { margin: 0; color: var(--color-text); overflow-wrap: anywhere; }
+    blockquote p + p { margin-top: var(--space-3); }
+    /* A short review in the display face, one step under the H3 (the canvas's 20 / 22px). */
+    .short blockquote p { font-family: var(--font-display); font-weight: 600; font-size: var(--city-h3); line-height: 1.4; color: var(--color-brand); }
+    .sig { margin: var(--space-3) 0 0; padding-top: var(--space-3); border-top: 1px solid var(--color-border); font-size: var(--text-sm); color: var(--color-text-muted); }
+    .sig { overflow-wrap: anywhere; }
+    .sig cite { font-style: normal; font-weight: 700; color: var(--color-text); }
+    /* From a 640px box: a 16:9 photo (both Victoria faces whole), inset at most 720px wide on its
+       bone, and a wider plate. */
+    @container (width >= 640px) {
+      .ph { max-width: 720px; margin-inline: auto; }
+      .ph img { aspect-ratio: 16 / 9; border-radius: var(--radius-md); }
+      .cr { max-width: calc(100% - var(--space-6)); }
+      .plate { margin: calc(-1 * var(--space-7)) var(--space-8) 0; padding: var(--space-6); }
+    }
+    /* From a desktop box: the photo on its slot's side, bled to the box's own edge (`--bleed`, the
+       box less the 1160px slot, halved: 0 in the column beside the dial), full height of the slot;
+       the plate beside it, set over the photo's inner edge. */
+    @container (width >= 800px) {
+      .slot {
+        --bleed: max(0px, (100cqw - 1160px) / 2);
+        display: flex; align-items: center; min-height: 400px; max-width: 1160px; margin-inline: auto; padding: var(--space-7) var(--space-6);
+      }
+      .ph { position: absolute; top: 0; bottom: 0; width: calc(52% + var(--bleed)); max-width: none; margin: 0; }
+      [data-side=start] .ph { inset-inline-start: calc(-1 * var(--bleed)); }
+      [data-side=end] .ph { inset-inline-end: calc(-1 * var(--bleed)); }
+      .ph img { height: 100%; aspect-ratio: auto; border-radius: 0; }
+      .cr { top: auto; bottom: var(--space-4); }
+      [data-side=start] .cr { inset-inline-start: calc(var(--bleed) + var(--space-4)); }
+      [data-side=end] .cr { inset-inline-start: auto; inset-inline-end: calc(var(--bleed) + var(--space-4)); }
+      .plate { width: 56%; max-width: 600px; margin: 0; padding: var(--space-7); }
+      [data-side=start] .plate { margin-inline-start: auto; }
+      [data-side=end] .plate { margin-inline-end: auto; }
+    }
+  }
+</style>

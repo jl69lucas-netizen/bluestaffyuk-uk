@@ -337,6 +337,62 @@ def test_main_refuses_without_the_id(tmp_path):
     assert "PUBLIC_FORMSPREE_ID is unset" in result.stderr
 
 
+# --- the Manchester enquiry form (Phase F Task 31): a collect-or-delivery choice and the
+# --- any-boy / any-girl choices beside the waiting list
+#
+# The contract's skill (bsuk-contact-form, "Delivery, where a form asks about it"): the two
+# handover options are the only two that exist, collection in person from Carlisle and UK home
+# delivery. And a puppy select offers the litter's own rows plus the choices the contract names,
+# never a value that is neither: an option nobody can be sold is an enquiry about nothing.
+
+HANDOVER = ('<input type="radio" name="handover" value="collect">'
+            '<input type="radio" name="handover" value="delivery">')
+
+
+def test_a_collect_or_delivery_choice_is_accepted():
+    html = page(GOOD.replace('<textarea', HANDOVER + '<textarea', 1))
+    assert problems(html) == []
+
+
+def test_a_handover_option_that_does_not_exist_is_a_problem():
+    third = HANDOVER + '<input type="radio" name="handover" value="courier">'
+    ps = problems(page(GOOD.replace('<textarea', third + '<textarea', 1)))
+    assert any('handover offers "courier"' in p for p in ps), ps
+
+
+def test_a_handover_choice_missing_one_of_the_two_is_a_problem():
+    one = '<input type="radio" name="handover" value="collect">'
+    ps = problems(page(GOOD.replace('<textarea', one + '<textarea', 1)))
+    assert any("handover lacks delivery" in p for p in ps), ps
+
+
+def test_a_handover_choice_is_judged_on_a_location_page_too():
+    """The field contract skips uk-locations/*, but a handover option that does not exist is a
+    false promise on any page: the value checks run on every inquiry form that carries one."""
+    third = HANDOVER + '<input type="radio" name="handover" value="courier">'
+    ps = problems(page(GOOD.replace('<textarea', third + '<textarea', 1)), "uk-locations/blue-staffy-puppies-manchester-uk")
+    assert any('handover offers "courier"' in p for p in ps), ps
+
+
+def test_the_any_boy_and_any_girl_choices_are_accepted():
+    both = PUPPY_SELECT.replace('<option value="waiting-list">',
+                                '<option value="any-boy">Any boy</option><option value="any-girl">Any girl</option>'
+                                '<option value="waiting-list">')
+    assert problems(page(GOOD.replace(PUPPY_SELECT, both))) == []
+
+
+def test_a_puppy_option_that_is_no_puppy_and_no_known_choice_is_a_problem():
+    odd = PUPPY_SELECT.replace('<option value="waiting-list">', '<option value="any-puppy">Any</option><option value="waiting-list">')
+    ps = problems(page(GOOD.replace(PUPPY_SELECT, odd)))
+    assert any('puppy select offers "any-puppy"' in p for p in ps), ps
+
+
+def test_the_puppy_choices_are_the_data_slugs_and_the_three_named_choices():
+    slugs = {p["slug"] for p in json.loads((pathlib.Path(__file__).resolve().parents[2] / "data/puppies.json").read_text())}
+    assert F.puppy_values() == slugs | {"waiting-list", "any-boy", "any-girl"}
+    assert F.HANDOVER_VALUES == ("collect", "delivery")
+
+
 # --- Finding 2: conservative inquiry/newsletter classification --------------------
 
 def test_no_textarea_inquiry_form_is_still_classed_inquiry():

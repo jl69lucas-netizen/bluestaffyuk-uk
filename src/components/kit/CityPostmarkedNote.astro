@@ -1,0 +1,159 @@
+---
+// src/components/kit/CityPostmarkedNote.astro — Manchester's newsletter (pick:
+// manchester/newsletter/b, "Postmarked note"; frozen 355d5e43). A short signed note from the breeder
+// on the open bone page, framed only by a steel rule above and a hairline below: an opening line in
+// the display face, one sentence on what a subscriber gets, the signature, and one email field
+// joined to its button. The one bold thing is the postmark: a puppy's round photograph in a dashed
+// ring, as if stamped on the envelope the note arrives in. Built from
+// design/city-canvas/manchester/newsletter/b.html as the visual spec only; it imports no London
+// component (rules/design.md own-components-per-page).
+//
+// NO HEADING (outline row 16 carries none) AND NO COUNT: the note says what the list is for and
+// nothing about how many are on it. The signature is data/settings.json's breeder and town.
+//
+// THE FORM POSTS TO THE ONE ENDPOINT every form uses (src/lib/formEndpoint.ts: PUBLIC_FORMSPREE_ID,
+// '#contact' while it is unset), `method="POST"`, with the `_gotcha` honeypot and the hidden `_next`
+// and `_subject`, and it keeps exactly ONE real control, a named email input, so
+// scripts/form_contract_audit.py classes it `newsletter`. Its error line says one thing for an empty
+// field and another for an address that is not whole (CSS alone, through the field's single-space
+// placeholder), and is tied to the field once native validation fails it (src/lib/formErrors.ts).
+//
+// THE POSTMARK: a puppy's card photo (data/puppies.json), drawn in onto its face: the photo is
+// scaled inside its round window about the centre of its faces (data/image-focus.json, through the
+// `focus fx-NN fy-NN` classes' own --fx / --fy), so no crop is typed beside it. Its first use on a
+// page keeps the alt the site serves; a repeat takes a new alt (`photoAlt`, working rule 11).
+//
+// AN IN-BODY COMPONENT FOLLOWS ITS OWN BOX (src/styles/city.css): on a phone a small postmark sits
+// top right beside the note and the field runs full width under both; from a 640px box a larger
+// postmark is centred beside the note and the field; from a desktop box the largest.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { abs, SITE } from '../../lib/site';
+import { formEndpoint } from '../../lib/formEndpoint';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass, servedPuppyAlt } from '../../lib/imageFocus';
+import { availablePuppies, citySizes, TOWN, type CityFit } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  /** The page's area, as its outline names the reader's home ("Greater Manchester"). */
+  area: string;
+  /** The postmark: an available puppy's name (data/puppies.json). */
+  puppy: string;
+  /** A new alt for a puppy photo the page already showed above (working rule 11). Omitted: the served alt. */
+  photoAlt?: string;
+  button?: string;
+  /** Where the section sits from 1024px, for the postmark's `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { area, puppy, photoAlt, button = 'Send me the note', fit = 'column', class: cls, ...rest } = Astro.props;
+const pup = availablePuppies().find((p) => p.name === puppy);
+if (!pup) throw new Error(`CityPostmarkedNote: ${puppy} is not an available puppy in data/puppies.json`);
+if (photoAlt !== undefined && (!photoAlt.trim() || photoAlt === servedPuppyAlt(pup))) {
+  throw new Error(`CityPostmarkedNote: a repeated ${pup.card_photo} needs a new alt of its own (working rule 11)`);
+}
+const { action, live } = formEndpoint();
+const id = 'city-note';
+// The postmark's window is 76 / 132 / 176px a tier; the photo inside it is drawn in 1.6 times.
+const ZOOM = 1.6;
+const sizes = citySizes(fit, {
+  phone: () => `${Math.round(76 * ZOOM)}px`,
+  tablet: () => `${Math.round(132 * ZOOM)}px`,
+  desktop: () => `${Math.round(176 * ZOOM)}px`,
+});
+---
+<section {...rest} class:list={['city-kit', 'city-postmarked-note', cls]}>
+  <div class="in">
+    <div class="box">
+      <div class="note">
+        <p class="line">A note from {TOWN} when the next litter is due</p>
+        <p class="say">Leave your email and we send one short note to you in {area} when our next litter is on its way. That is all this list is for.</p>
+        <p class="sig"><b>{SITE.breeder_name}</b>, BlueStaffyUK, {TOWN}</p>
+      </div>
+      <figure class="pm">
+        <span class="disc">
+          <Image src={puppyImage(pup.card_photo)} alt={photoAlt ?? servedPuppyAlt(pup)} widths={[240, 480, 720]}
+            sizes={sizes} class={focusClass(pup.card_photo)} loading="lazy" decoding="async" />
+        </span>
+      </figure>
+      <form method="POST" action={action} data-form="newsletter" data-newsletter data-live={String(live)} aria-label="Next litter note sign-up">
+        <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+        <input type="hidden" name="_subject" value="Next litter note sign-up" />
+        <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <label for={`${id}-email`}>Your email address</label>
+        <div class="join">
+          <input id={`${id}-email`} name="email" type="email" autocomplete="email" required placeholder=" " data-err={`${id}-err`} />
+          <button type="submit">{button}</button>
+        </div>
+        <p class="err" id={`${id}-err`}><span class="e-empty">Please give us your email address.</span><span class="e-bad">That address looks incomplete: it needs an @ and a full address.</span></p>
+        <p class="priv">Your email is used for nothing else.</p>
+      </form>
+    </div>
+  </div>
+</section>
+<script>
+  import { wireFieldErrors } from '../../lib/formErrors';
+  document.querySelectorAll<HTMLFormElement>('.city-postmarked-note form').forEach(wireFieldErrors);
+</script>
+<style>
+  @layer components {
+    /* An in-body container (src/styles/city.css): the gutters live on .in, never on the root. */
+    .city-postmarked-note { background: var(--color-surface); }
+    .in { max-width: 960px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
+    .box {
+      display: grid; grid-template-columns: minmax(0, 1fr) 88px; gap: var(--space-4) var(--space-5);
+      padding-block: var(--space-6); border-top: 2px solid var(--color-brand); border-bottom: 1px solid var(--color-border);
+    }
+    .note { grid-column: 1; grid-row: 1; }
+    /* The postmark: a round photo in a dashed ring, top right. */
+    .pm { grid-column: 2; grid-row: 1; margin: 0; align-self: start; justify-self: end; padding: 5px; border: 2px dashed var(--color-steel-300); border-radius: 50%; }
+    .disc { display: block; width: 76px; height: 76px; overflow: hidden; border-radius: 50%; background: var(--color-bone-50); }
+    /* Drawn in about the faces' centre (the focus classes' --fx / --fy): the face, not the rug. */
+    .pm img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.6); transform-origin: var(--fx, 50%) var(--fy, 50%); }
+    .line { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: var(--city-h3); line-height: 1.3; color: var(--color-brand); text-wrap: balance; }
+    .say { margin: var(--space-2) 0 0; color: var(--color-text); max-inline-size: 52ch; overflow-wrap: anywhere; }
+    .sig { margin: var(--space-3) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+    .sig b { color: var(--color-text); }
+    form { grid-column: 1 / -1; display: grid; gap: var(--space-2); max-width: 560px; }
+    label { font-size: var(--text-sm); font-weight: 600; color: var(--color-text); }
+    .join { display: grid; gap: var(--space-2); }
+    input[type='email'] {
+      width: 100%; box-sizing: border-box; min-height: 48px; padding: 10px 14px; font: inherit; font-size: var(--city-body);
+      color: var(--color-text); background: var(--color-surface-raised); border: 1px solid var(--color-brand-mid); border-radius: var(--btn-form-radius);
+    }
+    input:focus-visible, button:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    input:user-invalid, input[aria-invalid='true'] { border: 2px solid var(--color-warn); }
+    button {
+      min-height: 48px; padding: 10px 22px; font: inherit; font-weight: 700; color: var(--color-cta-ink); background: var(--color-cta);
+      border: 0; border-radius: var(--btn-form-radius); cursor: pointer; white-space: nowrap;
+      transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    button:hover { background: var(--color-cta-hover); }
+    .err { display: none; margin: 0; font-size: var(--text-sm); color: var(--color-text); }
+    /* Read off the EMAIL field only: the honeypot has no placeholder, so a bare `input` here would
+       always read as typed in and hide the empty-field line. */
+    form:has(input[type='email']:user-invalid) .err, form:has(input[type='email'][aria-invalid='true']) .err { display: block; }
+    .err .e-bad { display: none; }
+    form:has(input[type='email']:not(:placeholder-shown)) .err .e-empty { display: none; }
+    form:has(input[type='email']:not(:placeholder-shown)) .err .e-bad { display: inline; }
+    .priv { margin: 0; font-size: var(--text-sm); line-height: 1.45; color: var(--color-text-muted); }
+    /* Off-screen rather than display:none: a honeypot a bot cannot see is one it does not fill. */
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
+    @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+    /* From a 640px box: the field joined to its button, and a larger postmark centred beside the
+       note and the form. */
+    @container (width >= 640px) {
+      .join { grid-template-columns: minmax(0, 1fr) auto; }
+      .box { grid-template-columns: minmax(0, 1fr) 148px; }
+      .pm { grid-row: 1 / span 2; align-self: center; }
+      .disc { width: 132px; height: 132px; }
+      form { grid-column: 1; }
+    }
+    @container (width >= 800px) {
+      .in { padding-inline: var(--space-6); }
+      .box { grid-template-columns: minmax(0, 1fr) 200px; column-gap: var(--space-9); padding-block: var(--space-8); }
+      .pm { padding: 8px; }
+      .disc { width: 176px; height: 176px; }
+    }
+  }
+</style>

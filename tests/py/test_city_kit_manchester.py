@@ -16,7 +16,9 @@ Task 29 the nav set (the contents list, the desktop dial and the jump links, mou
 src/layouts/CityShell.astro as a `CityNavSet`) and the shared `data-city-nav` hook every city's
 nav furniture carries (gap G12); Task 30 the first in-body components (the key takeaways, the
 litter table with each puppy's own photo, and the image-and-text section), which bring the
-Manchester preview under city-layout-follows-box.
+Manchester preview under city-layout-follows-box; Task 31 the last four (the reviews, the FAQ
+blocks, the newsletter and the enquiry form), each mounted at its place on the page, so the three
+review slots and the three FAQ blocks are three mounts of one component.
 """
 import html as _h
 import json
@@ -46,9 +48,11 @@ PUPPIES = [p for p in json.loads((ROOT / "data/puppies.json").read_text()) if p[
 CITY = next(r["city"] for r in json.loads((ROOT / "data/locations.json").read_text()) if r["slug"] == SLUG)
 
 #: The components built so far, by task (Task 28: the hero, the counter strip, the trust strip;
-#: Task 29: the nav set; Task 30: the key takeaways, the table, the image and text).
+#: Task 29: the nav set; Task 30: the key takeaways, the table, the image and text; Task 31: the
+#: reviews, the FAQ blocks, the newsletter and the enquiry form).
 NAV = ["contents-list", "desktop-dial", "jump-links"]
-IN_BODY = ["key-takeaways", "tables", "image-text"]
+TAIL = ["reviews", "faq-blocks", "newsletter", "contact-form"]
+IN_BODY = ["key-takeaways", "tables", "image-text", *TAIL]
 BUILT = ["hero", "counter-strip", "trust-strip", *NAV, *IN_BODY]
 #: The components that state facts (prices, the deposit, the band, names): each reads them through
 #: src/lib/cityKit.ts. The nav set states none: its words are the page's own section list.
@@ -639,3 +643,278 @@ def test_each_in_body_component_follows_its_own_box(comp):
     assert "@container" in css, FILE[comp]
     assert "@media (width" not in css and "@media (min-width" not in css and "@media (max-width" not in css, FILE[comp]
     assert "font-variant" not in css and "variant" not in css.lower(), FILE[comp]
+
+
+# --------------------------------------------------------------------------- Task 31: the last four
+
+REVIEWS = json.loads((ROOT / "data/reviews.json").read_text())
+BANK = {r["id"]: r for r in json.loads((ROOT / "data/faq.json").read_text())}
+FAQ_SECTIONS = [sec for sec in OUTLINE["sections"] if sec.get("faq")]
+ENQUIRY_H2 = OUTLINE["sections"][-1]["headings"][0]["text"]
+MAGGIE = "maggie-blue-staffy-dam-with-pups.webp"
+JONES = "jones-magnificent-blue-staffy-sire.webp"
+LISA = "lisa-bright-blue-staffy-breeder-carlisle.webp"
+DNA = sorted(e["name"].removesuffix(" DNA test") for e in json.loads((ROOT / "data/bsuk-ontology.json").read_text())["entities"]
+             if e["id"] in ("ont:l-2-hga-dna-test", "ont:hc-hsf4-dna-test"))
+CLAUSE = SETTINGS["deposit_refund_clause"]
+DEPOSIT = gbp(SETTINGS["deposit_gbp"])
+#: The answer board's q04 wording (2026-10-07, docs/reference/answer-board/answers/
+#: 2026-10-07-outline-blue-staffy-puppies-manchester-uk-2026-10-07.md), every figure read here
+#: from data/settings.json, as the build must read it.
+MOTHER_ANSWER = (f"See them together before you commit to a puppy. With us the {DEPOSIT} deposit comes first: "
+                 f"it books your viewing and reserves your puppy, it comes off the price, and it is {CLAUSE}. "
+                 "At the viewing you see both parents, their registration papers and the veterinary records "
+                 "before you commit to a puppy, and again on the day you collect.")
+#: The answers that are a bank row word for word (data/faq.json, no token in them).
+VERBATIM = {
+    "How Do I Know Which Puppies Are Still Available?": "listing-availability",
+    "What Vaccinations, Worming and Flea Treatments Has the Puppy Had?": "health-vaccinations",
+    "Is Blue Staffy Aggressive?": "listing-aggressive",
+    "Do Blue Staffies Suit First-Time Dog Owners?": "listing-first-time-owners",
+    "Can a Staffy Be Left Alone for Hours?": "listing-left-alone",
+    "Do Blue Staffies Make Good Family Pets for Homes With Children?": "home-family-children",
+    "Is a Staffordshire Bull Terrier Able to Live in a Flat?": "guide-flat-living",
+}
+
+
+def inline(fragment):
+    """Text with tags stripped and NO space added: a keep span inside a word stays inside it."""
+    return re.sub(r"\s+", " ", _h.unescape(re.sub(r"<[^>]+>", "", fragment))).strip()
+
+
+def mounts(kit_id):
+    """Every root of one component on the preview (a component mounted at several places)."""
+    return re.findall(rf'<(?:section|aside|div)\b[^>]*class="city-kit {kit_id}\b.*?</section>', section(kit_id), re.S)
+
+
+def served_alt_of(file):
+    return served_alts()[file]
+
+
+TEST_ID = "test-form-id"
+
+
+def with_id(fn):
+    """Run `fn` with a stand-in PUBLIC_FORMSPREE_ID: the audit refuses to run without one (it would
+    match nothing), and the real id lives only in .env."""
+    import os
+    old = os.environ.get("PUBLIC_FORMSPREE_ID")
+    os.environ["PUBLIC_FORMSPREE_ID"] = TEST_ID
+    try:
+        return fn()
+    finally:
+        if old is None:
+            os.environ.pop("PUBLIC_FORMSPREE_ID", None)
+        else:
+            os.environ["PUBLIC_FORMSPREE_ID"] = old
+
+
+# ---- reviews C, "Three plates": one review per mount, three mounts, data/reviews.json word for word
+
+def test_three_plates_quote_each_review_word_for_word_one_per_slot_with_no_score():
+    s = section(KIT_ID["reviews"])
+    plates = mounts(KIT_ID["reviews"])
+    assert len(plates) == 3 and s.count("data-review-slot") == 3, "outline rows 6, 11 and 20: one review each"
+    want = {r["name"]: r for r in REVIEWS}
+    names = []
+    for plate in plates:
+        quote = " ".join(inline(p) for p in re.findall(r"<p\b[^>]*>(.*?)</p>", re.search(r"<blockquote\b.*?</blockquote>", plate, re.S).group(0), re.S))
+        cite = inline(re.search(r"<cite\b[^>]*>(.*?)</cite>", plate, re.S).group(1))
+        r = want[cite]
+        assert quote == r["quote"], (cite, quote[:60])
+        assert f"{r['name']}, {r['place']}" in inline(plate), "attributed as the data gives it"
+        names.append(cite)
+    assert names == ["The Victoria Family", "Mark J", "Rachel L."]
+    for banned in ("★", "☆", "/5", "out of 5", "rating", "stars"):
+        assert banned not in text(s).lower() and banned not in s, banned
+    assert "aggregateRating" not in built() and "reviewRating" not in built()
+    src = code_of((KIT / FILE["reviews"]).read_text(encoding="utf-8"))
+    assert "reviews.json" in src, "the review is read from data/reviews.json by name, never typed"
+
+
+def test_three_plates_alternate_the_photo_side_and_credit_every_parent_photo():
+    plates = mounts(KIT_ID["reviews"])
+    sides = [re.search(r'data-side="(start|end)"', p).group(1) for p in plates]
+    assert sides == ["start", "end", "start"], sides
+    files = [re.search(r'src="/images/([^"?]+)', p).group(1).split(" ")[0] for p in plates]
+    assert files == [FAMILY, MAGGIE, JONES], files
+    for p in plates[1:]:
+        assert re.search(r'class="cr"[^>]*>\s*Photo:', p), "a parent's photo never reads as the reviewer's own dog"
+    # Working rule 11: the family photo is on the preview twice already (takeaways, offset sheet),
+    # so the plate takes a third alt; Maggie and Jones are first uses and keep the served alt.
+    alts = [alt_of(re.search(r"<img\b[^>]*>", p).group(0)) for p in plates]
+    assert alts[0] not in served_alt_of(FAMILY)
+    assert alts[1] in served_alt_of(MAGGIE) and alts[2] in served_alt_of(JONES)
+
+
+# ---- FAQ B, "Rows beside a photo": three mounts, the outline's questions, answers from the bank and the data
+
+def faq_blocks():
+    return mounts(KIT_ID["faq-blocks"])
+
+
+def faq_rows(block):
+    """(question, answer) per row: a long answer is set in paragraphs at its own sentence breaks, so
+    the answer is its paragraphs rejoined with single spaces (the FAQPage text, words untouched)."""
+    out = []
+    for q, a in re.findall(r"<details\b[^>]*>\s*<summary\b[^>]*>.*?<h3\b[^>]*>(.*?)</h3>.*?</summary>\s*<div class=\"a\"[^>]*>(.*?)</div>\s*</details>", block, re.S):
+        out.append((inline(q), " ".join(inline(t) for t in re.findall(r"<p\b[^>]*>(.*?)</p>", a, re.S))))
+    return out
+
+
+def test_faq_blocks_are_the_outlines_three_blocks_word_for_word():
+    blocks = faq_blocks()
+    assert len(blocks) == 3 == len(FAQ_SECTIONS)
+    total = 0
+    for block, sec in zip(blocks, FAQ_SECTIONS):
+        h2 = sec["headings"][0]
+        assert re.search(r"<h2\b[^>]*>\s*" + re.escape(h2["text"]) + r"\s*</h2>", block), h2["text"]
+        qs = [q for q, _ in faq_rows(block)]
+        assert qs == [c["text"] for c in h2["children"]], qs
+        total += len(qs)
+        assert block.count("<details") == len(qs) and block.count("<summary") == len(qs)
+    assert total == 20, "6 + 7 + 7 questions (Phase F ruling 2)"
+
+
+def test_faq_answers_come_from_the_bank_and_the_data_never_typed():
+    rows = dict(r for b in faq_blocks() for r in faq_rows(b))
+    for q, bank in VERBATIM.items():
+        assert rows[q] == BANK[bank]["a"], (q, bank)
+    boys = [p["name"] for p in PUPPIES if p["sex"] == "male"]
+    girls = [p["name"] for p in PUPPIES if p["sex"] == "female"]
+    cost = rows["How Much Does Each Blue Staffy Puppy Cost?"]
+    assert gbp(PRICES["male_gbp"]) in cost and gbp(PRICES["female_gbp"]) in cost
+    assert all(n in cost for n in boys + girls), cost
+    deposit = rows["How Much Is Your Deposit?"]
+    assert deposit.startswith(DEPOSIT) and CLAUSE in deposit, deposit
+    assert rows["Should I See the Mother With Her Puppy Before Money Changes Hands?"] == MOTHER_ANSWER
+    across = rows["Do You Deliver Puppies Across the UK?"]
+    assert BAND.replace("–", " to ") in across or (gbp(SETTINGS["delivery_min_gbp"]) in across and gbp(SETTINGS["delivery_max_gbp"]) in across)
+    assert SETTINGS["delivery_note"] in across and TOWN in across
+    dna = rows[next(q for q in rows if q.startswith("Are Both Parents DNA Tested"))]
+    assert all(t in dna for t in DNA) and "certificates on request" in dna, dna
+    for word in ("clear", "result", "negative", "passed", "free of"):
+        assert word not in dna.lower(), (word, dna)
+    where = rows["Where Do I Find Blue Staffy Puppies to Buy Near Manchester?"]
+    assert where == "Here. " + BANK["home-find-breeders"]["a"].split(". ", 1)[1], where
+    for q, a in rows.items():
+        assert "—" not in a, (q, "no em dash in our copy")
+        assert "refundable" not in a.replace(CLAUSE, ""), (q, "never plainly refundable")
+    lib = (ROOT / "src/lib/manchesterFaq.ts").read_text(encoding="utf-8")
+    assert "loadFaq" in lib and "outlines/blue-staffy-puppies-manchester-uk.json" in lib, "bank rows and the outline's questions"
+    assert "£" not in code_of(lib) and not re.search(r"(?<![\w.-])(500|1,500|1,700|200|350)(?![\w%])", code_of(lib))
+
+
+def test_faq_photos_swap_sides_and_every_repeat_takes_a_new_alt():
+    blocks = faq_blocks()
+    assert [re.search(r'data-side="(start|end)"', b).group(1) for b in blocks] == ["end", "start", "end"]
+    imgs = [re.search(r"<img\b[^>]*>", b).group(0) for b in blocks]
+    christa = next(p for p in PUPPIES if p["name"] == "Christa")
+    assert f"/{christa['card_photo'].rsplit('.', 1)[0]}." in imgs[0]
+    assert f'src="/images/{MAGGIE}"' in imgs[1] and f'src="/images/{MANCHESTER_PUP}"' in imgs[2]
+    assert alt_of(imgs[1]) not in served_alt_of(MAGGIE) and alt_of(imgs[2]) not in served_alt_of(MANCHESTER_PUP)
+    for b in blocks:
+        assert b.find("<img") < b.find('class="rows'), "the photo comes before the rows (a strip on top on a phone)"
+
+
+# ---- newsletter B, "Postmarked note": no heading, no count, the one endpoint, classed `newsletter`
+
+def test_postmarked_note_says_what_a_subscriber_gets_with_no_heading_and_no_count():
+    s = section(KIT_ID["newsletter"])
+    assert re.search(r"<h[1-6]\b", s) is None, "outline row 16 carries no heading"
+    t = text(s)
+    assert "next litter" in t and f"Greater {CITY}" in t
+    assert not re.search(r"\b\d[\d,]*\s*(subscribers|readers|families|people|owners)", t, re.I), "no subscriber count"
+    assert f"{SETTINGS['breeder_name']}" in t and TOWN in t, "signed by the breeder, from the town"
+    assert "Your email is used for nothing else." in t
+    img = re.search(r"<img\b[^>]*>", s).group(0)
+    vennie = next(p for p in PUPPIES if p["name"] == "Vennie")
+    assert f"/{vennie['card_photo'].rsplit('.', 1)[0]}." in img and "Vennie" in alt_of(img)
+
+
+def test_postmarked_note_posts_one_email_to_the_one_endpoint():
+    s = section(KIT_ID["newsletter"])
+    forms = re.findall(r"<form\b[^>]*>.*?</form>", s, re.S)
+    assert len(forms) == 1
+    head = re.search(r"<form\b[^>]*>", forms[0]).group(0)
+    assert 'method="POST"' in head and "data-newsletter" in head
+    contact = ROOT / "dist/uk-blue-staffy-breeders-contact/index.html"
+    real = re.findall(r'<form[^>]*\saction="([^"]*)"', contact.read_text(encoding="utf-8"))
+    assert re.search(r'\saction="([^"]*)"', head).group(1) in real, "the endpoint every form posts to"
+    for name in ("_next", "_subject", "_gotcha", "email"):
+        assert f'name="{name}"' in forms[0], name
+    email = re.search(r'<input\b[^>]*type="email"[^>]*>', forms[0]).group(0)
+    eid = re.search(r'id="([^"]+)"', email).group(1)
+    assert f'for="{eid}"' in forms[0] and "required" in email and 'data-err="' in email
+    import form_contract_audit as F
+    rows = with_id(lambda: F.audit_html(forms[0], "kit-preview/city-manchester"))
+    assert [r["kind"] for r in rows] == ["newsletter"], rows
+
+
+# ---- contact B, "Photo at the edge": the kit form's contract, a collect-or-delivery switch, the
+# ---- any-boy / any-girl / next-litter options, the reply time as data/faq.json words it
+
+def test_photo_at_the_edge_heads_the_form_with_lisas_photo_and_the_outlines_h2():
+    s = section(KIT_ID["contact-form"])
+    assert re.search(r"<h2\b[^>]*>\s*" + re.escape(ENQUIRY_H2) + r"\s*</h2>", s), "outline row 22's H2"
+    img = re.search(r"<img\b[^>]*>", s).group(0)
+    assert f'src="/images/{LISA}"' in img
+    assert s.find("<img") < s.find("<h2"), "the photo comes first (a strip on top on a phone)"
+    london = (ROOT / "dist/uk-locations/blue-staffy-puppies-london/index.html").read_text(encoding="utf-8")
+    there = {alt_of(i) for i in re.findall(r"<img\b[^>]*>", london) if LISA.rsplit(".", 1)[0] in i}
+    assert there and alt_of(img) not in there and "Lisa Bright" in alt_of(img), "a repeat carrying a new alt"
+
+
+def test_photo_at_the_edge_keeps_the_kit_forms_whole_contract_plus_the_switch():
+    s = section(KIT_ID["contact-form"])
+    form = re.search(r"<form\b[^>]*>.*?</form>", s, re.S).group(0)
+    head = re.search(r"<form\b[^>]*>", form).group(0)
+    assert 'method="POST"' in head and 'data-layout="compact"' in head and "data-contact-form" in head
+    for name in ("name", "email", "phone", "location", "puppy", "message", "_gotcha", "_next", "_subject", "handover"):
+        assert f'name="{name}"' in form, name
+    radios = re.findall(r'<input\b[^>]*name="handover"[^>]*>', form)
+    assert sorted(re.search(r'value="([^"]+)"', r).group(1) for r in radios) == ["collect", "delivery"]
+    assert all('type="radio"' in r for r in radios)
+    t = text(form)
+    assert f"Collect in {TOWN}" in t and "Home delivery" in t
+    assert BAND in t and "priced by distance" in t
+    values = re.findall(r'<option\b[^>]*value="([^"]*)"', form)
+    assert values == ["", *[p["slug"] for p in PUPPIES], "any-boy", "any-girl", "waiting-list"], values
+    labels = [inline(o) for o in re.findall(r"<option\b[^>]*>(.*?)</option>", form, re.S)]
+    for p in PUPPIES:
+        price = gbp(PRICES["male_gbp"] if p["sex"] == "male" else PRICES["female_gbp"])
+        assert f"{p['name']}, {'boy' if p['sex'] == 'male' else 'girl'}, {price}" in labels, p["name"]
+    words = ["no", "one", "two", "three", "four", "five", "six"]
+    n_boys = sum(p["sex"] == "male" for p in PUPPIES); n_girls = len(PUPPIES) - n_boys
+    assert f"Any of our {words[n_boys]} boys" in labels and f"Any of our {words[n_girls]} girls" in labels
+    reply = BANK["enquiry-reply-time"]["a"].split(". ", 1)[0] + "."
+    assert reply in t, "the reply time only as data/faq.json enquiry-reply-time words it"
+    for cid in re.findall(r'<(?:input|select|textarea)\b[^>]*\bid="([^"]+)"', form):
+        assert f'for="{cid}"' in form, cid
+    for key in ("name", "email", "puppy", "message"):
+        assert re.search(rf'name="{key}"[^>]*data-err="[^"]+"|data-err="[^"]+"[^>]*name="{key}"', form), key
+    assert "PHONE_PLACEHOLDER" not in s and not re.search(r"\b0\d{3,4}\s?\d{3}\s?\d{3,4}\b", t), "no phone number"
+    import form_contract_audit as F
+    # Judged as the FULL contract a content page owes (a specimen route skips it), at the id's endpoint.
+    live = form.replace(re.search(r'\saction="[^"]*"', head).group(0), f' action="https://formspree.io/f/{TEST_ID}"', 1)
+    rows = with_id(lambda: F.audit_html(live, "blue-staffy-vs-staffordshire-bull-terrier"))
+    assert [r["kind"] for r in rows] == ["inquiry"] and rows[0]["problems"] == [], rows
+    assert rows[0]["in_scope"], "the full field contract was applied"
+
+
+def test_every_served_photo_on_the_preview_keeps_its_served_alt_first_and_a_new_one_after():
+    """Working rule 11 for the served /images/ files (the puppy photos are held above): the first
+    use keeps an alt the old site served, every later use carries its own, and no two are alike."""
+    page = built()
+    seen = {}
+    for img in re.findall(r"<img\b[^>]*>", page):
+        m = re.search(r'src="/images/([^"/]+?\.webp)"', img)
+        if not m or decorative(img) or m.group(1) not in served_alts():
+            continue
+        f, alt = m.group(1), alt_of(img)
+        if f not in seen:
+            assert alt in served_alts()[f], (f, alt)
+        else:
+            assert alt not in served_alts()[f] and alt not in seen[f], (f, alt)
+        seen.setdefault(f, []).append(alt)
+    assert {FAMILY, MAGGIE, JONES, MANCHESTER_PUP} <= set(seen)

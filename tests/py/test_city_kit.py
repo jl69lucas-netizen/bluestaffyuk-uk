@@ -115,7 +115,13 @@ def test_a_served_photo_keeps_its_served_alt_and_its_baked_siblings():
         if row["src"] != "images":
             assert "alt" not in row, f"{name}: a puppy photo's alt is the component's, not a served one"
             continue
-        assert row["alt"] in served.get(name, ()), f"{name}: alt is not the one the old site served"
+        if "published" in row:
+            # A file this rebuild published (an Asset Gate's), not one the old site served: no served
+            # alt to keep, so it carries none, and the record that approved it must exist.
+            assert "alt" not in row and name not in served, f"{name}: a published file carries no served alt"
+            assert (ROOT / row["published"]).is_file(), (name, row["published"])
+        else:
+            assert row["alt"] in served.get(name, ()), f"{name}: alt is not the one the old site served"
         stem, ext = name.rsplit(".", 1)
         for w in row.get("widths", []):
             assert (ROOT / "public/images" / f"{stem}-{w}.{ext}").is_file(), (name, w)
@@ -766,7 +772,8 @@ def test_the_grid_layout_of_the_kit_form_is_opt_in():
     """ContactFormKit's `layout="grid"` is the city line-up's alone: judged FORM BY FORM, every
     grid form sits inside a city contact line-up (`section.city-contact`, the London scaffold from
     Plan 2 Task 8), and every other form on every built page is still the stepped form, with
-    three fieldsets and no error wiring."""
+    three fieldsets and no error wiring. Manchester's `layout="compact"` (Phase F Task 31) is its
+    photo-at-the-edge section's alone, held the same way."""
     pages = [p for p in (ROOT / "dist").rglob("index.html")
              if "kit-preview" not in p.parts and 'data-form="contact"' in p.read_text(encoding="utf-8")]
     if not pages:
@@ -776,9 +783,15 @@ def test_the_grid_layout_of_the_kit_form_is_opt_in():
         html = page.read_text(encoding="utf-8")
         lineups = [(m.start(), html.index("</section>", m.start()))
                    for m in re.finditer(r'<section[^>]*class="city-kit city-contact', html)]
+        edges = [(m.start(), html.index("</section>", m.start()))
+                 for m in re.finditer(r'<section[^>]*class="city-kit city-photo-at-the-edge', html)]
         for m in re.finditer(r'<form[^>]*data-form="contact"[^>]*>.*?</form>', html, re.S):
             f = m.group(0)
             inside = any(a < m.start() < b for a, b in lineups)
+            if 'data-layout="compact"' in f.split(">", 1)[0]:
+                assert any(a < m.start() < b for a, b in edges), f"{page}: a compact form outside a photo-at-the-edge section"
+                continue
+            assert not any(a < m.start() < b for a, b in edges), f"{page}: a photo-at-the-edge section without the compact form"
             if 'data-layout="grid"' in f.split(">", 1)[0]:
                 grids += 1
                 assert inside, f"{page}: a grid form outside a city contact line-up"

@@ -10,6 +10,9 @@ classed "inquiry" and must carry its page's contract:
   short — blog/* posts: name, email, message
   none  — the uk-locations/* cluster, the hubs (no inquiry forms today) and the
           NON_CONTENT_ROUTES below; those still owe the method and the one endpoint.
+Whatever the contract, every inquiry form also owes its option VALUES (`value_problems`): a
+collect-or-delivery `handover` offers exactly "collect" and "delivery", and a puppy select offers
+only data/puppies.json slugs, "waiting-list", "any-boy" and "any-girl".
 
 This is the Python half of the same contract tests/render/checks/form.ts enforces, and
 the two must agree or they will give different verdicts on the same page.
@@ -91,6 +94,16 @@ HIDDEN = ("_next", "_subject")
 # plus `waiting-list`, and src/components/ContactForm.astro now emits the same set from
 # the same data, so both pass the same `full` contract.
 PUPPY_OPTION = "waiting-list"
+# Beside the waiting list, the two other choices a puppy select may offer that are no single row of
+# data/puppies.json: "any of our boys" / "any of our girls" (the Manchester enquiry form, Phase F
+# Task 31, ContactFormKit `layout="compact"`). Every other option value must be a puppy's slug: an
+# option nobody can be sold is an enquiry about nothing.
+PUPPY_CHOICES = (PUPPY_OPTION, "any-boy", "any-girl")
+# The collect-or-delivery choice, where a form asks it (the bsuk-contact-form skill, "Delivery, where
+# a form asks about it"): the two options are the only two that exist, collection in person and UK
+# home delivery. An optional control; when a form carries it, it must offer exactly these two.
+HANDOVER_VALUES = ("collect", "delivery")
+PUPPIES = ROOT / "data/puppies.json"
 SHORT = ("name", "email", "message")
 LOCATION = re.compile(r"^uk-locations/")
 HUBS = ("available-puppies", "uk-locations", "blog")
@@ -173,6 +186,43 @@ def field_checks_apply(slug: str) -> bool:
     return bool(contract_keys(slug))
 
 
+@lru_cache(maxsize=1)
+def _slugs() -> frozenset:
+    return frozenset(p["slug"] for p in json.loads(PUPPIES.read_text(encoding="utf-8")))
+
+
+def puppy_values() -> set:
+    """Every value a puppy select may offer besides its empty prompt: a slug of data/puppies.json
+    (any status: a page may still offer a reserved puppy), or one of PUPPY_CHOICES."""
+    return set(_slugs()) | set(PUPPY_CHOICES)
+
+
+def value_problems(ctl: list) -> list:
+    """The option checks every inquiry form owes WHEREVER it carries the control, whatever its page's
+    field contract: a handover choice that offers something that does not exist, or a puppy option
+    that is no puppy and no named choice, is a false promise on any page (the uk-locations cluster
+    included, which the field contract skips)."""
+    problems = []
+    handover = [c for c in ctl if c["name"] == "handover"]
+    if handover:
+        values = [c.get("value") or "" for c in handover if c["tag"] == "input"]
+        values += [o for c in handover if c["tag"] == "select" for o in c["options"] if o]
+        for v in values:
+            if v not in HANDOVER_VALUES:
+                problems.append(f'handover offers "{v}"; the only two are {" and ".join(HANDOVER_VALUES)}')
+        for v in HANDOVER_VALUES:
+            if v not in values:
+                problems.append(f"handover lacks {v}")
+    allowed = puppy_values()
+    for c in ctl:
+        if c["name"] == "puppy" and c["tag"] == "select":
+            for o in c["options"]:
+                if o and o not in allowed:
+                    problems.append(f'puppy select offers "{o}", which is no puppy in data/puppies.json '
+                                    f'and none of {", ".join(PUPPY_CHOICES)}')
+    return problems
+
+
 _SKIPPED = ("template", "noscript")
 
 
@@ -198,7 +248,7 @@ class _Forms(HTMLParser):
         elif tag in ("input", "select", "textarea") and self._cur is not None:
             type_ = a.get("type") or ("text" if tag == "input" else tag)
             ctl = {"tag": tag, "name": a.get("name"), "type": type_.lower(),
-                   "required": "required" in a, "options": []}
+                   "required": "required" in a, "options": [], "value": a.get("value")}
             self._cur["controls"].append(ctl)
             self._cursel = ctl if tag == "select" else None
         elif tag == "option" and self._cursel is not None:
@@ -240,6 +290,8 @@ def audit_html(html: str, slug: str):
             problems.append(f'method is {a.get("method") or "GET"}, must be POST')
         if kind == "newsletter" and any(c["type"] == "email" and not c["name"] for c in ctl):
             problems.append("email input has no name attribute — Formspree receives nothing")
+        if kind == "inquiry":
+            problems += value_problems(ctl)
         if kind == "inquiry" and field_checks_apply(slug):
             for key, rx in contract_keys(slug):
                 hits = [c for c in ctl if c["name"] and rx.match(c["name"])]

@@ -508,6 +508,128 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       return out;
     },
   },
+  // Manchester's last four (Phase F Task 31). The reviews: three plates, one review each, the
+  // photo changing sides; the plate sits on its photo (overlapping it on a phone and a tablet,
+  // beside it from a desktop box) and never covers a face (img-face-visible measures that).
+  'city-three-plates': {
+    present: '.city-three-plates',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-review-slot');
+      out.push(...await page.evaluate(() => {
+        const bad: string[] = [];
+        const roots = Array.from(document.querySelectorAll<HTMLElement>('.city-three-plates'));
+        if (roots.length !== 3) bad.push(`${roots.length} plates on the page, not the outline's three review slots`);
+        const sides: string[] = [];
+        for (const root of roots) {
+          const s = getComputedStyle(root);
+          const box = root.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight);
+          const ph = root.querySelector('.ph')!.getBoundingClientRect();
+          const plate = root.querySelector('.plate')!.getBoundingClientRect();
+          if (ph.width < 1 || plate.width < 1) { bad.push('a slot paints no photo or no plate'); continue; }
+          if (box >= 800) {
+            // Beside: the photo's half and the plate's half on opposite sides, the plate over the photo's edge.
+            sides.push(ph.left + ph.width / 2 < plate.left + plate.width / 2 ? 'start' : 'end');
+            if (plate.top < ph.top - 1 || plate.bottom > ph.bottom + 1) bad.push('the desktop plate runs outside its photo band');
+          } else if (!(plate.top < ph.bottom - 8 && plate.top > ph.top)) bad.push(`the plate does not rise over its photo's foot in a ${Math.round(box)}px box`);
+          const cr = root.querySelector('.cr');
+          if (cr) {
+            const c = cr.getBoundingClientRect();
+            if (c.left < ph.left - 1 || c.right > ph.right + 1 || c.top < ph.top - 1 || c.bottom > ph.bottom + 1) bad.push('a photo credit paints outside its photo');
+          }
+        }
+        if (sides.length === 3 && sides.join() !== 'start,end,start') bad.push(`the photos sit ${sides.join(', ')}, not start, end, start`);
+        return bad;
+      }));
+      return out;
+    },
+  },
+  // The FAQ blocks: native details rows beside one photo per block, side swapping block by block.
+  'city-rows-beside-a-photo': {
+    present: '.city-rows-beside-a-photo',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-faq-block');
+      const q = page.locator('.city-rows-beside-a-photo [data-faq-q]').first();
+      const before = await q.evaluate((h) => (h.closest('details') as HTMLDetailsElement).open);
+      await q.click();
+      const after = await q.evaluate((h) => (h.closest('details') as HTMLDetailsElement).open);
+      if (after === before) out.push('pressing the first question does not toggle its answer');
+      await q.evaluate((h) => { (h.closest('details') as HTMLDetailsElement).open = false; });
+      out.push(...await page.evaluate(() => {
+        const bad: string[] = [];
+        const roots = Array.from(document.querySelectorAll('.city-rows-beside-a-photo'));
+        if (roots.length !== 3) bad.push(`${roots.length} FAQ blocks, not three`);
+        const n = roots.reduce((t, r) => t + r.querySelectorAll('[data-faq-q]').length, 0);
+        if (n < 15 || n > 20) bad.push(`${n} questions across the blocks (15 to 20)`);
+        for (const r of roots) {
+          for (const s of Array.from(r.querySelectorAll('summary'))) {
+            if (s.getBoundingClientRect().height < 44) bad.push('a question row is under 44px tall');
+          }
+          const img = r.querySelector('.pic img')!.getBoundingClientRect();
+          if (img.width < 100) bad.push(`a block's photo paints ${Math.round(img.width)}px wide`);
+        }
+        return bad;
+      }));
+      return out;
+    },
+  },
+  // The newsletter: a signed note with Vennie's round postmark; one email field, its error wired.
+  'city-postmarked-note': {
+    present: '.city-postmarked-note',
+    run: async (page) => {
+      const out: string[] = [];
+      out.push(...await page.evaluate(() => {
+        const bad: string[] = [];
+        const root = document.querySelector('.city-postmarked-note')!;
+        const pm = root.querySelector('.pm .disc')!.getBoundingClientRect();
+        if (pm.width < 60 || Math.abs(pm.width - pm.height) > 2) bad.push(`the postmark paints ${Math.round(pm.width)}×${Math.round(pm.height)}, not a round stamp`);
+        const ring = getComputedStyle(root.querySelector('.pm')!);
+        if (ring.borderTopStyle !== 'dashed') bad.push('the postmark has no dashed ring');
+        if (root.querySelector('h1, h2, h3, h4')) bad.push('the note carries a heading (outline row 16 carries none)');
+        return bad;
+      }));
+      const email = page.locator('.city-postmarked-note input[type="email"]');
+      const h = (await email.boundingBox())?.height ?? 0;
+      if (h < 44) out.push(`the email field is ${h}px tall`);
+      await page.locator('.city-postmarked-note button[type="submit"]').click();
+      if ((await email.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the field aria-invalid');
+      const desc = await email.getAttribute('aria-describedby');
+      if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid field is not described by a painted error line');
+      out.push(...(await emailMessages(page, '.city-postmarked-note form', '.city-postmarked-note input[type="email"]')));
+      return out;
+    },
+  },
+  // The enquiry form: Lisa's photo at the edge, a collect-or-delivery switch, the kit form's contract.
+  'city-photo-at-the-edge': {
+    present: '.city-photo-at-the-edge',
+    run: async (page) => {
+      const out: string[] = [];
+      const form = '.city-photo-at-the-edge form';
+      const short = await page.evaluate((f) => Array.from(document.querySelectorAll(
+        `${f} input:not([type="hidden"]):not([name="_gotcha"]):not([type="radio"]), ${f} select, ${f} textarea, ${f} button, ${f} .key`))
+        .filter((el) => el.getBoundingClientRect().height < 44).map((el) => el.getAttribute('name') || el.className || el.tagName), form);
+      if (short.length) out.push(`under 44px tall: ${short.join(', ')}`);
+      // The switch: a tap on a key checks its radio and rings the key.
+      await page.locator(`${form} .key`).nth(1).click();
+      const picked = await page.evaluate((f) => {
+        const k = document.querySelectorAll(`${f} .key`)[1];
+        return { checked: (k.querySelector('input') as HTMLInputElement).checked, ring: getComputedStyle(k).boxShadow };
+      }, form);
+      if (!picked.checked) out.push('a tap on the delivery key does not pick it');
+      if (!/3px/.test(picked.ring)) out.push('the picked key has no 3px ring');
+      await page.locator(`${form} [type="submit"]`).click();
+      const name = page.locator(`${form} [name="name"]`);
+      if ((await name.getAttribute('aria-invalid')) !== 'true') out.push('an empty submit does not mark the name aria-invalid');
+      const desc = await name.getAttribute('aria-describedby');
+      if (!desc || !(await page.locator(`#${desc}`).isVisible())) out.push('the invalid name is not described by a painted error line');
+      out.push(...(await emailMessages(page, form, `${form} [name="email"]`)));
+      out.push(...await page.evaluate(() => {
+        const root = document.querySelector('.city-photo-at-the-edge')!;
+        const img = root.querySelector('.ph img')!.getBoundingClientRect();
+        return img.width < 200 ? [`the photo paints ${Math.round(img.width)}px wide`] : [];
+      }));
+      return out;
+    },
+  },
   'city-contents-photo-index': {
     present: '.city-contents-photo-index',
     run: async (page, viewport) => {

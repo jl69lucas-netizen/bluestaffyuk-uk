@@ -88,6 +88,20 @@ const PAGE_KINDS: Record<string, string> = (() => {
   }
 })();
 
+/** Mirrors PUPPY_CHOICES, HANDOVER_VALUES and puppy_values() in scripts/form_contract_audit.py
+ *  (the Manchester enquiry form, Phase F Task 31): the option values every inquiry form owes,
+ *  whatever its page's field contract. */
+const PUPPY_CHOICES = ['waiting-list', 'any-boy', 'any-girl'];
+const HANDOVER_VALUES = ['collect', 'delivery'];
+const PUPPY_VALUES: string[] = (() => {
+  try {
+    const rows = JSON.parse(readFileSync(join(REPO, 'data/puppies.json'), 'utf8')) as { slug: string }[];
+    return [...rows.map((r) => r.slug), ...PUPPY_CHOICES];
+  } catch {
+    return [...PUPPY_CHOICES];
+  }
+})();
+
 export function contractFor(slug: string): 'full' | 'short' | 'none' {
   const kind = PAGE_KINDS[slug];
   if (kind && kind in KIND_CONTRACT) return KIND_CONTRACT[kind];
@@ -131,7 +145,7 @@ register({
       };
     }
     const r = await page.evaluate(
-      ({ endpoint, contract }) => {
+      ({ endpoint, contract, handoverValues, puppyValues }) => {
         const ALL: [string, RegExp][] = [
           ['name', /^name$/],
           ['email', /^email$/],
@@ -158,6 +172,7 @@ register({
         const missing: string[] = [];
         let missingCount = 0;
         const submitsEmpty: string[] = [];
+        const badValues: string[] = [];
         let examined = 0;
         Array.from(document.querySelectorAll('form')).forEach((f, i) => {
           const action = (f.getAttribute('action') || '').trim();
@@ -199,6 +214,26 @@ register({
             (c) => (c as HTMLInputElement).type !== 'hidden' && c.name !== '_gotcha',
           );
           const isInquiry = !(visible.length === 1 && (visible[0] as HTMLInputElement).type === 'email');
+          // The option values (scripts/form_contract_audit.py `value_problems`), on every inquiry
+          // form whatever its contract: a handover offers exactly collect and delivery, and a puppy
+          // select only the litter's slugs and the three named choices.
+          if (isInquiry) {
+            const handover = controls.filter((c) => c.name === 'handover');
+            if (handover.length) {
+              const values = handover.flatMap((c) => (c.tagName.toLowerCase() === 'select'
+                ? Array.from((c as HTMLSelectElement).options).map((o) => o.getAttribute('value') ?? '').filter(Boolean)
+                : [c.getAttribute('value') ?? '']));
+              for (const v of values) if (!handoverValues.includes(v)) badValues.push(`${label}: handover offers "${v}"; the only two are ${handoverValues.join(' and ')}`);
+              for (const v of handoverValues) if (!values.includes(v)) badValues.push(`${label}: handover lacks ${v}`);
+            }
+            for (const c of controls) {
+              if (c.name !== 'puppy' || c.tagName.toLowerCase() !== 'select') continue;
+              for (const o of Array.from((c as HTMLSelectElement).options)) {
+                const v = o.getAttribute('value') ?? '';
+                if (v && !puppyValues.includes(v)) badValues.push(`${label}: puppy select offers "${v}", which is no puppy in data/puppies.json and none of the named choices`);
+              }
+            }
+          }
           if (!isInquiry) {
             // Same parity check as form_contract_audit.py: a newsletter's one real control
             // must carry a `name`, or Formspree receives an unlabeled value and drops it.
@@ -242,9 +277,9 @@ register({
           }
           if (f.checkValidity()) submitsEmpty.push(label);
         });
-        return { examined, wrongEndpoint, missing, missingCount, submitsEmpty };
+        return { examined, wrongEndpoint, missing, missingCount, submitsEmpty, badValues };
       },
-      { endpoint: FORM_ENDPOINT, contract: contractFor(ctx.slug) },
+      { endpoint: FORM_ENDPOINT, contract: contractFor(ctx.slug), handoverValues: HANDOVER_VALUES, puppyValues: PUPPY_VALUES },
     );
     const defects: Defect[] = [];
     if (r.examined === 0 && formExpected(ctx.slug)) {
@@ -256,6 +291,10 @@ register({
     if (r.wrongEndpoint.length) {
       defects.push({ checkId: 'form-inquiry-contract', family: 'FORM' as const, viewport, count: r.wrongEndpoint.length,
         message: `endpoint/method contract (must POST to ${FORM_ENDPOINT}): ${r.wrongEndpoint.slice(0, 4).join(' | ')}` });
+    }
+    if (r.badValues.length) {
+      defects.push({ checkId: 'form-inquiry-contract', family: 'FORM' as const, viewport, count: r.badValues.length,
+        message: `option values: ${r.badValues.slice(0, 4).join(' | ')}` });
     }
     if (r.missing.length) {
       defects.push({ checkId: 'form-inquiry-contract', family: 'FORM' as const, viewport, count: r.missingCount,

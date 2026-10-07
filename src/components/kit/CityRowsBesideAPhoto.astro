@@ -1,0 +1,161 @@
+---
+// src/components/kit/CityRowsBesideAPhoto.astro — Manchester's FAQ blocks (pick:
+// manchester/faq-blocks/b, "Rows beside a photo"; frozen 355d5e43). ONE block: on the open bone page
+// under a steel rule, the block's H2 and its answer, then its questions as display-face rows between
+// hairlines, each a native `<details>` with a plus that turns to a minus, beside one photograph that
+// belongs to the block. A Manchester page mounts it THREE times, at outline rows 7, 12 and 21, the
+// photo swapping sides block by block (`side`: end, start, end) and staying in view while the rows
+// are read. Built from design/city-canvas/manchester/faq-blocks/b.html as the visual spec only; it
+// imports no London component (rules/design.md own-components-per-page).
+//
+// THE ROWS ARE THE CALLER'S, never this file's: Manchester's are src/lib/manchesterFaq.ts (the
+// approved outline's questions word for word, each answered from data/faq.json and the data keys).
+// Each question is an `<h3>` inside its `<summary>`; the answer is one paragraph and the FAQPage
+// node's text word for word (src/lib/cityKit.ts `faqPageNode`, fed the same rows), so it carries no
+// link. A price, a band or a hard-hyphen word ("L-2-HGA", "DEFRA-approved") never breaks inside. A
+// long answer is set in paragraphs at its own sentence breaks (src/lib/cityKit.ts `splitReview`:
+// words and order untouched), so no paragraph runs past the type-fit line caps in the narrow
+// column beside the photo.
+//
+// THE PHOTO: a puppy's card photo (data/puppies.json, served through astro:assets) or a served
+// /images/ file (data/image-focus.json), its crop solved from the faces. A first use keeps the alt
+// the site serves; a photo the page already showed takes a new alt (`photoAlt`, working rule 11).
+//
+// AN IN-BODY COMPONENT FOLLOWS ITS OWN BOX (src/styles/city.css): on a phone the photo is a short
+// 3:1 strip between the answer and the rows; from a 640px box a square beside the rows; from a
+// desktop box a larger square that stays in view (sticky) while the rows are read.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { puppyImage, PUPPY_IMAGES } from '../../lib/puppyImages';
+import { focusClassFor, focusRow, servedPhoto, servedPuppyAlt } from '../../lib/imageFocus';
+import { availablePuppies, citySizes, keepRuns, splitReview, BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, PARENT_DNA_TESTS, type CityFit } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  /** A stable key for the block (`data-faq-block`). */
+  block: string;
+  /** The block's H2, word for word. */
+  heading: string;
+  /** One sentence under it: what the block's questions are about. */
+  lede: string;
+  /** The block's questions, each with its answer (the FAQPage node's text). */
+  items: { q: string; a: string }[];
+  /** A puppy's card photo (data/puppies.json `card_photo`) or a served /images/ file. */
+  photo: string;
+  /** A new alt for a photo the page already showed above (working rule 11). Omitted: the served alt. */
+  photoAlt?: string;
+  /** The photo's caption. */
+  caption: string;
+  /** The photo's side from a 640px box; blocks alternate end, start, end. */
+  side?: 'start' | 'end';
+  /** Where the section sits from 1024px, for its photo's `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { block, heading, lede, items, photo, photoAlt, caption, side = 'end', fit = 'column', class: cls, ...rest } = Astro.props;
+if (!items.length) throw new Error(`CityRowsBesideAPhoto: block ${block} has no question`);
+
+// The photo: a puppy's card photo, or a served file with its served alt.
+const isPuppy = photo in PUPPY_IMAGES && focusRow(photo).src === 'puppies';
+const pup = isPuppy ? availablePuppies().find((p) => p.card_photo === photo) : undefined;
+if (isPuppy && !pup) throw new Error(`CityRowsBesideAPhoto: ${photo} is no available puppy's card photo`);
+const served = isPuppy ? null : servedPhoto(photo);
+const firstAlt = pup ? servedPuppyAlt(pup) : served!.alt;
+if (photoAlt !== undefined && (!photoAlt.trim() || photoAlt === firstAlt)) {
+  throw new Error(`CityRowsBesideAPhoto: a repeated ${photo} needs a new alt of its own, never the served one (working rule 11)`);
+}
+const alt = photoAlt ?? firstAlt;
+// The crop is solved for the deepest box it paints in: the phone's 3:1 strip.
+const crop = focusClassFor(photo, 3);
+const keep = [BOY_PRICE, GIRL_PRICE, DEPOSIT, DELIVERY_BAND, ...PARENT_DNA_TESTS];
+// The photo: the box less its 16px gutters on a phone; 272px from a 640px box (a 540px served file
+// is then under 2x its painted width); 320px from desktop.
+const sizes = citySizes(fit, {
+  phone: (B) => `calc(min(${B}, 1120px) - 32px)`,
+  tablet: () => '272px',
+  desktop: () => '320px',
+});
+/** About five lines of the narrowest answer column; the type-fit gate caps a paragraph at 8. */
+const PARA = 210;
+const id = `city-faq-${block}`;
+---
+<section {...rest} class:list={['city-kit', 'city-rows-beside-a-photo', cls]} data-faq-block={block} data-side={side} aria-labelledby={`${id}-h`}>
+  <div class="in"><div class="blk">
+    <h2 id={`${id}-h`}>{heading}</h2>
+    <p class="lede">{lede}</p>
+    <div class="pair">
+      <figure class="pic">
+        {pup
+          ? <Image src={puppyImage(photo)} alt={alt} widths={[400, 640, 960]} sizes={sizes} class={crop} loading="lazy" decoding="async" />
+          : <img src={served!.file} srcset={served!.srcset} sizes={served!.srcset ? sizes : undefined}
+              alt={alt} width={served!.w} height={served!.h} class={crop} loading="lazy" decoding="async" />}
+        <figcaption>{caption}</figcaption>
+      </figure>
+      <div class="rows">
+        {items.map((r) => (
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>{keepRuns(r.q, keep).map((x) => (x.keep ? <span class="keep">{x.text}</span> : x.text))}</h3></summary>
+            <div class="a">{splitReview(r.a, PARA).map((t) => <p>{keepRuns(t, keep).map((x) => (x.keep ? <span class="keep">{x.text}</span> : x.text))}</p>)}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div></div>
+</section>
+<style>
+  @layer components {
+    /* An in-body container (src/styles/city.css): the gutters live on .in, never on the root. */
+    .city-rows-beside-a-photo { background: var(--color-surface); }
+    .in { max-width: 1120px; margin: 0 auto; padding: var(--city-pad-y) var(--space-4); }
+    /* The block is ruled off by a steel rule the block's whole width (the pick's framing: rule), not
+       the H2's measure: on the H2 it stopped at 741px over 1010px of rows (frontend-design). */
+    .blk { padding-top: var(--space-5); border-top: 2px solid var(--color-brand); }
+    h2 { margin: 0; }
+    .lede { margin: var(--space-2) 0 var(--space-5); font-size: var(--city-lead); color: var(--color-text); }
+    .pair { display: grid; gap: var(--space-4); }
+    .pic { margin: 0; }
+    .pic img {
+      display: block; width: 100%; height: auto; aspect-ratio: 3 / 1; object-fit: cover;
+      border-radius: var(--radius-md); background: var(--color-bone-50);
+    }
+    .pic figcaption { margin-top: var(--space-2); font-size: var(--text-sm); line-height: 1.4; color: var(--color-text-muted); }
+    .rows { border-top: 1px solid var(--color-border); }
+    .row { border-bottom: 1px solid var(--color-border); }
+    summary {
+      display: flex; align-items: center; gap: var(--space-4); min-height: 56px; padding: var(--space-3) 0;
+      cursor: pointer; list-style: none; border-radius: var(--radius-sm);
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    /* Hover underlines the question; it never dims it (Task 25). */
+    summary:hover h3 { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+    /* A long word (a URL, a test name in another script) wraps rather than run the row wide (impeccable harden). */
+    h3 { flex: 1; min-width: 0; margin: 0; font-family: var(--font-display); font-weight: 600; overflow-wrap: anywhere; }
+    /* The plus, a minus once open: two 2px bars, the upright turned flat. */
+    .pm { order: 2; flex: none; position: relative; width: 16px; height: 16px; color: var(--color-brand); }
+    .pm::before, .pm::after {
+      content: ""; position: absolute; left: 0; top: 7px; width: 16px; height: 2px; background: currentColor;
+      transition: transform var(--dur-base) var(--ease-out);
+    }
+    .pm::after { transform: rotate(90deg); }
+    details[open] .pm::after { transform: rotate(0deg); }
+    .a { padding-block: 0 var(--space-4); padding-inline: 0 var(--space-8); }
+    .a p { margin: 0; color: var(--color-text); max-inline-size: 64ch; overflow-wrap: anywhere; }
+    .a p + p { margin-top: var(--space-2); }
+    @media (prefers-reduced-motion: reduce) { .pm::before, .pm::after { transition: none; } }
+    /* From a 640px box: a 272px square beside the rows, on the block's side. */
+    @container (width >= 640px) {
+      .pair { grid-template-columns: minmax(0, 1fr) 272px; gap: var(--space-6); align-items: start; }
+      [data-side=start] .pair { grid-template-columns: 272px minmax(0, 1fr); }
+      [data-side=end] .pic { grid-column: 2; grid-row: 1; }
+      [data-side=end] .rows { grid-column: 1; grid-row: 1; }
+      .pic img { aspect-ratio: 1 / 1; }
+    }
+    /* From a desktop box: a 320px square that stays in view while the rows are read. */
+    @container (width >= 800px) {
+      .in { padding-inline: var(--space-6); }
+      .pair { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--space-8); }
+      [data-side=start] .pair { grid-template-columns: 320px minmax(0, 1fr); }
+      .pic { position: sticky; top: var(--space-5); }
+    }
+  }
+</style>

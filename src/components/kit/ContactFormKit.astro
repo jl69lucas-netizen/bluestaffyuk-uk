@@ -27,6 +27,9 @@ import type { HTMLAttributes } from 'astro/types';
 import puppiesJson from '../../../data/puppies.json';
 import { abs, type PuppyRow } from '../../lib/site';
 import { formEndpoint } from '../../lib/formEndpoint';
+import { loadFaq } from '../../lib/faq';
+import { DELIVERY_BAND, TOWN, priceFor, pricedBy, transportName } from '../../lib/cityKit';
+import { numberWord } from '../../lib/recordText';
 import Button from './Button.astro';
 
 // THE ID PREFIX IS A PROP because the board preview renders this form three times on one
@@ -41,14 +44,27 @@ import Button from './Button.astro';
 // field, tied to its control with `aria-describedby` and `aria-invalid` (plan2-notes, Task 9) by
 // CityContactLineup's script — kept there, so the pages that mount the stepped form ship no
 // new script. The grid layout is drawn for a steel band: its text and links read on-inverse.
+//
+// `compact` is Manchester's enquiry form (contact-form B, "Photo at the edge"; Phase F Task 31):
+// the SAME six controls, honeypot, hidden fields, method and endpoint, plus two things the
+// Manchester canvas asks of the form. A collect-or-delivery choice (`handover`, two radios, the
+// only two that exist: collection in the breeder's town and UK home delivery; the bsuk-contact-form
+// skill, "Delivery, where a form asks about it"), its hint the band and the transport read from
+// data/settings.json; and, beside the waiting list, "any boy" / "any girl" choices, each offered only
+// while the litter has two or more of that sex, counted from data/puppies.json. The reply time under
+// the button is data/faq.json `enquiry-reply-time`'s own sentence. It lies flat on the bone page
+// (no card), its fields tight two-up from a 640px box and six-column from a desktop box; its error
+// lines are wired by the section that mounts it (CityPhotoAtTheEdge, src/lib/formErrors.ts).
+// scripts/form_contract_audit.py holds the two new controls' values (HANDOVER_VALUES, puppy_values).
 type Props = HTMLAttributes<'form'> & {
   idPrefix?: string;
-  layout?: 'stepped' | 'grid';
+  layout?: 'stepped' | 'grid' | 'compact';
   /** The id of the heading that names a `grid` form (its section's H2). */
   labelledBy?: string;
 };
 const { idPrefix = 'kit-contact-form', layout = 'stepped', labelledBy, class: cls, ...rest } = Astro.props;
 const grid = layout === 'grid';
+const compact = layout === 'compact';
 const { action, live } = formEndpoint();
 
 const puppies = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
@@ -74,8 +90,81 @@ const ERR: Record<string, string> = {
 };
 // The email line has two: one for a field left empty, one for an address that is not whole.
 const EMAIL_ERR = { empty: 'Please give us your email address.', bad: 'That email address looks incomplete: it needs an @ and a full address.' };
+
+// THE COMPACT LAYOUT'S OWN FACTS (Manchester, Task 31): the any-boy / any-girl choices, counted from
+// data/puppies.json and offered only for two or more of a sex (one puppy is its own option already),
+// and the reply time as data/faq.json words it.
+const ofSex = (sex: 'male' | 'female') => puppies.filter((p) => p.sex === sex).length;
+const anyOf = [
+  ...(ofSex('male') > 1 ? [{ value: 'any-boy', label: `Any of our ${numberWord(ofSex('male'))} boys` }] : []),
+  ...(ofSex('female') > 1 ? [{ value: 'any-girl', label: `Any of our ${numberWord(ofSex('female'))} girls` }] : []),
+];
+const replyRow = loadFaq().find((r) => r.id === 'enquiry-reply-time');
+if (compact && !replyRow) throw new Error('ContactFormKit: data/faq.json has no enquiry-reply-time row');
+const REPLY = replyRow ? replyRow.a.split(/(?<=\.)\s+/)[0] : '';
+const COMPACT_ERR: Record<string, string> = {
+  name: 'Please tell us your name.',
+  puppy: 'Please choose a puppy, a boy or a girl, or the next litter.',
+  message: 'Please tell us what you would like to know.',
+};
+// Name, email and phone run three to a row from a desktop box (`sm`); town and puppy two (`half`).
+const compactFields = [
+  { ...fields[0], cls: 'sm' }, { ...fields[1], cls: 'sm' }, { ...fields[2], cls: 'sm' }, { ...fields[3], cls: 'half' },
+] as const;
 ---
-{grid ? (
+{compact ? (
+<form
+  {...rest}
+  class:list={['kit-contact', cls]}
+  method="POST"
+  action={action}
+  data-form="contact"
+  data-layout="compact"
+  data-live={String(live)}
+  aria-labelledby={labelledBy}
+>
+  <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+  <input type="hidden" name="_subject" value="New Blue Staffy enquiry" />
+  <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <fieldset class="handover">
+    <legend>Collect or delivery?</legend>
+    <div class="sw">
+      <label class="key" for={`${f}-collect`}><input id={`${f}-collect`} name="handover" type="radio" value="collect" />Collect in {TOWN}</label>
+      <label class="key" for={`${f}-delivery`}><input id={`${f}-delivery`} name="handover" type="radio" value="delivery" />Home delivery</label>
+    </div>
+    <p class="hint">UK home delivery is <span class="keep">{DELIVERY_BAND}</span> by <span class="keep">{transportName}</span>, {pricedBy}.</p>
+  </fieldset>
+  {compactFields.map((x) => (
+    <p class:list={['field', x.cls]}>
+      <label for={`${f}-${x.key}`}>{x.label}{' '}<span class="req">({x.required ? 'required' : 'optional'})</span></label>
+      <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} data-err={x.required ? `${f}-${x.key}-err` : undefined}
+        placeholder={x.key === 'email' ? ' ' : undefined} />
+      {x.required && (x.key === 'email'
+        ? <span class="err" id={`${f}-${x.key}-err`}><span class="e-empty">{EMAIL_ERR.empty}</span><span class="e-bad">{EMAIL_ERR.bad}</span></span>
+        : <span class="err" id={`${f}-${x.key}-err`}>{COMPACT_ERR[x.key]}</span>)}
+    </p>
+  ))}
+  <p class="field half pup">
+    <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
+    <select id={`${f}-puppy`} name="puppy" required data-err={`${f}-puppy-err`}>
+      <option value="" disabled selected>Choose a puppy…</option>
+      {puppies.map((p) => <option value={p.slug}>{p.name}, {p.sex === 'male' ? 'boy' : 'girl'}, {priceFor(p)}</option>)}
+      {anyOf.map((o) => <option value={o.value}>{o.label}</option>)}
+      <option value="waiting-list">The next litter, please</option>
+    </select>
+    <span class="err" id={`${f}-puppy-err`}>{COMPACT_ERR.puppy}</span>
+  </p>
+  <p class="field wide">
+    <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
+    <textarea id={`${f}-message`} name="message" rows="3" required data-err={`${f}-message-err`}></textarea>
+    <span class="err" id={`${f}-message-err`}>{COMPACT_ERR.message}</span>
+  </p>
+  <div class="go">
+    <Button kind="submit" type="submit" label="Send my enquiry" />
+    <p class="note">{REPLY} Your details are used only to answer you.</p>
+  </div>
+</form>
+) : grid ? (
 <form
   {...rest}
   class:list={['kit-contact', cls]}
@@ -266,8 +355,58 @@ const EMAIL_ERR = { empty: 'Please give us your email address.', bad: 'That emai
     }
   }
 
+  /* THE COMPACT LAYOUT (`layout="compact"`, Manchester Task 31): flat on the bone page, no card
+     shell; the collect-or-delivery switch first, then the fields one to a row on a phone, two-up
+     from a 640px box and six columns from a desktop box (name, email and phone three to a row; town
+     and puppy two). Its tiers are the section's box, the city edges (640 / 800). */
+  @layer components {
+    .kit-contact[data-layout='compact'] { max-width: none; padding: 0; gap: var(--space-3); }
+    [data-layout='compact'] .field { align-content: start; }
+    [data-layout='compact'] label { font-size: var(--text-sm); }
+    [data-layout='compact'] .req { font-size: var(--text-sm); color: var(--color-text-muted); }
+    [data-layout='compact'] input:not([type='radio']), [data-layout='compact'] select, [data-layout='compact'] textarea {
+      min-height: 46px; padding: 9px 12px; border-color: var(--color-brand-mid);
+    }
+    [data-layout='compact'] textarea { min-height: 104px; resize: vertical; }
+    [data-layout='compact'] :user-invalid:not([type='radio']), [data-layout='compact'] [aria-invalid='true'] { border: 2px solid var(--color-warn); }
+    [data-layout='compact'] .err { display: none; font-size: var(--text-sm); color: var(--color-text); }
+    [data-layout='compact'] .field:has(:user-invalid) .err,
+    [data-layout='compact'] [aria-invalid='true'] + .err { display: block; }
+    [data-layout='compact'] .err .e-bad { display: none; }
+    [data-layout='compact'] input:not(:placeholder-shown) + .err .e-empty { display: none; }
+    [data-layout='compact'] input:not(:placeholder-shown) + .err .e-bad { display: inline; }
+    /* The switch: two raised keys on a soft steel tray, the whole key the tap target (its radio
+       covers it, invisible), a 3px ring on the picked key and the focus ring on the key. */
+    [data-layout='compact'] fieldset.handover { padding: 0; border: 0; gap: var(--space-2); min-width: 0; }
+    [data-layout='compact'] legend { padding: 0; margin-bottom: var(--space-2); font-family: inherit; font-size: var(--text-sm); font-weight: 600; color: var(--color-text); }
+    [data-layout='compact'] .sw { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--color-brand-soft); border-radius: var(--radius-md); }
+    [data-layout='compact'] .key {
+      position: relative; display: grid; place-items: center; min-height: 48px; padding: 6px 10px;
+      border-radius: var(--radius-sm); background: var(--color-surface-raised); box-shadow: inset 0 0 0 1px var(--color-brand-mid);
+      font-size: var(--text-sm); font-weight: 600; line-height: 1.25; text-align: center; color: var(--color-text); cursor: pointer;
+    }
+    /* The radio covers its key (trap 4: it must not inherit the text-input rule). */
+    [data-layout='compact'] .key input { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; margin: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; }
+    [data-layout='compact'] .key:has(input:checked) { color: var(--color-brand); box-shadow: inset 0 0 0 3px var(--color-brand); }
+    [data-layout='compact'] .key:has(input:focus-visible) { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    [data-layout='compact'] .hint { margin: 0; max-width: 65ch; text-wrap: pretty; font-size: var(--text-sm); line-height: 1.45; color: var(--color-text-muted); }
+    [data-layout='compact'] .keep { white-space: nowrap; }
+    [data-layout='compact'] .go { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-4); }
+    [data-layout='compact'] .note { flex: 1 1 220px; text-wrap: pretty; font-size: var(--text-sm); line-height: 1.45; color: var(--color-text); }
+    @container (width >= 640px) {
+      .kit-contact[data-layout='compact'] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-3); }
+      [data-layout='compact'] .handover, [data-layout='compact'] .pup, [data-layout='compact'] .wide, [data-layout='compact'] .go { grid-column: 1 / -1; }
+    }
+    @container (width >= 800px) {
+      .kit-contact[data-layout='compact'] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      [data-layout='compact'] .sm { grid-column: span 2; }
+      [data-layout='compact'] .half, [data-layout='compact'] .pup { grid-column: span 3; }
+      [data-layout='compact'] textarea { min-height: 76px; }
+    }
+  }
+
   /* Outside the layer on purpose: Button's `submit` kind is a full-width Tailwind utility
      (`w-full`, in the utilities layer), which a rule inside @layer components cannot beat.
      The grid form's submit sits beside its note, at its own width, as on the canvas. */
-  [data-layout='grid'] .go :global(.kit-btn) { width: auto; }
+  [data-layout='grid'] .go :global(.kit-btn), [data-layout='compact'] .go :global(.kit-btn) { width: auto; }
 </style>

@@ -594,3 +594,76 @@ is still judged
 red, then green). After that fix `check:all` exits 0, with both canvases at 0 problems.
 `python3 -m pytest -q tests/py -k "city or design or prune or kit"`: 851 passed, 2 skipped,
 1 xfailed.
+
+## Built — Task 31
+
+Reviews C, FAQ blocks B, newsletter B and contact form B built into the kit from the frozen picks
+(355d5e43) as `CityThreePlates`, `CityRowsBesideAPhoto`, `CityPostmarkedNote` and
+`CityPhotoAtTheEdge` (`data/design/components.json` rows M10-M13, each with `canvas_variant` and
+`root_selector`), previewed on `/kit-preview/city-manchester/`. The reviews and the FAQ blocks are
+one section per mount, as the page mounts them at outline rows 6, 11, 20 and 7, 12, 21, so the
+preview mounts each three times (the side alternating start, end, start and end, start, end). No
+London component is imported or copied; shared are tokens, `city.css`, `cityKit.ts`
+(`splitReview`, `keepRuns`, the deposit helpers) and new pieces:
+- `src/lib/manchesterFaq.ts`: the three blocks, questions read from the approved outline word for
+  word (its `faq` sections' H2 and H3s, the `faq_rewordings` page wordings), each answer keyed to
+  its question and built from `data/faq.json` through `loadFaq` and the data keys, with its
+  `source` named. Seven answers are bank rows word for word; the deposit answer carries
+  `deposit_refund_clause` whole and never says plainly "refundable" (the bank's
+  `{deposit_terms}` rows are not used); the mother-and-puppy answer is answer board q04 (a) with
+  every figure read; the DNA answer names L-2-HGA and HC-HSF4 (from `health-dna-tests`) and the
+  certificates on request, no result. A question that moves in the outline (Task 34's three
+  re-proposals) stops the build until its answer is keyed to the new words.
+- `src/lib/formErrors.ts` `wireFieldErrors()`: the aria-invalid / aria-describedby wiring for the
+  newsletter and the enquiry form (London's line-up keeps its own script, unchanged).
+- `src/lib/imageFocus.ts` `publishedPhoto()` and a `published` row in `data/image-focus.json` for
+  Lisa Bright's photo: a file this rebuild published (the London board's Asset Gate), with faces
+  recorded and no served alt, so the page passes the alt its board approves.
+  `tests/py/test_city_kit.py` now accepts a `published` row (no served alt, the approving record
+  must exist).
+- `ContactFormKit` `layout="compact"`: the same six controls, honeypot, hidden fields, POST and
+  one endpoint, plus a `handover` radio pair (`collect`, `delivery`; "Collect in" the town, "Home
+  delivery"; the hint the band and transport from `delivery_note`) and `any-boy` / `any-girl`
+  options (counted from `data/puppies.json`, offered only for two or more of a sex) beside
+  `waiting-list`; the note under the button is `enquiry-reply-time`'s own first sentence. The
+  London grid test now also holds a compact form to a photo-at-the-edge section.
+- `scripts/form_contract_audit.py` classes the newsletter `newsletter` (one named email input,
+  the honeypot and hidden fields aside) and the enquiry form `inquiry` with the full contract
+  clean. The contract was extended test-first (5 tests red, then green): `value_problems()` holds
+  every inquiry form, on any page, to `HANDOVER_VALUES` (exactly collect and delivery) and to
+  `puppy_values()` (the data slugs plus `waiting-list`, `any-boy`, `any-girl`);
+  `tests/render/checks/form.ts` mirrors it ("option values"), and the `bsuk-contact-form` skill
+  documents it.
+- `city-layout-follows-box` gains six keys (the plates and the FAQ blocks per side, the note, the
+  form) and one fact kind, `overlaps` (the review plate is set over its photo's inner edge, which
+  `beside` refuses by design).
+
+Alts (working rule 11), checked against the pictures: the family photo's third use, the Manchester
+pup's second, Christa's fourth and Vennie's fourth each take a new alt; Maggie and Jones are first
+uses on the preview and keep the served alts; Lisa's photo takes "Lisa Bright, the breeder who
+answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other" (the
+canvas's "at home in Carlisle" was dropped: the picture does not show where it was taken).
+
+`frontend-design:frontend-design`, then `impeccable:impeccable` (brand register; critique and
+harden), were invoked with the Skill tool. Both read per-component shots at 375 / 768 / 1024 /
+1280 (`task31-<component>-<width>.png`, header hidden) and the full-page `CITY_SHOTS=…` shots. The
+impeccable loader again reported `hasProduct: false`, so the brand context came from
+`rules/design.md` and the tokens. The detector (`npx impeccable --json` on the four files)
+returned no rows.
+
+| Component | gate / frontend-design found | impeccable found (critique, harden) | Fixed | Widths |
+|---|---|---|---|---|
+| reviews (three plates) | The credit pill covered 11% of Maggie's face at 375 (img-face-visible); the family crop cut the faces at 768 (2:1) and 1280 (crop solved for a square). | Harden: a long word in a review or a name ran the plate wide. No stars, no score, no schema rating; the bleed reads the box (`100cqw`), not the viewport, so beside the dial it stops at the column. | Pill capped at 55% on a phone; 16:9 from 640px; the crop solved for 16:9 (`focusClassFor`); `overflow-wrap: anywhere` on the quote and signature. | 375 · 768 · 1024 · 1280 |
+| FAQ blocks (rows beside a photo) | The q04 answer ran 10 lines at 375 and 640 (8 max); the Manchester pup's 540px file painted at 200px at 768 (2.70x, blocking); the block's steel rule stopped at the H2's measure (741px over 1010px of rows). | Harden: a long word in a question or answer overflowed the row. Hover underlines, never dims; reduced motion stills the plus. | Long answers set in paragraphs at their own sentence breaks (`splitReview`, words untouched; the FAQPage text is the same); the tablet photo is 272px (1.99x); the rule moved to a `.blk` wrapper, the block's whole width; `overflow-wrap: anywhere`. | 375 · 768 · 1024 · 1280 |
+| newsletter (postmarked note) | The empty-email line never painted (London's newsletter probe and the new one both failed on it): `form:has(input:not(:placeholder-shown))` matched the honeypot, which has no placeholder. | Critique: no heading, no count, says what the list is for; the postmark is drawn in on Vennie's face by `transform: scale` about the focus classes' `--fx` / `--fy` (no crop typed). Harden: long copy wraps. | The error rules read the email field only; `overflow-wrap` on the note. | 375 · 768 · 1024 · 1280 |
+| contact form (photo at the edge) | At 1024 the outline's long H2 ran to 3 lines in the canvas's 544px copy column (the type ruling q06); the delivery hint was 77-84ch (75 max); "distance." and "you." were orphans. | Harden: no phone number (PHONE_PLACEHOLDER only); the switch is a radio pair under one legend, the whole key the tap target, picked state a 3px ring, not colour alone; error lines wired by script and painted by CSS without it. | From a desktop box the question and its answer run the full width above, and the photo bleeds from the box edge beside the form, as tall as the form (it was the full section height); hint capped at 65ch; `text-wrap: pretty` on the hint and the note. | 375 · 768 · 1024 · 1280 |
+
+Accepted, not changed (advisory): `img-not-upscaled` on Lisa's photo at 1024 (2.48x) and 1280
+(1.27x): the column's `sizes` is its width, and the cover crop of a tall column needs more pixels
+than a width-chosen candidate carries; the master (1408px) is in the srcset for a 2x screen.
+
+Gates after the fixes: `npm run -s build` exit 0. `python3 -m pytest -q tests/py/test_city_kit_manchester.py
+tests/py/test_city_kit.py tests/py/test_design_components.py`: 221 passed, 1 skipped (the skip
+pre-dates Task 28). `npm run test:render:city`: 57 passed, 55 skipped, 0 failed, London's three
+routes unchanged; on the Manchester route city-layout-follows-box examined 11 facts at 768 and 17
+at 1024 and 1280 (7 before this task), and at the edge widths 11 / 11 / 11 / 17.

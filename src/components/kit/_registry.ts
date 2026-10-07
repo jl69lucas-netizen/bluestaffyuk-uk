@@ -89,6 +89,11 @@ import CityQuestionBar from './CityQuestionBar.astro';
 import CityTickCard from './CityTickCard.astro';
 import CityPhotoShelf from './CityPhotoShelf.astro';
 import CityOffsetSheet from './CityOffsetSheet.astro';
+import CityThreePlates from './CityThreePlates.astro';
+import CityRowsBesideAPhoto from './CityRowsBesideAPhoto.astro';
+import CityPostmarkedNote from './CityPostmarkedNote.astro';
+import CityPhotoAtTheEdge from './CityPhotoAtTheEdge.astro';
+import { MANCHESTER_FAQ } from '../../lib/manchesterFaq';
 import componentsJson from '../../../data/design/components.json';
 import locationRows from '../../../data/locations.json';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
@@ -124,7 +129,8 @@ export type ComponentId =
   // /kit-preview/city-manchester/ and never on London's /kit-preview/city/.
   | 'city-feature-and-three' | 'city-range-sheet' | 'city-puppy-folder'
   | 'city-icon-rows' | 'city-numeral-rail' | 'city-question-bar'
-  | 'city-tick-card' | 'city-photo-shelf' | 'city-offset-sheet';
+  | 'city-tick-card' | 'city-photo-shelf' | 'city-offset-sheet'
+  | 'city-three-plates' | 'city-rows-beside-a-photo' | 'city-postmarked-note' | 'city-photo-at-the-edge';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -312,6 +318,10 @@ const MANCHESTER_TABLE = MANCHESTER_SECTIONS.find((s) => s.table)!.table!;
 /** The outline's "H4 <heading>": the level and the words the table sits under. */
 const MANCHESTER_TABLE_UNDER = /^H([2-4]) (.+)$/.exec(MANCHESTER_TABLE.under)!;
 const MANCHESTER_DEPOSIT_H2 = MANCHESTER_H2.find((h) => /\bDeposit\b/.test(h))!;
+/** The puppies Task 31's specimens show: Christa beside the first FAQ block and Vennie as the
+ *  newsletter's postmark, the picked canvas's (pickAvailable passes over a sold one). */
+const MANCHESTER_FAQ_PUP = pickAvailable(['Christa'], 1)[0];
+const MANCHESTER_NOTE_PUP = pickAvailable(['Vennie'], 1)[0];
 
 export const REGISTRY: Record<ComponentId, KitEntry> = {
   // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
@@ -837,6 +847,53 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       photoAlt: 'A new owner holding her blue Staffy puppy in a pink collar, cheek to cheek in the garden',
       rows: depositTerms(),
       cta: { label: 'Ask about a viewing', href: '#kit-city-puppy-folder' },
+    }],
+  },
+  // Manchester's last four (Task 31), each mounted as the page mounts it: the reviews and the FAQ
+  // blocks three times (outline rows 6, 11, 20 and 7, 12, 21), the newsletter and the form once.
+  // Every photo here was painted above or is a repeat on the page, so each says a new true thing
+  // where the site already serves its alt (working rule 11): the family photo's third use, the
+  // Manchester pup's second, Christa's and Vennie's fourth (hero, counter, shelf); Maggie and Jones
+  // are first uses and keep the served alts. The alts were checked against the pictures.
+  'city-three-plates': {
+    C: CityThreePlates,
+    demo: [
+      { fit: 'full', name: 'The Victoria Family', photo: MANCHESTER_FAMILY, side: 'start',
+        photoAlt: "The Victoria family's blue Staffy puppy, held up beside its owner's smiling face in their garden" },
+      { fit: 'full', name: 'Mark J', photo: 'maggie-blue-staffy-dam-with-pups.webp', side: 'end', credit: 'Photo: Maggie, our dam, with her pups' },
+      { fit: 'full', name: 'Rachel L.', photo: 'jones-magnificent-blue-staffy-sire.webp', side: 'start', credit: 'Photo: Jones, the sire of this litter' },
+    ],
+  },
+  'city-rows-beside-a-photo': {
+    C: CityRowsBesideAPhoto,
+    demo: [
+      { fit: 'full', block: MANCHESTER_FAQ[0].key, heading: MANCHESTER_FAQ[0].heading, items: MANCHESTER_FAQ[0].items, side: 'end',
+        lede: 'The first questions are about the price, where to find us, how a puppy reaches your home and how the deposit works, so here are our answers in that order.',
+        photo: MANCHESTER_FAQ_PUP.card_photo, caption: `${MANCHESTER_FAQ_PUP.name}, one of our ${LITTER} puppies`,
+        photoAlt: `${MANCHESTER_FAQ_PUP.name}, one of our blue Staffy girls, with a white patch on her chest` },
+      { fit: 'full', block: MANCHESTER_FAQ[1].key, heading: MANCHESTER_FAQ[1].heading, items: MANCHESTER_FAQ[1].items, side: 'start',
+        lede: `Before you make the trip to ${TOWN}, families want to know about the parents, the viewing, the vet work and what happens after the puppy is home with you.`,
+        photo: 'maggie-blue-staffy-dam-with-pups.webp', caption: 'Maggie, our dam, with her pups',
+        photoAlt: 'Maggie, our blue Staffy dam, sitting on a grey sofa with two of her puppies beside her' },
+      { fit: 'full', block: MANCHESTER_FAQ[2].key, heading: MANCHESTER_FAQ[2].heading, items: MANCHESTER_FAQ[2].items, side: 'end',
+        lede: 'These are the questions about living with the breed: temperament, first-time owners, time alone, food, children and whether a flat is enough room.',
+        photo: 'reputable-blue-staffy-breeder-manchester-pup.webp', caption: `One of our puppies, settled at home in ${MANCHESTER}`,
+        photoAlt: 'A small blue Staffy puppy reaching up to its new owner as she kneels on the lawn' },
+    ],
+  },
+  'city-postmarked-note': {
+    C: CityPostmarkedNote,
+    demo: [{ fit: 'full', area: `Greater ${MANCHESTER}`, puppy: MANCHESTER_NOTE_PUP.name,
+      photoAlt: `${MANCHESTER_NOTE_PUP.name}, a blue and white Staffy girl, her white face marked with one dark eye patch` }],
+  },
+  'city-photo-at-the-edge': {
+    C: CityPhotoAtTheEdge,
+    demo: [{
+      fit: 'full',
+      heading: MANCHESTER_SECTIONS[MANCHESTER_SECTIONS.length - 1].headings[0].text,
+      lede: 'Tell us which puppy you like, or simply a boy or a girl, and how you would like to take your puppy home. We confirm your puppy is still free before you pay anything.',
+      photo: 'lisa-bright-blue-staffy-breeder-carlisle.webp',
+      photoAlt: 'Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other',
     }],
   },
 };

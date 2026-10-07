@@ -51,6 +51,14 @@ The pup list is data, not markup: a pup added to `data/puppies.json` appears in 
 the next build, and a pup marked sold there is still selectable only if the page still offers
 it. Never hardcode a name or a price into the form.
 
+**Two optional additions (Manchester, Phase F Task 31; ContactFormKit `layout="compact"`)** — a
+`handover` radio pair whose values are exactly `collect` and `delivery`, and, beside `waiting-list`,
+the puppy options `any-boy` / `any-girl` (offered only while the litter has two or more of that sex).
+`scripts/form_contract_audit.py` (`value_problems`, `HANDOVER_VALUES`, `puppy_values()`) and its
+render twin hold these VALUES on every inquiry form, whatever the page's field contract: a handover
+option that does not exist, or a puppy option that is no `data/puppies.json` slug and none of the
+three named choices, is a problem.
+
 **Delivery, where a form asks about it** — the two options are the only two that exist:
 **UK home delivery £200–£350 by distance, by DEFRA-approved transport**, and **collection in
 person from Carlisle**. It is a band, never a single figure, and the £500 deposit (`deposit_gbp`, never plainly "refundable") is stated
