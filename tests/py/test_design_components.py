@@ -29,7 +29,10 @@ CITY_IDS = ["city-hero-filmstrip", "city-price-scale", "city-trust-ledger", "cit
             # fifteen picks: London's board revision of 2026-10-03, answer board q01-q04.
             "city-signed-byline", "city-ticket-strip", "city-look-listen-checklist", "city-places-by-publisher",
             # And the London map, answer board 2026-10-06-london-map q01-q02.
-            "city-map-facade"]
+            "city-map-facade",
+            # Manchester's own picks (the Manchester page run, Phase F Tasks 28-31), each row
+            # carrying `canvas_variant` and `root_selector`; previewed on /kit-preview/city-manchester/.
+            "city-feature-and-three", "city-range-sheet", "city-puppy-folder"]
 
 
 def load():

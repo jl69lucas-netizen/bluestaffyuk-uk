@@ -25,7 +25,19 @@ import { TIER, HEADING_CAPS } from './lib/cityTiers.js';
  * dial's and rule 10's boundary — is measured for the city set. A component that fails here is
  * fixed in the component, never excused here.
  */
-const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/', '/uk-locations/blue-staffy-puppies-london/'];
+// Manchester's own components (the Manchester page run, Phase F Tasks 28-31; gap G11) are
+// previewed on their own route, never on London's /kit-preview/city/: the nav set is a page
+// singleton, and each city's picks are components of their own (rules/design.md
+// own-components-per-page).
+const MANCHESTER_KIT = '/kit-preview/city-manchester/';
+const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/', '/uk-locations/blue-staffy-puppies-london/', MANCHESTER_KIT];
+// The full-width specimen routes: every component paints the viewport wide, as the canvas frames did.
+const FULL_WIDTH_SPECIMENS = new Set(['/kit-preview/city/', MANCHESTER_KIT]);
+// city-layout-follows-box judges the IN-BODY city components (its SPEC keys). A route that mounts
+// none yet has nothing for it to judge, and every key would be reported missing: Manchester's
+// preview carries only its three full-width strips until Task 30 builds its first in-body
+// component (the takeaways, the table, the image-and-text sections), which removes it from here.
+const NO_IN_BODY_YET = new Set([MANCHESTER_KIT]);
 // A real city page's approved board says which city components it mounts; a SPEC key of
 // city-layout-follows-box whose component the board does not mount is declared absent, never
 // demanded (tests/render/lib/cityLayoutFollowsBox.ts `absent`, 2026-10-04). The specimen routes
@@ -132,6 +144,33 @@ async function priceScaleSpill(page: Page): Promise<string[]> {
   });
 }
 
+/** The range sheet's figures stay on the sheet (Manchester's counter, CityRangeSheet): every
+ *  figure's PAINTED glyphs (a Range over its text, so a no-wrap figure that overflows its own cell
+ *  is caught, as priceScaleSpill reads London's) end inside the sheet's content box, a face paints,
+ *  and the delivery band paints its bar. Nothing to measure is a defect, never a pass. */
+async function rangeSheetSpill(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const bad: string[] = [];
+    const sheet = document.querySelector('.city-range-sheet .sheet');
+    if (!sheet) return ['the page has no range sheet (.city-range-sheet) to measure'];
+    const s = getComputedStyle(sheet);
+    const b = sheet.getBoundingClientRect();
+    const left = b.left + parseFloat(s.paddingLeft); const right = b.right - parseFloat(s.paddingRight);
+    const figs = Array.from(sheet.querySelectorAll('.fig'));
+    if (!figs.length) return ['the range sheet has no figure to measure'];
+    for (const f of figs) {
+      const r = document.createRange(); r.selectNodeContents(f);
+      const g = r.getBoundingClientRect();
+      if (g.left < left - 1 || g.right > right + 1) bad.push(`"${(f.textContent || '').trim()}" paints outside the sheet`);
+    }
+    const faces = Array.from(sheet.querySelectorAll<HTMLImageElement>('.faces img')).filter((i) => i.getBoundingClientRect().width > 0);
+    if (!faces.length) bad.push('the range sheet paints no face');
+    const track = sheet.querySelector('.track')?.getBoundingClientRect();
+    if (!track || track.width < 40) bad.push('the delivery band paints no range bar');
+    return bad;
+  });
+}
+
 /** Each probe: the selector that says its component is on the page, and what it measures. */
 const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-hero-filmstrip': {
@@ -155,6 +194,62 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-trust-ledger': {
     present: '.city-trust',
     run: (page) => allVisible(page, 'data-trust-item'),
+  },
+  // ── Manchester's picks (Phase F Task 28): hero C, counter B, trust B ──────────────────────
+  'city-feature-and-three': {
+    present: '.city-feature-and-three',
+    run: async (page, viewport) => {
+      const out: string[] = [];
+      const r = await page.evaluate(() => {
+        const root = document.querySelector('.city-feature-and-three')!;
+        const ticks = Array.from(root.querySelectorAll<HTMLElement>('[data-tick]'))
+          .filter((t) => t.getBoundingClientRect().height > 0);
+        return {
+          band: Math.round(root.getBoundingClientRect().height),
+          pics: root.querySelectorAll('.pic img').length,
+          ticks: ticks.length,
+          tops: ticks.map((t) => Math.round(t.getBoundingClientRect().top)),
+          lefts: ticks.map((t) => Math.round(t.getBoundingClientRect().left)),
+        };
+      });
+      // rules/design.md rule 10: 390px floor from 1024, 450px ceiling from 1024 (the pick's band).
+      if (viewport >= 1024 && (r.band < 390 || r.band > 450)) out.push(`hero band is ${r.band}px at ${viewport}px; it must be 390-450`);
+      if (r.pics !== 4) out.push(`the hero paints ${r.pics} puppies, not the feature and three`);
+      if (r.ticks !== 4) out.push(`${r.ticks} ticks are painted, not four`);
+      // The user's canvas note: one line on desktop; two left and two right below it.
+      const rowsOf = (xs: number[]) => new Set(xs.map((x) => Math.round(x / 4))).size;
+      if (viewport >= 1024 && rowsOf(r.tops) !== 1) out.push(`the four ticks take ${rowsOf(r.tops)} lines at ${viewport}px, not one`);
+      if (viewport < 1024 && (rowsOf(r.tops) !== 2 || rowsOf(r.lefts) !== 2)) out.push(`the ticks are not a 2x2 at ${viewport}px`);
+      return out;
+    },
+  },
+  'city-range-sheet': {
+    present: '.city-range-sheet',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-figure');
+      out.push(...await rangeSheetSpill(page));
+      return out;
+    },
+  },
+  'city-puppy-folder': {
+    present: '.city-puppy-folder',
+    run: async (page, viewport) => {
+      const out = await allVisible(page, 'data-trust-item');
+      out.push(...await page.evaluate((vp) => {
+        const bad: string[] = [];
+        const root = document.querySelector('.city-puppy-folder')!;
+        const box = (sel: string) => root.querySelector(sel)!.getBoundingClientRect();
+        const intro = box('.intro'); const folder = box('.folder'); const steps = box('.steps'); const tab = box('.tab');
+        // The tab sits on the folder's top edge, inside the panel, never clipped by it.
+        if (Math.abs(tab.bottom - folder.top) > 1) bad.push('the folder tab does not sit on the folder');
+        if (tab.top < box('.panel').top) bad.push('the folder tab runs out of the panel');
+        if (vp >= 1024) {
+          if (!(intro.right <= folder.left + 1 && folder.right <= steps.left + 1)) bad.push(`the intro, folder and steps are not side by side at ${vp}px`);
+        } else if (!(intro.bottom <= tab.top + 1 && folder.bottom <= steps.top + 1)) bad.push(`the intro, folder and steps do not stack at ${vp}px`);
+        return bad;
+      }, viewport));
+      return out;
+    },
   },
   'city-contents-photo-index': {
     present: '.city-contents-photo-index',
@@ -442,7 +537,12 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-layout-follows-box': {
     present: '.city-kit',
     run: async (page, viewport) => {
-      const absent = absentFor(new URL(page.url()).pathname);
+      const path = new URL(page.url()).pathname;
+      if (NO_IN_BODY_YET.has(path)) {
+        console.log(`city-layout-follows-box @ ${viewport}px: ${path} mounts no in-body city component yet`);
+        return [];
+      }
+      const absent = absentFor(path);
       const r = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER, absent });
       console.log(`city-layout-follows-box @ ${viewport}px: examined ${r.examined}, declared absent ${Object.keys(absent).join(', ') || 'none'}`);
       return r.defects;
@@ -453,7 +553,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
   'city-type-fit': {
     present: '.city-kit',
     run: async (page, viewport) => {
-      const fullWidthSpecimen = new URL(page.url()).pathname === '/kit-preview/city/';
+      const fullWidthSpecimen = FULL_WIDTH_SPECIMENS.has(new URL(page.url()).pathname);
       const r = await page.evaluate(cityTypeFit, { viewport, tier: TIER, caps: HEADING_CAPS, fullWidthSpecimen });
       console.log(`city-type-fit @ ${viewport}px: examined ${r.examined}`);
       return r.examined ? r.defects : ['city-type-fit examined nothing'];
@@ -665,12 +765,14 @@ for (const route of ROUTES) {
       const res = await page.goto(route);
       expect(res?.status()).toBe(200);
       await page.evaluate(() => document.fonts.ready);
-      const fullWidthSpecimen = route === '/kit-preview/city/';
+      const fullWidthSpecimen = FULL_WIDTH_SPECIMENS.has(route);
       const t = await page.evaluate(cityTypeFit, { viewport: width, tier: TIER, caps: HEADING_CAPS, fullWidthSpecimen });
-      const l = await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER, absent: absentFor(route) });
+      const l = NO_IN_BODY_YET.has(route) ? { examined: 0, defects: [] as string[] }
+        : await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER, absent: absentFor(route) });
       console.log(`${route} @ ${width}px: city-type-fit examined ${t.examined}, city-layout-follows-box examined ${l.examined}`);
       expect(t.examined).toBeGreaterThan(0);
-      const scale = await priceScaleSpill(page);
+      // Each city's counter at the edge widths: London's price scale, Manchester's range sheet.
+      const scale = route === MANCHESTER_KIT ? await rangeSheetSpill(page) : await priceScaleSpill(page);
       expect([...t.defects, ...l.defects, ...scale], `${route} at ${width}px`).toEqual([]);
     }
   });

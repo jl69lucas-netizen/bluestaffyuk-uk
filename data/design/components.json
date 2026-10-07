@@ -36,5 +36,8 @@
   {"id": "city-ticket-strip", "file": "CityTicketStrip.astro", "title": "C17 · City puppy strip (ticket strip)", "board_width": 1280, "project": 5, "subcomponent": "puppy-strip"},
   {"id": "city-look-listen-checklist", "file": "CityLookListenChecklist.astro", "title": "C18 · City video-call checklist (look and listen)", "board_width": 1280, "project": 5, "subcomponent": "video-call-checklist"},
   {"id": "city-places-by-publisher", "file": "CityPlacesByPublisher.astro", "title": "C19 · City places (grouped by who sets the rules)", "board_width": 1280, "project": 5, "subcomponent": "london-places"},
-  {"id": "city-map-facade", "file": "CityMapFacade.astro", "title": "C20 · City map (tap to load)", "board_width": 1280, "project": 5, "subcomponent": "london-map"}
+  {"id": "city-map-facade", "file": "CityMapFacade.astro", "title": "C20 · City map (tap to load)", "board_width": 1280, "project": 5, "subcomponent": "london-map"},
+  {"id": "city-feature-and-three", "file": "CityFeatureAndThree.astro", "title": "M1 · Manchester hero (feature and three)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/hero/c", "root_selector": ".city-feature-and-three"},
+  {"id": "city-range-sheet", "file": "CityRangeSheet.astro", "title": "M2 · Manchester counter strip (range sheet)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/counter-strip/b", "root_selector": ".city-range-sheet"},
+  {"id": "city-puppy-folder", "file": "CityPuppyFolder.astro", "title": "M3 · Manchester trust strip (puppy folder)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/trust-strip/b", "root_selector": ".city-puppy-folder"}
 ]

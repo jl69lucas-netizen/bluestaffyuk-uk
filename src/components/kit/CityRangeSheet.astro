@@ -1,0 +1,128 @@
+---
+// src/components/kit/CityRangeSheet.astro — Manchester's counter strip (pick:
+// manchester/counter-strip/b, "Range sheet"; frozen 355d5e43). The litter's figures written up as
+// one short sheet on a paper card over a soft steel ground: labelled cells first (the available
+// puppies carry their faces inline, a small row of portraits beside the count), then the delivery
+// band drawn as a range bar in the seam colours, because a band priced by distance is a range,
+// not a single figure. Cells stack 2-up on phones and run three across from 800px. Built from
+// design/city-canvas/manchester/counter-strip/b.html as the visual spec only; it imports no London
+// component (rules/design.md own-components-per-page).
+//
+// EVERY FIGURE IS DATA (working rule 9): the count is data/puppies.json's available rows, the
+// two prices data/price-matrix.json's, the band and its two ends data/settings.json's, all through
+// src/lib/cityKit.ts. Only the page's city name is passed in (`city`, from data/locations.json).
+//
+// THE FACES AND THEIR ALTS (working rule 11): a face whose card photo the page already showed
+// above (`shownAbove`, by puppy name: the hero's four on Manchester) is a repeat and takes a new
+// alt (`puppyAlt`, 'short'); any other is the photo's first use and keeps the alt the site serves
+// for it (`servedPuppyAlt`). No two alts on the page are the same (`img-alt-present-and-unique`).
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass, puppyAlt, servedPuppyAlt } from '../../lib/imageFocus';
+import { availablePuppies, money, BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, TOWN, transportName } from '../../lib/cityKit';
+import { numberWord } from '../../lib/recordText';
+import settings from '../../../data/settings.json';
+
+type Props = HTMLAttributes<'section'> & {
+  /** The page's city, from data/locations.json `city`. */
+  city: string;
+  /** Puppies whose card photo a component above this one already painted, by name. */
+  shownAbove?: string[];
+};
+const { city, shownAbove = [], class: cls, ...rest } = Astro.props;
+
+const pups = availablePuppies();
+if (!pups.length) throw new Error('CityRangeSheet: data/puppies.json has no available puppy to count');
+/** "Each of our three boys", or "Our one boy" when the litter has only one. */
+const each = (sex: 'male' | 'female') => {
+  const n = pups.filter((p) => p.sex === sex).length;
+  const word = sex === 'male' ? 'boy' : 'girl';
+  return n === 1 ? `Our one ${word}` : `Each of our ${numberWord(n)} ${word}s`;
+};
+const cells = [
+  ...(pups.some((p) => p.sex === 'male') ? [{ label: each('male'), fig: BOY_PRICE }] : []),
+  ...(pups.some((p) => p.sex === 'female') ? [{ label: each('female'), fig: GIRL_PRICE }] : []),
+];
+const alt = (p: (typeof pups)[number]) => (shownAbove.includes(p.name) ? puppyAlt(p, 'short') : servedPuppyAlt(p));
+---
+<section {...rest} class:list={['city-kit', 'city-range-sheet', cls]}>
+  <div class="in">
+    <div class="sheet">
+      <ul class="cells" aria-label="This litter in figures">
+        <li class="pups">
+          <span data-figure><span class="lab">Puppies available now</span><span class="fig">{pups.length}</span></span>
+          <span class="faces">
+            {pups.map((p) => (
+              <Image src={puppyImage(p.card_photo)} alt={alt(p)} widths={[48, 72]} sizes="36px"
+                class={focusClass(p.card_photo)} loading="lazy" decoding="async" />
+            ))}
+          </span>
+        </li>
+        {cells.map((c) => <li data-figure><span class="lab">{c.label}</span><span class="fig">{c.fig}</span></li>)}
+      </ul>
+      <div class="range" data-figure>
+        <div class="top">
+          <span class="lab">UK home delivery to {city}, by {transportName}</span>
+          <span class="fig">{DELIVERY_BAND}</span>
+        </div>
+        <div class="track" aria-hidden="true"></div>
+        <div class="ends" aria-hidden="true"><span>{money(settings.delivery_min_gbp)}</span><span>{money(settings.delivery_max_gbp)}</span></div>
+        <p class="note">Priced by distance, or collect your puppy from us in {TOWN}.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A full-width strip, the viewport wide (src/styles/city.css): its gutters are the inner
+       tray's padding, never root padding, so its content box is its box. */
+    .city-range-sheet { background: var(--color-brand-soft); }
+    .in { max-width: 1080px; margin: 0 auto; padding: var(--space-5) var(--space-4); }
+    .sheet {
+      background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--card-radius);
+      box-shadow: var(--shadow-card); padding: var(--space-4);
+    }
+    .cells { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+    .cells li {
+      margin: 0; max-width: none; background: var(--counter-bed); border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm); padding: var(--space-3);
+    }
+    /* The label at the top of its cell, the figure at the foot: two prices in one row share a
+       baseline even when one label wraps (frontend-design, Task 28: at 375 "Each of our / three
+       boys" took two lines and dropped £1,500 below £1,700). */
+    .cells li[data-figure] { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-1); }
+    .cells .pups {
+      grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: var(--space-2) var(--space-4);
+    }
+    .lab { display: block; font-size: var(--text-xs); line-height: 1.4; font-weight: 600; color: var(--color-ink-2); }
+    .fig {
+      display: block; font-family: var(--font-display); font-weight: 600; font-size: var(--text-xl); line-height: 1.2;
+      color: var(--color-brand); white-space: nowrap; font-variant-numeric: lining-nums;
+    }
+    .faces { display: flex; padding-left: var(--space-2); }
+    .faces :global(img) {
+      display: block; width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+      margin-left: calc(-1 * var(--space-2)); border: 2px solid var(--color-surface-raised);
+      background: var(--color-brand-soft);
+    }
+    .range { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-border); }
+    .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-1) var(--space-4); }
+    .track { margin: var(--space-3) 0 var(--space-1); height: 10px; border-radius: var(--radius-pill); background: var(--seam-gradient); }
+    .ends { display: flex; justify-content: space-between; font-size: var(--text-xs); font-weight: 600; color: var(--color-ink-2); }
+    .note { margin: var(--space-2) 0 0; font-size: var(--text-sm); line-height: 1.5; color: var(--color-ink-2); }
+    @media (width >= 800px) {
+      .in { padding: var(--space-6) var(--space-5); }
+      .sheet { padding: var(--space-5) var(--space-6); }
+      .cells { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); }
+      /* The label at the top of its cell, the figure at the foot: two prices in one row share a
+       baseline even when one label wraps (frontend-design, Task 28: at 375 "Each of our / three
+       boys" took two lines and dropped £1,500 below £1,700). */
+    .cells li[data-figure] { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-1); }
+    .cells .pups { grid-column: auto; }
+      .fig { font-size: var(--text-2xl); }
+    }
+  }
+</style>

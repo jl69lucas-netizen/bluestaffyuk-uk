@@ -69,3 +69,12 @@ export function puppyAlt(p: { name: string; colour: string; sex: 'male' | 'femal
   if (!scene) throw new Error(`data/image-focus.json has no scene for ${p.card_photo}`);
   return `${short}, ${scene}`;
 }
+
+/** The alt the site already SERVES for a puppy's card photo: PuppyCard's (src/components/kit/
+ *  PuppyCard.astro), on every page that lists the litter. A city component that shows a puppy's
+ *  card photo for the FIRST time on its page keeps it (working rule 11; the user's ruling,
+ *  2026-09-29: "same photo use new alt"); each repeat on that page takes `puppyAlt()` instead.
+ *  tests/py/test_city_kit_manchester.py holds the two templates equal. */
+export function servedPuppyAlt(p: { name: string; colour: string }): string {
+  return `${p.name} the ${p.colour.toLowerCase()} Staffordshire Bull Terrier puppy`;
+}

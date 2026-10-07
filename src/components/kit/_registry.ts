@@ -80,11 +80,15 @@ import CityTicketStrip from './CityTicketStrip.astro';
 import CityLookListenChecklist from './CityLookListenChecklist.astro';
 import CityPlacesByPublisher from './CityPlacesByPublisher.astro';
 import CityMapFacade from './CityMapFacade.astro';
+import CityFeatureAndThree from './CityFeatureAndThree.astro';
+import CityRangeSheet from './CityRangeSheet.astro';
+import CityPuppyFolder from './CityPuppyFolder.astro';
 import locationRows from '../../../data/locations.json';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
 import londonPlaces from '../../../data/city-places/blue-staffy-puppies-london.json';
 import londonBoard from '../../../data/boards/blue-staffy-puppies-london.json';
-import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine, guaranteeRow } from '../../lib/cityKit';
+import manchesterOutline from '../../../data/outlines/blue-staffy-puppies-manchester-uk.json';
+import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine, guaranteeRow, pickAvailable } from '../../lib/cityKit';
 import { numberWord } from '../../lib/recordText';
 /** The guarantee, from data/settings.json (answer board q07, 2026-09-29); null if the data loses it. */
 const GUARANTEE = guaranteeRow();
@@ -108,7 +112,10 @@ export type ComponentId =
   // 2026-10-03 (answer board 2026-10-03-london-board-revision q01-q04).
   | 'city-signed-byline' | 'city-ticket-strip' | 'city-look-listen-checklist' | 'city-places-by-publisher'
   // And the London map (answer board 2026-10-06-london-map q01-q02).
-  | 'city-map-facade';
+  | 'city-map-facade'
+  // Manchester's own picks (the Manchester page run, Phase F Tasks 28-31), previewed on
+  // /kit-preview/city-manchester/ and never on London's /kit-preview/city/.
+  | 'city-feature-and-three' | 'city-range-sheet' | 'city-puppy-folder';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -145,7 +152,16 @@ export interface ComponentRow {
   /** A piece inside a city section rather than a section of its own: the board record's
    *  `subcomponents[].id` it builds (London's board revision, 2026-10-03). Not a canvas pick. */
   subcomponent?: string;
+  /** The canvas pick the row builds (`<city>/<component>/<variant>`), and the root selector the
+   *  side-by-side shoots (the Manchester page run, gap G10). London's rows are back-filled in
+   *  Phase F Task 32; until then a row without it is London's (`cityOf`). */
+  canvas_variant?: string;
+  root_selector?: string;
 }
+
+/** The city a city row was built for: its `canvas_variant`'s city, or London for a row that
+ *  predates the field. Each city's preview route renders its own rows only. */
+export const cityOf = (row: ComponentRow): string => row.canvas_variant?.split('/')[0] ?? 'london';
 
 /** The six sections the dial and the sheet both demo. One list, not two: the pair is one
  *  component split by viewport width, and two drifting fixtures would let the board show a
@@ -230,6 +246,11 @@ const FAQ_LIFE: CityFaqRow[] = [
   { q: 'Is a Staffy a good first dog?', a: 'Yes, for a household ready to socialise the puppy early and train it consistently with rewards. Staffies are eager to please but strong-willed, and they need company.' },
   { q: 'How long does a Staffordshire Bull Terrier live?', a: 'Twelve to fourteen years is the figure the Staffordshire Bull Terrier Club gives for a healthy, well-cared-for dog.' },
 ];
+
+/** Manchester's city name, from data/locations.json, and the four puppies its hero shows (the
+ *  picked canvas variant's, feature first; src/lib/cityKit.ts pickAvailable passes over a sold one). */
+const MANCHESTER = (locationRows as { slug: string; city: string }[]).find((r) => r.slug === manchesterOutline.slug)!.city;
+const MANCHESTER_HERO_PUPS = pickAvailable(['Roman', 'Cheryl', 'Ince', 'Vennie'], 4).map((p) => p.name);
 
 export const REGISTRY: Record<ComponentId, KitEntry> = {
   // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
@@ -702,4 +723,23 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       caption: `We deliver from ${TOWN} for ${DELIVERY_BAND}, priced by distance, by DEFRA-approved transport, or you collect your puppy from us in ${TOWN}.`,
     }],
   },
+  // ── Manchester's own picks, previewed on /kit-preview/city-manchester/ (Phase F Tasks 28-31) ──
+  // The copy is the picked canvas variants' (design/city-canvas/manchester/), about Manchester and
+  // stating only data facts (Phase F ruling 10); the H1 is the approved outline's, and the hero
+  // mounts it as the preview's one H1, as the page will. The links point at the preview's own sections.
+  // The hero shows four of the litter and the counter all of them: the counter's repeats take a
+  // new alt (`shownAbove`), its first uses keep the served one (working rule 11).
+  'city-feature-and-three': {
+    C: CityFeatureAndThree,
+    demo: [{
+      as: 'h1',
+      title: manchesterOutline.h1,
+      lede: `Not on its own. Our ${LITTER} ${SITE.address.city} puppies are priced by boy or girl, not by coat, and each can travel to ${MANCHESTER} or be collected.`,
+      cta: { label: 'Ask about a puppy', href: '#kit-city-puppy-folder' },
+      more: { label: `See all ${LITTER} puppies`, href: '#kit-city-range-sheet' },
+      photos: MANCHESTER_HERO_PUPS,
+    }],
+  },
+  'city-range-sheet': { C: CityRangeSheet, demo: [{ city: MANCHESTER, shownAbove: MANCHESTER_HERO_PUPS }] },
+  'city-puppy-folder': { C: CityPuppyFolder, demo: [{ city: MANCHESTER }] },
 };

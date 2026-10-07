@@ -28,8 +28,18 @@ PREVIEW = ROOT / "dist/kit-preview/city/index.html"
 CONFIG = ROOT / "tests/render/city-kit.config.ts"
 
 
+def city_of(row):
+    """The city a city row was built for: its `canvas_variant`'s city. London's rows predate the
+    field (the Manchester page run back-fills them in Phase F Task 32, gap G10), so a row with
+    none is London's."""
+    return row.get("canvas_variant", "london/").split("/", 1)[0]
+
+
 def city_rows():
-    return [r for r in json.loads(COMPONENTS.read_text(encoding="utf-8")) if r["project"] == 5]
+    """London's city rows: this file holds London's components and /kit-preview/city/.
+    Manchester's own are held by tests/py/test_city_kit_manchester.py on /kit-preview/city-manchester/."""
+    return [r for r in json.loads(COMPONENTS.read_text(encoding="utf-8"))
+            if r["project"] == 5 and city_of(r) == "london"]
 
 
 def focus_rows():
@@ -804,7 +814,8 @@ def test_each_city_component_is_named_for_the_variant_it_builds():
     from city_components import KIT_OF_VARIANT
     rows = {r["id"]: r for r in city_rows()}
     assert len({r["file"] for r in rows.values()}) == len(rows)
-    for key, kit_id in KIT_OF_VARIANT.items():
+    # London's picks; Manchester's are named by tests/py/test_city_kit_manchester.py as each is built.
+    for key, kit_id in ((k, v) for k, v in KIT_OF_VARIANT.items() if k.startswith("london/")):
         city, comp, v = key.split("/")
         name = json.loads((ROOT / "design/city-canvas" / city / comp / "meta.json").read_text())["variants"][v]["name"]
         own = _name_words(name) - {"litter", "photo"} or _name_words(name)

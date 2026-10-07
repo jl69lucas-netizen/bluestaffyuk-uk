@@ -1,0 +1,41 @@
+---
+// src/pages/kit-preview/city-manchester.astro — Manchester's own city components, once each, on
+// one hidden page (the Manchester page run, Phase F Tasks 28-31; gap G11).
+//
+// /kit-preview/city/ is London's: it renders London's picks, and the city nav set is a page
+// singleton, so a second city's nav components cannot share its document. Each city's picks are
+// components of their own (rules/design.md own-components-per-page), so each city previews its
+// own rows here: the `"project": 5` rows of data/design/components.json whose `canvas_variant`
+// names Manchester, in file order, each looked up in REGISTRY and rendered once per fixture,
+// exactly as /kit-preview/city/ does. No per-component branch.
+//
+// What reads it: the city-kit render spec (tests/render/city-kit.spec.ts) at 375 / 768 / 1024 /
+// 1280, and the dist assertions in tests/py/test_city_kit_manchester.py. noindex, and under
+// `kit-preview`, which form_contract_audit.py and retired_facts_check.py treat as a specimen route.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import componentsJson from '../../../data/design/components.json';
+import { REGISTRY, cityOf, type ComponentRow } from '../../components/kit/_registry';
+const components = (componentsJson as ComponentRow[]).filter((c) => c.project === 5 && cityOf(c) === 'manchester');
+const title = 'Manchester city kit preview — BlueStaffyUK (project 5)';
+---
+<BaseLayout title={title} description="Internal Manchester city component preview; not indexed." noindex={true}>
+  <div class="city-preview">
+    <!-- The hero carries the page's one H1 (the outline's), as Manchester's page will. -->
+    <p class="head">Manchester city kit preview</p>
+    {components.map((c) => {
+      const { C, demo = [{}] } = REGISTRY[c.id];
+      return (
+        <section id={`kit-${c.id}`} data-component={c.id} data-width={c.board_width} class="kit-section">
+          <p class="cap">{c.title}</p>
+          {demo.map((props) => <C {...props} />)}
+        </section>
+      );
+    })}
+  </div>
+</BaseLayout>
+<style>
+  .city-preview { padding-block: var(--space-6); }
+  .head { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; max-width: var(--container); margin: 0 auto var(--space-6); padding-inline: var(--space-5); }
+  .kit-section { margin-block: var(--space-8); }
+  .cap { max-width: var(--container); margin: 0 auto var(--space-3); padding-inline: var(--space-5); font-size: var(--text-sm); color: var(--color-text-muted); }
+</style>

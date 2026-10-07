@@ -17,4 +17,4 @@ None.
 
 - `/uk-locations/blue-staffy-puppies-london/` — 2 LocalBusiness nodes on one page
 
-examined 63 pages; 0 blocking, 1 advisory
+examined 64 pages; 0 blocking, 1 advisory

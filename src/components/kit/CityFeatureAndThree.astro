@@ -1,0 +1,205 @@
+---
+// src/components/kit/CityFeatureAndThree.astro — Manchester's hero (pick: manchester/hero/c,
+// "Feature and three"; data/design/city-picks/blue-staffy-puppies-manchester-uk.json, frozen
+// 355d5e43). One puppy large, bled to the screen's left edge with its name in a caption pill,
+// three more of the litter stacked beside it as a contact column; the copy sits on the bone page
+// to the right, and four ticks run as one line along the foot of the band from 1024px (a 2x2 of
+// soft steel tiles below it, two left and two right: the user's canvas note, Task 26). Built from
+// design/city-canvas/manchester/hero/c.html as the visual spec only (London Plan 2 execution
+// note 13: no inline style, no typed figure, nothing marked canvas-only is ported). It imports no
+// London component (rules/design.md own-components-per-page).
+//
+// IT IS A `.kit-hero`, so every hero check judges it as it judges the built pages' heroes: `.pic`
+// precedes `.title` in source and paints first on a phone (`layout-hero-image-first-mobile`,
+// rules/design.md rule 10), `img-sizes-matches-box` reads each photo's `sizes`, and the band is
+// 390-450px tall from 1024px (the city-kit render spec measures it).
+//
+// THE PUPPIES ARE DATA: `photos` names the four to show, feature first (src/lib/cityKit.ts
+// `pickAvailable`: a sold puppy is passed over and the next of the litter takes its place), each
+// its data/puppies.json `card_photo`, cropped on its face by src/lib/imageFocus.ts. A puppy's
+// card photo keeps the alt the site already serves for it (`servedPuppyAlt`, PuppyCard's), since
+// the hero is the first place the page shows it (working rule 11): a component further down that
+// repeats one takes a new alt. The feature is the LCP candidate: eager, `fetchpriority="high"`.
+//
+// THE TICKS ARE DATA: two of data/settings.json `puppy_trust_signs` (through `sign()`), the
+// guarantee's label (`guaranteeRow()`, answer board q07) and the transport the delivery note names.
+// None of them repeats the trust strip under it (the user's note on trust B, Task 26).
+//
+// Conventions 2 (focus rings read --kit-ring), 4, 6. Brass is a FILL (the CTA) with --color-cta-ink.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { Image } from 'astro:assets';
+import { puppyImage } from '../../lib/puppyImages';
+import { focusClass, servedPuppyAlt } from '../../lib/imageFocus';
+import { availablePuppies, guaranteeRow, pickAvailable, sign, transportName } from '../../lib/cityKit';
+import { numberWord } from '../../lib/recordText';
+import type { PuppyRow } from '../../lib/site';
+
+export interface HeroLink { label: string; href: string }
+type Props = HTMLAttributes<'section'> & {
+  as?: 'h1' | 'h2';
+  title: string;
+  lede?: string;
+  /** The brass call to action. */
+  cta: HeroLink;
+  /** The quieter text link beside it. */
+  more?: HeroLink;
+  /** The four puppies to show, by name, the feature first. */
+  photos?: string[];
+};
+const { as: H = 'h1', title, lede, cta, more, photos = [], class: cls, ...rest } = Astro.props;
+
+const shown = pickAvailable(photos, 4);
+if (!shown.length) throw new Error('CityFeatureAndThree: data/puppies.json has no available puppy to show');
+
+/** "Roman, one of our three boys": the feature's share of the litter, counted from the data. */
+const featureCaption = (p: PuppyRow) => {
+  const n = availablePuppies().filter((q) => q.sex === p.sex).length;
+  const word = p.sex === 'male' ? 'boy' : 'girl';
+  return n === 1 ? `${p.name}, our only ${word}` : `${p.name}, one of our ${numberWord(n)} ${word}s`;
+};
+
+const G = guaranteeRow();
+const ticks = [sign('Raised in our home'), sign('Support after collection'), ...(G ? [G.t] : []), transportName];
+
+// MEASURED against the painted box: below 640px the feature runs edge to edge and the three sit
+// three across under it (2px seams); from 640 the photo column is the band's width, 2fr | 1fr;
+// from 1024 it is the band's left half. The 1px seams are the `- Npx` terms.
+const FEATURE_SIZES = '(min-width: 1024px) calc(33.333vw - 1.333px), (min-width: 640px) calc(66.667vw - 1.333px), 100vw';
+const THUMB_SIZES = '(min-width: 1024px) calc(16.667vw - 0.667px), (min-width: 640px) calc(33.333vw - 0.667px), calc(33.333vw - 1.333px)';
+const TICK = 'M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0M7.5 12.5l3 3 6-6.5';
+---
+<section {...rest} class:list={['city-kit', 'kit-hero', 'city-feature-and-three', cls]} data-hero-layout="feature-and-three" data-hero-media="left">
+  <div class="inner">
+    <div class="pic">
+      {shown.map((p, i) => (
+        <figure class={i === 0 ? 'feature' : 'thumb'}>
+          <Image
+            src={puppyImage(p.card_photo)}
+            alt={servedPuppyAlt(p)}
+            widths={i === 0 ? [400, 640, 960] : [160, 240, 400]}
+            sizes={i === 0 ? FEATURE_SIZES : THUMB_SIZES}
+            class={focusClass(p.card_photo)}
+            loading="eager"
+            fetchpriority={i === 0 ? 'high' : 'auto'}
+            decoding={i === 0 ? 'sync' : 'async'}
+          />
+          <figcaption>{i === 0 ? featureCaption(p) : p.name}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="copy">
+      <H class="title">{title}</H>
+      {lede && <p class="lede">{lede}</p>}
+      <div class="row">
+        <a class="cta" href={cta.href}>{cta.label}</a>
+        {more && <a class="more" href={more.href}>{more.label}</a>}
+      </div>
+    </div>
+    <ul class="ticks" aria-label="With every puppy">
+      {ticks.map((t) => (
+        <li data-tick>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={TICK} /></svg>
+          {t}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* A full-width strip, the viewport wide, so its @media edges read its own box (src/styles/city.css).
+       The photo column carries no radius on its outer side: it bleeds, it is not carded. */
+    .city-feature-and-three { background: var(--color-surface); }
+    .inner { display: grid; }
+    .pic {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px;
+      background: var(--color-surface);
+    }
+    figure { position: relative; margin: 0; background: var(--color-brand-soft); }
+    .feature { grid-column: 1 / -1; }
+    /* A litter down to one available puppy: the feature takes the whole photo column. */
+    .pic:has(> .feature:only-child) { grid-template-columns: minmax(0, 1fr); }
+    .pic :global(img) { display: block; width: 100%; height: auto; object-fit: cover; }
+    .feature :global(img) { aspect-ratio: 16 / 10; }
+    .thumb :global(img) { aspect-ratio: 1 / 1; }
+    /* The name pill sits in a lower corner, clear of the face the focus class centres
+       (`img-face-visible` measures it): left on the feature, right on the three. */
+    figcaption {
+      position: absolute; left: var(--space-2); bottom: var(--space-2);
+      padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill);
+      background: var(--color-surface-deep); color: var(--color-text-on-inverse);
+      font-size: var(--text-xs); line-height: 1.3; font-weight: 600;
+    }
+    /* A longer name never runs off its photo: the pill wraps inside it (impeccable harden, Task 28). */
+    figcaption { max-width: calc(100% - 2 * var(--space-2)); }
+    .thumb figcaption { left: auto; right: var(--space-2); }
+    .feature figcaption { left: var(--space-4); bottom: var(--space-4); font-size: var(--text-sm); }
+    .copy { padding: var(--space-5) var(--space-4) var(--space-6); }
+    .title { margin: 0 0 var(--space-3); font-family: var(--font-display); }
+    /* The H1 at the picked canvas's two sizes (24px, then 30px from 640), inside every tier's cap
+       (tests/render/lib/cityTiers.ts HEADING_CAPS): the copy column is half the band from 1024, so
+       the tier's own 34px would stack the outline's 70-character question to four lines there.
+       `h1` only: a specimen that mounts the hero with an H2 keeps the tier's H2 size. */
+    h1.title { font-size: 24px; }
+    @media (width >= 640px) { h1.title { font-size: 30px; } }
+    .lede { margin: 0 0 var(--space-4); font-size: var(--city-lead); color: var(--color-ink-2); max-width: 48ch; }
+    .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
+    .cta {
+      display: inline-flex; align-items: center; min-height: 48px; padding: var(--space-2) var(--space-6);
+      line-height: 1.25; text-align: center; text-wrap: balance;
+      border-radius: var(--btn-radius); background: var(--color-cta); color: var(--color-cta-ink);
+      font-weight: 700; text-decoration: none; transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    .cta:hover { background: var(--color-cta-hover); }
+    .more {
+      display: inline-flex; align-items: center; min-height: 44px; font-weight: 600;
+      color: var(--color-link); text-decoration: underline; text-underline-offset: 4px;
+    }
+    .more:hover { text-decoration-thickness: 2px; }
+    .cta:focus-visible, .more:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    /* THE PROMISE RAIL (the user's note, Task 26): phones and tablets, a 2x2 of soft steel tiles
+       filled column-first (two left, two right), each tick seated in a ring so one-line and
+       two-line labels share one centre line. */
+    .ticks {
+      list-style: none; margin: 0; padding: 0 var(--space-4) var(--space-6);
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, auto);
+      grid-auto-flow: column; gap: var(--space-2);
+    }
+    .ticks li {
+      display: flex; align-items: center; gap: var(--space-2); margin: 0; max-width: none; min-height: 52px;
+      padding: var(--space-2) var(--space-3); background: var(--color-brand-soft); border-radius: var(--radius-sm);
+      font-size: var(--text-sm); line-height: 1.3; font-weight: 600; color: var(--color-text);
+    }
+    .ticks svg { width: 22px; height: 22px; flex: none; color: var(--color-ok); }
+    @media (width >= 640px) {
+      .pic {
+        height: 360px; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+      }
+      .feature { grid-column: 1; grid-row: 1 / 4; }
+      .pic :global(img) { aspect-ratio: auto; height: 100%; }
+      .copy { padding: var(--space-6) var(--space-5) var(--space-5); }
+      /* Tiles capped at 300px a column (impeccable, Task 26): a 720px tile stranded its label. */
+      .ticks { grid-template-columns: repeat(2, minmax(0, 300px)); padding: 0 var(--space-5) var(--space-7); gap: var(--space-3); }
+    }
+    @media (width >= 1024px) {
+      .inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto; min-height: 390px; }
+      .pic { height: 372px; }
+      /* The copy's right edge meets the site's 1200px content edge: the root is its own inline
+         container (city.css), so 100cqi is the band's width with no scrollbar in it. */
+      .copy { align-self: center; padding: var(--space-4) max(var(--space-5), calc((100cqi - 1200px) / 2)) var(--space-4) var(--space-8); }
+      .ticks {
+        grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: none;
+        grid-auto-flow: row; gap: 0; padding: 0 max(var(--space-5), calc((100cqi - 1200px) / 2));
+        border-top: 1px solid var(--color-border);
+      }
+      /* One line each at today's labels; a longer label from the data balances onto two inside its
+         cell rather than running into the next (impeccable harden, Task 28: the canvas's nowrap). */
+      .ticks li { justify-content: center; min-height: 56px; padding: 0 var(--space-3); background: none; border-radius: 0; text-wrap: balance; }
+      .ticks li + li { background: linear-gradient(var(--color-steel-300), var(--color-steel-300)) left center / 1px 24px no-repeat; }
+    }
+    /* rules/design.md rule 10: the photo column is first in source and first in the grid at every
+       width, so a phone paints it first with no `order` to undo. */
+  }
+</style>

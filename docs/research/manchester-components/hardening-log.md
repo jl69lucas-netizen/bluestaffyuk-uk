@@ -416,3 +416,34 @@ Final runs:
 - The canvas page was rebuilt with `--allow-partial --files-map
   docs/artifacts/canvas/manchester-files.json`: 39 variants, 14 images. It is not republished
   here; the controller publishes it.
+
+## Built — Task 28
+
+Hero C, counter B and trust B built into the kit from the frozen picks (355d5e43) as
+`CityFeatureAndThree`, `CityRangeSheet` and `CityPuppyFolder` (`data/design/components.json` rows
+M1-M3, each with `canvas_variant` and `root_selector`), previewed on the new
+`/kit-preview/city-manchester/` (gap G11; London's `/kit-preview/city/` now renders London's rows
+only). No London component is imported or copied; shared are tokens, `city.css`, and three new
+`src/lib/cityKit.ts` helpers (`transportName`, `PUPPY_SIGNS`/`sign()`, `pickAvailable()`) plus
+`servedPuppyAlt()` in `src/lib/imageFocus.ts`. Every figure, sign and name is read from data; the
+hero's four photos keep PuppyCard's served alt on first use, and the counter's four repeats take
+`puppyAlt(…, 'short')` (`shownAbove`), its two first uses (Byrd, Christa) the served alt.
+
+`frontend-design:frontend-design` and then `impeccable:impeccable` were invoked with the Skill tool
+on the built components, read from `CITY_SHOTS=…/BSUK-refs/manchester/_build-shots npm run
+test:render:city` at 375 / 768 / 1024 / 1280 against the canvas fragments. The impeccable loader
+again reported `hasProduct: false`; the brand context came from `rules/design.md` and the tokens,
+as in Tasks 22 and 26. The render gate first failed on the hero heading mounted as an H2 on the
+preview (desktop H2 at 3 lines in the 440-552px copy column, q06); the preview now mounts it as its
+one H1, as the page will, at the canvas's 24px / 30px (inside the 26 / 30 / 34 caps).
+
+| Component | frontend-design found | impeccable found (critique, harden) | Fixed | Widths |
+|---|---|---|---|---|
+| hero (feature and three) | Faithful to the pick: bled photo column, contact column of three, promise rail one line from 1024 and 2x2 below; band 428px at 1024 and 1280. No defect. | Harden: the canvas's `white-space: nowrap` on the rail would run a longer data label into its neighbour at 1024 (cells 244px); a long name could run its caption pill off a thumb; a litter down to one puppy would leave the feature in a 2fr column beside empty cells. | Rail labels `text-wrap: balance` instead of nowrap (one line at today's labels); pill `max-width` inside its photo; `.pic:has(> .feature:only-child)` gives a lone feature the whole column. | 375 · 768 · 1024 · 1280 |
+| counter strip (range sheet) | At 375 "Each of our / three boys" wrapped to two lines and dropped £1,500 a line below £1,700 in the same row. | Critique: figures within the sheet at every width (probe `rangeSheetSpill`); contrast passes. No further defect. | Each figure cell is a column, label at the top and figure at the foot, so the two prices share a baseline. | 375 · 768 · 1024 · 1280 |
+| trust strip (puppy folder) | At 1024 the fifth slip, "KC registration application form", ran to three lines in a half cell beside an empty one, so the folder ended ragged. | Critique: tab sits on the folder (probe), steps balanced (Task 26 fix carried), no step repeats a hero tick. No further defect. | From 640px an odd last slip spans both columns: one line at 768, 1024 and 1280. | 375 · 768 · 1024 · 1280 |
+
+Gates after the fixes: `npm run -s build` exit 0; `python3 -m pytest -q tests/py/test_city_kit_manchester.py
+tests/py/test_city_kit.py tests/py/test_design_components.py` 130 passed, 1 skipped (the skip
+pre-dates this task); `npm run test:render:city` 57 passed, 55 skipped, 0 failed, with London's
+three routes unchanged and no advisory on the Manchester route.

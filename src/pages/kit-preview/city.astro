@@ -15,8 +15,10 @@
 // retired_facts_check.py already treat as a specimen route.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import componentsJson from '../../../data/design/components.json';
-import { REGISTRY, type ComponentRow } from '../../components/kit/_registry';
-const components = (componentsJson as ComponentRow[]).filter((c) => c.project === 5);
+import { REGISTRY, cityOf, type ComponentRow } from '../../components/kit/_registry';
+// London's city components only: each later city previews its own picks on its own route
+// (/kit-preview/city-manchester/, the Manchester page run's gap G11).
+const components = (componentsJson as ComponentRow[]).filter((c) => c.project === 5 && cityOf(c) === 'london');
 const title = 'City kit preview — BlueStaffyUK (project 5)';
 ---
 <BaseLayout title={title} description="Internal city component preview; not indexed." noindex={true}>

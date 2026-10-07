@@ -65,11 +65,40 @@ export const depositBrief = sentence(DEPOSIT_DOES);
 /** How a puppy travels, from data/settings.json `delivery_note` ("UK home delivery by
  *  DEFRA-approved transport, priced by distance"): "By DEFRA-approved transport, priced by
  *  distance." A note without its "by …" clause stops the build rather than print a guess. */
-export const transportLine = (() => {
+const TRANSPORT_BY = (() => {
   const m = settings.delivery_note.match(/\bby (.+)$/);
   if (!m) throw new Error(`cityKit: data/settings.json delivery_note has no "by …" clause: ${settings.delivery_note}`);
-  return sentence(`by ${m[1]}`);
+  return m[1];
 })();
+export const transportLine = sentence(`by ${TRANSPORT_BY}`);
+/** The transport alone, "DEFRA-approved transport": delivery_note's "by …" clause up to its first
+ *  comma, for a label that names how a puppy travels and states no price or distance. */
+export const transportName = TRANSPORT_BY.split(',')[0].trim();
+
+/** data/settings.json `puppy_trust_signs`: what every puppy has and leaves with (the breeder's
+ *  pick, answer board 2026-10-04 q08 (c)). A component names the signs it prints through `sign()`,
+ *  so a reworded sign in the data stops the build rather than leaving a stale line on a page. */
+export const PUPPY_SIGNS: readonly string[] = (settings as unknown as { puppy_trust_signs: string[] }).puppy_trust_signs;
+export function sign(words: string): string {
+  if (!PUPPY_SIGNS.includes(words)) {
+    throw new Error(`cityKit: "${words}" is not one of data/settings.json puppy_trust_signs (${PUPPY_SIGNS.join(' | ')})`);
+  }
+  return words;
+}
+
+/** Up to `n` available puppies for a component that shows a few of the litter: the named ones
+ *  first, in the order named, then the rest of the litter in file order. A name that is not in
+ *  data/puppies.json stops the build (a typo); a named puppy that is no longer available is
+ *  passed over, so a sale changes the photographs and never breaks the page. */
+export function pickAvailable(names: readonly string[], n: number): PuppyRow[] {
+  const all = puppiesJson as PuppyRow[];
+  for (const name of names) {
+    if (!all.some((p) => p.name === name)) throw new Error(`cityKit: no puppy named ${name} in data/puppies.json`);
+  }
+  const avail = availablePuppies();
+  const named = names.map((name) => avail.find((p) => p.name === name)).filter((p): p is PuppyRow => !!p);
+  return [...named, ...avail.filter((p) => !named.includes(p))].slice(0, n);
+}
 
 /** THE GUARANTEE (the breeder's answers, answer board q07 and q02, 2026-09-29): data/settings.json
  *  `guarantee_days`, `guarantee_label`, `guarantee_cover` and `guarantee_note`, checked by
