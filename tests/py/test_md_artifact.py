@@ -82,13 +82,22 @@ def test_the_download_in_a_browser_against_a_fake_runtime(tmp_path):
         assert mode["errors"] == [] and mode["copyAllVisible"] and mode["sections"] == 2, res
     # A saved copy outside the viewer, and a viewer that cannot save: no button, copy-all stays.
     assert res["none"]["hiddenBefore"] and res["nullNs"]["hiddenBefore"], res
+    assert res["throwNs"]["hiddenBefore"], res
     # The viewer can save: the button shows and hands over the exact markdown under its name.
     s = res["save"]
     assert not s["hiddenBefore"] and not s["hiddenAfter"] and s["status"] == "Downloaded", res
     assert s["saves"] == [{"filename": "head-tail.md", "data": MA.markdown("Head & Tail", SECTIONS)}], res
-    # The viewer said no: nothing retried, the button stays for another go.
-    d = res["declined"]
-    assert len(d["saves"]) == 1 and not d["hiddenAfter"] and "cancelled" in d["status"], res
-    # The runtime cannot save after all: the button goes and the page points at copy-all.
-    u = res["unavailable"]
-    assert u["hiddenAfter"] and "Copy all as Markdown" in u["status"], res
+    # Handed to a destination the viewer chose: confirmed, but not as a download.
+    v = res["delivered"]
+    assert not v["hiddenAfter"] and v["status"] == "Sent", res
+    # The viewer said no, a prompt is already open, or this file was refused: one save, nothing
+    # retried, and the button stays for another go.
+    for mode, says in (("declined", "cancelled"), ("rateLimited", "already open"),
+                       ("tooLarge", "too large")):
+        d = res[mode]
+        assert len(d["saves"]) == 1 and not d["hiddenAfter"] and says in d["status"], (mode, res)
+    # The runtime cannot save after all (an unknown code counts as that): the button goes and
+    # the page points at copy-all.
+    for mode in ("unavailable", "unknown"):
+        u = res[mode]
+        assert u["hiddenAfter"] and "Copy all as Markdown" in u["status"], (mode, res)

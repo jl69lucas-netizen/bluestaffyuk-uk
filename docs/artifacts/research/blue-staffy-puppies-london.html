@@ -389,11 +389,14 @@ An AI Overview is shown.
   var whole='# '+head+'\n\n'+all.join('\n\n')+'\n';
   document.getElementById('copy-all').addEventListener('click',function(){copy(whole,document.getElementById('all-status'));});
   // The .md download: only through the viewer's downloads capability (a link does nothing there).
-  var dl=document.getElementById('dl-md'),st=document.getElementById('all-status'),downloads=null;
+  var dl=document.getElementById('dl-md'),st=document.getElementById('all-status'),downloads=null,KEEP=['bad_request','request_unknown','transform_error'];
   dl.addEventListener('click',function(){if(!downloads)return;
-    downloads.save({filename:name,data:whole}).then(function(r){say(st,r&&r.status==='saved'?'Downloaded':'');},function(e){var c=(e&&e.code)||'error';
+    downloads.save({filename:name,data:whole}).then(function(r){say(st,r&&r.status==='delivered'?'Sent':'Downloaded');},function(e){var c=(e&&e.code)||'error';
       if(c==='declined')say(st,'Download cancelled','warn');
       else if(c==='rate_limited')say(st,'A download prompt is already open','warn');
+      else if(c==='too_large')say(st,'This file is too large to download here. Use Copy all as Markdown.','warn');
+      else if(KEEP.indexOf(c)>=0)say(st,"Download didn't happen ("+c+'). Use Copy all as Markdown.','warn');
+      // unavailable, not_granted, capability_* and any unknown code: this view cannot save.
       else{downloads=null;dl.hidden=true;say(st,'Download is unavailable here ('+c+'). Use Copy all as Markdown.','warn');}});});
   var use=window.claude&&window.claude.use;
   if(typeof use==='function')use.call(window.claude,"downloads").then(function(ns){if(ns){downloads=ns;dl.hidden=false;}},function(){});

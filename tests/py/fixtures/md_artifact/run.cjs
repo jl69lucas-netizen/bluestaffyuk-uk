@@ -10,20 +10,22 @@ try { ({ chromium } = require("playwright")); } catch (e) {
 }
 const [, , PAGE] = process.argv;
 
-// mode: "none" (no window.claude, a saved copy), "null" (use() resolves null), "save", or an
-// error code that save() rejects with.
+// mode: "none" (no window.claude, a saved copy), "null" (use() resolves null), "throw" (use()
+// rejects), "save", "delivered" (an export the platform asked for), or an error code that
+// save() rejects with.
 function fake(mode) {
   window.__saves = [];
   if (mode === "none") return;
-  var ns = mode === "null" ? null : Object.freeze({
+  var ns = mode === "null" || mode === "throw" ? null : Object.freeze({
     save: function (req) {
       window.__saves.push({ filename: req.filename, data: req.data });
-      return mode === "save" ? Promise.resolve({ status: "saved" })
+      return mode === "save" || mode === "delivered" ? Promise.resolve({ status: mode === "save" ? "saved" : "delivered" })
         : Promise.reject({ code: mode, message: mode });
     },
   });
   window.claude = Object.freeze({
     use: function (name) {
+      if (mode === "throw") return Promise.reject(new Error("no viewer"));
       return new Promise(function (r) { setTimeout(function () { r(name === "downloads" ? ns : null); }, 50); });
     },
   });
@@ -60,9 +62,14 @@ async function run(browser, mode, click) {
   const out = {};
   out.none = await run(browser, "none", false);
   out.nullNs = await run(browser, "null", false);
+  out.throwNs = await run(browser, "throw", false);
   out.save = await run(browser, "save", true);
+  out.delivered = await run(browser, "delivered", true);
   out.declined = await run(browser, "declined", true);
+  out.rateLimited = await run(browser, "rate_limited", true);
+  out.tooLarge = await run(browser, "too_large", true);
   out.unavailable = await run(browser, "unavailable", true);
+  out.unknown = await run(browser, "some_new_code", true);
   await browser.close();
   console.log("RESULT " + JSON.stringify(out));
 })().catch((e) => { console.error(e); process.exit(1); });
