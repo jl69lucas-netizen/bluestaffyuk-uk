@@ -38,18 +38,90 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 .md strong{color:var(--ink)}
 .md a{color:var(--blue);overflow-wrap:anywhere}
 .copied{color:var(--ok);font-size:12px}
+.warn{color:var(--warn);font-size:12px}
+[hidden]{display:none!important}
 @media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 14px 20px}
 .md table,.md thead,.md tbody,.md tr,.md th,.md td{display:block}.md thead{position:absolute;left:-9999px}
 .md tr{border:1px solid var(--line);border-radius:6px;margin:0 0 10px;padding:6px 0}.md td{border:0;padding:4px 12px}
 .md td::before{content:attr(data-label);display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}}
 @media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+:root{--rec-bg:#F6EBC4;--rec-line:#C9A227;--rec-ink:#6E5408;--why:#1F5A85;--why-bg:#E3EEF7;--wedge:#2F6B4F;--wedge-bg:#E2F0E8;--trade:#9A3B1E;--trade-bg:#F7E4DC;--nf:#5E4A86;--nf-bg:#EEE8F6;--cost:#2D6A4F;--cost-bg:#DCEFE4}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--rec-bg:#3A3218;--rec-line:#D8B23A;--rec-ink:#E9CF7A;--why:#8FC1EA;--why-bg:#17324A;--wedge:#8FD1AE;--wedge-bg:#163428;--trade:#F0A58A;--trade-bg:#3E2219;--nf:#C9B4EC;--nf-bg:#2B2340;--cost:#7CC9A0;--cost-bg:#1D3A2C}}
+:root[data-theme="dark"]{--rec-bg:#3A3218;--rec-line:#D8B23A;--rec-ink:#E9CF7A;--why:#8FC1EA;--why-bg:#17324A;--wedge:#8FD1AE;--wedge-bg:#163428;--trade:#F0A58A;--trade-bg:#3E2219;--nf:#C9B4EC;--nf-bg:#2B2340;--cost:#7CC9A0;--cost-bg:#1D3A2C}
+
+.recmark{background:var(--rec-line);color:#1B2430;font-weight:700;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.nf{color:var(--nf);background:var(--nf-bg);border:1px dashed var(--nf);border-radius:5px;padding:0 5px;font-weight:600;white-space:nowrap}
+.legend{display:flex;gap:8px;flex-wrap:wrap;font:600 13px/1 "Source Sans 3",system-ui,sans-serif;margin:0 0 20px}
+.legend span{border-radius:99px;padding:6px 10px;border:1px solid var(--line)}
+.legend .l-rec{background:var(--rec-line);color:#1B2430;border-color:var(--rec-line)}
+.legend .l-why{color:var(--why);background:var(--why-bg)}
+.legend .l-wedge{color:var(--wedge);background:var(--wedge-bg)}
+.legend .l-trade{color:var(--trade);background:var(--trade-bg)}
+.legend .l-nf{color:var(--nf);background:var(--nf-bg);border-style:dashed}
+.fcards{display:grid;gap:14px;margin:12px 0 6px}
+.fcard{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:var(--ground);display:grid;gap:12px;min-width:0}
+.fcard .fct{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.fcard h3.fcardh{font:600 20px/1.3 Fraunces,Georgia,serif;color:var(--blue,var(--green));margin:0;overflow-wrap:anywhere;text-transform:none;letter-spacing:0}
+.fcard h3.fcardh a{color:inherit}
+.fchips{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{font:600 13px/1 "Source Sans 3",system-ui,sans-serif;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);padding:6px 9px;border-radius:99px;font-variant-numeric:tabular-nums}
+.fchip.rec{background:var(--rec-line);border-color:var(--rec-line);color:#1B2430}
+.fld{display:grid;gap:4px;max-width:72ch;border-left:3px solid var(--line);padding-left:12px;min-width:0}
+.fld>.lab,.subfld>.lab{font:700 12px/1.2 "Source Sans 3",system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.fld.why{border-left-color:var(--why)} .fld.why>.lab{color:var(--why)}
+.fld.wedge{border-left-color:var(--wedge)} .fld.wedge>.lab{color:var(--wedge)}
+.fld.trade{border-left-color:var(--trade)} .fld.trade>.lab{color:var(--trade)}
+.fld .lead{font-weight:600;margin:0}
+.fld .v{overflow-wrap:anywhere}
+.fld details{margin-top:2px}
+.fld summary{cursor:pointer;color:var(--blue,var(--green));font-weight:600;font-size:15px}
+.fld details p{margin:6px 0 0;color:var(--ink-2)}
+.fld.ev{border-left:0;padding-left:0;font:13px/1.45 "JetBrains Mono",ui-monospace,Menlo,monospace;color:var(--ink-3);overflow-wrap:anywhere}
+.fcard.isrec,.lablist>li.isrec{border:2px solid var(--rec-line);background:var(--rec-bg)}
+.lablist{padding-left:0}
+.lablist>li{list-style:none;margin:0 0 14px;border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--ground);display:grid;gap:8px;max-width:none}
+.lablist>li>.lead2{display:block;font:600 19px/1.35 Fraunces,Georgia,serif;color:var(--blue,var(--green))}
+.lablist>li>.fchip.rec{justify-self:start}
+.subfld{display:grid;gap:3px;margin:2px 0 0;padding-left:14px;border-left:2px solid var(--line)}
+.subfld.trade{border-left-color:var(--trade)} .subfld.trade>.lab{color:var(--trade)}
+.subfld.why{border-left-color:var(--why)} .subfld.why>.lab{color:var(--why)}
+.subfld p{margin:0}
+.md li.rl-why,.md li.rl-trade{list-style:none;border-left:3px solid var(--why);padding-left:10px;margin:4px 0}
+.md li.rl-trade{border-left-color:var(--trade)}
+.rl-why>.rl-lab{color:var(--why);font-weight:700} .rl-trade>.rl-lab{color:var(--trade);font-weight:700}
+.md td .clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.md tr.open td .clamp{-webkit-line-clamp:unset;display:block}
+.md tr.open td{background:var(--why-bg)}
+.hint{font-size:14px;color:var(--ink-3);margin:0 0 8px}
+.plain{display:grid;gap:14px;margin:0 0 14px}
+.plain ul{margin:0;padding-left:0;list-style:none;display:grid;gap:8px}
+.plain li{position:relative;padding-left:22px;max-width:64ch}
+.plain li::before{content:"";position:absolute;left:4px;top:.68em;width:8px;height:8px;border-radius:50%;background:var(--why)}
+.plain .box{border-radius:10px;padding:12px 16px;border-left:4px solid}
+.plain .box h4{margin:0 0 6px;font:700 13px/1.2 "Source Sans 3",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.plain .box.cost{background:var(--cost-bg);border-color:var(--cost)} .plain .box.cost h4{color:var(--cost)} .plain .box.cost li::before{background:var(--cost)}
+.plain .box.care{background:var(--trade-bg);border-color:var(--trade)} .plain .box.care h4{color:var(--trade)} .plain .box.care li::before{background:var(--trade)}
+details.full{border-top:1px dashed var(--line);padding-top:12px;min-width:0}
+details.full>summary{cursor:pointer;font-weight:700;color:var(--blue,var(--green));min-height:32px}
+details.full[open]>summary{margin-bottom:8px}
+.summed:not(.md)>details.full>:not(summary){margin-top:12px}
+@media (max-width:640px){.fcard,.lablist>li{padding:14px}}
+
+body{font-size:17px;line-height:1.65}
+.md p,.md li{max-width:70ch}
+section.sec{padding:26px 28px 30px;border-radius:12px}
+section.sec h2{font-size:26px}
+.md h3{font:600 19px/1.3 Fraunces,Georgia,serif;text-transform:none;letter-spacing:0;color:var(--blue);margin:22px 0 8px}
+.md table{font-size:15px}
+.md td,.md th{padding:9px 12px}
+@media (max-width:640px){section.sec{padding:18px 14px 22px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="mast"><div><p class="eyebrow">BlueStaffyUK · project 5 · STOP 2</p><h1 class="title">Section matrix and H1–H6 outline — /uk-locations/blue-staffy-puppies-manchester-uk/</h1></div>
 <div class="meta"><span class="pill">approved</span> <span class="pill">2026-10-07</span><br>data/outlines/blue-staffy-puppies-manchester-uk.json</div></header>
-<div class="toolbar"><button class="btn" id="copy-all">Copy all as Markdown</button><button class="btn ghost" id="dl-md">Download .md</button><span id="all-status"></span><span>Every section has its own copy button; the copy is the exact markdown.</span></div>
+<div class="toolbar"><button class="btn" id="copy-all">Copy all as Markdown</button><button class="btn ghost" id="dl-md" hidden>Download .md</button><span id="all-status"></span><span>Every section has its own copy button; the copy is the exact markdown.</span></div>
 <nav class="toc" id="toc" aria-label="Sections"></nav>
 <main id="doc"></main>
 </div>
@@ -392,7 +464,11 @@ Every H2–H6 opens by answering its own question in the first sentence, in Lisa
   var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
   function un(t){return t.replace(/<\\\//g,'</');}
   var head=un(document.getElementById('md-head').textContent.trim()),name=un(document.getElementById('md-name').textContent.trim());
-  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  function say(el,msg,cls){el.textContent=msg;el.className=cls||'copied';setTimeout(function(){if(el.textContent===msg)el.textContent='';},cls?6000:1800);}
+  function copy(text,el){
+    function legacy(){var t=document.createElement('textarea'),ok=false;t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';
+      document.body.appendChild(t);t.select();try{ok=document.execCommand('copy');}catch(e){}t.remove();say(el,ok?'Copied':'Copying is blocked here',ok?'':'warn');}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){say(el,'Copied');},legacy);else legacy();}
   function labels(root){root.querySelectorAll('table').forEach(function(t){var hs=[].map.call(t.querySelectorAll('th'),function(h){return h.textContent;});
     t.querySelectorAll('tbody tr').forEach(function(r){[].forEach.call(r.children,function(c,i){c.setAttribute('data-label',hs[i]||'');});});});}
   document.querySelectorAll('script[type="text/markdown"][data-title]').forEach(function(b,i){
@@ -405,7 +481,7 @@ Every H2–H6 opens by answering its own question in the first sentence, in Lisa
     var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
     btn.addEventListener('click',function(){copy(full,st);});
     right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
-    var body=document.createElement('div');body.className='md';
+    var body=document.createElement('div');body.className='md';body.setAttribute('data-title',title);
     if(window.marked&&window.DOMPurify){body.innerHTML=DOMPurify.sanitize(marked.parse(md));labels(body);}
     else{body.style.whiteSpace='pre-wrap';body.textContent=md;}
     sec.appendChild(body);doc.appendChild(sec);
@@ -413,9 +489,163 @@ Every H2–H6 opens by answering its own question in the first sentence, in Lisa
   });
   var whole='# '+head+'\n\n'+all.join('\n\n')+'\n';
   document.getElementById('copy-all').addEventListener('click',function(){copy(whole,document.getElementById('all-status'));});
-  document.getElementById('dl-md').addEventListener('click',function(){
-    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([whole],{type:'text/markdown'}));a.download=name;
-    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},0);});
+  // The .md download: only through the viewer's downloads capability (a link does nothing there).
+  var dl=document.getElementById('dl-md'),st=document.getElementById('all-status'),downloads=null,KEEP=['bad_request','request_unknown','transform_error'];
+  dl.addEventListener('click',function(){if(!downloads)return;
+    downloads.save({filename:name,data:whole}).then(function(r){say(st,r&&r.status==='delivered'?'Sent':'Downloaded');},function(e){var c=(e&&e.code)||'error';
+      if(c==='declined')say(st,'Download cancelled','warn');
+      else if(c==='rate_limited')say(st,'A download prompt is already open','warn');
+      else if(c==='too_large')say(st,'This file is too large to download here. Use Copy all as Markdown.','warn');
+      else if(KEEP.indexOf(c)>=0)say(st,"Download didn't happen ("+c+'). Use Copy all as Markdown.','warn');
+      // unavailable, not_granted, capability_* and any unknown code: this view cannot save.
+      else{downloads=null;dl.hidden=true;say(st,'Download is unavailable here ('+c+'). Use Copy all as Markdown.','warn');}});});
+  var use=window.claude&&window.claude.use;
+  if(typeof use==='function')use.call(window.claude,"downloads").then(function(ns){if(ns){downloads=ns;dl.hidden=false;}},function(){});
+})();
+</script>
+<script>
+(function(){
+  var doc=document.getElementById('doc');if(!doc)return;
+  var S={sections:{},items:[]};
+  var sj=document.getElementById('board-summaries');
+  if(sj){try{var d=JSON.parse(sj.textContent);S.sections=d.sections||{};S.items=d.items||[];}catch(e){}}
+  function el(tag,cls){var e=document.createElement(tag);if(cls)e.className=cls;return e;}
+  function bodies(){return [].slice.call(doc.querySelectorAll('.md[data-title]'));}
+  function bodyOf(title){var b=bodies();for(var i=0;i<b.length;i++)if(b[i].getAttribute('data-title')===title)return b[i];return null;}
+  function role(label){return /weak|wedge/i.test(label)?'wedge':/trade|risk/i.test(label)?'trade':/why/i.test(label)?'why':'';}
+  function rich(cell){return [].some.call(cell.childNodes,function(n){return n.nodeType===1;});}
+  function split(t){
+    var m=t.match(/^(.{20,220}?[.!?])(\s|$)/);if(m)return [m[1],t.slice(m[1].length).trim()];
+    if(t.length>200){var c=t.lastIndexOf(' ',200);if(c<80)c=200;return [t.slice(0,c)+' …',t.slice(c).trim()];}
+    return [t,''];}
+  function readRest(host,lead,rest){
+    if(rest.length>40){host.appendChild(lead);var det=el('details');var s=el('summary');s.textContent='Read the rest';det.appendChild(s);
+      var p=el('p');p.textContent=rest;det.appendChild(p);host.appendChild(det);return true;}
+    return false;}
+  function fld(label,cell,cls){
+    var d=el('div','fld'+(cls?' '+cls:''));var l=el('span','lab');l.textContent=label;d.appendChild(l);
+    if(typeof cell!=='string'&&rich(cell)){var v=el('div','v');while(cell.firstChild)v.appendChild(cell.firstChild);d.appendChild(v);return d;}
+    var t=(typeof cell==='string'?cell:cell.textContent).trim(),sp=split(t),p=el('p','lead');
+    p.textContent=sp[0];if(!readRest(d,p,sp[1])){p.textContent=t;d.appendChild(p);}
+    return d;}
+
+  // 1. Where each item summary lands: the i-th body row of a block's first table, or the i-th
+  //    item of its first top-level list. Marked before any transform moves the rows.
+  S.items.forEach(function(it,n){
+    var b=bodyOf(it.section),x=null;if(!b)return;
+    if(it.kind==='row'){var t=b.querySelector('table');if(t)x=t.querySelectorAll('tbody tr')[it.index];}
+    else{var l=b.querySelector(':scope > ul, :scope > ol');if(l)x=l.children[it.index];}
+    if(x)x.setAttribute('data-item',String(n));});
+
+  // 2. Field cards. A table holding a control, an image, a fold, an anchor id or anything a
+  //    board script marked up for itself (a class, a data-id: the page board's pickers and its
+  //    keyword filter) is left as it is — a card is rebuilt from the table's text and cells.
+  var KEEP='input,select,textarea,button,iframe,img,details,[id],[class],[data-id]';
+  [].slice.call(doc.querySelectorAll('.md table')).forEach(function(t){
+    if(t.hasAttribute('class')||t.hasAttribute('id')||t.closest('.kv,.mx-wrap')||t.querySelector(KEEP))return;
+    var hs=[].map.call(t.querySelectorAll('thead th'),function(h){return h.textContent.trim();});
+    var rows=[].slice.call(t.querySelectorAll('tbody tr'));if(!rows.length||!hs.length)return;
+    var marked=rows.some(function(r){return r.hasAttribute('data-item');});
+    var b=t.closest('.md'),title=(b&&b.getAttribute('data-title'))||'';
+    if(!marked&&/Keyword Universe|Keyword Distribution|NOT FETCHED/.test(title)){
+      // long lists stay compact tables, two lines per cell; a tap opens the row
+      t.querySelectorAll('tbody td').forEach(function(td){if(td.textContent.length>90){var w=el('div','clamp');while(td.firstChild)w.appendChild(td.firstChild);td.appendChild(w);}});
+      rows.forEach(function(tr){tr.addEventListener('click',function(e){if(e.target.closest('a'))return;tr.classList.toggle('open');});});
+      var hint=el('p','hint');hint.textContent='Tap a row to open its full text.';t.parentNode.insertBefore(hint,t);return;}
+    var long=[].concat.apply([],rows.map(function(r){return [].slice.call(r.children);}))
+      .filter(function(c){return c.textContent.length>140;}).length;
+    if(!marked&&long<rows.length*0.5)return;           // short tables stay tables
+    var ti=hs.findIndex(function(h){return /result|competitor|section|page|source|keyword|entity|angle/i.test(h);});if(ti<0)ti=0;
+    var recCol=/recommended/i.test(hs.join(' ')),wrap=el('div','fcards');
+    rows.forEach(function(r){
+      var c=[].slice.call(r.children),card=el('article','fcard'),isrec=!recCol&&/Recommended/.test(r.textContent);
+      if(r.hasAttribute('data-item'))card.setAttribute('data-item',r.getAttribute('data-item'));
+      var top=el('div','fct'),h=el('h3','fcardh'),tc=c[ti],a=tc&&tc.querySelector('a[href]');
+      var tt=(tc?tc.textContent.trim():'').replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,'');
+      if(a){var link=el('a');link.href=a.getAttribute('href');link.textContent=tt;h.appendChild(link);}else h.textContent=tt;
+      top.appendChild(h);var chips=el('div','fchips');top.appendChild(chips);card.appendChild(top);
+      c.forEach(function(cell,i){if(i===ti)return;var v=cell.textContent.trim();if(!v||v==='—')return;
+        var lab=hs[i]||'';
+        if(/evidence|source/i.test(lab)){var e=el('div','fld ev');e.appendChild(document.createTextNode(lab+': '));
+          while(cell.firstChild)e.appendChild(cell.firstChild);card.appendChild(e);return;}
+        if(v.length<=40&&!rich(cell)){var ch=el('span','fchip'+(/recommended/i.test(lab)?' rec':''));
+          ch.textContent=/recommended/i.test(lab)?'Recommended: '+v:(/^#$/.test(lab)?'#':lab+' ')+v;chips.appendChild(ch);return;}
+        card.appendChild(fld(lab,cell,role(lab)));});
+      if(isrec||card.querySelector('.fchip.rec'))card.classList.add('isrec');
+      wrap.appendChild(card);});
+    t.replaceWith(wrap);});
+
+  // 3. Labelled lists: "- **X** — idea" items whose children carry a LABEL (why, trade-off).
+  var LABEL=/^(Angle|Why|Trade-off|Why it could win)\s*:\s*([\s\S]*)$/,HEAD=/^(\S+)\s+—\s+/;
+  function own(li){var t='';[].forEach.call(li.childNodes,function(n){if(n.nodeName!=='UL'&&n.nodeName!=='OL')t+=n.textContent;});return t.trim();}
+  [].slice.call(doc.querySelectorAll('.md > ul')).forEach(function(ul){
+    var lis=[].slice.call(ul.children);
+    if(!lis.every(function(li){return HEAD.test(own(li));}))return;
+    if(!lis.some(function(li){var s=li.querySelector(':scope > ul');
+      return s&&[].some.call(s.children,function(x){return LABEL.test(x.textContent.trim());});}))return;
+    ul.classList.add('lablist');
+    lis.forEach(function(li){
+      var sub=li.querySelector(':scope > ul'),ht=el('div','lhead');
+      [].slice.call(li.childNodes).forEach(function(n){if(n!==sub)ht.appendChild(n);});
+      var txt=ht.textContent.trim(),rec=/\(Recommended\)/.test(txt),m=txt.match(/^(\S+)\s+—\s+([\s\S]*)$/);
+      if(m){
+        var rest=m[2].replace(/\s*\(Recommended\)\s*/,' ').trim(),name='',idea=rest,k=rest.indexOf(': ');
+        if(k>0&&k<=60&&rest.slice(0,k).indexOf('. ')<0){name=rest.slice(0,k);idea=rest.slice(k+2);}
+        var lead=el('span','lead2');lead.textContent=m[1]+(name?' · '+name:'');li.appendChild(lead);
+        if(rec){var chip=el('span','fchip rec');chip.textContent='Recommended';li.appendChild(chip);}
+        li.appendChild(fld('The idea',idea));
+      }else li.appendChild(ht);
+      if(rec)li.classList.add('isrec');
+      if(sub){var keep=el('ul');
+        [].slice.call(sub.children).forEach(function(s){var mm=s.textContent.trim().match(LABEL);
+          if(!mm){keep.appendChild(s);return;}
+          var d=el('div','subfld'+(/trade/i.test(mm[1])?' trade':/why/i.test(mm[1])?' why':''));
+          var l=el('span','lab');l.textContent=mm[1]==='Angle'?'Hook, intro and section order':mm[1];d.appendChild(l);
+          var sp=split(mm[2]),p=el('p');p.textContent=sp[0];if(!readRest(d,p,sp[1])){p.textContent=mm[2];d.appendChild(p);}
+          li.appendChild(d);});
+        sub.remove();if(keep.children.length)li.appendChild(keep);}
+    });});
+  // Any other nested why or trade-off line keeps its place and wears its role colour.
+  [].slice.call(doc.querySelectorAll('.md li > ul > li, .md li > ol > li')).forEach(function(li){
+    if(li.closest('.lablist'))return;
+    var m=own(li).match(/^(Why|Trade-off)\s*:/);if(!m)return;
+    li.classList.add(/trade/i.test(m[1])?'rl-trade':'rl-why');
+    var t=li.firstChild;
+    if(t&&t.nodeType===3){var i=t.nodeValue.indexOf(m[0]);
+      if(i>=0&&!t.nodeValue.slice(0,i).trim()){var mid=t.splitText(i);mid.splitText(m[0].length);
+        var lab=el('span','rl-lab');li.replaceChild(lab,mid);lab.appendChild(mid);}}
+  });
+
+  // 4. Plain summaries first; the original folds underneath, unchanged.
+  function bullets(list){var u=el('ul');list.forEach(function(t){var li=el('li');li.textContent=t;u.appendChild(li);});return u;}
+  function plain(sum){var w=el('div','plain');
+    if(sum.bullets&&sum.bullets.length)w.appendChild(bullets(sum.bullets));
+    [['cost','What it cost'],['care','Read with care']].forEach(function(k){
+      if(sum[k[0]]&&sum[k[0]].length){var b=el('div','box '+k[0]);var h=el('h4');h.textContent=k[1];b.appendChild(h);b.appendChild(bullets(sum[k[0]]));w.appendChild(b);}});
+    return w;}
+  function fold(label){var d=el('details','full');var s=el('summary');s.textContent=label;d.appendChild(s);return d;}
+  [].slice.call(doc.querySelectorAll('[data-item]')).forEach(function(x){
+    var it=S.items[+x.getAttribute('data-item')];if(!it||x.tagName==='TR')return;
+    var keep=[].slice.call(x.children).filter(function(n){return n.classList.contains('fct')||n.classList.contains('lead2')||(n.classList.contains('fchip')&&n.classList.contains('rec'));});
+    var det=fold('The full text');
+    [].slice.call(x.childNodes).forEach(function(n){if(keep.indexOf(n)<0)det.appendChild(n);});
+    x.appendChild(plain(it));x.appendChild(det);x.classList.add('summed');});
+  bodies().forEach(function(b){
+    var sum=S.sections[b.getAttribute('data-title')]||S.sections[b.getAttribute('data-id')||'\u0000'];if(!sum)return;
+    var det=fold('Full text, with every source and file path');
+    while(b.firstChild)det.appendChild(b.firstChild);
+    b.appendChild(plain(sum));b.appendChild(det);b.classList.add('summed');});
+
+  // 5. The legend, and the two marks every board carries in its text.
+  var legend=el('div','legend');legend.innerHTML='<span class="l-rec">Recommended</span><span class="l-why">Why / why it ranks</span><span class="l-wedge">Weakness · our wedge</span><span class="l-trade">Trade-off · risk</span><span class="l-nf">NOT FETCHED</span>';
+  doc.parentNode.insertBefore(legend,doc);
+  var w=document.createTreeWalker(doc,NodeFilter.SHOW_TEXT,null),hits=[];
+  while(w.nextNode()){var n=w.currentNode;
+    if(/NOT FETCHED|\(Recommended\)/.test(n.nodeValue)&&!n.parentNode.closest('.nf,.recmark,button,summary,textarea,script,style,option,label'))hits.push(n);}
+  hits.forEach(function(n){var f=document.createDocumentFragment();n.nodeValue.split(/(NOT FETCHED|\(Recommended\))/).forEach(function(part){
+    if(part==='NOT FETCHED'){var a=el('span','nf');a.textContent=part;f.appendChild(a);}
+    else if(part==='(Recommended)'){var r=el('span','recmark');r.textContent='Recommended';f.appendChild(r);}
+    else if(part)f.appendChild(document.createTextNode(part));});n.parentNode.replaceChild(f,n);});
 })();
 </script>
 </body>

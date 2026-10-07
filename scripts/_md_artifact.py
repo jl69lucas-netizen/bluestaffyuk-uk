@@ -93,7 +93,7 @@ JS = r"""
     var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
     btn.addEventListener('click',function(){copy(full,st);});
     right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
-    var body=document.createElement('div');body.className='md';
+    var body=document.createElement('div');body.className='md';body.setAttribute('data-title',title);
     if(window.marked&&window.DOMPurify){body.innerHTML=DOMPurify.sanitize(marked.parse(md));labels(body);}
     else{body.style.whiteSpace='pre-wrap';body.textContent=md;}
     sec.appendChild(body);doc.appendChild(sec);
@@ -147,7 +147,15 @@ def publish_hint(html_path):
             f"capabilities={json.dumps(CAPABILITIES)} (the .md download needs it)")
 
 
-def page(title, eyebrow, heading, status, date, rel, sections, md_name):
+def page(title, eyebrow, heading, status, date, rel, sections, md_name,
+         extra_css="", extra_js="", summaries_json=None):
+    """The page. `extra_css` and `extra_js` are a presentation layer laid over the rendered
+    sections (scripts/board_style.py); `summaries_json` is its data, a JSON string safe inside a
+    <script> block. None of the three touches the markdown: the copy buttons and the download
+    hand back exactly the sections given."""
+    data = ("" if summaries_json is None else
+            f'<script type="application/json" id="board-summaries">{summaries_json}</script>\n')
+    layer = f"<script>{extra_js}</script>\n" if extra_js else ""
     blocks = "\n".join(
         f'<script type="text/markdown" data-title="{html.escape(t)}">\n{_esc(b.strip())}\n</script>'
         for t, b in sections)
@@ -158,7 +166,7 @@ def page(title, eyebrow, heading, status, date, rel, sections, md_name):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(title)}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
-<style>{CSS}</style>
+<style>{CSS}{extra_css}</style>
 </head>
 <body>
 <div class="wrap">
@@ -171,9 +179,9 @@ def page(title, eyebrow, heading, status, date, rel, sections, md_name):
 <script type="text/plain" id="md-head">{_esc(heading)}</script>
 <script type="text/plain" id="md-name">{_esc(md_name)}</script>
 {blocks}
-<script src="{MARKED}"></script>
+{data}<script src="{MARKED}"></script>
 <script src="{PURIFY}"></script>
 <script>{JS}</script>
-</body>
+{layer}</body>
 </html>
 """

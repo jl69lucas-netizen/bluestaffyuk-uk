@@ -32,6 +32,12 @@ unless that board is approved as it stands. The deliverable carries:
                              for the user's decision), planned tests, build notes
   schema and component notes
 
+The page wears scripts/board_style.py (the user's picks of 2026-10-07, plan
+docs/superpowers/plans/2026-10-07-board-readability.md): field cards with a colour per role, and
+the record's optional `summaries` — `sections` by block title, `items` by `sections[i]` (that
+row's own block) — as plain bullets above the original, folded into <details class="full">.
+They never enter the markdown, so every copy button and the .md download are unchanged.
+
 The rows are held to the research board:
   - framework is one of the board's framework picks or a named standard framework (a
     `.claude/skills/framework-*` skill); `—` only on a row with no H2 or deeper heading
@@ -74,6 +80,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _md_artifact as MA  # noqa: E402
+import board_style as BS  # noqa: E402
 import research_board as RB  # noqa: E402
 import family_rules as FR  # noqa: E402
 
@@ -344,7 +351,51 @@ def validate(record, research, root=None):
         _validate(record, research if isinstance(research, dict) else {}, root, p)
     except (TypeError, AttributeError, KeyError, ValueError) as e:
         p.append(f"malformed outline: {type(e).__name__}: {e}")
+    p.extend(_summary_problems(record, research if isinstance(research, dict) else {}))
     return p
+
+
+# --- the plain summaries (plan 2026-10-07-board-readability.md) -------------------------
+# An optional `summaries` key: `sections` keyed by block title, `items` keyed by record path
+# (`sections[i]`, which leads that row's own block, "§<n> <section>"). Each is {bullets, cost?,
+# care?} under scripts/board_style.py's rules. They never enter the markdown.
+
+def _item_titles(record):
+    """{"sections[i]": the title of row i's own block}."""
+    return {f"sections[{i}]": f"§{s.get('n')} {s.get('section')}"
+            for i, s in enumerate(_sections(record)) if isinstance(s, dict)}
+
+
+def _summary_problems(record, research):
+    s = record.get("summaries")
+    if s is None:
+        return []
+    try:
+        titles = [t for t, _ in sections(record, research)]
+    except Exception:  # noqa: BLE001 — an outline that cannot render yet: titles go unchecked
+        titles = None
+    items = _item_titles(record)
+    p = BS.validate_summaries(s, titles, set(items))
+    secs = s.get("sections") if isinstance(s, dict) and isinstance(s.get("sections"), dict) else {}
+    its = s.get("items") if isinstance(s, dict) and isinstance(s.get("items"), dict) else {}
+    for path in its:
+        if items.get(path) in secs:
+            p.append(f"summaries: {items[path]!r} is summarised twice, by sections and by {path}")
+    return p
+
+
+def summaries_data(record):
+    """The record's `summaries` as the page reads them: every summary keyed by its block's
+    title. None when the record has none, so the page renders exactly as before."""
+    s = record.get("summaries")
+    if not isinstance(s, dict):
+        return None
+    out = dict(s.get("sections") or {})
+    titles = _item_titles(record)
+    for path, entry in (s.get("items") or {}).items():
+        if path in titles:
+            out[titles[path]] = entry
+    return {"sections": out, "items": []}
 
 
 def _validate(record, research, root, p):
@@ -719,9 +770,12 @@ def build(record, research, out_dir):
     out_dir = pathlib.Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     html_path, md_path = out_dir / f"{slug}.html", out_dir / f"{slug}.md"
+    data = summaries_data(record)
     html_path.write_text(MA.page(f"Outline {slug}", "BlueStaffyUK · project 5 · STOP 2",
                                  heading, approval_state(record), record.get("date", ""),
-                                 f"{RECORDS}/{slug}.json", secs, f"{slug}-outline.md"),
+                                 f"{RECORDS}/{slug}.json", secs, f"{slug}-outline.md",
+                                 extra_css=BS.CSS + BS.READING_CSS, extra_js=BS.SCRIPT,
+                                 summaries_json=None if data is None else BS.summaries_json(data)),
                          encoding="utf-8")
     md_path.write_text(MA.markdown(heading, secs), encoding="utf-8")
     return html_path, md_path

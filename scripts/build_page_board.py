@@ -45,6 +45,7 @@ import board_extras as BX           # blocks 2b, 8a, 8b, 8c (breeder q12, 2026-1
 import board_entities as BE
 import page_intake as PI          # block 0, the intake (the brief's target block)
 import outline_matrix as OM       # STOP 2: the outline is approved before the page board
+import board_style as BS          # role colours, field cards, plain summaries (2026-10-07)
 from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 
 OUT = PB.ROOT / "docs" / "artifacts" / "boards"
@@ -1448,12 +1449,60 @@ def queue_shell(slug, m, record_hash, cards, n_picks, status):
     return top, doc, bar
 
 
+# ── Board readability (the user's picks of 2026-10-07, plan 2026-10-07-board-readability.md) ──
+# The board wears scripts/board_style.py over its own block cards: role colours, field cards for
+# long plain tables, and a plain summary first. The summaries come from a SIDECAR,
+# data/boards/summaries/<slug>.json ({"sections": {"<block title>": {bullets, cost?, care?}}}),
+# never from the board record, so PB.record_hash — what the approval signs — is the same with or
+# without one. Every block carries a copy button that copies its markdown exactly; the summaries
+# never enter that markdown.
+SUMMARIES_DIR = ("data", "boards", "summaries")
+
+
+def load_summaries(slug):
+    """The page's summaries sidecar, or None when it has none. Read at call time from PB.ROOT."""
+    path = PB.ROOT.joinpath(*SUMMARIES_DIR, PB.slug_file(slug) + ".json")
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        raise PB.BoardError(f"summaries sidecar {path.name} is not JSON — {e}") from None
+
+
+COPY_CSS = """
+.blk-copy{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:0 0 6px}
+.card>.blk-copy{margin:0;padding:10px 16px 0}
+.blk-copy button.btn{font-size:12px;padding:5px 12px;background:transparent;color:var(--green);border-color:var(--line)}
+.blk-copy .copied{font-size:12px;color:var(--ink-3)}
+"""
+
+#: The copy button every block carries: `## <title>`, a blank line, then the block's markdown
+#: exactly as the record rendered it (the same text the block is parsed from).
+COPY_JS = r"""  function copyMd(text,st){
+    function done(ok){st.textContent=ok?'Copied':'Copying is blocked here';setTimeout(function(){st.textContent='';},1800);}
+    function legacy(){var t=document.createElement('textarea'),ok=false;t.value=text;t.setAttribute('readonly','');
+      t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
+      try{ok=document.execCommand('copy');}catch(e){}t.remove();done(ok);}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){done(true);},legacy);else legacy();
+  }
+  function copyBar(title,md){
+    var bar=document.createElement('div');bar.className='blk-copy';
+    var st=document.createElement('span');st.className='copied';st.setAttribute('role','status');
+    var btn=document.createElement('button');btn.type='button';btn.className='btn';btn.textContent='Copy block';
+    btn.addEventListener('click',function(){copyMd('## '+title+'\n\n'+md,st);});
+    bar.appendChild(st);bar.appendChild(btn);return bar;
+  }
+"""
+
 #: The flat layout's block loop: every block one <section>, in board order.
 FLAT_JS = r"""  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
     var sec=document.createElement('section');sec.className='sec';
-    var h2=document.createElement('h2');h2.textContent=b.getAttribute('data-title');sec.appendChild(h2);
-    var body=document.createElement('div');body.className='md';
-    body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\n+|\s+$/g,'')):b.textContent;
+    var h2=document.createElement('h2');h2.textContent=title;sec.appendChild(h2);
+    sec.appendChild(copyBar(title,md));
+    var body=document.createElement('div');body.className='md';body.setAttribute('data-title',title);
+    body.innerHTML=window.marked?marked.parse(md):b.textContent;
     sec.appendChild(body);doc.appendChild(sec);
   });
 """
@@ -1479,8 +1528,11 @@ QUEUE_JS = r"""  // Decision queue (breeder pick B, 2026-10-03): one <details> c
     sum.appendChild(mid);
     var chip=document.createElement('span');chip.className='chip '+chipCls;chip.textContent=b.getAttribute('data-chip-text');
     sum.appendChild(chip);card.appendChild(sum);
+    var md=b.textContent.replace(/^\n+|\s+$/g,'');
+    card.appendChild(copyBar(title,md));
     var body=document.createElement('div');body.className='in md';
-    body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\n+|\s+$/g,'')):b.textContent;
+    body.setAttribute('data-title',title);body.setAttribute('data-id',bid);
+    body.innerHTML=window.marked?marked.parse(md):b.textContent;
     card.appendChild(body);
     var host=document.querySelector('[data-host="'+(tab==='ref'?'ref:'+grp:tab)+'"]');
     (host||doc).appendChild(card);
@@ -1621,8 +1673,11 @@ div.q-bar{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--pap
 
 
 def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None,
-           intake=None, layout="queue"):
-    """The board document. `layout` is "queue" (breeder pick B, 2026-10-03: the three-tab
+           intake=None, layout="queue", summaries=None):
+    """The board document. `summaries` is the page's sidecar (load_summaries): plain bullets
+    shown above a block's original, which folds underneath; a sidecar that breaks
+    scripts/board_style.py's rules, or names a block the board does not have, is a BoardError.
+    `layout` is "queue" (breeder pick B, 2026-10-03: the three-tab
     decision queue with a sticky approve bar) or "flat" (every block as one long column, as
     before). It only reaches project 5 boards: a pre-rule board is always flat, byte for byte."""
     previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
@@ -1861,6 +1916,12 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                   + refusal_note + "\n\nWrites your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it."))
 
     record_hash = PB.record_hash(board)
+    bad = BS.validate_summaries(summaries, [t for t, _ in parts])
+    if bad:
+        raise PB.BoardError("summaries sidecar: " + "; ".join(bad))
+    layer = ("" if summaries is None else
+             f'<script type="application/json" id="board-summaries">{BS.summaries_json(summaries)}</script>\n'
+             ) + f"<script>{BS.SCRIPT}</script>\n"
     if queue:
         labels = signature_labels(board, ledger, slug, ig_plan)
         facts = {"hits": hits, "qhits": qhits, "routes": routes, "rules": rfind, "refused": refused,
@@ -1895,7 +1956,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     return f"""<meta charset="utf-8">
 <title>Page Board: {esc(slug)}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&display=swap">
-<style>{CSS}{BE.CSS}{QUEUE_CSS if queue else ""}</style>
+<style>{CSS}{BE.CSS}{QUEUE_CSS if queue else ""}{COPY_CSS}{BS.CSS}</style>
 {top}<div class="wrap{" q" if queue else ""}">
 {masthead}<p class="howto">{QUEUE_HOWTO if queue else HOWTO}</p>
 <div id="doc">{doc_html}</div>
@@ -1905,7 +1966,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
 <script>
 (function(){{
   var doc=document.getElementById('doc');
-{QUEUE_JS.replace("@@SLUG@@", js(slug)) if queue else FLAT_JS}  // Blocks 4 and 5: the keyword and entity filters (scripts/board_entities.py).
+{COPY_JS}{QUEUE_JS.replace("@@SLUG@@", js(slug)) if queue else FLAT_JS}  // Blocks 4 and 5: the keyword and entity filters (scripts/board_entities.py).
   {BE.JS}
   // The style frames are filled HERE rather than carrying a static srcdoc each: the page
   // stylesheet is inlined once and pasted into every frame at load, instead of nine copies
@@ -2042,7 +2103,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
   }}).catch(function(e){{dbState='none';say('Board database unavailable: '+(e&&e.code?e.code:'error')+'. Approve in chat.');}});
 }})();
 </script>
-"""
+{layer}"""
 
 
 def main():
@@ -2081,7 +2142,8 @@ def main():
         intake = None
         print(f"board: no block 0 for {slug} — {type(e).__name__}: {e}", file=sys.stderr)
     try:
-        html = render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images, intake)
+        html = render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images, intake,
+                      summaries=load_summaries(slug))
     except PB.BoardError as e:
         # A record fault found while rendering (e.g. an unknown infographic_style): the same
         # refusal approval gives, said plainly, and no half-written board on disk.

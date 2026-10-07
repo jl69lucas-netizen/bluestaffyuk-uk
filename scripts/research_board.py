@@ -36,6 +36,14 @@ carries its `fetched` date and `evidence` on the same rule, and a fetched author
 record are read from it, never retyped: a competitor's `words`, and its H2 count
 (`h2_clean`) when the record gives no heading census.
 
+PLAIN SUMMARIES (the user's picks of 2026-10-07, docs/superpowers/plans/2026-10-07-board-readability.md).
+The page wears scripts/board_style.py: field cards with a colour per role, and an optional
+`summaries` key — `sections` keyed by section title (SECTION_TITLES) and `items` keyed by
+record path (`serp.results[0]`, `angles[1]`; ITEM_ANCHORS) — each `{bullets, cost?, care?}`, at
+most 6 bullets of at most 25 words, no file path and no backticked field. They render above the
+original, which folds into <details class="full">; they never enter the markdown, so every copy
+button and the .md download are unchanged. They are part of the record, so its hash covers them.
+
 THE APPROVAL. The user's picks come back from the answer board as
 `docs/reference/answer-board/answers/<batchId>-<date>.json`; `--approve --answers <file>`
 reads that file — an answer-board answers file saved under docs/reference/answer-board/answers/,
@@ -66,6 +74,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _md_artifact as MA  # noqa: E402
+import board_style as BS  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 RECORDS = "data/research-boards"
@@ -113,6 +122,34 @@ FETCH = {
     "authority": "`mcp__…__backlinks_summary` through the spend guard, per competitor domain",
     "referring_domains": "`mcp__…__backlinks_summary` through the spend guard",
 }
+
+
+# The board's sections, in order: what `summaries.sections` may be keyed by.
+SECTION_TITLES = ("Status", "1. SERP Snapshot", "2. Search Intent",
+                  "3. Competitor Reverse Engineering", "4. Owner Language", "5. Query Fan-Out",
+                  "6. Why Competitors Rank", "7. How We Win", "8. Content Gap (build list)",
+                  "9. Entities", "10. Angles", "11. Strategy Directions",
+                  "12. Frameworks per Section Group", "13. Keyword Universe",
+                  "14. Keyword Distribution", "15. AI Overview", "16. Heading-Type Analysis",
+                  "17. SERP Schema Audit", "18. Authority and Links",
+                  "19. What Is NOT FETCHED and How to Fetch It")
+# The record lists the board renders one row or one list item per entry: what
+# `summaries.items` may be keyed by (`<path>[i]`), and where that entry lands on the page —
+# the i-th body row of the section's first table, or the i-th item of its first list.
+ITEM_ANCHORS = {
+    "serp.results": ("1. SERP Snapshot", "row"),
+    "reverse_engineering": ("3. Competitor Reverse Engineering", "row"),
+    "how_we_win": ("7. How We Win", "li"),
+    "content_gap": ("8. Content Gap (build list)", "li"),
+    "entities": ("9. Entities", "row"),
+    "angles": ("10. Angles", "li"),
+    "strategies": ("11. Strategy Directions", "li"),
+    "frameworks": ("12. Frameworks per Section Group", "row"),
+    "heading_types.rows": ("16. Heading-Type Analysis", "row"),
+    "serp_schema": ("17. SERP Schema Audit", "row"),
+    "authority": ("18. Authority and Links", "row"),
+}
+ITEM_PATH = re.compile(r"^(.+)\[(\d+)\]$")
 
 
 class RecordError(Exception):
@@ -343,7 +380,7 @@ def _bare_nf(record, p):
         elif is_nf(v) and not nf_ok(v):
             p.append(f"{path}: a bare NOT FETCHED — name the barrier "
                      f"(`NOT FETCHED — <what was tried and what stopped it>`)")
-    walk({k: v for k, v in record.items() if k != "approval"}, "")
+    walk({k: v for k, v in record.items() if k not in ("approval", "summaries")}, "")
 
 
 def _evidence(where, row, root, p, key="evidence", own_url=None):
@@ -624,6 +661,40 @@ def _validate(record, queries, root, p):
         else:
             _nf_or(f, record[f], check, p, root)
 
+    p.extend(BS.validate_summaries(record.get("summaries"), SECTION_TITLES, item_paths(record)))
+
+
+# --- the plain summaries (plan 2026-10-07-board-readability.md) -------------------------
+
+def _at(record, dotted):
+    v = record
+    for k in dotted.split("."):
+        v = _d(v).get(k)
+    return v
+
+
+def item_paths(record):
+    """Every `<path>[i]` a summary may name: one per entry the board renders as a row or item."""
+    return {f"{prefix}[{i}]" for prefix in ITEM_ANCHORS
+            for i in range(len(_l(_at(record, prefix))))}
+
+
+def summaries_data(record):
+    """The record's `summaries` as the page reads them (scripts/board_style.py): sections by
+    title, and each item with the section, the kind and the index it lands on. None when the
+    record has none, so the page renders exactly as before."""
+    s = record.get("summaries")
+    if not isinstance(s, dict):
+        return None
+    items = []
+    for path, entry in _d(s.get("items")).items():
+        m = ITEM_PATH.match(path)
+        if not m or m.group(1) not in ITEM_ANCHORS:
+            continue
+        section, kind = ITEM_ANCHORS[m.group(1)]
+        items.append({"section": section, "kind": kind, "index": int(m.group(2)), **entry})
+    return {"sections": _d(s.get("sections")), "items": items}
+
 
 def _keywords(kw, p):
     if not isinstance(kw, dict):
@@ -759,13 +830,18 @@ def sections(record, queries, root=None):
     aio = record["ai_overview"]
     if isinstance(aio, str):
         aio_md = aio
-    elif not aio["present"]:
-        aio_md = "No AI Overview is shown for this query."
     else:
-        cites = aio["cites"] if isinstance(aio["cites"], str) else ", ".join(aio["cites"])
-        aio_md = f"An AI Overview is shown.\n\n> {aio['says']}\n\n**Cites:** {cites}"
-        if aio.get("implication"):
-            aio_md += f"\n\n**GEO implication:** {aio['implication']}"
+        if not aio["present"]:
+            aio_md = "No AI Overview is shown for this query."
+        else:
+            cites = aio["cites"] if isinstance(aio["cites"], str) else ", ".join(aio["cites"])
+            aio_md = f"An AI Overview is shown.\n\n> {aio['says']}\n\n**Cites:** {cites}"
+        # The session the SERP was read in and what to read it with, so the section's plain
+        # summary has its source text under it (summary writer's flag, 2026-10-07).
+        for key, label in (("session", "Session"), ("note", "Note"),
+                           ("implication", "GEO implication")):
+            if aio.get(key):
+                aio_md += f"\n\n**{label}:** {aio[key]}"
     out.append(("15. AI Overview", aio_md))
     ht = record["heading_types"]
     out.append(("16. Heading-Type Analysis", ht if isinstance(ht, str) else
@@ -801,7 +877,7 @@ def fetch_plan(record, queries):
             leaf = "headings" if key == "note" else key
             rows.append([path.lstrip("."), v.split("—", 1)[-1].strip(),
                          FETCH.get(leaf, "the row 4–7 step that owns this field (page-run.md)")])
-    body = {k: v for k, v in record.items() if k != "approval"}
+    body = {k: v for k, v in record.items() if k not in ("approval", "summaries")}
     body["reverse_engineering"] = merged(record, queries)
     walk(body, "", "")
     return rows
@@ -826,9 +902,12 @@ def build(record, queries, out_dir):
     out_dir = pathlib.Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     html_path, md_path = out_dir / f"{slug}.html", out_dir / f"{slug}.md"
+    data = summaries_data(record)
     html_path.write_text(MA.page(f"Research Board {slug}", "BlueStaffyUK · project 5 · STOP 1",
                                  heading, approval_state(record, queries), record["date"],
-                                 f"{RECORDS}/{slug}.json", secs, f"{slug}-research-board.md"),
+                                 f"{RECORDS}/{slug}.json", secs, f"{slug}-research-board.md",
+                                 extra_css=BS.CSS + BS.READING_CSS, extra_js=BS.SCRIPT,
+                                 summaries_json=None if data is None else BS.summaries_json(data)),
                          encoding="utf-8")
     md_path.write_text(MA.markdown(heading, secs), encoding="utf-8")
     return html_path, md_path
