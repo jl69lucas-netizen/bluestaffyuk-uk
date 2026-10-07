@@ -1067,7 +1067,7 @@
      "slot": "deposit-h2",
      "kind": "photo",
      "required": true,
-     "prompt": "H2: Lisa Bright at home with a puppy, a served photo first (outline row 8). Image: first use on this page; the file has no row in the served record (it was baked at London's Asset Gate, 2026-10-04 q06), so it carries the alt London serves it with.",
+     "prompt": "H2: Lisa Bright at home with a puppy, a served photo first (outline row 8). Image: first use on this page; the file has no row in the served record (it was baked at London's Asset Gate, 2026-10-04 q06), so it carries a fresh alt written for this page, checked against the photo (a fawn and a dark brindle puppy, so no 'blue'): a city board never repeats another city board's alt on an image with no served alt (tests/py/test_city_board_alts.py).",
      "source": "existing",
      "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp"
     }
@@ -2889,7 +2889,7 @@
    "required": true,
    "status": "baked",
    "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
-   "alt": "Lisa Bright, our blue Staffy breeder, smiling and holding up two young puppies, one fawn and one dark brindle"
+   "alt": "Lisa Bright, who breeds our Staffies, in glasses and a grey jumper, holding a fawn puppy in one arm and a dark brindle puppy in the other"
   },
   {
    "slot": "deposit-settle",

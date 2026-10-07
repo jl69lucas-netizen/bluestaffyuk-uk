@@ -1,0 +1,35 @@
+{
+  "_comment": "Served images the boards never offer, by name: the pictures docs/reference/lessons.md marks false, whose own words (printed in the image) state something we do not hold (lessons 7: an image with words in it is copy, under working rule 9). Working rule 11 still holds: none is renamed, deleted or re-encoded, and a page that served one keeps its URL; this list only keeps them out of scripts/image_candidates.py's pools (block 7) and scripts/original_slots.py's inventory (block 7d), through image_candidates.untruthful(). An image whose served ALT states an unproven claim is caught by rule from data/quality/evidence-ledger.json and needs no row here. Each row: the served file, why it is false, the lesson number in lessons.md and where the defect was recorded. Entered 2026-10-07 (Manchester page run, gap G19), from London's Asset Gate (docs/reports/asset-gate-london/README.md A1-A5, swapped out in ab26a887).",
+  "files": [
+    {
+      "file": "/images/kc-registered-staffy-puppies.webp",
+      "reason": "AI picture of a puppy beside printed Kennel Club Pedigree and Certificate of Health sheets (one misspelt): we hold no such certificate, and a puppy goes home with the KC registration application form, not a pedigree certificate.",
+      "lesson": 7,
+      "source": "docs/reports/asset-gate-london/README.md#a1-the-ai-certificate-of-health-picture"
+    },
+    {
+      "file": "/images/blue-staffy-puppy-delivery-uk.webp",
+      "reason": "AI picture of a van painted in BlueStaffyUK livery with phone digits on it: we own no such van, and the phone number is PHONE_PLACEHOLDER until project 6.",
+      "lesson": 7,
+      "source": "docs/reports/asset-gate-london/README.md#a2-the-van-in-bluestaffyuk-livery-with-phone-digits"
+    },
+    {
+      "file": "/images/defra-pet-transport-process.webp",
+      "reason": "AI infographic titled Our Trusted DEFRA-Approved Pet Transport Partners with gibberish labels: it names partners we have not confirmed.",
+      "lesson": 7,
+      "source": "docs/reports/asset-gate-london/README.md#a3-the-defra-transport-partners-diagram"
+    },
+    {
+      "file": "/images/affordable-vs-premium-blue-staffy-breeders-comparison.webp",
+      "reason": "AI chart Comparing BlueStaffyUK vs. Classified Ads with gibberish bullet text: its comparison claims are unsourced.",
+      "lesson": 7,
+      "source": "docs/reports/asset-gate-london/README.md#a4-the-bluestaffyuk-vs-classified-ads-chart"
+    },
+    {
+      "file": "/images/busting-common-staffy-myths-loving-family-dog.webp",
+      "reason": "AI chart Staffy Myths vs. Facts with misspelt, garbled text: the words cannot be read as true copy.",
+      "lesson": 7,
+      "source": "docs/reports/asset-gate-london/README.md#a5-the-myths-vs-facts-chart"
+    }
+  ]
+}

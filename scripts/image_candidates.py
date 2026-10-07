@@ -45,6 +45,13 @@ filename stem or any alt it is shown with names a city other than the board's ow
 (`other_city_filter`, through original_slots.cities_named): a Manchester board is never
 offered London's or Glasgow's photos. Every other board keeps city-named photos.
 
+TRUTH (gap G19, 2026-10-07). The own and served pools also drop every photo untruthful()
+names: one whose served alt states a claim data/quality/evidence-ledger.json does not prove
+(by rule: a NOT FETCHED row's pattern, or the vocabulary of a claim no proved row covers, so
+"L-2-HGA clear" is out while "L-2-HGA tested" stays), and one data/quality/image-deny.json
+names because lessons.md marks it false (the "Certificate of Health" picture, lessons 7).
+scripts/original_slots.py applies the same test to block 7d's inventory.
+
 Every served candidate carries `used_on`: the other built pages that already show it, so
 reuse across pages is visible on the board rather than discovered after the build.
 
@@ -450,12 +457,86 @@ def other_city_filter(board, root, alts):
     return keep
 
 
+# ── truth (gap G19, Manchester page run, 2026-10-07) ─────────────────────────────────────
+LEDGER_FILE = pathlib.Path("data/quality/evidence-ledger.json")
+DENY_FILE = pathlib.Path("data/quality/image-deny.json")
+
+
+def _unproven_patterns(ledger):
+    """[(claim id, compiled pattern)] for every claim the evidence ledger does NOT prove:
+
+      - the own `pattern` of each row at proof NOT FETCHED that is not `naming_only` (a
+        naming-only row records naming a test, which is allowed, never a result);
+      - the vocabulary pattern of each claim id no proved row and no naming-only row covers:
+        held only at NOT FETCHED (dna-clear, by parents-dna-clear) or held by no row at all
+        (an unledgered claim, e.g. licensed-breeder, which no page may state either).
+
+    The ledger decides: put a proof on file and the same alt stops matching."""
+    claims = ledger.get("claims") or []
+    vocab = ledger.get("vocabulary") or {}
+    proven = {v for c in claims if c.get("proof") != "NOT FETCHED" or c.get("naming_only")
+              for v in c.get("covers") or []}
+    out = [(f"{c['id']} claim", re.compile(c["pattern"], re.I)) for c in claims
+           if c.get("proof") == "NOT FETCHED" and not c.get("naming_only") and c.get("pattern")]
+    for v, pat in sorted(vocab.items()):
+        if v in proven:
+            continue
+        held = [c["id"] for c in claims if v in (c.get("covers") or [])]
+        label = (f"{v} claim (held at NOT FETCHED by {', '.join(held)})" if held
+                 else f"{v} claim (held by no ledger row)")
+        out.append((label, re.compile(pat, re.I)))
+    return out
+
+
+def claim_hits(alts, ledger):
+    """{file: reason} for every image one of whose alts (`alts`: {file: [alt, ...]}) states a
+    claim the ledger does not prove (_unproven_patterns)."""
+    pats = _unproven_patterns(ledger)
+    out = {}
+    for f, texts in alts.items():
+        for alt in texts or []:
+            hit = next((cid for cid, rx in pats if alt and rx.search(alt)), None)
+            if hit:
+                out[f] = (f"its served alt {alt!r} states the {hit}, which "
+                          "data/quality/evidence-ledger.json does not prove")
+                break
+    return out
+
+
+def deny_list(root):
+    """{file: reason} from data/quality/image-deny.json: the images lessons.md marks false."""
+    f = pathlib.Path(root) / DENY_FILE
+    rows = json.loads(f.read_text(encoding="utf-8")).get("files", []) if f.exists() else []
+    return {r["file"]: f"lessons.md lesson {r['lesson']}: {r['reason']}" for r in rows}
+
+
+def untruthful(root=None, alts=None):
+    """{canonical /images/ file: reason} — the photos no board may offer (gap G19): an image
+    whose served alt states a claim the evidence ledger does not prove (claim_hits, by rule),
+    and an image lessons.md marks false (deny_list, by name). `alts` as usage_and_alts()
+    returns them, read from `root` when not given. Both the candidate pools (block 7) and
+    original_slots' inventory (block 7d) apply it."""
+    root = pathlib.Path(root) if root is not None else ROOT
+    if alts is None:
+        alts = usage_and_alts(root)[1]
+    lf = root / LEDGER_FILE
+    ledger = json.loads(lf.read_text(encoding="utf-8")) if lf.exists() else {}
+    out = claim_hits(alts, ledger)
+    for f, why in deny_list(root).items():
+        out[canonical(f, root) or f] = why
+    return out
+
+
 def candidates(board, root=None, assets_dir=None, per_pool=3):
     """The whole candidate report for one record. Pure: reads files, writes nothing."""
     root = pathlib.Path(root) if root is not None else ROOT
     slug = board["meta"]["slug"]
     used, alts = usage_and_alts(root)
-    keep = other_city_filter(board, root, alts)
+    city_ok = other_city_filter(board, root, alts)
+    false = untruthful(root, alts)                     # G19: never offer an untruthful photo
+
+    def keep(item):
+        return item["file"] not in false and city_ok(item)
     own = [o for o in own_images(board, root) if keep(o)]
     own_files = {o["file"] for o in own}
     served = [s for s in served_images(root) if s["file"] not in own_files and keep(s)]

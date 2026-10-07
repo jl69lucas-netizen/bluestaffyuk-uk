@@ -4,7 +4,7 @@
  "assets_dir": null,
  "pools": {
   "own": 24,
-  "served": 68,
+  "served": 61,
   "assets": 2,
   "assets_already_served": 36
  },
@@ -449,23 +449,6 @@
     },
     {
      "pool": "served",
-     "file": "/images/affordable-vs-premium-blue-staffy-breeders-comparison.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "A visual comparison illustrating the difference between affordable vs premium Blue Staffy breeders, highlighting health testing versus uncertain origins.",
-     "used_on": [
-      "/buy-staffy-puppies-for-sale-uk/"
-     ],
-     "pick": "file:/images/affordable-vs-premium-blue-staffy-breeders-comparison.webp",
-     "current": false,
-     "missing": false,
-     "score": 1,
-     "matched": [
-      "between"
-     ]
-    },
-    {
-     "pool": "served",
      "file": "/images/blue-staffy-bully-puppies-for-sale-uk-kc-certified.webp",
      "asset": null,
      "ingest_as": null,
@@ -479,6 +462,23 @@
      "score": 1,
      "matched": [
       "coat"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "deposit"
      ]
     }
    ],
@@ -1003,30 +1003,6 @@
     },
     {
      "pool": "served",
-     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
-     "used_on": [
-      "/buy-staffy-puppies-for-sale-uk/"
-     ],
-     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
-     "current": false,
-     "missing": false,
-     "score": 8,
-     "matched": [
-      "before",
-      "checked",
-      "guarantee",
-      "health",
-      "hga",
-      "test",
-      "testing",
-      "vet"
-     ]
-    },
-    {
-     "pool": "served",
      "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
      "asset": null,
      "ingest_as": null,
@@ -1066,6 +1042,27 @@
       "check",
       "guarantee",
       "vaccination"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/what-health-tests-blue-staffies-need.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A graphic illustrating various diagnostic tools used to perform what health tests do blue Staffies need, including DNA and physical exams.",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/what-health-tests-blue-staffies-need.webp",
+     "current": false,
+     "missing": false,
+     "score": 4,
+     "matched": [
+      "check",
+      "health",
+      "test",
+      "vet"
      ]
     }
    ],
@@ -1188,28 +1185,6 @@
     },
     {
      "pool": "served",
-     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
-     "used_on": [
-      "/buy-staffy-puppies-for-sale-uk/"
-     ],
-     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
-     "current": false,
-     "missing": false,
-     "score": 6,
-     "matched": [
-      "before",
-      "health",
-      "hga",
-      "matter",
-      "test",
-      "vet"
-     ]
-    },
-    {
-     "pool": "served",
      "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
      "asset": null,
      "ingest_as": null,
@@ -1249,6 +1224,27 @@
       "check",
       "health",
       "test",
+      "vet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/find-health-certified-staffy-breeders-uk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "UK buyer checking a list of health-certified Staffy breeders",
+     "used_on": [
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/",
+      "/uk-staffordshire-bull-terrier-guide/"
+     ],
+     "pick": "file:/images/find-health-certified-staffy-breeders-uk.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "health",
+      "table",
       "vet"
      ]
     }
@@ -1436,21 +1432,22 @@
     },
     {
      "pool": "served",
-     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
      "asset": null,
      "ingest_as": null,
-     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
+     "alt": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
      "used_on": [
-      "/buy-staffy-puppies-for-sale-uk/"
+      "/",
+      "/blue-staffy-health-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
      ],
-     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
+     "pick": "file:/images/blue-staffy-puppy-vet-check-uk.webp",
      "current": false,
      "missing": false,
-     "score": 3,
+     "score": 2,
      "matched": [
       "before",
-      "health",
-      "test"
+      "health"
      ]
     }
    ],
@@ -1622,27 +1619,6 @@
     },
     {
      "pool": "served",
-     "file": "/images/kc-registered-staffy-puppies.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "A cute blue Staffy puppy sitting next to its official Kennel Club registration papers, symbolizing KC registered Staffy puppies.",
-     "used_on": [
-      "/blue-staffy-health-uk/",
-      "/uk-staffordshire-bull-terrier-guide/"
-     ],
-     "pick": "file:/images/kc-registered-staffy-puppies.webp",
-     "current": false,
-     "missing": false,
-     "score": 4,
-     "matched": [
-      "club",
-      "kc",
-      "kennel",
-      "registered"
-     ]
-    },
-    {
-     "pool": "served",
      "file": "/images/staffy-health-tests-to-ask-a-breeder-infographic.webp",
      "asset": null,
      "ingest_as": null,
@@ -1659,6 +1635,25 @@
       "health",
       "kennel",
       "six"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Four cards: the price of a boy, the price of a girl, the deposit and its terms, and how many puppies are available now",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-litter-prices-and-deposit-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "deposit",
+      "litter",
+      "price"
      ]
     }
    ],
@@ -2099,27 +2094,6 @@
     },
     {
      "pool": "served",
-     "file": "/images/blue-staffy-puppy-delivery-uk.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "A blue Staffy puppy ready for UK home delivery",
-     "used_on": [
-      "/",
-      "/buy-blue-staffy-puppies-uk/",
-      "/uk-locations/blue-staffy-puppies-uk/"
-     ],
-     "pick": "file:/images/blue-staffy-puppy-delivery-uk.webp",
-     "current": false,
-     "missing": false,
-     "score": 3,
-     "matched": [
-      "delivery",
-      "ready",
-      "van"
-     ]
-    },
-    {
-     "pool": "served",
      "file": "/images/bluestaffyuk-nationwide-delivery.webp",
      "asset": null,
      "ingest_as": null,
@@ -2156,6 +2130,24 @@
      "score": 2,
      "matched": [
       "across",
+      "ready"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/ready-to-welcome-blue-staffy-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "An infographic showing a Blue Staffy puppy surrounded by icons of essential supplies like food bowls, a bed, toys, a leash, and a vet checklist.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/ready-to-welcome-blue-staffy-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "bed",
       "ready"
      ]
     }
@@ -2317,21 +2309,19 @@
     },
     {
      "pool": "served",
-     "file": "/images/blue-staffy-puppy-delivery-uk.webp",
+     "file": "/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
      "asset": null,
      "ingest_as": null,
-     "alt": "A blue Staffy puppy ready for UK home delivery",
+     "alt": "A checklist for your puppy's folder: microchip and vaccinations, the written contract, what to check before signing, and the guarantee",
      "used_on": [
-      "/",
-      "/buy-blue-staffy-puppies-uk/",
-      "/uk-locations/blue-staffy-puppies-uk/"
+      "/uk-locations/blue-staffy-puppies-london/"
      ],
-     "pick": "file:/images/blue-staffy-puppy-delivery-uk.webp",
+     "pick": "file:/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
      "current": false,
      "missing": false,
      "score": 1,
      "matched": [
-      "delivery"
+      "written"
      ]
     }
    ],
@@ -2434,43 +2424,6 @@
     },
     {
      "pool": "served",
-     "file": "/images/breeder-sitting-blue-staffy-puppy-home.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "Lisa Bright sitting with a blue Staffy puppy at home in Carlisle",
-     "used_on": [
-      "/blue-staffy-uk-breeders/"
-     ],
-     "pick": "file:/images/breeder-sitting-blue-staffy-puppy-home.webp",
-     "current": false,
-     "missing": false,
-     "score": 2,
-     "matched": [
-      "carlisle",
-      "lisa"
-     ]
-    },
-    {
-     "pool": "served",
-     "file": "/images/blue-staffy-puppy-delivery-uk.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "A blue Staffy puppy ready for UK home delivery",
-     "used_on": [
-      "/",
-      "/buy-blue-staffy-puppies-uk/",
-      "/uk-locations/blue-staffy-puppies-uk/"
-     ],
-     "pick": "file:/images/blue-staffy-puppy-delivery-uk.webp",
-     "current": false,
-     "missing": false,
-     "score": 1,
-     "matched": [
-      "delivery"
-     ]
-    },
-    {
-     "pool": "served",
      "file": "/images/bluestaffyuk-nationwide-delivery.webp",
      "asset": null,
      "ingest_as": null,
@@ -2487,6 +2440,40 @@
      "score": 1,
      "matched": [
       "delivery"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/bluestaffyuk-nationwide-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A clean infographic of a UK map with icons of families and puppies connected by lines, representing nationwide delivery.",
+     "used_on": [
+      "/uk-blue-staffy-puppy-buying-guide/"
+     ],
+     "pick": "file:/images/bluestaffyuk-nationwide-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "delivery"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "Beautiful and healthy Staffy puppy for sale in the UK, featuring an alert expression and glossy coat, available for immediate collection.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/"
+     ],
+     "pick": "file:/images/premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp",
+     "current": false,
+     "missing": false,
+     "score": 1,
+     "matched": [
+      "collection"
      ]
     }
    ],
@@ -2622,28 +2609,6 @@
     },
     {
      "pool": "served",
-     "file": "/images/kc-registered-staffy-puppies.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "A cute blue Staffy puppy sitting next to its official Kennel Club registration papers, symbolizing KC registered Staffy puppies.",
-     "used_on": [
-      "/blue-staffy-health-uk/",
-      "/uk-staffordshire-bull-terrier-guide/"
-     ],
-     "pick": "file:/images/kc-registered-staffy-puppies.webp",
-     "current": false,
-     "missing": false,
-     "score": 5,
-     "matched": [
-      "club",
-      "kc",
-      "kennel",
-      "paper",
-      "registered"
-     ]
-    },
-    {
-     "pool": "served",
      "file": "/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp",
      "asset": null,
      "ingest_as": null,
@@ -2682,6 +2647,25 @@
       "every",
       "health",
       "one"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/staffy-health-tests-to-ask-a-breeder-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A checklist of six health questions to put to a Staffy breeder, from the two DNA tests to checking a Kennel Club registration",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/staffy-health-tests-to-ask-a-breeder-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 3,
+     "matched": [
+      "club",
+      "health",
+      "kennel"
      ]
     }
    ],
@@ -2852,21 +2836,20 @@
     },
     {
      "pool": "served",
-     "file": "/images/kc-registered-staffy-puppies.webp",
+     "file": "/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp",
      "asset": null,
      "ingest_as": null,
-     "alt": "A cute blue Staffy puppy sitting next to its official Kennel Club registration papers, symbolizing KC registered Staffy puppies.",
+     "alt": "A breeder holding a KC-registered Staffy puppy, illustrating what Kennel Club registration records about a litter and what it does not.",
      "used_on": [
-      "/blue-staffy-health-uk/",
-      "/uk-staffordshire-bull-terrier-guide/"
+      "/buy-staffy-puppies-for-sale-uk/"
      ],
-     "pick": "file:/images/kc-registered-staffy-puppies.webp",
+     "pick": "file:/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp",
      "current": false,
      "missing": false,
      "score": 3,
      "matched": [
       "kc",
-      "paper",
+      "record",
       "registered"
      ]
     }
@@ -3006,26 +2989,6 @@
     },
     {
      "pool": "served",
-     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
-     "used_on": [
-      "/buy-staffy-puppies-for-sale-uk/"
-     ],
-     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
-     "current": false,
-     "missing": false,
-     "score": 4,
-     "matched": [
-      "before",
-      "guarantee",
-      "health",
-      "test"
-     ]
-    },
-    {
-     "pool": "served",
      "file": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
      "asset": null,
      "ingest_as": null,
@@ -3060,6 +3023,24 @@
      "matched": [
       "health",
       "wellbeing"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "A checklist for your puppy's folder: microchip and vaccinations, the written contract, what to check before signing, and the guarantee",
+     "used_on": [
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "before",
+      "guarantee"
      ]
     }
    ],
@@ -3189,25 +3170,6 @@
     },
     {
      "pool": "served",
-     "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
-     "asset": null,
-     "ingest_as": null,
-     "alt": "A happy, vet checked blue staffy puppy near me receiving a final examination from a veterinarian before going to its new home. | Why Does Puppy Health Testing Matter, and Why Do We DNA Test for L-2-HGA?",
-     "used_on": [
-      "/buy-staffy-puppies-for-sale-uk/"
-     ],
-     "pick": "file:/images/vet-checked-blue-staffy-puppy-near-me.webp",
-     "current": false,
-     "missing": false,
-     "score": 3,
-     "matched": [
-      "checked",
-      "health",
-      "vet"
-     ]
-    },
-    {
-     "pool": "served",
      "file": "/images/what-health-tests-blue-staffies-need.webp",
      "asset": null,
      "ingest_as": null,
@@ -3224,6 +3186,25 @@
       "check",
       "health",
       "vet"
+     ]
+    },
+    {
+     "pool": "served",
+     "file": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "asset": null,
+     "ingest_as": null,
+     "alt": "How can I avoid common Staffordshire Bull Terrier temperament problems? Blue Staffy puppy socialising with children.",
+     "used_on": [
+      "/buy-staffy-puppies-for-sale-uk/",
+      "/uk-locations/blue-staffy-puppies-london/"
+     ],
+     "pick": "file:/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+     "current": false,
+     "missing": false,
+     "score": 2,
+     "matched": [
+      "can",
+      "problem"
      ]
     }
    ],

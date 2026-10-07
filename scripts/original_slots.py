@@ -279,6 +279,7 @@ def _site_photos(root_s):
     """The board-independent half of the inventory, read once per root."""
     root = Path(root_s)
     _used, alts = IC.usage_and_alts(root)
+    false = IC.untruthful(root, alts)      # G19: an unproven claim in its alt, or lessons-false
     mf = root / "data" / "image-manifest.json"
     manifest = json.loads(mf.read_text(encoding="utf-8")) if mf.exists() else {}
     out = []
@@ -291,7 +292,7 @@ def _site_photos(root_s):
             continue
         path = f"/images/{stem}{ext}"
         site_alts = alts.get(path, [])
-        if _is_graphic(path, site_alts):
+        if _is_graphic(path, site_alts) or path in false:
             continue
         size = image_size(f) or (0, 0)
         out.append({"path": path, "alt": site_alts[0] if site_alts else "",
