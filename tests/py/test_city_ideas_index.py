@@ -157,7 +157,14 @@ def test_manchester_pool_lines_match_the_pool_and_london_meta():
         if cid in NO_POOL:
             continue
         rows = POOL.findall(body)
-        assert sorted(r[0] for r in rows) == sorted(pool[cid]), cid
+        # The index lists London's pool as it stood when Manchester was designed: the London
+        # entries still pooled, plus any London source a frozen Manchester pick copied (a picked
+        # from_pool copy takes its source out of the pool, Phase F gap G5).
+        at_design = [k for k in pool[cid] if k.startswith("london/")]
+        meta_m = json.loads((CANVAS_ROOT / "manchester" / cid / "meta.json").read_text(encoding="utf-8"))
+        at_design += [r["from_pool"] for r in meta_m["variants"].values()
+                      if r.get("from_pool") and r["from_pool"] not in at_design]
+        assert sorted(r[0] for r in rows) == sorted(at_design), cid
         meta = json.loads((CANVAS_ROOT / "london" / cid / "meta.json").read_text(encoding="utf-8"))
         for key, comp, v, name, layout, media, density, framing in rows:
             assert comp == cid, key

@@ -30,6 +30,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `H-BL2` | hero | Contents panel with the cover image above it | panel | top | plain | — |
 | `H-BL3` | hero | Photo mosaic above the copy on a steel band, topic chips | mosaic | top | band | blue-staffy-blog-guides |
 | `london/hero/b` | city | Litter filmstrip | filmstrip | bottom | inset | blue-staffy-puppies-london |
+| `manchester/hero/c` | city | Feature and three | feature-thumbs | left | bleed | blue-staffy-puppies-manchester-uk |
 
 ## counter-strip — Counter strip
 
@@ -57,6 +58,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `C-BL2` | stats | Ruled columns on a steel band | ruled | none | band | blue-staffy-blog-guides |
 | `C-BL3` | stats | Ring tiles on a steel band, beside the heading, labels beside | ring | none | band | — |
 | `london/counter-strip/c` | city | Price scale | scale | none | inset | blue-staffy-puppies-london |
+| `manchester/counter-strip/b` | city | Range sheet | range-sheet | inline | card | blue-staffy-puppies-manchester-uk |
 
 ## trust-strip — Trust strip
 
@@ -66,6 +68,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `S2` | trust | Trust strip in a card | cols-1 | none | card | buy-staffy-puppies-for-sale-uk, index |
 | `S3` | trust | Trust strip beside the heading | cols-2 | none | plain | — |
 | `london/trust-strip/c` | city | Photo ledger | photo-ledger | left | card | blue-staffy-puppies-london |
+| `manchester/trust-strip/b` | city | Puppy folder | folder-tabs | none | inset | blue-staffy-puppies-manchester-uk |
 
 ## contents-list — Contents list
 
@@ -73,6 +76,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 |---|---|---|---|---|---|---|
 | `PageNav` | kit | Shipped contents list: a wrapping row of pills, no heading (PageNav) | chip-row | none | plain | every rebuilt page (PageShell mounts it) |
 | `london/contents-list/c` | city | Photo index | photo-index | left | inset | blue-staffy-puppies-london |
+| `manchester/contents-list/b` | city | Icon rows | icon-rows | right | card | blue-staffy-puppies-manchester-uk |
 
 ## desktop-dial — Desktop dial
 
@@ -82,6 +86,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `S2` | dial | Compact numbered strip, no ring | ring-hidden+number+rail | none | plain | uk-blue-staffy-breeders-contact |
 | `S3` | dial | Progress ring above labels only | ring-shown+label+stack | none | plain | — |
 | `london/desktop-dial/c` | city | Photo marker | photo-track | top | inset | blue-staffy-puppies-london |
+| `manchester/desktop-dial/a` | city | Numeral rail | numeral-rail | none | rule | blue-staffy-puppies-manchester-uk |
 
 ## jump-links — Mobile sticky jump links and sheet
 
@@ -94,6 +99,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `S2` | sheet | Full-width Sections pill above the bar | pill | none | plain | uk-blue-staffy-breeders-contact |
 | `S3` | sheet | Floating round Sections button, bottom right | fab | none | plain | — |
 | `london/jump-links/a` | city | Stepper band | stepper | none | band | blue-staffy-puppies-london |
+| `manchester/jump-links/b` | city | Question bar | question-bar | inline | rule | blue-staffy-puppies-manchester-uk |
 
 ## key-takeaways — Key takeaways
 
@@ -103,6 +109,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `S2` | takeaways | Three-up grid on a band | grid-3 | none | band | blue-staffy-health-uk, buy-blue-staffy-puppies-uk, buy-staffy-puppies-for-sale-uk, uk-blue-staffy-puppy-buying-guide |
 | `S3` | takeaways | Rail of cards beside the heading | rail | none | plain | blue-staffy-blog-guides, index, thank-you-blue-staffy-puppies-journey |
 | `london/key-takeaways/a` | city | Answer ledger | ledger | left | rule | blue-staffy-puppies-london |
+| `manchester/key-takeaways/c` | city | Tick card | tick-grid | top | card | blue-staffy-puppies-manchester-uk |
 
 ## puppy-cards — Puppy cards
 
@@ -121,6 +128,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `S2` | table | Zebra rows inside a card | zebra | none | card | blue-staffy-health-uk, blue-staffy-pup-sale-uk, index, uk-blue-staffy-puppy-buying-guide, uk-staffordshire-bull-terrier-guide |
 | `S3` | table | Borderless rows with brass column rules | brass | none | plain | uk-blue-staffy-puppy-buying-guide |
 | `london/tables/a` | city | Litter roster | roster | inline | inset | blue-staffy-puppies-london |
+| `manchester/tables/a` | city | Photo shelf | shelf | inline | card | blue-staffy-puppies-manchester-uk |
 
 ## video — Video
 
@@ -139,6 +147,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `S2` | standard | Image full width above two-column prose | cols-2 | top | plain | blue-staffy-blog-guides, blue-staffy-pup-sale-uk, buy-blue-staffy-puppies-uk, buy-staffy-puppies-for-sale-uk, index |
 | `S3` | standard | Band with an InfoCard aside | cols-2+infocard | none | band | — |
 | `london/image-text/c` | city | Two chapters | chapters | inline | inset | blue-staffy-puppies-london |
+| `manchester/image-text/c` | city | Offset sheet | offset-sheet | left | bleed | blue-staffy-puppies-manchester-uk |
 
 ## reviews — Reviews
 
@@ -148,6 +157,7 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `S2` | reviews | Review grid on a band | grid | none | band | blue-staffy-blog-guides, blue-staffy-uk-breeders, index, uk-staffordshire-bull-terrier-guide |
 | `S3` | reviews | Review grid beside the heading | grid | none | plain | blue-staffy-health-uk, buy-blue-staffy-puppies-uk, buy-staffy-puppies-for-sale-uk, thank-you-blue-staffy-puppies-journey |
 | `london/reviews/a` | city | Owner's letter | letter | left | card | blue-staffy-puppies-london |
+| `manchester/reviews/c` | city | Three plates | overlap | none | bleed | blue-staffy-puppies-manchester-uk |
 
 ## faq-blocks — FAQ blocks
 
@@ -157,12 +167,14 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `S2` | faq | Heading and intro beside the accordion | cols-2 | none | plain | uk-blue-staffy-puppy-buying-guide |
 | `S3` | faq | Accordion in a card with a jump list | cols-2+jump | none | card | blue-staffy-pup-sale-uk, index, thank-you-blue-staffy-puppies-journey, uk-blue-staffy-breeders-contact, uk-staffordshire-bull-terrier-guide |
 | `london/faq-blocks/a` | city | Steel ledger | photo-rail | left | band | blue-staffy-puppies-london |
+| `manchester/faq-blocks/b` | city | Rows beside a photo | photo-rows | none | rule | blue-staffy-puppies-manchester-uk |
 
 ## newsletter — Newsletter
 
 | Style | Shape | What it renders | layout | media | framing | Worn by |
 |---|---|---|---|---|---|---|
 | `london/newsletter/a` | city | Litter notice | split | left | card | blue-staffy-puppies-london |
+| `manchester/newsletter/b` | city | Postmarked note | postmark | right | rule | blue-staffy-puppies-manchester-uk |
 
 ## contact-form — Contact form
 
@@ -172,3 +184,4 @@ Every city canvas variant differs from **every row of its component** on at leas
 | `S2` | form | Form beside the reasons to write | cols-2+infocard | none | plain | buy-staffy-puppies-for-sale-uk, uk-blue-staffy-breeders-contact |
 | `S3` | form | Form in a card, heading beside it | cols-2 | none | card | buy-blue-staffy-puppies-uk |
 | `london/contact-form/b` | city | Litter line-up | lineup | grid | band | blue-staffy-puppies-london |
+| `manchester/contact-form/b` | city | Photo at the edge | photo-bleed | left | bleed | blue-staffy-puppies-manchester-uk |

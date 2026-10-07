@@ -58,6 +58,20 @@
     "used_by": [
      "blue-staffy-puppies-london"
     ]
+   },
+   {
+    "axes": {
+     "density": "compact",
+     "framing": "bleed",
+     "layout": "photo-bleed",
+     "media": "left"
+    },
+    "id": "manchester/contact-form/b",
+    "name": "Photo at the edge",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
+    ]
    }
   ],
   "contents-list": [
@@ -87,6 +101,20 @@
     "shape": "city",
     "used_by": [
      "blue-staffy-puppies-london"
+    ]
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "card",
+     "layout": "icon-rows",
+     "media": "right"
+    },
+    "id": "manchester/contents-list/b",
+    "name": "Icon rows",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
     ]
    }
   ],
@@ -377,6 +405,20 @@
     "used_by": [
      "blue-staffy-puppies-london"
     ]
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "card",
+     "layout": "range-sheet",
+     "media": "inline"
+    },
+    "id": "manchester/counter-strip/b",
+    "name": "Range sheet",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
+    ]
    }
   ],
   "desktop-dial": [
@@ -430,6 +472,20 @@
     "shape": "city",
     "used_by": [
      "blue-staffy-puppies-london"
+    ]
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "rule",
+     "layout": "numeral-rail",
+     "media": "none"
+    },
+    "id": "manchester/desktop-dial/a",
+    "name": "Numeral rail",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
     ]
    }
   ],
@@ -497,6 +553,20 @@
     "shape": "city",
     "used_by": [
      "blue-staffy-puppies-london"
+    ]
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "rule",
+     "layout": "photo-rows",
+     "media": "none"
+    },
+    "id": "manchester/faq-blocks/b",
+    "name": "Rows beside a photo",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
     ]
    }
   ],
@@ -788,6 +858,20 @@
     "used_by": [
      "blue-staffy-puppies-london"
     ]
+   },
+   {
+    "axes": {
+     "density": "compact",
+     "framing": "bleed",
+     "layout": "feature-thumbs",
+     "media": "left"
+    },
+    "id": "manchester/hero/c",
+    "name": "Feature and three",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
+    ]
    }
   ],
   "image-text": [
@@ -851,6 +935,20 @@
     "shape": "city",
     "used_by": [
      "blue-staffy-puppies-london"
+    ]
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "bleed",
+     "layout": "offset-sheet",
+     "media": "left"
+    },
+    "id": "manchester/image-text/c",
+    "name": "Offset sheet",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
     ]
    }
   ],
@@ -944,6 +1042,20 @@
     "used_by": [
      "blue-staffy-puppies-london"
     ]
+   },
+   {
+    "axes": {
+     "density": "compact",
+     "framing": "rule",
+     "layout": "question-bar",
+     "media": "inline"
+    },
+    "id": "manchester/jump-links/b",
+    "name": "Question bar",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
+    ]
    }
   ],
   "key-takeaways": [
@@ -1007,6 +1119,20 @@
     "used_by": [
      "blue-staffy-puppies-london"
     ]
+   },
+   {
+    "axes": {
+     "density": "airy",
+     "framing": "card",
+     "layout": "tick-grid",
+     "media": "top"
+    },
+    "id": "manchester/key-takeaways/c",
+    "name": "Tick card",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
+    ]
    }
   ],
   "newsletter": [
@@ -1022,6 +1148,20 @@
     "shape": "city",
     "used_by": [
      "blue-staffy-puppies-london"
+    ]
+   },
+   {
+    "axes": {
+     "density": "airy",
+     "framing": "rule",
+     "layout": "postmark",
+     "media": "right"
+    },
+    "id": "manchester/newsletter/b",
+    "name": "Postmarked note",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
     ]
    }
   ],
@@ -1152,6 +1292,20 @@
     "used_by": [
      "blue-staffy-puppies-london"
     ]
+   },
+   {
+    "axes": {
+     "density": "regular",
+     "framing": "bleed",
+     "layout": "overlap",
+     "media": "none"
+    },
+    "id": "manchester/reviews/c",
+    "name": "Three plates",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
+    ]
    }
   ],
   "tables": [
@@ -1214,6 +1368,20 @@
     "used_by": [
      "blue-staffy-puppies-london"
     ]
+   },
+   {
+    "axes": {
+     "density": "airy",
+     "framing": "card",
+     "layout": "shelf",
+     "media": "inline"
+    },
+    "id": "manchester/tables/a",
+    "name": "Photo shelf",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
+    ]
    }
   ],
   "trust-strip": [
@@ -1270,6 +1438,20 @@
     "shape": "city",
     "used_by": [
      "blue-staffy-puppies-london"
+    ]
+   },
+   {
+    "axes": {
+     "density": "airy",
+     "framing": "inset",
+     "layout": "folder-tabs",
+     "media": "none"
+    },
+    "id": "manchester/trust-strip/b",
+    "name": "Puppy folder",
+    "shape": "city",
+    "used_by": [
+     "blue-staffy-puppies-manchester-uk"
     ]
    }
   ],

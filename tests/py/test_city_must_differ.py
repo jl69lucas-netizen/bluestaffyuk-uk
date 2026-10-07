@@ -87,12 +87,17 @@ def test_every_london_pick_is_a_city_row():
     inv = M.inventory()
     picks = PB.load_city_picks()[LONDON]["picks"]
     for comp, key in picks.items():
-        rows = [r for r in inv[comp] if r["shape"] == "city"]
+        rows = [r for r in inv[comp] if r["shape"] == "city" and r["id"].startswith("london/")]
         city, cid, v = key.split("/")
         meta = json.loads((ROOT / "design/city-canvas" / city / cid / "meta.json").read_text(encoding="utf-8"))
         assert rows == [{"shape": "city", "id": key, "name": meta["variants"][v]["name"],
                          "axes": PB.canvas_axes(key), "used_by": [LONDON]}], (comp, rows)
-    assert sum(1 for rows in inv.values() for r in rows if r["shape"] == "city") == len(picks) == 15
+    london_rows = sum(1 for rows in inv.values() for r in rows if r["shape"] == "city"
+                      and r["id"].startswith("london/"))
+    assert london_rows == len(picks) == 15
+    # every other city's picks are rows too, one per non-"none" pick (Manchester, Task 27)
+    every = sum(1 for doc in PB.load_city_picks().values() for k in doc["picks"].values() if k != "none")
+    assert sum(1 for rows in inv.values() for r in rows if r["shape"] == "city") == every
 
 
 def test_a_city_row_is_left_to_city_pick_too_close():

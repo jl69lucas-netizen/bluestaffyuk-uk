@@ -100,7 +100,7 @@ const alt = (p: (typeof pups)[number]) => (shownAbove.includes(p.name) ? puppyAl
     .lab { display: block; font-size: var(--text-xs); line-height: 1.4; font-weight: 600; color: var(--color-ink-2); }
     .fig {
       display: block; font-family: var(--font-display); font-weight: 600; font-size: var(--text-xl); line-height: 1.2;
-      color: var(--color-brand); white-space: nowrap; font-variant-numeric: lining-nums;
+      color: var(--color-brand); white-space: nowrap; font-feature-settings: "lnum";
     }
     .faces { display: flex; padding-left: var(--space-2); }
     .faces :global(img) {
