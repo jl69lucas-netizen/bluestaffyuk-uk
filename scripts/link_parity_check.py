@@ -173,18 +173,32 @@ def dropped_links(record):
     return out
 
 
-def record_links(record):
-    """Every href the record's sections list, internal and external, minus same-page
-    fragments: the page side drops `#section` jumps (nav-anchors-resolve owns them), so a
-    record that lists one must not be read as owing it to the page."""
-    out = set()
+#: The mark a board puts in a link's `why` when the breeder approved the link but held it until a
+#: condition lands (Manchester, STOP 3 q12: "HELD: built only once the deposit-order correction …").
+HELD = "HELD:"
+
+
+def _links(record):
     for s in record["sections"]:
         for side in ("internal", "external"):
             for l in s["links"][side]:
                 href = l["href"].strip()
                 if not href.startswith("#"):
-                    out.add(href)
-    return out
+                    yield href, l
+
+
+def held_links(record):
+    """Every href the record lists but HOLDS (`why` carries "HELD:"): on the board, so never an
+    extra; not owed to the page while held; reported if the page builds it early."""
+    return {h for h, l in _links(record) if HELD in (l.get("why") or "")}
+
+
+def record_links(record):
+    """Every href the record's sections list, internal and external, minus same-page
+    fragments: the page side drops `#section` jumps (nav-anchors-resolve owns them), so a
+    record that lists one must not be read as owing it to the page. A HELD link is not owed
+    either (held_links)."""
+    return {h for h, _ in _links(record)} - held_links(record)
 
 
 def puppy_hrefs(record):
@@ -258,6 +272,7 @@ def check(slug):
     on_page = page_links(html, cut_cards=hub)
     in_cards = card_links(html) if hub else []
     allowed = record_links(record)
+    held = held_links(record)
     data_ok = puppy_hrefs(record)
     banned = dropped_links(record)
 
@@ -275,6 +290,8 @@ def check(slug):
     for h in sorted(set(on_page)):
         if h in banned:
             problems.append(f"{slug}: {h} is listed in the record's `dropped.links` and is on the page")
+        elif h in held:
+            problems.append(f"{slug}: {h} is HELD on the record and already on the page")
         elif h not in allowed and h not in data_ok:
             problems.append(f"{slug}: {h} is on the page and in no section's `links`")
     for h in sorted(allowed - set(on_page)):

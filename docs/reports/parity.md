@@ -23,7 +23,6 @@ and expected must keep at least 60% of raw's words. Pages listed in
 | /uk-locations/blue-staffy-puppies-for-sale-leeds/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/blue-staffy-puppies-hull/ | 470→437→437 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
 | /uk-locations/blue-staffy-puppies-inverness/ | 469→436→436 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
-| /uk-locations/blue-staffy-puppies-manchester-uk/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/blue-staffy-puppies-middlesbrough/ | 449→416→416 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
 | /uk-locations/blue-staffy-puppies-oxford/ | 473→440→440 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
 | /uk-locations/blue-staffy-puppies-south-yorkshire/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
@@ -41,4 +40,4 @@ and expected must keep at least 60% of raw's words. Pages listed in
 | /uk-locations/staffy-puppies-wolverhampton/ | 3→3→3 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/uk-staffordshire-bull-terrier-breeder/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 
-examined 27 pages, 0 failing, skipped 13 rebuilt
+examined 26 pages, 0 failing, skipped 14 rebuilt

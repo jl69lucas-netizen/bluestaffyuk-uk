@@ -11,12 +11,23 @@ def _slug(url):
     return url.strip("/").split("/")[-1] or "index"
 
 
+def held_noindex(page):
+    """A rebuilt page whose own source still writes robots="noindex is not yet in the index
+    (the city pages keep it in the file until the user approves the page)."""
+    route = page["url"].strip("/")
+    for src in (ROOT / "src/pages" / f"{route}.astro", ROOT / "src/pages" / route / "index.astro"):
+        if src.is_file():
+            return 'robots="noindex' in src.read_text(encoding="utf-8")
+    return False
+
+
 def rebuilt_stub(page, rebuilt):
-    """A migrated stub (`stub-noindexed`) that a rebuilt page has since replaced. Its row still
-    describes the WordPress stub, so it is listed (the rebuilt page carries its own robots meta;
-    London became indexable on the breeder's approval, 2026-10-06) but without the stub's word
-    count, which counts the stub and not the page."""
-    return "stub-noindexed" in page.get("refresh_flags", []) and _slug(page["url"]) in rebuilt
+    """A migrated stub (`stub-noindexed`) that a rebuilt page has since replaced AND whose page
+    file no longer holds it out of the index. Its row still describes the WordPress stub, so it
+    is listed without the stub's word count. London became indexable on the breeder's approval
+    (2026-10-06); Manchester is rebuilt and stays out until the user approves it (row 21)."""
+    return ("stub-noindexed" in page.get("refresh_flags", []) and _slug(page["url"]) in rebuilt
+            and not held_noindex(page))
 
 
 def indexable(page, rebuilt=()):

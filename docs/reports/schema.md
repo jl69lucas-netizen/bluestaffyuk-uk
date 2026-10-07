@@ -16,5 +16,6 @@ None.
 ## Advisory
 
 - `/uk-locations/blue-staffy-puppies-london/` — 2 LocalBusiness nodes on one page
+- `/uk-locations/blue-staffy-puppies-manchester-uk/` — 2 LocalBusiness nodes on one page
 
-examined 64 pages; 0 blocking, 1 advisory
+examined 64 pages; 0 blocking, 2 advisory

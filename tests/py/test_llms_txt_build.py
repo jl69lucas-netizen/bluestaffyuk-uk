@@ -49,3 +49,10 @@ def test_zero_word_rows_are_listed_without_a_word_count(tmp_path):
     text = build_llms_txt.main(tmp_path / "llms.txt").read_text(encoding="utf-8")
     assert ": 0 words" not in text
     assert "](/blue-staffy-blog-guides/)\n" in text, "archive page should be listed, suffix-free"
+
+
+def test_a_rebuilt_page_still_noindex_stays_out(tmp_path):
+    # Manchester is rebuilt (data/facts/rebuilt.json) but its own file still writes
+    # robots="noindex, follow" until the user approves it (page-run row 21).
+    text = build_llms_txt.main(tmp_path / "llms.txt").read_text(encoding="utf-8")
+    assert "/uk-locations/blue-staffy-puppies-manchester-uk/" not in text

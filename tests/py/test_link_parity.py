@@ -215,3 +215,36 @@ def test_a_same_page_fragment_in_the_record_is_not_owed_to_the_page():
     record = {"sections": [{"links": {"internal": [{"href": "#enquiry"}, {"href": "/available-puppies/"}],
                                       "external": []}}]}
     assert L.record_links(record) == {"/available-puppies/"}
+
+
+# ── a HELD link (the Manchester page run, STOP 3 q12) ─────────────────────────────────────────
+# The breeder approved two links on Manchester's board and held them: their `why` says "HELD:
+# built only once …", and the page leaves them unbuilt until the condition lands. A held link
+# is on the board, so it is never an extra; it is not owed to the page while held, and building
+# it early is a defect of its own.
+
+HELD_RECORD = {"sections": [{"shape": "standard", "links": {"internal": [
+    {"href": "/held-page/", "why": "Row 8. HELD: built only once the correction has landed on both pages."},
+    {"href": "/live-page/", "why": "Row 7."}], "external": []}}]}
+
+
+def test_a_held_link_is_not_owed_to_the_page():
+    assert L.record_links(HELD_RECORD) == {"/live-page/"}
+    assert L.held_links(HELD_RECORD) == {"/held-page/"}
+
+
+def test_a_held_link_built_early_is_reported(tmp_path, monkeypatch):
+    page = tmp_path / "dist" / "p" / "index.html"
+    page.parent.mkdir(parents=True)
+    page.write_text('<main><section id="s"><p><a href="/live-page/">live</a> and '
+                    '<a href="/held-page/">held</a></p></section></main>', encoding="utf-8")
+    boards = tmp_path / "boards"
+    boards.mkdir()
+    (boards / "p.json").write_text(json.dumps({**HELD_RECORD, "dropped": {"links": []},
+                                               "meta": {"page_type": "location"}}), encoding="utf-8")
+    monkeypatch.setattr(L, "BOARDS", boards)
+    monkeypatch.setattr(L, "DIST", tmp_path / "dist")
+    monkeypatch.setattr(L, "built_page", lambda slug, root, dist: dist / slug / "index.html")
+    monkeypatch.setattr(L, "resolve_page", lambda slug, root: (slug, None))
+    problems, _ = L.check("p")
+    assert problems == ["p: /held-page/ is HELD on the record and already on the page"]
