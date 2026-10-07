@@ -44,9 +44,8 @@ Before the first generation in a session:
      use the cheap model so we don't waste all credits".
    - **An image with words in it** (an infographic, a labelled diagram, a sign or caption drawn
      into the picture): `gemini-nano-banana-2.1` (Nano Banana 2.1, confirmed on the models list
-     2026-10-06). Its price is `NOT FETCHED — the pricing page's tables did not name their
-     models when read on 2026-10-06`. Read it from the pricing page and state it in the ask
-     (step 3) before the first call. The text it draws is still copy: read every word against
+     2026-10-06). Its price is $0.0336 per 1K image on the Standard tier (Google's pricing page, read
+     2026-10-07; $0.0504 at 2K). State it in the ask (step 3) before the first call. The text it draws is still copy: read every word against
      rule 9 before the image goes on a board (`docs/reference/lessons.md`, entry 7).
    - Never use a pro image model (`gemini-3-pro-image*`, 4× the price) unless the breeder asks
      for it.
