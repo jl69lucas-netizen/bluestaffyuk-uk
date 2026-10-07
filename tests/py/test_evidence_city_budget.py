@@ -42,7 +42,10 @@ def test_the_live_budgets_name_no_former_city():
 
 def test_the_city_term_is_resolved_per_slug_and_capped_on_location_pages():
     assert LIVE["terms"]["city"] == "{city}"
-    assert LIVE["budgets"]["location"]["city"] == 8
+    # Since Known Issue 99 option (a) (user, 2026-10-07) the live city ceiling is a density
+    # (tests/py/test_evidence_location_density.py); the fixed-count path is pinned below on
+    # the budgets() fixture.
+    assert LIVE["location_density"]["per_1000_words"]["city"] > 0
 
 
 def test_every_page_type_budgets_the_brand():

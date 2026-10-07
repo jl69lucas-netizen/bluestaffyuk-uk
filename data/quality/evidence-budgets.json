@@ -1,5 +1,5 @@
 {
-  "_comment": "Per-page-type ceilings on head-term repetition inside <main>. PROPOSALS re-based from CAG on 2026-09-16 until a calibration pass measures them against the pages that AI answers actually cite (record the date in `calibrated`). A term absent from a page type's map has no ceiling. Terms are BSUK's five head terms, the page's own city and the brand; the caps are proportional to the CAG originals, not measured. `city` is the literal `{city}`: scripts/evidence_audit.py resolves it per slug to the row's `city` in data/locations.json (a bracketed note dropped, a national `UK` row skipped), so it budgets location pages only. `bluestaffyuk` is the brand written as one word; `Blue Staffy UK` with spaces is counted by the `blue staffy` and `uk` head terms.",
+  "_comment": "Per-page-type ceilings on head-term repetition inside <main>. PROPOSALS re-based from CAG on 2026-09-16 until a calibration pass measures them against the pages that AI answers actually cite (record the date in `calibrated`). The location page type's head terms are calibrated: they are densities in `location_density`, with its own date, and budgets.location keeps only the brand. A term absent from a page type's map has no ceiling. Terms are BSUK's five head terms, the page's own city and the brand; the caps are proportional to the CAG originals, not measured. `city` is the literal `{city}`: scripts/evidence_audit.py resolves it per slug to the row's `city` in data/locations.json (a bracketed note dropped, a national `UK` row skipped), so it budgets location pages only. `bluestaffyuk` is the brand written as one word; `Blue Staffy UK` with spaces is counted by the `blue staffy` and `uk` head terms.",
   "calibrated": null,
   "title_max_chars": 70,
   "superlatives": [
@@ -20,6 +20,19 @@
     "city": "{city}",
     "uk": "\\bUK\\b",
     "bluestaffyuk": "\\bbluestaffyuk\\b"
+  },
+  "location_density": {
+    "_comment": "Known Issue 99 option (a), the user's pick on the answer board 2026-10-07 (batch 2026-10-07-research-board-blue-staffy-puppies-manchester-uk q12 (a)): location head-term ceilings scale with the page's length, on board block 4c's own counter. scripts/evidence_audit.py counts each term below with term_density.count_terms (block 4c's <main> scope and tokeniser) and caps it at per_1000_words x the page's own word count from that counter / 1,000, rounded as block 4c rounds its leader band. Each figure is the top of block 4c's leader band: the highest density among the 17 pooled competitor bodies cached for Manchester and London (listing pages counted, the breeder's ruling q02, 2026-10-02), never measured on our own pages. `city` is the page's own city ({city}); `bluestaffyuk` has no competitor density and stays a fixed count in budgets.location. Recalibrate by re-measuring the pool and moving the date.",
+    "calibrated": "2026-10-07",
+    "source": "docs/reports/ki99-location-calibration-2026-10-07.md section 4 (a); the maxima are London #9 (blue staffy, uk), London #8 (staffy puppies), London #6 (staffordshire bull terrier), Manchester #7 (puppies for sale, city) in data/queries/cache/<slug>/<n>.html",
+    "per_1000_words": {
+      "blue staffy": 4.38,
+      "staffy puppies": 4.72,
+      "staffordshire bull terrier": 28.49,
+      "puppies for sale": 3.31,
+      "city": 17.5,
+      "uk": 7.3
+    }
   },
   "budgets": {
     "home": {
@@ -55,12 +68,6 @@
       "bluestaffyuk": 8
     },
     "location": {
-      "blue staffy": 10,
-      "staffy puppies": 8,
-      "staffordshire bull terrier": 5,
-      "puppies for sale": 6,
-      "city": 8,
-      "uk": 8,
       "bluestaffyuk": 10
     },
     "interior": {
@@ -104,7 +111,7 @@
     "uk-staffordshire-bull-terrier-guide": 112
   },
   "budgets_by_slug": {
-    "_comment": "Per-slug override of budgets[page_type]. A number replaces the page-type ceiling; null removes the ceiling for that slug. Every override must carry a `_why` naming the approved outline or breeder ruling that earns it. The twelve project 4 rebuilt pages carry one each (Known Issue 34): budget = the CARRIED count (the working-rule-15 verbatim set as it stands on the page, plus the shell's repetition of those approved headings in the section dial, strip, sheet and table of contents) + the page type's own-prose ceiling, floored at the count AS BUILT so the entry is a ratchet — any later edit that pushes a term higher re-fails the audit. Project 5's location and puppy pages carry no entry and are judged on the page-type defaults, with one exception: London (`uk-locations/blue-staffy-puppies-london`), which the breeder ruled is held at its counts as built until the location ceilings are calibrated (answer board 2026-10-05 london-gate-findings q03 (a); Known Issue 99).",
+    "_comment": "Per-slug override of budgets[page_type]. A number replaces the page-type ceiling; null removes the ceiling for that slug. Every override must carry a `_why` naming the approved outline or breeder ruling that earns it. The twelve project 4 rebuilt pages carry one each (Known Issue 34): budget = the CARRIED count (the working-rule-15 verbatim set as it stands on the page, plus the shell's repetition of those approved headings in the section dial, strip, sheet and table of contents) + the page type's own-prose ceiling, floored at the count AS BUILT so the entry is a ratchet — any later edit that pushes a term higher re-fails the audit. Project 5's location and puppy pages carry no entry: a location page is judged on the density ceilings in `location_density` (Known Issue 99 option (a), user 2026-10-07), and London's entry (answer board 2026-10-05 london-gate-findings q03 (a)) was deleted because London as built fits under every one of them.",
     "index": {
       "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 49 as built = 25 carried + 15 shell + 9 own; budget 60 = 25 + 15 + the home ceiling 20; `staffy puppies` 23 as built = 12 carried + 6 shell + 5 own; budget 30 = 12 + 6 + the home ceiling 12; `staffordshire bull terrier` 19 as built = 10 carried + 3 shell + 6 own; budget 21 = 10 + 3 + the home ceiling 8; `uk` 42 as built = 21 carried + 6 shell + 15 own; budget 42 = as built, because own 15 is over the home ceiling 10. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built. `bluestaffyuk` (added 2026-09-26, CAG parity audit D2) 19 as built, over the home ceiling 10; budget 19 = as built, so the new term ratchets this page rather than failing it retroactively. `uk` +6 on 2026-09-26 (CAG parity audit D4): the six puppy cards each carry the canonical delivery line from rules/puppies.md `delivery-band-on-every-card`, which says UK once — mandated text, so carried; budget 42 + 6 = 48.",
       "blue staffy": 60,
@@ -173,14 +180,6 @@
       "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 11 as built = 0 carried + 3 shell + 8 own; budget 11 = 0 + 3 + the blog ceiling 8; `uk` 11 as built = 4 carried + 0 shell + 7 own; budget 11 = as built, because own 7 is over the blog ceiling 5. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built.",
       "blue staffy": 11,
       "uk": 11
-    },
-    "uk-locations/blue-staffy-puppies-london": {
-      "_why": "MEASURED on dist/ 2026-10-05 after the q07 binomial sentence (commit 07229fcf), the breeder's ruling (answer board 2026-10-05 london-gate-findings q03 (a): 'Keep London as approved: record its counts as its own limit, then tune the location limits before the next city'; docs/reference/answer-board/answers/2026-10-05-london-gate-findings-2026-10-05.md). The density is the approved page board's (data/boards/blue-staffy-puppies-london.json, STOP 3, approved 2026-10-03 and re-approved since): its density table (block 4c) aimed higher than these uncalibrated location ceilings (Staffordshire Bull Terrier 16-19, London 8-13), and the approved headings alone are over three of them. Breakdown in <main> (docs/reports/london-gate-findings-2026-10-05.md section 3): `blue staffy` 32 = 23 approved headings + 2 reviews + 7 prose and data rows; `staffy puppies` 22 = 15 headings + 1 review + 6 prose; `staffordshire bull terrier` 10 = 4 headings + 1 review + 5 prose, the q07 taxonomy sentence among them; `city` (London) 60 = 20 headings + 6 reviews + 6 shell and puppy-card lines + 7 publisher names in the places data + 21 prose; `uk` 20 = 1 heading + 5 reviews + 6 mandated puppy-card delivery lines (rules/puppies.md delivery-band-on-every-card) + 8 prose. Every budget is the count AS BUILT, so the entry is a ratchet: any later edit that pushes a term higher re-fails the audit. `puppies for sale` (1) and `bluestaffyuk` (5) are under the location ceilings and keep them. Known Issue 99 calibrates the location ceilings before the next city; this entry is revisited then. RE-MEASURED 2026-10-06 after the London map (answer board 2026-10-06-london-map q01 (a), q02 (a); board subcomponent london-map): `city` 60 -> 62, the map's two London mentions, its facade label (the place name on the steel panel) and its without-JavaScript fallback link ('Open the map of London on Google Maps'). The map is part of the approved board, so its count is the page's as approved; every other term is unchanged.",
-      "blue staffy": 32,
-      "staffy puppies": 22,
-      "staffordshire bull terrier": 10,
-      "city": 62,
-      "uk": 20
     }
   }
 }

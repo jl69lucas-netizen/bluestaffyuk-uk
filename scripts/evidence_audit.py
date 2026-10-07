@@ -7,7 +7,9 @@ Runs over dist/ (the rendered page, never the source).
 
 Checks (ids are the rule-index ids):
   term-budget-per-page        trust-concept mentions in <main> vs data/quality/evidence-budgets.json
-                               (per-slug override: budgets_by_slug)
+                               (per-slug override: budgets_by_slug; a location page's head terms
+                               are densities, location_density, counted with board block 4c's
+                               counter and scaled by the page's own word count)
   title-length-max            <title> length vs title_max_chars (per-slug override: title_max_chars_by_slug)
   review-attribution-unique   the same review text credited to two different names on one page
   claim-bound-to-proof        a ledger claim made 2+ times must link its proof object (ERROR);
@@ -112,15 +114,40 @@ def city_pattern(city):
     return r"\b" + r"[\s-]+".join(re.escape(w) for w in words) + r"\b"
 
 
+def _location_density(html, budgets, slug):
+    """{term: (count, ceiling)} for the location head terms that have a density
+    (`location_density.per_1000_words`, Known Issue 99 option (a), user 2026-10-07).
+
+    Counted with board block 4c's own counter (term_density.count_terms: its <main> scope,
+    its tokeniser), and each ceiling is that density x the page's own word count from the
+    same counter, rounded as block 4c rounds its leader band. `{city}` is the page's own
+    city; a page with no city (a national row) has no city ceiling."""
+    per = (budgets.get("location_density") or {}).get("per_1000_words") or {}
+    names = {t: (city_for(slug) if budgets["terms"].get(t) == CITY_TERM else t) for t in per}
+    names = {t: n for t, n in names.items() if n}
+    if not names:
+        return {}
+    import term_density   # lazy: only location pages need block 4c's counter
+    r = term_density.count_terms(html, list(names.values()))
+    return {t: (r["counts"][n], int(round(per[t] * r["words"] / 1000))) for t, n in names.items()}
+
+
 def term_budget(html, page_type, budgets, slug=""):
     """[(term, count, ceiling)] for every term over its ceiling. Owner pages are exempt for their term.
-    Per-slug override: budgets_by_slug — a number replaces the page-type ceiling, null removes it."""
+    Per-slug override: budgets_by_slug — a number replaces the page-type ceiling, null removes it.
+    A location page's head terms with a `location_density` are counted and capped by
+    _location_density(); every other term keeps its fixed count and its regex."""
     text = text_of(main_html(html))
-    ceilings = budgets["budgets"].get(page_type, {})
+    density = _location_density(html, budgets, slug) if page_type == "location" else {}
+    ceilings = dict(budgets["budgets"].get(page_type, {}))
+    ceilings.update({t: c for t, (_, c) in density.items()})
+    # a density term a page cannot resolve (no city on a national row) is still a capped term
+    per = (budgets.get("location_density") or {}).get("per_1000_words") or {}
+    capped = set(ceilings) | (set(per) if page_type == "location" else set())
     # Per-slug override (breeder, 2026-09-10): a number replaces the page-type ceiling, null removes it.
     overrides = {t: c for t, c in budgets.get("budgets_by_slug", {}).get(slug, {}).items() if not t.startswith("_")}
     for t in overrides:
-        if t not in ceilings:
+        if t not in capped:
             print(f"WARN budgets_by_slug[{slug!r}] names {t!r}, which budgets[{page_type!r}] never caps — ignored", file=sys.stderr)
     ceilings = {t: overrides.get(t, c) for t, c in ceilings.items()}
     ceilings = {t: c for t, c in ceilings.items() if c is not None}
@@ -130,13 +157,16 @@ def term_budget(html, page_type, budgets, slug=""):
             continue
         if term == "legit" and slug in budgets.get("legit_owner", []):
             continue
-        pat = budgets["terms"].get(term, re.escape(term))
-        if pat == CITY_TERM:
-            city = city_for(slug)
-            if city is None:
-                continue
-            pat = city_pattern(city)
-        n = len(re.findall(pat, text, flags=re.I))
+        if term in density:
+            n = density[term][0]
+        else:
+            pat = budgets["terms"].get(term, re.escape(term))
+            if pat == CITY_TERM:
+                city = city_for(slug)
+                if city is None:
+                    continue
+                pat = city_pattern(city)
+            n = len(re.findall(pat, text, flags=re.I))
         if n > ceiling:
             out.append((term, n, ceiling))
     return out
