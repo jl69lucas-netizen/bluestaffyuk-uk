@@ -1,0 +1,78 @@
+<title>Manchester Asset Gate</title>
+<style>
+:root{--bg:#f6f3ec;--fg:#1d2733;--muted:#5b6672;--card:#fffdf8;--line:#d9d2c3;--steel:#3c5a78;--warn:#9a3b1e;--warn-bg:#fbeae3;--ok:#2f6b3f;--ok-bg:#e6f2e8;--rec:#7a5b12;--rec-bg:#f7edd2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161b21;--fg:#e9e4d8;--muted:#a3abb4;--card:#1f262e;--line:#36404b;--steel:#8fb0cf;--warn:#f0a487;--warn-bg:#3a2219;--ok:#8fd19e;--ok-bg:#1d3324;--rec:#e8c879;--rec-bg:#3a3018;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161b21;--fg:#e9e4d8;--muted:#a3abb4;--card:#1f262e;--line:#36404b;--steel:#8fb0cf;--warn:#f0a487;--warn-bg:#3a2219;--ok:#8fd19e;--ok-bg:#1d3324;--rec:#e8c879;--rec-bg:#3a3018;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 "Source Sans 3",system-ui,sans-serif;padding-inline:16px;padding-block:24px 48px}
+main{max-width:1080px;margin:0 auto;display:grid;gap:28px}
+h1{font:600 1.7rem/1.2 Georgia,serif;margin:0;text-wrap:balance}
+h2{font:600 1.2rem/1.3 Georgia,serif;margin:0 0 4px;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.lede{color:var(--muted)}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:12px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.pair{grid-template-columns:1fr}}
+figure{margin:0;display:grid;gap:6px;min-width:0}
+figure img{width:100%;aspect-ratio:4/3;object-fit:contain;background:var(--bg);border-radius:6px;border:1px solid var(--line)}
+figure.tall img{aspect-ratio:auto;max-height:520px}
+figcaption{font-size:.92rem;color:var(--muted)}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;margin-bottom:2px}
+.tag.pick{background:var(--warn-bg);color:var(--warn)}
+.tag.rec{background:var(--rec-bg);color:var(--rec)}
+.tag.ok{background:var(--ok-bg);color:var(--ok)}
+.why{border-left:3px solid var(--steel);padding-left:10px;font-size:.95rem}
+code{font-size:.85em}
+</style>
+<main>
+<header style="display:grid;gap:8px">
+<h1>Manchester Asset Gate · STOP 4</h1>
+<p class="lede">The images that need your eye before the page is built. For each slot, your STOP 3 pick sits beside the photo the board first proposed. The questions are on the answer board; this page is only for looking.</p>
+</header>
+
+<section>
+<h2>1. The papers checklist (comic style, your STOP 3 pick)</h2>
+<p>When you picked comic, the preview frame was empty because of a tooling bug (now fixed). Here is the real draft. Every line comes from our own list of what goes home with each puppy, and it promises the KC application form only.</p>
+<div class="pair">
+<figure><span class="tag rec">Recommended · desktop and tablet</span><img src="drafts/papers-checklist.webp" alt="Draft papers checklist infographic, wide layout"><figcaption>Comic draft, wide layout.</figcaption></figure>
+<figure class="tall"><span class="tag rec">Recommended · phone</span><img src="drafts/papers-checklist-phone.webp" alt="Draft papers checklist infographic, phone layout"><figcaption>Comic draft, phone layout (the board can't show this one, so it's here).</figcaption></figure>
+</div>
+<figure><span class="tag pick">The board currently names this</span><img src="images/blue-staffy-puppy-paperwork-folder-checklist-infographic.webp" alt="London's served paperwork infographic"><figcaption>The paperwork infographic already served on the London page. It carries London's headings, so it isn't Manchester's own.</figcaption></figure>
+</section>
+
+<section>
+<h2>2. Travel heading</h2>
+<div class="pair">
+<figure><span class="tag pick">Your pick</span><img src="images/bluestaffyuk-nationwide-delivery.webp" alt="AI-made van with puppies"><figcaption>AI-made, with a logo and part of a word on the van. It implies we run a branded delivery van, and the slot's own brief said no van lettering.</figcaption></figure>
+<figure><span class="tag rec">Proposed · Recommended</span><img src="images/blue-staffy-puppy-preparation.webp" alt="Puppy preparation photo"><figcaption>The board's original proposal.</figcaption></figure>
+</div>
+</section>
+
+<section>
+<h2>3. Guarantee heading</h2>
+<div class="pair">
+<figure><span class="tag pick">Your pick</span><img src="images/blue-staffy-health-prioritising-wellbeing.webp" alt="Dog on vet table with misspelt banner"><figcaption>The printed banner misspells it "WELL-BEIING".</figcaption></figure>
+<figure><span class="tag rec">Proposed · Recommended</span><img src="images/blue-staffy-family-dog-uk.webp" alt="Blue Staffy family dog photo"><figcaption>The board's original proposal.</figcaption></figure>
+</div>
+</section>
+
+<section>
+<h2>4. Four weaker fits</h2>
+<p class="why">None of these is false. Three fit their heading less well than the proposal did; on the itching heading your pick is the better of the two, because the proposal is AI-made. Pick per slot on the answer board.</p>
+<div class="pair">
+<figure><span class="tag pick">Health tests · your pick</span><img src="images/blue-staffy-puppy-vet-check-uk.webp" alt="Fawn and white puppy at a vet"><figcaption>A fawn and white puppy that isn't one of ours, on a section about our parents' tests.</figcaption></figure>
+<figure><span class="tag rec">Proposed · Recommended</span><img src="images/jones-magnificent-blue-staffy-sire.webp" alt="Jones, our sire"><figcaption>Jones, the father of this litter.</figcaption></figure>
+</div>
+<div class="pair">
+<figure><span class="tag pick">What the guarantee covers · your pick</span><img src="images/buy-staffy-health-guarantee-uk.webp" alt="Five puppies in a pink bed"><figcaption>Five puppies, none of them blue.</figcaption></figure>
+<figure><span class="tag rec">Proposed · Recommended</span><img src="images/puppies/cheryl-cheryl1.webp" alt="Cheryl, one of our puppies"><figcaption>Cheryl, from this litter.</figcaption></figure>
+</div>
+<div class="pair">
+<figure><span class="tag pick">How many years · your pick</span><img src="images/premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp" alt="Blue Staffy puppy looking over its shoulder"><figcaption>A puppy, on the lifespan heading that planned an older dog.</figcaption></figure>
+<figure><span class="tag rec">Proposed · Recommended</span><img src="images/blue-staffy-family-dog-uk.webp" alt="Blue Staffy family dog"><figcaption>The proposal. If the guarantee heading also goes back to this photo, this repeat gets its own new alt.</figcaption></figure>
+</div>
+<div class="pair">
+<figure><span class="tag ok">Itching · your pick · Recommended</span><img src="images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp" alt="Dam with newborn pups"><figcaption>A whelping dam with newborns, on a section about itchy skin.</figcaption></figure>
+<figure><span class="tag pick">Proposed</span><img src="images/blue-staffy-vet-check.webp" alt="Blue Staffy vet check"><figcaption>The proposal. It is AI-made and carries an "ANIMAL WELL-BEING" poster, and the DNA heading uses it too. If you take it back, its second use gets a new alt.</figcaption></figure>
+</div>
+</section>
+</main>
