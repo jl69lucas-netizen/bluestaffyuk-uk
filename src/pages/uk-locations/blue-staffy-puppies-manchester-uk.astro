@@ -1,42 +1,37 @@
 ---
-// src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro — the Manchester page's SCAFFOLD
-// (the Manchester page run, Phase F Task 32; London's pattern, London Plan 2 Task 8).
+// src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro — the Manchester city page, written
+// from its approved board (the Manchester page run, page-run row 12).
 //
-// WHAT THIS IS. Manchester's thirteen picks (data/design/city-picks/blue-staffy-puppies-manchester-uk.json,
-// frozen 355d5e43; video and puppy cards are "none"), each built as a component of its own
-// (rules/design.md own-components-per-page), mounted on the city layout (src/layouts/CityShell.astro:
-// PageShell with Manchester's own nav set) in the order of the APPROVED OUTLINE
-// (data/outlines/blue-staffy-puppies-manchester-uk.json, STOP 2), so the picks can be judged together,
-// at every width, before the page board (STOP 3).
+// WHAT THIS IS. A question-led breeder page for Greater Manchester buyers that asks whether colour
+// should decide (the research board's M1) and answers from the data: health, the parents and the
+// deposit first, one price per sex in this litter, the coat last. Its sources, and nothing else:
+//   - the approved outline, data/outlines/blue-staffy-puppies-manchester-uk.json (STOP 2): the H1;
+//   - the approved page board, data/boards/blue-staffy-puppies-manchester-uk.json (STOP 3): the 22
+//     sections in order, each one `<section id="<board id>" data-section-label="<board heading>">`
+//     in <main>, every H2 to H6 its section's `heading` and `tree`, every link its `links`, the two
+//     HELD links (8 and 9, STOP 3 q12) left unbuilt while their sentences stand;
+//   - the Asset Gate (STOP 4): every image is its slot's `assets[]` row, read from the record by
+//     slot (file, alt, size), and the four frame repeats take the alts the breeder approved there
+//     (data/boards/frame-alts/blue-staffy-puppies-manchester-uk.json, q08 (a)).
+// The prose is written for this page from the board's intents; no sibling page was opened for it
+// (working rule 8). First-person voice as Lisa Bright; breed facts in a neutral register (rule 1).
 //
-// WHAT THIS IS NOT. Manchester's copy. Every heading, H1 to H6, is the outline's, read from the
-// outline file word for word and in order. Every paragraph the page itself would write (the hero's
-// opener, each body section's answer, each FAQ block's line, the form's line) is ONE MARKED SCAFFOLD
-// LINE ("Scaffold line, not copy."), until page-run row 12 writes the page from the approved board.
-// The deposit section carries its designed sheet (src/lib/cityKit.ts `depositTerms()`, the refund
-// clause word for word); the other eight body sections show the outline's own plan for the section
-// (its row, framework and planned words) in the sheet, marked as such. Each body section's deeper
-// headings (H3 to H6) are listed below it in a marked scaffold outline, the litter table under its H4.
-//
-// EVERY FIGURE IS DATA: prices, deposit, band, town, the litter's names and sexes, the guarantee and
-// the reviews are read by the components (src/lib/cityKit.ts, data/reviews.json), never typed. The
-// three FAQ blocks are src/lib/manchesterFaq.ts: the outline's twenty questions (its page wordings)
-// with answers from the FAQ bank and the data, and the FAQPage node carries exactly those twenty.
-// No video, no puppy cards, no licence claim, no phone.
+// EVERY FACT IS DATA (rule 9): prices, the deposit and its refund clause, the delivery band and how
+// it is priced, the town, the guarantee and its cover, the test names, the trust signs, the litter's
+// names, sexes, coats and personalities are read through src/lib/cityKit.ts, src/lib/site.ts and the
+// data files, never typed. The tests are named and no result is stated (the certificates are shared
+// on request); the breed is "not a banned breed / not on the government's list" only; no licence
+// claim, no rescue wording, no video call, no phone, no mileage, journey time or date.
 //
 // KEPT OUT OF THE INDEX: `noindex, follow`, written HERE rather than read from data/locations.json,
-// so a data edit cannot publish a scaffold; scripts/generate_sitemaps.py leaves a noindex page out of
-// every shard. src/pages/uk-locations/[slug].astro no longer builds this route (it skips a city with
-// its own file). THE MIGRATED BODY STAYS, word for word, in an `article.prose-migrated` at the foot:
-// Manchester is not in data/facts/rebuilt.json until its page run ends, so `check:parity` still
-// measures its migrated body, and it finds it here.
-//
-// ONE SERVED PHOTOGRAPH, ONE ALT PER USE (working rule 11; answer board q02, 2026-09-29): a served
-// photo's first use keeps its served alt; each repeat says a new true thing, checked against the
-// picture. The repeats the preview already used keep the preview's alts.
+// until the user approves the page (page-run row 21, Task 54). scripts/generate_sitemaps.py leaves a
+// noindex page out of every shard.
 import CityShell from '../../layouts/CityShell.astro';
+import BodyImage from '../../components/BodyImage.astro';
 import locations from '../../../data/locations.json';
 import outline from '../../../data/outlines/blue-staffy-puppies-manchester-uk.json';
+import board from '../../../data/boards/blue-staffy-puppies-manchester-uk.json';
+import frameAlts from '../../../data/boards/frame-alts/blue-staffy-puppies-manchester-uk.json';
 import CityFeatureAndThree from '../../components/kit/CityFeatureAndThree.astro';
 import CityRangeSheet from '../../components/kit/CityRangeSheet.astro';
 import CityPuppyFolder from '../../components/kit/CityPuppyFolder.astro';
@@ -52,219 +47,472 @@ import CityPostmarkedNote from '../../components/kit/CityPostmarkedNote.astro';
 import CityPhotoAtTheEdge from '../../components/kit/CityPhotoAtTheEdge.astro';
 import { MANCHESTER_FAQ } from '../../lib/manchesterFaq';
 import { MANCHESTER, MANCHESTER_H2, MANCHESTER_NAV } from '../../lib/manchesterNav';
-import { availablePuppies, depositTerms, faqPageNode, pickAvailable } from '../../lib/cityKit';
+import {
+  availablePuppies, depositTerms, faqPageNode, pickAvailable, priceFor, refundClause, sexWord, sign,
+  BOY_PRICE, GIRL_PRICE, DEPOSIT, DELIVERY_BAND, TOWN, PARENT_DNA_TESTS, PUPPY_SIGNS, transportName, pricedBy,
+} from '../../lib/cityKit';
+import { guaranteeRow, guaranteeFact } from '../../lib/cityKit';
+import { puppyAlt } from '../../lib/imageFocus';
+import { bakedAssets, bakedSrcset, inPublic, type FilledAsset } from '../../lib/assets';
 import { numberWord } from '../../lib/recordText';
+import { SITE, SITE_URL, abs, guaranteeLabel } from '../../lib/site';
 import type { LocationRow } from '../../lib/site';
 import type { SectionRef } from '../../lib/sections';
 
 const SLUG = 'blue-staffy-puppies-manchester-uk';
 const loc = (locations as LocationRow[]).find((l) => l.slug === SLUG);
 if (!loc) throw new Error(`data/locations.json has no row for ${SLUG}`);
-if (outline.slug !== SLUG) throw new Error(`the outline is ${outline.slug}'s, not ${SLUG}'s`);
+if (outline.slug !== SLUG || board.meta.slug !== SLUG) throw new Error(`the outline or the board is not ${SLUG}'s`);
 
-// ── the outline, as the page reads it ───────────────────────────────────────────────────────────
-type Heading = { level: number; text: string; children?: Heading[] };
-type Row = { n: string; section: string; framework: string; words: number; headings: Heading[]; faq?: boolean;
-  table?: { under: string; caption: string } };
-const ROWS = outline.sections as unknown as Row[];
-const row = (n: string): Row => {
-  const r = ROWS.find((x) => x.n === n);
-  if (!r) throw new Error(`the outline has no row ${n}`);
-  return r;
+// ── the board, as the page reads it ─────────────────────────────────────────────────────────────
+type Node = { level: number; heading: string; children?: Node[] };
+type Sec = { id: string; heading: string; tree?: Node[] };
+const SECTIONS = board.sections as unknown as Sec[];
+const sec = (id: string): Sec => {
+  const s = SECTIONS.find((x) => x.id === id);
+  if (!s) throw new Error(`the board has no section ${id}`);
+  return s;
 };
-const h2Of = (r: Row): Heading => {
-  const h = r.headings.find((x) => x.level === 2);
-  if (!h) throw new Error(`outline row ${r.n} (${r.section}) has no H2`);
-  return h;
+/** A section's tree, flattened in document order, so the page can write each heading word for word
+ *  and refuse a heading the board does not carry. */
+const flat = (nodes: Node[] = []): Node[] => nodes.flatMap((n) => [n, ...flat(n.children)]);
+/** The board heading at `path` (indices into the tree), checked to sit at `level`. */
+const head = (id: string, level: number, ...path: number[]): string => {
+  let nodes = sec(id).tree ?? [];
+  let n: Node | undefined;
+  for (const i of path) { n = nodes[i]; nodes = n?.children ?? []; }
+  if (!n || n.level !== level) throw new Error(`board section ${id}: no H${level} at [${path.join(', ')}]`);
+  return n.heading;
 };
-/** A heading tree's nodes below the H2, in document order. */
-const below = (h: Heading): Heading[] => (h.children ?? []).flatMap((c) => [c, ...below(c)]);
-/** The marked scaffold line that stands in for a paragraph until row 12 writes it. */
-const scaffold = (r: Row) => `Scaffold line, not copy. Outline §${r.n}, ${r.section}: written here at page-run row 12, from the approved page board.`;
+const label = (id: string) => sec(id).heading;
 
-// ── the nav set: the thirteen H2 sections, in page order ───────────────────────────────────────
-// Each section's anchor, keyed by its outline row; MANCHESTER_NAV (src/lib/manchesterNav.ts) names
-// each in the same order, so the dial, the bar and the contents agree with the preview.
-const NAV_ROWS: [string, string][] = [
-  ['7', 'asked-first'], ['8', 'deposit'], ['9', 'health-tests'], ['10', 'litter'], ['12', 'health-questions'],
-  ['13', 'travel'], ['14', 'papers'], ['15', 'guarantee'], ['17', 'busy-household'], ['18', 'favourite-person'],
-  ['19', 'coat'], ['21', 'everyday'], ['22', 'enquire'],
-];
-const ID = Object.fromEntries(NAV_ROWS);
-const sections: SectionRef[] = NAV_ROWS.map(([n, id], i) => {
-  const question = h2Of(row(n)).text;
+/** A slot's baked `assets[]` row, with the candidate list of the width siblings baked beside it. */
+const asset = bakedAssets(board as unknown as Parameters<typeof bakedAssets>[0]);
+const SIBLINGS = [240, 400, 760];
+const photo = (slot: string): FilledAsset & { srcset?: string } => {
+  const a = asset(slot);
+  const dot = a.file.lastIndexOf('.');
+  const widths = SIBLINGS.filter((w) => w < a.w && inPublic(`${a.file.slice(0, dot)}-${w}${a.file.slice(dot)}`));
+  return widths.length ? { ...a, srcset: bakedSrcset(a, widths, inPublic) } : a;
+};
+/** A frame repeat's approved alt (STOP 4 q08 (a)), by section and file; never retyped. */
+type FrameAlt = { section: string; file: string; alt: string };
+const frameAlt = (section: string, file: string): string => {
+  const row = (frameAlts.rows as FrameAlt[]).find((r) => r.section === section);
+  if (!row || !row.file.endsWith(file)) throw new Error(`frame-alts: no approved alt for ${file} in ${section}`);
+  return row.alt;
+};
+/** The HELD links (STOP 3 q12): on the board, left unbuilt until the deposit-order correction lands. */
+const HELD = (board.sections as unknown as { links?: { internal?: { href: string; why: string }[] } }[])
+  .flatMap((s) => s.links?.internal ?? []).filter((l) => l.why.includes('HELD:')).map((l) => l.href);
+if (HELD.length !== 2) throw new Error(`the board holds ${HELD.length} links, not the two STOP 3 q12 held`);
+
+// ── the nav set: the thirteen H2 sections, in page order (board ids, ruling 3) ───────────────────
+const NAV_IDS = ['faq-top', 'deposit', 'health-tests', 'litter', 'faq-middle', 'travel', 'papers', 'guarantee',
+  'busy-household', 'favourite-person', 'coat', 'faq-bottom', 'enquiry'];
+const sections: SectionRef[] = NAV_IDS.map((id, i) => {
+  const question = label(id);
   if (question !== MANCHESTER_H2[i]) throw new Error(`nav row ${i + 1} is "${question}"; the outline's H2 ${i + 1} is "${MANCHESTER_H2[i]}"`);
   return { id, question, ...MANCHESTER_NAV[i] };
 });
 
-// ── the photographs ─────────────────────────────────────────────────────────────────────────────
-const LITTER = numberWord(availablePuppies().length);
-const HERO_PUPS = pickAvailable(['Roman', 'Cheryl', 'Ince', 'Vennie'], 4).map((p) => p.name);
-const FAQ_PUP = pickAvailable(['Christa'], 1)[0];
-const NOTE_PUP = pickAvailable(['Vennie'], 1)[0];
-const BAR_PUP = pickAvailable(['Christa'], 1)[0].card_photo;
-const FAMILY = 'victoria-family-blue-staffy-manchester.webp';
-const PUP = 'reputable-blue-staffy-breeder-manchester-pup.webp';
-const MAGGIE = 'maggie-blue-staffy-dam-with-pups.webp';
-const JONES = 'jones-magnificent-blue-staffy-sire.webp';
-const JONES_SITTING = 'jones-strong-staffy-sire-temperament.webp';
-const OWNER = 'trusted-blue-staffy-breeder-reviews-satisfied-owners.webp';
-const HELD = 'best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp';
+// ── the litter, from the data ───────────────────────────────────────────────────────────────────
+const pups = availablePuppies();
+const LITTER = numberWord(pups.length);
+const of = (sex: 'male' | 'female') => pups.filter((p) => p.sex === sex);
+const BOYS = numberWord(of('male').length);
+const GIRLS = numberWord(of('female').length);
+const list = (xs: string[]) => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs[0] ?? '');
+const COATS = [...new Set(pups.map((p) => p.colour.toLowerCase()))];
+const [TEST_A, TEST_B] = PARENT_DNA_TESTS;
+const lcFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+const GUARANTEE = guaranteeLabel('lower');
+const G_ROW = guaranteeRow();
+if (!G_ROW) throw new Error('data/settings.json gives no guarantee row to state');
+const PAPERS = ['Vet-signed health card', 'First vaccinations', 'Microchipped', 'Wormed and flea treated', 'KC registration application form'].map(sign);
 
-/** The nine body sections, in outline order: each an offset sheet with its photo (a first use
- *  carries no `alt`, so the served one is kept; a repeat names a new one), its sheet and its
- *  deeper headings. */
-const plan = (r: Row) => [
-  { t: 'Outline row', d: `§${r.n}` },
-  { t: 'Framework', d: r.framework },
-  { t: 'Words planned', d: String(r.words) },
+// The hero: the board's hero slot is Roman's card (manchester-hero); three more of the litter beside him.
+const HERO = asset('manchester-hero');
+const HERO_PUPS = pickAvailable(['Roman', 'Cheryl', 'Ince', 'Vennie'], 4);
+const heroIsTheSlot = HERO_PUPS[0]?.slug && HERO.file.includes(`/puppies/${HERO_PUPS[0].slug}-card`);
+// A puppy's card photo appears in the hero, the counter's faces and the litter table, each under its
+// own alt (src/lib/imageFocus.ts); the two FAQ blocks that show a card take the one alt left unused.
+const BYRD = pickAvailable(['Byrd'], 1)[0];
+const CHRISTA = pickAvailable(['Christa'], 1)[0];
+const VENNIE = pickAvailable(['Vennie'], 1)[0];
+const PERSONALITY = pickAvailable(['Ince', 'Christa'], 2);
+
+// ── the schema: the twenty visible questions, the business serving Greater Manchester (no telephone
+// while PHONE_PLACEHOLDER) and the byline's author ─────────────────────────────────────────────
+const AREA = `Greater ${MANCHESTER}`;
+const schema = [
+  faqPageNode(MANCHESTER_FAQ.flatMap((b) => b.items)),
+  { '@context': 'https://schema.org', '@type': 'LocalBusiness', '@id': `${SITE_URL}/#business`, name: SITE.site_name,
+    url: SITE_URL, areaServed: { '@type': 'AdministrativeArea', name: AREA } },
+  { '@context': 'https://schema.org', '@type': 'Person', '@id': `${SITE_URL}/blue-staffy-uk-breeders/#lisa-bright`,
+    name: SITE.breeder_name, url: abs('/blue-staffy-uk-breeders/'), worksFor: { '@id': `${SITE_URL}/#business` },
+    address: { '@type': 'PostalAddress', addressLocality: TOWN, addressRegion: SITE.address.region, addressCountry: SITE.address.country } },
 ];
-const BODY: { n: string; photo: string; alt?: string; rows?: { t: string; d: string }[]; cta?: { label: string; href: string } }[] = [
-  { n: '8', photo: FAMILY, alt: 'A new owner holding her blue Staffy puppy in a pink collar, cheek to cheek in the garden',
-    rows: depositTerms(), cta: { label: 'Ask about a viewing', href: '#enquire' } },
-  { n: '9', photo: JONES },
-  { n: '10', photo: MAGGIE },
-  { n: '13', photo: OWNER },
-  { n: '14', photo: HELD },
-  { n: '15', photo: JONES, alt: 'Jones lying on the carpet in front of his crate, a basketball behind him' },
-  { n: '17', photo: PUP, alt: 'A woman in a rust cardigan kneeling on the grass as a blue Staffy puppy stands up to greet her' },
-  { n: '18', photo: JONES_SITTING, alt: 'Jones sitting up on the carpet in front of his tartan-covered crate' },
-  { n: '19', photo: HELD, alt: 'A blue Staffy puppy held up in a pair of hands, its front paws hanging down' },
-];
-const body = Object.fromEntries(BODY.map((b) => [b.n, b]));
-
-/** The litter table's place: the outline's "H4 <heading>" under row 10's tree. */
-const litter = row('10');
-if (!litter.table) throw new Error('outline row 10 carries no table');
-const [, underLevel, underText] = /^H([2-6]) (.+)$/.exec(litter.table.under) ?? [];
-const litterTree = below(h2Of(litter));
-const at = litterTree.findIndex((h) => h.level === Number(underLevel) && h.text === underText);
-if (at < 0) throw new Error(`the litter table's heading "${litter.table.under}" is not in row 10's tree`);
-
-/** The body sections' render data: the H2 and its line, the sheet, and the deeper headings split
- *  around the litter table where a section carries it. */
-const bodyOf = (n: string) => {
-  const r = row(n);
-  const b = body[n];
-  if (!b) throw new Error(`outline row ${n} has no body photo`);
-  const tree = below(h2Of(r));
-  const t = n === litter.n ? at : -1;
-  return {
-    id: ID[n], heading: h2Of(r).text, lede: scaffold(r), photo: b.photo, photoAlt: b.alt, rows: b.rows ?? plan(r), cta: b.cta,
-    before: t < 0 ? tree : tree.slice(0, t), table: t < 0 ? null : litterTree[t], after: t < 0 ? [] : tree.slice(t + 1),
-  };
-};
-
-// ── the page body, row by row in the outline's order (rows 1-3 are the hero slot, row 4 the
-// contents the layout mounts) ────────────────────────────────────────────────────────────────────
 const [faqFirst, faqHealth, faqLife] = MANCHESTER_FAQ;
-const FAQ_ROW: Record<string, typeof faqFirst> = { '7': faqFirst, '12': faqHealth, '21': faqLife };
-for (const [n, block] of Object.entries(FAQ_ROW)) {
-  if (block.heading !== h2Of(row(n)).text) throw new Error(`FAQ block ${block.key} is not outline row ${n}`);
-}
-const REVIEW_ROW: Record<string, Record<string, unknown>> = {
-  '6': { name: 'The Victoria Family', photo: FAMILY, side: 'start',
-    photoAlt: "The Victoria family's blue Staffy puppy, held up beside its owner's smiling face in their garden" },
-  '11': { name: 'Mark J', photo: JONES_SITTING, side: 'end', credit: 'Photo: Jones, the sire of this litter' },
-  '20': { name: 'Rachel L.', photo: MAGGIE, side: 'start', credit: 'Photo: Maggie, our dam, with her pups',
-    photoAlt: 'Maggie, mouth open, looking up from the sofa with two of her blue pups in front of her' },
-};
-const FAQ_PHOTO: Record<string, Record<string, unknown>> = {
-  '7': { side: 'end', photo: FAQ_PUP.card_photo, caption: `${FAQ_PUP.name}, one of our ${LITTER} puppies`,
-    photoAlt: `${FAQ_PUP.name}, one of our blue Staffy girls, with a white patch on her chest` },
-  '12': { side: 'start', photo: MAGGIE, caption: 'Maggie, our dam, with her pups',
-    photoAlt: 'Maggie, our blue Staffy dam, sitting on a grey sofa with two of her puppies beside her' },
-  '21': { side: 'end', photo: PUP, caption: `One of our puppies, settled at home in ${MANCHESTER}`,
-    photoAlt: 'A small blue Staffy puppy reaching up to its new owner as she kneels on the lawn' },
-};
-type Block = { n: string; kind: 'takeaways' | 'review' | 'faq' | 'body' | 'newsletter' | 'form' };
-const KIND: Record<string, Block['kind']> = {
-  '5': 'takeaways', '6': 'review', '7': 'faq', '11': 'review', '12': 'faq', '16': 'newsletter',
-  '20': 'review', '21': 'faq', '22': 'form',
-};
-const blocks: Block[] = ROWS.filter((r) => Number(r.n) >= 5).map((r) => ({ n: r.n, kind: KIND[r.n] ?? 'body' }));
-for (const b of blocks) {
-  const name = row(b.n).section;
-  const ok = { takeaways: /^Key takeaways/, review: /^Review/, faq: /^(FAQ|G6)/, newsletter: /^Newsletter/, form: /^Enquiry/, body: /./ }[b.kind];
-  if (!ok.test(name) || (b.kind === 'body' && !body[b.n])) throw new Error(`outline row ${b.n} (${name}) is not a ${b.kind} section`);
-}
-const schema = [faqPageNode(MANCHESTER_FAQ.flatMap((b) => b.items))];
-const enquiry = row('22');
+const enquiry = label('enquiry');
 ---
 <CityShell title={loc.title} description={loc.description} canonical={`/uk-locations/${SLUG}/`}
   robots="noindex, follow" ogType="article" schema={schema} crumbTitle={loc.city} sections={sections}
   nav={{
-    bar: { component: CityQuestionBar, props: { city: MANCHESTER, photo: BAR_PUP } },
+    bar: { component: CityQuestionBar, props: { city: MANCHESTER, photo: CHRISTA.card_photo } },
     dial: { component: CityNumeralRail, props: { city: MANCHESTER } },
-    contents: { component: CityIconRows, props: { city: MANCHESTER, photo: PUP } },
+    contents: { component: CityIconRows, props: { city: MANCHESTER, photo: 'reputable-blue-staffy-breeder-manchester-pup.webp',
+      id: 'contents', 'data-section-label': label('contents') } },
   }}>
   <Fragment slot="hero">
-    <CityFeatureAndThree data-city-scaffold={SLUG}
-      as="h1" title={outline.h1} lede={scaffold(row('1'))}
-      cta={{ label: 'Ask about a puppy', href: '#enquire' }}
-      more={{ label: `See all ${LITTER} puppies`, href: `#${ID['10']}` }}
-      photos={HERO_PUPS} />
-    <CityRangeSheet city={MANCHESTER} shownAbove={HERO_PUPS} />
-    <CityPuppyFolder city={MANCHESTER} />
+    <CityFeatureAndThree id="top" data-section-label={label('top')} as="h1" title={outline.h1}
+      cta={{ label: 'Ask about a puppy', href: '#enquiry' }} more={{ label: 'See the whole litter', href: '#litter' }}
+      photos={HERO_PUPS.map((p) => p.name)} featureAlt={heroIsTheSlot ? HERO.alt : undefined}>
+      <Fragment slot="byline">By <a href="/blue-staffy-uk-breeders/">{SITE.breeder_name}</a>, who breeds our Staffies in {TOWN}</Fragment>
+      <Fragment slot="lede"><a href="/">Here at BlueStaffyUK</a> we raise Staffordshire Bull Terrier puppies indoors in {TOWN}, {SITE.address.region}, and our blue Staffy puppies for {MANCHESTER} homes are priced by sex, never by coat. <a href="/available-puppies/">Available Blue Staffy puppies</a> are {BOY_PRICE} a boy and {GIRL_PRICE} a girl, held with a {DEPOSIT} deposit.</Fragment>
+    </CityFeatureAndThree>
+    <CityRangeSheet id="counter" data-section-label={label('counter')} city={MANCHESTER} shownAbove={HERO_PUPS.map((p) => p.name)} />
+    <CityPuppyFolder id="trust" data-section-label={label('trust')} city={MANCHESTER} />
   </Fragment>
 
-  {blocks.map(({ n, kind }) => {
-    if (kind === 'takeaways') return <CityTickCard city={MANCHESTER} photo={FAMILY} cta={{ label: 'Ask about a puppy', href: '#enquire' }} />;
-    if (kind === 'review') return <CityThreePlates {...(REVIEW_ROW[n] as { name: string; photo: string })} />;
-    if (kind === 'faq') {
-      const f = FAQ_ROW[n];
-      return <CityRowsBesideAPhoto id={ID[n]} block={f.key} heading={f.heading} items={f.items} lede={scaffold(row(n))}
-        {...(FAQ_PHOTO[n] as { photo: string; caption: string })} />;
-    }
-    if (kind === 'newsletter') return <CityPostmarkedNote area={`Greater ${MANCHESTER}`} puppy={NOTE_PUP.name}
-      photoAlt={`${NOTE_PUP.name}, a blue and white Staffy girl, her white face marked with one dark eye patch`} />;
-    if (kind === 'form') return <CityPhotoAtTheEdge id={ID[n]} heading={h2Of(enquiry).text} lede={scaffold(enquiry)}
-      photo="lisa-bright-blue-staffy-breeder-carlisle.webp"
-      photoAlt="Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other" />;
-    const b = bodyOf(n);
-    return (
-      <div id={b.id} class="scaffold-section">
-        <CityOffsetSheet heading={b.heading} lede={b.lede} photo={b.photo} photoAlt={b.photoAlt} rows={b.rows} cta={b.cta} />
-        {b.before.length > 0 && (
-          <div class="scaffold-tree" data-scaffold-tree>
-            <p class="scaffold-note">Scaffold outline: this section's deeper headings, word for word from the approved outline. Their answers are written at row 12.</p>
-            {b.before.map((h) => { const Tag = `h${h.level}`; return <Tag>{h.text}</Tag>; })}
-          </div>
-        )}
-        {b.table && (
-          <CityPhotoShelf heading={b.table.text} as={`h${b.table.level}` as 'h4'} caption={litter.table!.caption}
-            city={MANCHESTER} shownAbove={availablePuppies().map((p) => p.name)} />
-        )}
-        {b.after.length > 0 && (
-          <div class="scaffold-tree" data-scaffold-tree>
-            {b.after.map((h) => { const Tag = `h${h.level}`; return <Tag>{h.text}</Tag>; })}
-          </div>
-        )}
-      </div>
-    );
-  })}
+  <CityTickCard id="key-takeaways" data-section-label={label('key-takeaways')} city={MANCHESTER}
+    photo="blue-staffy-family-dog-uk.webp" cta={{ label: 'Ask us about a puppy', href: '#enquiry' }} />
 
-  <section class="migrated" aria-label="The old page's words">
-    <p class="note">The old page's words, kept until this page is written:</p>
-    <article class="prose-migrated"><Fragment set:html={loc.body_html} /></article>
+  <CityThreePlates id="review-top" data-section-label={label('review-top')} name="The Victoria Family"
+    photo="victoria-family-blue-staffy-manchester.webp" side="start" />
+
+  <CityRowsBesideAPhoto id="faq-top" data-section-label={label('faq-top')} block={faqFirst.key} heading={faqFirst.heading}
+    items={faqFirst.items} side="end" photo={CHRISTA.card_photo} photoAlt={puppyAlt(CHRISTA, 'short')}
+    caption={`${CHRISTA.name}, one of our ${GIRLS} girls`}
+    lede="Price, where we are, delivery and the deposit: the questions families put to us before anything else." />
+
+  {/* ── G1 · the deposit and the visit (outline row 8) ── */}
+  <section id="deposit" data-section-label={label('deposit')} class="mx-chapter">
+    <CityOffsetSheet heading={label('deposit')} asset={photo('deposit-h2')} rows={depositTerms()}>
+      <Fragment slot="lede">Because the {DEPOSIT} deposit is what books your viewing here in {TOWN} and holds your puppy for you, and it comes off the price. Paying someone you found online is a fair worry, so here is what you can have from us before any money leaves your account, and what you see before you commit.</Fragment>
+    </CityOffsetSheet>
+    <div class="mx-answers">
+      <div class="mx-a">
+        <h3>{head('deposit', 3, 0)}</h3>
+        <BodyImage asset={photo('deposit-settle')} srcset={photo('deposit-settle').srcset} box="uniform" focal="50% 30%" />
+        <p>It settles two things at once: the puppy you chose is taken off our list for you, and the date of your visit is fixed. Nobody else can reserve that puppy while your deposit holds it.</p>
+        <h4>{head('deposit', 4, 0, 0)}</h4>
+        <p>By bank transfer, once we have confirmed your puppy is still free. The full {DEPOSIT} then comes off the puppy's price, which stays {BOY_PRICE} for a boy or {GIRL_PRICE} for a girl.</p>
+        <h5>{head('deposit', 5, 0, 0, 0)}</h5>
+        <p>If you change your mind, the deposit is {refundClause()}. That clause is the whole of our refund terms, and it reads the same for every puppy in this litter.</p>
+        <h6>{head('deposit', 6, 0, 0, 0, 0)}</h6>
+        <p>Up to the day before your collection or delivery, which is the line the clause above draws, so tell us as early as you can if your plans move.</p>
+      </div>
+      <div class="mx-a">
+        <h3>{head('deposit', 3, 1)}</h3>
+        <BodyImage asset={photo('deposit-questions')} srcset={photo('deposit-questions').srcset} box="uniform" focal="50% 40%" />
+        <p>The ones you can check for yourself before you pay a penny: whether the puppy is still free, who the parents are, and what our guarantee covers. <a href="/uk-blue-staffy-puppy-buying-guide/">The UK Blue Staffy puppy buying guide</a> lists every question worth asking; these are the answers our own order gives you first.</p>
+        <h4>{head('deposit', 4, 1, 0)}</h4>
+        <p>Yes. Tell us which puppy you like and we confirm that nobody has reserved it before you send anything.</p>
+        <h4>{head('deposit', 4, 1, 1)}</h4>
+        <p><a href="/uk-blue-staffy-breeders-contact/">Ask us for both parents' certificates</a> when you first write, and they come to you privately, ahead of any deposit. {SITE.guarantee_note}</p>
+        <h5>{head('deposit', 5, 1, 1, 0)}</h5>
+        <p>Our own vet. You are welcome to speak to the vet who looks after our dogs before you commit, so a second voice can answer what you would rather not take from us alone.</p>
+        <h6>{head('deposit', 6, 1, 1, 0, 0)}</h6>
+        <p>Yes. Ask, and we pass on how to reach them; the RCVS register is where anyone in the UK can confirm that a vet is registered to practise.</p>
+      </div>
+      <div class="mx-a">
+        <h3>{head('deposit', 3, 2)}</h3>
+        <BodyImage asset={photo('deposit-visit')} srcset={photo('deposit-visit').srcset} box="tall" />
+        <p>Maggie with her litter, in the house where the puppies were raised, by appointment. <a href="https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy">Advice on buying a puppy from a breeder</a> from the RSPCA says to see the mother and her puppies together, and that is what the visit is for.</p>
+        <h4>{head('deposit', 4, 2, 0)}</h4>
+        <p>At the visit itself. You see both parents, their registration papers and the vet records before you commit, and again on the day you collect. <a href="#enquiry">Tell us which puppy you would like to visit</a>, and we will find a time that suits you.</p>
+      </div>
+    </div>
   </section>
+
+  {/* ── G4 · health and raising (outline row 9) ── */}
+  <section id="health-tests" data-section-label={label('health-tests')} class="mx-chapter">
+    <CityOffsetSheet heading={label('health-tests')} asset={photo('health-tests-h2')}
+      rows={[
+        { t: 'Named tests on both parents', d: `${TEST_A} and ${TEST_B}, with eye and elbow screening.` },
+        { t: 'The parents', d: 'Maggie, our dam, and Jones, our sire.' },
+        { t: 'Where the litter grew up', d: `${sign('Raised in our home')} in ${TOWN}.` },
+      ]}>
+      <Fragment slot="lede">Maggie and Jones both had the {TEST_A} and {TEST_B} tests, and eye and elbow screening, before this litter was planned. Their papers come to you privately once you write to us; this page names each test and prints none of them.</Fragment>
+    </CityOffsetSheet>
+    <div class="mx-answers">
+      <div class="mx-a">
+        <h3>{head('health-tests', 3, 0)}</h3>
+        <BodyImage asset={photo('health-tests-dna')} srcset={photo('health-tests-dna').srcset} box="uniform" focal="50% 40%" />
+        <p>Because the condition is recessive: a puppy is affected only when it inherits the gene from both parents, so testing the dam and the sire is what protects the litter. <a href="/blue-staffy-health-uk/">How L-2-HGA and HC-HSF4 pass from parent to puppy</a> is set out on our health page, condition by condition.</p>
+        <h4>{head('health-tests', 4, 0, 0)}</h4>
+        <p>Eye screening for hereditary cataracts and other inherited eye diseases, and elbow screening, on both parents. <a href="https://www.bva.co.uk/canine-health-schemes/eye-scheme/">Hereditary eye disease screening by veterinary ophthalmologists</a> is what the BVA's eye scheme describes, if you want to know what an eye examination looks for.</p>
+        <h5>{head('health-tests', 5, 0, 0, 0)}</h5>
+        <p>Because a paper posted on a website can be copied onto any dog in an advert. We name each test here and hand the papers themselves to buyers who contact us.</p>
+        <h6>{head('health-tests', 6, 0, 0, 0, 0)}</h6>
+        <p><a href="https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/">The breed's pre-breeding health screening list</a> sits on the Kennel Club's own Staffordshire Bull Terrier page, scheme by scheme.</p>
+      </div>
+      <div class="mx-a">
+        <h3>{head('health-tests', 3, 1)}</h3>
+        <BodyImage asset={photo('health-tests-home')} srcset={photo('health-tests-home').srcset} box="uniform" />
+        <p>Indoors with us, never in kennels: each litter grows up in our family home, among the people, cats and everyday noise of a busy house. <a href="/blue-staffy-uk-breeders/">The home our puppies grow up in</a> is described on our breeder page.</p>
+        <h4>{head('health-tests', 4, 1, 0)}</h4>
+        <p>We follow both with every litter. Each gives the first weeks a plan of short, gentle handling and a steady run of new sights, sounds and people, so a puppy meets the world a little at a time.</p>
+        <h4>{head('health-tests', 4, 1, 1)}</h4>
+        <p>Each puppy's own line on our litter list describes it as we know it today. {PERSONALITY.map((p) => `${p.name} is ${lcFirst(p.personality)}`).join(' ')}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ── G2 · the litter and its prices (outline row 10) ── */}
+  <section id="litter" data-section-label={label('litter')} class="mx-chapter">
+    <CityOffsetSheet heading={label('litter')} asset={photo('litter-h2')}
+      rows={[
+        { t: `Each of our ${BOYS} boys`, d: `${BOY_PRICE}.` },
+        { t: `Each of our ${GIRLS} girls`, d: `${GIRL_PRICE}.` },
+        { t: 'The coats in this litter', d: `${list(COATS).charAt(0).toUpperCase()}${list(COATS).slice(1)}.` },
+        { t: 'The parents', d: 'Maggie and Jones.' },
+      ]}>
+      <Fragment slot="lede">This litter is {LITTER} Staffordshire Bull Terrier puppies for sale, {BOYS} boys and {GIRLS} girls, and each one can come home to {AREA}. The price follows the sex alone, and it carries the parents' papers, the puppy's own folder and our {GUARANTEE}.</Fragment>
+    </CityOffsetSheet>
+    <div class="mx-answers">
+      <div class="mx-a">
+        <h3>{head('litter', 3, 0)}</h3>
+        <BodyImage asset={photo('litter-prices')} srcset={photo('litter-prices').srcset} box="uniform" focal="50% 35%" />
+        <p>Because in this litter we set one figure for a boy and one for a girl, and the coat changes neither. Our Blue Staffy pup prices in full sit beside every puppy in the table below.</p>
+        <CityPhotoShelf heading={head('litter', 4, 0, 0)} as="h4" caption={(outline.sections.find((s) => s.table) as { table: { caption: string } }).table.caption}
+          city={MANCHESTER} shownAbove={pups.map((p) => p.name)} />
+        <p>Our regularly updated listing shows the same puppies, and one still showing there is a puppy nobody has reserved.</p>
+        <p class="mx-act"><a class="mx-cta" href="#enquiry">Ask us which puppy suits your home</a></p>
+        <h5>{head('litter', 5, 0, 0, 0)}</h5>
+        <p>No, the coat never moves the figure in this litter. <a href={`/available-puppies/${BYRD.slug}/`}>Byrd, our solid white boy</a>, is {priceFor(BYRD)}, exactly as his blue brothers are.</p>
+        <h6>{head('litter', 6, 0, 0, 0, 0)}</h6>
+        <p>Not necessarily. What you read here describes this litter only, and the next one will carry its own prices when it arrives.</p>
+      </div>
+      <div class="mx-a">
+        <h3>{head('litter', 3, 1)}</h3>
+        <BodyImage asset={photo('litter-parents')} srcset={photo('litter-parents').srcset} box="uniform" focal="50% 50%" />
+        <p>Maggie, our dam, and Jones, our sire, are the parents of all {LITTER}. You meet them both at your visit, Maggie with her puppies beside her.</p>
+        <h4>{head('litter', 4, 1, 0)}</h4>
+        <p>Yes. Maggie and Jones are both Kennel Club registered, and we give you both registration numbers so you can look up the pedigree yourself.</p>
+      </div>
+    </div>
+  </section>
+
+  <CityThreePlates id="review-middle" data-section-label={label('review-middle')} name="Mark J"
+    photo="jones-strong-staffy-sire-temperament.webp" photoAlt={frameAlt('review-middle', 'jones-strong-staffy-sire-temperament.webp')}
+    side="end" credit="Photo: Jones, the sire of this litter" />
+
+  <CityRowsBesideAPhoto id="faq-middle" data-section-label={label('faq-middle')} block={faqHealth.key} heading={faqHealth.heading}
+    items={faqHealth.items} side="start" photo={BYRD.card_photo} photoAlt={puppyAlt(BYRD, 'short')}
+    caption={`${BYRD.name}, one of our ${BOYS} boys`}
+    lede="Health, vaccinations and what a good breeder lets you see, answered the way we work.">
+    <p><a href="/buy-staffy-puppies-for-sale-uk/">How we compare with a classified puppy advert</a> is laid out point by point on our Staffy puppies page.</p>
+  </CityRowsBesideAPhoto>
+
+  {/* ── G3 · travel to Greater Manchester (outline row 13) ── */}
+  <section id="travel" data-section-label={label('travel')} class="mx-chapter">
+    <CityOffsetSheet heading={label('travel')} asset={photo('travel-h2')}
+      rows={[
+        { t: 'Home delivery', d: `${DELIVERY_BAND} by ${transportName}, ${pricedBy}.` },
+        { t: 'Collection', d: `From our home in ${TOWN}, by appointment.` },
+      ]}>
+      <Fragment slot="lede">By {transportName} to your door in {AREA}, for {DELIVERY_BAND} {pricedBy}, or in your own car from our home in {TOWN}. Either way the journey comes after the viewing your deposit books, so you have met Maggie and the litter before your puppy travels.</Fragment>
+    </CityOffsetSheet>
+    <div class="mx-answers">
+      <div class="mx-a">
+        <h3>{head('travel', 3, 0)}</h3>
+        <BodyImage asset={photo('travel-priced')} srcset={photo('travel-priced').srcset} box="uniform" focal="50% 40%" />
+        <p>By distance, as everywhere else in the UK: a home in Salford, Stockport, Bolton, Wigan or Rochdale sits inside the same {DELIVERY_BAND} band, and the figure for yours depends on how far it is from {TOWN}.</p>
+        <h4>{head('travel', 4, 0, 0)}</h4>
+        <p>{transportName.charAt(0).toUpperCase()}{transportName.slice(1)} carries your puppy, approved under the government's rules for moving animals rather than any of our own.</p>
+        <h5>{head('travel', 5, 0, 0, 0)}</h5>
+        <p>Because both depend on the transport booking, which follows your viewing and your puppy's readiness, and we would rather give you no date than a wrong one.</p>
+        <h6>{head('travel', 6, 0, 0, 0, 0)}</h6>
+        <p>In its guidance on the welfare of dogs and cats in transport, published on gov.uk for anyone who moves animals.</p>
+      </div>
+      <div class="mx-a">
+        <h3>{head('travel', 3, 1)}</h3>
+        <BodyImage asset={photo('travel-collect')} srcset={photo('travel-collect').srcset} box="uniform" />
+        <p>Neither is better for every family: collecting means you carry your puppy home yourself after meeting us, while delivery saves you the drive north. Collection is from our home in {TOWN}.</p>
+        <h4>{head('travel', 4, 1, 0)}</h4>
+        <p>Yes. Visits here are by appointment only, so collection day is arranged with you in the same way as the viewing.</p>
+        <p><a href="/uk-locations/staffy-puppies-for-sale-liverpool/">Liverpool buyers</a> choose between the same two routes. <a href="/uk-locations/blue-staffy-puppies-south-yorkshire/">Our South Yorkshire page</a> covers the next county over. <a href="/uk-locations/blue-staffies-newcastle-under-lyme/">Readers in Newcastle-under-Lyme</a> have a page of their own, and so do <a href="/uk-locations/blue-staffy-puppies-for-sale-leeds/">Families in Leeds</a>. <a href="/uk-locations/blue-staffy-puppies-york/">York households</a> pay within the same band. <a href="/uk-locations/">Every other UK city on our list</a> is one click away.</p>
+        <p><a href="#enquiry">Tell us whether you will collect or want delivery</a>, and we will plan the rest around your puppy.</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ── paperwork (outline row 14, extra section 1) ── */}
+  <section id="papers" data-section-label={label('papers')} class="mx-chapter">
+    <CityOffsetSheet heading={label('papers')} asset={photo('papers-h2')}
+      rows={[
+        { t: 'In the folder', d: `${list(PAPERS.map((p, i) => (i ? lcFirst(p) : p)))}.` },
+        { t: 'Also in writing', d: "A puppy purchase contract, and both parents' registration numbers." },
+      ]}>
+      <Fragment slot="lede">Each Blue Staffy puppy leaves us with a folder of its own records, the papers that prove where it came from and what has been done for it. Here is what is in that folder, and why one of those papers is a form rather than a finished registration.</Fragment>
+    </CityOffsetSheet>
+    <div class="mx-answers">
+      <div class="mx-a">
+        <h3>{head('papers', 3, 0)}</h3>
+        <BodyImage asset={photo('papers-checklist')} srcset={photo('papers-checklist').srcset} box="uniform"
+          phone={{ src: '/images/blue-staffy-puppy-papers-checklist-manchester-phone.webp', w: 622, h: 1644 }} />
+        <p>Whoever you buy from, ask for both parents' registration numbers, the Kennel Club registration application form, the vaccination record, the microchip details and a written contract. Ours come with every one of them, in the folder above.</p>
+        <h4>{head('papers', 4, 0, 0)}</h4>
+        <p>Because registering the puppy is your step to take: the form travels home with it so that the registration is made in your name.</p>
+        <h5>{head('papers', 5, 0, 0, 0)}</h5>
+        <p>No. The parents are on the register; each puppy leaves with its application form, ready to join them once you send it in.</p>
+        <h6>{head('papers', 6, 0, 0, 0, 0)}</h6>
+        <p>You do. Every puppy comes with its {lcFirst(sign('KC registration application form'))} so that you, as the new owner, can register it yourself.</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ── health (outline row 15, extra section 2) ── */}
+  <section id="guarantee" data-section-label={label('guarantee')} class="mx-chapter">
+    <CityOffsetSheet heading={label('guarantee')} asset={photo('guarantee-h2')}
+      rows={[
+        { t: 'What the breed is prone to', d: `${TEST_A} and ${TEST_B}, which run in families, and skin allergies.` },
+        G_ROW,
+      ]}>
+      <Fragment slot="lede">Staffy dogs are mainly prone to two inherited conditions and to skin allergies, and our {GUARANTEE} is what we stand behind. <a href="#health-tests">Both inherited conditions in the parents' screening</a> are covered further up, so this part turns to the skin and to the guarantee itself.</Fragment>
+    </CityOffsetSheet>
+    <div class="mx-answers">
+      <div class="mx-a">
+        <h3>{head('guarantee', 3, 0)}</h3>
+        <BodyImage asset={photo('guarantee-itch')} srcset={photo('guarantee-itch').srcset} box="uniform" />
+        <p>Most often it is the skin: the breed is prone to allergies, and scratching that keeps going is worth a vet's opinion. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7510130/">Veterinary research on what Staffies are prone to</a> found the breed at higher odds of atopic dermatitis and of skin lumps than other dogs.</p>
+        <h4>{head('guarantee', 4, 0, 0)}</h4>
+        <p><a href="/blue-staffy-health-uk/">Our Blue Staffy health page</a> does, with the skin conditions Staffies see and what we look for in the parents.</p>
+      </div>
+      <div class="mx-a">
+        <h3>{head('guarantee', 3, 1)}</h3>
+        <BodyImage asset={photo('guarantee-cover')} srcset={photo('guarantee-cover').srcset} box="tall" />
+        <p>Every puppy comes with it in writing. {guaranteeFact()}</p>
+        <h4>{head('guarantee', 4, 1, 0)}</h4>
+        <p>Yes, and we would like you to. {SITE.guarantee_note}</p>
+      </div>
+    </div>
+  </section>
+
+  <CityPostmarkedNote id="newsletter" data-section-label={label('newsletter')} area={AREA} puppy={VENNIE.name}
+    photoAlt={frameAlt('newsletter', `/puppies/${VENNIE.slug}-`.concat(VENNIE.slug, '.webp'))} />
+
+  {/* ── G5 · life in a busy household (outline row 17) ── */}
+  <section id="busy-household" data-section-label={label('busy-household')} class="mx-chapter">
+    <CityOffsetSheet heading={label('busy-household')} asset={photo('household-h2')}
+      rows={[
+        { t: "On the government's list?", d: 'No. The Staffordshire Bull Terrier is not a banned breed.' },
+        { t: 'Renting', d: 'Get the pet policy in writing before you sign.' },
+      ]}>
+      <Fragment slot="lede">Well, when someone in the house has time for daily walks, training and company, because a Staffy is a people-focused dog rather than a guard. <a href="/blue-staffy-blog-guides/">Choosing the right puppy for your household</a> is where our guides start, and the answers below cover what a Manchester family asks first.</Fragment>
+    </CityOffsetSheet>
+    <div class="mx-answers">
+      <div class="mx-a">
+        <h3>{head('busy-household', 3, 0)}</h3>
+        <BodyImage asset={photo('household-rented')} srcset={photo('household-rented').srcset} box="uniform" focal="50% 35%" />
+        <p>It means the breed itself is not the obstacle. <a href="https://www.gov.uk/control-dog-public/banned-dogs">The dog types it is against the law to own in the UK</a> are listed by the government, which judges a dog by how it looks, and the Staffordshire Bull Terrier is not on that list.</p>
+        <h4>{head('busy-household', 4, 0, 0)}</h4>
+        <p>Yes, before you sign anything. A letting agent or a housing association can still restrict a breed, and a written policy settles the question for both of you.</p>
+      </div>
+      <div class="mx-a">
+        <h3>{head('busy-household', 3, 1)}</h3>
+        <BodyImage asset={photo('household-downsides')} srcset={photo('household-downsides').srcset} box="uniform" focal="50% 70%" />
+        <p>Three, mainly. A Staffy can be strong-willed and needs steady training from the start; it may chase smaller animals unless it meets them young; and it wants its people around, so it suits a home where the house is rarely empty for long.</p>
+        <h4>{head('busy-household', 4, 1, 0)}</h4>
+        <p>Yes. Every litter grows up indoors with us and meets children, cats and older people before it leaves, along with the ordinary bustle of a family house.</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ── temperament (outline row 18, extra section 3) ── */}
+  <section id="favourite-person" data-section-label={label('favourite-person')} class="mx-chapter">
+    <CityOffsetSheet heading={label('favourite-person')} asset={photo('favourite-h2')}
+      rows={[
+        { t: 'Boy or girl', d: 'Training and socialisation shape temperament more than sex does.' },
+        { t: 'Who it bonds with', d: 'Often one main carer, and the whole family with good socialisation.' },
+      ]}>
+      <Fragment slot="lede">Both, as a rule. A Staffordshire Bull Terrier often grows closest to the person who feeds, walks and trains it, yet a well-socialised Staffy is just as affectionate with everyone else in the house.</Fragment>
+    </CityOffsetSheet>
+    <div class="mx-answers">
+      <div class="mx-a">
+        <h3>{head('favourite-person', 3, 0)}</h3>
+        <BodyImage asset={photo('favourite-boisterous')} srcset={photo('favourite-boisterous').srcset} box="uniform" focal="50% 60%" />
+        <p>Some are. Boys can be the more boisterous and openly affectionate, girls a touch more independent, but each puppy's own character and its upbringing count for more than its sex. <a href="#enquiry">Tell us whether you would like a boy or a girl</a>, and we will tell you which of this litter fits your home.</p>
+        <h4>{head('favourite-person', 4, 0, 0)}</h4>
+        <p><a href="https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier">Staffordshire Bull Terrier exercise and care advice</a> from the PDSA puts an adult's need at an hour or more of exercise a day, ideally split into two outings with play and training mixed in.</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ── colour last (outline row 19) ── */}
+  <section id="coat" data-section-label={label('coat')} class="mx-chapter">
+    <CityOffsetSheet heading={label('coat')} asset={photo('coat-h2')}
+      rows={[
+        { t: 'In this litter', d: `${list(COATS).charAt(0).toUpperCase()}${list(COATS).slice(1)}, at one price per sex.` },
+        { t: 'Lifespan', d: 'Twelve to fourteen years, whatever the coat.' },
+      ]}>
+      <Fragment slot="lede">Not by any figure we can give you: the Royal Kennel Club breed standard lists blue, alone or with white, and states no rarity, so neither do we. <a href="https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/">The Kennel Club's Staffordshire Bull Terrier page</a> also puts health and temperament before colour, which is why the coat is the last question on this page.</Fragment>
+    </CityOffsetSheet>
+    <div class="mx-answers">
+      <div class="mx-a">
+        <h3>{head('coat', 3, 0)}</h3>
+        <BodyImage asset={photo('coat-breed')} srcset={photo('coat-breed').srcset} box="uniform" focal="50% 60%" />
+        <p>No. A blue Staffy is a Staffordshire Bull Terrier in a blue coat, the same English breed as every other colour. The Pit Bull Terrier is a different type and is on the government's banned list, and the American Staffordshire Terrier, or AmStaff, is a separate and larger breed.</p>
+        <h4>{head('coat', 4, 0, 0)}</h4>
+        <p>They show a dog's ancestors and the registry behind them, which is the surest way to tell an English Staffy from an American one. Here that means Maggie's and Jones's papers; our puppies go home with their application form.</p>
+      </div>
+      <div class="mx-a">
+        <h3>{head('coat', 3, 1)}</h3>
+        <BodyImage asset={photo('coat-years')} srcset={photo('coat-years').srcset} box="uniform" focal="50% 40%" />
+        <p>Twelve to fourteen years is the figure the Staffordshire Bull Terrier Club gives for a healthy, well cared for dog, and the colour of its coat makes no difference to it.</p>
+        <h4>{head('coat', 4, 1, 0)}</h4>
+        <p>Food, daily exercise and regular visits to your own vet decide where in that range a dog lands, far more than anything you can see in the puppy today.</p>
+      </div>
+    </div>
+  </section>
+
+  <CityThreePlates id="review-bottom" data-section-label={label('review-bottom')} name="Rachel L."
+    photo="maggie-blue-staffy-dam-with-pups.webp" photoAlt={frameAlt('review-bottom', 'maggie-blue-staffy-dam-with-pups.webp')}
+    side="start" credit="Photo: Maggie, our dam, with her pups" />
+
+  <CityRowsBesideAPhoto id="faq-bottom" data-section-label={label('faq-bottom')} block={faqLife.key} heading={faqLife.heading}
+    items={faqLife.items} side="end" photo="blue-staffy-puppy-preparation.webp"
+    caption="A bed, a crate and two bowls, ready before a puppy comes home"
+    lede="Everyday life with a Staffy, from time alone to living in a flat, in short answers.">
+    <p><a href="/uk-staffordshire-bull-terrier-guide/">Our Staffordshire Bull Terrier guide for UK owners</a> goes further on each of these, from training to the breed's reputation.</p>
+  </CityRowsBesideAPhoto>
+
+  <CityPhotoAtTheEdge id="enquiry" data-section-label={enquiry} heading={enquiry}
+    lede={`Send us the form with the puppy you have in mind, or simply a boy or a girl, and say whether you would collect in ${TOWN} or want delivery. The reply comes from us, not an agency, and we confirm your puppy is still free before you pay anything.`}
+    photo="lisa-bright-blue-staffy-breeder-carlisle.webp" photoAlt={frameAlt('enquiry', 'lisa-bright-blue-staffy-breeder-carlisle.webp')} />
 </CityShell>
 <style>
-  /* The scaffold's own furniture: a marked outline of each body section's deeper headings, on the
-     page's tokens, compact so it never stands in for the section's real height. Not a city
-     component (no `city-kit`): the type-fit gate judges the components, not this list. */
-  .scaffold-tree {
-    max-width: 1160px; margin: 0 auto; padding: var(--space-4) var(--space-4) var(--space-5);
-    border-block-end: 1px dashed var(--color-border); color: var(--color-text-muted);
+  /* The H3 answers under each body H2: page-local, on the site's tokens, at the city kit's type
+     sizes for each tier (src/styles/city.css), so no heading is chunkier than the component's H2
+     above it. Every body image sits in the uniform box straight after its heading (BodyImage). */
+  .mx-answers { container-type: inline-size; max-width: 1160px; margin: 0 auto; padding: 0 var(--space-4) var(--space-7); }
+  .mx-a { max-width: 760px; margin: 0 auto; padding-top: var(--space-6); border-top: 1px solid var(--color-border); }
+  .mx-a + .mx-a { margin-top: var(--space-6); }
+  .mx-a :is(h3, h4, h5, h6) { color: var(--color-brand); line-height: 1.25; text-wrap: balance; }
+  .mx-a h3 { margin: 0 0 var(--space-4); font-family: var(--font-display); font-size: 19px; font-weight: 700; }
+  .mx-a h4 { margin: var(--space-5) 0 var(--space-2); font-size: 17px; font-weight: 700; }
+  .mx-a h5 { margin: var(--space-4) 0 var(--space-2); font-size: 16px; font-weight: 700; }
+  .mx-a h6 { margin: var(--space-4) 0 var(--space-2); font-size: 15px; font-weight: 700; color: var(--color-ink-2); }
+  .mx-a > p { margin: 0 0 var(--space-3); font-size: 16px; line-height: 1.6; max-inline-size: 65ch; text-wrap: pretty; color: var(--color-text); }
+  .mx-a > :global(.bl-img), .mx-a > :global(.art-pic) { margin-bottom: var(--space-4); }
+  .mx-a p a { color: var(--color-link); text-decoration: underline; text-underline-offset: 3px; }
+  .mx-a p a:hover { text-decoration-thickness: 2px; }
+  .mx-a p a:focus-visible, .mx-cta:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+  .mx-a > :global(.city-photo-shelf) { margin: var(--space-4) 0; }
+  .mx-act { margin: var(--space-4) 0 var(--space-5); }
+  .mx-cta {
+    display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--space-6); border-radius: var(--btn-radius);
+    background: var(--color-cta); color: var(--color-cta-ink); font-weight: 700; text-decoration: none;
+    transition: background-color var(--dur-fast) var(--ease-out);
   }
-  .scaffold-tree :is(h3, h4, h5, h6) {
-    margin: var(--space-2) 0 0; font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
-    line-height: 1.4; color: var(--color-text);
+  .mx-cta:hover { background: var(--color-cta-hover); }
+  @container (width >= 640px) {
+    .mx-a h3 { font-size: 20px; }
+    .mx-a > p { font-size: 17px; }
   }
-  .scaffold-tree h4 { padding-inline-start: var(--space-4); }
-  .scaffold-tree h5 { padding-inline-start: var(--space-6); }
-  .scaffold-tree h6 { padding-inline-start: var(--space-8); }
-  .scaffold-note { margin: 0; font-size: var(--text-sm); }
-  .migrated { max-width: var(--container); margin: var(--space-8) auto; padding-inline: var(--space-5); color: var(--color-text-muted); font-size: var(--text-sm); }
-  .note { margin: 0 0 var(--space-1); }
+  @container (width >= 800px) {
+    .mx-a h3 { font-size: 21px; }
+  }
 </style>
