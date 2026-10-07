@@ -821,6 +821,24 @@
       "authorization": "ASSERTED",
       "source": "docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md",
       "owner_page": null
+    },
+    {
+      "id": "ont:greater-manchester",
+      "name": "Greater Manchester",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "PROPOSED",
+      "source": "docs/superpowers/sessions/2026-09-25-location-pages-strategy.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:salford",
+      "name": "Salford",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "PROPOSED",
+      "source": "data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json",
+      "owner_page": null
     }
   ]
 }

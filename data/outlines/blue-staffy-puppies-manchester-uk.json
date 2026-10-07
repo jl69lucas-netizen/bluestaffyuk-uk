@@ -57,7 +57,45 @@
         ]
       },
       "image": "Hero slot: one of the litter's own blue puppies at home in Carlisle, coat secondary to the dog (M1: colour comes last) — a served photo first (working rules 11 and 17), the page's own hero layout and crop (rule 16); its alt names the puppy and Carlisle, never a Manchester street.",
-      "note": "M1 answer under the H1 (STOP 1 q01): not on its own. EEBP opener, one statement: Entity — Lisa Bright in Carlisle, Cumbria, the Staffordshire Bull Terrier named in full; Evidence — the six named puppies from data/puppies.json, their prices from data/price-matrix.json (one price per boy, one per girl, said of THIS litter only, q09), the deposit as deposit_gbp words it, UK home delivery by DEFRA-approved transport inside the delivery_min_gbp–delivery_max_gbp band priced by distance, or collection in Carlisle; Benefit — what that gives a Greater Manchester buyer; Purpose — ask about a puppy (the enquiry form). The for-sale family leads the title and the first 100 words (STOP 1 q04); blue stays primary in the H1. No video call (q08), no mileage, no journey time."
+      "note": "M1 answer under the H1 (STOP 1 q01): not on its own. EEBP opener, one statement: Entity — Lisa Bright in Carlisle, Cumbria, the Staffordshire Bull Terrier named in full; Evidence — the six named puppies from data/puppies.json, their prices from data/price-matrix.json (one price per boy, one per girl, said of THIS litter only, q09), the deposit as deposit_gbp words it, UK home delivery by DEFRA-approved transport inside the delivery_min_gbp–delivery_max_gbp band priced by distance, or collection in Carlisle; Benefit — what that gives a Greater Manchester buyer; Purpose — ask about a puppy (the enquiry form). The for-sale family leads the title and the first 100 words (STOP 1 q04); blue stays primary in the H1. No video call (q08), no mileage, no journey time.",
+      "entities": [
+        {
+          "id": "ont:manchester",
+          "why": "(Recommended) Primary keyword 'blue staffy puppies manchester', and the for-sale family that leads the title and first 100 words (STOP 1 q04); Manchester is on 11/20 competitors (gap matrix, city gaps) and the ontology row's owner_page is this page. Trade-off: named as where the buyer is, never as where the puppies are — every pool page pads 'Manchester' with puppies from elsewhere (universal_gaps[4]) — so no Manchester address, kennel or meeting point."
+        },
+        {
+          "id": "ont:greater-manchester",
+          "why": "PROPOSED row (source: the strategy file, Manchester row, line 118): its keyword 'staffordshire bull terrier puppies for sale in manchester greater manchester' is a hero primary, and the county is how the ranking listings place every advert. Named as the area we deliver to (the outline's LocalBusiness areaServed), never as a place we are."
+        },
+        {
+          "id": "ont:lisa-bright",
+          "why": "EEBP Entity: the opener is signed by the named breeder (S2, STOP 1 q02). None of the eight pool pages names an author (universal_gaps[0]); Person is the outline's byline schema (how_we_win[5])."
+        },
+        {
+          "id": "ont:carlisle",
+          "why": "Where the puppies are, said plainly (how_we_win[0], content_gap[0]); collection in Carlisle is the opener's alternative to delivery. Town only (Known Issue 16)."
+        },
+        {
+          "id": "ont:cumbria",
+          "why": "The opener's 'Carlisle, Cumbria' (data/settings.json address.region): town and region only, never a street or postcode (Known Issue 16)."
+        },
+        {
+          "id": "ont:staffordshire-bull-terrier",
+          "why": "The breed named in full in the opener (outline note): the KG parent of 'blue staffy' and of the for-sale keywords placed on this row ('staffordshire bull terrier for sale manchester', 'staffy puppies for sale manchester')."
+        },
+        {
+          "id": "ont:blue-coat",
+          "why": "The H1 keeps 'Blue Staffy' primary (STOP 1 q04) and the hero photo is one of the litter's blue puppies; the coat stays secondary to the dog (M1), said of this litter only (q09), never 'rare'."
+        },
+        {
+          "id": "ont:defra-approved-transport",
+          "why": "EEBP Evidence: UK home delivery by DEFRA-approved transport inside the delivery_min_gbp–delivery_max_gbp band, priced by distance (delivery_note). No pool page says how a puppy reaches a Manchester home (universal_gaps[3]). No mileage or journey time."
+        },
+        {
+          "id": "ont:refundable-deposit",
+          "why": "EEBP Evidence: the deposit as deposit_gbp words it (QF q-how-much-is-the-deposit-2cce23); no pool page states one (universal_gaps[2]). Never a plain 'refundable': the refund wording only from deposit_refund_clause."
+        }
+      ]
     },
     {
       "n": "2",
@@ -69,7 +107,17 @@
       "why": "—",
       "keywords": {},
       "image": "—",
-      "note": "This page's own figures, read from data at render (rule 16): puppies available (data/puppies.json status), the boy and girl prices (data/price-matrix.json), the delivery band (data/settings.json). Never shared with London's strip."
+      "note": "This page's own figures, read from data at render (rule 16): puppies available (data/puppies.json status), the boy and girl prices (data/price-matrix.json), the delivery band (data/settings.json). Never shared with London's strip.",
+      "entities": [
+        {
+          "id": "ont:defra-approved-transport",
+          "why": "(Recommended) The delivery band, read from delivery_min_gbp / delivery_max_gbp at render: the one counter figure no pool page states (universal_gaps[3], how_we_win[0]). Trade-off: a band priced by distance, never a per-borough price, a mileage or a date."
+        },
+        {
+          "id": "ont:blue-coat",
+          "why": "Puppies available (data/puppies.json status, this row's own source) and the boy and girl prices (data/price-matrix.json): this litter's figures only (q09), the price following the sex and never the coat."
+        }
+      ]
     },
     {
       "n": "3",
@@ -81,7 +129,33 @@
       "why": "—",
       "keywords": {},
       "image": "—",
-      "note": "Items from data/settings.json puppy_trust_signs only, plus guarantee_label appended at render; no licence wording (LICENCE_CLAIM_PLACEHOLDER) and no rating."
+      "note": "Items from data/settings.json puppy_trust_signs only, plus guarantee_label appended at render; no licence wording (LICENCE_CLAIM_PLACEHOLDER) and no rating.",
+      "entities": [
+        {
+          "id": "ont:vet-signed-health-card",
+          "why": "(Recommended) The first item of puppy_trust_signs, read verbatim. It is the entity the research builds around (entities.md): microchip and vaccinations are the AI answer's only high-band entities and both are on_page false (LLM intel 2026-10-07), and the card carries both (ledger puppy-vet-signed-health-card, confirmed 2026-10-04). Trade-off: a paperwork entity with no local pull, and never 'health certificate' or 'vet checked' in our own sentence (ledger vocabulary)."
+        },
+        {
+          "id": "ont:vaccination-record",
+          "why": "Trust item 'First vaccinations' (puppy_trust_signs); LLM 'vaccinations' is high band and on_page false."
+        },
+        {
+          "id": "ont:kc-registration-application-form",
+          "why": "Trust item 'KC registration application form' (puppy_trust_signs): the only wording ledger parents-kc-registered-application-form allows for a puppy, never 'KC registered'."
+        },
+        {
+          "id": "ont:home-raised-litter",
+          "why": "Trust item 'Raised in our home' (ledger litters-home-raised-never-kennels, confirmed 2026-10-04); QF q-are-the-puppy-raised-in-a-family-home-c93ef5."
+        },
+        {
+          "id": "ont:after-collection-support",
+          "why": "Trust item 'Support after collection' (ledger breeder-support-after-collection). 'Aftercare' and 'support after' are on none of the eight pool pages (how_we_win[7], universal_gaps[8])."
+        },
+        {
+          "id": "ont:health-guarantee",
+          "why": "guarantee_label, appended at render (outline note); never typed, and its length never retyped from guarantee_days. The word 'guarantee' is on none of the eight pool pages (universal_gaps[7])."
+        }
+      ]
     },
     {
       "n": "4",
@@ -92,7 +166,17 @@
       "cat": "A",
       "why": "—",
       "keywords": {},
-      "image": "—"
+      "image": "—",
+      "entities": [
+        {
+          "id": "ont:manchester",
+          "why": "(Recommended) The contents labels repeat the H2s, and four of them name Manchester (FAQ top, FAQ middle, life in Manchester, FAQ bottom). Trade-off: navigation labels add no density, and they must not push Manchester past the board's term ceiling (STOP 1 q12)."
+        },
+        {
+          "id": "ont:greater-manchester",
+          "why": "Two labels name Greater Manchester (the delivery H2 and the enquiry H2); PROPOSED row, source the strategy file line 118."
+        }
+      ]
     },
     {
       "n": "5",
@@ -104,7 +188,33 @@
       "why": "—",
       "keywords": {},
       "image": "—",
-      "note": "Five lines, each a fact from data: one price per sex in this litter; the deposit books the viewing, reserves the puppy and comes off the price; home delivery band or collection in Carlisle; both parents' named tests with certificates on request; the guarantee as guarantee_label words it."
+      "note": "Five lines, each a fact from data: one price per sex in this litter; the deposit books the viewing, reserves the puppy and comes off the price; home delivery band or collection in Carlisle; both parents' named tests with certificates on request; the guarantee as guarantee_label words it.",
+      "entities": [
+        {
+          "id": "ont:refundable-deposit",
+          "why": "(Recommended) Takeaway 2: the deposit books the viewing, reserves the puppy and comes off the price (FU Q3/Q5 'viewing stays deposit-first'; FU 2026-09-27, the deposit and the price); QF q-how-much-is-the-deposit-2cce23; no pool page states deposit terms (universal_gaps[2]). Trade-off: the refund wording comes only as deposit_refund_clause words it, so a five-line summary carries the whole clause or none of it."
+        },
+        {
+          "id": "ont:defra-approved-transport",
+          "why": "Takeaway 3: the delivery band from data, priced by distance (delivery_note)."
+        },
+        {
+          "id": "ont:carlisle",
+          "why": "Takeaway 3: collection in Carlisle, the stated alternative to delivery (how_we_win[0])."
+        },
+        {
+          "id": "ont:l-2-hga-dna-test",
+          "why": "Takeaway 4: named as a test both parents had, with the certificates on request (ledger certificates-on-request; the breeder's chat ruling, 2026-10-05). PROPOSED, so never a result or 'clear' (ledger parents-dna-clear: no proof on file)."
+        },
+        {
+          "id": "ont:hc-hsf4-dna-test",
+          "why": "Takeaway 4, the second named test, on the same rule: named, never a result."
+        },
+        {
+          "id": "ont:health-guarantee",
+          "why": "Takeaway 5: the guarantee as guarantee_label words it; nothing typed."
+        }
+      ]
     },
     {
       "n": "6",
@@ -115,7 +225,17 @@
       "cat": "A",
       "why": "—",
       "keywords": {},
-      "image": "Reviewer card: The Victoria Family, Manchester (data/reviews.json, their own review — the one review from Greater Manchester)"
+      "image": "Reviewer card: The Victoria Family, Manchester (data/reviews.json, their own review — the one review from Greater Manchester)",
+      "entities": [
+        {
+          "id": "ont:manchester",
+          "why": "(Recommended) The one review on file from Greater Manchester (data/reviews.json, The Victoria Family, place 'Manchester, UK'). Every pool page is a feed of other people's adverts (universal_gaps[9]), so a local buyer's own words are a signal none of them carries. Trade-off: only the review's own text renders — nothing added, trimmed into a new claim or invented (working rule 9)."
+        },
+        {
+          "id": "ont:home-raised-litter",
+          "why": "The review's own words, 'raised with so much care and early socialisation', sit beside our ledgered home-raising (ledger litters-home-raised-never-kennels); the card claims nothing beyond the quote."
+        }
+      ]
     },
     {
       "n": "7",
@@ -170,7 +290,29 @@
         "secondary": []
       },
       "image": "—",
-      "note": "The question file's six top picks (data/queries/blue-staffy-puppies-manchester-uk.json, faq: top), in score order (5, 5, 4, 4, 3, 3), file order within a score. Each answer comes only from the bank row or data key its found_in / fact_source names; the deposit answer adds deposit_refund_clause only as a clause of the deposit sentence and never says plainly 'refundable'. FAQPage carries exactly these questions."
+      "note": "The question file's six top picks (data/queries/blue-staffy-puppies-manchester-uk.json, faq: top), in score order (5, 5, 4, 4, 3, 3), file order within a score. Each answer comes only from the bank row or data key its found_in / fact_source names; the deposit answer adds deposit_refund_clause only as a clause of the deposit sentence and never says plainly 'refundable'. FAQPage carries exactly these questions.",
+      "entities": [
+        {
+          "id": "ont:defra-approved-transport",
+          "why": "(Recommended) Delivery answers three of the six top picks: 'Can My Blue Staffy Puppy Be Delivered to My Home?' (QF q-can-i-get-a-blue-staffy-puppy-delivered-ad16e3, bank about-delivery-home), 'Do You Deliver Puppies Across the UK?' (QF q-do-you-deliver-across-the-uk-fb0c4a, bank delivery: delivery_note and the band) and the where-to-buy pick (bank home-find-breeders: 'deliver across the United Kingdom'). Trade-off: no journey time, date or per-borough price in any answer."
+        },
+        {
+          "id": "ont:carlisle",
+          "why": "'Where Do I Find Blue Staffy Puppies to Buy Near Manchester?' (QF q-where-can-i-find-blue-staffy-breeders-in-fbecea, score 5): the bank answer says we raise them 'in our own home in Carlisle' (home-find-breeders), the honest location no pool page gives (universal_gaps[4])."
+        },
+        {
+          "id": "ont:manchester",
+          "why": "The block H2 names Manchester buyers, and the score-5 pick keeps 'Near Manchester' from its own wording (faq_rewordings); no Manchester is added beyond that (STOP 1 q12)."
+        },
+        {
+          "id": "ont:blue-coat",
+          "why": "'How Much Does Each Blue Staffy Puppy Cost?' (QF q-how-much-does-a-blue-staffy-cost-uk-4051c2, score 5; Google PAA's first question): the bank answer (listing-cost) points to each puppy's own price, read from data/price-matrix.json and said of this litter only (q09)."
+        },
+        {
+          "id": "ont:refundable-deposit",
+          "why": "'How Much Is Your Deposit?' (QF q-how-much-is-the-deposit-2cce23): deposit_gbp, with deposit_refund_clause only as a clause of the deposit sentence, never a plain 'refundable' (outline note)."
+        }
+      ]
     },
     {
       "n": "8",
@@ -270,7 +412,45 @@
       },
       "image": "H2: Lisa Bright at home with a puppy on her lap — a served photo first · H3 deposit: a plain photo of the reservation moment (no on-image text, or any text read as copy, lessons 7) · H3 what to ask: Maggie with the litter, the parent a buyer meets · H3 visit: the home setting in Carlisle where the litter is raised — served photos first, never a Manchester location",
       "fear": "Paying a deposit to a seller found online and never hearing back (FAN §3, excerpt 5).",
-      "note": "The H2 answers in its first sentence: because the deposit is what books the viewing and holds the puppy, and it comes off the price. Bank transfer is never framed as a red flag (q04). Each piece of buyer advice here is something our own process passes."
+      "note": "The H2 answers in its first sentence: because the deposit is what books the viewing and holds the puppy, and it comes off the price. Bank transfer is never framed as a red flag (q04). Each piece of buyer advice here is something our own process passes.",
+      "entities": [
+        {
+          "id": "ont:refundable-deposit",
+          "why": "(Recommended) The section's subject (how_we_win[1], its why_source): the deposit books the viewing in Carlisle, reserves the puppy and comes off the price (FU Q3/Q5 'viewing stays deposit-first'; FU 2026-09-27, the deposit and the price), paid by bank transfer (answer board 2026-09-29 q04). The fear is paying a stranger found online (fan-out §3, excerpt 5), and no pool page states an amount, a refund or what a deposit secures (universal_gaps[2]). Trade-off: the H5 and H6 answer from deposit_refund_clause alone, never a plain 'refundable', and no video call stands in for the visit (STOP 1 q08)."
+        },
+        {
+          "id": "ont:carlisle",
+          "why": "H3 'What Will I See When I Visit a Staffy Breeder's Home in Carlisle?': the deposit books the viewing here (QF q-can-i-visit-you-before-i-decide-4fc075). Town only (Known Issue 16)."
+        },
+        {
+          "id": "ont:maggie",
+          "why": "The dam a buyer meets at the visit (the H3 image: Maggie with the litter). QF q-how-can-i-avoid-buying-from-a-puppy-5e9d7e (score 5) asks to see the puppy with its mother, and the AI answer's first question is 'Can I see the puppy with its mother, at the place where it was raised?' (LLM 'meet the mother')."
+        },
+        {
+          "id": "ont:jones",
+          "why": "Both parents are seen before the buyer commits (faq whyus-evidence), and H4 asks for both parents' certificates (ledger certificates-on-request); the sire is named so that 'both parents' is never vague."
+        },
+        {
+          "id": "ont:lisa-bright",
+          "why": "'This Staffy breeder' answers in the first person: one named breeder for the Greater Manchester buyer (S2, STOP 1 q02). No pool page names an accountable seller (universal_gaps[9])."
+        },
+        {
+          "id": "ont:kc-registration-paperwork",
+          "why": "At the visit the buyer sees both parents' registration papers and the vet records before committing (faq whyus-evidence). The alias 'registration papers' is used of the parents only: no puppy is called registered (ledger parents-kc-registered-application-form)."
+        },
+        {
+          "id": "ont:rspca",
+          "why": "This section's outside citation (external-links.md §8: the RSPCA's buying-from-a-breeder advice, see mum and her pups together); QF q-how-do-i-tell-an-ethical-breeder-from-414f97 (score 4). Named for its buying advice only, never for rehoming (STOP 1 q10), and the copy never says it endorses our deposit-first order."
+        },
+        {
+          "id": "ont:the-kennel-club",
+          "why": "H3 'Which Questions Should a Staffy Breeder Answer Before Any Money Moves?': the registry publishes its own questions to ask a breeder before and during a visit (link library line 51), and royalkennelclub.com is the AI answer's first cited domain (LLM citations). Named here, not linked: the external set links the registry in sections 9 and 19."
+        },
+        {
+          "id": "ont:rcvs",
+          "why": "H6 'Will Your Vet Answer My Questions Before I Commit?': yes, buyers may contact our vet (FU Q12), and the RCVS register is where a buyer checks that a vet is registered (link library line 75). We name no practice."
+        }
+      ]
     },
     {
       "n": "9",
@@ -361,7 +541,53 @@
         ]
       },
       "image": "H2: Jones and Maggie, the sire and dam — served parent photos first · H3 L-2-HGA: a calm vet-check photo (no certificate prop and no on-image text, lessons 7) · H3 raising: the litter indoors with the family — a served home-raised photo first",
-      "note": "The H5 is a warning in our own favour: we hold the certificates and share them after contact; the page states no result. The H6 is a citation (the external link chosen at Task 15). Never 'tested clear', 'cleared' or a score."
+      "note": "The H5 is a warning in our own favour: we hold the certificates and share them after contact; the page states no result. The H6 is a citation (the external link chosen at Task 15). Never 'tested clear', 'cleared' or a score.",
+      "entities": [
+        {
+          "id": "ont:l-2-hga-dna-test",
+          "why": "(Recommended) The H3 names L-2-HGA (QF q-what-does-l-2-hga-testing-mean-for-27d9f9; LLM 'l-2-hga' medium), and the Kennel Club's breed page lists it under pre-breeding screening (external-links.md §9 H6); content_gap[5] is the row's why_source. Trade-off: PROPOSED with no proof on file, so it is named as a test the parents had, with the certificate shared on request (ledger certificates-on-request) — never 'clear', a result or a score (ledger parents-dna-clear: no proof on file). The H5 says why."
+        },
+        {
+          "id": "ont:hc-hsf4-dna-test",
+          "why": "The second named test (LLM 'hc-hsf4' medium; FU Q9), on the same rule: named, never a result."
+        },
+        {
+          "id": "ont:bva-kc-eye-scheme",
+          "why": "H4 'Which Eye and Elbow Screening Sits Beside the DNA Tests?' (FU Q9: 'hereditary cataracts and other inherited eye diseases'); LLM 'eye testing' and 'litter eye screening' are on_page false. Written by its alias, eye screening: the breeder named the screening, not the scheme, so the copy never says the parents were examined under it (external-links.md §9 H4 copy note)."
+        },
+        {
+          "id": "ont:elbow-screening",
+          "why": "The same H4 (FU Q9, 'mention elbows as well'; LLM 'elbow testing' on_page false). Screening only, never a score or a grade (ledger vocabulary hip-elbow-score)."
+        },
+        {
+          "id": "ont:bva",
+          "why": "The H4's outside citation, the eye scheme page (external-links.md §9 H4). Never within 20 characters of 'hip', 'elbow' or 'score' (ledger vocabulary hip-elbow-score)."
+        },
+        {
+          "id": "ont:the-kennel-club",
+          "why": "H6 'Where Does the Kennel Club Explain These Health Schemes?' is the citation slot: the registry's breed page lists the pre-breeding screening (external-links.md §9 H6). The copy never implies our parents' results can be looked up there."
+        },
+        {
+          "id": "ont:maggie",
+          "why": "The H2 image is the two parents; QF q-are-the-parents-of-your-blue-staffy-puppy-523777 (score 6, the top-scored question) asks about both of them."
+        },
+        {
+          "id": "ont:jones",
+          "why": "The sire, on the same grounding; the AI answer asks for 'the mother's and father's' results, which this section answers with the named tests and the certificates on request."
+        },
+        {
+          "id": "ont:home-raised-litter",
+          "why": "H3 'Where Does Each Blue Staffy Puppy Spend Its First Weeks in Our Carlisle Home?': in our home, never in kennels (ledger litters-home-raised-never-kennels); QF q-are-the-puppy-raised-in-a-family-home-c93ef5; LLM 'socialisation', 'household noises' and 'handling' are on_page false."
+        },
+        {
+          "id": "ont:puppy-culture",
+          "why": "H4 'What Do Puppy Culture and ENS Add in the First Weeks?' (FU Q16: 'both')."
+        },
+        {
+          "id": "ont:early-neurological-stimulation",
+          "why": "The same H4, by its alias ENS (FU Q16: 'both')."
+        }
+      ]
     },
     {
       "n": "10",
@@ -468,7 +694,41 @@
         "rows": "6, one per puppy, status Available only",
         "mobile": "stacks into labelled rows below 640px (.stack-table, data-label cells; rule 13)",
         "why": "universal_gaps[1] — 0 tables on page one"
-      }
+      },
+      "entities": [
+        {
+          "id": "ont:blue-coat",
+          "why": "(Recommended) The H2 and its table carry this litter from data/puppies.json (the row's own source): blue, blue and white, white. PAA asks 'How much does a blue Staffy puppy cost?' (QF q-how-much-does-a-blue-staffy-cost-uk-4051c2, score 5), page one's only blue claim is a colour premium (how_we_win[3]), and ours is one price per sex whatever the coat (data/price-matrix.json; content_gap[3], the why_source). Trade-off: said of this litter only, with the H6's next-litter note (q09), and never 'rare'."
+        },
+        {
+          "id": "ont:staffordshire-bull-terrier",
+          "why": "The H2's 'Staffordshire Bull Terrier Puppies for Sale': the strategy row's primary keyword (strategy file line 118) and the for-sale family (STOP 1 q04)."
+        },
+        {
+          "id": "ont:maggie",
+          "why": "H3 'Who Are Maggie and Jones, the Parents Behind Our Blue Staffies?' (FU, which parents); QF q-who-are-the-bluestaffyuk-stud-dogs-and-ho-54449c."
+        },
+        {
+          "id": "ont:jones",
+          "why": "The sire, in the same H3, on the same grounding."
+        },
+        {
+          "id": "ont:the-kennel-club",
+          "why": "H4 'Can I Check the Parents' Kennel Club Registration Myself?': we give both parents' registration numbers so a buyer can check the pedigree (faq whyus-paperwork). The PAA related search 'Blue staffy puppies manchester kennel club' and the registry SERP's 'Staffy puppies for sale manchester kennel club' are keywords placed on this row."
+        },
+        {
+          "id": "ont:kc-registration-paperwork",
+          "why": "The parents' registration: 'Maggie and Jones are both Kennel Club registered' is the one ledgered sentence (ledger parents-kc-registered-application-form). The alias is used of the parents only, and no puppy is called registered."
+        },
+        {
+          "id": "ont:kc-registration-application-form",
+          "why": "What the price carries for the puppy: its KC registration application form, so the owner registers it (ledger parents-kc-registered-application-form, answer board 2026-10-04 q06); QF q-are-your-blue-staffy-puppy-kennel-club-re-edca46."
+        },
+        {
+          "id": "ont:health-guarantee",
+          "why": "A FAB Feature the price carries: the guarantee as guarantee_label words it, nothing typed (QF q-do-you-offer-health-guarantees-for-your-b-04ef4b)."
+        }
+      ]
     },
     {
       "n": "11",
@@ -479,7 +739,17 @@
       "cat": "A",
       "why": "—",
       "keywords": {},
-      "image": "Reviewer card: Mark J, London (data/reviews.json, Mark J's review)"
+      "image": "Reviewer card: Mark J, London (data/reviews.json, Mark J's review)",
+      "entities": [
+        {
+          "id": "ont:vaccination-record",
+          "why": "(Recommended) The review's own words, 'with all his papers and medical records meticulously organized' (data/reviews.json, Mark J): the records a puppy goes home with (faq whyus-paperwork, the vaccination records). Trade-off: a London reviewer on a Manchester page; only the review's text renders, and its 'health testing' stays the reviewer's word, never repeated as our claim."
+        },
+        {
+          "id": "ont:staffordshire-bull-terrier",
+          "why": "The review names the breed in full ('to buy a Staffordshire Bull Terrier in the UK')."
+        }
+      ]
     },
     {
       "n": "12",
@@ -539,7 +809,41 @@
         "secondary": []
       },
       "image": "—",
-      "note": "The question file's seven middle picks in score order (6, 5, 4, 4, 4, 4, 4). Two answers need care (lessons 9): 'Should I See the Mother With Her Puppy Before Money Changes Hands?' (pick wording 'Should I See the Puppy With Its Mother Before Any Money Changes Hands?', faq_rewordings) — its bank row (health-avoid-puppy-farm) says to read the contract 'before any money moves', which our deposit-books-the-viewing order does not follow; the answer says how our order works and what a buyer can check before the deposit, and the bank row needs the breeder's wording before the board (open flag). 'Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?' is kept (STOP 1 q11 b) and answered by naming L-2-HGA, HC-HSF4 and the eye and elbow screening, with the certificates shared on request — never a result (ledger parents-dna-clear: no proof on file in the repository)."
+      "note": "The question file's seven middle picks in score order (6, 5, 4, 4, 4, 4, 4). Two answers need care (lessons 9): 'Should I See the Mother With Her Puppy Before Money Changes Hands?' (pick wording 'Should I See the Puppy With Its Mother Before Any Money Changes Hands?', faq_rewordings) — its bank row (health-avoid-puppy-farm) says to read the contract 'before any money moves', which our deposit-books-the-viewing order does not follow; the answer says how our order works and what a buyer can check before the deposit, and the bank row needs the breeder's wording before the board (open flag). 'Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?' is kept (STOP 1 q11 b) and answered by naming L-2-HGA, HC-HSF4 and the eye and elbow screening, with the certificates shared on request — never a result (ledger parents-dna-clear: no proof on file in the repository).",
+      "entities": [
+        {
+          "id": "ont:l-2-hga-dna-test",
+          "why": "(Recommended) Two of the seven middle picks ask about the parents' tests: 'Are the Parents of Every Blue Staffy Puppy You Breed Health-Tested?' (QF q-are-the-parents-of-your-blue-staffy-puppy-523777, score 6, the top-scored question) and the kept DNA pick (QF q-which-genetic-tests-have-the-parents-had-19da02, STOP 1 q11 b). Trade-off: both are answered by naming the tests and offering the certificates on request, never a result; the pick's 'Tested Clear' stays inside the question (evidence_audit exempts questions) and no answer echoes it."
+        },
+        {
+          "id": "ont:hc-hsf4-dna-test",
+          "why": "The same two picks name HC-HSF4: named, never a result (ledger parents-dna-clear: no proof on file)."
+        },
+        {
+          "id": "ont:vet-signed-health-card",
+          "why": "'What Vaccinations, Worming and Flea Treatments Has the Puppy Had?' (QF q-what-has-a-puppy-had-before-it-comes-46de43): the bank answer ends 'It all goes on a vet-signed health card' (health-vaccinations). LLM 'microchip' and 'vaccinations' are high band and on_page false."
+        },
+        {
+          "id": "ont:vaccination-record",
+          "why": "The same pick: a first vaccination covering distemper, parvovirus, leptospirosis and hepatitis (bank health-vaccinations). The second dose and the booster are the owner's own vet's."
+        },
+        {
+          "id": "ont:dog-microchipping-law",
+          "why": "'Has the Puppy Been Microchipped and Vet Checked?' (QF q-what-comes-with-a-puppy-ccf7f1, score 4; LLM 'microchip' high, on_page false): the law is named, with no compliance claim (link library line 46)."
+        },
+        {
+          "id": "ont:maggie",
+          "why": "'Should I See the Mother With Her Puppy Before Money Changes Hands?' (QF q-how-can-i-avoid-buying-from-a-puppy-5e9d7e, score 5): the answer says how our order works — the deposit books the visit where the buyer sees Maggie with her litter — and never repeats a 'see before you pay' rule we do not follow (lessons 9; the outline's open flag on bank health-avoid-puppy-farm)."
+        },
+        {
+          "id": "ont:after-collection-support",
+          "why": "'Can I Contact You for Advice for the Dog's Whole Life?' (QF q-do-you-offer-support-after-i-take-my-d4ebe8, score 4; bank home-after-support; ledger breeder-support-after-collection)."
+        },
+        {
+          "id": "ont:lisa-bright",
+          "why": "The block H2 asks 'a Staffy breeder', and 'How Do I Spot a Bad Staffy Breeder?' (QF q-how-do-i-tell-an-ethical-breeder-from-414f97) is answered by what an ethical breeder does (bank buying-puppy-farm), which our own process passes, in the breeder's first person."
+        }
+      ]
     },
     {
       "n": "13",
@@ -617,7 +921,61 @@
       },
       "image": "H2: a puppy settled for travel in a crate — a served delivery photo first, no van lettering or phone digits on it (lessons 7) · H3 delivery price: the delivery band as a plain image or none (any words on it are read as copy) · H3 collection: Lisa handing a puppy over at home in Carlisle — served photo first",
       "fear": "Where are the puppies, really, and how does one get here? (Universal gaps: No honest location; No delivery answer)",
-      "note": "Answers ChatGPT's 'don't have the puppy delivered' warning without a video call (q08): the buyer can collect in Carlisle after seeing both parents, or take delivery after the viewing; the deposit clause applies either way."
+      "note": "Answers ChatGPT's 'don't have the puppy delivered' warning without a video call (q08): the buyer can collect in Carlisle after seeing both parents, or take delivery after the viewing; the deposit clause applies either way.",
+      "entities": [
+        {
+          "id": "ont:defra-approved-transport",
+          "why": "(Recommended) The section's first route (how_we_win[0], its why_source): UK home delivery by DEFRA-approved transport inside the delivery_min_gbp–delivery_max_gbp band, priced by distance (delivery_note). Three score-4 delivery questions ask for it (QF q-can-i-get-a-blue-staffy-puppy-delivered-ad16e3, q-can-you-deliver-a-blue-staffy-puppy-to-74fa14, q-do-you-deliver-across-the-uk-fb0c4a), and no pool page says how a puppy reaches a Manchester home (universal_gaps[3]). Trade-off: no mileage, journey time, delivery date or per-borough price; the H5 says why, as a warning."
+        },
+        {
+          "id": "ont:greater-manchester",
+          "why": "PROPOSED row (source: the strategy file, line 118): the H2's destination and a placed secondary keyword ('greater manchester'). Bing ranks the listings under /greater-manchester/ (serp_bing.json, entities.md)."
+        },
+        {
+          "id": "ont:salford",
+          "why": "PROPOSED row (source: data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json, the related search 'Staffy puppies for sale near Salford'): the first borough the H3 names (S2: the boroughs are named once, inside the delivery answer, STOP 1 q02). The rank-2 Google result is Staffie Owners' Salford page, and Salford is on 3/5 competitor domains (entities.md)."
+        },
+        {
+          "id": "ont:manchester",
+          "why": "The city the delivery answer is written for; the secondary 'staffie puppies for sale in salford, manchester' is placed on this row."
+        },
+        {
+          "id": "ont:carlisle",
+          "why": "H3 'Is Collection in Carlisle Better Than Delivery for Greater Manchester Homes?': the second route. ChatGPT's 'don't have the puppy delivered' warning is answered by collection here after the viewing, or delivery after it (outline note), with no video call (STOP 1 q08)."
+        },
+        {
+          "id": "ont:cumbria",
+          "why": "The collection point's region (data/settings.json address.region): town and region only (Known Issue 16)."
+        },
+        {
+          "id": "ont:welfare-in-transport-pb10308",
+          "why": "H6 'Where Does the Government Set Out Rules for Moving Animals?': the government's welfare-in-transport guidance for dogs and cats (link library line 55) is the rules DEFRA-approved transport works to. Named, with no compliance claim (working rule 9). The external set does not link it because it adds no domain (external-links.md judgment 4), so the H6 names it in words unless the merge adds that library row."
+        },
+        {
+          "id": "ont:uk-government",
+          "why": "The publisher of that guidance (link library line 55): the H6 asks where the government sets out the rules."
+        },
+        {
+          "id": "ont:liverpool",
+          "why": "The nearby line (links-plan.md): the nearest location page in data/locations.json, by straight-line distance (ranking only, never written on the page). bsuk-entity-agent rule 5: a location page names its nearby cities."
+        },
+        {
+          "id": "ont:south-yorkshire",
+          "why": "The nearby line: the second-nearest location page (links-plan.md); bsuk-entity-agent rule 5."
+        },
+        {
+          "id": "ont:newcastle-under-lyme",
+          "why": "The nearby line: the third-nearest location page (links-plan.md); bsuk-entity-agent rule 5."
+        },
+        {
+          "id": "ont:leeds",
+          "why": "The nearby line: the fourth-nearest location page (links-plan.md); bsuk-entity-agent rule 5."
+        },
+        {
+          "id": "ont:york",
+          "why": "The nearby line: the nearest location page that is indexed today, with 441 words (links-plan.md); bsuk-entity-agent rule 5."
+        }
+      ]
     },
     {
       "n": "14",
@@ -670,7 +1028,37 @@
         ]
       },
       "image": "H2: a puppy beside its folder of papers — a served paperwork photo or the paperwork checklist infographic, every word on it read as copy before the board (lessons 7) · H3: a plain photo of the Kennel Club application form being handed over, no legible personal data",
-      "note": "Buyer advice is worded so our own puppies pass it: a buyer asks for the parents' registration numbers and the application form, never 'the puppy's registration certificate' (ours are not registered at sale)."
+      "note": "Buyer advice is worded so our own puppies pass it: a buyer asks for the parents' registration numbers and the application form, never 'the puppy's registration certificate' (ours are not registered at sale).",
+      "entities": [
+        {
+          "id": "ont:vet-signed-health-card",
+          "why": "(Recommended) The first item that travels home (content_gap[4], the why_source): every puppy leaves with a vet-signed health card that carries its first vaccination, microchip, worming and flea treatment (ledger puppy-vet-signed-health-card, confirmed 2026-10-04). It is the research's entity to build around: microchip and vaccinations are the AI answer's only high-band entities, on_page false (LLM intel 2026-10-07). Trade-off: the ledger pattern is scoped to London's one sentence, so Manchester's sentence needs its own pattern on that row at build; never 'health certificate' or 'vet checked' in our own sentence."
+        },
+        {
+          "id": "ont:kc-registration-application-form",
+          "why": "H4 'Why Does Our Puppy Leave With an Application Form, Not a Certificate?', and the H5 and H6 below it: the form goes home so the owner registers the puppy (ledger parents-kc-registered-application-form, answer board 2026-10-04 q06). QF q-what-paperwork-comes-with-a-puppy-7f78f0 (score 4), 'What paperwork should a puppy advertised as KC registered come with?', is this row's primary keyword."
+        },
+        {
+          "id": "ont:the-kennel-club",
+          "why": "The register the owner joins with that form: H5 'Is Each Puppy Already on the Kennel Club Register When It Leaves?' and H6 'Who Completes the Kennel Club Form, You or Us?'; secondary 'kennel club'."
+        },
+        {
+          "id": "ont:puppy-purchase-contract",
+          "why": "The written puppy purchase contract (faq whyus-paperwork); 'contract' is on none of the eight pool pages (universal_gaps[7]). Its take-back terms are FU Q6. No deposit timing is attached to it here (lessons 9)."
+        },
+        {
+          "id": "ont:vaccination-record",
+          "why": "The vaccination records (faq whyus-paperwork); LLM 'vaccinations' is high band and on_page false."
+        },
+        {
+          "id": "ont:dog-microchipping-law",
+          "why": "The microchipping details go home (faq whyus-paperwork); LLM 'microchip' is high band and on_page false. The law is named, with no compliance claim (link library line 46)."
+        },
+        {
+          "id": "ont:kc-registration-paperwork",
+          "why": "The parents' registration numbers, so a buyer can check the pedigree (faq whyus-paperwork). The alias is used of the parents only: the outline's open flag words bank whyus-paperwork's 'Kennel Club registration paperwork' as the application form for the puppy."
+        }
+      ]
     },
     {
       "n": "15",
@@ -722,7 +1110,25 @@
           "blue staffy puppy"
         ]
       },
-      "image": "H2: a healthy adult blue Staffy outdoors — a served wellbeing photo first · H3 itching: a puppy at a vet check (no on-image text) · H3 guarantee: a plain photo of the guarantee paper being read, the length never painted on the image"
+      "image": "H2: a healthy adult blue Staffy outdoors — a served wellbeing photo first · H3 itching: a puppy at a vet check (no on-image text) · H3 guarantee: a plain photo of the guarantee paper being read, the length never painted on the image",
+      "entities": [
+        {
+          "id": "ont:health-guarantee",
+          "why": "(Recommended) H3 'What Does the Written Guarantee on a Blue Staffy Puppy Cover?': its length only as guarantee_label words it and its cover only as guarantee_cover words it, with the terms asked for before a deposit (guarantee_note). QF q-do-you-offer-health-guarantees-for-your-b-04ef4b (extra_sections, health); the word 'guarantee' is on none of the eight pool pages (universal_gaps[7], the why_source). Trade-off: no length is typed and no cover is paraphrased, so the answer is shorter than a buyer may want, and the H4 sends them to ask."
+        },
+        {
+          "id": "ont:staffordshire-bull-terrier",
+          "why": "H2 'Which Health Problems Can Staffy Dogs Develop, and What Will We Stand Behind?' answers QF q-what-are-staffy-prone-to-323dfd (primary 'what are staffies prone to'). The breed's skin predispositions are stated as the study's findings (external-links.md §15, Pegram et al. 2020), never as our dogs' results."
+        },
+        {
+          "id": "ont:l-2-hga-dna-test",
+          "why": "The two inherited conditions the parents are screened for open the answer (faq whyus-prone-to) and jump to section 9, which covers them in depth (links-plan.md, jump link): named, never a result."
+        },
+        {
+          "id": "ont:hc-hsf4-dna-test",
+          "why": "The same jump-link sentence: named, never a result."
+        }
+      ]
     },
     {
       "n": "16",
@@ -733,7 +1139,13 @@
       "cat": "A",
       "why": "—",
       "keywords": {},
-      "image": "—"
+      "image": "—",
+      "entities": [
+        {
+          "id": "ont:lisa-bright",
+          "why": "(Recommended) The sign-up comes from the breeder, in the first person: the one entity a 35-word block can carry honestly. Trade-off: no density gain."
+        }
+      ]
     },
     {
       "n": "17",
@@ -797,7 +1209,29 @@
           "why weren't staffordshire bull terriers banned in the uk"
         ]
       },
-      "image": "H2: a blue Staffy relaxed indoors with its family — a served family photo first · H3 banned-breed line: a calm blue Staffy on a lead in a town street, no identifiable Manchester landmark claimed · H3 downsides: a puppy in early socialisation with children at home — served photo first"
+      "image": "H2: a blue Staffy relaxed indoors with its family — a served family photo first · H3 banned-breed line: a calm blue Staffy on a lead in a town street, no identifiable Manchester landmark claimed · H3 downsides: a puppy in early socialisation with children at home — served photo first",
+      "entities": [
+        {
+          "id": "ont:dangerous-dogs-act-1991",
+          "why": "(Recommended) H3 'What Does the Banned-Breed Line Mean for Staffy Dogs in a Rented Manchester Home?': the Staffordshire Bull Terrier is not on the government's list of banned types (data/breed-standards.json uk_legal_status; external-links.md §17); QF q-is-the-staffy-a-banned-breed-in-the-954365 and q-why-werent-staffy-banned-in-the-uk-9c6951 are secondary keywords placed here. Trade-off: stated only as 'not a banned breed' or 'not on the government's list', never 'legal' or 'cannot be seized' (the outline's open flag on bank guide-banned-breed and whyus-not-banned); the gov.uk page judges a type by its looks."
+        },
+        {
+          "id": "ont:uk-government",
+          "why": "The publisher of the banned-types list, this section's outside citation (external-links.md §17)."
+        },
+        {
+          "id": "ont:staffordshire-bull-terrier",
+          "why": "Google's PAA life questions are answered by no pool page: 'Is blue Staffy aggressive?', 'Are blue Staffies suitable for first-time dog owners?', 'Can a Staffy be left alone for hours?' and 'Are blue staffies good pets?' (universal_gaps[11], the why_source; how_we_win[6]). Breed facts in a neutral register."
+        },
+        {
+          "id": "ont:manchester",
+          "why": "H2 'How Do Staffies in Manchester Fit Into a Busy Household?': primary 'staffies in manchester' (the gap matrix keyword, 1/19). No named park, vet, business or city statistic (outline why)."
+        },
+        {
+          "id": "ont:home-raised-litter",
+          "why": "H4 'Will Our Puppies Have Met Children and Cats Before Moving to Manchester?': every litter meets children, cats and older people before it leaves (faq about-home-raised; ledger litters-home-raised-never-kennels)."
+        }
+      ]
     },
     {
       "n": "18",
@@ -836,7 +1270,17 @@
           "staffy dogs"
         ]
       },
-      "image": "H2: a Staffy leaning into its owner — a served bonding photo first · H3: two puppies from the litter, a boy and a girl, together — served photos first"
+      "image": "H2: a Staffy leaning into its owner — a served bonding photo first · H3: two puppies from the litter, a boy and a girl, together — served photos first",
+      "entities": [
+        {
+          "id": "ont:staffordshire-bull-terrier",
+          "why": "(Recommended) Extra section 3 (QF extra_sections, temperament, uncovered): attachment to one person (QF q-do-staffy-get-attached-to-one-person-6d9e29, primary) and male or female (QF q-is-a-male-or-female-staffy-better-d4eed7, a PAA question on none of the eight pool pages; how_we_win[6], the why_source). Temperament is shaped more by training and socialisation than by sex (faq guide-male-female). Trade-off: breed facts in a neutral register, never a first-hand claim about our dogs as adults (lessons 10)."
+        },
+        {
+          "id": "ont:pdsa",
+          "why": "H4 'How Long Should a Grown Staffy's Daily Walks and Play Last?': the PDSA's breed page gives the minimum daily exercise (external-links.md §18), a breed figure (QF q-how-much-exercise-does-a-staffy-need-dail-0d2427); the AI answer cites pdsa.org.uk (LLM citations)."
+        }
+      ]
     },
     {
       "n": "19",
@@ -894,7 +1338,33 @@
           "what is the average lifespan of a blue staffy"
         ]
       },
-      "image": "H2: the litter's coats side by side — blue, white, blue and white — a served litter photo first, the alt naming coats without ranking them · H3 breed: a served Staffordshire Bull Terrier side-profile photo (no comparison chart with words unless read as copy, lessons 7) · H3 lifespan: an older, healthy Staffy — served photo first"
+      "image": "H2: the litter's coats side by side — blue, white, blue and white — a served litter photo first, the alt naming coats without ranking them · H3 breed: a served Staffordshire Bull Terrier side-profile photo (no comparison chart with words unless read as copy, lessons 7) · H3 lifespan: an older, healthy Staffy — served photo first",
+      "entities": [
+        {
+          "id": "ont:blue-coat",
+          "why": "(Recommended) M1 puts colour last, so the coat is the page's last body question (how_we_win[3], the why_source). The Royal Kennel Club standard lists blue, alone or with white (data/breed-standards.json colours), and states no rarity figure, so we give none (faq breed-blue-rarity; primary 'how rare are blue staffies'); the Kennel Club puts health and temperament before colour (external-links.md §19). Trade-off: no colour genetics, because the inheritance question is blocked (QF q-can-a-blue-staffy-puppy-come-from-parents-4e444c), and never 'rare' or a premium."
+        },
+        {
+          "id": "ont:staffordshire-bull-terrier",
+          "why": "H3 'Are Blue Staffies a Breed of Their Own, Apart From Pit Bulls and AmStaffs?': the English breed (faq whyus-pit-bull, whyus-american-english; QF q-is-a-staffy-a-pitbull-e881f1). H3 on lifespan: 12–14 years whatever the coat (faq health-lifespan, the Staffordshire Bull Terrier Club's figure)."
+        },
+        {
+          "id": "ont:american-staffordshire-terrier",
+          "why": "The same H3, and the H4 on an English or American Staffy (QF q-how-can-i-tell-if-my-puppy-is-c8ea81, q-what-is-the-difference-between-an-amstaff-0fd204). An advert listed in Wigan on Pets4Homes offers 'Blue American staffies' (entities.md), so a Manchester buyer meets the confusion in the listings; a separate, larger breed (faq whyus-amstaff)."
+        },
+        {
+          "id": "ont:the-kennel-club",
+          "why": "This section's outside citation, the registry's breed page (external-links.md §19), and the publisher of the breed standard the colours come from."
+        },
+        {
+          "id": "ont:kc-registration-paperwork",
+          "why": "H4 'What Do the Pedigree Papers Show About an English or American Staffy?': checking the pedigree papers and Kennel Club registration is how a buyer tells them apart (faq whyus-american-english). Here that means the parents' papers; our puppies go home with the application form."
+        },
+        {
+          "id": "ont:dangerous-dogs-act-1991",
+          "why": "'Is a Staffy a pit bull?': the government's list bans the Pit Bull Terrier and not the Staffordshire Bull Terrier (data/breed-standards.json uk_legal_status; faq whyus-pit-bull). Stated only that way, never 'legal'."
+        }
+      ]
     },
     {
       "n": "20",
@@ -905,7 +1375,13 @@
       "cat": "A",
       "why": "—",
       "keywords": {},
-      "image": "Reviewer card: Rachel L., London (data/reviews.json, Rachel L.'s review)"
+      "image": "Reviewer card: Rachel L., London (data/reviews.json, Rachel L.'s review)",
+      "entities": [
+        {
+          "id": "ont:home-raised-litter",
+          "why": "(Recommended) The review's own words, 'the home-raised environment' (data/reviews.json, Rachel L.), sit beside our ledgered home-raising (ledger litters-home-raised-never-kennels). Trade-off: a London reviewer on a Manchester page, and her 'health checks' stays her word, never repeated as our claim."
+        }
+      ]
     },
     {
       "n": "21",
@@ -983,7 +1459,25 @@
         ]
       },
       "image": "—",
-      "note": "The question file's seven bottom picks in score order (4, 4, 4, 4, 4, 2, 2). Bottom row named for the research board's G6 so its placed keywords stay on it; the ten G6 breed and lifespan questions are not FAQ picks, and the 'Colour last' body section answers them. 'Is Blue Staffy Aggressive?' answers with the banned-breed line only as the fact table words it (never 'legal'). The food answer is the bank's: the puppy goes home with the food it has been raised on (starter pack), and the owner's vet advises after."
+      "note": "The question file's seven bottom picks in score order (4, 4, 4, 4, 4, 2, 2). Bottom row named for the research board's G6 so its placed keywords stay on it; the ten G6 breed and lifespan questions are not FAQ picks, and the 'Colour last' body section answers them. 'Is Blue Staffy Aggressive?' answers with the banned-breed line only as the fact table words it (never 'legal'). The food answer is the bank's: the puppy goes home with the food it has been raised on (starter pack), and the owner's vet advises after.",
+      "entities": [
+        {
+          "id": "ont:staffordshire-bull-terrier",
+          "why": "(Recommended) Six of the seven bottom picks are breed-life questions, answered in a neutral register from their bank rows: aggressive (QF q-are-blue-staffy-aggressive-55b447), first-time owners (q-are-blue-staffy-suitable-for-first-time-d-e4e6aa), left alone (q-can-staffy-be-left-alone-for-8-hours-858e97), good pets (q-do-blue-staffy-suit-a-family-home-d39c23), family with children (q-are-blue-staffy-good-family-pets-especial-7e3356) and a flat (q-can-a-staffy-live-in-a-flat-310055). Trade-off: each answer comes only from its bank row, and several of those point to our breed guide, so the link sits in a pointer paragraph outside the FAQ array (links-plan.md) and no <a> enters acceptedAnswer.text."
+        },
+        {
+          "id": "ont:dangerous-dogs-act-1991",
+          "why": "'Is Blue Staffy Aggressive?' answers with the banned-breed line only as the fact table words it (bank listing-aggressive: 'not a banned breed in the UK'), never 'legal' (outline note)."
+        },
+        {
+          "id": "ont:blue-coat",
+          "why": "Four picks name blue Staffies (Google PAA). They are answered of the breed, and the coat is never treated as a temperament marker (M1)."
+        },
+        {
+          "id": "ont:home-raised-litter",
+          "why": "'Do Blue Staffies Make Good Family Pets for Homes With Children?': the bank answer ends 'Ours meet the noise of an ordinary house before they leave it' (home-family-children)."
+        }
+      ]
     },
     {
       "n": "22",
@@ -1008,7 +1502,25 @@
         ]
       },
       "image": "Lisa Bright with a puppy beside the form — a served breeder photo, a repeat carrying a new alt (rule 11)",
-      "note": "AIDA's Action stage only (STOP 1 q03): one form; what to send — which puppy, or boy or girl, and collection in Carlisle or delivery; the reply within 24 to 48 business hours, from us (faq enquiry-reply-time, home-after-support); the puppy confirmed still free before anything is paid (faq listing-availability). Urgency only from data/puppies.json status. No phone while PHONE_PLACEHOLDER."
+      "note": "AIDA's Action stage only (STOP 1 q03): one form; what to send — which puppy, or boy or girl, and collection in Carlisle or delivery; the reply within 24 to 48 business hours, from us (faq enquiry-reply-time, home-after-support); the puppy confirmed still free before anything is paid (faq listing-availability). Urgency only from data/puppies.json status. No phone while PHONE_PLACEHOLDER.",
+      "entities": [
+        {
+          "id": "ont:lisa-bright",
+          "why": "(Recommended) AIDA's Action stage: the form reaches the breeder, and the reply comes from us within 24 to 48 business hours (faq enquiry-reply-time; ledger breeder-support-after-collection, 'from us rather than an agency'). Trade-off: no phone while PHONE_PLACEHOLDER, so the form is the only route."
+        },
+        {
+          "id": "ont:greater-manchester",
+          "why": "H2 'How Do I Ask About a Blue Staffy Puppy for My Greater Manchester Home?': the secondary 'greater manchester' is placed here; PROPOSED row (strategy file line 118)."
+        },
+        {
+          "id": "ont:carlisle",
+          "why": "The enquiry asks for collection in Carlisle or delivery (outline note)."
+        },
+        {
+          "id": "ont:defra-approved-transport",
+          "why": "The other answer to that question: delivery priced by distance inside the band (outline note), nothing typed."
+        }
+      ]
     }
   ],
   "schema": "LocalBusiness (areaServed Greater Manchester; no telephone while PHONE_PLACEHOLDER) + FAQPage (exactly the 20 visible questions) + BreadcrumbList + Person (Lisa Bright, the byline, how_we_win[5]) + Product only where a puppy card shows (one offer each); no VideoObject unless a youtube_embeds id is placed at STOP 3",
