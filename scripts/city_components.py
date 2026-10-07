@@ -82,6 +82,21 @@ KIT_OF_VARIANT = {
     "london/faq-blocks/a": "city-faq-ledger",
     "london/newsletter/a": "city-newsletter-notice",
     "london/contact-form/b": "city-contact-lineup",
+    # Manchester's picks (canvas HrFjMqHqr8W3tqTNsMt7wb, frozen 2026-10-07; Phase F Task 27):
+    # each named for its picked variant; video and puppy-cards are "none" for this page.
+    "manchester/hero/c": "city-feature-and-three",
+    "manchester/counter-strip/b": "city-range-sheet",
+    "manchester/trust-strip/b": "city-puppy-folder",
+    "manchester/contents-list/b": "city-icon-rows",
+    "manchester/desktop-dial/a": "city-numeral-rail",
+    "manchester/jump-links/b": "city-question-bar",
+    "manchester/key-takeaways/c": "city-tick-card",
+    "manchester/tables/a": "city-photo-shelf",
+    "manchester/image-text/c": "city-offset-sheet",
+    "manchester/reviews/c": "city-three-plates",
+    "manchester/faq-blocks/b": "city-rows-beside-a-photo",
+    "manchester/newsletter/b": "city-postmarked-note",
+    "manchester/contact-form/b": "city-photo-at-the-edge",
 }
 
 #: The pick a city records for a component its approved outline has no section for (the

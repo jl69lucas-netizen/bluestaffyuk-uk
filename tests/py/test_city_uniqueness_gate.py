@@ -230,3 +230,22 @@ def test_the_gate_fails_a_board_that_mounts_a_component_its_picks_mark_none():
     f = PB.city_rule16_findings(board, picks=picks, pool={"available": {c: [] for c in COMPONENT_IDS}},
                                 must_differ={}, axes_of=lambda k: {"layout": k})
     assert [x["check"] for x in f if x["check"] == "city-pick-none-mounted"] == ["city-pick-none-mounted"]
+
+
+def test_manchester_kit_ids_are_its_own_and_never_londons():
+    """Phase F Task 27: every Manchester pick is built as a kit component of its own — no kit
+    id is one of London's, and every non-`none` pick in the frozen record has an entry."""
+    import json
+    import pathlib
+    import city_components as C
+    root = pathlib.Path(__file__).resolve().parents[2]
+    picks = json.loads((root / "data/design/city-picks/blue-staffy-puppies-manchester-uk.json")
+                       .read_text(encoding="utf-8"))["picks"]
+    london = {kit for key, kit in C.KIT_OF_VARIANT.items() if key.startswith("london/")}
+    for comp, key in picks.items():
+        if key == C.NOT_USED:
+            continue
+        assert key in C.KIT_OF_VARIANT, f"{key} has no kit id"
+        assert C.KIT_OF_VARIANT[key] not in london, f"{key} reuses London's {C.KIT_OF_VARIANT[key]}"
+    mine = [kit for key, kit in C.KIT_OF_VARIANT.items() if key.startswith("manchester/")]
+    assert len(mine) == len(set(mine)) == 13

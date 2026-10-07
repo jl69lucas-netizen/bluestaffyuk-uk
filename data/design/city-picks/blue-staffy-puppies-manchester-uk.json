@@ -1,0 +1,23 @@
+{
+ "slug": "blue-staffy-puppies-manchester-uk",
+ "canvas": "manchester",
+ "canvas_url": "https://claude.ai/artifact/HrFjMqHqr8W3tqTNsMt7wb",
+ "approved_at": "2026-10-07T12:03:32Z",
+ "picks": {
+  "hero": "manchester/hero/c",
+  "counter-strip": "manchester/counter-strip/b",
+  "trust-strip": "manchester/trust-strip/b",
+  "contents-list": "manchester/contents-list/b",
+  "desktop-dial": "manchester/desktop-dial/a",
+  "jump-links": "manchester/jump-links/b",
+  "key-takeaways": "manchester/key-takeaways/c",
+  "puppy-cards": "none",
+  "tables": "manchester/tables/a",
+  "video": "none",
+  "image-text": "manchester/image-text/c",
+  "reviews": "manchester/reviews/c",
+  "faq-blocks": "manchester/faq-blocks/b",
+  "newsletter": "manchester/newsletter/b",
+  "contact-form": "manchester/contact-form/b"
+ }
+}

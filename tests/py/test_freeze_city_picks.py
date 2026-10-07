@@ -102,7 +102,10 @@ def test_the_real_london_freeze_is_on_disk_and_passes_the_city_gate():
     assert rec == F.picks_record(snap, slug="blue-staffy-puppies-london", canvas="london")
     picks = PB.load_city_picks()
     pool = PB.load_city_pool()
-    assert sum(len(v) for v in pool["available"].values()) == 30
+    # 30 London variants unpicked, less the 3 London sources Manchester picked as refreshed pool
+    # copies (key-takeaways c, image-text c, reviews c), plus the 18 Manchester variants unpicked
+    # that are not pool copies (Phase F Task 27): 30 - 3 + 18.
+    assert sum(len(v) for v in pool["available"].values()) == 45
     assert PB.city_pool_findings(pool, picks, PB.canvas_axes) == []
     md = json.loads(PB.CITY_MUST_DIFFER.read_text(encoding="utf-8"))["components"]
     assert PB.city_pick_findings("blue-staffy-puppies-london", picks, md, PB.canvas_axes) == []

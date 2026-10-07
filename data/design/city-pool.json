@@ -3,31 +3,40 @@
  "available": {
   "hero": [
    "london/hero/a",
-   "london/hero/c"
+   "london/hero/c",
+   "manchester/hero/a",
+   "manchester/hero/b"
   ],
   "counter-strip": [
    "london/counter-strip/a",
-   "london/counter-strip/b"
+   "london/counter-strip/b",
+   "manchester/counter-strip/a",
+   "manchester/counter-strip/c"
   ],
   "trust-strip": [
    "london/trust-strip/a",
-   "london/trust-strip/b"
+   "london/trust-strip/b",
+   "manchester/trust-strip/a"
   ],
   "contents-list": [
    "london/contents-list/a",
-   "london/contents-list/b"
+   "london/contents-list/b",
+   "manchester/contents-list/a"
   ],
   "desktop-dial": [
    "london/desktop-dial/a",
-   "london/desktop-dial/b"
+   "london/desktop-dial/b",
+   "manchester/desktop-dial/b"
   ],
   "jump-links": [
    "london/jump-links/b",
-   "london/jump-links/c"
+   "london/jump-links/c",
+   "manchester/jump-links/a"
   ],
   "key-takeaways": [
-   "london/key-takeaways/b",
-   "london/key-takeaways/c"
+   "london/key-takeaways/c",
+   "manchester/key-takeaways/a",
+   "manchester/key-takeaways/b"
   ],
   "puppy-cards": [
    "london/puppy-cards/a",
@@ -35,7 +44,8 @@
   ],
   "tables": [
    "london/tables/b",
-   "london/tables/c"
+   "london/tables/c",
+   "manchester/tables/b"
   ],
   "video": [
    "london/video/a",
@@ -43,23 +53,28 @@
   ],
   "image-text": [
    "london/image-text/a",
-   "london/image-text/b"
+   "manchester/image-text/a",
+   "manchester/image-text/b"
   ],
   "reviews": [
    "london/reviews/b",
-   "london/reviews/c"
+   "manchester/reviews/a",
+   "manchester/reviews/b"
   ],
   "faq-blocks": [
    "london/faq-blocks/b",
-   "london/faq-blocks/c"
+   "london/faq-blocks/c",
+   "manchester/faq-blocks/a"
   ],
   "newsletter": [
    "london/newsletter/b",
-   "london/newsletter/c"
+   "london/newsletter/c",
+   "manchester/newsletter/a"
   ],
   "contact-form": [
    "london/contact-form/a",
-   "london/contact-form/c"
+   "london/contact-form/c",
+   "manchester/contact-form/a"
   ]
  }
 }

@@ -1869,7 +1869,7 @@ def city_pick_findings(slug, picks, must_differ, axes_of):
             if okey == key:
                 fail("city-pick-shared", f"{comp} {key} is already worn by {other} (working rule 16)")
                 continue
-            oaxes = axes_of(okey) if okey else None
+            oaxes = axes_of(okey) if okey and okey != NOT_USED else None   # another city's "none" (G4)
             if oaxes and axis_distance(axes, oaxes) < 2:
                 fail("city-pick-too-close", f"{comp} {key} is within one axis of {other}'s {okey}")
         for row in must_differ.get(comp, []):
