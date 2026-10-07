@@ -2995,8 +2995,8 @@
       "w": 1408,
       "h": 768,
       "required": true,
-      "status": "missing",
-      "file": null,
+      "status": "baked",
+      "file": "/images/blue-staffy-puppies-ready-for-home-delivery-manchester.webp",
       "alt": "Three blue Staffy puppies sitting on a cream blanket in the open side door of a plain white van, a blue travel crate beside them and brick houses behind: the calm, padded start we want for every puppy's journey home"
     },
     {
@@ -3035,8 +3035,8 @@
       "w": 1408,
       "h": 768,
       "required": true,
-      "status": "missing",
-      "file": null,
+      "status": "baked",
+      "file": "/images/blue-staffy-puppy-papers-checklist-manchester.webp",
       "alt": "What travels home in each puppy's folder: the vet-signed health card, first vaccinations, the microchip, worming and flea treatment, and the Kennel Club registration application form"
     },
     {
@@ -3045,8 +3045,8 @@
       "w": 1408,
       "h": 768,
       "required": true,
-      "status": "missing",
-      "file": null,
+      "status": "baked",
+      "file": "/images/adult-blue-staffy-vet-health-check.webp",
       "alt": "An adult blue Staffy in a dark harness sitting on a vet's table, a hand resting on its shoulder and a stethoscope beside it: the routine check we encourage at every stage of a Staffy dog's life"
     },
     {
@@ -3184,7 +3184,7 @@
     ]
   },
   "approval": {
-    "approved_at": "2026-10-07T19:32:25.878Z",
+    "approved_at": "2026-10-07T21:34:00.909Z",
     "canvas_version": null,
     "h1": 0,
     "meta": {
@@ -3237,7 +3237,7 @@
       "img:favourite-boisterous": "file:/images/jones-magnificent-blue-staffy-sire.webp",
       "img:favourite-h2": "file:/images/trusted-blue-staffy-breeder-reviews-satisfied-owners.webp",
       "img:guarantee-cover": "file:/images/puppies/cheryl-cheryl1.webp",
-      "img:guarantee-h2": "og:A",
+      "img:guarantee-h2": "og:A:3c0f1c617ffd",
       "img:guarantee-itch": "file:/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
       "img:health-tests-dna": "file:/images/blue-staffy-vet-check.webp",
       "img:health-tests-h2": "file:/images/jones-magnificent-blue-staffy-sire.webp",
@@ -3252,10 +3252,11 @@
       "img:papers-checklist": "ig:IG-4:aa8ba0b32ecd",
       "img:papers-h2": "file:/images/puppy-vaccinations-uk.webp",
       "img:travel-collect": "file:/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
-      "img:travel-h2": "og:A",
-      "img:travel-priced": "file:/images/puppies/ince-ince1.webp"
+      "img:travel-h2": "og:A:fb33ca713c8b",
+      "img:travel-priced": "file:/images/puppies/ince-ince1.webp",
+      "img:papers-checklist-phone": "ig:IG-4:1292234191cd"
     },
-    "record_hash": "941058c26de97c60db2d46c2c7d51e26438b0ea8cf0c537daeedb182646d54ed",
+    "record_hash": "48d7a10026a713baca312ff3bd822f5a3c9226fada5c7c3d2c731f4c49f5ffc5",
     "tuple_before": {
       "hero": "city-feature-and-three",
       "dial": "city-numeral-rail",
