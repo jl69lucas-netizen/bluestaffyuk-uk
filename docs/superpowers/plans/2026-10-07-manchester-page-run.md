@@ -691,6 +691,35 @@ Steps per task:
   - one re-approval round if a non-Recommended FAQ wording or a side-by-side mismatch is picked.
 - **Cheaper alternative, not recommended:** build the components after STOP 3, at row 12, which saves about 10 h before the stop. Approval only needs reserved kit ids in `KIT_OF_VARIANT`. Not recommended because the user would then approve a board whose components exist only as canvas mockups, and London's components were built and compared side by side before its board.
 
+## Phase G: Images and the Asset Gate (row 11, STOP 4)
+
+Written out 2026-10-07 after STOP 3 was approved (3a4251a7), from London's Tasks 24–25, checked against the tree as it stands.
+The record's approval is re-recorded at STOP 4 by `board_approve.py`, so a record edit made here (an alt, a slot's file) is expected to stale the STOP 3 hash until then.
+
+### Task 39: Ingest the picked images, draft the papers checklist, settle the repeat alts
+
+**Files:** `data/boards/blue-staffy-puppies-manchester-uk.json` (`assets[]`, alts), `public/images/` and `data/image-manifest.json` (through the scripts only), `data/boards/generated/`, `tests/py/test_manchester_board.py`.
+
+- [ ] **Step 1:** List the slots by `source` (`existing`, `assets-folder`, `infographic`). For each `assets-folder` slot: `python3 scripts/ingest_image.py folder "<BSUK_ASSETS_DIR or bluestaffyuk-cms/Assets/Images>/<file>" --board blue-staffy-puppies-manchester-uk --slot <slot> --stem <meaningful-stem> --og-style A` (contain, bone; never blurfill). `existing` slots are reused at their served path, never renamed or re-encoded (rule 11).
+- [ ] **Step 2: Repeat alts (rule 11, user 2026-09-29).** Every photo shown twice on the page keeps its served alt on first use, and each repeat gets a new alt, never a copy. The known repeats are the hero puppies (Roman, Cheryl, Ince, Vennie) again in the body as their full-size files, and the middle review's Jones photo. Write each new alt from the picture itself (look at it). Keep the first-person voice. The primary keyword stays on the hero alt only. Test first: a case in `test_manchester_board.py` that no image path appears twice on the board with the same alt.
+- [ ] **Step 3: The papers checklist (IG-4, comic, STOP 3 pick).** Render it with the `bsuk-infographic` skill / `bsuk-infographic-builder` agent from the slot's brief. Every line comes from `data/settings.json` `puppy_trust_signs`, with no licence or registration claim beyond the data (`LICENCE_CLAIM_PLACEHOLDER` rules), and no health result. Draft it: `python3 scripts/ingest_image.py draft <master> --board blue-staffy-puppies-manchester-uk --slot papers-checklist --infographic IG-4`. Read every word on it as copy (lessons 7) and list them in the report.
+- [ ] **Step 4:** `npm run -s build`, `python3 scripts/build_board_previews.py blue-staffy-puppies-manchester-uk`, `python3 scripts/build_page_board.py blue-staffy-puppies-manchester-uk`; then `python3 -m pytest -q tests/py/test_manchester_board.py tests/py/test_uniform_image_box.py tests/py/test_served_alt_preserved.py tests/py/test_city_board_alts.py tests/py/test_image_truth.py tests/py/test_infographic_skip.py`. Expected: pass. `python3 scripts/board_gate.py blue-staffy-puppies-manchester-uk`: the only FAILs are `approval-hash` (re-recorded at STOP 4) and the papers draft awaiting its pick.
+- [ ] **Step 5: Commit.** `images(manchester): repeat alts, folder ingests and the papers-checklist draft for the Asset Gate (row 11)`.
+
+### Task 40 (CONTROLLER): STOP 4, the Asset Gate
+
+- [ ] **Step 1:** Republish the board at https://claude.ai/artifact/4NhTX3rzQXZVXLn4smTop8 (same file path). Block 7 shows the draft with its sha12 and every repeat alt.
+- [ ] **Step 2:** Post `docs/reference/answer-board/batches/2026-10-07-asset-gate-blue-staffy-puppies-manchester-uk.md`. It holds one question: "Have you approved every Manchester image slot on the board?" (a) Approved on the board (Recommended) · (b) Changes needed. The question links to the board and names the draft and the new repeat alts. Chat says only "1 new question on the board: <URL>", and the turn ends.
+- [ ] **Step 3: On the Send.**
+  - Save the answers.
+  - Get the board db into `data/boards/inbox/blue-staffy-puppies-manchester-uk.json`.
+  - Run `npm run -s build`, then `python3 scripts/board_approve.py blue-staffy-puppies-manchester-uk`. Expected: exit 0, with the `img:` picks recorded.
+  - For each approved draft: `python3 scripts/ingest_image.py publish --board blue-staffy-puppies-manchester-uk --slot <slot> --stem <stem>`.
+  - Run `python3 scripts/board_gate.py blue-staffy-puppies-manchester-uk`. Expected: 0 FAIL.
+  - Rebuild, then `npm run -s check:boards` (approval touches shared data, so every page goes stale until rebuilt).
+  - Commit: `images(manchester): STOP 4 approved — Asset Gate picks recorded and published`.
+- [ ] **Step 4:** Remind the user to delete `GEMINI_API_KEY` from `.env` once no image work remains (London handoff).
+
 ## Phases G–J (rows 11–21) — after STOP 3
 
 These follow London's plan Tasks 18–37 command for command, with the slug `blue-staffy-puppies-manchester-uk`, the route `uk-locations/blue-staffy-puppies-manchester-uk`, research folder `docs/research/manchester-page-run/`, and these differences: Manchester's own components are designed at row 10 (ruling 2) on the board's three styles at 1280 / 768 / 375; `python3 scripts/dup_content_audit.py --headers` runs straight after the first `npm run build` at row 12; every image with words is read as copy before STOP 4. Each phase is written out in full in this file once the stop before it is approved, so its commands are checked against the tree as it stands then.
