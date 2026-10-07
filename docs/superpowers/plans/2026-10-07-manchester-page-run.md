@@ -720,9 +720,862 @@ The record's approval is re-recorded at STOP 4 by `board_approve.py`, so a recor
   - Commit: `images(manchester): STOP 4 approved — Asset Gate picks recorded and published`.
 - [ ] **Step 4:** Remind the user to delete `GEMINI_API_KEY` from `.env` once no image work remains (London handoff).
 
-## Phases G–J (rows 11–21) — after STOP 3
+## Phase H: Build from the outline (row 12)
 
-These follow London's plan Tasks 18–37 command for command, with the slug `blue-staffy-puppies-manchester-uk`, the route `uk-locations/blue-staffy-puppies-manchester-uk`, research folder `docs/research/manchester-page-run/`, and these differences: Manchester's own components are designed at row 10 (ruling 2) on the board's three styles at 1280 / 768 / 375; `python3 scripts/dup_content_audit.py --headers` runs straight after the first `npm run build` at row 12; every image with words is read as copy before STOP 4. Each phase is written out in full in this file once the stop before it is approved, so its commands are checked against the tree as it stands then.
+Written out 2026-10-07 after STOP 3 (3a4251a7), from London's Tasks 26–28 (`docs/superpowers/plans/2026-09-30-london-page-run.md`), every command checked against the tree at 6c0ad36d. Phase H starts only once STOP 4 is recorded (Task 40 Step 3).
+
+### Phase H–J rulings (bind every task below)
+
+1. **Write from the board, never from a sibling** (working rule 8). The prose comes from the approved board (`data/boards/blue-staffy-puppies-manchester-uk.json`: each node's `intent`, `why`, `keywords`, `entities`, `links`) and the data files. No one opens London's page, board or built HTML for wording, and no paragraph is copied and reworded.
+2. **The nine adopted FAQ wordings** are the STOP 3 picks (`docs/reference/answer-board/answers/2026-10-07-page-board-blue-staffy-puppies-manchester-uk-2026-10-07.md` q2–q10, every one the (a) wording). They are the `REWORDED` map in `tests/py/test_manchester_board.py`, which every test below imports rather than retyping. Each answer text stays as it is. The one exception is the one `docs/research/manchester-components/faq-rewordings.md` §2 (a) names: "Which Parts of the UK Do You Deliver Puppies To?" cannot open on the `delivery` row's "Yes.", so its lead becomes the `about-delivery-home` row's own "wherever you are in the UK".
+3. **Section ids are the board's ids.** `scripts/outline_provenance_check.py` (`outline-unknown-section`), `scripts/query_coverage_check.py` and `scripts/dup_content_audit.py` find a section only as `<section id="<board section id>" data-section-label="…">` in `<main>`. Four of the scaffold's anchors are not board ids: `asked-first` becomes `faq-top`, `health-questions` becomes `faq-middle`, `everyday` becomes `faq-bottom` and `enquire` becomes `enquiry`.
+4. **Links 8 and 9 stay HELD** (STOP 3 q12 (a)): `/blue-staffy-pup-sale-uk/` ("Our Blue Staffy pup prices in full", litter H3) and `/buy-blue-staffy-puppies-uk/` ("Our regularly updated listing", under the litter table). They are left unbuilt until the Task 17 Step 3 grep finds no hit on both pages.
+5. **Images are the board's.** Every `<img>` is its slot's `assets[]` row in the board record (file, alt, size), read from the imported record by slot. The scaffold's hard-coded `BODY`, `FAQ_PHOTO` and `REVIEW_ROW` photo choices go.
+6. **Facts from data only** (Phase F ruling 10, unchanged): no video call (STOP 1 q08), no rescue wording (q10), no licence claim, colour and price said of this litter only (q09), the deposit only with `deposit_refund_clause` (never plainly "refundable"), the tests named with the certificates on request and never a result, no phone, no mileage, journey time or date.
+7. **noindex until the user approves the page** (Task 54). `robots="noindex, follow"` is written in the page file, never read from data.
+8. **`session-open` is never re-recorded** for this slug. Re-recording it stales the Harden passes (page-run row 1), and rows 14–15 would have to run again.
+
+### Task 41: Pre-flight (read-only)
+
+**Files:** none.
+
+- [ ] **Step 1:** Confirm the stops.
+
+  ```bash
+  git branch --show-current
+  npm run -s build
+  python3 scripts/board_gate.py blue-staffy-puppies-manchester-uk; echo "exit $?"
+  python3 -c "import json;b=json.load(open('data/boards/blue-staffy-puppies-manchester-uk.json'));print(b['approval']['approved_at'], [a['slot'] for a in b['assets'] if a.get('status')!='baked'])"
+  ```
+  Expected: `manchester-page`; board gate exit 0 with 0 FAIL; an approval stamped at or after the STOP 4 Send; `[]` (every slot baked, `papers-checklist` included). Anything else means STOP 4 is not recorded: go back to Task 40 Step 3.
+- [ ] **Step 2:** Re-run the deposit-order grep (Task 17 Step 3).
+
+  ```bash
+  grep -n "deposit comes after you have met\|video call before the deposit\|on a video call we offer before the deposit" src/pages/buy-blue-staffy-puppies-uk/index.astro src/pages/blue-staffy-pup-sale-uk/index.astro
+  ```
+  Expected while the fix has not landed: hits. Links 8 and 9 stay HELD (ruling 4). If there are no hits, report it to the CONTROLLER and stop this task. Building the links then needs a record change: the two `why` lines drop "HELD", a `board_revisions` row cites STOP 3 q12, and the CONTROLLER re-runs `python3 scripts/board_approve.py blue-staffy-puppies-manchester-uk`. That happens before Task 44.
+- [ ] **Step 3:** Confirm that the held links are recorded in `board_revisions`.
+
+  ```bash
+  python3 -c "import json;b=json.load(open('data/boards/blue-staffy-puppies-manchester-uk.json'));print([r['source'] for r in b.get('board_revisions') or []])"
+  ```
+  Expected: a row whose `source` is `answer board 2026-10-07-page-board-blue-staffy-puppies-manchester-uk q12`, whose `record_change` names links 8 and 9 as held, and whose `builder` says "leave both unbuilt". If it is missing, the CONTROLLER adds it. The record is shared with the Asset Gate work, so the CONTROLLER owns that edit. The row moves the record hash, so the CONTROLLER then runs `npm run -s build && python3 scripts/board_approve.py blue-staffy-puppies-manchester-uk` (expected: exit 0). London's board revision was re-approved the same way (f3031626). Commit `board(manchester): links 8 and 9 held, recorded as a board revision (STOP 3 q12)`.
+- [ ] **Step 4:** Read `docs/reference/lessons.md` entries 7–9, 15 and 18–21 again. Each one binds a step below.
+
+### Task 42: The rebuilt page's own tests, written first
+
+**Files:**
+- Create: `tests/py/test_manchester_page.py`
+- Modify: `tests/py/test_manchester_scaffold.py`
+
+- [ ] **Step 1: Write the failing test file.** Write `tests/py/test_manchester_page.py`:
+
+  ```python
+  """The Manchester city page, rebuilt from its approved outline and board (page-run row 12).
+
+  What must hold once the scaffold is replaced:
+    - no scaffold marker, no scaffold line and no migrated body: Manchester is a rebuilt page;
+    - the H1 is the approved outline's H1, and every body H2/H3 is a question (header Style 2);
+    - every board section is one labelled <section> in <main>, with the board's id, in order;
+    - the three FAQ blocks hold the board's questions (the nine STOP 3 wordings in place), and
+      the question file's covered_by records each one;
+    - facts come from data: no hand-typed £, parents Maggie and Jones, the tests named and no
+      result stated, nothing about a licence, no video call, no rescue wording;
+    - the deposit appears only with its refund clause, never plainly "refundable";
+    - every board link is on the page except the two HELD ones, and no other external link;
+    - the page stays noindex until the user approves it (Task 54).
+  """
+  import html as H
+  import json
+  import pathlib
+  import re
+
+  import pytest
+
+  from test_manchester_board import REWORDED
+
+  ROOT = pathlib.Path(__file__).resolve().parents[2]
+  SLUG = "blue-staffy-puppies-manchester-uk"
+  SRC = ROOT / "src/pages/uk-locations" / f"{SLUG}.astro"
+  BUILT = ROOT / "dist/uk-locations" / SLUG / "index.html"
+  OUTLINE = json.loads((ROOT / "data/outlines" / f"{SLUG}.json").read_text(encoding="utf-8"))
+  BOARD = json.loads((ROOT / "data/boards" / f"{SLUG}.json").read_text(encoding="utf-8"))
+  QUERIES = json.loads((ROOT / "data/queries" / f"{SLUG}.json").read_text(encoding="utf-8"))
+  SETTINGS = json.loads((ROOT / "data/settings.json").read_text(encoding="utf-8"))
+  FAQ_BAND = {"faq-top": 6, "faq-middle": 7, "faq-bottom": 7}
+  NODE_Q = re.compile(r"^Q:\s*(.+?)\s+—")
+  HELD = "HELD: built only once the deposit-order correction (STOP 2 q05 a) has landed on both pages"
+  ADOPTED = {old: new for old, (new, _) in REWORDED.items()}
+
+
+  def built():
+      if not BUILT.exists():
+          pytest.skip("run npm run -s build first")
+      return BUILT.read_text(encoding="utf-8")
+
+
+  def text(fragment):
+      """Visible words: an inline <span> breaks no word (src/lib/cityKit.ts `keepRuns` wraps a
+      price or a test name in one), every other tag is a space."""
+      fragment = re.sub(r"</?span\b[^>]*>", "", fragment)
+      return re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", fragment))).strip()
+
+
+  def main_html(html):
+      return html.split("<main", 1)[1].split("</main>", 1)[0]
+
+
+  def main_text(html):
+      return text(main_html(html))
+
+
+  def labelled_sections(html):
+      """[(id, html)] for every <section data-section-label> in <main>, each running to the next."""
+      main = main_html(html)
+      tags = list(re.finditer(r"<section\b[^>]*\bdata-section-label=[^>]*>", main))
+      out = []
+      for i, m in enumerate(tags):
+          sid = re.search(r'\bid="([^"]+)"', m.group(0))
+          end = tags[i + 1].start() if i + 1 < len(tags) else len(main)
+          out.append((sid.group(1) if sid else f"#{i}", main[m.start():end]))
+      return out
+
+
+  def board_faq_questions(section_id):
+      sec = next(s for s in BOARD["sections"] if s["id"] == section_id)
+      return [NODE_Q.match(n["intent"]).group(1) for n in sec["tree"]]
+
+
+  def board_links():
+      return [(s["id"], kind, l) for s in BOARD["sections"] for kind in ("internal", "external")
+              for l in s.get("links", {}).get(kind, [])]
+
+
+  def test_manchester_is_no_longer_a_scaffold():
+      html = built()
+      for mark in ("data-city-scaffold", "data-scaffold-tree", "prose-migrated", "Scaffold line, not copy."):
+          assert mark not in html, mark
+
+
+  def test_the_h1_is_the_approved_outline_h1():
+      assert OUTLINE["approval"], "STOP 2 is recorded"
+      h1s = [text(h) for h in re.findall(r"<h1[^>]*>(.*?)</h1>", built(), re.S)]
+      assert h1s == [OUTLINE["h1"]]
+
+
+  def test_every_body_h2_and_h3_is_a_question():
+      heads = [text(h) for h in re.findall(r"<h[23][^>]*>(.*?)</h[23]>", main_html(built()), re.S)]
+      assert heads
+      assert [h for h in heads if not h.endswith("?")] == []
+
+
+  def test_every_board_section_is_one_labelled_section_with_the_boards_id_in_order():
+      ids = [sid for sid, _ in labelled_sections(built())]
+      assert ids == [s["id"] for s in BOARD["sections"]], ids
+
+
+  def test_three_faq_blocks_holding_the_boards_questions_and_covered_by_records_them():
+      html = built()
+      secs = dict(labelled_sections(html))
+      assert html.count('data-faq-block="') == 3
+      shown = []
+      for sid, n in FAQ_BAND.items():
+          want = board_faq_questions(sid)
+          got = [text(q) for q in re.findall(r"<h3[^>]*data-faq-q[^>]*>(.*?)</h3>", secs[sid], re.S)]
+          assert got == want and len(got) == n, (sid, got)
+          shown += got
+      assert set(ADOPTED.values()) <= set(shown) and not set(ADOPTED) & set(shown)
+      covered = {q["covered_by"]["text"] for q in QUERIES["questions"]
+                 if q.get("covered_by") and q["covered_by"]["where"] == "faq"}
+      assert covered == set(shown)
+      assert not [q["id"] for q in QUERIES["questions"] if q["must_answer"] and not q.get("covered_by")]
+
+
+  def test_no_price_is_typed_in_the_page_source():
+      assert "£" not in SRC.read_text(encoding="utf-8")
+
+
+  def test_the_parents_are_maggie_and_jones():
+      body = main_text(built())
+      assert "Maggie" in body and "Jones" in body
+
+
+  def test_the_tests_are_named_and_no_result_is_stated():
+      body = main_text(built())
+      for name in ("L-2-HGA", "HC-HSF4"):
+          assert name in body, name
+      for m in re.finditer(r"L-2-HGA|HC-HSF4", body):
+          window = body[max(0, m.start() - 80): m.end() + 80].lower()
+          assert not re.search(r"\bclear\b|\bcertified\b|will not be affected", window), window
+
+
+  def test_nothing_about_a_licence_a_video_call_or_a_rescue():
+      body = main_text(built()).lower()
+      for word in ("licence", "license", "video call", "rescue"):
+          assert word not in body, word
+
+
+  def test_the_deposit_is_never_plainly_refundable():
+      body = main_text(built()).lower()
+      clause = SETTINGS["deposit_refund_clause"].lower()
+      assert body.count("refundable") == body.count(clause) > 0
+
+
+  def test_no_research_placeholder_ships():
+      body = main_text(built())
+      for mark in ("NOT FETCHED", "PHONE_PLACEHOLDER", "LICENCE_CLAIM_PLACEHOLDER", "LEGAL_CLAIM_PLACEHOLDER"):
+          assert mark not in body, mark
+
+
+  def test_every_enquiry_cta_points_at_the_board_id():
+      html = built()
+      assert 'id="enquiry"' in html and 'href="#enquire"' not in html
+      assert main_html(html).count('href="#enquiry"') >= 3
+
+
+  def test_every_board_link_is_on_the_page_but_the_held_two_and_no_other_external_link():
+      main = main_html(built())
+      anchors = {(H.unescape(h), text(a)) for h, a in re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', main, re.S)}
+      rows = board_links()
+      held = [l for _, _, l in rows if HELD in l["why"]]
+      assert sorted(l["href"] for l in held) == ["/blue-staffy-pup-sale-uk/", "/buy-blue-staffy-puppies-uk/"]
+      missing = [(l["href"], l["anchor"]) for _, _, l in rows if HELD not in l["why"]
+                 and not any(h == l["href"] and a.startswith(l["anchor"]) for h, a in anchors)]
+      assert missing == []
+      assert not [l["href"] for l in held if any(h == l["href"] for h, _ in anchors)], "a held link was built"
+      external = {h for h, _ in anchors if h.startswith("http")}
+      assert external <= {l["href"] for _, kind, l in rows if kind == "external"}, sorted(external)
+
+
+  def test_the_schema_names_greater_manchester_and_carries_no_telephone():
+      html = built()
+      nodes = []
+      for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S):
+          data = json.loads(block)
+          for n in data if isinstance(data, list) else [data]:
+              nodes += n.get("@graph", [n])
+      local = [n for n in nodes if n.get("@type") == "LocalBusiness"]
+      # The layout's site-wide node and the page's own share one @id: one business, described twice.
+      assert local and len({n.get("@id") for n in local}) == 1
+      assert any("Manchester" in json.dumps(n.get("areaServed")) for n in local)
+      assert not [n for n in local if "telephone" in n]
+      faq = [n for n in nodes if n.get("@type") == "FAQPage"]
+      assert len(faq) == 1 and len(faq[0]["mainEntity"]) == sum(FAQ_BAND.values())
+
+
+  def test_noindex_until_the_user_approves_the_page():
+      assert re.findall(r'<meta name="robots" content="([^"]*)"', built()) == ["noindex, follow"]
+      assert 'robots="noindex, follow"' in SRC.read_text(encoding="utf-8")
+  ```
+
+- [ ] **Step 2: Retire the scaffold-only assertions** in `tests/py/test_manchester_scaffold.py`. Its other tests hold the components, the nav set, the litter table, the reviews and the alts, and they stay.
+  - Add, after the imports: `from test_manchester_board import REWORDED` and `ADOPTED = {old: new for old, (new, _) in REWORDED.items()}`.
+  - Rename `test_the_template_no_longer_builds_manchester_and_still_builds_the_other_26` to `test_manchester_has_its_own_rebuilt_page_and_the_template_builds_the_other_26`, and change its first assertion to `assert f'data-city-scaffold="{SLUG}"' not in html`.
+  - Delete `test_the_scaffold_keeps_the_migrated_body_for_parity`. Once Manchester is in `data/facts/rebuilt.json` (Task 45), `check:facts` holds it against `data/facts/blue-staffy-puppies-manchester-uk.json`, and `check:parity` no longer measures it.
+  - Delete `test_each_body_section_carries_one_marked_scaffold_line`. `test_manchester_page.py::test_manchester_is_no_longer_a_scaffold` holds the reverse.
+  - In `test_the_headings_are_the_outlines_in_order_h1_to_h6`, build `want` with each H3 passed through `ADOPTED.get(text, text)`:
+
+    ```python
+    want = [(1, OUTLINE["h1"])] + [(l, ADOPTED.get(t, t)) for s in OUTLINE["sections"]
+                                    for l, t in flat(s["headings"]) if l > 1]
+    ```
+  - In `test_the_faq_schema_carries_exactly_the_visible_questions`, build `outline` as `[ADOPTED.get(c["text"], c["text"]) for s in OUTLINE["sections"] if s.get("faq") for h in s["headings"] for c in h["children"]]`.
+  - Change the module docstring's first line to "Manchester's own route: the thirteen picks, the nav set and the outline's headings, on the rebuilt page (a scaffold until page-run row 12)."
+  - `test_the_scaffold_is_noindex_and_in_no_sitemap` stays until Task 54.
+
+- [ ] **Step 3: Run the tests and see them fail.**
+
+  ```bash
+  npm run -s build
+  python3 -m pytest tests/py/test_manchester_page.py tests/py/test_manchester_scaffold.py -q
+  ```
+  Expected: FAIL. On the scaffold at least these fail: `test_manchester_is_no_longer_a_scaffold`, `test_every_board_section_is_one_labelled_section_with_the_boards_id_in_order`, the FAQ-block test (old wordings, `covered_by` null), `test_every_enquiry_cta_points_at_the_board_id`, the board-link test, the schema test (no `areaServed`), `test_the_tests_are_named_and_no_result_is_stated` (the old "Tested Clear for" heading), the renamed template test, and the two `ADOPTED` tests. `test_the_h1_is_the_approved_outline_h1`, `test_no_price_is_typed_in_the_page_source` and the noindex test pass already. Read the failure list: a test that passes on the scaffold for a reason other than these is a weak test and is tightened before the commit.
+
+- [ ] **Step 4: Commit the failing tests.**
+
+  ```bash
+  git add tests/py/test_manchester_page.py tests/py/test_manchester_scaffold.py
+  git commit -m "test(manchester): the rebuilt page's invariants, failing on the scaffold (row 12)
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  ```
+
+### Task 43: The nine FAQ wordings reach the build; the DNA xfail goes with them. Tests first.
+
+**Files:**
+- Modify: `src/lib/manchesterFaq.ts`, `data/queries/blue-staffy-puppies-manchester-uk.json`, `tests/py/test_city_kit_manchester.py`, `tests/py/test_no_health_result_stated.py`
+
+The approved outline stays frozen (hash 593992436b4531ab). The new wordings live in the board record: each FAQ node's `intent` reads `Q: <question> — …`, which `PB.faq_block_questions` reads too. So the FAQ module reads its questions from the board, as London's page reads its board (`src/pages/uk-locations/blue-staffy-puppies-london.astro` imports `data/boards/blue-staffy-puppies-london.json`). (Recommended.) Why: the board is the approved record that carries the STOP 3 picks. Trade-off: the module now imports the board record, so a later board edit changes the page's questions, and the record hash already guards that edit.
+
+- [ ] **Step 1: Point the kit's FAQ tests at the adopted wordings, and see them fail.** In `tests/py/test_city_kit_manchester.py`:
+  - Add `from test_manchester_board import REWORDED` and `ADOPTED = {old: new for old, (new, _) in REWORDED.items()}`.
+  - In `test_faq_blocks_are_the_outlines_three_blocks_word_for_word`, compare with `[ADOPTED.get(c["text"], c["text"]) for c in h2["children"]]`.
+  - In `test_faq_answers_come_from_the_bank_and_the_data_never_typed`, read every `rows[...]` key through `ADOPTED`:
+    - `VERBATIM`'s keys become `ADOPTED.get(k, k)`;
+    - `cost`, `deposit`, the mother answer and `across` use the adopted questions;
+    - `dna` is `rows[ADOPTED["Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?"]]`.
+  - Add `assert across.startswith("Wherever you are in the UK")` (ruling 2's one changed lead).
+  - Change the module assertion to `"boards/blue-staffy-puppies-manchester-uk.json" in lib`.
+
+  Run `npm run -s build && python3 -m pytest -q tests/py/test_city_kit_manchester.py -k faq`. Expected: FAIL, because the questions are still the outline's.
+- [ ] **Step 2: Read the questions from the board.** In `src/lib/manchesterFaq.ts`, replace the outline import and the `SECTIONS` block with:
+
+  ```ts
+  import board from '../../data/boards/blue-staffy-puppies-manchester-uk.json';
+
+  type Node = { intent?: string };
+  type Sec = { id: string; heading: string; tree: Node[] };
+  /** The board's three FAQ blocks, in page order (STOP 3: the nine wordings the breeder picked are
+   *  the nodes' `Q: <question> —` intents; the approved outline stays as STOP 2 approved it). */
+  const FAQ_IDS = ['faq-top', 'faq-middle', 'faq-bottom'] as const;
+  const NODE_Q = /^Q:\s*(.+?)\s+—/;
+  const SECTIONS = FAQ_IDS.map((id) => {
+    const s = (board as unknown as { sections: Sec[] }).sections.find((x) => x.id === id);
+    if (!s) throw new Error(`manchesterFaq: the board has no section ${id}`);
+    return s;
+  });
+  ```
+  The export becomes:
+
+  ```ts
+  export const MANCHESTER_FAQ: CityFaqBlock[] = SECTIONS.map((sec, i) => ({
+    key: KEYS[i],
+    heading: sec.heading,
+    items: sec.tree.map((n) => {
+      const q = NODE_Q.exec(n.intent ?? '')?.[1];
+      if (!q) throw new Error(`manchesterFaq: ${sec.id} has a node with no "Q: <question> —" intent`);
+      const hit = ANSWERS[q];
+      if (!hit) throw new Error(`manchesterFaq: no answer keyed to the board question "${q}"`);
+      return { q, ...hit };
+    }),
+  }));
+  ```
+  Keep `KEYS` and the length check. The scaffold page's own check (`block.heading !== h2Of(row(n)).text`) still holds, because the board's FAQ headings are the outline's H2s word for word.
+- [ ] **Step 3: Re-key `ANSWERS`.** Rename the nine keys, old → new, as `REWORDED` lists them, and leave every answer text and `source` as it is. There is one exception, the across-the-UK answer (ruling 2):
+
+  ```ts
+  'Which Parts of the UK Do You Deliver Puppies To?': {
+    // The `delivery` row opens "Yes.", which does not answer a "which" question; the reach is the
+    // about-delivery-home row's own words (faq-rewordings.md §2 (a), STOP 3 q3).
+    a: `${REACH}: ${edit(bank('delivery'), 'Yes. ', '').replace(/\.$/, '')}, and you can collect your puppy from us in ${TOWN} instead.`,
+    source: 'data/faq.json about-delivery-home, delivery, home-safe-delivery; data/settings.json delivery_note, delivery_min_gbp, delivery_max_gbp, address.city',
+  },
+  ```
+  with, above `ANSWERS`:
+
+  ```ts
+  const REACH = 'Wherever you are in the UK';
+  if (!bank('about-delivery-home').includes(lcFirst(REACH))) throw new Error('manchesterFaq: data/faq.json about-delivery-home no longer says "wherever you are in the UK"');
+  ```
+  Update the file-top comment: the questions are the board's (the STOP 3 picks), and the answers are the bank and the data.
+- [ ] **Step 4: Record each wording in the question file.** In `data/queries/blue-staffy-puppies-manchester-uk.json`, set `covered_by` on every `must_answer` question. `check:queries` holds all 29 once Task 45 registers the page.
+  - **The 20 FAQ picks:** `{"where": "faq", "text": <the board question>}`. The nine reworded ones carry the adopted wording: `q-how-much-is-the-deposit-2cce23`, `q-do-you-deliver-across-the-uk-fb0c4a`, `q-which-genetic-tests-have-the-parents-had-19da02`, `q-how-much-does-a-blue-staffy-cost-uk-4051c2`, `q-can-i-get-a-blue-staffy-puppy-delivered-ad16e3`, `q-how-can-i-avoid-buying-from-a-puppy-5e9d7e`, `q-are-blue-staffy-aggressive-55b447`, `q-do-blue-staffy-suit-a-family-home-d39c23`, `q-can-a-staffy-live-in-a-flat-310055`.
+  - **The 9 non-FAQ must-answer picks:** `{"where": "heading", "text": <the board heading in <main> that answers it>}`, read from the board node whose `intent` answers that question. Example: `q-do-staffy-get-attached-to-one-person-6d9e29` → the `favourite-person` H2.
+  - **The three `extra_sections`:** each takes as its `heading` the board H2 of the section built for it: paperwork → `papers`, health → `guarantee`, temperament → `favourite-person`.
+
+  Then:
+
+  ```bash
+  python3 scripts/query_augment.py blue-staffy-puppies-manchester-uk --page-type location --keyword "blue staffy puppies manchester" --route /uk-locations/blue-staffy-puppies-manchester-uk/
+  git diff --stat -- data/queries/blue-staffy-puppies-manchester-uk.json
+  ```
+  Expected: `… kept 29 covered_by and 3 headings, dropped 0`. If the re-run changed anything besides the fills (`fetched`, scores, a regrouped question), `git checkout` the file, re-apply the fills by hand, and keep the hand-written file. The re-run only proves the fills carry.
+- [ ] **Step 5: Run it, and watch the strict xfail turn red.**
+
+  ```bash
+  npm run -s build
+  python3 -m pytest -q tests/py/test_city_kit_manchester.py tests/py/test_no_health_result_stated.py tests/py/test_evidence_certificates_on_request.py tests/py/test_manchester_board.py
+  ```
+  Expected: the kit tests pass. `test_manchesters_dna_faq_heading_states_no_result` FAILs with `XPASS(strict)` on both Manchester routes, because "Tested Clear for" has left the page.
+- [ ] **Step 6: Remove the xfail and its constant, in this same change** (`faq-rewordings.md` §3). In `tests/py/test_no_health_result_stated.py`, delete:
+  - the comment block above `PENDING_REWORD`;
+  - `PENDING_REWORD = "Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?"`;
+  - the two lines `if rel in MANCHESTER_ROUTES:` and `text = text.replace(PENDING_REWORD, " ")   # held by the xfail below, not excused`;
+  - the whole `test_manchesters_dna_faq_heading_states_no_result` with its two decorators.
+
+  Re-run the Step 5 command. Expected: all pass, with `test_no_built_page_states_a_dna_or_health_test_result` examining more than 50 files and excusing nothing for the new heading.
+- [ ] **Step 7: Commit.**
+
+  ```bash
+  git add src/lib/manchesterFaq.ts data/queries/blue-staffy-puppies-manchester-uk.json tests/py/test_city_kit_manchester.py tests/py/test_no_health_result_stated.py
+  git commit -m "feat(manchester): the nine STOP 3 FAQ wordings, read from the board; covered_by recorded; the DNA xfail retired with them (row 12)
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  ```
+
+### Task 44: Write the page from the approved board
+
+**Files:**
+- Modify: `src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro`
+
+- [ ] **Step 1: Read the sources, and nothing else.** Invoke the Skill tool with `bsuk-location-page-builder` and read its Step 2 (sections) and Step 5 (FAQ). Then read:
+  - the approved board `data/boards/blue-staffy-puppies-manchester-uk.json`, with every section's `tree`, `intent`, `why`, `keywords`, `entities`, `links`, `images` and `refresh`, and its `assets[]`;
+  - the outline's `build_notes` and `schema`;
+  - `data/settings.json`, `data/puppies.json`, `data/price-matrix.json`, `data/reviews.json`, `data/faq.json`;
+  - `src/lib/cityKit.ts`, `src/lib/manchesterFaq.ts`, `src/lib/manchesterNav.ts`.
+
+  Do not open London's page, board or built HTML, or any other city's (ruling 1).
+- [ ] **Step 2: Rewire the scaffold's plumbing.**
+  - Import the board record: `import board from '../../../data/boards/blue-staffy-puppies-manchester-uk.json';`. Add a `photo(slot)` helper that returns the slot's `assets[]` row and throws on a missing slot.
+  - The contents panel (board section `contents`) is mounted by `CityShell` through `nav.contents`, so `id: 'contents'` and `'data-section-label'` go into its props, as London's page passes them.
+  - `NAV_ROWS` takes the board ids (ruling 3): `['7', 'faq-top']`, `['12', 'faq-middle']`, `['21', 'faq-bottom']`, `['22', 'enquiry']`. The other nine already match. Every `href: '#enquire'` becomes `'#enquiry'`.
+  - Each of the 22 board sections renders as one top-level `<section id="<board id>" data-section-label={<its board heading>}>` in `<main>`, in board order. Where a Manchester component's root is a `<section>` that spreads `...rest` (as `CityOffsetSheet` does), pass `id` and `data-section-label` to it. Otherwise wrap it.
+  - Remove the `scaffold()` helper, every scaffold line, the `.scaffold-tree` lists and their `<style>` rules, the `plan()` sheet rows, `data-city-scaffold`, and the `migrated` section with its `<style>` rules.
+  - Remove the hard-coded `BODY`, `FAQ_PHOTO`, `REVIEW_ROW` and hero photo choices (ruling 5).
+  - Keep `robots="noindex, follow"` (ruling 7) and rewrite the file-top comment: what the page is, its sources (outline STOP 2, board STOP 3, Asset Gate STOP 4), facts from data, and kept out of the index until the user approves it.
+- [ ] **Step 3: Write the page top to bottom, in the board's section order.**
+  - Each H2 is its section's `heading`, and each H3–H6 is its `tree` node's `heading`, word for word in Title Case. The litter table stays under its H4 with the outline's caption.
+  - The frame sections the outline gives no heading carry their board heading only as `data-section-label`, never as a heading element, as the scaffold does. These are `counter`, `trust`, `contents`, `key-takeaways`, the three `review-*` and `newsletter`. The heading census stays the outline's.
+  - The opening paragraph under every H2 and H3 answers its question conversationally, in 12 words or more, in Lisa Bright's first-person plural voice (`we`, `our`, `here at BlueStaffyUK`), inside the section's `words` band. The whole page lands in the 2,000–3,000 word target. Draft each section's prose through `@bsuk-seo-content-writer` from the node's `intent` and `entities`, then filter it through the `anti-ai-writing` skill. No em dash in our copy.
+  - Every fact is an interpolation from `src/lib/cityKit.ts` or the data, never typed:
+    - `BOY_PRICE`, `GIRL_PRICE`, `DEPOSIT`, `DEPOSIT_HOLDS`, `refundClause()`, `depositTerms()`;
+    - `DELIVERY_BAND`, `TOWN`, `transportName` and `pricedBy`;
+    - `PARENT_DNA_TESTS`, `PUPPY_SIGNS`, `guaranteeFact()` and `guaranteeRow()`, and `guarantee_cover` only where a guarantee sentence already carries it;
+    - `settings.breeder_name`;
+    - each puppy's name, sex and colour from `availablePuppies()`.
+  - **The deposit section** (`deposit`) answers "see the puppy with its mother before any money changes hands" without a video call. The deposit books the viewing in Carlisle, reserves the puppy and comes off the price. The refund wording is `refundClause()`, whole. Payment is by bank transfer. The parents, papers and vet records are seen before the buyer commits (`data/faq.json` `whyus-evidence`). It never states a "see before you pay" rule we do not follow (lessons 9).
+  - **Health** (`health-tests`, `guarantee`) names L-2-HGA and HC-HSF4 through `PARENT_DNA_TESTS`, says the certificates are shared on request, and states no result.
+  - **Life in Manchester** (`busy-household`) carries only "not a banned breed / not on the government's list", linked to gov.uk as the board lists it. It names no park, vet, business or city statistic.
+  - **Colour and price** are said of this litter only (q09). There is no licence claim, no rescue wording and no phone.
+  - **Images.** The hero's photos come from slot `manchester-hero`. Each body H2's photo is its `<section>-h2` slot, passed to `CityOffsetSheet` as `photo` (and `photoAlt` only where the record's alt differs from the served one). Each body H3 has its slot as a `BodyImage` (`src/components/BodyImage.astro`) directly after the H3 and before its prose, `box="uniform"` (or `box="tall"` for a portrait). The papers checklist is the published `papers-checklist` asset. Review and FAQ photos are the record's, each repeat with the record's new alt.
+  - **Links.** Every link on the board and no other sits Link-First at the start of its sentence, with the board's anchor. The two HELD links (ruling 4) are not built, and their sentences stand without them.
+  - **FAQ.** Each FAQ block is `CityRowsBesideAPhoto` with `items` from `MANCHESTER_FAQ` (Task 43), so its questions are the board's and its answers the bank's and the data's.
+  - **Schema.** `schema` is `faqPageNode(MANCHESTER_FAQ.flatMap((b) => b.items))`, plus one `LocalBusiness` node with `areaServed` Greater Manchester and no `telephone` key, and the `Person` byline the outline names (Lisa Bright). There is no `VideoObject` and no `Product` (the page shows no puppy card).
+  - No section of this board is a scam-and-trust section and none carries a video (Phase F ruling 2; canvas q2 (a)), so neither `bsuk-scam-trust-agent` nor `bsuk-video-seo-agent` runs.
+- [ ] **Step 4: Run the tests.**
+
+  ```bash
+  git add src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro
+  git commit -m "wip(manchester): the page written from its approved board (row 12)
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  npm run -s build
+  python3 -m pytest -q tests/py/test_manchester_page.py tests/py/test_manchester_scaffold.py tests/py/test_city_kit_manchester.py tests/py/test_no_health_result_stated.py
+  ```
+  The page is committed first because the prebuild dates a route from its history. Expected: PASS. A failure is confirmed on `dist/uk-locations/blue-staffy-puppies-manchester-uk/index.html` before the page is edited. Commit each fix with the page.
+- [ ] **Step 5: The duplicate check, straight after the first build (lessons 18).**
+
+  ```bash
+  python3 scripts/dup_content_audit.py --headers; echo "exit $?"
+  python3 scripts/dup_content_audit.py; echo "exit $?"
+  ```
+  Expected: no row names `uk-locations/blue-staffy-puppies-manchester-uk`, whether heading, FAQ question or body passage. A Manchester hit is fixed in the page now: a body sentence is rewritten from the board; a heading or FAQ question goes to the CONTROLLER, because changing it is a board change. It is never left for the close. Report both outputs to the controller.
+- [ ] **Step 6: Commit** the page and anything the build rewrote (`data/page-dates.json`, `docs/reports/{redirects,schema,sitemaps}.md`): `feat(manchester): the page written from its approved outline and board (row 12)`, with the trailer.
+
+### Task 45: Provenance, registration and the site gates
+
+**Files:**
+- Modify: `data/facts/rebuilt.json`, `tests/render/targets.json`, `scripts/build_llms_txt.py`, `tests/py/test_llms_txt_build.py`
+
+- [ ] **Step 1: Check provenance before registering.**
+
+  ```bash
+  npm run -s build
+  python3 scripts/outline_provenance_check.py blue-staffy-puppies-manchester-uk; echo "exit $?"
+  ```
+  Expected: exit 0, with none of these: `outline-unknown-section`, `outline-extra`, `outline-missing`, `outline-order`, `outline-duplicate-heading`, `outline-heading-crossover`, `outline-copy-crossover`, `outline-sentence-crossover`. A crossover is fixed in the copy, never by widening the whitelist.
+- [ ] **Step 2: Register the page.** Append `"blue-staffy-puppies-manchester-uk"` to `data/facts/rebuilt.json`. Append to `pages` in `tests/render/targets.json`:
+
+  ```json
+  {"slug": "uk-locations/blue-staffy-puppies-manchester-uk", "page_type": "location", "corpus": true}
+  ```
+- [ ] **Step 3: A rebuilt page that is still noindex stays out of `llms.txt`. Test first.** `scripts/build_llms_txt.py` `rebuilt_stub()` lists a `stub-noindexed` page-map row once its slug is in `data/facts/rebuilt.json`. The rule was written for London, which was indexable when it was added (f3031626). Registration therefore puts the noindex Manchester page into `public/llms.txt`, and `test_listed_page_count_matches_indexable_rows` moves from 23 to 24. In `tests/py/test_llms_txt_build.py`, add:
+
+  ```python
+  def test_a_rebuilt_page_still_noindex_stays_out(tmp_path):
+      # Manchester is rebuilt (data/facts/rebuilt.json) but its own file still writes
+      # robots="noindex, follow" until the user approves it (page-run row 21).
+      text = build_llms_txt.main(tmp_path / "llms.txt").read_text(encoding="utf-8")
+      assert "/uk-locations/blue-staffy-puppies-manchester-uk/" not in text
+  ```
+  Run `python3 -m pytest -q tests/py/test_llms_txt_build.py`. Expected: FAIL on the new test and on the count (24). Then, in `scripts/build_llms_txt.py`:
+
+  ```python
+  def held_noindex(page):
+      """A rebuilt page whose own source still writes robots="noindex is not yet in the index
+      (the city pages keep it in the file until the user approves the page)."""
+      route = page["url"].strip("/")
+      for src in (ROOT / "src/pages" / f"{route}.astro", ROOT / "src/pages" / route / "index.astro"):
+          if src.is_file():
+              return 'robots="noindex' in src.read_text(encoding="utf-8")
+      return False
+
+
+  def rebuilt_stub(page, rebuilt):
+      """A migrated stub (`stub-noindexed`) that a rebuilt page has since replaced AND whose page
+      file no longer holds it out of the index. Its row still describes the WordPress stub, so it
+      is listed without the stub's word count. London became indexable on the breeder's approval
+      (2026-10-06); Manchester is rebuilt and stays out until the user approves it (row 21)."""
+      return ("stub-noindexed" in page.get("refresh_flags", []) and _slug(page["url"]) in rebuilt
+              and not held_noindex(page))
+  ```
+  Re-run. Expected: PASS, with the count still 23. Then run `npm run llms` and `git diff --stat public/llms.txt`. Expected: no change.
+- [ ] **Step 4: Run the site gates.**
+
+  ```bash
+  npm run -s build
+  npm run -s check:all; echo "exit $?"
+  python3 scripts/board_gate.py blue-staffy-puppies-manchester-uk
+  python3 scripts/keyword_metrics.py blue-staffy-puppies-manchester-uk; echo "exit $?"
+  npm run -s test:py
+  ```
+  Expected: exit 0 on each. Read the examined counts:
+  - `check:queries` and `check:outline` now examine Manchester;
+  - `check:facts` examines it against its empty fact set;
+  - `check:parity` no longer measures its migrated body.
+
+  A FAIL is confirmed on the built page before anything is edited (`rules/gates.md`, `bsuk-gate-integrity`).
+- [ ] **Step 5: Commit.**
+
+  ```bash
+  git add data/facts/rebuilt.json tests/render/targets.json scripts/build_llms_txt.py tests/py/test_llms_txt_build.py
+  git commit -m "chore(manchester): registered as rebuilt; a noindex rebuilt page stays out of llms.txt; check:all green (row 12)
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  ```
+
+---
+
+## Phase I: Harden (rows 13–16)
+
+### Task 46: Render gates (row 13)
+
+**Files:**
+- Create: `data/quality/scorecards/uk-locations__blue-staffy-puppies-manchester-uk-${D}.json` and the other pages' scorecards of the run (written by the run)
+- Modify: `docs/reports/render-baseline-project4.md` (regenerated)
+
+- [ ] **Step 1: Check the checkers first.**
+
+  ```bash
+  npm run test:render:meta
+  ```
+  Expected: PASS. A failure here means the harness is broken: stop, report, and trust no page result.
+- [ ] **Step 2: Manchester alone, then the full run.**
+
+  ```bash
+  npm run test:render:pages -- --grep blue-staffy-puppies-manchester-uk
+  npm run test:render:pages
+  npm run test:render:city
+  ```
+  Expected:
+  - The filtered run says it skips the scorecard (a filtered run measures some pages only).
+  - The full run has no blocking IMG, LAYOUT or NAV row and no check that examined zero nodes.
+  - The four promoted checks pass on Manchester: they block a new page from board approval on (`tests/render/targets.json` `new_page_rule`):
+    - `hero-counter-separation`;
+    - `h3-image-first`;
+    - `sem-section-opening-paragraph`;
+    - `sem-title-case-headings`.
+  - The city suite passes `city-type-fit` on `/uk-locations/blue-staffy-puppies-manchester-uk/` with London's routes unchanged.
+
+  Fix in the page or its data, confirming each defect on the built page first. A flaky probe is reproduced and fixed in the harness or the component, never re-run until it passes (lessons 20).
+- [ ] **Step 3: Regenerate the baseline from the new scorecards.**
+
+  ```bash
+  python3 scripts/render_baseline.py --write docs/reports/render-baseline-project4.md
+  npm run -s baseline
+  ```
+  Expected: exit 0, then `--check` with 0 problems. Read the command's output before writing the commit message (lessons 15).
+- [ ] **Step 4: Commit.**
+
+  ```bash
+  git add data/quality/scorecards/ docs/reports/render-baseline-project4.md src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro
+  git commit -m "test(manchester): render gates at 375/768/1280, scorecard and baseline (row 13)
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  ```
+
+### Task 47 (CONTROLLER invokes the skill): Harden, the impeccable pass (row 14)
+
+**Files:**
+- Modify: the page and the Manchester `City*` components it mounts, only for fixes that change no content and no palette
+- Create: `docs/reports/impeccable-manchester-${D}.md`, `docs/reports/impeccable-manchester/` (screens)
+- Modify: `data/page-runs/blue-staffy-puppies-manchester-uk.json`
+
+- [ ] **Step 1: Run the pass.** The main checkout has no `.claude/launch.json` (it is listed in `.git/info/exclude`). Create it with one configuration:
+
+  ```json
+  {"version": "0.0.1", "configurations": [{"name": "bsuk-preview", "runtimeExecutable": "npx", "runtimeArgs": ["astro", "preview", "--port", "4321"], "port": 4321}]}
+  ```
+  Start it with the Browser pane's `preview_start` (name `bsuk-preview`), never as a background shell job.
+
+  The CONTROLLER invokes the Skill tool with `impeccable:impeccable` on `http://localhost:4321/uk-locations/blue-staffy-puppies-manchester-uk/`. The page is judged at 375, 768 and 1280 in a painting browser (the Browser pane or the Playwright MCP), with screenshots taken section by section into `docs/reports/impeccable-manchester/`. The user's type rule applies: every heading, paragraph and label sized per tier, no chunky headings, and no tall sections or uneven paragraphs (Phase F ruling 6). Findings go to `docs/reports/impeccable-manchester-${D}.md`.
+- [ ] **Step 2: Fix or defer each finding.**
+  - A fix that changes no content and no visual design is committed with the trailer.
+  - A proposed visual change is previewed before it is applied (working rule 6). With the user here: show the before/after in the browser, ask once, and apply only on a yes. With the user away: write it as a preview under `docs/reports/impeccable-manchester/preview/`, log it under the session brief's `## Open Flags`, and record it `--deferred "<reason>"`.
+  - The palette never changes.
+- [ ] **Step 3: Record the pass.**
+
+  ```bash
+  python3 scripts/page_run_record.py blue-staffy-puppies-manchester-uk impeccable --findings <n> --fixed <n> [--deferred "<reason>" ...]
+  ```
+  `<n>` is the count from Step 1's report. Expected: exit 0.
+- [ ] **Step 4: Commit.**
+
+  ```bash
+  git add data/page-runs/blue-staffy-puppies-manchester-uk.json docs/reports/impeccable-manchester-*.md docs/reports/impeccable-manchester/
+  git commit -m "chore(manchester): impeccable pass recorded (row 14)
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  ```
+
+### Task 48 (CONTROLLER invokes the skill): Harden, the frontend-design pass (row 15)
+
+**Files:** as Task 47, with `docs/reports/frontend-design-manchester-${D}.md` and `docs/reports/frontend-design-manchester/`.
+
+- [ ] **Step 1: Run the pass.** The CONTROLLER invokes the Skill tool with `frontend-design:frontend-design` the same way: the same page, 375, 768 and 1280, a painting browser, and screens section by section. It runs after Task 47's commit, because row 15's key must follow row 14's.
+- [ ] **Step 2: Fix or defer each finding**, as Task 47 Step 2. Preview before apply, and the palette never changes.
+- [ ] **Step 3: Record the pass.**
+
+  ```bash
+  python3 scripts/page_run_record.py blue-staffy-puppies-manchester-uk frontend-design --findings <n> --fixed <n> [--deferred "<reason>" ...]
+  ```
+  Expected: exit 0.
+- [ ] **Step 4: Commit** with `chore(manchester): frontend-design pass recorded (row 15)` and the trailer. From here on, any edit to the page or its sources stales this pass, and Tasks 47–48 run again.
+
+### Task 49: The static scan and visual intelligence (row 16)
+
+**Files:**
+- Create: `docs/superpowers/sessions/${D}-visual-intel-blue-staffy-puppies-manchester-uk.md`
+
+- [ ] **Step 1: Run the static scan.**
+
+  ```bash
+  python3 scripts/page_hardening_scan.py uk-locations/blue-staffy-puppies-manchester-uk --fail-on-error; echo "exit $?"
+  ```
+  Expected: exit 0, with 0 ERROR. Read the examined file list and confirm that it names `src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro`, not a shared scaffold (lessons 2). Triage every WARN in the task report as real, dead code or a false positive. A false positive is fixed in the scanner, with a case in its tests.
+- [ ] **Step 2: Run the visual-intelligence report.** Invoke the Skill tool with `bsuk-visual-intelligence` on the built page, against every sibling in the location cluster that `tests/render/targets.json` lists:
+  - `uk-locations/blue-staffy-puppies-london`;
+  - `uk-locations/blue-staffy-puppies-birmingham`;
+  - `uk-locations/blue-staffy-puppies-uk`.
+
+  Write the report to `docs/superpowers/sessions/${D}-visual-intel-blue-staffy-puppies-manchester-uk.md`. It holds the verdict, every score's source, every finding's owner, the verbalization table and the predicate inventory (the row 20 input). Every image with words is read as copy again (lessons 7). A proposed visual change is a preview, as in Tasks 47–48.
+- [ ] **Step 3: Commit.**
+
+  ```bash
+  git add docs/superpowers/sessions/*-visual-intel-blue-staffy-puppies-manchester-uk.md
+  git commit -m "docs(manchester): static scan clean; visual-intelligence report (row 16)
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  ```
+
+---
+
+## Phase J: Gates, verification and close (rows 17–21)
+
+### Task 50: Every gate twice (row 17)
+
+**Files:** none tracked. `docs/reports/gate-page/blue-staffy-puppies-manchester-uk.json` is git-ignored (`docs/reports/**/*.json`).
+
+- [ ] **Step 1: Confirm the tree is committed.**
+
+  ```bash
+  git status --short
+  ```
+  Expected: no modified tracked file except `public/search-index.json` or a current `data/page-dates.json`. The untracked `.playwright-mcp/`, `BSUK-london-research/` and `BSUK-outline-fix/` are not this run's and stay untouched.
+- [ ] **Step 2: Run the gates.**
+
+  ```bash
+  npm run -s build
+  npm run gate:page -- blue-staffy-puppies-manchester-uk --skip-record; echo "exit $?"
+  python3 scripts/quality_report.py
+  python3 scripts/perf_audit.py uk-locations/blue-staffy-puppies-manchester-uk
+  ```
+  Expected:
+  - `gate:page` exits 0 with both runs identical. Each of these runs twice: dup (body and `--headers`), `final_page_audit` `--type location`, hardening, AEO, evidence (`--fail-on-error`, so an unledgered health claim is an ERROR) and `board_gate`. The `listed` step passes.
+  - `quality_report.py` §5 is read.
+  - `perf_audit.py` reports the warm median of runs 2–5 on `dist/`. Never `--live`: it refuses on the placeholder.
+
+  Any FAIL is confirmed on the page, fixed and committed, and then Tasks 47–48 run again, because the page changed after frontend-design.
+
+### Task 51: Verification before completion (row 18)
+
+**Files:**
+- Modify: `data/page-runs/blue-staffy-puppies-manchester-uk.json`
+
+- [ ] **Step 1:** Invoke the Skill tool with `superpowers:verification-before-completion`.
+- [ ] **Step 2: Record the verification.** With the tree committed, run:
+
+  ```bash
+  python3 scripts/page_run_record.py blue-staffy-puppies-manchester-uk verification \
+    --run "npm run -s build" --run "npm run -s check:all" \
+    --run "npm run gate:page -- blue-staffy-puppies-manchester-uk --skip-record" \
+    --claim "Manchester passes every page gate twice, built from its approved outline and board"
+  ```
+  Expected: exit 0, with each command's exit code 0 and an examined count above 0.
+- [ ] **Step 3: Commit, then run the full gate.**
+
+  ```bash
+  git add data/page-runs/blue-staffy-puppies-manchester-uk.json
+  git commit -m "chore(manchester): verification-before-completion recorded (row 18)
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  npm run gate:page -- blue-staffy-puppies-manchester-uk; echo "exit $?"
+  ```
+  Expected: exit 0. The full gate re-runs `check:all` itself and checks the run record (`page_run_record.py blue-staffy-puppies-manchester-uk --check`: 0 problems).
+
+### Task 52: The measurement ledger and LLM visibility (rows 19–20)
+
+**Files:**
+- Create: `docs/reports/manchester-ledger-table.md` (tracked; its table goes into the gate report in Task 53)
+
+- [ ] **Step 1: Run the ledger.**
+
+  ```bash
+  python3 scripts/measurement_ledger.py p5 --slugs blue-staffy-puppies-manchester-uk --md docs/reports/manchester-ledger-table.md
+  python3 scripts/measurement_ledger.py p5 --require-pages; echo "exit $?"
+  ```
+  Expected:
+  - M1–M3, M6, M8–M10, M12, M13 and M18 are printed as numbers.
+  - `--require-pages` exits 0, with no FAIL or STALE on M1, M2, M6, M8 or M10. Its default scope is every project 5 page in `data/facts/rebuilt.json`: London and Manchester.
+  - A STALE M6 means the scorecard is older than the page: re-run Task 46.
+  - A STALE M8 means re-gate at HEAD (Task 50).
+- [ ] **Step 2: Check LLM visibility.**
+
+  ```bash
+  python3 scripts/aeo_audit.py uk-locations/blue-staffy-puppies-manchester-uk --fail-on-error; echo "exit $?"
+  ```
+  Expected: exit 0. Read it with Task 49's report and `docs/research/llm-intel/blue-staffy-puppies-manchester-uk-2026-10-07.json`. The fetched denominator is 1 of 1 (ChatGPT, banked 2026-09-25). `bsuk_cited` is `false`, because the page is not live. List the engine terms the page still lacks for the gate report.
+
+### Task 53: The close (row 21)
+
+**Files:**
+- Modify: `docs/reference/lessons.md`, `docs/reference/session-log.md` (Known Issues), the session brief `docs/superpowers/sessions/${D}-session-brief.md` (`## What's Next`; `grill-me` writes it at the session's open, and today's is `2026-10-07-session-brief.md`)
+- Create: `docs/reports/manchester-gate-report.md`, `docs/artifacts/manchester-gate-report.html`
+
+- [ ] **Step 1: Run the close in its fixed order, with no rebuild after gating.**
+
+  ```bash
+  npm run -s build
+  npm run test:render:pages
+  python3 -c "import sys,pathlib;sys.path.insert(0,'scripts');import measurement_ledger as M;print('\n'.join(M.default_slugs(pathlib.Path('.').resolve())))" | while read s; do npm run -s gate:page -- "$s" || echo "GATE FAIL $s"; done
+  python3 scripts/rendered_changes.py --base $(git merge-base HEAD foundation) --json
+  python3 scripts/measurement_ledger.py p5 --require-pages; echo "exit $?"
+  ```
+  Expected:
+  - The slug list prints `blue-staffy-puppies-london` and `blue-staffy-puppies-manchester-uk`, the project 5 pages, so M10 re-gates dup crossover at this commit for both.
+  - No `GATE FAIL` line.
+  - `docs/reports/rendered-changes.json` lists `blue-staffy-puppies-manchester-uk`.
+  - The ledger exits 0.
+- [ ] **Step 2: Lessons, through the learning loop.** Invoke the Skill tool with `bsuk-learning-loop`. Add a `## Manchester (blue-staffy-puppies-manchester-uk), 2026-10-07 to <close date>` section to `docs/reference/lessons.md`, numbered on from 21, in the file's form (family, what happened, why, what holds it now, or **not gated**). It must carry at least these:
+  - the rebuilt-but-noindex page that `llms.txt` would have listed (Task 45 Step 3, now gated);
+  - the nine thin FAQ wordings that `near_copy_hits` found after STOP 2 (G15);
+  - the scaffold's anchors that were not board ids (ruling 3);
+  - any escape the Harden passes or the gates found.
+
+  An escape an existing invariant should have caught is charged to the harness (a `known_broken` fixture and a fixed check), not to a new rule.
+- [ ] **Step 3: Known Issues.** Invoke the Skill tool with `session-closer`. In `docs/reference/session-log.md` `## Known Issues`:
+  - add one numbered entry from 102 on for every open item: links 8 and 9 held on the deposit-order fix; each deferred Harden preview; every `NOT FETCHED` the board and the gate report still carry (Search Console and LLM mentions among them), each with its barrier;
+  - mark closed what this run closed;
+  - extend the section's preamble sentence with "the Manchester page run added 102–<n>".
+
+  Fill the brief's `## What's Next`.
+- [ ] **Step 4: Verify again before any PASS claim.** Invoke `superpowers:verification-before-completion` again before the gate report says PASS.
+- [ ] **Step 5: The gate report.** Write `docs/reports/manchester-gate-report.md` in `docs/reports/london-gate-report.md`'s form:
+  - the double gate run with each step's two counts;
+  - the page-run record;
+  - the ledger table from `docs/reports/manchester-ledger-table.md`;
+  - other checks at the final HEAD;
+  - every `NOT FETCHED` with its barrier;
+  - the deferred Harden previews;
+  - a `## Open items` section (`tests/py/test_doc_drift.py` requires it).
+
+  Then build the page:
+
+  ```bash
+  D=$(date +%F)
+  python3 scripts/build_report_artifact.py docs/reports/manchester-gate-report.md docs/artifacts/manchester-gate-report.html "Manchester Gate Report" "BlueStaffyUK rebuild · Project 5" "Manchester page gate report" "BlueStaffyUK — Manchester page gate report" "status: PASS" "$D" docs/reports/manchester-gate-report.md
+  python3 -m pytest -q tests/py/test_doc_drift.py
+  ```
+  Expected: the page is written, and the drift test passes.
+- [ ] **Step 6 (CONTROLLER):** Read `docs/artifacts/manchester-gate-report.html` in full, then publish it as an Artifact: icon `check`, `capabilities={"downloads": true}` (copy buttons and a `.md` download).
+- [ ] **Step 7: Commit, as the close's last step** (lessons 21: the report records HEAD, so it is committed after gating).
+
+  ```bash
+  git add docs/reference/lessons.md docs/reference/session-log.md docs/superpowers/sessions/ docs/reports/manchester-gate-report.md docs/reports/manchester-ledger-table.md docs/artifacts/manchester-gate-report.html public/search-index.json data/page-dates.json
+  git commit -m "docs(close): Manchester gate report and ledger table, lessons and Known Issues (row 21)
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  ```
+  Never push.
+
+### Task 54 (CONTROLLER): The user approves or fails the page; noindex comes off only on approval
+
+**Files:**
+- Modify: `src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro` (robots), `tests/py/test_manchester_page.py`, `tests/py/test_manchester_scaffold.py`, `tests/py/test_llms_txt_build.py`, `public/llms.txt` (through `npm run llms`)
+- Create: `docs/reference/answer-board/answers/final-approval-blue-staffy-puppies-manchester-uk-${D}.md`
+
+- [ ] **Step 1: Ask one either/or question in chat** (a single blocking pick, so not a board batch):
+
+  > "Manchester is built and passes every gate twice (gate report: <the Artifact URL from Task 53>). Approve it to come out of noindex, or fail it with what to change?"
+
+  End the turn and wait.
+- [ ] **Step 2: On a fail.** Log each point under Open Flags. Each fix re-enters at the row it belongs to: copy at Task 44, which then re-runs Tasks 45–53; a visual change goes through a preview first (working rule 6).
+- [ ] **Step 3: On approval, save the answer and update the tests first.** Save the user's words, with the date and the gate report URL, as `docs/reference/answer-board/answers/final-approval-blue-staffy-puppies-manchester-uk-${D}.md`.
+  - In `tests/py/test_manchester_page.py`, replace `test_noindex_until_the_user_approves_the_page` with:
+
+    ```python
+    def test_indexable_and_in_the_sitemap_since_the_user_approved_it():
+        html = built()
+        assert re.findall(r'<meta name="robots" content="([^"]*)"', html) == ["index, follow"]
+        assert 'robots="noindex' not in SRC.read_text(encoding="utf-8")
+        shards = [s.read_text(encoding="utf-8") for s in (ROOT / "dist").glob("*sitemap*.xml")]
+        assert shards and [s for s in shards if f"/uk-locations/{SLUG}/<" in s], "Manchester is in no sitemap shard"
+    ```
+  - In `tests/py/test_manchester_scaffold.py`, delete `test_the_scaffold_is_noindex_and_in_no_sitemap`. `tests/py/test_city_scaffold.py::test_every_scaffold_is_noindex_and_in_no_sitemap` still guards any future scaffold.
+  - In `tests/py/test_llms_txt_build.py`, replace `test_a_rebuilt_page_still_noindex_stays_out` with:
+
+    ```python
+    def test_manchester_is_listed_since_the_user_approved_it(tmp_path):
+        text = build_llms_txt.main(tmp_path / "llms.txt").read_text(encoding="utf-8")
+        assert "- [Blue Staffy Puppies Manchester UK](/uk-locations/blue-staffy-puppies-manchester-uk/)\n" in text
+    ```
+    The title is the page-map row's, and a replaced stub is listed with no word count. In `test_listed_page_count_matches_indexable_rows`, change `23` to `24`.
+
+  ```bash
+  npm run -s build
+  python3 -m pytest -q tests/py/test_manchester_page.py tests/py/test_llms_txt_build.py
+  ```
+  Expected: FAIL on the new indexable test and on the two `llms` tests.
+- [ ] **Step 4: Flip the robots value.** In the page, delete `robots="noindex, follow"` so that the layout default `index, follow` renders, as London did (f3031626). Update the file-top comment's "kept out of the index" paragraph to say the user approved the page on `${D}`, citing the answer file. Then:
+
+  ```bash
+  npm run llms
+  npm run -s build
+  python3 -m pytest -q tests/py/test_manchester_page.py tests/py/test_manchester_scaffold.py tests/py/test_city_scaffold.py tests/py/test_llms_txt_build.py
+  npm run -s check:sitemaps; echo "exit $?"
+  ```
+  Expected: PASS, and `check:sitemaps` exits 0 with Manchester among the indexable URLs.
+- [ ] **Step 5: Commit, then re-run the close.**
+
+  ```bash
+  git add src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro tests/py/test_manchester_page.py tests/py/test_manchester_scaffold.py tests/py/test_llms_txt_build.py public/llms.txt public/search-index.json docs/reports/sitemaps.md docs/reference/answer-board/answers/final-approval-blue-staffy-puppies-manchester-uk-*.md
+  git commit -m "feat(manchester): take noindex off — the user approved the page
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  ```
+  The page changed after frontend-design, so Tasks 47–48 run again (the passes re-record), and then Tasks 50–53 run in order. The gate report is updated in place, and the Artifact is republished to the same URL. Never push, and do not merge into `foundation` until the user says so.
+- [ ] **Step 6: The key.** Remind the user to delete `GEMINI_API_KEY` from `.env`: no image work remains for this page (Task 40 Step 4, London handoff).
+
+### Phases H–J: order, parallelism and who does what
+
+- **Order:** 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 (the user's approval) → 47, 48, 50–53 again.
+- **CONTROLLER:**
+  - Task 41 Steps 2–3 when a record change is needed;
+  - the heading and FAQ hits in Task 44 Step 5;
+  - Tasks 47 and 48 (the two Harden skills, invoked by name with the Skill tool);
+  - Task 53 Step 6 (the Artifact);
+  - Task 54;
+  - every preview shown to the user.
+- **Implementers:** everything else, one Opus implementer per task. The controller reads every agent's diff before accepting it (lessons 3). No two tasks run in parallel: each one builds on the page the task before it left.
+- **The user decides twice:** each visual change a Harden pass proposes (a preview), and the page's approval (Task 54).
+
+## Phases G–J (rows 11–21) — written out
+
+Phases G–J are now written out in full above: Phase G (row 11, STOP 4) as Tasks 39–40, and Phases H–J (rows 12–21) as Tasks 41–54. Both were written on 2026-10-07, after STOP 3 was approved (3a4251a7), and every command in them was checked against the tree at 6c0ad36d. They follow London's Tasks 24–37 command for command, with the slug `blue-staffy-puppies-manchester-uk`, the route `uk-locations/blue-staffy-puppies-manchester-uk` and the research folder `docs/research/manchester-page-run/`. Where London's commands differ from the tree today, the difference is stated in the task:
+- the close's gate report is `docs/reports/manchester-gate-report.md` and `docs/artifacts/manchester-gate-report.html`, as London actually shipped (`docs/reports/london-gate-report.md`, `docs/artifacts/london-gate-report.html`), not the plan's `p5-london-*` names;
+- the close gates the project 5 pages (`measurement_ledger.default_slugs`), not every page in `data/facts/rebuilt.json`.
+
+Manchester's own differences: its components were designed at row 10 (ruling 2); `python3 scripts/dup_content_audit.py --headers` runs straight after the first build (Task 44 Step 5); every image with words is read as copy before STOP 4 and again at row 16; the nine STOP 3 FAQ wordings and links 8 and 9 held (Phase H–J rulings 2 and 4).
 
 ## Self-review
 
