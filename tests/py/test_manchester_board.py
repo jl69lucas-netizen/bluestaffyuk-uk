@@ -407,3 +407,29 @@ def test_block_7c_pre_checks_skip_on_the_four_photo_covered_slots(html):
         assert f'name="pick-ig:{slot}" value="skip" checked>' in block, slot
     assert 'name="pick-ig:papers-checklist" value="skip">' in block
     assert not re.search(r'name="pick-ig:papers-checklist" value="[a-z]+" checked>', block)
+
+
+# ── Task 36 Step 3: the plain summaries, from a sidecar outside the record hash ─────────────
+SUMMARY_BLOCKS = ("1b. How Google reads this page", "3d. Neighbourhoods", "3e. Changed since STOP 2",
+                  "4c. Term density against competitors", "4d. FAQ placement",
+                  "5c. What competitors say that we do not", "7b. Rules for new pages", "7c. Infographics")
+
+
+def test_the_summaries_sidecar_covers_the_eight_blocks_in_plain_bullets(html):
+    import board_style as BS
+    import build_page_board as BPB
+    side = BPB.load_summaries(SLUG)
+    assert side is not None, "no sidecar at data/boards/summaries/<slug>.json"
+    titles = re.findall(r'<script type="text/markdown" data-title="([^"]+)"', html)
+    titles = [t.replace("&amp;", "&") for t in titles]
+    assert BS.validate_summaries(side, titles) == []
+    assert set(side["sections"]) == set(SUMMARY_BLOCKS)
+    for t, entry in side["sections"].items():
+        assert 4 <= len(entry["bullets"]) <= 6, t
+    # The rendered board carries it, and the record's hash is untouched by it.
+    assert 'id="board-summaries"' in html
+    data = json.loads(re.search(r'<script type="application/json" id="board-summaries">(.*?)</script>',
+                                html, re.S).group(1))
+    assert data == side
+    assert f"record <code>{PB.record_hash(PB.load_board(SLUG))[:12]}" in html or \
+        PB.record_hash(PB.load_board(SLUG)) in html
