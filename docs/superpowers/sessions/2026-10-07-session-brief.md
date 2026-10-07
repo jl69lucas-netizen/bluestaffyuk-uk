@@ -31,6 +31,8 @@
 
 ## Open Flags
 
+- **Block 3d — Didsbury from prose (Task 20, 2026-10-07):** the neighbourhoods block lists Didsbury as a Manchester area only because keyword-universe.json's `method` text names it (the block scans every string, as London's does). Check before STOP 3.
+- **Planner rows for Bury dropped by the place rule (Task 20):** "staffy puppies bury" and "staffy puppies for sale bury" (0–10) go to Not shown; only autocomplete's "…near bury" counts. Known limit of the location-word rule.
 - **STOP 1 posted (2026-10-07):** research board https://claude.ai/artifact/WydQDtbxSc4WdJ5mfFEhkN; batch `2026-10-07-research-board-blue-staffy-puppies-manchester-uk` (12 questions) on the answer board. Nothing from row 9 on starts until the picks are saved and stamped with `python3 scripts/research_board.py blue-staffy-puppies-manchester-uk --approve --answers <file>`.
 - **Board template — the `.md` download link does nothing in the Artifact viewer** (publish warning, 2026-10-07): the viewer never grants pages download permission. London's board shares the template. Fix in the renderer (declare the `downloads` capability and save through it), separately from this page.
 - **[Closed by STOP 1 q08: the video call is dropped from Manchester's page]** Video call before deposit is not a data key (Task 10, strategies): the offer lives only in London's plan ruling 1 and `ont:video-call-before-deposit`; `data/settings.json` has no key. Pages state facts from data only, so the key is asked for in the STOP 1 batch and added before STOP 2.
