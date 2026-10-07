@@ -165,6 +165,14 @@ MANCHESTER_TICKS = {
 def test_manchesters_tick_card_states_the_cover_as_the_data_words_it(rel):
     page = _built(rel)
     assert f"health guarantee: it {BARE}." in page, "guaranteeFact(): the label, then the cover from data"
-    assert page.count("birth defects") == 1, "the tick only: no other sentence on the route states the cover"
+    # The preview carries the tick only. The written page (page-run row 12) also answers its board's
+    # H3 "What Does the Written Guarantee on a Blue Staffy Puppy Cover?" with guaranteeFact(), inside
+    # section #guarantee: two statements of the cover, both the data's words, and no third.
+    if rel.startswith("uk-locations/"):
+        assert page.count("birth defects") == 2, "the tick and the guarantee H3's answer, and nothing else"
+        sec = page.split('id="guarantee"', 1)[1].split('id="newsletter"', 1)[0]
+        assert sec.count("birth defects") == 1, "the second statement is the guarantee section's own"
+    else:
+        assert page.count("birth defects") == 1, "the tick only: no other sentence on the route states the cover"
     src = (ROOT / "src/components/kit/CityTickCard.astro").read_text(encoding="utf-8")
     assert "guaranteeFact()" in src and "birth defects" not in src, "the component reads the cover, never types it"

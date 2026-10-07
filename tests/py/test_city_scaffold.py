@@ -77,8 +77,12 @@ def test_the_template_builds_exactly_the_routes_the_date_map_gives_it():
     static = [p for p in sorted(G._rel("src/pages/**/*.astro")) if p not in G.DYNAMIC and "[" not in p]
     template = {r for r, _ in G.expand("src/pages/uk-locations/[slug].astro",
                                         frozenset(G.route_for(p) for p in static))}
+    # A city with its own page file (London; Manchester, rebuilt at its page run's row 12) is not
+    # the template's: the scaffold mark used to stand in for "its own file" while Manchester was one.
+    own = {p.stem for p in PAGE.parent.glob("*.astro") if "[" not in p.name} | \
+          {p.parent.name for p in PAGE.parent.glob("*/index.astro")}
     plain = {f"/uk-locations/{d.name}/" for d in (ROOT / "dist/uk-locations").iterdir()
-             if (d / "index.html").is_file() and d.name != SLUG
+             if (d / "index.html").is_file() and d.name != SLUG and d.name not in own
              and "data-city-scaffold" not in (d / "index.html").read_text(encoding="utf-8")}
     assert template and plain == template
 
