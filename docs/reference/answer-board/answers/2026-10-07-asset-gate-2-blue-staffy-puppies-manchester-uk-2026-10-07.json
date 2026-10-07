@@ -1,0 +1,23 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Approved on the board",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Have you approved the Manchester images on the board?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-07T21:15:21.369Z",
+  "batchId": "2026-10-07-asset-gate-2-blue-staffy-puppies-manchester-uk",
+  "counts": {
+    "answered": 1,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-07T21-15-21-367Z"
+}
