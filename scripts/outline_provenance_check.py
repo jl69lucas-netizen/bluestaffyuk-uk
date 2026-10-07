@@ -25,7 +25,8 @@ leaves behind on a built page, for location, comparison and blog pages only
                             exactly, with the breed words swapped (dup_content_audit's
                             template), or with a city name swapped (data/locations.json)
   outline-copy-crossover    a body passage of 12+ words shared with another built page
-                            (dup_content_audit.crossovers, its whitelist)
+                            (dup_content_audit.crossovers, its whitelist), less any stretch
+                            that prints a declared data value whole (DATA_VALUE_SOURCES)
   outline-sentence-crossover a body sentence of 6+ words equal to a sentence on another built
                             page, the city name swapped or not, outside the whitelist and
                             outside every passage already reported as a copy crossover
@@ -307,24 +308,95 @@ def corpus(dist):
 SCAFFOLD_MARK = "data-city-scaffold"
 
 
+# ── declared data values ──────────────────────────────────────────────────────────────────
+#: A DATA VALUE PRINTED WHOLE IS DATA, NOT COPY (Manchester page run, row 12, 2026-10-08). Some
+#: values may only ever be stated in their own words: working rule 9 states a refund term only
+#: from its data key, so `deposit_refund_clause` is printed word for word on every page that
+#: carries it, and the user's deposit ruling is one constant every city line is built from. Two
+#: pages printing them is one value rendered twice, the same reading the dup whitelist gives the
+#: delivery band. Each entry names its SOURCE, never the words: the value is read from that file
+#: at run time, so a reworded value excuses its new words and stops excusing the old ones. A
+#: source file that exists but no longer holds its key stops the gate (exit 2) rather than excuse
+#: nothing silently; a tree with no such file (a test site under --root) has no value to excuse.
+#: (source file, key or constant name, why it is printed whole)
+DATA_VALUE_SOURCES = (
+    ("data/settings.json", "deposit_refund_clause",
+     "the refund clause, word for word (rule 9; src/lib/cityKit.ts refundClause)"),
+    ("src/lib/cityKit.ts", "DEPOSIT_DOES",
+     "what the deposit does, the user's ruling of 2026-09-27 (depositLine, depositFact, depositBrief)"),
+)
+_TS_CONST = r"(?m)^\s*(?:export\s+)?const\s+{name}\s*(?::\s*string\s*)?=\s*(['\"])((?:(?!\1).)+)\1\s*;"
+
+
+def data_values(root):
+    """[token list] for every DATA_VALUE_SOURCES entry, read from `root`. A JSON source is a
+    top-level string key; a .ts source is a `const NAME = '...'` string literal."""
+    out = []
+    for rel, key, _ in DATA_VALUE_SOURCES:
+        f = Path(root) / rel
+        if not f.is_file():
+            continue
+        text = f.read_text(encoding="utf-8")
+        value = None
+        if rel.endswith(".json"):
+            v = json.loads(text).get(key)
+            value = v if isinstance(v, str) else None
+        else:
+            m = re.search(_TS_CONST.format(name=re.escape(key)), text)
+            value = m.group(2) if m and "${" not in m.group(2) else None
+        toks = TOKEN.findall(_h.unescape(value or "").replace("’", "'").lower())
+        if not toks:
+            print(f"outline_provenance_check: declared data value {rel} `{key}` does not resolve "
+                  "to a string — fix DATA_VALUE_SOURCES, never drop the entry silently",
+                  file=sys.stderr)
+            raise SystemExit(2)
+        out.append(toks)
+    return out
+
+
+def uncovered(run, stems):
+    """The stretches of `run` (a word list) that no stem in `stems` covers: each occurrence is
+    cut out and each side is judged on its own (dup_content_audit.unwhitelisted_segments)."""
+    covered = [False] * len(run)
+    for stem in stems:
+        n = len(stem)
+        for k in range(len(run) - n + 1):
+            if run[k:k + n] == stem:
+                covered[k:k + n] = [True] * n
+    segs, cur = [], []
+    for w, c in zip(run, covered):
+        if c:
+            if cur:
+                segs.append(cur)
+                cur = []
+        else:
+            cur.append(w)
+    if cur:
+        segs.append(cur)
+    return segs
+
+
 # ── the checks ────────────────────────────────────────────────────────────────────────────
 def _whitelisted_heading(text):
     return text in DUP.HEADER_WHITELIST or text in DUP.PUPPY_CARD_HEADINGS
 
 
-def _whitelisted_sentence(s):
-    """A head term; a sentence that is a stretch of one whitelisted stem (the delivery band
-    split before its prices); or one with no stretch of SENTENCE_MIN_WORDS+ words that the
-    whitelist leaves uncovered."""
+def _whitelisted_sentence(s, values=()):
+    """A head term; a sentence that is a stretch of one whitelisted stem or declared data value
+    (the delivery band split before its prices); or one with no stretch of SENTENCE_MIN_WORDS+
+    words that the whitelist and the data values leave uncovered."""
     if s in DUP.HEAD_TERMS:
         return True
-    if any(f" {s} " in f" {' '.join(stem)} " for stem in DUP.WHITELIST_STEMS):
+    stems = list(DUP.WHITELIST_STEMS) + list(values)
+    if any(f" {s} " in f" {' '.join(stem)} " for stem in stems):
         return True
-    return all(len(seg) < SENTENCE_MIN_WORDS for seg in DUP.unwhitelisted_segments(s.split()))
+    return all(len(seg) < SENTENCE_MIN_WORDS for seg in uncovered(s.split(), stems))
 
 
-def check_page(board, html, others, cities=None):
-    """Every problem on one built page: [(check id, message)]. `others` is corpus()."""
+def check_page(board, html, others, cities=None, values=()):
+    """Every problem on one built page: [(check id, message)]. `others` is corpus(); `values`
+    is data_values() — a shared run's stretch that prints one of them whole is cut out, and
+    what is left on either side is judged on its own."""
     problems = []
     page = parse(html)
     if not page.sections:
@@ -411,11 +483,13 @@ def check_page(board, html, others, cities=None):
     prose = "".join(p for s in body for p in s["text"]).lower()
     ws = TOKEN.findall(prose)
     sh = DUP.shingles(ws)
-    mine = sorted(s for s in sentences(prose) if not _whitelisted_sentence(s))
+    mine = sorted(s for s in sentences(prose) if not _whitelisted_sentence(s, values))
     runs = {}                                  # passage -> [pages], first-seen order
     for k, o in others.items():
         for seg in DUP.crossovers(ws, sh, o["shingles"]):
-            runs.setdefault(" ".join(seg), []).append(k)
+            for part in uncovered(seg, values):
+                if len(part) >= DUP.MIN_WORDS:
+                    runs.setdefault(" ".join(part), []).append(k)
     for run, keys in runs.items():
         problems.append(("outline-copy-crossover",
                          f"{len(run.split())} words shared with {_pages(keys)}: \"{run[:160]}\""))
@@ -482,6 +556,7 @@ def main(argv=None):
         if not {slug, resolve_page(slug, root)[0]} & set(by_key):
             problems.append(f"{slug}: [outline-no-board] no board record for this slug in data/boards/")
     cities = city_pattern(root)
+    values = data_values(root)
     built = None   # the corpus, read on the first page examined; never read when none is
     for slug, board in sorted(by_key.items()):
         if named and slug not in named:
@@ -516,7 +591,7 @@ def main(argv=None):
             built = corpus(root / "dist")
         own = page_key(page, root / "dist")
         others = {k: v for k, v in built.items() if k != own}
-        for cid, msg in check_page(board, page.read_text(encoding="utf-8"), others, cities):
+        for cid, msg in check_page(board, page.read_text(encoding="utf-8"), others, cities, values):
             problems.append(f"{slug}: [{cid}] {msg}")
     for p in problems:
         print(p)

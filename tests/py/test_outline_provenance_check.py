@@ -374,6 +374,83 @@ def test_a_whitelisted_line_shared_with_a_sibling_passes(tmp_path, capsys):
     assert code == 0, out
 
 
+# ── a declared data value printed whole is data, not copy (Manchester row 12, 2026-10-08) ────
+# London and Manchester both print data/settings.json `deposit_refund_clause` (rule 9: a refund
+# term is stated only from its data key, so neither page may reword it) and src/lib/cityKit.ts
+# `DEPOSIT_DOES` (the user's deposit ruling of 2026-09-27) word for word. The gate reported both
+# as outline-copy-crossover. The values are read from their own files, never typed here.
+CLAUSE = "up to 70% refundable if you change your mind up to 1 day before collection or delivery"
+DOES = "books your viewing and reserves your puppy, and it comes off the price"
+# Prose copied from London's own built page (#deposit-viewing), not a data value.
+LONDON_PROSE = ("Booking a video call with us takes one message: tell us which puppy you like "
+                "and when you are free.")
+
+
+def _data_site(tmp_path, mine, theirs, clause=CLAUSE):
+    root = site(tmp_path, page(TRAVEL + HOMES.replace("</section>", mine + "</section>")))
+    (root / "data" / "settings.json").write_text(json.dumps({"deposit_refund_clause": clause}))
+    (root / "src" / "lib").mkdir(parents=True)
+    (root / "src" / "lib" / "cityKit.ts").write_text(
+        f"/** what it does */\nconst DEPOSIT_DOES = '{DOES}';\nexport const x = DEPOSIT_DOES;\n")
+    sib = root / "dist" / "uk-locations" / SIBLING / "index.html"
+    sib.write_text(SIBLING_HTML.replace("</section>", theirs + "</section>", 1), encoding="utf-8")
+    return root
+
+
+def test_the_data_values_are_read_from_their_own_files():
+    vals = {" ".join(v) for v in OP.data_values(ROOT)}
+    settings = json.loads((ROOT / "data" / "settings.json").read_text())
+    assert " ".join(OP.TOKEN.findall(settings["deposit_refund_clause"].lower())) in vals
+    kit = (ROOT / "src" / "lib" / "cityKit.ts").read_text()
+    import re
+    does = re.search(r"const DEPOSIT_DOES = '([^']+)'", kit).group(1)
+    assert " ".join(OP.TOKEN.findall(does.lower())) in vals
+    assert len(vals) == len(OP.DATA_VALUE_SOURCES)   # every declared source resolved
+
+
+def test_a_declared_source_that_does_not_resolve_stops_the_gate(tmp_path):
+    root = _data_site(tmp_path, "", "")
+    (root / "data" / "settings.json").write_text(json.dumps({}))
+    with pytest.raises(SystemExit):
+        OP.data_values(root)
+
+
+@pytest.mark.parametrize("mine,theirs", [
+    (f"<p>The deposit is {CLAUSE}.</p>", f"<p>The deposit terms: £500, paid by bank transfer: {CLAUSE}.</p>"),
+    (f"<p>A £500 deposit {DOES}.</p>", f"<p>The deposit £500 {DOES}.</p>"),
+    (f"<p>Up to {CLAUSE[6:]}.</p>", f"<p>Your £500 is {CLAUSE}. Ask us.</p>"),
+])
+def test_a_data_value_printed_whole_on_two_pages_is_not_a_crossover(tmp_path, capsys, mine, theirs):
+    code, out = run(_data_site(tmp_path, mine, theirs), capsys)
+    assert "[outline-copy-crossover]" not in out and "[outline-sentence-crossover]" not in out, out
+    assert code == 0, out
+
+
+def test_prose_copied_from_london_beside_a_data_value_is_still_caught(tmp_path, capsys):
+    """The cut takes the data value out of the run and judges each side on its own, as the dup
+    whitelist does: London's prose glued to the clause is still a crossover."""
+    mine = f"<p>The deposit is {CLAUSE}. {LONDON_PROSE}</p>"
+    theirs = f"<p>Your deposit is {CLAUSE}. {LONDON_PROSE}</p>"
+    code, out = run(_data_site(tmp_path, mine, theirs), capsys)
+    assert code == 1 and "[outline-copy-crossover]" in out, out
+    assert "booking a video call with us takes one message" in out
+    assert "refundable" not in out   # the clause itself is not reported
+
+
+def test_prose_copied_from_london_alone_is_still_caught(tmp_path, capsys):
+    code, out = run(_data_site(tmp_path, f"<p>{LONDON_PROSE}</p>", f"<p>{LONDON_PROSE}</p>"), capsys)
+    assert code == 1 and "[outline-copy-crossover]" in out, out
+
+
+def test_a_reworded_clause_is_not_the_data_value(tmp_path, capsys):
+    """The excuse follows the data file: once settings.json words the clause differently, the
+    old wording on two pages is prose again and is reported."""
+    mine = f"<p>The deposit is {CLAUSE}.</p>"
+    theirs = f"<p>Your deposit is {CLAUSE}.</p>"
+    code, out = run(_data_site(tmp_path, mine, theirs, clause="half back up to a week before"), capsys)
+    assert code == 1 and "[outline-copy-crossover]" in out, out
+
+
 # ── wiring ─────────────────────────────────────────────────────────────────────────────────
 def test_check_all_runs_the_gate():
     scripts = json.loads((ROOT / "package.json").read_text())["scripts"]
