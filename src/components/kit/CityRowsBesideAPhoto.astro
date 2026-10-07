@@ -24,6 +24,16 @@
 // AN IN-BODY COMPONENT FOLLOWS ITS OWN BOX (src/styles/city.css): on a phone the photo is a short
 // 3:1 strip between the answer and the rows; from a 640px box a square beside the rows; from a
 // desktop box a larger square that stays in view (sticky) while the rows are read.
+//
+// IN A TABLET BOX THE ANSWER RUNS THE ROW'S WIDTH, under the plus as well as the question, and the
+// gap beside the square is 24px, not 32 (Phase F Task 32 follow-up). In the 656px column beside the
+// dial at 1024 the rows were 320px beside the 272px square, and the canvas's 48px end indent left
+// the answer 272px: the one-sentence answer to "Can I Contact You for Advice for the Dog's Whole
+// Life?" ran 7 lines there, over the 6-line cap from 1024. Now the answer is 328px and it sets on
+// six, inside the cap. The answers are bank rows, so the measure moves, never the words; and the
+// square stays 272px, because the served 540px file painted narrower than 270px is over 2x its box
+// (img-srcset-within-2x), so the photo cannot give the room up. From a desktop box the indent and
+// the 48px gap return. The departure from the picked canvas is the user's to judge at STOP 3.
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
@@ -144,11 +154,13 @@ const id = `city-faq-${block}`;
     @media (prefers-reduced-motion: reduce) { .pm::before, .pm::after { transition: none; } }
     /* From a 640px box: a 272px square beside the rows, on the block's side. */
     @container (width >= 640px) {
-      .pair { grid-template-columns: minmax(0, 1fr) 272px; gap: var(--space-6); align-items: start; }
+      .pair { grid-template-columns: minmax(0, 1fr) 272px; gap: var(--space-5); align-items: start; }
       [data-side=start] .pair { grid-template-columns: 272px minmax(0, 1fr); }
       [data-side=end] .pic { grid-column: 2; grid-row: 1; }
       [data-side=end] .rows { grid-column: 1; grid-row: 1; }
       .pic img { aspect-ratio: 1 / 1; }
+      /* The answer the row's full width beside the square (see the head of this file). */
+      .a { padding-inline-end: 0; }
     }
     /* From a desktop box: a 320px square that stays in view while the rows are read. */
     @container (width >= 800px) {
@@ -156,6 +168,7 @@ const id = `city-faq-${block}`;
       .pair { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--space-8); }
       [data-side=start] .pair { grid-template-columns: 320px minmax(0, 1fr); }
       .pic { position: sticky; top: var(--space-5); }
+      .a { padding-inline-end: var(--space-8); }
     }
   }
 </style>

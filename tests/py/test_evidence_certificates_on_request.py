@@ -1,7 +1,8 @@
 """The certificates sentences are ledgered, state no result, and leave the naming-only exemption
 for the tests working. London's came first; ten more pages carry the same two facts in their own
 words (answer board 2026-10-05 certificates-and-london-tweaks q01 (a)), and one row,
-`certificates-on-request`, covers all eleven, each sentence spelled to its full stop.
+`certificates-on-request`, covers all eleven, each sentence spelled to its full stop, and
+Manchester's two routes carry two more, built from data (Phase F Task 32 follow-up).
 
 Ruling: the breeder in the build session's chat, 2026-10-05
 (docs/reference/answer-board/answers/chat-2026-10-05-certificates-on-request.md): the parents'
@@ -159,6 +160,18 @@ ELEVEN = {
 # specimen; evidence_audit.py does not audit the preview (PREVIEW_PREFIXES), so it is named here.
 PREVIEW_ALSO = {"kit-preview/index.html": ELEVEN["buy-staffy-puppies-for-sale-uk/index.html"]}
 
+# Manchester (Phase F Task 32 follow-up): the same fact in two sentences built from data on each of
+# its two routes, the noindex scaffold and its kit preview: the tick card's DNA tick
+# (CityTickCard, the test names from cityKit PARENT_DNA_TESTS) and the DNA FAQ answer
+# (src/lib/manchesterFaq.ts, data/faq.json `health-dna-tests` then the certificates on request),
+# in the page's order. The test names sit in `keepRuns` spans; evidence_audit.sentences() reads an
+# inline span as no break, as a reader does.
+MANCHESTER_TICK = "Both parents are DNA tested for L-2-HGA and HC-HSF4, with the certificates shared on request."
+MANCHESTER_FAQ = ("Maggie and Jones are both DNA tested for L-2-HGA, a neurological disorder affecting "
+                  "metabolism, and HC-HSF4, an inherited cataract, and we share their certificates on request.")
+MANCHESTER = {rel: [MANCHESTER_TICK, MANCHESTER_FAQ] for rel in (
+    "uk-locations/blue-staffy-puppies-manchester-uk/index.html", "kit-preview/city-manchester/index.html")}
+
 
 def _pat():
     return re.compile(_row(LIVE, ROW_ID)["pattern"])
@@ -190,18 +203,22 @@ def test_the_row_cites_both_rulings_and_records_what_the_documents_hold():
     assert "no laboratory name, grade or score is in the repository" in notes
 
 
-@pytest.mark.parametrize("rel", sorted(ELEVEN))
+# Every sentence the row is spelled to: the eleven, then Manchester's two.
+SPELLED = {**ELEVEN, "manchester tick": MANCHESTER_TICK, "manchester faq": MANCHESTER_FAQ}
+
+
+@pytest.mark.parametrize("rel", sorted(SPELLED))
 def test_the_pattern_matches_each_sentence_whole(rel):
-    sentence = ELEVEN[rel]
+    sentence = SPELLED[rel]
     m = _pat().search(sentence)
     assert m and m.group(0) == sentence, sentence
     curly = sentence.replace("'", "\u2019")
     assert _pat().search(curly), "a typographic apostrophe is the same sentence"
 
 
-@pytest.mark.parametrize("rel", sorted(ELEVEN))
+@pytest.mark.parametrize("rel", sorted(SPELLED))
 def test_a_result_appended_inserted_or_prefixed_is_not_covered(rel):
-    sentence = ELEVEN[rel]
+    sentence = SPELLED[rel]
     for worse in _results(sentence):
         assert worse != sentence, worse
         assert not _pat().search(worse), f"the row would cover a result: {worse}"
@@ -210,7 +227,7 @@ def test_a_result_appended_inserted_or_prefixed_is_not_covered(rel):
 def test_a_result_sentence_beside_a_ruled_one_stays_unledgered():
     """A separate result sentence next to a ruled one is its own claim: the ruled sentence is
     still covered, and the result is caught as an unledgered dna-clear claim, never cleared."""
-    for sentence in ELEVEN.values():
+    for sentence in SPELLED.values():
         stated = "Both parents tested clear."
         out = ea.unledgered_claims(_page(f"{sentence} {stated}"), LIVE)
         assert not [r for r in out if r[1] == sentence], sentence
@@ -232,8 +249,11 @@ def test_each_page_carries_its_one_sentence_and_no_other_page_carries_one():
         if hits:
             found[rel] = hits
     assert examined > 50, f"examined only {examined} built pages"
-    want = {rel: [s] for rel, s in {**ELEVEN, **PREVIEW_ALSO}.items()}
+    want = {**{rel: [s] for rel, s in {**ELEVEN, **PREVIEW_ALSO}.items()}, **MANCHESTER}
     assert found == want, found
     for rel in ELEVEN:
         html = (dist / rel).read_text(encoding="utf-8")
         assert not [r for r in ea.unledgered_claims(html, LIVE) if r[1] == ELEVEN[rel]], rel
+    for rel, ruled in MANCHESTER.items():
+        html = (dist / rel).read_text(encoding="utf-8")
+        assert not [r for r in ea.unledgered_claims(html, LIVE) if r[1] in ruled], rel

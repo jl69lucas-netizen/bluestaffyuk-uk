@@ -667,3 +667,86 @@ tests/py/test_city_kit.py tests/py/test_design_components.py`: 221 passed, 1 ski
 pre-dates Task 28). `npm run test:render:city`: 57 passed, 55 skipped, 0 failed, London's three
 routes unchanged; on the Manchester route city-layout-follows-box examined 11 facts at 768 and 17
 at 1024 and 1280 (7 before this task), and at the edge widths 11 / 11 / 11 / 17.
+
+## Built — Task 32 follow-up
+
+Adding the noindex scaffold, `/uk-locations/blue-staffy-puppies-manchester-uk/`, to the city render
+gate (`tests/render/city-kit.spec.ts` `ROUTES` and `ROUTE_CITY`, the diff saved at Task 32) put
+every long outline H2 and every FAQ answer through the components at the page's real column
+widths for the first time. The preview mounts each component once with its own copy; the scaffold
+mounts the offset sheet for all nine body sections and the FAQ rows with the outline's twenty
+questions.
+
+**Red first.** With the route added and nothing else changed, `npm run test:render:city` failed on
+the scaffold at three widths (3 failed, 2 passed on the route):
+- 1280: `city-offset-sheet (832px, desktop)`: all eight long body H2s (61 to 77 characters) wrapped
+  to 3 lines at 442px "with 442px of room in a 832px box: heading column too narrow for its
+  box" (rule 1b; the type ruling, answer board q06).
+- 1024: `city-rows-beside-a-photo (656px, tablet)`: the one-sentence answer to "Can I Contact You
+  for Advice for the Dog's Whole Life?" ran 7 lines (6 max from 1024): the rows were 320px beside
+  the 272px square, and the answer's 48px end indent left it 272px.
+- 375: the hero H1 at 4 lines, once, under four workers. It did not recur in four later runs
+  (alone or in the full suite); measured at rest it is 3 lines at 375. A web-font timing race
+  under load, not a layout defect; noted here, not changed.
+
+**Fixed (the components, never the words; the answers are bank rows).**
+- `CityOffsetSheet`: the H2 and its answer moved out of the copy column into their own `.head`;
+  from a desktop box (800px) they run the whole width above, the H2's measure lifted, and under
+  them the photo on its bleed sits beside the sheet (`.sheet`: the cells, the slot, the action),
+  grid areas `head head / media sheet`. Below a desktop box the order and spacing are as before
+  (photo, question, answer, sheet). Task 31 fixed `CityPhotoAtTheEdge` the same way. At 1280 all
+  nine body H2s now set on 2 lines (784px of room); at 768 and 1024 (tablet boxes) eight are 2
+  lines and one, row 15's 77-character question, is 3 (the tablet tier allows 3).
+  `city-layout-follows-box` reads `['beside', '.media', '.sheet']` from a desktop box (it read
+  `.copy`).
+- `CityRowsBesideAPhoto`: in a tablet box the answer runs the row's full width (under the plus as
+  well as the question; the 48px end indent returns from a desktop box) and the gap beside the
+  square is 24px, not 32. In the 656px column the rows are 328px and the answer sets on 6 lines,
+  inside the cap. The first try, a narrower square (200px from a 640px box), failed
+  `img-srcset-within-2x` (the Manchester pup's served file is 540px only: 2.70x at 200px), so the
+  square stays 272px and the measure moved instead.
+
+**Both departures are from the picked canvas** (`manchester/image-text/c`, the copy column beside
+the photo; `manchester/faq-blocks/b`, the indented answer and 32px gap), and both are for the user
+to judge at STOP 3: the offset sheet's desktop layout is no longer the canvas's two-column split,
+and the FAQ rows' tablet answer is no longer indented.
+
+`frontend-design:frontend-design`, then `impeccable:impeccable` (brand register; critique and
+harden), were invoked with the Skill tool on the two components, reading per-component crops at
+375 / 768 / 1024 / 1280 (`BSUK-refs/manchester/_build-shots/t32f-offset-sheet-{deposit,guarantee}-<w>.png`,
+`t32f-rows-beside-a-photo-health-<w>.png`; the sticky header overlaps the top of a crop, an
+artefact of element shots) and the full-page `CITY_SHOTS` shots of the scaffold and the preview.
+The impeccable loader reported `hasProduct: false` again, so the brand context came from
+`rules/design.md` and the tokens. The detector (`npx impeccable --json` on the two files)
+returned no rows.
+
+| Component | frontend-design found | impeccable found (critique, harden) | Fixed | Widths |
+|---|---|---|---|---|
+| image and text (offset sheet) | At 1280 the question now reads as the section's head over both columns; the balanced H2 sets at about half the box, the lede at 58ch under it, the photo and sheet a row below; phone and tablet unchanged. The photo's 24px inset from the bleed's edge (the pick's offset) no longer lines up with the H2 above it: kept, it is the pick's identity. | Harden: the desktop bleed and the photo's inset were physical sides (`inset: 0 45% 0 -100vw`, `margin-left`), so a right-to-left page would mirror the grid but not the bleed. Tap target 48px, focus ring 3px, contrast and the reserved square box unchanged; bleed in the steel token. | `inset-block` / `inset-inline` on the bleed, `margin-inline-start` on the photo. | 375 · 768 · 1024 · 1280 |
+| FAQ blocks (rows beside a photo) | At 1024 the open answer's right edge now meets the plus's, which reads cleaner than the indent did in a 328px column; 768 unchanged in feel (440px rows). | Rows stay 56px, focus ring and reduced motion unchanged; the square still 272px (1.99x for the 540px file). | (none beyond the fix above) | 375 · 768 · 1024 · 1280 |
+
+**The two test lists the routes tripped**, each judged on the facts:
+- `test_guarantee_cover.py::test_no_other_built_page_types_a_cover_of_its_own`: the cover on both
+  Manchester routes is the tick card's guarantee tick, `cityKit.guaranteeFact()`: the label, then
+  `coverSentenceOf(G, 'it')`, read from `data/settings.json` `guarantee_cover`, never typed. The two
+  routes are allowed (`MANCHESTER_TICKS`, with that reason), and a new test holds each to the
+  data's wording, one occurrence per route, and `CityTickCard` to reading it.
+- `test_no_health_result_stated.py`: two "certificates on request" sentences per route (the DNA
+  FAQ answer, from `data/faq.json` `health-dna-tests`; the tick card's DNA tick) are excused by
+  their exact text with the 2026-10-05 chat ruling, as London's is, and both are spelled into the
+  evidence ledger's `certificates-on-request` row (thirteen sentences now; its basis says so and
+  that the breeder has not approved these two wordings one by one).
+  `test_evidence_certificates_on_request.py` holds them as it holds the eleven. The test names sit
+  in `keepRuns` spans, which the test's `visible()` and `evidence_audit.sentences()` read as a
+  space ("HC-HSF4 ,"), so neither could match a sentence spelled as a reader meets it: both now
+  read an inline `<span>` as no break (the evidence audit's only change across 64 pages: those
+  two Manchester WARNs gone). The FAQ heading "Are Both Parents DNA Tested Clear for L-2-HGA and
+  for HC-HSF4?" is left alone (Task 34 rewords it): one strict xfail per route, reason
+  "reworded in Phase F Task 34 (STOP 2 q03 b)", which turns red when the new wording lands.
+
+Gates after the fixes: `npm run -s build` exit 0. `python3 -m pytest -q
+tests/py/test_city_kit_manchester.py tests/py/test_manchester_scaffold.py
+tests/py/test_guarantee_cover.py tests/py/test_no_health_result_stated.py`: 159 passed, 2 xfailed.
+`npm run test:render:city`: 62 passed, 58 skipped, 0 failed, with the scaffold in ROUTES; on it
+city-type-fit examined 122 / 99 / 98 / 120 at 375 / 768 / 1024 / 1280, and at the edge widths
+121 / 121 / 121 / 97 type facts and 19 layout facts each. `npm run -s check:all` exit 0.

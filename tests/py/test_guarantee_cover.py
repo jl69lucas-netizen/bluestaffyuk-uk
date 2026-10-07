@@ -145,5 +145,26 @@ def test_no_other_built_page_types_a_cover_of_its_own():
                       if "birth defects" in p.read_text(errors="ignore") and "board-preview" not in p.parts)
     assert set(carriers) <= {"index.html", "uk-locations/blue-staffy-puppies-london/index.html",
                              "kit-preview/city/index.html", "kit-preview/city-page/index.html",
-                             "kit-preview/index.html", *HEADED}, carriers
+                             "kit-preview/index.html", *HEADED, *MANCHESTER_TICKS}, carriers
     assert "index.html" in carriers
+
+
+# Manchester's key-takeaways tick card (src/components/kit/CityTickCard.astro, Phase F Task 30)
+# carries the guarantee as one of its ticks, and its words are src/lib/cityKit.ts
+# `guaranteeFact()`: the label (`guarantee_label`), then `coverSentenceOf(G, 'it')`, the cover read
+# from data/settings.json `guarantee_cover` with its length taken out (the label states it, M1),
+# never typed. A guarantee sentence carries it, as CLAUDE.md allows. Its two routes: the preview
+# and the noindex scaffold (Phase F Task 32).
+MANCHESTER_TICKS = {
+    "kit-preview/city-manchester/index.html",
+    "uk-locations/blue-staffy-puppies-manchester-uk/index.html",
+}
+
+
+@pytest.mark.parametrize("rel", sorted(MANCHESTER_TICKS))
+def test_manchesters_tick_card_states_the_cover_as_the_data_words_it(rel):
+    page = _built(rel)
+    assert f"health guarantee: it {BARE}." in page, "guaranteeFact(): the label, then the cover from data"
+    assert page.count("birth defects") == 1, "the tick only: no other sentence on the route states the cover"
+    src = (ROOT / "src/components/kit/CityTickCard.astro").read_text(encoding="utf-8")
+    assert "guaranteeFact()" in src and "birth defects" not in src, "the component reads the cover, never types it"

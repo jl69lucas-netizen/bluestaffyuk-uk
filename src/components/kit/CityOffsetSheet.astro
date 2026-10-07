@@ -14,8 +14,15 @@
 // working rule 11, 2026-09-29: "same photo use new alt"), never a copy of the served one.
 //
 // AN IN-BODY COMPONENT FOLLOWS ITS OWN BOX (src/styles/city.css): the 2x2 sheet from a 640px box,
-// and the photo beside the copy from a desktop box (800px). In the 656px column beside the dial at
-// 1024 the section stays stacked; in the 832px column at 1280 it sits side by side.
+// and from a desktop box (800px) the H2 and its answer run the whole width above, and under them
+// the photo on its bleed sits beside the sheet. In the 656px column beside the dial at 1024 the
+// section stays stacked; in the 832px column at 1280 it takes the desktop layout. The heading
+// takes the whole width because the outline's questions are long (56 to 77 characters): in the
+// canvas's photo-beside-the-copy split the copy column was 442px in the 832px column, and all
+// eight body H2s on the Manchester scaffold ran to three lines there (Phase F Task 32 follow-up;
+// the type ruling, answer board q06: a 3-line H2 in a desktop box is a defect). Task 31 fixed
+// CityPhotoAtTheEdge the same way. The departure from the picked canvas is the user's to judge
+// at STOP 3.
 //
 // THE SHEET'S WORDS ARE THE CALLER'S, ITS FIGURES THE DATA'S: the rows are passed in (the
 // deposit section's are src/lib/cityKit.ts `depositTerms()`, the refund clause word for word in
@@ -63,9 +70,11 @@ const sizes = citySizes(fit, {
       <img src={p.file} srcset={p.srcset} sizes={p.srcset ? sizes : undefined}
         alt={photoAlt ?? p.alt} width={p.w} height={p.h} class={focusClassFor(photo, 1)} loading="lazy" decoding="async" />
     </figure>
-    <div class="copy">
+    <div class="head">
       <h2>{heading}</h2>
       <p class="lede">{lede}</p>
+    </div>
+    <div class="sheet">
       <dl>
         {rows.map((r) => (
           <div class="cell" data-cell>
@@ -84,7 +93,9 @@ const sizes = citySizes(fit, {
     /* An in-body container (src/styles/city.css): no inline padding on the root; it clips the
        bleed to its own box, so on a page the block never paints over the dial's column. */
     .city-offset-sheet { background: var(--color-surface); overflow: hidden; }
-    .in { max-width: 1160px; margin: 0 auto; padding: var(--space-7) var(--space-4); display: grid; gap: var(--space-6); }
+    /* Stacked below a desktop box: the photo, then the question and its answer, then the sheet. */
+    .in { max-width: 1160px; margin: 0 auto; padding: var(--space-7) var(--space-4); display: grid; }
+    .head { margin-top: var(--space-6); }
     .media { position: relative; margin: 0; padding: var(--space-5) 0; }
     /* The steel block the photo sits on, run past the box on both sides (clipped by the root). */
     .media::before { content: ""; position: absolute; inset: 0 -100vw; background: var(--color-brand-soft); }
@@ -116,15 +127,24 @@ const sizes = citySizes(fit, {
       /* An odd last cell (a three-cell sheet) takes the whole row, never a half beside an empty one. */
       .cell:last-child:nth-child(odd) { grid-column: 1 / -1; padding-inline: 0; }
     }
-    /* From a desktop box: the photo on its block beside the copy, the block bleeding off the left. */
+    /* From a desktop box: the question and its answer across the top, the measure lifted so the
+       longest outline question (77 characters) sets on two lines; under them the photo on its
+       block beside the sheet, the block bleeding off the left. */
     @container (width >= 800px) {
       .in {
-        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--space-8); align-items: center;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); grid-template-areas: 'head head' 'media sheet';
+        column-gap: var(--space-8); align-items: center;
         padding: var(--space-10) var(--space-5);
       }
-      .media { padding: var(--space-8) 0; }
-      .media::before { inset: 0 45% 0 -100vw; }
-      .media img { margin: 0 0 0 var(--space-5); max-width: min(400px, calc(100% - var(--space-5))); }
+      .head { grid-area: head; margin: 0 0 var(--space-6); }
+      h2 { max-inline-size: none; }
+      .lede { margin-bottom: 0; }
+      .media { grid-area: media; padding: var(--space-8) 0; }
+      .sheet { grid-area: sheet; }
+      /* Logical sides (impeccable harden, Task 32 follow-up): the bleed runs off the start edge and
+         the photo is inset from it, so a right-to-left page mirrors the block with its grid areas. */
+      .media::before { inset-block: 0; inset-inline: -100vw 45%; }
+      .media img { margin: 0; margin-inline-start: var(--space-5); max-width: min(400px, calc(100% - var(--space-5))); }
     }
   }
 </style>

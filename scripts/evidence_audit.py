@@ -361,6 +361,11 @@ def sentences(html):
     """The sentences of <main>, split at block boundaries and at . ! ? (a closing quote or
     bracket may follow; Dr. / e.g. / approx. and the like do not end one) — script/style dropped."""
     body = re.sub(r"<(script|style)\b[^>]*>.*?</\1>", " ", main_html(html), flags=re.S | re.I)
+    # An inline <span> breaks no word: the city components wrap a test name or a price in one so it
+    # never breaks across a line (src/lib/cityKit.ts `keepRuns`), and a reader meets "HC-HSF4," with
+    # no space before the comma. Read as a space, a ledger row spelled to the sentence never matched
+    # it (Manchester, Phase F Task 32 follow-up).
+    body = re.sub(r"</?span\b[^>]*>", "", body, flags=re.I)
     out = []
     for block in BLOCK_BREAK.split(body):
         out += _split_sentences(text_of(block))

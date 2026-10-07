@@ -30,7 +30,10 @@ import { TIER, HEADING_CAPS } from './lib/cityTiers.js';
 // singleton, and each city's picks are components of their own (rules/design.md
 // own-components-per-page).
 const MANCHESTER_KIT = '/kit-preview/city-manchester/';
-const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/', '/uk-locations/blue-staffy-puppies-london/', MANCHESTER_KIT];
+// Manchester's own route, a noindex scaffold until its page run writes it (Phase F Task 32; gap
+// G11's "the Manchester route"): the picks on CityShell in the approved outline's order.
+const MANCHESTER_PAGE = '/uk-locations/blue-staffy-puppies-manchester-uk/';
+const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/', '/uk-locations/blue-staffy-puppies-london/', MANCHESTER_KIT, MANCHESTER_PAGE];
 // The full-width specimen routes: every component paints the viewport wide, as the canvas frames did.
 const FULL_WIDTH_SPECIMENS = new Set(['/kit-preview/city/', MANCHESTER_KIT]);
 // city-layout-follows-box judges the IN-BODY city components (its SPEC keys). Each city's are its
@@ -38,7 +41,7 @@ const FULL_WIDTH_SPECIMENS = new Set(['/kit-preview/city/', MANCHESTER_KIT]);
 // other city's are declared absent for that reason, and one that the route does carry is a
 // defect (a stale declaration). Manchester's preview carried no in-body component until Task 30
 // (the takeaways, the table, the image and text) and was skipped; it is judged like London's now.
-const ROUTE_CITY: Record<string, string> = { [MANCHESTER_KIT]: 'manchester' };
+const ROUTE_CITY: Record<string, string> = { [MANCHESTER_KIT]: 'manchester', [MANCHESTER_PAGE]: 'manchester' };
 const routeCity = (route: string) => ROUTE_CITY[route] ?? 'london';
 const COMPONENT_ROWS: { id: string; canvas_variant?: string }[] =
   JSON.parse(readFileSync(new URL('../../data/design/components.json', import.meta.url), 'utf8'));
@@ -1106,7 +1109,7 @@ for (const route of ROUTES) {
       console.log(`${route} @ ${width}px: city-type-fit examined ${t.examined}, city-layout-follows-box examined ${l.examined}`);
       expect(t.examined).toBeGreaterThan(0);
       // Each city's counter at the edge widths: London's price scale, Manchester's range sheet.
-      const scale = route === MANCHESTER_KIT ? await rangeSheetSpill(page) : await priceScaleSpill(page);
+      const scale = routeCity(route) === 'manchester' ? await rangeSheetSpill(page) : await priceScaleSpill(page);
       expect([...t.defects, ...l.defects, ...scale], `${route} at ${width}px`).toEqual([]);
     }
   });

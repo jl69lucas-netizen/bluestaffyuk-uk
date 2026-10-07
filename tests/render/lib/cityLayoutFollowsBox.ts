@@ -66,10 +66,12 @@ export function cityLayoutFollowsBox({ viewport, tier: edges, absent = {} }:
       desktop: [['row', 'tbody tr:first-child > *', 4], ['beside', 'tbody tr:first-child .who img', 'tbody tr:first-child .nm'], ['row', 'thead th', 4]],
     },
     // The offset sheet: its four facts a two-by-two sheet from a 640px box, and from a desktop box
-    // the photo on its bleed beside the copy (a 656px column at 1024 keeps them stacked).
+    // the photo on its bleed beside the sheet, under the H2 and its answer, which run the whole
+    // width above (the Task 32 follow-up: in the canvas's split the copy column stacked every long
+    // outline H2 to three lines). A 656px column at 1024 keeps them stacked.
     '.city-offset-sheet': {
       tablet: [['row', '.cell', 2]],
-      desktop: [['row', '.cell', 2], ['beside', '.media', '.copy']],
+      desktop: [['row', '.cell', 2], ['beside', '.media', '.sheet']],
     },
     // Task 31. The review plates: from a desktop box the photo takes the slot's own side and its
     // plate sits beside it, set over the photo's inner edge (`overlaps`: the two meet, the second's
