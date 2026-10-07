@@ -511,3 +511,86 @@ again: the route alone at `--repeat-each=12 --workers=4` (12 passed), the whole 
 `--repeat-each=4 --workers=4` (68 passed), then a full run (57 passed, 0 failed). Not gated: a
 static-server stall on a cold first load is a harness fact, and is recorded here rather than excused
 in the probe.
+
+## Built — Task 30
+
+Takeaways C, tables A and image-and-text C built into the kit from the frozen picks (355d5e43) as
+`CityTickCard`, `CityPhotoShelf` and `CityOffsetSheet` (`data/design/components.json` rows M7-M9,
+each with `canvas_variant` and `root_selector`), previewed on `/kit-preview/city-manchester/`. No
+London component is imported or copied; shared are tokens, `city.css` and new helpers:
+`src/lib/cityKit.ts` `depositFact`, `DEPOSIT_HOLDS`, `refundClause()` (reads
+`deposit_refund_clause`, types none of its words), `depositTerms()`, `priceFor()` (price by sex
+from `data/price-matrix.json`; a puppy whose own `price_gbp` disagrees stops the build), `pricedBy`,
+`PARENT_DNA_TESTS` (the two test names from `data/bsuk-ontology.json`), `keepRuns()` (prices,
+bands and hard-hyphen words never break inside: "DEFRA-", "Two-" and "L-2-" ran on alone on the
+canvas) and `guaranteeFact()` (`guarantee_label` and `guarantee_cover`, the length said once); and
+`src/lib/imageFocus.ts` `focusClassFor(file, aspect)`, which solves object-position for the box
+the component paints. `focusClass` centres the faces as a fraction of the master, right for a
+slight crop; for the family photo's 2:1 crop it gave fy-30, which parks the window below both
+heads. Solved for 2:1 it gives fy-10, the canvas's own 9%, with no crop typed beside an image.
+
+These are the first in-body Manchester components, so the preview leaves Task 28's
+`NO_IN_BODY_YET` skip. `city-layout-follows-box` gains the three components' layout facts (tick
+grid two to a row and title beside answer from a 640px box; the shelf a four-cell table row with
+the photo beside the name; the offset sheet's 2x2 cells, and from a desktop box the photo beside
+the copy). Each route is now judged on its own city's keys: the other city's keys are declared
+absent for that reason (and a stale declaration is still a defect), and London's board-derived
+absent list is unchanged (`.city-sheet`, `.city-video`). Examined on the Manchester preview: 0 at
+375 (phone boxes), 5 at 768, 7 at 1024 and 1280; at the edge widths 5 / 5 / 5 / 7. Mutation-checked:
+with the tick grid's two columns removed, the gate failed at 768 with ".city-tick-card (768px
+box, tablet): 1 [data-takeaway] to the first row, not 2".
+
+Copy and facts: the five ticks are outline row 5's note, each from data. The table is the
+outline's H4, word for word, and its caption. It has the outline's four columns, the six
+available puppies in file order with their status, and `data-label` on every `<td>`. The offset
+sheet carries outline row 8's H2. Its "If plans change" cell is `deposit_refund_clause` word for
+word, so the deposit is never called plainly refundable. The test that banned "refundable" from
+every Manchester section now strips that one clause first. London's
+`test_the_city_kit_carries_no_refund_clause_helper` dated from before the clause landed in the
+data (2026-09-30). It is now `test_the_city_kit_reads_the_refund_clause_from_the_data_and_never_types_it`:
+one helper, it reads the key, no clause words are typed, and it is not dead code.
+
+Alts (working rule 11): the takeaways keep the family photo's served alt (its first use). The
+offset sheet's repeat reads "A new owner holding her blue Staffy puppy in a pink collar, cheek to
+cheek in the garden", checked against the picture. On the preview every shelf photo is a repeat:
+the hero spends the served alts on Roman, Cheryl, Ince and Vennie, and the counter spends the
+short ones on those four and the served alts on Byrd and Christa. So the shelf takes the `scene`
+alts (`shownAbove`, `repeatAlt`), and on the real page the Asset Gate decides.
+
+`frontend-design:frontend-design`, then `impeccable:impeccable` (brand register; critique and
+harden), were invoked with the Skill tool. Both read per-component shots at 375 / 768 / 1024 / 1280
+(`task30-<component>-<width>.png`, header hidden) and the full-page
+`CITY_SHOTS=…/BSUK-refs/manchester/_build-shots npm run test:render:city` shots. The impeccable
+loader again reported `hasProduct: false`, so the brand context came from `rules/design.md` and
+the tokens. The detector (`npx impeccable --json` on the three files) returned no rows.
+
+| Component | frontend-design found | impeccable found (critique, harden) | Fixed | Widths |
+|---|---|---|---|---|
+| key takeaways (tick card) | At 768 and 1024 the title took three lines at an even 1:1 head split, beside a two-line answer: a chunky title in a ragged head (the type ruling). | Critique: ticks state facts, not a numbered non-sequence. No side stripe, no em dash, odd last tick spans both columns. Harden: a one-sex litter must not print a price for a sex with no puppy (built in from the first draft, so nothing to fix). | The head is 7fr / 5fr, so the title takes two lines. | 375 · 768 · 1024 · 1280 |
+| table (photo shelf) | At 375 Cheryl's coat ("Blue with white blaze") wrapped to two lines, so her price sat 20px below Christa's in the same pair of cards. | Harden: a long puppy name or coat in a 165px phone card could overflow it. The `display: block` stack keeps its table semantics through the explicit ARIA roles. | The price is pinned to each phone card's foot, so the row stays `display: block` and the prices share a line. `overflow-wrap: anywhere` on the names and the stacked values. | 375 · 768 · 1024 · 1280 |
+| image and text (offset sheet) | Faithful to the pick: the photo is first, its steel block bleeds off the left from a desktop box, and the H2 sits on two lines at 1024 and 1280. No defect. | Harden: a three-cell sheet would leave a half cell beside an empty one; the hairline cross used physical sides (no RTL); a long value could overflow its cell. | An odd last cell spans the row. Logical `padding-inline` and `border-inline-start`. `overflow-wrap` on the values. | 375 · 768 · 1024 · 1280 |
+
+Accepted, not changed: the 2:1 takeaways crop trims the tip of the puppy's left ear (the faces
+row holds faces, not ears, and both faces are whole, as on the canvas). The shelf's caption sits
+under its H4 as the outline asks, though the two read alike in weight.
+
+Gates after the fixes: `npm run -s build` exit 0. `python3 -m pytest -q tests/py/test_city_kit_manchester.py
+tests/py/test_city_kit.py tests/py/test_design_components.py`: 187 passed, 1 skipped (the skip
+pre-dates Task 28). `npm run test:render:city`: 57 passed, 55 skipped, 0 failed, with London's three
+routes unchanged and no advisory on the Manchester route. One shots-only run (filtered to the
+Manchester route, cold server) failed once at vp375 before the fixes, and its message was
+overwritten by the next run. It was not met again in 2 more filtered runs, the route at
+`--repeat-each=4 --workers=4` (16 passed) and 2 full runs.
+
+`npm run -s check:all` first failed at `check:canvas`. That failure was already there at HEAD
+(30a23536), before this task changed anything: London's closed canvas failed three times against
+Manchester's picked pool copies of its own variants. The three were
+`london/{key-takeaways,image-text}/b` and `london/reviews/c`, each against its own
+`manchester/…/c` copy one axis away, which is exactly what ruling 4's single refresh delta makes.
+Fixed test-first in `scripts/check_city_canvas.py` with `pool_source()`: a must-differ row that is
+a later city's `from_pool` copy of the variant being judged is skipped, and every other city's pick
+is still judged
+(`tests/py/test_check_city_canvas.py::test_a_variant_is_never_compared_with_a_later_citys_pool_copy_of_itself`,
+red, then green). After that fix `check:all` exits 0, with both canvases at 0 problems.
+`python3 -m pytest -q tests/py -k "city or design or prune or kit"`: 851 passed, 2 skipped,
+1 xfailed.

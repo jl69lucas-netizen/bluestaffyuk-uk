@@ -42,5 +42,8 @@
   {"id": "city-puppy-folder", "file": "CityPuppyFolder.astro", "title": "M3 · Manchester trust strip (puppy folder)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/trust-strip/b", "root_selector": ".city-puppy-folder"},
   {"id": "city-icon-rows", "file": "CityIconRows.astro", "title": "M4 · Manchester contents list (icon rows)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/contents-list/b", "root_selector": ".city-icon-rows"},
   {"id": "city-numeral-rail", "file": "CityNumeralRail.astro", "title": "M5 · Manchester desktop dial (numeral rail)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/desktop-dial/a", "root_selector": ".city-numeral-rail"},
-  {"id": "city-question-bar", "file": "CityQuestionBar.astro", "title": "M6 · Manchester jump links (question bar)", "board_width": 640, "project": 5, "canvas_variant": "manchester/jump-links/b", "root_selector": ".city-question-bar"}
+  {"id": "city-question-bar", "file": "CityQuestionBar.astro", "title": "M6 · Manchester jump links (question bar)", "board_width": 640, "project": 5, "canvas_variant": "manchester/jump-links/b", "root_selector": ".city-question-bar"},
+  {"id": "city-tick-card", "file": "CityTickCard.astro", "title": "M7 · Manchester key takeaways (tick card)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/key-takeaways/c", "root_selector": ".city-tick-card"},
+  {"id": "city-photo-shelf", "file": "CityPhotoShelf.astro", "title": "M8 · Manchester table (photo shelf)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/tables/a", "root_selector": ".city-photo-shelf"},
+  {"id": "city-offset-sheet", "file": "CityOffsetSheet.astro", "title": "M9 · Manchester image and text (offset sheet)", "board_width": 1280, "project": 5, "canvas_variant": "manchester/image-text/c", "root_selector": ".city-offset-sheet"}
 ]

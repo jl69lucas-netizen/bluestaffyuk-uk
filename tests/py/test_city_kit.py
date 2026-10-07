@@ -192,13 +192,23 @@ def test_built_city_price_scale_reads_every_figure_from_the_data_files():
     assert "refundable" not in text.lower()
 
 
-def test_the_city_kit_carries_no_refund_clause_helper():
-    """The deposit's refund wording is being settled on another branch (deposit-wording); until
-    it lands no city component prints a refund clause, so src/lib/cityKit.ts carries no dead
-    helper for it (Task 7b review, item 6). The wording will be the data's when it comes."""
+def test_the_city_kit_reads_the_refund_clause_from_the_data_and_never_types_it():
+    """The Task 7b review (item 6) kept a refund helper out of src/lib/cityKit.ts while the wording
+    was being settled on another branch: a helper with no wording behind it was dead code. The
+    wording landed as data/settings.json `deposit_refund_clause` (2026-09-30), and Manchester's
+    deposit section prints it (Phase F ruling 10; outline row 8; Task 30). So the kit may carry ONE
+    helper, `refundClause`, that reads that key and types none of its words, and a city component
+    must use it (no dead helper)."""
     src = (ROOT / "src/lib/cityKit.ts").read_text(encoding="utf-8")
+    clause = json.loads((ROOT / "data/settings.json").read_text())["deposit_refund_clause"]
     assert "depositRefundClause" not in src
-    assert "deposit_refund" not in src
+    assert "deposit_refund_clause: string }).deposit_refund_clause" in src, "the clause is read from data/settings.json"
+    code = "\n".join(l for l in src.splitlines() if not l.lstrip().startswith(("//", "*", "/*")))
+    for words in (clause, clause[:20], "70%", "1 day before"):
+        assert words not in code, f"cityKit types the clause's words: {words!r}"
+    users = [f.name for f in (ROOT / "src").rglob("*.ts*") if "refundClause(" in f.read_text(encoding="utf-8") and f.name != "cityKit.ts"]
+    users += [f.name for f in (ROOT / "src").rglob("*.astro") if "refundClause(" in f.read_text(encoding="utf-8")]
+    assert "refundClause(" in src.split("export function refundClause", 1)[1] or users, "a helper nobody calls is dead code"
 
 
 def test_built_city_trust_ledger_keeps_its_served_photo_whole():

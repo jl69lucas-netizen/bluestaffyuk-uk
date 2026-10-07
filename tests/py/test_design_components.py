@@ -33,7 +33,8 @@ CITY_IDS = ["city-hero-filmstrip", "city-price-scale", "city-trust-ledger", "cit
             # Manchester's own picks (the Manchester page run, Phase F Tasks 28-31), each row
             # carrying `canvas_variant` and `root_selector`; previewed on /kit-preview/city-manchester/.
             "city-feature-and-three", "city-range-sheet", "city-puppy-folder",
-            "city-icon-rows", "city-numeral-rail", "city-question-bar"]
+            "city-icon-rows", "city-numeral-rail", "city-question-bar",
+            "city-tick-card", "city-photo-shelf", "city-offset-sheet"]
 
 
 def load():

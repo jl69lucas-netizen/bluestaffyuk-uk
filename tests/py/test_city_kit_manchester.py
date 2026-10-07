@@ -14,7 +14,9 @@ that lists the litter), and each repeat carries a new one, never a copy.
 `BUILT` grows by one batch per task: Task 28 is the hero, the counter strip and the trust strip;
 Task 29 the nav set (the contents list, the desktop dial and the jump links, mounted by
 src/layouts/CityShell.astro as a `CityNavSet`) and the shared `data-city-nav` hook every city's
-nav furniture carries (gap G12).
+nav furniture carries (gap G12); Task 30 the first in-body components (the key takeaways, the
+litter table with each puppy's own photo, and the image-and-text section), which bring the
+Manchester preview under city-layout-follows-box.
 """
 import html as _h
 import json
@@ -44,9 +46,10 @@ PUPPIES = [p for p in json.loads((ROOT / "data/puppies.json").read_text()) if p[
 CITY = next(r["city"] for r in json.loads((ROOT / "data/locations.json").read_text()) if r["slug"] == SLUG)
 
 #: The components built so far, by task (Task 28: the hero, the counter strip, the trust strip;
-#: Task 29: the nav set).
+#: Task 29: the nav set; Task 30: the key takeaways, the table, the image and text).
 NAV = ["contents-list", "desktop-dial", "jump-links"]
-BUILT = ["hero", "counter-strip", "trust-strip", *NAV]
+IN_BODY = ["key-takeaways", "tables", "image-text"]
+BUILT = ["hero", "counter-strip", "trust-strip", *NAV, *IN_BODY]
 #: The components that state facts (prices, the deposit, the band, names): each reads them through
 #: src/lib/cityKit.ts. The nav set states none: its words are the page's own section list.
 FACTS = [c for c in BUILT if c not in NAV]
@@ -178,7 +181,9 @@ def test_each_is_rendered_on_the_manchester_preview_with_no_inline_style_or_hex(
     assert f'class="city-kit {KIT_ID[comp]}' in s or f'class="city-kit kit-hero {KIT_ID[comp]}' in s, KIT_ID[comp]
     assert "style=" not in s, re.findall(r'style="[^"]*"', s)[:3]
     assert not re.findall(r"#[0-9A-Fa-f]{6}\b", s)
-    t = text(s).lower()
+    # The deposit is never called plainly "refundable" (Phase F ruling 10): the one place the word
+    # may stand is inside data/settings.json `deposit_refund_clause`, word for word.
+    t = text(s).lower().replace(SETTINGS["deposit_refund_clause"].lower(), "")
     for banned in ("video call", "rescue", "licence", "licensed", "refundable"):
         assert banned not in t, (KIT_ID[comp], banned)
 
@@ -482,3 +487,155 @@ def test_the_built_pages_ship_none_of_manchesters_nav_css():
         css = " ".join(re.findall(r"<style[^>]*>(.*?)</style>", path.read_text(encoding="utf-8"), re.S))
         for kit_id in (KIT_ID[c] for c in NAV):
             assert f".{kit_id}" not in css, (route, kit_id)
+
+
+# --------------------------------------------------------------------------- Task 30: the in-body components
+
+FAMILY = "victoria-family-blue-staffy-manchester.webp"
+BAND = f"{gbp(SETTINGS['delivery_min_gbp'])}–{gbp(SETTINGS['delivery_max_gbp'])}"
+TABLE = next(sec["table"] for sec in OUTLINE["sections"] if sec.get("table"))
+TABLE_H4 = TABLE["under"].split(" ", 1)[1]
+DEPOSIT_H2 = next(h["text"] for sec in OUTLINE["sections"] for h in sec["headings"]
+                  if h["level"] == 2 and "Deposit" in h["text"])
+TOWN = SETTINGS["address"]["city"]
+
+
+def alt_of(img):
+    return _h.unescape(re.search(r'alt="([^"]*)"', img).group(1))
+
+
+def sentence_case(s):
+    return s[:1].upper() + s[1:]
+
+
+def test_the_in_body_components_are_judged_by_layout_follows_box_on_the_manchester_preview():
+    """Task 28 kept the Manchester preview out of city-layout-follows-box (`NO_IN_BODY_YET`) until
+    an in-body component existed; Task 30 builds three, so the skip goes and each one's layout
+    facts are in the check's SPEC, keyed to its kit id."""
+    spec = SPEC.read_text(encoding="utf-8")
+    assert "NO_IN_BODY_YET" not in spec, "the Manchester preview is judged by city-layout-follows-box now"
+    lib = (ROOT / "tests/render/lib/cityLayoutFollowsBox.ts").read_text(encoding="utf-8")
+    spec_component = lib.split("export const SPEC_COMPONENT", 1)[1].split("};", 1)[0]
+    for comp in IN_BODY:
+        kit_id = KIT_ID[comp]
+        assert re.search(rf"'\.{kit_id}[^']*': \{{\s*tablet", lib), f"{kit_id} has layout facts in SPEC"
+        assert f": '{kit_id}'" in spec_component, f"SPEC_COMPONENT names {kit_id}"
+
+
+# --------------------------------------------------------------------------- key takeaways C, "Tick card"
+
+def tick_lines():
+    """The five facts outline row 5 names, each built from the data as the component must."""
+    tests = [e["name"].removesuffix(" DNA test") for e in json.loads((ROOT / "data/bsuk-ontology.json").read_text())["entities"]
+             if e["id"] in ("ont:l-2-hga-dna-test", "ont:hc-hsf4-dna-test")]
+    by = re.search(r"\bby (.+)$", SETTINGS["delivery_note"]).group(1)
+    transport, priced = [x.strip() for x in by.split(",", 1)]
+    cover = SETTINGS["guarantee_cover"].replace(" for two years", "")
+    return [
+        f"Each boy in this litter is {gbp(PRICES['male_gbp'])} and each girl {gbp(PRICES['female_gbp'])}, whatever the coat.",
+        f"A {gbp(SETTINGS['deposit_gbp'])} deposit books your viewing and reserves your puppy, and it comes off the price.",
+        f"We deliver by {transport} for {BAND}, {priced}, or you collect in {TOWN}.",
+        f"Both parents are DNA tested for {sorted(tests)[1]} and {sorted(tests)[0]}, with the certificates shared on request.",
+        f"{SETTINGS['guarantee_label']}: it {cover}.",
+    ]
+
+
+def test_tick_card_states_the_five_facts_of_outline_row_5_from_the_data():
+    s = section(KIT_ID["key-takeaways"])
+    # A tick's words run through inline `keep` spans: strip the tags without adding a space.
+    inline = lambda f: re.sub(r"\s+", " ", _h.unescape(re.sub(r"<[^>]+>", "", f))).strip()
+    ticks = [inline(t) for t in re.findall(r"<li[^>]*data-takeaway[^>]*>(.*?)</li>", s, re.S)]
+    assert ticks == tick_lines(), ticks
+    assert re.search(r"<h[1-6]\b", s) is None, "outline row 5 carries no heading: the card's title is a line of type"
+    t = text(s)
+    assert f"for your {CITY} home" in t
+    assert "Five plain answers from us" in t
+    assert 'class="cta"' in s and "Ask about a puppy" in t
+    # Every tick carries its brass disc, hidden from assistive technology.
+    assert s.count('class="tick"') == 5 and all('aria-hidden="true"' in m for m in re.findall(r'<span class="tick"[^>]*>', s))
+
+
+def test_tick_card_photo_is_the_served_family_photo_on_its_first_use():
+    s = section(KIT_ID["key-takeaways"])
+    img = re.search(r"<img\b[^>]*>", s).group(0)
+    assert f'src="/images/{FAMILY}"' in img
+    assert alt_of(img) in served_alts()[FAMILY], alt_of(img)
+    assert s.find("<img") < s.find("data-takeaway"), "the photo heads the card"
+
+
+# --------------------------------------------------------------------------- tables A, "Photo shelf"
+
+def test_photo_shelf_is_the_outlines_litter_table_with_every_cell_labelled():
+    s = section(KIT_ID["tables"])
+    assert re.search(r"<h4\b[^>]*>\s*" + re.escape(TABLE_H4) + r"\s*</h4>", s), "the outline's H4, word for word"
+    table = re.search(r"<table\b[^>]*>", s).group(0)
+    assert "stack-table" in table and 'role="table"' in table
+    assert text(re.search(r"<caption\b.*?</caption>", s, re.S).group(0)) == TABLE["caption"]
+    heads = [text(h) for h in re.findall(r"<th\b[^>]*scope=\"col\"[^>]*>(.*?)</th>", s, re.S)]
+    assert heads == [c["label"] for c in TABLE["columns"]], heads
+    tds = re.findall(r"<td\b[^>]*>", s)
+    assert tds and all("data-label=" in td for td in tds), "rule 13: every <td> carries its data-label"
+    labels = [re.search(r'data-label="([^"]+)"', td).group(1) for td in tds]
+    assert set(labels) == {c["label"] for c in TABLE["columns"][1:]}
+
+
+def test_photo_shelf_rows_are_the_available_litter_from_the_data():
+    s = section(KIT_ID["tables"])
+    body = re.search(r"<tbody\b.*?</tbody>", s, re.S).group(0)
+    rows_ = re.findall(r"<tr\b.*?</tr>", body, re.S)
+    assert len(rows_) == len(PUPPIES) == 6, "outline: 6, one per puppy, status Available only"
+    for row, p in zip(rows_, PUPPIES):
+        price = gbp(PRICES["male_gbp"] if p["sex"] == "male" else PRICES["female_gbp"])
+        cells = {re.search(r'data-label="([^"]+)"', td).group(1): text(td)
+                 for td in re.findall(r"<td\b.*?</td>", row, re.S)}
+        assert cells == {"Sex": "Boy" if p["sex"] == "male" else "Girl", "Coat": p["colour"], "Price": price}, cells
+        head = text(re.search(r"<th\b.*?</th>", row, re.S).group(0))
+        assert head == f"{p['name']} {p['status']}", head
+        img = re.search(r"<img\b[^>]*>", row).group(0)
+        assert f"/{p['card_photo'].rsplit('.', 1)[0]}." in img, (p["name"], "each row carries the pup's own card photo (KI 100)")
+    lede = text(re.search(r'<p class="lede"[^>]*>.*?</p>', s, re.S).group(0))
+    assert gbp(PRICES["male_gbp"]) in lede and gbp(PRICES["female_gbp"]) in lede and CITY in lede
+
+
+def test_photo_shelf_types_no_name_and_reads_price_by_sex():
+    src = code_of((KIT / FILE["tables"]).read_text(encoding="utf-8"))
+    assert "availablePuppies" in src and ("BOY_PRICE" in src or "priceFor" in src)
+    assert "font-variant" not in src
+
+
+# --------------------------------------------------------------------------- image and text C, "Offset sheet"
+
+def test_offset_sheet_is_the_deposit_section_with_its_four_cells_from_the_data():
+    s = section(KIT_ID["image-text"])
+    assert re.search(r"<h2\b[^>]*>\s*" + re.escape(DEPOSIT_H2) + r"\s*</h2>", s), "outline row 8's H2, word for word"
+    assert s.find("<figure") < s.find("<h2"), "the section's photo comes before its heading (rule 17, H3-image-first)"
+    cells = dict(zip([text(d) for d in re.findall(r"<dt\b[^>]*>(.*?)</dt>", s, re.S)],
+                     [text(d) for d in re.findall(r"<dd\b[^>]*>(.*?)</dd>", s, re.S)]))
+    assert list(cells) == ["What it does", "Off the price of", "If plans change", "After the visit"], cells
+    assert cells["What it does"] == f"{gbp(SETTINGS['deposit_gbp'])} books your viewing and reserves your puppy"
+    assert cells["Off the price of"] == f"{gbp(PRICES['male_gbp'])} for a boy or {gbp(PRICES['female_gbp'])} for a girl, in this litter"
+    assert cells["If plans change"] == sentence_case(SETTINGS["deposit_refund_clause"]), "the clause word for word, never plainly 'refundable'"
+    assert BAND in cells["After the visit"] and TOWN in cells["After the visit"] and "priced by distance" in cells["After the visit"]
+    t = text(s)
+    assert CITY in t and TOWN in t
+    assert 'class="cta"' in s
+
+
+def test_the_family_photo_repeated_by_the_offset_sheet_takes_a_new_alt():
+    """Working rule 11 (2026-09-29, "same photo use new alt"): takeaways C and image-text C both
+    show the family photo; the first use keeps its served alt, the second carries its own."""
+    first = re.search(r"<img\b[^>]*>", section(KIT_ID["key-takeaways"])).group(0)
+    second = re.search(r"<img\b[^>]*>", section(KIT_ID["image-text"])).group(0)
+    assert f'src="/images/{FAMILY}"' in second
+    assert alt_of(first) in served_alts()[FAMILY]
+    assert alt_of(second) and alt_of(second) not in served_alts()[FAMILY] and alt_of(second) != alt_of(first)
+
+
+@pytest.mark.parametrize("comp", IN_BODY)
+def test_each_in_body_component_follows_its_own_box(comp):
+    """An in-body city component is a container: its tiers read its own box (@container), never
+    the viewport, so it lays out the same in the column beside the dial as on the preview."""
+    css = code_of((KIT / FILE[comp]).read_text(encoding="utf-8")).split("<style>", 1)[1]
+    assert "@container" in css, FILE[comp]
+    assert "@media (width" not in css and "@media (min-width" not in css and "@media (max-width" not in css, FILE[comp]
+    assert "font-variant" not in css and "variant" not in css.lower(), FILE[comp]

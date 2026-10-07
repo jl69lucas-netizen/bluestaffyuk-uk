@@ -9,14 +9,16 @@
 // THE DEPOSIT (the user's rulings, 2026-09-27): £500 books the viewing and reserves the puppy,
 // and it comes off the price. It is never called plainly "refundable": the refund is partial
 // and conditional, and where the condition does not fit, no refund wording is printed at all
-// (answer board, deposit wording Q4). So `depositLine` carries no refund clause, and this file
-// carries no helper for one: the wording is being settled on the deposit-wording branch, and when
-// it lands it will be the data's (data/settings.json), not a component's.
+// (answer board, deposit wording Q4). So `depositLine` carries no refund clause. The wording landed
+// as data/settings.json `deposit_refund_clause` (2026-09-30), and `refundClause` below reads it,
+// word for word, for the one place a deposit-terms line carries it (Manchester's deposit section,
+// Phase F ruling 10); it types none of its words.
 import settings from '../../data/settings.json';
 import prices from '../../data/price-matrix.json';
 import puppiesJson from '../../data/puppies.json';
+import ontology from '../../data/bsuk-ontology.json';
 import { gbp, type PuppyRow } from './site';
-import { checkGuaranteeLabel, guaranteeRowParts, type GuaranteeSettings } from './guarantee';
+import { checkGuaranteeLabel, coverSentenceOf, guaranteeRowParts, guaranteeWords, type GuaranteeSettings } from './guarantee';
 
 export const money = (n: number) => `£${gbp(n)}`;
 
@@ -55,10 +57,47 @@ export const deliveryLineRuns: { text: string; keep?: true }[] = (() => {
 
 /** What the deposit does, in the user's ruling (2026-09-27). No refund wording: see the header. */
 const DEPOSIT_DOES = 'books your viewing and reserves your puppy, and it comes off the price';
+/** The same ruling split at its comma, for a component that states the two halves apart (the
+ *  offset sheet's "What it does" cell and its "Off the price of" cell, Manchester Task 30). */
+export const DEPOSIT_HOLDS = DEPOSIT_DOES.split(',')[0];
 const sentence = (s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}.`;
 
 /** The deposit line: "£500 books your viewing …". */
 export const depositLine = `${DEPOSIT} ${DEPOSIT_DOES}.`;
+/** The same line led by the noun, for a list of facts: "A £500 deposit books your viewing …". */
+export const depositFact = `A ${DEPOSIT} deposit ${DEPOSIT_DOES}.`;
+
+/** THE REFUND CLAUSE (the user's wording, deposit-wording batch Q3 (b), 2026-09-27, landed as
+ *  data/settings.json `deposit_refund_clause` on 2026-09-30): a clause, never a sentence on its
+ *  own and never a plain "refundable". A component prints it whole, word for word, only where a
+ *  deposit-terms line already carries the deposit (Phase F ruling 10); `sentence` gives it a
+ *  capital for a cell of its own, and nothing else about it changes. */
+const REFUND_CLAUSE: string = (settings as unknown as { deposit_refund_clause: string }).deposit_refund_clause;
+export function refundClause(form: 'clause' | 'sentence' = 'clause'): string {
+  if (!REFUND_CLAUSE) throw new Error('cityKit: data/settings.json has no deposit_refund_clause');
+  return form === 'sentence' ? `${REFUND_CLAUSE.charAt(0).toUpperCase()}${REFUND_CLAUSE.slice(1)}` : REFUND_CLAUSE;
+}
+
+/** The deposit's terms as four label-and-value cells (outline row 8, the offset sheet's 2x2 sheet,
+ *  Manchester Task 30): what it does, what it comes off, the refund clause word for word (its own
+ *  cell, so the deposit is never called plainly "refundable"), and how the puppy comes home. */
+export const depositTerms = (): { t: string; d: string }[] => [
+  { t: 'What it does', d: `${DEPOSIT} ${DEPOSIT_HOLDS}` },
+  { t: 'Off the price of', d: `${BOY_PRICE} for a boy or ${GIRL_PRICE} for a girl, in this litter` },
+  { t: 'If plans change', d: refundClause('sentence') },
+  { t: 'After the visit', d: `Collect in ${TOWN}, or UK home delivery for ${DELIVERY_BAND} by ${transportName}, ${pricedBy}` },
+];
+
+/** A puppy's price, read by its sex from data/price-matrix.json (the outline's table column:
+ *  "data/price-matrix.json by sex"). Its own data/puppies.json `price_gbp` must agree: a row that
+ *  disagrees with the matrix stops the build rather than print two prices for one puppy. */
+export function priceFor(p: PuppyRow): string {
+  const want = p.sex === 'male' ? prices.male_gbp : prices.female_gbp;
+  if (p.price_gbp !== want) {
+    throw new Error(`cityKit: data/puppies.json ${p.name} is £${p.price_gbp}, data/price-matrix.json says £${want} for a ${p.sex}`);
+  }
+  return money(want);
+}
 /** The same ruling without the figure, for a row whose label already carries it ("£500 deposit"). */
 export const depositBrief = sentence(DEPOSIT_DOES);
 
@@ -74,6 +113,34 @@ export const transportLine = sentence(`by ${TRANSPORT_BY}`);
 /** The transport alone, "DEFRA-approved transport": delivery_note's "by …" clause up to its first
  *  comma, for a label that names how a puppy travels and states no price or distance. */
 export const transportName = TRANSPORT_BY.split(',')[0].trim();
+/** How the band is set, delivery_note's words after the transport: "priced by distance". */
+export const pricedBy = TRANSPORT_BY.split(',').slice(1).join(',').trim();
+
+/** The two DNA tests both parents had, named and never a result (Known Issue 98; the breeder's
+ *  rulings, answer board 2026-09-29 q01 and chat 2026-10-05: the certificates are shared on
+ *  request). Their names are data/bsuk-ontology.json's entities, less " DNA test": "L-2-HGA",
+ *  "HC-HSF4". A missing entity stops the build. */
+export const PARENT_DNA_TESTS: readonly string[] = ['ont:l-2-hga-dna-test', 'ont:hc-hsf4-dna-test'].map((id) => {
+  const e = (ontology as { entities: { id: string; name: string }[] }).entities.find((x) => x.id === id);
+  if (!e || !/ DNA test$/.test(e.name)) throw new Error(`cityKit: data/bsuk-ontology.json has no DNA test entity ${id}`);
+  return e.name.replace(/ DNA test$/, '');
+});
+
+/** A sentence as runs for a renderer, each `keep` run a phrase that never breaks inside
+ *  (`.city-kit .keep`): a price, a band, or a word with a hard hyphen ("DEFRA-approved",
+ *  "L-2-HGA", "Two-year"), which a narrow column would otherwise split at its own hyphen (Task 24
+ *  copy checks: "DEFRA-" and "Two-" ran on alone). The runs rejoined ARE the sentence. */
+export function keepRuns(sentence: string, keep: readonly string[] = []): { text: string; keep?: true }[] {
+  const words = sentence.split(/(\s+)/);
+  const hyphenated = words.filter((w) => /\w-\w/.test(w)).map((w) => w.replace(/[.,;:!?]+$/, ''));
+  const phrases = [...new Set([...keep, ...hyphenated])].filter(Boolean).sort((a, b) => b.length - a.length);
+  if (!phrases.length) return [{ text: sentence }];
+  const esc = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const runs = sentence.split(new RegExp(`(${phrases.map(esc).join('|')})`)).filter((t) => t !== '')
+    .map((t) => (phrases.includes(t) ? { text: t, keep: true as const } : { text: t }));
+  if (runs.map((r) => r.text).join('') !== sentence) throw new Error(`cityKit: keepRuns no longer spells "${sentence}"`);
+  return runs;
+}
 
 /** data/settings.json `puppy_trust_signs`: what every puppy has and leaves with (the breeder's
  *  pick, answer board 2026-10-04 q08 (c)). A component names the signs it prints through `sign()`,
@@ -105,6 +172,15 @@ export function pickAvailable(names: readonly string[], n: number): PuppyRow[] {
  *  src/lib/guarantee.ts. No component types it. */
 const G = settings as unknown as GuaranteeSettings;
 export { checkGuaranteeLabel };
+
+/** The guarantee as one fact line: its label, then what it covers with the length said once,
+ *  in the label ("Two-year health guarantee: it covers … from the day your puppy comes home.").
+ *  data/settings.json `guarantee_label` and `guarantee_cover`, through src/lib/guarantee.ts's
+ *  checks; with no cover, the label alone. */
+export const guaranteeFact = (): string => {
+  const cover = coverSentenceOf(G, 'it');
+  return cover ? `${guaranteeWords(G)}: ${cover}` : `${guaranteeWords(G)}.`;
+};
 
 /** The guarantee's length in days, or null while the breeder has not given one (rule 9). */
 export const guaranteeDays = (): number | null => G.guarantee_days;

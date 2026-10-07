@@ -86,13 +86,16 @@ import CityPuppyFolder from './CityPuppyFolder.astro';
 import CityIconRows from './CityIconRows.astro';
 import CityNumeralRail from './CityNumeralRail.astro';
 import CityQuestionBar from './CityQuestionBar.astro';
+import CityTickCard from './CityTickCard.astro';
+import CityPhotoShelf from './CityPhotoShelf.astro';
+import CityOffsetSheet from './CityOffsetSheet.astro';
 import componentsJson from '../../../data/design/components.json';
 import locationRows from '../../../data/locations.json';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
 import londonPlaces from '../../../data/city-places/blue-staffy-puppies-london.json';
 import londonBoard from '../../../data/boards/blue-staffy-puppies-london.json';
 import manchesterOutline from '../../../data/outlines/blue-staffy-puppies-manchester-uk.json';
-import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine, guaranteeRow, pickAvailable } from '../../lib/cityKit';
+import { BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, TOWN, availablePuppies, deliveryLine, depositLine, depositTerms, guaranteeRow, pickAvailable } from '../../lib/cityKit';
 import { numberWord } from '../../lib/recordText';
 /** The guarantee, from data/settings.json (answer board q07, 2026-09-29); null if the data loses it. */
 const GUARANTEE = guaranteeRow();
@@ -120,7 +123,8 @@ export type ComponentId =
   // Manchester's own picks (the Manchester page run, Phase F Tasks 28-31), previewed on
   // /kit-preview/city-manchester/ and never on London's /kit-preview/city/.
   | 'city-feature-and-three' | 'city-range-sheet' | 'city-puppy-folder'
-  | 'city-icon-rows' | 'city-numeral-rail' | 'city-question-bar';
+  | 'city-icon-rows' | 'city-numeral-rail' | 'city-question-bar'
+  | 'city-tick-card' | 'city-photo-shelf' | 'city-offset-sheet';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -293,6 +297,21 @@ const MANCHESTER_DEMO_SECTIONS: SectionRef[] = (componentsJson as ComponentRow[]
   .map((r, i) => ({ id: `kit-${r.id}`, question: MANCHESTER_H2[i], ...MANCHESTER_NAV[i] }));
 /** The question bar's small decorative puppy: Christa while she is available (pickAvailable). */
 const MANCHESTER_BAR_PUP = pickAvailable(['Christa'], 1)[0].card_photo;
+
+/** Manchester's in-body specimens (Task 30), each in the outline's own words. The family photo
+ *  the old site served for Manchester heads the takeaways (its first use: the served alt) and the
+ *  deposit section (a repeat: its own alt, working rule 11, 2026-09-29). The table sits under the
+ *  outline's H4 with its caption; every face in it was painted above by the hero or the counter
+ *  (the counter shows the whole litter), so each row's photo is a repeat. */
+const MANCHESTER_FAMILY = 'victoria-family-blue-staffy-manchester.webp';
+type OutlineHeading = { level: number; text: string; children?: OutlineHeading[] };
+const MANCHESTER_SECTIONS = (manchesterOutline as unknown as {
+  sections: { headings: OutlineHeading[]; table?: { under: string; caption: string } }[];
+}).sections;
+const MANCHESTER_TABLE = MANCHESTER_SECTIONS.find((s) => s.table)!.table!;
+/** The outline's "H4 <heading>": the level and the words the table sits under. */
+const MANCHESTER_TABLE_UNDER = /^H([2-4]) (.+)$/.exec(MANCHESTER_TABLE.under)!;
+const MANCHESTER_DEPOSIT_H2 = MANCHESTER_H2.find((h) => /\bDeposit\b/.test(h))!;
 
 export const REGISTRY: Record<ComponentId, KitEntry> = {
   // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
@@ -795,5 +814,29 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'city-question-bar': {
     C: CityQuestionBar,
     demo: [{ sections: MANCHESTER_DEMO_SECTIONS, city: MANCHESTER, photo: MANCHESTER_BAR_PUP, chrome: false }],
+  },
+  // Manchester's in-body components (Task 30): full-width specimens, so `fit: 'full'`.
+  'city-tick-card': {
+    C: CityTickCard,
+    demo: [{ fit: 'full', city: MANCHESTER, photo: MANCHESTER_FAMILY, cta: { label: 'Ask about a puppy', href: '#kit-city-puppy-folder' } }],
+  },
+  'city-photo-shelf': {
+    C: CityPhotoShelf,
+    demo: [{
+      fit: 'full', heading: MANCHESTER_TABLE_UNDER[2], as: `h${MANCHESTER_TABLE_UNDER[1]}`, caption: MANCHESTER_TABLE.caption,
+      city: MANCHESTER, shownAbove: availablePuppies().map((p) => p.name),
+    }],
+  },
+  'city-offset-sheet': {
+    C: CityOffsetSheet,
+    demo: [{
+      fit: 'full',
+      heading: MANCHESTER_DEPOSIT_H2,
+      lede: `Because the deposit is what books your viewing and holds your puppy for you, and all of it comes off the price, so a ${MANCHESTER} family making the trip to ${TOWN} knows the puppy will still be there.`,
+      photo: MANCHESTER_FAMILY,
+      photoAlt: 'A new owner holding her blue Staffy puppy in a pink collar, cheek to cheek in the garden',
+      rows: depositTerms(),
+      cta: { label: 'Ask about a viewing', href: '#kit-city-puppy-folder' },
+    }],
   },
 };

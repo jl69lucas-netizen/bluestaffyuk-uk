@@ -52,6 +52,24 @@ export function cityLayoutFollowsBox({ viewport, tier: edges, absent = {} }:
       tablet: [['row', '.pups li', 6], ['row', '.field', 2], ['fill', '.field.wide', 'form']],
       desktop: [['row', '.pups li', 6], ['row', '.field', 3], ['fill', '.field.wide', 'form']],
     },
+    // Manchester's own in-body components (the Manchester page run, Phase F Task 30). The tick
+    // card: from a 640px box its title and answer sit side by side and the ticks run two to a row.
+    '.city-tick-card': {
+      tablet: [['beside', '.ttl', '.lede'], ['row', '[data-takeaway]', 2]],
+      desktop: [['beside', '.ttl', '.lede'], ['row', '[data-takeaway]', 2]],
+    },
+    // The photo shelf is a table from a 640px box (rule 13 stacks it below): the photo-led row
+    // header and its three cells side by side, the pup's photo beside its name, under a painted head.
+    '.city-photo-shelf': {
+      tablet: [['row', 'tbody tr:first-child > *', 4], ['beside', 'tbody tr:first-child .who img', 'tbody tr:first-child .nm']],
+      desktop: [['row', 'tbody tr:first-child > *', 4], ['beside', 'tbody tr:first-child .who img', 'tbody tr:first-child .nm'], ['row', 'thead th', 4]],
+    },
+    // The offset sheet: its four facts a two-by-two sheet from a 640px box, and from a desktop box
+    // the photo on its bleed beside the copy (a 656px column at 1024 keeps them stacked).
+    '.city-offset-sheet': {
+      tablet: [['row', '.cell', 2]],
+      desktop: [['row', '.cell', 2], ['beside', '.media', '.copy']],
+    },
   };
   const contentWidth = (el: Element) => {
     const s = getComputedStyle(el);
@@ -128,13 +146,19 @@ export const SPEC_COMPONENT: Record<string, string> = {
   '.city-faq.has-rail': 'city-faq-ledger',
   '.city-newsletter-notice': 'city-newsletter-notice',
   '.city-contact': 'city-contact-lineup',
+  '.city-tick-card': 'city-tick-card',
+  '.city-photo-shelf': 'city-photo-shelf',
+  '.city-offset-sheet': 'city-offset-sheet',
 };
 
 /** `absent` for a page from its board record: each SPEC key whose component the board mounts on
- *  no section, with the reason. A route with no board (the specimen routes) declares nothing. */
-export function absentFromBoard(board: { meta: { slug: string }; sections: { component?: string }[] } | null): Record<string, string> {
+ *  no section, with the reason. A route with no board (the specimen routes) declares nothing.
+ *  `keys` limits the judgement to the page's own city's keys (the Manchester page run, Task 30):
+ *  another city's components are declared absent by the caller for that reason, not the board's. */
+export function absentFromBoard(board: { meta: { slug: string }; sections: { component?: string }[] } | null,
+  keys: string[] = Object.keys(SPEC_COMPONENT)): Record<string, string> {
   if (!board) return {};
   const mounted = new Set(board.sections.map((s) => s.component));
-  return Object.fromEntries(Object.entries(SPEC_COMPONENT).filter(([, c]) => !mounted.has(c))
+  return Object.fromEntries(Object.entries(SPEC_COMPONENT).filter(([k, c]) => keys.includes(k) && !mounted.has(c))
     .map(([sel, c]) => [sel, `data/boards/${board.meta.slug}.json mounts no ${c}`]));
 }

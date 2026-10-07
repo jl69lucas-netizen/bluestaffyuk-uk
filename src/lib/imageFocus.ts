@@ -44,6 +44,25 @@ export function focusClass(file: string): string {
   return `focus fx-${x} fy-${y}`;
 }
 
+/** The crop classes for a box of a given aspect (width / height), when the faces' centre is not
+ *  the right object-position (Manchester Task 30). `focusPoint` centres the faces as a fraction of
+ *  the master, which object-position reads as the fraction of the CROPPED-AWAY length to put above
+ *  or left of the box: right for a slight crop, and for a deep one (a 2:1 box on a square photo)
+ *  it parks the window below the faces (the family photo's 2:1 crop cut both heads at fy-30). Here
+ *  the position is solved for the box: the window (the fraction of the master the box shows on
+ *  the cropped axis) is centred on the faces' centre, clamped to the master, on the same 5% grid.
+ *  On the axis the box does not crop, the faces' centre stands (it moves nothing). Use the
+ *  deepest crop the component paints; a shallower one at another tier then shows more around it. */
+export function focusClassFor(file: string, aspect: number): string {
+  const { w, h } = focusRow(file);
+  const c = focusPoint(file);
+  const solve = (centre: number, window: number) => (window >= 1 ? centre : step((100 * (centre / 100 - window / 2)) / (1 - window)));
+  const imgAspect = w / h;
+  const x = aspect < imgAspect ? solve(c.x, aspect / imgAspect) : c.x;
+  const y = aspect > imgAspect ? solve(c.y, imgAspect / aspect) : c.y;
+  return `focus fx-${x} fy-${y}`;
+}
+
 /** A served photograph as the asset row BodyImage and the city components take: its original
  *  public path, its served alt, its intrinsic size — plus the srcset of its baked siblings. */
 export function servedPhoto(file: string): FilledAsset & { srcset?: string } {

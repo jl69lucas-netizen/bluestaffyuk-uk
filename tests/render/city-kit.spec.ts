@@ -33,20 +33,33 @@ const MANCHESTER_KIT = '/kit-preview/city-manchester/';
 const ROUTES = ['/kit-preview/city/', '/kit-preview/city-page/', '/uk-locations/blue-staffy-puppies-london/', MANCHESTER_KIT];
 // The full-width specimen routes: every component paints the viewport wide, as the canvas frames did.
 const FULL_WIDTH_SPECIMENS = new Set(['/kit-preview/city/', MANCHESTER_KIT]);
-// city-layout-follows-box judges the IN-BODY city components (its SPEC keys). A route that mounts
-// none yet has nothing for it to judge, and every key would be reported missing: Manchester's
-// preview carries only its three full-width strips until Task 30 builds its first in-body
-// component (the takeaways, the table, the image-and-text sections), which removes it from here.
-const NO_IN_BODY_YET = new Set([MANCHESTER_KIT]);
+// city-layout-follows-box judges the IN-BODY city components (its SPEC keys). Each city's are its
+// own (rules/design.md own-components-per-page), so a route is judged on its OWN city's keys: the
+// other city's are declared absent for that reason, and one that the route does carry is a
+// defect (a stale declaration). Manchester's preview carried no in-body component until Task 30
+// (the takeaways, the table, the image and text) and was skipped; it is judged like London's now.
+const ROUTE_CITY: Record<string, string> = { [MANCHESTER_KIT]: 'manchester' };
+const routeCity = (route: string) => ROUTE_CITY[route] ?? 'london';
+const COMPONENT_ROWS: { id: string; canvas_variant?: string }[] =
+  JSON.parse(readFileSync(new URL('../../data/design/components.json', import.meta.url), 'utf8'));
+/** The city a kit component was built for (its row's `canvas_variant`; London's rows predate it). */
+const cityOfComponent = (id: string) => COMPONENT_ROWS.find((r) => r.id === id)?.canvas_variant?.split('/')[0] ?? 'london';
+const cityKeys = (city: string) => Object.keys(SPEC_COMPONENT).filter((k) => cityOfComponent(SPEC_COMPONENT[k]) === city);
 // A real city page's approved board says which city components it mounts; a SPEC key of
 // city-layout-follows-box whose component the board does not mount is declared absent, never
 // demanded (tests/render/lib/cityLayoutFollowsBox.ts `absent`, 2026-10-04). The specimen routes
-// carry every component and declare nothing.
+// carry every one of their city's components and declare none of them.
 const LONDON = '/uk-locations/blue-staffy-puppies-london/';
 const BOARDS: Record<string, { meta: { slug: string }; sections: { component?: string }[] }> = {
   [LONDON]: JSON.parse(readFileSync(new URL('../../data/boards/blue-staffy-puppies-london.json', import.meta.url), 'utf8')),
 };
-const absentFor = (route: string) => absentFromBoard(BOARDS[route] ?? null);
+const absentFor = (route: string) => absentFromBoard(BOARDS[route] ?? null, cityKeys(routeCity(route)));
+/** Everything a route declares absent: the other cities' keys, then its board's own. */
+const absentOn = (route: string): Record<string, string> => ({
+  ...Object.fromEntries(Object.entries(SPEC_COMPONENT).filter(([, c]) => cityOfComponent(c) !== routeCity(route))
+    .map(([k, c]) => [k, `${c} is ${cityOfComponent(c)}'s own component and ${route} is ${routeCity(route)}'s`])),
+  ...absentFor(route),
+});
 const REUSED = [
   'layout-no-horizontal-overflow',
   'layout-min-font-size',
@@ -421,6 +434,80 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
       return out;
     },
   },
+  // ── Manchester's in-body picks (Phase F Task 30): takeaways C, tables A, image and text C ────
+  'city-tick-card': {
+    present: '.city-tick-card',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-takeaway');
+      out.push(...await page.evaluate(() => {
+        const bad: string[] = [];
+        const root = document.querySelector('.city-tick-card')!;
+        const ticks = Array.from(root.querySelectorAll('[data-takeaway]'));
+        if (ticks.length !== 5) bad.push(`${ticks.length} ticks, not the outline's five`);
+        // Two to a row from a 640px box, and an odd last tick takes the whole row rather than
+        // sitting alone beside an empty cell (Task 24: the fifth tick spans both columns).
+        const list = root.querySelector('ul')!.getBoundingClientRect();
+        const last = ticks[ticks.length - 1].getBoundingClientRect();
+        const two = new Set(ticks.slice(0, 2).map((t) => Math.round(t.getBoundingClientRect().top))).size === 1;
+        if (two && ticks.length % 2 === 1 && last.width < list.width - 2) bad.push(`the odd last tick is ${Math.round(last.width)}px of a ${Math.round(list.width)}px list`);
+        const img = root.querySelector('img')!.getBoundingClientRect();
+        const card = root.querySelector('.card')!.getBoundingClientRect();
+        if (Math.abs(img.width - card.width) > 2) bad.push('the photo does not run the card wide');
+        return bad;
+      }));
+      return out;
+    },
+  },
+  'city-photo-shelf': {
+    present: '.city-photo-shelf',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-pup');
+      out.push(...await page.evaluate(() => {
+        const bad: string[] = [];
+        const root = document.querySelector<HTMLElement>('.city-photo-shelf')!;
+        const s = getComputedStyle(root);
+        const box = root.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight);
+        const rows = Array.from(root.querySelectorAll('tbody tr'));
+        if (rows.length < 1) return ['the shelf has no row to measure'];
+        for (const tr of rows) {
+          const img = tr.querySelector('img');
+          const r = img?.getBoundingClientRect();
+          if (!img || !r || r.width < 40 || r.height < 40) bad.push(`a row paints no photo of its puppy (${(tr.textContent || '').trim().slice(0, 12)})`);
+          // The price's glyphs never run over the name's, stacked or not.
+          const price = tr.querySelector('td[data-label="Price"]')!.getBoundingClientRect();
+          const range = document.createRange(); range.selectNodeContents(tr.querySelector('.nm')!);
+          const name = range.getBoundingClientRect();
+          if (price.left < name.right - 1 && price.right > name.left + 1 && price.top < name.bottom - 1 && price.bottom > name.top + 1) bad.push('a price paints over its puppy\'s name');
+        }
+        const tops = rows.map((tr) => Math.round(tr.getBoundingClientRect().top));
+        // Below a 640px box each row is a small portrait card, two to a line; from 640 a table row.
+        const perLine = tops.filter((t) => Math.abs(t - tops[0]) < 2).length;
+        if (box < 640 && perLine !== 2) bad.push(`${perLine} stacked cards to a line in a ${Math.round(box)}px box, not two`);
+        if (box >= 640 && perLine !== 1) bad.push(`${perLine} rows share a line in a ${Math.round(box)}px box`);
+        return bad;
+      }));
+      return out;
+    },
+  },
+  'city-offset-sheet': {
+    present: '.city-offset-sheet',
+    run: async (page) => {
+      const out = await allVisible(page, 'data-cell');
+      out.push(...await page.evaluate(() => {
+        const bad: string[] = [];
+        const root = document.querySelector('.city-offset-sheet')!;
+        const img = root.querySelector('.media img')!.getBoundingClientRect();
+        const media = root.querySelector('.media')!;
+        // The steel bleed is painted behind the photo and runs past it on the page's side.
+        const bleed = getComputedStyle(media, '::before');
+        if (bleed.content === 'none' || bleed.backgroundColor === 'rgba(0, 0, 0, 0)') bad.push('the photo has no steel bleed');
+        if (img.width < 200) bad.push(`the photo paints ${Math.round(img.width)}px wide`);
+        if (root.querySelectorAll('[data-cell]').length !== 4) bad.push('the sheet does not hold four cells');
+        return bad;
+      }));
+      return out;
+    },
+  },
   'city-contents-photo-index': {
     present: '.city-contents-photo-index',
     run: async (page, viewport) => {
@@ -708,11 +795,7 @@ const PROBES: Record<string, { present: string; run: Probe }> = {
     present: '.city-kit',
     run: async (page, viewport) => {
       const path = new URL(page.url()).pathname;
-      if (NO_IN_BODY_YET.has(path)) {
-        console.log(`city-layout-follows-box @ ${viewport}px: ${path} mounts no in-body city component yet`);
-        return [];
-      }
-      const absent = absentFor(path);
+      const absent = absentOn(path);
       const r = await page.evaluate(cityLayoutFollowsBox, { viewport, tier: TIER, absent });
       console.log(`city-layout-follows-box @ ${viewport}px: examined ${r.examined}, declared absent ${Object.keys(absent).join(', ') || 'none'}`);
       return r.defects;
@@ -897,8 +980,7 @@ for (const route of ROUTES) {
       await page.evaluate(() => document.fonts.ready);
       const fullWidthSpecimen = FULL_WIDTH_SPECIMENS.has(route);
       const t = await page.evaluate(cityTypeFit, { viewport: width, tier: TIER, caps: HEADING_CAPS, fullWidthSpecimen });
-      const l = NO_IN_BODY_YET.has(route) ? { examined: 0, defects: [] as string[] }
-        : await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER, absent: absentFor(route) });
+      const l = await page.evaluate(cityLayoutFollowsBox, { viewport: width, tier: TIER, absent: absentOn(route) });
       console.log(`${route} @ ${width}px: city-type-fit examined ${t.examined}, city-layout-follows-box examined ${l.examined}`);
       expect(t.examined).toBeGreaterThan(0);
       // Each city's counter at the edge widths: London's price scale, Manchester's range sheet.

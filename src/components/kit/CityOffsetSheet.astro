@@ -1,0 +1,130 @@
+---
+// src/components/kit/CityOffsetSheet.astro — Manchester's image and text (pick:
+// manchester/image-text/c, "Offset sheet"; frozen 355d5e43; a pool copy of London's offset block,
+// refreshed on LAYOUT). One body section: a steel-100 block that runs off the page's edge with
+// the section's photograph set offset on it, then the H2, its answer and a label-and-value sheet,
+// two by two behind a hairline cross from a 640px box, closed by one brass pill. On a phone the
+// block runs full width behind the photo and the cells stack. Built from
+// design/city-canvas/manchester/image-text/c.html as the visual spec only; it imports no London
+// component (rules/design.md own-components-per-page).
+//
+// THE PHOTO COMES FIRST, in source and on a phone (rule 17: an image on every body heading; the
+// H3-image-first rule's order): the H2's own photo, then the heading. A served file keeps its
+// served alt on its first use; a photo the page already showed above takes a new alt (`photoAlt`,
+// working rule 11, 2026-09-29: "same photo use new alt"), never a copy of the served one.
+//
+// AN IN-BODY COMPONENT FOLLOWS ITS OWN BOX (src/styles/city.css): the 2x2 sheet from a 640px box,
+// and the photo beside the copy from a desktop box (800px). In the 656px column beside the dial at
+// 1024 the section stays stacked; in the 832px column at 1280 it sits side by side.
+//
+// THE SHEET'S WORDS ARE THE CALLER'S, ITS FIGURES THE DATA'S: the rows are passed in (the
+// deposit section's are src/lib/cityKit.ts `depositTerms()`, the refund clause word for word in
+// its own cell), and every price and band in a value is kept on one line (`keepRuns`). The
+// default slot renders after the sheet, for the section's deeper headings on the page.
+import '../../styles/city.css';
+import type { HTMLAttributes } from 'astro/types';
+import { focusClassFor, servedPhoto } from '../../lib/imageFocus';
+import { citySizes, keepRuns, BOY_PRICE, GIRL_PRICE, DELIVERY_BAND, DEPOSIT, type CityFit } from '../../lib/cityKit';
+
+type Props = HTMLAttributes<'section'> & {
+  /** The outline's H2, word for word. */
+  heading: string;
+  /** Its answer, one paragraph. */
+  lede: string;
+  /** A served /images/ file named in data/image-focus.json. */
+  photo: string;
+  /** A new alt for a photo the page already showed above (working rule 11). Omitted: the served alt. */
+  photoAlt?: string;
+  /** The sheet: two to four label-and-value cells. */
+  rows: { t: string; d: string }[];
+  /** The section's one action. */
+  cta?: { label: string; href: string };
+  /** Where the section sits from 1024px, for its photo's `sizes` (src/lib/cityKit.ts `CityFit`). */
+  fit?: CityFit;
+};
+const { heading, lede, photo, photoAlt, rows, cta, fit = 'column', class: cls, ...rest } = Astro.props;
+if (rows.length < 2 || rows.length > 4) throw new Error(`CityOffsetSheet: ${rows.length} cells; the sheet holds 2 to 4`);
+const p = servedPhoto(photo);
+if (photoAlt !== undefined && (!photoAlt.trim() || photoAlt === p.alt)) {
+  throw new Error(`CityOffsetSheet: a repeated ${photo} needs a new alt of its own, never the served one (working rule 11)`);
+}
+const keep = [BOY_PRICE, GIRL_PRICE, DEPOSIT, DELIVERY_BAND];
+// The photo: the box less its 16px gutters, at most 400px; from a desktop box (800px) the media
+// column's two fifths of the inner row (less its 24px pads and the 48px gap), less its 24px inset.
+const sizes = citySizes(fit, {
+  phone: (B) => `min(400px, calc(${B} - 32px))`,
+  tablet: (B) => `min(400px, calc(${B} - 32px))`,
+  desktop: (B) => `min(400px, calc((min(${B}, 1160px) - 96px) * 2 / 5 - 24px))`,
+});
+---
+<section {...rest} class:list={['city-kit', 'city-offset-sheet', cls]}>
+  <div class="in">
+    <figure class="media" data-media>
+      <img src={p.file} srcset={p.srcset} sizes={p.srcset ? sizes : undefined}
+        alt={photoAlt ?? p.alt} width={p.w} height={p.h} class={focusClassFor(photo, 1)} loading="lazy" decoding="async" />
+    </figure>
+    <div class="copy">
+      <h2>{heading}</h2>
+      <p class="lede">{lede}</p>
+      <dl>
+        {rows.map((r) => (
+          <div class="cell" data-cell>
+            <dt>{r.t}</dt>
+            <dd>{keepRuns(r.d, keep).map((x) => (x.keep ? <span class="keep">{x.text}</span> : x.text))}</dd>
+          </div>
+        ))}
+      </dl>
+      <slot />
+      {cta && <p class="act"><a class="cta" href={cta.href}>{cta.label}</a></p>}
+    </div>
+  </div>
+</section>
+<style>
+  @layer components {
+    /* An in-body container (src/styles/city.css): no inline padding on the root; it clips the
+       bleed to its own box, so on a page the block never paints over the dial's column. */
+    .city-offset-sheet { background: var(--color-surface); overflow: hidden; }
+    .in { max-width: 1160px; margin: 0 auto; padding: var(--space-7) var(--space-4); display: grid; gap: var(--space-6); }
+    .media { position: relative; margin: 0; padding: var(--space-5) 0; }
+    /* The steel block the photo sits on, run past the box on both sides (clipped by the root). */
+    .media::before { content: ""; position: absolute; inset: 0 -100vw; background: var(--color-brand-soft); }
+    .media img {
+      position: relative; display: block; width: 100%; max-width: 400px; height: auto; aspect-ratio: 1 / 1;
+      object-fit: cover; margin: 0 auto; border-radius: var(--radius-md); background: var(--color-bone-50);
+    }
+    h2 { margin: 0 0 var(--space-3); }
+    .lede { margin: 0 0 var(--space-5); font-size: var(--city-lead); max-inline-size: 58ch; color: var(--color-text); }
+    dl { margin: 0 0 var(--space-5); border-top: 2px solid var(--color-brand); display: grid; }
+    .cell { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+    dt { margin-bottom: 2px; font-size: var(--text-sm); font-weight: 700; line-height: 1.35; color: var(--color-brand); }
+    dd { margin: 0; color: var(--color-text); overflow-wrap: break-word; }
+    .act { margin: 0; }
+    .cta {
+      display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--space-6); border-radius: var(--btn-radius);
+      background: var(--color-cta); color: var(--color-cta-ink); font-weight: 700; text-decoration: none;
+      transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    .cta:hover { background: var(--color-cta-hover); }
+    .cta:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    /* From a 640px box: the four facts a two-by-two sheet behind a hairline cross. */
+    @container (width >= 640px) {
+      dl { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      /* Logical sides, so the hairline cross holds in a right-to-left page too (impeccable harden). */
+      .cell { padding-block: var(--space-4); padding-inline: 0 var(--space-5); }
+      .cell:nth-child(even) { padding-inline: var(--space-5) 0; border-inline-start: 1px solid var(--color-border); }
+      .cell:nth-last-child(-n + 2):nth-child(odd), .cell:nth-last-child(-n + 2):nth-child(odd) ~ .cell { border-bottom: 0; }
+      /* An odd last cell (a three-cell sheet) takes the whole row, never a half beside an empty one. */
+      .cell:last-child:nth-child(odd) { grid-column: 1 / -1; padding-inline: 0; }
+    }
+    /* From a desktop box: the photo on its block beside the copy, the block bleeding off the left. */
+    @container (width >= 800px) {
+      .in {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--space-8); align-items: center;
+        padding: var(--space-10) var(--space-5);
+      }
+      .media { padding: var(--space-8) 0; }
+      .media::before { inset: 0 45% 0 -100vw; }
+      .media img { margin: 0 0 0 var(--space-5); max-width: min(400px, calc(100% - var(--space-5))); }
+    }
+  }
+</style>
