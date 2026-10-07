@@ -1,9 +1,11 @@
 <style>
 /* Trust B — Puppy folder. The paperwork is drawn as what it is: a brass-tinted folder with a
    tab, holding the five documents and records each puppy leaves with, each a paper slip with
-   a line icon. Beside it, what stays with us after the folder is handed over: our home, our
-   support, the guarantee. All of it inset in one soft steel panel on the bone page, airy.
-   Phones: intro, folder, then the three; from 1024px the three sit in a column to its right. */
+   a line icon. Beside it, how a puppy reaches a Manchester home: the deposit that holds it,
+   then delivery or collection (Task 26 refinement: the hero's four ticks now carry home,
+   support and the guarantee, so this column says what only this page needs). All of it
+   inset in one soft steel panel on the bone page, airy.
+   Phones: intro, folder, then the three steps; from 1024px the three sit in a column to its right. */
 .mtB{background:var(--color-surface);padding:var(--space-5) var(--space-4)}
 .mtB .panel{max-width:1120px;margin:0 auto;background:var(--color-brand-soft);border-radius:var(--radius-lg);padding:var(--space-6) var(--space-4);display:grid;gap:var(--space-6)}
 .mtB .intro{margin:0;font-size:var(--text-base);line-height:1.5;color:var(--color-text);max-width:40ch}
@@ -13,6 +15,7 @@
 .mtB ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-2)}
 .mtB .docs li{display:flex;align-items:center;gap:var(--space-3);margin:0;max-width:none;background:var(--color-surface-raised);border-radius:var(--radius-sm);padding:var(--space-2) var(--space-3);font-weight:600;line-height:1.35;color:var(--color-text);box-shadow:var(--shadow-card)}
 .mtB .us li{display:flex;align-items:center;gap:var(--space-3);margin:0;max-width:none;padding:var(--space-2) 0;font-weight:600;line-height:1.35;color:var(--color-text)}
+.mtB .us li{text-wrap:balance}
 .mtB .us li+li{border-top:1px solid var(--color-steel-300)}
 .mtB svg{width:22px;height:22px;flex:none;color:var(--color-brand)}
 .mtB .with{margin:0 0 var(--space-2);font-size:var(--text-sm);font-weight:700;color:var(--color-brand)}
@@ -25,7 +28,7 @@
 </style>
 <section data-component="trust-strip" data-variant="b" class="mtB">
   <div class="panel">
-    <p class="intro"><b>The puppy folder.</b> What your puppy carries home to Manchester, whether you collect in Carlisle or we deliver.</p>
+    <p class="intro"><b>The puppy folder.</b> The five papers and records that go home with every one of our puppies.</p>
     <div class="folder">
       <p class="tab">In the folder</p>
       <ul class="docs">
@@ -37,11 +40,11 @@
       </ul>
     </div>
     <div>
-      <p class="with">And from us</p>
+      <p class="with">From us to Manchester</p>
       <ul class="us">
-        <li data-trust-item><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6"/></svg>Raised in our home</li>
-        <li data-trust-item><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg>Support after collection</li>
-        <li data-trust-item><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>Two-year health guarantee</li>
+        <li data-trust-item><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/></svg>£500 deposit secures your puppy</li>
+        <li data-trust-item><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h11v9H2zM13 10h4l4 3.5V16h-8z"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>UK home delivery, £200–£350 by distance</li>
+        <li data-trust-item><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>Or collect from us in Carlisle</li>
       </ul>
     </div>
   </div>

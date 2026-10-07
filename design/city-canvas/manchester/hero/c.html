@@ -1,8 +1,8 @@
 <style>
 /* Hero C — Feature and three. One puppy large, bled to the left edge of the screen with its
    name in a caption pill, and three more of the litter stacked beside it as a contact column;
-   the copy sits on the bone page to the right with a hairline tick row as its last line.
-   On phones the feature runs edge to edge, the three sit in a row beneath it, then the copy.
+   the copy sits on the bone page to the right, and four ticks run along the foot of the band.
+   On phones the feature runs edge to edge, the three sit in a row beneath it, then the copy, then the four ticks as a 2x2.
    The photo column carries no radius on its outer side: it bleeds, it is not carded. */
 .mhC{background:var(--color-surface)}
 .mhC .inner{display:grid}
@@ -22,24 +22,32 @@
 .mhC .cta{display:inline-flex;align-items:center;min-height:48px;padding:0 var(--space-6);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
 .mhC .cta:hover{background:var(--color-cta-hover)}
 .mhC .more{display:inline-flex;align-items:center;min-height:44px;color:var(--color-link);font-weight:600;text-underline-offset:4px}
-.mhC .ticks{list-style:none;margin:var(--space-4) 0 0;padding:var(--space-3) 0 0;border-top:1px solid var(--color-border);display:flex;flex-wrap:wrap;gap:var(--space-1) var(--space-5)}
-.mhC .ticks li{display:inline-flex;align-items:center;gap:var(--space-2);margin:0;max-width:none;font-size:var(--text-sm);font-weight:600;color:var(--color-text)}
-.mhC .ticks svg{width:16px;height:16px;flex:none;color:var(--color-ok)}
+/* The promise rail (Task 26 refinement, the user's note): four ticks. Phones and tablets: a
+   2x2 of soft steel tiles, two left and two right, each tick seated in a ring so one-line and
+   two-line labels share one centre line. From 1024px the four run as one line along the foot
+   of the whole band, equal cells split by short hairlines, set to the page's content width. */
+.mhC .ticks{list-style:none;margin:0;padding:0 var(--space-4) var(--space-6);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,auto);grid-auto-flow:column;gap:var(--space-2)}
+.mhC .ticks li{display:flex;align-items:center;gap:var(--space-2);margin:0;max-width:none;min-height:52px;padding:var(--space-2) var(--space-3);background:var(--color-brand-soft);border-radius:var(--radius-sm);font-size:var(--text-sm);line-height:1.3;font-weight:600;color:var(--color-text)}
+.mhC .ticks svg{width:22px;height:22px;flex:none;color:var(--color-ok)}
 @media (min-width:640px){
   .mhC .pic{grid-template-columns:minmax(0,2fr) minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr))}
   .mhC .pic{height:360px}
   .mhC .feature{grid-column:1;grid-row:1/4}
   .mhC .feature img{aspect-ratio:auto;height:100%}
   .mhC .thumb img{aspect-ratio:auto;height:100%}
-  .mhC .copy{padding:var(--space-6) var(--space-5) var(--space-7)}
+  .mhC .copy{padding:var(--space-6) var(--space-5) var(--space-5)}
+  .mhC .ticks{grid-template-columns:repeat(2,minmax(0,300px));padding:0 var(--space-5) var(--space-7);gap:var(--space-3)}
   .mhC h1{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height)}
 }
 @media (min-width:1024px){
   .mhC{max-height:450px}
-  .mhC .inner{grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:390px}
-  .mhC .pic{height:420px}
+  .mhC .inner{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto;min-height:390px}
+  .mhC .pic{height:372px}
   .mhC .thumb img{aspect-ratio:auto}
-  .mhC .copy{align-self:center;padding:var(--space-5) max(var(--space-5),calc((100vw - 1200px) / 2)) var(--space-5) var(--space-8)}
+  .mhC .copy{align-self:center;padding:var(--space-4) max(var(--space-5),calc((100vw - 1200px) / 2)) var(--space-4) var(--space-8)}
+  .mhC .ticks{grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:none;grid-auto-flow:row;gap:0;padding:0 max(var(--space-5),calc((100vw - 1200px) / 2));border-top:1px solid var(--color-border)}
+  .mhC .ticks li{justify-content:center;min-height:56px;padding:0 var(--space-3);background:none;border-radius:0;white-space:nowrap}
+  .mhC .ticks li+li{background:linear-gradient(var(--color-steel-300),var(--color-steel-300)) left center/1px 24px no-repeat}
 }
 </style>
 <section data-component="hero" data-variant="c" class="mhC">
@@ -57,11 +65,12 @@
         <a class="cta" href="#enquire">Ask about a puppy</a>
         <a class="more" href="#litter">See all six puppies</a>
       </div>
-      <ul class="ticks">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Raised in our home</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Two-year health guarantee</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Support after collection</li>
-      </ul>
     </div>
+    <ul class="ticks">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>Raised in our home</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>Support after collection</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>Two-year health guarantee</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>DEFRA-approved transport</li>
+    </ul>
   </div>
 </section>

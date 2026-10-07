@@ -364,3 +364,55 @@ Final runs:
 - The whole city, all 13 components, gave `examined 39 fragments, 13 meta files; 0 problems`,
   and `npm run -s check:canvas` (London) still gives `examined 45 fragments, 15 meta files;
   0 problems`.
+
+## Task 26 refinements (user notes)
+
+The user picked hero C and trust-strip B on the canvas
+(`docs/research/manchester-components/picks-2026-10-07.md`, submission
+`s-2026-10-07T12-03-32-730Z`) and left one note on each. Plan Task 26 Step 5 redesign loop, for
+these two variants only. `frontend-design:frontend-design` was invoked with the Skill tool on the
+user's two notes plus the README contract, then `impeccable:impeccable` (brand register;
+critique and harden). The loader again reported `hasProduct: false`, so the brand context came
+from the design-context files, as in Task 22. The detector (`npx impeccable --json` on the two
+fragments) returned six `cramped-padding` rows, all false positives: the bled photo column and the
+panel wrappers, where jsdom does not resolve the stylesheet padding (the shots show every child
+inset). The painted review used Playwright Chromium shots at 375 / 768 / 1024 / 1280.
+
+**Why the fourth hero tick is not "Vet-signed health card".** That was the brief's recommended
+pick, but trust-strip B's folder already holds "Vet-signed health card" as its first slip, so the
+hero and the strip directly under it would repeat a line again, which is exactly what the user's
+trust-strip note objects to. "Kennel Club registered parents" was ruled out because it matches the
+evidence ledger's `kc-registered` vocabulary, and the ledger row's pattern is scoped to one
+sentence ("Maggie and Jones are both Kennel Club registered"), so a tick would be
+`claim-unledgered` on the built page. Deposit and price lines were ruled out for the hero by the
+brief. The fourth tick is "DEFRA-approved transport", from `data/settings.json` `delivery_note`.
+It fits a hero for a buyer whose puppy travels from Carlisle, it states no distance, it is a fact from
+data, and it repeats nothing on the canvas's picked sections.
+
+| Component | Variant | User's note | frontend-design direction | impeccable findings | Fixed | Widths |
+|---|---|---|---|---|---|---|
+| hero | c | "…should be four; add one more. Make it a one-liner on desktop and stack on mobile, with two on the left and two on the right, and make it look polished." | The tick row leaves the copy column and becomes a promise rail. From 1024px it runs as one line along the foot of the whole band: four equal cells, each tick in a ring, divided by short 24px steel hairlines, set to the page's 1200px content width under a full-width rule. Below 1024px the four sit as a 2x2 of soft steel tiles, filled column-first so the left holds Raised in our home and Support after collection, and the right holds Two-year health guarantee and DEFRA-approved transport. The ringed tick shares one centre line with one-line and two-line labels. | At 768 the 2x2 tiles ran the full 720px, leaving each label stranded in a wide empty tile, out of scale with the 48ch lede above. The four labels cannot fit one line at 768 (about 880px needed), so 2x2 is the correct tier there. At 375 every label wraps to two lines at the same height, so the grid is even, not ragged. | Tiles are capped at 300px per column from 640 to 1023. The photo column is 372px from 1024px, with the rail at 56px, so the band is 429px at 1024 and 1280 (inside 390–450). The photo still comes first on phones. Tap and type tiers are unchanged: tick labels are `--text-sm`, the tiles are 52–55px tall, and the CTAs are untouched. | 375 · 768 · 1024 · 1280 |
+| trust-strip | b | "…change this text since we already have it on the selected hero above. ADD new related page-specific terms" | The "And from us" column (home, support, guarantee, now all hero ticks) becomes "From us to Manchester": the handover steps the folder doesn't cover. The deposit that holds a puppy, then home delivery or collection. Each item gets a new line icon (tag, van, pin). The intro no longer names collection and delivery, because the column now does: "The five papers and records that go home with every one of our puppies." | At 1280 "£500 deposit secures your / puppy" and at 375 "UK home delivery, £200–£350 by / distance" left orphan words. | `text-wrap: balance` on the column's items, so the lines now break as "£500 deposit / secures your puppy" and "UK home delivery, / £200–£350 by distance". | 375 · 768 · 1024 · 1280 |
+
+The three new trust items and where each comes from:
+- "£500 deposit secures your puppy": `deposit_gbp`, and `data/faq.json` "How much is the deposit?" ("secures your chosen puppy"). It is never called refundable, and it has no clause because it is not a deposit-terms sentence.
+- "UK home delivery, £200–£350 by distance": `delivery_min_gbp`, `delivery_max_gbp`, and `delivery_note` ("priced by distance").
+- "Or collect from us in Carlisle": collection in Carlisle (the locked facts; `data/faq.json` "you can collect in person instead").
+
+None of the three repeats a hero tick or a folder slip. The hero's "DEFRA-approved transport" and
+the strip's delivery line are kept apart on purpose: the strip's line carries the price band and
+not the transport wording.
+
+`meta.json` descriptions were updated for both. Hero C's axes are unchanged (layout
+feature-thumbs, media left, density compact, framing bleed): the rail is a foot line inside the
+same band, not a new layout. Trust-strip B's axes are unchanged too, and its `differs_from` now
+says "three handover steps".
+
+Final runs:
+- `python3 scripts/check_city_canvas.py --city manchester --only hero,trust-strip` gave
+  `examined 6 fragments, 2 meta files; 0 problems`.
+- The full Manchester canvas smoke (`manchester-frames`, 39 frames) gave 160 passed at vp375,
+  vp768, vp1024 and vp1280. The two refined frames re-run alone gave 8 passed, with no advisories.
+- The canvas page was rebuilt with `--allow-partial --files-map
+  docs/artifacts/canvas/manchester-files.json`: 39 variants, 14 images. It is not republished
+  here; the controller publishes it.

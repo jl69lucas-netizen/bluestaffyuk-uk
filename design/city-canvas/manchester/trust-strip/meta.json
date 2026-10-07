@@ -18,12 +18,12 @@
   },
   "b": {
    "name": "Puppy folder",
-   "description": "The five papers as slips in a tabbed brass folder, and what stays with us beside it, inset in one soft steel panel.",
+   "description": "The five papers as slips in a tabbed brass folder; beside it, deposit, delivery or collection, inset in one soft steel panel.",
    "idea_sources": [
     "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Trust-ComponentDesign.png",
     "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/hero-idea00.png"
    ],
-   "differs_from": "The papers are drawn as a folder of slips inside an inset panel, split from the three promises beside it; London's pick is a carded two-column ledger with a photo.",
+   "differs_from": "The papers are drawn as a folder of slips inside an inset panel, split from the three handover steps beside it; London's pick is a carded two-column ledger with a photo.",
    "axes": {
     "layout": "folder-tabs",
     "media": "none",
