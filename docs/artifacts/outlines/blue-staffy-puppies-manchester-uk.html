@@ -537,11 +537,12 @@ Every H2–H6 opens by answering its own question in the first sentence, in Lisa
     else{var l=b.querySelector(':scope > ul, :scope > ol');if(l)x=l.children[it.index];}
     if(x)x.setAttribute('data-item',String(n));});
 
-  // 2. Field cards. A table holding a control, an image, a fold or an anchor id is left as it
-  //    is: the page board's pickers are found by those, and a card is rebuilt from text.
-  var KEEP='input,select,textarea,button,iframe,img,details,[id]';
+  // 2. Field cards. A table holding a control, an image, a fold, an anchor id or anything a
+  //    board script marked up for itself (a class, a data-id: the page board's pickers and its
+  //    keyword filter) is left as it is — a card is rebuilt from the table's text and cells.
+  var KEEP='input,select,textarea,button,iframe,img,details,[id],[class],[data-id]';
   [].slice.call(doc.querySelectorAll('.md table')).forEach(function(t){
-    if(t.querySelector(KEEP))return;
+    if(t.hasAttribute('class')||t.hasAttribute('id')||t.closest('.kv,.mx-wrap')||t.querySelector(KEEP))return;
     var hs=[].map.call(t.querySelectorAll('thead th'),function(h){return h.textContent.trim();});
     var rows=[].slice.call(t.querySelectorAll('tbody tr'));if(!rows.length||!hs.length)return;
     var marked=rows.some(function(r){return r.hasAttribute('data-item');});
@@ -574,7 +575,7 @@ Every H2–H6 opens by answering its own question in the first sentence, in Lisa
       wrap.appendChild(card);});
     t.replaceWith(wrap);});
 
-  // 3. Labelled lists: "- **X** — idea" items whose children say "Why:" or "Trade-off:".
+  // 3. Labelled lists: "- **X** — idea" items whose children carry a LABEL (why, trade-off).
   var LABEL=/^(Angle|Why|Trade-off|Why it could win)\s*:\s*([\s\S]*)$/,HEAD=/^(\S+)\s+—\s+/;
   function own(li){var t='';[].forEach.call(li.childNodes,function(n){if(n.nodeName!=='UL'&&n.nodeName!=='OL')t+=n.textContent;});return t.trim();}
   [].slice.call(doc.querySelectorAll('.md > ul')).forEach(function(ul){
@@ -604,7 +605,7 @@ Every H2–H6 opens by answering its own question in the first sentence, in Lisa
           li.appendChild(d);});
         sub.remove();if(keep.children.length)li.appendChild(keep);}
     });});
-  // Any other nested "Why:" / "Trade-off:" line keeps its place and wears its role colour.
+  // Any other nested why or trade-off line keeps its place and wears its role colour.
   [].slice.call(doc.querySelectorAll('.md li > ul > li, .md li > ol > li')).forEach(function(li){
     if(li.closest('.lablist'))return;
     var m=own(li).match(/^(Why|Trade-off)\s*:/);if(!m)return;
