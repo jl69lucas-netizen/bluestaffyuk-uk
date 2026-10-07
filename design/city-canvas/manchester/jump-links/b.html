@@ -1,0 +1,247 @@
+<style>
+/* Jump links B: Question bar. Below 1024px a slim bar sticks to the top, ruled off from the
+   page by a hairline and a row of thirteen ticks, one per section, the current tick in brass so
+   the reader sees how far down the page they are. In the bar: a small decorative photo of Christa, the
+   current section by number and name, and a Questions key that raises a sheet listing the
+   page's thirteen questions word for word, the current one marked. CSS only: the ticks and the
+   name follow a scroll-driven animation (or :target), and the sheet is the :target of its key. */
+.mjlB{background:var(--color-surface)}
+.mjlB .strip{position:sticky;top:0;z-index:20;background:var(--color-surface-raised);border-bottom:1px solid var(--color-border)}
+.mjlB .bar{display:flex;align-items:center;gap:var(--space-3);max-width:720px;margin:0 auto;padding:6px var(--space-3)}
+.mjlB .bar img{flex:none;width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:50% 35%;background:var(--color-surface)}
+.mjlB .where{flex:1;min-width:0;margin:0;line-height:1.2}
+.mjlB .where small{display:block;font-size:var(--text-xs);color:var(--color-ink-2)}
+.mjlB .now{display:grid;font-size:var(--text-sm);font-weight:700;color:var(--color-brand)}
+.mjlB .now span{grid-area:1/1;visibility:hidden;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--color-surface-raised)}
+.mjlB .now .base{visibility:visible}
+.mjlB .open{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 var(--space-4);border-radius:var(--btn-radius);border:1.5px solid var(--color-brand);color:var(--color-brand);font-size:var(--text-sm);font-weight:700;text-decoration:none}
+.mjlB .open:hover{background:var(--color-brand-soft)}
+.mjlB .open svg{width:16px;height:16px}
+.mjlB .ticks{display:flex;gap:2px;max-width:720px;margin:0 auto;padding:0 var(--space-3) 4px}
+.mjlB .ticks i{flex:1;height:3px;border-radius:2px;background:var(--color-steel-300)}
+.mjlB .sheet .panel{position:absolute;left:0;right:0;bottom:0;z-index:1;max-height:85vh;overflow-y:auto;padding:var(--space-4) var(--space-4) var(--space-6);background:var(--color-surface-raised);border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:var(--shadow-lift);animation:mjlB-up var(--dur-base) var(--ease-out)}
+.mjlB .sheet .top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-3)}
+.mjlB .sheet .t{margin:0;font-weight:700;color:var(--color-ink)}
+.mjlB .sheet ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--color-border)}
+.mjlB .sheet li{border-bottom:1px solid var(--color-border)}
+.mjlB .sheet li a{display:block;padding:var(--space-3) var(--space-2) var(--space-3) var(--space-3);font-family:var(--font-display);font-weight:500;font-size:var(--text-base);line-height:1.35;color:var(--color-ink);text-decoration:none}
+.mjlB .sheet li a:hover{color:var(--color-brand);text-decoration:underline;text-underline-offset:3px}
+@keyframes mjlB-up{from{transform:translateY(16px);opacity:.6}to{transform:none;opacity:1}}
+@media (min-width:600px){.mjlB .sheet .panel{left:50%;right:auto;width:600px;transform:translateX(-50%);animation:none}}
+.mjlB .shut{position:fixed;top:0;left:0;width:1px;height:1px;pointer-events:none}
+.mjlB .note{display:none}
+.mjlB .sheet{display:none}
+.mjlB .sheet:target{display:block;position:fixed;inset:0;z-index:50}
+.mjlB .scrim{position:fixed;inset:0;background:color-mix(in srgb,var(--color-steel-900) 55%,transparent);z-index:0}
+.mjlB .close{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 var(--space-3);border-radius:var(--btn-radius);border:1px solid var(--color-border);color:var(--color-brand);font-weight:600;font-size:var(--text-sm);text-decoration:none}
+.mjlB .close svg{width:16px;height:16px}
+.mjlB a:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+@media (min-width:1024px){
+  .mjlB .jl-only{display:none!important}
+  .mjlB .note{display:block;max-width:1200px;margin:var(--space-5) auto 0;padding:var(--space-3) var(--space-4);background:var(--color-brand-soft);border-radius:var(--radius-sm);font-size:var(--text-sm);color:var(--color-ink)}
+  .mjlB .stub{max-width:1200px;margin:0 auto;padding-left:var(--space-5);padding-right:var(--space-5)}
+}
+@media (prefers-reduced-motion:reduce){.mjlB *{animation-duration:0s!important;transition:none!important}}
+.mjlB .stub{padding:var(--space-7) var(--space-4) var(--space-6);border-bottom:1px solid var(--color-border);scroll-margin-top:calc(72px + var(--space-3))}
+.mjlB .stub h2{font-size:var(--text-xl);line-height:var(--text-xl--line-height);margin:0 0 var(--space-3);max-width:28ch;text-wrap:balance}
+.mjlB .stub p{margin:0 0 var(--space-3);max-width:62ch}
+.mjlB .stub .fill{color:var(--color-ink-2);font-size:var(--text-sm)}
+.mjlB{timeline-scope:--mjlB-1,--mjlB-2,--mjlB-3,--mjlB-4,--mjlB-5,--mjlB-6,--mjlB-7,--mjlB-8,--mjlB-9,--mjlB-10,--mjlB-11,--mjlB-12,--mjlB-13}
+@supports not (animation-timeline: view()){.mjlB:has(#mjlB-first:target) .ticks [data-tick="first"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-first:target) .now [data-for="first"]{visibility:visible}
+.mjlB:has(#mjlB-first:target) .sheet a[href="#mjlB-first"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-deposit:target) .ticks [data-tick="deposit"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-deposit:target) .now [data-for="deposit"]{visibility:visible}
+.mjlB:has(#mjlB-deposit:target) .sheet a[href="#mjlB-deposit"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-tests:target) .ticks [data-tick="tests"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-tests:target) .now [data-for="tests"]{visibility:visible}
+.mjlB:has(#mjlB-tests:target) .sheet a[href="#mjlB-tests"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-litter:target) .ticks [data-tick="litter"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-litter:target) .now [data-for="litter"]{visibility:visible}
+.mjlB:has(#mjlB-litter:target) .sheet a[href="#mjlB-litter"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-viewing:target) .ticks [data-tick="viewing"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-viewing:target) .now [data-for="viewing"]{visibility:visible}
+.mjlB:has(#mjlB-viewing:target) .sheet a[href="#mjlB-viewing"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-travel:target) .ticks [data-tick="travel"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-travel:target) .now [data-for="travel"]{visibility:visible}
+.mjlB:has(#mjlB-travel:target) .sheet a[href="#mjlB-travel"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-papers:target) .ticks [data-tick="papers"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-papers:target) .now [data-for="papers"]{visibility:visible}
+.mjlB:has(#mjlB-papers:target) .sheet a[href="#mjlB-papers"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-health:target) .ticks [data-tick="health"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-health:target) .now [data-for="health"]{visibility:visible}
+.mjlB:has(#mjlB-health:target) .sheet a[href="#mjlB-health"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-life:target) .ticks [data-tick="life"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-life:target) .now [data-for="life"]{visibility:visible}
+.mjlB:has(#mjlB-life:target) .sheet a[href="#mjlB-life"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-bond:target) .ticks [data-tick="bond"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-bond:target) .now [data-for="bond"]{visibility:visible}
+.mjlB:has(#mjlB-bond:target) .sheet a[href="#mjlB-bond"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-coat:target) .ticks [data-tick="coat"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-coat:target) .now [data-for="coat"]{visibility:visible}
+.mjlB:has(#mjlB-coat:target) .sheet a[href="#mjlB-coat"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-everyday:target) .ticks [data-tick="everyday"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-everyday:target) .now [data-for="everyday"]{visibility:visible}
+.mjlB:has(#mjlB-everyday:target) .sheet a[href="#mjlB-everyday"]{background:var(--color-brand-soft);font-weight:700}
+.mjlB:has(#mjlB-enquire:target) .ticks [data-tick="enquire"]{background:var(--color-cta)}
+.mjlB:has(#mjlB-enquire:target) .now [data-for="enquire"]{visibility:visible}
+.mjlB:has(#mjlB-enquire:target) .sheet a[href="#mjlB-enquire"]{background:var(--color-brand-soft);font-weight:700}}
+@keyframes mjlB-tick{from,to{background:var(--color-cta)}}
+@keyframes mjlB-show{from,to{visibility:visible}}
+@keyframes mjlB-row{from,to{background:var(--color-brand-soft);font-weight:700}}
+@supports (animation-timeline: view()){@media all{
+.mjlB #mjlB-first{view-timeline-name:--mjlB-1}
+.mjlB #mjlB-deposit{view-timeline-name:--mjlB-2}
+.mjlB #mjlB-tests{view-timeline-name:--mjlB-3}
+.mjlB #mjlB-litter{view-timeline-name:--mjlB-4}
+.mjlB #mjlB-viewing{view-timeline-name:--mjlB-5}
+.mjlB #mjlB-travel{view-timeline-name:--mjlB-6}
+.mjlB #mjlB-papers{view-timeline-name:--mjlB-7}
+.mjlB #mjlB-health{view-timeline-name:--mjlB-8}
+.mjlB #mjlB-life{view-timeline-name:--mjlB-9}
+.mjlB #mjlB-bond{view-timeline-name:--mjlB-10}
+.mjlB #mjlB-coat{view-timeline-name:--mjlB-11}
+.mjlB #mjlB-everyday{view-timeline-name:--mjlB-12}
+.mjlB #mjlB-enquire{view-timeline-name:--mjlB-13}
+.mjlB .ticks [data-tick="first"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-1!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="first"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-1!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-first"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-1!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="deposit"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-2!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="deposit"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-2!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-deposit"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-2!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="tests"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-3!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="tests"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-3!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-tests"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-3!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="litter"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-4!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="litter"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-4!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-litter"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-4!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="viewing"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-5!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="viewing"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-5!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-viewing"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-5!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="travel"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-6!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="travel"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-6!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-travel"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-6!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="papers"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-7!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="papers"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-7!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-papers"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-7!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="health"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-8!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="health"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-8!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-health"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-8!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="life"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-9!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="life"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-9!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-life"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-9!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="bond"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-10!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="bond"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-10!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-bond"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-10!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="coat"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-11!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="coat"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-11!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-coat"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-11!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="everyday"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-12!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="everyday"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-12!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-everyday"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-12!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .ticks [data-tick="enquire"]{animation-name:mjlB-tick!important;animation-timeline:--mjlB-13!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .now [data-for="enquire"]{animation-name:mjlB-show!important;animation-timeline:--mjlB-13!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlB .sheet a[href="#mjlB-enquire"]{animation-name:mjlB-row!important;animation-timeline:--mjlB-13!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+}}
+</style>
+<section data-component="jump-links" data-variant="b" class="mjlB">
+  <span class="shut" data-canvas-only id="mjlB-shut"></span>
+  <div class="strip jl-only" data-jump-strip>
+    <nav class="bar" aria-label="Where you are on this page">
+      <img src="/puppies/Christa.jpeg" width="1080" height="1080" alt="" aria-hidden="true">
+      <p class="where"><small>Manchester page, 13 sections</small><span class="now"><span class="base">Start at the top</span><span data-for="first">1 of 13: Asked first</span><span data-for="deposit">2 of 13: Deposit and visit</span><span data-for="tests">3 of 13: Parents' tests</span><span data-for="litter">4 of 13: The litter</span><span data-for="viewing">5 of 13: Health and viewing</span><span data-for="travel">6 of 13: Travel</span><span data-for="papers">7 of 13: Papers</span><span data-for="health">8 of 13: Health and guarantee</span><span data-for="life">9 of 13: Busy household</span><span data-for="bond">10 of 13: Favourite person</span><span data-for="coat">11 of 13: Coat comes last</span><span data-for="everyday">12 of 13: Everyday life</span><span data-for="enquire">13 of 13: Ask about a puppy</span></span></p>
+      <a class="open" href="#mjlB-sheet" data-jump-open>Questions<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></a>
+    </nav>
+    <div class="ticks" aria-hidden="true"><i data-tick="first"></i><i data-tick="deposit"></i><i data-tick="tests"></i><i data-tick="litter"></i><i data-tick="viewing"></i><i data-tick="travel"></i><i data-tick="papers"></i><i data-tick="health"></i><i data-tick="life"></i><i data-tick="bond"></i><i data-tick="coat"></i><i data-tick="everyday"></i><i data-tick="enquire"></i></div>
+  </div>
+  <div class="sheet jl-only" id="mjlB-sheet" data-jump-sheet>
+    <a class="scrim" href="#mjlB-shut" tabindex="-1" aria-hidden="true"></a>
+    <nav class="panel" aria-labelledby="mjlB-st">
+      <div class="top">
+        <p class="t" id="mjlB-st">The 13 questions on this page</p>
+        <a class="close" href="#mjlB-shut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>Close</a>
+      </div>
+      <ol>
+        <li><a href="#mjlB-first">What Do Manchester Buyers Ask First About Our Blue Staffy Puppies?</a></li>
+        <li><a href="#mjlB-deposit">Why Does This Staffy Breeder Take the Deposit Before You Visit?</a></li>
+        <li><a href="#mjlB-tests">Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?</a></li>
+        <li><a href="#mjlB-litter">Which Staffordshire Bull Terrier Puppies for Sale Are in Our Litter Now?</a></li>
+        <li><a href="#mjlB-viewing">What Do Manchester Families Ask a Staffy Breeder About Health and Viewing?</a></li>
+        <li><a href="#mjlB-travel">How Will Your Blue Staffy Puppy Travel to Greater Manchester?</a></li>
+        <li><a href="#mjlB-papers">Which Papers and Records Travel Home With Each Blue Staffy Puppy?</a></li>
+        <li><a href="#mjlB-health">Which Health Problems Can Staffy Dogs Develop, and What Will We Stand Behind?</a></li>
+        <li><a href="#mjlB-life">How Do Staffies in Manchester Fit Into a Busy Household?</a></li>
+        <li><a href="#mjlB-bond">Do Staffy Dogs Pick a Favourite Person, or Love the Whole Family?</a></li>
+        <li><a href="#mjlB-coat">Are Blue Staffies Rare, and Why Should the Coat Be the Last Thing You Choose?</a></li>
+        <li><a href="#mjlB-everyday">Which Everyday Questions Do Blue Staffies Raise for Manchester Households?</a></li>
+        <li><a href="#mjlB-enquire">How Do I Ask About a Blue Staffy Puppy for My Greater Manchester Home?</a></li>
+      </ol>
+    </nav>
+  </div>
+  <p class="note" data-canvas-only>At 1024px and wider the desktop dial navigates, so the jump links and their sheet are hidden and this frame shows only the Manchester page sections.</p>
+    <section class="stub" data-canvas-only id="mjlB-first" style="min-height:calc(0.95 * 45vh)">
+      <h2>What Do Manchester Buyers Ask First About Our Blue Staffy Puppies?</h2>
+      <p>Six questions come first from Manchester homes: the price, where to buy, delivery, which puppies are still available and the £500 deposit.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-deposit" style="min-height:calc(1.5 * 45vh)">
+      <h2>Why Does This Staffy Breeder Take the Deposit Before You Visit?</h2>
+      <p>The £500 deposit reserves your puppy while you plan the visit, and it is up to 70% refundable if you change your mind up to 1 day before collection or delivery.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-tests" style="min-height:calc(1.15 * 45vh)">
+      <h2>Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?</h2>
+      <p>Maggie, our dam, and Jones, our sire, were both DNA tested for L-2-HGA and HC-HSF4, and we share the certificates on request.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-litter" style="min-height:calc(1.2 * 45vh)">
+      <h2>Which Staffordshire Bull Terrier Puppies for Sale Are in Our Litter Now?</h2>
+      <p>Three boys, Roman, Byrd and Ince, are £1,500 each, and three girls, Vennie, Christa and Cheryl, are £1,700 each, all available today.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-viewing" style="min-height:calc(1.1 * 45vh)">
+      <h2>What Do Manchester Families Ask a Staffy Breeder About Health and Viewing?</h2>
+      <p>Seven questions on the parents' tests, meeting the mother, vet checks and vaccinations, each answered before you book a visit from Manchester.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-travel" style="min-height:calc(1.0 * 45vh)">
+      <h2>How Will Your Blue Staffy Puppy Travel to Greater Manchester?</h2>
+      <p>We deliver to UK homes by DEFRA-approved transport for £200 to £350, priced by distance, or you can collect your puppy from us in Carlisle.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-papers" style="min-height:calc(0.85 * 45vh)">
+      <h2>Which Papers and Records Travel Home With Each Blue Staffy Puppy?</h2>
+      <p>Both parents are Kennel Club registered, and each puppy goes home with its KC registration application form among its papers.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-health" style="min-height:calc(0.75 * 45vh)">
+      <h2>Which Health Problems Can Staffy Dogs Develop, and What Will We Stand Behind?</h2>
+      <p>Every puppy goes home with our Two-year health guarantee, and this part explains what it covers and when it is time to call the vet.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-life" style="min-height:calc(0.95 * 45vh)">
+      <h2>How Do Staffies in Manchester Fit Into a Busy Household?</h2>
+      <p>This part covers rented homes, the banned-breed line and the downsides a busy Manchester family should weigh before choosing a Staffy.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-bond" style="min-height:calc(0.7 * 45vh)">
+      <h2>Do Staffy Dogs Pick a Favourite Person, or Love the Whole Family?</h2>
+      <p>Here we talk about how a Staffy bonds with the people at home, and whether a boy or a girl suits your family better.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-coat" style="min-height:calc(0.65 * 45vh)">
+      <h2>Are Blue Staffies Rare, and Why Should the Coat Be the Last Thing You Choose?</h2>
+      <p>Our litter carries blue, white, and blue and white coats, and we suggest you choose the puppy first and let the coat come last.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-everyday" style="min-height:calc(1.05 * 45vh)">
+      <h2>Which Everyday Questions Do Blue Staffies Raise for Manchester Households?</h2>
+      <p>Seven everyday questions, from time alone and flat living to children and the food each puppy eats now, answered in plain words.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlB-enquire" style="min-height:calc(0.5 * 45vh)">
+      <h2>How Do I Ask About a Blue Staffy Puppy for My Greater Manchester Home?</h2>
+      <p>Send Lisa Bright a message naming the puppy you like, and we reply with the next step for a visit, delivery or collection.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+</section>

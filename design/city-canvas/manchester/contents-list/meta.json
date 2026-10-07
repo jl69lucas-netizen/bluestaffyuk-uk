@@ -1,0 +1,51 @@
+{
+ "component": "contents-list",
+ "variants": {
+  "a": {
+   "name": "Question index",
+   "description": "The thirteen H2 questions word for word in the display face, numbered in page order, as ruled rows under one steel rule; four and a disclosure on phones.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea44.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contents-list/sister-comparison-1280-01.png"
+   ],
+   "differs_from": "The index is the page's own questions, ruled, with no card, photo or band; London's pick is a photo beside arrow rows in a sunk panel and PageNav is an unheaded row of pills.",
+   "axes": {
+    "layout": "question-index",
+    "media": "none",
+    "density": "airy",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Icon rows",
+   "description": "A raised card: the sections as line-icon rows divided by rules in two columns, a settled Manchester puppy filling the card's right column from 640px.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea2.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-with-image.png"
+   ],
+   "differs_from": "A raised card with the photo on the right and icon rows that say what kind of section each is; London's pick puts the photo left in a sunk panel with plain arrow rows.",
+   "axes": {
+    "layout": "icon-rows",
+    "media": "right",
+    "density": "regular",
+    "framing": "card"
+   }
+  },
+  "c": {
+   "name": "Stage rows",
+   "description": "Three page-order stages as rows on the steel band: numeral and name, four ruled links, the enquiry as a brass pill; one stage and a disclosure on phones.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contents-list/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contents-list/sister-near-me-375-01.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's three equal stage columns become three stage rows of four page-order sections, with the enquiry as a closing pill. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "stage-rows",
+    "media": "none",
+    "density": "compact",
+    "framing": "band"
+   },
+   "from_pool": "london/contents-list/b"
+  }
+ }
+}

@@ -1,0 +1,51 @@
+{
+ "component": "desktop-dial",
+ "variants": {
+  "a": {
+   "name": "Numeral rail",
+   "description": "An unboxed column on the bone page, one steel hairline from the text: thin display numerals 01 to 13 beside short names, the current numeral in a brass square.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea3.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-comparison-1280-01.png"
+   ],
+   "differs_from": "Thin numerals on the page itself, set off by one hairline, no photo and no panel; London's pick is a sunk panel headed by a photo, and the built dials carry no rule and no numeral scale.",
+   "axes": {
+    "layout": "numeral-rail",
+    "media": "none",
+    "density": "regular",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Fact ledger",
+   "description": "A raised deep-steel card: a readout naming the part you are reading, then tight rows each carrying its section's figure (6 questions, £500, 6 pups) as a pill.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-for-sale-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-near-me-1280-01.png"
+   ],
+   "differs_from": "A raised dark card whose rows carry each section's own figure under a full-name readout; London's pick is a sunk light panel with a photo and a track, and the built dials are plain lists.",
+   "axes": {
+    "layout": "fact-ledger",
+    "media": "none",
+    "density": "compact",
+    "framing": "card"
+   }
+  },
+  "c": {
+   "name": "Page map",
+   "description": "London's steel band drawing the page as blocks sized by word count; Manchester's three question blocks are dotted and marked with a question mark.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/desktop-dial/sister-for-sale-1280-01.png"
+   ],
+   "differs_from": "Refresh delta, motif: London struck every block with one ruled texture; Manchester's three question blocks are dotted and carry a question mark. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "page-map",
+    "media": "none",
+    "density": "compact",
+    "framing": "band"
+   },
+   "from_pool": "london/desktop-dial/a"
+  }
+ }
+}

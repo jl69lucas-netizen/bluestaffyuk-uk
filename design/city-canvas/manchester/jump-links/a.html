@@ -1,0 +1,182 @@
+<style>
+/* Jump links A: Part switch. Below 1024px a sunk steel-100 track sticks to the top of the page
+   as a four-way switch: the page's three stages in page order (Choose, Checks, Living) and Ask.
+   The stage you are reading rises out of the track as a raised key; tapping a key jumps to the
+   first section of its stage. The All key at the end raises a bottom sheet with the thirteen
+   sections in ruled rows under their stage names. CSS only: the raised key follows a
+   scroll-driven animation (or :target), and the sheet is the :target of its key. */
+.mjlA{background:var(--color-surface)}
+.mjlA .strip{position:sticky;top:0;z-index:20;padding:6px var(--space-2);background:var(--color-surface)}
+.mjlA .bar{display:flex;gap:6px;max-width:720px;margin:0 auto}
+.mjlA .track{flex:1;min-width:0;display:flex;gap:2px;padding:3px;border-radius:var(--radius-md);background:var(--color-brand-soft)}
+.mjlA .seg{flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center;min-height:44px;padding:0 6px;border-radius:9px;color:var(--color-ink-2);font-size:var(--text-xs);font-weight:700;line-height:1.15;text-align:center;white-space:nowrap;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
+.mjlA .seg:hover{color:var(--color-brand)}
+.mjlA .seg:focus-visible{outline-offset:-3px}
+.mjlA .all{flex:none;display:flex;align-items:center;justify-content:center;gap:6px;min-height:50px;padding:0 var(--space-3);border-radius:var(--radius-md);background:var(--color-brand);color:var(--color-text-on-inverse);font-size:var(--text-xs);font-weight:700;text-decoration:none}
+.mjlA .all svg{width:18px;height:18px}
+.mjlA .sheet .panel{position:absolute;left:0;right:0;bottom:0;z-index:1;max-height:82vh;overflow-y:auto;padding:var(--space-4) var(--space-4) var(--space-6);background:var(--color-surface-raised);border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:var(--shadow-lift);animation:mjlA-up var(--dur-base) var(--ease-out)}
+.mjlA .sheet .top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-2)}
+.mjlA .sheet .t{margin:0;font-family:var(--font-display);font-weight:600;font-size:var(--text-lg);color:var(--color-brand)}
+.mjlA .sheet .g{margin:var(--space-4) 0 var(--space-1);font-family:var(--font-display);font-weight:600;font-size:var(--text-base);color:var(--color-brand)}
+.mjlA .sheet ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--color-border)}
+.mjlA .sheet li{border-bottom:1px solid var(--color-border)}
+.mjlA .sheet li a{display:flex;align-items:center;min-height:48px;padding:0 var(--space-2);color:var(--color-ink);font-weight:600;text-decoration:none}
+.mjlA .sheet li a:hover{background:var(--color-brand-soft)}
+.mjlA .sheet .ask{display:flex;justify-content:center;align-items:center;min-height:48px;margin-top:var(--space-5);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;text-decoration:none}
+.mjlA .sheet .ask:hover{background:var(--color-cta-hover)}
+@keyframes mjlA-up{from{transform:translateY(16px);opacity:.6}to{transform:none;opacity:1}}
+@media (min-width:600px){.mjlA .sheet .panel{left:50%;right:auto;width:560px;transform:translateX(-50%);animation:none} .mjlA .seg{font-size:var(--text-sm)}}
+.mjlA .shut{position:fixed;top:0;left:0;width:1px;height:1px;pointer-events:none}
+.mjlA .note{display:none}
+.mjlA .sheet{display:none}
+.mjlA .sheet:target{display:block;position:fixed;inset:0;z-index:50}
+.mjlA .scrim{position:fixed;inset:0;background:color-mix(in srgb,var(--color-steel-900) 55%,transparent);z-index:0}
+.mjlA .close{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 var(--space-3);border-radius:var(--btn-radius);border:1px solid var(--color-border);color:var(--color-brand);font-weight:600;font-size:var(--text-sm);text-decoration:none}
+.mjlA .close svg{width:16px;height:16px}
+.mjlA a:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+@media (min-width:1024px){
+  .mjlA .jl-only{display:none!important}
+  .mjlA .note{display:block;max-width:1200px;margin:var(--space-5) auto 0;padding:var(--space-3) var(--space-4);background:var(--color-brand-soft);border-radius:var(--radius-sm);font-size:var(--text-sm);color:var(--color-ink)}
+  .mjlA .stub{max-width:1200px;margin:0 auto;padding-left:var(--space-5);padding-right:var(--space-5)}
+}
+@media (prefers-reduced-motion:reduce){.mjlA *{animation-duration:0s!important;transition:none!important}}
+.mjlA .stub{padding:var(--space-7) var(--space-4) var(--space-6);border-bottom:1px solid var(--color-border);scroll-margin-top:calc(72px + var(--space-3))}
+.mjlA .stub h2{font-size:var(--text-xl);line-height:var(--text-xl--line-height);margin:0 0 var(--space-3);max-width:28ch;text-wrap:balance}
+.mjlA .stub p{margin:0 0 var(--space-3);max-width:62ch}
+.mjlA .stub .fill{color:var(--color-ink-2);font-size:var(--text-sm)}
+.mjlA{timeline-scope:--mjlA-1,--mjlA-2,--mjlA-3,--mjlA-4}
+@supports not (animation-timeline: view()){.mjlA:has(#mjlA-p1 :target) .seg[data-part="1"]{background:var(--color-surface-raised);color:var(--color-brand);box-shadow:var(--shadow-card)}
+.mjlA:has(#mjlA-p2 :target) .seg[data-part="2"]{background:var(--color-surface-raised);color:var(--color-brand);box-shadow:var(--shadow-card)}
+.mjlA:has(#mjlA-p3 :target) .seg[data-part="3"]{background:var(--color-surface-raised);color:var(--color-brand);box-shadow:var(--shadow-card)}
+.mjlA:has(#mjlA-p4 :target) .seg[data-part="4"]{background:var(--color-surface-raised);color:var(--color-brand);box-shadow:var(--shadow-card)}}
+@keyframes mjlA-seg{from,to{background:var(--color-surface-raised);color:var(--color-brand);box-shadow:var(--shadow-card)}}
+@supports (animation-timeline: view()){@media all{
+.mjlA #mjlA-p1{view-timeline-name:--mjlA-1}
+.mjlA #mjlA-p2{view-timeline-name:--mjlA-2}
+.mjlA #mjlA-p3{view-timeline-name:--mjlA-3}
+.mjlA #mjlA-p4{view-timeline-name:--mjlA-4}
+.mjlA .seg[data-part="1"]{animation-name:mjlA-seg!important;animation-timeline:--mjlA-1!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlA .seg[data-part="2"]{animation-name:mjlA-seg!important;animation-timeline:--mjlA-2!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlA .seg[data-part="3"]{animation-name:mjlA-seg!important;animation-timeline:--mjlA-3!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlA .seg[data-part="4"]{animation-name:mjlA-seg!important;animation-timeline:--mjlA-4!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+}}
+</style>
+<section data-component="jump-links" data-variant="a" class="mjlA">
+  <span class="shut" data-canvas-only id="mjlA-shut"></span>
+  <div class="strip jl-only" data-jump-strip>
+    <nav class="bar" aria-label="Jump to a stage of this page">
+      <div class="track">
+        <a class="seg" href="#mjlA-first" data-part="1">Choose</a>
+        <a class="seg" href="#mjlA-viewing" data-part="2">Checks</a>
+        <a class="seg" href="#mjlA-life" data-part="3">Living</a>
+        <a class="seg" href="#mjlA-enquire" data-part="4">Ask</a>
+      </div>
+      <a class="all" href="#mjlA-sheet" data-jump-open aria-label="All 13 sections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span aria-hidden="true">All</span></a>
+    </nav>
+  </div>
+  <div class="sheet jl-only" id="mjlA-sheet" data-jump-sheet>
+    <a class="scrim" href="#mjlA-shut" tabindex="-1" aria-hidden="true"></a>
+    <nav class="panel" aria-labelledby="mjlA-st">
+      <div class="top">
+        <p class="t" id="mjlA-st">All 13 sections</p>
+        <a class="close" href="#mjlA-shut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>Close</a>
+      </div>
+        <p class="g" id="mjlA-sg1">Choosing your puppy</p>
+        <ul aria-labelledby="mjlA-sg1">
+          <li><a href="#mjlA-first">First questions answered</a></li>
+          <li><a href="#mjlA-deposit">The deposit and your visit</a></li>
+          <li><a href="#mjlA-tests">The parents' health tests</a></li>
+          <li><a href="#mjlA-litter">The litter and its prices</a></li>
+        </ul>
+        <p class="g" id="mjlA-sg2">Checks, papers and the journey home</p>
+        <ul aria-labelledby="mjlA-sg2">
+          <li><a href="#mjlA-viewing">Health and viewing questions</a></li>
+          <li><a href="#mjlA-travel">Travel to Greater Manchester</a></li>
+          <li><a href="#mjlA-papers">Papers that come home</a></li>
+          <li><a href="#mjlA-health">Health and the guarantee</a></li>
+        </ul>
+        <p class="g" id="mjlA-sg3">Living with a Staffy</p>
+        <ul aria-labelledby="mjlA-sg3">
+          <li><a href="#mjlA-life">Life in a busy home</a></li>
+          <li><a href="#mjlA-bond">One person or the whole family</a></li>
+          <li><a href="#mjlA-coat">Why the coat comes last</a></li>
+          <li><a href="#mjlA-everyday">Everyday questions</a></li>
+        </ul>
+      <a class="ask" href="#mjlA-enquire">Ask about a puppy</a>
+    </nav>
+  </div>
+  <p class="note" data-canvas-only>At 1024px and wider the desktop dial navigates, so the jump links and their sheet are hidden and this frame shows only the Manchester page sections.</p>
+  <div class="part" id="mjlA-p1">
+    <section class="stub" data-canvas-only id="mjlA-first" style="min-height:calc(0.95 * 45vh)">
+      <h2>What Do Manchester Buyers Ask First About Our Blue Staffy Puppies?</h2>
+      <p>Six questions come first from Manchester homes: the price, where to buy, delivery, which puppies are still available and the £500 deposit.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlA-deposit" style="min-height:calc(1.5 * 45vh)">
+      <h2>Why Does This Staffy Breeder Take the Deposit Before You Visit?</h2>
+      <p>The £500 deposit reserves your puppy while you plan the visit, and it is up to 70% refundable if you change your mind up to 1 day before collection or delivery.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlA-tests" style="min-height:calc(1.15 * 45vh)">
+      <h2>Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?</h2>
+      <p>Maggie, our dam, and Jones, our sire, were both DNA tested for L-2-HGA and HC-HSF4, and we share the certificates on request.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlA-litter" style="min-height:calc(1.2 * 45vh)">
+      <h2>Which Staffordshire Bull Terrier Puppies for Sale Are in Our Litter Now?</h2>
+      <p>Three boys, Roman, Byrd and Ince, are £1,500 each, and three girls, Vennie, Christa and Cheryl, are £1,700 each, all available today.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+  </div>
+  <div class="part" id="mjlA-p2">
+    <section class="stub" data-canvas-only id="mjlA-viewing" style="min-height:calc(1.1 * 45vh)">
+      <h2>What Do Manchester Families Ask a Staffy Breeder About Health and Viewing?</h2>
+      <p>Seven questions on the parents' tests, meeting the mother, vet checks and vaccinations, each answered before you book a visit from Manchester.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlA-travel" style="min-height:calc(1.0 * 45vh)">
+      <h2>How Will Your Blue Staffy Puppy Travel to Greater Manchester?</h2>
+      <p>We deliver to UK homes by DEFRA-approved transport for £200 to £350, priced by distance, or you can collect your puppy from us in Carlisle.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlA-papers" style="min-height:calc(0.85 * 45vh)">
+      <h2>Which Papers and Records Travel Home With Each Blue Staffy Puppy?</h2>
+      <p>Both parents are Kennel Club registered, and each puppy goes home with its KC registration application form among its papers.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlA-health" style="min-height:calc(0.75 * 45vh)">
+      <h2>Which Health Problems Can Staffy Dogs Develop, and What Will We Stand Behind?</h2>
+      <p>Every puppy goes home with our Two-year health guarantee, and this part explains what it covers and when it is time to call the vet.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+  </div>
+  <div class="part" id="mjlA-p3">
+    <section class="stub" data-canvas-only id="mjlA-life" style="min-height:calc(0.95 * 45vh)">
+      <h2>How Do Staffies in Manchester Fit Into a Busy Household?</h2>
+      <p>This part covers rented homes, the banned-breed line and the downsides a busy Manchester family should weigh before choosing a Staffy.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlA-bond" style="min-height:calc(0.7 * 45vh)">
+      <h2>Do Staffy Dogs Pick a Favourite Person, or Love the Whole Family?</h2>
+      <p>Here we talk about how a Staffy bonds with the people at home, and whether a boy or a girl suits your family better.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlA-coat" style="min-height:calc(0.65 * 45vh)">
+      <h2>Are Blue Staffies Rare, and Why Should the Coat Be the Last Thing You Choose?</h2>
+      <p>Our litter carries blue, white, and blue and white coats, and we suggest you choose the puppy first and let the coat come last.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlA-everyday" style="min-height:calc(1.05 * 45vh)">
+      <h2>Which Everyday Questions Do Blue Staffies Raise for Manchester Households?</h2>
+      <p>Seven everyday questions, from time alone and flat living to children and the food each puppy eats now, answered in plain words.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+  </div>
+  <div class="part" id="mjlA-p4">
+    <section class="stub" data-canvas-only id="mjlA-enquire" style="min-height:calc(0.5 * 45vh)">
+      <h2>How Do I Ask About a Blue Staffy Puppy for My Greater Manchester Home?</h2>
+      <p>Send Lisa Bright a message naming the puppy you like, and we reply with the next step for a visit, delivery or collection.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+  </div>
+</section>

@@ -1,0 +1,196 @@
+<style>
+/* Dial B: Fact ledger. From 1024px a raised deep-steel card in the left margin. At its head a
+   readout names the part you are reading in full; under it the thirteen sections as tight rows,
+   each carrying the one figure its section is about where it has one (6 Q, the £500 deposit,
+   the 6 pups, the £200 to £350 band), so the dial doubles as the page's facts at a glance. The
+   current row fills brass. CSS only, as dial A. Hidden below 1024px. */
+.mdlB{background:var(--color-surface)}
+.mdlB .dock{display:none}
+@media (min-width:1024px){
+  .mdlB{display:grid;grid-template-columns:272px minmax(0,1fr);align-items:start}
+  .mdlB .page{padding:0 var(--space-8) 0 var(--space-6);max-width:840px}
+  .mdlB .dock{display:block;position:sticky;top:0;height:100vh;padding:var(--space-4) 0 var(--space-4) var(--space-4)}
+  .mdlB .card{display:flex;flex-direction:column;max-height:100%;background:var(--color-surface-deep);color:var(--color-text-on-inverse);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:var(--space-4) var(--space-3) var(--space-3)}
+  .mdlB .head{padding:0 var(--space-2) var(--space-3);border-bottom:1px solid var(--color-steel-500);margin-bottom:var(--space-2)}
+  .mdlB .t{margin:0 0 2px;font-size:var(--text-xs);color:var(--color-steel-100)}
+  .mdlB .now{display:grid;margin:0;font-family:var(--font-display);font-weight:600;font-size:var(--text-base);line-height:1.3;min-height:2.6em}
+  .mdlB .now span{grid-area:1/1;visibility:hidden;background:var(--color-surface-deep)}
+  .mdlB .now .base{visibility:visible}
+  .mdlB ol{list-style:none;margin:0;padding:0;overflow-y:auto;min-height:0}
+  .mdlB a{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);min-height:44px;padding:0 var(--space-2);border-radius:var(--radius-sm);color:var(--color-text-on-inverse);text-decoration:none;font-size:var(--text-sm);font-weight:600;line-height:1.2}
+  .mdlB a:hover{background:var(--color-steel-700)}
+  .mdlB a:focus-visible{outline:3px solid var(--color-focus-on-inverse);outline-offset:-3px}
+  .mdlB .f{flex:none;padding:2px var(--space-2);border-radius:var(--radius-pill);background:var(--color-steel-700);color:var(--color-text-on-inverse);font-size:var(--text-xs);font-weight:700;font-variant-numeric:tabular-nums}
+}
+.mdlB .page{padding:0 var(--space-4)}
+.mdlB .stub{padding:var(--space-8) 0 var(--space-7);border-bottom:1px solid var(--color-border);scroll-margin-top:var(--space-4)}
+.mdlB .stub:first-of-type{padding-top:var(--space-6)}
+.mdlB .stub h2{font-size:var(--text-2xl);line-height:var(--text-2xl--line-height);margin:0 0 var(--space-3);max-width:26ch;text-wrap:balance}
+.mdlB .stub p{margin:0 0 var(--space-3);max-width:62ch}
+.mdlB .stub .fill{color:var(--color-ink-2);font-size:var(--text-sm)}
+.mdlB .note{margin:var(--space-4) 0 var(--space-2);padding:var(--space-3) var(--space-4);background:var(--color-brand-soft);border-radius:var(--radius-sm);font-size:var(--text-sm);color:var(--color-ink)}
+@media (min-width:1024px){.mdlB .note{display:none}}
+.mdlB{timeline-scope:--mdlB-1,--mdlB-2,--mdlB-3,--mdlB-4,--mdlB-5,--mdlB-6,--mdlB-7,--mdlB-8,--mdlB-9,--mdlB-10,--mdlB-11,--mdlB-12,--mdlB-13}
+@supports not (animation-timeline: view()){.mdlB:has(#mdlB-first:target) a[href="#mdlB-first"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-first:target) .now [data-for="first"]{visibility:visible}
+.mdlB:has(#mdlB-deposit:target) a[href="#mdlB-deposit"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-deposit:target) .now [data-for="deposit"]{visibility:visible}
+.mdlB:has(#mdlB-tests:target) a[href="#mdlB-tests"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-tests:target) .now [data-for="tests"]{visibility:visible}
+.mdlB:has(#mdlB-litter:target) a[href="#mdlB-litter"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-litter:target) .now [data-for="litter"]{visibility:visible}
+.mdlB:has(#mdlB-viewing:target) a[href="#mdlB-viewing"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-viewing:target) .now [data-for="viewing"]{visibility:visible}
+.mdlB:has(#mdlB-travel:target) a[href="#mdlB-travel"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-travel:target) .now [data-for="travel"]{visibility:visible}
+.mdlB:has(#mdlB-papers:target) a[href="#mdlB-papers"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-papers:target) .now [data-for="papers"]{visibility:visible}
+.mdlB:has(#mdlB-health:target) a[href="#mdlB-health"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-health:target) .now [data-for="health"]{visibility:visible}
+.mdlB:has(#mdlB-life:target) a[href="#mdlB-life"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-life:target) .now [data-for="life"]{visibility:visible}
+.mdlB:has(#mdlB-bond:target) a[href="#mdlB-bond"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-bond:target) .now [data-for="bond"]{visibility:visible}
+.mdlB:has(#mdlB-coat:target) a[href="#mdlB-coat"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-coat:target) .now [data-for="coat"]{visibility:visible}
+.mdlB:has(#mdlB-everyday:target) a[href="#mdlB-everyday"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-everyday:target) .now [data-for="everyday"]{visibility:visible}
+.mdlB:has(#mdlB-enquire:target) a[href="#mdlB-enquire"]{background:var(--color-cta);color:var(--color-cta-ink)}
+.mdlB:has(#mdlB-enquire:target) .now [data-for="enquire"]{visibility:visible}}
+@keyframes mdlB-row{from,to{background:var(--color-cta);color:var(--color-cta-ink)}}
+@keyframes mdlB-show{from,to{visibility:visible}}
+@supports (animation-timeline: view()){@media all{
+.mdlB #mdlB-first{view-timeline-name:--mdlB-1}
+.mdlB #mdlB-deposit{view-timeline-name:--mdlB-2}
+.mdlB #mdlB-tests{view-timeline-name:--mdlB-3}
+.mdlB #mdlB-litter{view-timeline-name:--mdlB-4}
+.mdlB #mdlB-viewing{view-timeline-name:--mdlB-5}
+.mdlB #mdlB-travel{view-timeline-name:--mdlB-6}
+.mdlB #mdlB-papers{view-timeline-name:--mdlB-7}
+.mdlB #mdlB-health{view-timeline-name:--mdlB-8}
+.mdlB #mdlB-life{view-timeline-name:--mdlB-9}
+.mdlB #mdlB-bond{view-timeline-name:--mdlB-10}
+.mdlB #mdlB-coat{view-timeline-name:--mdlB-11}
+.mdlB #mdlB-everyday{view-timeline-name:--mdlB-12}
+.mdlB #mdlB-enquire{view-timeline-name:--mdlB-13}
+.mdlB a[href="#mdlB-first"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-1!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="first"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-1!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-deposit"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-2!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="deposit"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-2!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-tests"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-3!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="tests"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-3!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-litter"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-4!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="litter"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-4!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-viewing"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-5!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="viewing"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-5!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-travel"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-6!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="travel"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-6!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-papers"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-7!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="papers"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-7!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-health"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-8!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="health"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-8!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-life"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-9!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="life"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-9!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-bond"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-10!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="bond"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-10!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-coat"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-11!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="coat"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-11!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-everyday"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-12!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="everyday"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-12!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB a[href="#mdlB-enquire"]{animation-name:mdlB-row!important;animation-timeline:--mdlB-13!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mdlB .now [data-for="enquire"]{animation-name:mdlB-show!important;animation-timeline:--mdlB-13!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+}}
+</style>
+<section data-component="desktop-dial" data-variant="b" class="mdlB">
+  <aside class="dock" data-dial>
+    <nav class="card" aria-labelledby="mdlB-t">
+      <div class="head">
+        <p class="t" id="mdlB-t">Now reading on this Manchester page</p>
+        <p class="now"><span class="base">13 sections, top to bottom</span><span data-for="first">First questions answered</span><span data-for="deposit">The deposit and your visit</span><span data-for="tests">The parents' health tests</span><span data-for="litter">The litter and its prices</span><span data-for="viewing">Health and viewing questions</span><span data-for="travel">Travel to Greater Manchester</span><span data-for="papers">Papers that come home</span><span data-for="health">Health and the guarantee</span><span data-for="life">Life in a busy home</span><span data-for="bond">One person or the whole family</span><span data-for="coat">Why the coat comes last</span><span data-for="everyday">Everyday questions</span><span data-for="enquire">Ask about a puppy</span></p>
+      </div>
+      <ol>
+          <li><a href="#mdlB-first"><span class="l">Asked first</span><span class="f">6 questions</span></a></li>
+          <li><a href="#mdlB-deposit"><span class="l">Deposit and visit</span><span class="f">£500</span></a></li>
+          <li><a href="#mdlB-tests"><span class="l">Parents' tests</span><span class="f">2 tests</span></a></li>
+          <li><a href="#mdlB-litter"><span class="l">The litter</span><span class="f">6 pups</span></a></li>
+          <li><a href="#mdlB-viewing"><span class="l">Health and viewing</span><span class="f">7 questions</span></a></li>
+          <li><a href="#mdlB-travel"><span class="l">Travel</span><span class="f">£200–£350</span></a></li>
+          <li><a href="#mdlB-papers"><span class="l">Papers</span><span class="f">KC form</span></a></li>
+          <li><a href="#mdlB-health"><span class="l">Health and guarantee</span></a></li>
+          <li><a href="#mdlB-life"><span class="l">Busy household</span></a></li>
+          <li><a href="#mdlB-bond"><span class="l">Favourite person</span></a></li>
+          <li><a href="#mdlB-coat"><span class="l">Coat comes last</span></a></li>
+          <li><a href="#mdlB-everyday"><span class="l">Everyday life</span><span class="f">7 questions</span></a></li>
+          <li><a href="#mdlB-enquire"><span class="l">Ask about a puppy</span></a></li>
+      </ol>
+    </nav>
+  </aside>
+  <div class="page">
+    <p class="note" data-canvas-only>The dial shows from 1024px wide. Below that, the sticky jump links take over, so this frame shows only the Manchester page sections.</p>
+    <section class="stub" data-canvas-only id="mdlB-first" style="min-height:calc(0.95 * 50vh)">
+      <h2>What Do Manchester Buyers Ask First About Our Blue Staffy Puppies?</h2>
+      <p>Six questions come first from Manchester homes: the price, where to buy, delivery, which puppies are still available and the £500 deposit.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-deposit" style="min-height:calc(1.5 * 50vh)">
+      <h2>Why Does This Staffy Breeder Take the Deposit Before You Visit?</h2>
+      <p>The £500 deposit reserves your puppy while you plan the visit, and it is up to 70% refundable if you change your mind up to 1 day before collection or delivery.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-tests" style="min-height:calc(1.15 * 50vh)">
+      <h2>Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?</h2>
+      <p>Maggie, our dam, and Jones, our sire, were both DNA tested for L-2-HGA and HC-HSF4, and we share the certificates on request.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-litter" style="min-height:calc(1.2 * 50vh)">
+      <h2>Which Staffordshire Bull Terrier Puppies for Sale Are in Our Litter Now?</h2>
+      <p>Three boys, Roman, Byrd and Ince, are £1,500 each, and three girls, Vennie, Christa and Cheryl, are £1,700 each, all available today.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-viewing" style="min-height:calc(1.1 * 50vh)">
+      <h2>What Do Manchester Families Ask a Staffy Breeder About Health and Viewing?</h2>
+      <p>Seven questions on the parents' tests, meeting the mother, vet checks and vaccinations, each answered before you book a visit from Manchester.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-travel" style="min-height:calc(1.0 * 50vh)">
+      <h2>How Will Your Blue Staffy Puppy Travel to Greater Manchester?</h2>
+      <p>We deliver to UK homes by DEFRA-approved transport for £200 to £350, priced by distance, or you can collect your puppy from us in Carlisle.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-papers" style="min-height:calc(0.85 * 50vh)">
+      <h2>Which Papers and Records Travel Home With Each Blue Staffy Puppy?</h2>
+      <p>Both parents are Kennel Club registered, and each puppy goes home with its KC registration application form among its papers.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-health" style="min-height:calc(0.75 * 50vh)">
+      <h2>Which Health Problems Can Staffy Dogs Develop, and What Will We Stand Behind?</h2>
+      <p>Every puppy goes home with our Two-year health guarantee, and this part explains what it covers and when it is time to call the vet.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-life" style="min-height:calc(0.95 * 50vh)">
+      <h2>How Do Staffies in Manchester Fit Into a Busy Household?</h2>
+      <p>This part covers rented homes, the banned-breed line and the downsides a busy Manchester family should weigh before choosing a Staffy.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-bond" style="min-height:calc(0.7 * 50vh)">
+      <h2>Do Staffy Dogs Pick a Favourite Person, or Love the Whole Family?</h2>
+      <p>Here we talk about how a Staffy bonds with the people at home, and whether a boy or a girl suits your family better.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-coat" style="min-height:calc(0.65 * 50vh)">
+      <h2>Are Blue Staffies Rare, and Why Should the Coat Be the Last Thing You Choose?</h2>
+      <p>Our litter carries blue, white, and blue and white coats, and we suggest you choose the puppy first and let the coat come last.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-everyday" style="min-height:calc(1.05 * 50vh)">
+      <h2>Which Everyday Questions Do Blue Staffies Raise for Manchester Households?</h2>
+      <p>Seven everyday questions, from time alone and flat living to children and the food each puppy eats now, answered in plain words.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mdlB-enquire" style="min-height:calc(0.5 * 50vh)">
+      <h2>How Do I Ask About a Blue Staffy Puppy for My Greater Manchester Home?</h2>
+      <p>Send Lisa Bright a message naming the puppy you like, and we reply with the next step for a visit, delivery or collection.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+  </div>
+</section>

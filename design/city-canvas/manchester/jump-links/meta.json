@@ -1,0 +1,51 @@
+{
+ "component": "jump-links",
+ "variants": {
+  "a": {
+   "name": "Part switch",
+   "description": "A sticky sunk track as a four-way switch (Choose, Checks, Living, Ask), the stage you are in raised; All raises a sheet of rows under stage names.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea-modern.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/modern-faq-idea.png"
+   ],
+   "differs_from": "A segmented switch of the page's stages in a sunk track, not a row of every section; London's pick is a stepper of stops on a steel band, and the built strips are pill, chip or text rows.",
+   "axes": {
+    "layout": "part-switch",
+    "media": "none",
+    "density": "regular",
+    "framing": "inset"
+   }
+  },
+  "b": {
+   "name": "Question bar",
+   "description": "A slim sticky bar ruled off by thirteen progress ticks: a puppy photo, the current section by number and name, and a key raising the page's thirteen questions.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/jump-links/sister-for-sale-375-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/puppy-card-with-filter-idea-1.png"
+   ],
+   "differs_from": "One photo-led readout over a tick rule that shows how far down you are, opening the questions word for word; London's pick is a band of named stops and the built strips are chip rows.",
+   "axes": {
+    "layout": "question-bar",
+    "media": "inline",
+    "density": "compact",
+    "framing": "rule"
+   }
+  },
+  "c": {
+   "name": "Grouped drop panel",
+   "description": "London's raised card with photo, Jump to a section and Enquire; its panel now drops the sections as ruled icon rows under three stage names.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea-modern.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/modern-faq-idea.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's two-column grid of eight icon tiles becomes three stage columns of ruled icon rows (one column on phones). Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "drop-groups",
+    "media": "left",
+    "density": "regular",
+    "framing": "card"
+   },
+   "from_pool": "london/jump-links/b"
+  }
+ }
+}

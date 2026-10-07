@@ -1,0 +1,131 @@
+<style>
+/* Contents C: Stage rows, the pool copy of london/contents-list/b "Three stages", refreshed on
+   LAYOUT. London sorted its ten sections into three equal columns. Manchester's thirteen fall,
+   in page order, into three stages of four, so each stage becomes a ROW: its numeral and name in
+   a column on the left, its four sections as a two-by-two run of ruled links beside it, and the
+   enquiry closing the band as a brass pill instead of a fourth list. Still the full-width steel
+   band, still compact. Phones: the first stage, then the other two behind one disclosure. */
+.mclC{background:var(--color-surface-inverse);color:var(--color-text-on-inverse)}
+.mclC .in{max-width:1200px;margin:0 auto;padding:var(--space-6) var(--space-4)}
+.mclC .t{margin:0 0 var(--space-1);font-family:var(--font-display);font-weight:600;font-size:var(--text-lg);line-height:1.3;color:var(--color-text-on-inverse)}
+.mclC .lede{margin:0 0 var(--space-5);max-width:62ch;font-size:var(--text-sm);line-height:var(--text-sm--line-height)}
+.mclC .row{display:grid;gap:var(--space-2);padding:var(--space-4) 0;border-top:1px solid var(--color-brand-mid)}
+.mclC .stage{margin:0;display:flex;align-items:baseline;gap:var(--space-2);font-size:var(--text-sm);font-weight:700;color:var(--color-text-on-inverse)}
+.mclC .stage b{font-family:var(--font-display);font-size:var(--text-xl);line-height:1;color:var(--color-cta)}
+.mclC ul{list-style:none;margin:0;padding:0;display:grid;column-gap:var(--space-6)}
+.mclC li{border-bottom:1px solid var(--color-brand-mid)}
+.mclC li:last-child{border-bottom:0}
+.mclC a{display:flex;align-items:center;min-height:44px;padding:var(--space-1) 0;color:var(--color-text-on-inverse);text-decoration:none;font-weight:600;font-size:var(--text-sm)}
+.mclC a:hover{color:var(--color-cta-soft);text-decoration:underline;text-underline-offset:3px}
+.mclC a:focus-visible{outline:3px solid var(--color-focus-on-inverse);outline-offset:2px;border-radius:var(--radius-sm)}
+.mclC .end{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3) var(--space-5);padding-top:var(--space-4);border-top:1px solid var(--color-brand-mid)}
+.mclC .end p{margin:0;font-size:var(--text-sm)}
+.mclC .end a.cta{display:inline-flex;justify-content:center;min-height:44px;padding:0 var(--space-5);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700}
+.mclC .end a.cta:hover{background:var(--color-cta-hover);color:var(--color-cta-ink)}
+.mclC .more{display:none}
+@media (max-width:639px){
+  .mclC .row.rest{display:none}
+  .mclC .more{display:block;border-top:1px solid var(--color-brand-mid)}
+  .mclC summary{display:flex;align-items:center;justify-content:space-between;min-height:52px;font-weight:700;font-size:var(--text-sm);color:var(--color-text-on-inverse);cursor:pointer;list-style:none}
+  .mclC summary::-webkit-details-marker{display:none}
+  .mclC summary svg{width:20px;height:20px;color:var(--color-cta-soft);transition:transform var(--dur-fast) var(--ease-out)}
+  .mclC details[open] summary svg{transform:rotate(180deg)}
+  .mclC summary:focus-visible{outline:3px solid var(--color-focus-on-inverse);outline-offset:2px;border-radius:var(--radius-sm)}
+}
+@media (min-width:640px){
+  .mclC ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mclC li:nth-last-child(2){border-bottom:0}
+}
+@media (min-width:800px){
+  .mclC .in{padding:var(--space-7) var(--space-5)}
+  .mclC .top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-6);align-items:end;margin-bottom:var(--space-5)}
+  .mclC .lede{margin:0}
+  .mclC .row{grid-template-columns:220px minmax(0,1fr);gap:var(--space-6);padding:var(--space-3) 0}
+  .mclC .stage{padding-top:var(--space-2)}
+}
+@media (prefers-reduced-motion:reduce){.mclC summary svg{transition:none}}
+.mclC .stubs{background:var(--color-surface);color:var(--color-ink-2)}
+.mclC .stubs .in{display:grid;gap:var(--space-2);padding-top:var(--space-5);padding-bottom:var(--space-5)}
+.mclC .stub{scroll-margin-top:var(--space-4);padding:var(--space-3) var(--space-4);border:1px dashed var(--color-border);border-radius:var(--radius-sm);font-size:var(--text-sm);background:var(--color-surface-raised)}
+.mclC .stub:target{border-color:var(--color-brand);border-style:solid;color:var(--color-ink)}
+@media (min-width:768px){.mclC .stubs .in{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<section data-component="contents-list" data-variant="c" class="mclC">
+  <div class="in">
+    <nav aria-labelledby="mclC-t" data-contents>
+      <div class="top">
+        <p class="t" id="mclC-t">Where everything sits on this Manchester page</p>
+        <p class="lede">Three stages, in page order: choosing your puppy, the checks, papers and journey home, then living with a Staffy.</p>
+      </div>
+        <div class="row">
+          <p class="stage" id="mclC-g1"><b>1</b><span>Choosing your puppy</span></p>
+          <ul aria-labelledby="mclC-g1">
+            <li><a href="#mclC-first">First questions answered</a></li>
+            <li><a href="#mclC-deposit">The deposit and your visit</a></li>
+            <li><a href="#mclC-tests">The parents' health tests</a></li>
+            <li><a href="#mclC-litter">The litter and its prices</a></li>
+          </ul>
+        </div>
+        <div class="row rest">
+          <p class="stage" id="mclC-g2"><b>2</b><span>Checks, papers and the journey home</span></p>
+          <ul aria-labelledby="mclC-g2">
+            <li><a href="#mclC-viewing">Health and viewing questions</a></li>
+            <li><a href="#mclC-travel">Travel to Greater Manchester</a></li>
+            <li><a href="#mclC-papers">Papers that come home</a></li>
+            <li><a href="#mclC-health">Health and the guarantee</a></li>
+          </ul>
+        </div>
+        <div class="row rest">
+          <p class="stage" id="mclC-g3"><b>3</b><span>Living with a Staffy</span></p>
+          <ul aria-labelledby="mclC-g3">
+            <li><a href="#mclC-life">Life in a busy home</a></li>
+            <li><a href="#mclC-bond">One person or the whole family</a></li>
+            <li><a href="#mclC-coat">Why the coat comes last</a></li>
+            <li><a href="#mclC-everyday">Everyday questions</a></li>
+          </ul>
+        </div>
+      <details class="more">
+        <summary>Two more stages, 8 sections<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <div class="row copy">
+          <p class="stage" id="mclC-m2"><b>2</b><span>Checks, papers and the journey home</span></p>
+          <ul aria-labelledby="mclC-m2">
+            <li><a href="#mclC-viewing">Health and viewing questions</a></li>
+            <li><a href="#mclC-travel">Travel to Greater Manchester</a></li>
+            <li><a href="#mclC-papers">Papers that come home</a></li>
+            <li><a href="#mclC-health">Health and the guarantee</a></li>
+          </ul>
+        </div>
+        <div class="row copy">
+          <p class="stage" id="mclC-m3"><b>3</b><span>Living with a Staffy</span></p>
+          <ul aria-labelledby="mclC-m3">
+            <li><a href="#mclC-life">Life in a busy home</a></li>
+            <li><a href="#mclC-bond">One person or the whole family</a></li>
+            <li><a href="#mclC-coat">Why the coat comes last</a></li>
+            <li><a href="#mclC-everyday">Everyday questions</a></li>
+          </ul>
+        </div>
+      </details>
+      <div class="end">
+        <p>Ready to ask about one of our six puppies?</p>
+        <a class="cta" href="#mclC-enquire">Ask about a puppy</a>
+      </div>
+    </nav>
+  </div>
+  <div class="stubs" data-canvas-only>
+    <div class="in">
+      <div class="stub" id="mclC-first">1. First questions answered (page section)</div>
+      <div class="stub" id="mclC-deposit">2. The deposit and your visit (page section)</div>
+      <div class="stub" id="mclC-tests">3. The parents' health tests (page section)</div>
+      <div class="stub" id="mclC-litter">4. The litter and its prices (page section)</div>
+      <div class="stub" id="mclC-viewing">5. Health and viewing questions (page section)</div>
+      <div class="stub" id="mclC-travel">6. Travel to Greater Manchester (page section)</div>
+      <div class="stub" id="mclC-papers">7. Papers that come home (page section)</div>
+      <div class="stub" id="mclC-health">8. Health and the guarantee (page section)</div>
+      <div class="stub" id="mclC-life">9. Life in a busy home (page section)</div>
+      <div class="stub" id="mclC-bond">10. One person or the whole family (page section)</div>
+      <div class="stub" id="mclC-coat">11. Why the coat comes last (page section)</div>
+      <div class="stub" id="mclC-everyday">12. Everyday questions (page section)</div>
+      <div class="stub" id="mclC-enquire">13. Ask about a puppy (page section)</div>
+    </div>
+  </div>
+</section>

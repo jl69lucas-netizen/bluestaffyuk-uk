@@ -1,0 +1,102 @@
+<style>
+/* Contents B: Icon rows. One raised card: the thirteen sections as line-icon rows divided by
+   full-width rules, two columns from 640px, and a settled Manchester puppy filling the card's
+   right column from 640px (above the list on phones). The icon says what kind of
+   section it is before the label is read: a question mark for the three question blocks. */
+.mclB{background:var(--color-surface);padding:var(--space-6) var(--space-4)}
+.mclB .card{max-width:1200px;margin:0 auto;display:grid;background:var(--color-surface-raised);border:var(--card-border);border-radius:var(--card-radius);box-shadow:var(--shadow-card);overflow:hidden}
+.mclB figure{margin:0;background:var(--color-surface)}
+.mclB img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover;object-position:50% 78%}
+.mclB .body{padding:var(--space-5) var(--space-4) var(--space-4)}
+.mclB .t{margin:0 0 var(--space-4);font-family:var(--font-display);font-weight:600;font-size:var(--text-lg);line-height:1.3;color:var(--color-brand)}
+.mclB ul{list-style:none;margin:0;padding:0;display:grid;column-gap:var(--space-6)}
+.mclB li{border-top:1px solid var(--color-border)}
+.mclB a{display:flex;align-items:center;gap:var(--space-3);min-height:52px;padding:var(--space-2) var(--space-1);color:var(--color-ink);font-weight:600;text-decoration:none;border-radius:var(--radius-sm)}
+.mclB a svg{flex:none;width:22px;height:22px;color:var(--color-brand)}
+.mclB a:hover{background:var(--color-brand-soft)}
+.mclB a:focus-visible{outline:3px solid var(--color-focus);outline-offset:-3px}
+.mclB .more{display:none}
+@media (max-width:639px){
+  .mclB li.rest{display:none}
+  .mclB .more{display:block}
+  .mclB summary{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 var(--space-1);border-top:1px solid var(--color-border);font-weight:700;color:var(--color-brand);cursor:pointer;list-style:none}
+  .mclB summary::-webkit-details-marker{display:none}
+  .mclB summary svg{width:20px;height:20px;transition:transform var(--dur-fast) var(--ease-out)}
+  .mclB details[open] summary svg{transform:rotate(180deg)}
+  .mclB summary:focus-visible{outline:3px solid var(--color-focus);outline-offset:-3px}
+}
+@media (min-width:640px){
+  .mclB ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mclB .card{grid-template-columns:minmax(0,1fr) 220px}
+  .mclB nav > ul{grid-auto-flow:column;grid-template-rows:repeat(7,auto)}
+  .mclB figure{order:2;display:flex}
+  .mclB img{flex:1;aspect-ratio:auto;min-height:100%;object-position:50% 60%}
+  .mclB .body{order:1;padding:var(--space-6) var(--space-5) var(--space-5)}
+  .mclB a{min-height:56px;line-height:1.25}
+}
+@media (min-width:1024px){
+  .mclB{padding:var(--space-9) var(--space-5)}
+  .mclB .card{grid-template-columns:minmax(0,8fr) minmax(0,4fr)}
+  .mclB img{object-position:50% 50%}
+  .mclB .body{padding:var(--space-7) var(--space-7) var(--space-6)}
+}
+@media (prefers-reduced-motion:reduce){.mclB summary svg{transition:none}}
+.mclB .stubs{max-width:1200px;margin:var(--space-7) auto 0;display:grid;gap:var(--space-2)}
+.mclB .stub{scroll-margin-top:var(--space-4);padding:var(--space-3) var(--space-4);border:1px dashed var(--color-border);border-radius:var(--radius-sm);font-size:var(--text-sm);color:var(--color-ink-2);background:var(--color-surface-raised)}
+.mclB .stub:target{border-color:var(--color-brand);border-style:solid;color:var(--color-ink)}
+@media (min-width:768px){.mclB .stubs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<section data-component="contents-list" data-variant="b" class="mclB">
+  <div class="card">
+    <figure>
+      <img src="/images/reputable-blue-staffy-breeder-manchester-pup.webp" width="540" height="541" alt="A settled blue Staffy puppy at home in Manchester, a testament to BlueStaffyUK's excellent communication and reputable breeding.">
+    </figure>
+    <div class="body">
+      <nav aria-labelledby="mclB-t" data-contents>
+        <p class="t" id="mclB-t">Go straight to any part of this Manchester page</p>
+        <ul>
+          <li><a href="#mclB-first"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span>First questions answered</span></a></li>
+          <li><a href="#mclB-deposit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM10 8v10"/></svg><span>The deposit and your visit</span></a></li>
+          <li><a href="#mclB-tests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg><span>The parents' health tests</span></a></li>
+          <li><a href="#mclB-litter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 9.5a1.8 2.3 0 1 0 0-.01zM15.5 9.5a1.8 2.3 0 1 0 0-.01zM5 13a1.6 2 0 1 0 0-.01zM19 13a1.6 2 0 1 0 0-.01zM12 13.5c-2.6 0-4.5 2.4-4.5 4.2 0 1.4 1.2 2 2.4 1.7 1-.3 1.4-.6 2.1-.6s1.1.3 2.1.6c1.2.3 2.4-.3 2.4-1.7 0-1.8-1.9-4.2-4.5-4.2z"/></svg><span>The litter and its prices</span></a></li>
+          <li><a href="#mclB-viewing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span>Health and viewing questions</span></a></li>
+          <li><a href="#mclB-travel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h13v10H1zM14 10h4l3 3v3h-7"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg><span>Travel to Greater Manchester</span></a></li>
+          <li class="rest"><a href="#mclB-papers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg><span>Papers that come home</span></a></li>
+          <li class="rest"><a href="#mclB-health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1L12 21.5l8.8-8.8a5 5 0 0 0 0-7.1z"/></svg><span>Health and the guarantee</span></a></li>
+          <li class="rest"><a href="#mclB-life"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6"/></svg><span>Life in a busy home</span></a></li>
+          <li class="rest"><a href="#mclB-bond"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/></svg><span>One person or the whole family</span></a></li>
+          <li class="rest"><a href="#mclB-coat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg><span>Why the coat comes last</span></a></li>
+          <li class="rest"><a href="#mclB-everyday"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span>Everyday questions</span></a></li>
+          <li class="rest"><a href="#mclB-enquire"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z"/><path d="m3 6 9 7 9-7"/></svg><span>Ask about a puppy</span></a></li>
+        </ul>
+        <details class="more">
+          <summary>7 more sections<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <ul>
+            <li><a href="#mclB-papers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg><span>Papers that come home</span></a></li>
+            <li><a href="#mclB-health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1L12 21.5l8.8-8.8a5 5 0 0 0 0-7.1z"/></svg><span>Health and the guarantee</span></a></li>
+            <li><a href="#mclB-life"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6"/></svg><span>Life in a busy home</span></a></li>
+            <li><a href="#mclB-bond"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/></svg><span>One person or the whole family</span></a></li>
+            <li><a href="#mclB-coat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg><span>Why the coat comes last</span></a></li>
+            <li><a href="#mclB-everyday"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span>Everyday questions</span></a></li>
+            <li><a href="#mclB-enquire"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z"/><path d="m3 6 9 7 9-7"/></svg><span>Ask about a puppy</span></a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </div>
+  <div class="stubs" data-canvas-only>
+      <div class="stub" id="mclB-first">1. First questions answered (page section)</div>
+      <div class="stub" id="mclB-deposit">2. The deposit and your visit (page section)</div>
+      <div class="stub" id="mclB-tests">3. The parents' health tests (page section)</div>
+      <div class="stub" id="mclB-litter">4. The litter and its prices (page section)</div>
+      <div class="stub" id="mclB-viewing">5. Health and viewing questions (page section)</div>
+      <div class="stub" id="mclB-travel">6. Travel to Greater Manchester (page section)</div>
+      <div class="stub" id="mclB-papers">7. Papers that come home (page section)</div>
+      <div class="stub" id="mclB-health">8. Health and the guarantee (page section)</div>
+      <div class="stub" id="mclB-life">9. Life in a busy home (page section)</div>
+      <div class="stub" id="mclB-bond">10. One person or the whole family (page section)</div>
+      <div class="stub" id="mclB-coat">11. Why the coat comes last (page section)</div>
+      <div class="stub" id="mclB-everyday">12. Everyday questions (page section)</div>
+      <div class="stub" id="mclB-enquire">13. Ask about a puppy (page section)</div>
+  </div>
+</section>

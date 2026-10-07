@@ -1,0 +1,238 @@
+<style>
+/* Jump links C: Grouped drop panel, the pool copy of london/jump-links/b "Drop panel",
+   refreshed on LAYOUT. The sticky raised card is London's: a small decorative photo (here the
+   Victoria family's Manchester puppy, a CSS background so it is not announced), a wide "Jump to
+   a section" control naming the section you are in, and a brass Enquire link. London's panel
+   dropped a two-column grid of eight icon tiles; thirteen tiles would run to seven rows of
+   squares, so Manchester's panel drops the sections as ruled icon rows under the page's three
+   stage names: one column on phones, three stage columns side by side from 600px. CSS only:
+   the panel is the :target of its control; a jump, Close or a tap outside retargets away. */
+.mjlC{background:var(--color-surface)}
+.mjlC .strip{position:sticky;top:0;z-index:20;padding:var(--space-2) var(--space-2) 0}
+.mjlC .card{display:flex;align-items:center;gap:var(--space-2);padding:6px;background:var(--color-surface-raised);border:var(--card-border);border-radius:var(--radius-md);box-shadow:var(--shadow-card)}
+.mjlC .thumb{flex:none;width:44px;height:44px;border-radius:var(--radius-sm);background:var(--color-surface) url(/images/victoria-family-blue-staffy-manchester-440.webp) 50% 40% / cover no-repeat}
+.mjlC .open{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);min-height:48px;padding:0 var(--space-3);border-radius:var(--radius-sm);background:var(--color-brand-soft);color:var(--color-brand);text-decoration:none;line-height:1.2}
+.mjlC .now{display:grid;font-size:var(--text-xs);color:var(--color-ink-2)}
+.mjlC .now span{grid-area:1/1;visibility:hidden;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--color-brand-soft)}
+.mjlC .now .base{visibility:visible}
+.mjlC .open strong{display:block;font-size:var(--text-sm)}
+.mjlC .open svg{flex:none;width:20px;height:20px}
+.mjlC .enq{flex:none;display:inline-flex;align-items:center;min-height:48px;padding:0 var(--space-4);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;font-size:var(--text-sm);text-decoration:none}
+.mjlC .enq:hover{background:var(--color-cta-hover)}
+.mjlC .sheet .panel{position:absolute;left:var(--space-2);right:var(--space-2);top:calc(var(--space-2) + 62px);z-index:1;max-height:calc(100vh - 88px);overflow-y:auto;padding:var(--space-4);background:var(--color-surface-raised);border:var(--card-border);border-radius:var(--radius-md);box-shadow:var(--shadow-lift);animation:mjlC-drop var(--dur-base) var(--ease-out)}
+.mjlC .sheet .top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-2)}
+.mjlC .sheet .t{margin:0;font-weight:700;color:var(--color-ink)}
+.mjlC .groups{display:grid;gap:var(--space-3)}
+.mjlC .g{margin:var(--space-2) 0 var(--space-1);font-family:var(--font-display);font-weight:600;font-size:var(--text-base);color:var(--color-brand)}
+.mjlC .sheet ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--color-border)}
+.mjlC .sheet ul.last{margin-top:var(--space-3)}
+.mjlC .sheet li{border-bottom:1px solid var(--color-border)}
+.mjlC .sheet li a{display:flex;align-items:center;gap:var(--space-3);min-height:46px;padding:0 var(--space-2);border-radius:var(--radius-sm);color:var(--color-ink);font-weight:600;font-size:var(--text-sm);line-height:1.25;text-decoration:none}
+.mjlC .sheet li a svg{flex:none;width:20px;height:20px;color:var(--color-brand)}
+.mjlC .sheet li a:hover{background:var(--color-brand-soft)}
+@media (min-width:600px){.mjlC .groups{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4)} .mjlC .strip{padding:var(--space-3) var(--space-4) 0} .mjlC .sheet .panel{left:var(--space-4);right:var(--space-4);top:calc(var(--space-3) + 62px)}}
+@keyframes mjlC-drop{from{transform:translateY(-8px);opacity:.6}to{transform:none;opacity:1}}
+.mjlC .shut{position:fixed;top:0;left:0;width:1px;height:1px;pointer-events:none}
+.mjlC .note{display:none}
+.mjlC .sheet{display:none}
+.mjlC .sheet:target{display:block;position:fixed;inset:0;z-index:50}
+.mjlC .scrim{position:fixed;inset:0;background:color-mix(in srgb,var(--color-steel-900) 55%,transparent);z-index:0}
+.mjlC .close{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 var(--space-3);border-radius:var(--btn-radius);border:1px solid var(--color-border);color:var(--color-brand);font-weight:600;font-size:var(--text-sm);text-decoration:none}
+.mjlC .close svg{width:16px;height:16px}
+.mjlC a:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+@media (min-width:1024px){
+  .mjlC .jl-only{display:none!important}
+  .mjlC .note{display:block;max-width:1200px;margin:var(--space-5) auto 0;padding:var(--space-3) var(--space-4);background:var(--color-brand-soft);border-radius:var(--radius-sm);font-size:var(--text-sm);color:var(--color-ink)}
+  .mjlC .stub{max-width:1200px;margin:0 auto;padding-left:var(--space-5);padding-right:var(--space-5)}
+}
+@media (prefers-reduced-motion:reduce){.mjlC *{animation-duration:0s!important;transition:none!important}}
+.mjlC .stub{padding:var(--space-7) var(--space-4) var(--space-6);border-bottom:1px solid var(--color-border);scroll-margin-top:calc(72px + var(--space-3))}
+.mjlC .stub h2{font-size:var(--text-xl);line-height:var(--text-xl--line-height);margin:0 0 var(--space-3);max-width:28ch;text-wrap:balance}
+.mjlC .stub p{margin:0 0 var(--space-3);max-width:62ch}
+.mjlC .stub .fill{color:var(--color-ink-2);font-size:var(--text-sm)}
+.mjlC{timeline-scope:--mjlC-1,--mjlC-2,--mjlC-3,--mjlC-4,--mjlC-5,--mjlC-6,--mjlC-7,--mjlC-8,--mjlC-9,--mjlC-10,--mjlC-11,--mjlC-12,--mjlC-13}
+@supports not (animation-timeline: view()){.mjlC:has(#mjlC-first:target) .now [data-for="first"]{visibility:visible}
+.mjlC:has(#mjlC-first:target) .sheet a[href="#mjlC-first"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-deposit:target) .now [data-for="deposit"]{visibility:visible}
+.mjlC:has(#mjlC-deposit:target) .sheet a[href="#mjlC-deposit"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-tests:target) .now [data-for="tests"]{visibility:visible}
+.mjlC:has(#mjlC-tests:target) .sheet a[href="#mjlC-tests"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-litter:target) .now [data-for="litter"]{visibility:visible}
+.mjlC:has(#mjlC-litter:target) .sheet a[href="#mjlC-litter"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-viewing:target) .now [data-for="viewing"]{visibility:visible}
+.mjlC:has(#mjlC-viewing:target) .sheet a[href="#mjlC-viewing"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-travel:target) .now [data-for="travel"]{visibility:visible}
+.mjlC:has(#mjlC-travel:target) .sheet a[href="#mjlC-travel"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-papers:target) .now [data-for="papers"]{visibility:visible}
+.mjlC:has(#mjlC-papers:target) .sheet a[href="#mjlC-papers"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-health:target) .now [data-for="health"]{visibility:visible}
+.mjlC:has(#mjlC-health:target) .sheet a[href="#mjlC-health"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-life:target) .now [data-for="life"]{visibility:visible}
+.mjlC:has(#mjlC-life:target) .sheet a[href="#mjlC-life"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-bond:target) .now [data-for="bond"]{visibility:visible}
+.mjlC:has(#mjlC-bond:target) .sheet a[href="#mjlC-bond"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-coat:target) .now [data-for="coat"]{visibility:visible}
+.mjlC:has(#mjlC-coat:target) .sheet a[href="#mjlC-coat"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-everyday:target) .now [data-for="everyday"]{visibility:visible}
+.mjlC:has(#mjlC-everyday:target) .sheet a[href="#mjlC-everyday"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}
+.mjlC:has(#mjlC-enquire:target) .now [data-for="enquire"]{visibility:visible}
+.mjlC:has(#mjlC-enquire:target) .sheet a[href="#mjlC-enquire"]{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}}
+@keyframes mjlC-show{from,to{visibility:visible}}
+@keyframes mjlC-row{from,to{background:var(--color-brand-soft);font-weight:700;box-shadow:inset 0 0 0 2px var(--color-brand)}}
+@supports (animation-timeline: view()){@media all{
+.mjlC #mjlC-first{view-timeline-name:--mjlC-1}
+.mjlC #mjlC-deposit{view-timeline-name:--mjlC-2}
+.mjlC #mjlC-tests{view-timeline-name:--mjlC-3}
+.mjlC #mjlC-litter{view-timeline-name:--mjlC-4}
+.mjlC #mjlC-viewing{view-timeline-name:--mjlC-5}
+.mjlC #mjlC-travel{view-timeline-name:--mjlC-6}
+.mjlC #mjlC-papers{view-timeline-name:--mjlC-7}
+.mjlC #mjlC-health{view-timeline-name:--mjlC-8}
+.mjlC #mjlC-life{view-timeline-name:--mjlC-9}
+.mjlC #mjlC-bond{view-timeline-name:--mjlC-10}
+.mjlC #mjlC-coat{view-timeline-name:--mjlC-11}
+.mjlC #mjlC-everyday{view-timeline-name:--mjlC-12}
+.mjlC #mjlC-enquire{view-timeline-name:--mjlC-13}
+.mjlC .now [data-for="first"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-1!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-first"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-1!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="deposit"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-2!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-deposit"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-2!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="tests"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-3!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-tests"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-3!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="litter"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-4!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-litter"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-4!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="viewing"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-5!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-viewing"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-5!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="travel"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-6!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-travel"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-6!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="papers"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-7!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-papers"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-7!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="health"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-8!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-health"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-8!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="life"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-9!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-life"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-9!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="bond"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-10!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-bond"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-10!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="coat"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-11!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-coat"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-11!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="everyday"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-12!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-everyday"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-12!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .now [data-for="enquire"]{animation-name:mjlC-show!important;animation-timeline:--mjlC-13!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+.mjlC .sheet a[href="#mjlC-enquire"]{animation-name:mjlC-row!important;animation-timeline:--mjlC-13!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:none!important;animation-range:cover 50vh cover calc(100% - 50vh)!important}
+}}
+</style>
+<section data-component="jump-links" data-variant="c" class="mjlC">
+  <span class="shut" data-canvas-only id="mjlC-shut"></span>
+  <div class="strip jl-only" data-jump-strip>
+    <nav class="card" aria-label="Jump to a section">
+      <span class="thumb" aria-hidden="true"></span>
+      <a class="open" href="#mjlC-sheet" data-jump-open><span><span class="now"><span class="base" aria-hidden="true">Manchester page, 13 sections</span><span data-for="first">1 of 13: Asked first</span><span data-for="deposit">2 of 13: Deposit and visit</span><span data-for="tests">3 of 13: Parents' tests</span><span data-for="litter">4 of 13: The litter</span><span data-for="viewing">5 of 13: Health and viewing</span><span data-for="travel">6 of 13: Travel</span><span data-for="papers">7 of 13: Papers</span><span data-for="health">8 of 13: Health and guarantee</span><span data-for="life">9 of 13: Busy household</span><span data-for="bond">10 of 13: Favourite person</span><span data-for="coat">11 of 13: Coat comes last</span><span data-for="everyday">12 of 13: Everyday life</span><span data-for="enquire">13 of 13: Ask about a puppy</span></span><strong>Jump to a section</strong></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>
+      <a class="enq" href="#mjlC-enquire">Enquire</a>
+    </nav>
+  </div>
+  <div class="sheet jl-only" id="mjlC-sheet" data-jump-sheet>
+    <a class="scrim" href="#mjlC-shut" tabindex="-1" aria-hidden="true"></a>
+    <nav class="panel" aria-labelledby="mjlC-st">
+      <div class="top">
+        <p class="t" id="mjlC-st">Where do you want to go?</p>
+        <a class="close" href="#mjlC-shut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>Close</a>
+      </div>
+      <div class="groups">
+        <div class="grp">
+          <p class="g" id="mjlC-g1">Choosing your puppy</p>
+          <ul aria-labelledby="mjlC-g1">
+            <li><a href="#mjlC-first"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span>First questions answered</span></a></li>
+            <li><a href="#mjlC-deposit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM10 8v10"/></svg><span>The deposit and your visit</span></a></li>
+            <li><a href="#mjlC-tests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg><span>The parents' health tests</span></a></li>
+            <li><a href="#mjlC-litter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 9.5a1.8 2.3 0 1 0 0-.01zM15.5 9.5a1.8 2.3 0 1 0 0-.01zM5 13a1.6 2 0 1 0 0-.01zM19 13a1.6 2 0 1 0 0-.01zM12 13.5c-2.6 0-4.5 2.4-4.5 4.2 0 1.4 1.2 2 2.4 1.7 1-.3 1.4-.6 2.1-.6s1.1.3 2.1.6c1.2.3 2.4-.3 2.4-1.7 0-1.8-1.9-4.2-4.5-4.2z"/></svg><span>The litter and its prices</span></a></li>
+          </ul>
+        </div>
+        <div class="grp">
+          <p class="g" id="mjlC-g2">Checks, papers and the journey home</p>
+          <ul aria-labelledby="mjlC-g2">
+            <li><a href="#mjlC-viewing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span>Health and viewing questions</span></a></li>
+            <li><a href="#mjlC-travel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h13v10H1zM14 10h4l3 3v3h-7"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg><span>Travel to Greater Manchester</span></a></li>
+            <li><a href="#mjlC-papers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg><span>Papers that come home</span></a></li>
+            <li><a href="#mjlC-health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1L12 21.5l8.8-8.8a5 5 0 0 0 0-7.1z"/></svg><span>Health and the guarantee</span></a></li>
+          </ul>
+        </div>
+        <div class="grp">
+          <p class="g" id="mjlC-g3">Living with a Staffy</p>
+          <ul aria-labelledby="mjlC-g3">
+            <li><a href="#mjlC-life"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6"/></svg><span>Life in a busy home</span></a></li>
+            <li><a href="#mjlC-bond"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/></svg><span>One person or the whole family</span></a></li>
+            <li><a href="#mjlC-coat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg><span>Why the coat comes last</span></a></li>
+            <li><a href="#mjlC-everyday"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span>Everyday questions</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <ul class="last"><li><a href="#mjlC-enquire"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z"/><path d="m3 6 9 7 9-7"/></svg><span>Ask about a puppy</span></a></li></ul>
+    </nav>
+  </div>
+  <p class="note" data-canvas-only>At 1024px and wider the desktop dial navigates, so the jump links and their sheet are hidden and this frame shows only the Manchester page sections.</p>
+    <section class="stub" data-canvas-only id="mjlC-first" style="min-height:calc(0.95 * 45vh)">
+      <h2>What Do Manchester Buyers Ask First About Our Blue Staffy Puppies?</h2>
+      <p>Six questions come first from Manchester homes: the price, where to buy, delivery, which puppies are still available and the £500 deposit.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-deposit" style="min-height:calc(1.5 * 45vh)">
+      <h2>Why Does This Staffy Breeder Take the Deposit Before You Visit?</h2>
+      <p>The £500 deposit reserves your puppy while you plan the visit, and it is up to 70% refundable if you change your mind up to 1 day before collection or delivery.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-tests" style="min-height:calc(1.15 * 45vh)">
+      <h2>Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?</h2>
+      <p>Maggie, our dam, and Jones, our sire, were both DNA tested for L-2-HGA and HC-HSF4, and we share the certificates on request.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-litter" style="min-height:calc(1.2 * 45vh)">
+      <h2>Which Staffordshire Bull Terrier Puppies for Sale Are in Our Litter Now?</h2>
+      <p>Three boys, Roman, Byrd and Ince, are £1,500 each, and three girls, Vennie, Christa and Cheryl, are £1,700 each, all available today.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-viewing" style="min-height:calc(1.1 * 45vh)">
+      <h2>What Do Manchester Families Ask a Staffy Breeder About Health and Viewing?</h2>
+      <p>Seven questions on the parents' tests, meeting the mother, vet checks and vaccinations, each answered before you book a visit from Manchester.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-travel" style="min-height:calc(1.0 * 45vh)">
+      <h2>How Will Your Blue Staffy Puppy Travel to Greater Manchester?</h2>
+      <p>We deliver to UK homes by DEFRA-approved transport for £200 to £350, priced by distance, or you can collect your puppy from us in Carlisle.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-papers" style="min-height:calc(0.85 * 45vh)">
+      <h2>Which Papers and Records Travel Home With Each Blue Staffy Puppy?</h2>
+      <p>Both parents are Kennel Club registered, and each puppy goes home with its KC registration application form among its papers.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-health" style="min-height:calc(0.75 * 45vh)">
+      <h2>Which Health Problems Can Staffy Dogs Develop, and What Will We Stand Behind?</h2>
+      <p>Every puppy goes home with our Two-year health guarantee, and this part explains what it covers and when it is time to call the vet.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-life" style="min-height:calc(0.95 * 45vh)">
+      <h2>How Do Staffies in Manchester Fit Into a Busy Household?</h2>
+      <p>This part covers rented homes, the banned-breed line and the downsides a busy Manchester family should weigh before choosing a Staffy.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-bond" style="min-height:calc(0.7 * 45vh)">
+      <h2>Do Staffy Dogs Pick a Favourite Person, or Love the Whole Family?</h2>
+      <p>Here we talk about how a Staffy bonds with the people at home, and whether a boy or a girl suits your family better.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-coat" style="min-height:calc(0.65 * 45vh)">
+      <h2>Are Blue Staffies Rare, and Why Should the Coat Be the Last Thing You Choose?</h2>
+      <p>Our litter carries blue, white, and blue and white coats, and we suggest you choose the puppy first and let the coat come last.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-everyday" style="min-height:calc(1.05 * 45vh)">
+      <h2>Which Everyday Questions Do Blue Staffies Raise for Manchester Households?</h2>
+      <p>Seven everyday questions, from time alone and flat living to children and the food each puppy eats now, answered in plain words.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+    <section class="stub" data-canvas-only id="mjlC-enquire" style="min-height:calc(0.5 * 45vh)">
+      <h2>How Do I Ask About a Blue Staffy Puppy for My Greater Manchester Home?</h2>
+      <p>Send Lisa Bright a message naming the puppy you like, and we reply with the next step for a visit, delivery or collection.</p>
+      <p class="fill">This is a stand-in for the real section, kept long enough that the page scrolls the way the full Manchester page does, so you can judge how the navigation behaves while you read.</p>
+    </section>
+</section>
