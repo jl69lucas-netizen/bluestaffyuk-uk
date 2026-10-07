@@ -288,6 +288,20 @@ def test_a_passage_shared_with_a_sibling_fails(tmp_path, capsys):
     assert code == 1 and "[outline-copy-crossover]" in out
 
 
+def test_a_city_scaffold_is_never_a_sibling(tmp_path, capsys):
+    """A city's noindex component scaffold (`data-city-scaffold`; Manchester's, page-run Phase F
+    Task 32) renders data facts and marked scaffold lines, not a page of its own: like a specimen
+    route it competes for nothing, so a passage shared with it is not a crossover. Once its page
+    run writes the page, the attribute goes and the page is compared like any other."""
+    para = ("<p>Our breeding programme is small, careful and built around one family home in "
+            "the countryside where every puppy is handled daily.</p>")
+    root = site(tmp_path, page(TRAVEL + HOMES.replace("</section>", para + "</section>")))
+    sib = root / "dist" / "uk-locations" / SIBLING / "index.html"
+    sib.write_text(sib.read_text().replace("<h1>", '<h1 data-city-scaffold="x">', 1), encoding="utf-8")
+    code, out = run(root, capsys)
+    assert "[outline-copy-crossover]" not in out and "[outline-sentence-crossover]" not in out
+
+
 def test_a_sentence_shared_with_a_sibling_fails(tmp_path, capsys):
     para = "<p>We walk every puppy along the river path at dawn.</p>"
     code, out = run(site(tmp_path, page(TRAVEL + HOMES.replace("</section>", para + "</section>"))), capsys)

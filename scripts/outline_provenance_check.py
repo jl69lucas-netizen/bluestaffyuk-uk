@@ -283,15 +283,28 @@ def corpus_page(path):
 
 
 def corpus(dist):
-    """{page key: corpus_page} for every built page except the specimen routes. Read once per
-    run; each examined page is compared with every entry but its own."""
+    """{page key: corpus_page} for every built page except the specimen routes and a city's
+    component scaffold. Read once per run; each examined page is compared with every entry but
+    its own.
+
+    A SCAFFOLD IS NO SIBLING (the Manchester page run, Phase F Task 32): a page that carries
+    `data-city-scaffold` is a city's noindex component scaffold (London Plan 2 Task 8), the picks
+    mounted under the approved outline's headings with data facts and marked scaffold lines in
+    place of copy. Like a specimen route it competes for nothing, and the data facts it shows (the
+    deposit's refund clause, word for word) are the same data a written city page shows. Once its
+    page run writes the page the attribute goes, and the page is compared like any other."""
     dist = Path(dist)
     out = {}
     for p in sorted(dist.rglob("index.html")):
         k = page_key(p, dist)
-        if not DUP.is_specimen(k):
-            out[k] = corpus_page(p)
+        if DUP.is_specimen(k) or SCAFFOLD_MARK in p.read_text(encoding="utf-8", errors="ignore"):
+            continue
+        out[k] = corpus_page(p)
     return out
+
+
+#: The attribute a city's component scaffold carries (src/pages/uk-locations/<slug>.astro).
+SCAFFOLD_MARK = "data-city-scaffold"
 
 
 # ── the checks ────────────────────────────────────────────────────────────────────────────

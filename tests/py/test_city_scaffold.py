@@ -86,8 +86,11 @@ def test_the_template_builds_exactly_the_routes_the_date_map_gives_it():
 def test_london_has_its_own_file_and_every_other_city_the_template():
     html = built()
     assert "prose-migrated" not in html, "London is rebuilt; its migrated body is gone"
-    others = [l["slug"] for l in LOCATIONS if l["slug"] != SLUG]
-    assert len(others) == len(LOCATIONS) - 1
+    # Every city without its own page file (Manchester has one too from its page run's Phase F
+    # Task 32, a scaffold held by tests/py/test_manchester_scaffold.py).
+    own = {p.stem for p in PAGE.parent.glob("*.astro") if "[" not in p.name}
+    others = [l["slug"] for l in LOCATIONS if l["slug"] not in own]
+    assert SLUG in own and len(others) == len(LOCATIONS) - len(own & {l["slug"] for l in LOCATIONS})
     for slug in others:
         page = ROOT / "dist/uk-locations" / slug / "index.html"
         assert page.is_file(), slug

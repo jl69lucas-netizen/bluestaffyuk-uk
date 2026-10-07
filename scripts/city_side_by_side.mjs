@@ -3,7 +3,7 @@
 //
 // The side-by-side the user confirms before a city's component pass is done (spec §3.5, "The
 // user sees each built component beside its canvas version and confirms the match"). For each of
-// the city's fifteen picks it shoots, at 375, 768 and 1280:
+// the city's picks (every pick but a "none") it shoots, at 375, 768 and 1280:
 //   - the CANVAS frame the user picked (docs/artifacts/canvas/<city>-frames/<component>/<v>.html,
 //     emitted by `python3 scripts/build_component_canvas.py --emit-frames …`), and
 //   - the BUILT component ON THE REAL CITY PAGE (dist/uk-locations/<slug>/), found by its root
@@ -33,81 +33,95 @@ const PORT = Number(process.env.RENDER_SBS_PORT ?? 4361);
 const WIDTHS = [375, 768, 1280];
 const IMG_WAIT_MS = 5000;
 const picks = JSON.parse(readFileSync(resolve(ROOT, `data/design/city-picks/${SLUG}.json`), 'utf8')).picks;
-const rows = JSON.parse(readFileSync(resolve(ROOT, 'data/design/components.json'), 'utf8'))
-  .filter((r) => r.project === 5);
-// scripts/city_components.py KIT_ID, in city-page order: the same order the rows are in.
-const order = Object.keys(picks);
-if (rows.length !== order.length) {
-  console.error(`components.json has ${rows.length} city rows for ${order.length} picks`);
-  process.exit(1);
-}
-
-// Each built component's root on the city page, keyed by its component FILE (the rows carry the
-// current file names; a renamed file fails loudly here rather than shooting the wrong node).
-const ROOT_SELECTOR = {
-  'CityHeroFilmstrip.astro': '.city-hero-filmstrip',
-  'CityPriceScale.astro': '.city-scale',
-  'CityTrustLedger.astro': '.city-trust',
-  'CityContentsPhotoIndex.astro': '.city-contents-photo-index',
-  'CityDialPhotoMarker.astro': '[data-city-dial-photo-marker]',
-  'CityJumpStepper.astro': '[data-city-jump-stepper]',
-  'CityTakeawaysLedger.astro': '.city-takeaways-ledger',
-  'CityPuppySheet.astro': '.city-sheet',
-  'CityRoster.astro': '.city-roster',
-  'CityVideoPanel.astro': '.city-video',
-  'CityChapters.astro': '.city-chapters',
-  'CityLetter.astro': '.city-letter',
-  'CityFaqLedger.astro': '.city-faq',
-  'CityNewsletterNotice.astro': '.city-newsletter-notice',
-  'CityContactLineup.astro': '.city-contact',
-};
-// The picks whose canvas frame wraps them in stand-in page sections: their own element.
-const CANVAS_SELECTOR = {
-  'jump-links': '[data-jump-strip]',
-  'desktop-dial': '[data-dial]',
-  'contents-list': '[data-component] > .panel',
-};
-// Why a component is not displayed at a width, for its card.
-const HIDDEN_WHY = {
-  'CityDialPhotoMarker.astro': 'The dial is desktop navigation: it shows from 1024px, and the jump band stands in for it on phones and tablets.',
-  'CityJumpStepper.astro': 'The jump band is phone and tablet navigation: it shows below 1024px, and the dial beside the body takes its place from 1024px.',
-  'CityContentsPhotoIndex.astro': 'The contents list shows below 1024px only: from 1024px the dial beside the body is the page\'s contents, as on the other pages (your ruling, answer board q05, 2026-09-29).',
-};
-// The sticky furniture is shot as the element itself; every section is clipped from the page.
-const DIAL_FILE = 'CityDialPhotoMarker.astro';
-const STICKY = new Set(['CityJumpStepper.astro', DIAL_FILE]);
-// Chrome: shot as the element itself, with nothing hidden (the header sits outside its box).
-const CHROME = new Set(['CityJumpStepper.astro']);
-for (const r of rows) {
-  if (!ROOT_SELECTOR[r.file]) {
-    console.error(`no root selector for ${r.file} (${r.id}): add it to ROOT_SELECTOR`);
+// A pick the page does not use is recorded as "none" (gap G4): it names no variant, so it has no
+// canvas frame and no built component to set beside it.
+const NOT_USED = 'none';
+// Gap G10 (the Manchester page run, Phase F Task 32): each city's picked rows are the `"project": 5`
+// rows of data/design/components.json whose `canvas_variant` is one of ITS picks, and each row names
+// the root selector its built component is shot by. Every city's rows sit in one file, so the city
+// selects its own; comparing every project 5 row with one city's picks failed the second city.
+const all = JSON.parse(readFileSync(resolve(ROOT, 'data/design/components.json'), 'utf8')).filter((r) => r.project === 5);
+// The picks in city-page order (scripts/city_components.py COMPONENT_IDS), each paired with its row.
+const order = Object.keys(picks).filter((c) => picks[c] !== NOT_USED);
+const matches = order.map((c) => all.filter((r) => r.canvas_variant === picks[c]));
+for (const [i, c] of order.entries()) {
+  if (matches[i].length !== 1) {
+    console.error(`${picks[c]}: ${matches[i].length} rows of data/design/components.json carry it as canvas_variant (need exactly 1)`);
+    process.exit(1);
+  }
+  if (!matches[i][0].root_selector) {
+    console.error(`${matches[i][0].id} (${picks[c]}): no root_selector in data/design/components.json`);
     process.exit(1);
   }
 }
+const rows = matches.map((m) => m[0]);
 
-// What differs on purpose, per pick component. `column` is added at run time for any component
-// the 1280 shot finds narrower than the page (it sits in the column beside the dial).
+// The picks whose canvas frame wraps them in stand-in page sections: their own element. London's
+// contents frame wraps its panel in stand-ins; Manchester's contents frame is the card itself.
+const CANVAS_SELECTOR = {
+  'jump-links': '[data-jump-strip]',
+  'desktop-dial': '[data-dial]',
+  ...(CITY === 'london' ? { 'contents-list': '[data-component] > .panel' } : {}),
+};
+// Why a component is not displayed at a width, for its card: every city's nav furniture works so.
+const HIDDEN_WHY = {
+  'desktop-dial': 'The dial is desktop navigation: it shows from 1024px, and the jump band stands in for it on phones and tablets.',
+  'jump-links': 'The jump band is phone and tablet navigation: it shows below 1024px, and the dial beside the body takes its place from 1024px.',
+  'contents-list': 'The contents list shows below 1024px only: from 1024px the dial beside the body is the page\'s contents, as on the other pages (your ruling, answer board q05, 2026-09-29).',
+};
+// The sticky furniture is shot as the element itself; every section is clipped from the page.
+const DIAL = 'desktop-dial';
+const STICKY = new Set(['jump-links', DIAL]);
+// Chrome: shot as the element itself, with nothing hidden (the header sits outside its box).
+const CHROME = new Set(['jump-links']);
+// Hidden while a section is shot: the site header and every city's jump band (the shared
+// `data-city-nav="bar"` hook, gap G12; London's band also keeps its own hook).
+const HIDE_CHROME = '.kit-hdr, [data-city-nav="bar"], [data-city-jump-stepper] { visibility: hidden !important; }';
+
+// What differs on purpose, per pick component, per city. `column` is added at run time for any
+// component the 1280 shot finds narrower than the page (it sits in the column beside the dial).
 const TYPE_FIT = 'The type-fit scale you asked for on 2026-09-28: headings capped at 22 / 25 / 28px and reading paragraphs held to 65ch.';
 const BOLD = 'Bold, brand-coloured headings restored (Code fact 5): the site base inherits weight and colour, so the kit gives city headings the canvas weight back.';
 const GUARANTEE = 'The two-year health guarantee is printed from data/settings.json (guarantee_days 730, guarantee_label), your answer of 2026-09-29 (answer board q07), never typed on the page.';
 const PHOTO = (who) => `A different served photo where the canvas repeated Maggie's (Code fact 4): one served photo appears once per page, so this one carries ${who}.`;
-const DELIBERATE = {
-  hero: [BOLD, TYPE_FIT],
-  'counter-strip': ['From 640 to 839px the price scale\'s count sits above the line, not on it, so the figures keep their own width.'],
-  'trust-strip': [PHOTO("Jones's portrait"), GUARANTEE, BOLD, TYPE_FIT],
-  'contents-list': [BOLD],
-  'desktop-dial': [],
-  'jump-links': [],
-  'key-takeaways': [PHOTO('Jones seated'), GUARANTEE, BOLD, TYPE_FIT],
-  'puppy-cards': [BOLD, TYPE_FIT],
-  tables: [BOLD, TYPE_FIT],
-  video: [BOLD, TYPE_FIT],
-  'image-text': [PHOTO('Byrd for chapter one'), BOLD, TYPE_FIT],
-  reviews: ['The review is split into three paragraphs rather than one block.', BOLD, TYPE_FIT],
-  'faq-blocks': [PHOTO('the London owner photo in the rail'), 'The canvas frame stacks all three FAQ blocks; the page places them apart (buying, checking us, Staffy life), each under the section it answers, so the built shot is the first block, the one with the photo rail.', GUARANTEE, BOLD, TYPE_FIT],
-  newsletter: [BOLD, TYPE_FIT],
-  'contact-form': [BOLD, TYPE_FIT],
+// Manchester's page is a scaffold until row 12: every caller-written paragraph is a marked line.
+const SCAFFOLD = 'Its paragraph is a marked scaffold line, not copy: the page is written at page-run row 12 from the approved page board. Headings are the approved outline\'s, word for word.';
+const DELIBERATE_BY_CITY = {
+  london: {
+    hero: [BOLD, TYPE_FIT],
+    'counter-strip': ['From 640 to 839px the price scale\'s count sits above the line, not on it, so the figures keep their own width.'],
+    'trust-strip': [PHOTO("Jones's portrait"), GUARANTEE, BOLD, TYPE_FIT],
+    'contents-list': [BOLD],
+    'desktop-dial': [],
+    'jump-links': [],
+    'key-takeaways': [PHOTO('Jones seated'), GUARANTEE, BOLD, TYPE_FIT],
+    'puppy-cards': [BOLD, TYPE_FIT],
+    tables: [BOLD, TYPE_FIT],
+    video: [BOLD, TYPE_FIT],
+    'image-text': [PHOTO('Byrd for chapter one'), BOLD, TYPE_FIT],
+    reviews: ['The review is split into three paragraphs rather than one block.', BOLD, TYPE_FIT],
+    'faq-blocks': [PHOTO('the London owner photo in the rail'), 'The canvas frame stacks all three FAQ blocks; the page places them apart (buying, checking us, Staffy life), each under the section it answers, so the built shot is the first block, the one with the photo rail.', GUARANTEE, BOLD, TYPE_FIT],
+    newsletter: [BOLD, TYPE_FIT],
+    'contact-form': [BOLD, TYPE_FIT],
+  },
+  // From docs/research/manchester-components/hardening-log.md, "Built — Task 28" to "Task 31".
+  manchester: {
+    hero: ['The H1 is the approved outline\'s, at the canvas\'s size inside the type-fit caps.', 'The promise rail\'s labels wrap balanced rather than staying on one line, so a longer label never runs into its neighbour at 1024px.', SCAFFOLD],
+    'counter-strip': ['Each figure cell is a column, label at the top and figure at the foot, so the two prices share a baseline on a phone.'],
+    'trust-strip': ['From 640px an odd last slip spans both columns, so the folder ends square.'],
+    'contents-list': ['From 640px the photo column is 272 to 340px wide and the rows take two columns from 768px, so the served photo is never painted past twice its size.'],
+    'desktop-dial': ['The rail is inset from its column\'s edge, and the marked row is kept in view inside the rail on a short screen.'],
+    'jump-links': ['On the page the bar is the top chrome: it slides away on the way down and comes back on the way up (answer board q03).'],
+    'key-takeaways': ['The head is split 7 to 5, so the title takes two lines, not three.'],
+    tables: ['On a phone each card\'s price is pinned to its foot, so the prices in a pair share a line.'],
+    'image-text': ['The built shot is the deposit section, the canvas\'s own, with its four cells read from the data. The other eight body sections show the outline\'s plan for the section (its row, framework and planned words) in the sheet until the page is written.', 'An odd last cell spans the row.', SCAFFOLD],
+    reviews: ['The page mounts the plates three times (outline rows 6, 11 and 20), the photo side alternating; the built shot is the first, The Victoria Family.'],
+    'faq-blocks': ['The canvas frame stacks the three FAQ blocks; the page places them apart (outline rows 7, 12 and 21), so the built shot is the first block.', 'Long answers are set in paragraphs at their own sentence breaks, words untouched.', SCAFFOLD],
+    newsletter: ['The empty-email line reads the email field only.'],
+    'contact-form': ['From a desktop box the question and its answer run the full width above, and the photo bleeds from the box edge beside the form, as tall as the form.', SCAFFOLD],
+  },
 };
+const DELIBERATE = DELIBERATE_BY_CITY[CITY] ?? {};
 const COLUMN = 'Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.';
 
 const FRAMES = resolve(ROOT, `docs/artifacts/canvas/${CITY}-frames`);
@@ -120,6 +134,14 @@ if (!existsSync(resolve(ROOT, 'dist', PAGE_PATH, 'index.html'))) {
   console.error(`no dist/${PAGE_PATH} — run npm run -s build first`);
   process.exit(2);
 }
+// The page's approved board, where it has one, says which picked components the page mounts (the
+// kit is a menu: rules/gates.md outline-before-components). A pick the board mounts on no section
+// (London's puppy cards and video, once its page was written) is noted on its card, not failed; a
+// page with no board yet (a scaffold) must carry every pick.
+const BOARD = resolve(ROOT, `data/boards/${SLUG}.json`);
+const boardMounts = existsSync(BOARD)
+  ? new Set(JSON.parse(readFileSync(BOARD, 'utf8')).sections.flatMap((s) => [s.component, ...(s.subcomponents ?? []).map((x) => x.component)]).filter(Boolean))
+  : null;
 const OUT = resolve(ROOT, `docs/artifacts/canvas/side-by-side/${CITY}`);
 mkdirSync(OUT, { recursive: true });
 
@@ -161,7 +183,7 @@ try {
     const key = picks[component];
     const variant = key.split('/')[2];
     const row = rows[i];
-    const sel = ROOT_SELECTOR[row.file];
+    const sel = row.root_selector;
     for (const width of WIDTHS) {
       const shot = { component, key, row, width, canvasFile: null, builtFile: null, note: null };
       const height = 900;
@@ -189,21 +211,23 @@ try {
       await page.goto(`http://127.0.0.1:${PORT}/${PAGE_PATH}`, { waitUntil: 'load' });
       await page.evaluate(() => document.fonts.ready);
       const el = page.locator(sel).first();
-      if ((await page.locator(sel).count()) === 0) {
+      if ((await page.locator(sel).count()) === 0 && boardMounts && !boardMounts.has(row.id)) {
+        shot.note = `Not on the page: its approved board mounts no section with ${row.id}.`;
+      } else if ((await page.locator(sel).count()) === 0) {
         console.error(`${component}: ${sel} matched nothing on /${PAGE_PATH}`);
         process.exitCode = 1;
         shot.note = `Not found on the page (${sel}).`;
       } else if (!(await el.isVisible())) {
-        shot.note = `Not shown at ${width}px by design. ${HIDDEN_WHY[row.file] ?? `${row.file.replace('.astro', '')} is not displayed at this width.`}`;
+        shot.note = `Not shown at ${width}px by design. ${HIDDEN_WHY[component] ?? `${row.file.replace('.astro', '')} is not displayed at this width.`}`;
       } else {
-        if (!CHROME.has(row.file)) {
+        if (!CHROME.has(component)) {
           // The site header and the jump band are sticky; neither may sit over another section.
-          await page.addStyleTag({ content: '.kit-hdr, [data-city-jump-stepper] { visibility: hidden !important; }' });
+          await page.addStyleTag({ content: HIDE_CHROME });
         }
         for (const src of await settleImages(page, sel)) broken.push(`${component} built @${width}: ${src}`);
-        if (CHROME.has(row.file)) await page.evaluate(() => window.scrollTo(0, 0));
+        if (CHROME.has(component)) await page.evaluate(() => window.scrollTo(0, 0));
         else await el.scrollIntoViewIfNeeded();
-        if (row.file === DIAL_FILE) {
+        if (component === DIAL) {
           // The dial follows the reader. Scroll just far enough that the whole dial is on screen,
           // let the scroll spy settle, and read the row it marks; the shot then checks that row's
           // section is the one in the spy's reading band (40-45% down), so the marked row is
@@ -212,22 +236,36 @@ try {
             const dial = document.querySelector(s);
             const r = dial.getBoundingClientRect();
             window.scrollTo(0, Math.max(0, r.bottom + window.scrollY - window.innerHeight + 16));
-            let last = null;
-            let same = 0;
-            const t0 = Date.now();
-            while (same < 6 && Date.now() - t0 < 3000) {
-              await new Promise((res) => setTimeout(res, 50));
-              const cur = dial.querySelector('[aria-current]');
-              const id = cur ? cur.getAttribute('href') : null;
-              same = id && id === last ? same + 1 : 0;
-              last = id;
+            const settle = async () => {
+              let last = null;
+              let same = 0;
+              const t0 = Date.now();
+              while (same < 6 && Date.now() - t0 < 3000) {
+                await new Promise((res) => setTimeout(res, 50));
+                const cur = dial.querySelector('[aria-current]');
+                const id = cur ? cur.getAttribute('href') : null;
+                same = id && id === last ? same + 1 : 0;
+                last = id;
+              }
+            };
+            await settle();
+            const band = window.innerHeight * 0.42;
+            // A short dial (Manchester's numeral rail) is whole on screen while the reader is still
+            // above the first listed section, where no row can be the one being read: scroll on
+            // until the reading band is inside the first section, then let the spy settle again.
+            const first = document.getElementById(dial.querySelector('a[href^="#"]').getAttribute('href').slice(1));
+            const top = first.getBoundingClientRect().top;
+            if (top > band) {
+              window.scrollBy(0, top - band + 40);
+              await settle();
             }
             const cur = dial.querySelector('[aria-current]');
             if (!cur) return null;
             const t = document.getElementById(cur.getAttribute('href').slice(1)).getBoundingClientRect();
-            const band = window.innerHeight * 0.42;
             cur.dataset.sbsRow = '1';
-            return t.top <= band && t.bottom >= band ? cur.textContent.trim() : `MISMATCH:${cur.textContent.trim()}`;
+            // The row's name: its label where the row also prints a numeral (Manchester's rail).
+            const name = (cur.querySelector('.l') ?? cur).textContent.trim();
+            return t.top <= band && t.bottom >= band ? name : `MISMATCH:${name}`;
           }, sel);
           if (!dialRow || dialRow.startsWith('MISMATCH')) {
             console.error(`${component} @${width}: the dial's marked row is not the section being read (${dialRow})`);
@@ -240,7 +278,7 @@ try {
           if (w < width - 200) columnNote.add(component);
         }
         shot.builtFile = `${component}-${width}-built.jpg`;
-        if (row.file === DIAL_FILE) {
+        if (component === DIAL) {
           // Clipped from the viewport where it sticks: an element shot scrolls it into view, which
           // moves the reader and so the dial's current row.
           const b = await el.evaluate((n) => { const r = n.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
@@ -250,19 +288,32 @@ try {
           await page.screenshot({ path: resolve(OUT, shot.builtFile), type: 'jpeg', quality: 78, clip: { x, y, width: Math.floor(b.x + b.w) - x, height: Math.min(height, Math.floor(b.y + b.h)) - y } });
           const still = await el.evaluate((n) => n.querySelector('[data-sbs-row]').hasAttribute('aria-current'));
           if (!still) { console.error(`${component} @${width}: the dial's row "${dialRow}" was not current when shot`); process.exitCode = 1; }
-        } else if (STICKY.has(row.file)) {
+        } else if (STICKY.has(component)) {
           await el.screenshot({ path: resolve(OUT, shot.builtFile), type: 'jpeg', quality: 78 });
         } else {
           // The section's own box, rounded INWARD: an element shot rounds a fractional edge out and
-          // picks up a 1px line of the next section.
-          const b = await el.evaluate((n) => {
+          // picks up a 1px line of the next section. A section that fits the viewport is shot where
+          // it sits on screen: a full-page capture re-lays the page out at its whole height, and an
+          // already painted lazy photo could be captured before it was decoded again (the Manchester
+          // deposit section's photo came out as an empty box at 1280). A taller one needs the page.
+          const tall = await el.evaluate((n) => n.getBoundingClientRect().height > window.innerHeight);
+          if (!tall) {
+            await el.evaluate((n) => window.scrollTo(0, n.getBoundingClientRect().top + window.scrollY - 1));
+            // Decode the section's own painted photos again, each capped (a decode never settles
+            // for an image that never loads).
+            await el.evaluate((n) => Promise.all(Array.from(n.querySelectorAll('img')).filter((i) => i.getClientRects().length)
+              .map((i) => Promise.race([i.decode ? i.decode().catch(() => null) : null, new Promise((r) => setTimeout(r, 3000))]))));
+            await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+          }
+          const b = await el.evaluate((n, inView) => {
             const r = n.getBoundingClientRect();
-            return { x: r.left + window.scrollX, y: r.top + window.scrollY, w: r.width, h: r.height };
-          });
+            return inView ? { x: r.left, y: r.top, w: r.width, h: r.height }
+              : { x: r.left + window.scrollX, y: r.top + window.scrollY, w: r.width, h: r.height };
+          }, !tall);
           const x = Math.ceil(b.x);
           const y = Math.ceil(b.y);
           const clip = { x, y, width: Math.floor(b.x + b.w) - x, height: Math.floor(b.y + b.h) - y };
-          await page.screenshot({ path: resolve(OUT, shot.builtFile), type: 'jpeg', quality: 78, fullPage: true, clip });
+          await page.screenshot({ path: resolve(OUT, shot.builtFile), type: 'jpeg', quality: 78, fullPage: tall, clip });
         }
       }
       await page.close();
@@ -277,6 +328,10 @@ try {
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const title = CITY.charAt(0).toUpperCase() + CITY.slice(1);
+const COUNT = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
+  'thirteen', 'fourteen', 'fifteen'][order.length] ?? String(order.length);
+// What the built copies carry: London's page when its side-by-side was confirmed; a scaffold's lines.
+const CARRY = CITY === 'london' ? "the page's placeholder copy" : 'marked scaffold lines in place of copy, under the approved outline\'s headings,';
 const cards = order.map((component, i) => {
   const row = rows[i];
   const notes = [...DELIBERATE[component] ?? []];
@@ -346,7 +401,7 @@ code{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
 <header class="top"><div class="in">
 <h1>${title} Components, Side by Side</h1>
-<p class="intro">Each of the fifteen components you picked on the ${title} component canvas, beside the component as built on the real ${title} page, at phone (375px), tablet (768px) and desktop (1280px) width. The built copies carry the page's placeholder copy and the site's data (puppies, prices, served photos with their served alt text). Each card says what differs on purpose. Tell us which ones match, and what differs on any that do not.</p>
+<p class="intro">Each of the ${COUNT} components you picked on the ${title} component canvas, beside the component as built on the real ${title} page, at phone (375px), tablet (768px) and desktop (1280px) width. The built copies carry ${CARRY} and the site's data (puppies, prices, served photos with their served alt text). Each card says what differs on purpose. Tell us which ones match, and what differs on any that do not.</p>
 </div></header>
 <main>
 ${cards}

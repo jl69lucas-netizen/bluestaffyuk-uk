@@ -94,6 +94,7 @@ import CityRowsBesideAPhoto from './CityRowsBesideAPhoto.astro';
 import CityPostmarkedNote from './CityPostmarkedNote.astro';
 import CityPhotoAtTheEdge from './CityPhotoAtTheEdge.astro';
 import { MANCHESTER_FAQ } from '../../lib/manchesterFaq';
+import { MANCHESTER, MANCHESTER_H2, MANCHESTER_NAV } from '../../lib/manchesterNav';
 import componentsJson from '../../../data/design/components.json';
 import locationRows from '../../../data/locations.json';
 import { placeGroups, type PlaceRow } from '../../lib/cityPlaces';
@@ -262,37 +263,12 @@ const FAQ_LIFE: CityFaqRow[] = [
   { q: 'How long does a Staffordshire Bull Terrier live?', a: 'Twelve to fourteen years is the figure the Staffordshire Bull Terrier Club gives for a healthy, well-cared-for dog.' },
 ];
 
-/** Manchester's city name, from data/locations.json, and the four puppies its hero shows (the
- *  picked canvas variant's, feature first; src/lib/cityKit.ts pickAvailable passes over a sold one). */
-const MANCHESTER = (locationRows as { slug: string; city: string }[]).find((r) => r.slug === manchesterOutline.slug)!.city;
+/** The four puppies Manchester's hero shows (the picked canvas variant's, feature first;
+ *  src/lib/cityKit.ts pickAvailable passes over a sold one). Manchester's city name, its outline's
+ *  thirteen H2s and its nav set's names are src/lib/manchesterNav.ts's, one list the page reads too. */
 const MANCHESTER_HERO_PUPS = pickAvailable(['Roman', 'Cheryl', 'Ince', 'Vennie'], 4).map((p) => p.name);
+export { MANCHESTER_NAV };
 
-/** The questions Manchester's nav set lists: every H2 of its approved outline, word for word, in
- *  page order (thirteen; data/outlines/, approved at STOP 2). */
-const MANCHESTER_H2: string[] = (manchesterOutline as { sections: { headings: { level: number; text: string }[] }[] }).sections
-  .flatMap((sec) => sec.headings.filter((h) => h.level === 2).map((h) => h.text));
-/** The short name (the dial and the bar's readout), the contents row's fuller name and its icon for
- *  each of those thirteen sections, in the same order: the picked canvas variants' own words
- *  (design/city-canvas/manchester/{contents-list/b,desktop-dial/a,jump-links/b}.html). The page
- *  (Phase F Task 32) gives each its section's anchor; the preview gives each one of its own. */
-export const MANCHESTER_NAV: { label: string; row: string; icon: CityIcon }[] = [
-  { label: 'Asked first', row: 'First questions answered', icon: 'faq' },
-  { label: 'Deposit and visit', row: 'The deposit and your visit', icon: 'deposit' },
-  { label: 'Parents\' tests', row: "The parents' health tests", icon: 'health' },
-  { label: 'The litter', row: 'The litter and its prices', icon: 'puppies' },
-  { label: 'Health and viewing', row: 'Health and viewing questions', icon: 'faq' },
-  { label: 'Travel', row: `Travel to Greater ${MANCHESTER}`, icon: 'delivery' },
-  { label: 'Papers', row: 'Papers that come home', icon: 'papers' },
-  { label: 'Health and guarantee', row: 'Health and the guarantee', icon: 'guarantee' },
-  { label: 'Busy household', row: 'Life in a busy home', icon: 'home' },
-  { label: 'Favourite person', row: 'One person or the whole family', icon: 'family' },
-  { label: 'Coat comes last', row: 'Why the coat comes last', icon: 'coat' },
-  { label: 'Everyday life', row: 'Everyday questions', icon: 'faq' },
-  { label: 'Ask about a puppy', row: 'Ask about a puppy', icon: 'enquire' },
-];
-if (MANCHESTER_NAV.length !== MANCHESTER_H2.length) {
-  throw new Error(`_registry.ts: MANCHESTER_NAV names ${MANCHESTER_NAV.length} sections; the outline has ${MANCHESTER_H2.length} H2s`);
-}
 /** The nav set's demo sections on /kit-preview/city-manchester/: the preview's OWN Manchester
  *  anchors (`kit-<component id>`, in file order, so every link resolves and the spy has real
  *  sections to observe), each carrying the outline's question and the canvas's names in order. The

@@ -399,9 +399,11 @@ def test_the_nav_set_is_pluggable_and_pageshell_carries_no_city_pick():
     assert not re.search(r"import\s+City\w+", ccode), "CityShell names a city's picks"
     for name in ("nav-bar", "nav-contents", "nav-dial"):
         assert f'slot="{name}"' in city, name
-    # No site page mounts the city layout or names a city nav pick (London arrives in Task 8).
+    # No site page mounts the city layout or names a city nav pick but a city's own page (London
+    # arrived in Task 8; Manchester's scaffold in its page run, Phase F Task 32).
+    cities = {l["slug"] for l in json.loads((ROOT / "data/locations.json").read_text(encoding="utf-8"))}
     for page in (ROOT / "src/pages").rglob("*.astro"):
-        if "kit-preview" in page.parts or page.name == "blue-staffy-puppies-london.astro":
+        if "kit-preview" in page.parts or (page.parent.name == "uk-locations" and page.stem in cities):
             continue
         text = page.read_text(encoding="utf-8")
         assert "CityShell" not in text and "slot=\"nav-dial\"" not in text, page

@@ -1,0 +1,378 @@
+<title>Manchester Side by Side</title>
+<style>
+:root{--bg:#F4F1EA;--card:#FAF8F3;--ink:#1B2430;--muted:#46566B;--rule:#DAD6CC;--accent:#1F3A52;--brass:#A8861C;--band:#1F3A52;--band-ink:#F4F1EA;--note:#EFE3B4}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#14202B;--card:#1B2A38;--ink:#EEF1F4;--muted:#B6C2CC;--rule:#2C3A47;--accent:#8FA3B8;--brass:#C9A227;--band:#0E1720;--band-ink:#E4EAF1;--note:#2A2A1C}}
+:root[data-theme="dark"]{--bg:#14202B;--card:#1B2A38;--ink:#EEF1F4;--muted:#B6C2CC;--rule:#2C3A47;--accent:#8FA3B8;--brass:#C9A227;--band:#0E1720;--band-ink:#E4EAF1;--note:#2A2A1C}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{background:var(--band);color:var(--band-ink);border-bottom:3px solid var(--brass)}
+.top .in,main{max-width:1320px;margin:0 auto;padding-left:16px;padding-right:16px}
+.top .in{padding-top:24px;padding-bottom:20px}
+h1{margin:0 0 8px;font:700 clamp(24px,5vw,32px)/1.2 Fraunces,Georgia,serif}
+.intro{margin:0;max-width:70ch;opacity:.9}
+main{padding-top:24px;padding-bottom:64px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px;margin:0 0 24px;min-width:0}
+h2{margin:0 0 4px;font:700 20px/1.3 Fraunces,Georgia,serif;color:var(--accent)}
+.n{color:var(--brass);margin-right:6px}
+.key{margin:0 0 12px;color:var(--muted);font-size:14px;overflow-wrap:anywhere}
+code{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+.differs{background:var(--note);border-left:3px solid var(--brass);border-radius:6px;padding:10px 12px;margin:0 0 16px;font-size:14px}
+.dh{margin:0 0 4px;font-weight:700}
+.differs ul{margin:0;padding-left:18px}.differs li{max-width:80ch}
+.pair{margin:0 0 20px;padding-top:12px;border-top:1px solid var(--rule)}
+.pair figcaption{font-weight:700;margin:0 0 8px;color:var(--accent)}
+.two{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.two>div{min-width:0}
+.lab{margin:0 0 4px;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.two img{display:block;max-width:100%;height:auto;border:1px solid var(--rule);border-radius:6px;background:#fff}
+.absent{margin:0;padding:16px;border:1px dashed var(--rule);border-radius:6px;color:var(--muted);font-size:14px}
+@media (min-width:900px){.w375 .two{grid-template-columns:repeat(2,minmax(0,375px))}.w768 .two,.w1280 .two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<header class="top"><div class="in">
+<h1>Manchester Components, Side by Side</h1>
+<p class="intro">Each of the thirteen components you picked on the Manchester component canvas, beside the component as built on the real Manchester page, at phone (375px), tablet (768px) and desktop (1280px) width. The built copies carry marked scaffold lines in place of copy, under the approved outline's headings, and the site's data (puppies, prices, served photos with their served alt text). Each card says what differs on purpose. Tell us which ones match, and what differs on any that do not.</p>
+</div></header>
+<main>
+
+    <section class="card" id="hero">
+      <h2><span class="n">01</span> M1 · Manchester hero (feature and three)</h2>
+      <p class="key"><code>manchester/hero/c</code> → <code>src/components/kit/CityFeatureAndThree.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>The H1 is the approved outline's, at the canvas's size inside the type-fit caps.</li><li>The promise rail's labels wrap balanced rather than staying on one line, so a longer label never runs into its neighbour at 1024px.</li><li>Its paragraph is a marked scaffold line, not copy: the page is written at page-run row 12 from the approved page board. Headings are the approved outline's, word for word.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/hero-375-canvas.jpg" alt="hero as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/hero-375-built.jpg" alt="M1 · Manchester hero (feature and three) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/hero-768-canvas.jpg" alt="hero as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/hero-768-built.jpg" alt="M1 · Manchester hero (feature and three) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/hero-1280-canvas.jpg" alt="hero as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/hero-1280-built.jpg" alt="M1 · Manchester hero (feature and three) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="counter-strip">
+      <h2><span class="n">02</span> M2 · Manchester counter strip (range sheet)</h2>
+      <p class="key"><code>manchester/counter-strip/b</code> → <code>src/components/kit/CityRangeSheet.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>Each figure cell is a column, label at the top and figure at the foot, so the two prices share a baseline on a phone.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/counter-strip-375-canvas.jpg" alt="counter-strip as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/counter-strip-375-built.jpg" alt="M2 · Manchester counter strip (range sheet) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/counter-strip-768-canvas.jpg" alt="counter-strip as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/counter-strip-768-built.jpg" alt="M2 · Manchester counter strip (range sheet) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/counter-strip-1280-canvas.jpg" alt="counter-strip as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/counter-strip-1280-built.jpg" alt="M2 · Manchester counter strip (range sheet) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="trust-strip">
+      <h2><span class="n">03</span> M3 · Manchester trust strip (puppy folder)</h2>
+      <p class="key"><code>manchester/trust-strip/b</code> → <code>src/components/kit/CityPuppyFolder.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>From 640px an odd last slip spans both columns, so the folder ends square.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/trust-strip-375-canvas.jpg" alt="trust-strip as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/trust-strip-375-built.jpg" alt="M3 · Manchester trust strip (puppy folder) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/trust-strip-768-canvas.jpg" alt="trust-strip as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/trust-strip-768-built.jpg" alt="M3 · Manchester trust strip (puppy folder) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/trust-strip-1280-canvas.jpg" alt="trust-strip as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/trust-strip-1280-built.jpg" alt="M3 · Manchester trust strip (puppy folder) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="contents-list">
+      <h2><span class="n">04</span> M4 · Manchester contents list (icon rows)</h2>
+      <p class="key"><code>manchester/contents-list/b</code> → <code>src/components/kit/CityIconRows.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>From 640px the photo column is 272 to 340px wide and the rows take two columns from 768px, so the served photo is never painted past twice its size.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contents-list-375-canvas.jpg" alt="contents-list as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/contents-list-375-built.jpg" alt="M4 · Manchester contents list (icon rows) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contents-list-768-canvas.jpg" alt="contents-list as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/contents-list-768-built.jpg" alt="M4 · Manchester contents list (icon rows) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contents-list-1280-canvas.jpg" alt="contents-list as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><p class="absent">Not shown at 1280px by design. The contents list shows below 1024px only: from 1024px the dial beside the body is the page's contents, as on the other pages (your ruling, answer board q05, 2026-09-29).</p></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="desktop-dial">
+      <h2><span class="n">05</span> M5 · Manchester desktop dial (numeral rail)</h2>
+      <p class="key"><code>manchester/desktop-dial/a</code> → <code>src/components/kit/CityNumeralRail.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>The rail is inset from its column's edge, and the marked row is kept in view inside the rail on a short screen.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li><li>The dial follows the reader: its marked row is the section being read. The canvas marked its first row; the built dial is shot where the whole dial is on screen, with the reader in &quot;Asked first&quot;, so that row is marked.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><p class="absent">The canvas frame does not show it at 375px either, only its stand-in sections.</p></div>
+          <div><p class="lab">Built on the Manchester page</p><p class="absent">Not shown at 375px by design. The dial is desktop navigation: it shows from 1024px, and the jump band stands in for it on phones and tablets.</p></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><p class="absent">The canvas frame does not show it at 768px either, only its stand-in sections.</p></div>
+          <div><p class="lab">Built on the Manchester page</p><p class="absent">Not shown at 768px by design. The dial is desktop navigation: it shows from 1024px, and the jump band stands in for it on phones and tablets.</p></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/desktop-dial-1280-canvas.jpg" alt="desktop-dial as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/desktop-dial-1280-built.jpg" alt="M5 · Manchester desktop dial (numeral rail) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="jump-links">
+      <h2><span class="n">06</span> M6 · Manchester jump links (question bar)</h2>
+      <p class="key"><code>manchester/jump-links/b</code> → <code>src/components/kit/CityQuestionBar.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>On the page the bar is the top chrome: it slides away on the way down and comes back on the way up (answer board q03).</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/jump-links-375-canvas.jpg" alt="jump-links as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/jump-links-375-built.jpg" alt="M6 · Manchester jump links (question bar) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/jump-links-768-canvas.jpg" alt="jump-links as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/jump-links-768-built.jpg" alt="M6 · Manchester jump links (question bar) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><p class="absent">The canvas frame does not show it at 1280px either, only its stand-in sections.</p></div>
+          <div><p class="lab">Built on the Manchester page</p><p class="absent">Not shown at 1280px by design. The jump band is phone and tablet navigation: it shows below 1024px, and the dial beside the body takes its place from 1024px.</p></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="key-takeaways">
+      <h2><span class="n">07</span> M7 · Manchester key takeaways (tick card)</h2>
+      <p class="key"><code>manchester/key-takeaways/c</code> → <code>src/components/kit/CityTickCard.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>The head is split 7 to 5, so the title takes two lines, not three.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/key-takeaways-375-canvas.jpg" alt="key-takeaways as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/key-takeaways-375-built.jpg" alt="M7 · Manchester key takeaways (tick card) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/key-takeaways-768-canvas.jpg" alt="key-takeaways as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/key-takeaways-768-built.jpg" alt="M7 · Manchester key takeaways (tick card) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/key-takeaways-1280-canvas.jpg" alt="key-takeaways as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/key-takeaways-1280-built.jpg" alt="M7 · Manchester key takeaways (tick card) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="tables">
+      <h2><span class="n">08</span> M8 · Manchester table (photo shelf)</h2>
+      <p class="key"><code>manchester/tables/a</code> → <code>src/components/kit/CityPhotoShelf.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>On a phone each card's price is pinned to its foot, so the prices in a pair share a line.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/tables-375-canvas.jpg" alt="tables as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/tables-375-built.jpg" alt="M8 · Manchester table (photo shelf) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/tables-768-canvas.jpg" alt="tables as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/tables-768-built.jpg" alt="M8 · Manchester table (photo shelf) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/tables-1280-canvas.jpg" alt="tables as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/tables-1280-built.jpg" alt="M8 · Manchester table (photo shelf) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="image-text">
+      <h2><span class="n">09</span> M9 · Manchester image and text (offset sheet)</h2>
+      <p class="key"><code>manchester/image-text/c</code> → <code>src/components/kit/CityOffsetSheet.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>The built shot is the deposit section, the canvas's own, with its four cells read from the data. The other eight body sections show the outline's plan for the section (its row, framework and planned words) in the sheet until the page is written.</li><li>An odd last cell spans the row.</li><li>Its paragraph is a marked scaffold line, not copy: the page is written at page-run row 12 from the approved page board. Headings are the approved outline's, word for word.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/image-text-375-canvas.jpg" alt="image-text as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/image-text-375-built.jpg" alt="M9 · Manchester image and text (offset sheet) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/image-text-768-canvas.jpg" alt="image-text as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/image-text-768-built.jpg" alt="M9 · Manchester image and text (offset sheet) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/image-text-1280-canvas.jpg" alt="image-text as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/image-text-1280-built.jpg" alt="M9 · Manchester image and text (offset sheet) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="reviews">
+      <h2><span class="n">10</span> M10 · Manchester reviews (three plates)</h2>
+      <p class="key"><code>manchester/reviews/c</code> → <code>src/components/kit/CityThreePlates.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>The page mounts the plates three times (outline rows 6, 11 and 20), the photo side alternating; the built shot is the first, The Victoria Family.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/reviews-375-canvas.jpg" alt="reviews as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/reviews-375-built.jpg" alt="M10 · Manchester reviews (three plates) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/reviews-768-canvas.jpg" alt="reviews as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/reviews-768-built.jpg" alt="M10 · Manchester reviews (three plates) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/reviews-1280-canvas.jpg" alt="reviews as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/reviews-1280-built.jpg" alt="M10 · Manchester reviews (three plates) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="faq-blocks">
+      <h2><span class="n">11</span> M11 · Manchester FAQ blocks (rows beside a photo)</h2>
+      <p class="key"><code>manchester/faq-blocks/b</code> → <code>src/components/kit/CityRowsBesideAPhoto.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>The canvas frame stacks the three FAQ blocks; the page places them apart (outline rows 7, 12 and 21), so the built shot is the first block.</li><li>Long answers are set in paragraphs at their own sentence breaks, words untouched.</li><li>Its paragraph is a marked scaffold line, not copy: the page is written at page-run row 12 from the approved page board. Headings are the approved outline's, word for word.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/faq-blocks-375-canvas.jpg" alt="faq-blocks as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/faq-blocks-375-built.jpg" alt="M11 · Manchester FAQ blocks (rows beside a photo) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/faq-blocks-768-canvas.jpg" alt="faq-blocks as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/faq-blocks-768-built.jpg" alt="M11 · Manchester FAQ blocks (rows beside a photo) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/faq-blocks-1280-canvas.jpg" alt="faq-blocks as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/faq-blocks-1280-built.jpg" alt="M11 · Manchester FAQ blocks (rows beside a photo) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="newsletter">
+      <h2><span class="n">12</span> M12 · Manchester newsletter (postmarked note)</h2>
+      <p class="key"><code>manchester/newsletter/b</code> → <code>src/components/kit/CityPostmarkedNote.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>The empty-email line reads the email field only.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/newsletter-375-canvas.jpg" alt="newsletter as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/newsletter-375-built.jpg" alt="M12 · Manchester newsletter (postmarked note) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/newsletter-768-canvas.jpg" alt="newsletter as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/newsletter-768-built.jpg" alt="M12 · Manchester newsletter (postmarked note) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/newsletter-1280-canvas.jpg" alt="newsletter as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/newsletter-1280-built.jpg" alt="M12 · Manchester newsletter (postmarked note) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+    <section class="card" id="contact-form">
+      <h2><span class="n">13</span> M13 · Manchester contact form (photo at the edge)</h2>
+      <p class="key"><code>manchester/contact-form/b</code> → <code>src/components/kit/CityPhotoAtTheEdge.astro</code></p>
+      <div class="differs"><p class="dh">What differs on purpose</p><ul><li>From a desktop box the question and its answer run the full width above, and the photo bleeds from the box edge beside the form, as tall as the form.</li><li>Its paragraph is a marked scaffold line, not copy: the page is written at page-run row 12 from the approved page board. Headings are the approved outline's, word for word.</li><li>Laid out for the column beside the 272px dial (Code fact 6): the canvas painted it full width, so from 1024px the built copy is narrower and lays out for its own box.</li></ul></div>
+      <figure class="pair w375">
+        <figcaption>375px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contact-form-375-canvas.jpg" alt="contact-form as picked on the canvas at 375px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/contact-form-375-built.jpg" alt="M13 · Manchester contact form (photo at the edge) as built on the Manchester page at 375px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w768">
+        <figcaption>768px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contact-form-768-canvas.jpg" alt="contact-form as picked on the canvas at 768px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/contact-form-768-built.jpg" alt="M13 · Manchester contact form (photo at the edge) as built on the Manchester page at 768px" loading="lazy"></div>
+        </div>
+      </figure>
+      <figure class="pair w1280">
+        <figcaption>1280px</figcaption>
+        <div class="two">
+          <div><p class="lab">Canvas (your pick)</p><img src="side-by-side/contact-form-1280-canvas.jpg" alt="contact-form as picked on the canvas at 1280px" loading="lazy"></div>
+          <div><p class="lab">Built on the Manchester page</p><img src="side-by-side/contact-form-1280-built.jpg" alt="M13 · Manchester contact form (photo at the edge) as built on the Manchester page at 1280px" loading="lazy"></div>
+        </div>
+      </figure>
+    </section>
+</main>

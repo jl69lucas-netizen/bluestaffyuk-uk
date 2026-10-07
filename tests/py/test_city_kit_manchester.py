@@ -430,10 +430,13 @@ def test_question_bar_is_a_readout_ticks_and_a_native_dialog_of_the_questions():
 def test_the_nav_demo_reads_its_questions_from_the_outline():
     """The specimen's sections are the outline's own H2s and labels for the preview's anchors: one
     list for the three components (src/layouts/CityShell.astro hands each the same list)."""
-    src = REGISTRY.read_text(encoding="utf-8")
+    # One list for the preview and the page (Phase F Task 32): src/lib/manchesterNav.ts, which the
+    # registry re-exports, so a page never imports the registry (and every kit component's CSS).
+    src = (ROOT / "src/lib/manchesterNav.ts").read_text(encoding="utf-8")
     block = src.split("export const MANCHESTER_NAV", 1)[1].split("];", 1)[0]
     assert len(re.findall(r"label: '", block)) == len(OUTLINE_H2) == 13
-    assert re.search(r"const MANCHESTER_H2\b[^\n]*manchesterOutline\b[^\n]*\)\.sections", src), "the questions are read from the outline"
+    assert re.search(r"const MANCHESTER_H2\b[^\n]*outline\b[^\n]*\)\.sections", src), "the questions are read from the outline"
+    assert "export { MANCHESTER_NAV }" in REGISTRY.read_text(encoding="utf-8")
 
 
 # --------------------------------------------------------------------------- G12: the shared nav hook

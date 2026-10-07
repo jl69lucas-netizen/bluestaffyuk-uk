@@ -1,0 +1,270 @@
+---
+// src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro — the Manchester page's SCAFFOLD
+// (the Manchester page run, Phase F Task 32; London's pattern, London Plan 2 Task 8).
+//
+// WHAT THIS IS. Manchester's thirteen picks (data/design/city-picks/blue-staffy-puppies-manchester-uk.json,
+// frozen 355d5e43; video and puppy cards are "none"), each built as a component of its own
+// (rules/design.md own-components-per-page), mounted on the city layout (src/layouts/CityShell.astro:
+// PageShell with Manchester's own nav set) in the order of the APPROVED OUTLINE
+// (data/outlines/blue-staffy-puppies-manchester-uk.json, STOP 2), so the picks can be judged together,
+// at every width, before the page board (STOP 3).
+//
+// WHAT THIS IS NOT. Manchester's copy. Every heading, H1 to H6, is the outline's, read from the
+// outline file word for word and in order. Every paragraph the page itself would write (the hero's
+// opener, each body section's answer, each FAQ block's line, the form's line) is ONE MARKED SCAFFOLD
+// LINE ("Scaffold line, not copy."), until page-run row 12 writes the page from the approved board.
+// The deposit section carries its designed sheet (src/lib/cityKit.ts `depositTerms()`, the refund
+// clause word for word); the other eight body sections show the outline's own plan for the section
+// (its row, framework and planned words) in the sheet, marked as such. Each body section's deeper
+// headings (H3 to H6) are listed below it in a marked scaffold outline, the litter table under its H4.
+//
+// EVERY FIGURE IS DATA: prices, deposit, band, town, the litter's names and sexes, the guarantee and
+// the reviews are read by the components (src/lib/cityKit.ts, data/reviews.json), never typed. The
+// three FAQ blocks are src/lib/manchesterFaq.ts: the outline's twenty questions (its page wordings)
+// with answers from the FAQ bank and the data, and the FAQPage node carries exactly those twenty.
+// No video, no puppy cards, no licence claim, no phone.
+//
+// KEPT OUT OF THE INDEX: `noindex, follow`, written HERE rather than read from data/locations.json,
+// so a data edit cannot publish a scaffold; scripts/generate_sitemaps.py leaves a noindex page out of
+// every shard. src/pages/uk-locations/[slug].astro no longer builds this route (it skips a city with
+// its own file). THE MIGRATED BODY STAYS, word for word, in an `article.prose-migrated` at the foot:
+// Manchester is not in data/facts/rebuilt.json until its page run ends, so `check:parity` still
+// measures its migrated body, and it finds it here.
+//
+// ONE SERVED PHOTOGRAPH, ONE ALT PER USE (working rule 11; answer board q02, 2026-09-29): a served
+// photo's first use keeps its served alt; each repeat says a new true thing, checked against the
+// picture. The repeats the preview already used keep the preview's alts.
+import CityShell from '../../layouts/CityShell.astro';
+import locations from '../../../data/locations.json';
+import outline from '../../../data/outlines/blue-staffy-puppies-manchester-uk.json';
+import CityFeatureAndThree from '../../components/kit/CityFeatureAndThree.astro';
+import CityRangeSheet from '../../components/kit/CityRangeSheet.astro';
+import CityPuppyFolder from '../../components/kit/CityPuppyFolder.astro';
+import CityIconRows from '../../components/kit/CityIconRows.astro';
+import CityNumeralRail from '../../components/kit/CityNumeralRail.astro';
+import CityQuestionBar from '../../components/kit/CityQuestionBar.astro';
+import CityTickCard from '../../components/kit/CityTickCard.astro';
+import CityPhotoShelf from '../../components/kit/CityPhotoShelf.astro';
+import CityOffsetSheet from '../../components/kit/CityOffsetSheet.astro';
+import CityThreePlates from '../../components/kit/CityThreePlates.astro';
+import CityRowsBesideAPhoto from '../../components/kit/CityRowsBesideAPhoto.astro';
+import CityPostmarkedNote from '../../components/kit/CityPostmarkedNote.astro';
+import CityPhotoAtTheEdge from '../../components/kit/CityPhotoAtTheEdge.astro';
+import { MANCHESTER_FAQ } from '../../lib/manchesterFaq';
+import { MANCHESTER, MANCHESTER_H2, MANCHESTER_NAV } from '../../lib/manchesterNav';
+import { availablePuppies, depositTerms, faqPageNode, pickAvailable } from '../../lib/cityKit';
+import { numberWord } from '../../lib/recordText';
+import type { LocationRow } from '../../lib/site';
+import type { SectionRef } from '../../lib/sections';
+
+const SLUG = 'blue-staffy-puppies-manchester-uk';
+const loc = (locations as LocationRow[]).find((l) => l.slug === SLUG);
+if (!loc) throw new Error(`data/locations.json has no row for ${SLUG}`);
+if (outline.slug !== SLUG) throw new Error(`the outline is ${outline.slug}'s, not ${SLUG}'s`);
+
+// ── the outline, as the page reads it ───────────────────────────────────────────────────────────
+type Heading = { level: number; text: string; children?: Heading[] };
+type Row = { n: string; section: string; framework: string; words: number; headings: Heading[]; faq?: boolean;
+  table?: { under: string; caption: string } };
+const ROWS = outline.sections as unknown as Row[];
+const row = (n: string): Row => {
+  const r = ROWS.find((x) => x.n === n);
+  if (!r) throw new Error(`the outline has no row ${n}`);
+  return r;
+};
+const h2Of = (r: Row): Heading => {
+  const h = r.headings.find((x) => x.level === 2);
+  if (!h) throw new Error(`outline row ${r.n} (${r.section}) has no H2`);
+  return h;
+};
+/** A heading tree's nodes below the H2, in document order. */
+const below = (h: Heading): Heading[] => (h.children ?? []).flatMap((c) => [c, ...below(c)]);
+/** The marked scaffold line that stands in for a paragraph until row 12 writes it. */
+const scaffold = (r: Row) => `Scaffold line, not copy. Outline §${r.n}, ${r.section}: written here at page-run row 12, from the approved page board.`;
+
+// ── the nav set: the thirteen H2 sections, in page order ───────────────────────────────────────
+// Each section's anchor, keyed by its outline row; MANCHESTER_NAV (src/lib/manchesterNav.ts) names
+// each in the same order, so the dial, the bar and the contents agree with the preview.
+const NAV_ROWS: [string, string][] = [
+  ['7', 'asked-first'], ['8', 'deposit'], ['9', 'health-tests'], ['10', 'litter'], ['12', 'health-questions'],
+  ['13', 'travel'], ['14', 'papers'], ['15', 'guarantee'], ['17', 'busy-household'], ['18', 'favourite-person'],
+  ['19', 'coat'], ['21', 'everyday'], ['22', 'enquire'],
+];
+const ID = Object.fromEntries(NAV_ROWS);
+const sections: SectionRef[] = NAV_ROWS.map(([n, id], i) => {
+  const question = h2Of(row(n)).text;
+  if (question !== MANCHESTER_H2[i]) throw new Error(`nav row ${i + 1} is "${question}"; the outline's H2 ${i + 1} is "${MANCHESTER_H2[i]}"`);
+  return { id, question, ...MANCHESTER_NAV[i] };
+});
+
+// ── the photographs ─────────────────────────────────────────────────────────────────────────────
+const LITTER = numberWord(availablePuppies().length);
+const HERO_PUPS = pickAvailable(['Roman', 'Cheryl', 'Ince', 'Vennie'], 4).map((p) => p.name);
+const FAQ_PUP = pickAvailable(['Christa'], 1)[0];
+const NOTE_PUP = pickAvailable(['Vennie'], 1)[0];
+const BAR_PUP = pickAvailable(['Christa'], 1)[0].card_photo;
+const FAMILY = 'victoria-family-blue-staffy-manchester.webp';
+const PUP = 'reputable-blue-staffy-breeder-manchester-pup.webp';
+const MAGGIE = 'maggie-blue-staffy-dam-with-pups.webp';
+const JONES = 'jones-magnificent-blue-staffy-sire.webp';
+const JONES_SITTING = 'jones-strong-staffy-sire-temperament.webp';
+const OWNER = 'trusted-blue-staffy-breeder-reviews-satisfied-owners.webp';
+const HELD = 'best-blue-staffy-breeder-reviews-puppy-for-sale-uk.webp';
+
+/** The nine body sections, in outline order: each an offset sheet with its photo (a first use
+ *  carries no `alt`, so the served one is kept; a repeat names a new one), its sheet and its
+ *  deeper headings. */
+const plan = (r: Row) => [
+  { t: 'Outline row', d: `§${r.n}` },
+  { t: 'Framework', d: r.framework },
+  { t: 'Words planned', d: String(r.words) },
+];
+const BODY: { n: string; photo: string; alt?: string; rows?: { t: string; d: string }[]; cta?: { label: string; href: string } }[] = [
+  { n: '8', photo: FAMILY, alt: 'A new owner holding her blue Staffy puppy in a pink collar, cheek to cheek in the garden',
+    rows: depositTerms(), cta: { label: 'Ask about a viewing', href: '#enquire' } },
+  { n: '9', photo: JONES },
+  { n: '10', photo: MAGGIE },
+  { n: '13', photo: OWNER },
+  { n: '14', photo: HELD },
+  { n: '15', photo: JONES, alt: 'Jones lying on the carpet in front of his crate, a basketball behind him' },
+  { n: '17', photo: PUP, alt: 'A woman in a rust cardigan kneeling on the grass as a blue Staffy puppy stands up to greet her' },
+  { n: '18', photo: JONES_SITTING, alt: 'Jones sitting up on the carpet in front of his tartan-covered crate' },
+  { n: '19', photo: HELD, alt: 'A blue Staffy puppy held up in a pair of hands, its front paws hanging down' },
+];
+const body = Object.fromEntries(BODY.map((b) => [b.n, b]));
+
+/** The litter table's place: the outline's "H4 <heading>" under row 10's tree. */
+const litter = row('10');
+if (!litter.table) throw new Error('outline row 10 carries no table');
+const [, underLevel, underText] = /^H([2-6]) (.+)$/.exec(litter.table.under) ?? [];
+const litterTree = below(h2Of(litter));
+const at = litterTree.findIndex((h) => h.level === Number(underLevel) && h.text === underText);
+if (at < 0) throw new Error(`the litter table's heading "${litter.table.under}" is not in row 10's tree`);
+
+/** The body sections' render data: the H2 and its line, the sheet, and the deeper headings split
+ *  around the litter table where a section carries it. */
+const bodyOf = (n: string) => {
+  const r = row(n);
+  const b = body[n];
+  if (!b) throw new Error(`outline row ${n} has no body photo`);
+  const tree = below(h2Of(r));
+  const t = n === litter.n ? at : -1;
+  return {
+    id: ID[n], heading: h2Of(r).text, lede: scaffold(r), photo: b.photo, photoAlt: b.alt, rows: b.rows ?? plan(r), cta: b.cta,
+    before: t < 0 ? tree : tree.slice(0, t), table: t < 0 ? null : litterTree[t], after: t < 0 ? [] : tree.slice(t + 1),
+  };
+};
+
+// ── the page body, row by row in the outline's order (rows 1-3 are the hero slot, row 4 the
+// contents the layout mounts) ────────────────────────────────────────────────────────────────────
+const [faqFirst, faqHealth, faqLife] = MANCHESTER_FAQ;
+const FAQ_ROW: Record<string, typeof faqFirst> = { '7': faqFirst, '12': faqHealth, '21': faqLife };
+for (const [n, block] of Object.entries(FAQ_ROW)) {
+  if (block.heading !== h2Of(row(n)).text) throw new Error(`FAQ block ${block.key} is not outline row ${n}`);
+}
+const REVIEW_ROW: Record<string, Record<string, unknown>> = {
+  '6': { name: 'The Victoria Family', photo: FAMILY, side: 'start',
+    photoAlt: "The Victoria family's blue Staffy puppy, held up beside its owner's smiling face in their garden" },
+  '11': { name: 'Mark J', photo: JONES_SITTING, side: 'end', credit: 'Photo: Jones, the sire of this litter' },
+  '20': { name: 'Rachel L.', photo: MAGGIE, side: 'start', credit: 'Photo: Maggie, our dam, with her pups',
+    photoAlt: 'Maggie, mouth open, looking up from the sofa with two of her blue pups in front of her' },
+};
+const FAQ_PHOTO: Record<string, Record<string, unknown>> = {
+  '7': { side: 'end', photo: FAQ_PUP.card_photo, caption: `${FAQ_PUP.name}, one of our ${LITTER} puppies`,
+    photoAlt: `${FAQ_PUP.name}, one of our blue Staffy girls, with a white patch on her chest` },
+  '12': { side: 'start', photo: MAGGIE, caption: 'Maggie, our dam, with her pups',
+    photoAlt: 'Maggie, our blue Staffy dam, sitting on a grey sofa with two of her puppies beside her' },
+  '21': { side: 'end', photo: PUP, caption: `One of our puppies, settled at home in ${MANCHESTER}`,
+    photoAlt: 'A small blue Staffy puppy reaching up to its new owner as she kneels on the lawn' },
+};
+type Block = { n: string; kind: 'takeaways' | 'review' | 'faq' | 'body' | 'newsletter' | 'form' };
+const KIND: Record<string, Block['kind']> = {
+  '5': 'takeaways', '6': 'review', '7': 'faq', '11': 'review', '12': 'faq', '16': 'newsletter',
+  '20': 'review', '21': 'faq', '22': 'form',
+};
+const blocks: Block[] = ROWS.filter((r) => Number(r.n) >= 5).map((r) => ({ n: r.n, kind: KIND[r.n] ?? 'body' }));
+for (const b of blocks) {
+  const name = row(b.n).section;
+  const ok = { takeaways: /^Key takeaways/, review: /^Review/, faq: /^(FAQ|G6)/, newsletter: /^Newsletter/, form: /^Enquiry/, body: /./ }[b.kind];
+  if (!ok.test(name) || (b.kind === 'body' && !body[b.n])) throw new Error(`outline row ${b.n} (${name}) is not a ${b.kind} section`);
+}
+const schema = [faqPageNode(MANCHESTER_FAQ.flatMap((b) => b.items))];
+const enquiry = row('22');
+---
+<CityShell title={loc.title} description={loc.description} canonical={`/uk-locations/${SLUG}/`}
+  robots="noindex, follow" ogType="article" schema={schema} crumbTitle={loc.city} sections={sections}
+  nav={{
+    bar: { component: CityQuestionBar, props: { city: MANCHESTER, photo: BAR_PUP } },
+    dial: { component: CityNumeralRail, props: { city: MANCHESTER } },
+    contents: { component: CityIconRows, props: { city: MANCHESTER, photo: PUP } },
+  }}>
+  <Fragment slot="hero">
+    <CityFeatureAndThree data-city-scaffold={SLUG}
+      as="h1" title={outline.h1} lede={scaffold(row('1'))}
+      cta={{ label: 'Ask about a puppy', href: '#enquire' }}
+      more={{ label: `See all ${LITTER} puppies`, href: `#${ID['10']}` }}
+      photos={HERO_PUPS} />
+    <CityRangeSheet city={MANCHESTER} shownAbove={HERO_PUPS} />
+    <CityPuppyFolder city={MANCHESTER} />
+  </Fragment>
+
+  {blocks.map(({ n, kind }) => {
+    if (kind === 'takeaways') return <CityTickCard city={MANCHESTER} photo={FAMILY} cta={{ label: 'Ask about a puppy', href: '#enquire' }} />;
+    if (kind === 'review') return <CityThreePlates {...(REVIEW_ROW[n] as { name: string; photo: string })} />;
+    if (kind === 'faq') {
+      const f = FAQ_ROW[n];
+      return <CityRowsBesideAPhoto id={ID[n]} block={f.key} heading={f.heading} items={f.items} lede={scaffold(row(n))}
+        {...(FAQ_PHOTO[n] as { photo: string; caption: string })} />;
+    }
+    if (kind === 'newsletter') return <CityPostmarkedNote area={`Greater ${MANCHESTER}`} puppy={NOTE_PUP.name}
+      photoAlt={`${NOTE_PUP.name}, a blue and white Staffy girl, her white face marked with one dark eye patch`} />;
+    if (kind === 'form') return <CityPhotoAtTheEdge id={ID[n]} heading={h2Of(enquiry).text} lede={scaffold(enquiry)}
+      photo="lisa-bright-blue-staffy-breeder-carlisle.webp"
+      photoAlt="Lisa Bright, the breeder who answers your enquiry, holding a fawn puppy in one arm and a dark brindle puppy in the other" />;
+    const b = bodyOf(n);
+    return (
+      <div id={b.id} class="scaffold-section">
+        <CityOffsetSheet heading={b.heading} lede={b.lede} photo={b.photo} photoAlt={b.photoAlt} rows={b.rows} cta={b.cta} />
+        {b.before.length > 0 && (
+          <div class="scaffold-tree" data-scaffold-tree>
+            <p class="scaffold-note">Scaffold outline: this section's deeper headings, word for word from the approved outline. Their answers are written at row 12.</p>
+            {b.before.map((h) => { const Tag = `h${h.level}`; return <Tag>{h.text}</Tag>; })}
+          </div>
+        )}
+        {b.table && (
+          <CityPhotoShelf heading={b.table.text} as={`h${b.table.level}` as 'h4'} caption={litter.table!.caption}
+            city={MANCHESTER} shownAbove={availablePuppies().map((p) => p.name)} />
+        )}
+        {b.after.length > 0 && (
+          <div class="scaffold-tree" data-scaffold-tree>
+            {b.after.map((h) => { const Tag = `h${h.level}`; return <Tag>{h.text}</Tag>; })}
+          </div>
+        )}
+      </div>
+    );
+  })}
+
+  <section class="migrated" aria-label="The old page's words">
+    <p class="note">The old page's words, kept until this page is written:</p>
+    <article class="prose-migrated"><Fragment set:html={loc.body_html} /></article>
+  </section>
+</CityShell>
+<style>
+  /* The scaffold's own furniture: a marked outline of each body section's deeper headings, on the
+     page's tokens, compact so it never stands in for the section's real height. Not a city
+     component (no `city-kit`): the type-fit gate judges the components, not this list. */
+  .scaffold-tree {
+    max-width: 1160px; margin: 0 auto; padding: var(--space-4) var(--space-4) var(--space-5);
+    border-block-end: 1px dashed var(--color-border); color: var(--color-text-muted);
+  }
+  .scaffold-tree :is(h3, h4, h5, h6) {
+    margin: var(--space-2) 0 0; font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+    line-height: 1.4; color: var(--color-text);
+  }
+  .scaffold-tree h4 { padding-inline-start: var(--space-4); }
+  .scaffold-tree h5 { padding-inline-start: var(--space-6); }
+  .scaffold-tree h6 { padding-inline-start: var(--space-8); }
+  .scaffold-note { margin: 0; font-size: var(--text-sm); }
+  .migrated { max-width: var(--container); margin: var(--space-8) auto; padding-inline: var(--space-5); color: var(--color-text-muted); font-size: var(--text-sm); }
+  .note { margin: 0 0 var(--space-1); }
+</style>
