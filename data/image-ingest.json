@@ -1,14 +1,4 @@
 {
-  "adult-blue-staffy-vet-health-check": {
-    "h": 768,
-    "infographic_style": null,
-    "ingested": "2026-10-07",
-    "master": "data/boards/generated/blue-staffy-puppies-manchester-uk/guarantee-h2.webp",
-    "og_style": "A",
-    "sib_w": 760,
-    "source": "generate",
-    "w": 1408
-  },
   "blue-staffy-litter-prices-and-deposit-infographic": {
     "h": 768,
     "infographic_style": "IG-1",
@@ -28,16 +18,6 @@
     "source": "generate",
     "w": 1408
   },
-  "blue-staffy-puppies-ready-for-home-delivery-manchester": {
-    "h": 768,
-    "infographic_style": null,
-    "ingested": "2026-10-07",
-    "master": "data/boards/generated/blue-staffy-puppies-manchester-uk/travel-h2.webp",
-    "og_style": "A",
-    "sib_w": 760,
-    "source": "generate",
-    "w": 1408
-  },
   "blue-staffy-puppy-delivery-route-carlisle-to-london-infographic": {
     "h": 768,
     "infographic_style": "IG-5",
@@ -51,25 +31,6 @@
       "ingested": "2026-10-04",
       "master": "data/boards/generated/blue-staffy-puppies-london/delivery-route-phone.webp",
       "sha12": "65f062070dc7",
-      "w": 622
-    },
-    "sib_w": 760,
-    "source": "generate",
-    "w": 1408
-  },
-  "blue-staffy-puppy-papers-checklist-manchester": {
-    "h": 768,
-    "infographic_style": "IG-4",
-    "ingested": "2026-10-07",
-    "master": "data/boards/generated/blue-staffy-puppies-manchester-uk/papers-checklist.webp",
-    "og_style": null,
-    "phone": {
-      "file": "/images/blue-staffy-puppy-papers-checklist-manchester-phone.webp",
-      "h": 1644,
-      "infographic_style": "IG-4",
-      "ingested": "2026-10-07",
-      "master": "data/boards/generated/blue-staffy-puppies-manchester-uk/papers-checklist-phone.webp",
-      "sha12": "1292234191cd",
       "w": 622
     },
     "sib_w": 760,
