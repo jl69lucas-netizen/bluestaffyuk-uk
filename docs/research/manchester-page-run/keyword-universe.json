@@ -2064,9 +2064,8 @@
    "volume_yoy": "-90%",
    "source": "Google Keyword Planner idea or seed, 2026-10-07 (free-keyword-signals.json)",
    "placement": {
-    "status": "placed (proposed)",
-    "group": "G5 life in Manchester",
-    "why": "rescue-or-breeder passage (live related searches and the Dogs Trust Manchester result, fanout.md §4)"
+    "status": "parked",
+    "why": "brand clash: scripts/keyword_variants.py BRAND_CLASH keeps rescue wording off every BlueStaffyUK page (angle agent flag, 2026-10-07); the rescue-or-breeder strand is a question for the user at STOP 1, not a placement"
    }
   },
   {
