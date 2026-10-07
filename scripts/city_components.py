@@ -84,6 +84,26 @@ KIT_OF_VARIANT = {
     "london/contact-form/b": "city-contact-lineup",
 }
 
+#: The pick a city records for a component its approved outline has no section for (the
+#: Manchester page run, Phase F gap G4: no video, no puppy cards). It names no variant, so it
+#: is never compared, pooled or built, and a board that mounts that component is refused.
+NOT_USED = "none"
+
+#: The kit component each piece INSIDE a section is built as, per board slug and subcomponent
+#: id (the Manchester page run, Phase F gap G9). A piece names its kit id in the board's
+#: optional `subcomponents[].component`; London's five pieces were approved before that field
+#: existed, so their ids live here and London's record (and its approval hash) is never edited.
+#: Each id is the data/design/components.json row whose `subcomponent` is that piece.
+KIT_OF_SUBCOMPONENT = {
+    "blue-staffy-puppies-london": {
+        "byline": "city-signed-byline",
+        "puppy-strip": "city-ticket-strip",
+        "video-call-checklist": "city-look-listen-checklist",
+        "london-places": "city-places-by-publisher",
+        "london-map": "city-map-facade",
+    },
+}
+
 #: Where a city's canvas lives. One folder per city key, one sub-folder per component.
 CANVAS_ROOT = ROOT / "design" / "city-canvas"
 

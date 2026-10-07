@@ -229,6 +229,11 @@ def city_tuple(board, base, picks=None):
         raise PB.BoardError(f"city board {slug}: no data/design/city-picks/{slug}.json — its "
                             "components are picked in its component design pass first")
     chosen = picks[slug]["picks"]
+    mounted = PB.city_unused_mounted(board, picks[slug])
+    if mounted:
+        raise PB.BoardError(f"city board {slug}: " + "; ".join(
+            f"{comp} is marked none in its picks (no section in the outline), but {what}"
+            for comp, what in mounted))
 
     def kit(component):
         variant = chosen.get(component)

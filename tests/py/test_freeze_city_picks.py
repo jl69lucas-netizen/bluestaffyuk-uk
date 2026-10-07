@@ -106,3 +106,93 @@ def test_the_real_london_freeze_is_on_disk_and_passes_the_city_gate():
     assert PB.city_pool_findings(pool, picks, PB.canvas_axes) == []
     md = json.loads(PB.CITY_MUST_DIFFER.read_text(encoding="utf-8"))["components"]
     assert PB.city_pick_findings("blue-staffy-puppies-london", picks, md, PB.canvas_axes) == []
+
+
+# ── G4 and G5 (the Manchester page run, Phase F Task 19) ───────────────────────────────────
+#
+# G4: a city whose outline has no section for a component (Manchester: no video, no puppy
+# cards) records that component's pick as "none"; the record must be able to hold every answer
+# (lessons 12). G5: a pool variant enters a later city's canvas as a refreshed copy whose
+# meta.json row records `from_pool: <city>/<component>/<v>`; picking the copy takes its source
+# out of the pool, and an unpicked copy never enters the pool (its source is already there).
+
+def snapshot_without(*components):
+    snap = snapshot()
+    for c in components:
+        del snap["picks"][c]
+    return snap
+
+
+def test_a_component_the_page_does_not_use_is_recorded_none():
+    rec = F.picks_record(snapshot_without("video", "puppy-cards"), slug="blue-staffy-puppies-leeds",
+                         canvas="leeds", not_used=("video", "puppy-cards"))
+    assert rec["picks"]["video"] == "none"
+    assert rec["picks"]["puppy-cards"] == "none"
+    assert rec["picks"]["hero"] == "leeds/hero/b"
+    assert list(rec["picks"]) == list(COMPONENT_IDS)
+    PB._validate(rec, "city-picks.schema.json")
+
+
+def test_not_used_still_refuses_a_redesign_or_an_unknown_component():
+    snap = snapshot_without("video", "puppy-cards")
+    snap["picks"]["tables"] = {"pick": "redesign", "note": "again"}
+    with pytest.raises(F.FreezeError, match="tables"):
+        F.picks_record(snap, slug="blue-staffy-puppies-leeds", canvas="leeds",
+                       not_used=("video", "puppy-cards"))
+    with pytest.raises(F.FreezeError, match="carousel"):
+        F.picks_record(snapshot(), slug="blue-staffy-puppies-leeds", canvas="leeds",
+                       not_used=("carousel",))
+
+
+def test_the_cli_reads_not_used_as_a_comma_list_and_pools_nothing_for_it(tmp_path):
+    snap_path = tmp_path / "snap.json"
+    snap_path.write_text(json.dumps(snapshot_without("video", "puppy-cards")))
+    pool_path = tmp_path / "pool.json"
+    pool_path.write_text(json.dumps(empty_pool()))
+    out_dir = tmp_path / "city-picks"
+    assert F.main(["--snapshot", str(snap_path), "--slug", "blue-staffy-puppies-leeds",
+                   "--canvas", "leeds", "--pool", str(pool_path), "--out-dir", str(out_dir),
+                   "--not-used", "video,puppy-cards"]) == 0
+    rec = json.loads((out_dir / "blue-staffy-puppies-leeds.json").read_text())
+    assert rec["picks"]["video"] == rec["picks"]["puppy-cards"] == "none"
+    pool = json.loads(pool_path.read_text())
+    # a component the page does not use has no variants on its canvas, so none is pooled
+    assert pool["available"]["video"] == [] and pool["available"]["puppy-cards"] == []
+    assert sum(len(v) for v in pool["available"].values()) == 26
+
+
+def _canvas_with_pool_copy(root, canvas="leeds", component="hero", source="london/hero/a"):
+    meta = root / canvas / component / "meta.json"
+    meta.parent.mkdir(parents=True)
+    meta.write_text(json.dumps({"component": component, "variants": {
+        "a": {"axes": {}}, "b": {"axes": {}}, "c": {"axes": {}, "from_pool": source}}}))
+    return root
+
+
+def test_picking_a_pool_copy_takes_its_source_out_of_the_pool(tmp_path):
+    root = _canvas_with_pool_copy(tmp_path)
+    pool = empty_pool()
+    pool["available"]["hero"] = ["london/hero/a", "london/hero/c"]
+    rec = F.picks_record(snapshot(), slug="blue-staffy-puppies-leeds", canvas="leeds")
+    rec["picks"]["hero"] = "leeds/hero/c"
+    out = F.pooled(pool, rec, canvas="leeds", canvas_root=root)
+    assert out["available"]["hero"] == ["leeds/hero/a", "leeds/hero/b", "london/hero/c"]
+
+
+def test_an_unpicked_pool_copy_never_enters_the_pool(tmp_path):
+    root = _canvas_with_pool_copy(tmp_path)
+    pool = empty_pool()
+    pool["available"]["hero"] = ["london/hero/a", "london/hero/c"]
+    rec = F.picks_record(snapshot(), slug="blue-staffy-puppies-leeds", canvas="leeds")
+    assert rec["picks"]["hero"] == "leeds/hero/b"
+    out = F.pooled(pool, rec, canvas="leeds", canvas_root=root)
+    assert out["available"]["hero"] == ["leeds/hero/a", "london/hero/a", "london/hero/c"]
+
+
+def test_a_none_pick_is_not_a_pool_key_and_never_leaves_the_pool_by_accident():
+    pool = empty_pool()
+    pool["available"]["video"] = ["london/video/a", "london/video/b"]
+    rec = F.picks_record(snapshot_without("video"), slug="blue-staffy-puppies-leeds",
+                         canvas="leeds", not_used=("video",))
+    out = F.pooled(pool, rec, canvas="leeds")
+    assert out["available"]["video"] == ["london/video/a", "london/video/b"]

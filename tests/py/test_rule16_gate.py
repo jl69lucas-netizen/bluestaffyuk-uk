@@ -323,3 +323,63 @@ def test_approval_refuses_a_shared_section_component():
     assert len(msgs) == 1 and "city-chapters is already used by blue-staffy-puppies-leeds" in msgs[0]
     own = page("blue-staffy-puppies-york", "york-hero", "york-chapters")
     assert BA.rule16_refusals(york, own, boards) == []
+
+
+# ── G9: the pieces inside sections are judged too (the Manchester page run, Task 19) ─────────
+#
+# A subcomponent (a piece built inside a section: a byline, a strip, a checklist) is a kit
+# component like a section's, so two new-family boards may not share one either. A piece
+# names its kit id in an optional `component`; London's five pieces, approved before the field
+# existed, take theirs from city_components.KIT_OF_SUBCOMPONENT so London's record (and its
+# approval hash) is never edited.
+
+def with_pieces(board, *components):
+    board["subcomponents"] = [{"id": f"p{i}", "section": "s0", "component": c}
+                              for i, c in enumerate(components)]
+    return board
+
+
+def test_two_new_family_boards_sharing_a_piece_inside_a_section_fail():
+    boards = {"blue-staffy-puppies-leeds": with_pieces(page("blue-staffy-puppies-leeds", "leeds-hero"),
+                                                       "city-ticket-strip"),
+              "blue-staffy-puppies-york": with_pieces(page("blue-staffy-puppies-york", "york-hero"),
+                                                      "city-ticket-strip")}
+    assert PB.shared_section_components(boards) == [
+        ("city-ticket-strip", ["blue-staffy-puppies-leeds", "blue-staffy-puppies-york"])]
+    f = PB.component_findings(boards["blue-staffy-puppies-york"], boards)
+    assert [(x["check"], x["sev"]) for x in f] == [("component-shared", "FAIL")]
+
+
+def test_londons_pieces_take_their_kit_ids_from_the_map_and_are_judged():
+    from city_components import KIT_OF_SUBCOMPONENT
+    london = PB.load_board("blue-staffy-puppies-london")
+    assert sorted(KIT_OF_SUBCOMPONENT["blue-staffy-puppies-london"]) == sorted(
+        p["id"] for p in london["subcomponents"])
+    assert PB.subcomponent_components(london) == sorted(
+        KIT_OF_SUBCOMPONENT["blue-staffy-puppies-london"].values())
+    boards = {"blue-staffy-puppies-london": london,
+              "blue-staffy-puppies-leeds": with_pieces(page("blue-staffy-puppies-leeds", "leeds-hero"),
+                                                       "city-signed-byline")}
+    assert ("city-signed-byline", ["blue-staffy-puppies-leeds", "blue-staffy-puppies-london"]) \
+        in PB.shared_section_components(boards)
+
+
+def test_the_subcomponent_map_names_the_kit_rows_built_for_each_piece():
+    from city_components import KIT_OF_SUBCOMPONENT
+    rows = {r["id"]: r for r in json.loads((ROOT / "data/design/components.json").read_text(
+        encoding="utf-8"))}
+    for slug, pieces in KIT_OF_SUBCOMPONENT.items():
+        for piece, kit in pieces.items():
+            assert rows[kit]["subcomponent"] == piece, (slug, piece, kit)
+
+
+def test_londons_record_is_untouched_and_its_approval_still_matches():
+    london = PB.load_board("blue-staffy-puppies-london")
+    assert all("component" not in p for p in london["subcomponents"])
+    assert PB.approval_matches(london) is True
+
+
+def test_the_board_schema_accepts_a_component_on_a_piece():
+    london = json.loads(json.dumps(PB.load_board("blue-staffy-puppies-london")))
+    london["subcomponents"][0]["component"] = "city-signed-byline"
+    PB._validate(london, "board.schema.json")

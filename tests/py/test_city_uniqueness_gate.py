@@ -170,3 +170,63 @@ def test_the_real_pool_and_picks_validate_and_pass():
     md = json.loads(PB.CITY_MUST_DIFFER.read_text(encoding="utf-8"))["components"]
     for slug in picks:
         assert PB.city_pick_findings(slug, picks, md, PB.canvas_axes) == [], slug
+
+
+# ── G4: a component the page does not use (the Manchester page run, Phase F Task 19) ────────
+
+def test_the_picks_schema_accepts_none_for_a_component_the_page_does_not_use():
+    doc = picks_doc("leeds", "leeds", "leeds/hero/b")
+    doc["picks"]["video"] = "none"
+    PB._validate(doc, "city-picks.schema.json")
+    doc["picks"]["video"] = "redesign"
+    with pytest.raises(PB.BoardError):
+        PB._validate(doc, "city-picks.schema.json")
+
+
+def test_city_pick_findings_ignores_a_none_pick():
+    picks = {"london": picks_doc("london", "london", "london/hero/a"),
+             "leeds": picks_doc("leeds", "leeds", "leeds/hero/b")}
+    picks["leeds"]["picks"]["video"] = "none"
+    picks["london"]["picks"]["video"] = "none"
+    f = PB.city_pick_findings("leeds", picks, {}, axes_of)
+    assert [x for x in f if x["msg"].startswith("video")] == []
+
+
+def _london_picks_as(slug, **none):
+    """London's real picks under another city's slug, with the named components marked none:
+    every other pick then names a kit component, so a refusal is about the none alone."""
+    doc = json.loads(json.dumps(PB.load_city_picks()["blue-staffy-puppies-london"]))
+    doc["slug"] = slug
+    for comp in none:
+        doc["picks"][comp] = "none"
+    return {slug: doc}
+
+
+def _mounting(slug, *components, subcomponents=()):
+    return {"meta": {"slug": slug, "layout_type": "city", "page_type": "location", "status": "boarded"},
+            "sections": [{"id": f"s{i}", "shape": "standard", "component": c}
+                         for i, c in enumerate(components)],
+            "subcomponents": [{"id": f"p{i}", "section": "s0", "component": c}
+                              for i, c in enumerate(subcomponents)]}
+
+
+def test_city_tuple_refuses_a_board_that_mounts_a_component_its_picks_mark_none():
+    import board_approve as BA
+    picks = _london_picks_as("blue-staffy-puppies-leeds", video=1, **{"puppy-cards": 1})
+    ok = _mounting("blue-staffy-puppies-leeds", "city-hero-filmstrip", "city-chapters")
+    t = BA.city_tuple(ok, {}, picks=picks)
+    assert t["hero"] == "city-hero-filmstrip"
+    with pytest.raises(PB.BoardError, match="video"):
+        BA.city_tuple(_mounting("blue-staffy-puppies-leeds", "city-hero-filmstrip", "city-video-panel"),
+                      {}, picks=picks)
+    with pytest.raises(PB.BoardError, match="puppy-cards"):
+        BA.city_tuple(_mounting("blue-staffy-puppies-leeds", "city-hero-filmstrip",
+                                subcomponents=("city-puppy-sheet",)), {}, picks=picks)
+
+
+def test_the_gate_fails_a_board_that_mounts_a_component_its_picks_mark_none():
+    picks = _london_picks_as("blue-staffy-puppies-leeds", video=1)
+    board = _mounting("blue-staffy-puppies-leeds", "city-video-panel")
+    f = PB.city_rule16_findings(board, picks=picks, pool={"available": {c: [] for c in COMPONENT_IDS}},
+                                must_differ={}, axes_of=lambda k: {"layout": k})
+    assert [x["check"] for x in f if x["check"] == "city-pick-none-mounted"] == ["city-pick-none-mounted"]

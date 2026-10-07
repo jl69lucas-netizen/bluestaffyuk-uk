@@ -155,6 +155,11 @@
       "minLength": 1,
       "description": "where in the section it renders"
      },
+     "component": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "the kit component the piece is built as (a data/design/components.json id), judged by the own-components rule beside the sections' (scripts/pageboard.py shared_section_components). Optional: a piece approved before the field existed takes its id from scripts/city_components.py KIT_OF_SUBCOMPONENT, so its record and approval hash are never edited (the Manchester page run, Phase F gap G9)."
+     },
      "style": {
       "type": "object",
       "required": [

@@ -1,7 +1,7 @@
 {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "title": "BSUK city component picks",
- "comment": "One city's fifteen component picks from its component design pass (docs/superpowers/specs/2026-09-27-london-component-design-pass-design.md §2, Freeze). Read by scripts/pageboard.py city_rule16_findings. Each value names one canvas variant, <city>/<component>/<a|b|c>. The component list is scripts/city_components.py COMPONENT_IDS; tests/py/test_city_uniqueness_gate.py holds the two equal.",
+ "comment": "One city's fifteen component picks from its component design pass (docs/superpowers/specs/2026-09-27-london-component-design-pass-design.md §2, Freeze). Read by scripts/pageboard.py city_rule16_findings. Each value names one canvas variant, <city>/<component>/<a|b|c>, or is \"none\" for a component the page's approved outline has no section for (scripts/freeze_city_picks.py --not-used; the Manchester page run, Phase F gap G4). The component list is scripts/city_components.py COMPONENT_IDS; tests/py/test_city_uniqueness_gate.py holds the two equal.",
  "type": "object",
  "required": ["slug", "canvas", "canvas_url", "approved_at", "picks"],
  "additionalProperties": false,
@@ -14,7 +14,7 @@
    "type": "object",
    "required": ["hero", "counter-strip", "trust-strip", "contents-list", "desktop-dial", "jump-links", "key-takeaways", "puppy-cards", "tables", "video", "image-text", "reviews", "faq-blocks", "newsletter", "contact-form"],
    "propertyNames": {"enum": ["hero", "counter-strip", "trust-strip", "contents-list", "desktop-dial", "jump-links", "key-takeaways", "puppy-cards", "tables", "video", "image-text", "reviews", "faq-blocks", "newsletter", "contact-form"]},
-   "additionalProperties": {"type": "string", "pattern": "^[a-z0-9-]+/[a-z-]+/[abc]$"}
+   "additionalProperties": {"type": "string", "pattern": "^([a-z0-9-]+/[a-z-]+/[abc]|none)$"}
   }
  }
 }

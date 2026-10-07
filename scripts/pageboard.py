@@ -1757,13 +1757,26 @@ def component_judged(boards, board=None):
     return [slug for slug, b in sorted(corpus.items()) if component_judges(b)]
 
 
+def subcomponent_components(board):
+    """The sorted kit ids of the pieces built inside `board`'s sections: each piece's own
+    `component`, else the id city_components.KIT_OF_SUBCOMPONENT holds for that board and
+    piece (London's five, approved before the field existed; gap G9)."""
+    from city_components import KIT_OF_SUBCOMPONENT
+    slug = ((board.get("meta") or {}).get("slug") or "").rsplit("/", 1)[-1]
+    known = KIT_OF_SUBCOMPONENT.get(slug, {})
+    return sorted({p.get("component") or known.get(p.get("id"))
+                   for p in board.get("subcomponents") or []} - {None, ""})
+
+
 def shared_section_components(boards):
-    """[(component, [slugs])] for every section component two new-family boards both carry."""
+    """[(component, [slugs])] for every section component two new-family boards both carry,
+    the pieces inside sections included (gap G9)."""
     seen = {}
     for slug, board in sorted(boards.items()):
         if not component_judges(board):
             continue
-        for comp in sorted({s.get("component") for s in board.get("sections", []) if s.get("component")}):
+        for comp in sorted({s.get("component") for s in board.get("sections", []) if s.get("component")}
+                           | set(subcomponent_components(board))):
             seen.setdefault(comp, []).append(slug)
     return [(comp, slugs) for comp, slugs in sorted(seen.items()) if len(slugs) > 1]
 
@@ -1832,13 +1845,15 @@ def canvas_axes(key, canvas_root=None):
 
 def city_pick_findings(slug, picks, must_differ, axes_of):
     """FAILs for one city's picks against every other city's picks and every built page's."""
-    from city_components import axis_distance
+    from city_components import NOT_USED, axis_distance
     doc, out = picks[slug], []
 
     def fail(check, msg):
         out.append({"check": check, "sev": "FAIL", "msg": msg})
 
     for comp, key in sorted(doc["picks"].items()):
+        if key == NOT_USED:
+            continue    # the page has no section for it: nothing to compare (gap G4)
         city, kcomp, _v = key.split("/")
         if kcomp != comp or city != doc["canvas"]:
             fail("city-pick-malformed", f"{comp}: {key} is not a {doc['canvas']}/{comp}/… variant")
@@ -1864,6 +1879,28 @@ def city_pick_findings(slug, picks, must_differ, axes_of):
                 fail("city-pick-matches-built",
                      f"{comp} {key} is within one axis of {row['id']} ({row['name']}), worn by "
                      f"{', '.join(row['used_by'])}")
+    return out
+
+
+def city_unused_mounted(board, doc):
+    """[(component, what)] for every city component `doc`'s picks mark "none" that `board`
+    still mounts: a section or a piece built as that component's kit id (any city's), or a
+    section whose shape is that component's board shape (gap G4)."""
+    from city_components import KIT_OF_VARIANT, NOT_USED, SHAPES_OF
+    unused = {c for c, k in doc["picks"].items() if k == NOT_USED}
+    comp_of_kit = {kit: key.split("/")[1] for key, kit in KIT_OF_VARIANT.items()}
+    out = []
+    for sec in board.get("sections") or []:
+        kit = sec.get("component")
+        if comp_of_kit.get(kit) in unused:
+            out.append((comp_of_kit[kit], f"section {sec.get('id')} mounts {kit}"))
+        else:
+            for c in sorted(unused):
+                if sec.get("shape") in SHAPES_OF[c]:
+                    out.append((c, f"section {sec.get('id')} is a {sec['shape']} section"))
+    for kit in subcomponent_components(board):
+        if comp_of_kit.get(kit) in unused:
+            out.append((comp_of_kit[kit], f"a piece inside a section is built as {kit}"))
     return out
 
 
@@ -1900,8 +1937,11 @@ def city_rule16_findings(board, picks=None, pool=None, must_differ=None, axes_of
         must_differ = (_read_json(CITY_MUST_DIFFER).get("components") or {}) if CITY_MUST_DIFFER.exists() else {}
     axes_of = canvas_axes if axes_of is None else axes_of
     pool = load_city_pool() if pool is None else pool
+    unused = [{"check": "city-pick-none-mounted", "sev": "FAIL",
+               "msg": f"{comp}: the picks mark it none (no section in the outline), but {what}"}
+              for comp, what in city_unused_mounted(board, picks[slug])]
     return (city_pick_findings(slug, picks, must_differ, axes_of)
-            + city_pool_findings(pool, picks, axes_of))
+            + city_pool_findings(pool, picks, axes_of) + unused)
 
 
 GATE_STAGES = ("build", "release")
