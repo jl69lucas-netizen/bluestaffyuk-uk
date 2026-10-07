@@ -302,8 +302,12 @@ def test_the_hero_and_every_body_h2_and_h3_have_a_filled_slot_and_an_asset_row(b
         a = rows[img["slot"]]
         assert img["source"] in ("existing", "assets-folder", "infographic"), img["slot"]
         if img["source"] == "existing":
-            assert img["file"] == a["file"] and a["status"] == "baked", img["slot"]
-            assert (ROOT / "public" / img["file"].lstrip("/")).is_file(), img["file"]
+            # The row serves the breeder's STOP 3 pick where one names a file, else the record's
+            # own file (Task 39: assets[].file is lifecycle, outside the hash, and follows the pick).
+            pick = board["approval"]["picks"].get("img:" + img["slot"]) or ""
+            want = pick[len("file:"):] if pick.startswith("file:") else img["file"]
+            assert a["file"] == want and a["status"] == "baked", img["slot"]
+            assert (ROOT / "public" / want.lstrip("/")).is_file(), want
         assert a["alt"], img["slot"]
     assert not PB.duplicate_alts(board)
 
@@ -322,23 +326,146 @@ def test_only_the_hero_alt_carries_the_primary_keyword(board):
     assert carry == ["manchester-hero"]
 
 
+def _changed_alts(board):
+    """{served file name: the `new` alt} of the record's `verbatim.changed` alt rows (working
+    rule 15: a served alt that states a wrong fact is replaced, and the change is recorded)."""
+    return {r["src"].split("/images/", 1)[1]: r["new"] for r in board["verbatim"]["changed"]
+            if r["kind"] == "alt" and r.get("src")}
+
+
 def test_a_served_photo_keeps_its_served_alt_on_first_use_and_a_repeat_gets_a_new_one(board):
-    served = C.served_alts()
+    served, changed = C.served_alts(), _changed_alts(board)
     seen = {}
     for sec, node, img in IC.iter_slots(board):
         if img.get("source") != "existing":
             continue
         a = next(x for x in board["assets"] if x["slot"] == img["slot"])
-        name = img["file"][len("/images/"):]
+        name = a["file"][len("/images/"):]
         if name.startswith("puppies/"):
             continue
         if name not in seen:
             seen[name] = {a["alt"]}
             if name in served:
-                assert a["alt"] in served[name], img["slot"]
+                assert a["alt"] in served[name] or a["alt"] == changed.get(name), img["slot"]
         else:
             assert a["alt"] not in seen[name], img["slot"]
             seen[name].add(a["alt"])
+
+
+# ── the Asset Gate (Task 39; page-run row 11) ───────────────────────────────────────────────
+PUPPIES = json.loads((ROOT / "data/puppies.json").read_text(encoding="utf-8"))
+
+
+def _picked(board, slot):
+    pick = board["approval"]["picks"].get("img:" + slot) or ""
+    return pick[len("file:"):] if pick.startswith("file:") else None
+
+
+def test_every_photo_row_serves_the_file_the_breeder_picked_at_stop_3(board):
+    """Ten STOP 3 picks named a file other than the record's (block 7, 2026-10-07): the row
+    the build reads serves the pick, so its alt is written for the picture that ships."""
+    rows = {a["slot"]: a for a in board["assets"]}
+    examined = 0
+    for sec, node, img in IC.iter_slots(board):
+        f = _picked(board, img["slot"])
+        if img["kind"] != "photo" or f is None:
+            continue
+        examined += 1
+        assert rows[img["slot"]]["file"] == f, img["slot"]
+    assert examined == 26
+
+
+def _photo(file):
+    """The photograph a served file shows: a puppy's card crop (`<name>-card-800.webp`) is the
+    same picture as its full-size file (`<name>-<card_photo stem>.webp`), so the two are one
+    photo under the rule."""
+    m = re.fullmatch(r"/images/puppies/([a-z]+)-card-800\.webp", file or "")
+    if not m:
+        return file
+    pup = next(p for p in PUPPIES if p["name"].lower() == m[1])
+    return f"/images/puppies/{m[1]}-{pathlib.Path(pup['card_photo']).stem.lower()}.webp"
+
+
+def test_no_photo_appears_twice_on_the_board_with_the_same_alt(board):
+    """Working rule 11 (user, 2026-09-29): a photo shown twice keeps its served alt once and
+    each repeat says a new true thing. A card crop and its full-size file are one photo, and
+    the hero and frame components show each puppy's card photo first under the alt the site
+    serves for it (src/lib/imageFocus.ts servedPuppyAlt), so a body puppy row never takes it."""
+    by_photo, examined = defaultdict(list), 0
+    for a in board["assets"]:
+        if a["file"]:
+            by_photo[_photo(a["file"])].append(a)
+    for photo, rows in by_photo.items():
+        alts = [" ".join(PB.tokens(r["alt"])) for r in rows]
+        examined += len(rows) > 1
+        assert len(set(alts)) == len(alts), (photo, [r["slot"] for r in rows])
+    for a in board["assets"]:
+        if a["slot"] == "manchester-hero" or not (a["file"] or "").startswith("/images/puppies/"):
+            continue
+        name = a["file"].split("/")[-1].split("-")[0]
+        p = next(p for p in PUPPIES if p["name"].lower() == name)
+        assert a["alt"] != f"{p['name']} the {p['colour'].lower()} Staffordshire Bull Terrier puppy", a["slot"]
+    assert examined, "no photo is used twice on the board: the check examined nothing"
+
+
+#: Served alts the Asset Gate found describing a different picture (each image read with the
+#: eye, 2026-10-07; lessons 8; the breeder's ruling, answer board 2026-10-04 q05 (a): fix the
+#: alts that describe a different picture). Each is replaced and recorded in verbatim.changed.
+WRONG_SERVED = {
+    "blue-staffy-puppy-vet-check-uk.webp": "the puppy is fawn and white, not blue",
+    "bluestaffyuk-nationwide-delivery.webp": "an AI van picture; we own no branded van",
+    "blue-staffy-health-prioritising-wellbeing.webp": "a vet's room with a printed banner, not a home",
+    "avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp":
+        "a dam with newborn pups, no children",
+    "buy-staffy-health-guarantee-uk.webp": "five puppies, none of them blue",
+    "sbt-uk-legal-status-public-perception.webp": "a blue Staffy by a basketball, no sign, not brindle",
+    "premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp":
+        "not our puppy and not for sale or ready for collection",
+    "puppy-vaccinations-uk.webp": "a white puppy with a brown patch, not blue",
+}
+#: Words an alt we write never carries: a health result, a credential or an availability is
+#: never visible in a photograph (CLAUDE.md rule 9; Task 39 brief).
+CLAIM = re.compile(r"(?i)\b(?:healthy|health[- ]tested|tested|clear|registered|licen[cs]ed|"
+                   r"certified|certificate|vaccinated|available|for sale|ready (?:now|to go)|guarantee[ds]?)\b")
+
+
+def test_a_served_alt_that_describes_another_picture_is_replaced_and_recorded(board):
+    served, changed = C.served_alts(), _changed_alts(board)
+    rows = [a for a in board["assets"] if a["file"] and a["file"].split("/images/", 1)[1] in WRONG_SERVED]
+    assert rows, "no wrong-served-alt photo on the board: the check examined nothing"
+    for a in rows:
+        name = a["file"].split("/images/", 1)[1]
+        assert a["alt"] not in served[name], (a["slot"], WRONG_SERVED[name])
+        row = next(r for r in board["verbatim"]["changed"] if r.get("src") == a["file"])
+        assert row["old"] in served[name] and len(row["reason"]) > 40, a["slot"]
+    firsts = {}
+    for a in board["assets"]:
+        firsts.setdefault(a["file"], a["alt"])
+    for name, new in changed.items():
+        assert firsts.get("/images/" + name) == new, name
+
+
+def test_no_alt_we_wrote_states_a_health_result_credential_or_availability(board):
+    served = C.served_alts()
+    examined = 0
+    for a in board["assets"]:
+        name = (a["file"] or "").split("/images/", 1)[-1]
+        if a["alt"] in served.get(name, ()):
+            continue                      # a served alt kept word for word (working rule 11)
+        examined += 1
+        assert not CLAIM.search(a["alt"]), (a["slot"], CLAIM.search(a["alt"])[0])
+    assert examined >= 15
+
+
+def test_the_papers_checklist_is_drafted_in_ig4_from_puppy_trust_signs(board):
+    import infographic_plan as IP
+    signs = json.loads((ROOT / "data/settings.json").read_text(encoding="utf-8"))["puppy_trust_signs"]
+    p = next(p for p in IP.plan(board) if p["slot"] == "papers-checklist")
+    lines = [c["text"] for c in p["facts"]["checks"]]
+    assert lines == [x for x in signs if x in lines] and len(lines) == 5, lines
+    assert board["approval"]["picks"]["ig:papers-checklist"] == "comic"
+    draft = ROOT / "data/boards/generated" / IC.slug_file(SLUG) / "papers-checklist.webp"
+    assert draft.is_file(), "no papers-checklist draft: run ingest_image.py draft (Task 39 Step 3)"
 
 
 # ── the rendered board ──────────────────────────────────────────────────────────────────────

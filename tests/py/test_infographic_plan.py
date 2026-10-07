@@ -676,3 +676,92 @@ def test_write_without_chromium_exits_2_and_deletes_heights(tmp_path, monkeypatc
     # the previews were still written, into the tmp root and not the repo
     assert (tmp_path / IP.preview_path(LONDON, "deposit-steps", "sticker")).exists()
     assert IP.main([LONDON, "--heights"]) == 2
+
+
+# ── an IG-4 drawn from data/settings.json puppy_trust_signs (gap G20, Manchester Asset Gate,
+# 2026-10-07). Manchester's papers-checklist slot sits on its own H3, whose H4–H6 belong to
+# the infographic's node, so the outline-heading reader found no lines: the board's three
+# previews of it were an empty list, and the comic was picked from an empty frame. The slot's
+# prompt names the data list the graphic is drawn from; the reader now takes it from there.
+SIGNS = ["Vet-signed health card", "First vaccinations", "Microchipped",
+         "Wormed and flea treated", "KC registration application form", "Raised in our home",
+         "Support after collection"]
+FIVE = SIGNS[:5]
+
+
+def _papers_board(prompt):
+    sec = {"id": "papers", "heading": "Which Papers Travel Home With Each Puppy?", "tree": [
+        {"level": 3, "heading": "What Paperwork Should a Puppy Come With?", "children": [
+            {"level": 4, "heading": "Why an Application Form, Not a Certificate?", "children": []}],
+         "images": [{"slot": "papers-checklist", "kind": "infographic",
+                     "infographic_style": "IG-4", "prompt": prompt}]}]}
+    return {"meta": {"slug": "blue-staffy-puppies-manchester-uk"}, "sections": [sec], "assets": []}
+
+
+def _signs_root(tmp_path, signs=SIGNS):
+    s = {"address": {"city": "Testford"}, "guarantee_label": "Test guarantee"}
+    if signs is not None:
+        s["puppy_trust_signs"] = signs
+    return _data(tmp_path, settings=s)
+
+
+def test_ig4_takes_the_quoted_trust_signs_in_the_prompt_and_nothing_else(tmp_path):
+    root = _signs_root(tmp_path)
+    prompt = ("IG-4 Checklist Grid of what travels home in each puppy's folder, every line read "
+              "from data/settings.json puppy_trust_signs: " + " · ".join(f'"{x}"' for x in FIVE))
+    p = IP.plan(_papers_board(prompt), root=root)[0]
+    assert [c["text"] for c in p["facts"]["checks"]] == FIVE
+    assert "puppy_trust_signs" in p["facts"]["sources"]["checks"]
+    for sid, html in _render_all(p, root).items():
+        for line in FIVE:
+            assert html.count(f'<span class="l">{line}</span>') == 1, (sid, line)
+        # no outline heading, no guarantee line and no unpicked sign is drawn as a tick
+        for gone in ("Test guarantee", "Raised in our home", "Support after collection",
+                     "Why an Application Form"):
+            assert gone not in html, (sid, gone)
+
+
+def test_ig4_naming_the_list_without_quotes_takes_every_sign_in_data_order(tmp_path):
+    root = _signs_root(tmp_path)
+    p = IP.plan(_papers_board("IG-4 from data/settings.json puppy_trust_signs"), root=root)[0]
+    assert [c["text"] for c in p["facts"]["checks"]] == SIGNS
+
+
+def test_ig4_a_quoted_line_the_data_does_not_hold_renders_not_fetched(tmp_path):
+    root = _signs_root(tmp_path)
+    prompt = 'IG-4 from data/settings.json puppy_trust_signs: "Microchipped" · "Pedigree certificate"'
+    p = IP.plan(_papers_board(prompt), root=root)[0]
+    texts = [c["text"] for c in p["facts"]["checks"]]
+    assert texts[0] == "Microchipped" and texts[1].startswith("NOT FETCHED")
+    for html in _render_all(p, root).values():
+        assert 'class="nf"' in html
+        assert '<span class="l">Pedigree certificate</span>' not in html
+
+
+def test_ig4_with_the_list_missing_from_settings_renders_not_fetched(tmp_path):
+    root = _signs_root(tmp_path, signs=None)
+    p = IP.plan(_papers_board("IG-4 from data/settings.json puppy_trust_signs"), root=root)[0]
+    texts = [c["text"] for c in p["facts"]["checks"]]
+    assert texts == ["NOT FETCHED — data/settings.json puppy_trust_signs missing"]
+
+
+def test_an_ig4_with_no_lines_never_renders_an_empty_checklist(tmp_path):
+    """Gap G21: a checklist with no lines rendered `<ol class="items"></ol>` with no warning,
+    and the breeder picked a style from that empty frame (Manchester STOP 3, 2026-10-07). An
+    empty checklist now renders one visible NOT FETCHED line instead."""
+    root = _signs_root(tmp_path)
+    p = IP.plan(_papers_board("IG-4 Checklist Grid of the papers (no data list named)"),
+                root=root)[0]
+    texts = [c["text"] for c in p["facts"]["checks"]]
+    assert len(texts) == 1 and texts[0].startswith("NOT FETCHED"), texts
+    for html in _render_all(p, root).values():
+        assert '<ol class="items"></ol>' not in html and 'class="nf"' in html
+
+
+def test_manchester_papers_checklist_lines_are_puppy_trust_signs():
+    board = json.loads((IP.ROOT / "data/boards/blue-staffy-puppies-manchester-uk.json").read_text())
+    signs = json.loads((IP.ROOT / "data/settings.json").read_text())["puppy_trust_signs"]
+    p = next(p for p in IP.plan(board) if p["slot"] == "papers-checklist")
+    texts = [c["text"] for c in p["facts"]["checks"]]
+    assert texts and all(t in signs for t in texts), texts
+    assert p["ig"] == "IG-4" and "puppy_trust_signs" in p["facts"]["sources"]["checks"]

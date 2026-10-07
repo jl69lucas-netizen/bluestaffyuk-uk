@@ -2004,7 +2004,7 @@
               "slot": "papers-checklist",
               "kind": "infographic",
               "required": true,
-              "prompt": "H3 paperwork: IG-4 Checklist Grid of what travels home with each puppy, every line read from data/settings.json puppy_trust_signs (token-only HTML, bsuk-infographic); the outline's plain-photo option has no truthful served photo. Image: no served or folder photo shows a puppy's papers truthfully (kc-registered-staffy-puppies.webp props a 'Certificate of Health' and calls the puppy registered, London's lesson 7 image), so this H3 carries an IG-4 Checklist Grid as its only image (breeder q06 order: a photo first, an infographic only where none fits; q08: the graphic is that heading's only image). Every line on it is data/settings.json puppy_trust_signs, read as copy before the board (lessons 7).",
+              "prompt": "H3 paperwork: IG-4 Checklist Grid of what travels home in each puppy's folder, every line read from data/settings.json puppy_trust_signs: \"Vet-signed health card\" · \"First vaccinations\" · \"Microchipped\" · \"Wormed and flea treated\" · \"KC registration application form\" (the five that are papers and treatments, as the slot's alt names them; 'Raised in our home' and 'Support after collection' are not in the folder). Token-only HTML, bsuk-infographic; the outline's plain-photo option has no truthful served photo. Image: no served or folder photo shows a puppy's papers truthfully (kc-registered-staffy-puppies.webp props a 'Certificate of Health' and calls the puppy registered, London's lesson 7 image), so this H3 carries an IG-4 Checklist Grid as its only image (breeder q06 order: a photo first, an infographic only where none fits; q08: the graphic is that heading's only image). Every line on it is data/settings.json puppy_trust_signs, read as copy before the board (lessons 7).",
               "source": "infographic",
               "infographic_style": "IG-4"
             }
@@ -2936,8 +2936,8 @@
       "h": 780,
       "required": true,
       "status": "baked",
-      "file": "/images/jones-magnificent-blue-staffy-sire.webp",
-      "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire."
+      "file": "/images/blue-staffy-puppy-vet-check-uk.webp",
+      "alt": "A fawn and white puppy on a vet's clinic table, licking the hand of a smiling vet in blue scrubs while a colleague looks on"
     },
     {
       "slot": "health-tests-dna",
@@ -2996,8 +2996,8 @@
       "h": 475,
       "required": true,
       "status": "baked",
-      "file": "/images/blue-staffy-puppy-preparation.webp",
-      "alt": "A person kneeling in a clean living room, arranging a new dog bed next to a crate, with food bowls and puppy toys nearby."
+      "file": "/images/bluestaffyuk-nationwide-delivery.webp",
+      "alt": "Five blue Staffy puppies at the open side door of a white van, four sitting among cardboard boxes and one standing up inside the doorway"
     },
     {
       "slot": "travel-priced",
@@ -3017,7 +3017,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/lisa-bright-blue-staffy-breeder-carlisle.webp",
-      "alt": "Lisa Bright with two young puppies held up in her hands, the fawn one on her left and the dark brindle one on her right"
+      "alt": "Our breeder, Lisa Bright, holding two young puppies up in her arms, the fawn one on the left of the picture and the dark brindle one on the right"
     },
     {
       "slot": "papers-h2",
@@ -3027,7 +3027,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/puppy-vaccinations-uk.webp",
-      "alt": "A happy blue Staffy puppy engaging with a vet after receiving its puppy vaccinations UK."
+      "alt": "A white puppy with a brown eye patch looking over the shoulder of a vet nurse in blue scrubs, a black and white puppy held up behind her"
     },
     {
       "slot": "papers-checklist",
@@ -3046,8 +3046,8 @@
       "h": 450,
       "required": true,
       "status": "baked",
-      "file": "/images/blue-staffy-family-dog-uk.webp",
-      "alt": "Blue Staffordshire Bull Terrier: A beloved family dog in the UK."
+      "file": "/images/blue-staffy-health-prioritising-wellbeing.webp",
+      "alt": "An adult blue Staffy in a teal harness sitting on a vet's table beside a stethoscope, a banner about blue Staffy health printed across the bottom"
     },
     {
       "slot": "guarantee-itch",
@@ -3056,8 +3056,8 @@
       "h": 477,
       "required": true,
       "status": "baked",
-      "file": "/images/blue-staffy-vet-check.webp",
-      "alt": "A blue Staffordshire Bull Terrier sitting on a vet's examination table while the vet strokes its head"
+      "file": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+      "alt": "Newborn blue and white pups tucked against their sleeping blue Staffy mother on a cream fleece, behind the rails of a whelping box"
     },
     {
       "slot": "guarantee-cover",
@@ -3066,8 +3066,8 @@
       "h": 1148,
       "required": true,
       "status": "baked",
-      "file": "/images/puppies/cheryl-cheryl1.webp",
-      "alt": "Cheryl, a blue girl with a white blaze, lying on a wooden floor beside a soft toy"
+      "file": "/images/buy-staffy-health-guarantee-uk.webp",
+      "alt": "Five young puppies in fawn, brindle, black and white coats peering over the rim of a pink bed"
     },
     {
       "slot": "household-h2",
@@ -3076,8 +3076,8 @@
       "h": 562,
       "required": true,
       "status": "baked",
-      "file": "/images/uk-family-blue-staffy.webp",
-      "alt": "A joyful family with two children and a Blue Staffy dog standing in front of a stylized map of the United Kingdom."
+      "file": "/images/1blue-staffy-family-breeder.webp",
+      "alt": "A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background."
     },
     {
       "slot": "household-rented",
@@ -3096,8 +3096,8 @@
       "h": 478,
       "required": true,
       "status": "baked",
-      "file": "/images/1blue-staffy-family-breeder.webp",
-      "alt": "A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background."
+      "file": "/images/uk-family-blue-staffy.webp",
+      "alt": "A joyful family with two children and a Blue Staffy dog standing in front of a stylized map of the United Kingdom."
     },
     {
       "slot": "favourite-h2",
@@ -3117,7 +3117,7 @@
       "required": true,
       "status": "baked",
       "file": "/images/jones-magnificent-blue-staffy-sire.webp",
-      "alt": "Jones, the father of this litter, stretched out calmly on the carpet by his crate"
+      "alt": "A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire."
     },
     {
       "slot": "coat-h2",
@@ -3136,8 +3136,8 @@
       "h": 660,
       "required": true,
       "status": "baked",
-      "file": "/images/jones-strong-staffy-sire-temperament.webp",
-      "alt": "Jones, a pedigree Staffordshire Bull Terrier, sitting up in front of his tartan-covered crate"
+      "file": "/images/sbt-uk-legal-status-public-perception.webp",
+      "alt": "A young blue Staffordshire Bull Terrier standing on a grey carpet beside an orange basketball, a pink armchair and a wire pen behind it"
     },
     {
       "slot": "coat-years",
@@ -3146,13 +3146,70 @@
       "h": 450,
       "required": true,
       "status": "baked",
-      "file": "/images/blue-staffy-family-dog-uk.webp",
-      "alt": "An adult blue Staffordshire Bull Terrier in a blue harness, standing in long grass"
+      "file": "/images/premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp",
+      "alt": "A blue Staffy puppy in a black collar glancing up over its shoulder, its ears folded back"
     }
   ],
   "dropped": {},
   "verbatim": {
-    "changed": []
+    "changed": [
+      {
+        "kind": "alt",
+        "src": "/images/blue-staffy-puppy-vet-check-uk.webp",
+        "old": "A blue Staffy puppy receiving a gentle vet check, showcasing our commitment to the health of our pups in the UK.",
+        "new": "A fawn and white puppy on a vet's clinic table, licking the hand of a smiling vet in blue scrubs while a colleague looks on",
+        "reason": "The served alt calls the puppy blue: it is fawn and white, so it is not one of our blue puppies, and 'our commitment to the health of our pups' is not something the picture shows. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md); lessons 8: every alt is checked against its image at the Asset Gate (row 11). Manchester Asset Gate prep, Task 39, 2026-10-07."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/bluestaffyuk-nationwide-delivery.webp",
+        "old": "BlueStaffyUK.uk branded van delivering blue Staffy puppies nationwide across the UK.",
+        "new": "Five blue Staffy puppies at the open side door of a white van, four sitting among cardboard boxes and one standing up inside the doorway",
+        "reason": "The picture is an AI-made van with logo and part-lettering painted on it; we own no branded van (delivery is by DEFRA-approved transport, data/settings.json delivery_note), so 'BlueStaffyUK.uk branded van delivering ... nationwide' states a fact we do not hold (lessons 7: words in an image are copy). breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md); lessons 8: every alt is checked against its image at the Asset Gate (row 11). Manchester Asset Gate prep, Task 39, 2026-10-07."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/puppy-vaccinations-uk.webp",
+        "old": "A happy blue Staffy puppy engaging with a vet after receiving its puppy vaccinations UK.",
+        "new": "A white puppy with a brown eye patch looking over the shoulder of a vet nurse in blue scrubs, a black and white puppy held up behind her",
+        "reason": "The served alt calls the puppy blue and says it has just had its vaccinations: it is a white puppy with a brown eye patch held by a vet nurse, and no injection is shown. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md); lessons 8: every alt is checked against its image at the Asset Gate (row 11). Manchester Asset Gate prep, Task 39, 2026-10-07."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/blue-staffy-health-prioritising-wellbeing.webp",
+        "old": "Blue Staffy dog sitting in a clean, peaceful home environment representing health and care.",
+        "new": "An adult blue Staffy in a teal harness sitting on a vet's table beside a stethoscope, a banner about blue Staffy health printed across the bottom",
+        "reason": "The served alt places the dog 'in a clean, peaceful home environment': the picture is a vet's room with a stethoscope and an exam table, and a printed banner across the bottom. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md); lessons 8: every alt is checked against its image at the Asset Gate (row 11). Manchester Asset Gate prep, Task 39, 2026-10-07."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp",
+        "old": "How can I avoid common Staffordshire Bull Terrier temperament problems? Blue Staffy puppy socialising with children.",
+        "new": "Newborn blue and white pups tucked against their sleeping blue Staffy mother on a cream fleece, behind the rails of a whelping box",
+        "reason": "No children are in the picture: it is a blue dam asleep with her newborn pups in a whelping box, so 'puppy socialising with children' describes another photo. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md); lessons 8: every alt is checked against its image at the Asset Gate (row 11). Manchester Asset Gate prep, Task 39, 2026-10-07."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/buy-staffy-health-guarantee-uk.webp",
+        "old": "Blue Staffy puppy health guarantee UK — BlueStaffyUK breeder assurance",
+        "new": "Five young puppies in fawn, brindle, black and white coats peering over the rim of a pink bed",
+        "reason": "No puppy in the picture is blue and there are five of them (fawn, brindle, black and white coats); 'Blue Staffy puppy health guarantee' names a single blue puppy and a guarantee the picture does not show. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md); lessons 8: every alt is checked against its image at the Asset Gate (row 11). Manchester Asset Gate prep, Task 39, 2026-10-07."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/sbt-uk-legal-status-public-perception.webp",
+        "old": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\"",
+        "new": "A young blue Staffordshire Bull Terrier standing on a grey carpet beside an orange basketball, a pink armchair and a wire pen behind it",
+        "reason": "The served alt describes a brindle Staffy beside a sign about the Dangerous Dogs Act: the picture is a young blue Staffy on a carpet beside a basketball, with no sign, so the alt describes another image and carries a legal statement the picture does not make. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md); lessons 8: every alt is checked against its image at the Asset Gate (row 11). Manchester Asset Gate prep, Task 39, 2026-10-07."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp",
+        "old": "Beautiful and healthy Staffy puppy for sale in the UK, featuring an alert expression and glossy coat, available for immediate collection.",
+        "new": "A blue Staffy puppy in a black collar glancing up over its shoulder, its ears folded back",
+        "reason": "The puppy in this picture is none of the six in our current litter (data/puppies.json), so 'for sale in the UK' and 'available for immediate collection' state an availability we do not have, and 'healthy' is not visible in a photograph. breeder's ruling, answer board 2026-10-04 q05 (a): fix the alts that describe a different picture (docs/reference/answer-board/answers/2026-10-04-london-visual-intel-decisions-2026-10-04.md); lessons 8: every alt is checked against its image at the Asset Gate (row 11). Manchester Asset Gate prep, Task 39, 2026-10-07."
+      }
+    ]
   },
   "approval": {
     "approved_at": "2026-10-07T19:32:25.878Z",

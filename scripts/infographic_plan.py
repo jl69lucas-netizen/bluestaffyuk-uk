@@ -302,6 +302,31 @@ def _steps_from_prompt(prompt: str) -> list[str]:
     return [p for p in parts if p]
 
 
+#: The data/settings.json lists an IG-4 slot's prompt may name as its lines (gap G20,
+#: Manchester's papers checklist, 2026-10-07). A prompt that names one draws the checklist
+#: from it: the lines the prompt quotes ("…" or “…”), each matched word for word against the
+#: list, else every line in data order. A quoted line the list does not hold renders
+#: NOT FETCHED, never the quoted words (CLAUDE.md rule 9: the prompt selects, the data says).
+IG4_LISTS = ("puppy_trust_signs",)
+_QUOTED = re.compile(r'"([^"\n]+)"|“([^”\n]+)”')
+
+
+def _checks_from_data(prompt: str, settings: dict):
+    """(list key, [check]) when `prompt` names one of IG4_LISTS, else None."""
+    key = next((k for k in IG4_LISTS if re.search(rf"\b{k}\b", prompt or "")), None)
+    if key is None:
+        return None
+    lines = settings.get(key)
+    if not isinstance(lines, list) or not lines:
+        return key, [{"text": _nf("settings.json", key), "icon": "check"}]
+    tail = prompt.split(key, 1)[1]
+    wanted = [a or b for a, b in _QUOTED.findall(tail)]
+    if not wanted:
+        return key, [{"text": str(x), "icon": "check"} for x in lines]
+    return key, [{"text": w if w in lines else _nf("settings.json", f'{key} "{w}"'),
+                  "icon": "check"} for w in wanted]
+
+
 #: IG-3 rows, in order: (data/breed-standards.json field, row label). A row is shown only when
 #: BOTH subjects' standards state it, so the split compares like with like.
 SPLIT_FIELDS = (("standard", "Breed standard"), ("height", "Height"), ("weight", "Weight"),
@@ -422,11 +447,25 @@ def facts_for(slot_plan: dict, root) -> dict:
                             "video call": "outline H3 heading"}}
 
     if ig == "IG-4":
+        listed = _checks_from_data(slot_plan.get("prompt", ""), st)
+        if listed is not None:
+            # Gap G20: the prompt names the data list the graphic is drawn from, so every
+            # line is that list's, word for word, and nothing else is added to it.
+            key, checks = listed
+            return {"title": title, "checks": checks,
+                    "sources": {"checks": f"data/settings.json {key}"}}
         checks = [{"text": h, "icon": "check"} for h in _all_headings(sec)][:10]
         if re.search(r"paperwork|contract|guarantee", " ".join(_all_headings(sec) + [
                 sec.get("heading", "")]).lower()):
             checks.append({"text": _get(st, "settings.json", "guarantee_label"),
                            "icon": "shield"})
+        if not checks:
+            # Gap G21: an empty checklist rendered an empty list with no warning, and a style
+            # was picked from that empty frame. It renders one visible NOT FETCHED line.
+            checks = [{"text": f"{NF} — no checklist lines: no heading sits under the "
+                               "section's other headings and the slot's prompt names no data "
+                               "list (data/settings.json " + " or ".join(IG4_LISTS) + ")",
+                       "icon": "check"}]
         return {"title": title, "checks": checks,
                 "sources": {"checks": "the section's outline headings (H3–H6)",
                             "guarantee": "data/settings.json guarantee_label"}}
