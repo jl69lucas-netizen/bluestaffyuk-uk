@@ -760,6 +760,8 @@ Written out 2026-10-07 after STOP 3 (3a4251a7), from London's Tasks 26–28 (`do
   python3 -c "import json;b=json.load(open('data/boards/blue-staffy-puppies-manchester-uk.json'));print([r['source'] for r in b.get('board_revisions') or []])"
   ```
   Expected: a row whose `source` is `answer board 2026-10-07-page-board-blue-staffy-puppies-manchester-uk q12`, whose `record_change` names links 8 and 9 as held, and whose `builder` says "leave both unbuilt". If it is missing, the CONTROLLER adds it. The record is shared with the Asset Gate work, so the CONTROLLER owns that edit. The row moves the record hash, so the CONTROLLER then runs `npm run -s build && python3 scripts/board_approve.py blue-staffy-puppies-manchester-uk` (expected: exit 0). London's board revision was re-approved the same way (f3031626). Commit `board(manchester): links 8 and 9 held, recorded as a board revision (STOP 3 q12)`.
+
+  **Note (2026-10-08, as run): no `board_revisions` row is added for STOP 3 q12.** The HELD state is already recorded in each held link's `why` on the approved board and in the STOP 3 answers file (`docs/reference/answer-board/answers/2026-10-07-page-board-blue-staffy-puppies-manchester-uk-2026-10-07.md`, q12). A `board_revisions` row is inside the record hash, so adding one would send the approved board back for approval for a decision it already carries. The expected output of the command above is therefore `[]` for q12, and that is not a failure.
 - [ ] **Step 4:** Read `docs/reference/lessons.md` entries 7–9, 15 and 18–21 again. Each one binds a step below.
 
 ### Task 42: The rebuilt page's own tests, written first
