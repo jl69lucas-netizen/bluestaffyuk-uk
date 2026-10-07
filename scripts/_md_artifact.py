@@ -10,14 +10,24 @@ sections, so neither of them writes HTML by hand.
     page(title, eyebrow, heading, status, date, rel, sections, md_name)
         sections: [(section title, markdown body), ...]
     markdown(heading, sections) -> the whole document, the same text the download hands back
+
+The download goes through the viewer's `downloads` capability: the claude.ai Artifact viewer
+never grants a page download permission, so a link or a blob-URL click does nothing there (the
+publish warning of 2026-10-07). Publish the page with `capabilities=CAPABILITIES`
+(`publish_hint` prints the step). The button stays hidden until the runtime says it can save,
+and "Copy all as Markdown" is the fallback that always works, including in a saved copy.
 """
 import html
+import json
 import re
 
 # Pinned, from cdnjs (the artifact rules allow cdnjs scripts). Loaded before the page script.
 MARKED = "https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"
 PURIFY = "https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"
 _CLOSE = re.compile(r"</(script)", re.I)
+# What the page needs from the Artifact viewer. Pass it on every publish: a page published
+# without it gets `null` from claude.use("downloads") and never shows the download button.
+CAPABILITIES = {"downloads": True}
 
 CSS = """
 :root{--ground:#F4F1EA;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#5E6B7A;--line:#DAD6CC;--blue:#1F3A52;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#FAF8F3;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#EFE3B4}
@@ -52,6 +62,8 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 .md strong{color:var(--ink)}
 .md a{color:var(--blue);overflow-wrap:anywhere}
 .copied{color:var(--ok);font-size:12px}
+.warn{color:var(--warn);font-size:12px}
+[hidden]{display:none!important}
 @media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 14px 20px}
 .md table,.md thead,.md tbody,.md tr,.md th,.md td{display:block}.md thead{position:absolute;left:-9999px}
 .md tr{border:1px solid var(--line);border-radius:6px;margin:0 0 10px;padding:6px 0}.md td{border:0;padding:4px 12px}
@@ -64,7 +76,11 @@ JS = r"""
   var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
   function un(t){return t.replace(/<\\\//g,'</');}
   var head=un(document.getElementById('md-head').textContent.trim()),name=un(document.getElementById('md-name').textContent.trim());
-  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  function say(el,msg,cls){el.textContent=msg;el.className=cls||'copied';setTimeout(function(){if(el.textContent===msg)el.textContent='';},cls?6000:1800);}
+  function copy(text,el){
+    function legacy(){var t=document.createElement('textarea'),ok=false;t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';
+      document.body.appendChild(t);t.select();try{ok=document.execCommand('copy');}catch(e){}t.remove();say(el,ok?'Copied':'Copying is blocked here',ok?'':'warn');}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){say(el,'Copied');},legacy);else legacy();}
   function labels(root){root.querySelectorAll('table').forEach(function(t){var hs=[].map.call(t.querySelectorAll('th'),function(h){return h.textContent;});
     t.querySelectorAll('tbody tr').forEach(function(r){[].forEach.call(r.children,function(c,i){c.setAttribute('data-label',hs[i]||'');});});});}
   document.querySelectorAll('script[type="text/markdown"][data-title]').forEach(function(b,i){
@@ -85,9 +101,18 @@ JS = r"""
   });
   var whole='# '+head+'\n\n'+all.join('\n\n')+'\n';
   document.getElementById('copy-all').addEventListener('click',function(){copy(whole,document.getElementById('all-status'));});
-  document.getElementById('dl-md').addEventListener('click',function(){
-    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([whole],{type:'text/markdown'}));a.download=name;
-    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},0);});
+  // The .md download: only through the viewer's downloads capability (a link does nothing there).
+  var dl=document.getElementById('dl-md'),st=document.getElementById('all-status'),downloads=null,KEEP=['bad_request','request_unknown','transform_error'];
+  dl.addEventListener('click',function(){if(!downloads)return;
+    downloads.save({filename:name,data:whole}).then(function(r){say(st,r&&r.status==='delivered'?'Sent':'Downloaded');},function(e){var c=(e&&e.code)||'error';
+      if(c==='declined')say(st,'Download cancelled','warn');
+      else if(c==='rate_limited')say(st,'A download prompt is already open','warn');
+      else if(c==='too_large')say(st,'This file is too large to download here. Use Copy all as Markdown.','warn');
+      else if(KEEP.indexOf(c)>=0)say(st,"Download didn't happen ("+c+'). Use Copy all as Markdown.','warn');
+      // unavailable, not_granted, capability_* and any unknown code: this view cannot save.
+      else{downloads=null;dl.hidden=true;say(st,'Download is unavailable here ('+c+'). Use Copy all as Markdown.','warn');}});});
+  var use=window.claude&&window.claude.use;
+  if(typeof use==='function')use.call(window.claude,"downloads").then(function(ns){if(ns){downloads=ns;dl.hidden=false;}},function(){});
 })();
 """
 
@@ -116,6 +141,12 @@ def markdown(heading, sections):
         f"## {t}\n\n{b.strip()}" for t, b in sections) + "\n"
 
 
+def publish_hint(html_path):
+    """The publish step a generator prints after it writes the page."""
+    return (f"publish {html_path} as an Artifact with "
+            f"capabilities={json.dumps(CAPABILITIES)} (the .md download needs it)")
+
+
 def page(title, eyebrow, heading, status, date, rel, sections, md_name):
     blocks = "\n".join(
         f'<script type="text/markdown" data-title="{html.escape(t)}">\n{_esc(b.strip())}\n</script>'
@@ -133,7 +164,7 @@ def page(title, eyebrow, heading, status, date, rel, sections, md_name):
 <div class="wrap">
 <header class="mast"><div><p class="eyebrow">{html.escape(eyebrow)}</p><h1 class="title">{html.escape(heading)}</h1></div>
 <div class="meta"><span class="pill">{html.escape(status)}</span> <span class="pill">{html.escape(date)}</span><br>{html.escape(rel)}</div></header>
-<div class="toolbar"><button class="btn" id="copy-all">Copy all as Markdown</button><button class="btn ghost" id="dl-md">Download .md</button><span id="all-status"></span><span>Every section has its own copy button; the copy is the exact markdown.</span></div>
+<div class="toolbar"><button class="btn" id="copy-all">Copy all as Markdown</button><button class="btn ghost" id="dl-md" hidden>Download .md</button><span id="all-status"></span><span>Every section has its own copy button; the copy is the exact markdown.</span></div>
 <nav class="toc" id="toc" aria-label="Sections"></nav>
 <main id="doc"></main>
 </div>

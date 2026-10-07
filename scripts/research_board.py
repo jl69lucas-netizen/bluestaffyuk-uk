@@ -51,7 +51,8 @@ Usage:
   python3 scripts/research_board.py <slug> --check         validate only
   python3 scripts/research_board.py <slug> --approve --answers <answers.json>
   options: --record PATH  --queries PATH  --out DIR        (a fixture, or a scratch run)
-Writes docs/artifacts/research/<slug>.html and .md; publish the .html as an Artifact.
+Writes docs/artifacts/research/<slug>.html and .md; publish the .html as an Artifact with
+capabilities={"downloads": true} (scripts/_md_artifact.py: the .md download needs it).
 Exit 0 clean · 1 the record is incomplete or malformed (every problem printed) · 2 no record,
 an unreadable record or query file, a bad call, or a refused approval.
 """
@@ -879,6 +880,7 @@ def main(argv=None):
         return 0
     html_path, md_path = build(record, queries, pathlib.Path(a.out) if a.out else ROOT / OUT)
     print(f"wrote {html_path} and {md_path} — state: {approval_state(record, queries)}")
+    print("  " + MA.publish_hint(html_path))
     return 0
 
 
