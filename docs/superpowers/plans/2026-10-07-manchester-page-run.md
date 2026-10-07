@@ -153,7 +153,28 @@ Tasks 4, 6, 7, 8 and 9 share no file and run as parallel agents. Task 5 runs in 
 - [ ] **Step 3:** Write the measurements to `docs/reports/ki99-location-calibration-2026-10-07.md`, set `budgets.location` and `calibrated` in `data/quality/evidence-budgets.json`, run the test to green, and revisit London's `budgets_by_slug` entry (delete it if the new ceilings cover London as built; `tests/py/test_evidence_london_budget.py` changes with it).
 - [ ] **Step 4:** Commit `fix(evidence): calibrate the location term ceilings from competitor pages (Known Issue 99)`.
 
-## Phases E–J (rows 9–21) — after STOP 1
+## Phase E: The outline (row 9, STOP 2) — written 2026-10-07 after STOP 1 (approval hash 3583bdc08a7bd609)
+
+STOP 1 picks (`docs/reference/answer-board/answers/2026-10-07-research-board-blue-staffy-puppies-manchester-uk-2026-10-07.json`): M1 colour comes last; S2; every recommended framework (EEBP hero, PDB deposit and viewing, FAB litter and prices, FAB delivery, EEBP health and raising, QAB life in Manchester, QAB FAQ, AIDA contact); header Style 2 (Conversational Hybrid, FAQ register); blue stays primary for the H1, the for-sale family leads the title and the first 100 words; the keyword universe as shown; 2,000–3,000 words; no council link; colour and price said of this litter only; no rescue wording; the DNA FAQ pick kept, answered with the tests named and certificates on request (never a result); **no live video call on this page (q08 note)**.
+
+### Task 14: Write the outline record from the picks
+London's Task 18 command for command (`docs/superpowers/plans/2026-09-30-london-page-run.md`), slug `blue-staffy-puppies-manchester-uk`, with these values:
+- `h1`: M1's question, "Should Colour Decide Which Blue Staffy Puppy Comes Home to Manchester?" (`h1-pick-is-final`).
+- `word_target`: `{"min": 2000, "max": 3000, "source": "median NOT FETCHED — fewer than two prose competitor pages (1 used) in data/queries/blue-staffy-puppies-manchester-uk.json; the user's 2,000–3,000 band, STOP 1 q06 (2026-10-07)"}`.
+- `header_style`: Style 2, Conversational Hybrid in the FAQ register: every H2 and H3 is a buyer question that also carries a keyword (STOP 1 q03).
+- Body rows: exactly `section_target.total` (9), split across the builder's three gaps. M1's section order leads. The deposit and viewing section answers "see the puppy with its mother before any money changes hands" without a video call: the deposit books the viewing in Carlisle, reserves the puppy and comes off the price; the refund wording comes from `deposit_refund_clause`; payment is by bank transfer; the parents, papers and vet records are seen before the buyer commits (`data/faq.json` `whyus-evidence`). It never repeats a "see before you pay" rule we do not follow (lessons 9).
+- The census has one H1 and all six levels, with at least 5 H5s and at least 5 H6s (hard FAIL on a project 5 location page, the user's ruling of 2026-09-30).
+- FAQ: three blocks of the question file's picks (top, middle, bottom), 15–20 H3s in total, none repeating a body heading. The DNA pick stays (q11 b).
+- No rescue wording anywhere (q10). Colour and price are said of this litter only (q09).
+- Run `python3 scripts/outline_matrix.py blue-staffy-puppies-manchester-uk --check` until it exits 0, then commit.
+
+### Task 15: Entities, internal links and external links
+London's Task 19, with `docs/research/manchester-page-run/links-plan.md`. Internal anchors are never reused from another board for the same route, including London's. External links: six domains from four source types, no council page (STOP 1 q07), each live-checked. Then `python3 -m pytest -q tests/py/test_link_library.py tests/py/test_link_diversity.py` and the outline `--check`; commit.
+
+### Task 16 (CONTROLLER): STOP 2
+London's Task 20, with the batch `<date>-outline-blue-staffy-puppies-manchester-uk`. Before posting, read every piece of buyer advice in the outline against `data/settings.json`, the evidence ledger and the answer-board rulings (lessons 9).
+
+## Phases F–J (rows 10–21) — after STOP 2
 
 These follow London's plan Tasks 18–37 command for command, with the slug `blue-staffy-puppies-manchester-uk`, the route `uk-locations/blue-staffy-puppies-manchester-uk`, research folder `docs/research/manchester-page-run/`, and these differences: Manchester's own components are designed at row 10 (ruling 2) on the board's three styles at 1280 / 768 / 375; `python3 scripts/dup_content_audit.py --headers` runs straight after the first `npm run build` at row 12; every image with words is read as copy before STOP 4. Each phase is written out in full in this file once the stop before it is approved, so its commands are checked against the tree as it stands then.
 
