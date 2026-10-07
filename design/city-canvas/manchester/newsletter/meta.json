@@ -1,0 +1,52 @@
+{
+ "component": "newsletter",
+ "variants": {
+  "a": {
+   "name": "Sunk slip",
+   "description": "One soft steel slip pressed into the page, set left: the display line, what a subscriber gets, then the field and button stacked in it.",
+   "idea_sources": [
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Newsletter-module-design2.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/newsletter/mfs-home-1280-02.png"
+   ],
+   "differs_from": "Everything in one sunk slip set left in the column, no photo; London's pick is a raised card with a photo at its left, and C is a split steel band.",
+   "axes": {
+    "layout": "slip-stack",
+    "media": "none",
+    "density": "regular",
+    "framing": "inset"
+   }
+  },
+  "b": {
+   "name": "Postmarked note",
+   "description": "A short signed note between rules, with Vennie as a round postmark photo in a dashed ring at the right.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-idea55.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/newsletter-idea1.png"
+   ],
+   "differs_from": "A signed note framed by rules with a round postmark photo at the right; London's pick is a raised card with a square photo at the left.",
+   "axes": {
+    "layout": "postmark",
+    "media": "right",
+    "density": "airy",
+    "framing": "rule"
+   }
+  },
+  "c": {
+   "name": "Split steel band",
+   "description": "A compact steel band: envelope, line and sentence left-set on the left, the joined field and brass submit on the right.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/newsletter/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/newsletter/mfs-home-375-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Newsletter-Form-Design-component.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's centred one-column band becomes a split band from 1024px, copy left and form right. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "split-band",
+    "media": "none",
+    "density": "compact",
+    "framing": "band"
+   },
+   "from_pool": "london/newsletter/b"
+  }
+ }
+}

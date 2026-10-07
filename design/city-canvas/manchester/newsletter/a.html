@@ -1,0 +1,51 @@
+<style>
+/* Newsletter A — Sunk slip (Page-Newsletter-module-design2.png, the split MFS capture). One
+   soft steel slip pressed into the bone page (hairline edge, no shadow), set left in the
+   column and no wider than a postcard: the opening line in the display face, one sentence on
+   what a subscriber gets, and the field and button stacked beneath it, so everything sits in
+   one pocket. No heading (outline row 16 carries none), no photo, no subscriber count.
+   Regular density; the same stack at every width, only the slip's inset grows. */
+.nlA{background:var(--color-surface)}
+.nlA .in{max-width:1080px;margin:0 auto;padding:var(--space-7) var(--space-4)}
+.nlA .slip{max-width:600px;padding:var(--space-5) var(--space-4);background:var(--color-brand-soft);border-radius:var(--radius-md);box-shadow:inset 0 0 0 1px var(--color-brand-mid)}
+.nlA .line{margin:0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.3;color:var(--color-brand);text-wrap:balance;max-width:26ch}
+.nlA .say{margin:var(--space-2) 0 var(--space-4);font-size:16px;line-height:1.55;color:var(--color-text);max-width:52ch;text-wrap:pretty}
+.nlA form{display:grid;gap:var(--space-2)}
+.nlA label{font-size:15px;font-weight:600;color:var(--color-text)}
+.nlA .row{display:grid;gap:var(--space-2)}
+.nlA input{width:100%;min-height:48px;padding:10px 14px;font:inherit;font-size:16px;color:var(--color-text);background:var(--color-surface-raised);border:1px solid var(--color-brand-mid);border-radius:var(--btn-form-radius)}
+.nlA input:focus-visible,.nlA button:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.nlA input:user-invalid{border:2px solid var(--color-warn)}
+.nlA .err{display:none;margin:0;font-size:14px;color:var(--color-text)}
+.nlA form:has(input:user-invalid) .err{display:block}
+.nlA button{min-height:48px;padding:10px 22px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out)}
+.nlA button:hover{background:var(--color-cta-hover)}
+.nlA .note{margin:var(--space-3) 0 0;font-size:14px;line-height:1.45;color:var(--color-text)}
+@media (min-width:640px){
+  .nlA .row{grid-template-columns:minmax(0,1fr) auto}
+  .nlA .line{font-size:22px}
+  .nlA .say{font-size:17px}
+  .nlA .slip{padding:var(--space-6) var(--space-7)}
+}
+@media (min-width:1024px){
+  .nlA .in{padding:var(--space-9) var(--space-6)}
+  .nlA .line{font-size:24px}
+}
+</style>
+<section data-component="newsletter" data-variant="a" class="nlA">
+  <div class="in">
+    <div class="slip">
+      <p class="line">Shall we write to you when our next litter is on its way?</p>
+      <p class="say">If none of our six puppies is the one for your Greater Manchester home, leave your email and we send you one short note from Carlisle when the next litter is due.</p>
+      <form data-newsletter aria-label="Next litter note sign-up">
+        <label for="nlA-email">Your email address</label>
+        <div class="row">
+          <input id="nlA-email" name="email" type="email" autocomplete="email" required>
+          <button type="submit">Write to me</button>
+        </div>
+        <p class="err">That email address looks incomplete. Please check it and try again.</p>
+      </form>
+      <p class="note">That is all this list is for, and your email is used for nothing else.</p>
+    </div>
+  </div>
+</section>

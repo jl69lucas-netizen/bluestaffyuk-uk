@@ -1,0 +1,163 @@
+<style>
+/* FAQ B — Rows beside a photo (component-idea-faq1.png, faq-idea00.png). The open bone page;
+   each block is ruled off by a steel rule, its question and answer run full width, and then
+   its questions sit as display-face rows between hairlines, with a plus mark, beside one
+   portrait photo that belongs to that block: Christa beside the buying questions, Maggie with
+   her pups beside health and viewing, a puppy settled at home in Manchester beside everyday
+   life. The photo swaps sides block by block (right, left, right) and stays in view while the
+   rows are read. On a phone the photo is a short 3:1 strip between the answer and the rows; from 640px
+   it is a square beside them.
+   Regular density; no numbers, no card. */
+.fqB{background:var(--color-surface)}
+.fqB .in{max-width:1120px;margin:0 auto;padding:var(--space-7) var(--space-4);display:grid;gap:var(--space-10)}
+.fqB .blk{border-top:2px solid var(--color-brand);padding-top:var(--space-5)}
+.fqB h2{margin:0;font-size:22px;line-height:1.2;font-weight:700;color:var(--color-brand);text-wrap:balance;max-width:26ch}
+.fqB .lede{margin:var(--space-2) 0 var(--space-5);font-size:16px;line-height:1.6;color:var(--color-text);max-width:62ch;text-wrap:pretty}
+.fqB .pair{display:grid;gap:var(--space-4)}
+.fqB .pic{margin:0}
+.fqB .pic img{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.fqB .pic figcaption{margin-top:var(--space-2);font-size:14px;line-height:1.4;color:var(--color-text-muted)}
+.fqB .rows{border-top:1px solid var(--color-border)}
+.fqB .row{border-bottom:1px solid var(--color-border)}
+.fqB summary{display:flex;align-items:center;gap:var(--space-4);min-height:56px;padding:var(--space-3) 0;cursor:pointer;list-style:none;border-radius:var(--radius-sm)}
+.fqB summary::-webkit-details-marker{display:none}
+.fqB summary:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.fqB summary:hover h3{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.fqB .nb{white-space:nowrap}
+.fqB h3{flex:1;margin:0;font-size:17px;line-height:1.35;font-weight:600;color:var(--color-brand)}
+.fqB .pm{order:2;flex:none;position:relative;width:16px;height:16px;color:var(--color-brand)}
+.fqB .pm::before,.fqB .pm::after{content:"";position:absolute;left:0;top:7px;width:16px;height:2px;background:currentColor;transition:transform var(--dur-base) var(--ease-out)}
+.fqB .pm::after{transform:rotate(90deg)}
+.fqB details[open] .pm::after{transform:rotate(0deg)}
+.fqB .row>p{margin:0;padding:0 var(--space-8) var(--space-4) 0;font-size:16px;line-height:1.6;color:var(--color-text);max-width:64ch}
+@media (min-width:640px){
+  .fqB h2{font-size:24px}
+  .fqB .lede{font-size:17px}
+  .fqB h3{font-size:18px}
+  .fqB .row>p{font-size:17px}
+  .fqB .pair{grid-template-columns:minmax(0,1fr) 200px;gap:var(--space-6);align-items:start}
+  .fqB .pl .pair{grid-template-columns:200px minmax(0,1fr)}
+  .fqB .pr .pic{grid-column:2;grid-row:1}
+  .fqB .pr .rows{grid-column:1;grid-row:1}
+  .fqB .pic img{aspect-ratio:1/1}
+}
+@media (min-width:1024px){
+  .fqB .in{padding:var(--space-10) var(--space-6)}
+  .fqB h2{font-size:27px;max-width:34ch}
+  .fqB .pair{grid-template-columns:minmax(0,1fr) 320px;gap:var(--space-8)}
+  .fqB .pl .pair{grid-template-columns:320px minmax(0,1fr)}
+  .fqB .pic{position:sticky;top:var(--space-5)}
+  .fqB h3{font-size:19px}
+}
+</style>
+<section data-component="faq-blocks" data-variant="b" class="fqB">
+  <div class="in">
+    <div class="blk pr" data-faq-block="first">
+      <h2>What Do Manchester Buyers Ask First About Our Blue Staffy Puppies?</h2>
+      <p class="lede">The first questions are about the price, where to find us, how a puppy reaches your home and how the deposit works, so here are our answers in that order.</p>
+      <div class="pair">
+        <figure class="pic"><img src="/puppies/Christa.jpeg" alt="Christa the blue Staffordshire Bull Terrier puppy" width="1080" height="1080" loading="lazy" style="object-position:53% 30%"><figcaption>Christa, one of our six puppies</figcaption></figure>
+        <div class="rows">
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>How Much Does Each Blue Staffy Puppy Cost?</h3></summary>
+            <p>Each puppy is listed with its own price, so you see the figure before you enquire: in this litter £1,500 for each of our boys, Roman, Byrd and Ince, and £1,700 for each of our girls, Vennie, Christa and Cheryl.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Where Do I Find Blue Staffy Puppies to Buy Near Manchester?</h3></summary>
+            <p>Here. We raise blue Staffordshire Bull Terrier puppies in our own home in Carlisle and deliver across the United Kingdom, and our breeders page sets out who we are.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Can My Blue Staffy Puppy Be Delivered to My Home?</h3></summary>
+            <p>Yes. We offer UK-wide puppy delivery using <span class="nb">DEFRA-approved</span> pet transport, so wherever you are in the UK your de-wormed puppy can arrive at your doorstep comfortably and securely.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Do You Deliver Puppies Across the UK?</h3></summary>
+            <p>Yes. UK home delivery by <span class="nb">DEFRA-approved</span> transport, priced by distance, from £200 to £350, and you can collect your puppy from us in Carlisle instead.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>How Do I Know Which Puppies Are Still Available?</h3></summary>
+            <p>Our listing is generated from our own list of available puppies and updated regularly, so a puppy still showing there is one nobody has reserved. Tell us which one you like and we will confirm before you pay anything.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>How Much Is Your Deposit?</h3></summary>
+            <p>£500, which books your viewing and reserves your chosen puppy. It comes off the price, and it is up to 70% refundable if you change your mind up to 1 day before collection or delivery.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+    <div class="blk pl" data-faq-block="health">
+      <h2>What Do Manchester Families Ask a Staffy Breeder About Health and Viewing?</h2>
+      <p class="lede">Before you make the trip to Carlisle, families want to know about the parents, the viewing, the vet work and what happens after the puppy is home with you.</p>
+      <div class="pair">
+        <figure class="pic"><img src="/images/maggie-blue-staffy-dam-with-pups.webp" alt="A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups." width="780" height="585" loading="lazy" style="object-position:75% 4%"><figcaption>Maggie, our dam, with her pups</figcaption></figure>
+        <div class="rows">
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Are the Parents of Every Blue Staffy Puppy You Breed Health-Tested?</h3></summary>
+            <p>Yes. Maggie, our dam, and Jones, our sire, are both Kennel Club registered and fully vaccinated, and both have had DNA tests for <span class="nb">L-2-HGA</span> and <span class="nb">HC-HSF4</span> and eye and elbow screening.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Should I See the Mother With Her Puppy Before Money Changes Hands?</h3></summary>
+            <p>See them together before you commit to a puppy. With us the £500 deposit comes first: it books your viewing and reserves your puppy, it comes off the price, and it is up to 70% refundable if you change your mind up to 1 day before collection or delivery. At the viewing you see both parents, their registration papers and the veterinary records before you commit to a puppy, and again on the day you collect.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Can I Contact You for Advice for the Dog's Whole Life?</h3></summary>
+            <p>Yes. You are welcome to write to us before or after your puppy is home, and a question asked after the handover is answered the same way, within 24 to 48 business hours, by us rather than by an agency.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>How Do I Spot a Bad Staffy Breeder?</h3></summary>
+            <p>A good breeder invites you to their home, shows you the mother with the litter, shows the original registration papers, names the health tests on both parents and stays reachable afterwards. A car-park meeting, an absent dam, paperwork that is in the post or pressure to decide today are each reason enough to leave.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Has the Puppy Been Microchipped and Vet Checked?</h3></summary>
+            <p>Yes. Each puppy goes home with its first vaccinations, a microchip, a full veterinary health check, deworming and defleaing, its paperwork and a puppy pack to help it settle in.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>What Vaccinations, Worming and Flea Treatments Has the Puppy Had?</h3></summary>
+            <p>A veterinary health check, a first vaccination covering distemper, parvovirus, leptospirosis and hepatitis, a microchip, and deworming and flea treatment. It all goes on a vet-signed health card that comes with the puppy.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Are Both Parents DNA Tested Clear for <span class="nb">L-2-HGA</span> and for <span class="nb">HC-HSF4</span>?</h3></summary>
+            <p>Maggie and Jones are both DNA tested for <span class="nb">L-2-HGA</span>, a neurological disorder affecting metabolism, and for <span class="nb">HC-HSF4</span>, an inherited cataract, and we share their certificates on request.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+    <div class="blk pr" data-faq-block="life">
+      <h2>Which Everyday Questions Do Blue Staffies Raise for Manchester Households?</h2>
+      <p class="lede">These are the questions about living with the breed: temperament, first-time owners, time alone, food, children and whether a flat is enough room.</p>
+      <div class="pair">
+        <figure class="pic"><img src="/images/reputable-blue-staffy-breeder-manchester-pup.webp" alt="A settled blue Staffy puppy at home in Manchester, a testament to BlueStaffyUK&#x27;s excellent communication and reputable breeding." width="540" height="541" loading="lazy" style="object-position:50% 55%"><figcaption>One of our puppies, settled at home in Manchester</figcaption></figure>
+        <div class="rows">
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Is Blue Staffy Aggressive?</h3></summary>
+            <p>No. The Staffordshire Bull Terrier is not a banned breed in the UK and is bred as a companion, and our breed guide covers the law and the reputation together.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Do Blue Staffies Suit First-Time Dog Owners?</h3></summary>
+            <p>Yes, for a household with the time to put in. Socialise the puppy early and train consistently with rewards: Staffies are eager to please, but they need company, so the commitment matters more than the experience.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Can a Staffy Be Left Alone for Hours?</h3></summary>
+            <p>Not for long stretches. Staffies are people-focused dogs that can become bored or anxious alone, so a puppy is built up to short spells a little at a time.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Are Blue Staffies Good Pets?</h3></summary>
+            <p>Yes. The breed’s old nickname is the nanny dog, and our breed guide explains where that reputation came from and what it asks of a household with children.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>What Food Is the Puppy Eating Now?</h3></summary>
+            <p>The high-quality puppy food it has been raised on here, and we provide a starter pack so it can stay on that food at first. Your vet can advise on the long-term diet after that.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Do Blue Staffies Make Good Family Pets for Homes With Children?</h3></summary>
+            <p>Yes. A well-socialised and responsibly bred Staffordshire Bull Terrier is an excellent family companion, and its patience with children is why it was nicknamed the nanny dog. Ours meet the noise of an ordinary house before they leave it.</p>
+          </details>
+          <details class="row">
+            <summary><span class="pm" aria-hidden="true"></span><h3 data-faq-q>Is a Staffordshire Bull Terrier Able to Live in a Flat?</h3></summary>
+            <p>Yes, provided the dog gets its daily exercise and mental stimulation. The breed is medium-sized and people-focused rather than territorial, so regular walks matter more than a large garden.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

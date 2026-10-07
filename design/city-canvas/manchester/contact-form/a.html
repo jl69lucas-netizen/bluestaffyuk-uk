@@ -1,0 +1,96 @@
+<style>
+/* Contact A — Choice first (component-idea-shop1.png, the sister near-me capture). One raised
+   card on the bone page. Its head pairs the question and its answer with Lisa's own photo at
+   the right. The one bold thing is the first choice, made before any typing: two bordered
+   option boxes, collect from us in Carlisle or UK home delivery, each a whole box to tap.
+   Then the kit's fields two to a row, the puppy (one of the six, any boy, any girl or the next
+   litter), the message and a brass send. Regular density; one column on a phone, with the
+   photo a short strip under the answer. */
+.cfA{background:var(--color-surface)}
+.cfA .in{max-width:1000px;margin:0 auto;padding:var(--space-7) var(--space-3)}
+.cfA .card{background:var(--color-surface-raised);border:var(--card-border);border-radius:var(--card-radius);box-shadow:var(--shadow-card);padding:var(--space-5) var(--space-4)}
+.cfA .head{display:grid;gap:var(--space-4);margin-bottom:var(--space-5)}
+.cfA h2{margin:0;font-size:22px;line-height:1.2;font-weight:700;color:var(--color-brand);text-wrap:balance;max-width:26ch}
+.cfA .lede{margin:var(--space-2) 0 0;font-size:16px;line-height:1.6;color:var(--color-text);max-width:58ch;text-wrap:pretty}
+.cfA .pic{margin:0}
+.cfA .pic img{display:block;width:100%;height:auto;aspect-ratio:5/2;object-fit:cover;object-position:56% 30%;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.cfA form{display:grid;gap:var(--space-4)}
+.cfA fieldset{margin:0;padding:0;border:0;min-width:0}
+.cfA legend{padding:0;margin-bottom:var(--space-2);font-size:15px;font-weight:700;color:var(--color-text)}
+.cfA .opts{display:grid;gap:var(--space-2)}
+.cfA .opt{position:relative;display:grid;grid-template-columns:22px minmax(0,1fr);gap:var(--space-3);align-items:start;min-height:64px;padding:var(--space-3) var(--space-4);border:1px solid var(--color-brand-mid);border-radius:var(--radius-md);background:var(--color-surface-raised);cursor:pointer;transition:border-color var(--dur-fast) var(--ease-out)}
+.cfA .opt input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.cfA .dot{width:20px;height:20px;margin-top:2px;border:2px solid var(--color-steel-500);border-radius:50%;background:var(--color-surface-raised)}
+.cfA .opt b{display:block;font-size:16px;line-height:1.35;color:var(--color-text)}
+.cfA .opt small{display:block;margin-top:2px;font-size:14px;line-height:1.4;color:var(--color-text-muted)}
+.cfA .opt:hover{border-color:var(--color-brand)}
+.cfA .opt:has(input:checked){border:2px solid var(--color-brand);padding:calc(var(--space-3) - 1px) calc(var(--space-4) - 1px)}
+.cfA .opt:has(input:checked) .dot{border:6px solid var(--color-brand)}
+.cfA .opt:has(input:focus-visible){outline:3px solid var(--color-focus);outline-offset:2px}
+.cfA .f{display:grid;gap:4px;margin:0;min-width:0}
+.cfA label{font-size:15px;font-weight:600;color:var(--color-text)}
+.cfA label i{font-style:normal;font-weight:400;color:var(--color-text-muted)}
+.cfA .f input,.cfA select,.cfA textarea{width:100%;min-height:48px;padding:10px 12px;font:inherit;font-size:16px;color:var(--color-text);background:var(--color-surface-raised);border:1px solid var(--color-brand-mid);border-radius:var(--radius-sm)}
+.cfA textarea{min-height:120px;resize:vertical}
+.cfA .f input:focus-visible,.cfA select:focus-visible,.cfA textarea:focus-visible,.cfA button:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.cfA .f :user-invalid{border:2px solid var(--color-warn)}
+.cfA .err{display:none;font-size:14px;color:var(--color-text)}
+.cfA .f:has(:user-invalid) .err{display:block}
+.cfA .go{display:grid;gap:var(--space-3)}
+.cfA button{min-height:48px;padding:10px 26px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;justify-self:start;transition:background-color var(--dur-fast) var(--ease-out)}
+.cfA button:hover{background:var(--color-cta-hover)}
+.cfA .after{margin:0;font-size:15px;line-height:1.5;color:var(--color-text);max-width:60ch}
+.cfA .nb{white-space:nowrap}
+@media (min-width:640px){
+  .cfA .in{padding:var(--space-8) var(--space-5)}
+  .cfA .card{padding:var(--space-6)}
+  .cfA h2{font-size:24px}
+  .cfA .lede{font-size:17px}
+  .cfA .opts{grid-template-columns:1fr 1fr}
+  .cfA form{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--space-4)}
+  .cfA .wide,.cfA fieldset,.cfA .go{grid-column:1 / -1}
+}
+@media (min-width:768px){
+  .cfA .head{grid-template-columns:minmax(0,1fr) 260px;gap:var(--space-6);align-items:center}
+  .cfA .pic img{aspect-ratio:4/3}
+}
+@media (min-width:1024px){
+  .cfA .in{padding:var(--space-10) var(--space-6)}
+  .cfA .card{padding:var(--space-7) var(--space-8)}
+  .cfA h2{font-size:27px;max-width:none}
+  .cfA .head{grid-template-columns:minmax(0,1fr) 220px;gap:var(--space-7)}
+  .cfA .pic img{aspect-ratio:1/1}
+}
+</style>
+<section data-component="contact-form" data-variant="a" class="cfA">
+  <div class="in">
+    <div class="card">
+      <div class="head">
+        <div>
+          <h2>How Do I Ask About a Blue Staffy Puppy for My Greater Manchester Home?</h2>
+          <p class="lede">Tell us which puppy you have in mind, or simply a boy or a girl, and whether you would rather collect in Carlisle or have your puppy delivered. We confirm your puppy is still free before you pay anything.</p>
+        </div>
+        <figure class="pic"><img src="/images/lisa-bright-blue-staffy-breeder-carlisle.webp" alt="Lisa Bright, the breeder who answers your enquiry, holding two young puppies at home in Carlisle" width="1408" height="768" loading="lazy"></figure>
+      </div>
+      <form data-contact-form method="post" aria-label="Enquire about a puppy for a Greater Manchester home">
+        <fieldset>
+          <legend>How would you like your puppy to reach you?</legend>
+          <div class="opts">
+            <label class="opt" for="cfA-collect"><input id="cfA-collect" name="handover" type="radio" value="collect"><span class="dot" aria-hidden="true"></span><span><b>Collect from us in Carlisle</b><small>You meet us and the puppy on the day</small></span></label>
+            <label class="opt" for="cfA-deliver"><input id="cfA-deliver" name="handover" type="radio" value="delivery"><span class="dot" aria-hidden="true"></span><span><b>UK home delivery, <span class="nb">£200–£350</span></b><small>By <span class="nb">DEFRA-approved</span> transport, priced by distance</small></span></label>
+          </div>
+        </fieldset>
+        <p class="f"><label for="cfA-name">Your name <i>(required)</i></label><input id="cfA-name" name="name" type="text" autocomplete="name" required><span class="err">Please tell us your name.</span></p>
+        <p class="f"><label for="cfA-email">Email <i>(required)</i></label><input id="cfA-email" name="email" type="email" autocomplete="email" required><span class="err">That email address looks incomplete.</span></p>
+        <p class="f"><label for="cfA-phone">Phone <i>(optional)</i></label><input id="cfA-phone" name="phone" type="tel" autocomplete="tel"></p>
+        <p class="f"><label for="cfA-location">Town or postcode <i>(optional)</i></label><input id="cfA-location" name="location" type="text" autocomplete="address-level2"></p>
+        <p class="f wide"><label for="cfA-puppy">Which puppy? <i>(required)</i></label><select id="cfA-puppy" name="puppy" required><option value="" disabled selected>Choose a puppy…</option><option value="roman">Roman, boy, £1,500</option><option value="byrd">Byrd, boy, £1,500</option><option value="ince">Ince, boy, £1,500</option><option value="vennie">Vennie, girl, £1,700</option><option value="christa">Christa, girl, £1,700</option><option value="cheryl">Cheryl, girl, £1,700</option><option value="any-boy">Any of our three boys</option><option value="any-girl">Any of our three girls</option><option value="waiting-list">The next litter, please</option></select><span class="err">Please choose a puppy, a boy or a girl, or the next litter.</span></p>
+        <p class="f wide"><label for="cfA-message">Message <i>(required)</i></label><textarea id="cfA-message" name="message" rows="4" required></textarea><span class="err">Please tell us what you would like to know.</span></p>
+        <div class="go">
+          <button type="submit">Send my enquiry</button>
+          <p class="after">We personally review and respond to every message within <span class="nb">24-48</span> business hours. Your details are used only to answer you.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

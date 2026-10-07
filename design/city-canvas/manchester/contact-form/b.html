@@ -1,0 +1,87 @@
+<style>
+/* Contact B — Photo at the edge (card-idea55.png, new-modern-card-idea.png). Lisa's own photo
+   runs from the left edge of the screen to the middle of the section, full height, with no
+   frame (bleed); the question, its answer and a compact form sit on the bone page beside it.
+   The handover choice is a two-key switch (collect or delivery) above tight two-up fields.
+   On a phone the photo is a short strip across the top, edge to edge, then the form. Compact
+   density, no card and no shadow. */
+.cfB{position:relative;background:var(--color-surface)}
+.cfB .ph{margin:0}
+.cfB .ph img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:40% 30%;background:var(--color-bone-50)}
+.cfB .in{max-width:1160px;margin:0 auto;padding:var(--space-6) var(--space-4) var(--space-7)}
+.cfB .main{max-width:600px}
+.cfB h2{margin:0;font-size:22px;line-height:1.2;font-weight:700;color:var(--color-brand);text-wrap:balance;max-width:26ch}
+.cfB .lede{margin:var(--space-2) 0 var(--space-5);font-size:16px;line-height:1.6;color:var(--color-text);max-width:56ch;text-wrap:pretty}
+.cfB form{display:grid;gap:var(--space-3)}
+.cfB fieldset{margin:0;padding:0;border:0;min-width:0}
+.cfB legend{padding:0;margin-bottom:var(--space-2);font-size:15px;font-weight:600;color:var(--color-text)}
+.cfB .sw{display:grid;grid-template-columns:1fr 1fr;padding:4px;gap:4px;background:var(--color-brand-soft);border-radius:var(--radius-md)}
+.cfB .key{position:relative;display:grid;place-items:center;min-height:48px;padding:6px 10px;border-radius:var(--radius-sm);background:var(--color-surface-raised);box-shadow:inset 0 0 0 1px var(--color-brand-mid);font-size:15px;font-weight:600;line-height:1.25;text-align:center;color:var(--color-text);cursor:pointer}
+.cfB .key input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.cfB .key:has(input:checked){color:var(--color-brand);box-shadow:inset 0 0 0 3px var(--color-brand)}
+.cfB .key:has(input:focus-visible){outline:3px solid var(--color-focus);outline-offset:2px}
+.cfB .hint{margin:var(--space-2) 0 0;font-size:14px;line-height:1.45;color:var(--color-text-muted)}
+.cfB .f{display:grid;gap:4px;margin:0;min-width:0}
+.cfB label{font-size:15px;font-weight:600;color:var(--color-text)}
+.cfB label i{font-style:normal;font-weight:400;color:var(--color-text-muted)}
+.cfB .f input,.cfB select,.cfB textarea{width:100%;min-height:46px;padding:9px 12px;font:inherit;font-size:16px;color:var(--color-text);background:var(--color-surface-raised);border:1px solid var(--color-brand-mid);border-radius:var(--radius-sm)}
+.cfB textarea{min-height:104px;resize:vertical}
+.cfB .f input:focus-visible,.cfB select:focus-visible,.cfB textarea:focus-visible,.cfB button:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.cfB .f :user-invalid{border:2px solid var(--color-warn)}
+.cfB .err{display:none;font-size:14px;color:var(--color-text)}
+.cfB .f:has(:user-invalid) .err{display:block}
+.cfB .go{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3) var(--space-4)}
+.cfB button{min-height:48px;padding:10px 26px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out)}
+.cfB button:hover{background:var(--color-cta-hover)}
+.cfB .after{margin:0;flex:1 1 220px;font-size:14px;line-height:1.45;color:var(--color-text)}
+.cfB .nb{white-space:nowrap}
+@media (min-width:640px){
+  .cfB .ph img{aspect-ratio:5/2}
+  .cfB h2{font-size:24px}
+  .cfB .lede{font-size:17px}
+  .cfB form{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--space-3)}
+  .cfB .wide,.cfB fieldset,.cfB .go{grid-column:1 / -1}
+}
+@media (min-width:1024px){
+  .cfB .ph{position:absolute;left:0;top:0;bottom:0;width:calc(40% - var(--space-4))}
+  .cfB .ph img{height:100%;aspect-ratio:auto;object-position:58% 30%}
+  .cfB .in{display:grid;grid-template-columns:40% minmax(0,1fr);padding:var(--space-7) var(--space-6)}
+  .cfB textarea{min-height:76px}
+  .cfB .main{grid-column:2;padding-left:var(--space-6);max-width:660px}
+  .cfB form{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .cfB .f{grid-column:span 2}
+  .cfB .f.loc{grid-column:span 3}
+  .cfB .f.pup{grid-column:span 3}
+  .cfB .wide,.cfB fieldset,.cfB .go{grid-column:1 / -1}
+  .cfB h2{font-size:27px;max-width:none}
+}
+</style>
+<section data-component="contact-form" data-variant="b" class="cfB">
+  <figure class="ph"><img src="/images/lisa-bright-blue-staffy-breeder-carlisle.webp" alt="Lisa Bright, the breeder who answers your enquiry, holding two young puppies at home in Carlisle" width="1408" height="768" loading="lazy"></figure>
+  <div class="in">
+    <div class="main">
+      <h2>How Do I Ask About a Blue Staffy Puppy for My Greater Manchester Home?</h2>
+      <p class="lede">Tell us which puppy you like, or simply a boy or a girl, and how you would like to take your puppy home. We confirm your puppy is still free before you pay anything.</p>
+      <form data-contact-form method="post" aria-label="Enquire about a puppy for a Greater Manchester home">
+        <fieldset>
+          <legend>Collect or delivery?</legend>
+          <div class="sw">
+            <label class="key" for="cfB-collect"><input id="cfB-collect" name="handover" type="radio" value="collect">Collect in Carlisle</label>
+            <label class="key" for="cfB-deliver"><input id="cfB-deliver" name="handover" type="radio" value="delivery">Home delivery</label>
+          </div>
+          <p class="hint">UK home delivery is <span class="nb">£200–£350</span> by <span class="nb">DEFRA-approved</span> transport, priced by distance.</p>
+        </fieldset>
+        <p class="f"><label for="cfB-name">Your name <i>(required)</i></label><input id="cfB-name" name="name" type="text" autocomplete="name" required><span class="err">Please tell us your name.</span></p>
+        <p class="f"><label for="cfB-email">Email <i>(required)</i></label><input id="cfB-email" name="email" type="email" autocomplete="email" required><span class="err">That email address looks incomplete.</span></p>
+        <p class="f"><label for="cfB-phone">Phone <i>(optional)</i></label><input id="cfB-phone" name="phone" type="tel" autocomplete="tel"></p>
+        <p class="f loc"><label for="cfB-location">Town or postcode <i>(optional)</i></label><input id="cfB-location" name="location" type="text" autocomplete="address-level2"></p>
+        <p class="f wide pup"><label for="cfB-puppy">Which puppy? <i>(required)</i></label><select id="cfB-puppy" name="puppy" required><option value="" disabled selected>Choose a puppy…</option><option value="roman">Roman, boy, £1,500</option><option value="byrd">Byrd, boy, £1,500</option><option value="ince">Ince, boy, £1,500</option><option value="vennie">Vennie, girl, £1,700</option><option value="christa">Christa, girl, £1,700</option><option value="cheryl">Cheryl, girl, £1,700</option><option value="any-boy">Any of our three boys</option><option value="any-girl">Any of our three girls</option><option value="waiting-list">The next litter, please</option></select><span class="err">Please choose a puppy, a boy or a girl, or the next litter.</span></p>
+        <p class="f wide"><label for="cfB-message">Message <i>(required)</i></label><textarea id="cfB-message" name="message" rows="3" required></textarea><span class="err">Please tell us what you would like to know.</span></p>
+        <div class="go">
+          <button type="submit">Send my enquiry</button>
+          <p class="after">We personally review and respond to every message within <span class="nb">24-48</span> business hours. Your details are used only to answer you.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

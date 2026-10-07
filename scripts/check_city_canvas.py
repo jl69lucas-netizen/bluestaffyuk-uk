@@ -220,7 +220,7 @@ NOT_NAMES = frozenset({
     "A", "An", "And", "Are", "Blue", "Both", "Carlisle", "Cumbria", "Dam", "Do", "Does", "Each",
     "Every", "Father", "Has", "Have", "Health", "Her", "His", "In", "Is", "London", "Meet",
     "Mother", "Of", "Our", "Parent", "Parents", "Photo", "See", "Sire", "Staffy", "Tests", "The",
-    "Their", "Was", "What", "Which", "Who", "Your"})
+    "Their", "Was", "What", "Which", "Who", "With", "Your"})
 #: Claims no file records (learning loop 2026-09-27, L3 ii): an audience majority, a promise in
 #: writing, a handling routine, a litter count. Refused until the breeder confirms one.
 UNCONFIRMED_CLAIMS = (

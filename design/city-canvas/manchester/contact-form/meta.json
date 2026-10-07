@@ -1,0 +1,52 @@
+{
+ "component": "contact-form",
+ "variants": {
+  "a": {
+   "name": "Choice first",
+   "description": "A raised card: the question beside Lisa's photo, then collect-or-delivery option boxes before the kit's fields, puppy and message.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea-shop1.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/sister-near-me-1280-01.png"
+   ],
+   "differs_from": "The handover choice as two option boxes ahead of the fields, with Lisa's photo at the right of the head; London's pick is a puppy line-up on a deep band, the built rows carry no photo.",
+   "axes": {
+    "layout": "choice-first",
+    "media": "right",
+    "density": "regular",
+    "framing": "card"
+   }
+  },
+  "b": {
+   "name": "Photo at the edge",
+   "description": "Lisa's photo bleeds from the left screen edge, full height; a compact form with a collect-or-delivery switch sits beside it.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/new-modern-card-idea.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/sister-for-sale-375-01.png"
+   ],
+   "differs_from": "One photo bled to the screen edge beside a compact form on the bone page; London's pick is a photo grid of six puppies over a form on a deep band.",
+   "axes": {
+    "layout": "photo-bleed",
+    "media": "left",
+    "density": "compact",
+    "framing": "bleed"
+   }
+  },
+  "c": {
+   "name": "Letter, addressed",
+   "description": "The enquiry as a ruled letter to Lisa, fields inside each sentence, beside an addressee column with her photo.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/newsletter-idea1.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/contact-form/mfs-home-375-01.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's lone one-column letter sits beside an addressee column with Lisa's photo from 1024px, and gains the handover line. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "addressed-letter",
+    "media": "left",
+    "density": "airy",
+    "framing": "rule"
+   },
+   "from_pool": "london/contact-form/a"
+  }
+ }
+}

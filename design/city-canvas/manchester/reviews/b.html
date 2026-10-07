@@ -1,0 +1,75 @@
+<style>
+/* Reviews B — Margin quote (about:team-idea1.png, the sister comparison captures). Open bone
+   page, no box: each slot is ruled off by a steel rule above and a hairline below, and a large
+   display quotation mark hangs in the margin beside the words, the way a printed review sits
+   in a column. The top slot (the Victoria family, the one review from Greater Manchester)
+   carries the family's own photo as a portrait in the far margin. Per slot, the hanging mark
+   swaps sides from 640px (left, right, left; on the right it is the closing mark, and it
+   hugs the end of the measure) and the short review is set in the display face. Airy; no
+   stars, no score. No heading: outline rows 6, 11 and 20 carry none. */
+.rvB{background:var(--color-surface)}
+.rvB .in{max-width:1000px;margin:0 auto;padding:var(--space-8) var(--space-4);display:grid;gap:var(--space-10)}
+.rvB .slot{margin:0;padding:var(--space-5) 0 var(--space-6);border-top:2px solid var(--color-brand);border-bottom:1px solid var(--color-border);display:grid;gap:var(--space-4)}
+.rvB .pic{margin:0}
+.rvB .pic img{display:block;width:120px;height:120px;aspect-ratio:1/1;object-fit:cover;object-position:50% 40%;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.rvB .qm{display:block;height:40px;font-family:var(--font-display);font-size:72px;line-height:1;color:var(--color-brand-mid)}
+.rvB .cl{display:none}
+.rvB blockquote{margin:0}
+.rvB blockquote p{margin:0;max-width:62ch;font-size:16px;line-height:1.65;color:var(--color-text);text-wrap:pretty}
+.rvB .short blockquote p{font-family:var(--font-display);font-weight:600;font-size:20px;line-height:1.4;color:var(--color-brand)}
+.rvB .sig{margin:var(--space-3) 0 0;font-size:15px;color:var(--color-text-muted)}
+.rvB .sig cite{font-style:normal;font-weight:700;color:var(--color-text)}
+@media (min-width:640px){
+  .rvB .slot{grid-template-columns:72px minmax(0,1fr);column-gap:var(--space-5);align-items:start}
+  .rvB .slot .qm{grid-column:1;grid-row:1}
+  .rvB .slot .body{grid-column:2;grid-row:1}
+  .rvB .slot.flip{grid-template-columns:minmax(0,62ch) 72px;justify-content:start}
+  .rvB .flip .op{display:none}
+  .rvB .flip .cl{display:inline}
+  .rvB .slot.flip .qm{grid-column:2;text-align:right}
+  .rvB .slot.flip .body{grid-column:1}
+  .rvB .slot.has-pic{grid-template-columns:72px minmax(0,1fr) 140px}
+  .rvB .slot.has-pic .pic{grid-column:3;grid-row:1}
+  .rvB .pic img{width:140px;height:140px}
+  .rvB blockquote p{font-size:17px}
+}
+@media (min-width:1024px){
+  .rvB .in{padding:var(--space-10) var(--space-6)}
+  .rvB .slot{padding:var(--space-6) 0 var(--space-7)}
+  .rvB .slot.has-pic{grid-template-columns:88px minmax(0,1fr) 180px;column-gap:var(--space-7)}
+  .rvB .pic img{width:180px;height:180px}
+  .rvB .short blockquote p{font-size:22px}
+}
+</style>
+<section data-component="reviews" data-variant="b" class="rvB">
+  <div class="in">
+    <figure class="slot has-pic" data-review-slot>
+      <div class="pic"><img src="/images/victoria-family-blue-staffy-manchester.webp" alt="Victoria family with their happy blue Staffy puppy from BlueStaffyUK.uk in Manchester." width="723" height="723" loading="lazy"></div>
+      <span class="qm" aria-hidden="true">“</span>
+      <div class="body">
+        <blockquote data-review="0">
+          <p>We couldn’t be happier with our beautiful blue Staffy from BlueStaffyUK.uk! From the first enquiry to bringing her home, the process was seamless and incredibly professional. She’s got the most wonderful temperament – playful, loving, and fantastic with our kids. It’s clear she was raised with so much care and early socialisation. She truly is the heart of our family!</p>
+        </blockquote>
+        <figcaption class="sig"><cite>The Victoria Family</cite>, Manchester, UK</figcaption>
+      </div>
+    </figure>
+    <figure class="slot flip" data-review-slot>
+      <span class="qm" aria-hidden="true"><span class="op">“</span><span class="cl">”</span></span>
+      <div class="body">
+        <blockquote data-review="1">
+          <p>After extensive research, we chose BlueStaffyUK.uk, and we’re so glad we did. Our blue Staffy puppy arrived happy and healthy, with all his papers and medical records meticulously organized. Their commitment to ethical breeding and health testing truly shines through. He’s exactly what we wanted: loyal, intelligent, and incredibly affectionate. We highly recommend them if you’re looking to buy a Staffordshire Bull Terrier in the UK.</p>
+        </blockquote>
+        <figcaption class="sig"><cite>Mark J</cite>, London, UK</figcaption>
+      </div>
+    </figure>
+    <figure class="slot short" data-review-slot>
+      <span class="qm" aria-hidden="true">“</span>
+      <div class="body">
+        <blockquote data-review="2">
+          <p>The health checks, the communication, and the home-raised environment — everything was top-notch. I wouldn’t go anywhere else for a Staffy.</p>
+        </blockquote>
+        <figcaption class="sig"><cite>Rachel L.</cite>, London</figcaption>
+      </div>
+    </figure>
+  </div>
+</section>

@@ -1,0 +1,54 @@
+<style>
+/* Newsletter C — Split steel band (pool copy of london/newsletter/b "Steel band", refreshed on
+   LAYOUT). Kept from London: one compact full-width steel band, a brass line-icon envelope,
+   the line in bone, one sentence on what a subscriber gets, and a joined field and brass
+   submit. Changed: London centred everything in one column; from 1024px Manchester's band
+   splits, the envelope, line and sentence left-set on the left and the form on the right, so
+   the band reads as a short row, not a centred poster. Below 1024px it stays centred, as
+   London's was. No heading (outline row 16 carries none), no photo, no subscriber count. */
+.nlC{background:var(--color-surface-inverse);color:var(--color-text-on-inverse)}
+.nlC .in{max-width:1080px;margin:0 auto;padding:var(--space-6) var(--space-4);display:grid;gap:var(--space-5);text-align:center}
+.nlC .ic{display:inline-grid;place-items:center;width:44px;height:44px;margin-bottom:var(--space-3);border:1px solid var(--color-steel-500);border-radius:50%;color:var(--color-cta)}
+.nlC .ic svg{width:22px;height:22px}
+.nlC .line{margin:0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.3;color:var(--color-text-on-inverse);text-wrap:balance}
+.nlC .say{margin:var(--space-2) auto 0;max-width:52ch;font-size:16px;line-height:1.55;color:var(--color-text-on-inverse);text-wrap:pretty}
+.nlC form{display:grid;gap:var(--space-2);width:100%;max-width:520px;margin:0 auto;text-align:left}
+.nlC label{font-size:15px;font-weight:600;color:var(--color-text-on-inverse);text-align:center}
+.nlC .row{display:grid;gap:var(--space-2)}
+.nlC input{width:100%;min-height:48px;padding:10px 14px;font:inherit;font-size:16px;color:var(--color-text);background:var(--color-surface-raised);border:1px solid var(--color-brand-mid);border-radius:var(--btn-form-radius)}
+.nlC input:focus-visible,.nlC button:focus-visible{outline:3px solid var(--color-focus-on-inverse);outline-offset:2px}
+.nlC input:user-invalid{box-shadow:0 0 0 3px var(--color-cta)}
+.nlC .err{display:none;margin:0;font-size:14px;color:var(--color-text-on-inverse)}
+.nlC form:has(input:user-invalid) .err{display:block}
+.nlC button{min-height:48px;padding:10px 22px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out)}
+.nlC button:hover{background:var(--color-cta-hover)}
+@media (min-width:640px){
+  .nlC .row{grid-template-columns:minmax(0,1fr) auto}
+  .nlC .line{font-size:22px}
+}
+@media (min-width:1024px){
+  .nlC .in{grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:var(--space-9);align-items:center;padding:var(--space-7) var(--space-6);text-align:left}
+  .nlC .head{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:var(--space-4);align-items:start}
+  .nlC .ic{margin:0;grid-row:1 / span 2}
+  .nlC .say{margin:var(--space-2) 0 0}
+  .nlC form{margin:0}
+  .nlC label{text-align:left}
+}
+</style>
+<section data-component="newsletter" data-variant="c" class="nlC on-inverse">
+  <div class="in">
+    <div class="head">
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+      <p class="line">Shall we tell you when the next litter is due?</p>
+      <p class="say">Give us your email and we send one short note to you in Greater Manchester when our next litter is on its way. That is all this list is for, and your email is used for nothing else.</p>
+    </div>
+    <form data-newsletter aria-label="Next litter note sign-up">
+      <label for="nlC-email">Your email address</label>
+      <div class="row">
+        <input id="nlC-email" name="email" type="email" autocomplete="email" required>
+        <button type="submit">Email me the note</button>
+      </div>
+      <p class="err">That email address looks incomplete. Please check it and try again.</p>
+    </form>
+  </div>
+</section>

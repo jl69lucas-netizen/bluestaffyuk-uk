@@ -1,0 +1,52 @@
+{
+ "component": "reviews",
+ "variants": {
+  "a": {
+   "name": "Quote and nameplate",
+   "description": "Each review on a pale quote panel closing on a steel nameplate; the middle plate is deepest steel and the short quote is set in the display face.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/review-component-idea.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/reviews/sister-comparison-375-01.png"
+   ],
+   "differs_from": "Three compact quote panels each closed by a steel nameplate, the accent role shifting slot by slot; London's pick is one airy letter card with the photo at its left, the built rows are grids.",
+   "axes": {
+    "layout": "footer-bar",
+    "media": "none",
+    "density": "compact",
+    "framing": "card"
+   }
+  },
+  "b": {
+   "name": "Margin quote",
+   "description": "Open page, each review ruled off with a hanging display quote mark in the margin that swaps sides; the family's portrait in the far margin.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/about:team-idea1.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/reviews/sister-comparison-1280-01.png"
+   ],
+   "differs_from": "No box at all: rules above and below, a hanging quote mark in the margin and a margin portrait on the top slot; London's pick is a raised letter card, the built rows are grids.",
+   "axes": {
+    "layout": "margin",
+    "media": "none",
+    "density": "airy",
+    "framing": "rule"
+   }
+  },
+  "c": {
+   "name": "Three plates",
+   "description": "Three bleed photos, each with a bone plate overlapping it and one review: the photo side alternates left, right, left down the page.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/reviews/mfs-home-1280-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/review-idea1.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/about:team-idea1.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's one wall with one review under a heading becomes three plates, one per slot, the photo changing sides slot by slot. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "overlap",
+    "media": "none",
+    "density": "regular",
+    "framing": "bleed"
+   },
+   "from_pool": "london/reviews/c"
+  }
+ }
+}

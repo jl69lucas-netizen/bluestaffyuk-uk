@@ -1,0 +1,66 @@
+<style>
+/* Reviews A — Quote and nameplate (review-component-idea.png). Each slot is one review on a
+   pale quote panel that closes on a deep steel nameplate: the reviewer's name and the place
+   they gave, beside their own photo where the site holds one (the Victoria family) and a
+   brass monogram where it does not. No heading: outline rows 6, 11 and 20 carry none. The
+   three slots are the page's top, middle and bottom review, shown here in page order. Per
+   slot the accent role shifts so the three never read as one stamped card: the middle slot's
+   nameplate is the deepest steel, and the short review is set in the display face. Compact;
+   no stars, no score. */
+.rvA{background:var(--color-surface)}
+.rvA .in{max-width:1080px;margin:0 auto;padding:var(--space-7) var(--space-4);display:grid;gap:var(--space-8)}
+.rvA .slot{margin:0;max-width:680px;border-radius:var(--radius-lg);box-shadow:var(--shadow-card);overflow:hidden}
+.rvA blockquote{margin:0;padding:var(--space-5) var(--space-5) var(--space-4);background:var(--color-bone-50);position:relative}
+.rvA .qm{display:block;height:28px;font-family:var(--font-display);font-size:56px;line-height:1;color:var(--color-brand-mid)}
+.rvA blockquote p{margin:0;font-size:16px;line-height:1.6;color:var(--color-text);text-wrap:pretty}
+.rvA .plate{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-5);background:var(--color-surface-inverse);color:var(--color-text-on-inverse)}
+.rvA .plate img{flex:none;width:48px;height:48px;aspect-ratio:1/1;object-fit:cover;object-position:50% 40%;border-radius:50%;background:var(--color-bone-50)}
+.rvA .mono{flex:none;display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--color-cta);color:var(--color-cta-ink);font-family:var(--font-display);font-weight:700;font-size:17px}
+.rvA cite{display:block;font-style:normal;font-weight:700;font-size:16px;line-height:1.3}
+.rvA .slot.deep .plate{background:var(--color-surface-deep)}
+.rvA .slot.short blockquote p{font-family:var(--font-display);font-size:19px;line-height:1.45;color:var(--color-brand)}
+.rvA .pl{display:block;font-size:14px;line-height:1.35;color:var(--color-text-on-inverse)}
+@media (min-width:640px){
+  .rvA blockquote{padding:var(--space-6) var(--space-6) var(--space-5)}
+  .rvA blockquote p{font-size:17px}
+  .rvA .plate{padding:var(--space-3) var(--space-6)}
+}
+@media (min-width:768px){
+  .rvA .in{padding:var(--space-9) var(--space-6)}
+}
+@media (min-width:640px){.rvA .slot.short blockquote p{font-size:20px}}
+</style>
+<section data-component="reviews" data-variant="a" class="rvA">
+  <div class="in">
+    <figure class="slot" data-review-slot>
+      <blockquote data-review="0">
+        <span class="qm" aria-hidden="true">“</span>
+        <p>We couldn’t be happier with our beautiful blue Staffy from BlueStaffyUK.uk! From the first enquiry to bringing her home, the process was seamless and incredibly professional. She’s got the most wonderful temperament – playful, loving, and fantastic with our kids. It’s clear she was raised with so much care and early socialisation. She truly is the heart of our family!</p>
+      </blockquote>
+      <figcaption class="plate">
+        <img src="/images/victoria-family-blue-staffy-manchester.webp" alt="Victoria family with their happy blue Staffy puppy from BlueStaffyUK.uk in Manchester." width="723" height="723" loading="lazy">
+        <span><cite>The Victoria Family</cite><span class="pl">Manchester, UK</span></span>
+      </figcaption>
+    </figure>
+    <figure class="slot deep" data-review-slot>
+      <blockquote data-review="1">
+        <span class="qm" aria-hidden="true">“</span>
+        <p>After extensive research, we chose BlueStaffyUK.uk, and we’re so glad we did. Our blue Staffy puppy arrived happy and healthy, with all his papers and medical records meticulously organized. Their commitment to ethical breeding and health testing truly shines through. He’s exactly what we wanted: loyal, intelligent, and incredibly affectionate. We highly recommend them if you’re looking to buy a Staffordshire Bull Terrier in the UK.</p>
+      </blockquote>
+      <figcaption class="plate">
+        <span class="mono" aria-hidden="true">MJ</span>
+        <span><cite>Mark J</cite><span class="pl">London, UK</span></span>
+      </figcaption>
+    </figure>
+    <figure class="slot short" data-review-slot>
+      <blockquote data-review="2">
+        <span class="qm" aria-hidden="true">“</span>
+        <p>The health checks, the communication, and the home-raised environment — everything was top-notch. I wouldn’t go anywhere else for a Staffy.</p>
+      </blockquote>
+      <figcaption class="plate">
+        <span class="mono" aria-hidden="true">RL</span>
+        <span><cite>Rachel L.</cite><span class="pl">London</span></span>
+      </figcaption>
+    </figure>
+  </div>
+</section>

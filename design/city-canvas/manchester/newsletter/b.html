@@ -1,0 +1,66 @@
+<style>
+/* Newsletter B — Postmarked note (card-idea55.png, newsletter-idea1.png). A short note from
+   us, framed only by a steel rule above and a hairline below on the open bone page: the
+   opening line in the display face, one sentence on what a subscriber gets, a signature, and
+   a joined field and button under it. The one bold thing is the postmark at the right: a
+   round photo of Vennie inside a dashed ring, as if stamped on the envelope the note arrives
+   in. No heading (outline row 16 carries none), no subscriber count. Airy. */
+.nlB{background:var(--color-surface)}
+.nlB .in{max-width:960px;margin:0 auto;padding:var(--space-8) var(--space-4)}
+.nlB .box{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:var(--space-4) var(--space-5);padding:var(--space-6) 0;border-top:2px solid var(--color-brand);border-bottom:1px solid var(--color-border)}
+.nlB .note{grid-column:1;grid-row:1}
+.nlB .pm{grid-column:2;grid-row:1;margin:0;align-self:start;justify-self:end;padding:5px;border:2px dashed var(--color-steel-300);border-radius:50%}
+.nlB .pm img{display:block;width:76px;height:76px;aspect-ratio:1/1;object-fit:cover;object-view-box:inset(28% 26% 16% 18%);border-radius:50%;background:var(--color-bone-50)}
+.nlB .line{margin:0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.3;color:var(--color-brand);text-wrap:balance}
+.nlB .say{margin:var(--space-2) 0 0;font-size:16px;line-height:1.6;color:var(--color-text);max-width:52ch;text-wrap:pretty}
+.nlB .sig{margin:var(--space-3) 0 0;font-size:15px;color:var(--color-text-muted)}
+.nlB .sig b{color:var(--color-text)}
+.nlB form{grid-column:1 / -1;display:grid;gap:var(--space-2);max-width:560px}
+.nlB label{font-size:15px;font-weight:600;color:var(--color-text)}
+.nlB .row{display:grid;gap:var(--space-2)}
+.nlB input{width:100%;min-height:48px;padding:10px 14px;font:inherit;font-size:16px;color:var(--color-text);background:var(--color-surface-raised);border:1px solid var(--color-brand-mid);border-radius:var(--btn-form-radius)}
+.nlB input:focus-visible,.nlB button:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.nlB input:user-invalid{border:2px solid var(--color-warn)}
+.nlB .err{display:none;margin:0;font-size:14px;color:var(--color-text)}
+.nlB form:has(input:user-invalid) .err{display:block}
+.nlB .priv{margin:0;font-size:14px;line-height:1.45;color:var(--color-text-muted)}
+.nlB button{min-height:48px;padding:10px 22px;font:inherit;font-weight:700;color:var(--color-cta-ink);background:var(--color-cta);border:0;border-radius:var(--btn-form-radius);cursor:pointer;white-space:nowrap;transition:background-color var(--dur-fast) var(--ease-out)}
+.nlB button:hover{background:var(--color-cta-hover)}
+@media (min-width:640px){
+  .nlB .row{grid-template-columns:minmax(0,1fr) auto}
+  .nlB .line{font-size:22px}
+  .nlB .say{font-size:17px}
+  .nlB .box{grid-template-columns:minmax(0,1fr) 148px}
+  .nlB .pm img{width:132px;height:132px}
+  .nlB .pm{grid-row:1 / span 2;align-self:center}
+}
+@media (min-width:1024px){
+  .nlB .in{padding:var(--space-10) var(--space-6)}
+  .nlB .box{grid-template-columns:minmax(0,1fr) 200px;column-gap:var(--space-9);padding:var(--space-8) 0}
+  .nlB form{grid-column:1}
+  .nlB .pm{padding:8px}
+  .nlB .pm img{width:176px;height:176px}
+  .nlB .line{font-size:24px}
+}
+</style>
+<section data-component="newsletter" data-variant="b" class="nlB">
+  <div class="in">
+    <div class="box">
+      <div class="note">
+        <p class="line">A note from Carlisle when the next litter is due</p>
+        <p class="say">Leave your email and we send one short note to you in Greater Manchester when our next litter is on its way. That is all this list is for.</p>
+        <p class="sig"><b>Lisa Bright</b>, BlueStaffyUK, Carlisle</p>
+      </div>
+      <figure class="pm"><img src="/puppies/Vennie.jpeg" alt="Vennie the blue and white Staffordshire Bull Terrier puppy" width="1080" height="1080" loading="lazy"></figure>
+      <form data-newsletter aria-label="Next litter note sign-up">
+        <label for="nlB-email">Your email address</label>
+        <div class="row">
+          <input id="nlB-email" name="email" type="email" autocomplete="email" required>
+          <button type="submit">Send me the note</button>
+        </div>
+        <p class="err">That email address looks incomplete. Please check it and try again.</p>
+        <p class="priv">Your email is used for nothing else.</p>
+      </form>
+    </div>
+  </div>
+</section>

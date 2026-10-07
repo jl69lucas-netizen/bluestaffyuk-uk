@@ -223,3 +223,144 @@ Final runs:
   gave `examined 9 fragments, 3 meta files; 0 problems`.
 - The full Manchester canvas smoke (`manchester-frames`, 27 frames) gave 112 passed at vp375,
   vp768, vp1024 and vp1280, with no advisories.
+
+## Task 25: reviews, FAQ blocks, newsletter, contact form (2026-10-07)
+
+**How the passes ran.** `frontend-design:frontend-design` was invoked with the Skill tool on the
+plan's Step 2 brief (batch: reviews, faq-blocks, newsletter, contact-form; pool slot `c` of
+each). First, every sheet the ideas index cites for the four components was opened with the
+Read tool: the six reviews sources, the ten FAQ sources, the seven newsletter sources and the
+eight contact-form sources. So were the candidate served photos. The outline rows were read
+too:
+- reviews §6, §11 and §20: no heading; one `data/reviews.json` row per slot (The Victoria
+  Family, Mark J, Rachel L.), each quoted word for word with no score;
+- FAQ §7, §12 and §21: six, seven and seven questions, in the outline's page wordings;
+- newsletter §16: no heading, 35 words;
+- contact form §22: its H2 and the image note "Lisa Bright with a puppy beside the form".
+
+The FAQ answers are written only from each pick's bank rows (`found_in`) and the settings keys.
+They are kept in one source (the scratchpad generator) so the three variants carry identical
+copy:
+- the mother-and-puppy answer is the STOP 2 q04 approved wording, word for word;
+- the DNA answer names L-2-HGA and HC-HSF4 (and what each is) with the certificates on
+  request: never a result, never "clear";
+- "puts the terms in writing" (bank `buying-puppy-farm`) is left out, because the validator's
+  `in writing` rule refuses an unconfirmed promise;
+- the deposit answer carries `deposit_refund_clause` whole.
+
+Each review, newsletter and FAQ variant shows all three slots or blocks stacked, in page order,
+so the per-slot refresh delta (ruling 8) is visible on the canvas. On the page they sit far
+apart. The canvas smoke reads media at section level, and a photo inside a repeated
+`data-review-slot` / `data-faq-block` belongs to the item. So the review and FAQ variants
+declare `media: none`, even where each slot or block carries its own photo.
+
+Pool picks (Phase F ruling 4: furthest from London's pick, and suited to Manchester's rows):
+- reviews `c` ← `london/reviews/c` "Kennel wall". It is one review on a plate, which suits
+  mode single. "Two London notes" stacks two London reviews in one tray under a heading, which
+  is built on London-only copy.
+- faq-blocks `c` ← `london/faq-blocks/c` "Lead answer". Its blocks stack, as Manchester's three
+  separated rows do. "Three trays" sets the three blocks side by side, which the outline places
+  apart.
+- newsletter `c` ← `london/newsletter/b` "Steel band". "Ruled row" was the other candidate, but
+  its ruled, airy, left-set row overlaps newsletter B's ruled note.
+- contact-form `c` ← `london/contact-form/a` "Letter to Carlisle". The letter carries the
+  outline's "which puppy, or boy or girl, collect or delivery" as sentences, and its refresh
+  adds the outline's Lisa photo. "Doorstep tray" is built around a London family photo and a
+  call line.
+
+Every pool copy differs from London's pick on all four axes. None uses the video call (q08).
+
+**Harness fix, charged to the gate, not a new rule.** The validator read the approved H3
+"Should I See the Mother With Her Puppy Before Money Changes Hands?" as naming a parent
+"With", through the `mother <Name>` pattern on a Title Case heading. Test first:
+`tests/py/test_check_city_canvas.py::test_a_title_case_question_is_not_a_parent_name` failed.
+Then "With" joined `NOT_NAMES` in `scripts/check_city_canvas.py`, and the test file passes
+(66 tests).
+
+`impeccable:impeccable` was then invoked with the Skill tool (brand register; critique). Its
+loader reported `hasProduct: false`, and `/impeccable teach` is interactive and the user's, so
+the brand context came from the design-context files, as in Tasks 22–24. The two assessments
+ran in isolation:
+- **A.** A separate review agent read the twelve fragments, the metas and 48 painted shots
+  (375 / 768 / 1024 / 1280). Nielsen total 29/40. No hard tell was found: no side stripe, no
+  caps eyebrow, no middle dots, no CTA arrow, no hero metric, no numbered non-sequence, and no
+  em dash in our copy. Rachel L.'s verbatim review keeps its own.
+- **B.** The deterministic detector, `npx impeccable --json` on the four folders, returned 103
+  rows:
+  - 98 `cramped-padding` rows: jsdom false positives of the kind Tasks 22–24 recorded;
+  - 4 `side-tab` rows, all for the 4px `border-top` section rules on FAQ C and contact C.
+    These are full-measure rules over a block, not a side accent on a card (the ban is
+    `border-left`/`border-right`);
+  - 1 `clipped-overflow-container` row: `overflow:hidden` on reviews C, which holds the bled
+    photo off the page's sideways scroll and has no popover inside it.
+
+The smoke's advisories (face crops, upscales) and this agent's own measurement of every
+section's height and H2 line count were folded into the fix rounds.
+
+| Component | Variant | frontend-design direction | impeccable findings | Fixed | Widths |
+|---|---|---|---|---|---|
+| reviews | a | **Quote and nameplate** (`review-component-idea.png`, phone capture). Each review is on a bone-50 quote panel that closes on a steel nameplate with the name and the place as data gives it. The Victoria family's own served photo is their avatar; Mark J and Rachel L. have no served photo, so they get a brass monogram. | Three identical testimonial cards; the 24px step of the middle card read as a mistake. The 48px avatar shows half a face (the source's composition). | The step is gone. The per-slot delta is now an accent role: the middle nameplate is the deepest steel, and the short review is set in the display face at every width. | 375 · 768 · 1024 · 1280 |
+| reviews | b | **Margin quote** (`about:team-idea1.png`, comparison capture). No box: each slot is ruled off, a display quote mark hangs in the margin, and the family's portrait sits in the far margin of the top slot. The mark swaps sides slot by slot. | At 375 the closing ” came before the review it closes. At 1024 and up the flipped mark sat about 380px from the text. The left edge of the text differs between slots. | Phones show the opening “ on every slot. From 640px the flipped slot is held to the measure plus 72px, so the closing ” hugs the text. The left-edge difference is the intended delta and was kept. | 375 · 768 · 1024 · 1280 |
+| reviews | c | **Three plates**, the pool copy of `london/reviews/c`. Refresh delta, axis **layout**: London's one wall with one review becomes three plates, one per slot, with the photo alternating left, right, left. Each parent photo carries a credit pill, so a parent never reads as the reviewer's own dog. | The plate covered Maggie's face (top right of her photo) at 1024. The Victoria faces were cut at 375 and covered by the plate at 768. Upscaled 1.06x at 768. | Maggie moved beside Mark J (photo right, so her face is clear of the plate) and Jones beside Rachel L. The desktop credits sit at the photo's foot on its far side. Victoria is cropped at 45% 12%. At tablet the photo is inset at its natural 720px, and the plate overlap is reduced to 40px. | 375 · 768 · 1024 · 1280 |
+| faq-blocks | a | **Question bars** (`faq-idea0.png`, `faq-idea44.png`). Each block is its own band holding one narrow column of filled question bars with chevrons. Accent role per block: soft steel bands with raised bars, and a raised middle band with soft steel bars. | Generic SaaS accordion (noted). The bone-50 middle band was about 1.04:1 on the page, so the delta did not show. The H2 ran to 3 lines at 1024. "L-2-HGA" broke at its hyphen. | The middle band is now the raised surface between hairlines. The desktop H2 is 26px with no measure cap (2 lines). Test names and "DEFRA-approved" never break. | 375 · 768 · 1024 · 1280 |
+| faq-blocks | b | **Rows beside a photo** (`component-idea-faq1.png`, `faq-idea00.png`). Display-face rows between hairlines beside one photo per block: Christa (buying), Maggie with her pups (health and viewing), and Manchester's own served pup photo (everyday life). The photo swaps sides block by block and stays in view. | The 4:5 crop cut Maggie in half at 1024/1280. The Manchester pup photo was upscaled 1.36x at 768. Each block was about 1,000px tall on a phone. Hover dimmed the H3 to muted. | Square crops beside the rows from 640px (200px at tablet, 320px at desktop). Maggie is cropped at 75% 4%. Phones get a 3:1 strip. Hover now underlines. | 375 · 768 · 1024 · 1280 |
+| faq-blocks | c | **Lead beside rows**, the pool copy of `london/faq-blocks/c`. Refresh delta, axis **layout**: London's open lead above a two-column fold grid becomes the open lead on its own bone sheet beside one column of rows (from 1024). The H2 stays full width. London's 01–19 numbers are dropped. Per block, the third block folds all seven questions into two newspaper columns. | The first draft, a side head, wrapped the H2 to 4–5 lines in its column at 1024 (`cityTypeFit` 1b, "heading column too narrow"). The lead H3 was over the tier caps (19/20px). Block 3's grid zigzagged. | The side head was replaced by lead-beside-rows (2-line H2s). Lead H3 sizes are now 17 / 18 / 20. Block 3 uses CSS `columns:2`, read down then across. | 375 · 768 · 1024 · 1280 |
+| newsletter | a | **Sunk slip** (`Page-Newsletter-module-design2.png`, split capture). The whole sign-up sits in one soft steel slip pressed into the page and set left: the display line, one sentence on what a subscriber gets, then the field and button. | The first draft (ticks beside a slip) was a landing-page template; "That is all this list is for" read as a tick that is not a benefit; at 1024 and up it had the same composition as C. Field border steel-300 was 2.1–2.6:1 (WCAG 1.4.11). | Rebuilt as one stacked slip (layout `slip-stack`), with the ticks dropped. The note reads "…your email is used for nothing else." Borders and the slip edge are steel-500. | 375 · 768 · 1024 · 1280 |
+| newsletter | b | **Postmarked note** (`card-idea55.png`, `newsletter-idea1.png`). A short signed note from Lisa between rules, with Vennie as a round postmark photo in a dashed ring. | Vennie's face was small in the full-frame circle. Field border contrast as above. No privacy line. | The postmark crops onto her face (`object-view-box`). Steel-500 border. Added "Your email is used for nothing else." | 375 · 768 · 1024 · 1280 |
+| newsletter | c | **Split steel band**, the pool copy of `london/newsletter/b`. Refresh delta, axis **layout**: London's centred band becomes copy left and form right from 1024; it stays centred below. | The invalid state was a brass border (2.4:1 on the field). The label was left-set under centred copy on phones. "Tell me" was vague. | Invalid is a 3px brass ring on the steel band (large-text pair, about 5:1). The label is centred below 1024. The button reads "Email me the note". Privacy clause added. | 375 · 768 · 1024 · 1280 |
+| contact-form | a | **Choice first** (`component-idea-shop1.png`, near-me capture). A raised card: the H2 beside Lisa's photo, then collect-or-delivery as two whole-box options before the kit's fields. The radio input covers its box, so the tap target is the box (the smoke's 44px field rule). | Field and option borders were steel-300 (WCAG 1.4.11). The H2 ran to 3 lines at desktop. The phone section was 1,540px with a 16:9 photo. | Steel-500 borders. The desktop photo column is 220px square, with no measure cap on the H2 (2 lines). Phones get a 5:2 strip (1,492px). | 375 · 768 · 1024 · 1280 |
+| contact-form | b | **Photo at the edge** (`new-modern-card-idea.png`, phone capture). Lisa's photo bleeds from the left screen edge at full height, beside a compact form with a two-key collect-or-delivery switch. | The full-height crop upscaled the 1408×768 photo 1.16x. The unselected switch keys had no affordance. The H2 ran to 3 lines. "Send us the puppy you like" read oddly. The field grid matched A's. | A six-column desktop grid (name, email and phone; town and puppy; message) holds the section under 768px, with no upscale. Keys are raised with a steel-500 hairline, and a 3px ring when picked. The H2 is 2 lines. The lede reads "Tell us which puppy you like…". | 375 · 768 · 1024 · 1280 |
+| contact-form | c | **Letter, addressed**, the pool copy of `london/contact-form/a`. Refresh delta, axis **layout**: London's lone letter now sits beside an addressee column with Lisa's photo (outline §22's image), and it gains the handover line "and I would rather …". | Tall on phones (about 1,650px). The DEFRA sentence was tacked under the send button. The labels sit under their fields. | Phone line padding was tightened (1,618px). DEFRA moved into the lede. The privacy clause sits by the send. Labels under fields are kept: it is the letter's design, and each field carries `<label for>`. | 375 · 768 · 1024 · 1280 |
+
+Copy checks common to all twelve:
+- Reviews are `data-review` quotes, word for word, attributed as data gives them: The Victoria
+  Family, Manchester, UK; Mark J, London, UK; Rachel L., London. No stars, no score, no
+  re-attribution.
+- Prices are said of this litter only.
+- The deposit carries `deposit_refund_clause` whole.
+- The delivery band is `delivery_note`'s.
+- The reply time is `enquiry-reply-time`'s ("within 24-48 business hours").
+- "We confirm your puppy is still free before you pay anything" comes from
+  `listing-availability`.
+- No phone number, no video call, rescue, licence, distance, time or result. No em dash in our
+  copy.
+- Colours are tokens only. No colour word appears in any CSS comment.
+- Lisa's photo carries a new alt ("Lisa Bright, the breeder who answers your enquiry, holding
+  two young puppies at home in Carlisle"). It is not a validator-held served alt; London's
+  built page serves it as "Lisa Bright, our blue Staffy breeder, smiling and holding up two
+  young puppies, one fawn and one dark brindle", so Manchester's is the outline's "repeat
+  carrying a new alt".
+
+Left for the board or the kit build, not fixed here:
+- **Error messages.** They are shown by CSS `:user-invalid`, with no `aria-describedby`.
+  Pointing at a `display:none` error would make every field always announce its error. The
+  kit's `ContactFormKit` wires its errors through `data-err` and its script; the built
+  component does the same.
+- **Privacy link.** No link to `/privacy-policy-uk/` was added: working rule 12 puts every link
+  on the board first. The page board should list it beside the form and the newsletter.
+- **Reduced motion.** It is held by the frame's global rule; the built page's CSS must carry
+  the same rule.
+- **Two delivery answers.** "Can My Blue Staffy Puppy Be Delivered…" (bank
+  `about-delivery-home`) gives no price; "Do You Deliver Puppies Across the UK?" gives the band.
+  Each answer is its own bank row, so neither borrows the other's fact.
+- **The mother-and-puppy question.** It is answered "the £500 deposit comes first", which is
+  the q04-approved wording the user chose knowingly (the batch named the trade-off).
+- **Lisa's photo and the field names.** It appears in all three contact variants, and only one
+  will be picked. The new `handover` field (collect or delivery) and the `any-boy` / `any-girl`
+  puppy options are not in `ContactFormKit` yet; the kit build adds them.
+- **Photos shared with Tasks 22–24.** If reviews A, B or C is picked alongside takeaways C or
+  image-text C, `victoria-family-blue-staffy-manchester.webp` repeats on the page, and the
+  repeat needs a new alt (working rule 11). Maggie and Jones in reviews C repeat image-text B's
+  parents in the same way.
+- **The outline's straight apostrophe.** The H3 "Can I Contact You for Advice for the Dog's
+  Whole Life?" keeps it, as the outline writes it.
+
+Final runs:
+- `python3 scripts/check_city_canvas.py --city manchester --only
+  reviews,faq-blocks,newsletter,contact-form` gave `examined 12 fragments, 4 meta files;
+  0 problems`.
+- The full Manchester canvas smoke (`manchester-frames`, 39 frames) gave 160 passed at vp375,
+  vp768, vp1024 and vp1280, with no advisories.
+- The whole city, all 13 components, gave `examined 39 fragments, 13 meta files; 0 problems`,
+  and `npm run -s check:canvas` (London) still gives `examined 45 fragments, 15 meta files;
+  0 problems`.

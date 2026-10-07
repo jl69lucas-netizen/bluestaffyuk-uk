@@ -301,6 +301,16 @@ def test_the_real_parents_pass():
     assert probs("hero", "a", ok, c) == []
 
 
+def test_a_title_case_question_is_not_a_parent_name():
+    """Task 25 (Manchester): the approved outline's FAQ H3 "Should I See the Mother With Her Puppy
+    Before Money Changes Hands?" read "With" as the mother's name (the `mother <Name>` pattern
+    on a Title Case heading). A false positive, charged to the harness: "With" joins NOT_NAMES."""
+    c = ctx(parents=C.parent_names())
+    ok = HERO.replace("<a href", "<p>Should I See the Mother With Her Puppy Before Money Changes "
+                                 "Hands?</p><a href")
+    assert probs("hero", "a", ok, c) == []
+
+
 DECOR = f'<img src="{IMG}" alt="" width="44" height="44"'
 
 

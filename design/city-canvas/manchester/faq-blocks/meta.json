@@ -1,0 +1,52 @@
+{
+ "component": "faq-blocks",
+ "variants": {
+  "a": {
+   "name": "Question bars",
+   "description": "Each block a full-width band holding one narrow column of filled question bars with chevrons; the middle band takes the bone bed.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/faq-idea0.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/faq-idea44.png"
+   ],
+   "differs_from": "Filled bars in a narrow centred column on a band, no photo; London's pick is a photo rail beside a numbered ledger, and the built rows are plain accordions or a card with a jump list.",
+   "axes": {
+    "layout": "bar-column",
+    "media": "none",
+    "density": "compact",
+    "framing": "band"
+   }
+  },
+  "b": {
+   "name": "Rows beside a photo",
+   "description": "Display-face rows between hairlines beside one portrait per block (Christa, Maggie, a Manchester pup), the photo swapping sides.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea-faq1.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/faq-idea00.png"
+   ],
+   "differs_from": "Each block pairs its rows with its own portrait, side alternating, on the open page under a rule; London's pick runs one photo rail beside a ledger on a band.",
+   "axes": {
+    "layout": "photo-rows",
+    "media": "none",
+    "density": "regular",
+    "framing": "rule"
+   }
+  },
+  "c": {
+   "name": "Lead beside rows",
+   "description": "Each block under a steel rule, its question full width; the open lead answer on a bone sheet beside one column of folded rows.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/faq-blocks/sister-comparison-1280-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/faq-blocks/mfs-home-1280-02.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-FAQ-Design-Componet.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's open lead above a two-column fold grid becomes the lead in its own column beside one column of rows. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "lead-split",
+    "media": "none",
+    "density": "airy",
+    "framing": "rule"
+   },
+   "from_pool": "london/faq-blocks/c"
+  }
+ }
+}
