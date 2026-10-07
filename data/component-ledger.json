@@ -193,6 +193,18 @@
         "city-takeaways-ledger"
       ],
       "h6_prefixes": []
+    },
+    "blue-staffy-puppies-manchester-uk": {
+      "hero": "city-feature-and-three",
+      "dial": "city-numeral-rail",
+      "rail": "",
+      "toc": "city-icon-rows",
+      "table": "city-photo-shelf",
+      "faq": "city-rows-beside-a-photo",
+      "takeaway": [
+        "city-tick-card"
+      ],
+      "h6_prefixes": []
     }
   }
 }

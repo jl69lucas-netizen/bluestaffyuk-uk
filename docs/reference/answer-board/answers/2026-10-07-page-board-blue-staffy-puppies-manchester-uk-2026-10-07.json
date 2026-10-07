@@ -1,0 +1,133 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "Approved on the board",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "Have you approved the Manchester page board on the board?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "How Much Deposit Reserves One of Your Puppies?",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "\"How Much Is Your Deposit?\" becomes…",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Which Parts of the UK Do You Deliver Puppies To?",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "\"Do You Deliver Puppies Across the UK?\" becomes…",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Was Each Parent DNA Tested for L-2-HGA as Well as HC-HSF4?",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "\"Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?\" becomes…",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "How Much Will the Blue Staffy Puppy I Choose Cost?",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "\"How Much Does Each Blue Staffy Puppy Cost?\" is one word from the homepage board's question, and repeats part of this page's own litter heading. It becomes…",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Is Home Delivery an Option for My Blue Staffy Puppy?",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "\"Can My Blue Staffy Puppy Be Delivered to My Home?\" is two words from the About page's question. It becomes…",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Is It Wise to See the Mother and Puppy Together Before Money Changes Hands?",
+      "key": "q07",
+      "kind": "choice",
+      "n": 7,
+      "question": "\"Should I See the Mother With Her Puppy Before Money Changes Hands?\" is one word from London's question. It becomes…",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Is a Blue Staffy an Aggressive Dog by Nature?",
+      "key": "q08",
+      "kind": "choice",
+      "n": 8,
+      "question": "\"Is Blue Staffy Aggressive?\" is two words from the buy page's question. It becomes…",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Are Blue Staffies Good Pets for an Ordinary Household?",
+      "key": "q09",
+      "kind": "choice",
+      "n": 9,
+      "question": "\"Are Blue Staffies Good Pets?\" is two words from the homepage board's question. It becomes…",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Will a Staffordshire Bull Terrier Be Happy Living in a Flat?",
+      "key": "q10",
+      "kind": "choice",
+      "n": 10,
+      "question": "\"Is a Staffordshire Bull Terrier Able to Live in a Flat?\" is two words from the breed guide's question. It becomes…",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "They match",
+      "key": "q11",
+      "kind": "choice",
+      "n": 11,
+      "question": "Do the built components match the canvas you picked from?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Hold both links until the two pages put the deposit first",
+      "key": "q12",
+      "kind": "choice",
+      "n": 12,
+      "question": "Two links are held.",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-07T19:36:00.889Z",
+  "batchId": "2026-10-07-page-board-blue-staffy-puppies-manchester-uk",
+  "counts": {
+    "answered": 12,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-07T19-36-00-888Z"
+}

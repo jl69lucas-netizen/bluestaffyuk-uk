@@ -98,7 +98,10 @@ def test_the_record_validates_as_a_city_location_board(board):
     assert board["meta"]["layout_type"] == "city"
     assert board["meta"]["page_type"] == "location"
     assert board["density_pool"] == "all"
-    assert board["approval"] is None, "approval is the breeder's, at STOP 3"
+    # STOP 3 (2026-10-07): the breeder approved on the board; the approval must still match
+    # the record, so an edit after it shows here as a stale approval.
+    assert board["approval"] is not None, "approved at STOP 3, 2026-10-07"
+    assert PB.approval_matches(board), "the record changed after its STOP 3 approval"
 
 
 def test_the_outline_it_stands_on_is_approved_and_unedited(board):
@@ -406,7 +409,10 @@ def test_block_7c_pre_checks_skip_on_the_four_photo_covered_slots(html):
     for slot in SKIP_RECOMMENDED:
         assert f'name="pick-ig:{slot}" value="skip" checked>' in block, slot
     assert 'name="pick-ig:papers-checklist" value="skip">' in block
-    assert not re.search(r'name="pick-ig:papers-checklist" value="[a-z]+" checked>', block)
+    # The record proposes nothing for papers-checklist; the one style ticked is the breeder's
+    # own STOP 3 pick (comic, 2026-10-07), carried from the approval.
+    ticked = re.findall(r'name="pick-ig:papers-checklist" value="([a-z]+)" checked>', block)
+    assert ticked == [PB.load_board(SLUG)["approval"]["picks"]["ig:papers-checklist"]] == ["comic"]
 
 
 # ── Task 36 Step 3: the plain summaries, from a sidecar outside the record hash ─────────────

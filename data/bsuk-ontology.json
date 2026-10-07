@@ -827,7 +827,7 @@
       "name": "Greater Manchester",
       "aliases": [],
       "class": "Place",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "docs/superpowers/sessions/2026-09-25-location-pages-strategy.md",
       "owner_page": null
     },
@@ -836,7 +836,7 @@
       "name": "Salford",
       "aliases": [],
       "class": "Place",
-      "authorization": "PROPOSED",
+      "authorization": "ASSERTED",
       "source": "data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.json",
       "owner_page": null
     }
