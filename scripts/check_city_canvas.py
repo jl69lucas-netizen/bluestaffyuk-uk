@@ -539,10 +539,27 @@ def validate_meta(component, meta, ctx):
         for row in ctx.must_differ.get(component, []):
             if row["id"].startswith(f"{ctx.city}/"):
                 continue    # this city's own picks: its siblings rule already judges them
+            if pool_source(row["id"]) == f"{ctx.city}/{component}/{v}":
+                continue    # a later city's refreshed pool copy of this very variant (ruling 4)
             if axis_distance(ax, row["axes"]) < 2:
                 p.append(f"axes: {v} is within one axis of existing style {row['id']} "
                          f"({row['name']}) — see docs/research/london-components/must-differ.md")
     return p, axes
+
+
+def pool_source(key):
+    """The `from_pool` source a city canvas variant records (`<city>/<component>/<v>`, Phase F
+    ruling 4: a pool variant copied onto a later city's canvas with one refresh delta), or None.
+    A must-differ row that is such a copy is never held against its own source: London's closed
+    canvas failed against Manchester's refreshed copies of it once Manchester's picks became rows
+    (G2), though a copy one axis from its source is exactly what ruling 4 asks for."""
+    parts = str(key).split("/")
+    if len(parts) != 3:
+        return None
+    meta = ROOT / "design" / "city-canvas" / parts[0] / parts[1] / "meta.json"
+    if not meta.is_file():
+        return None
+    return json.loads(meta.read_text(encoding="utf-8")).get("variants", {}).get(parts[2], {}).get("from_pool")
 
 
 def validate_canvas(root, ctx, only=None):

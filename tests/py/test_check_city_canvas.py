@@ -437,3 +437,25 @@ def test_the_real_no_argument_run_judges_london_and_passes(capsys):
     assert C.main([]) == 0, capsys.readouterr().out
     assert "check-city-canvas london: examined 45 fragments, 15 meta files; 0 problems" \
         in capsys.readouterr().out
+
+
+def test_a_variant_is_never_compared_with_a_later_citys_pool_copy_of_itself():
+    """Phase F ruling 4 (pool variants) meets G2 (every city's picks are must-differ rows): a pool
+    variant (`london/key-takeaways/b`) is copied onto a later city's canvas with ONE refresh delta
+    and recorded `from_pool`; when that copy is picked it becomes a must-differ row, and London's
+    closed canvas then failed against its own refreshed copy ("b is within one axis of existing
+    style manchester/key-takeaways/c"; check:all red after 30a23536). A row that is a pool copy of
+    the very variant being judged is skipped; any other city's pick is still judged."""
+    m = _meta()
+    copy = {"shape": "city", "id": "manchester/key-takeaways/c", "name": "Tick card",
+            "axes": dict(m["variants"]["a"]["axes"]), "used_by": ["blue-staffy-puppies-manchester-uk"]}
+    md = {"key-takeaways": [copy]}
+    # The live copy's source is london/key-takeaways/b: judging London's variant b skips it ...
+    out = C.validate_meta("key-takeaways", {**m, "variants": {"b": m["variants"]["a"]}},
+                          ctx(city="london", ideas={"key-takeaways": IDEAS.get("hero", "")}, must_differ=md))[0]
+    assert not [x for x in out if "manchester/key-takeaways/c" in x], out
+    # ... and London's variant a, which is not its source, is still judged against it.
+    out = C.validate_meta("key-takeaways", m, ctx(city="london", ideas={"key-takeaways": IDEAS.get("hero", "")}, must_differ=md))[0]
+    assert any("within one axis of existing style manchester/key-takeaways/c" in x for x in out), out
+    assert C.pool_source("manchester/key-takeaways/c") == "london/key-takeaways/b"
+    assert C.pool_source("manchester/tables/a") is None
