@@ -127,32 +127,32 @@
           "children": [
             {
               "level": 3,
-              "text": "How Much Does a Blue Staffy Puppy Cost?",
+              "text": "How Much Does Each Blue Staffy Puppy Cost?",
               "children": []
             },
             {
               "level": 3,
-              "text": "Where Can I Buy a Blue Staffy Puppy Near Manchester?",
+              "text": "Where Do I Find Blue Staffy Puppies to Buy Near Manchester?",
               "children": []
             },
             {
               "level": 3,
-              "text": "Can I Get a Blue Staffy Puppy Delivered to My Home?",
+              "text": "Can My Blue Staffy Puppy Be Delivered to My Home?",
               "children": []
             },
             {
               "level": 3,
-              "text": "Do You Deliver Across the UK?",
+              "text": "Do You Deliver Puppies Across the UK?",
               "children": []
             },
             {
               "level": 3,
-              "text": "How Do I Know a Puppy Is Still Available?",
+              "text": "How Do I Know Which Puppies Are Still Available?",
               "children": []
             },
             {
               "level": 3,
-              "text": "How Much Is the Deposit?",
+              "text": "How Much Is Your Deposit?",
               "children": []
             }
           ]
@@ -491,12 +491,12 @@
           "children": [
             {
               "level": 3,
-              "text": "Are the Parents of Your Blue Staffy Puppies Health-Tested?",
+              "text": "Are the Parents of Every Blue Staffy Puppy You Breed Health-Tested?",
               "children": []
             },
             {
               "level": 3,
-              "text": "Should I See the Puppy With Its Mother Before Any Money Changes Hands?",
+              "text": "Should I See the Mother With Her Puppy Before Money Changes Hands?",
               "children": []
             },
             {
@@ -521,7 +521,7 @@
             },
             {
               "level": 3,
-              "text": "Are Both Parents DNA Tested Clear for L-2-HGA and HC-HSF4?",
+              "text": "Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?",
               "children": []
             }
           ]
@@ -539,7 +539,7 @@
         "secondary": []
       },
       "image": "—",
-      "note": "The question file's seven middle picks in score order (6, 5, 4, 4, 4, 4, 4). Two answers need care (lessons 9): 'Should I See the Puppy With Its Mother Before Any Money Changes Hands?' — its bank row (health-avoid-puppy-farm) says to read the contract 'before any money moves', which our deposit-books-the-viewing order does not follow; the answer says how our order works and what a buyer can check before the deposit, and the bank row needs the breeder's wording before the board (open flag). 'Are Both Parents DNA Tested Clear…?' is kept (STOP 1 q11 b) and answered by naming L-2-HGA, HC-HSF4 and the eye and elbow screening, with the certificates shared on request — never a result (ledger parents-dna-clear: no proof on file in the repository)."
+      "note": "The question file's seven middle picks in score order (6, 5, 4, 4, 4, 4, 4). Two answers need care (lessons 9): 'Should I See the Mother With Her Puppy Before Money Changes Hands?' (pick wording 'Should I See the Puppy With Its Mother Before Any Money Changes Hands?', faq_rewordings) — its bank row (health-avoid-puppy-farm) says to read the contract 'before any money moves', which our deposit-books-the-viewing order does not follow; the answer says how our order works and what a buyer can check before the deposit, and the bank row needs the breeder's wording before the board (open flag). 'Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?' is kept (STOP 1 q11 b) and answered by naming L-2-HGA, HC-HSF4 and the eye and elbow screening, with the certificates shared on request — never a result (ledger parents-dna-clear: no proof on file in the repository)."
     },
     {
       "n": "13",
@@ -922,7 +922,7 @@
             },
             {
               "level": 3,
-              "text": "Are Blue Staffies Suitable for First-Time Dog Owners?",
+              "text": "Do Blue Staffies Suit First-Time Dog Owners?",
               "children": []
             },
             {
@@ -942,12 +942,12 @@
             },
             {
               "level": 3,
-              "text": "Are Blue Staffies Good Family Pets, Especially With Children?",
+              "text": "Do Blue Staffies Make Good Family Pets for Homes With Children?",
               "children": []
             },
             {
               "level": 3,
-              "text": "Can a Staffordshire Bull Terrier Live in a Flat?",
+              "text": "Is a Staffordshire Bull Terrier Able to Live in a Flat?",
               "children": []
             }
           ]
@@ -1022,7 +1022,154 @@
     "Open flag (lessons 9): bank rows guide-banned-breed ('legal to own, breed and import') and whyus-not-banned ('legally permitted') go further than the fact table's banned-breed line; G5 and the FAQ use only 'not a banned breed / not on the government's list', linked to gov.uk.",
     "Open flag (lessons 9): bank row whyus-paperwork says 'The Kennel Club registration paperwork'; the ledger (parents-kc-registered-application-form) allows only the registration application form for a puppy, so the paperwork section words it that way.",
     "A Manchester sentence stating certificates on request needs its own pattern on the evidence ledger's certificates-on-request row at build (its pattern lists exact sentences).",
-    "FAQ middle H3 'Are Both Parents DNA Tested Clear for L-2-HGA and HC-HSF4?' is a question, which evidence_audit's _is_claim exempts; its answer names the tests and offers the certificates, never a result."
+    "FAQ middle H3 'Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?' (page wording, faq_rewordings) is a question, which evidence_audit's _is_claim exempts; its answer names the tests and offers the certificates, never a result.",
+    "FAQ rewordings (2026-10-07, lessons 18): twelve FAQ H3s collided exact or by shingle with headings elsewhere in the corpus, so each carries a city-free page wording recorded in faq_rewordings (pick_id -> page_wording -> why). Rule: bsuk-location-page-builder, a pick may be reworded on the page only if its meaning and its fact are unchanged, and the wording used is recorded. The build writes each page_wording into the question file's covered_by.text for its pick_id; the question file's own question stays as picked. No 'Manchester' added (term budget, STOP 1 q12) and none of London's wordings reused."
+  ],
+  "faq_rewordings": [
+    {
+      "pick_id": "q-how-much-does-a-blue-staffy-cost-uk-4051c2",
+      "block": "top",
+      "pick_wording": "How Much Does a Blue Staffy Puppy Cost?",
+      "page_wording": "How Much Does Each Blue Staffy Puppy Cost?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "board:index",
+        "heading": "How Much Does a Blue Staffy Puppy Cost?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'how much does … blue staffy puppy cost'; 'each' matches the bank answer (listing-cost: every puppy is listed with its own price)"
+    },
+    {
+      "pick_id": "q-where-can-i-find-blue-staffy-breeders-in-fbecea",
+      "block": "top",
+      "pick_wording": "Where Can I Buy a Blue Staffy Puppy Near Manchester?",
+      "page_wording": "Where Do I Find Blue Staffy Puppies to Buy Near Manchester?",
+      "collided_with": {
+        "kind": "shingle",
+        "page": "board:buy-blue-staffy-puppies-uk",
+        "heading": "Where can I buy a blue Staffy puppy in the UK?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'buy', 'blue staffy puppies' and 'near Manchester'; the five-word run 'buy a blue staffy puppy' is spent sitewide. The one city word was already in the pick: none added"
+    },
+    {
+      "pick_id": "q-can-i-get-a-blue-staffy-puppy-delivered-ad16e3",
+      "block": "top",
+      "pick_wording": "Can I Get a Blue Staffy Puppy Delivered to My Home?",
+      "page_wording": "Can My Blue Staffy Puppy Be Delivered to My Home?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "/blue-staffy-uk-breeders/",
+        "heading": "Can I Get a Blue Staffy Puppy Delivered to My Home?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'blue staffy puppy … delivered to my home'; same yes/no question"
+    },
+    {
+      "pick_id": "q-do-you-deliver-across-the-uk-fb0c4a",
+      "block": "top",
+      "pick_wording": "Do You Deliver Across the UK?",
+      "page_wording": "Do You Deliver Puppies Across the UK?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "/uk-blue-staffy-breeders-contact/",
+        "heading": "Do You Deliver Across the UK?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'deliver … across the UK'; the object made explicit, the meaning unchanged"
+    },
+    {
+      "pick_id": "q-how-do-i-know-a-puppy-is-still-cdf916",
+      "block": "top",
+      "pick_wording": "How Do I Know a Puppy Is Still Available?",
+      "page_wording": "How Do I Know Which Puppies Are Still Available?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "/buy-blue-staffy-puppies-uk/",
+        "heading": "How Do I Know a Puppy Is Still Available?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'how do I know … still available'; matches the bank answer (listing-availability: a puppy still showing on the list is unreserved)"
+    },
+    {
+      "pick_id": "q-how-much-is-the-deposit-2cce23",
+      "block": "top",
+      "pick_wording": "How Much Is the Deposit?",
+      "page_wording": "How Much Is Your Deposit?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "/blue-staffy-pup-sale-uk/",
+        "heading": "How Much Is the Deposit?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'how much is … deposit'; not London's 'What Does the £500 Deposit Cover?' and no figure in the header"
+    },
+    {
+      "pick_id": "q-are-the-parents-of-your-blue-staffy-puppy-523777",
+      "block": "middle",
+      "pick_wording": "Are the Parents of Your Blue Staffy Puppies Health-Tested?",
+      "page_wording": "Are the Parents of Every Blue Staffy Puppy You Breed Health-Tested?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "/buy-staffy-puppies-for-sale-uk/",
+        "heading": "Are the Parents of Your Blue Staffy Puppies Health-Tested?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'parents … blue staffy puppy … health-tested'; 'of your blue staffy puppies' is spent sitewide"
+    },
+    {
+      "pick_id": "q-how-can-i-avoid-buying-from-a-puppy-5e9d7e",
+      "block": "middle",
+      "pick_wording": "Should I See the Puppy With Its Mother Before Any Money Changes Hands?",
+      "page_wording": "Should I See the Mother With Her Puppy Before Money Changes Hands?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "board:blue-staffy-puppies-london",
+        "heading": "Should I See the Puppy With Its Mother Before Any Money Changes Hands?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'see … mother … puppy … before money changes hands'; 'see the puppy with its mother' and 'before any money changes hands' are both spent (London's board and built page). Not London's 'Should I See My Puppy With Its Mother…'. The answer still needs the breeder's wording (open flag): our deposit comes before the viewing"
+    },
+    {
+      "pick_id": "q-which-genetic-tests-have-the-parents-had-19da02",
+      "block": "middle",
+      "pick_wording": "Are Both Parents DNA Tested Clear for L-2-HGA and HC-HSF4?",
+      "page_wording": "Are Both Parents DNA Tested Clear for L-2-HGA and for HC-HSF4?",
+      "collided_with": {
+        "kind": "shingle",
+        "page": "/uk-locations/blue-staffy-puppies-london/",
+        "heading": "What Are L-2-HGA and HC-HSF4, and Why Should I Ask About Them?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'DNA tested clear', both test names and the order; 'L-2-HGA and HC-HSF4' (and the reverse) is a heading run on London and the health page. Still a question (STOP 1 q11 b): the answer names the tests, never a result"
+    },
+    {
+      "pick_id": "q-are-blue-staffy-suitable-for-first-time-d-e4e6aa",
+      "block": "bottom",
+      "pick_wording": "Are Blue Staffies Suitable for First-Time Dog Owners?",
+      "page_wording": "Do Blue Staffies Suit First-Time Dog Owners?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "/buy-blue-staffy-puppies-uk/",
+        "heading": "Are Blue Staffies Suitable for First-Time Dog Owners?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'blue staffies … first-time dog owners'; not London's 'Suitable for a First-Time Dog Owner'"
+    },
+    {
+      "pick_id": "q-are-blue-staffy-good-family-pets-especial-7e3356",
+      "block": "bottom",
+      "pick_wording": "Are Blue Staffies Good Family Pets, Especially With Children?",
+      "page_wording": "Do Blue Staffies Make Good Family Pets for Homes With Children?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "/",
+        "heading": "Are Blue Staffies Good Family Pets, Especially With Children?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'blue staffies … good family pets … with children'; not London's 'in a House With Young Children'"
+    },
+    {
+      "pick_id": "q-can-a-staffy-live-in-a-flat-310055",
+      "block": "bottom",
+      "pick_wording": "Can a Staffordshire Bull Terrier Live in a Flat?",
+      "page_wording": "Is a Staffordshire Bull Terrier Able to Live in a Flat?",
+      "collided_with": {
+        "kind": "exact",
+        "page": "board:uk-staffordshire-bull-terrier-guide",
+        "heading": "Can a Staffordshire Bull Terrier Live in a Flat?"
+      },
+      "why": "city-free rewording (lessons 18; London gate findings 2026-10-05 §2): meaning and fact unchanged, Title Case kept, no fact, video call, rescue wording, licence or result added; keeps 'staffordshire bull terrier … live in a flat'; 'can' read as 'able to'. Not London's 'Live in a London Flat'"
+    }
   ],
   "header_crossover": {
     "date": "2026-10-07",
@@ -1034,125 +1181,9 @@
       "note": "proposed = every heading in the tree, FAQ questions included"
     },
     "body_hits": 0,
-    "faq_hits": 12,
-    "hits": [
-      {
-        "heading": "How Much Does a Blue Staffy Puppy Cost?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "board:index",
-        "with_heading": "How Much Does a Blue Staffy Puppy Cost?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "Where Can I Buy a Blue Staffy Puppy Near Manchester?",
-        "kind": "shingle",
-        "shingles": [
-          "where can i buy a",
-          "can i buy a blue",
-          "i buy a blue staffy",
-          "buy a blue staffy puppy"
-        ],
-        "with_page": "board:buy-blue-staffy-puppies-uk",
-        "with_heading": "Where can I buy a blue Staffy puppy in the UK?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "Can I Get a Blue Staffy Puppy Delivered to My Home?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "/blue-staffy-uk-breeders/",
-        "with_heading": "Can I Get a Blue Staffy Puppy Delivered to My Home?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "Do You Deliver Across the UK?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "/uk-blue-staffy-breeders-contact/",
-        "with_heading": "Do You Deliver Across the UK?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "How Do I Know a Puppy Is Still Available?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "/buy-blue-staffy-puppies-uk/",
-        "with_heading": "How Do I Know a Puppy Is Still Available?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "How Much Is the Deposit?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "/blue-staffy-pup-sale-uk/",
-        "with_heading": "How Much Is the Deposit?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "Are the Parents of Your Blue Staffy Puppies Health-Tested?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "/buy-staffy-puppies-for-sale-uk/",
-        "with_heading": "Are the Parents of Your Blue Staffy Puppies Health-Tested?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "Should I See the Puppy With Its Mother Before Any Money Changes Hands?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "board:blue-staffy-puppies-london",
-        "with_heading": "Should I See the Puppy With Its Mother Before Any Money Changes Hands?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "Are Both Parents DNA Tested Clear for L-2-HGA and HC-HSF4?",
-        "kind": "shingle",
-        "shingles": [
-          "l 2 hga and hc",
-          "2 hga and hc hsf4"
-        ],
-        "with_page": "/uk-locations/blue-staffy-puppies-london/",
-        "with_heading": "What Are L-2-HGA and HC-HSF4, and Why Should I Ask About Them?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "Are Blue Staffies Suitable for First-Time Dog Owners?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "/buy-blue-staffy-puppies-uk/",
-        "with_heading": "Are Blue Staffies Suitable for First-Time Dog Owners?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "Are Blue Staffies Good Family Pets, Especially With Children?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "/",
-        "with_heading": "Are Blue Staffies Good Family Pets, Especially With Children?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      },
-      {
-        "heading": "Can a Staffordshire Bull Terrier Live in a Flat?",
-        "kind": "exact",
-        "shingles": [],
-        "with_page": "board:uk-staffordshire-bull-terrier-guide",
-        "with_heading": "Can a Staffordshire Bull Terrier Live in a Flat?",
-        "severity": "WARN",
-        "note": "a FAQ question kept in the question file's pick wording; pageboard.faq_hits grades it WARN. Lessons 18: any change is made in the data (covered_by.text city wording where the meaning is unchanged, or a bank row), never by hand"
-      }
-    ],
-    "fixed_before_record": "the first run found 14 body hits (question-file keywords that are already headings on the buying guide, the breed guide, the health page, the for-sale, pup-sale, buy and breeders pages, and the Aberdeen and Glasgow stubs); each was reworded so it still carries a keyword from its section's placement; the re-run found 1 more (the Edinburgh stub), reworded, then 0. Five headings were then reworded for Title Case (phrasal particles 'For', 'In', 'To' and a hyphenated 'Blue-and-White') and the run repeated at 0"
+    "faq_hits": 0,
+    "in_page_repeats": [],
+    "hits": [],
+    "fixed_before_record": "the first run found 14 body hits (question-file keywords that are already headings on the buying guide, the breed guide, the health page, the for-sale, pup-sale, buy and breeders pages, and the Aberdeen and Glasgow stubs); each was reworded so it still carries a keyword from its section's placement; the re-run found 1 more (the Edinburgh stub), reworded, then 0. Five headings were then reworded for Title Case (phrasal particles 'For', 'In', 'To' and a hyphenated 'Blue-and-White') and the run repeated at 0. The outline as committed (a80068b7) still had 12 FAQ hits (10 exact, 2 shingle) in the question file's pick wording; each was given a city-free page wording that keeps its meaning, fact and search phrase (faq_rewordings, lessons 18), and this run found 0 FAQ and 0 body hits"
   }
 }
