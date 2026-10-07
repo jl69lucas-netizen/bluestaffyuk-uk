@@ -2027,6 +2027,97 @@ def faq_hits(board, live):
             if not _whitelisted(h["heading"])]
 
 
+# FAQ near-copies (Manchester plan, Phase F gap G15; STOP 2 q03 (b), 2026-10-07). The collision
+# gate above passes a question one word away from a live one ("How Much Is Your Deposit?" against
+# "How Much Is the Deposit?"): no exact, template or five-token shingle match, the same question
+# to a reader. So a question is read as its CONTENT tokens — tokens() less keyword_metrics.STOP
+# and the pronouns — and is a near-copy when that set is within NEAR_COPY_DIFF tokens of another
+# question's, or when it shares a run of SHINGLE content tokens with one, in either order: a spent
+# run with a stop word slipped in ("L-2-HGA and for HC-HSF4") or turned round ("HC-HSF4 and
+# L-2-HGA") is the same run. A board WARN (block 3), never a refusal.
+import keyword_metrics as KM  # noqa: E402  (stdlib + page_sections/query_augment: no cycle)
+
+PRONOUNS = frozenset("i me my mine you your yours we us our ours he him his she her hers it its "
+                     "they them their theirs".split())
+NEAR_COPY_DIFF = 2
+FAQ_BANK = ROOT / "data" / "faq.json"
+
+
+def content_tokens(text):
+    """tokens() without keyword_metrics.STOP and the pronouns, in order."""
+    return [t for t in tokens(text) if t not in KM.STOP and t not in PRONOUNS]
+
+
+def _runs(ws):
+    return {frozenset(ws[i:i + SHINGLE]): " ".join(ws[i:i + SHINGLE])
+            for i in range(len(ws) - SHINGLE + 1) if len(set(ws[i:i + SHINGLE])) == SHINGLE}
+
+
+def near_copy_corpus(dist=None, boards=None, bank=None, live=None):
+    """{source: [question or heading, ...]}: every live heading (live_headings(), or `live` when
+    the caller already holds it), every board's FAQ questions under "board:<slug>"
+    (faq_block_questions()) and every data/faq.json question under "data/faq.json". `boards`
+    ({slug: record}) and `bank` ([{q: …}]) default to the files."""
+    out = dict(live_headings(dist) if live is None else live)
+    boards = load_all_boards() if boards is None else boards
+    for slug, b in boards.items():
+        qs = faq_block_questions(b)
+        if qs:
+            out["board:" + slug] = qs
+    bank = _read_json(FAQ_BANK) if bank is None else bank
+    qs = [r["q"] for r in bank if r.get("q")]
+    if qs:
+        out["data/faq.json"] = qs
+    return out
+
+
+def near_copy_hits(questions, live, exclude_page=None):
+    """One hit per question that is a near-copy of something in `live` ({source: [text, ...]}):
+    {heading, kind, page, with, matches: [(source, text), ...]}, plus `diff` (the tokens that set
+    them apart) for kind "near-copy" (content-token sets within NEAR_COPY_DIFF) or `run` for kind
+    "near-run" (a shared run of SHINGLE content tokens, any order). `page`/`with` is the nearest
+    match; `matches` names every one. `exclude_page` is a source key, or several, to leave out —
+    the page being built, which would otherwise be its own near-copy. A question with no content
+    tokens is never a hit."""
+    skip = {exclude_page} if isinstance(exclude_page, str) else set(exclude_page or ())
+    pool = [(src, t, content_tokens(t)) for src, ts in live.items() if src not in skip for t in ts]
+    hits = []
+    for q in questions:
+        ws = content_tokens(q)
+        if not ws:
+            continue
+        mine, runs = set(ws), _runs(ws)
+        close, shared = [], []
+        for src, t, tw in pool:
+            if not tw:
+                continue
+            d = mine ^ set(tw)
+            if len(d) <= NEAR_COPY_DIFF:
+                close.append((len(d), src, t, sorted(d)))
+            else:
+                common = runs.keys() & _runs(tw).keys()
+                if common:
+                    shared.append((src, t, runs[sorted(common, key=lambda k: runs[k])[0]]))
+        if close:
+            close.sort(key=lambda c: c[0])
+            n, src, t, d = close[0]
+            hits.append({"heading": q, "kind": "near-copy", "page": src, "with": t, "diff": d,
+                         "matches": [(c[1], c[2]) for c in close]})
+        elif shared:
+            src, t, run = shared[0]
+            hits.append({"heading": q, "kind": "near-run", "page": src, "with": t, "run": run,
+                         "matches": [(s[0], s[1]) for s in shared]})
+    return hits
+
+
+def board_near_copy_hits(board, live, boards=None, bank=None):
+    """near_copy_hits() for THIS board's FAQ questions against the live headings, the other
+    boards' FAQ questions and the FAQ bank; its own page and its own record are left out."""
+    corpus = near_copy_corpus(boards=boards, bank=bank, live=live)
+    return near_copy_hits(faq_block_questions(board), corpus,
+                          exclude_page=(own_live_key(board), "board:" + board["meta"]["slug"]))
+
+
 PERF_DIR = ROOT / "data" / "quality" / "perf"
 PERF_PROFILES = ("mobile", "desktop")
 

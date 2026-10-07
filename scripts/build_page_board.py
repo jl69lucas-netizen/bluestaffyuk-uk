@@ -286,6 +286,24 @@ def verbatim_block(slug, board):
     return head + "\n\n" + md_table(["", "Kind", "The migrated page's wording", "What happens to it"], out)
 
 
+def near_copy_note(board, live, new_family):
+    """Block 3's FAQ near-copy WARN (Manchester plan G15; STOP 2 q03 (b)): every FAQ question
+    within two content tokens of a live heading, another board's question or a data/faq.json
+    question, or sharing a five-token content run with one. A warning, not a refusal. Project 5
+    boards only, so the twelve built boards render byte for byte as before."""
+    if not new_family:
+        return ""
+    nhits = PB.board_near_copy_hits(board, live)
+    if not nhits:
+        return "\n\nNo FAQ question is a near-copy of a live heading, another board's question or the FAQ bank."
+    rows = [[md(h["heading"]), md(h["kind"]), md(h["with"]), md(h["page"]),
+             md(", ".join(h["diff"]) if h["kind"] == "near-copy" else h["run"]),
+             str(len(h["matches"]))] for h in nhits]
+    return (f"\n\n**WARN: {len(nhits)} FAQ question(s) are near-copies** — reword them before approving "
+            "(a warning, not a refusal).\n\n"
+            + md_table(["Question", "Kind", "Nearest", "Where", "Apart by / shared run", "Matches"], rows))
+
+
 def outline_block(board, hits):
     """The whole outline as one tree, H1 included — read from all_headings() so the board
     shows the same H1 the gate judged, whether it came from a pick or the recommendation."""
@@ -1686,6 +1704,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                      "No heading collides with a live page (exact, species-template or 5-word shingle).")
                   + (f"\n\n{len(qhits)} FAQ question(s) repeat a live heading — a warning, not a refusal."
                      if qhits else "")
+                  + near_copy_note(board, live, new_family)
                   # Working rule 12 rides with the outline rather than in a block of its own:
                   # the links ARE part of the shape of the page, and the reader who has just
                   # read the tree is the reader who can judge where each one is said.
