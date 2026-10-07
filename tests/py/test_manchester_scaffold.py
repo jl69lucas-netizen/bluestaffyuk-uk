@@ -1,18 +1,21 @@
-"""Manchester's own route, a noindex scaffold (the Manchester page run, Phase F Task 32; London's
-pattern, London Plan 2 Task 8 and tests/py/test_city_scaffold.py).
+"""Manchester's own route: the thirteen picks, the nav set and the outline's headings, on the rebuilt page (a scaffold until page-run row 12).
+
+The noindex scaffold came first (the Manchester page run, Phase F Task 32; London's pattern, London
+Plan 2 Task 8 and tests/py/test_city_scaffold.py).
 
 src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro mounts Manchester's thirteen picks
 (data/design/city-picks/blue-staffy-puppies-manchester-uk.json, frozen 355d5e43) on CityShell, in
 the approved outline's order (data/outlines/blue-staffy-puppies-manchester-uk.json, STOP 2), so the
 picks can be judged together at every width before the page board (STOP 3). What must hold:
-  - one route, one source: [slug].astro no longer builds Manchester; the other 26 cities still
-    build from it (London and Manchester each have their own file);
-  - the scaffold is `noindex, follow`, carries `data-city-scaffold`, and is in no sitemap shard;
+  - one route, one source: [slug].astro no longer builds Manchester, and Manchester's page is
+    its own rebuilt page (no `data-city-scaffold`); the other 26 cities still build from the
+    template (London and Manchester each have their own file);
+  - the page is `noindex, follow` and in no sitemap shard until the user approves it (Task 54);
   - every city component on it is one of Manchester's picks, all thirteen are mounted, and no
     London `city-*` root (nor the kit's own nav set, puppy cards or a video) appears;
-  - the headings are the outline's, word for word and in order (H1 to H6), and each body
-    section's prose is one clearly marked scaffold line (no copy before row 12);
-  - the FAQPage node carries exactly the visible questions, the outline's twenty;
+  - the headings are the outline's, word for word and in order (H1 to H6), with the nine FAQ
+    wordings the breeder adopted at STOP 3 in place (test_manchester_board.REWORDED);
+  - the FAQPage node carries exactly the visible questions, the outline's twenty as adopted;
   - the reviews are data/reviews.json's, word for word; the figures are read, never typed;
   - each served photo keeps its served alt on its first use and a new alt on a repeat.
 And gap G10: scripts/city_side_by_side.mjs selects a city's rows by `canvas_variant` and reads
@@ -30,6 +33,9 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "tests/py"))
 from city_components import KIT_OF_VARIANT, NOT_USED  # noqa: E402
+from test_manchester_board import REWORDED  # noqa: E402
+
+ADOPTED = {old: new for old, (new, _) in REWORDED.items()}
 
 SLUG = "blue-staffy-puppies-manchester-uk"
 LONDON = "blue-staffy-puppies-london"
@@ -42,10 +48,6 @@ LOCATIONS = json.loads((ROOT / "data/locations.json").read_text())
 COMPONENTS = json.loads((ROOT / "data/design/components.json").read_text())
 REVIEWS = json.loads((ROOT / "data/reviews.json").read_text())
 SIDE_BY_SIDE = ROOT / "scripts/city_side_by_side.mjs"
-SCAFFOLD_MARK = "Scaffold line, not copy."
-
-#: The nine body sections (outline rows), each an image-and-text section with one scaffold line.
-BODY_ROWS = ["8", "9", "10", "13", "14", "15", "17", "18", "19"]
 
 
 def built():
@@ -106,9 +108,9 @@ def test_manchester_has_its_own_file():
     assert PAGE.is_file()
 
 
-def test_the_template_no_longer_builds_manchester_and_still_builds_the_other_26():
+def test_manchester_has_its_own_rebuilt_page_and_the_template_builds_the_other_26():
     html = built()
-    assert f'data-city-scaffold="{SLUG}"' in html
+    assert f'data-city-scaffold="{SLUG}"' not in html
     own = {p.stem for p in (ROOT / "src/pages/uk-locations").glob("*.astro") if "[" not in p.name}
     assert {SLUG, LONDON} <= own
     others = [l["slug"] for l in LOCATIONS if l["slug"] not in own]
@@ -118,14 +120,6 @@ def test_the_template_no_longer_builds_manchester_and_still_builds_the_other_26(
         assert page.is_file(), slug
         body = page.read_text(encoding="utf-8")
         assert "prose-migrated" in body and "data-city-scaffold" not in body, slug
-
-
-def test_the_scaffold_keeps_the_migrated_body_for_parity():
-    """Manchester is not in data/facts/rebuilt.json until its page run ends, so `check:parity`
-    still measures its migrated body in `article.prose-migrated`, word for word."""
-    row = next(l for l in LOCATIONS if l["slug"] == SLUG)
-    art = re.search(r"<article[^>]*prose-migrated[^>]*>(.*?)</article>", built(), re.S)
-    assert art and text(art.group(1)) == text(row["body_html"])
 
 
 def test_the_scaffold_is_noindex_and_in_no_sitemap():
@@ -205,26 +199,9 @@ def test_the_city_nav_set_is_manchesters_and_every_link_names_a_section():
 def test_the_headings_are_the_outlines_in_order_h1_to_h6():
     main = main_of(built())
     found = [(int(l), words(t)) for l, t in re.findall(r"<h([1-6])\b[^>]*>(.*?)</h\1>", main, re.S)]
-    want = [(1, OUTLINE["h1"])] + [h for s in OUTLINE["sections"] for h in flat(s["headings"]) if h[0] > 1]
+    want = [(1, OUTLINE["h1"])] + [(l, ADOPTED.get(t, t)) for s in OUTLINE["sections"]
+                                    for l, t in flat(s["headings"]) if l > 1]
     assert found == want
-
-
-def test_each_body_section_carries_one_marked_scaffold_line():
-    main = main_of(built())
-    rows = {s["n"]: s for s in OUTLINE["sections"]}
-    sheets = {}
-    for sheet in re.findall(r'<section[^>]*city-offset-sheet[^>]*>(.*?)</section>', main, re.S):
-        h2 = text(re.search(r"<h2\b[^>]*>(.*?)</h2>", sheet, re.S).group(1))
-        sheets[h2] = text(re.search(r'<p class="lede"[^>]*>(.*?)</p>', sheet, re.S).group(1))
-    assert len(sheets) == len(BODY_ROWS), sorted(sheets)
-    for n in BODY_ROWS:
-        h2 = next(h["text"] for h in rows[n]["headings"] if h["level"] == 2)
-        assert h2 in sheets, (n, h2)
-        assert sheets[h2].startswith(SCAFFOLD_MARK), (n, sheets[h2])
-        assert f"§{n}" in sheets[h2], (n, "the line names its outline row")
-    lines = [p for p in re.findall(r"<p\b[^>]*>(.*?)</p>", main, re.S) if text(p).startswith(SCAFFOLD_MARK)]
-    # The nine body sections, the hero's opener, the three FAQ blocks' ledes and the form's lede.
-    assert len(lines) == len(BODY_ROWS) + 1 + 3 + 1, len(lines)
 
 
 def test_the_litter_table_sits_under_its_h4_with_the_outlines_caption():
@@ -244,7 +221,7 @@ def test_the_litter_table_sits_under_its_h4_with_the_outlines_caption():
 def test_the_faq_schema_carries_exactly_the_visible_questions():
     html = built()
     visible = [words(q) for q in re.findall(r"<h3[^>]*data-faq-q[^>]*>(.*?)</h3>", html, re.S)]
-    outline = [c["text"] for s in OUTLINE["sections"] if s.get("faq") for h in s["headings"] for c in h["children"]]
+    outline = [ADOPTED.get(c["text"], c["text"]) for s in OUTLINE["sections"] if s.get("faq") for h in s["headings"] for c in h["children"]]
     assert len(outline) == 20 and visible == outline
     blocks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
     nodes = [n for b in blocks for n in (b if isinstance(b, list) else [b]) if n.get("@type") == "FAQPage"]
