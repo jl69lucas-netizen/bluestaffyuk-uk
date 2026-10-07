@@ -1,0 +1,78 @@
+<style>
+/* Tables C — Boy or girl (pool copy of london/tables/c "Boy or girl", refreshed on LAYOUT).
+   Kept from London: two subjects side by side, boys and girls, each headed by a puppy photo,
+   framed by rules only, airy. Changed: London's table was turned on its side (price, names,
+   colours, deposit and delivery as rows, boys and girls as two columns). Manchester's is the
+   outline's own table, one row per puppy with its sex, coat and price, split into two row
+   groups that stand side by side from 640px under their photo heads. Each group head says the
+   group's one price (the photo sits in its own cell, so the row header is the words alone), which is the point of the table: the coat changes down the column and
+   the price does not. Below 640px the groups stack and each puppy is a two-line slip. */
+.mlC{background:var(--color-surface);border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}
+.mlC .in{max-width:1000px;margin:0 auto;padding:var(--space-7) var(--space-4)}
+.mlC h4{margin:0 0 var(--space-2);font-size:20px;line-height:1.25;font-weight:700;color:var(--color-brand);text-wrap:balance;max-width:30ch}
+.mlC .lede{margin:0 0 var(--space-6);font-size:16px;line-height:1.6;color:var(--color-text);max-width:62ch;text-wrap:pretty}
+.mlC .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mlC table{width:100%;border-collapse:collapse;color:var(--color-text)}
+.mlC table,.mlC thead,.mlC tbody,.mlC tr,.mlC th,.mlC td,.mlC caption{display:block}
+.mlC caption{text-align:left;padding:0 0 var(--space-3);font-family:var(--font-display);font-weight:600;font-size:17px;line-height:1.3;color:var(--color-brand)}
+.mlC thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mlC tbody{border-top:2px solid var(--color-brand)}
+.mlC tbody + tbody{margin-top:var(--space-6)}
+.mlC tr.grp td.ph{padding-top:var(--space-4)}
+.mlC tr.grp th{padding:0 0 var(--space-3);text-align:left;font-weight:400}
+.mlC .face{display:block;width:100%;height:auto;aspect-ratio:5/2;object-fit:cover;border-radius:var(--radius-md);background:var(--color-bone-50);margin-bottom:var(--space-3)}
+.mlC .gname{display:block;font-family:var(--font-display);font-weight:600;font-size:20px;line-height:1.2;color:var(--color-brand)}
+.mlC .gsub{display:block;margin-top:2px;font-size:15px;line-height:1.45;color:var(--color-text-muted)}
+.mlC .gsub b{font-weight:700;color:var(--color-brand)}
+.mlC tr.pup{padding:var(--space-3) 0;border-top:1px solid var(--color-border)}
+.mlC tr.pup th{margin-bottom:var(--space-1);font-family:var(--font-display);font-weight:600;font-size:18px;line-height:1.25;color:var(--color-brand);text-align:left}
+.mlC tr.pup td{display:inline-block;vertical-align:top;width:21%;font-size:15px;line-height:1.35}
+.mlC tr.pup td:nth-of-type(2){width:51%;padding-right:var(--space-2)}
+.mlC tr.pup td::before{content:attr(data-label);display:block;font-size:13px;font-weight:600;color:var(--color-text-muted);margin-bottom:2px}
+.mlC td.num{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+@media (min-width:641px){
+  .mlC .in{padding:var(--space-8) var(--space-5)}
+  .mlC table{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--space-7)}
+  .mlC caption{grid-column:1/-1}
+  .mlC tbody + tbody{margin-top:0}
+  .mlC .face{aspect-ratio:3/2}
+  .mlC tr.pup{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n p" "s c";column-gap:var(--space-4);row-gap:2px;padding:var(--space-4) 0}
+  .mlC tr.pup th{grid-area:n;margin:0;font-size:19px}
+  .mlC tr.pup td{display:block;width:auto;font-size:15px;color:var(--color-text-muted)}
+  .mlC tr.pup td::before{content:none}
+  .mlC tr.pup td:nth-of-type(1){grid-area:s}
+  .mlC tr.pup td:nth-of-type(2){grid-area:c;width:auto;padding-right:0;justify-self:end;text-align:right}
+  .mlC tr.pup td.num{grid-area:p;justify-self:end;font-size:19px;color:var(--color-brand)}
+}
+@media (min-width:1024px){
+  .mlC .in{padding:var(--space-10) var(--space-5)}
+  .mlC h4{font-size:22px}
+  .mlC table{column-gap:var(--space-9)}
+  .mlC .face{aspect-ratio:16/9}
+  .mlC .gname{font-size:22px}
+}
+</style>
+<section data-component="tables" data-variant="c" class="mlC">
+  <div class="in">
+    <h4>Who Are the Three Boys and Three Girls in This Litter?</h4>
+    <p class="lede">Our three boys and our three girls are grouped apart, so you can see at a glance how this litter is priced before you choose a puppy to bring home to Manchester: the price follows boy or girl, not the coat.</p>
+    <table class="stack-table" data-table role="table">
+      <caption>This litter: each puppy, sex, coat and price</caption>
+      <thead role="rowgroup">
+        <tr role="row"><th role="columnheader" scope="col">Puppy</th><th role="columnheader" scope="col">Sex</th><th role="columnheader" scope="col">Coat</th><th role="columnheader" scope="col">Price</th></tr>
+      </thead>
+      <tbody role="rowgroup">
+        <tr class="grp" role="row"><td role="cell" class="ph" data-label="Photo"><img class="face" src="/puppies/Roman2.jpg" alt="Roman the blue and white Staffordshire Bull Terrier puppy" width="1080" height="1081" loading="lazy" style="object-position:31% 46%"></td><th role="rowheader" scope="rowgroup" colspan="3"><span class="gname">Our three boys</span><span class="gsub"><b>£1,500</b> each, whatever the coat</span></th></tr>
+        <tr class="pup" role="row"><th role="rowheader" scope="row">Roman</th><td role="cell" data-label="Sex">Boy</td><td role="cell" data-label="Coat">Blue and white</td><td role="cell" data-label="Price" class="num">£1,500</td></tr>
+        <tr class="pup" role="row"><th role="rowheader" scope="row">Byrd</th><td role="cell" data-label="Sex">Boy</td><td role="cell" data-label="Coat">White</td><td role="cell" data-label="Price" class="num">£1,500</td></tr>
+        <tr class="pup" role="row"><th role="rowheader" scope="row">Ince</th><td role="cell" data-label="Sex">Boy</td><td role="cell" data-label="Coat">Blue</td><td role="cell" data-label="Price" class="num">£1,500</td></tr>
+      </tbody>
+      <tbody role="rowgroup">
+        <tr class="grp" role="row"><td role="cell" class="ph" data-label="Photo"><img class="face" src="/puppies/Christa.jpeg" alt="Christa the blue Staffordshire Bull Terrier puppy" width="1080" height="1080" loading="lazy" style="object-position:53% 18%"></td><th role="rowheader" scope="rowgroup" colspan="3"><span class="gname">Our three girls</span><span class="gsub"><b>£1,700</b> each, whatever the coat</span></th></tr>
+        <tr class="pup" role="row"><th role="rowheader" scope="row">Vennie</th><td role="cell" data-label="Sex">Girl</td><td role="cell" data-label="Coat">Blue and white</td><td role="cell" data-label="Price" class="num">£1,700</td></tr>
+        <tr class="pup" role="row"><th role="rowheader" scope="row">Christa</th><td role="cell" data-label="Sex">Girl</td><td role="cell" data-label="Coat">Blue</td><td role="cell" data-label="Price" class="num">£1,700</td></tr>
+        <tr class="pup" role="row"><th role="rowheader" scope="row">Cheryl</th><td role="cell" data-label="Sex">Girl</td><td role="cell" data-label="Coat">Blue with white blaze</td><td role="cell" data-label="Price" class="num">£1,700</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

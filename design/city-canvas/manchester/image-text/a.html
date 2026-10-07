@@ -1,0 +1,60 @@
+<style>
+/* Image + text A — Window card. One body section (outline row 13, delivery) held in a single
+   deep-steel rounded card. The H2 and its answer sit left; on the right a bone panel is set
+   into the card like a window, a thin bone mat that hugs the H2's photo (never wider than the
+   photo's own 540px). Under the answer, after a steel-500
+   hairline, the H3 runs heading, its own photo, then prose (H3-image-first), photo beside the
+   prose from 640px. One brass pill. Regular density. On a phone: H2, answer, the window, the
+   H3 block, the pill. */
+.miA{background:var(--color-surface);padding:var(--space-6) var(--space-4)}
+.miA .card{max-width:1120px;margin:0 auto;background:var(--color-surface-inverse);color:var(--color-text-on-inverse);border-radius:var(--card-radius);padding:var(--space-5) var(--space-4);display:grid;gap:var(--space-5)}
+.miA h2{margin:0 0 var(--space-3);font-size:22px;line-height:1.2;font-weight:700;color:var(--color-text-on-inverse);text-wrap:balance;max-width:24ch}
+.miA .lede{margin:0;font-size:16px;line-height:1.6;color:var(--color-text-on-inverse);max-width:60ch;text-wrap:pretty}
+.miA .win{margin:0;background:var(--color-bone-50);border-radius:var(--radius-md);padding:var(--space-4);display:grid;place-items:center}
+.miA .win img{display:block;width:100%;max-width:400px;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:var(--radius-sm);background:var(--color-bone-100)}
+.miA .sub{border-top:1px solid var(--color-steel-500);padding-top:var(--space-5);display:grid;gap:var(--space-3)}
+.miA h3{margin:0;font-size:17px;line-height:1.3;font-weight:700;color:var(--color-text-on-inverse);text-wrap:balance}
+.miA .sub img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 40%;border-radius:var(--radius-sm);background:var(--color-bone-50)}
+.miA .sub p{margin:0;font-size:16px;line-height:1.6;color:var(--color-text-on-inverse);text-wrap:pretty}
+.miA .act{margin:0}
+.miA .cta{display:inline-flex;align-items:center;min-height:48px;padding:0 var(--space-6);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
+.miA .cta:hover{background:var(--color-cta-hover)}
+.miA .cta:focus-visible{outline-color:var(--color-focus-on-inverse)}
+.miA .nb{white-space:nowrap}
+@media (min-width:640px){
+  .miA .card{padding:var(--space-7) var(--space-6)}
+  .miA h2{font-size:24px}
+  .miA .lede,.miA .sub p{font-size:17px}
+  .miA .sub{grid-template-columns:240px minmax(0,1fr);grid-template-areas:"h h" "i p";column-gap:var(--space-5);align-items:start}
+  .miA .sub h3{grid-area:h;font-size:18px}
+  .miA .sub img{grid-area:i}
+  .miA .sub p{grid-area:p}
+  .miA .win{justify-self:start;padding:var(--space-3);max-width:384px}
+  .miA .win img{max-width:none}
+}
+@media (min-width:1024px){
+  .miA{padding:var(--space-10) var(--space-5)}
+  .miA .card{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"head win" "sub win" "act win";column-gap:var(--space-8);row-gap:var(--space-6);padding:var(--space-8)}
+  .miA .head{grid-area:head}
+  .miA .win{grid-area:win;align-self:start;justify-self:stretch;max-width:none}
+  .miA .sub{grid-area:sub}
+  .miA .act{grid-area:act}
+  .miA h2{font-size:27px}
+  .miA .sub h3{font-size:20px}
+}
+</style>
+<section data-component="image-text" data-variant="a" class="miA on-inverse">
+  <div class="card">
+    <div class="head">
+      <h2>How Will Your Blue Staffy Puppy Travel to Greater Manchester?</h2>
+      <p class="lede">Either by UK home delivery, with <span class="nb">DEFRA-approved</span> transport priced by distance at <span class="nb">£200–£350</span>, or in your own car after you collect your puppy from us in Carlisle.</p>
+    </div>
+    <figure class="win" data-media><img src="/images/reputable-blue-staffy-breeder-manchester-pup.webp" alt="A settled blue Staffy puppy at home in Manchester, a testament to BlueStaffyUK's excellent communication and reputable breeding." width="540" height="541" loading="lazy"></figure>
+    <div class="sub">
+      <h3>Is Collection in Carlisle Better Than Delivery for Greater Manchester Homes?</h3>
+      <img data-media src="/images/1blue-staffy-family-breeder.webp" alt="A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background." width="512" height="478" loading="lazy">
+      <p>Collection suits a family who wants to meet us in Carlisle and drive the puppy home; delivery suits a family who would rather we bring the puppy to their own Manchester door, priced by distance.</p>
+    </div>
+    <p class="act"><a class="cta" href="#contact">Ask about delivery</a></p>
+  </div>
+</section>

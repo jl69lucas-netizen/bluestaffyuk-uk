@@ -1,0 +1,52 @@
+{
+ "component": "tables",
+ "variants": {
+  "a": {
+   "name": "Photo shelf",
+   "description": "The litter table in one raised card, each row led by that pup's own photo on a bone mat; phones get two-up portrait cards.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/puppy-card-idea2.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/tables/sister-for-sale-375-01.png"
+   ],
+   "differs_from": "Airy photo-led rows in a raised card that become two-up portrait cards on phones; London's pick is a compact roster sunk in a tray, and the built tables carry no photos.",
+   "axes": {
+    "layout": "shelf",
+    "media": "inline",
+    "density": "airy",
+    "framing": "card"
+   }
+  },
+  "b": {
+   "name": "Steel ledger",
+   "description": "The litter table on a full-width steel band: compact ruled rows, a token swatch beside each coat, prices in the display face.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/compare-table-idea.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea55.png"
+   ],
+   "differs_from": "A compact imageless ledger on a steel band with coat swatches; London's pick is a photo roster in a tray, and the built tables are ruled, zebra in a card, or brass-ruled on the page.",
+   "axes": {
+    "layout": "steel-ledger",
+    "media": "none",
+    "density": "compact",
+    "framing": "band"
+   }
+  },
+  "c": {
+   "name": "Boy or girl",
+   "description": "One puppy per row, split into a boys group and a girls group side by side, each headed by a puppy photo and its one price.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/tables/sister-for-sale-1280-01.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/DESKTOP-TABLE.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Table-Module-Design2.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's sideways table (attributes as rows, boys and girls as columns) becomes the outline's puppy-per-row table in two photo-headed row groups side by side. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "split-groups",
+    "media": "top",
+    "density": "airy",
+    "framing": "rule"
+   },
+   "from_pool": "london/tables/c"
+  }
+ }
+}

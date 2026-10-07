@@ -1,0 +1,48 @@
+<style>
+/* Takeaways B — Label and tiles. The strip's name sits in its own column as a label rather
+   than a heading (outline row 5 carries none), and the five facts fill a two-column bed of
+   tinted tiles pressed into the bone page: steel-100, no border, no shadow, a bold lead over
+   one or two plain sentences. The fifth tile, the guarantee, closes the bed across both
+   columns, so the five do not read as one repeated card. Compact. The deposit tile carries
+   its refund clause word for word. Desktop: label column left, tiles right. Tablet: label
+   across the top. Phone: one column. */
+.mkB{background:var(--color-surface);padding:var(--space-6) var(--space-4)}
+.mkB .grid{max-width:1160px;margin:0 auto;display:grid;gap:var(--space-4)}
+.mkB .ttl{margin:0 0 var(--space-2);font-family:var(--font-display);font-weight:600;font-size:20px;line-height:1.3;color:var(--color-brand);text-wrap:balance;max-width:24ch}
+.mkB .sub{margin:0;font-size:16px;line-height:1.55;color:var(--color-text-muted);max-width:44ch}
+.mkB ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-3)}
+.mkB .tile{margin:0;max-width:none;background:var(--color-brand-soft);border-radius:var(--radius-md);padding:var(--space-4)}
+.mkB .lead{display:block;font-weight:700;font-size:16px;line-height:1.35;color:var(--color-brand);margin-bottom:4px}
+.mkB .txt{display:block;font-size:15px;line-height:1.55;color:var(--color-text);text-wrap:pretty}
+.mkB .nb{white-space:nowrap}
+@media (min-width:640px){
+  .mkB{padding:var(--space-7) var(--space-5)}
+  .mkB .ttl{font-size:22px}
+  .mkB ul{grid-template-columns:1fr 1fr;gap:var(--space-4)}
+  .mkB .tile{padding:var(--space-5)}
+  .mkB .tile:last-child{grid-column:1/-1}
+}
+@media (min-width:1024px){
+  .mkB{padding:var(--space-9) var(--space-5)}
+  .mkB .grid{grid-template-columns:minmax(0,4fr) minmax(0,8fr);column-gap:var(--space-8);align-items:start}
+  .mkB .lab{padding-top:var(--space-2)}
+  .mkB .ttl{font-size:24px}
+  .mkB .lead{font-size:17px}
+  .mkB .txt{font-size:16px}
+}
+</style>
+<section data-component="key-takeaways" data-variant="b" class="mkB">
+  <div class="grid">
+    <div class="lab">
+      <p class="ttl">What a Manchester family should know first</p>
+      <p class="sub">Five facts about this litter, whether you collect in Carlisle or we deliver to Manchester.</p>
+    </div>
+    <ul>
+      <li class="tile" data-takeaway><span><span class="lead">The price follows the sex</span><span class="txt">Our three boys are <span class="nb">£1,500</span> each and our three girls <span class="nb">£1,700</span> each, whatever the coat, in this litter.</span></span></li>
+      <li class="tile" data-takeaway><span><span class="lead">£500 holds your puppy</span><span class="txt">The deposit books your viewing, reserves your puppy and comes off the price. It is up to 70% refundable if you change your mind up to 1 day before collection or delivery.</span></span></li>
+      <li class="tile" data-takeaway><span><span class="lead">To your door or ours</span><span class="txt">UK home delivery for <span class="nb">£200–£350</span> by <span class="nb">DEFRA-approved</span> transport, priced by distance, or collection in Carlisle.</span></span></li>
+      <li class="tile" data-takeaway><span><span class="lead">Both parents tested</span><span class="txt">Maggie and Jones are DNA tested for <span class="nb">L-2-HGA</span> and <span class="nb">HC-HSF4</span>; we share the certificates on request.</span></span></li>
+      <li class="tile" data-takeaway><span><span class="lead">Two-year health guarantee</span><span class="txt">It covers health issues and birth defects for two years from the day your puppy comes home.</span></span></li>
+    </ul>
+  </div>
+</section>

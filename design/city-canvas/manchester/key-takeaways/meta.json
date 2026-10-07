@@ -1,0 +1,52 @@
+{
+ "component": "key-takeaways",
+ "variants": {
+  "a": {
+   "name": "Hairline columns",
+   "description": "Five facts side by side as five columns split by vertical hairlines, each a line icon, serif title and one sentence, between two rules.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea444.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea3.png"
+   ],
+   "differs_from": "Five hairline-split columns framed by rules, no photo; London's pick is a ledger of rows beside Maggie's photo, and the built takeaways are a plain stack, a grid on a band or a rail.",
+   "axes": {
+    "layout": "hairline-cols",
+    "media": "none",
+    "density": "airy",
+    "framing": "rule"
+   }
+  },
+  "b": {
+   "name": "Label and tiles",
+   "description": "The strip's name in its own column, then five tinted steel-100 tiles, a bold lead and a sentence each, the guarantee tile across both.",
+   "idea_sources": [
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Section-Module-design4.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/moderrn-carrd.png"
+   ],
+   "differs_from": "A label cell and five sunk tinted tiles in one grid, no photo; London's pick is ruled rows beside a photo, and the built takeaways sit plain, on a band or in a rail.",
+   "axes": {
+    "layout": "label-tiles",
+    "media": "none",
+    "density": "compact",
+    "framing": "inset"
+   }
+  },
+  "c": {
+   "name": "Tick card",
+   "description": "One raised card: Manchester's family photo across the top, title and answer side by side, then five brass ticks in two columns.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/key-takeaways/sister-near-me-375-01.png",
+    "/Users/apple/Downloads/BSUK/BSUK-refs/london/key-takeaways/sister-near-me-1280-01.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea444.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's one column of four ticks under a heading becomes a two-column tick grid from 768px under a title and answer set side by side. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "tick-grid",
+    "media": "top",
+    "density": "airy",
+    "framing": "card"
+   },
+   "from_pool": "london/key-takeaways/b"
+  }
+ }
+}

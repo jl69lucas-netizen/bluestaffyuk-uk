@@ -1,0 +1,53 @@
+{
+ "component": "image-text",
+ "variants": {
+  "a": {
+   "name": "Window card",
+   "description": "One deep-steel card: H2 and answer left, the photo in a bone window right, then the H3 with its own photo first and a brass pill.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-idea55.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-idea2.png"
+   ],
+   "differs_from": "A whole body section inside one steel card with its photo in a bone window; London's pick is two H3 chapters in a sunk tray, and the built rows are plain prose with the image right or above.",
+   "axes": {
+    "layout": "window",
+    "media": "right",
+    "density": "regular",
+    "framing": "card"
+   }
+  },
+  "b": {
+   "name": "Zigzag pair",
+   "description": "The H2 row with its photo left, the H3 row with its photo right, both in the uniform in-body box, divided by hairlines.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-idea1.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-idea2.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Section-Slipt-Image+Text-Design-component.png"
+   ],
+   "differs_from": "Two open rows whose photos swap sides, framed by hairlines on the bone page; London's pick is a compact tray of chapters, and the built rows keep the image on one side or above.",
+   "axes": {
+    "layout": "zigzag",
+    "media": "left",
+    "density": "airy",
+    "framing": "rule"
+   }
+  },
+  "c": {
+   "name": "Offset sheet",
+   "description": "The photo offset on a steel-100 block bleeding off the left; right, the question, a two-by-two deposit sheet and a brass pill.",
+   "idea_sources": [
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/component-idea5.png",
+    "/Users/apple/Downloads/MFS/assets/MFS-Components-IDEAS/Page-Section-Slipt-Image+Text-Design-component.png",
+    "/Users/apple/Downloads/BSUK/bluestaffyuk-cms/Assets/Components-Ideas/card-idea1.png"
+   ],
+   "differs_from": "Refresh delta, layout: London's one column of five label-and-value rows becomes a two-by-two sheet divided by a hairline cross from 640px. Differs from London's pick on all four axes.",
+   "axes": {
+    "layout": "offset-sheet",
+    "media": "left",
+    "density": "regular",
+    "framing": "bleed"
+   },
+   "from_pool": "london/image-text/b"
+  }
+ }
+}

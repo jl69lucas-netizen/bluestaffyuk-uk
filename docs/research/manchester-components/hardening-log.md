@@ -135,3 +135,91 @@ Final runs:
 - The full Manchester canvas smoke (`manchester-frames`, 18 frames) gave 76 passed at vp375,
   vp768, vp1024 and vp1280, with no advisories. The one advisory before the fix was contents B's
   upscale at 768.
+
+## Task 24: key takeaways, tables, image and text (2026-10-07)
+
+**How the passes ran.** `frontend-design:frontend-design` was invoked with the Skill tool on the
+plan's Step 2 brief (batch: key-takeaways, tables, image-text; pool slot `c` of each). First,
+every sheet the ideas index cites for the three components was opened with the Read tool (the
+seven key-takeaways sources, the nine tables sources, the eleven image-text sources), and so were
+the candidate served photos (the delivery van photo was dropped: it carries a phone number and
+lettering, lessons 7). The outline rows were read: §5 (five lines, no heading), G2's litter table
+(H4, caption, four columns), and the body rows the image-text variants stand in for: §13
+delivery (A), §9 health tests and raising (B), §8 deposit and viewing (C). Those three were
+chosen because their answers sit wholly inside the README's facts; §17–§19 need facts the list
+does not hold. Outline §5 carries no heading, so no takeaways variant adds an H2: each names
+itself in a `<p>`. The tables heading is the outline's H4, word for word, and every table
+carries the outline caption.
+
+Pool picks (Phase F ruling 4: furthest from London's pick, and suited to Manchester's rows):
+- key-takeaways `c` ← `london/key-takeaways/b` "Tick card". "Numbered decisions" numbers five
+  facts that are not a sequence.
+- tables `c` ← `london/tables/c` "Boy or girl". "Payment schedule" is a payment table, and
+  Manchester's outline has one table only: the litter.
+- image-text `c` ← `london/image-text/b` "Offset block". It differs from London's pick on all
+  four axes ("Flanked portrait" on three), and its spec sheet suits the deposit row.
+
+Every pool copy differs from London's pick on all four axes.
+
+Tables (working rule 13, ruling 5): all three render a real `<table class="stack-table">` with
+the caption "This litter: each puppy, sex, coat and price", columns Puppy, Sex, Coat and Price,
+and `data-label` on every `<td>`. Each one stacks into labelled `display:block` rows at 640px
+and below, with no sideways scroll. Tables A carries each pup's own `card_photo` in its row
+(Known Issue 100). The puppy photos keep the alt the site serves most for each `card_photo`
+(`src/components/kit/PuppyCard.astro`, "<Name> the <coat> Staffordshire Bull Terrier puppy",
+on 8 to 21 built pages each), word for word on first use. Tables C reuses two of them.
+
+`impeccable:impeccable` was then invoked with the Skill tool (brand register; critique). Its
+loader reported `hasProduct: false`, and `/impeccable teach` is interactive and the user's, so
+the brand context came from the design-context files, as in Tasks 22–23. The two assessments ran
+in isolation:
+- **A.** A separate review agent read the nine fragments, the metas and 36 painted shots
+  (375 / 768 / 1024 / 1280). Nielsen total about 29/40. No banned pattern was found: no side
+  stripe, no hero-metric, no caps eyebrow, no numbered non-sequence, no CTA arrow, no em dash.
+- **B.** The deterministic detector, `npx impeccable --json` on the three folders. Its only rows
+  were 30 `cramped-padding` hits (19 distinct), all false positives of the kind Tasks 22–23
+  recorded. jsdom does not resolve the stylesheet padding, and on the shots every child is inset.
+
+This agent also painted its own review before and after each fix round (shots at four widths).
+
+| Component | Variant | frontend-design direction | impeccable findings | Fixed | Widths |
+|---|---|---|---|---|---|
+| key-takeaways | a | **Hairline columns** (`component-idea444.png`, `component-idea3.png`). The five facts (price per sex in this litter, deposit, delivery band or collection, both parents' named tests with certificates on request, the guarantee), each a line icon, a serif title and one sentence, as columns split by vertical hairlines. Framed only by a steel rule above and a hairline below. No photo. | Five columns at 1024 gave an 18–20 character measure and four titles wrapped, with orphans at 1280 ("first", "tests"). The body type tiers were inverted (17px at tablet, 16px at desktop). "our Two-year health guarantee" read like a capitalisation slip. "DEFRA-" broke at its hyphen. | Three columns at 1024–1199 and five from 1200. Titles shortened ("Deposit first", "Door or collect", "Two DNA tests") with `text-wrap: balance`. Body is 16px at every tier. The guarantee item is titled with `guarantee_label` and carries `guarantee_cover`. "DEFRA-approved" never breaks. | 375 · 768 · 1024 · 1280 |
+| key-takeaways | b | **Label and tiles** (`Page-Section-Module-design4.png`, `moderrn-carrd.png`). The strip's name in its own cell, then the five facts as sunk steel-100 tiles. The deposit tile carries `deposit_refund_clause` word for word. | Shared a's five icons, so the siblings read as twins at 375. The "icon + lead + sentence" tile was impeccable's identical-card-grid ban. The sub ("each one checked against our own price list…") read as defensive commentary. Tile 1 sat half empty beside the five-line tile 2. | Icons dropped. From 1024 the label is a column and the tiles a two-column bed, with the guarantee tile closing it across both columns. The sub now reads "Five facts about this litter, whether you collect in Carlisle or we deliver to Manchester." | 375 · 768 · 1024 · 1280 |
+| key-takeaways | c | **Tick card**, the pool copy of `london/key-takeaways/b`. Refresh delta, axis **layout**: London's one column of four ticks under a heading becomes a two-column tick grid from 768px, with title and answer side by side above it. The photo is Manchester's own served family photo, served alt kept. | Tall: a 16:9 photo made the card about 1,090px. The fifth tick sat alone in a column. The lede was bottom-aligned away from the title. "from Lisa Bright" described the breeder from outside (working rule 1). "Two-/year" broke at the hyphen. | 2:1 crop from 640px (1,046px; the faces stay whole, so 5:2 was refused). The fifth tick spans both columns and carries `guarantee_cover`. Head is top-aligned. "Five plain answers from us…". | 375 · 768 · 1024 · 1280 |
+| tables | a | **Photo shelf** (`puppy-card-idea2.png`, phone capture). The litter table in one raised card, each row led by the pup's own photo, an 80px rounded square on a bone mat, with name and Available. On phones each row becomes a two-up portrait card with labelled lines. | At 375 Cheryl's card (the last row) lost its padding and dividers: `tbody tr:last-child td` (0,2,3) beat the phone rule. Byrd's ears touched the top edge. The phone section was tall. A note that the thumbnail in the row header makes it repeat the alt. | The phone rule now covers `tr:last-child td` too. Byrd is cropped at 50% 30%. Phone photos are 3:2. Explicit ARIA table roles were added, so the `display:block` stack keeps table semantics. The alt-in-header is left as London's roster had it: the photo is the puppy column's own. | 375 · 768 · 1024 · 1280 |
+| tables | b | **Steel ledger** (`compare-table-idea.png`, `component-idea55.png`). The table on a full-width steel band, compact. A token swatch beside each coat (steel solid, bone pale, split for both, striped for the blaze). A steel-300 rule where the boys end and the girls begin. Heading left, table right from 1024. | At 375 "Blue with white blaze" butted against "£1,700". Prices in brass-200 could read as links on a band where brass-200 marks links. "DEFRA-" split in the note. (The review suggested `display:grid` rows; that would fail `layout-table-stacks-on-mobile`, which requires `display:block` rows below 640px.) | Phone cells are 21 / 51 / 21% with a gutter on the coat. Prices are bone (`--color-text-on-inverse`), and labels stay brass-200. A `.nb` rule was added. ARIA roles. | 375 · 768 · 1024 · 1280 |
+| tables | c | **Boy or girl**, the pool copy of `london/tables/c`. Refresh delta, axis **layout**: London's sideways table (attributes as rows, boys and girls as columns) becomes the outline's puppy-per-row table in two row groups that stand side by side from 641px, each headed by a photo and its one price ("£1,500 each, whatever the coat"). | The lede ("three boys on one side…") was false at 375, where the groups stack. The group photo inside `th scope=rowgroup` made every cell's header read the alt. Christa's ears were clipped. 1,392px tall at 375. The coat sat 8px off the price's edge at 1280. | The lede now reads "Our three boys and our three girls are grouped apart…". The photo moved into its own `<td data-label="Photo">`, so the row-group header is words alone. Christa is cropped at 53% 18%. The desktop coat padding was removed. ARIA roles. Height accepted: the 5:2 phone photos are the shortest crop that keeps Roman's face whole. | 375 · 768 · 1024 · 1280 |
+| image-text | a | **Window card** (`card-idea55.png`, `card-idea2.png`), §13 delivery. One deep-steel card: the H2 and its answer left, the H2's photo (Manchester's own served pup photo) in a bone window right, then the H3 with its photo first and its answer, and one brass pill with the brass focus ring on steel. | The bone window was mostly empty mat around a 300px photo at 1024, and a full-width slab at 768. The H3 thumbnail (200px, 16:9) made faces tiny. The H3 answer "Neither suits every family" dodged its question. | The window now hugs the photo (12px mat, top-aligned, at most 384px wide at tablet). The H3 photo is 240px at 4:3. The answer leads with the trade-off: "Collection suits a family who wants to meet us in Carlisle…; delivery suits…, priced by distance." | 375 · 768 · 1024 · 1280 |
+| image-text | b | **Zigzag pair** (`card-idea1.png`, `card-idea2.png`, split image+text sheet), §9. The H2 row puts Jones left; the H3 row puts Maggie with her pups right. Both are in the uniform 1408×768 in-body box with captions, divided by hairlines. | At 768 it ran 1,394px in one column (the zigzag started at 900). The H2 set in three lines at 27px. "…instead of printing a result on this page" invited doubt. | The zigzag starts at 640 (674px at 768). The H2 measure is 30ch from 1024. The answer ends "…and we share their certificates on request." | 375 · 768 · 1024 · 1280 |
+| image-text | c | **Offset sheet**, the pool copy of `london/image-text/b`. Refresh delta, axis **layout**: London's one column of five label/value rows becomes a two-by-two sheet divided by a hairline cross from 640px. §8 deposit: what it does, what it comes off, the refund clause word for word, and what happens after the visit. Manchester's served family photo sits on the steel-100 bleed. | The dt "If you change your mind" was repeated word for word by the clause beneath it. "What it comes off" was awkward. The H2 set in three lines. "DEFRA-" split at 1024. | The dts now read "If plans change" and "Off the price of". The H2 measure is 30ch from 1024. "DEFRA-approved" never breaks. | 375 · 768 · 1024 · 1280 |
+
+Copy checks common to all nine:
+- Prices are said of this litter only.
+- The deposit appears with `deposit_refund_clause` verbatim (takeaways B, image-text C) or with
+  no refund wording at all (the outline's "whole clause or none").
+- The delivery band is `delivery_note`'s, and the guarantee is `guarantee_label`, with
+  `guarantee_cover` where a sentence carries it.
+- Both parents' tests are named, with certificates on request: never a result, never "clear".
+- No video call, rescue, licence, distance, time, rating or review. No phone number. No em
+  dashes. Colours are tokens only, and no colour word appears in any CSS comment (the validator
+  caught "white" in two table comments on the first run).
+- First-person voice throughout.
+
+Left for the board, not fixed here:
+- Takeaways C and image-text C both use `victoria-family-blue-staffy-manchester.webp` with its
+  served alt. If both are picked, the second use needs a new alt (working rule 11, 2026-09-29).
+- Takeaways A's columns and the two pool copies' deltas show from 768 / 640 / 1200px. On a phone,
+  A reads as ruled rows, and takeaways C and image-text C paint like their London originals.
+  The metas' axes describe the tablet and desktop paint.
+- Image-text B's media alternates; its `media: left` names the leading row.
+- Jones's served photo reads as a young dog beside the caption "the sire of this litter". It is
+  a served asset, so this is an image-choice risk for STOP 4, not a defect.
+- On 2x screens the 723px and 780px masters upscale at 720 CSS px. The kit build takes the -760
+  siblings through srcset.
+
+Final runs:
+- `python3 scripts/check_city_canvas.py --city manchester --only key-takeaways,tables,image-text`
+  gave `examined 9 fragments, 3 meta files; 0 problems`.
+- The full Manchester canvas smoke (`manchester-frames`, 27 frames) gave 112 passed at vp375,
+  vp768, vp1024 and vp1280, with no advisories.

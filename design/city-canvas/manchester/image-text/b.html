@@ -1,0 +1,55 @@
+<style>
+/* Image + text B — Zigzag pair. One body section (outline row 9, the parents' tests and the
+   first weeks) as two open rows on the bone page that swap sides: the H2 row puts its photo
+   left and its answer right, the H3 row puts its answer left and its photo right, so the eye
+   walks down the page in a Z. Both photos sit in the site's uniform in-body box (1408 by 768,
+   rules/images.md) with a short caption under them. Framed by hairlines only, no box or band.
+   Airy. The H3's photo follows its heading in source (H3-image-first); on a phone each row is
+   heading, then photo and answer in reading order. */
+.miB{background:var(--color-surface)}
+.miB .in{max-width:1120px;margin:0 auto;padding:var(--space-7) var(--space-4)}
+.miB .row{display:grid;gap:var(--space-3);padding:var(--space-6) 0;border-top:1px solid var(--color-border)}
+.miB .row:first-child{padding-top:0;border-top:0}
+.miB .row:last-child{padding-bottom:0}
+.miB h2{margin:0;font-size:22px;line-height:1.2;font-weight:700;color:var(--color-brand);text-wrap:balance;max-width:24ch}
+.miB h3{margin:0;font-size:17px;line-height:1.3;font-weight:700;color:var(--color-brand);text-wrap:balance;max-width:34ch}
+.miB p{margin:0;font-size:16px;line-height:1.6;color:var(--color-text);max-width:60ch;text-wrap:pretty}
+.miB figure{margin:0}
+.miB figure img{display:block;width:100%;height:auto;aspect-ratio:1408/768;object-fit:cover;border-radius:var(--radius-lg);background:var(--color-bone-50)}
+.miB figcaption{margin-top:var(--space-2);font-size:14px;line-height:1.4;color:var(--color-text-muted)}
+.miB .nb{white-space:nowrap}
+@media (min-width:640px){
+  .miB .in{padding:var(--space-9) var(--space-5)}
+  .miB h2{font-size:24px}
+  .miB h3{font-size:18px}
+  .miB p{font-size:17px}
+  .miB .row{padding:var(--space-8) 0}
+}
+@media (min-width:640px){
+  .miB .row{column-gap:var(--space-6);row-gap:var(--space-3);align-items:center}
+  .miB .r1{grid-template-columns:minmax(0,6fr) minmax(0,5fr);grid-template-areas:"pic head" "pic text"}
+  .miB .r2{grid-template-columns:minmax(0,5fr) minmax(0,6fr);grid-template-areas:"head pic" "text pic"}
+  .miB .row > :is(h2,h3){grid-area:head;align-self:end}
+  .miB .row > p{grid-area:text;align-self:start}
+  .miB .row > figure{grid-area:pic}
+}
+@media (min-width:1024px){
+  .miB .in{padding:var(--space-10) var(--space-5)}
+  .miB h2{font-size:27px;max-width:30ch}
+  .miB h3{font-size:20px}
+}
+</style>
+<section data-component="image-text" data-variant="b" class="miB">
+  <div class="in">
+    <div class="row r1">
+      <h2>Which Health Tests Did Both Parents Have Before This Blue Staffy Litter?</h2>
+      <p>Both parents, Maggie and Jones, were DNA tested for <span class="nb">L-2-HGA</span> and <span class="nb">HC-HSF4</span> before this litter, and we share their certificates on request.</p>
+      <figure data-media><img src="/images/jones-magnificent-blue-staffy-sire.webp" alt="A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire." width="780" height="780" loading="lazy" style="object-position:66% 28%"><figcaption>Jones, the sire of this litter</figcaption></figure>
+    </div>
+    <div class="row r2">
+      <h3>Where Does Each Blue Staffy Puppy Spend Its First Weeks in Our Carlisle Home?</h3>
+      <figure data-media><img src="/images/maggie-blue-staffy-dam-with-pups.webp" alt="A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups." width="780" height="585" loading="lazy" style="object-position:50% 15%"><figcaption>Maggie, the dam, with her puppies</figcaption></figure>
+      <p>In our home in Carlisle, where every puppy is raised with its litter around it until the day it leaves for a new family in Manchester or anywhere else in the UK.</p>
+    </div>
+  </div>
+</section>

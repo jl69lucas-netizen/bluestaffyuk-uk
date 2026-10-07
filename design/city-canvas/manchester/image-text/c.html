@@ -1,0 +1,58 @@
+<style>
+/* Image + text C — Offset sheet (pool copy of london/image-text/b "Offset block", refreshed on
+   LAYOUT). Kept from London: a steel-100 block that runs off the left edge of the page with
+   the photo set offset on it, and the question, its answer and a label-and-value sheet to the
+   right, closed by one brass pill. Changed: London's sheet was one column of five ruled rows;
+   Manchester's is a two-by-two sheet from 640px, four cells divided by a hairline cross, so
+   the deposit's four facts (what it does, what it comes off, the refund clause, what happens
+   after the visit) are read as one square rather than a list. One body section, outline row 8.
+   On a phone the block runs full width behind the photo and the cells stack. */
+.miC{background:var(--color-surface);overflow:hidden}
+.miC .in{max-width:1160px;margin:0 auto;padding:var(--space-7) var(--space-4);display:grid;gap:var(--space-6)}
+.miC .media{position:relative;margin:0;padding:var(--space-5) 0}
+.miC .media::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right:-100vw;background:var(--color-brand-soft)}
+.miC .media img{position:relative;display:block;width:100%;max-width:400px;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:50% 30%;margin:0 auto;border-radius:var(--radius-md);background:var(--color-bone-50)}
+.miC h2{margin:0 0 var(--space-3);font-size:22px;line-height:1.2;font-weight:700;color:var(--color-brand);text-wrap:balance;max-width:24ch}
+.miC .lede{margin:0 0 var(--space-5);font-size:16px;line-height:1.6;max-width:58ch;color:var(--color-text);text-wrap:pretty}
+.miC dl{margin:0 0 var(--space-5);border-top:2px solid var(--color-brand);display:grid}
+.miC .cell{padding:var(--space-3) 0;border-bottom:1px solid var(--color-border)}
+.miC dt{font-size:14px;font-weight:700;line-height:1.35;color:var(--color-brand);margin-bottom:2px}
+.miC dd{margin:0;font-size:16px;line-height:1.5;color:var(--color-text);text-wrap:pretty}
+.miC .nb{white-space:nowrap}
+.miC .act{margin:0}
+.miC .cta{display:inline-flex;align-items:center;min-height:48px;padding:0 var(--space-6);border-radius:var(--btn-radius);background:var(--color-cta);color:var(--color-cta-ink);font-weight:700;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
+.miC .cta:hover{background:var(--color-cta-hover)}
+@media (min-width:640px){
+  .miC h2{font-size:24px}
+  .miC .lede{font-size:17px}
+  .miC dl{grid-template-columns:1fr 1fr}
+  .miC .cell{padding:var(--space-4) var(--space-5) var(--space-4) 0}
+  .miC .cell:nth-child(even){padding:var(--space-4) 0 var(--space-4) var(--space-5);border-left:1px solid var(--color-border)}
+  .miC .cell:nth-child(n+3){border-bottom:0}
+}
+@media (min-width:1024px){
+  .miC .in{grid-template-columns:420px minmax(0,1fr);gap:var(--space-9);align-items:center;padding:var(--space-10) var(--space-5)}
+  .miC .media{padding:var(--space-8) 0}
+  .miC .media::before{left:-100vw;right:45%}
+  .miC .media img{margin:0 0 0 var(--space-5)}
+  .miC h2{font-size:27px;max-width:30ch}
+}
+</style>
+<section data-component="image-text" data-variant="c" class="miC">
+  <div class="in">
+    <figure class="media" data-media>
+      <img src="/images/victoria-family-blue-staffy-manchester.webp" alt="Victoria family with their happy blue Staffy puppy from BlueStaffyUK.uk in Manchester." width="723" height="723" loading="lazy">
+    </figure>
+    <div class="copy">
+      <h2>Why Does This Staffy Breeder Take the Deposit Before You Visit?</h2>
+      <p class="lede">Because the deposit is what books your viewing and holds your puppy for you, and all of it comes off the price, so a Manchester family making the trip to Carlisle knows the puppy will still be there.</p>
+      <dl>
+        <div class="cell"><dt>What it does</dt><dd>£500 books your viewing and reserves your puppy</dd></div>
+        <div class="cell"><dt>Off the price of</dt><dd><span class="nb">£1,500</span> for a boy or <span class="nb">£1,700</span> for a girl, in this litter</dd></div>
+        <div class="cell"><dt>If plans change</dt><dd>Up to 70% refundable if you change your mind up to 1 day before collection or delivery</dd></div>
+        <div class="cell"><dt>After the visit</dt><dd>Collect in Carlisle, or UK home delivery for <span class="nb">£200–£350</span> by <span class="nb">DEFRA-approved</span> transport, priced by distance</dd></div>
+      </dl>
+      <p class="act"><a class="cta" href="#contact">Ask about a viewing</a></p>
+    </div>
+  </div>
+</section>

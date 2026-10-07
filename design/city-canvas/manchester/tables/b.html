@@ -1,0 +1,76 @@
+<style>
+/* Tables B — Steel ledger. The litter table run across a full-width steel band: bone type on
+   steel, no photos, compact ruled rows. Each coat carries a small swatch drawn from the tokens
+   (steel for the solid coat, bone for the pale one, split or striped where the coat is both), so the
+   eye can run down the coat column and see that it never moves the price. The price column is
+   set in the display face, bone on steel, and the two prices meet at one steel-500 rule
+   where the boys end and the girls begin. Below 640px each puppy becomes a two-line slip:
+   the name, then Sex, Coat and Price side by side as labelled cells. */
+.mlB{background:var(--color-surface-inverse);color:var(--color-text-on-inverse)}
+.mlB .in{max-width:960px;margin:0 auto;padding:var(--space-7) var(--space-4)}
+.mlB h4{margin:0 0 var(--space-2);font-size:20px;line-height:1.25;font-weight:700;color:var(--color-text-on-inverse);text-wrap:balance;max-width:30ch}
+.mlB .lede{margin:0 0 var(--space-5);font-size:16px;line-height:1.6;color:var(--color-text-on-inverse);max-width:62ch;text-wrap:pretty}
+.mlB table{width:100%;border-collapse:collapse;color:var(--color-text-on-inverse)}
+.mlB caption{caption-side:top;text-align:left;padding-bottom:var(--space-3);font-family:var(--font-display);font-weight:600;font-size:17px;line-height:1.3;color:var(--color-link-on-inverse)}
+.mlB thead th{padding:var(--space-2) var(--space-3);font-size:14px;font-weight:600;text-align:left;color:var(--color-link-on-inverse);border-top:1px solid var(--color-steel-500);border-bottom:1px solid var(--color-steel-500)}
+.mlB thead th.num{text-align:right}
+.mlB tbody th,.mlB tbody td{padding:10px var(--space-3);text-align:left;vertical-align:middle;border-bottom:1px solid var(--color-steel-500);font-size:16px}
+.mlB tbody tr.turn th,.mlB tbody tr.turn td{border-top:2px solid var(--color-steel-300)}
+.mlB tbody th{font-family:var(--font-display);font-weight:600;font-size:18px}
+.mlB .coat{display:inline-flex;align-items:center;gap:var(--space-2)}
+.mlB .sw{flex:none;width:16px;height:16px;border-radius:50%;border:1px solid var(--color-steel-300)}
+.mlB .k-solid{background:var(--color-steel-500)}
+.mlB .k-pale{background:var(--color-bone-100)}
+.mlB .k-pied{background:linear-gradient(135deg,var(--color-steel-500) 50%,var(--color-bone-100) 50%)}
+.mlB .k-blaze{background:linear-gradient(90deg,var(--color-steel-500) 40%,var(--color-bone-100) 40% 60%,var(--color-steel-500) 60%)}
+.mlB td.num{text-align:right;font-family:var(--font-display);font-weight:600;font-size:19px;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--color-text-on-inverse)}
+.mlB .nb{white-space:nowrap}
+.mlB .note{margin:var(--space-4) 0 0;font-size:15px;line-height:1.55;color:var(--color-text-on-inverse);max-width:62ch}
+@media (max-width:640px){
+  .mlB h4{font-size:18px}
+  .mlB table,.mlB thead,.mlB tbody,.mlB tr,.mlB th,.mlB td,.mlB caption{display:block}
+  .mlB thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .mlB tbody{border-top:1px solid var(--color-steel-500)}
+  .mlB tbody tr{display:block;padding:var(--space-3) 0;border-bottom:1px solid var(--color-steel-500)}
+  .mlB tbody tr.turn{border-top:1px solid var(--color-steel-300)}
+  .mlB tbody th,.mlB tbody td,.mlB tbody tr.turn th,.mlB tbody tr.turn td{border:0;padding:0}
+  .mlB tbody th{margin-bottom:var(--space-1)}
+  .mlB tbody td{display:inline-block;vertical-align:top;width:21%;font-size:15px;line-height:1.35}
+  .mlB tbody td:nth-of-type(2){width:51%;padding-right:var(--space-2)}
+  .mlB tbody td::before{content:attr(data-label);display:block;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--color-link-on-inverse);margin-bottom:2px}
+  .mlB td.num{text-align:left;font-size:17px}
+  .mlB .coat{align-items:flex-start}
+  .mlB .sw{margin-top:2px;width:14px;height:14px}
+}
+@media (min-width:1024px){
+  .mlB .in{padding:var(--space-9) var(--space-5)}
+  .mlB h4{font-size:22px}
+  .mlB .grid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);column-gap:var(--space-8);align-items:start}
+  .mlB .lede{margin-bottom:0}
+}
+</style>
+<section data-component="tables" data-variant="b" class="mlB on-inverse">
+  <div class="in grid">
+    <div class="head">
+      <h4>Who Are the Three Boys and Three Girls in This Litter?</h4>
+      <p class="lede">Our boys are Roman, Byrd and Ince, and our girls are Vennie, Christa and Cheryl. Run your eye down the coats and you will see the price stays put: in this litter it follows boy or girl, wherever in Manchester your puppy is going.</p>
+    </div>
+    <div class="body">
+      <table class="stack-table" data-table role="table">
+        <caption>This litter: each puppy, sex, coat and price</caption>
+        <thead role="rowgroup">
+          <tr role="row"><th role="columnheader" scope="col">Puppy</th><th role="columnheader" scope="col">Sex</th><th role="columnheader" scope="col">Coat</th><th role="columnheader" scope="col" class="num">Price</th></tr>
+        </thead>
+        <tbody role="rowgroup">
+          <tr role="row"><th role="rowheader" scope="row">Roman</th><td role="cell" data-label="Sex">Boy</td><td role="cell" data-label="Coat"><span class="coat"><span class="sw k-pied" aria-hidden="true"></span>Blue and white</span></td><td role="cell" data-label="Price" class="num">£1,500</td></tr>
+          <tr role="row"><th role="rowheader" scope="row">Byrd</th><td role="cell" data-label="Sex">Boy</td><td role="cell" data-label="Coat"><span class="coat"><span class="sw k-pale" aria-hidden="true"></span>White</span></td><td role="cell" data-label="Price" class="num">£1,500</td></tr>
+          <tr role="row"><th role="rowheader" scope="row">Ince</th><td role="cell" data-label="Sex">Boy</td><td role="cell" data-label="Coat"><span class="coat"><span class="sw k-solid" aria-hidden="true"></span>Blue</span></td><td role="cell" data-label="Price" class="num">£1,500</td></tr>
+          <tr class="turn" role="row"><th role="rowheader" scope="row">Vennie</th><td role="cell" data-label="Sex">Girl</td><td role="cell" data-label="Coat"><span class="coat"><span class="sw k-pied" aria-hidden="true"></span>Blue and white</span></td><td role="cell" data-label="Price" class="num">£1,700</td></tr>
+          <tr role="row"><th role="rowheader" scope="row">Christa</th><td role="cell" data-label="Sex">Girl</td><td role="cell" data-label="Coat"><span class="coat"><span class="sw k-solid" aria-hidden="true"></span>Blue</span></td><td role="cell" data-label="Price" class="num">£1,700</td></tr>
+          <tr role="row"><th role="rowheader" scope="row">Cheryl</th><td role="cell" data-label="Sex">Girl</td><td role="cell" data-label="Coat"><span class="coat"><span class="sw k-blaze" aria-hidden="true"></span>Blue with white blaze</span></td><td role="cell" data-label="Price" class="num">£1,700</td></tr>
+        </tbody>
+      </table>
+      <p class="note">All six are available. Delivery is £200–£350 by <span class="nb">DEFRA-approved</span> transport, priced by distance, or you collect in Carlisle.</p>
+    </div>
+  </div>
+</section>
