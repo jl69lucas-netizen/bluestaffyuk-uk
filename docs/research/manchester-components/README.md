@@ -10,7 +10,7 @@ file records only what Manchester does differently, plus the contract every vari
   captures and the MFS sheets, and every component's two London pool variants.
 - `hardening-log.md`: the frontend-design and impeccable record for each variant (Tasks 22–25,
   then the built components).
-- **The canvas:** not published yet. Task 26 publishes
+- **The canvas:** https://claude.ai/artifact/HrFjMqHqr8W3tqTNsMt7wb (published 2026-10-07, Task 26; db + comments). Task 26 publishes
   `docs/artifacts/bsuk-manchester-component-canvas.html` (built by
   `scripts/build_component_canvas.py --city manchester` from `design/city-canvas/manchester/`) and
   writes its URL here. Picks are stored in the canvas db exactly as London's are: collection
