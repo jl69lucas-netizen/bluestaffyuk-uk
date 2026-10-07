@@ -331,7 +331,44 @@ PLAN_EXCUSED = {("blue-staffy-pup-sale-uk", "/brief/done"):
                 ("blue-staffy-puppies-london", "/sections/11/options/note"):
                 "names the evidence-ledger row id `parents-dna-clear`, an identifier, to say no certificate is held",
                 ("blue-staffy-puppies-london", "/sections/12/options/note"):
-                "quotes a seller's 'DNA clear' line with no certificate as the buyer warning the H5 carries"}
+                "quotes a seller's 'DNA clear' line with no certificate as the buyer warning the H5 carries",
+                # Manchester's approved board (row 12, 2026-10-08). Each line plans the breeder's
+                # chat ruling of 2026-10-05 (the certificates are held and shared on request, ledger
+                # `certificates-on-request`) and denies a result; none states one. No rule separates
+                # these from a result: the hits are that ruled phrase, which the built-page test keeps
+                # by exact sentence only, and quoted words a plan forbids, which a quoted heading
+                # could also carry. So each is excused by its path, as London's are.
+                ("blue-staffy-puppies-manchester-uk", "/sections/4/options/note"):
+                "takeaways component note: the named tests with certificates on request '(never a "
+                "result)', and the ledger id `parents-dna-clear` cited to forbid 'clear'",
+                ("blue-staffy-puppies-manchester-uk", "/sections/7/intent"):
+                "deposit section's Why: lists the parents' certificates on request (ledger "
+                "certificates-on-request) among what a buyer can have before the deposit",
+                ("blue-staffy-puppies-manchester-uk", "/sections/8/intent"):
+                "health section's Why: named screening with certificates on request, 'never a result "
+                "or a clear' (ledger parents-dna-clear: no proof on file)",
+                ("blue-staffy-puppies-manchester-uk", "/sections/8/why"):
+                "the same Why as /sections/8/intent, in its own field: a denial and the ruled fact",
+                ("blue-staffy-puppies-manchester-uk", "/sections/8/links/external/1/why"):
+                "the Kennel Club link's why: 'the copy never implies our parents' results can be "
+                "looked up' — a denial",
+                ("blue-staffy-puppies-manchester-uk", "/sections/8/options/note"):
+                "health component note: 'Never tested clear, cleared or a score', certificates "
+                "shared on request; quotes the AI answer's ask for the parents' results as the "
+                "question the section answers with named tests",
+                ("blue-staffy-puppies-manchester-uk", "/sections/8/keywords/conversational/12"):
+                "a buyer's search query ('can i see the genetic test results …'), answered on the "
+                "page by the named tests and the certificates on request, never by a result",
+                ("blue-staffy-puppies-manchester-uk", "/sections/11/tree/6/intent"):
+                "FAQ row intent: records the outline's superseded wording 'Are Both Parents DNA "
+                "Tested Clear …?' as history beside the STOP 3 rewording the page carries ('Was Each "
+                "Parent DNA Tested …?'); the built page has no 'tested clear'",
+                ("blue-staffy-puppies-manchester-uk", "/sections/11/options/note"):
+                "FAQ block note: the DNA answer 'names the tests and the certificates on request, "
+                "never a result'; quotes the picked question, which states no result and was "
+                "reworded at STOP 3",
+                ("blue-staffy-puppies-manchester-uk", "/sections/14/keywords/conversational/1"):
+                "the same buyer search query as /sections/8/keywords/conversational/12"}
 
 
 def _strings(o, p):
