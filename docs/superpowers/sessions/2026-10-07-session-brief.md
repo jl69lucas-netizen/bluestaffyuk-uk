@@ -20,6 +20,7 @@
 
 ## Decisions Log
 
+- **Board layout: Option A, field cards (user, 2026-10-07, in chat: "A everything look nice", then "i choose A").** Preview https://claude.ai/artifact/VtcsZjjprL3yzWTbMHN4V5 (`docs/artifacts/research/previews/manchester-option-a.html`). Colours by role: Recommended gold, why blue, weakness/wedge green, trade-off rust, NOT FETCHED violet dashed. Applied to the board generators after the `.md`-download task lands (it edits the same renderer). Long-paragraph treatment offered separately: https://claude.ai/artifact/X78w7EuhsqYWEoV6TpvPi3 (Option 2, plain summary first, Recommended).
 - Next page is Manchester (Strategy A row 2). Branch `manchester-page`, cut from `foundation` at 15236191, in the main checkout.
 - grill-me run in `--brief` mode from the chat message; framework, AIO and visual choices go to the research board and outline as picks.
 - Manchester's question file (`data/queries/blue-staffy-puppies-manchester-uk.json`) is from 2026-09-23, before London's format: it has no `word_target`, no keyword volumes, no neighbourhood terms and no backlinks. Row 5 refreshes it through the spend guard (counted $0.51 of the $1.00 total cap; London's refresh cost $0.22).

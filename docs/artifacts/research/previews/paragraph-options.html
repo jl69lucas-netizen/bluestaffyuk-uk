@@ -1,0 +1,170 @@
+<title>Board Paragraph Options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: the board's own look (same tokens as the research board); tabs switch Before / Option 1 / Option 2 over two real paragraphs. */
+:root{--ground:#F4F1EA;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#5E6B7A;--line:#DAD6CC;--blue:#1F3A52;--sunk:#EEEAE1;
+  --rec:#C9A227;--rec-bg:#F6EBC4;--why:#1F5A85;--why-bg:#E3EEF7;--ok:#2F6B4F;--ok-bg:#E2F0E8;--trade:#9A3B1E;--trade-bg:#F7E4DC;--nf:#5E4A86;--nf-bg:#EEE8F6;
+  --display:Fraunces,Georgia,serif;--body:"Source Sans 3",system-ui,-apple-system,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#14202B;--paper:#1B2A3A;--ink:#F4F1EA;--ink-2:#E4EAF1;--ink-3:#8FA3B8;--line:#34495E;--blue:#8FB3D9;--sunk:#22344A;
+  --rec:#D8B23A;--rec-bg:#3A3218;--why:#8FC1EA;--why-bg:#17324A;--ok:#8FD1AE;--ok-bg:#163428;--trade:#F0A58A;--trade-bg:#3E2219;--nf:#C9B4EC;--nf-bg:#2B2340;color-scheme:dark}}
+:root[data-theme="dark"]{--ground:#14202B;--paper:#1B2A3A;--ink:#F4F1EA;--ink-2:#E4EAF1;--ink-3:#8FA3B8;--line:#34495E;--blue:#8FB3D9;--sunk:#22344A;
+  --rec:#D8B23A;--rec-bg:#3A3218;--why:#8FC1EA;--why-bg:#17324A;--ok:#8FD1AE;--ok-bg:#163428;--trade:#F0A58A;--trade-bg:#3E2219;--nf:#C9B4EC;--nf-bg:#2B2340;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:17px/1.65 var(--body)}
+.wrap{max-width:900px;margin:0 auto;padding-inline:16px;padding-block:30px 80px}
+h1,h2,h3{font-family:var(--display);color:var(--blue);margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);line-height:1.15}
+.lede{color:var(--ink-2);max-width:68ch;margin:10px 0 0}
+.verdict{margin-top:20px;background:var(--rec-bg);border:2px solid var(--rec);border-radius:12px;padding:16px 20px;display:grid;gap:8px}
+.verdict .tag{justify-self:start;font:700 12px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;background:var(--rec);color:#1B2430;padding:6px 10px;border-radius:99px}
+.verdict p{margin:0;max-width:72ch}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;flex-wrap:wrap;margin:24px 0 16px;padding:10px 0;background:var(--ground);border-bottom:1px solid var(--line)}
+.tabs button{font:600 15px/1 var(--body);color:var(--ink-2);background:transparent;border:1px solid var(--line);border-radius:99px;padding:10px 16px;cursor:pointer;min-height:44px}
+.tabs button[aria-selected="true"]{background:var(--blue);color:var(--ground);border-color:var(--blue)}
+.tabs button:focus-visible{outline:3px solid var(--rec);outline-offset:2px}
+.tabs .r{color:var(--rec);font-weight:700}
+.note{color:var(--ink-2);max-width:70ch;margin:0 0 6px}
+.sec{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 24px 26px;margin:18px 0;min-width:0}
+.sec h2{font-size:24px;margin-bottom:12px}
+.raw p{margin:0 0 12px;max-width:78ch;font-size:16px;line-height:1.6}
+/* Option 1: the same words, laid out by the renderer */
+.rows{display:grid;gap:0;margin:0}
+.rows .row{display:grid;grid-template-columns:minmax(150px,210px) minmax(0,1fr);gap:4px 18px;padding:12px 0;border-bottom:1px solid var(--line)}
+.rows .row:last-child{border-bottom:0}
+.rows .k{font:700 13px/1.35 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--why);padding-top:3px}
+.rows .v{max-width:66ch}
+.rows .v p{margin:0}
+.src{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.src span{font:500 12px/1.3 var(--mono);color:var(--ink-3);background:var(--sunk);border-radius:6px;padding:3px 7px;overflow-wrap:anywhere}
+.nf{color:var(--nf);background:var(--nf-bg);border:1px dashed var(--nf);border-radius:5px;padding:0 5px;font-weight:600}
+.status-pill{display:inline-block;font:700 13px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;background:var(--rec);color:#1B2430;border-radius:99px;padding:7px 12px;margin-bottom:12px}
+/* Option 2: plain summary first, exact text folded below */
+.plain{display:grid;gap:16px}
+.plain h3{font-size:19px;color:var(--blue)}
+.plain ul{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:8px}
+.plain li{position:relative;padding-left:22px;max-width:64ch}
+.plain li::before{content:"";position:absolute;left:4px;top:.68em;width:8px;height:8px;border-radius:50%;background:var(--why)}
+.plain li b{color:var(--ink)}
+.box{border-radius:10px;padding:12px 16px;border-left:4px solid}
+.box.care{background:var(--trade-bg);border-color:var(--trade)}
+.box.care h3{color:var(--trade)}
+.box.care li::before{background:var(--trade)}
+.box.cost{background:var(--ok-bg);border-color:var(--ok)}
+.box.cost h3{color:var(--ok)}
+.box.cost li::before{background:var(--ok)}
+details.full{border-top:1px dashed var(--line);padding-top:12px}
+details.full summary{cursor:pointer;font-weight:700;color:var(--blue);min-height:32px}
+details.full p{font-size:15px;color:var(--ink-2);max-width:78ch;margin:10px 0 0}
+.compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:30px}
+.compare section{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.compare section.isrec{border:2px solid var(--rec);background:var(--rec-bg)}
+.compare h3{font-size:19px;margin-bottom:8px}
+.compare ul{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--ink-2)}
+@media (max-width:640px){body{font-size:16px}.sec{padding:16px 14px 20px}.rows .row{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+  <h1>Cleaner paragraphs on every board</h1>
+  <p class="lede">Two real paragraphs from Manchester's research board, the one you pasted (Status) and §6 "Why competitors rank", shown three ways. The tabs switch between them.</p>
+
+  <div class="verdict">
+    <span class="tag">Recommended: Option 2</span>
+    <p><b>Why.</b> The problem is the writing, not the layout. Those paragraphs pack sources, file paths, dates and caveats into 60-word sentences. A layout trick (Option 1) breaks them into rows, but each row is still hard going. Option 2 leads with a short plain-English summary of four to six bullets, and folds the exact original underneath, so no fact or source is lost.</p>
+    <p><b>Trade-off.</b> Someone has to write each summary, a short agent step per board. Each summary is then checked against the full text so no fact drifts. Option 1 is automatic and needs no writing.</p>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Paragraph style">
+    <button role="tab" id="t0" aria-controls="p0" aria-selected="false">Before</button>
+    <button role="tab" id="t1" aria-controls="p1" aria-selected="false">Option 1 · same words, broken into rows</button>
+    <button role="tab" id="t2" aria-controls="p2" aria-selected="true">Option 2 · plain summary first <span class="r">Recommended</span></button>
+  </div>
+
+  <!-- BEFORE -->
+  <div id="p0" role="tabpanel" aria-labelledby="t0" hidden>
+    <p class="note">As the board shows it today.</p>
+    <div class="sec raw"><h2>Status</h2>
+      <p>Status: <b>AWAITING THE USER'S PICKS — STOP 1</b></p>
+      <p>Research method: Research for Manchester's page run, assembled 2026-10-07 (page-run rows 4–8; plan docs/superpowers/plans/2026-10-07-manchester-page-run.md). Google SERP and People Also Ask: DataForSEO serp_organic_live_advanced (UK, en, depth 10), banked 2026-09-23 (data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.response.json); Bing read free in the browser on 2026-09-23 (serp_bing.json); a free live read of Google on 2026-10-07 in the Playwright MCP browser, headless and signed out, placed by Google in Birmingham (docs/research/manchester-page-run/ai-overview.md). The pool is the eight pages saved under data/queries/cache/blue-staffy-puppies-manchester-uk/: pages 1–2 and 4–8 are the pilot's curl saves of 2026-09-23, re-measured identical on 2026-10-07; page 3 (Freeads), held at a Cloudflare challenge by curl and by a headless and a headed Playwright capture, came from one Firecrawl scrape on 2026-10-07 for 1 Firecrawl credit. Words and content H2s are the query file's (python3 scripts/query_augment.py; query file fetched 2026-10-06); whole-document heading counts, tables, FAQ, byline and JSON-LD were read from the saved pages by script (docs/research/manchester-page-run/serp-findings.md). Threads: 8 reused from the ledger (read 2026-09-23); 11 new candidates found by Firecrawl search (4 calls, 2026-10-07) could not be opened. LLM intel: the 2026-10-07 file re-reads the banked ChatGPT answer (bought 2026-09-25) against the refreshed question file, with no new call. Keyword volumes, neighbourhood terms and competitor authority come from free sources on the user's instruction of 2026-10-07 (DataForSEO balance $0.25 — dashboard reading 0.25074, real spend $0.749 of the $1.00 cap): Google autocomplete, Google Trends, Google Keyword Planner ranges and the free Ahrefs Website Authority Checker (docs/research/manchester-page-run/free-keyword-signals.md), beside London's banked DataForSEO backlinks file (2026-09-30), each figure quoted on its own scale and never compared. No paid DataForSEO call was made this run. AI Overview: none shown in that headless, signed-out session (Google placed it in Birmingham), which is a fact about the session, not proof that Manchester searchers never get one; London's overview was read in the user's own Chrome. Keyword volumes: a Keyword Planner range is written NOT FETCHED — exact monthly volume: …, with the range kept as the planner showed it, never narrowed. Keyword distribution: in each section the primary keywords are the universe's primary/secondary-typed rows placed there plus the section's top-scored question-file question(s); every other placed keyword is secondary; conditional and parked keywords carry their reason in the Parked column.</p></div>
+    <div class="sec raw"><h2>6. Why Competitors Rank</h2>
+      <p>Nobody on page one ranks on depth, and on Google nobody ranks on the colour. Google's banked top five are five different marketplaces, each a breed-and-place hub whose title and H1 name "Staffordshire Bull Terrier" and Manchester (Staffie Owners' is "Salford, Manchester"); none of the five says "blue" in its title or H1. Authority alone does not set Google's order. By Ahrefs Domain Rating (2026-10-07) the five run Gumtree 78, Pets4Homes 69, Freeads 46, puppies.co.uk 28 and Staffie Owners 0 — and DataForSEO's banked index puts the three domains it covers in the same order (Pets4Homes rank 59 and 17,047 referring domains, Freeads 51 and 3,517, Staffie Owners 14 and 51) — yet the banked Google order is Pets4Homes #1, Staffie Owners #2, Freeads #3, Gumtree #4 and puppies.co.uk #5. Pets4Homes holds Google #1 and Bing #2, and Freeads #3 on both. Staffie Owners, the weakest domain on both indexes, holds Google #2 and Bing #1 and #4 with three facets of one template: an exact breed-place title and H1, a live count and price range that Google shows as its snippet, SearchResultsPage/ItemList/FAQPage JSON-LD and 58 distinct Greater Manchester hub links per page. The colour word ranks only on Bing: Staffie Owners' blue Manchester facet (#1) and Pets4Homes' "blue staf" keyword search (#5). Gumtree (Google #4, the strongest domain in the pool on Ahrefs) and puppies.co.uk (Google #5) rank with exact place URLs over one local advert and three out-of-area adverts respectively. Every ranking page is a feed of other people's adverts; none is a breeder answering a Manchester buyer in its own voice.</p></div>
+  </div>
+
+  <!-- OPTION 1 -->
+  <div id="p1" role="tabpanel" aria-labelledby="t1" hidden>
+    <p class="note">Automatic: the board itself splits each long paragraph at its "Label:" runs and its sentences, moves file paths and dates into small grey source tags, and shows each part as its own row. The words are unchanged and nobody has to rewrite anything.</p>
+    <div class="sec"><h2>Status</h2>
+      <span class="status-pill">Awaiting your picks · STOP 1</span>
+      <div class="rows">
+        <div class="row"><div class="k">Research method</div><div class="v"><p>Research for Manchester's page run, assembled 2026-10-07 (page-run rows 4–8).</p><div class="src"><span>docs/superpowers/plans/2026-10-07-manchester-page-run.md</span></div></div></div>
+        <div class="row"><div class="k">Google SERP and People Also Ask</div><div class="v"><p>DataForSEO (UK, en, depth 10), banked 2026-09-23. Bing read free in the browser on 2026-09-23. A free live read of Google on 2026-10-07, headless and signed out, placed by Google in Birmingham.</p><div class="src"><span>serp_google.response.json</span><span>serp_bing.json</span><span>ai-overview.md</span></div></div></div>
+        <div class="row"><div class="k">The pool</div><div class="v"><p>The eight saved pages. Pages 1–2 and 4–8 are curl saves of 2026-09-23, re-measured identical on 2026-10-07. Page 3 (Freeads) was held at a Cloudflare challenge and came from one Firecrawl scrape on 2026-10-07 for 1 credit.</p><div class="src"><span>data/queries/cache/blue-staffy-puppies-manchester-uk/</span></div></div></div>
+        <div class="row"><div class="k">Words and headings</div><div class="v"><p>Words and content H2s are the query file's (fetched 2026-10-06). Heading counts, tables, FAQ, byline and JSON-LD were read from the saved pages by script.</p><div class="src"><span>scripts/query_augment.py</span><span>serp-findings.md</span></div></div></div>
+        <div class="row"><div class="k">Threads</div><div class="v"><p>8 reused from the ledger (read 2026-09-23). 11 new candidates found by Firecrawl search on 2026-10-07 could not be opened.</p></div></div>
+        <div class="row"><div class="k">LLM intel</div><div class="v"><p>The 2026-10-07 file re-reads the banked ChatGPT answer (bought 2026-09-25) against the refreshed question file, with no new call.</p></div></div>
+        <div class="row"><div class="k">Volumes and authority</div><div class="v"><p>From free sources on the user's instruction of 2026-10-07 (DataForSEO balance $0.25; real spend $0.749 of the $1.00 cap): Google autocomplete, Trends, Keyword Planner ranges and the free Ahrefs checker, beside London's banked DataForSEO backlinks file (2026-09-30). Each figure is quoted on its own scale and never compared. No paid DataForSEO call was made this run.</p><div class="src"><span>free-keyword-signals.md</span></div></div></div>
+        <div class="row"><div class="k">AI Overview</div><div class="v"><p>None shown in that headless, signed-out session (Google placed it in Birmingham). That is a fact about the session, not proof Manchester searchers never get one. London's was read in the user's own Chrome.</p></div></div>
+        <div class="row"><div class="k">Keyword volumes</div><div class="v"><p>A Keyword Planner range is written <span class="nf">NOT FETCHED</span> — exact monthly volume, with the range kept as the planner showed it, never narrowed.</p></div></div>
+        <div class="row"><div class="k">Keyword distribution</div><div class="v"><p>In each section the primary keywords are the primary and secondary rows placed there, plus the section's top-scored question. Every other placed keyword is secondary. Conditional and parked keywords carry their reason in the Parked column.</p></div></div>
+      </div></div>
+    <div class="sec"><h2>6. Why Competitors Rank</h2>
+      <div class="rows">
+        <div class="row"><div class="k">In one line</div><div class="v"><p>Nobody on page one ranks on depth, and on Google nobody ranks on the colour.</p></div></div>
+        <div class="row"><div class="k">Google's top five</div><div class="v"><p>Five different marketplaces, each a breed-and-place hub whose title and H1 name "Staffordshire Bull Terrier" and Manchester. None says "blue".</p></div></div>
+        <div class="row"><div class="k">Authority</div><div class="v"><p>Authority alone does not set the order. Ahrefs: Gumtree 78, Pets4Homes 69, Freeads 46, puppies.co.uk 28, Staffie Owners 0. Google's order: Pets4Homes #1, Staffie Owners #2, Freeads #3, Gumtree #4, puppies.co.uk #5.</p><div class="src"><span>Ahrefs 2026-10-07</span><span>DataForSEO banked 2026-09-30</span></div></div></div>
+        <div class="row"><div class="k">Staffie Owners</div><div class="v"><p>The weakest domain, yet Google #2 and Bing #1 and #4, with three facets of one template: an exact breed-place title, a live count and price range as its snippet, rich markup and 58 Greater Manchester hub links per page.</p></div></div>
+        <div class="row"><div class="k">The colour</div><div class="v"><p>Ranks only on Bing: Staffie Owners' blue Manchester facet (#1) and Pets4Homes' "blue staf" search (#5).</p></div></div>
+        <div class="row"><div class="k">The gap</div><div class="v"><p>Every ranking page is a feed of other people's adverts; none is a breeder answering a Manchester buyer in its own voice.</p></div></div>
+      </div></div>
+  </div>
+
+  <!-- OPTION 2 -->
+  <div id="p2" role="tabpanel" aria-labelledby="t2">
+    <p class="note">A short plain-English summary comes first: what it says, what it cost, what to read with care. The exact original, with every file path and date, is folded underneath and is what the copy button copies.</p>
+    <div class="sec"><h2>Status</h2>
+      <span class="status-pill">Awaiting your picks · STOP 1</span>
+      <div class="plain">
+        <div><h3>Where this research comes from</h3><ul>
+          <li><b>Google results and People Also Ask:</b> bought once on 23 Sept. Bing was read free the same day, and Google was re-checked free on 7 Oct.</li>
+          <li><b>Eight competitor pages</b>, saved and measured. Freeads blocked us, so its page came from one Firecrawl scrape on 7 Oct.</li>
+          <li><b>Reddit:</b> 8 threads reused. 11 new ones were found, but none could be opened.</li>
+          <li><b>ChatGPT's answer:</b> the one bought on 25 Sept, re-read against the new question list. No new purchase.</li>
+          <li><b>Search volumes and competitor strength:</b> free tools (Keyword Planner, Trends, autocomplete, Ahrefs' free checker), because the DataForSEO balance is $0.25.</li></ul></div>
+        <div class="box cost"><h3>What it cost</h3><ul><li>No paid DataForSEO call this run, and 1 Firecrawl credit.</li><li>Total DataForSEO spend so far: $0.75 of the $1.00 limit.</li></ul></div>
+        <div class="box care"><h3>Read with care</h3><ul>
+          <li>No AI Overview appeared, but that was a signed-out browser that Google placed in Birmingham. It doesn't prove Manchester buyers never see one.</li>
+          <li>Search volumes are Google's ranges (for example 10–100 a month), shown exactly as given, never narrowed.</li></ul></div>
+        <details class="full"><summary>Full method, with every source and file path</summary>
+          <p>Research for Manchester's page run, assembled 2026-10-07 (page-run rows 4–8; plan docs/superpowers/plans/2026-10-07-manchester-page-run.md). Google SERP and People Also Ask: DataForSEO serp_organic_live_advanced (UK, en, depth 10), banked 2026-09-23 … [the original paragraph, unchanged]</p></details>
+      </div></div>
+    <div class="sec"><h2>6. Why Competitors Rank</h2>
+      <div class="plain">
+        <div><h3>In short</h3><ul>
+          <li><b>Nobody wins on depth.</b> Every page-one result is a marketplace feed of other people's adverts.</li>
+          <li><b>On Google, the colour doesn't rank.</b> All five top results say "Staffordshire Bull Terrier" and Manchester; none says "blue".</li>
+          <li><b>Domain strength doesn't decide the order.</b> Gumtree is the strongest (Ahrefs 78) but sits #4; Staffie Owners is the weakest (0) but sits #2.</li>
+          <li><b>Staffie Owners wins on page build:</b> an exact breed-and-place title, a live count and price in its snippet, rich markup, and 58 Greater Manchester links per page.</li>
+          <li><b>"Blue" ranks only on Bing</b> (Staffie Owners' blue page #1, Pets4Homes' "blue staf" search #5).</li></ul></div>
+        <div class="box cost"><h3>Our opening</h3><ul><li>None of them is a breeder answering a Manchester buyer in its own voice.</li></ul></div>
+        <details class="full"><summary>Full analysis, with every figure and source</summary>
+          <p>Nobody on page one ranks on depth, and on Google nobody ranks on the colour. Google's banked top five are five different marketplaces … [the original paragraph, unchanged]</p></details>
+      </div></div>
+  </div>
+
+  <div class="compare">
+    <section><h3>Option 1 · same words, broken into rows</h3><ul>
+      <li>Automatic on every board and every page, today and later.</li>
+      <li>Nothing is rewritten, so nothing can drift from the source.</li>
+      <li>But each row is still the original dense sentence, full of technical terms.</li></ul></section>
+    <section class="isrec"><h3>Option 2 · plain summary first (Recommended)</h3><ul>
+      <li>Reads in under a minute; you see what matters, what it cost and what to watch.</li>
+      <li>The exact text stays one tap below, and the copy button still copies it.</li>
+      <li>Costs a short summary-writing step per board, checked against the full text.</li>
+      <li>Works inside Option A's cards: the summary leads each card.</li></ul></section>
+  </div>
+</div>
+<script>
+(function(){var tabs=[].slice.call(document.querySelectorAll('[role="tab"]'));
+function show(t){tabs.forEach(function(b){var on=b===t;b.setAttribute('aria-selected',on?'true':'false');document.getElementById(b.getAttribute('aria-controls')).hidden=!on;});}
+tabs.forEach(function(b){b.addEventListener('click',function(){show(b);});});})();
+</script>
