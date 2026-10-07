@@ -4,3 +4,5 @@
 {"ts": "2026-10-02T21:21:12Z", "model": "gemini-3-pro-image-preview", "slot": "_demo/raise-photo", "status": "RuntimeError", "note": "Cannot send a request, as the client has been closed."}
 {"ts": "2026-10-02T21:21:23Z", "model": "gemini-3-pro-image-preview", "slot": "_demo/raise-photo", "status": 402, "note": "402 RESOURCE_EXHAUSTED. {'error': {'code': 402, 'message': 'Your prepayment credits are depleted. Please go to AI Studio"}
 {"ts": "2026-10-02T22:11:48Z", "model": "gemini-3.1-flash-lite-image", "slot": "_demo/raise-photo", "status": 200, "note": "KI 70 smoke image"}
+{"ts": "2026-10-07T21:01:24Z", "model": "gemini-nano-banana-2.1", "slot": "blue-staffy-puppies-manchester-uk/travel-h2", "status": 200, "note": "Manchester STOP 4 replacement (q02/q03)"}
+{"ts": "2026-10-07T21:01:49Z", "model": "gemini-nano-banana-2.1", "slot": "blue-staffy-puppies-manchester-uk/guarantee-h2", "status": 200, "note": "Manchester STOP 4 replacement (q02/q03)"}
