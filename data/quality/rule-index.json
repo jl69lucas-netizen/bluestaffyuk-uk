@@ -621,6 +621,38 @@
    "enforced": "test",
    "test": "tests/py/test_rule16_gate.py",
    "pack": "rules/design.md"
+  },
+  {
+   "id": "ctas-on-the-board",
+   "family": "NAV",
+   "enforced": "test",
+   "pack": "rules/links.md",
+   "test": "tests/py/test_cta_rules.py",
+   "_note": "Working rule 12, CTAs included (breeder, 2026-10-08). scripts/cta_rules.py: the board's CTA slots, their three options, the picks (board_approve.py refuses a twin text or a repeated style) and the count band; family_rules registers it, so check:boards and the board's block 7b show it."
+  },
+  {
+   "id": "cta-text-distinct",
+   "family": "SEM",
+   "enforced": "test",
+   "test": "tests/render/checks/cta.ts::cta-text-distinct",
+   "severity": "advisory",
+   "why_advisory": "Manchester ships one near-identical pair (\"Ask about a puppy\" / \"Ask us about a puppy\", measured 2026-10-08), approved with its copy before the CTA rule; promote to new-pages once it is reworded."
+  },
+  {
+   "id": "cta-style-distinct",
+   "family": "CSS",
+   "enforced": "test",
+   "test": "tests/render/checks/cta.ts::cta-style-distinct",
+   "severity": "advisory",
+   "why_advisory": "Every page built before the CTA catalog (src/styles/cta.css, 2026-10-08) paints its CTAs in one pill design: London and Manchester each share one design across their CTAs (measured 2026-10-08). Promote to new-pages with the first page built from CTA picks."
+  },
+  {
+   "id": "cta-count-in-band",
+   "family": "SEM",
+   "enforced": "test",
+   "test": "tests/render/checks/cta.ts::cta-count-in-band",
+   "severity": "advisory",
+   "why_advisory": "The bands in data/design/cta-plan.json are defaults from the built pages (2026-10-08); the migrated interior and blog pages sit under them. Promote to new-pages with the first page built from CTA picks."
   }
  ]
 }

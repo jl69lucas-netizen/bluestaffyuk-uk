@@ -177,7 +177,12 @@ row, so the cap is untouched. Every other rule moved to a pack.
 12. **Every link on the board.** A page board lists every internal and external link the
     page will carry — per section (target URL, anchor text, purpose, and whether the target
     resolves today) and again as one page-level table — before the breeder approves it. A
-    link that is not on the approved board is not built. (Breeder, 2026-09-19.)
+    link that is not on the approved board is not built. (Breeder, 2026-09-19.) **CTAs too**
+    (breeder, 2026-10-08): on every page boarded from 2026-10-08 on, each call to action is a
+    slot on the board with three options (text + a style from `src/styles/cta.css`); the
+    breeder picks one per slot, no two picks on a page say the same thing or share a style,
+    and the page paints only the picks (`rules/links.md` `ctas-on-the-board`, the `bsuk-cta`
+    skill).
 
 13. **Tables: three styles on the board, stacked on mobile.** Any page section that renders a
     table (prices, comparisons, health tests, delivery bands) is a `table` shape on its board
@@ -371,7 +376,7 @@ components are listed in `data/design/components.json`, and rebuilt pages render
 - `docs/reference/page-run.md` — the ordered per-page run for a project 5 page: each brief
   step, the command that does it, what it leaves on disk, the gate that fails and the stop
 - `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
-  A–J. That is a different count from `data/quality/rule-index.json`'s 87 (of which 9 are
+  A–J. That is a different count from `data/quality/rule-index.json`'s 91 (of which 9 are
   `enforced: judgment`, capped there): the ledger indexes the `rules/` packs, the
   render-harness checks and working rules 10–17; seo-rules.md numbers its own categories.
   `docs/reference/quick-start.md` states both, and all three files change together.

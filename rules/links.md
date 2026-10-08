@@ -36,3 +36,13 @@ test: tests/py/test_anchor_types.py
 ---
 
 - **Anchor-type variation (location, comparison and blog pages built after 2026-09-24)** — Every internal and external link on a new location, comparison or blog page records its `anchor_type` on the board: `exact`, `partial`, `lsi`, `natural`, `branded` or `naked-url` (Rule 58's three strategies and the Anchor Diversity Ledger's rotation, one vocabulary). The page's in-copy internal anchors use **at least 3 types, at most 2 of them exact-match**; its external anchors use **at least 3 types**; no anchor repeats on the page (pageboard's `links-anchor-duplicate`, case and punctuation folded); and no internal anchor that another board in `data/boards/` already uses for the same target is used again. Nav tiles carry a type but do not count toward the mix. `scripts/link_diversity.py` checks the board (WARN on a draft, FAIL from `boarded` on), and the board's links block shows each link's type and a one-line diversity summary. (User ruling, 2026-09-24.)
+
+
+---
+id: ctas-on-the-board
+enforced: test
+family: NAV
+test: tests/py/test_cta_rules.py
+---
+
+- **Every CTA on the board, picked by the breeder, each its own button (every location, comparison and blog page boarded from 2026-10-08 on)** — Working rule 12 covers calls to action as well as links: every CTA the page will carry is a slot on the board (`ctas` in the record: its section, type, target and why) offering **three options**, each a button text in one style from the catalog (`src/styles/cta.css`: solid, arrow, down, chip, sub, tag, caps, wide). The breeder picks one option per slot on the board (block 7e, `approval.picks["cta:<slot>"]`), and `scripts/board_approve.py` refuses an approval that leaves a slot unpicked, picks two texts that say the same thing (data/design/cta-plan.json `near_identical`), or picks one style twice. A button is 2–8 words, never types a figure, and the page's body CTAs sit in its page type's band with a section between any two. The page paints only the picked option (`src/lib/ctas.ts` → `CtaButton.astro`). `scripts/cta_rules.py` checks the board (WARN on a draft, FAIL from `boarded` on); `tests/render/checks/cta.ts` (`cta-text-distinct`, `cta-style-distinct`, `cta-count-in-band`) judges the built page with the same rules. London and Manchester were approved before the rule (`BUILT_BEFORE_CTA_RULE`). The method is the `bsuk-cta` skill. (Breeder ruling, 2026-10-08.)
