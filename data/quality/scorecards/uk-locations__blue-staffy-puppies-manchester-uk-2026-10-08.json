@@ -1,0 +1,175 @@
+{
+  "slug": "uk-locations/blue-staffy-puppies-manchester-uk",
+  "date": "2026-10-08",
+  "page_type": "location",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 46
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1644,
+    "layout-tap-target-size": 159,
+    "layout-hero-counter-separation": 3,
+    "layout-h3-image-first": 51,
+    "layout-image-box-reserved": 20,
+    "layout-table-stacks-on-mobile": 3,
+    "hero-aside-no-clip": 0,
+    "layout-hero-image-first-mobile": 3,
+    "layout-body-heading-above-body": 51,
+    "layout-text-has-side-gutter": 1519,
+    "layout-boxed-h2-fits": 0,
+    "layout-kit-band-full-bleed": 3,
+    "layout-heading-size-order": 54,
+    "layout-heading-lines": 51,
+    "layout-hero-copy-fills-band": 3,
+    "layout-toc-aligns-with-container": 0,
+    "layout-body-heading-brand": 105,
+    "layout-body-text-shares-edge": 0,
+    "img-srcset-within-2x": 157,
+    "img-not-upscaled": 157,
+    "img-alt-present-and-unique": 157,
+    "img-sizes-matches-box": 12,
+    "img-face-visible": 100,
+    "nav-anchors-resolve": 144,
+    "nav-jump-target-lands": 36,
+    "nav-bottom-chrome-clear": 0,
+    "nav-breadcrumb-separator-spaced": 6,
+    "nav-breadcrumb-baseline-aligned": 12,
+    "sem-heading-order": 246,
+    "sem-all-six-levels": 246,
+    "sem-title-case-headings": 246,
+    "sem-section-opening-paragraph": 246,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 21,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 2061,
+    "css-no-dead-component-rule": 1521,
+    "css-component-color-not-overridden": 121,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 1458,
+    "a11y-no-duplicate-ids": 153,
+    "a11y-hero-ledge-contrast": 9,
+    "form-inquiry-contract": 6
+  },
+  "defects": {
+    "IMG": 4,
+    "CSS": 9,
+    "DUP": 3
+  },
+  "instances": {
+    "IMG": 25,
+    "CSS": 198,
+    "DUP": 15
+  },
+  "total": 16,
+  "total_instances": 238,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "img-not-upscaled",
+      "count": 11,
+      "message": "11 upscaled image(s): blue-staffy-family-dog-uk.webp file=600x450 painted=718x359 visible=718x359 cover 1.20x | lisa-bright-blue-staffy-breeder-carlisle-400.webp file=400x218 painted=400x400 visible=400x400 cover 1.83x | blue-staffy-vet-check.webp file=512x477 painted=752x410 visible=752x410 cover 1.47x | jones-strong-staffy-sire-temperament.webp file=663x660 painted=752x410 visible=752x410 cover 1.13x | avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp file=498x500 painted=752x410 visible=752x410 cover 1.51x | 1blue-staffy-family-breeder-400.webp file=400x373 painted=400x400 visible=400x400 cover 1.07x | uk-family-blue-staffy.webp file=604x562 painted=752x410 visible=752x410 cover 1.25x | trusted-blue-staffy-breeder-reviews-satisfied-owners.webp file=500x375 painted=400x400 visible=400x400 cover 1.07x | sbt-uk-legal-status-public-perception.webp file=436x540 painted=752x410 visible=752x410 cover 1.72x | premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp file=500x334 painted=752x410 visible=752x410 cover 1.50x"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "img-face-visible",
+      "count": 3,
+      "message": "3 face(s) cropped or covered: maggie-blue-staffy-dam-with-pups face 1: 22% covered by an overlay | lisa-bright-blue-staffy-breeder-carlisle face 2: 71% painted in a 324x562 cover crop | lisa-bright-blue-staffy-breeder-carlisle face 3: 79% painted in a 324x562 cover crop"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 3,
+      "message": "3 class(es) on rendered elements match no CSS rule: mx-chapter x9, kit-faq x3, steps x1"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-no-dead-component-rule",
+      "count": 62,
+      "message": "62 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-component-color-not-overridden",
+      "count": 1,
+      "message": "1 component colour(s) lost to a descendant rule: .mx-cta wants var(--color-cta-ink) but \".mx-a[data-astro-cid-vale4q3y] p[data-astro-cid-vale4q3y] a[data-astro-cid-vale4q3y]\" wins -> rgb(31, 58, 82) — qualify the component rule (`.wrap p.tag{...}`)"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 18w vs /uk-locations/blue-staffy-puppies-london/ \"is up to 70 refundable if you change your mind up to 1 day before collection or delivery\" | 17w vs /uk-locations/blue-staffy-puppies-london/ \"up to 70 refundable if you change your mind up to 1 day before collection or delivery\" | 15w vs /uk-locations/blue-staffy-puppies-london/ \"vet signed health card first vaccinations microchipped wormed and flea treated kc registra\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "img-not-upscaled",
+      "count": 1,
+      "message": "1 upscaled image(s): lisa-bright-blue-staffy-breeder-carlisle-400.webp file=400x218 painted=295x295 visible=295x295 cover 1.35x"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 3,
+      "message": "3 class(es) on rendered elements match no CSS rule: mx-chapter x9, kit-faq x3, steps x1"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-no-dead-component-rule",
+      "count": 62,
+      "message": "62 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-component-color-not-overridden",
+      "count": 1,
+      "message": "1 component colour(s) lost to a descendant rule: .mx-cta wants var(--color-cta-ink) but \".mx-a[data-astro-cid-vale4q3y] p[data-astro-cid-vale4q3y] a[data-astro-cid-vale4q3y]\" wins -> rgb(31, 58, 82) — qualify the component rule (`.wrap p.tag{...}`)"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 18w vs /uk-locations/blue-staffy-puppies-london/ \"is up to 70 refundable if you change your mind up to 1 day before collection or delivery\" | 17w vs /uk-locations/blue-staffy-puppies-london/ \"up to 70 refundable if you change your mind up to 1 day before collection or delivery\" | 15w vs /uk-locations/blue-staffy-puppies-london/ \"vet signed health card first vaccinations microchipped wormed and flea treated kc registra\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "img-not-upscaled",
+      "count": 10,
+      "message": "10 upscaled image(s): blue-staffy-family-dog-uk.webp file=600x450 painted=718x359 visible=718x359 cover 1.20x | lisa-bright-blue-staffy-breeder-carlisle-400.webp file=400x218 painted=400x400 visible=400x400 cover 1.83x | blue-staffy-vet-check.webp file=512x477 painted=688x375 visible=688x375 cover 1.34x | jones-strong-staffy-sire-temperament.webp file=663x660 painted=720x405 visible=720x405 cover 1.09x | avoid-staffordshire-bull-terrier-temperament-problems-bluestaffyuk.webp file=498x500 painted=688x375 visible=688x375 cover 1.38x | 1blue-staffy-family-breeder-400.webp file=400x373 painted=400x400 visible=400x400 cover 1.07x | uk-family-blue-staffy.webp file=604x562 painted=688x375 visible=688x375 cover 1.14x | trusted-blue-staffy-breeder-reviews-satisfied-owners.webp file=500x375 painted=400x400 visible=400x400 cover 1.07x | sbt-uk-legal-status-public-perception.webp file=436x540 painted=688x375 visible=688x375 cover 1.58x | premium-staffy-puppy-for-sale-in-the-uk-ready-now.webp file=500x334 painted=688x375 visible=688x375 cover 1.38x"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 3,
+      "message": "3 class(es) on rendered elements match no CSS rule: mx-chapter x9, kit-faq x3, steps x1"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-no-dead-component-rule",
+      "count": 62,
+      "message": "62 page-scoped rule(s) match nothing on the page: .kit-dial | .kit-dial | .t | ol | li + li | li a | li a[aria-current=\"location\"] | li a[aria-current=\"location\"] .num | .num | .lab — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-component-color-not-overridden",
+      "count": 1,
+      "message": "1 component colour(s) lost to a descendant rule: .mx-cta wants var(--color-cta-ink) but \".mx-a[data-astro-cid-vale4q3y] p[data-astro-cid-vale4q3y] a[data-astro-cid-vale4q3y]\" wins -> rgb(31, 58, 82) — qualify the component rule (`.wrap p.tag{...}`)"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 18w vs /uk-locations/blue-staffy-puppies-london/ \"is up to 70 refundable if you change your mind up to 1 day before collection or delivery\" | 17w vs /uk-locations/blue-staffy-puppies-london/ \"up to 70 refundable if you change your mind up to 1 day before collection or delivery\" | 15w vs /uk-locations/blue-staffy-puppies-london/ \"vet signed health card first vaccinations microchipped wormed and flea treated kc registra\""
+    }
+  ]
+}
