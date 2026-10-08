@@ -95,6 +95,15 @@ const photo = (slot: string): FilledAsset & { srcset?: string } => {
   const widths = SIBLINGS.filter((w) => w < a.w && inPublic(`${a.file.slice(0, dot)}-${w}${a.file.slice(dot)}`));
   return widths.length ? { ...a, srcset: bakedSrcset(a, widths, inPublic) } : a;
 };
+/** The papers infographic's phone layout, drawn for the ~300px phone box at 2x. Its `w` descriptor,
+ *  read against `sizes`, gives the browser that density, as London's phone layouts do
+ *  (`infographic()` there); without it the 622px file read as 2.11x a 295px box (row 13,
+ *  img-srcset-within-2x). */
+const PAPERS_PHONE = { src: '/images/blue-staffy-puppy-papers-checklist-manchester-phone.webp', w: 622, h: 1644 };
+const papersPhone = {
+  ...PAPERS_PHONE,
+  srcset: bakedSrcset({ ...asset('papers-checklist'), slot: 'papers-checklist-phone', file: PAPERS_PHONE.src, w: PAPERS_PHONE.w, h: PAPERS_PHONE.h }, [], inPublic),
+};
 /** A frame repeat's approved alt (STOP 4 q08 (a)), by section and file; never retyped. */
 type FrameAlt = { section: string; file: string; alt: string };
 const frameAlt = (section: string, file: string): string => {
@@ -355,7 +364,7 @@ const enquiry = label('enquiry');
       <div class="mx-a">
         <h3>{head('papers', 3, 0)}</h3>
         <BodyImage asset={photo('papers-checklist')} srcset={photo('papers-checklist').srcset} box="uniform"
-          phone={{ src: '/images/blue-staffy-puppy-papers-checklist-manchester-phone.webp', w: 622, h: 1644 }} />
+          phone={papersPhone} />
         <p>Whoever you buy from, ask for both parents' registration numbers, the Kennel Club registration application form, the vaccination record, the microchip details and a written contract. Ours come with all five.</p>
         <p>Be wary of an advert that calls a puppy registered but cannot show you the parents' numbers: the numbers let you look up the pedigree yourself, and the application form lets you register the puppy in your name once it is home. The vaccination record matters too: it is the first thing your own vet will want to see.</p>
         <h4>{head('papers', 4, 0, 0)}</h4>

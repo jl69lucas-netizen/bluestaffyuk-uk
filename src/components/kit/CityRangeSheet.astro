@@ -16,6 +16,9 @@
 // above (`shownAbove`, by puppy name: the hero's four on Manchester) is a repeat and takes a new
 // alt (`puppyAlt`, 'short'); any other is the photo's first use and keeps the alt the site serves
 // for it (`servedPuppyAlt`). No two alts on the page are the same (`img-alt-present-and-unique`).
+//
+// `data-counters` puts it in `layout-hero-counter-separation`'s view, as CounterStrip and London's
+// CityPriceScale are: without it the promoted check examined zero strips on Manchester (row 13).
 import '../../styles/city.css';
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
@@ -47,7 +50,7 @@ const cells = [
 ];
 const alt = (p: (typeof pups)[number]) => (shownAbove.includes(p.name) ? puppyAlt(p, 'short') : servedPuppyAlt(p));
 ---
-<section {...rest} class:list={['city-kit', 'city-range-sheet', cls]}>
+<section {...rest} class:list={['city-kit', 'city-range-sheet', cls]} data-counters>
   <div class="in">
     <div class="sheet">
       <ul class="cells" aria-label="This litter in figures">
@@ -79,6 +82,10 @@ const alt = (p: (typeof pups)[number]) => (shownAbove.includes(p.name) ? puppyAl
     /* A full-width strip, the viewport wide (src/styles/city.css): its gutters are the inner
        tray's padding, never root padding, so its content box is its box. */
     .city-range-sheet { background: var(--color-brand-soft); }
+    /* The rule between the hero and the strip (rules/design.md layout-hero-counter-separation: a
+       tone shift AND a rule). The tone shift alone left it flush (row 13); the bar is the seam
+       gradient the range bar below is drawn in, so the strip's own motif opens it. */
+    .city-range-sheet::before { content: ""; display: block; height: 3px; background: var(--seam-gradient); }
     .in { max-width: 1080px; margin: 0 auto; padding: var(--space-5) var(--space-4); }
     .sheet {
       background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--card-radius);

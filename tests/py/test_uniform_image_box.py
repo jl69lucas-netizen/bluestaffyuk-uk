@@ -21,6 +21,7 @@ background, and rules/images.md bakes in-body portraits with `--style contain`, 
 """
 import json
 import pathlib
+import math
 import re
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -95,8 +96,27 @@ def test_tall_sizes_fetches_the_whole_file_for_the_4_by_5_strip():
     m = re.search(r"export const TALL_SIZES = '([^']+)';", ASSETS)
     assert m and m.group(1) == "(max-width: 899.98px) and (orientation: portrait) 230vw, 760px"
     assert round(1408 * 1.25 / 768, 2) == 2.29
-    assert "import { BODY_SIZES, TALL_SIZES, UNIFORM_SIZES } from '../lib/assets';" in BODY
-    assert re.search(r"box === 'tall'\s*\?\s*TALL_SIZES", BODY)
+
+
+def _tall_vw(w, h):
+    """The tall box's phone `sizes` in vw for a w x h file: a 4:5 box W wide is 1.25W tall, and
+    the file covering it paints max(W, 1.25W * w / h) wide."""
+    return math.ceil(100 * max(1.0, 1.25 * w / h))
+
+
+def test_tall_sizes_follow_the_files_own_ratio():
+    """TALL_SIZES is the 16:9 master's case only. A PORTRAIT file in the same 4:5 box paints
+    about the box's own width, so 230vw sent the phone the full file for a 295px box
+    (Manchester row 13: img-srcset-within-2x, blue-staffy-pups-near-you 870x1080 at 2.92x,
+    cheryl-cheryl1 918x1148). BodyImage reads the factor from the asset's own width and height
+    through tallSizes(), and the 1408x768 case still spells TALL_SIZES (assets.ts throws if not)."""
+    assert _tall_vw(1408, 768) == 230
+    assert _tall_vw(870, 1080) == 101 and _tall_vw(918, 1148) == 100
+    assert re.search(r"export function tallSizes\(w: number, h: number\): string", ASSETS)
+    assert "Math.ceil(100 * Math.max(1, (1.25 * w) / h))" in ASSETS
+    assert re.search(r"tallSizes\(1408, 768\) !== TALL_SIZES", ASSETS), "the 16:9 case must spell TALL_SIZES"
+    assert "import { BODY_SIZES, UNIFORM_SIZES, tallSizes } from '../lib/assets';" in BODY
+    assert re.search(r"box === 'tall'\s*\?\s*tallSizes\(asset\.w, asset\.h\)", BODY)
 
 
 def test_an_explicit_sizes_prop_overrides_the_default():

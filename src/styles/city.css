@@ -61,7 +61,9 @@
 @layer components {
   .city-kit {
     --city-h1: clamp(24px, 17px + 2.4cqi, 26px);
-    --city-h2: clamp(20px, 15px + 2cqi, 22px);
+    /* 14px, not 15px (Manchester row 13): in a 327px phone box the 77-character guarantee question
+       set at 21.54px on four lines; at 20.54px it sets on three. Still 20-22px, the phone tier. */
+    --city-h2: clamp(20px, 14px + 2cqi, 22px);
     --city-h3: clamp(16px, 13px + 1.2cqi, 17px);
     --city-lead: 17px;
     --city-body: 16px;

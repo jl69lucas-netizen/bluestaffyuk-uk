@@ -30,7 +30,7 @@
 // `tall` is that box for a portrait, which turns 4:5 below 900px held upright (`.og-tall`). Every
 // body image keeps `.bl-img`, so a check that looks for in-body images reads one class.
 import type { FilledAsset } from '../lib/assets';
-import { BODY_SIZES, TALL_SIZES, UNIFORM_SIZES } from '../lib/assets';
+import { BODY_SIZES, UNIFORM_SIZES, tallSizes } from '../lib/assets';
 
 /** A phone-only art-directed file (an infographic's phone layout): served below 640px
  *  through `<picture>`, at its own intrinsic size, and never cropped by the uniform box. */
@@ -72,7 +72,9 @@ interface Props {
 }
 const FOCAL = /^\d{1,3}% \d{1,3}%$/;
 const { asset, srcset, box = 'natural', focal, class: extra, phone } = Astro.props;
-const sizes = Astro.props.sizes ?? (box === 'tall' ? TALL_SIZES : box === 'uniform' ? UNIFORM_SIZES : BODY_SIZES);
+// The tall box's phone `sizes` is the file's own: a 16:9 master paints 2.29x the box, a portrait
+// about 1x (src/lib/assets.ts tallSizes).
+const sizes = Astro.props.sizes ?? (box === 'tall' ? tallSizes(asset.w, asset.h) : box === 'uniform' ? UNIFORM_SIZES : BODY_SIZES);
 const crop = phone?.crop;
 if (crop && (crop.top < 0 || crop.bottom < 0 || crop.top + crop.bottom >= phone!.h)) {
   throw new Error(`BodyImage: ${phone!.src} crop ${crop.top}/${crop.bottom} leaves nothing of a ${phone!.h}px file`);

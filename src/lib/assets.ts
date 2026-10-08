@@ -150,3 +150,19 @@ export const UNIFORM_SIZES = '(max-width: 800px) 100vw, 760px';
  * is upscaled and soft. Elsewhere it is the uniform 16:9 box, 760px at most.
  */
 export const TALL_SIZES = '(max-width: 899.98px) and (orientation: portrait) 230vw, 760px';
+
+/**
+ * The tall box's `sizes` for a w x h file. TALL_SIZES is the 1408x768 master's case; a PORTRAIT
+ * file in the same 4:5 box paints about the box's own width (1.25W * 870 / 1080 = 1.007W), so
+ * 230vw sent the phone the full file for a 295px box (Manchester row 13, img-srcset-within-2x
+ * at 2.92x). The file covering a 4:5 box W wide paints max(W, 1.25W * w / h) wide, and that
+ * factor is the phone `sizes`. tests/py/test_uniform_image_box.py.
+ */
+export function tallSizes(w: number, h: number): string {
+  if (!(w > 0 && h > 0)) throw new Error(`tallSizes: ${w}x${h} is not a measured file size`);
+  const vw = Math.ceil(100 * Math.max(1, (1.25 * w) / h));
+  return `(max-width: 899.98px) and (orientation: portrait) ${vw}vw, 760px`;
+}
+if (tallSizes(1408, 768) !== TALL_SIZES) {
+  throw new Error('assets.ts: tallSizes(1408, 768) no longer spells TALL_SIZES');
+}
