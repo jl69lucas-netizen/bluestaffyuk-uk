@@ -75,14 +75,27 @@ export async function collectCtas(page: Page): Promise<Cta[]> {
         return c === 'none' || c === 'normal' ? '' : c;
       };
       const parentW = el.parentElement ? el.parentElement.getBoundingClientRect().width : 0;
-      const sig = [
-        cs.backgroundColor, cs.color, cs.borderRadius,
-        `${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor}`,
-        cs.fontFamily.split(',')[0], cs.fontSize, cs.fontWeight, cs.letterSpacing, cs.textTransform, cs.flexDirection,
-        Math.abs(el.getBoundingClientRect().width - parentW) < 1 ? 'full' : 'fit',
-        cs.boxShadow, pseudo('::before'), pseudo('::after'),
-        el.querySelector('svg, img') ? 'icon' : '',
-      ].join(' | ');
+      const borderW = parseFloat(cs.borderTopWidth) || 0;
+      // What a reader can SEE, coarsened (the bsuk-cta eval, 2026-10-08): a 1px font size, a
+      // zero-width border or weight 600 against 700 told three identical gold pills apart.
+      // Exact strings would call those three designs; the parts below are compared by
+      // sameDesign() with a tolerance instead.
+      const sig = JSON.stringify({
+        bg: cs.backgroundColor, ink: cs.color,
+        radius: parseFloat(cs.borderTopLeftRadius) >= 24 ? 'pill' : `${Math.round(parseFloat(cs.borderTopLeftRadius) || 0)}`,
+        border: borderW >= 1 ? `${Math.round(borderW)} ${cs.borderTopStyle} ${cs.borderTopColor}` : '',
+        face: cs.fontFamily.split(',')[0].trim(),
+        size: parseFloat(cs.fontSize),
+        bold: parseInt(cs.fontWeight, 10) >= 600,
+        track: parseFloat(cs.letterSpacing) || 0,
+        caps: cs.textTransform === 'uppercase',
+        dir: cs.flexDirection === 'column' ? 'column' : 'row',
+        width: Math.abs(el.getBoundingClientRect().width - parentW) < 1 ? 'full' : 'fit',
+        shadow: cs.boxShadow === 'none' ? '' : cs.boxShadow,
+        before: pseudo('::before'), after: pseudo('::after'),
+        icon: !!el.querySelector('svg, img'),
+        parts: el.children.length,
+      });
       const item = el.closest('li, article, [data-card]');
       const sibs = item?.parentElement
         ? Array.from(item.parentElement.children).filter((c) => c !== item && c.tagName === item.tagName)
@@ -125,6 +138,23 @@ export function nearIdentical(a: string, b: string): boolean {
   return inter / (x.size + y.size - inter) >= plan().near_identical.jaccard;
 }
 
+/**
+ * Two CTAs a reader sees as one design: every visible part equal, with a 2px tolerance on the
+ * font size and half a pixel on the tracking. A colour, the pill against a squared corner, a
+ * visible border, the case, an icon, a glyph, a second line or the full width each make a
+ * design of its own (src/styles/cta.css).
+ */
+export function sameDesign(a: string, b: string): boolean {
+  const x = JSON.parse(a) as Record<string, unknown>;
+  const y = JSON.parse(b) as Record<string, unknown>;
+  for (const k of Object.keys(x)) {
+    if (k === 'size') { if (Math.abs((x.size as number) - (y.size as number)) > 2) return false; continue; }
+    if (k === 'track') { if (Math.abs((x.track as number) - (y.track as number)) > 0.5) return false; continue; }
+    if (x[k] !== y[k]) return false;
+  }
+  return true;
+}
+
 const defect = (id: string, family: Family, viewport: number, count: number, message: string) => ({
   checkId: id,
   family,
@@ -165,14 +195,15 @@ register({
   minExamined: 2,
   async run(page: Page, viewport: number): Promise<CheckResult> {
     const all = await collectCtas(page);
-    const groups = new Map<string, Cta[]>();
-    for (const c of units(all)) groups.set(c.sig, [...(groups.get(c.sig) ?? []), c]);
-    const bad = [...groups.values()].filter((g) => g.length > 1);
+    const us = units(all);
+    const bad: Cta[][] = [];
+    for (let i = 0; i < us.length; i++)
+      for (let j = i + 1; j < us.length; j++) if (sameDesign(us[i].sig, us[j].sig)) bad.push([us[i], us[j]]);
     return {
       examined: all.length,
       defects: bad.length
         ? [defect('cta-style-distinct', 'CSS', viewport, bad.length,
-            `${bad.length} design(s) shared by more than one CTA: ` +
+            `${bad.length} CTA pair(s) a reader sees as one design: ` +
               bad.slice(0, 3).map((g) => g.map((c) => `"${c.text}"`).join(' = ')).join(' | ') +
               ' — give each CTA its own style from the catalog (bsuk-cta)')]
         : [],

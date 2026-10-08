@@ -367,6 +367,16 @@ test.describe('dup-no-sibling-crossover tokenises exactly like dup_content_audit
     expect(r.defects[0].message).not.toContain('refundable');
   });
 
+  test('cta-style-distinct: two pills told apart only by invisible differences are one design', async ({ page }, testInfo) => {
+    onlyOnce(testInfo);
+    const res = await page.goto(fixtureUrl('known_broken', 'cta-style-near-twin'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const check = registry.find((c) => c.id === 'cta-style-distinct')!;
+    const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(2);
+    expect(r.defects.length, 'a 1px size, a zero-width border and 600 vs 700 are not a design').toBe(1);
+  });
+
   test('the data values are read from outline_provenance_check.py, not copied', ({}, testInfo) => {
     onlyOnce(testInfo);
     const fromPy = py(
