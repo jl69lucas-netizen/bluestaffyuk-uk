@@ -1,12 +1,93 @@
 ---
 name: bsuk-cta-strategy
-description: "CTA strategy guide for BSUK — 22 homepage sections × 3 voice options = 66 conversion-ready CTAs. Three voices: Trust & Security, Direct & Transactional, Ethical & Quality. Use when writing or auditing any page section's CTA copy."
+description: "CTA strategy guide for BSUK — where CTAs sit on a page, how many a page carries, which CTA type each section takes from hero to contact form, and the button-text rules; then 22 homepage sections × 3 voice options = 66 CTA lines (Trust & Security, Direct & Transactional, Ethical & Quality). Use when planning a page board's CTAs or writing or auditing any section's CTA."
 allowed-tools: [Read, Write, Bash]
 ---
 
 ## Golden Rule
 > Use Claude Code and Playwright CLI to solve problems first.
 > Only call MCPs, external CLIs, or APIs if the specific task genuinely cannot be done with Claude Code alone.
+
+---
+
+## The CTA plan for a page — placement, count, type and text
+
+Added 2026-10-08 at the breeder's request. Read this first on every page board (rows 10–12 of
+`docs/reference/page-run.md`): the board lists each CTA like a link (working rule 12), and a CTA
+that is not on the approved board is not built. The voice sections further down supply the
+words; this section decides where they go and how many there are.
+
+### What is a CTA here
+
+A CTA is a **pill button in `--color-cta` with `--color-cta-ink`** (`rules/design.md` rules 1 and 3).
+Three kinds count:
+
+| Type | What it does | Target | Text pattern |
+|---|---|---|---|
+| **Browse** | sends the reader to the litter | `/available-puppies/` (or a puppy page) | "See / Browse … puppies", "… available now" |
+| **Ask** | sends the reader to this page's enquiry form | `#enquiry` | "Ask us …", "Tell us about …", "Ask for …" |
+| **Ask about <pup>** | one per puppy card | `/available-puppies/<slug>/` | "Ask about Roman" (the name from `data/puppies.json`) |
+| **Submit** | sends a form | the form's own button | "Send my enquiry", "Send me the litter note" |
+
+Not counted as CTAs: in-prose links (they follow `rules/links.md`), the header's "Available
+puppies" button and the footer CTA (site chrome, on every page), and tool buttons inside a
+component (a map's "Show the map", a calculator's "Work it out").
+
+### Where CTAs go, section by section (hero to contact form)
+
+| Section | CTA | Type | Why |
+|---|---|---|---|
+| Hero | **exactly one** pill | Browse (transactional pages) or Ask (location, comparison) | the first decision a reader can make; the hero clamp must fit it (`rules/design.md` rule 10) |
+| Key takeaways / counter strip | at most one | Ask | a reader who has the answer in one screen can act on it |
+| Trust / credentials | none | — | proof, not a pitch; a button here reads as selling the proof |
+| Litter, puppies, prices | one per section, or one "Ask about <pup>" per card | Ask / Ask about <pup> | the highest-intent section on the page |
+| Deposit and viewing | one | Ask | the reader has just learned how to reserve |
+| Delivery | none, or a tool button | — | the band is data; let the reader read it |
+| Paperwork, health, guarantee | at most one | Ask ("ask for the full terms") | the terms are what a careful buyer asks for before a deposit |
+| Life in the city, temperament, care | at most one | Ask ("tell us about your home") | turns a fit question into an enquiry |
+| FAQ blocks | **none** | — | no `<a>` inside an answer (FAQPage JSON-LD); the block may end with one prose link |
+| Reviews | none | — | a button after a review reads as paid for |
+| Newsletter | its own Submit | Submit | the soft path for a reader not ready to ask |
+| Enquiry / contact form | its own Submit, last | Submit | every Ask CTA above lands here |
+| Footer | site chrome | — | not counted |
+
+### How many
+
+| Page type | Pills in the body (not chrome, not form submits) | Measured on the built pages, 2026-10-08 |
+|---|---|---|
+| Location page | **3–6**, never two in a row of sections | London 6 (incl. one map tool button), Manchester 3 |
+| Buy / available-puppies | one "Ask about <pup>" per card + at most one Ask | buy page 6 cards + form |
+| Homepage | hero one + one per puppy card | homepage 6 cards |
+| Contact, privacy, thank-you | the form submit only | contact 1 |
+| Comparison, blog post | 2–4 | none built yet |
+
+Spacing: at least one section between two pills, so no two CTAs are on one screen at 1280.
+The figures in the right-hand column are what shipped and were approved, not targets; the
+breeder can change the bands on the board.
+
+### Button text
+
+1. **Starts with a verb and says what happens:** "Ask us which puppy suits your home", never
+   "Learn more", "Click here" or "Submit".
+2. **2–8 words.** It must sit on one line in the pill at 375px, or the hero clamp breaks.
+3. **Names the destination:** an Ask goes to the form, so it says ask, tell or send; a Browse goes
+   to the litter, so it says see or browse.
+4. **Never the same text twice on one page**, except the per-puppy "Ask about <name>". Near-twins
+   count too: Manchester ships "Ask about a puppy" (hero) and "Ask us about a puppy" (takeaways),
+   which reads as the same button twice.
+5. **No figure typed into a button.** A price, the deposit, the delivery band or the guarantee
+   length comes from `data/` in the copy beside the button, never in the button text
+   (working rule 9).
+6. **No promise the page cannot keep:** no "Reserve now" before a viewing, no "Verify our
+   credentials" while the licence is LICENCE_CLAIM_PLACEHOLDER, no video call where the page's
+   board dropped it (Manchester STOP 1 q08).
+7. **First-person brand voice** (working rule 1): "Ask us…", "Tell us…".
+
+### What the board carries for each CTA
+
+Section id · type (Browse / Ask / Ask about <pup> / Submit) · button text · target · the voice
+(Trust / Direct / Ethical, below) · why here. One page-level count line: body pills N, within the
+band for the page type, plus the spacing check.
 
 ---
 
