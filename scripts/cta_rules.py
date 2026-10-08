@@ -49,6 +49,8 @@ CSS_FILE = ROOT / "src" / "styles" / "cta.css"
 TOKENS_FILE = ROOT / "src" / "styles" / "tokens.css"
 
 PICK_PREFIX = "cta:"
+#: Where an `ask` goes on a page with no enquiry form of its own.
+CONTACT_PAGE = "/uk-blue-staffy-breeders-contact/"
 #: The catalog, in src/styles/cta.css and CtaButton.astro's CTA_STYLES order. An id is never
 #: renamed or reused: a pick stores it.
 STYLES = ("solid", "arrow", "down", "chip", "sub", "tag", "caps", "wide")
@@ -253,11 +255,14 @@ BANK = {
     "newsletter": ("Send me the litter note", "Keep me posted on litters", "Add me to the litter note"),
 }
 ROLE_MATCH = (
-    ("litter", r"litter|price|puppies"),
+    ("litter", r"litter|price"),
     ("deposit", r"deposit|viewing|visit|reserve"),
-    ("terms", r"paperwork|guarantee|terms|contract"),
-    ("home", r"life|temperament|household|home"),
+    ("terms", r"papers?|paperwork|guarantee|terms|contract|certificat"),
+    ("home", r"life|temperament|household|busy|family|home"),
 )
+#: Section shapes that never carry a body CTA (bsuk-cta §2): proof, answers and navigation.
+NO_CTA_SHAPES = ("faq", "reviews", "trust", "form", "stats", "dial", "takeaways")
+
 #: `sub` and `tag` need a second line and a tag that are true everywhere; both are read from
 #: data/settings.json at proposal time, never invented.
 def _sub_and_tag():
@@ -272,7 +277,10 @@ def propose(board):
     every slot's option (a) has a different style. The agent edits the texts to the page."""
     order = [s for s in board["sections"]]
     ids = {s["id"] for s in order}
-    target = "#enquiry" if "enquiry" in ids else next((f"#{s['id']}" for s in order if s.get("shape") == "form"), "/available-puppies/")
+    # An `ask` goes to this page's own form; a page with none sends it to the contact page,
+    # never to the litter (that is a `browse`, and it says see or browse, not ask).
+    target = "#enquiry" if "enquiry" in ids else next((f"#{s['id']}" for s in order if s.get("shape") == "form"),
+                                                      CONTACT_PAGE)
     transactional = board["meta"]["page_type"] not in ("location", "comparison", "blog")
     plans, last = [], -2
     for i, s in enumerate(order):
@@ -284,7 +292,7 @@ def propose(board):
         if sid in ("enquiry", "newsletter"):
             plans.append((s, sid, "submit"))
             continue
-        if s.get("shape") in ("faq", "reviews", "trust", "form") or i - last <= 1:
+        if s.get("shape") in NO_CTA_SHAPES or i - last <= 1:
             continue
         role = next((r for r, rx in ROLE_MATCH if re.search(rx, text)), None)
         if role and role not in {p[1] for p in plans}:

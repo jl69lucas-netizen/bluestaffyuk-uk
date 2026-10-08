@@ -182,3 +182,25 @@ def test_the_catalog_preview_paints_every_style_and_a_board_block():
     for s in CR.STYLES:
         assert f'data-cta-style="{s}"' in page, s
     assert 'name="pick-cta:hero"' in page and "<title>BSUK CTA Styles</title>" in page
+
+
+def test_the_proposal_on_a_real_city_record_finds_the_decision_sections():
+    """The bsuk-cta eval (2026-10-08): `papers` got household wording and the life sections got
+    no slot. On Manchester's 22 sections the proposal now places the hero, deposit, litter,
+    papers and the busy-household section, both forms' submits, and nothing in an FAQ, review,
+    trust, stats, contents or takeaways section."""
+    b = copy.deepcopy(PB.load_board("blue-staffy-puppies-manchester-uk"))
+    b["meta"]["slug"] = SLUG
+    b.pop("approval", None)
+    got = {s["section"]: s["type"] for s in CR.propose(b)}
+    assert got == {"top": "ask", "deposit": "ask", "litter": "ask", "papers": "ask",
+                   "busy-household": "ask", "newsletter": "submit", "enquiry": "submit"}, got
+    b["ctas"] = CR.propose(b)
+    assert CR.slot_problems(b) == []
+    assert CR.validate_cta_picks(b, {f"cta:{s['slot']}": "a" for s in b["ctas"]}) == []
+
+
+def test_an_ask_on_a_page_with_no_form_goes_to_the_contact_page():
+    b = _record()
+    asks = [s for s in CR.propose(b) if s["type"] == "ask"]
+    assert asks and all(s["target"] == CR.CONTACT_PAGE for s in asks)
