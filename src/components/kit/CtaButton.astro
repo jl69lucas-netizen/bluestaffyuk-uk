@@ -1,0 +1,39 @@
+---
+// src/components/kit/CtaButton.astro — one call to action in one catalog style (src/styles/cta.css;
+// the bsuk-cta skill). A page passes the board's pick through src/lib/ctas.ts, never typed text:
+// the text, the style and the target are what the breeder chose on the page board (working rule
+// 12, CTAs included from 2026-10-08). `submit` renders a form's own <button type="submit">.
+import '../../styles/cta.css';
+
+export const CTA_STYLES = ['solid', 'arrow', 'down', 'chip', 'sub', 'tag', 'caps', 'wide'] as const;
+export type CtaStyle = (typeof CTA_STYLES)[number];
+
+interface Props {
+  text: string;
+  style: CtaStyle;
+  /** The target; omitted for a submit. */
+  href?: string;
+  submit?: boolean;
+  /** `sub`'s second line and `tag`'s tag, from the board option. */
+  sub?: string;
+  tag?: string;
+  class?: string;
+}
+const { text, style, href, submit = false, sub, tag, class: cls } = Astro.props;
+if (!CTA_STYLES.includes(style)) throw new Error(`CtaButton: unknown style ${style}`);
+if (!submit && !href) throw new Error(`CtaButton: "${text}" has no target`);
+if (style === 'sub' && !sub) throw new Error(`CtaButton: style sub needs its second line ("${text}")`);
+if (style === 'tag' && !tag) throw new Error(`CtaButton: style tag needs its tag ("${text}")`);
+const Tag = submit ? 'button' : 'a';
+const attrs = submit ? { type: 'submit', 'data-submit': '' } : { href };
+---
+{style === 'caps' ? (
+  <p class="cta-rule"><a class:list={['cta', cls]} href={href} data-cta-style="caps">{text}</a></p>
+) : (
+  <Tag class:list={['cta', cls]} data-cta-style={style} {...attrs}>
+    {style === 'chip' && (
+      <span class="chip" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg></span>
+    )}
+    {style === 'sub' ? (<span>{text}</span><small>{sub}</small>) : style === 'tag' ? (<span>{text}</span><span class="tag">{tag}</span>) : text}
+  </Tag>
+)}
