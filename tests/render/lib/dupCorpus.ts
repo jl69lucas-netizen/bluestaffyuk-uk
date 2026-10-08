@@ -1,4 +1,5 @@
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -41,6 +42,37 @@ export function loadWhitelist(): string[] {
     );
   }
   return out;
+}
+
+/**
+ * The declared data values, as token lists — READ FROM `scripts/outline_provenance_check.py`
+ * (`DATA_VALUE_SOURCES` through its own `data_values()`), never copied.
+ *
+ * A data value is the breeder's own wording printed whole on every page that states it (the
+ * refund clause, what the deposit does — working rule 9), so two pages sharing it is the rule
+ * working, not copy crossing over. The Python gate already cut a shared run around these; the
+ * render check did not, and reported the refund clause on Manchester against London
+ * (2026-10-08). Python is RUN rather than parsed: the values live in a JSON key and a .ts
+ * constant, and `data_values()` already refuses (exit 2) an entry that no longer resolves.
+ */
+let dataValuesCache: string[][] | null = null;
+export function loadDataValues(): string[][] {
+  if (dataValuesCache) return dataValuesCache;
+  const out = execFileSync(
+    'python3',
+    [
+      '-c',
+      "import sys, json; sys.path.insert(0, 'scripts'); import outline_provenance_check as o\n" +
+        "print(json.dumps([' '.join(t) for t in o.data_values('.')]))",
+    ],
+    { cwd: REPO, encoding: 'utf8' },
+  );
+  const values = (JSON.parse(out) as string[]).map((v) => normalise(v));
+  if (values.length === 0 || values.some((v) => v.length === 0)) {
+    throw new Error('outline_provenance_check.data_values() returned an empty value — refusing to run');
+  }
+  dataValuesCache = values;
+  return values;
 }
 
 /**
