@@ -67,6 +67,9 @@
     "bsuk-content-audit-agent": {
       "tier": "tier_max"
     },
+    "bsuk-cta-agent": {
+      "tier": "tier_high"
+    },
     "bsuk-deploy-verifier": {
       "tier": "tier_medium"
     },
