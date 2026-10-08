@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>CTAs out of band</title>
+<style>
+  :root { --color-cta:#c9a227; --color-cta-ink:#14202b; }
+  body { margin:0; font:16px/1.5 system-ui }
+  section { padding:24px }
+  .pill { display:inline-flex; padding:12px 24px; border-radius:999px; background:var(--color-cta); color:var(--color-cta-ink); font-weight:700; text-decoration:none }
+  .pill-arrow::after { content:" →" }
+  .pill-down { border-radius:8px; font-size:17px }
+  .cards { display:flex; gap:12px; list-style:none; padding:0 }
+  form button { border:0; border-radius:6px; padding:10px 20px; background:var(--color-cta); color:var(--color-cta-ink); font:inherit; font-weight:700 }
+</style></head><body>
+<main>
+  <!-- Judged as a puppy page (band 1-3, data/design/cta-plan.json): four body CTAs, and the
+       last two sit in neighbouring sections. -->
+  <section id="a" data-section-label="A"><a class="pill" href="/available-puppies/">See the puppies available now</a></section>
+  <section id="b" data-section-label="B"><p>Copy.</p></section>
+  <section id="c" data-section-label="C"><a class="pill pill-arrow" href="#enquiry">Ask us for the full terms</a></section>
+  <section id="d" data-section-label="D"><p>Copy.</p></section>
+  <section id="e" data-section-label="E"><a class="pill pill-down" href="#enquiry">Tell us about your home</a></section>
+  <section id="f" data-section-label="F"><a class="pill" style="border-radius:4px" href="#enquiry">Ask which puppy suits you</a></section>
+</main>
+</body></html>

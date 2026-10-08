@@ -8,4 +8,5 @@ import './css.js';
 import './dup.js';
 import './a11y.js';
 import './form.js';
+import './cta.js';
 export {};

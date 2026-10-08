@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>each CTA its own design</title>
+<style>
+  :root { --color-cta:#c9a227; --color-cta-ink:#14202b; }
+  body { margin:0; font:16px/1.5 system-ui }
+  section { padding:24px }
+  .pill { display:inline-flex; padding:12px 24px; border-radius:999px; background:var(--color-cta); color:var(--color-cta-ink); font-weight:700; text-decoration:none }
+  .pill-arrow::after { content:" →" }
+  .pill-down { border-radius:8px; font-size:17px }
+  .cards { display:flex; gap:12px; list-style:none; padding:0 }
+  form button { border:0; border-radius:6px; padding:10px 20px; background:var(--color-cta); color:var(--color-cta-ink); font:inherit; font-weight:700 }
+</style></head><body>
+<main>
+  <!-- Each CTA its own design (the arrow pill, the squared pill, the form button); the puppy
+       cards share one design as a repeated set, which is one CTA by construction. -->
+  <section id="top" data-section-label="Top"><a class="pill pill-arrow" href="/available-puppies/">See the puppies available now</a></section>
+  <section id="litter" data-section-label="Litter"><ul class="cards">
+    <li><a class="pill pill-down" href="/available-puppies/roman/">Ask about Roman</a></li>
+    <li><a class="pill pill-down" href="/available-puppies/byrd/">Ask about Byrd</a></li></ul></section>
+  <section id="paperwork" data-section-label="Paperwork"><a class="pill" href="#enquiry">Ask us for the full terms</a></section>
+  <section id="enquiry" data-section-label="Enquiry"><form><button type="submit">Send my enquiry</button></form></section>
+</main>
+</body></html>
