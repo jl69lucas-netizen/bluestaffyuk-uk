@@ -512,8 +512,8 @@ const enquiry = label('enquiry');
   .mx-a h6 { margin: var(--space-4) 0 var(--space-2); font-size: 15px; font-weight: 700; color: var(--color-ink-2); }
   .mx-a > p { margin: 0 0 var(--space-3); font-size: 16px; line-height: 1.6; max-inline-size: 65ch; text-wrap: pretty; color: var(--color-text); }
   .mx-a > :global(.bl-img), .mx-a > :global(.art-pic) { margin-bottom: var(--space-4); }
-  .mx-a p a { color: var(--color-link); text-decoration: underline; text-underline-offset: 3px; }
-  .mx-a p a:hover { text-decoration-thickness: 2px; }
+  .mx-a p a:not(.mx-cta) { color: var(--color-link); text-decoration: underline; text-underline-offset: 3px; }
+  .mx-a p a:not(.mx-cta):hover { text-decoration-thickness: 2px; }
   .mx-a p a:focus-visible, .mx-cta:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
   .mx-a > :global(.city-photo-shelf) { margin: var(--space-4) 0; }
   .mx-act { margin: var(--space-4) 0 var(--space-5); }
