@@ -70,7 +70,18 @@ and the set counts once.
 
 **Spacing:** at least one section between any two body CTAs, so no two are on one screen at 1280.
 The board refuses two slots in neighbouring sections, and `cta-count-in-band` reports them on the
-built page.
+built page. The other way round matters too: on a long page, don't leave the reader five or more
+decision sections (deposit, delivery, papers, the guarantee section, `guarantee_days`) with no way to ask. Manchester runs about
+18,800px from the litter button to the form with no `ask` (measured 2026-10-08). Spread the
+slots down the page instead of bunching them under the hero.
+
+**When the band can't be met.** A short record (a stub, or a page whose only open sections are
+proof, FAQ and reviews) may have fewer eligible sections than its band's minimum. Say so plainly
+in the plan ("2 eligible sections, band 3–6"). Never put a button in an FAQ, review, trust,
+stats, contents or takeaways section to reach the number. The board then shows the count short,
+and the breeder decides whether the outline gains a section or the band changes in
+`data/design/cta-plan.json`. Plan only against the record's real section ids: a slot naming a
+section the record doesn't have fails the board.
 
 ---
 
@@ -135,7 +146,9 @@ page look alike and the palette never moves.
 
 **Rules:**
 
-- **Every CTA on a page has its own style.** Link CTAs are judged against link CTAs, and submits
+- **Every CTA on a page has its own style, as a reader sees it.** `cta-style-distinct` compares
+  what is visible, with a tolerance: a 1px font size, a zero-width border or weight 600 against
+  700 don't make a new design. A catalog style does. Link CTAs are judged against link CTAs, and submits
   against submits (they are different shapes by rule). The board refuses an approval that picks
   one style twice, and `cta-style-distinct` reports it on the built page. A repeated set is one
   style.
@@ -158,8 +171,10 @@ python3 scripts/cta_rules.py <slug> --propose
 python3 scripts/cta_rules.py <slug> --propose --write
 ```
 
-The proposal places the hero, one slot per matched body section (litter, deposit, paperwork,
-life) with a section left between buttons, and each form's submit. It gives every slot three
+The proposal places the hero, one slot per matched body section (deposit, litter, papers or
+the guarantee section (`guarantee_days`), life or household) with a section left between buttons, and each form's submit. It
+skips FAQ, review, trust, stats, contents and takeaways sections. An `ask` targets `#enquiry`,
+or the contact page when the page has no form of its own. It gives every slot three
 options in three different styles, rotating through the catalog so each slot's option (a) has a
 style of its own. **Then edit it to the page:** rewrite each option's words from the section's
 outline (working rule 8, never from a sibling page), make sure the three options in a slot are
