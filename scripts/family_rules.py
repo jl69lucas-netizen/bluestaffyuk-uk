@@ -220,6 +220,18 @@ def image_build_ready(board, ont):
     return IR.build_findings(board)
 
 
+# ── CTAs on the board (working rule 12, CTAs included; breeder, 2026-10-08) ────────────────
+# The logic is in scripts/cta_rules.py; imported here, at the bottom, for the same reason.
+import cta_rules as CR  # noqa: E402
+
+
+@register
+def cta_on_the_board(board, ont):
+    """Every call to action the page will carry is a slot on the board with three options the
+    breeder picks from; the picks never repeat a text or a style (bsuk-cta)."""
+    return CR.findings(board)
+
+
 # ── parity build Task 18: the primary keyword's placement (CAG §7a.7, §7d.6) ─────────────────
 # The logic and the ours-vs-top-5 table are scripts/keyword_metrics.py; imported at the
 # bottom for the same reason image_rules is. keyword_metrics imports pageboard only inside

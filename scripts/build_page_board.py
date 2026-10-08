@@ -30,6 +30,7 @@ import pageboard as PB
 import link_diversity as LD
 import verbatim_set_check as VSC
 import image_rules as IR          # block 7's image pickers (system-gaps build, Task 10b)
+import cta_rules as CR            # block 7e's CTA pickers (working rule 12, CTAs, 2026-10-08)
 import image_candidates as IC      # the image slots, walked in outline order (refusal labels)
 import keyword_metrics as KM       # block 4b, the ours-vs-top-5 table (parity build Task 18)
 # Board v2 (plan 2026-10-02, Task 7): six blocks, on project 5 boards only.
@@ -1009,7 +1010,7 @@ def signature_sections(board, ledger=None, slug=None, ig_plan=None):
     helper board_approve.py re-checks with. Original-photo slots (`og:<slot>`) are never in
     it — block 7d is a use/swap/skip proposal, not a required decision. `ig_plan`: PB.ig_plan(), if held."""
     return (picked_sections(board, ledger, slug) + IR.slots_needing_pick(board)
-            + PB.ig_slots_required(board, ig_plan))
+            + PB.ig_slots_required(board, ig_plan) + CR.slots_needing_pick(board))
 
 
 BLOCK2_LABELS = (("h1", "H1"), ("meta-title", "title tag"), ("meta-description", "meta description"))
@@ -1026,6 +1027,8 @@ def pick_anchor(pick_id):
         return "og-" + pick_id[3:]
     if pick_id.startswith(IR.PICK_PREFIX):
         return "img-" + pick_id[len(IR.PICK_PREFIX):]
+    if pick_id.startswith(CR.PICK_PREFIX):
+        return "cta-" + pick_id[len(CR.PICK_PREFIX):]
     return "choose-" + pick_id
 
 
@@ -1046,12 +1049,16 @@ def signature_labels(board, ledger=None, slug=None, ig_plan=None):
                       for o in OS.propose(board, root=PB.ROOT)})
     for s, _n, img in IC.iter_slots(board):
         owner.setdefault(IR.PICK_PREFIX + img["slot"], s)
+    for c in CR.slots(board):
+        owner.setdefault(CR.PICK_PREFIX + c["slot"], by_id.get(c["section"]))
     out = {}
     for pid in signature_sections(board, ledger, slug, ig_plan):
         if pid.startswith("ig:"):
             sec, label = owner.get(pid), f"infographic style ({pid})"
         elif pid.startswith(IR.PICK_PREFIX):
             sec, label = owner.get(pid), f"image ({pid})"
+        elif pid.startswith(CR.PICK_PREFIX):
+            sec, label = owner.get(pid), f"call to action ({pid})"
         elif pid.startswith("og:"):          # never required today; labelled if one becomes so
             sec, label = owner.get(pid), f"original photo ({pid})"
         else:
@@ -1904,6 +1911,10 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         f'{("<br><span class=" + chr(34) + "why" + chr(34) + ">alt: " + esc(a["alt"]) + "</span>") if a.get("alt") else ""}</div>'
         for a in board["assets"])
     parts.append(("7. Images & styles", f'<div class="slots">{slots}</div>' + IR.board_block(board, images)))
+    # 7e only on the pages the CTA rule binds (boarded from 2026-10-08), so every board built
+    # before renders byte-for-byte as it did.
+    if CR.applies(board):
+        parts.append(("7e. Calls to action", CR.board_block(board)))
 
     # 7b only on the pages the new-page rules bind, so the twelve built boards render
     # byte-for-byte as they did before these rules reached the board.

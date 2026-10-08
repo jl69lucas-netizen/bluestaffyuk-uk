@@ -58,6 +58,7 @@ import pageboard as PB
 import outline_matrix as OM
 from pageboard import file_token       # one `#` → `_` spelling for the whole board system
 import image_rules as IR               # the `img:<slot>` picks (system-gaps build, Task 10)
+import cta_rules as CR                 # the `cta:<slot>` picks (working rule 12, CTAs, 2026-10-08)
 
 # The build-gate checks approval never waits on (family_rules owns the one copy).
 APPROVAL_EXEMPT = PB.FR.APPROVAL_EXEMPT
@@ -396,6 +397,8 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
     for sid, pick in inbox.get("picks", {}).items():
         if sid.startswith(IR.PICK_PREFIX):
             continue                                  # an image pick, validated below
+        if sid.startswith(CR.PICK_PREFIX):
+            continue                                  # a CTA pick, validated below
         # Board v2 blocks 7c and 7d (build_page_board.py): an infographic style and an
         # original-photo slot's use/swap/skip. They name a slot, not a section, and live only in approval.picks.
         # The allowed values are PB.V2_VALUES: ig: sticker / chalk / comic (breeder q08) or
@@ -434,6 +437,9 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None, live=SKIP_LIVE, b
     bad = IR.validate_image_picks(b, inbox.get("picks", {}))
     if bad:
         raise PB.BoardError("image picks refused: " + "; ".join(bad))
+    bad = CR.validate_cta_picks(b, inbox.get("picks", {}))
+    if bad:
+        raise PB.BoardError("CTA picks refused: " + "; ".join(bad))
     for sid, note in inbox.get("notes", {}).items():
         # PAGE notes are not section notes. The board's "Navigation on this page" block
         # (spec §9 amendment 7) asks about furniture the SHELL mounts — the dial, the strip,
