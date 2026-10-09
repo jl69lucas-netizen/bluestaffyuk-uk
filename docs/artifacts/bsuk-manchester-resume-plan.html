@@ -38,7 +38,7 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 @media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
 </style>
 <div class="wrap">
-<header class="mast"><div><p class="eyebrow">BlueStaffyUK · Project 5 · Manchester</p><h1 class="title">Manchester resume, route timers and the faster lane</h1></div>
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK · Project 5 · Manchester</p><h1 class="title">Manchester resume, route timers, long meta and the faster lane</h1></div>
 <div class="meta"><span class="pill">status: awaiting the breeder's picks</span> <span class="pill">2026-10-09</span><br>docs/superpowers/plans/2026-10-09-manchester-resume-route-timers.md</div></header>
 <div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
 <nav class="toc" id="toc"></nav>
@@ -47,7 +47,7 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 <script type="text/markdown" data-title="Context">
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Land the cloud session's work (PR #2) locally, give the Route Map a start/finish timer for every page-run row and every agent, apply the breeder's eight open answers, and take Manchester from row 14 (Harden: impeccable) to row 21 (close) through one harden round instead of London's five or six.
+**Goal:** Land the cloud session's work (PR #2) locally, put the long-form meta styles on every page from Manchester on (Phase H, a test), give the Route Map a start/finish timer for every page-run row and every agent, apply the breeder's eight open answers, and take Manchester from row 14 (Harden: impeccable) to row 21 (close) through one harden round instead of London's five or six.
 
 **Architecture:** The timers follow the Route Map's own rule: nothing is guessed, everything is proved from disk. A row's start and finish come from the commit subjects the page run already writes (`(row N)`, `(rows A-B)`, `STOP k posted|approved`), scoped to commits since the page's session-open commit. `scripts/pipeline_status.py` adds them to its JSON; the `bsuk-route` mod only draws them. Agent timers reuse the `startedAt`/`endedAt` fields the `bsuk-agents` mod already keeps.
 
@@ -64,7 +64,7 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 | STOPs 1–4 | all approved | same, `stops_done: 4` |
 | Row 14, Harden: impeccable | **now** | no `impeccable` key in `data/page-runs/blue-staffy-puppies-manchester-uk.json` |
 | PR #2 (`manchester-page-gfr12s` → `manchester-page`) | open, 14 commits, fast-forward | `git merge-base --is-ancestor` |
-| PR #2 on this Mac | `npm run -s build` exit 0; `npm run check:all` exit 0, `check:parity` included (the cloud could not run it) | `scratchpad/pr2-summary.log` |
+| PR #2 on this Mac | `npm run -s build` 0; `npm run check:all` 0, `check:parity` included (the cloud could not run it); `test:py` 8173 passed, 1 failed (the contact-form endpoint test — the worktree had no `.env`; passes once `.env` is linked); meta gate 566 passed, 21 failed, all in the FORM family: with the id set, 7 still fail on `fixture must load` (status not 200) — classify in Task 1 | `scratchpad/pr2-*.log` |
 | Answer board | watched, auto-replies armed; 2 batches open, 8 questions, 0 answered | ArtifactData `batches` query |
 | Agents registry | 47 agents, 0 problems | `python3 scripts/build_agent_registry.py --check` |
 </script>
@@ -579,6 +579,249 @@ PR #2 exempts London and Manchester, because their boards were approved before t
 - [ ] In `page-run.md` rows 14–16, add: "One harden round: the findings of rows 14, 15 and 16 go to the breeder in one preview Artifact and one batch."
 - [ ] Run `npm run check:workflow` and `python3 -m pytest tests/py/test_doc_drift.py -q`, then commit: `docs(workflow): page lane and system lane; one harden round (breeder's pick, Option A)`.
 </script>
+<script type="text/markdown" data-title="Phase H — Long-form meta titles and descriptions (the breeder&#x27;s ruling, 2026-10-09)">
+**The ruling.** From Manchester on, every remaining location, comparison and blog page carries a long-form meta title and description, modelled on the sibling site's state location pages. **Not** London, **not** the homepage, **not** any page already built (`BUILT_BEFORE_SYSTEM_GAPS` in `scripts/family_rules.py`, plus `blue-staffy-puppies-london`). Each board offers **three styles**, about 150, 250 and 300 characters long. Each style follows the same order:
+
+1. starts with the primary keyword;
+2. then a number;
+3. positive words;
+4. useful keyword variations;
+5. long-form conversational search queries;
+6. ends with `BlueStaffyUK - <LSI/NLP keywords>`.
+
+Parts are divided by ` | `, three parts or four.
+
+**It is a test (breeder, 2026-10-09 22:27).** On these pages the old limits do not apply: the 70-character title ceiling and the 140–160 description band are lifted, and the title and the description each take the chosen style's length. The limits stay for London, the homepage and the built pages. Because it is a test, the switch is one data file: removing a page type from `page_types` in `data/design/meta-styles.json` returns those pages to the old bands, with no code change. Record each page's chosen style in the measurement ledger (row 19), so project 6 can compare click-through once Search Console is connected.
+
+**What the sibling's pages do** (fetched 2026-10-09 from its national page and its Colorado, Florida, Texas and California pages; full text in `docs/research/long-meta/sibling-meta-2026-10-09.json`):
+
+| Page | Title | Description |
+|---|---|---|
+| national | 3 parts, 122 chars: offer with a number · a cost question · brand + positives | 440 chars |
+| Colorado | 7 parts, 224 chars: primary keyword · "near me" query · brand + years · sizes · DNA tested · four cities · availability | 210 chars |
+| Florida | 3 parts, 138 chars: number + positive word + primary keyword · sizes · brand + delivery to cities | 154 chars |
+| Texas | 3 parts, 128 chars: positive word + primary keyword + sizes · positive word + breeder · brand + town | 229 chars |
+| California | 4 parts, 186 chars: primary keyword · "where to buy" question · a number + proof · brand + LSI terms | 294 chars |
+
+Each description opens on the primary keyword (or a question built from it), then the offer, the proofs, the delivery cities, and a call to action.
+
+**BSUK adaptation.**
+
+- **Every fact in a meta line is read from data, never typed.** Prices come from `data/price-matrix.json`, the deposit and delivery band from `data/settings.json`, the guarantee from `guarantee_label`, and the puppy count from `data/puppies.json`.
+- **A health or credential word is bounded by `data/quality/evidence-ledger.json`.** Kennel Club registration is confirmed (FAQ bank facts). A licence is never claimed.
+- **Conversational queries come from `data/queries/<slug>.json`.**
+- **Variations and LSI/NLP terms come from the approved research board's keywords and entities.**
+
+Example, Manchester, 150 style:
+
+`Blue Staffy Puppies Manchester | 2 Prices, Health-Tested Parents | Where Can I Buy a Blue Staffy Near Manchester? | BlueStaffyUK - KC Registered Staffordshire Bull Terriers`
+</script>
+<script type="text/markdown" data-title="Task 17: Fix the defect first: Manchester ships its migrated meta, not its approved pick">
+`dist/uk-locations/blue-staffy-puppies-manchester-uk/index.html` carries `<title>Blue Staffy Puppies Manchester UK</title>` and the same words as its description. The page passes `loc.title`/`loc.description` from `data/locations.json` to `CityShell` (`src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro:166`), while London reads its board's `meta_set` pick. No gate noticed, so the harness is charged first (CLAUDE.md, "When a defect escapes").
+
+**Files:** Create `tests/py/test_meta_from_board.py`; Modify `src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro`.
+
+- [ ] **Step 1: Write the failing test**
+
+```python
+"""Every rebuilt page with an approved board emits the meta its board picked, word for word."""
+import html
+import json
+import pathlib
+import re
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+REBUILT = json.loads((ROOT / "data/facts/rebuilt.json").read_text(encoding="utf-8"))
+
+
+def _slugs():
+    for entry in REBUILT:
+        slug = entry["slug"] if isinstance(entry, dict) else entry
+        board = ROOT / "data/boards" / f"{slug}.json"
+        if board.exists() and json.loads(board.read_text())["meta_set"]["pick"]["title"] is not None:
+            yield slug
+
+
+@pytest.mark.parametrize("slug", sorted(set(_slugs())))
+def test_the_built_page_carries_its_boards_picked_meta(slug):
+    board = json.loads((ROOT / "data/boards" / f"{slug}.json").read_text(encoding="utf-8"))
+    ms = board["meta_set"]
+    want_t = ms["titles"][ms["pick"]["title"]]
+    want_d = ms["descriptions"][ms["pick"]["description"]]
+    built = next((p for p in (ROOT / "dist").rglob("index.html") if p.parent.name == slug), None)
+    if built is None:
+        pytest.skip("run npm run -s build first")
+    page = built.read_text(encoding="utf-8")
+    title = html.unescape(re.search(r"<title>([^<]*)</title>", page).group(1))
+    desc = html.unescape(re.search(r'<meta name="description" content="([^"]*)"', page).group(1))
+    assert (title, desc) == (want_t, want_d)
+```
+
+- [ ] **Step 2:** Run `npm run -s build && python3 -m pytest tests/py/test_meta_from_board.py -q`. Expected: FAIL on `blue-staffy-puppies-manchester-uk` (and on any other page with the same fault: list them all before fixing).
+- [ ] **Step 3:** In the Manchester page, read the meta the way London does (`grep -n "meta_set\|pickedStyle" src/pages/uk-locations/blue-staffy-puppies-london*.astro` and use the same reader) and pass it to `CityShell`. Rebuild and re-run: PASS.
+- [ ] **Step 4:** Add the test to the per-page gate list in `scripts/gate_page.py` if that list names tests explicitly. Commit: `fix(manchester): the page emits its board's picked meta, not the migrated one; test for every rebuilt page`.
+</script>
+<script type="text/markdown" data-title="Task 18: `scripts/meta_styles.py` — the three styles, validated">
+**Files:** Create `scripts/meta_styles.py`, `data/design/meta-styles.json`, `tests/py/test_meta_styles.py`.
+
+- [ ] **Step 1: The style spec** (`data/design/meta-styles.json`)
+
+```json
+{
+  "applies_from": "blue-staffy-puppies-manchester-uk",
+  "exempt_extra": ["blue-staffy-puppies-london"],
+  "page_types": ["location", "comparison", "blog"],
+  "divider": " | ",
+  "brand_lead": "BlueStaffyUK - ",
+  "styles": {
+    "s150": {"target": 150, "tolerance": 10, "parts": [3, 4]},
+    "s250": {"target": 250, "tolerance": 10, "parts": [4]},
+    "s300": {"target": 300, "tolerance": 10, "parts": [4]}
+  },
+  "positive_words": ["healthy", "happy", "friendly", "loving", "well-socialised", "trusted", "ethical",
+                     "home-raised", "beautiful", "gentle", "affectionate", "family-ready"],
+  "query_starts": ["how", "what", "where", "which", "why", "when", "who", "can", "do", "does", "is", "are", "should"]
+}
+```
+
+- [ ] **Step 2: Write the failing tests**
+
+```python
+import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
+import meta_styles as MS  # noqa: E402
+
+CTX = {"primary": "blue staffy puppies manchester",
+       "variations": ["blue staffordshire bull terrier puppies", "staffy puppies for sale"],
+       "lsi": ["kc registered", "staffordshire bull terriers", "health-tested parents"],
+       "numbers": {"2", "500", "1,500", "1,700"}}
+GOOD = ("Blue Staffy Puppies Manchester | 2 Prices, Healthy Health-Tested Parents"
+        " | Where Can I Buy Staffy Puppies For Sale Near Manchester?"
+        " | BlueStaffyUK - KC Registered Staffordshire Bull Terriers")
+
+
+def test_a_line_built_to_the_order_passes():
+    assert MS.problems(GOOD, "s150", CTX, tolerance=50) == []
+
+
+def test_each_missing_ingredient_is_named():
+    bad = "Staffy Puppies | Nice | BlueStaffyUK"
+    names = {p.split(":")[0] for p in MS.problems(bad, "s150", CTX)}
+    assert {"primary-first", "number", "positive", "variation", "query", "brand-last", "lsi", "length"} <= names
+
+
+def test_a_number_not_in_the_data_is_refused():
+    assert any(p.startswith("number") for p in MS.problems(GOOD.replace("2 Prices", "7 Prices"), "s150", CTX, tolerance=50))
+
+
+def test_the_rule_applies_from_manchester_on_but_never_to_london_or_the_built_twelve():
+    assert MS.applies("blue-staffy-puppies-manchester-uk", "location")
+    assert MS.applies("blue-staffy-puppies-leeds-uk", "location")
+    assert not MS.applies("blue-staffy-puppies-london", "location")
+    assert not MS.applies("index", "home")
+    assert not MS.applies("buy-blue-staffy-puppies-uk", "location")
+```
+
+- [ ] **Step 3:** Run `python3 -m pytest tests/py/test_meta_styles.py -q`. Expected: FAIL, `No module named 'meta_styles'`.
+- [ ] **Step 4: Implement** (`scripts/meta_styles.py`)
+
+```python
+#!/usr/bin/env python3
+"""meta_styles.py — the long-form meta title and description styles (breeder's ruling, 2026-10-09).
+
+From Manchester on, location, comparison and blog pages offer three styles (about 150, 250 and
+300 characters), each in one order: primary keyword first, a number read from data, a positive
+word, a keyword variation, a conversational query, and `BlueStaffyUK - <LSI/NLP terms>` last,
+parts divided by " | ". London, the homepage and the pages built before are never touched.
+
+  python3 scripts/meta_styles.py <slug>      # check the board's meta_set against the styles
+"""
+import json
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+SPEC = json.loads((ROOT / "data/design/meta-styles.json").read_text(encoding="utf-8"))
+sys.path.insert(0, str(ROOT / "scripts"))
+import family_rules as FR  # noqa: E402
+
+
+def applies(slug, page_type):
+    return (page_type in SPEC["page_types"] and slug not in SPEC["exempt_extra"]
+            and FR.is_new_page(slug))
+
+
+def problems(line, style, ctx, tolerance=None):
+    """[`check: why`] for one meta line against one style; [] when it follows the order."""
+    st = SPEC["styles"][style]
+    tol = st["tolerance"] if tolerance is None else tolerance
+    low = line.lower()
+    parts = [p.strip() for p in line.split(SPEC["divider"].strip())]
+    out = []
+    if not low.startswith(ctx["primary"].lower()):
+        out.append("primary-first: the line must open on the primary keyword")
+    nums = set(re.findall(r"\d[\d,]*", line))
+    if not nums or not nums <= set(ctx["numbers"]):
+        out.append(f"number: needs a number from the data ({sorted(ctx['numbers'])}), found {sorted(nums)}")
+    if not any(re.search(rf"\b{re.escape(w)}\b", low) for w in SPEC["positive_words"]):
+        out.append("positive: no positive word from data/design/meta-styles.json")
+    if not any(v.lower() in low for v in ctx["variations"]):
+        out.append("variation: no keyword variation from the research board")
+    if not any(p.lower().split(" ", 1)[0] in SPEC["query_starts"] and p.endswith("?") for p in parts):
+        out.append("query: no part is a conversational question")
+    last = parts[-1] if parts else ""
+    if not last.startswith(SPEC["brand_lead"].strip(" ")):
+        out.append("brand-last: the last part must start 'BlueStaffyUK - '")
+    if sum(t.lower() in last.lower() for t in ctx["lsi"]) < 1:
+        out.append("lsi: the brand part carries no LSI/NLP term from the research board")
+    if len(parts) not in st["parts"]:
+        out.append(f"parts: {len(parts)} parts, style {style} takes {st['parts']}")
+    if abs(len(line) - st["target"]) > tol:
+        out.append(f"length: {len(line)} chars, style {style} is {st['target']}±{tol}")
+    return out
+
+
+def context(slug):
+    """The words a line may use, read from the approved research board and the data files."""
+    rb = json.loads((ROOT / "data/research-boards" / f"{slug}.json").read_text(encoding="utf-8"))
+    kw = rb.get("keywords") or {}
+    primary = (kw.get("primary") or [""])[0] if isinstance(kw, dict) else ""
+    variations = (kw.get("secondary") or []) + (kw.get("variants") or []) if isinstance(kw, dict) else []
+    lsi = (kw.get("lsi") or []) + [e.get("name", "") for e in rb.get("entities") or [] if isinstance(e, dict)]
+    prices = json.loads((ROOT / "data/price-matrix.json").read_text(encoding="utf-8"))
+    settings = json.loads((ROOT / "data/settings.json").read_text(encoding="utf-8"))
+    pups = json.loads((ROOT / "data/puppies.json").read_text(encoding="utf-8"))
+    nums = set(re.findall(r"\d[\d,]*", json.dumps(prices) + json.dumps(
+        {k: settings.get(k) for k in ("deposit", "delivery_min", "delivery_max", "guarantee_label")})))
+    nums.add(str(len(pups if isinstance(pups, list) else pups.get("puppies", []))))
+    return {"primary": primary, "variations": variations, "lsi": lsi, "numbers": nums}
+```
+
+Before Step 5, open `data/research-boards/blue-staffy-puppies-manchester-uk.json` and `data/settings.json` once. Correct the key names `context()` reads (`keywords.primary`, `secondary`, `variants`, `lsi`, `entities[].name`, and the deposit/delivery keys) to the names those files really use. A wrong key leaves a list empty, and Step 6's real-page run will then show a check firing on every line.
+
+- [ ] **Step 5:** Run `python3 -m pytest tests/py/test_meta_styles.py -q`. Expected: PASS.
+- [ ] **Step 6:** Add the `main()` CLI. It loads `data/boards/<slug>.json`, maps `meta_set.titles[i]`/`descriptions[i]` to styles `s150`/`s250`/`s300` by index, prints every problem and exits 1 on any. Run it on Manchester: every current line FAILs (all are under 160). That is expected until Task 19.
+- [ ] **Step 7:** Commit: `feat(meta): the three long-form meta styles and their checker (breeder's ruling 2026-10-09)`.
+</script>
+<script type="text/markdown" data-title="Task 19: The board and the gates take the long styles for the new pages only">
+**Files:** Modify `scripts/pageboard.py` (the `meta-length` block near line 2481), `scripts/evidence_audit.py:182`, `scripts/check_city_canvas.py:508`, `scripts/build_page_board.py` (meta block); Test `tests/py/test_meta_styles.py`.
+
+- [ ] **Step 1: Failing test.** A board whose slug `meta_styles.applies()` accepts gets no `meta-length` FAIL for a 250-character description, and does get `meta-style` FAILs from `meta_styles.problems()`. A board for `blue-staffy-puppies-london` still gets the old 140–160 band and the 70-character ceiling.
+- [ ] **Step 2:** In `pageboard.py`, branch on `meta_styles.applies(slug, board["meta"]["page_type"])`. The new pages are checked with `meta_styles.problems` per style index; the others keep `DESC_MIN/DESC_MAX` and `title_ceiling`. Make the same branch in `evidence_audit.py` (title budget) and `check_city_canvas.py` (the 160 cap).
+- [ ] **Step 3:** On the board, label the meta block's three options **Style 150 / Style 250 / Style 300**, each showing the title and the description with their character counts, and a Google-style preview that shows where the visible cut falls (about 60 characters for a title, 155 for a description).
+- [ ] **Step 4:** Write the rule into `rules/copy.md` as `long-meta-styles` (enforced: test, naming `tests/py/test_meta_styles.py`), and add its row to `data/quality/rule-index.json`. Update the `bsuk-meta-description-agent` and the `bsuk-location-page-builder`, `bsuk-comparison-page-builder` and `bsuk-blog-post` skills to point at it. Run `python3 scripts/build_agent_registry.py` and `npm run check:all`.
+- [ ] **Step 5:** Commit: `rules(meta): long-form meta styles on the board and in the gates, new pages only; London and the built pages keep the old bands`.
+</script>
+<script type="text/markdown" data-title="Task 20: Manchester&#x27;s three styles, picked on its board">
+- [ ] **Step 1:** Write three style options for Manchester, each title and description its own line, from `meta_styles.context("blue-staffy-puppies-manchester-uk")`. Then run `python3 scripts/meta_styles.py blue-staffy-puppies-manchester-uk` until it is clean. Every figure in them must appear in the data, and none may repeat another city's line (`python3 scripts/dup_content_audit.py --headers`).
+- [ ] **Step 2:** Put them in the board record's `meta_set` (new pick: `null`). Republish the board together with the CTA block 7e if Phase D is on, so this is **one** sitting (Option A). Post one batch question: "Pick a meta style for Manchester".
+- [ ] **Step 3:** After the pick is saved on the board, run `python3 scripts/board_approve.py blue-staffy-puppies-manchester-uk`, rebuild, run `python3 -m pytest tests/py/test_meta_from_board.py tests/py/test_meta_styles.py -q` and `npm run check:all`, then commit `feat(manchester): long-form meta, Style <n>, picked on the board`.
+</script>
 <script type="text/markdown" data-title="Phase G — System check: workflow, boards, skills, agents">
 
 </script>
@@ -607,6 +850,6 @@ PR #2 exempts London and Manchester, because their boards were approved before t
     sec.appendChild(body);doc.appendChild(sec);
     var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
   });
-  document.getElementById('copy-all').addEventListener('click',function(){copy('# '+'Manchester Resume, Route Timers and the Faster Lane'+'\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# '+'Manchester Resume, Route Timers, Long Meta and the Faster Lane'+'\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
 })();
 </script>
