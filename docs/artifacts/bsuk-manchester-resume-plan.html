@@ -135,12 +135,14 @@ The PR names `test_page_board::test_refusal_list_renders_in_a_browser…` as a k
 ```
 </script>
 <script type="text/markdown" data-title="Task 2: Fast-forward `manchester-page` to the PR head">
-- [ ] **Step 1: Merge locally (fast-forward only)**
+- [ ] **Step 1: Put the PR's 14 commits under this session's commits**
+
+This session's plan commit (`ac6d0de8`) already sits on `manchester-page`, so a plain fast-forward is no longer possible. Replay it on top of the PR head instead (it touches only new files, so there is nothing to conflict):
 
 ```bash
-git -C /Users/apple/Downloads/BSUK merge --ff-only origin/manchester-page-gfr12s
+git -C /Users/apple/Downloads/BSUK rebase origin/manchester-page-gfr12s
 ```
-Expected: `Fast-forward`, HEAD `a0448ea4`.
+Expected: `Successfully rebased`, `git log --oneline -3` shows this session's commits above `a0448ea4`.
 
 - [ ] **Step 2: Remove the verification worktree**
 
