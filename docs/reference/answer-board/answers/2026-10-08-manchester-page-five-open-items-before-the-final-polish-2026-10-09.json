@@ -1,0 +1,73 @@
+{
+  "answers": [
+    {
+      "choice": "a",
+      "choiceLabel": "\"Yes. Maggie, our dam, and Jones, our sire, are both fully vaccinated, and both have had DNA tests for L-2-HGA and HC-HSF4 and eye and elbow screening, with the certificates shared on request.\"",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "question": "May we reword the health-testing answer in the middle FAQ?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "\"Your £500 is up to 70% refundable if you change your mind up to 1 day before collection or delivery.\"",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "question": "May we remove the doubled \"change your mind\"?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Keep the bar",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "question": "Keep the thin navy-to-gold bar above the prices strip?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Keep the smaller phone headings everywhere",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "question": "Phone section headings about 1px smaller on every city page, London included?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "b",
+      "choiceLabel": "Maggie, as the board said (her caption names her)",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "question": "Which photo goes beside the health and viewing FAQ?",
+      "status": "answered",
+      "text": ""
+    },
+    {
+      "choice": "a",
+      "choiceLabel": "Keep it",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "question": "Is the AI-made preparation photo all right beside the last FAQ?",
+      "status": "answered",
+      "text": ""
+    }
+  ],
+  "at": "2026-10-09T22:00:11.894Z",
+  "batchId": "2026-10-08-manchester-page-five-open-items-before-the-final-polish",
+  "counts": {
+    "answered": 6,
+    "empty": 0,
+    "not_yet": 0,
+    "skip": 0
+  },
+  "id": "s-2026-10-09T22-00-11-893Z"
+}
