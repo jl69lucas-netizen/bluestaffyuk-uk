@@ -96,9 +96,9 @@ const ANSWERS: Record<string, { a: string; source: string }> = {
   },
   // ── middle (outline row 12) ──
   'Are the Parents of Every Blue Staffy Puppy You Breed Health-Tested?': {
-    // about-health-tests, its "KC-registered with full pedigrees" in the ledger's words
-    // (parents-kc-registered: "Maggie and Jones are both Kennel Club registered").
-    a: `Yes. Maggie, our dam, and Jones, our sire, are both Kennel Club registered and fully vaccinated, and both have had DNA tests for ${TEST_A} and ${TEST_B} and eye and elbow screening.`,
+    // about-health-tests; Kennel Club registration is left to the parents section, and the
+    // certificates are on request (open items q01 (a), 2026-10-09).
+    a: `Yes. Maggie, our dam, and Jones, our sire, are both fully vaccinated, and both have had DNA tests for ${TEST_A} and ${TEST_B} and eye and elbow screening, with the certificates shared on request.`,
     source: 'data/faq.json about-health-tests; data/bsuk-ontology.json (the two test names)',
   },
   'Is It Wise to See the Mother and Puppy Together Before Money Changes Hands?': {

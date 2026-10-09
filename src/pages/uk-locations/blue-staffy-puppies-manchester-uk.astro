@@ -206,7 +206,7 @@ const enquiry = label('enquiry');
         <h4>{head('deposit', 4, 0, 0)}</h4>
         <p>By bank transfer, once we have confirmed the puppy is still free, and all of it comes off the price of {BOY_PRICE} for a boy or {GIRL_PRICE} for a girl.</p>
         <h5>{head('deposit', 5, 0, 0, 0)}</h5>
-        <p>If you change your mind, your {DEPOSIT} is {refundClause()}.</p>
+        <p>Your {DEPOSIT} is {refundClause()}.</p>
         <h6>{head('deposit', 6, 0, 0, 0, 0)}</h6>
         <p>Up to the day before collection or delivery, the line that clause draws, so tell us as early as you can.</p>
       </div>
@@ -310,8 +310,8 @@ const enquiry = label('enquiry');
     side="end" credit="Photo: Jones, the sire of this litter" />
 
   <CityRowsBesideAPhoto id="faq-middle" data-section-label={label('faq-middle')} block={faqHealth.key} heading={faqHealth.heading}
-    items={faqHealth.items} side="start" photo={BYRD.card_photo} photoAlt={puppyAlt(BYRD, 'short')}
-    caption={`${BYRD.name}, one of our ${BOYS} boys`}
+    items={faqHealth.items} side="start" photo="maggie-blue-staffy-dam-with-pups.webp" photoAlt={frameAlt('faq-middle', 'maggie-blue-staffy-dam-with-pups.webp')}
+    caption="Maggie, our dam and the mother of this litter"
     lede="Health, vaccinations and what a good breeder lets you see, answered the way we work.">
     <p><a href="/buy-staffy-puppies-for-sale-uk/">How we compare with a classified puppy advert</a> is set out point by point on our Staffy puppies page.</p>
   </CityRowsBesideAPhoto>

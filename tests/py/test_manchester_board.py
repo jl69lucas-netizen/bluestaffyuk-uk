@@ -443,10 +443,11 @@ FRAME_ALTS = ROOT / "data/boards/frame-alts" / f"{SLUG}.json"
 
 def test_the_frame_repeat_alts_are_recorded_new_and_after_a_first_use(board):
     """STOP 4 q08 (a): the four frame repeats (two reviews, the newsletter, the enquiry form)
-    carry the approved new alts, read by Task 44 from data/boards/frame-alts/. Each photo is
-    already shown by a body slot first, and no alt copies the served one or a board alt."""
+    carry the approved new alts, read by Task 44 from data/boards/frame-alts/; open items q05 (b)
+    (2026-10-09) added Maggie beside the middle FAQ as a fifth repeat. Each photo is already
+    shown by a body slot first, and no alt copies the served one or a board alt."""
     rec = json.loads(FRAME_ALTS.read_text(encoding="utf-8"))
-    assert rec["slug"] == SLUG and len(rec["rows"]) == 4
+    assert rec["slug"] == SLUG and len(rec["rows"]) == 5
     served = C.served_alts()
     ids = {s["id"] for s in board["sections"]}
     by_file = defaultdict(set)
@@ -454,7 +455,7 @@ def test_the_frame_repeat_alts_are_recorded_new_and_after_a_first_use(board):
         if a["file"]:
             by_file[_photo(a["file"])].add(" ".join(PB.tokens(a["alt"])))
     alts = [r["alt"] for r in rec["rows"]]
-    assert len(set(alts)) == 4
+    assert len(set(alts)) == 5
     for r in rec["rows"]:
         assert r["section"] in ids, r["section"]
         assert by_file[_photo(r["file"])], f"{r['file']}: no body slot shows it first"

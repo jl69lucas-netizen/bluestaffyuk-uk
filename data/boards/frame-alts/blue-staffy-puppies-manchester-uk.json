@@ -11,6 +11,14 @@
       "alt": "Jones, our sire, sitting up on the carpet in front of his tartan-covered crate"
     },
     {
+      "section": "faq-middle",
+      "component": "CityRowsBesideAPhoto",
+      "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
+      "first_use": "slot deposit-questions, under its served alt",
+      "alt": "Maggie, the mother of this litter, resting on the sofa with two of her puppies beside her",
+      "source": "docs/reference/answer-board/answers/2026-10-08-manchester-page-five-open-items-before-the-final-polish-2026-10-09.md q05 (b), 2026-10-09; alt written from the picture"
+    },
+    {
       "section": "review-bottom",
       "component": "CityThreePlates",
       "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
