@@ -28,6 +28,7 @@ import {
   siblingSlugsFor,
   isSpecimen,
   loadWhitelist,
+  loadDataValues,
   normalise,
   REPO,
   type Target,
@@ -340,6 +341,50 @@ test.describe('dup-no-sibling-crossover tokenises exactly like dup_content_audit
     expect(r.defects.length, 'a 12-word run Python reports must fire here too').toBe(1);
     expect(r.defects[0].count).toBe(1);
     expect(r.defects[0].message).toContain(`12w vs /sibling-contraction/ "${SHARED_12}"`);
+  });
+
+  // The declared data values (scripts/outline_provenance_check.py DATA_VALUE_SOURCES) are printed
+  // whole on every page that states them, so a shared run is cut around them exactly as around a
+  // whitelist stem (2026-10-08: the refund clause fired on Manchester against London).
+  test('a declared data value shared with a sibling is cut out, not reported', async ({ page }, testInfo) => {
+    onlyOnce(testInfo);
+    const res = await page.goto(fixtureUrl('known_good', 'dup-data-value-shared'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const check = registry.find((c) => c.id === 'dup-no-sibling-crossover')!;
+    const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'must have compared against the corpus').toBeGreaterThanOrEqual(1);
+    expect(r.defects.map((d) => d.message), 'the refund clause is a data value, not copy').toEqual([]);
+  });
+
+  test('copy beside a declared data value still fires', async ({ page }, testInfo) => {
+    onlyOnce(testInfo);
+    const res = await page.goto(fixtureUrl('known_broken', 'dup-data-value-adjacent'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const check = registry.find((c) => c.id === 'dup-no-sibling-crossover')!;
+    const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.defects.length, 'the sentence after the clause is a real crossover').toBe(1);
+    expect(r.defects[0].message).toContain('vs /sibling-data-value/ "every puppy goes home with a folder');
+    expect(r.defects[0].message).not.toContain('refundable');
+  });
+
+  test('cta-style-distinct: two pills told apart only by invisible differences are one design', async ({ page }, testInfo) => {
+    onlyOnce(testInfo);
+    const res = await page.goto(fixtureUrl('known_broken', 'cta-style-near-twin'));
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const check = registry.find((c) => c.id === 'cta-style-distinct')!;
+    const r = await runCheck(check, page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(2);
+    expect(r.defects.length, 'a 1px size, a zero-width border and 600 vs 700 are not a design').toBe(1);
+  });
+
+  test('the data values are read from outline_provenance_check.py, not copied', ({}, testInfo) => {
+    onlyOnce(testInfo);
+    const fromPy = py(
+      `import sys, json; sys.path.insert(0, 'scripts'); import outline_provenance_check as o\n` +
+        `print(json.dumps([' '.join(t) for t in o.data_values('.')]))`,
+    ) as string[];
+    expect(fromPy.length, 'DATA_VALUE_SOURCES resolves to at least the refund clause').toBeGreaterThanOrEqual(2);
+    expect(loadDataValues().map((v) => v.join(' '))).toEqual(fromPy);
   });
 
   test('normalise() and the whitelist stems match Python token for token', ({}, testInfo) => {

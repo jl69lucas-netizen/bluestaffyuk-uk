@@ -15,7 +15,7 @@ hand-written and is preserved across regenerations.
 
 <!-- generated:start -->
 
-## Agents — 46
+## Agents — 47
 
 Every agent carries `model: inherit`; effort is the only per-agent cost lever, and
 `data/agent-registry.json` is GENERATED from the agents' own frontmatter by
@@ -41,7 +41,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-strategy-synthesizer.md` | Use after the competitor research has run (gap matrix, keyword-gap list, competitor reports, LLM intel) and BlueStaffyUK needs a content … |
 | `.claude/agents/bsuk-structure-architect.md` | The BSUK silo architect — maps content clusters into Silo (top-down authority) or Reverse Silo (bottom-up ranking) shapes across … |
 
-### `tier_high` — 15
+### `tier_high` — 16
 
 | Agent | Does |
 |---|---|
@@ -49,6 +49,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-coat-variant-builder.md` | Builds the coat-colour and variant pages of the BlueStaffyUK comparison cluster — blue against black, blue against blue and white, and any … |
 | `.claude/agents/bsuk-comparison-builder.md` | Builds Staffy comparison pages — male vs female, Blue Staffy vs another breed — at the URLs the project-5 strategy gives them |
 | `.claude/agents/bsuk-competitive-keyword-gap-agent.md` | Use after bsuk-competitor-intel has written competitor reports and the BSUK profile, to find the topics BlueStaffyUK's competitors have a … |
+| `.claude/agents/bsuk-cta-agent.md` | Plans, boards and audits every call to action on a BlueStaffyUK page — where each button goes from hero to contact form, how many the page … |
 | `.claude/agents/bsuk-faq-agent.md` | Builds and audits FAQ sections for any BlueStaffyUK page using the QAB framework — 6–12 questions per page from real buyer language … |
 | `.claude/agents/bsuk-gsc-analytics.md` | Search Console analysis — INACTIVE UNTIL PROJECT 6 |
 | `.claude/agents/bsuk-hub-builder.md` | Builds aggregator hub pages that link to their spokes — the puppy hub (/available-puppies/), the location hub (/uk-locations/) with the … |
@@ -83,7 +84,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
 
-## Skills — 66
+## Skills — 67
 
 One SKILL.md per directory under `.claude/skills/`. The `bsuk-*` set is the ported
 system; the rest are the generic writing, research and framework skills.
@@ -99,6 +100,7 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/bsuk-component-variations/SKILL.md`
 - `.claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md`
 - `.claude/skills/bsuk-contact-form/SKILL.md`
+- `.claude/skills/bsuk-cta/SKILL.md`
 - `.claude/skills/bsuk-cta-strategy/SKILL.md`
 - `.claude/skills/bsuk-duplicate-content-gate/SKILL.md`
 - `.claude/skills/bsuk-entity-agent/SKILL.md`
@@ -165,7 +167,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 117
+## Scripts — 118
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -208,6 +210,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/city_must_differ.py`
 - `scripts/city_side_by_side.mjs`
 - `scripts/competitor_registry_check.py`
+- `scripts/cta_rules.py`
 - `scripts/design_system_publish_manifest.py`
 - `scripts/dup_content_audit.py`
 - `scripts/env_loader.py`

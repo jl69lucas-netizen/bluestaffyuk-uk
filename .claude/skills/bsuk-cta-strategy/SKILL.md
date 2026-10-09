@@ -1,12 +1,23 @@
 ---
 name: bsuk-cta-strategy
-description: "CTA strategy guide for BSUK — 22 homepage sections × 3 voice options = 66 conversion-ready CTAs. Three voices: Trust & Security, Direct & Transactional, Ethical & Quality. Use when writing or auditing any page section's CTA copy."
+description: "CTA word bank for BSUK — 22 homepage sections × 3 voice options = 66 CTA lines (Trust & Security, Direct & Transactional, Ethical & Quality). Use when drafting a CTA's words in a voice; placement, count, types, styles and the board picks are the bsuk-cta skill."
 allowed-tools: [Read, Write, Bash]
 ---
 
 ## Golden Rule
 > Use Claude Code and Playwright CLI to solve problems first.
 > Only call MCPs, external CLIs, or APIs if the specific task genuinely cannot be done with Claude Code alone.
+
+---
+
+## Placement, count, type, style and the board — see `bsuk-cta`
+
+Where each CTA goes from hero to contact form, how many a page carries, the CTA types, the
+button-text rules, the style catalog and putting every CTA on the page board for the breeder to
+pick all live in `.claude/skills/bsuk-cta/SKILL.md` (the breeder's request, 2026-10-08). This
+skill is the word bank for a CTA's line and button text, in three voices; `bsuk-cta`'s rules win
+where the two disagree (2–8 words, no figure in a button, never two near-identical buttons on a
+page).
 
 ---
 

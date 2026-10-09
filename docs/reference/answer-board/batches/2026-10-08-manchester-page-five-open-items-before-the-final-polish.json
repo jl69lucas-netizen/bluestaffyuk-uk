@@ -1,0 +1,144 @@
+{
+  "askedAt": "2026-10-08T01:06:48Z",
+  "id": "2026-10-08-manchester-page-five-open-items-before-the-final-polish",
+  "intro": "Screenshots of each item are on the preview page: https://claude.ai/artifact/3rVRn48yHYp2uYDG44XDYa. The page is built and passes its gates, and stays noindex until you approve it. Claude's recommendation is marked on each question.",
+  "project": "project-5",
+  "questions": [
+    {
+      "context": "Our evidence check flags two problems in \"Are the Parents of Every Blue Staffy Puppy You Breed Health-Tested?\": the answer repeats Kennel Club registration (the page already says it), and it names the DNA tests without saying the certificates are shared on request. Now: \"Yes. Maggie, our dam, and Jones, our sire, are both Kennel Club registered and fully vaccinated, and both have had DNA tests for L-2-HGA and HC-HSF4 and eye and elbow screening.\" Recommended: (a). Why: it clears both errors in scripts/evidence_audit.py, and every fact in it is one you have already given us. Trade-off: this answer no longer says the parents are Kennel Club registered; the parents section still says it.",
+      "key": "q01",
+      "kind": "choice",
+      "n": 1,
+      "options": [
+        {
+          "id": "a",
+          "label": "\"Yes. Maggie, our dam, and Jones, our sire, are both fully vaccinated, and both have had DNA tests for L-2-HGA and HC-HSF4 and eye and elbow screening, with the certificates shared on request.\""
+        },
+        {
+          "id": "b",
+          "label": "Keep it as it is"
+        },
+        {
+          "id": "c",
+          "label": "Other wording (type it)"
+        }
+      ],
+      "question": "May we reword the health-testing answer in the middle FAQ?",
+      "section": 0,
+      "where": "src/lib/manchesterFaq.ts, the middle FAQ (preview question 1)."
+    },
+    {
+      "context": "In the deposit section, under \"What Happens to My Money If I Pull Out Before Collection?\", the answer reads: \"If you change your mind, your £500 is up to 70% refundable if you change your mind up to 1 day before collection or delivery.\" Your refund wording already contains the phrase, so the opening adds it a second time. Recommended: (a). Why: it keeps your refund wording whole and drops only the repeat. Trade-off: none.",
+      "key": "q02",
+      "kind": "choice",
+      "n": 2,
+      "options": [
+        {
+          "id": "a",
+          "label": "\"Your £500 is up to 70% refundable if you change your mind up to 1 day before collection or delivery.\""
+        },
+        {
+          "id": "b",
+          "label": "Keep it as it is"
+        }
+      ],
+      "question": "May we remove the doubled \"change your mind\"?",
+      "section": 0,
+      "where": "the Manchester page, deposit section (preview question 5)."
+    },
+    {
+      "context": "The design rule needs a visible line between the hero and the strip of figures under it. The bar uses the same blend as the delivery range bar inside the strip. Recommended: (a). Why: without it, the strip has only a change of background to set it apart from the hero, which the render gate counts as a defect. Trade-off: one more thin line near the top of the page.",
+      "key": "q03",
+      "kind": "choice",
+      "n": 3,
+      "options": [
+        {
+          "id": "a",
+          "label": "Keep the bar"
+        },
+        {
+          "id": "b",
+          "label": "Remove it (the gate then needs another way to separate the two)"
+        }
+      ],
+      "question": "Keep the thin navy-to-gold bar above the prices strip?",
+      "section": 1,
+      "where": "the strip under the hero (preview question 2, with and without, desktop and phone)."
+    },
+    {
+      "context": "On a phone, Manchester's longest heading ran to four lines; this change brings it to three. The setting is shared, so London's phone headings get at most 1px smaller too. Desktop is unchanged. Recommended: (a). Why: headings stay inside the 20–22px phone range and no city heading gains a line. Trade-off: London changes after you had approved it.",
+      "key": "q04",
+      "kind": "choice",
+      "n": 4,
+      "options": [
+        {
+          "id": "a",
+          "label": "Keep the smaller phone headings everywhere"
+        },
+        {
+          "id": "b",
+          "label": "Undo it everywhere, and shorten the Manchester heading instead"
+        },
+        {
+          "id": "c",
+          "label": "Manchester only, London back as it was"
+        }
+      ],
+      "question": "Phone section headings about 1px smaller on every city page, London included?",
+      "section": 1,
+      "where": "every city page on a phone (preview question 3, before and now, Manchester and London)."
+    },
+    {
+      "context": "The board you approved says Maggie. At build we used Byrd instead, because Maggie's photo already sits beside the review just before the last FAQ, so she would appear twice in a short scroll. Recommended: (a). Why: no photo repeats close together. Trade-off: it differs from the approved board, which is why we are asking.",
+      "key": "q05",
+      "kind": "choice",
+      "n": 5,
+      "options": [
+        {
+          "id": "a",
+          "label": "Byrd, as built"
+        },
+        {
+          "id": "b",
+          "label": "Maggie, as the board said (her caption names her)"
+        }
+      ],
+      "question": "Which photo goes beside the health and viewing FAQ?",
+      "section": 1,
+      "where": "the middle FAQ block (preview question 4, Byrd and a Maggie mock-up side by side)."
+    },
+    {
+      "context": "It shows a bed, a crate and two bowls set out for a new puppy, captioned \"A bed, a crate and two bowls, ready before a puppy comes home\". It is AI-made, not one of your photos. Recommended: (a). Why: none of the served photos shows a home made ready, and the image has no text on it. Trade-off: it is the one AI-made photo in a FAQ frame on the page.",
+      "key": "q06",
+      "kind": "choice",
+      "n": 6,
+      "options": [
+        {
+          "id": "a",
+          "label": "Keep it"
+        },
+        {
+          "id": "b",
+          "label": "Use one of your own photos instead (name it, or say \"you pick\")"
+        }
+      ],
+      "question": "Is the AI-made preparation photo all right beside the last FAQ?",
+      "section": 1,
+      "where": "the last FAQ block (preview question 4, desktop and phone)."
+    }
+  ],
+  "receivedAt": "",
+  "receivedCommit": "",
+  "sections": [
+    {
+      "lead": "",
+      "title": "Wording"
+    },
+    {
+      "lead": "",
+      "title": "How it looks (screenshots on the preview page)"
+    }
+  ],
+  "status": "open",
+  "title": "Manchester page · five open items before the final polish"
+}

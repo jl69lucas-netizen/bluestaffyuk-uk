@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>two CTAs, one message</title>
+<style>
+  :root { --color-cta:#c9a227; --color-cta-ink:#14202b; }
+  body { margin:0; font:16px/1.5 system-ui }
+  section { padding:24px }
+  .pill { display:inline-flex; padding:12px 24px; border-radius:999px; background:var(--color-cta); color:var(--color-cta-ink); font-weight:700; text-decoration:none }
+  .pill-arrow::after { content:" →" }
+  .pill-down { border-radius:8px; font-size:17px }
+  .cards { display:flex; gap:12px; list-style:none; padding:0 }
+  form button { border:0; border-radius:6px; padding:10px 20px; background:var(--color-cta); color:var(--color-cta-ink); font:inherit; font-weight:700 }
+</style></head><body>
+<main>
+  <!-- Manchester, 2026-10-08: "Ask about a puppy" in the hero and "Ask us about a puppy" in the
+       takeaways. With the stop words dropped both are {ask, about, puppy}: one button twice. -->
+  <section id="top" data-section-label="Top"><a class="pill" href="#enquiry">Ask about a puppy</a></section>
+  <section id="facts" data-section-label="Facts"><p>Two facts.</p></section>
+  <section id="takeaways" data-section-label="Takeaways"><a class="pill pill-arrow" href="#enquiry">Ask us about a puppy</a></section>
+</main>
+</body></html>

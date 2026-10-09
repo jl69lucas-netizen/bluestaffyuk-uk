@@ -1,5 +1,5 @@
 import { register, type CheckContext, type CheckResult } from '../lib/registry.js';
-import { loadWhitelist, normalise } from '../lib/dupCorpus.js';
+import { loadDataValues, loadWhitelist, normalise } from '../lib/dupCorpus.js';
 import type { Page } from '@playwright/test';
 
 /** The Python auditor's window. Changing it here without changing it there splits the gate. */
@@ -94,7 +94,9 @@ register({
         return text;
       }),
     );
-    const whitelist = loadWhitelist().map(normalise);
+    // The whitelist stems and the declared data values are cut out the same way: each
+    // occurrence is removed and either side is judged on its own (unwhitelistedSegments).
+    const whitelist = [...loadWhitelist().map(normalise), ...loadDataValues()];
 
     const ownShingles = new Map<string, number>();
     for (let i = 0; i + MIN_WORDS <= own.length; i++) {

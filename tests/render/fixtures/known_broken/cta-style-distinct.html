@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>two CTAs, one design</title>
+<style>
+  :root { --color-cta:#c9a227; --color-cta-ink:#14202b; }
+  body { margin:0; font:16px/1.5 system-ui }
+  section { padding:24px }
+  .pill { display:inline-flex; padding:12px 24px; border-radius:999px; background:var(--color-cta); color:var(--color-cta-ink); font-weight:700; text-decoration:none }
+  .pill-arrow::after { content:" →" }
+  .pill-down { border-radius:8px; font-size:17px }
+  .cards { display:flex; gap:12px; list-style:none; padding:0 }
+  form button { border:0; border-radius:6px; padding:10px 20px; background:var(--color-cta); color:var(--color-cta-ink); font:inherit; font-weight:700 }
+</style></head><body>
+<main>
+  <!-- Different words, the same painted pill: the reader sees one button twice. -->
+  <section id="top" data-section-label="Top"><a class="pill" href="/available-puppies/">See the puppies available now</a></section>
+  <section id="facts" data-section-label="Facts"><p>Two facts.</p></section>
+  <section id="paperwork" data-section-label="Paperwork"><a class="pill" href="#enquiry">Ask us for the full terms</a></section>
+</main>
+</body></html>

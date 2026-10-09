@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>two CTAs, one design with invisible differences</title>
+<style>
+  :root { --color-cta:#c9a227; --color-cta-ink:#14202b; }
+  body { margin:0; font:16px/1.5 system-ui }
+  section { padding:24px }
+  /* Manchester, 2026-10-08 (the bsuk-cta eval): three gold pills a reader sees as one design,
+     told apart by the first signature only through a 1px font size, a zero-width border and
+     weight 700 against 600. None of that is a design a reader can see. */
+  .p1 { display:inline-flex; padding:12px 24px; border-radius:999px; background:var(--color-cta); color:var(--color-cta-ink); font-weight:700; font-size:16px; text-decoration:none }
+  .p2 { display:inline-flex; padding:12px 24px; border-radius:999px; background:var(--color-cta); color:var(--color-cta-ink); font-weight:600; font-size:15px; text-decoration:none; border:0 solid #000 }
+</style></head><body>
+<main>
+  <section id="top" data-section-label="Top"><a class="p1" href="#enquiry">See the puppies available now</a></section>
+  <section id="facts" data-section-label="Facts"><p>Two facts.</p></section>
+  <section id="terms" data-section-label="Terms"><a class="p2" href="#enquiry">Ask us for the full terms</a></section>
+</main>
+</body></html>

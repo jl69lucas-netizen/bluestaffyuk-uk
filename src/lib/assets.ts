@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import manifest from '../../data/image-manifest.json';
 
 // src/lib/assets.ts — a board record's baked photographs, by slot.
 //
@@ -37,6 +38,24 @@ export interface AssetSource {
 }
 
 /**
+ * The served file's own size, from the bake's index (data/image-manifest.json, measured from
+ * the file when it was baked), or nothing when the file is not a listed `/images/` master.
+ *
+ * WHY THE ROW'S OWN `w`/`h` DO NOT WIN. The row's size is hashed with the approval, its `file`
+ * is not (pageboard.record_hash), so when the Asset Gate swaps a slot's photo the row keeps
+ * the size of the photo it used to name. Manchester shipped five such rows (2026-10-08): a
+ * 604px file announced as 512w in `srcset`, and 4:3 boxes reserved for 3:2 photos. The size
+ * belongs to the file, so it is read from the file's record
+ * (tests/py/test_images.py::test_every_public_image_on_a_built_page_states_the_file_s_own_size).
+ */
+const MANIFEST = manifest as Record<string, { w: number; h: number } | undefined>;
+function servedSize(file: string): { w: number; h: number } | Record<string, never> {
+  const m = /^\/images\/([^/]+)\.webp$/.exec(file);
+  const row = m ? MANIFEST[m[1]] : undefined;
+  return row ? { w: row.w, h: row.h } : {};
+}
+
+/**
  * `asset('hero')` for one record: the filled row that slot names, or a build-time error.
  *
  * The error names the record's own slug, so a page that mounts more than one record's assets
@@ -47,7 +66,7 @@ export function bakedAssets(record: AssetSource, label?: string) {
   return (slot: string): FilledAsset => {
     const a = record.assets.find((x) => x.slot === slot);
     if (!a || !a.file) throw new Error(`${who}: the record has no baked asset for ${slot}`);
-    return a as FilledAsset;
+    return { ...(a as FilledAsset), ...servedSize(a.file) };
   };
 }
 

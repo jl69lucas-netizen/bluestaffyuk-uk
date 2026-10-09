@@ -1,0 +1,35 @@
+{
+  "_comment": "The CTA plan the bsuk-cta skill and the three render checks read (tests/render/checks/cta.ts). A CTA is a visible <a>, <button> or submit inside <main> painted in --color-cta; nav and [data-cta-exempt] are not CTAs. `body` counts link CTAs only (not form submits, not tool buttons), and a repeated set (one CTA per card, e.g. 'Ask about <pup>') counts as ONE. Bands are defaults from the pages measured 2026-10-08 (`measured`); the breeder changes them here, and the board shows the page's count against its band.",
+  "near_identical": {
+    "_comment": "Two CTA texts on one page are near-identical when their content words are the same set, or their Jaccard overlap is at least `jaccard`. Stop words are dropped first, so 'Ask about a puppy' and 'Ask us about a puppy' are one button twice.",
+    "jaccard": 0.6,
+    "stop_words": ["a", "an", "the", "us", "our", "we", "me", "my", "you", "your", "to", "for", "of", "this", "that", "and", "now", "here", "please"]
+  },
+  "bands": {
+    "location": { "min": 3, "max": 6 },
+    "comparison": { "min": 2, "max": 4 },
+    "blog": { "min": 2, "max": 4 },
+    "for-sale": { "min": 1, "max": 4 },
+    "puppy": { "min": 1, "max": 3 },
+    "home": { "min": 1, "max": 6 },
+    "hub": { "min": 0, "max": 3 },
+    "interior": { "min": 0, "max": 3 }
+  },
+  "measured": {
+    "_comment": "Body CTAs per page at 1280, 2026-10-08 (a repeated set counted once).",
+    "uk-locations/blue-staffy-puppies-london": 5,
+    "uk-locations/blue-staffy-puppies-manchester-uk": 3,
+    "buy-blue-staffy-puppies-uk": 1,
+    "index": 1,
+    "uk-blue-staffy-breeders-contact": 0,
+    "available-puppies": 0,
+    "available-puppies/roman": 0
+  },
+  "types": {
+    "browse": "to the litter: /available-puppies/ or a puppy page",
+    "ask": "to this page's enquiry form: #enquiry",
+    "ask-about-pup": "one per puppy card, the name from data/puppies.json",
+    "submit": "a form's own button",
+    "tool": "a button that works a component (a map facade, a calculator); not counted"
+  }
+}

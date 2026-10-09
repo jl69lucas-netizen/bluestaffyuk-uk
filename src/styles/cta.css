@@ -1,0 +1,53 @@
+/* src/styles/cta.css — the CTA style catalog (bsuk-cta skill; the breeder's request of 2026-10-08:
+   "each gets its own unique buttons and styles"). One file, three readers: src/components/kit/
+   CtaButton.astro imports it, scripts/build_page_board.py inlines it so the page board shows each
+   option exactly as the page will paint it, and the catalog Artifact is rendered from it.
+
+   EVERY STYLE KEEPS THE LOCKED RULES (rules/design.md 1 and 3): the fill is --color-cta, the label
+   --color-cta-ink, a link CTA is a --btn-radius pill and a form submit a --btn-form-radius button,
+   at least 48px tall. What varies is the shape INSIDE those rules — a glyph, an icon chip, a second
+   line, a tag, the width, the case — so no two CTAs on a page look alike
+   (tests/render/checks/cta.ts cta-style-distinct) and the palette never moves.
+   Ids are stable: a board pick stores the id, so an id is never renamed or reused. */
+@layer components {
+  .cta {
+    box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: 48px; padding: 0 var(--space-6); border: 0; border-radius: var(--btn-radius);
+    background: var(--color-cta); color: var(--color-cta-ink);
+    font: inherit; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;
+    cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out);
+  }
+  .cta:hover { background: var(--color-cta-hover); }
+  .cta:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+  .cta[data-submit] { border-radius: var(--btn-form-radius); }
+
+  /* solid — the signature pill, nothing added. */
+  /* arrow — a trailing arrow that steps forward on hover: goes somewhere else on the site. */
+  .cta[data-cta-style="arrow"]::after { content: "\2192"; transition: transform var(--dur-fast) var(--ease-out); }
+  .cta[data-cta-style="arrow"]:hover::after { transform: translateX(3px); }
+  /* down — a trailing down arrow: jumps to the form further down this page. */
+  .cta[data-cta-style="down"]::after { content: "\2193"; }
+  /* chip — a round ink chip with an envelope icon before the label: write to us. */
+  .cta[data-cta-style="chip"] { padding-inline-start: var(--space-2); }
+  .cta[data-cta-style="chip"] .chip {
+    display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+    background: var(--color-cta-ink); color: var(--color-cta);
+  }
+  /* sub — two lines: the label and a short plain line under it (from the board option). */
+  .cta[data-cta-style="sub"] { flex-direction: column; gap: 0; padding-block: var(--space-2); }
+  .cta[data-cta-style="sub"] small { font-size: 13px; font-weight: 500; }
+  /* tag — the label and a short tag split by a dashed seam, like a ticket stub. */
+  .cta[data-cta-style="tag"] { padding-inline-end: 0; gap: 0; }
+  .cta[data-cta-style="tag"] .tag {
+    margin-inline-start: var(--space-4); padding: 0 var(--space-4); align-self: stretch; display: inline-flex; align-items: center;
+    border-inline-start: 2px dashed currentColor; font-size: 14px; font-weight: 600;
+  }
+  /* caps — small capitals with open tracking, set at the end of a brass rule. */
+  .cta-rule { display: flex; align-items: center; gap: var(--space-3); }
+  /* The rule takes the space the button leaves, and never less than 32px, so a long label
+     wraps inside the pill instead of squeezing the rule away. */
+  .cta-rule::before { content: ""; flex: 1 1 32px; min-width: 32px; height: 2px; background: var(--color-cta); }
+  .cta[data-cta-style="caps"] { font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; }
+  /* wide — the full width of its column (a card or a narrow section's end), label centred. */
+  .cta[data-cta-style="wide"] { display: flex; width: 100%; }
+}

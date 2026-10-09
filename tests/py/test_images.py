@@ -279,3 +279,47 @@ def test_every_srcset_candidate_on_a_built_page_is_a_file_that_exists():
                     continue
                 missing.append(f"{page.relative_to(dist)} -> {url}")
     assert not missing, missing[:10]
+
+
+def test_every_public_image_on_a_built_page_states_the_file_s_own_size():
+    """A `/images/` file's `srcset` descriptor is its real width, and the <img> width/height
+    are in the file's own shape (2% tolerance for rounding).
+
+    A board record's `assets[]` row carries `w`/`h`, and a row whose `file` was swapped at the
+    Asset Gate kept the size of the photo it used to name (Manchester, 2026-10-08: five rows).
+    `src/lib/assets.ts` built `srcset` and width/height from that row, so the page told the
+    browser a 604px file was 512w (it picks the wrong candidate) and reserved a 4:3 box for a
+    3:2 photo. Nothing else measures the file: img-srcset-within-2x and img-not-upscaled read
+    what painted, and the 404 test above only asks that a candidate exists.
+    """
+    root = pathlib.Path(__file__).resolve().parents[2]
+    dist = root / "dist"
+    if not dist.exists():
+        pytest.skip("no dist/ — run npm run build")
+    sizes = {}
+
+    def size(url):
+        if url not in sizes:
+            f = root / "public" / url.lstrip("/")
+            sizes[url] = Image.open(f).size if f.is_file() else None
+        return sizes[url]
+
+    wrong = []
+    for page in sorted(dist.rglob("index.html")):
+        text = page.read_text(encoding="utf-8", errors="ignore")
+        where = page.parent.relative_to(dist)
+        for tag in re.findall(r"<(?:img|source)\b[^>]*>", text):
+            srcset = re.search(r'srcset="([^"]*)"', tag)
+            for part in (srcset.group(1).split(",") if srcset else []):
+                bits = part.strip().split()
+                if len(bits) == 2 and bits[0].startswith("/images/") and bits[1].endswith("w"):
+                    s = size(bits[0])
+                    if s and int(bits[1][:-1]) != s[0]:
+                        wrong.append(f"{where}: {bits[0]} says {bits[1]}, the file is {s[0]}px wide")
+            src = re.search(r'\ssrc="(/images/[^"]+)"', tag)
+            w, h = re.search(r'\swidth="(\d+)"', tag), re.search(r'\sheight="(\d+)"', tag)
+            if src and w and h:
+                s = size(src.group(1))
+                if s and abs(int(w.group(1)) / int(h.group(1)) - s[0] / s[1]) > 0.02 * s[0] / s[1]:
+                    wrong.append(f"{where}: {src.group(1)} is {w.group(1)}x{h.group(1)}, the file is {s[0]}x{s[1]}")
+    assert not wrong, wrong[:10]

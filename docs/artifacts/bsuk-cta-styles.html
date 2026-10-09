@@ -1,0 +1,129 @@
+<title>BSUK CTA Styles</title>
+<style>
+:root{--bg:#F3EFE6;--card:#FFFFFF;--ink:#1B2430;--muted:#556171;--line:#D9D2C3;--paper:#FFFFFF;--clay:#22384F;--ink-2:#33404F;--ink-3:#5B6676;--code-bg:#EEE9DD}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Source Sans 3",system-ui,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:32px 64px;display:grid;gap:28px}
+h1,h2{font-family:"Fraunces",Georgia,serif;color:#22384F;margin:0;text-wrap:balance} h1{font-size:clamp(26px,4vw,36px)} h2{font-size:22px}
+.lede{color:var(--muted);max-width:68ch;margin:6px 0 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px;min-width:0}
+.card header{display:flex;justify-content:space-between;font-size:14px} .card header span{color:var(--muted)}
+.stage{min-height:72px;display:grid;align-items:center;justify-items:start} .stage .cta-rule,.stage .cta[data-cta-style=wide]{width:100%;margin:0}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+section.board{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:8px;min-width:0}
+code{background:var(--code-bg);padding:1px 4px;border-radius:4px}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>:root{--btn-form-radius:12px;--btn-radius:50px;--color-cta:#C9A227;--color-cta-hover:#A8861C;--color-cta-ink:#14202B;--color-focus:#1F3A52;--dur-fast:120ms;--ease-out:cubic-bezier(0.2, 0.7, 0.2, 1);--space-2:8px;--space-3:12px;--space-4:16px;--space-6:32px;}/* src/styles/cta.css — the CTA style catalog (bsuk-cta skill; the breeder's request of 2026-10-08:
+   "each gets its own unique buttons and styles"). One file, three readers: src/components/kit/
+   CtaButton.astro imports it, scripts/build_page_board.py inlines it so the page board shows each
+   option exactly as the page will paint it, and the catalog Artifact is rendered from it.
+
+   EVERY STYLE KEEPS THE LOCKED RULES (rules/design.md 1 and 3): the fill is --color-cta, the label
+   --color-cta-ink, a link CTA is a --btn-radius pill and a form submit a --btn-form-radius button,
+   at least 48px tall. What varies is the shape INSIDE those rules — a glyph, an icon chip, a second
+   line, a tag, the width, the case — so no two CTAs on a page look alike
+   (tests/render/checks/cta.ts cta-style-distinct) and the palette never moves.
+   Ids are stable: a board pick stores the id, so an id is never renamed or reused. */
+@layer components {
+  .cta {
+    box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: 48px; padding: 0 var(--space-6); border: 0; border-radius: var(--btn-radius);
+    background: var(--color-cta); color: var(--color-cta-ink);
+    font: inherit; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;
+    cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out);
+  }
+  .cta:hover { background: var(--color-cta-hover); }
+  .cta:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+  .cta[data-submit] { border-radius: var(--btn-form-radius); }
+
+  /* solid — the signature pill, nothing added. */
+  /* arrow — a trailing arrow that steps forward on hover: goes somewhere else on the site. */
+  .cta[data-cta-style="arrow"]::after { content: "\2192"; transition: transform var(--dur-fast) var(--ease-out); }
+  .cta[data-cta-style="arrow"]:hover::after { transform: translateX(3px); }
+  /* down — a trailing down arrow: jumps to the form further down this page. */
+  .cta[data-cta-style="down"]::after { content: "\2193"; }
+  /* chip — a round ink chip with an envelope icon before the label: write to us. */
+  .cta[data-cta-style="chip"] { padding-inline-start: var(--space-2); }
+  .cta[data-cta-style="chip"] .chip {
+    display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+    background: var(--color-cta-ink); color: var(--color-cta);
+  }
+  /* sub — two lines: the label and a short plain line under it (from the board option). */
+  .cta[data-cta-style="sub"] { flex-direction: column; gap: 0; padding-block: var(--space-2); }
+  .cta[data-cta-style="sub"] small { font-size: 13px; font-weight: 500; }
+  /* tag — the label and a short tag split by a dashed seam, like a ticket stub. */
+  .cta[data-cta-style="tag"] { padding-inline-end: 0; gap: 0; }
+  .cta[data-cta-style="tag"] .tag {
+    margin-inline-start: var(--space-4); padding: 0 var(--space-4); align-self: stretch; display: inline-flex; align-items: center;
+    border-inline-start: 2px dashed currentColor; font-size: 14px; font-weight: 600;
+  }
+  /* caps — small capitals with open tracking, set at the end of a brass rule. */
+  .cta-rule { display: flex; align-items: center; gap: var(--space-3); }
+  /* The rule takes the space the button leaves, and never less than 32px, so a long label
+     wraps inside the pill instead of squeezing the rule away. */
+  .cta-rule::before { content: ""; flex: 1 1 32px; min-width: 32px; height: 2px; background: var(--color-cta); }
+  .cta[data-cta-style="caps"] { font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; }
+  /* wide — the full width of its column (a card or a narrow section's end), label centred. */
+  .cta[data-cta-style="wide"] { display: flex; width: 100%; }
+}
+</style>
+<div class="wrap">
+<header><h1>CTA styles for BlueStaffyUK pages</h1>
+<p class="lede">Eight button styles, painted from the site's own CSS (src/styles/cta.css) in the site's gold, ink and pill shape, which never change. No two buttons on a page may share a style or say the same thing. From now on each page board offers three options per button, and you pick one.</p></header>
+<div class="grid"><article class="card"><header><b>solid</b><span>link</span></header><div class="stage"><span class="cta" data-cta-style="solid">Send my enquiry</span></div><p>The signature pill. The one plain button on a page, often the enquiry form&#x27;s.</p></article><article class="card"><header><b>arrow</b><span>link</span></header><div class="stage"><span class="cta" data-cta-style="arrow">See the puppies available now</span></div><p>Goes somewhere else on the site: the litter, a puppy&#x27;s page. The arrow steps forward on hover.</p></article><article class="card"><header><b>down</b><span>link</span></header><div class="stage"><span class="cta" data-cta-style="down">Ask which puppy suits your home</span></div><p>Jumps down to the enquiry form on this page.</p></article><article class="card"><header><b>chip</b><span>form submit</span></header><div class="stage"><span class="cta" data-cta-style="chip" data-submit=""><span class="chip" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>Send my questions to Lisa</span></div><p>Writing to us: an envelope chip before the words. Shown here as a form submit.</p></article><article class="card"><header><b>sub</b><span>link</span></header><div class="stage"><span class="cta" data-cta-style="sub"><span>Ask us to book your visit</span><small>Collection in Carlisle or UK delivery</small></span></div><p>Two lines: the button, then one fact read from data/settings.json, never invented.</p></article><article class="card"><header><b>tag</b><span>link</span></header><div class="stage"><span class="cta" data-cta-style="tag"><span>Tell us when you could visit</span><span class="tag">Carlisle</span></span></div><p>The button, a dashed seam and a short tag read from data/settings.json.</p></article><article class="card"><header><b>caps</b><span>link</span></header><div class="stage"><span class="cta-rule"><span class="cta" data-cta-style="caps">Ask us for the full terms</span></span></div><p>Small capitals at the end of a brass rule: a quiet sign-off to a long section.</p></article><article class="card"><header><b>wide</b><span>link</span></header><div class="stage"><span class="cta" data-cta-style="wide">Tell us about your household</span></div><p>The full width of its column: the end of a card or a narrow section.</p></article></div>
+<section class="board"><h2>How it will look on a page board (block 7e)</h2><p class="lede">A sample location board with the proposal the tool writes before the button words are edited to the page. You pick one option per button. The board won't approve while a button is unpicked, two picks say the same thing, or two picks share a style.</p><style>.ctapick{border:1px solid var(--line);border-radius:8px;padding:10px 12px 12px;margin:10px 0;min-width:0}.ctapick legend{font-size:13px;font-weight:600;padding:0 6px}.ctac{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:6px 0}.ctaopt{display:grid;gap:8px;justify-items:start;border:1px solid var(--line);border-radius:6px;padding:10px;font-size:12px;cursor:pointer}.ctaopt:has(input:checked){outline:3px solid var(--clay);outline-offset:1px}.ctaopt .cta-rule{width:100%;margin:0}.ctaopt .cta[data-cta-style=wide]{width:100%}.ctawhy{font-size:12px;color:var(--ink-3);margin:2px 0 4px}.ctacount{font-weight:600}.ctapick{--btn-form-radius:12px;--btn-radius:50px;--color-cta:#C9A227;--color-cta-hover:#A8861C;--color-cta-ink:#14202B;--color-focus:#1F3A52;--dur-fast:120ms;--ease-out:cubic-bezier(0.2, 0.7, 0.2, 1);--space-2:8px;--space-3:12px;--space-4:16px;--space-6:32px;}/* src/styles/cta.css — the CTA style catalog (bsuk-cta skill; the breeder's request of 2026-10-08:
+   "each gets its own unique buttons and styles"). One file, three readers: src/components/kit/
+   CtaButton.astro imports it, scripts/build_page_board.py inlines it so the page board shows each
+   option exactly as the page will paint it, and the catalog Artifact is rendered from it.
+
+   EVERY STYLE KEEPS THE LOCKED RULES (rules/design.md 1 and 3): the fill is --color-cta, the label
+   --color-cta-ink, a link CTA is a --btn-radius pill and a form submit a --btn-form-radius button,
+   at least 48px tall. What varies is the shape INSIDE those rules — a glyph, an icon chip, a second
+   line, a tag, the width, the case — so no two CTAs on a page look alike
+   (tests/render/checks/cta.ts cta-style-distinct) and the palette never moves.
+   Ids are stable: a board pick stores the id, so an id is never renamed or reused. */
+@layer components {
+  .cta {
+    box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: 48px; padding: 0 var(--space-6); border: 0; border-radius: var(--btn-radius);
+    background: var(--color-cta); color: var(--color-cta-ink);
+    font: inherit; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;
+    cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out);
+  }
+  .cta:hover { background: var(--color-cta-hover); }
+  .cta:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+  .cta[data-submit] { border-radius: var(--btn-form-radius); }
+
+  /* solid — the signature pill, nothing added. */
+  /* arrow — a trailing arrow that steps forward on hover: goes somewhere else on the site. */
+  .cta[data-cta-style="arrow"]::after { content: "\2192"; transition: transform var(--dur-fast) var(--ease-out); }
+  .cta[data-cta-style="arrow"]:hover::after { transform: translateX(3px); }
+  /* down — a trailing down arrow: jumps to the form further down this page. */
+  .cta[data-cta-style="down"]::after { content: "\2193"; }
+  /* chip — a round ink chip with an envelope icon before the label: write to us. */
+  .cta[data-cta-style="chip"] { padding-inline-start: var(--space-2); }
+  .cta[data-cta-style="chip"] .chip {
+    display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+    background: var(--color-cta-ink); color: var(--color-cta);
+  }
+  /* sub — two lines: the label and a short plain line under it (from the board option). */
+  .cta[data-cta-style="sub"] { flex-direction: column; gap: 0; padding-block: var(--space-2); }
+  .cta[data-cta-style="sub"] small { font-size: 13px; font-weight: 500; }
+  /* tag — the label and a short tag split by a dashed seam, like a ticket stub. */
+  .cta[data-cta-style="tag"] { padding-inline-end: 0; gap: 0; }
+  .cta[data-cta-style="tag"] .tag {
+    margin-inline-start: var(--space-4); padding: 0 var(--space-4); align-self: stretch; display: inline-flex; align-items: center;
+    border-inline-start: 2px dashed currentColor; font-size: 14px; font-weight: 600;
+  }
+  /* caps — small capitals with open tracking, set at the end of a brass rule. */
+  .cta-rule { display: flex; align-items: center; gap: var(--space-3); }
+  /* The rule takes the space the button leaves, and never less than 32px, so a long label
+     wraps inside the pill instead of squeezing the rule away. */
+  .cta-rule::before { content: ""; flex: 1 1 32px; min-width: 32px; height: 2px; background: var(--color-cta); }
+  .cta[data-cta-style="caps"] { font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; }
+  /* wide — the full width of its column (a card or a narrow section's end), label centred. */
+  .cta[data-cta-style="wide"] { display: flex; width: 100%; }
+}
+</style><p class="ctacount">2 body CTA(s) · band 3–6 for location · plus 0 form or tool button(s)</p><fieldset class="ctapick" id="cta-hero"><legend>01 · Indoors With Us From Day One · ask → <code>/available-puppies/</code></legend><p class="ctawhy">proposed for the hero, ask role; edit to fit the section</p><div class="ctac"><label class="ctaopt"><input type="radio" name="pick-cta:hero" value="a"> <b>a</b> · solid<span class="cta" data-cta-style="solid">Start with a question about a puppy</span></label><label class="ctaopt"><input type="radio" name="pick-cta:hero" value="b"> <b>b</b> · arrow<span class="cta" data-cta-style="arrow">Tell us what you are looking for</span></label><label class="ctaopt"><input type="radio" name="pick-cta:hero" value="c"> <b>c</b> · down<span class="cta" data-cta-style="down">Ask us anything before you choose</span></label></div></fieldset><fieldset class="ctapick" id="cta-how-we-raise"><legend>03 · How our puppies are raised · ask → <code>/available-puppies/</code></legend><p class="ctawhy">proposed for the litter role; edit to fit the section</p><div class="ctac"><label class="ctaopt"><input type="radio" name="pick-cta:how-we-raise" value="a"> <b>a</b> · chip<span class="cta" data-cta-style="chip"><span class="chip" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>Ask which puppy suits your home</span></label><label class="ctaopt"><input type="radio" name="pick-cta:how-we-raise" value="b"> <b>b</b> · sub<span class="cta" data-cta-style="sub"><span>Tell us which puppy caught your eye</span><small>Collection in Carlisle or UK delivery</small></span></label><label class="ctaopt"><input type="radio" name="pick-cta:how-we-raise" value="c"> <b>c</b> · tag<span class="cta" data-cta-style="tag"><span>Ask about one of this litter</span><span class="tag">Carlisle</span></span></label></div></fieldset></section>
+</div>
