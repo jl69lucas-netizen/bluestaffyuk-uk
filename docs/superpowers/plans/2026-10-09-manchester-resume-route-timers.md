@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Land the cloud session's work (PR #2) locally, put the long-form meta styles on every page from Manchester on (Phase H, a test), give the Route Map a start/finish timer for every page-run row and every agent, apply the breeder's eight open answers, and take Manchester from row 14 (Harden: impeccable) to row 21 (close) through one harden round instead of London's five or six.
+**Goal:** Land the cloud session's work (PR #2) locally, put the long-form meta styles on every page from Manchester on (Phase H, a test), give the Route Map a start/finish timer for every page-run row and every agent, apply the breeder's eight open answers, and take Manchester from row 14 (Harden: impeccable) to row 21 (close) by the page-run procedure as it stands.
 
 **Architecture:** The timers follow the Route Map's own rule: nothing is guessed, everything is proved from disk. A row's start and finish come from the commit subjects the page run already writes (`(row N)`, `(rows A-B)`, `STOP k posted|approved`), scoped to commits since the page's session-open commit. `scripts/pipeline_status.py` adds them to its JSON; the `bsuk-route` mod only draws them. Agent timers reuse the `startedAt`/`endedAt` fields the `bsuk-agents` mod already keeps.
 
@@ -45,7 +45,9 @@ Why: it attacks the two measured causes without removing a gate or a STOP. Trade
 
 Why not now: the harness still changes on every page (39 system commits on Manchester), so a defect would land on three pages at once. Three branches would also conflict on the shared generated files (`data/facts/rebuilt.json`, page dates, `data/image-manifest.json`, `public/_redirects`). Working rule 16 (no shared hero or counter) would have to be checked across three unbuilt pages at once. Trade-off of waiting: the first few cities go at single-city speed.
 
-**Verdict:** keep the current system and refine it with Option A now. Move to Option B once two cities in a row close with zero system-lane commits during their runs. The Phase B timeline counts those commits for us.
+**The breeder's pick (2026-10-09, answer board q01): (c), keep everything exactly as it is — "no changes, I don't need any gap."** Options A and B are recorded here for reference only; Phase F is dropped and Phase E runs the standard procedure. The route timers (Phase B) still go in, as measurement only.
+
+
 
 ---
 
@@ -60,7 +62,6 @@ Why not now: the harness still changes on every page (39 system commits on Manch
 | `tools/claude-mods/bsuk-agents/hooks/register.tsx` | modify | each agent card shows its start → finish clock time |
 | `tools/claude-mods/README.md` | modify | one line on the timers |
 | `docs/artifacts/claude-mods-preview.html` | modify | the timer drawn in the pane mock (working rule 10) |
-| `docs/reference/WORKFLOW.md`, `docs/reference/page-run.md` | modify (Phase F, if Option A is picked) | page lane / system lane; one harden round |
 | `src/lib/manchesterFaq.ts`, `src/pages/uk-locations/blue-staffy-puppies-manchester-uk.astro` | modify (Phase C) | the breeder's answers |
 
 ---
@@ -120,7 +121,7 @@ git add docs/superpowers/sessions/2026-10-07-session-brief.md docs/superpowers/p
 git commit -m "docs(manchester): resumed locally — PR #2 verified on the Mac, plan for timers and rows 14–21"
 ```
 
-- [ ] **Step 5: Ask before anything leaves the Mac.** Merging PR #2 on GitHub and pushing `manchester-page` are outward-facing: ask in chat and wait for the breeder's yes.
+- [ ] **Step 5: Merge PR #2 on GitHub and push `manchester-page`** (breeder: yes, answer board q03, 2026-10-09).
 
 ---
 
@@ -501,7 +502,7 @@ git commit -m "docs(mods): the route and agent timers in the README and the pane
 
 ---
 
-## Phase D — CTAs on the Manchester board (only if the breeder says yes)
+## Phase D — CTAs on the Manchester board (breeder: yes, answer board q02, 2026-10-09)
 
 PR #2 exempts London and Manchester, because their boards were approved before the CTA rule. The cloud's own eval found Manchester's three gold pills nearly identical (`cta-style-distinct`, advisory today).
 
@@ -514,14 +515,14 @@ PR #2 exempts London and Manchester, because their boards were approved before t
 
 ---
 
-## Phase E — Manchester rows 14–21 in one harden round
+## Phase E — Manchester rows 14–21
 
-### Task 12: Rows 14–16 together
+### Task 12: Rows 14–16
 
 - [ ] **Step 1:** The controller (main loop, not a subagent) invokes the Skill tool `impeccable:impeccable` on the built page at 375 / 768 / 1280 in the browser pane (`npm run preview`, then open `/uk-locations/blue-staffy-puppies-manchester-uk/`). Write each finding down; edit nothing yet.
 - [ ] **Step 2:** Same for `frontend-design:frontend-design`.
 - [ ] **Step 3:** Run `python3 scripts/page_hardening_scan.py --json` and the `bsuk-visual-intelligence` skill (page-run row 16).
-- [ ] **Step 4:** Put all three lists in ONE preview Artifact `docs/artifacts/bsuk-manchester-harden.html`. Each finding gets a before/after screenshot, one **(Recommended)** fix with its why and trade-off, and copy buttons. Post ONE batch. This is the Option A change; on London these were five or six rounds.
+- [ ] **Step 4:** Present the findings for approval as the page-run procedure does today (preview before apply, working rule 6), the way London's were (the breeder kept the current procedure, q01 (c)).
 - [ ] **Step 5:** Apply the approved fixes (visual layer only, working rule 6), rebuild, and record `impeccable` and `frontend_design` in `data/page-runs/blue-staffy-puppies-manchester-uk.json` in the shape London's record uses (`ran_on`, `widths`, `findings`, `fixed`, `deferred`, `commit`). Commit per fix group.
 
 ### Task 13: Rows 17–18
@@ -537,15 +538,9 @@ PR #2 exempts London and Manchester, because their boards were approved before t
 
 ---
 
-## Phase F — Make Option A standing (only if the breeder picks it)
+## Phase F — dropped
 
-### Task 15: Write the two-lane rule where the run reads it
-
-**Files:** Modify `docs/reference/WORKFLOW.md`, `docs/reference/page-run.md`.
-
-- [ ] In `WORKFLOW.md`, add a section `## Page lane and system lane` with three rules. (1) During a page run, a change to a gate, skill, rule, mod or script that does not block a gate on the page in hand goes on the system-lane list (`mcp__ccd_session__spawn_task` chip, or a Known Issue in `docs/reference/session-log.md`). (2) The system lane is worked between pages. (3) A blocking defect is fixed in the page lane, with a failing test first (`rules/gates.md`).
-- [ ] In `page-run.md` rows 14–16, add: "One harden round: the findings of rows 14, 15 and 16 go to the breeder in one preview Artifact and one batch."
-- [ ] Run `npm run check:workflow` and `python3 -m pytest tests/py/test_doc_drift.py -q`, then commit: `docs(workflow): page lane and system lane; one harden round (breeder's pick, Option A)`.
+The breeder kept the current system (answer board q01 (c), 2026-10-09). No workflow change.
 
 ## Phase H — Long-form meta titles and descriptions (the breeder's ruling, 2026-10-09)
 
@@ -792,7 +787,7 @@ Before Step 5, open `data/research-boards/blue-staffy-puppies-manchester-uk.json
 ### Task 20: Manchester's three styles, picked on its board
 
 - [ ] **Step 1:** Write three style options for Manchester, each title and description its own line, from `meta_styles.context("blue-staffy-puppies-manchester-uk")`. Then run `python3 scripts/meta_styles.py blue-staffy-puppies-manchester-uk` until it is clean. Every figure in them must appear in the data, and none may repeat another city's line (`python3 scripts/dup_content_audit.py --headers`).
-- [ ] **Step 2:** Put them in the board record's `meta_set` (new pick: `null`). Republish the board together with the CTA block 7e if Phase D is on, so this is **one** sitting (Option A). Post one batch question: "Pick a meta style for Manchester".
+- [ ] **Step 2:** Put them in the board record's `meta_set` (new pick: `null`). Republish the board together with the CTA block 7e (Phase D), so both are picked in one sitting. Post one batch question: "Pick a meta style for Manchester".
 - [ ] **Step 3:** After the pick is saved on the board, run `python3 scripts/board_approve.py blue-staffy-puppies-manchester-uk`, rebuild, run `python3 -m pytest tests/py/test_meta_from_board.py tests/py/test_meta_styles.py -q` and `npm run check:all`, then commit `feat(manchester): long-form meta, Style <n>, picked on the board`.
 
 ## Phase G — System check: workflow, boards, skills, agents
