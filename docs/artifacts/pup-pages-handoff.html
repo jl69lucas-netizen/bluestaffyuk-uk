@@ -1,0 +1,123 @@
+<title>BSUK Pup Pages Handoff</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: one reading column — status strip, three steps, then the prompt in a copyable sheet. BSUK tokens. */
+:root{
+  --bg:#f4f1ea; --panel:#ffffff; --ink:#1b2430; --muted:#5e6b7a; --brand:#1f3a52; --rule:#dad6cc;
+  --cta:#c9a227; --cta-ink:#14202b; --ok:#2f6b4f; --sheet:#faf8f3;
+  --display:"Fraunces",Georgia,"Times New Roman",serif; --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101820;--panel:#17222d;--ink:#e8edf2;--muted:#a3b1c0;--brand:#9cc0df;--rule:#2b3a49;--cta:#d4ae3a;--cta-ink:#14202b;--ok:#7cc2a0;--sheet:#131d27;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101820;--panel:#17222d;--ink:#e8edf2;--muted:#a3b1c0;--brand:#9cc0df;--rule:#2b3a49;--cta:#d4ae3a;--cta-ink:#14202b;--ok:#7cc2a0;--sheet:#131d27;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 72px;display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--display);color:var(--brand);margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,5vw,40px);line-height:1.1}
+h2{font-size:22px}
+p{margin:0}
+.lede{color:var(--muted);max-width:65ch}
+.facts{display:flex;flex-wrap:wrap;gap:8px}
+.fact{font-size:14px;border:1px solid var(--rule);background:var(--panel);border-radius:50px;padding:5px 14px;color:var(--muted)}
+.fact b{color:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.steps li{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.steps .n{font:700 13px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--ok)}
+.steps a{color:var(--brand);font-weight:600;word-break:break-word}
+.sheet{background:var(--panel);border:1px solid var(--rule);border-radius:20px;overflow:hidden}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--rule)}
+.bar h2{margin-right:auto}
+button{font:700 16px/1 var(--body);background:var(--cta);color:var(--cta-ink);border:0;border-radius:50px;height:44px;padding:0 22px;cursor:pointer}
+button:hover{filter:brightness(.95)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.msg{font-size:14px;color:var(--ok);min-height:1em}
+pre{margin:0;padding:20px 18px;background:var(--sheet);font:14px/1.6 var(--mono);white-space:pre-wrap;word-break:break-word;max-height:70vh;overflow:auto;color:var(--ink)}
+code{font-family:var(--mono);font-size:.92em}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:12px">
+    <h1>Pup Pages Handoff</h1>
+    <p class="lede">The prompt that carries the short-pages work from the cloud session into a local Claude Code chat, where <code>foundation</code>, the blog posts and the BlackStaffy images live.</p>
+    <div class="facts">
+      <span class="fact"><b>Picks:</b> HA · G1 · T1 · X1</span>
+      <span class="fact"><b>Strategy:</b> A + B, C as sections</span>
+      <span class="fact"><b>Open:</b> D1, D3, D4</span>
+      <span class="fact"><b>Measured on:</b> 9 Oct snapshot</span>
+    </div>
+  </header>
+
+  <ol class="steps">
+    <li><span class="n">Step 1</span><p>Get the files: unzip <code>bsuk-compact-bundle.zip</code> into the project root, or take branch <code>compact-keywords-handoff</code> from GitHub.</p></li>
+    <li><span class="n">Step 2</span><p>Open a new local Claude Code chat in the BlueStaffyUK project folder.</p></li>
+    <li><span class="n">Step 3</span><p>Copy the prompt below and paste it in. The Art board: <a href="https://claude.ai/artifact/J893onxJZi8idwKsxzu31S">claude.ai/artifact/J893onxJZi8idwKsxzu31S</a></p></li>
+  </ol>
+
+  <section class="sheet" aria-labelledby="p-h">
+    <div class="bar">
+      <h2 id="p-h">Handoff Prompt</h2>
+      <span class="msg" id="msg" role="status"></span>
+      <button type="button" id="copy">Copy prompt</button>
+    </div>
+    <pre id="prompt">Continue the BlueStaffyUK short-pages work started in a cloud session on 2026-11-02. That session could not see the `foundation` branch, the two finished blog posts or the new BlackStaffy images, because they exist only on this machine. Everything it produced was measured against the GitHub snapshot `manchester-page` (3e8f87f, 2026-10-09), so re-check every finding against `foundation` before acting on it. Do not invent data; any field with no data key is a question for me.
+
+INPUTS FROM THE CLOUD SESSION
+Get them one of two ways: unzip `bsuk-compact-bundle.zip` into the project root, or take the files from the GitHub branch `compact-keywords-handoff` (jl69lucas-netizen/bluestaffyuk-uk, commit 56e544a, docs only). The files:
+- `.claude/skills/bsuk-compact-page/SKILL.md`: DRAFT compact-keyword skill, not yet pressure-tested
+- `docs/reference/compact-keywords/2026-11-02-defects-snapshot.md`: 15 measured defects on the pup pages and the hub
+- `docs/reference/compact-keywords/2026-11-02-keyless-keyword-research.md`: keyless keyword evidence, graded A/B/C, no volumes
+- `docs/reference/compact-keywords/2026-11-02-header-gallery-research.md`: research on 8 sites
+- Art board (Claude Design canvas, BlueStaffyUK design system installed): https://claude.ai/artifact/J893onxJZi8idwKsxzu31S. Four rows, three options each, every option at desktop 1280 / tablet 820 / mobile 390.
+
+ALREADY DECIDED BY ME
+0. Art board picks: HA Eyebrow and Question (H2/H3 body headings), G1 Stage and Side Pair (pup photos), T1 Kennel Card (pup page template), X1 Swipe Rail of Cards (other-pups strip). Build the first pup page&#x27;s components from these. The unpicked options (HB/HC, G2/G3, T2/T3, X2/X3) are the pool for the following pup pages, because no two pages share a component (rule `own-components-per-page`).
+1. Compact keyword strategy = A + B, with C as sections. A: each pup page owns its own attribute phrase (colour + sex + KC registered). B: `/available-puppies/` owns &quot;blue staffy puppies for sale UK / available now&quot;. C: buyer-situation phrases (Carlisle/Cumbria collection, UK delivery, health-tested parents with the tests named and never a result, price) become H2 sections on those pages, never separate pages.
+2. The 85–112 entity rule stays as it is for longer pages. Compact pages (~850 words, under 1,000 in &lt;main&gt;) do not apply it.
+
+STILL OPEN: ask me one at a time via the answer board: D1 (H5/H6 floor on compact pages), D3 (H2 count on compact pages), D4 (sold/reserved pup page behaviour). The proposals are in SKILL.md §9.
+
+DO, IN ORDER. Follow every BSUK rule, skill, agent and gate. Answer board and grill board before code; verification before any &quot;done&quot;.
+1. Set up a worktree off `foundation` (another agent is working on the main checkout). Merge back into `foundation` only. Load all BSUK mods.
+2. Re-run the measurements on `foundation`: `npx astro build`, the &lt;main&gt; word count, `scripts/final_page_audit.py` and `scripts/page_hardening_scan.py` on `available-puppies` and each pup. Update the defects file with what is still true.
+3. Finish the skill with `superpowers:writing-skills`: diff it against `foundation`&#x27;s rules and skills, run RED→GREEN pressure tests with subagents, fold in my rulings, then commit. Write the `compact-word-ceiling` test (red first) per `bsuk-learning-loop`. Then list the other pages and sections the skill should apply to.
+4. Images (BlackStaffy folder), through `bsuk-photo-ingest` and `image-metadata`:
+   - Cheryl: same name, 3 new images. Replace her images on every page and delete the current Cheryl images. Update her colour and markings in `data/puppies.json` (and so on every pup card) to match the new photos. Show me the proposed wording before writing it.
+   - Ince: 3 new images. Delete the old ones.
+   - Vennie: add her 3 new images.
+   - Deleting a served image conflicts with working rule 11. I asked for the deletions, so do them, but first show me every page, sitemap and og:image that references each old file.
+5. Design: continue on the Art board above (Claude Design, not HTML pages), at desktop, tablet and mobile:
+   - &quot;Header ideas&quot; means H2 and H3 section headings in the page body, not the navbar. Research other sites&#x27; H2/H3 heading treatments and add an option if one beats HA–HC.
+   - Images must be crisp: edge to edge on mobile, no small photos on desktop.
+   - Every board, answer, page, grill, component, image and infographic is 380–400px tall on desktop. Heroes are 400–450px.
+   - Design 3 templates for `/available-puppies/`. I pick one and you build all its unique components from it.
+   - For the following pup pages, offer the unpicked templates plus the for-sale page&#x27;s unpicked A (Ledger column) and C (Answer card). Each following pup page takes the next style.
+   - Make the components beautiful, fluid, clean and well designed.
+6. Copy: every paragraph answers its heading in its first sentence, and the conversational opening reinforces the heading&#x27;s core message. Use the pups&#x27; new and existing images on each pup page. Cross-show the other pups with X1.
+7. Check for bugs and board defects. Any workflow or board check that fails is fixed, not waived.
+
+DEFECTS TO CONFIRM ON FOUNDATION (from the snapshot)
+- Pup pages are 36–42 words; the hub is 64.
+- &quot;Deposit £500, refundable&quot;: should use `deposit_refund_clause`. CLAUDE.md&#x27;s locked facts still say &quot;£500, refundable&quot;; fix that too.
+- The H1 template hard-codes &quot;Blue Staffy Puppy&quot;, so Byrd, who is white, gets the wrong H1.
+- Roman&#x27;s H1 is not Title Case.
+- The hub has no ItemList of Product nodes.
+- The Enquire button is ink-coloured, not the brass pill.
+- The mobile photo is not edge to edge.
+- The desktop photo is capped at 560px with a single 120px thumbnail.
+
+KNOWN BLOCKER: autocomplete research was blocked in the cloud. Re-run the alphabet-soup expansion locally (Chrome extension / `research-recency`) for UK results.
+
+SKILLS TO USE: `bsuk-compact-page` (new) for keyword choice, word budget and answer-first copy on these pages. `bsuk-puppy-page-builder` and `bsuk-puppy-page-excellence` for the pup pages and the hub. There is no &quot;purchase guide&quot; skill, but the `bsuk-purchase-guide` agent rebuilds `/buy-blue-staffy-puppies-uk/`, not the pup pages. The buying guide page uses `bsuk-seo-master-checklist`.
+</pre>
+  </section>
+</div>
+
+<script>
+document.getElementById('copy').addEventListener('click',function(){
+  var t=document.getElementById('prompt').textContent, m=document.getElementById('msg');
+  function sel(){var r=document.createRange();r.selectNodeContents(document.getElementById('prompt'));var s=getSelection();s.removeAllRanges();s.addRange(r);m.textContent='Selected. Press Ctrl/Cmd+C.';}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){m.textContent='Copied.';},sel);}else{sel();}
+});
+</script>

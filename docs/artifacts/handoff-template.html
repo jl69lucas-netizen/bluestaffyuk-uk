@@ -1,0 +1,74 @@
+<title>BSUK Pup Pages Handoff</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: one reading column — status strip, three steps, then the prompt in a copyable sheet. BSUK tokens. */
+:root{
+  --bg:#f4f1ea; --panel:#ffffff; --ink:#1b2430; --muted:#5e6b7a; --brand:#1f3a52; --rule:#dad6cc;
+  --cta:#c9a227; --cta-ink:#14202b; --ok:#2f6b4f; --sheet:#faf8f3;
+  --display:"Fraunces",Georgia,"Times New Roman",serif; --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101820;--panel:#17222d;--ink:#e8edf2;--muted:#a3b1c0;--brand:#9cc0df;--rule:#2b3a49;--cta:#d4ae3a;--cta-ink:#14202b;--ok:#7cc2a0;--sheet:#131d27;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101820;--panel:#17222d;--ink:#e8edf2;--muted:#a3b1c0;--brand:#9cc0df;--rule:#2b3a49;--cta:#d4ae3a;--cta-ink:#14202b;--ok:#7cc2a0;--sheet:#131d27;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 72px;display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--display);color:var(--brand);margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,5vw,40px);line-height:1.1}
+h2{font-size:22px}
+p{margin:0}
+.lede{color:var(--muted);max-width:65ch}
+.facts{display:flex;flex-wrap:wrap;gap:8px}
+.fact{font-size:14px;border:1px solid var(--rule);background:var(--panel);border-radius:50px;padding:5px 14px;color:var(--muted)}
+.fact b{color:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.steps li{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.steps .n{font:700 13px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--ok)}
+.steps a{color:var(--brand);font-weight:600;word-break:break-word}
+.sheet{background:var(--panel);border:1px solid var(--rule);border-radius:20px;overflow:hidden}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--rule)}
+.bar h2{margin-right:auto}
+button{font:700 16px/1 var(--body);background:var(--cta);color:var(--cta-ink);border:0;border-radius:50px;height:44px;padding:0 22px;cursor:pointer}
+button:hover{filter:brightness(.95)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.msg{font-size:14px;color:var(--ok);min-height:1em}
+pre{margin:0;padding:20px 18px;background:var(--sheet);font:14px/1.6 var(--mono);white-space:pre-wrap;word-break:break-word;max-height:70vh;overflow:auto;color:var(--ink)}
+code{font-family:var(--mono);font-size:.92em}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:12px">
+    <h1>Pup Pages Handoff</h1>
+    <p class="lede">The prompt that carries the short-pages work from the cloud session into a local Claude Code chat, where <code>foundation</code>, the blog posts and the BlackStaffy images live.</p>
+    <div class="facts">
+      <span class="fact"><b>Picks:</b> HA · G1 · T1 · X1</span>
+      <span class="fact"><b>Strategy:</b> A + B, C as sections</span>
+      <span class="fact"><b>Open:</b> D1, D3, D4</span>
+      <span class="fact"><b>Measured on:</b> 9 Oct snapshot</span>
+    </div>
+  </header>
+
+  <ol class="steps">
+    <li><span class="n">Step 1</span><p>Get the files: unzip <code>bsuk-compact-bundle.zip</code> into the project root, or take branch <code>compact-keywords-handoff</code> from GitHub.</p></li>
+    <li><span class="n">Step 2</span><p>Open a new local Claude Code chat in the BlueStaffyUK project folder.</p></li>
+    <li><span class="n">Step 3</span><p>Copy the prompt below and paste it in. The Art board: <a href="https://claude.ai/artifact/J893onxJZi8idwKsxzu31S">claude.ai/artifact/J893onxJZi8idwKsxzu31S</a></p></li>
+  </ol>
+
+  <section class="sheet" aria-labelledby="p-h">
+    <div class="bar">
+      <h2 id="p-h">Handoff Prompt</h2>
+      <span class="msg" id="msg" role="status"></span>
+      <button type="button" id="copy">Copy prompt</button>
+    </div>
+    <pre id="prompt">@@PROMPT@@</pre>
+  </section>
+</div>
+
+<script>
+document.getElementById('copy').addEventListener('click',function(){
+  var t=document.getElementById('prompt').textContent, m=document.getElementById('msg');
+  function sel(){var r=document.createRange();r.selectNodeContents(document.getElementById('prompt'));var s=getSelection();s.removeAllRanges();s.addRange(r);m.textContent='Selected. Press Ctrl/Cmd+C.';}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){m.textContent='Copied.';},sel);}else{sel();}
+});
+</script>
